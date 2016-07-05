@@ -1,0 +1,48 @@
+.loginBoxShadow{
+
+  -moz-box-shadow:    0 0 10px #485258;
+  -webkit-box-shadow: 0 0 10px #485258;
+   box-shadow:        0 0 10px #485258;
+}
+div#content{
+    margin-left: 0px!important;
+}
+.loginBox {
+	background: #fff;
+	border: none;
+
+}
+.password{
+	border: none;
+	border-top: 1px solid white;
+}
+
+.button{
+	border: none;
+	padding: 2px;
+	background-color: transparent;
+	margin-right: 3px;
+	border-bottom: 1px solid #607d8b;
+	margin-bottom: 1px;
+	font-size: 12px;
+	text-decoration: none !important;
+	vertical-alig: middle;
+	color: black;
+}
+.button:hover{
+	color: black;
+	background-color: transparent;
+	border-bottom: 2px solid #E47B00;
+	margin-bottom: 0px;
+}
+
+.login input[type="text"], .login input[type="password"]{
+	border: none;
+	border-bottom: 1px solid /*#e47b00*/ #b71c1c;
+	border-left: 1px solid /*#e47b00*/ #b71c1c;
+	margin-left: -2px;
+	margin-bottom: 10px;
+	padding-left: 3px;
+	padding-bottom: 3px;
+	background: transparent;
+}

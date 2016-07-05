@@ -1,0 +1,122 @@
+v2.7.3
+-----
+* changed to SpiceTheme
+-----
+
+v2.7.2
+-----
+* added Support for SugarCRM 6.5.16 CE
+* added languagefile for german for Userinterface.
+-----
+
+v2.7.0
+-----
+* optimized Link-Width in SideBar and Top-Module-SubMenus (https://www.sugaroutfitters.com/support/google-style-sugartheme/249)
+* Date Display Bug in Reminders fixed (https://www.sugaroutfitters.com/support/google-style-sugartheme/252)
+-----
+
+v2.6.9
+-----
+* added Support for SugarCRM 6.5.15 CE
+-----
+
+v2.6.8
+-----
+* added Support for SugarCRM 6.5.14 CE
+* 20reasons.js now only loads if user is logged in
+* performance tuning in SideBar/SideBarWidgets/Favorites/Reminders
+-----
+
+v2.6.7
+-----
+* added Support for SugarCRM 6.5.13 CE
+* fixed some db field issues with Oracle
+-----
+
+v2.6.6
+-----
+* added Support for SugarCRM 6.5.12 CE
+* micro Bugfix for pages titles
+* changed line-endings to unix
+-----
+
+v2.6.5
+-----
+* new Feature: QuickNotes for any Bean
+* re-designed "item actions" (favorite-star,remider-picker) under Bean-Name in Detailview
+* complete re-designed icons (metro style)
+* code optimizing in SideBarWidgets
+* handling of "session expired" in ajax requests (display login screen and redirecting to prevous page after login)
+* added Support for SugarCRM 6.5.11 CE
+* new Feature: ColorPicker. In Admin-Panel you can change the 2 main-colors of the theme.
+* now supporting Submenus of GlobalLinks (in the right side of FooterLine)
+-----
+
+v2.6.4
+-----
+* fixed some MSSQL bugs
+* fixed bug of SideBarWidgets on first load (now writing initial config to user-prefs)
+* reminder refreshing optimized (set/remove reminder reloads SideBarWidgets)
+* fixed bug: default HomePages Title empty
+-----
+
+v2.6.3
+-----
+* added Support for SugarCRM 6.5.10 CE
+-----
+
+v2.6.2
+-----
+* new Feature: There is now a Configuration-Section in Admin-Panel for the 20reasons Theme 
+  where you can configure to to load content of closed SideBar-Widgets and to display Subpanels as Tabs
+* new Feature: Subpanels can now be displayed as tabs if config param is set 
+  and user has disabled "Subpanel Tabs" (TabGroups) in User-Config
+* fixed bug that sidebar slides in on detailviews without mouseover after page load
+-----
+
+v2.6.1
+------
+* login-screen custom image (20reasons logo)
+* Support MSSQL
+* Edit Page on Homescreen , columns now as DropDown
+* SideBar foldable now with timeout on 400 ms like top submenus
+------
+
+v2.6
+------
+* SideBar now Foldable
+* Little CSS Fixes
+* SideBarWidget "My Items" fixed mini Bug (duplicate prev./next buttons) 
+
+v2.5
+------
+* support for SugarCRM 6.5.9 CE added
+* fixed missing background color in Emails > settings > add
+* new Feature: Dynamic Sidebar (all Sidebar-elements are Foldabe and sortable, 
+  each user can configure the SideBar by him self)
+* jQuery-UI elements custom styled to match 20reasons theme
+* Favorites now also avavibel in Home Menu/Screen
+* Edit Button for Favorite-Entries now also shows on mouseover in SideBar
+* Titles and Menue-Entrys of the Theme now in language file 
+  (for more info about multilingual support contact us)
+* Set Config param $sugar_config['twentyreasons']['SpiceSideBar_load_closed'] = false;
+  to don't load content of closed SideBar-Elements (will be loaded on open)
+* Fixed some issues with default user config and dublicate widget-content
+* Fixed issue with sorting Widgets when not all widgets are displayed (which user has configured)
+------
+
+v2.4
+------
+* Folding Panels in DetailView fixed
+* Core modifications only take effect if actuel theme == '20reasons'
+* SubPanelGroupTabs styled like Detail-View-Panel-Tabs
+* vertical-alignment of images fixed (now every text biside a image should be vertical centered)
+* show/hide-Subpanel-images no left margin
+* Icons in Subpanels (calls,meetings...) also no left margin
+* File MySugar.tpl now update-save replaced
+* LeftBar: Shortcuts foldable (state will be saved/loaded from/to User-Config)
+------
+
+v2.3
+------
+* Only display error Count if there are errors (errorcount > 0 )

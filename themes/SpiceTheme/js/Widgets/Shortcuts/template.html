@@ -1,0 +1,13 @@
+<div id="{{shortcutsWidget.name}}" class="shortcuts">
+    <span class="shortcutstitle">{{shortcutsWidget.label}}</span>
+    <div id="expand_{{shortcutsWidget.name}}" class="expander" ng-click="userConfigService.toggle(shortcutsWidget.name,true)">
+        <span ng-show="userConfigService.objects.Shortcuts_collapsed == 'true'" class="arrow_down"></span>
+        <span ng-show="userConfigService.objects.Shortcuts_collapsed == 'false'" class="arrow_up"></span>
+    </div>
+    <div ng-if="shortcutsService.loading">loading...</div>
+    <div id="widget_cotent_{{shortcutsWidget.name}}" ng-class="'widget_content '+shortcutsWidget.class()" ng-if="!shortcutsService.loading">
+        <ul ng-show="userConfigService.objects.Shortcuts_collapsed == 'false'">
+        <shortcuts-item ng-repeat="object in shortcutsService.objects" item-data="object"></shortcuts-item>
+        </ul>
+    </div>
+</div>

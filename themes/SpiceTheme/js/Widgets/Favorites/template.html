@@ -1,0 +1,13 @@
+<div id="{{favoritesWidget.name}}" class="shortcuts">
+    <span class="shortcutstitle">{{favoritesWidget.label}}</span>
+    <div id="expand_{{favoritesWidget.name}}" class="expander" ng-click="userConfigService.toggle(favoritesWidget.name,true)">
+        <span ng-show="userConfigService.objects.Favorites_collapsed == 'true'" class="arrow_down"></span>
+        <span ng-show="userConfigService.objects.Favorites_collapsed == 'false'" class="arrow_up"></span>
+    </div>
+    <div ng-if="favoritesService.loading">loading...</div>
+    <div id="widget_cotent_{{favoritesWidget.name}}" ng-class="'widget_content '+favoritesWidget.class()" ng-if="!favoritesService.loading">
+        <ul ng-show="userConfigService.objects.Favorites_collapsed == 'false'">
+        <favorites-item ng-repeat="object in favoritesService.objects" item-data="object"></favorites-item>
+        </ul>
+    </div>
+</div>

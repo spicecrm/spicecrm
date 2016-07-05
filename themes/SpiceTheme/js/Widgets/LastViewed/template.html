@@ -1,0 +1,13 @@
+<div id="{{lastViewedWidget.name}}" class="shortcuts">
+    <span class="shortcutstitle">{{lastViewedWidget.label}}</span>
+    <div id="expand_{{lastViewedWidget.name}}" class="expander" ng-click="userConfigService.toggle(lastViewedWidget.name,true)">
+        <span ng-show="userConfigService.objects.LastViewed_collapsed == 'true'" class="arrow_down"></span>
+        <span ng-show="userConfigService.objects.LastViewed_collapsed == 'false'" class="arrow_up"></span>
+    </div>
+    <div ng-if="lastViewedService.loading">loading...</div>
+    <div id="widget_cotent_{{lastViewedWidget.name}}" ng-class="'widget_content '+lastViewedWidget.class()" ng-if="!lastViewedService.loading">
+        <ul ng-show="userConfigService.objects.LastViewed_collapsed == 'false'">
+        <last-viewed-item ng-repeat="object in lastViewedService.objects" item-data="object"></last-viewed-item>
+        </ul>
+    </div>
+</div>

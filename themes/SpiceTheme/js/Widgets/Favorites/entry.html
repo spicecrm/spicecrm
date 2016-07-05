@@ -1,0 +1,13 @@
+<li title="{{itemData.module_name}}: {{itemData.item_summary}}">
+    <a href="index.php?module={{itemData.module_name}}&action=DetailView&record={{itemData.item_id}}">
+        <span>{{itemData.item_summary_short}}</span>
+    </a>
+    <div class="moduleIcon">
+        <img ng-src="themes/SpiceTheme/images/{{itemData.module_name}}.gif" onerror="this.src='include/images/blank.gif'">
+    </div>
+    <div class="changeIcon">
+        <a title="{{itemData.module_name}}: {{itemData.item_summary}}" href="index.php?module={{itemData.module_name}}&action=EditView&record={{itemData.item_id}}">
+            <img src="themes/SpiceTheme/images/edit_inline.gif">
+        </a>
+    </div>
+</li>
