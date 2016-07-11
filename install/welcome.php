@@ -142,27 +142,27 @@ $php_verison_warning =<<<eoq
 eoq;
 }
 
-//@todo: create cache and upload folders
-//if(!is_dir('cache')) {
-//    if(!@mkdir('cache', 0766)){
-//        $error_found = true;
-//        $error_txt .= '
-//          <table width="100%" cellpadding="0" cellpadding="0" border="0"><tr>
-//            <td><strong>'.$mod_strings['ERR_CHECKSYS_CACHE_NOT_CREATEABLE'].'</strong></td>
-//            <td class="error">'.$mod_strings['ERR_CHECKSYS_CACHE_NOT_CREATEABLE'].'</td>
-//          </tr></table>';
-//    }
-//}
-//if(!is_dir('upload')) {
-//    if(!@mkdir('upload', 0766)){
-//        $error_found = true;
-//        $error_txt .= '
-//          <table width="100%" cellpadding="0" cellpadding="0" border="0"><tr>
-//            <td><strong>'.$mod_strings['ERR_CHECKSYS_UPLOAD_NOT_CREATEABLE'].'</strong></td>
-//            <td class="error">'.$mod_strings['ERR_CHECKSYS_UPLOAD_NOT_CREATEABLE'].'</td>
-//          </tr></table>';
-//    }
-//}
+//create cache and upload folders
+if(!is_dir('cache')) {
+    if(!@mkdir('cache', 0766)){
+        $error_found = true;
+        $error_txt .= '
+          <table width="100%" cellpadding="0" cellpadding="0" border="0"><tr>
+            <td><strong>'.$mod_strings['ERR_CHECKSYS_CACHE_NOT_CREATEABLE'].'</strong></td>
+            <td class="error">'.$mod_strings['ERR_CHECKSYS_CACHE_NOT_CREATEABLE'].'</td>
+          </tr></table>';
+    }
+}
+if(!is_dir('upload')) {
+    if(!@mkdir('upload', 0766)){
+        $error_found = true;
+        $error_txt .= '
+          <table width="100%" cellpadding="0" cellpadding="0" border="0"><tr>
+            <td><strong>'.$mod_strings['ERR_CHECKSYS_UPLOAD_NOT_CREATEABLE'].'</strong></td>
+            <td class="error">'.$mod_strings['ERR_CHECKSYS_UPLOAD_NOT_CREATEABLE'].'</td>
+          </tr></table>';
+    }
+}
 
 // config_override.php
 if((file_exists('./config_override.php') && (!(make_writable('./config_override.php')) ||  !(is_writable('./config_override.php')))) 
