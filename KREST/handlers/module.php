@@ -31,6 +31,24 @@ class KRESTModuleHandler
         // some general global settings
         global $disable_date_format;
         $disable_date_format = true;
+		$this->isSpice = $this->checkForSpiceFavorites();
+
+    }
+    /*
+     * Check if KREST is installed in spicecrm ou suitesrm/sugarcrm
+     **/
+    function checkForSpiceFavorites() {
+        $spiceFavoritesFiles = array(
+            'include/SpiceFavorites/SpiceFavoritesSugarFavoritesWrapper.php',
+            'include/SpiceFavorites/SpiceFavorites.php'
+        );
+        foreach ($spiceFavoritesFiles as $filename) {
+            if (file_exists($filename)) {
+                return true; break;
+            } else {
+                return false; continue;
+            }
+        }
     }
 
     public function get_mod_language($modules, $lang)
@@ -179,11 +197,13 @@ class KRESTModuleHandler
         // $beanList = $thisBean->get_list($searchParams['orderby'], $searchParams['whereclause'], $searchParams['offset'], $searchParams['limit']);
         $queryArray = $thisBean->create_new_list_query($searchParams['orderby'], $searchParams['whereclause'], $filterFields, array(), false, '', true, $thisBean, true);
 
+        if($his->isSpice){ 
         $spiceFavoritesClass = $this->getSpiceFavoritesClass();
         if ($spiceFavoritesClass) {
             $favoritesQueryParts = $spiceFavoritesClass::getBeanListQueryParts($thisBean, $searchParams['searchfavorites']);
             $queryArray['from'] .= $favoritesQueryParts['from'] . $favoritesQueryParts['where'];
             $queryArray['secondary_from'] .= $favoritesQueryParts['from'] . $favoritesQueryParts['where'];
+        }
         }
 
         // any additional joins we might have gotten
@@ -601,25 +621,31 @@ class KRESTModuleHandler
     public
     function get_favorite($beanModule, $beanId)
     {
+    if($this->isSpice) {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
         if ($spiceFavoriteClass)
             return $spiceFavoriteClass::get_favorite($beanModule, $beanId);
         else
             return array();
+        }       
     }
 
     public
     function set_favorite($beanModule, $beanId)
     {
+    if($this->isSpice) {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
         $spiceFavoriteClass::set_favorite($beanModule, $beanId);
+    }
     }
 
     public
     function delete_favorite($beanModule, $beanId)
     {
+    if($this->isSpice) {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
         $spiceFavoriteClass::delete_favorite($beanModule, $beanId);
+        }
     }
 
     private
