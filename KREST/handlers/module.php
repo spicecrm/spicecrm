@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-class KRESTModuleHandler
-{
+class KRESTModuleHandler {
 
     var $app = null;
     var $sessionId = null;
@@ -24,17 +23,31 @@ class KRESTModuleHandler
     var $excludeAuthentication = array();
     var $spiceFavoritesClass = null;
 
-    public function __construct($app)
-    {
+    public function __construct($app) {
         $this->app = $app;
-
+        $this->isSpice = $this->checkForSpiceFavorites();
         // some general global settings
         global $disable_date_format;
         $disable_date_format = true;
     }
+    /*
+     * Check if KREST is installed in spicecrm ou suitesrm/sugarcrm
+     **/
+    function checkForSpiceFavorites() {
+        $spiceFavoritesFiles = array(
+            'include/SpiceFavorites/SpiceFavoritesSugarFavoritesWrapper.php',
+            'include/SpiceFavorites/SpiceFavorites.php'
+        );
+        foreach ($spiceFavoritesFiles as $filename) {
+            if (file_exists($filename)) {
+                return true; break;
+            } else {
+                return false; continue;
+            }
+        }
+    }
 
-    public function get_mod_language($modules, $lang)
-    {
+    public function get_mod_language($modules, $lang) {
         $modLang = array();
 
         foreach ($modules as $module)
@@ -55,9 +68,11 @@ class KRESTModuleHandler
             $fieldDefs = $thisBean->getFieldDefinitions();
 
             //$domainFunctions = array_map(function($fieldDef) { return isset($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function'] : array();} , $dictionary[$beanList[$module]]['fields']);
-            $fieldDefsWithDomainFunction = array_filter($fieldDefs, function($fieldDef) { return isset($fieldDef['spice_domain_function']);});
+            $fieldDefsWithDomainFunction = array_filter($fieldDefs, function($fieldDef) {
+                return isset($fieldDef['spice_domain_function']);
+            });
 
-            foreach($fieldDefsWithDomainFunction as $fieldDef) {
+            foreach ($fieldDefsWithDomainFunction as $fieldDef) {
                 $functionName = is_array($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function']['name'] : $fieldDef['spice_domain_function'];
                 $domainKey = 'spice_domain_function_' . strtolower($functionName) . '_dom';
                 $dynamicDomains[$domainKey] = $this->processSpiceDomainFunction($thisBean, $fieldDef, $language);
@@ -67,8 +82,7 @@ class KRESTModuleHandler
         return $dynamicDomains;
     }
 
-    public function get_bean_list($beanModule, $searchParams)
-    {
+    public function get_bean_list($beanModule, $searchParams) {
         global $current_user, $sugar_config, $dictionary;
 
         // whitelist currencies modules
@@ -109,7 +123,7 @@ class KRESTModuleHandler
                     foreach ($searchTermFields as $fieldName) {
                         switch ($thisBean->field_name_map[$fieldName]['type']) {
                             case 'relate':
-                                $searchTerms[] = ($thisBean->field_name_map[$fieldName]['join_name'] ?: $thisBean->field_name_map[$fieldName]['table']) . '.' . $thisBean->field_name_map[$fieldName]['rname'] . ' like \'%' . $thisSearchterm . '%\'';
+                                $searchTerms[] = ($thisBean->field_name_map[$fieldName]['join_name'] ? : $thisBean->field_name_map[$fieldName]['table']) . '.' . $thisBean->field_name_map[$fieldName]['rname'] . ' like \'%' . $thisSearchterm . '%\'';
                                 break;
                             default:
                                 $searchTerms[] = $thisBean->table_name . '.' . $fieldName . ' like \'%' . $thisSearchterm . '%\'';
@@ -165,7 +179,7 @@ class KRESTModuleHandler
             if (!json_decode(html_entity_decode($searchParams['sortfield']))) {
                 $searchParams['orderby'] = '';
                 $searchParams['orderby'] .= /* $thisBean->table_name . '.' . */
-                    $searchParams['sortfield'] . ' ' . ($searchParams['sortdirection'] ? strtoupper($searchParams['sortdirection']) : 'ASC');
+                        $searchParams['sortfield'] . ' ' . ($searchParams['sortdirection'] ? strtoupper($searchParams['sortdirection']) : 'ASC');
             } else {
                 $sortObject = json_decode(html_entity_decode($searchParams['sortfield']));
                 $searchParams['orderby'] = $this->sort_object_handler($thisBean->table_name, $sortObject) . ' ' . ($searchParams['sortdirection'] ? strtoupper($searchParams['sortdirection']) : 'ASC');
@@ -179,12 +193,14 @@ class KRESTModuleHandler
         // $beanList = $thisBean->get_list($searchParams['orderby'], $searchParams['whereclause'], $searchParams['offset'], $searchParams['limit']);
         $queryArray = $thisBean->create_new_list_query($searchParams['orderby'], $searchParams['whereclause'], $filterFields, array(), false, '', true, $thisBean, true);
 
-        $spiceFavoritesClass = $this->getSpiceFavoritesClass();
-        if ($spiceFavoritesClass) {
-            $favoritesQueryParts = $spiceFavoritesClass::getBeanListQueryParts($thisBean, $searchParams['searchfavorites']);
-            $queryArray['from'] .= $favoritesQueryParts['from'] . $favoritesQueryParts['where'];
-            $queryArray['secondary_from'] .= $favoritesQueryParts['from'] . $favoritesQueryParts['where'];
-        }
+          if($his->isSpice){ 
+            $spiceFavoritesClass = $this->getSpiceFavoritesClass();
+            if ($spiceFavoritesClass) {
+                $favoritesQueryParts = $spiceFavoritesClass::getBeanListQueryParts($thisBean, $searchParams['searchfavorites']);
+                $queryArray['from'] .= $favoritesQueryParts['from'] . $favoritesQueryParts['where'];
+                $queryArray['secondary_from'] .= $favoritesQueryParts['from'] . $favoritesQueryParts['where'];
+            }
+          }
 
         // any additional joins we might have gotten
         $queryArray['from'] .= ' ' . $addJoins;
@@ -198,7 +214,7 @@ class KRESTModuleHandler
             $searchParams['offset'] = 0;
 
         if (empty($searchParams['limit']))
-            $searchParams['limit'] = $sugar_config['list_max_entries_per_page'] ?: 25;
+            $searchParams['limit'] = $sugar_config['list_max_entries_per_page'] ? : 25;
 
         $beanList = $thisBean->process_list_query($query, $searchParams['offset'], $searchParams['limit'] + 1);
 
@@ -251,8 +267,7 @@ class KRESTModuleHandler
     }
 
     private
-    function buildConditionsWhereClause($bean, $conditions, &$addJoins)
-    {
+            function buildConditionsWhereClause($bean, $conditions, &$addJoins) {
         $condWhereClause = '';
         if (!empty($conditions['join'])) {
             foreach ($conditions['conditions'] as $condition) {
@@ -271,8 +286,7 @@ class KRESTModuleHandler
     }
 
     private
-    function buildConditionWhereClause($bean, $condition, &$addJoins)
-    {
+            function buildConditionWhereClause($bean, $condition, &$addJoins) {
         // check if we have to add the table to the field name
         $fieldName = $condition['field'];
         if (strpos($condition['field'], '.') === false)
@@ -282,9 +296,8 @@ class KRESTModuleHandler
         if (is_array(($condition['addjoin']))) {
 
             $addJoins .= ' ' . $condition['addjoin']['jointype'] . ' JOIN ' . $condition['addjoin']['jointable'] . ' ON ' . $bean->table_name . '.' .
-                $condition['addjoin']['joinid'] . ' = ' . $condition['addjoin']['jointable'] . '.' . $condition['addjoin']['jointableid'] . ' AND ' .
-                $condition['addjoin']['jointable'] . '.deleted = 0';
-
+                    $condition['addjoin']['joinid'] . ' = ' . $condition['addjoin']['jointable'] . '.' . $condition['addjoin']['jointableid'] . ' AND ' .
+                    $condition['addjoin']['jointable'] . '.deleted = 0';
         }
 
         switch ($condition['operator']) {
@@ -308,8 +321,7 @@ class KRESTModuleHandler
     }
 
     public
-    function get_bean_detail($beanModule, $beanId, $requestParams)
-    {
+            function get_bean_detail($beanModule, $beanId, $requestParams) {
 
         // acl check if user can get the detail
         if (!ACLController::checkAccess($beanModule, 'view', true)) {
@@ -344,8 +356,7 @@ class KRESTModuleHandler
     }
 
     public
-    function get_bean_attachment($beanModule, $beanId)
-    {
+            function get_bean_attachment($beanModule, $beanId) {
 // acl check if user can get the detail
         if (!ACLController::checkAccess($beanModule, 'detail', true)) {
             http_response_code(403);
@@ -379,8 +390,7 @@ class KRESTModuleHandler
     }
 
     private
-    function get_acl_actions($bean)
-    {
+            function get_acl_actions($bean) {
         $aclArray = [];
         $aclActions = ['list', 'detail', 'edit', 'delete'];
         foreach ($aclActions as $aclAction) {
@@ -390,8 +400,7 @@ class KRESTModuleHandler
     }
 
     public
-    function get_related($beanModule, $beanId, $linkName)
-    {
+            function get_related($beanModule, $beanId, $linkName) {
 
 // acl check if user can get the detail
         if (!ACLController::checkAccess($beanModule, 'detail', true)) {
@@ -429,8 +438,7 @@ class KRESTModuleHandler
     }
 
     public
-    function add_related($beanModule, $beanId, $linkName)
-    {
+            function add_related($beanModule, $beanId, $linkName) {
 
         if (!ACLController::checkAccess($beanModule, 'edit', true)) {
             http_response_code(403);
@@ -463,8 +471,7 @@ class KRESTModuleHandler
     }
 
     public
-    function delete_related($beanModule, $beanId, $linkName)
-    {
+            function delete_related($beanModule, $beanId, $linkName) {
 
         if (!ACLController::checkAccess($beanModule, 'edit', true)) {
             http_response_code(403);
@@ -497,14 +504,12 @@ class KRESTModuleHandler
     }
 
     public
-    function add_mudltiple_related($beanModule, $linkName)
-    {
-
+            function add_mudltiple_related($beanModule, $linkName) {
+        
     }
 
     public
-    function add_bean($beanModule, $beanId, $post_params)
-    {
+            function add_bean($beanModule, $beanId, $post_params) {
         global $current_user;
 
         if ($post_params['deleted']) {
@@ -545,6 +550,7 @@ class KRESTModuleHandler
         }
 
         // if favorite is set .. update this as well
+
         if (isset($post_params['favorite'])) {
             if ($post_params['favorite'])
                 $this->set_favorite($beanModule, $beanId);
@@ -552,12 +558,12 @@ class KRESTModuleHandler
                 $this->delete_favorite($beanModule, $beanId);
         }
 
+
         return $this->mapBeanToArray($beanModule, $thisBean);
     }
 
     public
-    function delete_bean($beanModule, $beanId)
-    {
+            function delete_bean($beanModule, $beanId) {
         if (!ACLController::checkAccess($beanModule, 'delete', true)) {
             http_response_code(403);
             echo('not authorized for module ' . $beanModule);
@@ -578,53 +584,48 @@ class KRESTModuleHandler
         $thisBean->mark_deleted($beanId);
         return true;
     }
-
-    private
-    function getSpiceFavoritesClass()
-    {
-        global $sugar_flavor, $dictionary;
-
-        if ($this->spiceFavoritesClass === null) {
-            if ($sugar_flavor === 'PRO') {
-                require_once 'include/SpiceFavorites/SpiceFavoritesSugarFavoritesWrapper.php';
-                $this->spiceFavoritesClass = 'SpiceFavoritesSugarFavoritesWrapper';
-            } else {
-                if ($dictionary['spicefavorites']) {
-                    require_once 'include/SpiceFavorites/SpiceFavorites.php';
-                    $this->spiceFavoritesClass = 'SpiceFavorites';
+    private function getSpiceFavoritesClass() {
+            global $sugar_flavor, $dictionary;
+            if ($this->spiceFavoritesClass === null) {
+                if ($sugar_flavor === 'PRO') {
+                    require_once 'include/SpiceFavorites/SpiceFavoritesSugarFavoritesWrapper.php';
+                    $this->spiceFavoritesClass = 'SpiceFavoritesSugarFavoritesWrapper';
+                } else {
+                    if ($dictionary['spicefavorites']) {
+                        require_once 'include/SpiceFavorites/SpiceFavorites.php';
+                        $this->spiceFavoritesClass = 'SpiceFavorites';
+                    }
                 }
             }
-        }
         return $this->spiceFavoritesClass;
     }
 
-    public
-    function get_favorite($beanModule, $beanId)
-    {
-        $spiceFavoriteClass = $this->getSpiceFavoritesClass();
-        if ($spiceFavoriteClass)
-            return $spiceFavoriteClass::get_favorite($beanModule, $beanId);
-        else
-            return array();
+    public function get_favorite($beanModule, $beanId) {
+        if($this->isSpice) {
+            $spiceFavoriteClass = $this->getSpiceFavoritesClass();
+            if ($spiceFavoriteClass)
+                return $spiceFavoriteClass::get_favorite($beanModule, $beanId);
+            else
+                return array();
+        }       
     }
 
-    public
-    function set_favorite($beanModule, $beanId)
-    {
-        $spiceFavoriteClass = $this->getSpiceFavoritesClass();
-        $spiceFavoriteClass::set_favorite($beanModule, $beanId);
+    public function set_favorite($beanModule, $beanId) {
+        if($this->isSpice) {
+            $spiceFavoriteClass = $this->getSpiceFavoritesClass();
+            $spiceFavoriteClass::set_favorite($beanModule, $beanId);
+        }
     }
 
-    public
-    function delete_favorite($beanModule, $beanId)
-    {
-        $spiceFavoriteClass = $this->getSpiceFavoritesClass();
-        $spiceFavoriteClass::delete_favorite($beanModule, $beanId);
+    public function delete_favorite($beanModule, $beanId) {
+        if($this->isSpice) {
+            $spiceFavoriteClass = $this->getSpiceFavoritesClass();
+            $spiceFavoriteClass::delete_favorite($beanModule, $beanId);
+        }
     }
 
     private
-    function get_reminder($bean)
-    {
+            function get_reminder($bean) {
 
         global $dictionary, $db, $current_user;
 
@@ -650,8 +651,7 @@ class KRESTModuleHandler
     }
 
     private
-    function get_quicknotes($bean)
-    {
+            function get_quicknotes($bean) {
         global $dictionary, $current_user, $db;
 
         // check capability and handle old theme customers
@@ -691,8 +691,7 @@ class KRESTModuleHandler
     }
 
     public
-    function execute_bean_action($beanModule, $beanId, $beanAction, $postParams)
-    {
+            function execute_bean_action($beanModule, $beanId, $beanAction, $postParams) {
 
         $GLOBALS['KREST']['beanID'] = $beanId;
         $GLOBALS['KREST']['beanAction'] = $beanAction;
@@ -725,16 +724,14 @@ class KRESTModuleHandler
     }
 
     public
-    function get_bean_vardefs($beanModule)
-    {
+            function get_bean_vardefs($beanModule) {
 
         $thisBean = BeanFactory::getBean($beanModule);
         return $thisBean->field_name_map;
     }
 
     public
-    function get_beandefs_multiple($beanModules)
-    {
+            function get_beandefs_multiple($beanModules) {
 
         $retArray = array();
 
@@ -746,8 +743,7 @@ class KRESTModuleHandler
     }
 
     public
-    function get_modules()
-    {
+            function get_modules() {
 
         global $current_language;
 
@@ -763,8 +759,7 @@ class KRESTModuleHandler
     }
 
     public
-    function get_beandefs($beanModule)
-    {
+            function get_beandefs($beanModule) {
 
         $thisBean = BeanFactory::getBean($beanModule);
         $retArray = array();
@@ -785,16 +780,14 @@ class KRESTModuleHandler
     }
 
     public
-    function get_bean_language($beanModule)
-    {
+            function get_bean_language($beanModule) {
 
         return return_module_language('', $beanModule);
     }
 
 //private helper functions
     private
-    function mapBeanToArray($beanModule, $thisBean, $returnFields = array(), $includeReminder = false, $includeNotes = false)
-    {
+            function mapBeanToArray($beanModule, $thisBean, $returnFields = array(), $includeReminder = false, $includeNotes = false) {
 
         global $current_language;
 
@@ -830,16 +823,14 @@ class KRESTModuleHandler
     }
 
     private
-    function getEmailAddresses($beanObject, $beanId)
-    {
+            function getEmailAddresses($beanObject, $beanId) {
 
         $emailAddresses = BeanFactory::getBean('EmailAddresses');
         return $emailAddresses->getAddressesByGUID($beanId, $beanObject);
     }
 
     private
-    function setEmailAddresses($beanModule, $beanId, $emailaddresses)
-    {
+            function setEmailAddresses($beanModule, $beanId, $emailaddresses) {
 
         $emailAddresses = BeanFactory::getBean('EmailAddresses');
         $emailAddresses->addresses = $emailaddresses;
@@ -847,8 +838,7 @@ class KRESTModuleHandler
     }
 
     private
-    function getModuleListdefs($beanModule, $thisBean = null, $mobile = false)
-    {
+            function getModuleListdefs($beanModule, $thisBean = null, $mobile = false) {
 
         if (!$thisBean)
             $thisBean = BeanFactory::getBean($beanModule);
@@ -872,8 +862,7 @@ class KRESTModuleHandler
     }
 
     private
-    function getModuleViewdefs($beanModule, $thisBean)
-    {
+            function getModuleViewdefs($beanModule, $thisBean) {
         require_once 'modules/' . $thisBean->module_dir . '/metadata/detailviewdefs.php';
 
         $moduleLanguage = $this->get_bean_language($beanModule);
@@ -924,8 +913,7 @@ class KRESTModuleHandler
 
 // for the emails
     public
-    function email_getmailboxes()
-    {
+            function email_getmailboxes() {
         global $db;
 
         $inboundEmails = array();
@@ -934,8 +922,7 @@ class KRESTModuleHandler
     }
 
     public
-    function email_getmails($mailboxid)
-    {
+            function email_getmails($mailboxid) {
         global $db;
 
         $emailsobj = $db->query("SELECT *, (SELECT count(id) FROM notes WHERE parent_id=emails.id) attachmentcount FROM emails, emails_text WHERE emails.id = emails_text.email_id AND mailbox_id='" . $mailboxid . "' ORDER BY date_sent DESC");
@@ -959,8 +946,7 @@ class KRESTModuleHandler
     }
 
     public
-    function email_getmail($emailId)
-    {
+            function email_getmail($emailId) {
         global $db;
 
         $emailsEntry = $db->fetchByAssoc($db->query("SELECT * FROM emails, emails_text WHERE emails.id = emails_text.email_id AND id='" . $emailId . "'"));
@@ -989,8 +975,7 @@ class KRESTModuleHandler
     }
 
     private
-    function write_spiceuitracker($module, $bean)
-    {
+            function write_spiceuitracker($module, $bean) {
         global $db, $timedate, $current_user;
 
         // check if the last entr from the user is the same id
@@ -1003,8 +988,7 @@ class KRESTModuleHandler
         $db->query("INSERT INTO spiceuitrackers (id, user_id, date_entered, record_module, record_id, record_summary) VALUES('" . create_guid() . "', '{$current_user->id}', '" . $timedate->nowDb() . "', '{$module}', '{$bean->id}', '" . $bean->get_summary_text() . "')");
     }
 
-    private function sort_object_handler($table_name, $sort_object)
-    {
+    private function sort_object_handler($table_name, $sort_object) {
         switch ($sort_object->sortfunction) {
             case "distance":
                 return "POWER(SIN((" . $sort_object->sortparams->current_lat . " - abs(" . $table_name . "." . $sort_object->sortparams->lat_field . ")) * pi()/180 / 2), 2)
@@ -1033,7 +1017,6 @@ class KRESTModuleHandler
 
             $domain = call_user_func($function, $thisBean, $fieldDef['name'], $language);
             return $domain;
-            
         } else {
             return array();
         }
