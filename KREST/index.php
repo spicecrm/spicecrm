@@ -56,8 +56,41 @@ if ($KRestDirHandle) {
     }
 }
 
+// check if we have extension in the local path
+$KRestDirHandle = opendir('./modules');
+if ($KRestDirHandle) {
+    while (($KRestNextDir = readdir($KRestDirHandle)) !== false) {
+        if ($KRestNextDir != '.' && $KRestNextDir != '..' && is_dir('./modules/' . $KRestNextDir) && file_exists('./modules/' . $KRestNextDir . '/KREST/extensions')) {
+            $KRestSubDirHandle = opendir('./modules/' . $KRestNextDir . '/KREST/extensions');
+            if ($KRestSubDirHandle) {
+                while (false !== ($KRestNextFile = readdir($KRestSubDirHandle))) {
+                    if (preg_match('/.php$/', $KRestNextFile)) {
+                        require_once('./modules/' . $KRestNextDir . '/KREST/extensions/' . $KRestNextFile);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // authenticate
 $KRESTManager->authenticate();
+
+// SpiceCRM Deployment Maintenance Windows Check
+global $db, $timedate;
+$date = new DateTime('now',new DateTimeZone('UTC'));
+$res = $db->query("SELECT * FROM kdeploymentmws WHERE deleted = 0 AND from_date <= '".date_format($date, $timedate->get_db_date_time_format())."' AND to_date > '".date_format($date, $timedate->get_db_date_time_format())."'");
+while($row = $db->fetchByAssoc($res)){
+    $logged_in_user = new User();
+    $logged_in_user->retrieve($_SESSION['authenticated_user_id']);
+    if(!$logged_in_user->is_admin && !$KRESTManager->noAuthentication) {
+        unset($_GET['PHPSESSID']);
+        session_destroy();
+        $to_date = $timedate->fromDb($row['to_date']);
+        $KRESTManager->authenticationError('System in Deployment Maintenance Window till '.$timedate->asUser($to_date)." !");
+        exit;
+    }
+}
 
 // run the request
 $app->contentType('application/json');

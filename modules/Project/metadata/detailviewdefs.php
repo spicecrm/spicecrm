@@ -187,7 +187,8 @@ $viewdefs['Project']['DetailView'] = array(
 				'label' => 'LBL_DATE_ENTERED',
 			),
 		),
-	  ),  						
+	  ),
+        'LBL_WBS_PANEL' => 'modules/KProjectWBSs/DVPanel.php'
 	),
 );
 ?>

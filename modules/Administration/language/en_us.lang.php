@@ -449,7 +449,9 @@ $mod_strings = array (
     'LBL_MANAGE_TIMEPERIODS_TITLE' => 'Time Periods',
     'LBL_MANAGE_TIMEPERIODS' => 'Manage time periods',
     'LBL_MANAGE_USERS_TITLE' => 'User Management',
+    'LBL_MANAGE_USERS_QUOTAS' => 'Salesquota Management',
     'LBL_MANAGE_USERS' => 'Manage user accounts and passwords',
+    'LBL_MANAGE_QUOTAS' => 'Manage users sales quotas',
     'LBL_MANAGE_WORKFLOW'                   => 'Workflow Management',
     'LBL_MANUAL_VALIDATION_TXT' => 'Manual Validation',
     'LBL_MANUAL_VALIDATION'=>'
@@ -938,6 +940,7 @@ $mod_strings = array (
     'WARN_UPGRADE' => 'Warning: Please upgrade ',
     'WARN_UPGRADENOTE' => 'Note: ',
     'WARN_UPGRADE2'=>' using the upgrade in the <a href="index.php?module=Administration&action=Upgrade">administration panel</a>',
+    'WARN_NEWSWUPDATES' => '{count} new updates for installed software: {info}',
     'WARN_VALIDATION_EXPIRED'=> "Notice: Your validation key expires in ",
     'WARN_VALIDATION_EXPIRED2' =>" day(s). Please update information in the <a href='index.php?action=LicenseSettings&module=Administration'>'\"License Management\"</a> page in the Admin area.",
     'WARN_NO_SMTP_SERVER_AVAILABLE_ERROR' =>"Note: To send record assignment notifications, an SMTP server must be configured in <a href='index.php?module=EmailMan&action=config'>Email Settings</a>.",
@@ -1182,5 +1185,19 @@ $mod_strings = array (
     'LBL_SPICETHEMECONFIG_LINK1_DESCRIPTION' => 'general Theme Options', // description for the link
     'LBL_SPICETHEMECONFIG_LINK2_TITLE' => 'Home-Pages Administration (BETA)', // title of the link
     'LBL_SPICETHEMECONFIG_LINK2_DESCRIPTION' => 'publish Home Pages to a set of users (BETA)', // description for the link
+    'LNK_KDEPLOYMENTCR_MANAGER' => 'Change Request Manager',
+    'LNK_LANDSCAPEMANAGER' => 'Landscape Manager',
+    'LNK_DEPLOYMENTMANAGER' => 'Deployment Manager',
+    'LNK_KRELEASEPACKAGE_MANAGER' => 'Release Package Manager',
+    'LNK_KDEPLOYMENTMWS' => 'Maintenance Windows'
 );
 
+//SpiceCRM load defs from Modules
+$DirHandle = opendir('./modules');
+if ($DirHandle) {
+    while (($NextDir = readdir($DirHandle)) !== false) {
+        if ($NextDir != '.' && $NextDir != '..' && is_dir('./modules/' . $NextDir) && file_exists('./modules/' . $NextDir . '/language/en_us.adminpanel.lang.php')) {
+            require_once('./modules/' . $NextDir . '/language/en_us.adminpanel.lang.php');
+        }
+    }
+}

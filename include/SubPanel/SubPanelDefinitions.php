@@ -113,6 +113,12 @@ class aSubPanel
 				require ("custom/$def_path");
 				$loaded = true;
 			}
+                        
+                        // BEGIN KReporter Report as SubPanel
+                        if (strpos($name, 'kreporterpres') !== false || strpos($name, 'kreportervisu') !== false) {
+                            $loaded = true;
+                        }
+                        // END KReporter
 
 			if (! $original_only && isset ( $this->_instance_properties [ 'override_subpanel_name' ] ) && file_exists ( 'custom/modules/' . $this->_instance_properties [ 'module' ] . '/metadata/subpanels/' . $this->_instance_properties [ 'override_subpanel_name' ] . '.php' ))
 			{
@@ -707,7 +713,13 @@ class SubPanelDefinitions
 				$this->layout_defs = $layout_defs [ $this->_focus->module_dir ] ;
 
 		}
-
+                
+                //BEGIN KReporter Add Subpanel for Reports
+                if (file_exists('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php')) {
+                    require_once('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php');
+                    kpublishing::addToLayoutDefs($this->layout_defs, $layout_def_key);
+                }
+                //END KReporter
 	}
 
 	/**

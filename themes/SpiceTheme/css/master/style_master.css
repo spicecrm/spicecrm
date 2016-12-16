@@ -3116,7 +3116,7 @@ button[selected], input[type=submit][selected], input[type=reset][selected], inp
     background-color: #b71c1c;
     border-color: #b71c1c;
 }
-button[disabled], input[type=submit][disabled], input[type=reset][disabled], input[type=button][disabled]
+button[disabled], input[type=submit][disabled], input[type=reset][disabled], .action_buttons input[type=button][disabled]
 {
     border-color: #c1c1c1;
     background-color: #f0f0f0;

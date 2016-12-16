@@ -35,12 +35,9 @@
 ********************************************************************************/
 
 *}
-{if strval({{sugarvar key='value' stringFormat='false'}}) == "1" || strval({{sugarvar key='value' stringFormat='false'}}) == "yes" || strval({{sugarvar key='value' stringFormat='false'}}) == "on"} 
-{assign var="checked" value="CHECKED"}
+{if strval({{sugarvar key='value' stringFormat='false'}}) == "1" || strval({{sugarvar key='value' stringFormat='false'}}) == "yes" || strval({{sugarvar key='value' stringFormat='false'}}) == "on"}
+    {assign var="checked" value="1"}
 {else}
-{assign var="checked" value=""}
+    {assign var="checked" value="0"}
 {/if}
-<input type="checkbox" class="checkbox" name="{{sugarvar key='name'}}" id="{{sugarvar key='name'}}" value="{{sugarvar key='value' stringFormat='false'}}" disabled="true" {$checked}>
-{{if !empty($displayParams.enableConnectors)}}
-{{sugarvar_connector view='DetailView'}} 
-{{/if}}
+<img src="themes/SpiceTheme/images/checkbox_{if !$checked}un{/if}checked.png">

@@ -166,6 +166,22 @@ if(isset($_SESSION["waiting_error"])) {
     $sugar_smarty->assign('WAITING_ERROR', $_SESSION['waiting_error']);
 }
 
+if(isset($GLOBALS['kdeploymentmw_now'])){
+    global $timedate;
+    $admin = new User();
+    $admin->retrieve('1');
+    $to_date = $timedate->fromDb($GLOBALS['kdeploymentmw_now']['to_date']);
+    $sugar_smarty->assign('MAINTEN_ERROR', "System is currently in Deployment Maintenance Window till ".$timedate->asUser($to_date,$admin)." !");
+}
+if(isset($GLOBALS['kdeploymentmw_near'])){
+    global $timedate;
+    $admin = new User();
+    $admin->retrieve('1');
+    $to_date = $timedate->fromDb($GLOBALS['kdeploymentmw_near']['to_date']);
+    $from_date = $timedate->fromDb($GLOBALS['kdeploymentmw_near']['from_date']);
+    $sugar_smarty->assign('MAINTEN_ERROR', "Deployment Maintenance Window from ".$timedate->asUser($from_date,$admin)." till ".$timedate->asUser($to_date,$admin)." !");
+}
+
 if (isset($_REQUEST['ck_login_language_20'])) {
 	$display_language = $_REQUEST['ck_login_language_20'];
 } else {

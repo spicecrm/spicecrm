@@ -79,7 +79,7 @@ if ($loginData !== false) {
         }
     }
 
-private function authenticationError($message = '') {
+public function authenticationError($message = '') {
         http_response_code(401);
 
 		if($message !== '')

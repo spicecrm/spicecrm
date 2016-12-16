@@ -99,7 +99,9 @@ function ajaxBannedModules(){
         'Employees',
         'Import',
         'OAuthKeys',
-        'KReports' //KReporter
+        'KReports', //KReporter
+        'Proposals',
+        'CompetitorAssessments'
     );
 
     if(!empty($GLOBALS['sugar_config']['addAjaxBannedModules'])){

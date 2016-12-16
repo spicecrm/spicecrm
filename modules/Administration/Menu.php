@@ -34,13 +34,12 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
+global $db;
+$dev = false;
+$res2 = $db->query("SELECT * FROM kdeploymentsystems WHERE this_system = 1 AND type = 'dev' AND deleted = 0");
+while($row2 = $db->fetchByAssoc($res2)) $dev = true;
+if (ACLController::checkAccess('KDeploymentCRs', 'edit', true) && $dev) $module_menu[] = Array("index.php?module=KDeploymentCRs&action=manager", $mod_strings['LNK_KDEPLOYMENTCR_MANAGER'], "Administration");
+if (ACLController::checkAccess('KReleasePackages', 'edit', true) && $dev)$module_menu[]=Array("index.php?module=KReleasePackages&action=manager", $mod_strings['LNK_KRELEASEPACKAGE_MANAGER'],"Administration");
+if (ACLController::checkAccess('KDeploymentSystems', 'deploymentmanager', true)) $module_menu[] = Array("index.php?module=KDeploymentSystems&action=deploymentManager", $mod_strings['LNK_DEPLOYMENTMANAGER'], "Administration");
+if (ACLController::checkAccess('KDeploymentMWs', 'edit', true))$module_menu[]=Array("index.php?module=KDeploymentMWs", $mod_strings['LNK_KDEPLOYMENTMWS'],"Administration");
 
-/*********************************************************************************
-
- * Description:  TODO To be written.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
- * All Rights Reserved.
- * Contributor(s): ______________________________________..
- ********************************************************************************/
-
-$module_menu = Array();

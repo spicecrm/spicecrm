@@ -1419,6 +1419,11 @@ class SugarBean
 
         $this->call_custom_logic('after_save', '');
 
+        // call fts manager to index the bean
+        $spiceFTSHandler = new SpiceFTSHandler();
+        $spiceFTSHandler->indexBean($this);
+
+
         //Now that the record has been saved, we don't want to insert again on further saves
         $this->new_with_id = false;
         $this->in_save = false;

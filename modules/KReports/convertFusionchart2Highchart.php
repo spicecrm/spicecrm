@@ -17,7 +17,8 @@
  * This script may be run before oder after the update
  * 
  * Call this script over URL
- * yourSitePath.com/#bwc/index.php?module=KReports&action=convertFusionchart2Highchart
+ * Sugar7.x: yourSitePath.com/#bwc/index.php?module=KReports&action=convertFusionchart2Highchart
+ * Sugar6.x: yourSitePath.com/index.php?module=KReports&action=convertFusionchart2Highchart
  */
 
 class KReporterFusionChartSupport {
@@ -37,7 +38,7 @@ class KReporterFusionChartSupport {
         'StackedBar3D' => 'bar_stacked',
         'StackedColumn2D' => 'column_stacked',
         'StackedColumn3D' => 'column_stacked',
-        'MSCombiDY2D' => '', //No type found
+        'MSCombiDY2D' => 'column',
         'Marimekko' => 'area',
         'Bar2D' => 'bar',
         'Line' => 'line',
@@ -101,31 +102,61 @@ class KReporterFusionChartSupport {
     public function mapFusion2Highchart($visualization_params, $kreport_id){
         ini_set('max_execution_time', 3600);
         $visObj = json_decode(html_entity_decode($visualization_params, ENT_QUOTES, 'UTF-8'));
-//echo '<pre>'.print_r($visObj, true);die();
+//echo '<pre>'.print_r($visObj, true);
 //echo '<pre>---------------------';        
         foreach($visObj as $layout => $charts){       
             if($visObj->plugin == 'fusioncharts') $visObj->plugin = 'highcharts';
             
-//            echo ("<br>asdasdas ".$layout. " = ".gettype($layout));
+//            echo ("<br>Layout: ".$layout. " = ".gettype($layout));
             if(is_object($charts->fusioncharts) && !empty($charts->fusioncharts->uid)){
+// echo '<pre>F '.print_r($charts->fusioncharts, true);
+				
+				$originalFusionChartType = $charts->fusioncharts->type;
                 $visObj->$layout->highcharts = $charts->fusioncharts;
+				
+// echo '<pre>fill H '.print_r($visObj->$layout->highcharts, true);
+				
                 $visObj->$layout->highcharts->type = $this->mapChartTypeFusion2Highchart($charts->fusioncharts->type);
                 if($visObj->$layout->highcharts->type == "" && !empty($charts->fusioncharts->type)){
                     echo "<br />Could not map chart type ".json_encode($charts->fusioncharts). " in report with ID ".$kreport_id;
                 }
                 if(isset($visObj->$layout->plugin) && $visObj->$layout->plugin == 'fusioncharts') $visObj->$layout->plugin = 'highcharts';
                 
+				//clean up dataseries config
+				if(isset($visObj->$layout->highcharts->dataseries)){
+					foreach($visObj->$layout->highcharts->dataseries as $idx => $dataserie){						
+						if(isset($dataserie->axis))
+							unset($charts->fusioncharts->dataseries[$idx]->axis);
+						
+						if(isset($dataserie->renderer))
+							unset($charts->fusioncharts->dataseries[$idx]->renderer);
+						
+					}
+				}
+				
+				
+				//convert options from charttype
+				if(preg_match("/3D$/", $originalFusionChartType)){
+					$visObj->$layout->highcharts->options->{'3d'} = "on";
+				}
+				
+				//convert legend param from charttype
+				if($visObj->$layout->highcharts->options->legend == "on"){
+					$visObj->$layout->highcharts->legend = "bottom";
+					unset($visObj->$layout->highcharts->options->legend);
+				}
+				
+// echo '<pre>'.print_r($vis->$layout->highcharts, true);
+// die();
+				
                 unset($visObj->$layout->fusioncharts);
                 
             }elseif(is_object($charts->fusioncharts) && empty($charts->fusioncharts->uid)){
                 unset($visObj->$layout); //clean up   //sometimes something like "{"0": "fusioncharts": {}} found in visualization_params             
             }
-
-
-
         }
-//        echo '<pre>'.print_r($visObj, true);die();
-        return json_encode($visObj);
+//         echo '<pre>'.print_r($visObj, true);die();
+        return str_replace("'", "\'", str_replace("\\", "\\\\", json_encode($visObj)));
     }
     
     

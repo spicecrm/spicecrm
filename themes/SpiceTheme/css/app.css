@@ -1728,6 +1728,9 @@ input[type="reset"],
 input[type="submit"] {
   padding: 0px; }
 
+.edit.view textarea {
+  width: calc(100% - 10px); }
+
 input[type=text], input[type=password], textarea {
   width: auto; }
 
@@ -2119,8 +2122,7 @@ div.moduleTitle {
 .detail tr td {
   border: none;
   vertical-align: top;
-  padding: 5px 6px 5px 6px;
-  vertical-align: top;
+  padding: 10px;
   text-align: left; }
 
 .detail tr td[scope=row] {
@@ -2153,13 +2155,16 @@ div.moduleTitle {
 
 .edit tr td {
   font-weight: normal;
-  vertical-align: top;
+  vertical-align: middle;
   padding: 3px !important; }
+
+#ftsaggregates tr td {
+  vertical-align: top; }
 
 .edit tr td[scope=row] {
   padding: 5px 5px 5px 7px !important;
   text-align: left;
-  vertical-align: top; }
+  vertical-align: middle; }
 
 .edit tr th {
   padding: 5px 5px 5px 7px !important; }
@@ -2206,7 +2211,8 @@ table.edit.view {
   margin: 0; }
 
 .list tr.pagination td table td {
-  padding: 3px 7px 3px 5px !important; }
+  /*padding: 3px 7px 3px 5px !important;*/
+  padding: 3px 0px 3px 0px !important; }
 
 .list tr.pagination td table td button {
   width: 25px; }
@@ -2241,7 +2247,7 @@ table.edit.view {
 
 .list tr td {
   vertical-align: middle;
-  padding: 3px 8px 5px 5px !important; }
+  padding: 10px 8px 10px 5px !important; }
 
 .list tr.pagination td {
   padding: 0 !important; }
@@ -3323,7 +3329,8 @@ td.edit.view td[align=right] {
   text-align: left; }
 
 .login {
-  padding: 10px 6px 12px 10px !important; }
+  padding: 10px 10px 12px 10px !important;
+  position: relative; }
 
 .login .login_more {
   text-align: right; }
@@ -3696,7 +3703,7 @@ ul.subTabs li a:link, ul.subTabs li a:visited {
   font-weight: bold;
   padding: 8px 5px 6px 5px;
   background-position: top center;
-  border-bottom: 2px solid;
+  border-bottom: 5px solid;
   margin: 0 !important;
   border-left: 0 !important; }
 
@@ -4122,7 +4129,13 @@ button[selected], input[type=submit][selected], input[type=reset][selected], inp
   background-color: #b71c1c;
   border-color: #b71c1c; }
 
-button[disabled], input[type=submit][disabled], input[type=reset][disabled], input[type=button][disabled] {
+button:disabled {
+  cursor: auto; }
+
+button:hover:disabled {
+  background-color: transparent; }
+
+button[disabled], input[type=submit][disabled], input[type=reset][disabled], .action_buttons input[type=button][disabled] {
   border-color: #c1c1c1;
   background-color: #f0f0f0;
   color: #000;
@@ -5126,7 +5139,7 @@ div.action_buttons form {
 #moduleList ul li span.currentTab {
   background-image: none;
   border-bottom: none;
-  border-bottom: 3px solid transparent; }
+  border-bottom: 5px solid transparent; }
 
 #newSubmenu li {
   padding-bottom: 9px !important; }
@@ -5142,7 +5155,7 @@ div.action_buttons form {
   display: none; }
 
 #moduleList ul li span.currentTab {
-  border-bottom: 3px solid #b71c1c; }
+  border-bottom: 5px solid #b71c1c; }
 
 #moduleList ul li a:link,
 #moduleList ul li a:visited {
@@ -5163,7 +5176,7 @@ div.action_buttons form {
   border-radius: 2px;
   margin-top: -2px;
   padding: 1px;
-  background: white; }
+  background: transparent; }
 
 .moreModulesUl {
   list-style: none outside none;
@@ -5450,11 +5463,11 @@ ul.itemMenuMenu > li, .itemMenuMenu li a, .itemMenuLv li a {
 
 .shortcuts ul li.activePageItem {
   /*background: #e5e5e5;*/
-  border-left: 3px solid #607d8b; }
+  border-left: 5px solid #607d8b; }
 
 .shortcuts ul li:hover, .shortcuts ul li.activePageItem:hover {
   background: #e5e5e5;
-  border-left: 3px solid #b71c1c; }
+  border-left: 5px solid #b71c1c; }
 
 #actionmenu .changeIcon {
   visibility: hidden; }
@@ -5540,9 +5553,9 @@ div#content {
   background-color: white;
   /*#d5d5d5;*/
   color: #2d2d2d;
-  padding-left: 0px;
+  padding-left: 4px;
   font-size: 12px;
-  border-bottom: 1px solid #607d8b; }
+  border-bottom: 1px solid #b71c1c; }
 
 .detail508 tr td[scope="col"], .detail tr td {
   border-color: #eee; }
@@ -5571,6 +5584,10 @@ h3 {
   background: none;
   border: none; }
 
+.pagination button:hover.button {
+  background: none;
+  border: none; }
+
 a.utilsLink > img {
   vertical-align: bottom; }
 
@@ -5593,7 +5610,12 @@ table.edit {
   margin-bottom: 0px !important; }
 
 .edit tr td {
-  border-bottom: 1px solid #EEEEEE; }
+  border-bottom: 1px solid #EEEEEE;
+  padding: 0px 5px; }
+
+.edit tr td.colhidelabel {
+  border-bottom: none;
+  padding: 0px; }
 
 .search tr td {
   border-bottom: none; }
@@ -5603,29 +5625,36 @@ fieldset {
   margin-left: 0px; }
 
 .edit tr th {
-  padding: 0px !important; }
+  padding: 0px !important;
+  padding: 0px 5px; }
 
 .edit tr td[scope="col"], .edit tr td[scope="row"] {
   background-color: #F6F6F6; }
 
-.edit tr td input[type="text"], .edit tr td textarea, .edit tr td select, #pageEdit input[type="text"], .login_more input[type="text"] {
-  border: none;
-  border-bottom: 1px solid #b71c1c;
-  border-left: 1px solid #b71c1c;
-  margin-left: -2px;
-  margin-bottom: -2px;
-  padding-left: 3px;
-  padding-bottom: 3px;
-  background: transparent; }
+.edit tr td input[type="text"], .edit tr td input[type="file"], .edit tr td input[type="number"], .edit tr td input[type="date"], .edit tr td textarea, .edit tr td select, #pageEdit input[type="text"], .login_more input[type="text"] {
+  border: 1px dotted #999;
+  background: transparent;
+  padding: 5px;
+  margin: 5px 0px; }
+
+.edit tr td input[type="text"][disabled], .edit tr td input[type="file"][disabled], .edit tr td input[type="number"][disabled], .edit tr td input[type="date"][disabled], .edit tr td textarea[disabled], .edit tr td select[disabled], #pageEdit input[type="text"][disabled], .login_more input[type="text"][disabled] {
+  border: 1px dotted #c1c1c1;
+  background: transparent;
+  padding: 5px;
+  margin: 5px 0px;
+  color: #b1b1b1; }
+
+.edit tr td input:focus[type="text"], .edit tr td input:focus[type="file"], .edit tr td input:focus[type="number"], .edit tr td input:focus[type="date"], .edit tr td textarea:focus, .edit tr td select:focus, #pageEdit input:focus[type="text"], .login_more input:focus[type="text"] {
+  border-color: #b71c1c;
+  outline: none; }
+
+.edit tr td input[type="file"] {
+  width: calc(100% - 10px); }
 
 .login input[type="text"], .login input[type="password"] {
-  border: none;
-  border-bottom: 1px solid #b71c1c;
-  border-left: 1px solid #b71c1c;
-  margin-left: -2px;
-  margin-bottom: 5px;
-  padding-left: 3px;
-  padding-bottom: 3px;
+  border: 1px dotted #999;
+  padding: 5px;
+  margin: 5px 0px;
   background: transparent; }
 
 .edit tr td textarea[readonly], input[readonly] {
@@ -5650,7 +5679,8 @@ fieldset {
   padding-bottom: 6px; }
 
 .list tr th[scope="col"], .td_alt {
-  border: none; }
+  border: none;
+  padding: 10px 5px !important; }
 
 .list tr th, .td_alt {
   background: #e5e5e5 !important; }
@@ -5706,23 +5736,47 @@ div.moduleTitle {
 #dashletsList {
   height: 470px !important; }
 
-.button, .login_more .button, .login .button, .pageEditButtons .button, .search .button, .search a:link, .search input[type="button"]:focus, .search input[type="button"][selected], .search input[type="submit"]:focus, .search input[type="submit"][selected], .search a:visited, .action_buttons .button {
+.button, .pagination input[type=submit].button, .login_more .button, .login .button, .pageEditButtons .button, .search .button, .search a:link, .search input[type="button"]:focus, .search input[type="button"][selected], .search input[type="submit"]:focus, .search input[type="submit"][selected], .search a:visited, .action_buttons .button, input[type=submit], input[type=button], input[type=reset] {
   border: none;
   padding: 2px;
-  background-color: transparent;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 12px 8px 12px;
   margin-right: 3px;
-  border-bottom: 1px solid #607d8b;
+  /* border-bottom: 1px solid #607d8b; */
   margin-bottom: 1px;
   font-size: 12px;
   text-decoration: none !important;
   vertical-align: middle;
-  color: black; }
+  color: black;
+  border-radius: 2px;
+  margin: 2px; }
+
+/*
+.actionsContainer .action_buttons .button{
+    margin: 2px 0px;
+    border-radius: 0px;
+    border-right: none;
+}
+
+.actionsContainer .action_buttons [class~='button']:first-of-type{
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.actionsContainer .action_buttons [class~='button']:last-of-type{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-right: 1px solid #ddd;
+}
+*/
+/* remove whitepaces between buttons*/
+.action_buttons {
+  font-size: 0px; }
 
 .button:hover, .login_more .button:hover, .login .button:hover, .pageEditButtons .button:hover, .search a:hover, .search .button:hover, .action_buttons .button:hover, .search input[type="submit"][selected]:hover, .search input[type="button"][selected]:hover {
-  color: black;
-  background-color: transparent;
-  border-bottom: 2px solid #b71c1c;
-  margin-bottom: 0px !important; }
+  color: white;
+  background-color: #b71c1c; }
 
 ul.clickMenu {
   background-image: none;
@@ -5738,7 +5792,8 @@ ul.clickMenu {
   z-index: 80; }
 
 .yui-nav, .subpanelTablist {
-  border-bottom: 1px solid #607d8b !important; }
+  border-bottom: 1px solid #b71c1c !important;
+  overflow: hidden; }
 
 .subpanelTablist {
   margin-bottom: 2px; }
@@ -5749,12 +5804,14 @@ ul.clickMenu {
   margin-bottom: 2px; }
 
 .yui-nav > li.selected > a > em, .yui-nav > li.selected > a > em:hover, ul.subpanelTablist > li > a.current, ul.subpanelTablist > li:hover > a.current {
-  border-bottom: 2px solid #607d8b !important;
-  margin-bottom: 0px; }
+  border-bottom: 3px solid #b71c1c !important;
+  margin-bottom: 2px;
+  padding-bottom: 2px; }
 
 .yui-nav > li > a > em:hover, ul.subpanelTablist > li:hover > a {
-  border-bottom: 1px solid #b71c1c !important;
-  margin-bottom: 1px; }
+  border-bottom: 3px solid #b71c1c !important;
+  margin-bottom: 2px;
+  padding-bottom: 2px; }
 
 ul.subpanelTablist > li > a, ul.subpanelTablist > li > a:hover, ul.subpanelTablist > li > a:visited {
   border-right-width: 0;
@@ -6171,6 +6228,9 @@ a img {
 .statuspanel, #statuspanel {
   z-index: 1 !important;
   bottom: 1px !important; }
+
+.helpIcon {
+  text-align: right; }
 
 /* Spice CSS3 animations */
 #leftBar {

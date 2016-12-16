@@ -102,7 +102,7 @@ class SubPanelTilesTabs extends SubPanelTiles
      * @param boolean $showTabs	Call the view code to display the generated tabs
      * @param string $selectedGroup	(Optional) Name of any selected tab (defaults to 'All')
      */
-	function getTabs($tabs, $showTabs = true, $selectedGroup='All')
+    function getTabs($tabs, $showTabs = true, $selectedGroup='All')
     {
         //WDong Bug: 12258 "All" tab in the middle of a record's detail view is not localized.
         if($selectedGroup=='All')
@@ -141,7 +141,14 @@ class SubPanelTilesTabs extends SubPanelTiles
                 	}
             }
         }
-
+        
+        // BEGIN KReporter Reporter as Subpanels
+        if (file_exists('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php')) {
+            require_once('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php');
+            kpublishing::addToTabs($tabs, $groups, $found, $GLOBALS['tabStructure']);
+        }
+        // END KReporter
+        // 
         // Put all the remaining subpanels into the 'Other' tab.
 
         foreach( $tabs as $subpanelID )

@@ -159,6 +159,8 @@ class ListViewSmarty extends ListViewDisplay{
         $this->ss->assign('is_admin_for_user', $GLOBALS['current_user']->isAdminForModule('Users'));
         $this->ss->assign('is_admin', $GLOBALS['current_user']->isAdmin());
 
+        // assign fts aggregates is we have any
+        $this->ss->assign('aggregates', $data['pageData']['aggregates']);
 
         if($this->contextMenus && !empty($contextMenuObjectsTypes)) {
             $script = '';

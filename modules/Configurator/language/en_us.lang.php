@@ -45,6 +45,7 @@
 $mod_strings = array (
 	/*'ADMIN_EXPORT_ONLY'=>'Admin export only',*/
 	'ADVANCED'=>'Advanced',
+	'FTS'=>'Full Text Search',
 	'DEFAULT_CURRENCY_ISO4217'=>'ISO 4217 currency code',
 	'DEFAULT_CURRENCY_NAME'=>'Currency name',
 	'DEFAULT_CURRENCY_SYMBOL'=>'Currency symbol',
@@ -433,6 +434,12 @@ To configure additional system settings, click <a href="index.php?module=Adminis
 	'LBL_LOGO' => 'Logo' /*for 508 compliance fix*/,
     'LBL_MOBILE_MOD_REPORTS_RESTRICTION' => '* The Reports module is only available for the Sugar Mobile native clients',
     'LBL_ENABLE_HISTORY_CONTACTS_EMAILS' => 'Show related contacts\' emails in History subpanel for modules',
+
+	// fts search
+	'LBL_FTS_SERVER' => 'Server',
+	'LBL_FTS_PORT' => 'Port',
+	'LBL_FTS_PREFIX' => 'Index prefix'
+
 );
 
 

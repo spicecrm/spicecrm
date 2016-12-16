@@ -12,6 +12,7 @@
 ******************************************************************************* */
 
 
+global $kreporterWhereOperatorCount;
 
 $kreporterWhereOperatorCount = array(
     'ignore' => 0,

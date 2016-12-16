@@ -595,6 +595,9 @@ class SugarApplication
 			}
 		}
 
+        // SpiceCRM Deployment Maintenance Windows Check
+        KDeploymentMW::checkMW();
+
         //set the default module to either Home or specified default
         $default_module = !empty($GLOBALS['sugar_config']['default_module'])?  $GLOBALS['sugar_config']['default_module'] : 'Home';
 

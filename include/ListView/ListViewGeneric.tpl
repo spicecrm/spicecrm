@@ -247,6 +247,8 @@
 {/if}
 {if $contextMenus}
 <script type="text/javascript">
+	var ftsAggregates = "{$aggregates}";
+	SpiceCRM.fts.setAggreggates(ftsAggregates);
 {$contextMenuScript}
 {literal}
 function lvg_nav(m,id,act,offset,t){

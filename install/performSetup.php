@@ -461,7 +461,8 @@ FP;
     $enabled_tabs[] = 'Prospects';
     $enabled_tabs[] = 'ProspectLists';
     $enabled_tabs[] = 'KReports'; //KReporter
-
+    $enabled_tabs[] = 'Proposals';
+    $enabled_tabs[] = 'CompetitorAssessments';
 
     installerHook('pre_setSystemTabs');
     require_once('modules/MySettings/TabController.php');

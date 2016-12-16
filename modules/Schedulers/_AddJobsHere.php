@@ -67,6 +67,7 @@ $job_strings = array (
     14 => 'cleanJobQueue',
     15 => 'removeDocumentsFromFS',
     16 => 'trimSugarFeeds',
+	20 => 'fullTextIndex'
 
 );
 
@@ -502,6 +503,17 @@ function trimSugarFeeds()
     return true;
 }
 
+/*
+ * Job 20 .. rzun the full text indexer
+ */
+
+function fullTextIndex(){
+    require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
+    $ftsHandler = new SpiceFTSHandler();
+    echo "running indexer";
+    $ftsHandler->indexBeans(5000);
+    return true;
+}
 
 
 function cleanJobQueue($job)
@@ -532,4 +544,4 @@ if (file_exists('custom/modules/Schedulers/Ext/ScheduledTasks/scheduledtasks.ext
 {
 	require('custom/modules/Schedulers/Ext/ScheduledTasks/scheduledtasks.ext.php');
 }
-?>
+

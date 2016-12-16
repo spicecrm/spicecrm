@@ -12,19 +12,20 @@
 ******************************************************************************* */
 
 
+if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 $mod_strings = array(
 
     // various
-    'LBL_PIVOTVIEW' => 'Pivot',
-    'LBL_STANDARDWSUMMARY' => 'Standard with Summary',
-    'LBL_STANDARDWPREVIEW' => 'Standard with Preview',
-    'LBL_TREEVIEW' => 'Treeview',
-    'LBL_TREEVIEWPROPERTIES_GRPUNTIL' => 'group until',
+    'LBL_PIVOTVIEW' => 'Pivot-Tabelle',
+    'LBL_STANDARDWSUMMARY' => 'Standard mit Zusammenfassung',
+    'LBL_STANDARDWPREVIEW' => 'Standard mit Vorschau',
+    'LBL_TREEVIEW' => 'Baumstruktur',
+    'LBL_TREEVIEWPROPERTIES_GRPUNTIL' => 'gruppieren bis',
 
-    'LBL_GROUPEDVIEW' => 'Grouped View',
-    'LBL_STANDARDVIEW' => 'Standard View',
-    'LBL_EDITPLUGIN' => 'Edit View (beta)',
+    'LBL_GROUPEDVIEW' => 'Gruppierte Ansicht',
+    'LBL_STANDARDVIEW' => 'Standard Ansicht',
+    'LBL_EDITPLUGIN' => 'Edit Ansicht (beta)',
 
     'LBL_GOOGLECHARTS' => 'Google Charts',
     'LBL_FUSIONCHARTS' => 'Fusion Charts',
@@ -32,32 +33,38 @@ $mod_strings = array(
     'LBL_GOOGLEMAPS' => 'Google Maps',
     'LBL_GOOGLEGEO' => 'Google Geo',
     'LBL_SUGARCHARTS' => 'Sugar Charts',
+    'LBL_AMCHARTS' => 'Am Charts',
+    'LBL_AMMAP' => 'Am Maps',
+    'LBL_AMMAP_TYPE_AREA' => 'Weltkarte Farben Ländern',
+    'LBL_AMMAP_TYPE_BUBBLES' => 'Weltkarte mit Bubbles',
 
-    'LBL_GEOOPTIONS_TITLE' => 'Title',
+    'LBL_GEOOPTIONS_TITLE' => 'Überschrift',
     'LBL_GEOOPTIONS_REGION' => 'Display Region',
     'LBL_GEOOPTIONS_RESOLUTION' => 'Resolution',
     'LBL_GEOOPTIONS_COUNTRIES' => 'Countries',
     'LBL_GEOOPTIONS_PROVINCES' => 'Provinces',
     'LBL_GEOOPTIONS_METROS' => 'Metros',
 
-    'LBL_PUBLISH_CNTENTRIES' => 'number of entries displayed',
+    'LBL_ANMAPOPTIONS_COLORSTEPS' => 'Anzahl von Farbstufen',
+    
+    'LBL_PUBLISH_CNTENTRIES' => 'Anzahl angezeigter Treffer',
 
-    'LBL_PDF_CHARTSONSEPARATEPAGE' => 'Charts on separate Page',
+    'LBL_PDF_CHARTSONSEPARATEPAGE' => 'Grafiken auf eigener Seite',
 
     'LBL_KPDRILLDOWN' => 'Presentation Drilldown',
     'LBL_LINK_LINKTYPE' => 'Link',
     'LBL_POPUP_LINKTYPE' => 'Popup',
-    'LBL_CHART_LINKTYPE' => 'Chart',
+    'LBL_CHART_LINKTYPE' => 'Grafik',
     'LBL_DRILLDOWNMENUTITLE' => 'Drill Down',
     'LBL_ADDLINKEDREPORT_TITLE' => 'Link Report',
-    'LBL_ADDLINK_ADD' => 'Add',
+    'LBL_ADDLINK_ADD' => 'Einfügen',
     'LBL_MAPPING_TITLE' => 'InputMapping',
 
-    'LBL_EDITABLE' => 'editable',
+    'LBL_EDITABLE' => 'editierbar',
 
-    'LBL_PUBLISH_ASDASHLET' => 'publish as Dashlet',
-    'LBL_PUBLISH_ASSUBPANEL' => 'publish as Subpanel',
-    'LBL_PUBLISH_MOBILE' => 'publish Mobile',
+    'LBL_PUBLISH_ASDASHLET' => 'Als Dashlet veröffentlichen',
+    'LBL_PUBLISH_ASSUBPANEL' => 'Als Subpanel veröffentlichen',
+    'LBL_PUBLISH_MOBILE' => 'Für mobilen Zugriff veröffentlichen',
 
     'LBL_CHARTOPTIONS_ROTATELABELS' => 'Rotate Labels',
     'LBL_STACK_NONE' => 'not stacked',
@@ -142,9 +149,9 @@ $mod_strings = array(
     'LBL_GOOGLEMAPS_CIRCLEDESIGNER_MODULE' => 'Module',
     'LBL_GOOGLEMAPS_CIRCLEDESIGNER_DISPLAYFIELDS' => 'Query config',
 
-    'LBL_PREVIEW' => 'Preview for',
+    'LBL_PREVIEW' => 'Vorschau für',
 
-    'LBL_PDF_WHERE' => 'Print Selection criteria',
+    'LBL_PDF_WHERE' => 'Suchkrietrien drucken',
 
     'LBL_SAVE_BUTTON_LABEL' => 'Speichern',
     'LBL_REMOVE_BUTTON_LABEL' => 'Entfernen',
@@ -175,14 +182,14 @@ $mod_strings = array(
     'LBL_AUTH_NONE' => 'Deaktiviert',
     'LBL_SHOW_DELETED' => 'Gelöschte anzeigen',
     'LBL_FOLDED_PANELS' => 'Klappbare Panels',
-    'LBL_DYNOPTIONS' => 'Dynamic Options',
+    'LBL_DYNOPTIONS' => 'Dynamische Selektion',
     'LBL_RESULTS' => 'Ergebnisse zusammenklappen',
     'LBL_PANEL_OPEN' => 'aufgeklappt',
     'LBL_PANEL_COLLAPSED' => 'zugeklappt',
-    'LBL_OPTIONS_MENUITEMS' => 'Toolbar Items',
+    'LBL_OPTIONS_MENUITEMS' => 'Werkzeugsleiste',
     'LBL_ADVANCEDOPTIONS_MENUITEMS' => 'Erweiterete Einstellungen',
     'LBL_AOP_EXPORTTOPLANNING' => 'Export to Planning Nodes',
-    'LBL_TOOLBARITEMS_FS' => 'Toolbar Items',
+    'LBL_TOOLBARITEMS_FS' => 'Werkzeugsleiste',
     'LBL_TOOLBARITEMS_SHOW' => 'Anzeigen',
     'LBL_SHOW_EXPORT' => 'Export Optionen anzeigen',
     'LBL_SHOW_SNAPSHOTS' => 'Snapshots Optionen anzeigen',
@@ -289,8 +296,9 @@ $mod_strings = array(
     'LBL_SNAPSHOTCOMPARISON_LOADINGCHARTMSG' => 'lade Diagramm',
     'LBL_OP_IGNORE' => 'ignorieren',
     'LBL_OP_EQUALS' => '=',
+    'LBL_OP_EQGROUPED' => 'ist (Gruppierung)',    
     'LBL_OP_AUTOCOMPLETE' => 'autocomplete name',
-    'LBL_OP_SOUNDSLIKE' => 'sounds like',
+    'LBL_OP_SOUNDSLIKE' => 'klingt wie',
     'LBL_OP_NOTEQUAL' => '≠',
     'LBL_OP_STARTS' => 'beginnt mit',
     'LBL_OP_CONTAINS' => 'enthält',
@@ -307,10 +315,14 @@ $mod_strings = array(
     'LBL_OP_THISMONTH' => 'diesen Monat',
     'LBL_OP_NOTTHISMONTH' => 'nicht diesen Monat',
     'LBL_OP_THISWEEK' => 'diese Woche',
+    'LBL_OP_NEXTNMONTH' => 'in den nächsten n Monaten',    
+    'LBL_OP_NEXTNMONTHDAILY' => 'in den nächsten n Monaten (Tag genau)',  
     'LBL_OP_NEXT3MONTH' => 'in den nächsten 3 Monaten',
     'LBL_OP_NEXT3MONTHDAILY' => 'in den nächsten 3 Monaten (Tag genau)',
     'LBL_OP_NEXT6MONTH' => 'in den nächsten 6 Monaten',
     'LBL_OP_NEXT6MONTHDAILY' => 'in den nächsten 6 Monaten (Tag genau)',
+    'LBL_OP_LASTNMONTH' => 'in den letzten n Monaten',    
+    'LBL_OP_LASTNMONTHDAILY' => 'in den letzten n Monaten (Tag genau)',  
     'LBL_OP_LAST3MONTHDAILY' => 'in den letzten 3 Monaten (Tag genau)',
     'LBL_OP_LAST6MONTH' => 'in den letzten 6 Monaten',
     'LBL_OP_LAST6MONTHDAILY' => 'in den letzten 6 Monaten (Tag genau)',
@@ -324,6 +336,8 @@ $mod_strings = array(
     'LBL_OP_LASTNWEEKS' => 'in den letzten n Wochen',
     'LBL_OP_NOTLASTNWEEKS' => 'nicht in den letzten n Wochen',
     'LBL_OP_LASTNFWEEKS' => 'in den letzten n vollen Wochen',
+    'LBL_OP_LASTNFQUARTER' => 'in den letzten n Quartalen',    
+    'LBL_OP_NEXTNFQUARTER' => 'in den nächsten n Quartalen',        
     'LBL_OP_NEXTNDAYS' => 'in den nächsten n Tagen (Anzahl)',
     'LBL_OP_NEXTNDDAYS' => 'in den nächsten n Tagen (Datum)',
     'LBL_OP_NEXTNWEEKS' => 'in den nächsten n Wochen',
@@ -334,6 +348,10 @@ $mod_strings = array(
     'LBL_OP_AFTER' => 'nach',
     'LBL_OP_LASTMONTH' => 'letzten Monat',
     'LBL_OP_LAST3MONTH' => 'in den letzten 3 Monaten',
+    'LBL_OP_NEXTNYEAR' => 'in den nächsten n Jahren',    
+    'LBL_OP_NEXTNYEARDAILY' => 'in den nächsten n Jahren (Tag genau)',  
+    'LBL_OP_LASTNYEAR' => 'in den letzten n Jahren',
+    'LBL_OP_LASTNYEARDAILY' => 'in den letzten n Jahren (Tag genau)',  
     'LBL_OP_THISYEAR' => 'dieses Jahr',
     'LBL_OP_LASTYEAR' => 'letztes Jahr',
     'LBL_OP_TYYTD' => 'seit Jahresbeginn',
@@ -419,13 +437,13 @@ $mod_strings = array(
     'LBL_FUNCTION_CUMSUM' => 'Kumulierte Summe',
     'LBL_FUNCTION_COUNT' => 'Anzahl',
     'LBL_FUNCTION_COUNT_DISTINCT' => 'Anzahl eindeutig',
-    'LBL_FUNCTION_AVG' => 'Average',
+    'LBL_FUNCTION_AVG' => 'Durchschnitt',
     'LBL_FUNCTION_MIN' => 'Minimum',
     'LBL_FUNCTION_MAX' => 'Maximum',
     'LBL_FUNCTION_GROUP_CONCAT' => 'Group Concat',
     'LBL_FUNCTION_GROUP_CONASC' => 'Group Concat (asc)',
     'LBL_FUNCTION_GROUP_CONDSC' => 'Group Concat (desc)',
-    'LBL_VALUETYPE_TOFSUM' => 'display Sum',
+    'LBL_VALUETYPE_TOFSUM' => 'Summe anzeigen',
     'LBL_VALUETYPE_POFSUM' => '% der Summe',
     'LBL_VALUETYPE_POFCOUNT' => '% der Anzahl',
     'LBL_VALUETYPE_POFAVG' => '% des Durchschnitts',
@@ -580,6 +598,7 @@ $mod_strings = array(
     'LBL_CHARTOPTIONS_CTFUNCTION' => 'geglättete Linien',
     'LBL_CHARTOPTIONS_POINTS' => 'Punkte anzeigen',
     'LBL_CHARTOPTIONS_MATERIAL' => 'material Design',
+    'LBL_CHARTOPTIONS_ALLOWOVERLAP' => 'Überlappen von Datenbeschriftungen erlauben',    
     'LBL_CHARTTYPE_COLUMN2D' => 'Säulen 2D',
     'LBL_CHARTTYPE_COLUMN3D' => 'Säulen 3D',
     'LBL_CHARTTYPE_PIE2D' => 'Kuchen 2D',
@@ -761,6 +780,7 @@ $mod_strings = array(
 
     //Bucket Manager   
 $mod_strings['LNK_MANAGE_BUCKETS'] = 'Bucket Manager';
+$mod_strings['LBL_GROUPING'] = 'Gruppierung';
 $mod_strings['LBL_GROUPING_ID'] = 'Gruppierung ID';
 $mod_strings['LBL_GROUPING_NAME'] = 'Gruppierungsname';
 $mod_strings['LBL_GROUPING_DESCRIPTION'] = 'Beschreibung';
@@ -774,7 +794,7 @@ $mod_strings['LBL_MAPPING_NEWVALUE'] = 'Neuer Wert';
 $mod_strings['LBL_MAPPING_PROMPT_NAME'] = 'Bitte geben Sie einen Wert ein';
 $mod_strings['LBL_ENUMVALUE_ID'] = 'ID';
 $mod_strings['LBL_ENUMVALUE_VALUE'] = 'Wert';
-$mod_strings['LBL_ENUMVALUE_HANDLER'] = 'Restliche Werte ignoring';
+$mod_strings['LBL_ENUMVALUE_LABEL'] = 'Name';
 $mod_strings['LBL_ENUMVALUE_HANDLER'] = 'Restliche Werte unter \'sonstiges\' gruppieren';
 $mod_strings['LBL_GRID_GROUPINGS'] = 'Gruppierungen';
 $mod_strings['LBL_GRID_MODULEFIELD'] = 'Quelle';
@@ -805,3 +825,19 @@ $mod_strings['LBL_DLIST_KREPORT_MODULENAME'] = 'Modul';
 $mod_strings['LBL_DLIST_WINDOW_ADDKREPORTS_TITLE'] = 'KReports hinzufügen';
 $mod_strings['LBL_DLIST_WINDOW_ADDUSERS_TITLE'] = 'Benutzer hinzufügen';
 $mod_strings['LBL_DLIST_WINDOW_ADDCONTACTS_TITLE'] = 'Kontakte hinzufügen';
+
+    //ksavedfilters
+$mod_strings['LBL_KSAVEDFILTERS'] = 'Dynamische Selektionen';
+$mod_strings['LBL_KSAVEDFILTERS_ID'] = 'Dynamische Selektion ID';
+$mod_strings['LBL_KSAVEDFILTERS_NAME'] = 'Name';
+$mod_strings['LBL_KSAVEDFILTERS_ASSIGNED_USER_ID'] = 'Benutzer ID';
+$mod_strings['LBL_KSAVEDFILTERS_ASSIGNED_USER_NAME'] = 'Zugewiesener Benutzer';
+$mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL'] = 'für alle Benutzer setzen';
+$mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL_MARK'] = '(G)';
+$mod_strings['LBL_KSAVEDFILTERS_SELECTEDFILTERS'] = 'Dynamische Selektion';
+$mod_strings['LBL_KSAVEDFILTERS_SAVE_BTN'] = 'Dyn. Selektion speichern';
+$mod_strings['LBL_KSAVEDFILTERS_DELETE_BTN'] = 'Löschen';
+$mod_strings['LBL_KSAVESFILTERS_EMPTYTEXT'] = '-- Dyn. Selektion auswählen --';
+$mod_strings['LBL_KSAVEDFILTERS_WINDOW_TITLE'] = 'Dynamische Selektion speichern';
+$mod_strings['LBL_KSAVEDFILTERS_STATUS'] = 'Status';
+$mod_strings['LBL_KSAVEDFILTERS_CONTENT'] = 'Dynamische Selektion Details';

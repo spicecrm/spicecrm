@@ -142,9 +142,19 @@ $php_verison_warning =<<<eoq
 eoq;
 }
 
-//create cache and upload folders
+//create cache, custom and upload folders
 if(!is_dir('cache')) {
     if(!@mkdir('cache', 0766)){
+        $error_found = true;
+        $error_txt .= '
+          <table width="100%" cellpadding="0" cellpadding="0" border="0"><tr>
+            <td><strong>'.$mod_strings['ERR_CHECKSYS_CACHE_NOT_CREATEABLE'].'</strong></td>
+            <td class="error">'.$mod_strings['ERR_CHECKSYS_CACHE_NOT_CREATEABLE'].'</td>
+          </tr></table>';
+    }
+}
+if(!is_dir('custom')) {
+    if(!@mkdir('custom', 0766)){
         $error_found = true;
         $error_txt .= '
           <table width="100%" cellpadding="0" cellpadding="0" border="0"><tr>

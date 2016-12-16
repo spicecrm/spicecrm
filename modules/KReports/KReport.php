@@ -432,12 +432,12 @@ class KReport extends SugarBean
             $this->team_set_id = '';
         }
 
-        switch ($sugar_config['KReports']['authCheck']) {
-            case 'KAuthObjects':
-                $this->korgobjectmain = $_REQUEST['authaccess_id'];
-                $this->korgobjectmultiple = json_encode(array('primary' => $_REQUEST['authaccess_id'], 'secondary' => array()));
-                break;
-        }
+//        switch ($sugar_config['KReports']['authCheck']) {
+//            case 'KAuthObjects':
+//                $this->korgobjectmain = $_REQUEST['authaccess_id'];
+//                $this->korgobjectmultiple = json_encode(array('primary' => $_REQUEST['authaccess_id'], 'secondary' => array()));
+//                break;
+//        }
         parent::save($checkNotify);
 
         switch ($sugar_config['KReports']['authCheck']) {
@@ -744,7 +744,7 @@ class KReport extends SugarBean
             $fieldDetails = $this->kQueryArray->queryArray ['root'] ['kQuery']->get_listfieldentry_by_fieldid($fieldID);
 
             if (isset($this->fieldNameMap [$fieldID]) && !in_array($fieldID, $excludeFields) && (!isset($fieldDetails ['customsqlfunction']) || (isset($fieldDetails ['customsqlfunction']) && $fieldDetails ['customsqlfunction'] == ''))) {
-                switch ($this->fieldNameMap [$fieldID] ['type']) {
+                switch ($this->fieldNameMap [$fieldID] ['kreporttype'] ?: $this->fieldNameMap [$fieldID] ['type']) {
 
                     case 'enum' :
                     case 'radioenum' :
@@ -761,10 +761,18 @@ class KReport extends SugarBean
                         } else {
                             // 2011-03-07 add the orig value for the treeid
                             $returnArray [$fieldID . '_val'] = $fieldValue;
-                            // bug 2011-03-07 fields might have different options if in a join
-                            //$fieldValue = $app_list_strings[$this->fieldNameMap[$fieldID]['fields_name_map_entry']['options']][$fieldValue];
-                            if ($fieldValue != '' && isset($this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']))
-                                $fieldValue = $app_list_strings [$this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']] [$fieldValue];
+                            // chek if we have a function set
+                            if (is_array($this->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['function'])) {
+                                $fielName = $this->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['function']['include'];
+                                require_once ($fielName);
+                                $functionName = $this->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['function']['name'];
+                                $fieldValue = $functionName(null, $this->fieldNameMap[$fieldID]['fieldname'], $fieldValue);
+                            } else {
+                                // bug 2011-03-07 fields might have different options if in a join
+                                //$fieldValue = $app_list_strings[$this->fieldNameMap[$fieldID]['fields_name_map_entry']['options']][$fieldValue];
+                                if ($fieldValue != '' && isset($this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']))
+                                    $fieldValue = $app_list_strings [$this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']] [$fieldValue];
+                            }
                         }
 
                         // bug 2011-05-25
@@ -888,17 +896,15 @@ class KReport extends SugarBean
             $fieldType = 'percentage';
 
         // 2012-12-30 properly hande ovverride type
-        if (!empty($listFieldArray ['overridetype']))
+        if (!empty($listFieldArray ['overridetype']) && $listFieldArray ['overridetype'] != "-")
             $fieldType = $listFieldArray ['overridetype'];
 
         // process thee fieldtypes
         switch ($fieldType) {
             case 'currency':
                 return 'kcurrencyRenderer';
-                break;
             case 'percentage':
                 return 'kpercentageRenderer';
-                break;
             // bug 2011-03-25 format double & float properly
             case 'double' :
             case 'float' :
@@ -907,30 +913,22 @@ class KReport extends SugarBean
                 //2013-04-06 type decimal
             case 'decimal':
                 return 'knumberRenderer';
-                break;
             case 'int' :
                 return 'kintRenderer';
                 // return ', renderer: function(value){return value;}';
-                break;
             case 'date' :
                 return 'kdateRenderer';
-                break;
             case 'datetime' :
             case 'datetimecombo' :
                 return 'kdatetimeRenderer';
-                break;
             case 'datetutc':
                 return 'kdatetutcRenderer';
-                break;
             case 'bool' :
                 return 'kboolRenderer';
-                break;
             case 'text' :
                 return 'ktextRenderer';
-                break;
             default :
                 return '';
-                break;
         }
 
         // if we end up here we return an empty string
@@ -944,7 +942,7 @@ class KReport extends SugarBean
         $listFieldArray = $this->kQueryArray->queryArray ['root'] ['kQuery']->get_listfieldentry_by_fieldid($fieldID);
 
         //2013-03-01 maual alignmetn setting rules
-        if (!empty($listFieldArray ['overridealignment']))
+        if (!empty($listFieldArray ['overridealignment']) && $listFieldArray ['overridealignment'] != "-")
             return $listFieldArray ['overridealignment'];
 
         // manage switching of Fieldtypes
@@ -957,14 +955,13 @@ class KReport extends SugarBean
             $fieldType = 'percentage';
 
         // 2012-12-30 properly hande ovverride type
-        if (!empty($listFieldArray ['overridetype']))
+        if (!empty($listFieldArray ['overridetype']) && $listFieldArray ['overridetype'] != "-")
             $fieldType = $listFieldArray ['overridetype'];
 
         // process the fieldtypes
         switch ($fieldType) {
             case 'currency':
                 return 'right';
-                break;
             case 'double' :
             case 'float' :
             case 'int' :
@@ -972,10 +969,8 @@ class KReport extends SugarBean
                 //2013-04-06 type decimal
             case 'decimal':
                 return 'center';
-                break;
             default :
                 return 'left';
-                break;
         }
     }
 
@@ -1128,7 +1123,6 @@ class KReport extends SugarBean
 
     function getContextselectionResult($parameters, $getcount = false, $additionalFilter = '', $additionalGroupBy = array())
     {
-
         $query = '';
 
         if (!empty($GLOBALS['sugar_config']['k_dbconfig_clone'])) {
@@ -2034,11 +2028,24 @@ class KReportRenderer
             foreach ($valArray as $thisValue) {
                 if ($fieldValue != '')
                     $fieldValue .= ', ';
-                if (trim($thisValue) != '' && isset($this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']))
-                    $fieldValue .= $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']] [trim($thisValue)];
+                if (trim($thisValue) != '' && isset($this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options'])) {
+                    if (is_array($this->report->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['function'])) {
+                        $fielName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['include'];
+                        require_once($fielName);
+                        $functionName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['name'];
+                        $fieldValue = $functionName(null, $this->report->fieldNameMap [$fieldid]['fieldname'], $record[$thisValue]);
+                    } else
+                        $fieldValue .= $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']] [trim($thisValue)];
+                }
             }
         } else {
-            $fieldValue = $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']] [$record[$fieldid]];
+            if (is_array($this->report->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['function'])) {
+                $fielName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['include'];
+                require_once($fielName);
+                $functionName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['name'];
+                $fieldValue = $functionName(null, $this->report->fieldNameMap [$fieldid]['fieldname'], $record[$fieldid]);
+            } else
+                $fieldValue = $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']] [$record[$fieldid]];
         }
 
         // if value is empty we return the original value
@@ -2081,11 +2088,14 @@ class KReportRenderer
     public static function knumberRenderer($fieldid, $record)
     {
         return round($record[$fieldid], 2);
+//        return format_number($record[$fieldid], $GLOBALS['current_user']->getPreference('default_currency_significant_digits'));
     }
 
     public static function kintRenderer($fieldid, $record)
     {
-        return round($record[$fieldid], 2);
+        
+        return round($record[$fieldid]);
+//        return format_number($record[$fieldid], 0);
     }
 
     public static function kdateRenderer($fieldid, $record)

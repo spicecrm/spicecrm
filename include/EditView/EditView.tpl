@@ -81,15 +81,15 @@ class="yui-navset"
 {{/if}}
 
 {counter name="panelFieldCount" start=0 print=false assign="panelFieldCount"}
-{{* Check to see if the panel variable is an array, if not, we'll attempt an include with type param php *}}
-{{* See function.sugar_include.php *}}
+{* Check to see if the panel variable is an array, if not, we'll attempt an include with type param php *}
+{*See function.sugar_include.php *}
 {{if !is_array($panel)}}
     {sugar_include type='php' file='{{$panel}}'}
 {{else}}
 
-{{* Only show header if it is not default or an int value *}}
+{* Only show header if it is not default or an int value *}
 {{if !empty($label) && !is_int($label) && $label != 'DEFAULT' && $showSectionPanelsTitles && (!isset($tabDefs[$label_upper].newTab) || (isset($tabDefs[$label_upper].newTab) && $tabDefs[$label_upper].newTab == false)) && $view != "QuickCreate"}}
-<h4>&nbsp;&nbsp;
+<h4>
   <a href="javascript:void(0)" class="collapseLink" onclick="collapsePanel({{$smarty.foreach.section.iteration}});">
   <img border="0" id="detailpanel_{{$smarty.foreach.section.iteration}}_img_hide" src="{sugar_getimagepath file="basic_search.gif"}"></a>
   <a href="javascript:void(0)" class="expandLink" onclick="expandPanel({{$smarty.foreach.section.iteration}});">
@@ -123,7 +123,7 @@ class="yui-navset"
 <tr>
 
 	{{math assign="rowCount" equation="$rowCount + 1"}}
-	
+
 	{{assign var='columnsInRow' value=$rowData|@count}}
 	{{assign var='columnsUsed' value=0}}
 
@@ -143,7 +143,7 @@ class="yui-navset"
     {{/if}}
 
 		{{if empty($def.templateMeta.labelsOnTop) && empty($colData.field.hideLabel)}}
-		<td valign="top" id='{{$colData.field.name}}_label' width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].label}}%' scope="col">
+		<td valign="middle" id='{{$colData.field.name}}_label' width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].label}}%' scope="col">
 			{{if isset($colData.field.customLabel)}}
 			   <label for="{{$fields[$colData.field.name].name}}">{{$colData.field.customLabel}}</label>
 			{{elseif isset($colData.field.label)}}
@@ -185,7 +185,7 @@ class="yui-navset"
 		    {** if not explicitly assigned, we will default to 0 for 508 compliance reasons, instead of the calculated tabIndexVal value **}
 		    {{assign var='tabindex' value=0}}
 		{{/if}}
-		<td valign="top" width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].field}}%' {{if $colData.colspan}}colspan='{{$colData.colspan}}'{{/if}}>
+		<td valign="middle" width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].field}}%' {{if $colData.colspan}}colspan='{{$colData.colspan}}'{{/if}} {{if $colData.field.hideLabel}}class="colhidelabel"{{/if}}>
 			{{if !empty($def.templateMeta.labelsOnTop)}}
 				{{if isset($colData.field.label)}}
 				    {{if !empty($colData.field.label)}}

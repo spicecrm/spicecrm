@@ -52,7 +52,7 @@ class KReportQueryArray
     var $addParams;
     var $queryArray;
 
-    function KReportQueryArray($rootModule = '', $whereOverride = array(), $unionModules = '', $evalSQLFunctions = true, $listFields = array(), $unionListFields = array(), $whereFields = array(), $additonalFilter = '', $whereGroupFields = array(), $additionalGroupBy = array(), $addParams = array())
+    function __construct($rootModule = '', $whereOverride = array(), $unionModules = '', $evalSQLFunctions = true, $listFields = array(), $unionListFields = array(), $whereFields = array(), $additonalFilter = '', $whereGroupFields = array(), $additionalGroupBy = array(), $addParams = array())
     {
         // set the various Fields
         $this->root_module = $rootModule;
@@ -80,8 +80,9 @@ class KReportQueryArray
         }
         */
 
-        if ($whereOverride)
+        if ($whereOverride) {
             $this->whereOverrideArray = $whereOverride;
+        }
     }
 
     /*
@@ -102,7 +103,6 @@ class KReportQueryArray
         $referencedFields = array();
         $referencingFields = array();
 
-
         // handle parent bean assignments and see if we need to handle references
         reset($this->whereArray);
         foreach ($this->whereArray as $originalKey => $originalData) {
@@ -116,12 +116,14 @@ class KReportQueryArray
             }
 
             if ($originalData['operator'] == 'parent_assign') {
-                if (!isset($this->addParams['parentbean']) || (isset($this->addParams['parentbean']) && $originalData['valuekey'] == '')) {
+                if (!isset($this->addParams['parentbean']) 
+                        //|| (isset($this->addParams['parentbean']) && $originalData['valuekey'] == '')
+                        ) {
                     // if we do not have a parentbean we do not evaluate this condition
                     unset($this->whereArray[$originalKey]);
                 } else {
                     // get the value from the parentbean
-                    $fieldName = $originalData['valuekey'];
+                    $fieldName = (empty($originalData['valuekey']) ? 'id' : $originalData['valuekey']);
                     $thisNewValue = $this->addParams['parentbean']->$fieldName;
 
                     //set the value
@@ -158,6 +160,23 @@ class KReportQueryArray
             if (!isset($whereArrayEntry['valuetokey']))
                 $this->whereArray[$whereId]['valuetokey'] = '';
 
+            // do time handling treating passed in values as User Timezone converting to UTS
+            if($whereArrayEntry['type'] == 'datetime'){
+                $userTimezZone = $GLOBALS['current_user']->getPreference('timezone');
+                if($whereArrayEntry['valuekey'] != ''){
+                    $valuefromdate = SugarDateTime::createFromFormat('Y-m-d H:i:s', $whereArrayEntry['valuekey'], new DateTimeZone($userTimezZone));
+                    $valuefromdate->setTimeZone(new DateTimeZone('UTC'));
+                    $this->whereArray[$whereId]['valuekey'] = $valuefromdate->format('Y-m-d H:i:s');
+                    $this->whereArray[$whereId]['value'] = $valuefromdate->format('Y-m-d H:i:s');
+                }
+                if($whereArrayEntry['valuetokey'] != ''){
+                    $valuetodate = SugarDateTime::createFromFormat('Y-m-d H:i:s', $whereArrayEntry['valuetokey'],  new DateTimeZone($userTimezZone));
+                    $valuetodate->setTimeZone(new DateTimeZone('UTC'));
+                    $this->whereArray[$whereId]['valuetokey'] = $valuetodate->format('Y-m-d H:i:s');
+                    $this->whereArray[$whereId]['valueto'] = $valuetodate->format('Y-m-d H:i:s');
+                }
+            }
+
             // check context
             if (array_key_exists('context', $whereArrayEntry) && $whereArrayEntry['context'] != '') { // && trim($whereArrayEntry['context']) != $this->queryContext)
                 // by default we delte unless we find a matching context
@@ -181,10 +200,11 @@ class KReportQueryArray
                 unset($this->whereArray[$whereId]); //['operator'] = 'ignore';
 
 
-// 2011-03-25 added function to be evaluated
+            // 2011-03-25 added function to be evaluated
             if ($whereArrayEntry['operator'] == 'function') {
                 include('modules/KReports/kreportsConfig.php');
-                if ($customFunctionInclude != '') {
+                $customFunctionInclude = 'modules/KReports/kreportsConfig.php';
+                if (file_exists($customFunctionInclude)) {
                     include($customFunctionInclude);
                     if (function_exists($whereArrayEntry['valuekey'])) {
                         $this->whereArray[$whereId]['operator'] = '';
@@ -323,7 +343,9 @@ class KReportQueryArray
                     if ($this->whereArray[$i]['unionid'] == $thisUnionId) {
                         $this->queryArray[$thisUnionId]['whereArray'][] = $this->whereArray[$i];
                         // replace the beginning of the string to make it root
-                        $this->queryArray[$thisUnionId]['whereArray'][count($this->queryArray[$thisUnionId]['whereArray']) - 1]['path'] = preg_replace('/unionroot::union[A-Za-z0-9]*:/', 'root:', $this->queryArray[$thisUnionId]['whereArray'][count($this->queryArray[$thisUnionId]['whereArray']) - 1]['path']);
+                        $newPath = preg_replace('/unionroot::/', '', $this->queryArray[$thisUnionId]['whereArray'][count($this->queryArray[$thisUnionId]['whereArray']) - 1]['path']);
+                        $newPath = preg_replace('/union[A-Za-z0-9]*:/', 'root:', $newPath);
+                        $this->queryArray[$thisUnionId]['whereArray'][count($this->queryArray[$thisUnionId]['whereArray']) - 1]['path'] = $newPath;
                     }
                     $i++;
                 }
@@ -413,6 +435,7 @@ class KReportQueryArray
                     $queryString .= ' UNION ';
                 $queryString .= $queryArrayData['kQuery']->selectString . ' ' . $queryArrayData['kQuery']->fromString . ' ' . $queryArrayData['kQuery']->whereString . ' ' . $queryArrayData['kQuery']->groupbyString;
             }
+            $fullQuery = $queryString;
 
             // specific Union handling
             // $queryString .= ' ' . /*$this->queryArray['root']['kQuery']->groupbyString .*/ ' ' . $this->queryArray['root']['kQuery']->havingString . ' ' . $this->queryArray['root']['kQuery']->orderbyString;
@@ -458,7 +481,7 @@ class KReportQueryArray
             }
             // build the unions
             // build the total Select Sting if we need to calculate Percentage Values
-            $this->buildTotalSelectString($this->queryArray['root']['kQuery']->unionSelectString . ' FROM (' . $queryString . ') unionResult ' . $this->queryArray['root']['kQuery']->groupbyString . ' ' . $this->queryArray['root']['kQuery']->havingString . ' ' . $this->queryArray['root']['kQuery']->orderbyString);
+            $this->buildTotalSelectString($fullQuery);
 
             // return the main query string
             return $queryString;
@@ -658,7 +681,7 @@ class KReportQuery
      *  $addParams - AuthCheckLevel = full, top none
      *  			 showDeleted = true, false
      */
-    function KreportQuery($rootModule = '', $evalSQLFunctions = true, $listFields = array(), $whereFields = array(), $additonalFilter = '', $whereGroupFields = array(), $additionalGroupBy = array(), $addParams = array())
+    function __construct($rootModule = '', $evalSQLFunctions = true, $listFields = array(), $whereFields = array(), $additonalFilter = '', $whereGroupFields = array(), $additionalGroupBy = array(), $addParams = array())
     {
         // set the various Fields
         $this->root_module = $rootModule;
@@ -885,7 +908,8 @@ class KReportQuery
                     break;
                 case 'KAuthObjects':
                     $selectArray = array('where' => '', 'from' => '', 'select' => '');
-                    $GLOBALS['KAuthAccessController']->addAuthAccessToListArray($selectArray, $this->joinSegments['root:' . $this->root_module]['object'], $this->joinSegments['root:' . $this->root_module]['alias'], true);
+                    if($GLOBALS['KAuthAccessController'])
+                        $GLOBALS['KAuthAccessController']->addAuthAccessToListArray($selectArray, $this->joinSegments['root:' . $this->root_module]['object'], $this->joinSegments['root:' . $this->root_module]['alias'], true);
                     if (!empty($selectArray['where'])) {
                         if (empty($this->whereString)) {
                             $this->whereString = " " . $selectArray['where'] . " ";
@@ -926,7 +950,6 @@ class KReportQuery
         // Index to iterate through the join table building the joins
         // from the root object outward going
         $levelCounter = 1;
-
         if (is_array($this->joinSegments)) {
 
             while ($levelCounter <= $this->maxDepth) {
@@ -971,9 +994,7 @@ class KReportQuery
                                 $this->fromString .= ' LEFT JOIN ' . $this->joinSegments[$thisPath]['object']->table_name . '_cstm as ' . $this->joinSegments[$thisPath]['customjoin'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id = ' . $this->joinSegments[$thisPath]['customjoin'] . '.id_c';
                             }
                         } else {
-                            //left Path Object must be set since we process from the top
                             if (!($this->joinSegments[$leftPath]['object'] instanceof $beanList[$rightArray[1]])) {
-                                $GLOBALS['log']->error('KReporter: fatal error in join with left path ' . $thisPath);
                                 die('fatal Error in Join ' . $thisPath);
                             }
 
@@ -1039,7 +1060,8 @@ class KReportQuery
                                         break;
                                     case 'KAuthObjects':
                                         $selectArray = array('where' => '', 'from' => '', 'select' => '');
-                                        $GLOBALS['KAuthAccessController']->addAuthAccessToListArray($selectArray, $this->joinSegments[$thisPath]['object'], $this->joinSegments[$thisPath]['alias'], true);
+                                        if($GLOBALS['KAuthAccessController'])
+                                            $GLOBALS['KAuthAccessController']->addAuthAccessToListArray($selectArray, $this->joinSegments[$thisPath]['object'], $this->joinSegments[$thisPath]['alias'], true);
                                         if (!empty($selectArray['where'])) {
                                             if (empty($this->whereString)) {
                                                 $this->whereString = " " . $selectArray['where'] . " ";
@@ -1104,10 +1126,15 @@ class KReportQuery
 
 
         // build select
-        if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8'))
+        // 2016-11-23 added count select stzring into the swicth for mssql and oci8
+        if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')) {
             $this->selectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
-        else
+            $this->countSelectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
+        }
+        else {
             $this->selectString = 'SELECT ' . $this->rootGuid . '.id as "sugarRecordId"';
+            $this->countSelectString = 'SELECT ' . $this->rootGuid . '.id as "sugarRecordId"';
+        }
 
         $this->unionSelectString = 'SELECT sugarRecordId';
 
@@ -1118,10 +1145,6 @@ class KReportQuery
         $this->unionSelectString .= ', sugarRecordModule';
 
         $this->fieldArray['sugarRecordModule'] = 'sugarRecordModule';
-
-        // 2011-02-03 for Performance add a count Query
-        // just for the count
-        $this->countSelectString = 'SELECT ' . $this->rootGuid . '.id as "sugarRecordId"';
 
         // see if we are in a union statement then we select the unionid as well
         if ($this->unionId != '') {
@@ -1229,7 +1252,7 @@ class KReportQuery
                         'tablealias' => $this->rootGuid,
                         'fields_name_map_entry' => '',
                         'type' => /* 'fixedvalue' */
-                            (isset($this->joinSegments[$pathName]) ? ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'kreporter') ? $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] : $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] : 'fixedvalue'),
+                            (isset($this->joinSegments[$pathName]) ?  $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] ?: $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] : 'fixedvalue'),
                         'module' => $this->root_module,
                         'fields_name_map_entry' => (isset($this->joinSegments[$pathName]) ? $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]] : array()));
                 } else {
@@ -1352,7 +1375,7 @@ class KReportQuery
                 $tempWhereString = '';
                 // check if this is for the current group
                 // 2011--01-24 add ignore filter
-                if (($thisWhere['groupid'] == $thisWhereGroup['groupid'] || $thisWhere['groupid'] == $thisWhereGroup['group']) && $thisWhere['operator'] != 'ignore') {
+                if (($thisWhere['groupid'] == $thisWhereGroup['groupid'] || $thisWhere['groupid'] == $thisWhereGroup['id']) && $thisWhere['operator'] != 'ignore') {
 
                     // process the Field and link with the joinalias
                     $fieldName = substr($thisWhere['path'], strrpos($thisWhere['path'], "::") + 2, strlen($thisWhere['path']));
@@ -1592,31 +1615,32 @@ class KReportQuery
                 //2011-07-17 ... get db formatted field from key field
                 //else try legacy handliung with date interpretation
                 if ($valuekey != '')
-                    $value = $valuekey;
+                    $value = str_replace('T', ' ', $valuekey);
                 else
-                    $value = $GLOBALS['timedate']->to_db_date($value, false);
+                    $value = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$value), false);
+
 
                 if ($valuetokey != '')
-                    $valueto = $valuetokey;
+                    $valueto = str_replace('T', ' ' ,$valuetokey);
                 else
-                    $valueto = $GLOBALS['timedate']->to_db_date($value, false);
+                    $valueto = $GLOBALS['timedate']->to_db_date(str_replace('T', ' ' ,$valueto), false);
             }
             if ($this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo') {
                 //2011-07-17 .. db formated dtae stroed in key field
                 if ($valuekey != '')
-                    $value = $valuekey;
+                    $value = str_replace('T', ' ', $valuekey);
                 else {
                     // legacy handling ... try to interpret date
-                    $timeArray = explode(' ', $value);
+                    $timeArray = explode(' ', str_replace('T', ' ', $value));
                     $value = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                 }
 
                 if ($valueto != '' || $valuetokey != '') {
                     if ($valuetokey != '')
-                        $valueto = $valuetokey;
+                        $valueto = str_replace('T', ' ' ,$valuetokey);
                     else {
                         // legacy handling ... try to interpret date
-                        $timeArray = explode(' ', $valueto);
+                        $timeArray = explode(' ', str_replace('T', ' ', $valueto));
                         $valueto = $GLOBALS['timedate']->to_db_date($timeArray[0], false) . ' ' . $timeArray[1];
                     }
                 }
@@ -1787,7 +1811,7 @@ class KReportQuery
                 break;
             case 'today':
                 $todayDate = date('Y-m-d', mktime());
-                $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $todayDate . ' 24:00:00\'';
+                $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
             case 'past':
                 $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', gmmktime()) . '\'';
@@ -2114,6 +2138,14 @@ class KReportQuery
                 $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . $year . '-' . date('m-d') . '\'';
                 break;
         }
+        
+        //check on custom operators and their handler
+        if(file_exists('custom/modules/KReports/KReportQueryCustom.php')){
+            require_once 'custom/modules/KReports/KReportQueryCustom.php';
+            if(function_exists('getKReportQueryCustomOperatorWhereString')){
+                    getKReportQueryCustomOperatorWhereString($operator, $thisWhereString, $this, $path, $fieldname, $fieldid);
+            }
+        }
 
         //2011-07-20 handle jointype
         if ($jointype == 'optional' && $operator != 'isnull') {
@@ -2360,7 +2392,7 @@ class KReportQuery
                     'customFunction' => (is_array($thisFieldIdEntry) && array_key_exists('customsqlfunction', $thisFieldIdEntry) ? $thisFieldIdEntry['customsqlfunction'] : ''),
                     'tablealias' => $thisAlias,
                     'fields_name_map_entry' => $this->joinSegments[$path]['object']->field_name_map[$field],
-                    'type' => ($this->joinSegments[$path]['object']->field_name_map[$field]['type'] == 'kreporter') ? $this->joinSegments[$path]['object']->field_name_map[$field]['kreporttype'] : $this->joinSegments[$path]['object']->field_name_map[$field]['type'],
+                    'type' => $this->joinSegments[$path]['object']->field_name_map[$field]['kreporttype'] ?: $this->joinSegments[$path]['object']->field_name_map[$field]['type'],
                     'module' => $thisModule);
 
             // check for custom function

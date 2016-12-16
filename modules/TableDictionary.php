@@ -73,7 +73,8 @@ include("metadata/projects_accountsMetaData.php");
 include("metadata/projects_contactsMetaData.php");
 include("metadata/projects_opportunitiesMetaData.php");
 
-
+// sys data
+include("metadata/system_fts.php");
 
 //ACL RELATIONSHIPS
 include("metadata/acl_roles_actionsMetaData.php");
@@ -99,6 +100,19 @@ include("metadata/cron_remove_documentsMetaData.php");
 include("metadata/spicecrmPerformancetrackerMetaData.php");
 include('metadata/SpiceThemePagesMetadata.php');
 include('metadata/SpiceThemeMetadata.php');
+
+// guide metadata
+include('metadata/opportunity_guideMetaData.php');
+
+// exchange sync basic data
+include('metadata/exchangesync.objectsyncstate.metadata.php');
+include('metadata/exchangesync.syncdefs.metadata.php');
+
+include('metadata/kdeploymentsystems_kdeploymentsystems.Metadata.php');
+include('metadata/kdeploypack_items.Metadata.php');
+include('metadata/kdeploypack_contents.Metadata.php');
+include('metadata/kdeploypack_sysstatus.Metadata.php');
+include("metadata/kreleasemanager.metadata.php");
 
 if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
 	include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');

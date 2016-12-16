@@ -48,8 +48,6 @@ class pluginkcsvexportcontroller {
         header('Content-type: application/ms-excel');
         header('Content-Disposition: attachment; filename=' . $filename);
 
-        echo $thisReport->createCSV($dynamicolsOverride);
-        
         $output = $thisReport->createCSV($dynamicolsOverride);
 
         if ($requestParams['rawResult'])

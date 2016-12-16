@@ -55,6 +55,7 @@ class KReporterRESTHandler
         $customFunctionInclude = '';
         $kreportCustomFunctions = array();
         include('modules/KReports/kreportsConfig.php');
+        global $kreportCustomFunctions;
         if ($customFunctionInclude != '') {
             include($customFunctionInclude);
             if (is_array($kreportCustomFunctions) && count($kreportCustomFunctions) > 0) {
@@ -129,11 +130,11 @@ class KReporterRESTHandler
         $uc = $db->fetchByAssoc($db->query(base64_decode('c2VsZWN0IGNvdW50KGlkKSBjaSBmcm9tIHVzZXJzIHdoZXJlIHN0YXR1cyA9ICdBY3RpdmUn')));
 
         return array(
-            'systemkey' => $sugar_config['unique_key'],
+            'systemkey' => $sugar_config['kreports_unique_key'] ?: $sugar_config['unique_key'],
             'count' => $uc['ci'],
             'server' => $_SERVER['SERVER_ADDR'],
             'current_user_id' => $current_user->id,
-            'current_user_name' => $current_user->name
+            'current_user_name' => $current_user->name,
         );
     }
 
@@ -182,14 +183,69 @@ class KReporterRESTHandler
         return array('timef' => $timef, 'datef' => $datef);
     }
     
-    function get_users_list()
+    function get_user_prefs(){
+        global $current_user;
+        $timef = $current_user->getPreference('timef');
+        if (empty($timef)) {
+            $timef = $GLOBALS['sugar_config']['default_time_format'];
+        }
+        if (empty($timef)) {
+            $timef = '';
+        }
+        
+        $datef = $current_user->getPreference('datef');
+        if (empty($datef)) {
+            $datef = $GLOBALS['sugar_config']['default_date_format'];
+        }
+        if (empty($datef)) {
+            $datef = '';
+        }
+
+        $precision = $current_user->getPreference('default_currency_significant_digits');
+        if (empty($precision)) {
+            $precision = $GLOBALS['sugar_config']['default_currency_significant_digits'];
+        }
+        if (empty($precision)) {
+            $precision = '';
+        }
+
+        return array('timef' => $timef, 'datef' => $datef, 'precision' => $precision );
+    }
+    
+    function get_users_list($params = array())
     {
         $responseArray = array();
         $tmpBean = new User();
-        $order_by = "last_name ASC";
+        $order_by = "users.last_name ASC";
         $where = ""; // status='Active' ?
-        $users = $tmpBean->get_list($order_by, $where);
-        $responseArray = array('list' => array(), 'totalcount' => $users['row_count']);
+        $row_offset = 0;
+        $limit=-1;
+        //begin handle search param
+        if(isset($params['searchterm']) && !empty($params['searchterm'])){
+            if(isset($params['searchtermfields'])){
+                $whereParts = array();
+                $searchtermfields = json_decode($params['searchtermfields'], true);
+                foreach($searchtermfields as $searchfield){
+                    $whereParts[] = "users.$searchfield LIKE '%".$params['searchterm']."%'";
+                }
+                if(!empty($whereParts))
+                    $where.= "(".implode(" OR ", $whereParts).")";
+            }
+        }
+        if(isset($params['limit'])){
+            $limit = $params['limit'];
+        }
+        if(isset($params['start'])){
+            $row_offset = $params['start'];
+        }
+        //end handle search param
+        
+        $users = $tmpBean->get_list($order_by, $where, $row_offset, $limit);
+
+        //get total count
+        $usersForCount = $tmpBean->get_list($order_by, $where);
+        $responseArray = array('list' => array(), 'totalcount' => $usersForCount['row_count']);
+        
         foreach($users['list'] as $user){
             $responseArray['list'][] = array('id' => $user->id, 'user_name' => $user->user_name, 'name' => $user->full_name);
         }
@@ -260,7 +316,7 @@ class KReporterRESTHandler
     }
 
     function getWhereOperators($path, $grouping, $designer)
-    {
+    {        
         global $app_list_strings, $beanFiles, $beanList, $db, $current_language;
 
         $app_list_strings = return_app_list_strings_language($current_language);
@@ -393,7 +449,7 @@ class KReporterRESTHandler
         return $retarray;
     }
 
-    function getEnumOptions($path, $grouping = '')
+    function getEnumOptions($path, $grouping = '', $operators = array())
     {
 
         global $current_language, $beanFiles, $beanList, $db;
@@ -445,13 +501,20 @@ class KReporterRESTHandler
 
 
             // pars the otpions into the return array
-            switch ($thisModule->field_name_map[$fieldArray[1]]['type']) {
+            switch ($thisModule->field_name_map[$fieldArray[1]]['kreporttype'] ?: $thisModule->field_name_map[$fieldArray[1]]['type']) {
                 case 'enum':
                 case 'radioenum':
                 case 'multienum':
-                    foreach ($app_list_strings[$thisModule->field_name_map[$fieldArray[1]]['options']] as $value => $text) {
-                        if($value !== "")
-                            $returnArray[] = array('value' => $value, 'text' => (!empty($text) ? $text : '-'));
+                    if ($thisModule->field_name_map[$fieldArray[1]]['function']) {
+                        require_once($thisModule->field_name_map[$fieldArray[1]]['function']['include']);
+                        $functionName = $thisModule->field_name_map[$fieldArray[1]]['function']['name'];
+                        $returnArray = $functionName($thisModule, $fieldArray[1], '', 'KReporterOptions', $operators);
+
+                    } else {
+                        foreach ($app_list_strings[$thisModule->field_name_map[$fieldArray[1]]['options']] as $value => $text) {
+                            if ($value !== "")
+                                $returnArray[] = array('value' => $value, 'text' => (!empty($text) ? $text : '-'));
+                        }
                     }
                     break;
                 case 'parent_type':
@@ -462,6 +525,7 @@ class KReporterRESTHandler
                     }
                     break;
                 case 'user_name':
+                case 'username': //sugar7
                 case 'assigned_user_name':
                     global $locale;
                     $returnArray[] = array('value' => 'current_user_id', 'text' => 'active user');
@@ -488,13 +552,19 @@ class KReporterRESTHandler
                 $parentModule->field_name_map[$fieldArray[1]]['type'] = $parentModule->field_name_map[$fieldArray[1]]['kreporttype'];
 
             // we have the root module
-            switch ($parentModule->field_name_map[$fieldArray[1]]['type']) {
+            switch ($parentModule->field_name_map[$fieldArray[1]]['kreporttype'] ?: $parentModule->field_name_map[$fieldArray[1]]['type']) {
                 case 'enum':
                 case 'radioenum':
                 case 'multienum':
-                    foreach ($app_list_strings[$parentModule->field_name_map[$fieldArray[1]]['options']] as $value => $text) {
-                        if($value !== "")
-                            $returnArray[] = array('value' => $value, 'text' => (!empty($text) ? $text : '-'));
+                    if ($parentModule->field_name_map[$fieldArray[1]]['function']) {
+                        require_once($parentModule->field_name_map[$fieldArray[1]]['function']['include']);
+                        $functionName = $parentModule->field_name_map[$fieldArray[1]]['function']['name'];
+                        $returnArray = $functionName($parentModule, $fieldArray[1], '', 'KReporterOptions', $operators);
+                    } else {
+                        foreach ($app_list_strings[$parentModule->field_name_map[$fieldArray[1]]['options']] as $value => $text) {
+                            if ($value !== "")
+                                $returnArray[] = array('value' => $value, 'text' => (!empty($text) ? $text : '-'));
+                        }
                     }
                     break;
                 case 'parent_type':
@@ -505,6 +575,7 @@ class KReporterRESTHandler
                     }
                     break;
                 case 'user_name':
+                case 'username': //sugar7
                 case 'assigned_user_name':
                     $returnArray[] = array('value' => 'current_user_id', 'text' => 'active user');
                     $usersResult = $db->query('SELECT id, user_name FROM users WHERE deleted = \'0\' AND status = \'Active\'');
@@ -516,25 +587,25 @@ class KReporterRESTHandler
             }
         }
 
-        if(!empty($grouping)){
+        if (!empty($grouping)) {
             $groupedReturnArray = array();
             $groupingDetail = $db->fetchByAssoc($db->query("SELECT * FROM kreportgroupings WHERE id = '$grouping'"));
             $groupingMapping = json_decode(html_entity_decode($groupingDetail['mapping']), true);
 
-            if($groupingMapping['others']){
-                foreach($groupingMapping['mappings'] as $mappingDetail) {
+            if ($groupingMapping['others']) {
+                foreach ($groupingMapping['mappings'] as $mappingDetail) {
                     $groupedReturnArray[] = array('value' => $mappingDetail['mappingvalue'], 'text' => $mappingDetail['mappingvalue']);
-                 }
+                }
 
                 $groupedReturnArray[] = array('value' => 'other', 'text' => 'other');
 
                 $returnArray = $groupedReturnArray;
             } else {
-                foreach($groupingMapping['mappings'] as $mappingDetail){
+                foreach ($groupingMapping['mappings'] as $mappingDetail) {
                     $groupedReturnArray[] = array('value' => $mappingDetail['mappingvalue'], 'text' => $mappingDetail['mappingvalue']);
-                    foreach($mappingDetail['children'] as $mappedValue) {
-                        foreach($returnArray as $returnIndex => $returnEntry)
-                            if($returnEntry['value'] == $mappedValue)
+                    foreach ($mappingDetail['children'] as $mappedValue) {
+                        foreach ($returnArray as $returnIndex => $returnEntry)
+                            if ($returnEntry['value'] == $mappedValue)
                                 unset($returnArray[$returnIndex]);
                     }
                 }
@@ -892,13 +963,12 @@ class KReporterRESTHandler
 
     function getPresentation($reportId, $requestParams)
     {
+        
         global $db, $app_list_string, $current_language;
-
         $app_list_strings = return_app_list_strings_language($current_language);
 
         // initialize Return Array
         $retData = array();
-
         // get the report and the vizParams
         $thisReport = BeanFactory::getBean('KReports', $reportId);
 
@@ -923,10 +993,50 @@ class KReporterRESTHandler
             $thisReport->whereOverride = json_decode(html_entity_decode($requestParams['whereConditions']), true);
         }
 
+        // if a filter is set evaluate it .. comes from the dashlet
+        if(!empty($requestParams['filter'])){
+            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '".$requestParams['filter']."'"));
+            $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
+        }
+
+        //get parent bean 
+        if(isset($requestParams['parentbeanId']) && isset($requestParams['parentbeanModule'])){
+            $parentbean = BeanFactory::getBean($requestParams['parentbeanModule'], $requestParams['parentbeanId']);
+            if($parentbean->id)
+                $reportParams['parentbean'] = $parentbean;
+        }
+        
         // print_r(json_decode(html_entity_decode($requestParams['whereConditions']), true));
 
+        //catch dynamic options sent by drilldown plugin at first load
+        $whereconditions = json_decode(html_entity_decode($thisReport->whereconditions), true);
+        $whereoverride = array();
+        if (isset($requestParams['dynamicoptions']) && !empty($requestParams['dynamicoptions'])) {
+            $dynamicoptions = json_decode(html_entity_decode(base64_decode($requestParams['dynamicoptions'])), true);
+            foreach($whereconditions as $idx => $wherecondition){
+                foreach($dynamicoptions as $idxdo => $dynamicoption){
+                    if( (!empty($dynamicoption['fieldid']) && $dynamicoption['fieldid'] == $wherecondition['fieldid']) ||
+                        (!empty($dynamicoption['reference']) && $dynamicoption['reference'] == $wherecondition['reference'])){
+                        $whereconditions[$idx]['operator'] = $dynamicoption['operator'];
+                        if(isset($dynamicoption['value'])) $whereconditions[$idx]['value'] = $dynamicoption['value'];
+                        if(isset($dynamicoption['valuekey'])) $whereconditions[$idx]['valuekey'] = $dynamicoption['valuekey'];
+                        if(isset($dynamicoption['valueto'])) $whereconditions[$idx]['valueto'] = $dynamicoption['valueto'];
+                        if(isset($dynamicoption['valuetokey'])) $whereconditions[$idx]['valuetokey'] = $dynamicoption['valuetokey'];
+                        $whereoverride [] = $whereconditions[$idx];
+                    }
+                }
+            }
+        }        
+        //allocate dynamicoptions to whereOverride
+        if(is_array($thisReport->whereOverride)){
+            $thisReport->whereOverride = array_merge($thisReport->whereOverride, $whereoverride);
+        }
+        else
+            $thisReport->whereOverride = $whereoverride;
+                        
+        
         $retData['records'] = $thisReport->getSelectionResults($reportParams, isset($requestParams['snapshotid']) ? $requestParams['snapshotid'] : '0', false);
-
+        
         // rework ... load from kQuery fieldArray
         $fieldArr = array();
 
@@ -943,9 +1053,11 @@ class KReporterRESTHandler
                 case 'float':
                     $thisFieldArray['type'] = 'number';
                     break;
-                case 'date':
-                    $thisFieldArray['type'] = 'date';
-                    break;
+//type date will modified date format in store and check on timezone on user's machine! 
+//2016-06-25 will become Sat Jun 24 2016 20:00:00 GMT-0400 (Zentalbrasilianische Normalzeit)                
+//                case 'date':
+//                    $thisFieldArray['type'] = 'date'; 
+//                    break;
                 default:
                     $thisFieldArray['type'] = 'string';
                     break;
@@ -998,13 +1110,17 @@ class KReporterRESTHandler
         }
 
         // do a count
-        $retData['count'] = $thisReport->getSelectionResults(array('start' => $_REQUEST['start'], 'limit' => $_REQUEST['limit']), isset($_REQUEST['snapshotid']) ? $_REQUEST['snapshotid'] : '0', true);
-
+        $parameters = array('start' => $requestParams['start'], 'limit' => $requestParams['limit']);
+        if($parentbean)
+            $parameters['parentbean'] = $parentbean;
+        $retData['count'] = $thisReport->getSelectionResults($parameters, isset($requestParams['snapshotid']) ? $requestParams['snapshotid'] : '0', true);
         return $retData;
     }
 
     function getVisualization($reportId, $requestParams)
     {
+        global $db;
+
         $retData = array();
 
         // get the report and the vizParams
@@ -1014,12 +1130,45 @@ class KReporterRESTHandler
             $thisReport->whereOverride = json_decode(html_entity_decode($requestParams['whereConditions']), true);
         }
 
+        // if a filter is set evaluate it .. comes from the dashlet
+        if(!empty($requestParams['filter'])){
+            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '".$requestParams['filter']."'"));
+            $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
+        }
+
+        //get parent bean 
+        if(isset($requestParams['parentbeanId']) && isset($requestParams['parentbeanModule'])){
+            $parentbean = BeanFactory::getBean($requestParams['parentbeanModule'], $requestParams['parentbeanId']);
+            if($parentbean->id)
+                $reportParams['parentbean'] = $parentbean;
+        }
+        
+
+        //catch dynamic options sent by drilldown plugin at first load
+        if (isset($requestParams['dynamicoptions']) && !empty($requestParams['dynamicoptions'])) {
+            $dynamicoptions = json_decode(html_entity_decode(base64_decode($requestParams['dynamicoptions'])), true);
+            if(count($thisReport->whereOverride) <= 0)
+                $thisReport->whereOverride = $dynamicoptions;
+            else{
+                $dynamicoptions = json_decode(html_entity_decode($requestParams['dynamicoptions']), true);
+                foreach($thisReport->whereOverride as $idx => $whereOverride){
+                    foreach($dynamicoptions as $idxdo => $dynamicoption){
+                        if($dynamicoption['fieldid'] == $whereOverride['fieldid'] || $dynamicoption['reference'] == $whereOverride['reference']){
+                            $thisReport->whereOverride[$idx] = $dynamicoption;
+                        }
+                    }
+                }
+            }
+        }
+        
         $vizData = json_decode(html_entity_decode($thisReport->visualization_params, ENT_QUOTES, 'UTF-8'), true);
 
         // get the managers
         $vizManager = new KReportVisualizationManager();
         $pluginManager = new KReportPluginManager();
-
+        
+        if(!is_array($reportParams)) $reportParams = array();
+        
         // loop over the plugins
         for ($i = 0; $i < count($vizManager->layouts[$vizData['layout']]['items']); $i++) {
             // add the layout
@@ -1040,7 +1189,7 @@ class KReporterRESTHandler
 
             // add the data of the item
             $itemData['uid'] = $vizData[$i + 1][$itemData['plugin']]['uid'];
-            $itemData['data'] = $vizObject->getItem($vizData[$i + 1][$itemData['plugin']]['uid'], $thisReport, $vizData[$i + 1][$itemData['plugin']], array(), $requestParams['snapshotid'] ? $requestParams['snapshotid'] : '0');
+            $itemData['data'] = $vizObject->getItem($vizData[$i + 1][$itemData['plugin']]['uid'], $thisReport, $vizData[$i + 1][$itemData['plugin']], $reportParams, $requestParams['snapshotid'] ? $requestParams['snapshotid'] : '0');
 
             $retData[] = $itemData;
         }
@@ -1081,6 +1230,78 @@ class KReporterRESTHandler
         $thisReport->listfields = json_encode($listFields);
         $thisReport->save();
     }
+    
+###################### BEGIN SavedFilters ksavedfilters ######################    
+    public function getSavedFilters($params = array()){
+        global $db;
+        $whereClause = "";
+        if(!empty($params['assigneduserid'])) $whereClause = " AND (ksf.assigned_user_id='".$params['assigneduserid']."' OR ksf.is_global > 0)";
+        $results = array();
+        $mod_strings = return_module_language($GLOBALS['current_language'], 'KReports');
+        
+        //set empty record for Viewer only
+        if(isset($params['context']) && $params['context'] == "Viewer"){
+            $results[] = array(
+                    'savedfilter_id' => 'none',
+                    'name' => '---',
+                    'kreport_id' => $params['reportid'],
+                    'assigned_user_id' => null,
+                    'assigned_user_name' => null,
+                    'is_global' => 1,
+                    'selectedfilters' => null
+            );
+        }
+        
+        //read passed whereConditions
+        $whereconditions = array();
+        if(isset($params['currentWhereConditions'])){
+            $whereconditions = json_decode(html_entity_decode($params['currentWhereConditions'], ENT_QUOTES), true);
+        }
+
+        //get data
+        $records = $db->query("SELECT ksf.*, u.user_name FROM kreportsavedfilters ksf "
+                . "INNER JOIN users u ON u.id = ksf.assigned_user_id "
+                . "WHERE ksf.deleted= 0 AND ksf.kreport_id='".$params['reportid']."' "
+                . $whereClause   
+                . " ORDER BY ksf.name ASC");
+
+        //prepare records
+        while ($record = $db->fetchByAssoc($records)) {
+            $selectedfilters = json_decode(html_entity_decode($record['selectedfilters'], ENT_QUOTES), true);
+            $whereconditionsFieldids = array();
+            foreach($whereconditions as $idx => $condition){
+                $whereconditionsFieldids[] = $condition['fieldid'];
+            }
+            
+            //loop selectedfilters over whereconditions and set status
+            //if one of the filters IDs does not correspond to whereconditions, the whole savedfilter is status =0 
+            $status = 1;
+            foreach($selectedfilters as $idxfi => $filter){
+                if(!in_array($filter['fieldid'], $whereconditionsFieldids)){
+                    $status = 0;
+                    break;
+                }
+            }
+            
+            //set entry values
+            $results[] = array(
+                'savedfilter_id' => $record['id'],
+                'name' => ($record['is_global'] ? $mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL_MARK'].' ' : '').$record['name'],
+                'kreport_id' => $record['kreport_id'],
+                'assigned_user_id' => $record['assigned_user_id'],
+                'assigned_user_name' => $record['user_name'],
+                'is_global' => $record['is_global'],
+                'selectedfilters' => $record['selectedfilters'],
+                'status' => $status,
+            );
+        }
+        
+        return $results;
+    }
+       
+    
+###################### END SavedFilters ksavedfilters ######################    
+    
     
 ###################### BEGIN BucketManager ######################    
     
@@ -1573,6 +1794,26 @@ class KReporterRESTHandler
         }
         
         return $fieldtype;
+    }
+    
+    /**
+     * get KReporter related config vars from config.php and config_override.php
+     */
+    public function getConfig(){
+        require_once 'modules/Configurator/Configurator.php';
+        $configurator = new Configurator();
+        $configurator->loadConfig();
+        $default_currency_symbol = $configurator->config['default_currency_symbol'];
+        return array('KReports' => $configurator->config['KReports'], 'default_currency_symbol' => $default_currency_symbol);
+    }
+    
+    /**
+     * get KReporter labels (needed in kpublishing to subpanel
+     */
+    public function getLabels(){
+        $labels = return_module_language((empty($GLOBALS['current_language']) ? $GLOBALS['sugar_config']['default_language'] : $GLOBALS['current_language']), 'KReports');
+
+        return $labels;
     }
     
 }

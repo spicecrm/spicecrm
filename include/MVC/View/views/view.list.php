@@ -170,18 +170,24 @@ class ViewList extends SugarView{
             return;
         if(empty($_REQUEST['search_form_only']) || $_REQUEST['search_form_only'] == false){
             $this->lv->ss->assign("SEARCH",true);
-            $this->lv->setup($this->seed, 'include/ListView/ListViewGeneric.tpl', $this->where, $this->params);
+            // if we are in fts use other tpl
+            if($_REQUEST['searchFormTab'] == 'fts_search')
+                $this->lv->setup($this->seed, 'include/ListView/ListViewFTSTable.tpl', $this->where, $this->params);
+            else
+                $this->lv->setup($this->seed, 'include/ListView/ListViewGeneric.tpl', $this->where, $this->params);
+
             $savedSearchName = empty($_REQUEST['saved_search_select_name']) ? '' : (' - ' . $_REQUEST['saved_search_select_name']);
             echo $this->lv->display();
         }
     }
+
     function prepareSearchForm()
     {
         $this->searchForm = null;
 
         //search
         $view = 'basic_search';
-        if(!empty($_REQUEST['search_form_view']) && $_REQUEST['search_form_view'] == 'advanced_search')
+        if(!empty($_REQUEST['search_form_view']) && ($_REQUEST['search_form_view'] == 'advanced_search' || $_REQUEST['search_form_view'] == 'fts_search'))
             $view = $_REQUEST['search_form_view'];
         $this->headers = true;
 
@@ -192,6 +198,11 @@ class ViewList extends SugarView{
             if(isset($_REQUEST['searchFormTab']) && $_REQUEST['searchFormTab'] == 'advanced_search')
             {
                 $view = 'advanced_search';
+            }
+            else if(isset($_REQUEST['searchFormTab']) && $_REQUEST['searchFormTab'] == 'fts_search')
+            {
+                $view = 'fts_search';
+                $this->params['fts'] = true;
             }
             else
             {

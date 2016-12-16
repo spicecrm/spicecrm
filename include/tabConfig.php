@@ -50,7 +50,10 @@ $GLOBALS['tabStructure'] = array(
             "Contracts",
             "Quotes",
             "Forecasts",
-            "KReports" //KReporter
+            "KReports", //KReporter
+            "Proposals",
+            "CompetitorAssessments",
+            "KDeploymentSystems"
         )
     ),
     "LBL_TABGROUP_MARKETING" => array(

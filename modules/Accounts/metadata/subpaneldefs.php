@@ -172,6 +172,19 @@ $layout_defs['Accounts'] = array(
 				array('widget_class' => 'SubPanelTopButtonQuickCreate')
 			),
 		),
+		'proposals' => array(
+			'order' => 40,
+			'module' => 'Proposals',
+			'subpanel_name' => 'ForAccounts',
+			'sort_order' => 'desc',
+			'sort_by' => 'date_entered',
+			'get_subpanel_data' => 'proposals',
+			'add_subpanel_data' => 'proposal_id',
+			'title_key' => 'LBL_PROPOSALS_SUBPANEL_TITLE',
+			'top_buttons' => array(
+				array('widget_class' => 'SubPanelTopCreateProposalButton')
+			),
+		),
 		'leads' => array(
 			'order' => 80,
 			'module' => 'Leads',

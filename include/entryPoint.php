@@ -1,5 +1,5 @@
 <?php
-if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -36,7 +36,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 ********************************************************************************/
 
 /*********************************************************************************
-
  * Description:
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc. All Rights
  * Reserved. Contributor(s): ______________________________________..
@@ -78,14 +77,14 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * zipatcher.php
  * WebToLeadCapture.php
  * HandleAjaxCall.php */
- /*
-  * for 50, added:
-  * minify.php
-  */
-  /*
-  * for 510, added:
-  * dceActionCleanup.php
-  */
+/*
+ * for 50, added:
+ * minify.php
+ */
+/*
+* for 510, added:
+* dceActionCleanup.php
+*/
 $GLOBALS['starttTime'] = microtime(true);
 
 set_include_path(
@@ -95,33 +94,30 @@ set_include_path(
 
 if (!defined('PHP_VERSION_ID')) {
     $version_array = explode('.', phpversion());
-    define('PHP_VERSION_ID', ($version_array[0]*10000 + $version_array[1]*100 + $version_array[2]));
+    define('PHP_VERSION_ID', ($version_array[0] * 10000 + $version_array[1] * 100 + $version_array[2]));
 }
 
-if(empty($GLOBALS['installing']) && !file_exists('config.php'))
-{
-	header('Location: install.php');
-	exit ();
+if (empty($GLOBALS['installing']) && !file_exists('config.php')) {
+    header('Location: install.php');
+    exit ();
 }
 
 
 // config|_override.php
-if(is_file('config.php')) {
-	require_once('config.php'); // provides $sugar_config
+if (is_file('config.php')) {
+    require_once('config.php'); // provides $sugar_config
 }
 
 // load up the config_override.php file.  This is used to provide default user settings
-if(is_file('config_override.php')) {
-	require_once('config_override.php');
+if (is_file('config_override.php')) {
+    require_once('config_override.php');
 }
-if(empty($GLOBALS['installing']) &&empty($sugar_config['dbconfig']['db_name']))
-{
-	    header('Location: install.php');
-	    exit ();
+if (empty($GLOBALS['installing']) && empty($sugar_config['dbconfig']['db_name'])) {
+    header('Location: install.php');
+    exit ();
 }
 
-if (!empty($sugar_config['xhprof_config']))
-{
+if (!empty($sugar_config['xhprof_config'])) {
     require_once 'include/SugarXHprof/SugarXHprof.php';
     SugarXHprof::getInstance()->start();
 }
@@ -176,6 +172,10 @@ require_once('include/MVC/SugarModule.php');
 require_once('include/SugarCache/SugarCache.php');
 require('modules/Currencies/Currency.php');
 require_once('include/MVC/SugarApplication.php');
+require_once('modules/KDeploymentMWs/KDeploymentMW.php');
+
+// include the FTS Handler
+require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
 
 require_once('include/upload_file.php');
 UploadStream::register();
@@ -189,55 +189,56 @@ if (!defined('SUGAR_PATH')) {
 }
 require_once 'include/SugarObjects/SugarRegistry.php';
 
-if(empty($GLOBALS['installing'])){
+if (empty($GLOBALS['installing'])) {
 ///////////////////////////////////////////////////////////////////////////////
 ////	SETTING DEFAULT VAR VALUES
-$GLOBALS['log'] = LoggerManager::getLogger('SugarCRM');
-$error_notice = '';
-$use_current_user_login = false;
+    $GLOBALS['log'] = LoggerManager::getLogger('SugarCRM');
+    $error_notice = '';
+    $use_current_user_login = false;
 
 // Allow for the session information to be passed via the URL for printing.
-if(isset($_GET['PHPSESSID'])){
-    if(!empty($_COOKIE['PHPSESSID']) && strcmp($_GET['PHPSESSID'],$_COOKIE['PHPSESSID']) == 0) {
-        session_id($_REQUEST['PHPSESSID']);
-    }else{
-        unset($_GET['PHPSESSID']);
+    if (isset($_GET['PHPSESSID'])) {
+        if (!empty($_COOKIE['PHPSESSID']) && strcmp($_GET['PHPSESSID'], $_COOKIE['PHPSESSID']) == 0) {
+            session_id($_REQUEST['PHPSESSID']);
+        } else {
+            unset($_GET['PHPSESSID']);
+        }
     }
-}
 
-if(!empty($sugar_config['session_dir'])) {
-	session_save_path($sugar_config['session_dir']);
-}
+    if (!empty($sugar_config['session_dir'])) {
+        session_save_path($sugar_config['session_dir']);
+    }
 
-SugarApplication::preLoadLanguages();
+    // moved getting the db instance up so we can load the language from teh DB
+    $db = DBManagerFactory::getInstance();
+    $db->resetQueryCount();
 
-$timedate = TimeDate::getInstance();
+    SugarApplication::preLoadLanguages();
 
-$GLOBALS['sugar_version'] = $sugar_version;
-$GLOBALS['sugar_flavor'] = $sugar_flavor;
-$GLOBALS['timedate'] = $timedate;
-$GLOBALS['js_version_key'] = md5($GLOBALS['sugar_config']['unique_key'].$GLOBALS['sugar_version'].$GLOBALS['sugar_flavor']);
+    $timedate = TimeDate::getInstance();
 
-$db = DBManagerFactory::getInstance();
-$db->resetQueryCount();
-$locale = new Localization();
+    $GLOBALS['sugar_version'] = $sugar_version;
+    $GLOBALS['sugar_flavor'] = $sugar_flavor;
+    $GLOBALS['timedate'] = $timedate;
+    $GLOBALS['js_version_key'] = md5($GLOBALS['sugar_config']['unique_key'] . $GLOBALS['sugar_version'] . $GLOBALS['sugar_flavor']);
+
+    $locale = new Localization();
 
 // Emails uses the REQUEST_URI later to construct dynamic URLs.
 // IIS does not pass this field to prevent an error, if it is not set, we will assign it to ''.
-if (!isset ($_SERVER['REQUEST_URI'])) {
-	$_SERVER['REQUEST_URI'] = '';
-}
+    if (!isset ($_SERVER['REQUEST_URI'])) {
+        $_SERVER['REQUEST_URI'] = '';
+    }
 
-$current_user = new User();
-$current_entity = null;
-$system_config = new Administration();
-$system_config->retrieveSettings();
+    $current_user = new User();
+    $current_entity = null;
+    $system_config = new Administration();
+    $system_config->retrieveSettings();
 
-LogicHook::initialize()->call_custom_logic('', 'after_entry_point');
+    LogicHook::initialize()->call_custom_logic('', 'after_entry_point');
 }
 
 
 ////	END SETTING DEFAULT VAR VALUES
 ///////////////////////////////////////////////////////////////////////////////
 
-?>

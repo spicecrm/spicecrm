@@ -104,11 +104,11 @@ class KReportChartData {
                      switch ($thisDataSeries['chartfunction']) {
                         case 'MAX':
                            if ($thisResultRecord[$thisDataSeries['fieldid']] > $chartData[$thisDataSeries['fieldid']]['value'])
-                              $chartData[$thisDataSeries['fieldid']]['value'] = $thisResultRecord[$thisDataSeries['fieldid']];
+                              $chartData[$thisDataSeries['fieldid']]['value'] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                            break;
                         case 'MIN':
                            if ($thisResultRecord[$thisDataSeries['fieldid']] < $chartData[$thisDataSeries['fieldid']]['value'] || $chartData[$thisDataSeries['fieldid']]['value'] == 0)
-                              $chartData[$thisDataSeries['fieldid']]['value'] = $thisResultRecord[$thisDataSeries['fieldid']];
+                              $chartData[$thisDataSeries['fieldid']]['value'] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                            break;
                         case 'COUNT':
                            $chartData[$thisDataSeries['fieldid']]['value']++;
@@ -137,11 +137,11 @@ class KReportChartData {
                      switch ($thisDataSeries['chartfunction']) {
                         case 'MAX':
                            if ($chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] < $thisResultRecord[$thisDataSeries['fieldid']])
-                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] = $thisResultRecord[$thisDataSeries['fieldid']];
+                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                            break;
                         case 'MIN':
                            if ($chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] == 0 || $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] > $thisResultRecord[$thisDataSeries['fieldid']])
-                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] = $thisResultRecord[$thisDataSeries['fieldid']];
+                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                            break;
                         case 'COUNT':
                            $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisDataSeries['fieldid']]++;
@@ -179,11 +179,11 @@ class KReportChartData {
                          switch ($thisDataSeries['chartfunction']) {
                             case 'MAX':
                                if ($chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] < $thisResultRecord[$thisDataSeries['fieldid']])
-                                  $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] = $thisResultRecord[$thisDataSeries['fieldid']];
+                                  $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                                break;
                             case 'MIN':
                                if ($chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] == 0 || $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] < $thisResultRecord[$thisDataSeries['fieldid']])
-                                  $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] = $thisResultRecord[$thisDataSeries['fieldid']];
+                                  $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                                break;
                             case 'COUNT':
                                $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]]++;
@@ -212,11 +212,11 @@ class KReportChartData {
                      switch ($thisDataSeries['chartfunction']) {
                         case 'MAX':
                            if ($chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] < $thisResultRecord[$thisDataSeries['fieldid']])
-                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] = $thisResultRecord[$thisDataSeries['fieldid']];
+                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                            break;
                         case 'MIN':
                            if ($chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] == 0 || $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] < $thisResultRecord[$thisDataSeries['fieldid']])
-                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] = $thisResultRecord[$thisDataSeries['fieldid']];
+                              $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]] = (float)$thisResultRecord[$thisDataSeries['fieldid']];
                            break;
                         case 'COUNT':
                            $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]][$thisResultRecord[$dimensions[2]['fieldid']]]++;
@@ -236,7 +236,8 @@ class KReportChartData {
       // 2013-03-19 handle Chart Function properly Bug #448
       // an array for the cumulated sum
       $dimCumsumArray = array();
-      
+      $valueAxes = array();
+
       // Fill all missing values with 0
       switch ($dimCount) {
          // 2013-03-19 handle Chart Function properly Bug #448
@@ -256,6 +257,25 @@ class KReportChartData {
                   if (!isset($chartData[$thisKey][$thisDataSeries['fieldid']]))
                      $chartData[$thisKey][$thisDataSeries['fieldid']] = 0;
 
+                //catch valueAxes
+//              if(!empty($thisDataSeries['axis'])){
+                    //va will be common axis on the left
+                    $valueAxisId = (!empty($thisDataSeries['axis']) ? $thisDataSeries['axis'] : "va"); 
+                    if(!in_array($valueAxisId, array_keys($valueAxes))){
+                        $valueAxes[$valueAxisId] = array(
+                            'id' => $valueAxisId,
+                            'axisThickness'=> 2,
+                            'vaxisAlpha'=> 1,
+                            'position'=> (count($valueAxes) <= 0 ? "left" : "right"),
+                            'offset' => (count($valueAxes) <= 1 ? 0 : 30),
+                            'title' => $thisDataSeries['axis']
+                        );
+                        if(!empty($thisDataSeries['color'])){
+                             $valueAxes[$valueAxisId]['axisColor'] = $thisDataSeries['color'];
+                        }
+
+                    }
+//              }
                   // 2013-03-19 handle Chart Function properly Bug #448
                   switch ($thisDataSeries['chartfunction']) {
                      case 'AVG':
@@ -330,7 +350,7 @@ class KReportChartData {
          if(!in_array($chartParams['type'], $keepDimensionsForTypes)) unset($dimensions[1]);
       }
       
-      return array('dimensions' => $dimensions, 'dataseries' => $dataSeries, 'chartData' => $chartData);
+      return array('dimensions' => $dimensions, 'dataseries' => $dataSeries, 'chartData' => $chartData, 'valueAxes' => $valueAxes);
    }
 
 }

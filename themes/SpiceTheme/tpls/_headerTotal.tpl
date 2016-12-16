@@ -2,7 +2,7 @@
 
     <div id="moduleList">
         <ul>
-            <li class="newsubmenuitem" id="Hometab" ><span class="notCurrentTab"><a id="moduleTab_Home" module="Home" href="index.php?module=Home&action=index"><img id="homeIcon" src={sugar_getimagepath file="Home.png"}></a></span></li>
+            <li class="newsubmenuitem" id="Hometab" ><span class="notCurrentTab"><a id="moduleTab_Home" module="Home" href="index.php?module=Home&action=index"><img id="homeIcon" src={sugar_getimagepath file="Home_white.png"}></a></span></li>
             <li>|</li>
             {if $USE_GROUP_TABS}
             <li id="groupdropdowntab" onclick="spicetheme.toggleGroups();"><span id="currentGroup">{$currentGroupTab}</span><span class="moreModuleItemsArrow"></span>
@@ -33,7 +33,7 @@
                 <input type="hidden" name="search_form" value="false">
                 <input type="hidden" name="advanced" value="false">
                 <input type="text" name="query_string" id="query_string" size="20" value="{$SEARCH}">&nbsp;
-                <input type="image" id="searchimage" src={sugar_getimagepath file="search.gif"} alt="">
+                <input type="image" id="searchimage" src={sugar_getimagepath file="search_white.gif"} alt="">
             </form><br />
         </div>
 

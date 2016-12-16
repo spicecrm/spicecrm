@@ -40,6 +40,7 @@ global $current_user,$admin_group_header;
 $admin_option_defs=array();
 $admin_option_defs['Users']['user_management']= array('Users','LBL_MANAGE_USERS_TITLE','LBL_MANAGE_USERS','./index.php?module=Users&action=index');
 $admin_option_defs['Users']['roles_management']= array('Roles','LBL_MANAGE_ROLES_TITLE','LBL_MANAGE_ROLES','./index.php?module=ACLRoles&action=index');
+$admin_option_defs['Users']['quota_management']= array('Roles','LBL_MANAGE_USERS_QUOTAS','LBL_MANAGE_QUOTAS','./index.php?module=Users&action=QuotaManager');
 $admin_option_defs['Administration']['password_management']= array('Password','LBL_MANAGE_PASSWORD_TITLE','LBL_MANAGE_PASSWORD','./index.php?module=Administration&action=PasswordManager');
 $admin_group_header[]= array('LBL_USERS_TITLE','',false,$admin_option_defs, 'LBL_USERS_DESC');
 $license_management = false;
@@ -203,8 +204,25 @@ $links['SpiceThemeConfig']['link2'] = array(
 //);
 
 
+$admin_option_defs=array();
+$admin_option_defs['FTS']['FulltextSearchManager']= array('Releases','FTS Manager','Full Text Search Configuration','./index.php?module=Administration&action=FTSManager');
+$admin_option_defs['FTS']['FulltextSearchManager']= array('FTSManager','FTS Manager','Full Text Search Configuration','./index.php?module=Administration&action=FTSManager');
+$admin_group_header[]= array('Full Text Search','',false,$admin_option_defs, 'Manage Full Text Search Options and Settings');
+
+
+
 if(file_exists('custom/modules/Administration/Ext/Administration/administration.ext.php')){
 	include('custom/modules/Administration/Ext/Administration/administration.ext.php');
+}
+
+//SpiceCRM load defs from Modules
+$DirHandle = opendir('./modules');
+if ($DirHandle) {
+    while (($NextDir = readdir($DirHandle)) !== false) {
+        if ($NextDir != '.' && $NextDir != '..' && is_dir('./modules/' . $NextDir) && file_exists('./modules/' . $NextDir . '/metadata/adminpaneldefs.php')) {
+            require_once('./modules/' . $NextDir . '/metadata/adminpaneldefs.php');
+        }
+    }
 }
 
 //For users with MLA access we need to find which entries need to be shown.

@@ -68,6 +68,9 @@ safe_map('opportunity_id', $focus);
 safe_map('contact_name', $focus);
 safe_map('contact_id', $focus);
 safe_map('contact_role', $focus);
+safe_map('propensity_to_buy', $focus);
+safe_map('level_of_support', $focus);
+safe_map('level_of_influence', $focus);
 
 
 $GLOBALS['log']->info("Contact opportunity relationship");
@@ -96,6 +99,9 @@ $xtpl->assign("OPPORTUNITY",$oppName = Array("NAME" => $focus->opportunity_name,
 echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_CONTACT_OPP_FORM_TITLE']." ".$contactName['NAME'] . " - ". $oppName['NAME']), true);
 
 $xtpl->assign("CONTACT_ROLE_OPTIONS", get_select_options_with_id($app_list_strings['opportunity_relationship_type_dom'], $focus->contact_role));
+$xtpl->assign("PROPENSITY_TO_BUY_OPTIONS", get_select_options_with_id($app_list_strings['opportunity_relationship_buying_center_dom'], $focus->propensity_to_buy ?: 'o'));
+$xtpl->assign("LEVEL_OF_SUPPORT_OPTIONS", get_select_options_with_id($app_list_strings['opportunity_relationship_buying_center_dom'], $focus->level_of_support ?: 'o'));
+$xtpl->assign("LEVEL_OF_INFLUENCE_OPTIONS", get_select_options_with_id($app_list_strings['opportunity_relationship_buying_center_dom'], $focus->level_of_influence ?: 'o'));
 
 
 

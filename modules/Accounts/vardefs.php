@@ -377,7 +377,16 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited'=>true, 'unified_
         'module'=>'ProspectLists',
         'source'=>'non-db',
         'vname'=>'LBL_PROSPECT_LIST',
-      ), 
+      ),
+
+	  'proposals' => array(
+		  'name' => 'proposals',
+		  'vname' => 'LBL_PROPOSALS_LINK',
+		  'type' => 'link',
+		  'relationship' => 'accounts_proposals_rel',
+		  'link_type' => 'one',
+		  'source' => 'non-db',
+	  ),
 )
 , 'indices' => array (
         array('name' =>'idx_accnt_id_del', 'type' =>'index', 'fields'=>array('id', 'deleted')),

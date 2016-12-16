@@ -196,6 +196,17 @@ if(document.DetailView != null &&
 }
 </script>
 <?php
+        // BEGIN KReporter Reporter as Subpanels
+        // include js files here to support first load as well as load on click => showSubPanel() 
+        if (file_exists('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php')) {
+            echo '<script type="text/javascript" src="vendor/extjs6/ext-all.js"></script>
+            <script type="text/javascript" src="modules/KReports/js/KReporterCommon.js"></script>
+            <script type="text/javascript" src="modules/KReports/Plugins/Integration/kpublishing/kpublishingview.js"></script>
+';
+        }
+        // END KReporter
+?>
+<?php
 
 		$tabs = array();
 		$default_div_display = 'inline';
@@ -271,30 +282,30 @@ if(document.DetailView != null &&
 		{
 			//load meta definition of the sub-panel.
 			$thisPanel=$this->subpanel_definitions->load_subpanel($tab);
-            if ($thisPanel === false)
+            if ($thisPanel === false) 
                 continue;
-			//this if-block will try to skip over ophaned subpanels. Studio/MB are being delete unloaded modules completely.
-			//this check will ignore subpanels that are collections (activities, history, etc)
-			if (!isset($thisPanel->_instance_properties['collection_list']) and isset($thisPanel->_instance_properties['get_subpanel_data']) ) {
-				//ignore when data source is a function
+            //this if-block will try to skip over ophaned subpanels. Studio/MB are being delete unloaded modules completely.
+            //this check will ignore subpanels that are collections (activities, history, etc)
+            if (!isset($thisPanel->_instance_properties['collection_list']) and isset($thisPanel->_instance_properties['get_subpanel_data']) ) {
+                    //ignore when data source is a function
 
-				if (!isset($this->focus->field_defs[$thisPanel->_instance_properties['get_subpanel_data']])) {
-					if (stripos($thisPanel->_instance_properties['get_subpanel_data'],'function:') === false) {
-						$GLOBALS['log']->fatal("Bad subpanel definition, it has incorrect value for get_subpanel_data property " .$tab);
-						continue;
-					}
-				} else {
-					$rel_name='';
-					if (isset($this->focus->field_defs[$thisPanel->_instance_properties['get_subpanel_data']]['relationship'])) {
-						$rel_name=$this->focus->field_defs[$thisPanel->_instance_properties['get_subpanel_data']]['relationship'];
-					}
+                    if (!isset($this->focus->field_defs[$thisPanel->_instance_properties['get_subpanel_data']])) {
+                            if (stripos($thisPanel->_instance_properties['get_subpanel_data'],'function:') === false) {
+                                    $GLOBALS['log']->fatal("Bad subpanel definition, it has incorrect value for get_subpanel_data property " .$tab);
+                                    continue;
+                            }
+                    } else {
+                            $rel_name='';
+                            if (isset($this->focus->field_defs[$thisPanel->_instance_properties['get_subpanel_data']]['relationship'])) {
+                                    $rel_name=$this->focus->field_defs[$thisPanel->_instance_properties['get_subpanel_data']]['relationship'];
+                            }
 
-					if (empty($rel_name) or !isset($GLOBALS['relationships'][$rel_name])) {
-						$GLOBALS['log']->fatal("Missing relationship definition " .$rel_name. ". skipping " .$tab ." subpanel");
-						continue;
-					}
-				}
-			}
+                            if (empty($rel_name) or !isset($GLOBALS['relationships'][$rel_name])) {
+                                    $GLOBALS['log']->fatal("Missing relationship definition " .$rel_name. ". skipping " .$tab ." subpanel");
+                                    continue;
+                            }
+                    }
+            }
 
             if ($thisPanel->isCollection()) {
                 // collect names of sub-panels that may contain items of each module

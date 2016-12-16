@@ -166,8 +166,12 @@ class StoreQuery{
 				}            	
             	
             	// cn: bug 6546 storequery stomps correct value for 'module' in Activities
-    			$_REQUEST[$key] = $value;	
-    			$_GET[$key] = $value;
+				// bugfix SpiceCRM ... only overwrite if not sent from REQUEST
+				if(empty($_REQUEST[$key]))
+    				$_REQUEST[$key] = $value;
+
+				if(empty($_GET[$key]))
+    				$_GET[$key] = $value;
 
             }
         }

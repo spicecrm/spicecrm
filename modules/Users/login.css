@@ -59,7 +59,7 @@ form {
 }
 
 input[type="text"], input[type="password"], textarea {
-	width: 200px !important;
+	width: calc(100% - 10px) !important;
 }
 
 #recaptcha_image {

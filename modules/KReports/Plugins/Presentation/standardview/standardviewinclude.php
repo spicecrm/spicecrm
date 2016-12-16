@@ -49,7 +49,7 @@ class kreportpresentationstandard extends kreportpresentationplugin {
          if ($fieldArray != '[')
             $fieldArray .= ',';
          $fieldArray .= '{name : \'' . trim($thisList['fieldid'], ':') . '\'}';
-
+         
          // see if we nee to add a field for the currency_id to the store 2010-12-25 
          // change to check if set to avoid php notice
          if ((isset($thisReport->fieldNameMap[$thisList['fieldid']]['fields_name_map_entry']['type']) && $thisReport->fieldNameMap[$thisList['fieldid']]['fields_name_map_entry']['type'] == 'currency') || (isset($thisReport->fieldNameMap[$thisList['fieldid']]['fields_name_map_entry']['kreporttype']) && $thisReport->fieldNameMap[$thisList['fieldid']]['fields_name_map_entry']['kreporttype'] == 'currency'))
@@ -80,7 +80,7 @@ class kreportpresentationstandard extends kreportpresentationplugin {
 
             // see if we have renderer we need to process
             
-            $renderer = $thisReport->getXtypeRenderer($thisReport->getFieldTypeById($thisList['fieldid']), $thisList['fieldid']);
+            $renderer = $thisReport->getXtypeRenderer($thisReport->getFieldTypeById($thisList['fieldid']), $thisList['fieldid']);            
             if ($renderer != '')
                $thisColumn['fieldrenderer'] = $renderer;
             //2012-12-01 add default renderer for buuilding links

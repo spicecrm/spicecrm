@@ -42,6 +42,7 @@
 class="yui-navset detailview_tabs"
 {{/if}}
 >
+    {sugar_include type='php' file='{{$headerPanel}}'}
     {{if $useTabs}}
     {* Generate the Tab headers *}
     {{counter name="tabCount" start=-1 print=false assign="tabCount"}}

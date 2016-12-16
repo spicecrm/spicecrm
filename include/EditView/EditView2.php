@@ -675,6 +675,7 @@ class EditView
 
         $this->th->ss->assign('form', isset($this->defs['templateMeta']['form']) ? $this->defs['templateMeta']['form'] : null);
         $this->th->ss->assign('includes', isset($this->defs['templateMeta']['includes']) ? $this->defs['templateMeta']['includes'] : null);
+        $this->th->ss->assign('headerPanel', isset($this->defs['templateMeta']['headerPanel']) ? $this->defs['templateMeta']['headerPanel'] : null);
         $this->th->ss->assign('view', $this->view);
 
 

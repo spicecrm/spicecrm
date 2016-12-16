@@ -185,3 +185,7 @@ function sortFieldArrayBySequence($first, $second)
 function getLastDayOfMonth($month, $year) {
     return date('Y-m-d',strtotime('-1 second',strtotime('+1 month',strtotime($month.'/01/'.$year.' 00:00:00'))));
 }
+
+
+if(file_exists('custom/modules/KReports/utils.php'))
+    include('custom/modules/KReports/utils.php');

@@ -382,7 +382,7 @@ class KRESTModuleHandler
     function get_acl_actions($bean)
     {
         $aclArray = [];
-        $aclActions = ['list', 'detail', 'edit', 'delete'];
+        $aclActions = ['list', 'detail', 'edit', 'delete', 'export'];
         foreach ($aclActions as $aclAction) {
             $aclArray[$aclAction] = $bean->ACLAccess($aclAction);
         }
@@ -585,11 +585,11 @@ class KRESTModuleHandler
         global $sugar_flavor, $dictionary;
 
         if ($this->spiceFavoritesClass === null) {
-            if ($sugar_flavor === 'PRO') {
+            if ($sugar_flavor === 'PRO' && file_exists('include/SpiceFavorites/SpiceFavoritesSugarFavoritesWrapper.php')) {
                 require_once 'include/SpiceFavorites/SpiceFavoritesSugarFavoritesWrapper.php';
                 $this->spiceFavoritesClass = 'SpiceFavoritesSugarFavoritesWrapper';
             } else {
-                if ($dictionary['spicefavorites']) {
+                if ($dictionary['spicefavorites'] && file_exists('include/SpiceFavorites/SpiceFavorites.php')) {
                     require_once 'include/SpiceFavorites/SpiceFavorites.php';
                     $this->spiceFavoritesClass = 'SpiceFavorites';
                 }
@@ -612,14 +612,18 @@ class KRESTModuleHandler
     function set_favorite($beanModule, $beanId)
     {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
-        $spiceFavoriteClass::set_favorite($beanModule, $beanId);
+        if($spiceFavoriteClass)
+            $spiceFavoriteClass::set_favorite($beanModule, $beanId);
     }
 
     public
     function delete_favorite($beanModule, $beanId)
     {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
-        $spiceFavoriteClass::delete_favorite($beanModule, $beanId);
+        if ($spiceFavoriteClass)
+            $spiceFavoriteClass::delete_favorite($beanModule, $beanId);
+        else
+            return false;
     }
 
     private

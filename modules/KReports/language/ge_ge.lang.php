@@ -36,6 +36,7 @@ $mod_strings = array(
     'LBL_ASSIGNED_TO_ID' => 'Zugewiesene User-ID',
     'LBL_ASSIGNED_TO_NAME' => 'Zugewiesen an',
     'LBL_SAVE_BUTTON_LABEL' => 'Speichern',
+    'LBL_SAVE_LAYOUT_BUTTON_LABEL' => 'Layout speichern',
     'LBL_CANCEL_BUTTON_LABEL' => 'Abbrechen',
     'LBL_REPORT_NAME_LABEL' => 'Report Name: ',
     'LBL_LOADMASK' => '... Daten werden geladen ...',

@@ -1,5 +1,5 @@
 <?php
-if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -37,15 +37,17 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 require_once('include/EditView/SugarVCR.php');
+
 /**
  * Data set for ListView
  * @api
  */
-class ListViewData {
+class ListViewData
+{
 
-	var $additionalDetails = true;
+    var $additionalDetails = true;
     var $listviewName = null;
-	var $additionalDetailsAllow = null;
+    var $additionalDetailsAllow = null;
     var $additionalDetailsAjax = true; // leave this true when using filter fields
     var $additionalDetailsFieldToAdd = 'NAME'; // where the span will be attached to
     var $base_url = null;
@@ -55,15 +57,16 @@ class ListViewData {
      */
     var $count_query = '';
 
-	/**
-	 * Constructor sets the limitName to look up the limit in $sugar_config
-	 *
-	 * @return ListViewData
-	 */
-	function ListViewData() {
-		$this->limitName = 'list_max_entries_per_page';
-		$this->db = &DBManagerFactory::getInstance('listviews');
-	}
+    /**
+     * Constructor sets the limitName to look up the limit in $sugar_config
+     *
+     * @return ListViewData
+     */
+    function ListViewData()
+    {
+        $this->limitName = 'list_max_entries_per_page';
+        $this->db = &DBManagerFactory::getInstance('listviews');
+    }
 
     /**
      * takes in a seed and creates the list view query based off of that seed
@@ -106,6 +109,9 @@ class ListViewData {
         global $current_user;
         SugarVCR::erase($seed->module_dir);
         $this->seed =& $seed;
+
+        $pageData = array();
+
         $totalCounted = empty($GLOBALS['sugar_config']['disable_count_query']);
         $_SESSION['MAILMERGE_MODULE_FROM_LISTVIEW'] = $seed->module_dir;
         if (empty($_REQUEST['action']) || $_REQUEST['action'] != 'Popup') {
@@ -116,104 +122,133 @@ class ListViewData {
 
         $this->seed->id = '[SELECT_ID_LIST]';
 
-        // if $params tell us to override all ordering
-        if (!empty($params['overrideOrder']) && !empty($params['orderBy'])) {
-            $order = $this->getOrderBy(strtolower($params['orderBy']), (empty($params['sortOrder']) ? '' : $params['sortOrder'])); // retreive from $_REQUEST
-        } else {
-            $order = $this->getOrderBy(); // retreive from $_REQUEST
-        }
+        if ($params['fts']) {
+            if(!isset($params['fts_rows'])){
+                require_once ('include/SpiceFTSManager/SpiceFTShandler.php');
+                $ftsHandler = new SpiceFTSHandler();
+                $params = array_merge($params, $ftsHandler->getRawSearchResultsForListView($seed->module_name));
+                if($params['fts_aggregates'])
+                    $pageData['aggregates'] = $params['fts_aggregates'];
+            }
+            $id_list = '';
+            $rows = array(); $count = 0;
+            foreach($params['fts_rows'] as $row){
+                $id_list .= ',\'' . $row['id'] . '\'';
+                $idIndex[$row['id']][] = count($rows);
+                $rows[] = $row;
+                $count++;
+            }
 
-        // still empty? try to use settings passed in $param
-        if (empty($order['orderBy']) && !empty($params['orderBy'])) {
-            $order['orderBy'] = $params['orderBy'];
-            $order['sortOrder'] = (empty($params['sortOrder']) ? '' : $params['sortOrder']);
-        }
-
-        //rrs - bug: 21788. Do not use Order by stmts with fields that are not in the query.
-        // Bug 22740 - Tweak this check to strip off the table name off the order by parameter.
-        // Samir Gandhi : Do not remove the report_cache.date_modified condition as the report list view is broken
-        $orderby = $order['orderBy'];
-        if (strpos($order['orderBy'], '.') && ($order['orderBy'] != "report_cache.date_modified")) {
-            $orderby = substr($order['orderBy'], strpos($order['orderBy'], '.') + 1);
-        }
-        if ($orderby != 'date_entered' && !in_array($orderby, array_keys($filter_fields))) {
-            $order['orderBy'] = '';
-            $order['sortOrder'] = '';
-        }
-
-        if (empty($order['orderBy'])) {
-            $orderBy = '';
-        } else {
-            $orderBy = $order['orderBy'] . ' ' . $order['sortOrder'];
-            //wdong, Bug 25476, fix the sorting problem of Oracle.
-            if (isset($params['custom_order_by_override']['ori_code']) && $order['orderBy'] == $params['custom_order_by_override']['ori_code'])
-                $orderBy = $params['custom_order_by_override']['custom_code'] . ' ' . $order['sortOrder'];
-        }
-
-        if (empty($params['skipOrderSave'])) { // don't save preferences if told so
-            $current_user->setPreference('listviewOrder', $order, 0, $this->var_name); // save preference
-        }
-
-        // If $params tells us to override for the special last_name, first_name sorting
-        if (!empty($params['overrideLastNameOrder']) && $order['orderBy'] == 'last_name') {
-            $orderBy = 'last_name ' . $order['sortOrder'] . ', first_name ' . $order['sortOrder'];
-        }
-
-        $ret_array = $seed->create_new_list_query($orderBy, $where, $filter_fields, $params, 0, '', true, $seed, $singleSelect);
-        $ret_array['inner_join'] = '';
-        if (!empty($this->seed->listview_inner_join)) {
-            $ret_array['inner_join'] = ' ' . implode(' ', $this->seed->listview_inner_join) . ' ';
-        }
-
-        if (!is_array($params)) $params = array();
-        if (!isset($params['custom_select'])) $params['custom_select'] = '';
-        if (!isset($params['custom_from'])) $params['custom_from'] = '';
-        if (!isset($params['custom_where'])) $params['custom_where'] = '';
-        if (!isset($params['custom_order_by'])) $params['custom_order_by'] = '';
-        $main_query = $ret_array['select'] . $params['custom_select'] . $ret_array['from'] . $params['custom_from'] . $ret_array['inner_join'] . $ret_array['where'] . $params['custom_where'] . $ret_array['order_by'] . $params['custom_order_by'];
-        //C.L. - Fix for 23461
-        if (empty($_REQUEST['action']) || $_REQUEST['action'] != 'Popup') {
-            $_SESSION['export_where'] = $ret_array['where'];
-        }
-        if ($limit < -1) {
-            $result = $this->db->query($main_query);
-        } else {
             if ($limit == -1) {
                 $limit = $this->getLimit();
             }
-            $dyn_offset = $this->getOffset();
+            $dyn_offset = $params['fts_offset'];
             if ($dyn_offset > 0 || !is_int($dyn_offset)) $offset = $dyn_offset;
 
             if (strcmp($offset, 'end') == 0) {
-                $totalCount = $this->getTotalCount($main_query);
+                $totalCount = $params['fts_total'];
                 $offset = (floor(($totalCount - 1) / $limit)) * $limit;
             }
-            if ($this->seed->ACLAccess('ListView')) {
-                $result = $this->db->limitQuery($main_query, $offset, $limit + 1);
+
+        } else {
+            // if $params tell us to override all ordering
+            if (!empty($params['overrideOrder']) && !empty($params['orderBy'])) {
+                $order = $this->getOrderBy(strtolower($params['orderBy']), (empty($params['sortOrder']) ? '' : $params['sortOrder'])); // retreive from $_REQUEST
             } else {
-                $result = array();
+                $order = $this->getOrderBy(); // retreive from $_REQUEST
             }
 
-        }
-
-        $data = array();
-
-        $temp = clone $seed;
-
-        $rows = array();
-        $count = 0;
-        $idIndex = array();
-        $id_list = '';
-
-        while (($row = $this->db->fetchByAssoc($result)) != null) {
-            if ($count < $limit) {
-                $id_list .= ',\'' . $row[$id_field] . '\'';
-                $idIndex[$row[$id_field]][] = count($rows);
-                $rows[] = $seed->convertRow($row);
+            // still empty? try to use settings passed in $param
+            if (empty($order['orderBy']) && !empty($params['orderBy'])) {
+                $order['orderBy'] = $params['orderBy'];
+                $order['sortOrder'] = (empty($params['sortOrder']) ? '' : $params['sortOrder']);
             }
-            $count++;
-        }
 
+            //rrs - bug: 21788. Do not use Order by stmts with fields that are not in the query.
+            // Bug 22740 - Tweak this check to strip off the table name off the order by parameter.
+            // Samir Gandhi : Do not remove the report_cache.date_modified condition as the report list view is broken
+            $orderby = $order['orderBy'];
+            if (strpos($order['orderBy'], '.') && ($order['orderBy'] != "report_cache.date_modified")) {
+                $orderby = substr($order['orderBy'], strpos($order['orderBy'], '.') + 1);
+            }
+            if ($orderby != 'date_entered' && !in_array($orderby, array_keys($filter_fields))) {
+                $order['orderBy'] = '';
+                $order['sortOrder'] = '';
+            }
+
+            if (empty($order['orderBy'])) {
+                $orderBy = '';
+            } else {
+                $orderBy = $order['orderBy'] . ' ' . $order['sortOrder'];
+                //wdong, Bug 25476, fix the sorting problem of Oracle.
+                if (isset($params['custom_order_by_override']['ori_code']) && $order['orderBy'] == $params['custom_order_by_override']['ori_code'])
+                    $orderBy = $params['custom_order_by_override']['custom_code'] . ' ' . $order['sortOrder'];
+            }
+
+            if (empty($params['skipOrderSave'])) { // don't save preferences if told so
+                $current_user->setPreference('listviewOrder', $order, 0, $this->var_name); // save preference
+            }
+
+            // If $params tells us to override for the special last_name, first_name sorting
+            if (!empty($params['overrideLastNameOrder']) && $order['orderBy'] == 'last_name') {
+                $orderBy = 'last_name ' . $order['sortOrder'] . ', first_name ' . $order['sortOrder'];
+            }
+
+            $ret_array = $seed->create_new_list_query($orderBy, $where, $filter_fields, $params, 0, '', true, $seed, $singleSelect);
+            $ret_array['inner_join'] = '';
+            if (!empty($this->seed->listview_inner_join)) {
+                $ret_array['inner_join'] = ' ' . implode(' ', $this->seed->listview_inner_join) . ' ';
+            }
+
+            if (!is_array($params)) $params = array();
+            if (!isset($params['custom_select'])) $params['custom_select'] = '';
+            if (!isset($params['custom_from'])) $params['custom_from'] = '';
+            if (!isset($params['custom_where'])) $params['custom_where'] = '';
+            if (!isset($params['custom_order_by'])) $params['custom_order_by'] = '';
+            $main_query = $ret_array['select'] . $params['custom_select'] . $ret_array['from'] . $params['custom_from'] . $ret_array['inner_join'] . $ret_array['where'] . $params['custom_where'] . $ret_array['order_by'] . $params['custom_order_by'];
+            //C.L. - Fix for 23461
+            if (empty($_REQUEST['action']) || $_REQUEST['action'] != 'Popup') {
+                $_SESSION['export_where'] = $ret_array['where'];
+            }
+            if ($limit < -1) {
+                $result = $this->db->query($main_query);
+            } else {
+                if ($limit == -1) {
+                    $limit = $this->getLimit();
+                }
+                $dyn_offset = $this->getOffset();
+                if ($dyn_offset > 0 || !is_int($dyn_offset)) $offset = $dyn_offset;
+
+                if (strcmp($offset, 'end') == 0) {
+                    $totalCount = $this->getTotalCount($main_query);
+                    $offset = (floor(($totalCount - 1) / $limit)) * $limit;
+                }
+                if ($this->seed->ACLAccess('ListView')) {
+                    $result = $this->db->limitQuery($main_query, $offset, $limit + 1);
+                } else {
+                    $result = array();
+                }
+
+            }
+
+            $data = array();
+
+            $temp = clone $seed;
+
+            $rows = array();
+            $count = 0;
+            $idIndex = array();
+            $id_list = '';
+
+            while (($row = $this->db->fetchByAssoc($result)) != null) {
+                if ($count < $limit) {
+                    $id_list .= ',\'' . $row[$id_field] . '\'';
+                    $idIndex[$row[$id_field]][] = count($rows);
+                    $rows[] = $seed->convertRow($row);
+                }
+                $count++;
+            }
+        }
         if (!empty($id_list)) {
             $id_list = '(' . substr($id_list, 1) . ')';
         }
@@ -266,7 +301,7 @@ class ListViewData {
                 }
             }
 
-            $pageData = array();
+
 
             reset($rows);
             while ($row = current($rows)) {
@@ -327,6 +362,11 @@ class ListViewData {
         if ($count >= $limit && $totalCounted) {
             $totalCount = $this->getTotalCount($main_query);
         }
+
+        // add the total cpunt from the fts query
+        if(!empty($params['fts_total']))
+            $totalCount = $params['fts_total'];
+
         SugarVCR::recordIDs($this->seed->module_dir, array_keys($idIndex), $offset, $totalCount);
         $module_names = array(
             'Prospects' => 'Targets'
@@ -397,7 +437,7 @@ class ListViewData {
 
         $_SESSION[strtoupper($baseName) . "_FROM_LIST_VIEW"] = $timestamp;
         $_SESSION[strtoupper($baseName) . "_DETAIL_NAV_HISTORY"] = false;
-	}
+    }
 
     /**
      * checks the request for the order by and if that is not set then it checks the session for it
@@ -437,7 +477,7 @@ class ListViewData {
             }
         }
         return array('orderBy' => $orderBy, 'sortOrder' => $direction);
-	}
+    }
 
     /**
      * gets the limit of how many rows to show per page
@@ -447,7 +487,7 @@ class ListViewData {
     function getLimit()
     {
         return $GLOBALS['sugar_config'][$this->limitName];
-	}
+    }
 
     /**
      * returns the current offset
@@ -457,12 +497,13 @@ class ListViewData {
     function getOffset()
     {
         return (!empty($_REQUEST[$this->var_offset])) ? $_REQUEST[$this->var_offset] : 0;
-	}
+    }
 
-	function getTotalCount($main_query){
-		if(!empty($this->count_query)){
-		    $count_query = $this->count_query;
-		} else {
+    function getTotalCount($main_query)
+    {
+        if (!empty($this->count_query)) {
+            $count_query = $this->count_query;
+        } else {
             //BEGIN PHP7 COMPAT or SugarBug? Very strange thing here.
             //Anyway create_list_count_query is not static and needs a $this.
             //Encoutering problems with Dashlets loading, we check on $this->seed here and still use the original line if $this->seed is null
@@ -474,12 +515,12 @@ class ListViewData {
                 $count_query = $sugar_bean->create_list_count_query($main_query);
             }
             //END
-	    }
-		$result = $this->db->query($count_query);
-		if($row = $this->db->fetchByAssoc($result)){
-			return $row['c'];
-		}
-		return 0;
+        }
+        $result = $this->db->query($count_query);
+        if ($row = $this->db->fetchByAssoc($result)) {
+            return $row['c'];
+        }
+        return 0;
     }
 
     /**
@@ -553,8 +594,8 @@ class ListViewData {
      */
     function getReverseSortOrder($current_order)
     {
-        return (strcmp(strtolower($current_order), 'asc') == 0) ? 'DESC' :'ASC';
-	}
+        return (strcmp(strtolower($current_order), 'asc') == 0) ? 'DESC' : 'ASC';
+    }
 
     /**
      * generates queries for use by the display layer
@@ -576,28 +617,22 @@ class ListViewData {
         $queries['orderBy'] = $queries['baseURL'];
         $queries['orderBy'][$this->var_order_by] = '';
 
-        if($nextOffset > -1)
-        {
+        if ($nextOffset > -1) {
             $queries['nextPage'] = $queries['baseURL'];
             $queries['nextPage'][$this->var_offset] = $nextOffset;
         }
-        if($offset > 0)
-        {
+        if ($offset > 0) {
             $queries['startPage'] = $queries['baseURL'];
             $queries['startPage'][$this->var_offset] = 0;
         }
-        if($prevOffset > -1)
-        {
+        if ($prevOffset > -1) {
             $queries['prevPage'] = $queries['baseURL'];
             $queries['prevPage'][$this->var_offset] = $prevOffset;
         }
-        if($totalCounted)
-        {
+        if ($totalCounted) {
             $queries['endPage'] = $queries['baseURL'];
             $queries['endPage'][$this->var_offset] = $endOffset;
-        }
-        else
-        {
+        } else {
             $queries['endPage'] = $queries['baseURL'];
             $queries['endPage'][$this->var_offset] = 'end';
         }

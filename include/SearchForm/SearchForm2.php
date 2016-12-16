@@ -95,6 +95,11 @@ require_once('include/EditView/EditView2.php');
                             'key'    => $module . '|advanced_search',
                             'name'   => 'advanced',
                             'displayDiv'   => 'display:none'),
+                      array('title'  => $GLOBALS['app_strings']['LNK_FTS_SEARCH'],
+                            'link'   => $module . '|fts_search',
+                            'key'    => $module . '|fts_search',
+                            'name'   => 'fts',
+                            'displayDiv'   => 'display:none'),
                        );
         $this->searchColumns = array () ;
         $this->setOptions($options);
@@ -133,6 +138,14 @@ require_once('include/EditView/EditView2.php');
                                 'name'   => 'advanced',
                                 'displayDiv' => 'display:none');
         }
+
+        $this->nbTabs++;
+        $this->tabs[]=array('title'  => $GLOBALS['app_strings']['LNK_FTS_SEARCH'],
+            'link'   => $this->module . '|fts_search',
+            'key'    => $this->module . '|fts_search',
+            'name'   => 'fts',
+            'displayDiv' => 'display:none');
+
         if(isset($this->showCustom) && is_array($this->showCustom)){
             foreach($this->showCustom as $v){
                 $this->nbTabs++;
@@ -205,6 +218,13 @@ require_once('include/EditView/EditView2.php');
                         $this->th->ss->assign('DISPLAYSS', 'display:none');
                     }
                 }
+                if($viewName=='fts'){
+                    $this->tpl = 'SearchFormGenericFTS.tpl';
+                    if ($this->action =='ListView') {
+                        $this->th->ss->assign('DISPLAY_SEARCH_HELP', true);
+                    }
+                    $this->th->ss->assign('DISPLAY_SAVED_SEARCH', false);
+                }
             }else{
                 $this->tabs[$tabkey]['displayDiv']='display:none';
             }
@@ -230,6 +250,10 @@ require_once('include/EditView/EditView2.php');
         }
         $this->th->ss->assign('templateMeta', $this->searchdefs['templateMeta']);
         $this->th->ss->assign('HAS_ADVANCED_SEARCH', !empty($this->searchdefs['layout']['advanced_search']));
+
+        // spiceCRM Full text Search
+        $this->th->ss->assign('HAS_FULLTEXT_SEARCH', SpiceFTSHandler::checkModule($this->module));
+
         $this->th->ss->assign('displayType', $this->displayType);
         // return the form of the shown tab only
         if($this->showSavedSearchesOptions){

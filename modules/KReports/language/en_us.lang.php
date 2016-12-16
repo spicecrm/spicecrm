@@ -19,6 +19,7 @@ $mod_strings = array(
     'LBL_CANCEL_BUTTON_LABEL' => 'Cancel',
     'LBL_REMOVE_BUTTON_LABEL' => 'Remove',
     'LBL_REPORT_NAME_LABEL' => 'Name',
+    'LBL_SAVE_LAYOUT_BUTTON_LABEL' => 'Save Layout',
     'LBL_LOADMASK' => '... loading data ...',
     'LBL_SAVEMASK' => '... saving ...',
     'LBL_ERROR' => 'Error',
@@ -100,13 +101,17 @@ $mod_strings = array(
     'LBL_GROUPEDVIEW' => 'Grouped View',
     'LBL_STANDARDVIEW' => 'Standard View',
     'LBL_EDITPLUGIN' => 'Edit View (beta)',
-
+    
     'LBL_GOOGLECHARTS' => 'Google Charts',
     'LBL_FUSIONCHARTS' => 'Fusion Charts',
     'LBL_HIGHCHARTS' => 'High Charts',
     'LBL_GOOGLEMAPS' => 'Google Maps',
     'LBL_GOOGLEGEO' => 'Google Geo',
     'LBL_SUGARCHARTS' => 'Sugar Charts',
+    'LBL_AMCHARTS' => 'Am Charts',
+    'LBL_AMMAP' => 'Am Maps',
+    'LBL_AMMAP_TYPE_AREA' => 'World Map color countries',
+    'LBL_AMMAP_TYPE_BUBBLES' => 'World Map with Bubbles',
 
     'LBL_GEOOPTIONS_TITLE' => 'Title',
     'LBL_GEOOPTIONS_REGION' => 'Display Region',
@@ -115,6 +120,8 @@ $mod_strings = array(
     'LBL_GEOOPTIONS_PROVINCES' => 'Provinces',
     'LBL_GEOOPTIONS_METROS' => 'Metros',
 
+    'LBL_ANMAPOPTIONS_COLORSTEPS' => 'Number of color steps',
+    
     'LBL_PUBLISH_CNTENTRIES' => 'number of entries displayed',
 
     'LBL_PDF_CHARTSONSEPARATEPAGE' => 'Charts on separate Page',
@@ -617,7 +624,7 @@ $mod_strings = array(
     'LBL_CHARTOPTIONS_YELLOW' => 'Yellow from/to',
     'LBL_CHARTOPTIONS_RED' => 'Red from/to',
     'LBL_CHARTOPTIONS_LEGEND' => 'display Legend',
-    'LBL_CHARTOPTIONS_EMTPY' => 'empty Values',
+    'LBL_CHARTOPTIONS_EMTPY' => 'show empty Values',
     'LBL_CHARTOPTIONS_NOVLABLES' => 'hide V-Axis Labels',
     'LBL_CHARTOPTIONS_NOHLABLES' => 'hide H-Axis Labels',
     'LBL_CHARTOPTIONS_LOGV' => 'logarithmic V Scale',
@@ -828,7 +835,8 @@ $mod_strings = array(
     'LBL_KSNAPSHOTS' => 'Snapshots',
     'LBL_KSNAPSHOT' => 'Snapshot',
     'LBL_TAKING_SNAPSHOT' => 'taking snapshot ... ',
-    'LBL_GROUPING' => 'Grouping'
+    'LBL_GROUPING' => 'Grouping',
+    'LBL_PICK_DATETIME' => 'choose Date/Time'
 
 );
 
@@ -1011,3 +1019,21 @@ $mod_strings['LBL_DLIST_KREPORT_MODULENAME'] = 'Module';
 $mod_strings['LBL_DLIST_WINDOW_ADDKREPORTS_TITLE'] = 'Add KReports';
 $mod_strings['LBL_DLIST_WINDOW_ADDUSERS_TITLE'] = 'Add Users';
 $mod_strings['LBL_DLIST_WINDOW_ADDCONTACTS_TITLE'] = 'Add Contacts';
+
+    //ksavedfilters
+$mod_strings['LBL_KSAVEDFILTERS'] = 'Saved Filters';
+$mod_strings['LBL_KSAVEDFILTERS_ID'] = 'Saved Filter ID';
+$mod_strings['LBL_KSAVEDFILTERS_NAME'] = 'Name';
+$mod_strings['LBL_KSAVEDFILTERS_ASSIGNED_USER_ID'] = 'Assigned User ID';
+$mod_strings['LBL_KSAVEDFILTERS_ASSIGNED_USER_NAME'] = 'Assigned user';
+$mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL'] = 'set for all users';
+$mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL_MARK'] = '(G)';
+$mod_strings['LBL_KSAVEDFILTERS_SELECTEDFILTERS'] = 'Filters';
+$mod_strings['LBL_KSAVEDFILTERS_SAVE_BTN'] = 'Save Filters';
+$mod_strings['LBL_KSAVEDFILTERS_DELETE_BTN'] = 'Delete';
+$mod_strings['LBL_KSAVESFILTERS_EMPTYTEXT'] = '-- select a filter --';
+$mod_strings['LBL_KSAVEDFILTERS_WINDOW_TITLE'] = 'Save Filter';
+$mod_strings['LBL_KSAVEDFILTERS_STATUS'] = 'Status';
+$mod_strings['LBL_KSAVEDFILTERS_CONTENT'] = 'Filter details';
+
+

@@ -36,9 +36,9 @@
 
 *}
 
-    {if strval($parentFieldArray.$col) == "1" || strval($parentFieldArray.$col) == "yes" || strval($parentFieldArray.$col) == "on"}
-{assign var="checked" value="CHECKED"}
+{if strval($parentFieldArray.$col) == "1" || strval($parentFieldArray.$col) == "yes" || strval($parentFieldArray.$col) == "on"}
+    {assign var="checked" value="CHECKED"}
 {else}
-{assign var="checked" value=""}
+    {assign var="checked" value=""}
 {/if}
-<input type="checkbox" class="checkbox" disabled="true" {$checked}>
+<img src="themes/SpiceTheme/images/checkbox_{if !$checked}un{/if}checked.png">

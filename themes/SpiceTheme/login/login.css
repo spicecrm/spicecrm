@@ -1,9 +1,3 @@
-.loginBoxShadow{
-
-  -moz-box-shadow:    0 0 10px #485258;
-  -webkit-box-shadow: 0 0 10px #485258;
-   box-shadow:        0 0 10px #485258;
-}
 div#content{
     margin-left: 0px!important;
 }
@@ -37,12 +31,24 @@ div#content{
 }
 
 .login input[type="text"], .login input[type="password"]{
-	border: none;
-	border-bottom: 1px solid /*#e47b00*/ #b71c1c;
-	border-left: 1px solid /*#e47b00*/ #b71c1c;
-	margin-left: -2px;
-	margin-bottom: 10px;
-	padding-left: 3px;
-	padding-bottom: 3px;
+	border: 1px dotted #999;
 	background: transparent;
+	padding: 5px;
+	margin: 5px 0px;
+	background-color: #fff !important;
+	border-radius: 2px;
+}
+
+.login input:focus[type="text"], .login input:focus[type="password"]{
+	border-color: #b71c1c;
+	outline: none;
+}
+
+input:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0 1000px white inset !important;
+}
+
+#login_button, #generate_pwd_button {
+	float: right;
+	margin-right: -2px;
 }

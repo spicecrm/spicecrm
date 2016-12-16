@@ -59,7 +59,7 @@ var LBL_HIDEOPTIONS = '{sugar_translate module="Users" label="LBL_HIDEOPTIONS"}'
 					<td align="center">
 						<div class="login">
                             {if $REWRITE}
-							<form action="index.php" method="post" name="DetailView" id="form" onsubmit="return document.getElementById('cant_login').value == ''">
+							<form autocomplete="off" action="index.php" method="post" name="DetailView" id="form" onsubmit="return document.getElementById('cant_login').value == ''">
 								<table cellpadding="0" cellspacing="2" border="0" align="center" width="100%">
 						    	<td scope="row" colspan="2">
 						    	    <span class="error" id="browser_warning" style="display:none">
@@ -68,6 +68,9 @@ var LBL_HIDEOPTIONS = '{sugar_translate module="Users" label="LBL_HIDEOPTIONS"}'
 						    	    <span class="error" id="ie_compatibility_mode_warning" style="display:none">
 						    	        {sugar_translate label="WARN_BROWSER_IE_COMPATIBILITY_MODE_WARNING"}
 						    	    </span>
+                                    {if $MAINTEN_ERROR !=''}
+                                        <span class="error">{$MAINTEN_ERROR}</span>
+                                    {/if}
 						    	</td>
 						    	{if $LOGIN_ERROR !=''}
 									<tr>
