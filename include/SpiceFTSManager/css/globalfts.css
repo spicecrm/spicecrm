@@ -1,0 +1,104 @@
+.globalftssearchtermcontainer{
+    background: #F6F6F6;
+    padding: 10px;
+    width: calc(100% - 230px);
+}
+
+.globalftssearchterm{
+    border: 1px dotted #999;
+    background: transparent;
+    padding: 5px;
+    margin: 5px 0px 5px 5px;
+}
+
+.globalftssearchterm:focus{
+    border-color: #b71c1c;
+    outline: none;
+    background-color: transparent;
+}
+
+.globalftscontainer{
+    position: relative;
+    height: calc(100vh - 110px);
+}
+
+.globalftssearchresults{
+    margin-top: 0px;
+    width: calc(100% - 210px);
+    height: calc(100% - 70px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.globalFTSMModulePanel{
+    width: 100%;
+}
+
+.globalFTSMModulePanelShowMore{
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.globalFTSMModulePanelHeader{
+    //background-color: #F6F6F6;
+    margin: 10px 0px 0px 0px;
+    padding: 10px;
+    border-bottom: 1px solid #b71c1c;
+    font-weight: bold;
+}
+
+.globalFTSMModulePanelFields{
+    background-color: #E5E5E5;
+    padding: 10px 10px;
+    display: flex;
+
+}
+
+.globalFTSMModulePanelFieldsItem{
+    display: inline;
+    font-weight: bold;
+}
+
+.globalFTSMModuleSearchRecord{
+    padding: 10px 10px;
+    border-bottom: 1px solid #E5E5E5;
+    display: flex;
+}
+
+.globalFTSMModulePanel .globalFTSMModuleSearchRecord:last-child{
+    border-bottom: none;
+}
+
+.globalFTSMModuleSearchRecordItem{
+    display: inline;
+    overflow: hidden;
+}
+
+.globalftssearchmodules{
+    // background-color: #aaa;
+    width: 200px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    border-left: 1px solid #E5E5E5;
+}
+
+.globalFTSMenuItem{
+    background-color: #F6F6F6;
+    width: calc(100% - 30px);
+    padding: 15px 10px;
+    font-weight: bold;
+    margin: 5px 0px 5px 10px;
+    cursor: pointer;
+}
+
+.globalFTSMenuItem.currentItem{
+    background-color: #b71c1c;
+    color: #fff;
+}
+
+.globalftssearchmodules .globalFTSMenuItem:first-child{
+    margin-top: 0px;
+}

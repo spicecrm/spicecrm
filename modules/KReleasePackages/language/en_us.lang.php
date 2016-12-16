@@ -1,0 +1,48 @@
+<?php
+
+if (!defined('sugarEntry') || !sugarEntry)
+    die('Not A Valid Entry Point');
+
+$mod_strings = array(
+    'LBL_MODULE_TITLE' => 'Published Pages',
+    'LBL_MODULE_NAME' => 'Published Pages',
+    'LBL_PUSER_NAME' => 'published from User',
+    'LBL_PAGE_INDEX' => 'page Index',
+    'LNK_KRELEASEPACKAGE_NEW' => 'New Package',
+    'LNK_KRELEASEPACKAGE_LIST' => 'List Packages',
+    'LBL_KRELEASEPACKAGES_MAIN' => 'Package Date',
+    'LBL_OUTPUT_PANEL' => 'PDF Output',
+    'LBL_SECURITY_PANEL' => 'assignment',
+    'LBL_ADMIN_PANEL' => 'Admin Data',
+    'LBL_SEARCH_FORM_TITLE' => 'Customer systems',
+    'LBL_USERS_SUBPANEL_TITLE' => 'assigned Users',
+    'LBL_ACLROLES_SUBPANEL_TITLE' => 'assigned Roles',
+    'LBL_BANKACCOUNTS_SUBPANEL_TITLE' => 'Bank Accounts',
+    'LBL_LIST_FORM_TITLE' => 'List Published Pages',
+    'LBL_LIST_DATE_MODIFIED' => 'Date modified',
+    'LBL_LIST_DATE_ENTERED' => 'Date entered',
+    'LBL_LIST_PUSER_NAME' => 'user Name', 
+    'LBL_RPSTATUS' => 'Status', 
+    'LBL_RPTYPE' => 'Type', 
+    'LBL_CHANGEREQUESTS' => 'Changerequests',
+    'LBL_RELEASE_DATE' => 'Release Date', 
+    'LBL_PRINT_BUTTON_LABEL' => 'Print', 
+    'LBL_RELEASE_VERSION' => 'Version',
+    'LBL_REQUIRED_RELEASE_REGEX' => 'Required Release Regex', 
+    'LBL_SET_VERSION' => 'Set Version', 
+    'LBL_CONFLICT_WITH' => 'Conflicts with',
+    'LBL_PACKAGE_LINK' => 'Package',
+    'LBL_SOURCE_RELEASE_DATE' => 'Release Date Source System',
+    'LBL_SOURCE_SYSTEM' => 'Source System',
+    'LBL_REPAIRS' => 'Repair actions',
+    'LBL_REPAIR_MODULES' => 'Repair modules',
+    'LNK_KDEPLOYMENTCR_MANAGER' => 'Change Request Manager',
+    'LNK_LANDSCAPEMANAGER' => 'Landscape Manager',
+    'LNK_DEPLOYMENTMANAGER' => 'Deployment Manager',
+    'LNK_KRELEASEPACKAGE_MANAGER' => 'Release Package Manager',
+    'LBL_SOFTWARE_NAME' => 'Software Name',
+    'LBL_SOFTWARE_HASH' => 'Software Hash',
+    'LBL_SOFTWARE_VERSION_MAJOR' => 'Software Version Major',
+    'LBL_SOFTWARE_VERSION_MINOR' => 'Software Version Minor',
+    'LBL_SOFTWARE_VERSION_RELEASE' => 'Software Version Release'
+);
