@@ -1,0 +1,4 @@
+<div class="globalFTSMenuItem" ng-class="[{currentItem: menuItem === globalFTSService.searchFiltermodule}]" ng-click="setSearchModule()">
+    {{globalFTSService.globalSearchModuleLabels[menuItem]}}
+    <span ng-if="globalFTSService.globalSearchResults[menuItem].total > 0">&nbsp;&nbsp;({{globalFTSService.globalSearchResults[menuItem].total}})</span>
+</div>

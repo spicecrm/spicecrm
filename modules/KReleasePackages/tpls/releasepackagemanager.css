@@ -1,0 +1,13 @@
+.treeview_highlighted_row{
+    filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=30);
+    opacity:0.3;
+}
+
+div[id^="ReleasePackageManager-"] div.x-form-date-trigger{
+    background: none !important;
+    background-image: none !important;
+}
+
+div[id^="ReleasePackageManager-"] div.x-column-header {
+    padding: 0px !important;
+}

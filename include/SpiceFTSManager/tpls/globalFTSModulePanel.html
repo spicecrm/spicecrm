@@ -1,0 +1,6 @@
+<div ng-show="globalFTSService.globalSearchResults[searchModule].hits.length > 0" class="globalFTSMModulePanel">
+    <div class="globalFTSMModulePanelHeader">{{searchModule}}<span ng-if="globalFTSService.globalSearchResults[searchModule].total > 0">&nbsp;-&nbsp;{{globalFTSService.globalSearchResults[searchModule].total}} records found</span></div>
+    <global-fts-module-panel-header search-module="searchModule"></global-fts-module-panel-header>
+    <global-fts-module-search-item ng-repeat="searchRecord in globalFTSService.globalSearchResults[searchModule].hits" search-module="searchModule" search-record="searchRecord"></global-fts-module-search-item>
+    <div class="globalFTSMModulePanelShowMore" ng-if="globalFTSService.globalSearchResults[searchModule].total > globalFTSService.globalSearchResults[searchModule].hits.length" ng-click="loadMore(searchModule)">show more</div>
+</div>

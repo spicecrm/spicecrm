@@ -1,0 +1,6 @@
+<div class="globalFTSMModuleSearchRecord">
+    <div ng-repeat="moduleField in globalFTSService.viewdefs[searchModule]" ng-style="getFieldStyle(moduleField)" class="globalFTSMModulePanelRecordItem">
+        <a ng-if="hasLink(moduleField, searchRecord)" href="index.php?module={{getLinkModule(moduleField,searchRecord)}}&record={{getLinkId(moduleField,searchRecord)}}&action=DetailView">{{getRecordValue(moduleField, searchRecord)}}</a>
+        <span ng-if="!hasLink(moduleField, searchRecord)">{{getRecordValue(moduleField, searchRecord)}}</span>
+    </div>
+</div>

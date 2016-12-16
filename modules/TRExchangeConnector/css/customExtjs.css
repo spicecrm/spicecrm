@@ -1,0 +1,15 @@
+/*
+Copyright notice
+
+(c) 2015 twentyreasons business solutions GmbH <office@twentyreasons.com>
+
+All rights reserved
+*/
+/* 
+    Created on : 28.02.2016, 22:11:00
+    Author     : thomaskerle
+*/
+.text-wrapper .x-form-display-field {
+   word-break: break-word;
+   word-wrap: break-word;
+}

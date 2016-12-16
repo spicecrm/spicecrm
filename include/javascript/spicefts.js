@@ -1,0 +1,12 @@
+/* * *******************************************************************************
+* This file is part of KReporter. KReporter is an enhancement developed
+* by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+*
+* This Version of the KReporter is licensed software and may only be used in
+* alignment with the License Agreement received with this Software.
+* This Software is copyrighted and may not be further distributed without
+* witten consent of aac services k.s.
+*
+* You can contact us at info@kreporter.org
+******************************************************************************* */
+if("undefined"==typeof SpiceCRM)var SpiceCRM={};SpiceCRM.fts={displayAggregates:!1,page:0,aggregates:[],isSearching:!1,clearSearch:function(){this.aggregates=[],$("#ftssearchterm").val(""),this.submitSearch()},submitSearch:function(){this.isSearching=!0,$("table .list").html("... loading ..."),$.post("KREST/fts/search/"+$("#search_form input[name=module]").val(),JSON.stringify({searchterm:$("#ftssearchterm").val(),module:$("#search_form input[name=module]").val(),aggregates:this.aggregates,page:this.page}),function(a,b,c){$("table .list").html(atob(a.result)),$("#ftsaggregates").html(atob(a.aggregates)),$("ul.clickMenu").each(function(a,b){$(b).sugarActionMenu()}),$(".selectActionsDisabled").children().each(function(a){$(this).attr("onclick","").unbind("click")});var d=$("#selectCountTop").attr("value");"undefined"!=typeof d&&"0"!=d&&sugarListView.prototype.toggleSelected(),SpiceCRM.fts.isSearching=!1})},setAggreggates:function(a){$("#ftsaggregates").html(atob(a))},handleKeyPress:function(a){if(13==a.keyCode)return this.page=0,SpiceCRM.fts.submitSearch(),!1},handleAggClick:function(a,b){if(!this.isSearching){a.currentTarget.setAttribute("src","themes/SpiceTheme/images/checkbox_indetermined.png");var c=this.aggregates.indexOf(b);c==-1?this.aggregates.push(b):this.aggregates.splice(c,1),this.page=0,this.submitSearch()}},getAggregates:function(){var a=[];return $(".aggitem").each(function(b,c){c.checked&&a.push(c.name)}),a},toggleAggregates:function(){this.displayAggregates?($("#ftsaggregates").hide(500),$("#ftsaggregatetoggleimage").attr("src","themes/SpiceTheme/images/downarrow.gif")):($("#ftsaggregates").show(500),$("#ftsaggregatetoggleimage").attr("src","themes/SpiceTheme/images/uparrow.gif")),this.displayAggregates=!this.displayAggregates},paginate:function(a){switch(a){case"first":this.page=0;break;case"prev":this.page--;break;case"next":this.page++;break;case"last":this.page="last"}this.submitSearch()}};
