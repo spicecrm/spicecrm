@@ -1059,14 +1059,43 @@ class TimeDate
      *
      * @param string $date
      * @return string Datetime in DB format
-     */
-    public function to_db($date)
+     */    
+    public function to_db($date, $fname)
     {
-        return $this->_convert($date,
+		// Code added to handle the second in time. By default second is not supported.
+		//Here below code added to support that.
+		
+		$date_ar = explode(' ', $date);
+		$form_date = $date_ar[0];
+		$form_time = $date_ar[1];
+		$time_length = strlen($form_time);
+		$rev = strrev($form_time);
+		
+		$time2 = $form_time;
+		$am_pm = '';
+		
+		if(($rev[0] == 'M') OR ($rev[0] == 'm')) {			
+			$new_time = $form_time;
+			$time2 = substr($new_time, 0, $time_length - 2);
+			$am_pm = substr($new_time, $time_length - 2); 
+		}
+		
+		$application_format = $this->get_date_time_format();
+		$application_format_ar = explode(' ', $application_format);
+		$time_format = $application_format_ar[1];
+		$separator = $time_format[1];
+		
+		$date = $form_date.' '.$time2.$separator.'00'.$am_pm;
+		//End of code to handle the second in time.
+		
+		return $this->_convert($date,
             $this->get_date_time_format(), $this->_getUserTZ(),
             $this->get_db_date_time_format(), self::$gmtTimezone,
-            true);
+            true, $fname);
     }
+    
+    
+    
 
     /**
      * Convert local datetime to DB date
