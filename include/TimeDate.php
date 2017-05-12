@@ -1060,7 +1060,7 @@ class TimeDate
      * @param string $date
      * @return string Datetime in DB format
      */    
-    public function to_db($date, $fname)
+    public function to_db($date, $fname = true)
     {
 		// Code added to handle the second in time. By default second is not supported.
 		//Here below code added to support that.
