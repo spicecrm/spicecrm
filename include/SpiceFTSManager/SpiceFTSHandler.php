@@ -188,6 +188,7 @@ class SpiceFTSHandler
 
         // check all related beans
         $relatedRecords = $this->elasticHandler->filter('related_ids', $bean->id);
+		if ($relatedRecords == null) return true;
         foreach ($relatedRecords['hits']['hits'] as $relatedRecord) {
             $relatedBean = BeanFactory::getBean($relatedRecord['_type'], $relatedRecord['_id']);
             $relBeanHandler = new SpiceFTSBeanHandler($relatedBean);
