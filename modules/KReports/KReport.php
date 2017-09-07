@@ -2107,8 +2107,8 @@ class KReportRenderer
 
     public static function kdatetimeRenderer($fieldid, $record)
     {
-        global $timedate;
-        return ($record[$fieldid] != '' ? $timedate->to_display_date_time($record[$fieldid]) : '');
+        global $timedate, $db;
+        return ($record[$fieldid] != '' ? $timedate->to_display_date_time($db->fromConvert($record[$fieldid], 'datetime')) : '');
     }
 
     public static function kdatetutcRenderer($fieldid, $record)
