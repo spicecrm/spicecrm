@@ -221,6 +221,8 @@ class ElasticHandler
     {
         global $db, $timedate;
 
-        $db->query("INSERT INTO sysftslog (id, date_created, request_method, request_url, response_status, index_request, index_response) values('" . create_guid() . "', '" . $timedate->nowDb() . "', '$method', '$url', '$status', '$request', '$response')");
+        if($db->query("SELECT 1 FROM sysftslog LIMIT 1")) { //check if table exists
+            $db->query("INSERT INTO sysftslog (id, date_created, request_method, request_url, response_status, index_request, index_response) values('" . create_guid() . "', '" . $timedate->nowDb() . "', '$method', '$url', '$status', '$request', '$response')");
+        }
     }
 }
