@@ -163,7 +163,6 @@ $mod_strings = array(
     'LBL_ERROR_NAME' => 'Bitte geben Sie einen Reportnamen ein!',
     'LBL_ASSIGNED_USER_LABEL' => 'Zugewiesener Benutzer: ',
     'LBL_ASSIGNED_TEAM_LABEL' => 'Team: ',
-    'LBL_ASSIGNED_SECURITYGROUP_LABEL' => 'Security Group',
     'LBL_KORGOBJECTS_LABEL' => 'Territory',
     'LBL_REPORT_OPTIONS' => 'Report Einstellungen',
     'LBL_DEFAULT_NAME' => 'Neuer Report',
@@ -533,6 +532,7 @@ $mod_strings = array(
     'LBL_VISUALIZATIONPLUGIN' => 'Typ',
     'LBL_VISUALIZATIONTOOLBAR_LAYOUT' => 'Layout',
     'LBL_VISUALIZATION_HEIGHT' => 'Höhe (px)',
+    'LBL_GOOGLECHARTS' => 'Google Charts',
     'LBL_CHARTFS_TYPE' => 'Diagramm Typ',
     'LBL_CHARTFS_DATA' => 'Diagramm Daten',
     'LBL_CHARTFS_SERIES' => 'Dataserien',
@@ -598,9 +598,7 @@ $mod_strings = array(
     'LBL_CHARTOPTIONS_CTFUNCTION' => 'geglättete Linien',
     'LBL_CHARTOPTIONS_POINTS' => 'Punkte anzeigen',
     'LBL_CHARTOPTIONS_MATERIAL' => 'material Design',
-    'LBL_CHARTOPTIONS_ALLOWOVERLAP' => 'Überlappen von Datenbeschriftungen erlauben',
-    'LBL_CHARTOPTIONS_COLORBYPOINT' => 'eine Farbe pro ',
-
+    'LBL_CHARTOPTIONS_ALLOWOVERLAP' => 'Überlappen von Datenbeschriftungen erlauben',    
     'LBL_CHARTTYPE_COLUMN2D' => 'Säulen 2D',
     'LBL_CHARTTYPE_COLUMN3D' => 'Säulen 3D',
     'LBL_CHARTTYPE_PIE2D' => 'Kuchen 2D',
@@ -777,23 +775,7 @@ $mod_strings = array(
     'LBL_KSNAPSHOTS' => 'Snapshots',
     'LBL_KSNAPSHOT' => 'Snapshot',
     'LBL_TAKING_SNAPSHOT' => 'taking snapshot ... ',
-
-    // the field renderer
-    'LBL_RENDERER_-' => '-',
-    'LBL_RENDERER_CURRENCY' => 'Währung',
-    'LBL_RENDERER_CURRENCYINT' => 'Währung gerundet',
-    'LBL_RENDERER_SCURRENCY' => 'System Währung',
-    'LBL_RENDERER_UCURRENCY' => 'User Währung',
-    'LBL_RENDERER_PERCENTAGE' => 'Prozent',
-    'LBL_RENDERER_NUMBER' => 'Zahl',
-    'LBL_RENDERER_INT' => 'Vollzahl',
-    'LBL_RENDERER_DATE' => 'Datum',
-    'LBL_RENDERER_DATETIME' => 'Datum Uhrzeit',
-    'LBL_RENDERER_DATETUTC' => 'Datum Uhrzeit (UTC)',
-    'LBL_RENDERER_FLOAT' => 'Dezimalzahl',
-    'LBL_RENDERER_BOOL' => 'Boolean',
-    'LBL_RENDERER_TEXT' => 'Text',
-    'LBL_RENDERER_NONE' => 'keine Formatierung',
+    
 );
 
     //Bucket Manager   
@@ -859,13 +841,3 @@ $mod_strings['LBL_KSAVESFILTERS_EMPTYTEXT'] = '-- Dyn. Selektion auswählen --';
 $mod_strings['LBL_KSAVEDFILTERS_WINDOW_TITLE'] = 'Dynamische Selektion speichern';
 $mod_strings['LBL_KSAVEDFILTERS_STATUS'] = 'Status';
 $mod_strings['LBL_KSAVEDFILTERS_CONTENT'] = 'Dynamische Selektion Details';
-
-    //kreportcategories
-$mod_strings['LNK_MANAGE_CATEGORIES'] = 'Kategorien verwalten';
-$mod_strings['LNK_REPORT_COCKPIT'] = 'KReporter Cockpit';
-$mod_strings['LBL_CATEGORIES_ID'] = 'Kategorie ID';
-$mod_strings['LBL_CATEGORIES_NAME'] = 'Kategorie';
-$mod_strings['LBL_CATEGORIES_IS_ADMIN_ONLY'] = 'Nur für Admins';
-$mod_strings['LBL_CATEGORIES_PRIORITY'] = 'Priorität';
-$mod_strings['LBL_ASSIGNED_CATEGORY_LABEL'] = 'Kategorie';
-$mod_strings['LBL_CATEGORIES_PRIORITY'] = 'Prio';
