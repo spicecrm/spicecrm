@@ -122,7 +122,8 @@ $viewdefs['Users']['EditView'] = array(
             array(
                 'description',
                 ''
-            )
+            ),
+            array('inbound_processing_allowed')
         )
     )
 );

@@ -371,10 +371,28 @@ class M2MRelationship extends SugarRelationship
             }
         }
 
+        if(!empty($params['sort'])){
+            if ($this->linkIsLHS($link)) {
+                $from .= " INNER JOIN " . $this->def['rhs_table'] . ' ON ' . $this->def['rhs_table'] . '.' . $this->def['rhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_rhs'];
+                $sort = ' ORDER BY ' . $this->def['rhs_table'] . '.' . $params['sort']['sortfield'] . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
+            } else {
+                $from .= " INNER JOIN " . $this->def['lhs_table'] . ' ON ' . $this->def['lhs_table'] . '.' . $this->def['lhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_lhs'];
+                $sort = ' ORDER BY ' . $this->def['lhs_table'] . '.' . $params['sort']['sortfield'] . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
+            }
+
+
+        }
+
+        $relFieldsSelect = '';
+        if(count($params['relationship_fields']) > 0){
+            foreach($params['relationship_fields'] as $fieldName => $fieldData)
+                $relFieldsSelect .= ', '. $rel_table . '.' . $fieldName;
+        }
+
         if (empty($params['return_as_array'])) {
             // 20reasons add the relid to the query
             // $query = "SELECT $targetKey id FROM $from WHERE $where AND $rel_table.deleted=$deleted";
-            $query = "SELECT $rel_table.id relid, $targetKey id FROM $from WHERE $where AND $rel_table.deleted=$deleted";
+            $query = "SELECT $rel_table.id relid, $targetKey id $relFieldsSelect FROM $from WHERE $where AND $rel_table.deleted=$deleted $sort";
             //Limit is not compatible with return_as_array
             if (!empty($params['limit']) && $params['limit'] > 0) {
                 $offset = isset($params['offset']) ? $params['offset'] : 0;
@@ -387,9 +405,10 @@ class M2MRelationship extends SugarRelationship
             return array(
                 // 20reasons add the relid to the query
                 //'select' => "SELECT $targetKey id",
-                'select' => "SELECT $rel_table.id relid, $targetKey id",
+                'select' => "SELECT $rel_table.id relid, $targetKey id $relFieldsSelect",
                 'from' => "FROM $from",
                 'where' => "WHERE $where AND $rel_table.deleted=$deleted",
+                'sort' => $sort
             );
         }
     }

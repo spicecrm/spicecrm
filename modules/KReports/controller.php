@@ -46,9 +46,15 @@ class KReportsController extends SugarController {
     
     function action_DListManagerView(){
         $this->view = 'dlistmanager';
-        
     }
-        
+
+    function action_CategoriesView(){
+        $this->view = 'categories';
+    }
+
+    function action_CockpitView(){
+        $this->view = 'cockpit';
+    }
     function action_check_access_level() {
 
         global $current_user;

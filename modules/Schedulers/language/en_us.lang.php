@@ -163,5 +163,6 @@ $mod_strings = array(
     'LBL_SENDEMAILREMINDERS' => 'Run Email Reminders Sending',
     'LBL_CLEANJOBQUEUE' => 'Cleanup Job Queue',
     'LBL_REMOVEDOCUMENTSFROMFS' => 'Removal of documents from filesystem',
-    'LBL_FULLTEXTINDEX' => 'Full Text Indexing'
+    'LBL_FULLTEXTINDEX' => 'Full Text Indexing',
+    'LBL_KDEPLOYMENTMWNOTIFICATION' => 'Maintenance Window notify Users'
 );

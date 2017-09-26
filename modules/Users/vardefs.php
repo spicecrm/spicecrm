@@ -492,7 +492,7 @@ $dictionary['User'] = array(
             'source' => 'non-db',
             'vname' => 'LBL_EMAIL_ADDRESSES',
             'reportable' => false,
-            'required' => true,
+            'required' => false,
         ),
         'email_addresses_primary' => array(
             'name' => 'email_addresses_primary',
@@ -501,7 +501,7 @@ $dictionary['User'] = array(
             'source' => 'non-db',
             'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
             'duplicate_merge' => 'disabled',
-            'required' => true,
+            'required' => false,
         ),
         /* Virtual email fields so they will display on the main user page */
         'email_link_type' => array(
@@ -636,7 +636,12 @@ $dictionary['User'] = array(
             'relationship' => 'users_userquotas',
             'source' => 'non-db',
             'vname' => 'LBL_USERQUOTAS',
-        )
+        ),
+        'inbound_processing_allowed' => array(
+            'name' => 'inbound_processing_allowed',
+            'vname' => 'LBL_INBOUND_PROCESSING_ALLOWED',
+            'type' => 'bool',
+        ),
     ),
     'indices' => array(
         array(

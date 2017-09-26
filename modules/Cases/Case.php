@@ -280,8 +280,8 @@ class aCase extends Basic {
 		return false;
 	}
 
-	function save($check_notify = FALSE){
-		return parent::save($check_notify);
+	function save($check_notify = FALSE, $fts_index_bean = TRUE){
+		return parent::save($check_notify, $fts_index_bean);
 	}
 
 	/**

@@ -329,7 +329,28 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
             'source' => 'non-db',
             'module' => 'Contacts',
             'bean_name' => 'Contact',
-            'rel_fields' => array('contact_role' => array('type' => 'enum', 'options' => 'opportunity_relationship_type_dom')),
+            'rel_fields' => array(
+                'contact_role' => array(
+                    'type' => 'enum',
+                    'options' => 'opportunity_relationship_type_dom',
+                    'map' => 'opportunity_role'
+                ),
+                'propensity_to_buy' => array(
+                    'type' => 'enum',
+                    'options' => 'opportunity_relationship_buying_center_dom',
+                    'map' => 'opportunity_propensity_to_buy'
+                ),
+                'level_of_support' => array(
+                    'type' => 'enum',
+                    'options' => 'opportunity_relationship_buying_center_dom',
+                    'map' => 'opportunity_level_of_support'
+                ),
+                'level_of_influence' => array(
+                    'type' => 'enum',
+                    'options' => 'opportunity_relationship_buying_center_dom',
+                    'map' => 'opportunity_level_of_influence'
+                )
+            ),
             'vname' => 'LBL_CONTACTS',
             'hide_history_contacts_emails' => true,
         ),

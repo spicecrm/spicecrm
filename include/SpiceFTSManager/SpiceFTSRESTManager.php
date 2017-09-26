@@ -15,8 +15,41 @@ class SpiceFTSRESTManager
         $this->spiceFTSHandler = new SpiceFTSHandler();
     }
 
+    public function checkAdmin()
+    {
+        global $current_user;
+
+        if(!$current_user->is_admin) {
+            http_response_code(401);
+            header('HTTP/1.0 401', true, 401);
+
+            header("Access-Control-Allow-Origin: *");
+            HttpResponse::send('admin access only');
+            exit;
+        }
+    }
+
+    function initialize()
+    {
+        global $db;
+
+        $this->checkAdmin();
+
+        $modules = $db->query("SELECT module FROM sysfts");
+        while($module = $db->fetchByAssoc($modules)){
+            $this->elasticHandler->deleteIndex($module['module']);
+            $this->elasticHandler->putMapping($module['module'], SpiceFTSBeanHandler::mapModule($module['module']));
+            $this->spiceFTSHandler->resetIndexModule($module['module']);
+        }
+
+        return array('status' => 'success');
+
+    }
+
     function getIndex()
     {
+        $this->checkAdmin();
+
         $checkIndex = json_decode($this->elasticHandler->getIndex(), true);
         if ($checkIndex['error']) {
             $this->elasticHandler->createIndex();
@@ -27,6 +60,8 @@ class SpiceFTSRESTManager
 
     function deleteIndex($module)
     {
+        $this->checkAdmin();
+
         $deleteIndex = json_decode($this->elasticHandler->deleteIndex($module), true);
         return $deleteIndex;
     }
@@ -34,6 +69,8 @@ class SpiceFTSRESTManager
     function getFTSFields($module)
     {
         global $db;
+
+        $this->checkAdmin();
 
         $seed = BeanFactory::getBean($module);
 
@@ -51,9 +88,23 @@ class SpiceFTSRESTManager
         return $ftsFields;
     }
 
+    function getAnalyzers()
+    {
+        $analyzers = array();
+
+        $this->checkAdmin();
+
+        foreach ($this->elasticHandler->standardSettings['analysis']['analyzer'] as $analyzer => $analyzerData)
+            $analyzers[] = array('value' => $analyzer, 'text' => $analyzer);
+
+        return $analyzers;
+    }
+
     function getFTSSettings($module)
     {
         global $db;
+
+        $this->checkAdmin();
 
         // check if we have a mapping
         $mapping = json_decode($this->elasticHandler->getMapping($module));
@@ -71,6 +122,8 @@ class SpiceFTSRESTManager
 
     function mapModule($module)
     {
+        $this->checkAdmin();
+
         $response = $this->elasticHandler->putMapping($module, SpiceFTSBeanHandler::mapModule($module));
     }
 
@@ -78,12 +131,24 @@ class SpiceFTSRESTManager
     {
         global $db;
 
+        $this->checkAdmin();
+
         $record = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
 
         if ($record) {
-            $db->query("UPDATE sysfts SET " . ($items["fields"] != '' ? " ftsfields = '" . json_encode($items["fields"]) : "") . ($items["settings"] != '' ? " index_priority='".$items["settings"]["index_priority"]."', settings='" . json_encode($items["settings"]) : "") . "' WHERE module = '$module'");
-        }
-        else
+
+            $setFields = [];
+            if ($items["fields"] != '') {
+                $setFields[] = "ftsfields = '" . json_encode($items["fields"]) . "'";
+            }
+            if ($items["settings"] != '') {
+                $setFields[] = "index_priority='" . $items["settings"]["index_priority"] . "'";
+                $setFields[] = "settings = '" . json_encode($items["settings"]) . "'";
+            }
+            if (count($setFields) > 0) {
+                $db->query("UPDATE sysfts SET " . implode(', ', $setFields) . " WHERE module = '$module'");
+            }
+        } else
             $db->query("INSERT INTO sysfts (module, ftsfields, settings) VALUES('$module', '" . json_encode($items['fields']) . "', '" . json_encode($items['settings']) . "')");
 
         return true;
@@ -91,6 +156,8 @@ class SpiceFTSRESTManager
 
     function getFields($nodeid)
     {
+        $this->checkAdmin();
+
         global $_REQUEST, $beanFiles, $beanList;
         $pathArray = explode('::', $nodeid);
         //print_r($pathArray);
@@ -143,6 +210,9 @@ class SpiceFTSRESTManager
 
     function getNodes($nodeid)
     {
+
+        $this->checkAdmin();
+
         // main processing
         global $beanFiles, $beanList;
 
@@ -184,6 +254,8 @@ class SpiceFTSRESTManager
 
     private function buildNodeArray($module, $thisLink = '')
     {
+
+
         global $beanFiles, $beanList;
         require_once('include/utils.php');
 
@@ -310,6 +382,8 @@ class SpiceFTSRESTManager
 
     private function buildFieldArray($module)
     {
+        $this->checkAdmin();
+
         global $beanFiles, $beanList;
         require_once('include/utils.php');
         $returnArray = array();

@@ -270,5 +270,7 @@ $mod_strings = array (
 	'LBL_ENTERDATE' => 'Enter Date' /*for 508 compliance fix*/,
 	'LBL_LOADING' => 'Loading' /*for 508 compliance fix*/,
 	'LBL_EDIT_INLINE' => 'Edit' /*for 508 compliance fix*/,
+
+    'LBL_ACCOUNT_LINKED_NAME' => 'linked Account',
+    'LBL_CONTACT_LINKED_NAME' => 'linked Contact',
 );
-?>

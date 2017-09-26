@@ -24,6 +24,7 @@ class SpiceFTSAggregates
                     'field' => $indexProperty['indexfieldname'] . '.raw',
                     'name' => $indexProperty['name'],
                     'type' => $indexProperty['aggregate'],
+                    'aggregatesize' => $indexProperty['aggregatesize'],
                     'metadata' => SpiceFTSUtils::getFieldIndexParams(null, $indexProperty['path'])
                 );
 
@@ -43,7 +44,7 @@ class SpiceFTSAggregates
     {
         $postFilter = array();
         foreach ($this->aggregatesFilters as $aggregatesFilter => $aggregatesFilterValues) {
-            $postFilter['and'][] = SpiceFTSFilters::buildFiltersFromAggregate($this->aggregateFields[$aggregatesFilter]['indexfieldname'], $aggregatesFilterValues);
+            $postFilter['bool']['must'][] = SpiceFTSFilters::buildFiltersFromAggregate($this->aggregateFields[$aggregatesFilter]['indexfieldname'], $aggregatesFilterValues);
         }
 
         return count($postFilter) > 0 ? $postFilter : false;
@@ -60,7 +61,7 @@ class SpiceFTSAggregates
 
             foreach ($this->aggregatesFilters as $aggregatesFilter => $aggregatesFilterValues) {
                 if ($aggregatesFilter != $aggregateIndexFieldData['indexfieldname'] && $aggregatesFilter != $aggregateField) {
-                    $aggFilters['and'][] = SpiceFTSFilters::buildFiltersFromAggregate($this->aggregateFields[$aggregatesFilter]['indexfieldname'], $aggregatesFilterValues);
+                    $aggFilters['bool']['must'][] = SpiceFTSFilters::buildFiltersFromAggregate($this->aggregateFields[$aggregatesFilter]['indexfieldname'], $aggregatesFilterValues);
                 }
             }
 
@@ -96,6 +97,7 @@ class SpiceFTSAggregates
                     break;
                 case 'term':
                     $aggParams = array('terms' => array(
+                        'size' => isset($aggregateIndexFieldData['aggregatesize']) ? $aggregateIndexFieldData['aggregatesize'] : 10,
                         'field' => $aggregateIndexFieldData['indexfieldname'] . '.raw'
                     ));
                     break;
@@ -158,13 +160,13 @@ class SpiceFTSAggregates
                         $fromDate = new DateTime($keyArr[1] . '-' . $keyArr[0] . '-01 00:00:00');
                         $aggItemData['from'] = $fromDate->format('Y-m-d') . ' 00:00:00';
                         $aggItemData['to'] = $fromDate->format('Y-m-t') . ' 23:59:59';
-                        $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = base64_encode(json_encode($aggItemData));
+                        $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = $this->getAggItemData($aggItemData);
                         break;
                     case 'datey':
                         $aggregations[$aggField]['buckets'][$aggItemIndex]['displayName'] = $aggItemData['key_as_string'];
                         $aggItemData['from'] = $aggItemData['key_as_string'] . '-01-01 00:00:00';
                         $aggItemData['to'] = $aggItemData['key_as_string'] . '-12-31 23:59:59';
-                        $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = base64_encode(json_encode($aggItemData));
+                        $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = $this->getAggItemData($aggItemData);
                         break;
                     case 'dateq':
                         $dateArray = explode('/', $aggItemData['key_as_string']);
@@ -188,17 +190,22 @@ class SpiceFTSAggregates
                                 $aggItemData['to'] = $dateArray[1] . '-12-31 23:59:59';
                                 break;
                         }
-                        $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = base64_encode(json_encode($aggItemData));
+                        $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = $this->getAggItemData($aggItemData);
                         break;
                     default:
                         switch ($this->aggregateFields[$aggField]['metadata']['type']) {
+                            case 'multienum':
                             case 'enum':
                                 $aggregations[$aggField]['buckets'][$aggItemIndex]['displayName'] = $appListStrings[$this->aggregateFields[$aggField]['metadata']['options']][$aggItemData['key']] ?: $aggItemData['key'];
-                                $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = base64_encode(json_encode($aggItemData));
+                                $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = $this->getAggItemData($aggItemData);
+                                break;
+                            case 'bool':
+                                $aggregations[$aggField]['buckets'][$aggItemIndex]['displayName'] = $appListStrings['dom_int_bool'][$aggItemData['key']];
+                                $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = $this->getAggItemData($aggItemData);
                                 break;
                             default:
                                 $aggregations[$aggField]['buckets'][$aggItemIndex]['displayName'] = $aggItemData['key'];
-                                $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = base64_encode(json_encode($aggItemData));
+                                $aggregations[$aggField]['buckets'][$aggItemIndex]['aggdata'] = $this->getAggItemData($aggItemData);
                                 break;
                         }
                         break;
@@ -212,5 +219,16 @@ class SpiceFTSAggregates
                 }
             }
         }
+    }
+
+    private function getAggItemData($aggItemData){
+        $aggData = array();
+
+        foreach($aggItemData as $key => $value){
+            if($key !== 'doc_count'){
+                $aggData[$key] = $value;
+            }
+        }
+        return base64_encode(json_encode($aggData));
     }
 }

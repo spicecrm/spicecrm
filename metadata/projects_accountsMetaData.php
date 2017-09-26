@@ -54,8 +54,8 @@ $dictionary['projects_accounts'] = array (
     ),
     'relationships' => array (
         'projects_accounts' => array(
-            'lhs_module' => 'Project',
-            'lhs_table' => 'project',
+            'lhs_module' => 'Projects',
+            'lhs_table' => 'projects',
             'lhs_key' => 'id',
             'rhs_module' => 'Accounts',
             'rhs_table' => 'accounts',

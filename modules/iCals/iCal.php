@@ -342,7 +342,7 @@ class iCal extends vCal {
         $today = gmdate("Y-m-d");
         $today = $timedate->handle_offset($today, $timedate->dbDayFormat, false);
 
-        require_once('modules/ProjectTask/ProjectTask.php');
+        require_once('modules/ProjectTasks/ProjectTask.php');
         $where = "project_task.assigned_user_id='{$user_bean->id}' ".
             "AND (project_task.status IS NULL OR (project_task.status!='Deferred')) ".
             "AND (project_task.date_start IS NULL OR " . CalendarActivity::get_occurs_within_where_clause('project_task', '', $start_date_time, $end_date_time, 'date_start', 'month') . ")";

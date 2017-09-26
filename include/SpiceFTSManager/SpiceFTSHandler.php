@@ -113,12 +113,12 @@ class SpiceFTSHandler
 
             $totalWidth = 0;
             foreach ($listViewDefs[$module['module']] as $fieldName => $fieldData) {
-                if ($fieldData['default']) {
+                if ($fieldData['default'] && $fieldData['globalsearch'] !== false) {
                     $viewDefs[$module['module']][] = array(
                         'name' => $fieldName,
                         'width' => str_replace('%', '', $fieldData['width']),
                         'label' => $modLang[$fieldData['label']] ?: $appLang[$fieldData['label']] ?: $fieldData['label'],
-                        'link' => ($fieldData['link'] && empty($fieldData['customCode']) ) ? true : false,
+                        'link' => ($fieldData['link'] && empty($fieldData['customCode'])) ? true : false,
                         'linkid' => $fieldData['id'],
                         'linkmodule' => $fieldData['module']
                     );
@@ -126,8 +126,8 @@ class SpiceFTSHandler
                 }
             }
 
-            if($totalWidth != 100){
-                foreach($viewDefs[$module['module']] as $fieldIndex => $fieldData)
+            if ($totalWidth != 100) {
+                foreach ($viewDefs[$module['module']] as $fieldIndex => $fieldData)
                     $viewDefs[$module['module']][$fieldIndex]['width'] = $viewDefs[$module['module']][$fieldIndex]['width'] * 100 / $totalWidth;
             }
         }
@@ -178,20 +178,40 @@ class SpiceFTSHandler
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($beanModule);
         if ($indexProperties) {
             $indexArray = $beanHandler->normalizeBean();
-            $this->elasticHandler->document_index($beanModule, $indexArray);
+            $indexResponse = $this->elasticHandler->document_index($beanModule, $indexArray);
 
-            // update the date
-            $bean->db->query("UPDATE " . $bean->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '" . $bean->id . "'");
-
+            // check if we had success
+            $indexResponse = json_decode($indexResponse);
+            if (!$indexResponse->error) {
+                // update the date
+                $bean->db->query("UPDATE " . $bean->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '" . $bean->id . "'");
+            }
 
         }
 
         // check all related beans
         $relatedRecords = $this->elasticHandler->filter('related_ids', $bean->id);
-        foreach ($relatedRecords['hits']['hits'] as $relatedRecord) {
-            $relatedBean = BeanFactory::getBean($relatedRecord['_type'], $relatedRecord['_id']);
-            $relBeanHandler = new SpiceFTSBeanHandler($relatedBean);
-            $this->elasticHandler->document_index($relatedRecord['_type'], $relBeanHandler->normalizeBean());
+        if(is_array($relatedRecords['hits']['hits'])) {
+            foreach ($relatedRecords['hits']['hits'] as $relatedRecord) {
+                $relatedBean = BeanFactory::getBean($relatedRecord['_type'], $relatedRecord['_id']);
+                if ($relatedBean) {
+                    $relBeanHandler = new SpiceFTSBeanHandler($relatedBean);
+                    $this->elasticHandler->document_index($relatedRecord['_type'], $relBeanHandler->normalizeBean());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    function deleteBean($bean)
+    {
+        global $beanList;
+
+        $beanModule = array_search(get_class($bean), $beanList);
+        $indexProperties = SpiceFTSUtils::getBeanIndexProperties($beanModule);
+        if ($indexProperties) {
+            $this->elasticHandler->document_delete($beanModule, $bean->id);
         }
 
         return true;
@@ -240,7 +260,7 @@ class SpiceFTSHandler
     /*
      * function to search in a module
      */
-    function searchModule($module, $searchterm = '', $aggregatesFilters = array(), $size = 25, $from = 0)
+    function searchModule($module, $searchterm = '', $aggregatesFilters = array(), $size = 25, $from = 0, $sort = array(), $addFilters = array())
     {
         global $current_user;
 
@@ -255,7 +275,10 @@ class SpiceFTSHandler
         // $aggregateFields = array();
         foreach ($indexProperties as $indexProperty) {
             if ($indexProperty['index'] == 'analyzed' && $indexProperty['search']) {
-                $searchFields[] = $indexProperty['indexfieldname'];
+                if ($indexProperty['boost'])
+                    $searchFields[] = $indexProperty['indexfieldname'] . '^' . $indexProperty['boost'];
+                else
+                    $searchFields[] = $indexProperty['indexfieldname'];
             }
         }
 
@@ -269,6 +292,10 @@ class SpiceFTSHandler
             'size' => $size,
             'from' => $from
         );
+
+        if ($sort['sortfield'] && $sort['sortdirection'])
+            $queryParam['sort'] = array(array($sort['sortfield'] . '.raw' => $sort['sortdirection']));
+
         if (!empty($searchterm)) {
             $queryParam['query'] = array(
                 "bool" => array(
@@ -285,13 +312,212 @@ class SpiceFTSHandler
             if ($indexSettings['minimum_should_match'])
                 $queryParam['query']['bool']['must']['multi_match']['minimum_should_match'] = $indexSettings['minimum_should_match'] . '%';
 
+            if ($indexSettings['fuzziness'])
+                $queryParam['query']['bool']['must']['multi_match']['fuzziness'] = $indexSettings['fuzziness'];
+
             if ($indexSettings['operator'])
                 $queryParam['query']['bool']['must']['multi_match']['operator'] = $indexSettings['operator'];
+
+            if ($indexSettings['multimatch_type'])
+                $queryParam['query']['bool']['must']['multi_match']['type'] = $indexSettings['multimatch_type'];
         }
 
         // check if we have an org management has array
         // add the org management info
-        if (!$current_user->is_admin && !empty($GLOBALS['KAuthAccessController']) && $GLOBALS['KAuthAccessController']->orgManaged($GLOBALS['beanList'][$module])) {
+        if (!$current_user->is_admin && !method_exists($GLOBALS['ACLController'], 'orgManaged') && !empty($GLOBALS['KAuthAccessController']) && $GLOBALS['KAuthAccessController']->orgManaged($GLOBALS['beanList'][$module])) {
+            $orgFilters = array();
+
+            $orgHashArrays = $GLOBALS['KAuthAccessController']->getFTSObjectHashArray($GLOBALS['beanList'][$module]);
+            if (count($orgHashArrays) > 0) {
+                foreach ($orgHashArrays as $orgHashArray) {
+                    $thisFilter = array();
+
+                    if ($orgHashArray['owner']) {
+                        $thisFilter[] = array(
+                            'term' => array(
+                                'assigned_user_id' => $current_user->id
+                            )
+                        );
+                    }
+
+                    // add Field Filters
+                    if ($orgHashArray['fields']) {
+                        foreach ($orgHashArray['fields'] as $fieldname => $fieldvalues) {
+                            switch ($fieldvalues['operator']) {
+                                default:
+                                    $thisFilter[] = array(
+                                        'term' => array(
+                                            $fieldname => $fieldvalues['value1']
+                                        )
+                                    );
+                                    break;
+                            }
+                        }
+                    }
+
+                    if (is_array($orgHashArray['hashArray']) && count($orgHashArray['hashArray']) > 0) {
+                        $thisFilter[] = array(
+                            'terms' => array(
+                                'korgobjecthash' => $orgHashArray['hashArray']
+                            )
+                        );
+                    }
+
+                    //only one filter
+                    if (count($thisFilter) == 1) {
+                        $orgFilters[] = $thisFilter[0];
+                    }
+
+                    // multiple filters combine them with an and
+                    if (count($thisFilter) > 1) {
+                        $orgFilters[] = array(
+                            'bool' => array(
+                                'must' => $thisFilter
+                            )
+                        );
+                    }
+                }
+            }
+
+            $userHashArray = $GLOBALS['KAuthAccessController']->getUserHashArray();
+            if (count($userHashArray) > 0) {
+                $orgFilters[] = array(
+                    'terms' => array(
+                        'korguserhash' => $userHashArray
+                    )
+                );
+            }
+
+            if (count($orgFilters) > 0) {
+                $queryParam['query']['bool']['filter']['bool']['should'] = $orgFilters;
+                $queryParam['query']['bool']['filter']['bool']['minimum_should_match'] = 1;
+            } else {
+                // seems the user has no privileges
+                return false;
+            }
+        } else if (!$current_user->is_admin && $GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'getFTSQuery')) {
+            if (method_exists($GLOBALS['ACLController'], 'getFTSQuery')) {
+                $orgFilters = $GLOBALS['ACLController']->getFTSQuery($module);
+                if ($orgFilters === false)
+                    return false;
+                else {
+                    if (count($orgFilters) > 0) {
+                        $queryParam['query']['bool']['filter']['bool']['should'] = $orgFilters;
+                        $queryParam['query']['bool']['filter']['bool']['minimum_should_match'] = 1;
+                    }
+                }
+            }
+        }
+
+        // process additional filters
+        if (is_array($addFilters) && count($addFilters) > 0) {
+            $currentFilters = $queryParam['query']['bool']['filter'];
+            if (is_array($currentFilters)) {
+
+            } else {
+                $queryParam['query']['bool']['filter']['bool']['must'] = $addFilters;
+            }
+        }
+
+        //add aggregates filters
+        $postFiler = $aggregates->buildQueryFilterFromAggregates();
+        if ($postFiler !== false)
+            $queryParam['post_filter'] = $postFiler;
+
+        $aggs = $aggregates->buildAggregates();
+        if ($aggs !== false)
+            $queryParam{'aggs'} = $aggs;
+
+        // make the search
+        $GLOBALS['log']->debug(json_encode($queryParam));
+        $searchresults = $this->elasticHandler->searchModule($module, $queryParam, $size, $from);
+
+        $aggregates->processAggregations($searchresults['aggregations']);
+
+        /* not required .. han dled on frontend
+        foreach ($searchresults['hits']['hits'] as $srIndex => $srData) {
+            foreach ($indexProperties as $indexProperty) {
+                switch ($indexProperty['metadata']['type']) {
+                    case 'enum':
+                        // $searchresults['hits']['hits'][$srIndex]['_source'][$indexProperty['fieldname']] = $appListStrings[$indexProperty['metadata']['options']][$srData['_source'][$indexProperty['fieldname']]];
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        */
+
+        return $searchresults;
+
+    }
+
+    /*
+     * function to search in a module
+     */
+    function checkDuplicates($bean)
+    {
+        global $current_user, $beanList;
+
+        $reservedWords = ['inc', 'gmbh', 'ltd', 'co', 'ag'];
+
+        $module = array_search(get_class($bean), $beanList);
+
+        // get the app list strings for the enum processing
+        $appListStrings = return_app_list_strings_language($GLOBALS['current_language']);
+
+        $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);
+        $indexSettings = SpiceFTSUtils::getBeanIndexSettings($module);
+
+        $searchFields = array();
+
+        $searchParts = array();
+        foreach ($indexProperties as $indexProperty) {
+            if ($indexProperty['index'] == 'analyzed' && $indexProperty['duplicatecheck']) {
+                $indexField = $indexProperty['indexfieldname'];
+                if (empty($bean->$indexField)) {
+                    return [];
+                } else {
+
+                    $queryField = $bean->$indexField;
+                    foreach ($reservedWords as $reservedWord) {
+                        $queryField = preg_replace('/\b(' . $reservedWord . ')\b/i', '', $queryField);
+                    }
+
+                    $searchParts[] = array(
+                        "multi_match" => array(
+                            "query" => $queryField,
+                            'fields' => [$indexProperty['indexfieldname']],
+                            'fuzziness' => $indexProperty['duplicatefuzz'] ?: 0
+                        )
+                    );
+                }
+            }
+        }
+
+        if (count($searchParts) == 0)
+            return [];
+
+
+        $queryParam['query'] = array(
+            "bool" => array(
+                "must" => $searchParts
+            )
+        );
+
+        if ($bean->id) {
+            $queryParam['query']['bool']['must_not'] = array(
+                'term' => array(
+                    'id' => $bean->id
+                )
+            );
+        }
+
+        // check if we have an org management has array
+        // add the org management info
+        if ((!$current_user->is_admin && !empty($GLOBALS['KAuthAccessController']) && $GLOBALS['KAuthAccessController']->orgManaged($GLOBALS['beanList'][$module]))
+
+        ) {
             $orgFilters = array();
 
             $orgHashArrays = $GLOBALS['KAuthAccessController']->getFTSObjectHashArray($GLOBALS['beanList'][$module]);
@@ -340,43 +566,36 @@ class SpiceFTSHandler
             }
 
             if (count($orgFilters) > 0) {
-                $queryParam['query']['bool']['filter']['or'] = $orgFilters;
+                //$queryParam['query']['bool']['filter']['or'] = $orgFilters;
+                $queryParam['query']['bool']['filter']['bool']['should'] = $orgFilters;
+                $queryParam['query']['bool']['filter']['bool']['minimum_should_match'] = 1;
             } else {
                 // seems the user has no privileges
                 return false;
             }
-        } else {
-
-        }
-
-        //add aggregates filters
-        $postFiler = $aggregates->buildQueryFilterFromAggregates();
-        if ($postFiler !== false)
-            $queryParam['post_filter'] = $postFiler;
-
-        $aggs = $aggregates->buildAggregates();
-        if ($aggs !== false)
-            $queryParam{'aggs'} = $aggs;
-
-        // make the search
-        $GLOBALS['log']->fatal(json_encode($queryParam));
-        $searchresults = $this->elasticHandler->searchModule($module, $queryParam, $size, $from);
-
-        $aggregates->processAggregations($searchresults['aggregations']);
-
-        foreach ($searchresults['hits']['hits'] as $srIndex => $srData) {
-            foreach ($indexProperties as $indexProperty) {
-                switch ($indexProperty['metadata']['type']) {
-                    case 'enum':
-                        $searchresults['hits']['hits'][$srIndex]['_source'][$indexProperty['fieldname']] = $appListStrings[$indexProperty['metadata']['options']][$srData['_source'][$indexProperty['fieldname']]];
-                        break;
-                    default:
-                        break;
+        } else if ($GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'orgManaged') && $GLOBALS['ACLController']->orgManaged(get_class($GLOBALS['beanList'][$module]))) {
+            if (method_exists($GLOBALS['ACLController'], 'getFTSQuery')) {
+                $orgFilters = $GLOBALS['ACLController']->getFTSQuery($module);
+                if ($orgFilters === false)
+                    return false;
+                else {
+                    // $queryParam['query']['bool']['filter']['or'] = $orgFilters;
+                    $queryParam['query']['bool']['filter']['bool']['should'] = $orgFilters;
+                    $queryParam['query']['bool']['filter']['bool']['minimum_should_match'] = 1;
                 }
             }
         }
 
-        return $searchresults;
+        // make the search
+        $GLOBALS['log']->debug(json_encode($queryParam));
+        $searchresults = $this->elasticHandler->searchModule($module, $queryParam, 100, 0);
+
+        $duplicateIds = array();
+        foreach ($searchresults['hits']['hits'] as $hit) {
+            $duplicateIds[] = $hit['_id'];
+        }
+
+        return $duplicateIds;
 
     }
 
@@ -407,14 +626,96 @@ class SpiceFTSHandler
         return $aggSmarty->fetch('include/SpiceFTSManager/tpls/aggregates.tpl');
     }
 
-    function getGlobalSearchResults($modules, $searchterm, $params){
-        $modArray = explode(',', $modules);
+    function getGlobalSearchResults($modules, $searchterm, $params, $aggregates = array(), $sort = array())
+    {
+        global $current_user;
+
+        if (empty($modules)) {
+            $modulesArray = $this->getGlobalSearchModules();
+            $modArray = $modulesArray['modules'];
+        } else {
+            $modArray = explode(',', $modules);
+        }
         $searchresults = array();
-        foreach($modArray as $module){
-            $searchresultsraw = $this->searchModule($module, $searchterm, array(), $params['records'] ?: 5, $params['start'] ?: 0);
-            $searchresults[$module] = $searchresultsraw['hits'];
+
+        foreach ($modArray as $module) {
+
+            if (!ACLController::checkAccess($module, 'list', true))
+                continue;
+
+            // prepare the aggregates
+            $aggregatesFilters = array();
+            foreach ($aggregates[$module] as $aggregate) {
+                $aggregateDetails = explode('::', $aggregate);
+                $aggregatesFilters[$aggregateDetails[0]][] = $aggregateDetails[1];
+            }
+
+            // check if we have an owner set as parameter
+            $addFilters = array();
+            if ($params['owner'] === 'true') {
+                $addFilters[] = array(
+                    'term' => array(
+                        'assigned_user_id' => $current_user->id
+                    )
+                );
+            }
+
+            $searchresultsraw = $this->searchModule($module, $searchterm, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters);
+            $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => 0];
+
+            foreach ($searchresults[$module]['hits'] as &$hit) {
+                $seed = BeanFactory::getBean($module, $hit['_id']);
+                $hit['acl'] = $this->get_acl_actions($seed);
+                $hit['acl_fieldcontrol'] = $this->get_acl_fieldaccess($seed);
+            }
+
+            // add the aggregations
+            $searchresults[$module]['aggregations'] = $searchresultsraw['aggregations'];
         }
         return $searchresults;
+    }
+
+    private function get_acl_actions($bean)
+    {
+        $aclArray = [];
+        $aclActions = ['list', 'detail', 'edit', 'delete', 'export'];
+        foreach ($aclActions as $aclAction) {
+            if ($bean)
+                $aclArray[$aclAction] = $bean->ACLAccess($aclAction);
+            else
+                $aclArray[$aclAction] = false;
+        }
+
+        return $aclArray;
+    }
+
+    private function get_acl_fieldaccess($bean)
+    {
+        global $current_user;
+
+        $aclArray = [];
+        if (!$current_user->is_admin && $GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'getFieldAccess')) {
+            $beanDataArray['acl_fieldcontrol']['edit'] = $GLOBALS['ACLController']->getFieldAccess($bean, 'edit', false);
+            $beanDataArray['acl_fieldcontrol']['display'] = $GLOBALS['ACLController']->getFieldAccess($bean, 'display', false);
+
+            // remove any field that is hidden
+            $controlArray = [];
+            foreach ($beanDataArray['acl_fieldcontrol']['display'] as $field => $fieldcontrol) {
+                if (!isset($controlArray[$field]) || (isset($controlArray[$field]) && $fieldcontrol > $controlArray[$field]))
+                    $aclArray[$field] = $fieldcontrol;
+            }
+            foreach ($beanDataArray['acl_fieldcontrol']['edit'] as $field => $fieldcontrol) {
+                if (!isset($controlArray[$field]) || (isset($controlArray[$field]) && $fieldcontrol > $controlArray[$field]))
+                    $aclArray[$field] = $fieldcontrol;
+            }
+
+            foreach ($controlArray as $field => $fieldcontrol) {
+                if ($fieldcontrol == 1)
+                    unset($beanDataArray[$field]);
+            }
+        }
+
+        return $aclArray;
     }
 
     function getSearchResults($module, $searchTerm, $page = 0, $aggregates)
@@ -434,6 +735,7 @@ class SpiceFTSHandler
         $vl->bean = $seed;
         $vl->module = $module;
         $GLOBALS['module'] = $module;
+        $GLOBALS['currentModule'] = $module;
         $vl->preDisplay();
         $vl->listViewPrepare();
 
@@ -450,9 +752,11 @@ class SpiceFTSHandler
         $rows = array();
         foreach ($searchresults['hits']['hits'] as $searchresult) {
             // todo: check why we need to decode here
+            /*
             foreach ($searchresult['_source'] as $fieldName => $fieldValue) {
                 $searchresult['_source'][$fieldName] = utf8_decode($fieldValue);
             }
+            */
 
             $rows[] = $seed->convertRow($searchresult['_source']);
         }
@@ -461,8 +765,8 @@ class SpiceFTSHandler
         ob_end_clean();
 
         return array(
-            'result' => base64_encode($vl->lv->display()),
-            'aggregates' => base64_encode($this->getArrgetgatesHTML($searchresults['aggregations']))
+            'result' => $vl->lv->display(),
+            'aggregates' => $this->getArrgetgatesHTML($searchresults['aggregations'])
         );
     }
 
@@ -475,12 +779,19 @@ class SpiceFTSHandler
         while ($bean = $db->fetchByAssoc($beans)) {
             echo "indexing " . $bean['module'];
             $seed = BeanFactory::getBean($bean['module']);
-            $indexBeans = $db->limitQuery("SELECT id FROM " . $seed->table_name . " WHERE (date_indexed IS NULL OR date_indexed = '' OR date_indexed < date_modified) AND deleted = 0", 0, $counter);
+
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (date_indexed IS NULL OR date_indexed = '' OR date_indexed < date_modified)", 0, $counter);
 
             while ($indexBean = $db->fetchByAssoc($indexBeans)) {
-                $seed->retrieve($indexBean['id']);
-                $this->indexBean($seed);
-                $beanCounter++;
+                if($indexBean['deleted'] == 0) {
+                    $seed->retrieve($indexBean['id']);
+                    $this->indexBean($seed);
+                    $beanCounter++;
+                } else {
+                    $seed->retrieve($indexBean['id'], true, false);
+                    $this->deleteBean($seed);
+                    $beanCounter++;
+                }
             }
 
             if ($beanCounter >= $counter)

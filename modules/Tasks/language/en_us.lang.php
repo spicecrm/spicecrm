@@ -117,6 +117,7 @@ $mod_strings = array (
   'LBL_EXPORT_PARENT_TYPE' => 'Related To Module',
   'LBL_EXPORT_PARENT_ID' => 'Related To ID',
   'LBL_RELATED_TO' => 'Related to:',
+    'LBL_PROJECTWBS_NAME' => 'WBS Element'
 );
 
 

@@ -54,7 +54,7 @@ $viewdefs['Users']['DetailView'] = array(
                       'customCode'=>'{$USER_TYPE_READONLY}',
                   ),
             ),
-            array('quota_carrying', ''),
+            array('quota_carrying', 'inbound_processing_allowed'),
         ),
         'LBL_EMPLOYEE_INFORMATION' => array(
             array('employee_status','show_on_employees'),

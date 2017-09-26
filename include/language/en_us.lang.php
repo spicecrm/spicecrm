@@ -70,8 +70,8 @@ $app_list_strings = array(
             'TaxRates' => 'Tax Rates',
             'ContractTypes' => 'Contract Types',
             'Schedulers' => 'Schedulers',
-            'Project' => 'Projects',
-            'ProjectTask' => 'Project Tasks',
+            'Projects' => 'Projects',
+            'ProjectTasks' => 'Project Tasks',
             'Campaigns' => 'Campaigns',
             'CampaignLog' => 'Campaign Log',
             'Documents' => 'Documents',
@@ -103,12 +103,30 @@ $app_list_strings = array(
             'SpiceFeed' => 'Spice Feed',
             'KBDocuments' => 'Knowledge Base',
             'SpiceFavorites' => 'Favorites',
-
+            'Dashboards' => 'Dashboards',
+            'DashboardComponents' => 'DashboardComponents',
             'OAuthKeys' => 'OAuth Consumer Keys',
             'OAuthTokens' => 'OAuth Tokens',
             'KReports' => 'Reports',
             'Proposals' => 'Proposals',
-            'CompetitorAssessments' => 'Competitor Assessments'
+            'CompetitorAssessments' => 'Competitor Assessments',
+            'EventRegistrations' => 'Event Registrations',
+// begin moved down to ensure compatibility with CE edition
+//            'Products' => 'Products',
+//            'ProductGroups' => 'Product Groups',
+//            'ProductVariants' => 'Product Variants',
+//            'ProductAttributes' => 'Product Attributes',
+//            'Questions' => 'Questions',
+//            'Questionnaires' => 'Questionnaires',
+//            'QuestionSets' => 'Question Sets',
+//            'QuestionAnswers' => 'Question Answers',
+//            'QuestionnaireParticipations' => 'Questionnaire Participations',
+//            'QuestionOptions' => 'Question Options',
+//            'QuestionOptionCategories' => 'Question Option Categories',
+//            'SalesDocs' => 'Sales Documents',
+//end
+            'CompanyCodes' => 'Company',
+            'CompanyFiscalPeriods' => 'Fiscal Periods',
         ),
 
     'moduleListSingular' =>
@@ -132,8 +150,8 @@ $app_list_strings = array(
             'Feeds' => 'RSS',
             'iFrames' => 'My Sites',
             'TimePeriods' => 'Time Period',
-            'Project' => 'Project',
-            'ProjectTask' => 'Project Task',
+            'Projects' => 'Project',
+            'ProjectTasks' => 'Project Task',
             'Prospects' => 'Target',
             'Campaigns' => 'Campaign',
             'Documents' => 'Document',
@@ -143,7 +161,25 @@ $app_list_strings = array(
             'SpiceFavorites' => 'SpiceFavorites',
             'KReports' => 'KReport',
             'Proposals' => 'Proposal',
-            'CompetitorAssessments' => 'Competitor Assessment'
+            'CompetitorAssessments' => 'Competitor Assessment',
+            'EventRegistrations' => 'Event Registration',
+// begin moved down to ensure compatibility with CE edition
+//            'Products' => 'Product',
+//            'ProductGroups' => 'Product Group',
+//            'ProductVariants' => 'Product Variant',
+//            'ProductAttributes' => 'Product Attribute',
+//            'Questions' => 'QuestionOption',
+//            'Questionnaires' => 'Questionnaire',
+//            'QuestionSets' => 'Question Set',
+//            'QuestionAnswers' => 'Question Answer',
+//            'QuestionnaireParticipations' => 'Questionnaire Participation',
+//            'QuestionOptions' => 'Question Option',
+//            'QuestionOptionCategories' => 'Question Option Category',
+// end
+            'CompanyCodes' => 'Company',
+			'CompanyFiscalPeriods' => 'Fiscal Period',
+            'AccountBankAccount' => 'Bank Accounts'
+
         ),
 
     'checkbox_dom' => array(
@@ -284,11 +320,11 @@ $app_list_strings = array(
         'Closed Lost' => 'Closed Lost',
     ),
     'opportunity_relationship_buying_center_dom' => array(
-        '++' => '++',
-        '+' => '+',
-        'o' => 'o',
-        '-' => '-',
-        '--' => '--'
+        '++' => 'very positive',
+        '+' => 'positive',
+        'o' => 'neutral',
+        '-' => 'negative',
+        '--' => 'very negative'
     ),
     'in_total_group_stages' => array(
         'Draft' => 'Draft',
@@ -325,16 +361,14 @@ $app_list_strings = array(
         'withdrawn' => 'withdrawn by Competitor',
         'rejected' => 'rejected by Customer'
     ),
-    'activity_dom' =>
-        array(
+    'activity_dom' =>        array(
             'Call' => 'Call',
             'Meeting' => 'Meeting',
             'Task' => 'Task',
             'Email' => 'Email',
             'Note' => 'Note',
         ),
-    'salutation_dom' =>
-        array(
+    'salutation_dom' =>        array(
             '' => '',
             'Mr.' => 'Mr.',
             'Ms.' => 'Ms.',
@@ -342,6 +376,46 @@ $app_list_strings = array(
             'Dr.' => 'Dr.',
             'Prof.' => 'Prof.',
         ),
+    'contacts_title_dom' => array(
+        '' => '',
+        'ceo' => 'CEO',
+        'cfo' => 'CFO',
+        'cto' => 'CTO',
+        'cio' => 'CIO',
+        'coo' => 'COO',
+        'cmo' => 'CMO',
+        'vp sales' => 'VP Sales',
+        'vp engineering' => 'VP Engineering',
+        'vp procurement' => 'VP Procurement',
+        'vp finance' => 'VP Finance',
+        'vp marketing' => 'VP Marketing',
+        'sales' => 'Sales',
+        'engineering' => 'Engineering',
+        'procurement' => 'Procurement',
+        'finance' => 'Finance',
+        'marketing' => 'Marketing'
+    ),
+    'personalinterests_dom' => array(
+        'sports' => 'Sports',
+        'food' => 'Food',
+        'wine' => 'Wine',
+        'culture' => 'Culture',
+        'travel' => 'Travel',
+        'books' => 'Books',
+        'animals' => 'Animals',
+        'clothing' => 'Clothing',
+        'cooking' => 'Cooking',
+        'fashion' => 'Fashion',
+        'music' => 'Music',
+        'fitness' => 'Fitness'
+    ),
+    'questionstypes_dom' => array(
+        'rating' => 'Rating',
+        'binary' => 'Binary Choice',
+        'single' => 'Single Choice',
+        'multi' => 'Multiple Choice',
+        'text' => 'Text Input',
+    ),
     //time is in seconds; the greater the time the longer it takes;
     'reminder_max_time' => 90000,
     'reminder_time_options' => array(60 => '1 minute prior',
@@ -438,6 +512,7 @@ $app_list_strings = array(
     'user_type_dom' =>
         array(
             'RegularUser' => 'Regular User',
+            'PortalUser' => 'Portal User',
             'Administrator' => 'Administrator',
         ),
     'user_status_dom' =>
@@ -513,10 +588,10 @@ $app_list_strings = array(
 
 
             'Bugs' => 'Bug',
-            'Project' => 'Project',
+            'Projects' => 'Project',
 
             'Prospects' => 'Target',
-            'ProjectTask' => 'Project Task',
+            'ProjectTasks' => 'Project Task',
 
 
             'Tasks' => 'Task',
@@ -533,8 +608,8 @@ $app_list_strings = array(
             'Emails' => 'Email',
 
             'Bugs' => 'Bug',
-            'Project' => 'Project',
-            'ProjectTask' => 'Project Task',
+            'Projects' => 'Project',
+            'ProjectTasks' => 'Project Task',
             'Prospects' => 'Target',
             'Cases' => 'Case',
             'Leads' => 'Lead',
@@ -555,8 +630,8 @@ $app_list_strings = array(
             'Cases' => 'Case',
             'Leads' => 'Lead',
 
-            'Project' => 'Project',
-            'ProjectTask' => 'Project Task',
+            'Projects' => 'Project',
+            'ProjectTasks' => 'Project Task',
 
             'Prospects' => 'Target',
 
@@ -689,6 +764,7 @@ $app_list_strings = array(
     'campaign_type_dom' =>
         array(
             '' => '',
+            'Event' => 'Event',
             'Telesales' => 'Telesales',
             'Mail' => 'Mail',
             'Email' => 'Email',
@@ -1145,6 +1221,26 @@ $app_list_strings = array(
             'move' => 'Move',
             'donothing' => 'Do Nothing'
         ),
+    'salesdoc_doctypes' => array(
+        'QT' => 'Quote'
+    ),
+    'salesdoc_uoms' => array(
+        'm2' => 'm²',
+        'PC' => 'PC'
+    ),
+    'salesdocs_paymentterms' => array(
+        '7DN' => '7 Days Net',
+        '14DN' => '14 Days Net',
+        '30DN' => '30 Days Net',
+        '30DN7D3' => '30 Days Net, 7 Days 3%',
+        '60DN' => '60 Days Net',
+        '60DN7D3' => '60 Days Net, 7 Days 3%',
+    ),
+    'mediatypes_dom' => array(
+        1 => 'Bild',
+        2 => 'Audio',
+        3 => 'Video'
+    )
 );
 
 $app_strings = array(
@@ -1913,10 +2009,13 @@ $app_strings = array(
     'LBL_SHIPPING_STREET' => 'Street:',
 
     'LBL_PRODUCT_BUNDLES' => 'Product Bundles',
-    'LBL_PRODUCT_BUNDLES' => 'Product Bundles',
     'LBL_PRODUCTS' => 'Products',
+    'LBL_PRODUCTGROUPS' => 'Product Groups',
+    'LBL_PRODUCTATTRIBUTES' => 'Product Attributes',
+    'LBL_PRODUCTATTRIBUTEVALUES' => 'Product Attribute Values',
+    'LBL_PRODUCTVARIANTS' => 'Product Variants',
+
     'LBL_PROJECT_TASKS' => 'Project Tasks',
-    'LBL_PROJECTS' => 'Projects',
     'LBL_PROJECTS' => 'Projects',
     'LBL_QUOTE_TO_OPPORTUNITY_KEY' => 'O',
     'LBL_QUOTE_TO_OPPORTUNITY_LABEL' => 'Create Opportunity from Quote',
@@ -2536,9 +2635,243 @@ $app_strings = array(
     'ERR_CONNECTOR_NOT_ARRAY' => 'connector array in {0} been defined incorrectly or is empty and could not be used.',
     'ERR_SUHOSIN' => 'Upload stream is blocked by Suhosin, please add &quot;upload&quot; to suhosin.executor.include.whitelist (See sugarcrm.log for more information)',
     'ERR_BAD_RESPONSE_FROM_SERVER' => 'Bad response from the server',
+
+    'LBL_FIELD' => 'Field',
+    'LBL_NOTAUTHORIZED' => 'not authorized',
+    'LBL_NEW' => 'New',
+    'LBL_SET' => 'Set',
+    'LBL_EDIT' => 'Edit',
+    'LBL_CANCEL' => 'Cancel',
+    'LBL_CLEAR' => 'Clear',
+    'LBL_SELECT' => 'Select',
+    'LBL_SEARCH' => 'Search',
+    'LBL_PREFERENCES' => 'Preferences',
+    'LBL_INSPICECRM' => 'in SpiceCRM',
+    'LBL_TOPRESULTS' => 'Top Results',
+    'LBL_SEARCHRESULTS' => 'Search Results',
+    'LBL_NEXT' => 'Next',
+    'LBL_MERGE' => 'Merge',
+    'LBL_PREVIOUS' => 'Previous',
+    'LBL_BACK' => 'Back',
+    'LBL_IMPORT' => 'Import',
+    'LBL_EXIT' => 'Finish',
+    'LBL_AUDITLOG' => 'Changes',
+    'LBL_CLEARALL' => 'Clear all',
+    'LBL_DISPLAYAS' => 'Display as',
+    'LBL_CLOSE' => 'Close',
+    'LBL_SAVE' => 'Save',
+    'LBL_DELETE' => 'Delete',
+    'LBL_OPTIONS' => 'Options',
+    'LBL_DELETE_RECORD' => 'Delete Record',
+    'MSG_DELETE_CONFIRM' => 'Are you sure you want to delete this Record?',
+    'LBL_DONE' => 'Done',
+    'LBL_REMOVE' => 'Remove',
+    'LBL_LISTVIEWSETTINGS' => 'List View Settings',
+    'LBL_ADDLIST' => 'Add New List',
+    'LBL_EDITLIST' => 'Edit List',
+    'LBL_DELETELIST' => 'Delete List',
+    'MSG_DELETELIST' => 'Are you sure you want to delete the current Listtype?',
+    'LBL_NEWLISTNAME' => 'List Name',
+    'LBL_GLOBALVISIBLE' => 'visible global',
+    'LBL_DISPLAY' => 'Display',
+    'LBL_ALL' => 'All',
+    'LBL_OWN' => 'My',
+    'LBL_SETFIELDS' => 'Set Display Fields',
+    'LBL_ADDFILTER' => 'Add Filter',
+    'LBL_REMOVEALL' => 'Remove All',
+    'LBL_RECENTLYVIEWED' => 'Recently Viewed',
+    'LBL_VIEWALL' => 'View All',
+    'LBL_KANBAN' => 'Kanban Board',
+    'LBL_TABLE' => 'Table View',
+
+    'LBL_LEADCONVERT_CREATEACCOUNT' => 'Create Account',
+    'LBL_LEADCONVERT_CREATECONTACT' => 'Create Contact',
+    'LBL_LEADCONVERT_CREATEOPPORTUNITY' => 'Create Opportunity',
+    'LBL_LEADCONVERT_CONVERTLEAD' => 'Convert Lead',
+
+    'MSG_NOAUDITRECORDS_FOUND' => 'No Change Log Records Found',
+    'LBL_LOGGED_CHANGES' => 'Logged Changes',
+    'LBL_SEARCH_SPICE' => 'Search SpiceCRM',
+    'LBL_APP_LAUNCHER' => 'App Launcher',
+    'LBL_FIND_CONFMODULE' => 'Find a configuration or module',
+    'LBL_ALL_CONFIGURATIONS' => 'All Configurations',
+    'LBL_ALL_MODULES' => 'All Modules',
+
+    'LBL_OF' => 'of',
+    'LBL_ITEMS' => 'items',
+    'LBL_SORTEDBY' => 'sorted by',
+    'LBL_LASTUPDATE' => 'last update',
+    'LBL_DUPLICATES' => 'Duplicates',
+    'LBL_ADDNOTE' => 'add Note',
+    'LBL_CREATENOTE' => 'create a new Note ...',
+
+    'LBL_LOGOFF' => 'Log Off',
+    'LBL_SELECT_LANGUAGE' => 'Select Language',
+    'LBL_DETAILS' => 'Details',
+    'LBL_CHANGE_PWD' => 'Change Password',
+    'LBL_CURRENT_PWD' => 'Current Password',
+    'LBL_NEW_PWD' => 'New Password',
+    'LBL_REPEAT_PWD' => 'Retype Password',
+
+    'LBL_ACTIVITIES' => 'Activities',
+    'LBL_QUICKNOTES' => 'Notes',
+    'LBL_ANALYTICS' => 'Analytics',
+    'LBL_RELATED' => 'Related',
+    'LBL_DETAIL' => 'Detail',
+    'LBL_MAP' => 'Map',
+    'LBL_FILES' => 'Attachments',
+    'LBL_TARGETS' => 'Targets',
+    'LBL_CAMPAIGNS' => 'Campaigns',
+    'LBL_TERRITORY' => 'Territory',
+
+    'LBL_BUYINGCENTER' => 'Buying Center',
+
+    'LBL_NEXT_STEPS' => 'Next Steps',
+    'LBL_PAST_ACTIVITIES' => 'Past Activities',
+    'LBL_SUMMARY' => 'Summary',
+    'LBL_ACTIVITY' => 'Activity',
+    'LBL_USER' => 'User',
+    'LBL_DATE' => 'Date',
+
+
+    'LBL_BEFOREVALUE' => 'value before',
+    'LBL_AFTERVALUE' => 'value after',
+
+    'LBL_REMINDER' => 'Reminder',
+    'LBL_BEANTOMAIL' => 'send it via Mail',
+    'LBL_TEMPLATE' => 'Email Template',
+    'LBL_SUBSIDIARIES' => 'Subsidiaries',
+
+    // List Filters
+    'LBL_EQUALS' => 'equals',
+    'LBL_STARTS' => 'starts with',
+    'LBL_CONTAINS' => 'contains',
+    'LBL_NCONTAINS' => 'does not contain',
+    'LBL_GREATER' => 'greater than',
+    'LBL_GEQUAL' => 'greater or equal than',
+    'LBL_SMALLER' => 'smaller than',
+    'LBL_SEQUAL' => 'smaller or equal than',
+    'LBL_ONEOF' => 'one of',
+    'LBL_PAST' => 'in the past',
+    'LBL_FUTURE' => 'in the future',
+    'LBL_THIS_MONTH' => 'this Month',
+    'LBL_THIS_QUARTER' => 'this Quarter',
+    'LBL_THIS_YEAR' => 'this Year',
+    'LBL_NEXT_MONTH' => 'next Month',
+    'LBL_NEXT_QUARTER' => 'next Quarter',
+    'LBL_NEXT_YEAR' => 'next Year',
+
+    'LBL_STRUCTURE' => 'Structure',
+    'LBL_ADMIN_TAB' => 'Administrative Data',
+    'LBL_DUPLICATES_FOUND' => 'Duplicates Found',
+
+    'LBL_ASSIGNED_TO_NAME' => 'Assigned to:',
+
+    /* Common */
+
+    'LBL_PREVIEW' => 'Preview',
+    'LBL_VALUE' => 'Value',
+    'LBL_TEXT' => 'Text',
+    'LBL_POINTS' => 'Points',
+    'LBL_UP' => 'Up',
+    'LBL_DOWN' => 'Down',
+    'LBL_SAVE_ORDER' => 'Save order',
+    'LBL_CHANGE_ORDER' => 'Change order',
+    'LBL_NUMBER_OF_ENTRIES' => 'Number of entries',
+    'LBL_POSITION' => 'Position',
+    'LBL_LEFT' => 'Left',
+    'LBL_RIGHT' => 'Right',
+    'LBL_PARAMETER' => 'Parameter',
+    'LBL_TIMELIMIT_SEC' => 'Time limit (seconds)',
+    'LBL_DATA_SAVED' => 'Data saved',
+    'LBL_PROLOGUE' => 'Prologue',
+    'LBL_EPILOGUE' => 'Epilogue',
+    'MSG_INPUT_REQUIRED' => 'Input is required',
+    'ERR_UPLOAD_FAILED' => 'Upload failed',
+    'LBL_ALTTEXT' => 'Alternative Text',
+    'LBL_COPYRIGHT_OWNER' => 'Copyright owner',
+    'LBL_COPYRIGHT_LICENSE' => 'Copyright license',
+    'LBL_IMAGENAME' => 'Image name',
+
+    /* Questionnaires, QuestionSets, etc. date_*/
+
+    'LBL_QUESTIONS' => 'Questions',
+    'LBL_QUESTIONTYPE' => 'Question type',
+    'LBL_QUESTION_NAME' => 'Question name',
+    'LBL_QUESTIONSET_PREVIEW' => 'Question set preview',
+    'LBL_NO_QUESTIONSETS_TO_DISPLAY' => 'No question sets to display.',
+    'LBL_NO_QUESTIONS_TO_DISPLAY' => 'No questions to display.',
+    'LBL_QUESTION_MANAGER' => 'Question manager',
+    'LBL_ADD_QUESTION' => 'Add question',
+    'LBL_QUESTION_TEXT' => 'Question text',
+    'LBL_EDIT_QUESTION' => 'Edit question',
+    'LBL_MIN_ANSWERS' => 'min. answers',
+    'LBL_MAX_ANSWERS' => 'max. answers',
+    'LBL_CATEGORIES' => 'Categories',
+    'LBL_ADD_ANSWER_OPTION' => 'Add answer option',
+    'LBL_CORRECT_ANSWER' => 'Correct Answer',
+    'QST_CONFIRM_DELETE_ENTRIES' => 'Delete entries?',
+    'QST_CONFIRM_DELETE_ENTRIES_LONG' => 'The list will be shortened, entries will be removed!',
+    'LBL_CATEGORYPOOL' => 'Category Pool',
+    'LBL_POSS_CATEGORIES' => 'Possible categories',
+    'MSG_CANTCHANGE_QUESTIONSEXISTS' => 'Can not change because there are already questions.',
+    'QST_CONFIRM_DELETE_QUESTION' => 'Delete Question?',
+    'QST_CONFIRM_DELETE_QUESTION_LONG' => 'Are you sure you want to delete the question „%s“?',
+    'MSG_NO_QUESTIONTYPE_NO_QUESTION' => 'The creation of a question is not yet possible, since no question type has yet been selected for the question set.',
+    'LBL_NUMBER_QUESTIONS_COMPLETED' => '%s of %s Questions completed.',
+
+    'LBL_MY' => 'My',
+    'LBL_ALL' => 'All'
+
+
 );
 
-$app_list_strings['moduleList']['Library'] = 'Library';
+//Some modules shall not be included for SpiceCRM CE
+if(file_exists('modules/Products/Product.php')){
+    $app_list_strings['moduleList']['Products'] =  'Products';
+    $app_list_strings['moduleList']['ProductGroups'] =  'Product Groups';
+    $app_list_strings['moduleList']['ProductVariants'] =  'Product Variants';
+    $app_list_strings['moduleList']['ProductAttributes'] =  'Product Attributes';
+    $app_list_strings['moduleListSingular']['Products'] =  'Product';
+    $app_list_strings['moduleListSingular']['ProductGroups'] =  'Product Group';
+    $app_list_strings['moduleListSingular']['ProductAttributes'] =  'Product Attribute';
+}
+if(file_exists('modules/Questionnaires/Questionnaire.php')) {
+    $app_list_strings['moduleList']['Questionnaires'] =  'Questionnaires';
+    $app_list_strings['moduleList']['Questions'] =  'Questions';
+    $app_list_strings['moduleList']['QuestionSets'] =  'Question Sets';
+    $app_list_strings['moduleList']['QuestionAnswers'] =  'Question Answers';
+    $app_list_strings['moduleList']['QuestionnaireParticipations'] =  'Questionnaire Participations';
+    $app_list_strings['moduleList']['QuestionOptions'] =  'Question Options';
+    $app_list_strings['moduleList']['QuestionOptionCategories'] =  'Question Option Categories';
+    $app_list_strings['moduleListSingular']['Questionnaires'] =  'Questionnaire';
+    $app_list_strings['moduleListSingular']['Questions'] =  'Question';
+    $app_list_strings['moduleListSingular']['QuestionSets'] =  'Question Set';
+    $app_list_strings['moduleListSingular']['QuestionAnswers'] =  'Question Answer';
+    $app_list_strings['moduleListSingular']['QuestionnaireParticipations'] =  'Question Participation';
+    $app_list_strings['moduleListSingular']['QuestionOptions'] =  'Question Option';
+    $app_list_strings['moduleListSingular']['QuestionOptionCategories'] =  'Question Option Category';
+}
+if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
+    $app_list_strings['moduleList']['ProjectWBSs'] = 'Project WBSs';
+    $app_list_strings['moduleListSingular']['ProjectWBSs'] =  'Project WBS';
+}
+if(file_exists('modules/ProjectActivities/ProjectActivity.php')) {
+    $app_list_strings['moduleList']['ProjectActivities'] = 'Project Activities';
+    $app_list_strings['moduleListSingular']['ProjectActivities'] =  'Project Activity';
+}
+if(file_exists('modules/ProjectPlannedActivities/ProjectPlannedActivity.php')) {
+    $app_list_strings['moduleList']['ProjectPlannedActivities'] = 'Project Planned Activities';
+    $app_list_strings['moduleListSingular']['ProjectPlannedActivities'] =  'Project Planned Activity';
+}
+if(file_exists('modules/SalesDocs/SalesDoc.php')) {
+    $app_list_strings['moduleList']['SalesDocs'] = 'Sales Documents';
+    $app_list_strings['moduleListSingular']['SalesDocs'] =  'Sales Document';
+}
+if(file_exists('modules/Library/Library.php')) {
+    $app_list_strings['moduleList']['Library'] = 'Library';
+}
+
 $app_list_strings['library_type'] = array('Books' => 'Book', 'Music' => 'Music', 'DVD' => 'DVD', 'Magazines' => 'Magazines');
 $app_list_strings['moduleList']['EmailAddresses'] = 'Email Address';
 $app_list_strings['project_priority_default'] = 'Medium';
@@ -3294,6 +3627,7 @@ $app_list_strings ['emailTemplates_type_list'] = array(
     '' => '',
     'campaign' => 'Campaign',
     'email' => 'Email',
+    'bean2mail' => 'send Bean via mail'
 );
 
 $app_list_strings ['emailTemplates_type_list_campaigns'] = array(
@@ -3415,9 +3749,12 @@ $addAppStrings = array(
     'LBL_SET_HOME' => 'Set Home',
     'LBL_ADVANCED_SETTINGS' => 'Advanced Settings',
     'LBL_SEARCH_DELAY' => 'Search Delay',
+    'LBL_TIMESTREAM' => 'Timestream',
+    'LBL_TASKMANAGER' => 'Taskmanager'
 );
 
-$app_list_strings['moduleList']['KDeploymentCRs'] = 'K Changerequests';
+if(file_exists('modules/KDeploymentCRs/KDeploymentCR.php'))
+    $app_list_strings['moduleList']['KDeploymentCRs'] = 'K Changerequests';
 
 $app_list_strings['crstatus_dom'] = array(
     '0' => 'created',
@@ -3493,7 +3830,55 @@ $app_list_strings['kdeploymentsystems_type_dom'] = array(
     "prod" => "production"
 );
 
+//EventRegistrations module
+$app_list_strings['eventregistration_status_dom'] = array(
+    'interested' => 'not available',
+    'tentative' => 'tentative',
+    'registered' => 'registered',
+    'unregistered' => 'unregistered',
+    'attended' => 'attended',
+    'notattended' => 'did not attend'
+);
 
+//ProjectWBSs module
+$app_list_strings['wbs_status_dom'] = array(
+    '0' => 'created',
+    '1' => 'started',
+    '2' => 'complete'
+);
+//Projectactivities
+$app_list_strings['projects_activity_types_dom'] = array(
+    'consulting' => 'consulting',
+    'dev' => 'development',
+    'support' => 'support'
+);
+$app_list_strings['projects_activity_levels_dom'] = array(
+    'standard' => 'standard',
+    'senior' => 'senior',
+);
+//Projectmilestones
+$app_list_strings['projects_milestone_status_dom'] = array(
+    'not startet' => 'standard',
+    'senior' => 'senior',
+);
+$app_list_strings['projects_activity_status_dom'] = array(
+    'created' => 'created',
+    'billed' => 'billed',
+);
+
+//ProductAttributes
+$app_list_strings['productattributedatatypes_dom'] = array(
+    'di' => 'Dropdown',
+    'f' => 'Checkbox',
+    'n' => 'Numeric',
+    's' => 'Multiselect',
+    'vc' => 'Text'
+);
+$app_list_strings['productattribute_usage_dom'] =  array (
+    'required' 		=> 'required',
+    'optional' 		=> 'optional',
+    'none' 		=> 'no input',
+);
 
 $app_strings = array_merge($app_strings, $addAppStrings);
 

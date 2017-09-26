@@ -2060,7 +2060,8 @@ ul.cssmenu li a {
 
 /* module title */
 div.moduleTitle {
-  height: 2em; }
+  height: 2em;
+overflow:hidden;}
 
 .moduleTitle img {
   margin-right: 3px;

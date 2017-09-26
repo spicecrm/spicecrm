@@ -58,6 +58,16 @@
 .globalFTSMModulePanelFieldsItem{
     display: inline;
     font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.globalFTSModulePanelRecordItem{
+    display: inline;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .globalFTSMModuleSearchRecord{
@@ -68,6 +78,10 @@
 
 .globalFTSMModulePanel .globalFTSMModuleSearchRecord:last-child{
     border-bottom: none;
+}
+.globalFTSModulePanelRecordItem{
+    overflow: hidden;
+    padding-right:5px;
 }
 
 .globalFTSMModuleSearchRecordItem{

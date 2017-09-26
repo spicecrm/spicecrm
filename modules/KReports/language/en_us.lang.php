@@ -26,6 +26,7 @@ $mod_strings = array(
     'LBL_ERROR_NAME' => 'Please, fill in report name!',
     'LBL_ASSIGNED_USER_LABEL' => 'User',
     'LBL_ASSIGNED_TEAM_LABEL' => 'Team',
+    'LBL_ASSIGNED_SECURITYGROUP_LABEL' => 'Security Group',
     'LBL_KORGOBJECTS_LABEL' => 'Territory',
     'LBL_REPORT_OPTIONS' => 'Options',
     'LBL_DEFAULT_NAME' => 'new Report',
@@ -636,6 +637,7 @@ $mod_strings = array(
     'LBL_CHARTOPTIONS_POINTS' => 'show Points',
     'LBL_CHARTOPTIONS_MATERIAL' => 'material Design',
     'LBL_CHARTOPTIONS_ALLOWOVERLAP' => 'allow data labels to overlap',
+    'LBL_CHARTOPTIONS_COLORBYPOINT' => 'color by point',
 
     // for Fusion Charts ... needs to be moved
     'LBL_CHARTTYPE_COLUMN2D' => 'Column 2D',
@@ -805,6 +807,7 @@ $mod_strings = array(
     // the field renderer
     'LBL_RENDERER_-' => '-',
     'LBL_RENDERER_CURRENCY' => 'Currency',
+    'LBL_RENDERER_CURRENCYINT' => 'Currency rounded',
     'LBL_RENDERER_SCURRENCY' => 'System Currency',
     'LBL_RENDERER_UCURRENCY' => 'User Currency',
     'LBL_RENDERER_PERCENTAGE' => 'Percentage',
@@ -836,7 +839,9 @@ $mod_strings = array(
     'LBL_KSNAPSHOT' => 'Snapshot',
     'LBL_TAKING_SNAPSHOT' => 'taking snapshot ... ',
     'LBL_GROUPING' => 'Grouping',
-    'LBL_PICK_DATETIME' => 'choose Date/Time'
+    'LBL_PICK_DATETIME' => 'choose Date/Time',
+
+    'LBL_COMPONENT' => 'Component'
 
 );
 
@@ -1037,3 +1042,12 @@ $mod_strings['LBL_KSAVEDFILTERS_STATUS'] = 'Status';
 $mod_strings['LBL_KSAVEDFILTERS_CONTENT'] = 'Filter details';
 
 
+//kreportcategories
+$mod_strings['LNK_MANAGE_CATEGORIES'] = 'Manage Categories';
+$mod_strings['LNK_REPORT_COCKPIT'] = 'KReporter Cockpit';
+$mod_strings['LBL_CATEGORIES_ID'] = 'Category ID';
+$mod_strings['LBL_CATEGORIES_NAME'] = 'Category name';
+$mod_strings['LBL_CATEGORIES_IS_ADMIN_ONLY'] = 'Admin only';
+$mod_strings['LBL_CATEGORIES_PRIORITY'] = 'Priority';
+$mod_strings['LBL_ASSIGNED_CATEGORY_LABEL'] = 'Cat.';
+$mod_strings['LBL_CATEGORIES_PRIORITY'] = 'Prio.';

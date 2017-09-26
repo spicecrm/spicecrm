@@ -14,8 +14,8 @@ $viewdefs[$module_name]['DetailView'] = array(
     'panels' => array(
 
         array(
-            'name',
-            'mwstatus'
+            array('name' => 'name'),
+            array('name' => 'mwstatus'),
         ),
         array(
             array('name' => 'from_date'),
@@ -34,9 +34,27 @@ $viewdefs[$module_name]['DetailView'] = array(
                 'label' => 'LBL_DATE_MODIFIED',
             ),
         ),
-
         array(
-            'description',
+            array('name' => 'disable_login',),
+        ),
+        array(
+            array('name' => 'disable_login_description', 'customCode' => '{sugar_translate module="KDeploymentMWs" label="LBL_DISABLE_LOGIN_DESCRIPTION"}'),
+        ),
+        array(
+            array('name' => 'disable_krest'),
+        ),
+        array (
+            array('name' => 'disable_krest_description', 'customCode' => '{sugar_translate module="KDeploymentMWs" label="LBL_DISABLE_KREST_DESCRIPTION"}'),
+        ),
+        array(
+            array('name' => 'disable_cron'),
+        ),
+        array(
+            array('name' => 'disable_cron_description', 'customCode' => '{sugar_translate module="KDeploymentMWs" label="LBL_DISABLE_CRON_DESCRIPTION"}')
+        ),
+        array(
+            array('name' => 'description'),
+            array('name' => 'notified'),
         ),
     )
 );

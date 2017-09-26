@@ -1,6 +1,7 @@
 <?php
 
 require_once('include/SpiceFTSManager/SpiceFTSRESTManager.php');
+
 $spiceFTSManager = new SpiceFTSRESTManager();
 
 $app->group('/ftsmanager', function () use ($app, $spiceFTSManager) {
@@ -15,6 +16,9 @@ $app->group('/ftsmanager', function () use ($app, $spiceFTSManager) {
         $app->get('/fields', function () use ($app, $spiceFTSManager) {
             $getParams = $app->request->get();
             echo json_encode($spiceFTSManager->getFields($getParams['nodeid']));
+        });
+        $app->get('/analyzers', function () use ($app, $spiceFTSManager) {
+            echo json_encode($spiceFTSManager->getAnalyzers());
         });
     });
     $app->group('/:module', function () use ($app, $spiceFTSManager) {

@@ -1023,7 +1023,7 @@ class Email extends SugarBean {
 	 */
 	///////////////////////////////////////////////////////////////////////////
 	////	SAVERS
-	function save($check_notify = false) {
+	function save($check_notify = false, $fts_index_bean = true) {
         global $current_user;
 
 		if($this->isDuplicate) {
@@ -1057,7 +1057,7 @@ class Email extends SugarBean {
                  }
 			}
 
-			parent::save($check_notify);
+			parent::save($check_notify, $fts_index_bean);
 
 			if(!empty($this->parent_type) && !empty($this->parent_id)) {
                 if(!empty($this->fetched_row) && !empty($this->fetched_row['parent_id']) && !empty($this->fetched_row['parent_type'])) {

@@ -134,7 +134,7 @@ class EAPM extends Basic {
         return parent::create_new_list_query($order_by, $where, $filter, $params, $show_deleted,$join_type, $return_array, $parentbean, $singleSelect);
     }
 
-   function save($check_notify = FALSE ) {
+   function save($check_notify = FALSE, $fts_index_bean = TRUE ) {
        $this->fillInName();
        if ( !is_admin($GLOBALS['current_user']) ) {
            $this->assigned_user_id = $GLOBALS['current_user']->id;
@@ -144,7 +144,7 @@ class EAPM extends Basic {
            $this->password = empty($this->fetched_row['password']) ? '' : $this->fetched_row['password'];
        }
 
-       $parentRet = parent::save($check_notify);
+       $parentRet = parent::save($check_notify, $fts_index_bean);
 
        // Nuke the EAPM cache for this record
        if ( isset($_SESSION['EAPM'][$this->application]) ) {

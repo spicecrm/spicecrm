@@ -36,8 +36,8 @@
 ********************************************************************************/
 
 //session_destroy();
-if (version_compare(phpversion(),'5.2.0') < 0) {
-	$msg = 'Minimum PHP version required is 5.2.0.  You are using PHP version  '. phpversion();
+if (version_compare(phpversion(),'5.4.0') < 0) {
+	$msg = 'Minimum PHP version required is 5.4.0.  You are using PHP version  '. phpversion();
     die($msg);
 }
 $session_id = session_id();

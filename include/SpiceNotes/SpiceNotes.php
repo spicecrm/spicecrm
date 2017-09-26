@@ -21,7 +21,7 @@ class SpiceNotes {
 							'own' => ($thisQuickNote['user_id']==$current_user->id || $current_user->is_admin) ? '1' : '0',
 							'date' => $GLOBALS['timedate']->to_display_date_time($thisQuickNote['trdate']),
 							'text' => nl2br($thisQuickNote['text']),
-							'global' => $thisQuickNote['trglobal']
+							'global' => $thisQuickNote['trglobal'] ? true : false
 						);
 			}
 		}
@@ -46,7 +46,7 @@ class SpiceNotes {
 				'user_name' => $current_user->user_name,
 				'date' => $GLOBALS['timedate']->to_display_date_time(gmdate('Y-m-d H:i:s')),
 				'text' => nl2br($data['text']),
-				'global' => $data['global']
+				'global' => $data['global'] ? true : false
 		);
 		return json_encode($quicknotes);
 	}
@@ -59,5 +59,6 @@ class SpiceNotes {
 	public static function deleteQuickNote($noteId) {
 		global $current_user, $db;
 		$db->query("UPDATE spicenotes SET deleted = 1 WHERE id='{$noteId}'" . (!$current_user->is_admin ? " AND user_id='".$current_user->id."'":""));
+		return json_encode(array('status' => 'success'));
 	}
 }

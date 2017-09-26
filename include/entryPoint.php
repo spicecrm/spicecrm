@@ -1,5 +1,5 @@
 <?php
-if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -36,6 +36,7 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 ********************************************************************************/
 
 /*********************************************************************************
+
  * Description:
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc. All Rights
  * Reserved. Contributor(s): ______________________________________..
@@ -234,6 +235,15 @@ if (empty($GLOBALS['installing'])) {
     $current_entity = null;
     $system_config = new Administration();
     $system_config->retrieveSettings();
+
+
+    $GLOBALS['ACLController'] = new ACLController();
+
+    // if we have auth management then load it
+    if (1 == 2 && file_exists('modules/KAuthProfiles/KAuthAccess.php')) {
+        require_once('modules/KAuthProfiles/KAuthAccess.php');
+        $GLOBALS['KAuthAccessController'] = new KAuthAccessController();
+    }
 
     LogicHook::initialize()->call_custom_logic('', 'after_entry_point');
 }

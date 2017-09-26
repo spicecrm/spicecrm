@@ -15,7 +15,7 @@ $app->group('/theme', function () use ($app) {
             $SpiceThemeController = new SpiceThemeController();
             echo $SpiceThemeController->resetPages();
         });
-        $app->group('/:pageId', function ($pageId) use ($app) {
+        $app->group('/:pageId', function () use ($app) {
             $app->get('', function ($pageId) use ($app) {
                 require_once('modules/SpiceThemeController/SpiceThemeController.php');
                 $SpiceThemeController = new SpiceThemeController();
@@ -95,7 +95,8 @@ $app->group('/theme', function () use ($app) {
         global $current_user;
         require_once('modules/Trackers/Tracker.php');
         $tracker = new Tracker();
-        $history = $tracker->get_recently_viewed($current_user->id);
+        $getParams = $app->request->get();
+        $history = $tracker->get_recently_viewed($current_user->id, $getParams['module'] ? array($getParams['module']) : '', $getParams['limit'] ?: 10);
         foreach ($history as $key => $row) {
             if(empty($history[$key]['module_name'])) {
                 unset($history[$key]);
@@ -141,7 +142,7 @@ $app->group('/theme', function () use ($app) {
             $favorites = SpiceFavorites::getFavoritesRaw();
             echo json_encode($favorites);
         });
-        $app->group('/:module/:beanId', function ($module,$beanId) use ($app) {
+        $app->group('/:module/:beanId', function () use ($app) {
             $app->get('', function ($module,$beanId) use ($app) {
                 require_once('include/SpiceFavorites/SpiceFavorites.php');
                 $isFavorite = SpiceFavorites::get_favorite($module,$beanId);

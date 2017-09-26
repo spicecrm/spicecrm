@@ -23,14 +23,14 @@ class SpiceFTSBeanHandler
         $indexArray = array();
         foreach ($this->indexProperties as $indexProperty) {
             $indexValue = $this->getFieldValue($indexProperty);
-            if (!empty($indexValue['fieldvalue'])) {
+            if ($indexValue['fieldvalue'] == '0' || !empty($indexValue['fieldvalue'])) {
                 $indexArray[$indexValue['fieldname']] = $indexValue['fieldvalue'];
             }
 
-            /*
-            foreach ($indexValue['fields'] as $subFieldName => $subFieldValue)
-                $indexArray[$indexValue['fieldname'] . '_' . $subFieldName] = $subFieldValue;
-            */
+            if(isset($indexValue['fields'])) {
+                foreach ($indexValue['fields'] as $subFieldName => $subFieldValue)
+                    $indexArray[$indexValue['fieldname'] . '_' . $subFieldName] = $subFieldValue;
+            }
         }
 
         // push the related IDs
@@ -38,18 +38,33 @@ class SpiceFTSBeanHandler
 
         // add Standard Fields
         foreach (SpiceFTSUtils::$standardFields as $standardField => $standardFieldData) {
-            if (!empty($this->seed->$standardField)) {
+            if ($this->seed->$standardField == '0' || !empty($this->seed->$standardField)) {
                 $indexArray[$standardField] = $this->mapDataType($this->seed->field_name_map[$standardField]['type'], $this->seed->$standardField);
             }
         }
 
         // add the org management info
+        // legacy handling
         if (!empty($GLOBALS['KAuthAccessController']) && $GLOBALS['KAuthAccessController']->orgManaged(get_class($this->seed))) {
             $indexArray['korgobjecthash'] = $this->seed->korgobjecthash;
             $indexArray['korguserhash'] = $this->seed->korguserhash;
         }
 
+        // new handling
+        if ($GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'addFTSData')) {
+            $addIndexArray = $GLOBALS['ACLController']->addFTSData($this->seed);
+            foreach($addIndexArray as $indexfield => $indexValue)
+                $indexArray[$indexfield] = $indexValue;
+        }
+
         $indexArray['summary_text'] = $this->seed->get_summary_text();
+
+        if(method_exists($this->seed, 'add_fts_fields')){
+            $addFields = $this->seed->add_fts_fields();
+            if(is_array($addFields) && count($addFields) > 0){
+                $indexArray = array_merge($indexArray, $addFields);
+            }
+        }
 
         return $indexArray;
     }
@@ -71,7 +86,7 @@ class SpiceFTSBeanHandler
                     $valueBean = $this->seed;
                     break;
                 case 'link':
-                    $fieldName = !empty($fieldName) ? $fieldName . '->' . $pathRecordDetails[2] : $pathRecordDetails[2];
+                    $fieldName = $indexproperty['indexedname'] ?: (!empty($fieldName) ? $fieldName . '->' . $pathRecordDetails[2] : $pathRecordDetails[2]);
                     $beans = array();
                     if (is_array($valueBean)) {
                         foreach ($valueBean as $thisValueBean) {
@@ -99,7 +114,7 @@ class SpiceFTSBeanHandler
                     }
                     break;
                 case 'field':
-                    $fieldName = !empty($fieldName) ? $fieldName . '->' . $pathRecordDetails[1] : $pathRecordDetails[1];
+                    $fieldName = isset($indexproperty['indexedname']) ? $indexproperty['indexedname'] : (!empty($fieldName) ? $fieldName . '->' . $pathRecordDetails[1] : $pathRecordDetails[1]);
                     if (is_array($valueBean)) {
                         $valArray = array();
                         foreach ($valueBean as $thisValueBean) {
@@ -138,7 +153,7 @@ class SpiceFTSBeanHandler
                     }
 
                     // see if we have a related id for the field
-                    if ($this->seed->field_name_map[$pathRecordDetails[1]]['id_name'] != '')
+                    if (isset($this->seed->field_name_map[$pathRecordDetails[1]]['id_name']) && $this->seed->field_name_map[$pathRecordDetails[1]]['id_name'] != '')
                         $this->addRelated($this->seed->{$this->seed->field_name_map[$pathRecordDetails[1]]['id_name']});
 
                     break;
@@ -156,11 +171,24 @@ class SpiceFTSBeanHandler
         global $timedate;
         $retvalue = $value;
         switch ($type) {
+            case 'boolean':
+            case 'bool':
+                $retvalue = $value ? '1' : '0';
+                break;
+            case 'multienum':
+                if (strpos($value, '^,^') !== false) {
+                    $retvalue = explode('^,^', substr($value, 1, strlen($value) - 2));
+                } else {
+                    $retvalue = trim($value, '^');
+                }
+                break;
             case'date':
-                $retvalue = $timedate->to_db($value) ?: $value;
+                if ($GLOBALS['disable_date_format'] !== true)
+                    $retvalue = $timedate->to_db($value) ?: $value;
                 break;
             case 'datetime':
-                $retvalue = $timedate->to_db($value) ?: $value;
+                if ($GLOBALS['disable_date_format'] !== true)
+                    $retvalue = $timedate->to_db($value) ?: $value;
                 break;
         }
         return $retvalue;
@@ -181,7 +209,7 @@ class SpiceFTSBeanHandler
 
         foreach (SpiceFTSUtils::$standardFields as $standardField => $standardFieldData) {
             $properties[$standardField] = array(
-                'type' => $standardFieldData['type'] ?: 'string',
+                'type' => $standardFieldData['type'] ?: 'text',
                 'index' => $standardFieldData['index'] ?: 'analyzed'
             );
 
@@ -205,7 +233,7 @@ class SpiceFTSBeanHandler
             //$fieldParams = SpiceFTSUtils::getFieldIndexParams(BeanFactory::getBean($module), $indexProperty['path']);
 
             $properties[$indexProperty['indexfieldname']] = array(
-                'type' => $indexProperty['indextype'] ?: 'string',
+                'type' => $indexProperty['indextype'] ?: 'text',
             );
 
             /*
@@ -235,7 +263,12 @@ class SpiceFTSBeanHandler
             if ($indexProperty['format'])
                 $properties[$indexProperty['indexfieldname']]['format'] = $indexProperty['format'];
 
-            if (!empty($indexProperty['aggregate'])) {
+            /*
+            if ($indexProperty['boost'])
+                $properties[$indexProperty['indexfieldname']]['boost'] = $indexProperty['boost'];
+            */
+
+            if (!empty($indexProperty['aggregate']) || $indexProperty['enablesort']) {
                 $properties[$indexProperty['indexfieldname']]['fields']['raw'] = array(
                     'type' => $indexProperty['indextype'] ?: 'string',
                     'index' => 'not_analyzed'
@@ -243,6 +276,29 @@ class SpiceFTSBeanHandler
 
                 if ($properties[$indexProperty['indexfieldname']]['fields']['raw']['type'] == 'date')
                     $properties[$indexProperty['indexfieldname']]['fields']['raw']['format'] = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis";
+            }
+        }
+
+        $seed = BeanFactory::getBean($module);
+        if(method_exists($seed, 'add_fts_metadata')){
+            $addFields = $seed->add_fts_metadata();
+            if(is_array($addFields) && count($addFields) > 0){
+                foreach($addFields as $addFieldName => $addField){
+                    $properties[$addFieldName] = array(
+                        'type' =>  $addField['type'],
+                        'index' =>  $addField['index']
+                    );
+
+                    if (!empty($addField['aggregate']) || $addField['enablesort']) {
+                        $properties[$addFieldName]['fields']['raw'] = array(
+                            'type' => $addField['type'] ?: 'string',
+                            'index' => 'not_analyzed'
+                        );
+
+                        if ($properties[$addFieldName]['fields']['raw']['type'] == 'date')
+                            $properties[$addFieldName]['fields']['raw']['format'] = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis";
+                    }
+                }
             }
         }
 

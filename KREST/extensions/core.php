@@ -27,14 +27,36 @@ $app->get('/', function () use ($KRESTManager) {
 });
 
 $app->get('/sysinfo', function () use ($KRESTManager) {
+    global $sugar_config;
     echo json_encode(array(
         'version' => '2.0',
-        'extensions' => $KRESTManager->extensions
+        'extensions' => $KRESTManager->extensions,
+        'languages' => array(
+            'available' => $sugar_config['languages'],
+            'default' => $sugar_config['default_language']
+        )
     ));
+});
+
+$app->group('/system', function () use ($app, $KRESTManager) {
+    $app->get('/guid', function () use ($KRESTManager) {
+        require_once 'include/utils.php';
+        echo json_encode(array(
+            'id' => create_guid()
+        ));
+    });
 });
 
 $app->get('/validatesession', function () use ($app) {
     $sessionData = $app->request->get();
     $KRESTManager = new KRESTManager($app);
     echo json_encode($KRESTManager->validate_session($sessionData['session_id']));
+});
+
+$app->post('/tmpfile', function () use ($app) {
+    $postBody = $body = $app->request->getBody();
+    $temppath = sys_get_temp_dir();
+    $filename = create_guid();
+    file_put_contents($temppath . '/' . $filename, base64_decode($postBody));
+    echo $temppath . '/' . $filename;
 });

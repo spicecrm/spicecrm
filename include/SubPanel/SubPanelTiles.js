@@ -707,7 +707,25 @@ SUGAR.subpanelUtils = function() {
                     continue;
                 }
 				var cur = document.getElementById('whole_subpanel_'+SUGAR.subpanelUtils.subpanelGroups[group][group_sp]);
-			    
+
+                //BEGIN CORE MODIFICATION KREPORTER 4
+                //load KREporter Subpanel located on unfocussed Tab
+                if(typeof(SpiceCRM) !== 'undefined') {
+                    if(typeof(SpiceCRM.KReporter) !== 'undefined') {
+                        if(typeof(SpiceCRM.KReporter.Subpanel) !== 'undefined') {
+                            if (cur.id.match(/kreporterpres/i)) {
+                                var kreporterSubpanelId = SUGAR.subpanelUtils.subpanelGroups[group][group_sp];
+                                SpiceCRM.KReporter.Subpanel.createPresentationSubpanel(kreporterSubpanelId, kreporterSubpanelId.substr(('kreporterpres').length));
+                            }
+                            else if (cur.id.match(/kreportervisu/i)) {
+                                var kreporterSubpanelId = SUGAR.subpanelUtils.subpanelGroups[group][group_sp];
+                                SpiceCRM.KReporter.Subpanel.createVisualizationSubpanel(kreporterSubpanelId, kreporterSubpanelId.substr(('kreportervisu').length));
+                            }
+                        }
+                    }
+                }
+                //END
+
                 if(cur == null)
                 {
                     continue;

@@ -30,15 +30,16 @@
 define('sugarEntry', 'ATTACH_DOWNLOAD');
 //require('include/entryPoint.php');
 global $db;
-
-$local_location =  "upload://{$_REQUEST['id']}";
-$query = "SELECT filename name, file_mime_type FROM spiceattachments ";
+$query = "SELECT filename name, file_mime_type, filemd5 FROM spiceattachments ";
 $query .= "WHERE id= '".$db->quote($_REQUEST['id'])."'";
 $rs = $GLOBALS['db']->query($query);
 $row = $GLOBALS['db']->fetchByAssoc($rs);
+
+$local_location =  "upload://".($row['filemd5'] ?: $_REQUEST['id']);
+$download_location = "upload://".($row['filemd5'] ?: $_REQUEST['id']);
+
 $name = $row['name'];
 $mime_type = $row['file_mime_type'];
-$download_location = "upload://{$_REQUEST['id']}";
 header("Pragma: public");
 header("Cache-Control: maxage=1, post-check=0, pre-check=0");
 header('Content-type: ' . $mime_type);

@@ -68,13 +68,19 @@ include("metadata/outboundEmailMetaData.php");
 include("metadata/addressBookMetaData.php");
 include("metadata/project_bugsMetaData.php");
 include("metadata/project_casesMetaData.php");
-include("metadata/project_productsMetaData.php");
+if(file_exists('metadata/project_productsMetaData.php'))
+    include("metadata/project_productsMetaData.php");
 include("metadata/projects_accountsMetaData.php");
 include("metadata/projects_contactsMetaData.php");
 include("metadata/projects_opportunitiesMetaData.php");
 
 // sys data
 include("metadata/system_fts.php");
+include("metadata/system_ui.php");
+
+// products data
+if(file_exists('metadata/products_MetaData.php'))
+    include('metadata/products_MetaData.php');
 
 //ACL RELATIONSHIPS
 include("metadata/acl_roles_actionsMetaData.php");
@@ -101,6 +107,12 @@ include("metadata/spicecrmPerformancetrackerMetaData.php");
 include('metadata/SpiceThemePagesMetadata.php');
 include('metadata/SpiceThemeMetadata.php');
 
+// for kauthmanagement
+if(file_exists('modules/KAuthProfiles/dictionarydata/addtables.php'))
+    include('modules/KAuthProfiles/dictionarydata/addtables.php');
+if(file_exists('modules/KOrgObjects/dictionarydata/addtables.php'))
+    include('modules/KOrgObjects/dictionarydata/addtables.php');
+
 // guide metadata
 include('metadata/opportunity_guideMetaData.php');
 
@@ -115,5 +127,9 @@ include('metadata/kdeploypack_sysstatus.Metadata.php');
 include("metadata/kreleasemanager.metadata.php");
 
 if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
-	include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+    include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+}
+
+if(file_exists('modules/SalesDocs/dictionarydata/SalesDocs.dictionary.php')){
+    include('modules/SalesDocs/dictionarydata/SalesDocs.dictionary.php');
 }

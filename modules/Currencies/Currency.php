@@ -229,9 +229,9 @@ class Currency extends SugarBean
 		$data = parent::get_list_view_data();
 		return $data;
 	}
-    function save($check_notify = FALSE) {
+    function save($check_notify = FALSE, $fts_index_bean = TRUE) {
         sugar_cache_clear('currency_list');
-        return parent::save($check_notify);
+        return parent::save($check_notify, $fts_index_bean);
     }
 } // end currency class
 

@@ -197,7 +197,7 @@ $layout_defs['Opportunities'] = array(
         ),
         'project' => array(
             'order' => 70,
-            'module' => 'Project',
+            'module' => 'Projects',
             'get_subpanel_data' => 'project',
             'sort_order' => 'asc',
             'sort_by' => 'name',

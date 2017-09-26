@@ -423,7 +423,7 @@ class User extends Person {
         return "1<>1";
     }
 
-    function save($check_notify = false) {
+    function save($check_notify = false, $fts_index_bean) {
         $isUpdate = !empty($this->id) && !$this->new_with_id;
 
 
@@ -452,7 +452,7 @@ class User extends Person {
         $setNewUserPreferences = empty($this->id) || !empty($this->new_with_id);
 
 
-        parent::save($check_notify);
+        parent::save($check_notify, $fts_index_bean);
 
 
         // set some default preferences when creating a new user

@@ -484,11 +484,11 @@ class Lead extends Person {
 		return true;
 	}
 
-	function save($check_notify = false) {
+	function save($check_notify = false, $fts_index_bean = true) {
 		if(empty($this->status))
 			$this->status = 'New';
 		// call save first so that $this->id will be set
-		$value = parent::save($check_notify);
+		$value = parent::save($check_notify, $fts_index_bean);
 		return $value;
 	}
 	function get_unlinked_email_query($type=array()) {

@@ -218,7 +218,7 @@ class BreadCrumbStack {
     *
     * @return array of breadcrumbs
     */
-   public function getBreadCrumbList($filter_module='') {
+   public function getBreadCrumbList($filter_module='', $count = 10) {
    	  if(!empty($filter_module)) {
    	  	 $s2 = array();
    	  	 if(is_array($filter_module)) {
@@ -236,16 +236,16 @@ class BreadCrumbStack {
    	  	 }
    	  	 
    	  	 $s2 = array_reverse($s2);
-   	     if(count($s2) > 10) {
-   	  	 	$s2 = array_slice($s2, 0, 10);
+   	     if(count($s2) > $count) {
+   	  	 	$s2 = array_slice($s2, 0, $count);
    	  	 }
    	  	 return $s2;   	  	 
    	  }
    	  
    	  $s = $this->stack;
    	  $s = array_reverse($s);
-   	  if(count($s) > 10) {
-   	  	 $s = array_slice($s, 0, 10);
+   	  if(count($s) > $count) {
+   	  	 $s = array_slice($s, 0, $count);
    	  }
       return $s;
    }

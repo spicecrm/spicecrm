@@ -52,13 +52,13 @@ class File extends Basic
 	/**
 	 * @see SugarBean::save()
 	 */
-	public function save($check_notify=false)
+	public function save($check_notify=false, $fts_index_bean = true)
 	{
 		if (!empty($this->uploadfile)) {
 			$this->filename = $this->uploadfile;
 		}
 
-		return parent::save($check_notify);
+		return parent::save($check_notify, $fts_index_bean = true);
  	}
 
  	/**

@@ -15,9 +15,17 @@ $subpanel_layout = array(
             'widget_class' => 'SubPanelDetailViewLink',
             'width' => '45%',
         ),
+        'from_date' => array(
+            'vname' => 'LBL_FROM_DATE',
+            'width' => '10%',
+        ),
+        'to_date' => array(
+            'vname' => 'LBL_TO_DATE',
+            'width' => '10%',
+        ),
         'date_modified' => array(
             'vname' => 'LBL_DATE_MODIFIED',
-            'width' => '45%',
+            'width' => '10%',
         ),
         'edit_button' => array(
             'widget_class' => 'SubPanelEditButton',

@@ -55,14 +55,13 @@ $mod_strings = array(
     'LBL_CURRENCIES' => 'Currencies',
     'LBL_LIST_OPPORTUNITY_NAME' => 'Name',
     'LBL_LIST_ACCOUNT_NAME' => 'Account Name',
-    'LBL_LIST_AMOUNT' => 'Opportunity Amount',
+    'LBL_LIST_AMOUNT' => 'Amount',
     'LBL_LIST_AMOUNT_USDOLLAR' => 'Amount',
     'LBL_LIST_DATE_CLOSED' => 'Close',
     'LBL_LIST_SALES_STAGE' => 'Sales Stage',
     'LBL_ACCOUNT_ID' => 'Account ID',
     'LBL_CURRENCY_ID' => 'Currency ID',
-    'LBL_CURRENCY_NAME' => 'Currency Name',
-    'LBL_CURRENCY_SYMBOL' => 'Currency Symbol',
+    'LBL_CURRENCY_NAME' => 'Currency Name','LBL_CURRENCY_SYMBOL' => 'Currency Symbol',
 //DON'T CONVERT THESE THEY ARE MAPPINGS
     'db_sales_stage' => 'LBL_LIST_SALES_STAGE',
     'db_name' => 'LBL_NAME',
@@ -95,10 +94,10 @@ $mod_strings = array(
     'UPDATE_MERGE' => 'Merge Currencies',
     'UPDATE_MERGE_TXT' => 'Merge multiple currencies into a single currency. If there are multiple currency records for the same currency, you merge them together. This will also merge the currencies for all other modules.',
     'LBL_ACCOUNT_NAME' => 'Account Name:',
-    'LBL_AMOUNT' => 'Opportunity Amount:',
+    'LBL_AMOUNT' => 'Amount:',
     'LBL_AMOUNT_USDOLLAR' => 'Amount:',
     'LBL_CURRENCY' => 'Currency:',
-    'LBL_DATE_CLOSED' => 'Expected Close Date:',
+    'LBL_DATE_CLOSED' => 'Close Date:',
     'LBL_TYPE' => 'Type:',
     'LBL_CAMPAIGN' => 'Campaign:',
     'LBL_NEXT_STEP' => 'Next Step:',
@@ -126,7 +125,6 @@ $mod_strings = array(
     'LBL_PROJECTS_SUBPANEL_TITLE' => 'Projects',
     'LBL_ASSIGNED_TO_NAME' => 'Assigned to:',
     'LBL_LIST_ASSIGNED_TO_NAME' => 'Assigned User',
-    'LBL_LIST_SALES_STAGE' => 'Sales Stage',
     'LBL_MY_CLOSED_OPPORTUNITIES' => 'My Closed Opportunities',
     'LBL_TOTAL_OPPORTUNITIES' => 'Total Opportunities',
     'LBL_CLOSED_WON_OPPORTUNITIES' => 'Closed Won Opportunities',
@@ -168,5 +166,8 @@ $mod_strings = array(
     'LBL_CUST_BUSNEEDS' => 'Business Needs',
     'LBL_CUST_PAINPOINTS' => 'Pain Points',
     'LBL_CUST_SOLUTIONPROPOSAL' => 'Solution Proposal',
-    'LBL_CUST_VALUEPROPOSITION' => 'Value Proposition'
+    'LBL_CUST_VALUEPROPOSITION' => 'Value Proposition',
+
+//links
+	'LBL_PROPOSALS_LINK' => 'Angebote',
 );

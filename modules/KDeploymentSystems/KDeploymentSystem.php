@@ -574,6 +574,7 @@ class KDeploymentSystem extends SugarBean
             if ($item['ctype'] === 'file' && $item['exists']) {
                 $content = base64_encode(file_get_contents($item['ckey']));
                 $db->query("INSERT INTO kdeploypack_contents (id, kdeploypack_item_id, content, ctype, deleted) VALUES ('" . create_guid() . "','" . $item['id'] . "','$content','B',0)");
+                $db->query("UPDATE kdeploypack_items SET exist = 1 WHERE id = '".$item['id']."'");
             }
             if ($item['ctype'] === 'db') {
                 $ident = explode('/', $item['ckey']);
@@ -581,6 +582,7 @@ class KDeploymentSystem extends SugarBean
                 if (!empty($exists['id'])) {
                     $dbContent = base64_encode(json_encode($exists));
                     $db->query("INSERT INTO kdeploypack_contents (id, kdeploypack_item_id, content, ctype, deleted) VALUES ('" . create_guid() . "','" . $item['id'] . "','$dbContent','B',0)");
+                    $db->query("UPDATE kdeploypack_items SET exist = 1 WHERE id = '".$item['id']."'");
                 } else {
                     $item['exists'] = false;
                 }
@@ -789,7 +791,7 @@ class KDeploymentSystem extends SugarBean
         foreach ($items as $item) {
             $backup = $db->fetchByAssoc($db->query("SELECT * FROM kdeploypack_contents WHERE kdeploypack_item_id = '" . $item['id'] . "' AND ctype = 'B'"));
             if ($item['ctype'] === 'file') {
-                if ($item['exists']) {
+                if ($item['exist']) {
                     if (!empty($backup['id'])) {
                         file_put_contents($item['ckey'], base64_decode($backup['content']));
                     } else {

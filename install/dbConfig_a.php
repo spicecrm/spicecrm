@@ -240,6 +240,31 @@ $out3 =<<<EOQ3
     </td>
 </tr>
 </table>
+
+<table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
+<tr><th colspan="3" align="left">{$mod_strings['LBL_FTS']} {$mod_strings['LBL_FTS_REQUIREMENTS']}</th></tr>
+<tr>
+    <td width='1%'>&nbsp;</td>
+    <td  width='60%'nowrap><b>{$mod_strings['LBL_FTS_SERVER']}</b></td>
+    <td  width='35%'nowrap align="left">
+        <input type="text" name="fts_server" value="{$_SESSION['fts_server']}">
+    </td>
+</tr>
+<tr>
+    <td width='1%'>&nbsp;</td>
+    <td  width='60%'nowrap><b>{$mod_strings['LBL_FTS_PORT']}</b></td>
+    <td  width='35%'nowrap align="left">
+        <input type="text" name="fts_port" value="{$_SESSION['fts_port']}">
+    </td>
+</tr>
+<tr>
+    <td width='1%'>&nbsp;</td>
+    <td  width='60%'nowrap><b>{$mod_strings['LBL_FTS_PREFIX']}</b></td>
+    <td  width='35%'nowrap align="left">
+        <input type="text" name="fts_prefix" value="{$_SESSION['fts_prefix']}">
+    </td>
+</tr>
+</table>
 EOQ3;
 
 
@@ -395,6 +420,15 @@ function callDBCheck(){
                 }
                 if(typeof(document.setConfig.dbUSRData) != 'undefined'){
                     postData += "&dbUSRData="+document.getElementById('dbUSRData').value;
+                }
+                if(typeof(document.setConfig.fts_server) != 'undefined'){
+                    postData += "&fts_server="+document.setConfig.fts_server.value;
+                }
+                if(typeof(document.setConfig.fts_port) != 'undefined'){
+                    postData += "&fts_port="+document.setConfig.fts_port.value;
+                }
+                if(typeof(document.setConfig.fts_prefix) != 'undefined'){
+                    postData += "&fts_prefix="+document.setConfig.fts_prefix.value;
                 }
 
 EOQ4;

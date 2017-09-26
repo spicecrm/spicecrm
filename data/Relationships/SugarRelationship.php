@@ -92,6 +92,17 @@ abstract class SugarRelationship
      */
     public abstract function getQuery($link, $params = array());
 
+
+    public function getCount($link, $params){
+        $params['return_as_array'] = true;
+        $queryArray = $this->getQuery($link, $params);
+        $queryArray['select'] = 'SELECT count(*) relcount';
+        $db = DBManagerFactory::getInstance();
+        $result = $db->fetchByAssoc($db->query($queryArray['select'] . ' ' . $queryArray['from'] . ' ' . $queryArray['where']));
+        return $result['relcount'];
+    }
+
+
     /**
      * @abstract
      * @param Link2 $link

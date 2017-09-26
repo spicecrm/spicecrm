@@ -39,7 +39,6 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
 
     'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true, 'fields' =>
         array(
-
             'email_and_name1' => array(
                 'name' => 'email_and_name1',
                 'rname' => 'email_and_name1',
@@ -89,7 +88,6 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'massupdate' => false,
                 'duplicate_merge' => 'disabled',
                 'hideacl' => true,
-
             ),
             'opportunity_role_fields' => array(
                 'name' => 'opportunity_role_fields',
@@ -232,6 +230,13 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLS',
             ),
+            'calls_parent' => array(
+                'name' => 'calls_parent',
+                'type' => 'link',
+                'relationship' => 'contact_calls_parent',
+                'source' => 'non-db',
+                'vname' => 'LBL_CALLS',
+            ),
             'cases' => array(
                 'name' => 'cases',
                 'type' => 'link',
@@ -275,6 +280,13 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                     'source' => 'non-db',
                     'vname' => 'LBL_MEETINGS',
                 ),
+            'meetings_parent' => array(
+                'name' => 'meetings_parent',
+                'type' => 'link',
+                'relationship' => 'contact_meetings_parent',
+                'source' => 'non-db',
+                'vname' => 'LBL_MEETINGS',
+            ),
             'notes' => array(
                 'name' => 'notes',
                 'type' => 'link',
@@ -289,13 +301,14 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'source' => 'non-db',
                 'vname' => 'LBL_PROJECTS',
             ),
-            'project_resource' => array(
-                'name' => 'project_resource',
-                'type' => 'link',
-                'relationship' => 'projects_contacts_resources',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROJECTS_RESOURCES',
-            ),
+// uncleaned PRO code
+//            'project_resource' => array(
+//                'name' => 'project_resource',
+//                'type' => 'link',
+//                'relationship' => 'projects_contacts_resources',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_PROJECTS_RESOURCES',
+//            ),
 
 
             'tasks' => array(
@@ -474,6 +487,41 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'comment' => 'Synch to outlook?  (Meta-Data only)',
                 'studio' => 'true',
             ),
+            'eventregistrations' => array(
+                'name' => 'eventregistrations',
+                'vname' => 'LBL_EVENTREGISTRATOINS_LINK',
+                'type' => 'link',
+                'relationship' => 'eventregistration_contact_rel',
+                'source' => 'non-db',
+            ),
+            'degree1' => array(
+                'name' => 'degree1',
+                'vname' => 'LBL_DEGREE1',
+                'type' => 'varchar'
+            ),
+            'degree2' => array(
+                'name' => 'degree2',
+                'vname' => 'LBL_DEGREE2',
+                'type' => 'varchar'
+            ),
+            'title_dd' => array(
+                'name' => 'title_dd',
+                'vname' => 'LBL_TITLE_DD',
+                'type' => 'enum',
+                'options' => 'contacts_title_dom'
+            ),
+            'ext_id' => array(
+                'name' => 'ext_id',
+                'vname' => 'LBL_EXT_ID',
+                'type' => 'varchar',
+                'len' => 50
+            ),
+            'portal_user_id' => array(
+                'name' => 'portal_user_id',
+                'vname' => 'LBL_PORTAL_USER_ID',
+                'type' => 'varchar',
+                'len' => 36
+            )
         ),
     'indices' => array(
         array(
@@ -505,7 +553,7 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
             'name' => 'idx_cont_assigned',
             'type' => 'index',
             'fields' => array('assigned_user_id')
-        ),
+        )
 //	array(
 //		'name' => 'idx_cont_email1',
 //		'type' => 'index',
@@ -596,6 +644,18 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
             'rhs_key' => 'target_id',
             'relationship_type' => 'one-to-many',
             'relationship_role_column' => 'target_type',
+            'relationship_role_column_value' => 'Contacts'
+        ),
+        'contact_calls_parent' => array(
+            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
+            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Contacts'
+        ),
+        'contact_meetings_parent' => array(
+            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
+            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
         )
     ),

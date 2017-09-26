@@ -149,7 +149,7 @@ $dictionary['Email'] = array(
 		'from_addr_name' => array (
 			'name' => 'from_addr_name',
 			'type' => 'varchar',
-			'vname' => 'from_addr_name',
+			'vname' => 'LBL_FROM',
 			'source'=> 'non-db',
 		),
 		'reply_to_addr' => array (
@@ -161,19 +161,19 @@ $dictionary['Email'] = array(
 		'to_addrs_names' => array (
 			'name' => 'to_addrs_names',
 			'type' => 'varchar',
-			'vname' => 'to_addrs_names',
+			'vname' => 'LBL_TO',
 			'source'=> 'non-db',
 		),
 		'cc_addrs_names' => array (
 			'name' => 'cc_addrs_names',
 			'type' => 'varchar',
-			'vname' => 'cc_addrs_names',
+			'vname' => 'LBL_CC',
 			'source'=> 'non-db',
 		),
 		'bcc_addrs_names' => array (
 			'name' => 'bcc_addrs_names',
 			'type' => 'varchar',
-			'vname' => 'bcc_addrs_names',
+			'vname' => 'LBL_BCC',
 			'source'=> 'non-db',
 		),
 		'raw_source' => array (
@@ -297,7 +297,8 @@ $dictionary['Email'] = array(
 
 		'parent_name' => array (
 			'name' => 'parent_name',
-			'type' => 'varchar',
+            'type' => 'parent',
+			'vname' => 'LBL_RELATED_TO',
 			'reportable'=>false,
 			'source'=> 'non-db',
 		),
@@ -377,7 +378,7 @@ $dictionary['Email'] = array(
 			'vname'			=> 'LBL_EMAILS_PROJECT_REL',
 			'type'			=> 'link',
 			'relationship'	=> 'emails_projects_rel',
-			'module'		=> 'Project',
+			'module'		=> 'Projects',
 			'bean_name'		=> 'Project',
 			'source'		=> 'non-db',
 		),
@@ -386,7 +387,7 @@ $dictionary['Email'] = array(
 			'vname'			=> 'LBL_EMAILS_PROJECT_TASK_REL',
 			'type'			=> 'link',
 			'relationship'	=> 'emails_project_task_rel',
-			'module'		=> 'ProjectTask',
+			'module'		=> 'ProjectTasks',
 			'bean_name'		=> 'ProjectTask',
 			'source'		=> 'non-db',
 		),

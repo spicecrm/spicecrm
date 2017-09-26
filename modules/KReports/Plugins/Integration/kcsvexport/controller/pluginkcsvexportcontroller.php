@@ -44,7 +44,8 @@ class pluginkcsvexportcontroller {
             $dynamicolsOverride = html_entity_decode($requestParams['dynamicols'], ENT_QUOTES, 'UTF-8');
 
         // force Download
-        $filename = "kreporter.csv";
+        //$filename = "kreporter.csv";
+        $filename = preg_replace("/(\W)/", "", $thisReport->name. "_" . date("Ymd_His") . ".csv");
         header('Content-type: application/ms-excel');
         header('Content-Disposition: attachment; filename=' . $filename);
 

@@ -72,6 +72,34 @@ $dictionary['EmailTemplate'] = array(
 			'dbType' => 'id',
 			'comment' => 'User who last modified record'
 		),
+        //begin workaround maretval 2017-09-21  to terminate error when using default template in Vardefs
+        //which will built wrong defined relationships since table name
+        // for EmailTemplates module is email_templates and not emailtemplates
+        'modified_by_name' => array (
+            'name' => 'modified_by_name',
+            'vname' => 'LBL_MODIFIED_NAME',
+            'type' => 'relate',
+            'reportable' => false,
+            'source' => 'non-db',
+            'rname' => 'user_name',
+            'table' => 'users',
+            'id_name' => 'modified_user_id',
+            'module' => 'Users',
+            'link' => 'modified_user_link',
+            'duplicate_merge' => 'disabled',
+            'massupdate' => false,
+        ),
+        'modified_user_link' => array (
+            'name' => 'modified_user_link',
+            'type' => 'link',
+            'relationship' => 'emailtemplates_modified_user',
+            'vname' => 'LBL_MODIFIED_USER',
+            'link_type' => 'one',
+            'module' => 'Users',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+        ),
+		//end
 		'created_by' => array(
 			'name' => 'created_by',
 			'vname' => 'LBL_CREATED_BY',
@@ -79,6 +107,35 @@ $dictionary['EmailTemplate'] = array(
 			'len'=> '36',
 			'comment' => 'User who created record'
 		),
+        //begin workaround maretval 2017-09-21  to terminate error when using default template in Vardefs
+        //which will built wrong defined relationships since table name
+        // for EmailTemplates module is email_templates and not emailtemplates
+        'created_by_name' => array (
+            'name' => 'created_by_name',
+            'vname' => 'LBL_CREATED',
+            'type' => 'relate',
+            'reportable' => false,
+            'link' => 'created_by_link',
+            'rname' => 'user_name',
+            'source' => 'non-db',
+            'table' => 'users',
+            'id_name' => 'created_by',
+            'module' => 'Users',
+            'duplicate_merge' => 'disabled',
+            'importable' => 'false',
+            'massupdate' => false,
+        ),
+        'created_by_link' => array (
+            'name' => 'created_by_link',
+            'type' => 'link',
+            'relationship' => 'emailtemplates_created_by',
+            'vname' => 'LBL_CREATED_USER',
+            'link_type' => 'one',
+            'module' => 'Users',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+        ),
+        //end
 		'published' => array(
 			'name' => 'published',
 			'vname' => 'LBL_PUBLISHED',
@@ -116,7 +173,7 @@ $dictionary['EmailTemplate'] = array(
 		),
 		'body_html' => array(
 			'name' => 'body_html',
-			'vname' => 'LBL_PLAIN_TEXT',
+			'vname' => 'LBL_BODY_HTML',
 			'type' => 'html',
 			'comment' => 'HTML formatted email body to be used in resulting email'
 		),
@@ -191,23 +248,27 @@ $dictionary['EmailTemplate'] = array(
 	),
 	'indices' => array(
 		array(
-			'name' => 'email_templatespk',
-			'type' =>'primary',
-			'fields'=>array('id')
-		),
-		array(
 			'name' => 'idx_email_template_name',
 			'type'=>'index',
 			'fields'=>array('name')
 		)
 	),
 	'relationships' => array(
-	'emailtemplates_assigned_user' =>
-       array('lhs_module'=> 'Users', 'lhs_table'=> 'users', 'lhs_key' => 'id',
-       'rhs_module'=> 'EmailTemplates' , 'rhs_table'=> 'email_templates', 'rhs_key' => 'assigned_user_id',
-       'relationship_type'=>'one-to-many')
-	),
+        'emailtemplates_assigned_user' =>
+            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+                'rhs_module' => 'EmailTemplates', 'rhs_table' => 'email_templates', 'rhs_key' => 'assigned_user_id',
+                'relationship_type' => 'one-to-many'),
+        //begin workaround maretval 2017-09-21  to terminate error when using default template in Vardefs
+        'emailtemplates_modified_user' =>
+            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+                'rhs_module' => 'EmailTemplates', 'rhs_table' => 'email_templates', 'rhs_key' => 'modified_user_id',
+                'relationship_type' => 'one-to-many'),
+        'emailtemplates_created_by' =>
+            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+                'rhs_module' => 'EmailTemplates', 'rhs_table' => 'email_templates', 'rhs_key' => 'created_by',
+                'relationship_type' => 'one-to-many')
+        //end
+    ),
 );
 
-VardefManager::createVardef('EmailTemplates','EmailTemplate', array(
-));
+VardefManager::createVardef('EmailTemplates','EmailTemplate', array('assignable'));

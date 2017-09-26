@@ -245,6 +245,21 @@ $dictionary['InboundEmail'] = array('table' => 'inbound_email', 'comment' => 'In
 			'reportable'=>false,
 			'comment' => 'Unique identifier'
 		),
+        'processing_file' => array (
+            'name' => 'processing_file',
+            'vname' => 'LBL_PROCESSING_FILE',
+            'type' => 'varchar'
+        ),
+        'processing_class' => array (
+            'name' => 'processing_class',
+            'vname' => 'LBL_PROCESSING_CLASS',
+            'type' => 'varchar'
+        ),
+        'processing_function' => array (
+            'name' => 'processing_function',
+            'vname' => 'LBL_PROCESSING_FUNCTION',
+            'type' => 'varchar'
+        ),
 	), /* end fields() */
 	'indices' => array (
 		array(

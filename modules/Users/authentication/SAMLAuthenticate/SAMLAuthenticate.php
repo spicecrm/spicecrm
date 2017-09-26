@@ -58,7 +58,7 @@ class SAMLAuthenticate extends SugarAuthenticate {
 	 * @return SAMLAuthenticate
 	 */
 	function SAMLAuthenticate(){
-		parent::SugarAuthenticate();
+		parent::__construct();
 	}
 
     /**

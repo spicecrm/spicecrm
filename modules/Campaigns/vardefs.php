@@ -242,7 +242,6 @@ $dictionary['Campaign'] = array ('audited'=>true,
             'link_class' => 'ProspectLink',
             'link_file' => 'modules/Campaigns/ProspectLink.php'
         ),
-
         'opportunities'=> array (
             'name' => 'opportunities',
             'type' => 'link',
@@ -269,6 +268,30 @@ $dictionary['Campaign'] = array ('audited'=>true,
             'link_file' => 'modules/Campaigns/ProspectLink.php'
         ),
 
+		// non db fields for campaign log
+        'activity_type' => array (
+            'name' => 'activity_type',
+            'vname' => 'LBL_ACTIVITY_TYPE',
+            'type' => 'enum',
+            'options'=>'campainglog_activity_type_dom',
+            'len' => 100,
+            'comment' => 'The activity that occurred (e.g., Viewed Message, Bounced, Opted out)',
+			'source' => 'non-db'
+        ),
+        'activity_date' => array (
+            'name' => 'activity_date',
+            'vname' => 'LBL_ACTIVITY_DATE',
+            'type' => 'datetime',
+            'comment' => 'The date the activity occurred',
+            'source' => 'non-db'
+        ),
+        'eventregistrations'=> array (
+            'name' => 'eventregistrations',
+            'vname' => 'LBL_EVENTREGISTRATOINS_LINK',
+            'type' => 'link',
+            'relationship' => 'eventregistration_campaign_rel',
+            'source'=>'non-db',
+        ),
 
 	),
 	'indices' => array (

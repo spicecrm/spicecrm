@@ -403,6 +403,9 @@ else if( $focus->is_personal == '1')
 
 //else
 
+$xtpl->assign('PROCESSING_FILE', $focus->processing_file);
+$xtpl->assign('PROCESSING_CLASS', $focus->processing_class);
+$xtpl->assign('PROCESSING_FUNCTION', $focus->processing_function);
 
 $xtpl->parse("main");
 $xtpl->out("main");

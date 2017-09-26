@@ -117,8 +117,8 @@ class DocumentRevision extends SugarBean {
 		$this->disable_row_level_security =true; //no direct access to this module. 
 	}
 
-	function save($check_notify = false){	
-		$saveRet = parent::save($check_notify);
+	function save($check_notify = false, $fts_index_bean = true){
+		$saveRet = parent::save($check_notify, $fts_index_bean);
 
 		//update documents table. (not through save, because it causes a loop)
         // If we don't have a document_id, find it.
@@ -170,7 +170,7 @@ class DocumentRevision extends SugarBean {
 		$row = $this->db->fetchByAssoc($result);
 		if ($row != null) {
 			$this->document_name = $row['document_name'];
-            $this->document_name = '<a href="index.php?module=Documents&action=DetailView&record='.$this->document_id.'">'.$row['document_name'].'</a>';
+            //$this->document_name = '<a href="index.php?module=Documents&action=DetailView&record='.$this->document_id.'">'.$row['document_name'].'</a>';
 			$this->latest_revision = $row['revision'];	
 			$this->latest_revision_id = $row['document_revision_id'];
 

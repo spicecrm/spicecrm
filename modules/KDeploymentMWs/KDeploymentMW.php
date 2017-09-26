@@ -65,9 +65,9 @@ class KDeploymentMW extends SugarBean
                 }
                 $GLOBALS['kdeploymentmw_now'] = $row;
             }else{
-                //check if we have Maintenance Windows in 10 minutes
+                //check if we have Maintenance Windows in n minutes
                 $date_near = new DateTime('now',new DateTimeZone('UTC'));
-                $date_near->add(new DateInterval('PT10M'));
+                $date_near->add(new DateInterval('PT'.$sugar_config['kdeploymentmw_near_interval'].'M'));
                 if($from_date <= $date_near){
                     $GLOBALS['kdeploymentmw_near'] = $row;
                 }else{

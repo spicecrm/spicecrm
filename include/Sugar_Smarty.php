@@ -53,7 +53,7 @@ if(!defined('SUGAR_SMARTY_DIR'))
 class Sugar_Smarty extends SmartyBC
 {
     //BEGIN SMARTY3 UPDATE
-    public static $_tpl_vars = array();
+    public $_tpl_vars = array();
     public $_compile_id;
 
     //END

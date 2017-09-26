@@ -30,5 +30,12 @@ $mod_strings = array(
     'LBL_LIST_NAME' => 'Name',
     'LBL_FROM_DATE' => 'Window from',
     'LBL_TO_DATE' => 'to',
-    'LBL_MWSTATUS' => 'Status'
+    'LBL_MWSTATUS' => 'Status',
+    'LBL_DISABLE_CRON' => 'Disable cron',
+    'LBL_DISABLE_CRON_DESCRIPTION' => 'Running Jobs will be completed. Planned Jobs will NOT start',
+    'LBL_DISABLE_KREST' => 'Disable krest access',
+    'LBL_DISABLE_KREST_DESCRIPTION' => 'KREST calls only with admin credentials',
+    'LBL_DISABLE_LOGIN' => 'Disable login access',
+    'LBL_DISABLE_LOGIN_DESCRIPTION' => 'Login for Admins only',
+    'LBL_NOTIFIED' => 'User notification sent'
 );

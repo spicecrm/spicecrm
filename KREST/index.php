@@ -17,7 +17,7 @@
 // set error reporting to E_ERROR
 ini_set('error_reporting', 'E_ERROR');
 ini_set("display_errors", "off");
-header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: *');
 // initalize SLIM Framework
 require 'Slim/Slim.php';
@@ -32,6 +32,9 @@ $app->add(new \CorsSlim\CorsSlim());
 $app->mode = 'production';
 chdir(dirname(__FILE__) . '/../');
 define('sugarEntry', 'SLIM');
+
+// disrgeard a sessionid sent via cookie
+// unset($_COOKIE['PHPSESSID']);
 
 // initialize the Rest Manager
 require 'KREST/KRESTManager.php';
@@ -57,24 +60,29 @@ if ($KRestDirHandle) {
 }
 
 // check if we have extension in the local path
-$KRestDirHandle = opendir('./modules');
-if ($KRestDirHandle) {
-    while (($KRestNextDir = readdir($KRestDirHandle)) !== false) {
-        if ($KRestNextDir != '.' && $KRestNextDir != '..' && is_dir('./modules/' . $KRestNextDir) && file_exists('./modules/' . $KRestNextDir . '/KREST/extensions')) {
-            $KRestSubDirHandle = opendir('./modules/' . $KRestNextDir . '/KREST/extensions');
-            if ($KRestSubDirHandle) {
-                while (false !== ($KRestNextFile = readdir($KRestSubDirHandle))) {
-                    if (preg_match('/.php$/', $KRestNextFile)) {
-                        require_once('./modules/' . $KRestNextDir . '/KREST/extensions/' . $KRestNextFile);
+$checkRootPaths= ['include', 'modules', 'custom/modules'];
+foreach($checkRootPaths as $checkRootPath) {
+    $KRestDirHandle = opendir("./$checkRootPath");
+    if ($KRestDirHandle) {
+        while (($KRestNextDir = readdir($KRestDirHandle)) !== false) {
+            if ($KRestNextDir != '.' && $KRestNextDir != '..' && is_dir("./$checkRootPath/$KRestNextDir") && file_exists("./$checkRootPath/$KRestNextDir/KREST/extensions")) {
+                $KRestSubDirHandle = opendir("./$checkRootPath/$KRestNextDir/KREST/extensions");
+                if ($KRestSubDirHandle) {
+                    while (false !== ($KRestNextFile = readdir($KRestSubDirHandle))) {
+                        if (preg_match('/.php$/', $KRestNextFile)) {
+                            require_once("./$checkRootPath/$KRestNextDir/KREST/extensions/$KRestNextFile");
+                        }
                     }
                 }
             }
         }
     }
 }
-
 // authenticate
 $KRESTManager->authenticate();
+
+// specific handler for the files
+$KRESTManager->getProxyFiles();
 
 // SpiceCRM Deployment Maintenance Windows Check
 global $db, $timedate;
@@ -83,7 +91,7 @@ $res = $db->query("SELECT * FROM kdeploymentmws WHERE deleted = 0 AND from_date 
 while($row = $db->fetchByAssoc($res)){
     $logged_in_user = new User();
     $logged_in_user->retrieve($_SESSION['authenticated_user_id']);
-    if(!$logged_in_user->is_admin && !$KRESTManager->noAuthentication) {
+    if($row['disable_krest'] > 0 && !$logged_in_user->is_admin && !$KRESTManager->noAuthentication) {
         unset($_GET['PHPSESSID']);
         session_destroy();
         $to_date = $timedate->fromDb($row['to_date']);

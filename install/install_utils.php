@@ -773,6 +773,12 @@ function handleSugarConfig() {
         $sugar_config['dbconfigoption']                 = array_merge($sugar_config['dbconfigoption'], $_SESSION['setup_db_options']);
     }
 
+    $sugar_config['fts']['server'] = $_SESSION['fts_server'];
+    $sugar_config['fts']['port'] = $_SESSION['fts_port'];
+    $sugar_config['fts']['prefix'] = $_SESSION['fts_prefix'];
+    $sugar_config['fts']['loglevel'] = '2';
+    $sugar_config['fts']['schedulerpackagesize'] = 25000;
+
     $sugar_config['cache_dir']                      = $cache_dir;
     $sugar_config['default_charset']                = $mod_strings['DEFAULT_CHARSET'];
     $sugar_config['default_email_client']           = 'sugar';

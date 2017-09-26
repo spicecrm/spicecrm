@@ -139,7 +139,7 @@ Touched:
 - modules/Quotes/QuoteFormBase.php
 - modules/Contracts/Save.php
 - modules/EmailTemplates/EmailTemplateFormBase.php
-- modules/Project/Save.php
+- modules/Projects/Save.php
 - modules/Contacts/ContactFormBase.php
 - modules/ProspectLists/ProspectListFormBase.php
 - include/formbase.php

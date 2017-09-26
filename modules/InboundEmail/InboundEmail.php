@@ -707,7 +707,7 @@ class InboundEmail extends SugarBean {
      * wraps SugarBean->save()
      * @param string ID of saved bean
      */
-    function save($check_notify = false)
+    function save($check_notify = false, $fts_index_bean = true)
     {
         // generate cache table for email 2.0
         $multiDImArray = $this->generateMultiDimArrayFromFlatArray(explode(",", $this->mailbox), $this->retrieveDelimiter());
@@ -720,7 +720,7 @@ class InboundEmail extends SugarBean {
         if (!empty($this->email_password)) {
             $this->email_password = blowfishEncode(blowfishGetKey('InboundEmail'), $this->email_password);
         }
-        $ret = parent::save($check_notify);
+        $ret = parent::save($check_notify, $fts_index_bean);
         return $ret;
     }
 

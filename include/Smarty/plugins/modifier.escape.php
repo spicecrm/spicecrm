@@ -91,6 +91,9 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null, $
                 }
             }
 
+        case 'htmlentitydecode':
+            return html_entity_decode($string, ENT_QUOTES, $char_set);
+
         case 'url':
             return rawurlencode($string);
 

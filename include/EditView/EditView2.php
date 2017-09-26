@@ -279,6 +279,18 @@ class EditView
             $this->requiredFirst();
         }
 
+        // BEGMOD KORGOBJECTS
+        // see if bean is managed ... if yes create the object and add template
+        if (!empty($GLOBALS['KAuthAccessController'])) {
+            if ($GLOBALS['KAuthAccessController']->selfOrgManaged($GLOBALS['beanList'][$this->module])) {
+                require_once('modules/KOrgObjects/KOrgObject.php');
+                $this->korgObject = new KOrgObject();
+                $this->korgObject->getOrgManagementPanel($this->module, $this->defs, $this->view);
+            }
+        }
+        // ENDMOD KORGOBJECTS
+
+
         $maxColumns = isset($this->defs['templateMeta']['maxColumns']) ? $this->defs['templateMeta']['maxColumns'] : 2;
         $panelCount = 0;
         static $itemCount = 100; //Start the generated tab indexes at 100 so they don't step on custom ones.
@@ -733,6 +745,18 @@ class EditView
         $this->th->ss->assign('SHOW_VCR_CONTROL', $this->showVCRControl);
 
         $str = $this->showTitle($showTitle);
+
+        // BEGMOD KORGOBJECTS
+        // see if bean is managed ... if yes create the object and add template
+        if (!empty($GLOBALS['KAuthAccessController'])) {
+            if ($GLOBALS['KAuthAccessController']->selfOrgManaged($GLOBALS['beanList'][$this->module])) {
+                require_once('modules/KOrgObjects/KOrgObject.php');
+                $this->korgObject = new KOrgObject();
+                if (method_exists($this->korgObject, 'get' . $this->view . 'Data'))
+                    $this->korgObject->{'get' . $this->view . 'Data'}($this->module, $this->focus, $this->th->ss);
+            }
+        }
+        // ENDMOD KORGOBJECTS
 
         //Use the output filter to trim the whitespace
         $this->th->ss->load_filter('output', 'trimwhitespace');

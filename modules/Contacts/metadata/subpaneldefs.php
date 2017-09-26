@@ -237,7 +237,7 @@ $layout_defs['Contacts'] = array(
 		),
 		'project' => array(
 			'order' => 110,
-			'module' => 'Project',
+			'module' => 'Projects',
 			'sort_order' => 'asc',
 			'sort_by' => 'name',
 			'get_subpanel_data' => 'project',
@@ -256,6 +256,15 @@ $layout_defs['Contacts'] = array(
 			'get_subpanel_data'=>'campaigns',
 			'subpanel_name' => 'ForTargets',
 			'title_key' => 'LBL_CAMPAIGN_LIST_SUBPANEL_TITLE',
+		),
+		'eventregistrations' => array(
+			'order' => 70,
+			'module' => 'EventRegistrations',
+			'sort_order' => 'desc',
+			'sort_by' => 'date_entered',
+			'get_subpanel_data' => 'eventregistrations',
+			'subpanel_name' => 'ForContacts',
+			'title_key' => 'LBL_EVENTREGISTRATIONS_SUBPANEL_TITLE',
 		),
 	),
 );

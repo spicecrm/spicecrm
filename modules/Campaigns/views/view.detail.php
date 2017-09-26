@@ -122,7 +122,7 @@ class CampaignsViewDetail extends ViewDetail {
         if (!empty($alltabs)) {
             //iterate through list, and filter out all but 3 subpanels
             foreach ($alltabs as $key=>$name) {
-                if ($name != 'prospectlists' && $name!='emailmarketing' && $name != 'tracked_urls') {
+                if ($name != 'prospectlists' && $name!='emailmarketing' && $name != 'tracked_urls' && $name!='eventregistrations') {
                     //exclude subpanels that are not prospectlists, emailmarketing, or tracked urls
                     $subpanel->subpanel_definitions->exclude_tab($name);
                 }   
@@ -133,7 +133,12 @@ class CampaignsViewDetail extends ViewDetail {
                 $subpanel->subpanel_definitions->exclude_tab('emailmarketing');
                 // Bug #49893  - 20120120 - Captivea (ybi) - Remove trackers subpanels if not on an email/newsletter campaign (useless subpannl)
                 $subpanel->subpanel_definitions->exclude_tab('tracked_urls');
-            }                       
+            }
+            //only show registrations subpanel for event campaigns
+            if ($this->bean->campaign_type != 'Event') {
+                //exclude emailmarketing subpanel if not on an email or newsletter campaign
+                $subpanel->subpanel_definitions->exclude_tab('eventregistrations');
+            }
         }
         //show filtered subpanel list
         echo $subpanel->display();    

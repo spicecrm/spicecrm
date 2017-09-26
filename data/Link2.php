@@ -405,6 +405,10 @@ class Link2 {
             $this->load();
         }
 
+        if(count($this->relationship_fields)>0){
+            $params['relationship_fields'] = $this->relationship_fields;
+        }
+
         $rows = $this->rows;
         //If params is set, we are doing a query rather than a complete load of the relationship
         if (!empty($params)) {
@@ -440,6 +444,12 @@ class Link2 {
                 //20reasons .. add the relid
                 if($vals['relid'])
                     $result[$id]->relid = $vals['relid'];
+
+                foreach ($this->relationship_fields as $field => $data) {
+                    if ($data['map']) {
+                        $result[$id]->{$data['map']} = $vals[$field];
+                    }
+                }
             }
 
             //If we did a compelte load, cache the result in $this->beans
@@ -450,6 +460,19 @@ class Link2 {
         }
 
         return $result;
+    }
+
+
+    function getBeanCount($params = array()) {
+        //Some depricated code attempts to pass in the old format to getBeans with a large number of useless paramters.
+        //reset the parameters if they are not in the new array format.
+    	if (!is_array($params))
+            $params = array();
+
+        if (!$this->loaded && empty($params)) {
+            $this->load();
+        }
+        return $this->relationship->getCount($this, $params);
     }
 
     /**

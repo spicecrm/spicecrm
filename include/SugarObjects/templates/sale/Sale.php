@@ -83,7 +83,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 	}
 
  	
- 	function save($check_notify = FALSE) {
+ 	function save($check_notify = FALSE, $fts_index_bean = TRUE) {
  		//"amount_usdollar" is really amount_basecurrency. We need to save a copy of the amount in the base currency.
 		if(isset($this->amount) && !number_empty($this->amount)){
             if (!number_empty($this->currency_id))
@@ -98,7 +98,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 			}
 		}
 		
-		return parent::save($check_notify);
+		return parent::save($check_notify, $fts_index_bean);
  	}
  }
 ?>

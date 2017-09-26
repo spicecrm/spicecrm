@@ -88,12 +88,12 @@ class Task extends SugarBean {
 
 	var $new_schema = true;
 
-    function save($check_notify = FALSE)
+    function save($check_notify = FALSE, $fts_index_bean = TRUE)
     {
         if (empty($this->status) ) {
             $this->status = $this->getDefaultStatus();
         }
-        return parent::save($check_notify);
+        return parent::save($check_notify, $fts_index_bean);
     }
 
 	function get_summary_text()

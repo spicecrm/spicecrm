@@ -21,6 +21,20 @@ class SpiceFTSUtils
             'type' => 'string',
             'index' => 'not_analyzed'
         ),
+        'modified_by_name' => array(
+            'type' => 'string'
+        ),
+        'modified_user_id' => array(
+            'type' => 'string',
+            'index' => 'not_analyzed'
+        ),
+        'created_by_name' => array(
+            'type' => 'string'
+        ),
+        'created_by' => array(
+            'type' => 'string',
+            'index' => 'not_analyzed'
+        ),
         'date_entered' => array(
             'type' => 'date',
             'index' => 'not_analyzed',
@@ -41,8 +55,24 @@ class SpiceFTSUtils
             $modulePropertiesarray = json_decode(html_entity_decode($moduleProperties['ftsfields']), true);
             $seed = BeanFactory::getBean($module);
             foreach ($modulePropertiesarray as $modulePropertyIndex => $moduleProperty) {
-                $modulePropertiesarray[$modulePropertyIndex]['indexfieldname'] = SpiceFTSUtils::getFieldIndexName($seed, $moduleProperty['path']);
+                $modulePropertiesarray[$modulePropertyIndex]['indexfieldname'] = isset($moduleProperty['indexedname']) ? $moduleProperty['indexedname'] : SpiceFTSUtils::getFieldIndexName($seed, $moduleProperty['path']);
                 $modulePropertiesarray[$modulePropertyIndex]['metadata'] = SpiceFTSUtils::getFieldIndexParams($seed, $moduleProperty['path']);
+            }
+
+            $seed = BeanFactory::getBean($module);
+            if(method_exists($seed, 'add_fts_metadata')){
+                $addFields = $seed->add_fts_metadata();
+                foreach($addFields as $addFieldName => $addField){
+                    $modulePropertiesarray[] = array(
+                        'fieldid' =>  create_guid(),
+                        'fieldname' =>  $addFieldName,
+                        'indexfieldname' =>  $addFieldName,
+                        'search' =>  $addField['search'],
+                        'indextype' =>  $addField['type'],
+                        'aggregate' =>  $addField['aggregate'],
+                        'aggregatesize' =>  $addField['aggregatesize']
+                    );
+                }
             }
 
             return $modulePropertiesarray;
@@ -76,8 +106,10 @@ class SpiceFTSUtils
                     break;
                 case 'link':
                     $fieldName = !empty($fieldName) ? $fieldName . '->' . $pathRecordDetails[2] : $pathRecordDetails[2];
-                    $valueBean->load_relationship($pathRecordDetails[2]);
-                    $valueBean = BeanFactory::getBean($valueBean->{$pathRecordDetails[2]}->getRelatedModuleName());
+                    if($valueBean) {
+                        $valueBean->load_relationship($pathRecordDetails[2]);
+                        $valueBean = BeanFactory::getBean($valueBean->{$pathRecordDetails[2]}->getRelatedModuleName());
+                    }
                     break;
                 case 'field':
                     $fieldName = !empty($fieldName) ? $fieldName . '->' . $pathRecordDetails[1] : $pathRecordDetails[1];

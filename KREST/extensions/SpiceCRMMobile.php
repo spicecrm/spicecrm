@@ -31,7 +31,7 @@ $app->group('/mobile', function () use ($app, $KRESTManager) {
             $syncData = json_decode($app->request->getBody(), true);
             echo json_encode($controller->determineSync($beanName, $syncData));
         });
-        $app->group('/relationship/:tablename', function ($tablename) use ($app, $KRESTManager) {
+        $app->group('/relationship/:tablename', function () use ($app, $KRESTManager) {
             $app->post('/set', function ($tablename) use ($app, $KRESTManager) {
                 include 'KREST/handlers/spicecrmmobile.php';
                 $controller = new KRESTSpiceCRMMobileHandler();
@@ -64,13 +64,13 @@ $app->group('/mobile', function () use ($app, $KRESTManager) {
             echo json_encode($controller->syncQuicknotes($syncData));
         });
     });
-    $app->group('/reminder', function ($beanName, $beanId) use ($app) {
+    $app->group('/reminder', function () use ($app) {
         $app->get('', function () use ($app) {
             include 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
             $syncData = $app->request->get();
             echo json_encode($controller->getReminders($syncData));
-        });    
+        });
         $app->post('/:beanName/:beanId', function ($beanName, $beanId) use ($app) {
             $postBody = $body = $app->request->getBody();
             $postParams = $app->request->get();

@@ -475,8 +475,8 @@ if(!empty($sugar_demodata['emailtemplates_seed_data'])) {
 ///
 /// SEED DATA FOR PROJECT AND PROJECT TASK
 ///
-include_once('modules/Project/Project.php');
-include_once('modules/ProjectTask/ProjectTask.php');
+include_once('modules/Projects/Project.php');
+include_once('modules/ProjectTasks/ProjectTask.php');
 // Project: Audit Plan
 $project = new Project();
 $project->name = $sugar_demodata['project_seed_data']['audit']['name'];

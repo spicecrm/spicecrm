@@ -57,6 +57,12 @@ global $current_user;
 $current_user = new User();
 $current_user->getSystemUser();
 
+//do not run queued jobs if maintenance is active */
+if(isset($GLOBALS['kdeploymentmw_now']) && $GLOBALS['kdeploymentmw_now']['disable_cron'] > 0){
+    $GLOBALS['log']->debug('--------------------------------------------> at cron.php System is currently in Deployment Maintenance Window <--------------------------------------------');
+    exit;
+}
+
 $GLOBALS['log']->debug('--------------------------------------------> at cron.php <--------------------------------------------');
 $cron_driver = !empty($sugar_config['cron_class'])?$sugar_config['cron_class']:'SugarCronJobs';
 $GLOBALS['log']->debug("Using $cron_driver as CRON driver");

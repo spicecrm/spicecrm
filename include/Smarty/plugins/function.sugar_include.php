@@ -56,16 +56,19 @@ function smarty_function_sugar_include($params, &$smarty)
 {
     global $app_strings;
 
-    if(empty($params['file'])) return;
+    // bugfix proper include js files from metadata
+    // if(empty($params['file'])) return;
 
     if(isset($params['type']) && $params['type'] == 'php') {
 		if(!isset($params['file'])) {
-		   $smarty->trigger_error($app_strings['ERR_MISSING_REQUIRED_FIELDS'] . 'include');
+		   //$smarty->trigger_error($app_strings['ERR_MISSING_REQUIRED_FIELDS'] . 'include');
+            return;
 		} 
 		
 		$includeFile = $params['file'];
 		if(!file_exists($includeFile)) {
-		   $smarty->trigger_error($app_strings['ERR_NO_SUCH_FILE'] . ': ' . $includeFile);
+		   // $smarty->trigger_error($app_strings['ERR_NO_SUCH_FILE'] . ': ' . $includeFile);
+            return;
 		}
 		
 	    ob_start();

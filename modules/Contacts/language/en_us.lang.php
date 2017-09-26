@@ -242,6 +242,14 @@ $mod_strings = array (
     'LBL_EXPORT_PHONE_MOBILE' => 'Mobile Phone',
     // SNIP
     'LBL_CONTACT_HISTORY_SUBPANEL_TITLE' => 'Related Contacts\' Emails',
-    'LBL_USER_SYNC' => 'User Sync'
-)
-?>
+    'LBL_USER_SYNC' => 'User Sync',
+
+    'LBL_CONTACT_DATA' => 'Contacts Data',
+	'LBL_CONTACT_INTERESTS' => 'Interests',
+	'LBL_PERSONAL_INTERESTS' => 'Interests',
+
+    'LBL_DEGREE1' => 'Degree 1',
+    'LBL_DEGREE2' => 'Degree 2',
+    'LBL_TITLE_DD' => 'Function',
+    'LBL_EXT_ID' => 'external ID'
+);

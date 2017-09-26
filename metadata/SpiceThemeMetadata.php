@@ -47,7 +47,7 @@ $dictionary['spicefavorites'] = array(
 		),
 		array(
 			'name' => 'date_entered',
-			'type' => 'date'
+			'type' => 'datetime'
 		)
 	),
 	'indices' => array(
@@ -187,6 +187,15 @@ $dictionary['spiceattachments'] = array(
 			'len' => 150
 		),
 		array(
+			'name' => 'filesize',
+			'type' => 'float'
+		),
+		array(
+			'name' => 'filemd5',
+			'type' => 'varchar',
+            'len' => 32
+		),
+		array(
 			'name' => 'file_mime_type',
 			'type' => 'varchar',
 			'len' => 150
@@ -196,27 +205,40 @@ $dictionary['spiceattachments'] = array(
 			'type' => 'text'
 		),
 		array(
+			'name' => 'thumbnail',
+			'type' => 'text'
+		),
+		array(
 			'name' => 'deleted',
 			'type' => 'bool'
-		),
+		)
 	),
 	'indices' => array(
-		array(	'name'			=> 'tqn_idx2',
+		array(
+		    'name'			=> 'tqn_idx2',
 			'type'			=> 'unique',
 			'fields'		=> array('id'),
 		),
-		array(	'name'			=> 'tatusr_idx',
+		array(
+		    'name'			=> 'tatusr_idx',
 			'type'			=> 'index',
 			'fields'		=> array('user_id'),
 		),
-		array(	'name'			=> 'tatusrbean_idx',
+		array(
+		    'name'			=> 'tatusrbean_idx',
 			'type'			=> 'index',
 			'fields'		=> array('bean_type', 'bean_id'),
 		),
-		array(	'name'			=> 'tatselection_idx',
+		array(
+		    'name'			=> 'tatselection_idx',
 			'type'			=> 'index',
 			'fields'		=> array('bean_type', 'bean_id', 'user_id', 'deleted'),
 		),
+		array(
+		    'name'			=> 'tatmd5_idx',
+			'type'			=> 'index',
+			'fields'		=> array('filemd5', 'deleted'),
+		)
 	),
 
 );

@@ -19,7 +19,7 @@ if (!defined('sugarEntry') || !sugarEntry)
 global $dictionary;
 
 require_once('modules/KReports/utils.php');
-require_once('modules/ACL/ACLController.php');
+// require_once('modules/ACL/ACLController.php');
 
 // class for the query Array if we have multiple query we join
 class KReportQueryArray
@@ -420,7 +420,7 @@ class KReportQueryArray
                 }
             }
 
-            // revuild all select strings
+            // rebuild all select strings
             // first for root
             $this->queryArray['root']['kQuery']->build_select_string($totalJoinSegments);
             // then for all the joins
@@ -723,7 +723,7 @@ class KReportQuery
 
     function build_query_strings()
     {
-        if ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')
+        // if ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')
             $this->check_groupby($this->additionalGroupBy);
 
         $this->build_path();
@@ -943,6 +943,15 @@ class KReportQuery
                         }
                     }
                     break;
+                default:
+                    //by deault check ownwer clause
+                    if(!$current_user->is_admin && $this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL')  && ACLController::requireOwner($this->joinSegments['root:' . $this->root_module]['object']->module_dir, 'list')) {
+                        //2013-02-22 missing check if we have a wherestring at all
+                        if ($this->whereString != '')
+                            $this->whereString .= ' AND ';
+                        $this->whereString .= $this->rootGuid . '.assigned_user_id=\'' . $current_user->id . '\'';
+                    }
+                    break;
             }
         }
 
@@ -1124,10 +1133,13 @@ class KReportQuery
         // reset the Fiels Array
         $this->fieldArray = array();
 
+        //handle additional currency field in union (at least one of unioned modules uses a currency field)
+        //this creates an additional field dor select and crashes union query
+        $atLeast1CurrencyInSelect = false;
 
         // build select
         // 2016-11-23 added count select stzring into the swicth for mssql and oci8
-        if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')) {
+        if ($this->isGrouped /* && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/) {
             $this->selectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
             $this->countSelectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
         }
@@ -1152,6 +1164,11 @@ class KReportQuery
             $this->unionSelectString .= ', unionid';
 
             $this->fieldArray['unionid'] = 'unionid';
+
+            //check if one of the fields is currency. In that case add '-99' to select on line
+            foreach($this->listArray as $idx => $fielddef)
+                if($fielddef['type'] == 'currency' || $fielddef['overridetype'] == 'currency')
+                    $atLeast1CurrencyInSelect = true;
         }
 
         // select the ids for the various linked tables
@@ -1162,7 +1179,7 @@ class KReportQuery
             foreach ($unionJoinSegments as $thisAlias => $thisJoinIdData) {
                 if ($thisJoinIdData['unionid'] == $this->unionId) {
                     // this is for this join ... so we select the id
-                    if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8'))
+                    if ($this->isGrouped /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/)
                         $this->selectString .= ', MIN(' . $thisAlias . '.id) as ' . $thisAlias . 'id';
                     else
                         $this->selectString .= ', ' . $thisAlias . '.id as "' . $thisAlias . 'id"';
@@ -1187,7 +1204,7 @@ class KReportQuery
                 // 2011-12-29 check if Jointype is set
                 //if( $joinsegment['jointype'] != '')
                 //{
-                if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8'))
+                if ($this->isGrouped /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/)
                     $this->selectString .= ', MIN(' . $joinsegment['alias'] . '.id) as ' . $joinsegment['alias'] . 'id';
                 else
                     $this->selectString .= ', ' . $joinsegment['alias'] . '.id as "' . $joinsegment['alias'] . 'id"';
@@ -1312,7 +1329,8 @@ class KReportQuery
                 // 2010-12-18 handle currencies if value is set in vardefs
                 // 2011-03-28 handle curencies in any case
                 // 2012-11-04 also check the rootfieldNameMap
-                if (isset($this->joinSegments[$pathName]) && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'currency' || (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype']) && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] == 'currency')) || $this->rootfieldNameMap[$thisListEntry['fieldid']]['type'] == 'currency') {
+                // 2017-06-20 handle currencies in union if value is set in vardefs: see $atLeast1CurrencyInSelect
+                if (isset($this->joinSegments[$pathName]) && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'currency' || (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype']) && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] == 'currency')) || $this->rootfieldNameMap[$thisListEntry['fieldid']]['type'] == 'currency' || $atLeast1CurrencyInSelect) {
                     // if we have a currency id and no SQL function select the currency .. if we have an SQL fnction select -99 for the system currency
                     if (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id']) && ($thisListEntry['sqlfunction'] == '-' || strtoupper($thisListEntry['sqlfunction']) == 'SUM'))
                         $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id'] . " as '" . $thisListEntry['fieldid'] . "_curid'";
@@ -1674,6 +1692,12 @@ class KReportQuery
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-21 fixed custom sql function
                 // bug 2011-03-25 ... date handling no managed in client
+
+                // 2017/08/14 reset iof we have an array .. might be for multiple values
+                if(is_array($value)){
+                    $value = reset($value);
+                }
+
                 if ($this->fieldNameMap[$fieldid]['customFunction'] == '' && $this->fieldNameMap[$fieldid]['sqlFunction'] == '') {
                     switch ($this->fieldNameMap[$fieldid]['type']) {
                         case 'multienum':
@@ -1700,6 +1724,11 @@ class KReportQuery
                 $thisWhereString .= ' SOUNDS LIKE \'' . $value . '\'';
                 break;
             case 'notequal':
+                // 2017/08/14 reset iof we have an array .. might be for multiple values
+                if(is_array($value)){
+                    $value = reset($value);
+                }
+
                 $thisWhereString .= ' <> \'' . $value . '\'';
                 break;
             case 'greater':
@@ -2173,7 +2202,7 @@ class KReportQuery
         }
         if ($this->isGrouped)
             foreach ($this->listArray as $listArrayIndex => $thisList) {
-                if ($thisList['groupby'] == 'no' && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') && $this->evalSQLFunctions && ($thisList['sqlfunction'] == '' || $thisList['sqlfunction'] == '-'))
+                if ($thisList['groupby'] == 'no' && /*($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') &&*/ $this->evalSQLFunctions && ($thisList['sqlfunction'] == '' || $thisList['sqlfunction'] == '-'))
                     $this->listArray[$listArrayIndex]['sqlfunction'] = 'MIN';
             }
     }
@@ -2331,7 +2360,7 @@ class KReportQuery
                     }
                 }
             } else {
-                if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')) {
+                if ($this->isGrouped /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') */) {
                     if ($this->orderByFieldID)
                         $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
                     else

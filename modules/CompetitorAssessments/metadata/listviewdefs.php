@@ -31,8 +31,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $listViewDefs['CompetitorAssessments'] = array(
     'NAME' => array(
         'width'   => '30',
-        'label'   => 'LBL_COMPETITOR_NAME',
-        'link'    => false,
+        'label'   => 'LBL_COMPETITOR',
+        'link'    => true,
         'default' => true),
     'OPPORTUNITY_NAME' => array(
         'width'   => '20',

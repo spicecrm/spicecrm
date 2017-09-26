@@ -10,7 +10,7 @@ $KReportRestHandler = new KReporterRESTHandler();
 
 $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHandler) {
 
-    $app->group('/core', function ($plugin, $action) use ($app, $KRESTManager, $KReportRestHandler) {
+    $app->group('/core', function () use ($app, $KRESTManager, $KReportRestHandler) {
         $app->get('/whereinitialize', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             echo json_encode($restHandler->whereInitialize());
@@ -19,6 +19,11 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             $restHandler = new KReporterRESTHandler();
             $getParams = $app->request->get();
             echo json_encode($restHandler->getWhereOperators($getParams['path'], $getParams['grouping'], $getParams['designer']));
+        });
+        $app->get('/whereoperators/all', function () use ($app, $KRESTManager) {
+            $restHandler = new KReporterRESTHandler();
+            $getParams = $app->request->get();
+            echo json_encode($restHandler->getAllWhereOperators());
         });
         $app->get('/enumoptions', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
@@ -75,9 +80,24 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             $restHandler = new KReporterRESTHandler();
             echo json_encode($restHandler->getLabels());
         });
+
     });
-    
-    $app->group('/user', function ($plugin, $action) use ($app, $KRESTManager, $KReportRestHandler) {
+
+    $app->group('/securitygroups', function () use ($app, $KRESTManager, $KReportRestHandler) {
+        $app->post('/save', function () use ($app, $KReportRestHandler) {
+            $postBody = json_decode($app->request->getBody(), true);
+            echo json_encode($KReportRestHandler->saveSecurityGroups($postBody));
+        });
+        $app->get('/get/:report_id', function ($report_id) use ($app, $KRESTManager, $KReportRestHandler) {
+            $restHandler = new KReporterRESTHandler();
+            echo json_encode($restHandler->getSecurityGroups($report_id));
+        });
+
+    });
+
+
+
+    $app->group('/user', function () use ($app, $KRESTManager, $KReportRestHandler) {
         $app->get('/datetimeformat', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             echo json_encode($restHandler->get_user_datetime_format());
@@ -91,12 +111,12 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             $params = $app->request->get();
             echo json_encode($restHandler->get_users_list($params));
         });
-        
-    });
-    
-    
 
-    $app->group('/plugins', function ($plugin, $action) use ($app, $KReportRestHandler) {
+    });
+
+
+
+    $app->group('/plugins', function () use ($app, $KReportRestHandler) {
         $app->get('', function () use ($app, $KReportRestHandler) {
             $pluginManager = new KReportPluginManager();
 
@@ -124,14 +144,14 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             echo json_encode($pluginData);
         });
 
-        $app->group('/action/:plugin/:action', function ($plugin, $action) use ($app) {
+        $app->group('/action/:plugin/:action', function () use ($app) {
             $app->post('', function ($plugin, $action) use ($app) {
                 $pluginManager = new KReportPluginManager();
                 $getParams = $app->request->get();
-                
+
                 $formBody = $app->request->getBody();
                 $postBody = json_decode($formBody, true);
-                
+
                 if(!$postBody && $formBody != ''){
                     $formBody = urldecode($formBody);
                     $formBodyArray = explode('&', $formBody);
@@ -141,9 +161,9 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
                             $postBody[$itemArray[0]] = $itemArray[1];
                     }
                 }
-                
+
                 if(!$postBody) $postBody = array();
-                
+
                 //Only return if not null! In case of empty we get a null line in exports (csv, xlsx) and excel can't open file properly
                 //echo json_encode($pluginManager->processPluginAction($plugin, 'action_' . $action, array_merge($getParams,$postBody)));
                 $resultsPluginAction = $pluginManager->processPluginAction($plugin, 'action_' . $action, array_merge($getParams,$postBody));
@@ -166,15 +186,15 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
         echo json_encode($vizObject->getItem('', $thisReport, $vizData[1]['googlecharts']));
     });
     $app->group('/:reportId', function () use ($app, $KRESTManager, $KReportRestHandler) {
-        
-        $app->group('/snapshot', function ($reportId) use ($app, $KRESTManager) {
+
+        $app->group('/snapshot', function () use ($app, $KRESTManager) {
             $app->get('', function ($reportId) use ($app, $KRESTManager) {
                 $thisReport = new KReport();
                 $thisReport->retrieve($reportId);
                 $requestParams = $app->request->get();
                 echo json_encode($thisReport->getSnapshots($requestParams['withoutActual']));
             });
-            $app->group('/:snapshotId', function ($reportId, $snapshotId) use ($app, $KRESTManager) {
+            $app->group('/:snapshotId', function () use ($app, $KRESTManager) {
                 $app->delete('', function ($reportId, $snapshotId) use ($app, $KRESTManager) {
                     $thisReport = new KReport();
                     $thisReport->retrieve($reportId);
@@ -182,22 +202,22 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
                 });
             });
         });
-        
-        $app->group('/savedfilter', function ($reportId) use ($app, $KRESTManager, $KReportRestHandler) {
+
+        $app->group('/savedfilter', function () use ($app, $KRESTManager, $KReportRestHandler) {
             $app->get('', function ($reportId) use ($app, $KRESTManager, $KReportRestHandler) {
-                file_put_contents("sugarcrm.log", "savedfilter\n", FILE_APPEND);
+//                file_put_contents("sugarcrm.log", "savedfilter\n", FILE_APPEND);
                 $requestParams = $app->request->get();
                 $requestParams['reportid'] = $reportId;
                 echo json_encode($KReportRestHandler->getSavedFilters($requestParams));
             });
-            $app->group('/assigneduserid/:assigneduserid', function ($reportId, $assignedUserId) use ($app, $KRESTManager, $KReportRestHandler) {                
+            $app->group('/assigneduserid/:assigneduserid', function () use ($app, $KRESTManager, $KReportRestHandler) {
                 $app->get('', function ($reportId, $assignedUserId) use ($app, $KRESTManager, $KReportRestHandler) {
                     $requestParams = $app->request->get();
                     $requestParams = array('reportid' => $reportId, 'assigneduserid' => $assignedUserId, 'context' => $requestParams['context']);
                     echo json_encode($KReportRestHandler->getSavedFilters($requestParams));
                 });
             });
-            $app->group('/:savedfiltertId', function ($reportId, $savedfiltertId) use ($app, $KRESTManager, $KReportRestHandler) {
+            $app->group('/:savedfiltertId', function () use ($app, $KRESTManager, $KReportRestHandler) {
                 $app->delete('', function ($reportId, $savedfiltertId) use ($app, $KRESTManager, $KReportRestHandler) {
                     $KReportRestHandler->deleteSavedFilter($savedfiltertId);
                 });
@@ -228,55 +248,124 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
 //            echo json_encode($KReportRestHandler->getPresentation($reportId, $app->request->get()));
 //        });
 
-        $app->group('/visualization', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
+        $app->group('/visualization', function () use ($app, $KRESTManager, $KReportRestHandler) {
+            $app->post('', function ($reportId) use ($app, $KReportRestHandler) {
+                $requestParams = $app->request->get();
+                $postBody = json_decode($app->request->getBody(), true);
+                if(!is_array($requestParams))
+                    $requestParams = array();
+                if(is_array($postBody))
+                    $requestParams = array_merge($requestParams, $postBody);
+                echo json_encode($KReportRestHandler->getVisualization($reportId, $requestParams));
+            });
             $app->get('', function ($reportId) use ($app, $KReportRestHandler) {
                 echo json_encode($KReportRestHandler->getVisualization($reportId, $app->request->get()));
             });
-            $app->group('/dynamicoptions/:dynamicoptions', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
-                $app->get('', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
-                    
+//            $app->group('/dynamicoptions/:dynamicoptions', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
+//                $app->get('', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
+//
+//                    $requestParams = $app->request->get();
+//                    $requestParams['dynamicoptions'] = $dynamicoptions;
+//                    echo json_encode($KReportRestHandler->getVisualization($reportId, $requestParams));
+//                });
+//            });
+            //passing dynamicoptions in url may generate a far too long url and trigger a http 400 bad request
+            //pass dynamicoptions to post
+            $app->group('/dynamicoptions', function () use ($app, $KRESTManager, $KReportRestHandler) {
+                $app->post('', function ($reportId) use ($app, $KRESTManager, $KReportRestHandler) {
                     $requestParams = $app->request->get();
-                    $requestParams['dynamicoptions'] = $dynamicoptions;
+                    $postBody = json_decode($app->request->getBody(), true);
+                    if(!is_array($requestParams))
+                        $requestParams = array();
+                    if(is_array($postBody))
+                        $requestParams = array_merge($requestParams, $postBody);
+//                    if(isset($postBody['dynamicoptions']))
+//                        $requestParams['dynamicoptions'] = $postBody['dynamicoptions'];
+//                    if(isset($postBody['whereConditions']))
+//                        $requestParams['whereConditions'] = $postBody['whereConditions'];
                     echo json_encode($KReportRestHandler->getVisualization($reportId, $requestParams));
                 });
-            });
-        });
-  
-        $app->group('/presentation', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
-            $app->get('', function ($reportId) use ($app, $KReportRestHandler) {
-                echo json_encode($KReportRestHandler->getPresentation($reportId, $app->request->get()));
-            });
-            $app->group('/dynamicoptions/:dynamicoptions', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
-                $app->get('', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
+                //keep a get for UI and Sugar7....
+                $app->get('', function ($reportId) use ($app, $KRESTManager, $KReportRestHandler) {
                     $requestParams = $app->request->get();
-                    $requestParams['dynamicoptions'] = $dynamicoptions;
+                    $postBody = json_decode($app->request->getBody(), true);
+//                    if(isset($postBody['dynamicoptions']))
+//                        $requestParams['dynamicoptions'] = $postBody['dynamicoptions'];
+//                    if(isset($postBody['whereConditions']))
+//                        $requestParams['whereConditions'] = $postBody['whereConditions'];
+                    if(!is_array($requestParams))
+                        $requestParams = array();
+                    if(is_array($postBody))
+                        $requestParams = array_merge($requestParams, $postBody);
                     echo json_encode($KReportRestHandler->getPresentation($reportId, $requestParams));
                 });
             });
         });
-//        $app->group('/dynamicoptions', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
-//            $app->group('/:dynamicoptions', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
+
+        $app->group('/presentation', function () use ($app, $KRESTManager, $KReportRestHandler) {
+            $app->post('', function ($reportId) use ($app, $KReportRestHandler) {
+                $requestParams = $app->request->get();
+                $postBody = json_decode($app->request->getBody(), true);
+                if(!is_array($requestParams))
+                    $requestParams = array();
+                if(is_array($postBody))
+                    $requestParams = array_merge($requestParams, $postBody);
+                echo json_encode($KReportRestHandler->getPresentation($reportId, $requestParams));
+            });
+            $app->get('', function ($reportId) use ($app, $KReportRestHandler) {
+                echo json_encode($KReportRestHandler->getPresentation($reportId, $app->request->get()));
+            });
+//            $app->group('/dynamicoptions/:dynamicoptions', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
 //                $app->get('', function ($reportId, $dynamicoptions) use ($app, $KRESTManager, $KReportRestHandler) {
 //                    $requestParams = $app->request->get();
 //                    $requestParams['dynamicoptions'] = $dynamicoptions;
 //                    echo json_encode($KReportRestHandler->getPresentation($reportId, $requestParams));
 //                });
 //            });
-//        });
+            //passing dynamicoptions in url may generate a far too long url and trigger a http 400 bad request
+            //pass dynamicoptions to post
+            $app->group('/dynamicoptions', function () use ($app, $KRESTManager, $KReportRestHandler) {
+                $app->post('', function ($reportId) use ($app, $KRESTManager, $KReportRestHandler) {
+                    $requestParams = $app->request->get();
+                    $postBody = json_decode($app->request->getBody(), true);
+//                    if(isset($postBody['dynamicoptions']))
+//                        $requestParams['dynamicoptions'] = $postBody['dynamicoptions'];
+//                    if(isset($postBody['whereConditions']))
+//                        $requestParams['whereConditions'] = $postBody['whereConditions'];
+                    if(!is_array($requestParams))
+                        $requestParams = array();
+                    if(is_array($postBody))
+                        $requestParams = array_merge($requestParams, $postBody);
+                    echo json_encode($KReportRestHandler->getPresentation($reportId, $requestParams));
+                });
+                //keep a get for UI and Sugar7....
+                $app->get('', function ($reportId) use ($app, $KRESTManager, $KReportRestHandler) {
+                    $requestParams = $app->request->get();
+                    $postBody = json_decode($app->request->getBody(), true);
+                    if(!is_array($requestParams))
+                        $requestParams = array();
+                    if(is_array($postBody))
+                        $requestParams = array_merge($requestParams, $postBody);
+                    echo json_encode($KReportRestHandler->getPresentation($reportId, $requestParams));
+                });
+            });
+
+
+        });
     });
-    
-    
-    $app->group('/bucketmanager', function ($plugin, $action) use ($app, $KRESTManager, $KReportRestHandler) {
+
+
+    $app->group('/bucketmanager', function () use ($app, $KRESTManager, $KReportRestHandler) {
         $app->get('/enumfields', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             $getParams = $app->request->get();
             echo json_encode($restHandler->getEnumfields($getParams['modulename']));
-        });        
+        });
         $app->get('/enumfieldvalues', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             $getParams = $app->request->get();
             echo json_encode($restHandler->getEnumfieldvalues($getParams));
-        });                
+        });
         $app->get('/groupings', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             $getParams = $app->request->get();
@@ -296,13 +385,13 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             echo json_encode($KReportRestHandler->deleteGrouping($postBody));
         });
     });
-    
-    $app->group('/dlistmanager', function ($plugin, $action) use ($app, $KRESTManager, $KReportRestHandler) {
+
+    $app->group('/dlistmanager', function () use ($app, $KRESTManager, $KReportRestHandler) {
         $app->get('/dlists', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             $getParams = $app->request->get();
             echo json_encode($restHandler->getDLists());
-        });        
+        });
         $app->get('/users', function () use ($app, $KRESTManager) {
             $restHandler = new KReporterRESTHandler();
             $getParams = $app->request->get();
@@ -332,5 +421,32 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             echo json_encode($KReportRestHandler->deleteDList($postBody));
         });
     });
+
+    //KReporter Cockpit VIew
+    $app->group('/categoriesmanager', function () use ($app, $KRESTManager, $KReportRestHandler) {
+        $app->get('/categories', function () use ($app, $KRESTManager) {
+            $restHandler = new KReporterRESTHandler();
+            $getParams = $app->request->get();
+            echo json_encode($restHandler->getCategories($getParams));
+        });
+        $app->get('/cockpit', function () use ($app, $KRESTManager) {
+            $restHandler = new KReporterRESTHandler();
+            $getParams = $app->request->get();
+            echo json_encode($restHandler->getCockpit());
+        });
+        $app->post('/savenewcategory', function () use ($app, $KReportRestHandler) {
+            $postBody = json_decode($app->request->getBody(), true);
+            echo json_encode($KReportRestHandler->saveNewCategory($postBody));
+        });
+        $app->post('/updatecategory', function () use ($app, $KReportRestHandler) {
+            $postBody = json_decode($app->request->getBody(), true);
+            echo json_encode($KReportRestHandler->updateCategory($postBody));
+        });
+        $app->post('/deletecategory', function () use ($app, $KReportRestHandler) {
+            $postBody = json_decode($app->request->getBody(), true);
+            echo json_encode($KReportRestHandler->deleteCategory($postBody));
+        });
+    });
+
 
 });

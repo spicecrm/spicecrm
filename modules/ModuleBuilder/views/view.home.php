@@ -56,7 +56,7 @@ class ViewHome extends SugarView
 		global $mod_strings;
 		$smarty = new Sugar_Smarty();
 		$smarty->assign('title' , $mod_strings['LBL_DEVELOPER_TOOLS']);
-		$smarty->assign('question', $mod_strings['LBL_QUESTION_EDITOR']);
+		$smarty->assign('QuestionOption', $mod_strings['LBL_QUESTION_EDITOR']);
 		$smarty->assign('defaultHelp', 'mainHelp');
 		$this->generateHomeButtons();
 		$smarty->assign('buttons', $this->buttons);

@@ -80,7 +80,7 @@ class Tracker extends SugarBean
      * @param mixed module_name Optional - return only items from this module, a string of the module or array of modules
      * @return array list
      */
-    function get_recently_viewed($user_id, $modules = '')
+    function get_recently_viewed($user_id, $modules = '', $count = 10)
     {
         $path = 'modules/Trackers/BreadCrumbStack.php';
         if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
@@ -106,7 +106,7 @@ class Tracker extends SugarBean
 	        }
         }     
 
-        $list = $breadCrumb->getBreadCrumbList($modules);
+        $list = $breadCrumb->getBreadCrumbList($modules, $count);
         $GLOBALS['log']->info("Tracker: retrieving ".count($list)." items");
         return $list;
     }

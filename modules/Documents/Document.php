@@ -129,6 +129,9 @@ class Document extends SugarBean {
             $Revision->revision = $this->revision;
             $Revision->document_id = $this->id;
             $Revision->filename = $this->filename;
+            $Revision->assigned_user_id = $this->assigned_user_id;
+            $Revision->created_by = $this->created_by;
+
 
             if(isset($this->file_ext))
             {
@@ -165,12 +168,17 @@ class Document extends SugarBean {
                 $GLOBALS['log']->debug("Attempting to copy from $old_name to $new_name");
                 copy($old_name, $new_name);
                 $createRevision = true;
+            } else if(!empty($this->filename) && file_exists("upload://{$this->id}")){
+                $old_name = "upload://{$this->id}";
+                $new_name = "upload://{$Revision->id}";
+                copy($old_name, $new_name);
+                $this->name = $this->document_name;
             }
 
             // For external documents, we just need to make sure we have a doc_id
-            if ( !empty($this->doc_id) && $this->doc_type != 'Sugar' ) {
+            //if ( !empty($this->doc_id) && $this->doc_type != 'Sugar' ) {
                 $createRevision = true;
-            }
+            //}
 
             if ( $createRevision ) {
                 $Revision->save();
@@ -236,7 +244,10 @@ class Document extends SugarBean {
 
             if(isset($row['filename']))$this->filename = $row['filename'];
             //$this->latest_revision = $row['revision'];
-            if(isset($row['revision']))$this->revision = $row['revision'];
+            if(isset($row['revision'])){
+                $this->revision = $row['revision'];
+                $this->next_revision = $row['revision'] + 1;
+            }
 
             //image is selected based on the extension name <ext>_icon_inline, extension is stored in document_revisions.
             //if file is not found then default image file will be used.

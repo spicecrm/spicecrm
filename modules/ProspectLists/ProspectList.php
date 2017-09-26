@@ -331,9 +331,9 @@ FROM prospect_lists_prospects plp
 		return $the_where;
 	}
 
-	function save($check_notify = FALSE) {
+	function save($check_notify = FALSE, $fts_index_bean = TRUE) {
 
-		return parent::save($check_notify);
+		return parent::save($check_notify, $fts_index_bean);
 
 	}
 

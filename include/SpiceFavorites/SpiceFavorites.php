@@ -1,8 +1,10 @@
 <?php
 
-class SpiceFavorites {
+class SpiceFavorites
+{
 
-    public static function get_favorite($beanModule, $beanId) {
+    public static function get_favorite($beanModule, $beanId)
+    {
         global $db, $current_user;
 
         if ($db->fetchByAssoc($db->query("SELECT beanid FROM spicefavorites WHERE bean='$beanModule' AND beanid='$beanId' AND user_id='$current_user->id'")))
@@ -11,13 +13,15 @@ class SpiceFavorites {
             return false;
     }
 
-    public static function set_favorite($beanModule, $beanId) {
+    public static function set_favorite($beanModule, $beanId)
+    {
         global $db, $current_user;
         if (!self::get_favorite($beanModule, $beanId))
-            $db->query("INSERT INTO spicefavorites (bean, beanid, user_id, date_entered) VALUES('$beanModule', '$beanId', '$current_user->id', CURRENT_DATE)");
+            $db->query("INSERT INTO spicefavorites (bean, beanid, user_id, date_entered) VALUES('$beanModule', '$beanId', '$current_user->id', NOW())");
     }
 
-    public static function delete_favorite($beanModule, $beanId) {
+    public static function delete_favorite($beanModule, $beanId)
+    {
         global $db, $current_user;
         $db->query("DELETE FROM spicefavorites WHERE bean='$beanModule' AND beanid='$beanId' AND user_id='$current_user->id'");
     }
@@ -27,7 +31,8 @@ class SpiceFavorites {
      * @param $beanId
      * @return int
      */
-    public static function isBeanFavorite($beanId) {
+    public static function isBeanFavorite($beanId)
+    {
         global $db, $current_user;
         $favResult = $db->query("SELECT * FROM spicefavorites WHERE beanid='$beanId' AND user_id='$current_user->id'");
 
@@ -38,18 +43,19 @@ class SpiceFavorites {
     }
 
 
-    public static function getFavoritesRaw($beanModule = '', $lastN = 10) {
+    public static function getFavoritesRaw($beanModule = '', $lastN = 10)
+    {
         global $current_user, $db, $beanFiles, $beanList;
         $favorites = array();
 
         $moduleWhere = '';
-        if($beanModule != '')
+        if ($beanModule != '')
             $moduleWhere = " AND bean='$beanModule' ";
 
-        if ($GLOBALS['db']->dbType == 'mssql')
-            $favoritesRes = $db->query("SELECT TOP $lastN * FROM spicefavorites WHERE user_id='$current_user->id' $moduleWhere ORDER BY 'date_entered' DESC");
-        else
-            $favoritesRes = $db->limitQuery("SELECT * FROM spicefavorites WHERE user_id='$current_user->id' $moduleWhere ORDER BY 'date_entered' DESC", 0, $lastN);
+        if ($lastN !== 0) {
+            $favoritesRes = $db->limitQuery("SELECT * FROM spicefavorites WHERE user_id='$current_user->id' $moduleWhere ORDER BY date_entered DESC", 0, $lastN);
+        } else
+            $favoritesRes = $db->query("SELECT * FROM spicefavorites WHERE user_id='$current_user->id' $moduleWhere ORDER BY date_entered DESC");
 
         $thisBean = null;
 
@@ -77,12 +83,12 @@ class SpiceFavorites {
      * @param int $lastN
      * @return mixed|string|void
      */
-    public static function getFavorites($beanModule = '',$lastN = 10) {
+    public static function getFavorites($beanModule = '', $lastN = 10)
+    {
         global $current_user, $db, $beanFiles, $beanList;
 
         $favorites = self::getFavoritesRaw($beanModule);
-        if(count($favorites) > 0)
-        {
+        if (count($favorites) > 0) {
             $ss = new Sugar_Smarty();
             $ss->assign('items', $favorites);
             $ss->assign('title', 'Favorites');
@@ -92,13 +98,15 @@ class SpiceFavorites {
         return '';
     }
 
-    public static function getFavoritesCountForSideBar($lastN = 10) {
-       $favorites = self::getFavoritesRaw();
-       return count($favorites);
+    public static function getFavoritesCountForSideBar($lastN = 10)
+    {
+        $favorites = self::getFavoritesRaw();
+        return count($favorites);
     }
 
-    public static function getBeanListQueryParts($thisBean, $favoritesOnly) {
-        
+    public static function getBeanListQueryParts($thisBean, $favoritesOnly)
+    {
+
         $ret_array = [
             'from' => '',
             'where' => ''

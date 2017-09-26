@@ -53,6 +53,13 @@ class VardefManager{
 
         include_once('modules/TableDictionary.php');
 
+        // BEGMOD KORGOBJECTS
+        // see if bean is managed ... if yes add template
+        if ($GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'orgManaged') && $GLOBALS['ACLController']->orgManaged($module)){
+            $templates[] = 'kauthmanaged';
+        }
+        // ENDMOD KORGOBJECTS
+
         //reverse the sort order so priority goes highest to lowest;
         $templates = array_reverse($templates);
         foreach ($templates as $template)

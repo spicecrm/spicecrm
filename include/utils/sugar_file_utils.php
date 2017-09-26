@@ -169,7 +169,7 @@ function sugar_file_put_contents_atomic($filename, $data, $mode='wb', $use_inclu
     if (!($f = @fopen($temp, $mode))) {
         $temp =  $dir . DIRECTORY_SEPARATOR . uniqid('temp');
         if (!($f = @fopen($temp, $mode))) {
-            trigger_error("sugar_file_put_contents_atomic() : error writing temporary file '$temp'", E_USER_WARNING);
+            //trigger_error("sugar_file_put_contents_atomic() : error writing temporary file '$temp'", E_USER_WARNING);
             return false;
         }
     }
@@ -184,7 +184,7 @@ function sugar_file_put_contents_atomic($filename, $data, $mode='wb', $use_inclu
         {
             // cleaning up temp file to avoid filling up temp dir
             @unlink($temp);
-            trigger_error("sugar_file_put_contents_atomic() : fatal rename failure '$temp' -> '$filename'", E_USER_ERROR);
+            //trigger_error("sugar_file_put_contents_atomic() : fatal rename failure '$temp' -> '$filename'", E_USER_WARNING);
         }
     }
 

@@ -314,6 +314,7 @@ $mod_strings = array(
     'LBL_RECEIVE_NOTIFICATIONS' => 'Notify on Assignment',
     'LBL_REGISTER' => 'New user? Please register',
     'LBL_REGULAR_USER' => 'Regular User',
+    'LBL_PORTAL_USER' => 'Portal User',
     'LBL_REMINDER_TEXT' => 'Set a default for reminders for calls and meetings. Pop-up notifications appear for all invitees using Spice. Email reminders are sent to all invitees.',
     'LBL_REMINDER' => 'Reminders',
     'LBL_REMINDER_POPUP' => 'Popup',
@@ -579,6 +580,8 @@ $mod_strings = array(
     'LBL_DELETED' => 'Deleted',
     'LBL_HIDEOPTIONS' => 'Hide Options',
     'LBL_SHOWOPTIONS' => 'Show Options',
+
+    'LBL_INBOUND_PROCESSING_ALLOWED' => 'Inbound Mail Processing active'
 
 ); // END STRINGS DEFS
 

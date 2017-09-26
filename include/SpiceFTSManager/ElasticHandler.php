@@ -9,56 +9,9 @@ class ElasticHandler
 
     var $standardSettings = array(
         "analysis" => array(
-            "filter" => array(
-                "spice_email" => array(
-                    "type" => "pattern_capture",
-                    "preserve_original" => 1,
-                    "patterns" => array(
-                        "([^@]+)",
-                        "(\\p{L}+)",
-                        "(\\d+)",
-                        "@(.+)"
-                    )
-                ),
-                "spice_ngram" => array(
-                    "type" => "nGram",
-                    "min_gram" => "3",
-                    "max_gram" => "20",
-                    //   "token_chars" => ["letter", "digit"]
-                ),
-                "spice_edgengram" => array(
-                    "type" => "edgeNGram",
-                    "min_gram" => "2",
-                    "max_gram" => "20",
-                    //   "token_chars" => ["letter", "digit"]
-                )
-            ),
-            "tokenizer" => array(
-                "spice_ngram" => array(
-                    "type" => "nGram",
-                    "min_gram" => "3",
-                    "max_gram" => "20",
-                    //   "token_chars" => ["letter", "digit"]
-                )
-            ),
-            "analyzer" => array(
-                "spice_ngram" => array(
-                    "type" => "custom",
-                    "tokenizer" => "spice_ngram"
-                    //"tokenizer" => "standard",
-                    // "filter" => ["standard", "lowercase","spice_ngram"]
-                ),
-                "spice_edgengram" => array(
-                    "type" => "custom",
-                    // "tokenizer" => "spice_ngram",
-                    "tokenizer" => "standard",
-                    "filter" => ["standard", "lowercase","spice_edgengram"]
-                ),
-                "spice_email" => array(
-                    "tokenizer" => "uax_url_email",
-                    "filter" => ["spice_email", "lowercase", "unique"]
-                )
-            )
+            "filter" => array(),
+            "tokenizer" => array(),
+            "analyzer" => array()
         )
     );
 
@@ -68,15 +21,41 @@ class ElasticHandler
         $this->server = $sugar_config['fts']['server'];
         $this->port = $sugar_config['fts']['port'];
         $this->indexPrefix = $sugar_config['fts']['prefix'];
+        $this->buildSettings();
     }
 
-    private function getAllIndexes(){
+    function buildSettings()
+    {
+        $elasticAnalyzers = array();
+        if (file_exists('custom/include/SpiceFTSManager/analyzers/spice_analyzers.php'))
+            include 'custom/include/SpiceFTSManager/analyzers/spice_analyzers.php';
+        else
+            include 'include/SpiceFTSManager/analyzers/spice_analyzers.php';
+        $this->standardSettings['analysis']['analyzer'] = $elasticAnalyzers;
+
+        $elasticTokenizers = array();
+        if (file_exists('custom/include/SpiceFTSManager/tokenizers/spice_tokenizers.php'))
+            include 'custom/include/SpiceFTSManager/tokenizers/spice_tokenizers.php';
+        else
+            include 'include/SpiceFTSManager/tokenizers/spice_tokenizers.php';
+        $this->standardSettings['analysis']['tokenizer'] = $elasticTokenizers;
+
+        $elasticFilters = array();
+        if (file_exists('custom/include/SpiceFTSManager/filters/spice_filters.php'))
+            include 'custom/include/SpiceFTSManager/filters/spice_filters.php';
+        else
+            include 'include/SpiceFTSManager/filters/spice_filters.php';
+        $this->standardSettings['analysis']['tokenizer'] = $elasticFilters;
+    }
+
+    private function getAllIndexes()
+    {
         global $db;
 
         $indexes = array();
 
         $indexObjects = $db->query("SELECT module FROM sysfts");
-        while($indexObject = $db->fetchByAssoc($indexObjects)){
+        while ($indexObject = $db->fetchByAssoc($indexObjects)) {
             $indexes[] = $this->indexPrefix . strtolower($indexObject['module']);
         }
 
@@ -86,6 +65,12 @@ class ElasticHandler
     function document_index($module, $data)
     {
         $response = $this->query('POST', $this->indexPrefix . strtolower($module) . '/' . $module . '/' . $data['id'], array(), $data);
+        return $response;
+    }
+
+    function document_delete($module, $id)
+    {
+        $response = $this->query('DELETE', $this->indexPrefix . strtolower($module) . '/' . $module . '/' . $id);
         return $response;
     }
 
@@ -131,13 +116,14 @@ class ElasticHandler
         $response = json_decode($this->query('POST', $this->indexPrefix . strtolower($module) . '/_search', array(), $queryParam), true);
         return $response;
     }
+
     function searchModules($modules, $queryParam, $size = 25, $from = 0)
     {
         global $db;
 
         $modString = '';
-        foreach($modules as $module) {
-            if($modString !== '') $modString .= ',';
+        foreach ($modules as $module) {
+            if ($modString !== '') $modString .= ',';
             $modString .= $this->indexPrefix . strtolower($module);
         }
 
@@ -147,7 +133,7 @@ class ElasticHandler
 
     function filter($filterfield, $filtervalue)
     {
-        $response = json_decode($this->query('POST', '/' . implode(',',$this->getAllIndexes()) . '/_search', array(), array('filter' => array('term' => array($filterfield => $filtervalue)))), true);
+        $response = json_decode($this->query('POST', '/' . implode(',', $this->getAllIndexes()) . '/_search', array(), array('filter' => array('term' => array($filterfield => $filtervalue)))), true);
         return $response;
     }
 
@@ -195,10 +181,12 @@ class ElasticHandler
 
     function query($method, $url, $params = array(), $body = array())
     {
+        global $sugar_config;
+
         $data_string = !empty($body) ? json_encode($body) : '';
 
-        $cURL = 'http://'.$this->server.':' . $this->port . '/';
-        if (!empty($url)) $cURL .= '/' . $url;
+        $cURL = 'http://' . $this->server . ':' . $this->port . '/';
+        if (!empty($url)) $cURL .=  $url;
 
         $ch = curl_init($cURL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -209,6 +197,30 @@ class ElasticHandler
                 'Content-Length: ' . strlen($data_string))
         );
 
-        return curl_exec($ch);
+        $start = microtime();
+        $result = curl_exec($ch);
+        $end = microtime();
+
+        $rt_local = microtime_diff($start, $end) * 1000;
+        $resultdec = json_decode($result);
+
+        switch ($sugar_config['fts']['loglevel']) {
+            case '2':
+                $this->addLogEntry($method, $cURL, $resultdec->status, $data_string, $result, $rt_local, $resultdec->took);
+                break;
+            case '1':
+                if ($resultdec->status > 0)
+                    $this->addLogEntry($method, $cURL, $resultdec->status, $data_string, $result, $rt_local, $resultdec->took);
+                break;
+        }
+
+        return $result;
+    }
+
+    private function addLogEntry($method, $url, $status, $request, $response, $rtlocal, $rtremote)
+    {
+        global $db, $timedate;
+
+        $db->query("INSERT INTO sysftslog (id, date_created, request_method, request_url, response_status, index_request, index_response) values('" . create_guid() . "', '" . $timedate->nowDb() . "', '$method', '$url', '$status', '$request', '$response')");
     }
 }

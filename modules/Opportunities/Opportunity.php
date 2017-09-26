@@ -335,7 +335,7 @@ $query .= 			"LEFT JOIN users
 	return $the_where;
 }
 
-	function save($check_notify = FALSE)
+	function save($check_notify = FALSE, $fts_index_bean = TRUE)
     {
         // Bug 32581 - Make sure the currency_id is set to something
         global $current_user, $app_list_strings;
@@ -356,7 +356,7 @@ $query .= 			"LEFT JOIN users
 		require_once('modules/Opportunities/SaveOverload.php');
 
 		perform_save($this);
-		return parent::save($check_notify);
+		return parent::save($check_notify, $fts_index_bean);
 
 	}
 

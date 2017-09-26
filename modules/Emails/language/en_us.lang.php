@@ -85,6 +85,7 @@ $mod_strings = array (
 	'LBL_CC'					=> 'Cc:',
 	'LBL_COLON'					=> ':',
 	'LBL_COMPOSE_MODULE_NAME'	=> 'Compose Email',
+	'LBL_RELATED_TO'	        => 'Related to',
 	'LBL_CONTACT_FIRST_NAME'	=> 'Contact First Name',
 	'LBL_CONTACT_LAST_NAME'		=> 'Contact Last Name',
 	'LBL_CONTACT_NAME'			=> 'Contact:',

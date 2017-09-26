@@ -114,6 +114,9 @@ class kGoogleChart extends kreportvisualizationplugin {
         foreach ($dataseries as $thisDataseries) {
             $googleData['cols'][] = array('id' => $thisDataseries['fieldid'], 'type' => 'number', 'label' => ($thisDataseries['name'] != '' ? $thisDataseries['name'] : $thisDataseries['fieldid']));
 
+            // add a row for the annotation
+            $googleData['cols'][] = array('id' => $thisDataseries['fieldid'], 'type' => 'number', 'label' => ($thisDataseries['name'] != '' ? $thisDataseries['name'] : $thisDataseries['fieldid']), 'role' => 'annotation');
+
             // 2013-03-05 check if we have a renderer
             $dataseries[$thisDataseries['fieldid']]['renderer'] = $this->report->getXtypeRenderer($this->report->fieldNameMap[$thisDataseries['fieldid']]['type'], $thisDataseries['fieldid']);
         }

@@ -53,7 +53,7 @@ class CompetitorAssessment extends SugarBean {
     }
 
     public function get_summary_text(){
-        return $this->competitor;
+        return $this->name;
     }
 
     public function bean_implements($interface){

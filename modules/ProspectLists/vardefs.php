@@ -44,8 +44,7 @@ $dictionary['ProspectList'] = array (
 			'name' => 'id',
 			'vname' => 'LBL_ID',
 			'type' => 'id',
-			'required' => true,
-			'reportable'=>false,
+			'required' => true
 		),
 		'name' => array (
 			'name' => 'name',
@@ -206,11 +205,6 @@ $dictionary['ProspectList'] = array (
 	),
 
 	'indices' => array (
-		array (
-			'name' =>'prospectlistsspk',
-			'type' =>'primary',
-			'fields'=>array('id')
-		),
 		array (
 			'name' =>'idx_prospect_list_name',
 			'type' =>'index',

@@ -154,6 +154,12 @@ function populateFromPost($prefix, &$focus, $skipRetrieve = false, $checkACL = f
 			$focus->$field = $value;
 		}
 	}
+
+	// handle acl
+    if ($GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'populateBeanFromPost')) {
+        $GLOBALS['ACLController']->populateBeanFromPost($focus);
+    }
+
 	return $focus;
 }
 

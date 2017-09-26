@@ -324,28 +324,31 @@ class KReportPluginManager
 class KReport extends SugarBean
 {
 
-    var $field_name_map;
+    public $field_name_map;
     // Stored fields
-    var $id;
-    var $date_entered;
-    var $date_modified;
-    var $assigned_user_id;
-    var $modified_user_id;
-    var $created_by;
-    var $created_by_name;
-    var $modified_by_name;
-    var $report_module = '';
-    var $reportoptions = '';
-    var $team_id;
-    var $description;
-    var $name;
-    var $status;
-    var $assigned_user_name;
-    var $team_name;
-    var $table_name = "kreports";
-    var $object_name = "KReport";
-    var $module_dir = 'KReports';
-    var $importable = true;
+    public $id;
+    public $date_entered;
+    public $date_modified;
+    public $assigned_user_id;
+    public $modified_user_id;
+    public $created_by;
+    public $created_by_name;
+    public $modified_by_name;
+    public $report_module = '';
+    public $reportoptions = '';
+    public $team_id;
+    public $description;
+    public $name;
+    public $status;
+    public $assigned_user_name;
+    public $team_name;
+    public $category_id;
+    public $category_name;
+    public $category_priority;
+    public $table_name = "kreports";
+    public $object_name = "KReport";
+    public $module_dir = 'KReports';
+    public $importable = true;
     // This is used to retrieve related fields from form posts.
     // var $additional_column_fields = Array('assigned_user_name', 'assigned_user_id', 'contact_name', 'contact_phone', 'contact_email', 'parent_name');
 
@@ -388,8 +391,16 @@ class KReport extends SugarBean
           }
          */
 
-        // call the partenr constructor
-        parent::SugarBean();
+        // call the parent constructor
+        //BEGIN Sugar 7.8 and higher compatiblity: SugarBean Constructor is now __construct()
+        //and no longer SugarBean()
+        //ORIGINAL: parent::SugarBean();
+        //get name of SugarBean constructor to support older Sugar Versions
+        $class = new ReflectionClass('SugarBean');
+        $constructor = $class->getConstructor();
+        $constructorName = $constructor->name;
+        parent::$constructorName();
+        //END
     }
 
     function bean_implements($interface)
@@ -420,7 +431,7 @@ class KReport extends SugarBean
         return $this;
     }
 
-    function save($checkNotify)
+    function save($checkNotify, $fts_index_bean = true)
     {
         global $sugar_config;
 
@@ -438,7 +449,7 @@ class KReport extends SugarBean
 //                $this->korgobjectmultiple = json_encode(array('primary' => $_REQUEST['authaccess_id'], 'secondary' => array()));
 //                break;
 //        }
-        parent::save($checkNotify);
+        parent::save($checkNotify, $fts_index_bean);
 
         switch ($sugar_config['KReports']['authCheck']) {
             case 'SecurityGroups':
@@ -482,7 +493,10 @@ class KReport extends SugarBean
         // loop over all kquery entries in teh query array and merge Options from the $app_list_strings
         $retArray = array();
         foreach ($this->kQueryArray->queryArray as $unionid => $unionkQuery) {
-            if (isset($unionkQuery ['kQuery']->fieldNameMap [$fieldId] ['fields_name_map_entry'] ['options'])) {
+            if (isset($unionkQuery ['kQuery']->fieldNameMap [$fieldId] ['fields_name_map_entry'] ['options'])
+                //Begin BugFix 2017-01-18: Opportunities.date_closed has options set! Check on field type!
+                && preg_match("/enum/i",$unionkQuery ['kQuery']->fieldNameMap [$fieldId] ['fields_name_map_entry'] ['type'])) {
+                //end
                 if (is_array($app_list_strings [$unionkQuery ['kQuery']->fieldNameMap [$fieldId] ['fields_name_map_entry'] ['options']]))
                     foreach ($app_list_strings [$unionkQuery ['kQuery']->fieldNameMap [$fieldId] ['fields_name_map_entry'] ['options']] as $key => $value)
                         $retArray [$key] = $value;
@@ -501,6 +515,13 @@ class KReport extends SugarBean
         if ($this->report_module != '') {
             //$sqlArray = $this->build_sql_string();
             //$this->sql_statement = $sqlArray['select'] . ' ' . $sqlArray['from'] . ' ' . $sqlArray['where'] . ' ' . $sqlArray['groupby'] . ' ' . $sqlArray['orderby'] ;
+        }
+
+        //CockpitView: get category name
+        if(!empty($this->category_id)){
+            $q= "SELECT name category_name FROM kreportcategories WHERE id='".$this->category_id."' AND deleted=0";
+            $row = $this->db->fetchByAssoc($this->db->query($q));
+            $this->category_name = $row['category_name'];
         }
     }
 
@@ -710,8 +731,7 @@ class KReport extends SugarBean
 
         foreach ($fieldArray as $fieldID => $fieldValue) {
             // get the FieldDetails from the Query
-            $fieldDetails = $this->kQueryArray->queryArray ['root'] ['kQuery']->get_listfieldentry_by_fieldid($fieldID);
-
+            $fieldDetails = $this->kQueryArray->queryArray['root']['kQuery']->get_listfieldentry_by_fieldid($fieldID);
             if ($fieldDetails !== false && isset($this->fieldNameMap [$fieldID]) && !in_array($fieldID, $excludeFields) && (!isset($fieldDetails ['customsqlfunction']) || (isset($fieldDetails ['customsqlfunction']) && $fieldDetails ['customsqlfunction'] == ''))) {
 
                 // 2013-05-18 individual rendering removed - handled by the Renderer Object
@@ -762,10 +782,10 @@ class KReport extends SugarBean
                             // 2011-03-07 add the orig value for the treeid
                             $returnArray [$fieldID . '_val'] = $fieldValue;
                             // chek if we have a function set
-                            if (is_array($this->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['function'])) {
-                                $fielName = $this->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['function']['include'];
+                            if (is_array($this->fieldNameMap[$fieldID]['fields_name_map_entry']['function']) && isset($this->fieldNameMap[$fieldID]['fields_name_map_entry']['function']['include'])) {
+                                $fielName = $this->fieldNameMap[$fieldID]['fields_name_map_entry']['function']['include'];
                                 require_once ($fielName);
-                                $functionName = $this->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['function']['name'];
+                                $functionName = $this->fieldNameMap[$fieldID]['fields_name_map_entry']['function']['name'];
                                 $fieldValue = $functionName(null, $this->fieldNameMap[$fieldID]['fieldname'], $fieldValue);
                             } else {
                                 // bug 2011-03-07 fields might have different options if in a join
@@ -901,6 +921,8 @@ class KReport extends SugarBean
 
         // process thee fieldtypes
         switch ($fieldType) {
+            case 'currencyint':
+                return 'kcurrencyintRenderer';
             case 'currency':
                 return 'kcurrencyRenderer';
             case 'percentage':
@@ -915,7 +937,7 @@ class KReport extends SugarBean
                 return 'knumberRenderer';
             case 'int' :
                 return 'kintRenderer';
-                // return ', renderer: function(value){return value;}';
+            // return ', renderer: function(value){return value;}';
             case 'date' :
                 return 'kdateRenderer';
             case 'datetime' :
@@ -961,6 +983,7 @@ class KReport extends SugarBean
         // process the fieldtypes
         switch ($fieldType) {
             case 'currency':
+            case 'currencyint':
                 return 'right';
             case 'double' :
             case 'float' :
@@ -1124,6 +1147,7 @@ class KReport extends SugarBean
     function getContextselectionResult($parameters, $getcount = false, $additionalFilter = '', $additionalGroupBy = array())
     {
         $query = '';
+//        file_put_contents("sugarcrm.log", "------". print_r($this->whereOverride, true)."\n", FILE_APPEND);
 
         if (!empty($GLOBALS['sugar_config']['k_dbconfig_clone'])) {
             $db = new $GLOBALS['sugar_config']['k_dbconfig_clone']['db_manager']();
@@ -1133,6 +1157,9 @@ class KReport extends SugarBean
         } else {
             global $db;
         }
+
+        // disable ONLY_FULL_GROUP_BY if this is set
+        $db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
         // retun an empty array
         $retArray = array();
@@ -1170,7 +1197,7 @@ class KReport extends SugarBean
                 if ($this->kQueryArray->countSelectString != '') {
                     $queryResults = $db->fetchByAssoc($db->limitquery($this->kQueryArray->countSelectString, 0, $selectionLimit));
                     echo $this->kQueryArray->countSelectString;
-                    return $queryResults ['totalCount'];
+                    return $queryResults ['totalcount'];
                 } else {
                     return $db->getRowCount($db->limitquery($query, 0, $selectionLimit));
                 }
@@ -1178,7 +1205,7 @@ class KReport extends SugarBean
             } else {
                 if ($this->kQueryArray->countSelectString != '') {
                     $queryResults = $db->fetchByAssoc($db->query($this->kQueryArray->countSelectString));
-                    return $queryResults ['totalCount'];
+                    return $queryResults ['totalcount'];
                 } else {
                     return $db->getRowCount($queryResults = $db->query($query));
                 }
@@ -1228,8 +1255,10 @@ class KReport extends SugarBean
                 //$queryResults = $db->query($query);
             }
         }
+//        file_put_contents("sugarcrm.log", "#######". print_r($this->whereOverride, true)."\n", FILE_APPEND);
 
         $query = $this->get_report_main_sql_query(true, $additionalFilter, $additionalGroupBy, $parameters);
+
         $queryResults = $db->query($query);
 
         if ($_REQUEST['kreportdebugquery'] == true)
@@ -1342,12 +1371,21 @@ class KReport extends SugarBean
             // still need to process this to have all teh setting for theformat
             $sqlArray = $this->get_report_main_sql_query('', true, '');
 
+            //2017-06-28 bug fix load snapshot queryArray and overwrite current one
+            $query = 'SELECT data FROM kreportsnapshots WHERE id = \'' . $snapshotid . '\'';
+            $srow = $db->fetchByAssoc($db->query($query));
+            $this->kQueryArray->queryArray = unserialize(base64_decode(html_entity_decode($srow['data'])));
+
             while ($snapshotRecordData = $db->fetchByAssoc($snapshotResults)) {
 
                 // just the basic Row
                 // 2012-12-05 ... we might find inks in the returned data not properly escaped. Fixed that so the json is not broken
                 // $formattedRow = json_decode_kinamu(html_entity_decode($snapshotRecordData ['data'], ENT_QUOTES, 'UTF-8'));
-                $jsonstring = html_entity_decode($snapshotRecordData['data']);
+                // 2017-06-27 bug fix unicode not saved properly. NOw json saved as base64. Decode
+                $jsonstring = base64_decode(html_entity_decode($snapshotRecordData['data']));
+                //backward compatibility before base64_encode (KReporter < 4.2)
+                if(!$jsonstring)
+                    $jsonstring = html_entity_decode($snapshotRecordData['data']);
 
                 preg_match_all("/\<a(.*)a\>/U", $jsonstring, $matches);
                 foreach ($matches[0] as $key => $value)
@@ -1475,13 +1513,16 @@ class KReport extends SugarBean
 
         $i = 0;
         foreach ($results as $resultsrow) {
-            $query = 'INSERT INTO kreportsnapshotsdata SET record_id=\'' . $i . '\', snapshot_id = \'' . $snapshotID . '\', data=\'' . json_encode_kinamu($resultsrow) . '\'';
+            //2017-06-28 bug fix save data to DB by using bsae64_encode
+            $query = 'INSERT INTO kreportsnapshotsdata SET record_id=\'' . $i . '\', snapshot_id = \'' . $snapshotID . '\', data=\'' . $GLOBALS['db']->quote(base64_encode(json_encode_kinamu($resultsrow) )). '\'';
             $db->query($query);
             $i++;
         }
 
         // create the snapshot record
-        $query = 'INSERT INTO kreportsnapshots SET id=\'' . $snapshotID . '\', snapshotdate =\'' . gmdate('Y-m-d H:i:s') . '\', report_id=\'' . $this->id . '\'';
+        //2017-06-28 bug fix missing id matching for snapshotdata. Save queryArray
+        $queryArray = $this->kQueryArray->queryArray;
+        $query = "INSERT INTO kreportsnapshots SET id='" . $snapshotID . "', snapshotdate ='" . gmdate('Y-m-d H:i:s') . "', report_id='" . $this->id . "', data='".$GLOBALS['db']->quote(base64_encode(serialize($queryArray)))."'";
         $db->query($query);
     }
 
@@ -1901,7 +1942,7 @@ class KReport extends SugarBean
 
             //PHP7 - 5.6 COMPAT: use creaetd variable as dynamic property
             $moduleArrayEl = $moduleArray[2];
-                
+
             // load the Module
             $thisModuleName = $parentModule->$moduleArrayEl->getRelatedModuleName();
             require_once($beanFiles [$beanList [$parentModule->$moduleArrayEl->getRelatedModuleName()]]);
@@ -2018,6 +2059,16 @@ class KReportRenderer
         return currency_format_number($record[$fieldid], array('currency_id' => $record [$fieldid . '_curid'], 'currency_symbol' => true));
     }
 
+    public static function kcurrencyintRenderer($fieldid, $record)
+    {
+        if ($record[$fieldid] == '' || $record[$fieldid] == 0)
+            return '';
+        // 2014-02-25 .. set teh default system currency .. otherwise sugar might take the default users currency
+        if (empty($record [$fieldid . '_curid']))
+            $record [$fieldid . '_curid'] = '99';
+        return currency_format_number($record[$fieldid], array('round' => 0, 'decimals'=> 0, 'currency_id' => $record [$fieldid . '_curid'], 'currency_symbol' => true));
+    }
+
     public function kenumRenderer($fieldid, $record)
     {
         global $app_list_strings;
@@ -2029,23 +2080,23 @@ class KReportRenderer
                 if ($fieldValue != '')
                     $fieldValue .= ', ';
                 if (trim($thisValue) != '' && isset($this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options'])) {
-                    if (is_array($this->report->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['function'])) {
-                        $fielName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['include'];
+                    if (is_array($this->report->fieldNameMap[$fieldid]['fields_name_map_entry']['function']) && isset($this->report->fieldNameMap[$fieldid]['fields_name_map_entry']['function']['include'])) {
+                        $fielName = $this->report->fieldNameMap[$fieldid]['fields_name_map_entry']['function']['include'];
                         require_once($fielName);
-                        $functionName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['name'];
+                        $functionName = $this->report->fieldNameMap[$fieldid]['fields_name_map_entry']['function']['name'];
                         $fieldValue = $functionName(null, $this->report->fieldNameMap [$fieldid]['fieldname'], $record[$thisValue]);
                     } else
-                        $fieldValue .= $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']] [trim($thisValue)];
+                        $fieldValue .= $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')]['kQuery']->fieldNameMap[$fieldid]['fields_name_map_entry']['options']][trim($thisValue)];
                 }
             }
         } else {
-            if (is_array($this->report->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['function'])) {
+            if (is_array($this->report->fieldNameMap[$fieldid]['fields_name_map_entry']['function']) && isset($this->report->fieldNameMap[$fieldid]['fields_name_map_entry']['function']['include'])) {
                 $fielName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['include'];
                 require_once($fielName);
                 $functionName = $this->report->fieldNameMap [$fieldid]['fields_name_map_entry'] ['function']['name'];
                 $fieldValue = $functionName(null, $this->report->fieldNameMap [$fieldid]['fieldname'], $record[$fieldid]);
             } else
-                $fieldValue = $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldid] ['fields_name_map_entry'] ['options']] [$record[$fieldid]];
+                $fieldValue = $app_list_strings [$this->report->kQueryArray->queryArray [(isset($record ['unionid']) ? $record ['unionid'] : 'root')] ['kQuery']->fieldNameMap[$fieldid]['fields_name_map_entry']['options']][$record[$fieldid]];
         }
 
         // if value is empty we return the original value
@@ -2093,9 +2144,9 @@ class KReportRenderer
 
     public static function kintRenderer($fieldid, $record)
     {
-        
-        return round($record[$fieldid]);
-//        return format_number($record[$fieldid], 0);
+
+//        return round($record[$fieldid]);
+        return format_number($record[$fieldid], 0, 0);
     }
 
     public static function kdateRenderer($fieldid, $record)
@@ -2120,7 +2171,7 @@ class KReportRenderer
     public static function kboolRenderer($fieldid, $record)
     {
         global $mod_strings;
-        return ($record[$fieldid] == '1' ? $mod_strings['LBL_BOOL_1'] : $mod_strings['LBL_BOOL_0']);
+        return ($record[$fieldid] == '1' ? ($mod_strings['LBL_BOOL_1'] ?: 1) : ($mod_strings['LBL_BOOL_0'] ?: 0));
     }
 
     public static function ktextRenderer($fieldid, $record)

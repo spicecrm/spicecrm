@@ -101,10 +101,28 @@ $dictionary['KReport'] = array('table' => 'kreports',
             'name' => 'advancedoptions',
             'type' => 'text',
             'vname' => 'LBL_ADVANCEDOPTIONS'
-        )
+        ),
+        'category_id' => array(
+            'name' => 'category_id',
+            'type' => 'id',
+            'vname' => 'LBL_CATEGORIES_ID'
+        ),
+        'category_name' => array(
+            'name' => 'category_name',
+            'type' => 'name',
+            'vname' => 'LBL_CATEGORIES_NAME',
+            'source' => 'non-db'
+        ),
+        'category_priority' => array(
+            'name' => 'category_priority',
+            'type' => 'int',
+            'len' => 6,
+            'vname' => 'LBL_CATEGORIES_PRIORITY'
+        ),
     ),
     'indices' => array(
         array('name' => 'idx_reminder_name', 'type' => 'index', 'fields' => array('name')),
+        array('name' => 'idx_cat', 'type' => 'index', 'fields' => array('category_id')),
     ),
     'optimistic_locking' => true,
 );

@@ -189,6 +189,11 @@ function checkDBSettings($silent=false) {
             }
         }
 
+        $sugar_config['fts']['server'] = $_SESSION['fts_server'];
+        $sugar_config['fts']['port'] = $_SESSION['fts_port'];
+        $sugar_config['fts']['prefix'] = $_SESSION['fts_prefix'];
+        $sugar_config['fts']['loglevel'] = '2';
+        $sugar_config['fts']['schedulerpackagesize'] = 25000;
 
         if($silent){
             return $errors;
@@ -348,6 +353,10 @@ function copyInputsIntoSession(){
                 //set up for Oracle Silent Installer
                 $_REQUEST['setup_db_drop_tables'] = $_SESSION['setup_db_drop_tables'] ;
             }
+
+            $_SESSION['fts_server'] = $_REQUEST['fts_server'];
+            $_SESSION['fts_port'] = $_REQUEST['fts_port'];
+            $_SESSION['fts_prefix'] = $_REQUEST['fts_prefix'];
 }
 
 ////    END PAGEOUTPUT

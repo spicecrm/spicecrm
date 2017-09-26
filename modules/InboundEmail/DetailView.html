@@ -237,11 +237,40 @@
 		<td valign="top" width='30%'>
 			<slot>{LEAVEMESSAGESONMAILSERVER}&nbsp;</slot></td>
 		<td valign="top" width='20%' scope='row'>
-			<slot>&nbsp;</slot>&nbsp;</td>
+			<slot> </slot>&nbsp;</td>
 		<td valign="top" width='30%'>
-			<slot>&nbsp;</slot>&nbsp;
+			<slot> </slot>&nbsp;
 		</td>
 	</tr>
+	</table>
+
+	<br>
+	<table width="100%" border=0 cellspacing="{GRIDLINE}" cellpadding="0">
+		<tr>
+			<th align="left" colspan="4"><h4>{MOD.LBL_PROCESSING_OPTIONS}</h4></th>
+		</tr>
+		<tr>
+			<td valign="top" width='20%' scope='row'>
+				<slot><div style="{EDIT_GROUP_FOLDER_STYLE}">{MOD.LBL_PROCESSING_FILE}:</div>&nbsp;</slot>&nbsp;</td>
+			<td valign="top" width='30%'>
+				<slot><div style="{EDIT_GROUP_FOLDER_STYLE}">{PROCESSING_FILE}</div>&nbsp;</slot>&nbsp;</td>
+			<td valign="top" width='20%' scope='row'>
+				<slot>{MOD.LBL_PROCESSING_CLASS}:&nbsp;</slot>&nbsp;</td>
+			<td valign="top" width='30%'>
+				<slot>{PROCESSING_CLASS}&nbsp;</slot>&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" scope='row'>
+				<slot>{MOD.LBL_PROCESSING_FUNCTION}:</slot></td>
+			<td valign="top">
+				<slot>{PROCESSING_FUNCTION}&nbsp;</slot></td>
+			<td valign="top" width='20%' scope='row'>
+				<slot> </slot>&nbsp;</td>
+			<td valign="top" width='30%'>
+				<slot> </slot>&nbsp;
+			</td>
+		</tr>
 	</table>
 </div>
 

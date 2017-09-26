@@ -129,12 +129,12 @@ class Person extends Basic
 	/**
  	 * @see parent::save()
  	 */
-	public function save($check_notify=false) 
+	public function save($check_notify=false, $fts_index_bean = true)
 	{
 		//If we are saving due to relationship changes, don't bother trying to update the emails
         if(!empty($GLOBALS['resavingRelatedBeans']))
         {
-            parent::save($check_notify);
+            parent::save($check_notify, $fts_index_bean);
             return $this->id;
         }
         $this->add_address_streets('primary_address_street');
@@ -143,7 +143,7 @@ class Person extends Basic
         $this->emailAddress->handleLegacySave($this, $this->module_dir);
         // bug #39188 - store emails state before workflow make any changes
         $this->emailAddress->stash($this->id, $this->module_dir);
-        parent::save($check_notify);
+        parent::save($check_notify, $fts_index_bean);
         // $this->emailAddress->evaluateWorkflowChanges($this->id, $this->module_dir);
         $override_email = array();
         if(!empty($this->email1_set_in_workflow)) {

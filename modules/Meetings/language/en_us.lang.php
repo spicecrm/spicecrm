@@ -130,6 +130,8 @@ $mod_strings = array (
 	'LNK_NEW_APPOINTMENT' => 'Create Appointment',
 	'LNK_NEW_MEETING'=>'Schedule Meeting',
 	'LNK_IMPORT_MEETINGS' => 'Import Meetings',
+    'LBL_RESULTS' => 'Results',
+    'LBL_NEXTSTEPS' => 'Next Steps',
 
 	'NTC_REMOVE_INVITEE' => 'Are you sure you want to remove this invitee from the meeting?',
     'LBL_CREATED_USER' => 'Created User',
@@ -183,8 +185,8 @@ $mod_strings = array (
     'LBL_REPEAT_COUNT' => 'Repeat Count',
     'LBL_REPEAT_PARENT_ID' => 'Repeat Parent ID',
     'LBL_RECURRING_SOURCE' => 'Recurring Source',
+    'LBL_PARTICIPANTS' => 'Participants',
     
     'LBL_SYNCED_RECURRING_MSG' => 'This meeting originated in another system and was synced to Sugar. To make changes, go to the original meeting within the other system. Changes made in the other system can be synced to this record.',
     'LBL_RELATED_TO' => 'Related to:',
 );
-?>

@@ -155,7 +155,7 @@ $viewdefs['Contacts']['EditView'] = array(
           array (
             'name' => 'description',
             'label' => 'LBL_DESCRIPTION',
-          ),
+          )
         ),
       ),
 
@@ -194,6 +194,7 @@ $viewdefs['Contacts']['EditView'] = array(
 
         array (
 	      'campaign_name',
+            'personal_interests'
         ),
       ),
 

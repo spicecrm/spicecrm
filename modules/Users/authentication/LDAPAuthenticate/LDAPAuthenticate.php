@@ -55,7 +55,7 @@ class LDAPAuthenticate extends SugarAuthenticate {
 	 * @return LDAPAuthenticate
 	 */
 	function LDAPAuthenticate(){
-		parent::SugarAuthenticate();
+		parent::__construct();
 	}
 
 }

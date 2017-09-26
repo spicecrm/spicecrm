@@ -32,16 +32,16 @@ $listViewDefs['KReports'] = array(
         'label' => 'LBL_LIST_LISTTYPE',
         'link' => false,
         'default' => true),
-    'CHART_LAYOUT' => array(
-        'width' => '10',
-        'label' => 'LBL_LIST_CHART_LAYOUT',
-        'link' => false,
-        'default' => true),
     'DESCRIPTION' => array(
         'width' => '30',
         'label' => 'LBL_DESCRIPTION',
         'link' => false,
-        'default' => true),    
+        'default' => true),
+    'CATEGORY_NAME' => array(
+        'width' => '20',
+        'label' => 'LBL_CATEGORIES_NAME',
+        'link' => false,
+        'default' => true),
     'DATE_ENTERED' => array(
         'width' => '10',
         'label' => 'LBL_LIST_DATEENTERED',
@@ -58,4 +58,7 @@ $listViewDefs['KReports'] = array(
         'link' => false,
         'default' => true),
 );
+
+if(!file_exists('modules/KReports/plugins.dictionary.extended'))
+    unset($listViewDefs['KReports']['CATEGORY_NAME'] );
 

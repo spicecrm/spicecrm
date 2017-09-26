@@ -21622,7 +21622,7 @@ $sugar_demodata['project_seed_data']['audit'] = array(
 	'priority' => 'medium',
 );
 
-$sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
+$sugar_demodata['project_seed_data']['audit']['projecttasks'][] = array(
 	'name' => 'Communicate with internal stakeholders',
 	'date_start' => '2010-11-1',
 	'date_finish' => '2010-11-8',
@@ -21632,7 +21632,7 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'percent_complete' => 100,
 );
 
-$sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
+$sugar_demodata['project_seed_data']['audit']['projecttasks'][] = array(
 	'name' => 'Create draft of the plan',
 	'date_start' => '2010-11-5',
 	'date_finish' => '2010-11-20',
@@ -21642,7 +21642,7 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'percent_complete' => 38,
 );
 
-$sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
+$sugar_demodata['project_seed_data']['audit']['projecttasks'][] = array(
 	'name' => 'Perform field studies to collect data',
 	'date_start' => '2010-11-5',
 	'date_finish' => '2010-11-13',
@@ -21652,7 +21652,7 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'percent_complete' => 75,
 );
 
-$sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
+$sugar_demodata['project_seed_data']['audit']['projecttasks'][] = array(
 	'name' => 'Update draft of the plan',
 	'date_start' => '2010-11-12',
 	'date_finish' => '2010-11-19',
@@ -21662,7 +21662,7 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'percent_complete' => 0,
 );
 
-$sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
+$sugar_demodata['project_seed_data']['audit']['projecttasks'][] = array(
 	'name' => 'Gather data from meetings',
 	'date_start' => '2010-11-20',
 	'date_finish' => '2010-11-20',

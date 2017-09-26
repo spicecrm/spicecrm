@@ -70,6 +70,10 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
         echo json_encode($retArray);
     });
     $app->group('/:beanName', function () use ($app, $KRESTModuleHandler) {
+        $app->post('/duplicates', function ($beanName) use ($app, $KRESTModuleHandler) {
+            $postBody = $body = json_decode($app->request->getBody(), true);
+            echo json_encode($KRESTModuleHandler->check_bean_duplicates($beanName, $postBody));
+        });
         $app->get('/:beanId', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
             $requestParams = $app->request->get();
             echo json_encode($KRESTModuleHandler->get_bean_detail($beanName, $beanId, $requestParams));
@@ -83,13 +87,25 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
         $app->delete('/:beanId', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
             return $KRESTModuleHandler->delete_bean($beanName, $beanId);
         });
-        $app->group('/:beanId', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
-            $app->group('/noteattachment', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+        $app->group('/:beanId', function () use ($app, $KRESTModuleHandler) {
+            $app->get('/duplicates', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+                echo json_encode($KRESTModuleHandler->get_bean_duplicates($beanName, $beanId));
+            });
+            $app->get('/auditlog', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+                echo json_encode($KRESTModuleHandler->get_bean_auditlog($beanName, $beanId));
+            });
+            $app->group('/noteattachment', function () use ($app, $KRESTModuleHandler) {
                 $app->get('', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
                     echo json_encode($KRESTModuleHandler->get_bean_attachment($beanName, $beanId));
                 });
+                $app->get('/download', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+                    echo json_encode($KRESTModuleHandler->download_bean_attachment($beanName, $beanId));
+                });
+                $app->post('', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+                    echo json_encode($KRESTModuleHandler->set_bean_attachment($beanName, $beanId));
+                });
             });
-            $app->group('/attachment', function ($beanName, $beanId) use ($app) {
+            $app->group('/attachment', function () use ($app) {
                 $app->post('', function ($beanName, $beanId) use ($app) {
                     $postBody = $body = $app->request->getBody();
                     $postParams = $app->request->get();
@@ -116,8 +132,18 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
                     require_once('include/SpiceAttachments/SpiceAttachments.php');
                     echo SpiceAttachments::getAttachmentsForBean($beanName, $beanId);
                 });
+                $app->get('/:attachmentId', function ($beanName, $beanId, $attachmentId) use ($app) {
+                    /* for get file url for theme, not file in base64 */
+                    require_once('include/SpiceAttachments/SpiceAttachments.php');
+                    echo SpiceAttachments::getAttachment($attachmentId);
+                });
+                $app->get('/:attachmentId/download', function ($beanName, $beanId, $attachmentId) use ($app) {
+                    /* for get file url for theme, not file in base64 */
+                    require_once('include/SpiceAttachments/SpiceAttachments.php');
+                    echo SpiceAttachments::downloadAttachment($attachmentId);
+                });
             });
-            $app->group('/favorite', function ($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+            $app->group('/favorite', function () use ($app, $KRESTModuleHandler) {
                 $app->get('', function($beanName, $beanId) use ($app, $KRESTModuleHandler) {
                     $actionData = $KRESTModuleHandler->get_favorite($beanName, $beanId);
                     echo json_encode($actionData);
@@ -129,7 +155,7 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
                     $actionData = $KRESTModuleHandler->delete_favorite($beanName, $beanId);
                 });
             });
-            $app->group('/note', function ($beanName, $beanId) use ($app) {
+            $app->group('/note', function () use ($app) {
                 $app->get('', function ($beanName, $beanId) use ($app) {
                     require_once('modules/SpiceThemeController/SpiceThemeController.php');
                     $SpiceThemeController = new SpiceThemeController();
@@ -157,7 +183,7 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
                     echo $SpiceThemeController->deleteQuickNote($noteId);
                 });
             });
-            $app->group('/reminder', function ($beanName, $beanId) use ($app) {
+            $app->group('/reminder', function () use ($app) {
                 $app->get('', function ($beanName, $beanId) use ($app) {
                     require_once('modules/SpiceThemeController/SpiceThemeController.php');
                     $SpiceThemeController = new SpiceThemeController();
@@ -180,14 +206,29 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
 
             $app->group('/related/:linkname', function () use ($app, $KRESTModuleHandler) {
                 $app->get('', function($beanName, $beanId, $linkname) use ($app, $KRESTModuleHandler) {
-                    echo json_encode($KRESTModuleHandler->get_related($beanName, $beanId, $linkname));
+                    $getParams = $app->request->get();
+                    echo json_encode($KRESTModuleHandler->get_related($beanName, $beanId, $linkname, $getParams));
                 });
                 $app->post('', function($beanName, $beanId, $linkname) use ($app, $KRESTModuleHandler) {
                     echo json_encode($KRESTModuleHandler->add_related($beanName, $beanId, $linkname));
                 });
+                $app->put('', function($beanName, $beanId, $linkname) use ($app, $KRESTModuleHandler) {
+                    $postBody = json_decode($app->request->getBody(), true);
+                    echo json_encode($KRESTModuleHandler->set_related($beanName, $beanId, $linkname, $postBody));
+                });
                 $app->delete('', function($beanName, $beanId, $linkname) use ($app, $KRESTModuleHandler) {
                     echo json_encode($KRESTModuleHandler->delete_related($beanName, $beanId, $linkname));
                 });
+            });
+            $app->post('/merge_bean', function($beanName, $beanId) use ($app, $KRESTModuleHandler) {
+                $postBody = $body = $app->request->getBody();
+                $postParams = $app->request->get();
+                $actionData = $KRESTModuleHandler->merge_bean($beanName, $beanId, array_merge(json_decode($postBody, true), $postParams));
+                if ($actionData === false)
+                    $app->response()->status(501);
+                else {
+                    echo json_encode($actionData);
+                }
             });
             $app->post('/:beanAction', function($beanName, $beanId, $beanAction) use ($app, $KRESTModuleHandler) {
                 $postBody = $body = $app->request->getBody();

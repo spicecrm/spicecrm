@@ -57,7 +57,7 @@ $dictionary['CompetitorAssessment'] = array(
         ),
         'differentitation' => array (
             'name' => 'differentitation',
-            'vname' => 'LBL_DIFFERENTITATION',
+            'vname' => 'LBL_DIFFERENTIATION',
             'type' => 'text',
             'required' => false,
             'massupdate' => false,

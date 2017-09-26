@@ -245,13 +245,13 @@ $layout_defs['Accounts'] = array(
 				array('widget_class' => 'SubPanelTopSelectButton', 'mode'=>'MultiSelect')
 			),
 		),
-		'project' => array(
+		'projects' => array(
 			'order' => 120,
 			'sort_order' => 'asc',
 			'sort_by' => 'name',
-			'module' => 'Project',
+			'module' => 'Projects',
 			'subpanel_name' => 'default',
-			'get_subpanel_data' => 'project',
+			'get_subpanel_data' => 'projects',
 			'add_subpanel_data' => 'project_id',
 			'title_key' => 'LBL_PROJECTS_SUBPANEL_TITLE',
 			'top_buttons' => array(

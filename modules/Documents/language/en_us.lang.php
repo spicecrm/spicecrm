@@ -92,6 +92,10 @@ $mod_strings = array (
 	'LBL_DOC_VERSION' => 'Revision:',
 	'LBL_FILE_UPLOAD' => 'File:',
 
+	// for the panels
+	'LBL_MAIN' => 'Main Data',
+	'LBL_ADMIN' => 'Admin Data',
+
 	'LBL_CATEGORY_VALUE' => 'Category:',
 	'LBL_LIST_CATEGORY' => 'Category',
 	'LBL_SUBCATEGORY_VALUE'=> 'Sub Category:',

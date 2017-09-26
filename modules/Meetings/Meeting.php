@@ -155,7 +155,7 @@ class Meeting extends SugarBean {
 
 	// save date_end by calculating user input
 	// this is for calendar
-	function save($check_notify = FALSE) {
+	function save($check_notify = FALSE, $fts_index_bean = TRUE) {
 		global $timedate;
 		global $current_user;
 
@@ -255,7 +255,13 @@ class Meeting extends SugarBean {
             $api->logoff();
         }
 
-		$return_id = parent::save($check_notify);
+		$return_id = parent::save($check_notify, $fts_index_bean);
+
+        // check if contact_id is set
+        if(!empty($this->contact_id)){
+            $this->load_relationship('contacts');
+            $this->contacts->add($this->contact_id);
+        }
 
 		if($this->update_vcal) {
 			vCal::cache_sugar_vcal($current_user);

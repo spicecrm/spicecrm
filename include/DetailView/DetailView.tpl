@@ -42,7 +42,9 @@
 class="yui-navset detailview_tabs"
 {{/if}}
 >
-    {sugar_include type='php' file='{{$headerPanel}}'}
+    {* begin SpiceBeanGuide *}
+    {{if $headerPanel !=""}}{sugar_include type='php' file='{{$headerPanel}}'}{{/if}}
+    {* end SpiceBeanGuide *}
     {{if $useTabs}}
     {* Generate the Tab headers *}
     {{counter name="tabCount" start=-1 print=false assign="tabCount"}}

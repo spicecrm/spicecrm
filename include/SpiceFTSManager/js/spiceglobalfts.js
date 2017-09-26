@@ -1,13 +1,19 @@
 SpiceCRM.controller('GlobalFTSController', ['$scope', 'GlobalFTSService', function (_scope, _globalFTSService) {
     angular.extend(_scope, {
-        globalFTSService: _globalFTSService
+        globalFTSService: _globalFTSService,
+        keyup: function(event){
+            //console.log(event.altKey );
+        }
     });
 
     _scope.$watch('globalFTSService.gloablSearchTerm', function (_newVal, _oldVal) {
         if (!(!_newVal && !_oldVal) && _newVal !== _oldVal) {
             _globalFTSService.getGlobalFTSSearchResults();
+            var queryInput = document.getElementById('query_string');
+            if (queryInput)queryInput.value = _newVal;
         }
     });
+
 }]);
 
 SpiceCRM.controller('GlobalFTSModuleItemController', ['$scope', 'GlobalFTSService', function (_scope, _globalFTSService) {
@@ -158,9 +164,13 @@ SpiceCRM.factory('GlobalFTSService', ['$rootScope', '$http', '$q', function (_sc
                     _globalFTSService.globalFTSSearchModules.push(_module);
                     _globalFTSService.globalSearchModules.push(_module);
                     _globalFTSService.viewdefs = _response.viewdefs;
+
+                    _globalFTSService.globalSearchModuleLabels[_module] = SUGAR.language.get("app_list_strings", "moduleList")[_module];
+
                 });
 
-                _globalFTSService.globalSearchModuleLabels = _response.moduleLabels;
+
+                // _globalFTSService.globalSearchModuleLabels = _response.moduleLabels;
                 _globalFTSService.globalSearchModuleLabels.all = 'All Modules';
 
                 // do an initilal load of results

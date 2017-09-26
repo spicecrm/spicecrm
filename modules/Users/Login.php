@@ -166,14 +166,14 @@ if(isset($_SESSION["waiting_error"])) {
     $sugar_smarty->assign('WAITING_ERROR', $_SESSION['waiting_error']);
 }
 
-if(isset($GLOBALS['kdeploymentmw_now'])){
+if(isset($GLOBALS['kdeploymentmw_now']) && $GLOBALS['kdeploymentmw_now']['disable_login'] > 0){
     global $timedate;
     $admin = new User();
     $admin->retrieve('1');
     $to_date = $timedate->fromDb($GLOBALS['kdeploymentmw_now']['to_date']);
     $sugar_smarty->assign('MAINTEN_ERROR', "System is currently in Deployment Maintenance Window till ".$timedate->asUser($to_date,$admin)." !");
 }
-if(isset($GLOBALS['kdeploymentmw_near'])){
+if(isset($GLOBALS['kdeploymentmw_near']) && $GLOBALS['kdeploymentmw_near']['disable_login'] > 0){
     global $timedate;
     $admin = new User();
     $admin->retrieve('1');

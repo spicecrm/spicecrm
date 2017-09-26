@@ -107,6 +107,8 @@ else {
 		$local_location = sugar_cached("modules/Emails/{$_REQUEST['ieId']}/attachments/{$_REQUEST['id']}");
     } elseif(isset($_REQUEST['isTempFile']) && $file_type == "import") {
     	$local_location = "upload://import/{$_REQUEST['tempName']}";
+    } elseif(isset($_REQUEST['fileid']) && isset($_REQUEST['filename'])) {
+        $local_location = "upload://{$_REQUEST['fileid']}";
     } else {
 		$local_location = "upload://{$_REQUEST['id']}";
     }
@@ -134,7 +136,9 @@ else {
 		}  elseif($file_type == 'notes') {
             $query = "SELECT filename name, file_mime_type FROM notes ";
 			$query .= "WHERE notes.id = '" . $db->quote($_REQUEST['id']) ."'";
-		} elseif( !isset($_REQUEST['isTempFile']) && !isset($_REQUEST['tempName'] ) && isset($_REQUEST['type']) && $file_type!='temp' ){ //make sure not email temp file.
+		} elseif($file_type == 'proposals') {
+            $doQuery = false;
+        }elseif( !isset($_REQUEST['isTempFile']) && !isset($_REQUEST['tempName'] ) && isset($_REQUEST['type']) && $file_type!='temp' ){ //make sure not email temp file.
 			$query = "SELECT filename name FROM ". $file_type ." ";
 			$query .= "WHERE ". $file_type .".id= '".$db->quote($_REQUEST['id'])."'";
 		}elseif( $file_type == 'temp'){
@@ -164,7 +168,10 @@ else {
 		} else if(isset($_REQUEST['isTempFile']) && ($_REQUEST['type']=="SugarFieldImage")) {
 			$download_location = $local_location;
 			$name = isset($_REQUEST['tempName'])?$_REQUEST['tempName']:'';
-		}
+		} else if(isset($_REQUEST['fileid']) && isset($_REQUEST['filename'])){
+            $download_location = $local_location;
+            $name = $_REQUEST['filename'];
+        }
 
 		if(isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/", $_SERVER['HTTP_USER_AGENT']))
 		{

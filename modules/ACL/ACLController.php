@@ -166,6 +166,9 @@ class ACLController {
 
     function checkAccess($category, $action, $is_owner = false, $type = 'module')
     {
+        // for the territorry management we pass int he full object
+        if(is_object($category))
+            $category = $category->module_dir;
 
         global $current_user;
         if (is_admin($current_user)) return true;
@@ -186,6 +189,8 @@ class ACLController {
         if (is_admin($current_user)) return false;
         return ACLAction::userNeedsOwnership($current_user->id, $category, $value, $type);
 	}
+
+
 
 	function addJavascript($category,$form_name='', $is_owner=false){
 		$jscontroller = new ACLJSController($category, $form_name, $is_owner);
@@ -219,6 +224,22 @@ class ACLController {
 		echo '<script>function set_focus(){}</script><p class="error">' . translate('LBL_NO_ACCESS', 'ACL') . '</p>';
 		if($redirect_home)echo translate('LBL_REDIRECT_TO_HOME', 'ACL') . ' <span id="seconds_left">3</span> ' . translate('LBL_SECONDS', 'ACL') . '<script> function redirect_countdown(left){document.getElementById("seconds_left").innerHTML = left; if(left == 0){document.location.href = "index.php";}else{left--; setTimeout("redirect_countdown("+ left+")", 1000)}};setTimeout("redirect_countdown(3)", 1000)</script>';
 	}
+
+	function getFTSQuery($module){
+	    global $current_user;
+
+        $thisFilter = [];
+        if ($this->requireOwner($module, 'list')) {
+            $thisFilter[] = array(
+                'match' => array(
+                    'assigned_user_id' => $current_user->id
+                )
+            );
+        }
+
+        return $thisFilter;
+
+    }
 
 }
 

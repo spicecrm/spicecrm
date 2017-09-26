@@ -50,17 +50,17 @@ class Company extends Basic
  	/**
  	 * @see parent::save()
  	 */
-	public function save($check_notify=false) 
+	public function save($check_notify=false, $fts_index_bean = true)
  	{
  	    if(!empty($GLOBALS['resavingRelatedBeans']))
  	    {
- 	        return parent::save($check_notify);
+ 	        return parent::save($check_notify, $fts_index_bean);
  	    } 	    
 		$this->add_address_streets('billing_address_street');
 		$this->add_address_streets('shipping_address_street');
     	$ori_in_workflow = empty($this->in_workflow) ? false : true;
 		$this->emailAddress->handleLegacySave($this, $this->module_dir);
-    	$record_id = parent::save($check_notify);
+    	$record_id = parent::save($check_notify, $fts_index_bean);
         $override_email = array();
         if(!empty($this->email1_set_in_workflow)) {
             $override_email['emailAddress0'] = $this->email1_set_in_workflow;

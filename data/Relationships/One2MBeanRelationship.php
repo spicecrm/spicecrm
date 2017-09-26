@@ -359,7 +359,7 @@ class One2MBeanRelationship extends One2MRelationship
                 'type' => $this->type,
                 'rel_key' => $targetKey,
                 'join_tables' => array($targetTable),
-                'where' => "WHERE $startingTable.$startingKey='{$link->focus->id}'",
+                'where' => "WHERE $startingTable.$startingKey='{$link->focus->$targetKey}'",
                 'select' => " ",
             );
         }

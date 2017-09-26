@@ -67,7 +67,8 @@ $job_strings = array (
     14 => 'cleanJobQueue',
     15 => 'removeDocumentsFromFS',
     16 => 'trimSugarFeeds',
-	20 => 'fullTextIndex'
+	20 => 'fullTextIndex',
+	21 => 'kdeploymentmwnotification'
 
 );
 
@@ -84,7 +85,6 @@ function refreshJobs() {
  * Job 1
  */
 function pollMonitoredInboxes() {
-
     $_bck_up = array('team_id' => $GLOBALS['current_user']->team_id, 'team_set_id' => $GLOBALS['current_user']->team_set_id);
 	$GLOBALS['log']->info('----->Scheduler fired job of type pollMonitoredInboxes()');
 	global $dictionary;
@@ -118,16 +118,18 @@ function pollMonitoredInboxes() {
 			if($ieX->connectMailserver() == 'true') {
 				$connectToMailServer = true;
 			} // if
-
+            $GLOBALS['log']->debug("start connecting LINE 87 ");
 			$GLOBALS['log']->debug('Trying to connect to mailserver for [ '.$a['name'].' ]');
 			if($connectToMailServer) {
 				$GLOBALS['log']->debug('Connected to mailserver');
 				if (!$ieX->isPop3Protocol()) {
 					$newMsgs = $ieX->getNewMessageIds();
 				}
+                $GLOBALS['log']->debug("got mails:".print_r($newMsgs,true));
 				if(is_array($newMsgs)) {
 					$current = 1;
 					$total = count($newMsgs);
+                    $GLOBALS['log']->debug("start processing $total mails from ".$a['name']." LINE 97 ");
 					require_once("include/SugarFolders/SugarFolders.php");
 					$sugarFolder = new SugarFolder();
 					$groupFolderId = $ieX->groupfolder_id;
@@ -155,15 +157,31 @@ function pollMonitoredInboxes() {
 						} else {
 							$uid = imap_uid($ieX->conn, $msgNo);
 						} // else
-						if ($isGroupFolderExists) {
+                        $GLOBALS['log']->debug("Processing mail ".$msgNo." from ".$a['name']." LINE 126 ");
+                        if ($isGroupFolderExists) {
 							if ($ieX->importOneEmail($msgNo, $uid)) {
 								// add to folder
 								$sugarFolder->addBean($ieX->email);
-								if ($ieX->isPop3Protocol()) {
+                                $GLOBALS['log']->debug("Processing mail ".$msgNo." from ".$a['name']." LINE 131 ");
+                                if ($ieX->isPop3Protocol()) {
 									$messagesToDelete[] = $msgNo;
 								} else {
 									$messagesToDelete[] = $uid;
 								}
+                                //SpiceCRM generic Inbound Mail Processing
+                                if(!empty($ieX->processing_file)){
+								    $GLOBALS['log']->debug("Processing mail ".$msgNo." from ".$a['name']." in ".$ieX->processing_class." func:".$ieX->processing_function);
+								    if(file_exists($ieX->processing_file)) {
+                                        require_once($ieX->processing_file);
+                                        $processing_class = $ieX->processing_class;
+                                        $processing_function = $ieX->processing_function;
+                                        if(!empty($processing_class) && !empty($processing_function) && class_exists($processing_class) && method_exists($processing_class,$processing_function)){
+                                            $processor = new $processing_class();
+                                            $processor->$processing_function($ieX->email);
+                                        }
+                                    }
+                                }
+                                //SpiceCRM end
 								if ($ieX->isMailBoxTypeCreateCase()) {
 									$userId = "";
 									if ($distributionMethod == 'roundRobin') {
@@ -201,6 +219,20 @@ function pollMonitoredInboxes() {
 						} else {
 								if($ieX->isAutoImport()) {
 									$ieX->importOneEmail($msgNo, $uid);
+                                    //SpiceCRM generic Inbound Mail Processing
+                                    if(!empty($ieX->processing_file)){
+                                        $GLOBALS['log']->debug("Processing mail ".$msgNo." from ".$a['name']." in ".$ieX->processing_class." func:".$ieX->processing_function);
+                                        if(file_exists($ieX->processing_file)) {
+                                            require_once($ieX->processing_file);
+                                            $processing_class = $ieX->processing_class;
+                                            $processing_function = $ieX->processing_function;
+                                            if(!empty($processing_class) && !empty($processing_function) && class_exists($processing_class) && method_exists($processing_class,$processing_function)){
+                                                $processor = new $processing_class();
+                                                $processor->$processing_function($ieX->email);
+                                            }
+                                        }
+                                    }
+                                    //SpiceCRM end
 								} else {
 									/*If the group folder doesn't exist then download only those messages
 									 which has caseid in message*/
@@ -508,10 +540,29 @@ function trimSugarFeeds()
  */
 
 function fullTextIndex(){
+    // no date formatting
+    global $disable_date_format, $sugar_config;
+    $disable_date_format = true;
+
+    // determine package size
+    $packagesize = $sugar_config['fts']['schedulerpackagesize'] ?: 5000;
+
     require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
     $ftsHandler = new SpiceFTSHandler();
-    echo "running indexer";
-    $ftsHandler->indexBeans(5000);
+    $ftsHandler->indexBeans($packagesize);
+    return true;
+}
+
+/*
+ * Job 21 ... send notification before window maintenance starts
+ */
+function kdeploymentmwnotification(){
+    $classpath = 'module/KDeploymentMWs/KDeploymentMWNotification.php';
+    if(file_exists('custom/'.$classpath))
+        $classpath = 'custom/'.$classpath;
+    require_once($classpath);
+    $notification = new KDeploymentMWNotification();
+    $notification->checkAndNotify();
     return true;
 }
 

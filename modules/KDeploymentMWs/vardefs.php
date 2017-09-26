@@ -19,14 +19,37 @@ $dictionary['KDeploymentMW'] = array(
             'options' => 'date_range_search_dom',
             'vname' => 'LBL_TO_DATE',
         ),
-        'mwstatus' =>
-            array(
-                'name' => 'mwstatus',
-                'vname' => 'LBL_MWSTATUS',
-                'type' => 'enum',
-                'len' => '10',
-                'options' => 'mwstatus_dom'
-            ),
+        'mwstatus' => array(
+            'name' => 'mwstatus',
+            'vname' => 'LBL_MWSTATUS',
+            'type' => 'enum',
+            'len' => '10',
+            'options' => 'mwstatus_dom'
+        ),
+        'disable_cron' => array(
+            'name' => 'disable_cron',
+            'vname' => 'LBL_DISABLE_CRON',
+            'type' => 'bool',
+            'comment' => 'flag turn off cron. Running jobs will run, planned jobs won\'t be started',
+        ),
+        'disable_krest' => array(
+            'name' => 'disable_krest',
+            'vname' => 'LBL_DISABLE_KREST',
+            'type' => 'bool',
+            'comment' => 'flag turn off krest except for admin users',
+        ),
+        'disable_login' => array(
+            'name' => 'disable_login',
+            'vname' => 'LBL_DISABLE_LOGIN',
+            'type' => 'bool',
+            'comment' => 'flag turn off login except for admin users',
+        ),
+        'notified' => array(
+            'name' => 'notified',
+            'vname' => 'LBL_NOTIFIED',
+            'type' => 'bool',
+            'comment' => 'flag tells us if e-mail notification was sent',
+        )
     ),
     'indices' => array(
         'id' => array('name' => 'kdeploymentmws_pk', 'type' => 'primary', 'fields' => array('id')),

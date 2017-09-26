@@ -158,7 +158,7 @@ $layout_defs['Emails'] = array(
 
         'project' => array(
 			'order' => 80,
-			'module' => 'Project',
+			'module' => 'Projects',
 			'sort_order' => 'asc',
 			'sort_by' => 'name',
 			'subpanel_name' => 'ForEmails',

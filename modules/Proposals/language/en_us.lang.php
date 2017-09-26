@@ -45,6 +45,7 @@ $mod_strings = array (
     'LBL_MODULE_NAME' => 'Proposals',
     'LBL_MODULE_ID'   => 'Proposals',
     'LNK_NEW_PROPOSAL' => 'Create Proposal',
+    'LBL_NEW_FORM_TITLE' => 'Create Proposal',
     'LNK_PROPOSAL_LIST' => 'View Proposals',
     'LNK_IMPORT_PROPOSALS' => 'Import Proposals',
 

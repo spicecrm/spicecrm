@@ -210,6 +210,15 @@ $admin_option_defs['FTS']['FulltextSearchManager']= array('FTSManager','FTS Mana
 $admin_group_header[]= array('Full Text Search','',false,$admin_option_defs, 'Manage Full Text Search Options and Settings');
 
 
+// add the settings for the Auth management
+if(file_exists('modules/KOrgObjects/KOrgObject.php')) {
+    $admin_option_defs = array();
+    $admin_option_defs['TAM']['CoreConfig'] = array('orgunit', 'Define Organization Settings', 'Core settings for Organization Managent', './index.php?module=KOrgObjects&action=CoreConfigurator');
+    $admin_option_defs['TAM']['OrgManager'] = array('orgchart', 'Define Organization Objects', 'Definition of rg Units and Territorries', './index.php?module=KOrgObjects&action=OrgObjectManager');
+    $admin_option_defs['TAM']['AuthTypes'] = array('kauthtypes', 'Define Authorization Types', 'Authorization Type Definition', './index.php?module=KAuthProfiles&action=AuthTypeManager');
+    $admin_option_defs['TAM']['AuthProfiles'] = array('KAuthProfiles', 'Define Authorization Profiles', 'Authorization Profile Definition', './index.php?module=KAuthProfiles&action=AuthProfileManager');
+    $admin_group_header[] = array('Territorry and Authorization Management', '', false, $admin_option_defs, 'Define Settings for territorry and Authorization management');
+}
 
 if(file_exists('custom/modules/Administration/Ext/Administration/administration.ext.php')){
 	include('custom/modules/Administration/Ext/Administration/administration.ext.php');

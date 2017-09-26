@@ -93,11 +93,11 @@ Touched:
 - modules/Contracts/Save.php
 - modules/DCEInstances/DCEInstance.php
 - modules/InboundEmail/InboundEmail.php
-- modules/Project/Export.php
-- modules/Project/ResourceReport.php
-- modules/Project/Convert.php
-- modules/Project/EditGridView.php
-- modules/Project/Dashboard.php
+- modules/Projects/Export.php
+- modules/Projects/ResourceReport.php
+- modules/Projects/Convert.php
+- modules/Projects/EditGridView.php
+- modules/Projects/Dashboard.php
 - modules/WorkFlow/WorkFlowSchedule.php
 - modules/TeamNotices/DisplayNotices.php
 - modules/TeamNotices/DefaultNotices.php

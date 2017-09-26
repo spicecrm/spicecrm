@@ -16,7 +16,8 @@
 
 require('include/entryPoint.php');
 
-class KRESTManager {
+class KRESTManager
+{
 
     var $app = null;
     var $sessionId = null;
@@ -25,7 +26,8 @@ class KRESTManager {
     var $noAuthentication = false;
     var $extensions = array();
 
-    public function __construct($theApp, $requestParams = array()) {
+    public function __construct($theApp, $requestParams = array())
+    {
         // link the app and the request paramas
         $this->app = $theApp;
         $this->requestParams = $requestParams;
@@ -35,13 +37,15 @@ class KRESTManager {
         $disable_date_format = true;
     }
 
-    public function registerExtension($extension, $version) {
+    public function registerExtension($extension, $version)
+    {
         $this->extensions[$extension] = array(
             'version' => $version
         );
     }
 
-    public function excludeFromAuthentication($path) {
+    public function excludeFromAuthentication($path)
+    {
         $currentPath = $this->app->environment()->offsetGet("PATH_INFO");
         if (substr($path, -1) === '*' && strpos($currentPath, $path) === 0)
             $this->noAuthentication = true;
@@ -49,51 +53,74 @@ class KRESTManager {
             $this->noAuthentication = true;
     }
 
-    public function authenticate() {
+    public function authenticate()
+    {
         $enviroment = $this->app->environment();
         if ($this->noAuthentication)
             return;
+
+        // get the headers
+        $headers = getallheaders();
+
         // handle the session start
         $sessionSuccess = false;
-        if (!empty($this->requestParams['user_name']) && !empty($this->requestParams['password'])) {
+        if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+            $loginData = $this->login(array('user_name' => $_SERVER['PHP_AUTH_USER'], 'password' => $_SERVER['PHP_AUTH_PW'], 'encryption' => 'PLAIN'));
+            if ($loginData !== false) {
+                $this->sessionId = $loginData;
+                $this->tmpSessionId = $loginData;
+                $accessLog = BeanFactory::getBean('UserAccessLogs');
+                $accessLog->addRecord();
+            } else
+                $this->authenticationError();
+        } elseif (!empty($this->requestParams['user_name']) && !empty($this->requestParams['password'])) {
             $loginData = $this->login(array('user_name' => $this->requestParams['user_name'], 'password' => $this->requestParams['password'], 'encryption' => $this->requestParams['encryption']));
-if ($loginData !== false) {
+            if ($loginData !== false) {
                 $this->sessionId = $loginData;
                 $this->tmpSessionId = $loginData;
             } else
-				$this->authenticationError();
+                $this->authenticationError();
 
+        } elseif (!empty($headers['OAuth-Token'])) {
+            $startedSession = $this->startSession($headers['OAuth-Token']);
+            if ($startedSession !== false)
+                $this->sessionId = $startedSession;
+            else
+                $this->authenticationError('session invalid');
         } elseif (!empty($this->requestParams['session_id']) || !empty($_COOKIE['PHPSESSID'])) {
             $startedSession = $this->startSession($this->requestParams['session_id']);
             if ($startedSession !== false)
                 $this->sessionId = $startedSession;
-			else
-				$this->authenticationError('session invalid');
+            else
+                $this->authenticationError('session invalid');
         }
     }
 
-    public function cleanup() {
+    public function cleanup()
+    {
         // delete the session if it was created without login 
         if (!empty($this->tmpSessionId)) {
             session_destroy();
         }
     }
 
-public function authenticationError($message = '') {
+    public function authenticationError($message = '')
+    {
         http_response_code(401);
 
-		if($message !== '')
-			header ( 'HTTP/1.0 401 ' . $message, true , 401 );
+        if ($message !== '')
+            header('HTTP/1.0 401 ' . $message, true, 401);
 
-		// set for cors
-		header("Access-Control-Allow-Origin: *");
-
-         HttpResponse::send('session invalid');
+        // set for cors
+        header("Access-Control-Allow-Origin: *");
+        HttpResponse::send('session invalid');
 
         exit;
     }
+
     // BEGMOD KORGOBJECTS change private to public..
-    public function startSession($session_id = '') {
+    public function startSession($session_id = '')
+    {
         if (empty($session_id)) {
             $requestparams = $this->app->request->get();
             if (isset($requestparams['session_id']))
@@ -135,7 +162,8 @@ public function authenticationError($message = '') {
         return false;
     }
 
-    public function validate_session($session_id) {
+    public function validate_session($session_id)
+    {
         if (!empty($session_id)) {
 
             // only initialize session once in case this method is called multiple times
@@ -160,7 +188,8 @@ public function authenticationError($message = '') {
         return false;
     }
 
-    private function login($user_auth) {
+    private function login($user_auth)
+    {
         global $sugar_config, $system_config;
 
         $user = BeanFactory::getBean('Users');
@@ -179,10 +208,10 @@ public function authenticationError($message = '') {
             if ($authController->authController->userAuthenticateClass != "LDAPAuthenticateUser") {
                 $user_auth['password'] = md5(base64_decode(str_rot13($user_auth['password'])));
             } else {
-                $user_auth['password'] = base64_decode(str_rot13($user_auth['password']));                
+                $user_auth['password'] = base64_decode(str_rot13($user_auth['password']));
                 $passwordEncrypted = false;
             }
-        }        
+        }
         $isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], array('passwordEncrypted' => $passwordEncrypted));
         $usr_id = $user->retrieve_user_id($user_auth['user_name']);
         if ($usr_id)
@@ -226,7 +255,7 @@ public function authenticationError($message = '') {
             $_SESSION['KREST'] = true;
 
             $_SESSION['avail_modules'] = query_module_access_list($user);
-            ACLController :: filterModuleList($_SESSION['avail_modules'], false);
+            ACLController:: filterModuleList($_SESSION['avail_modules'], false);
 
             $_SESSION['authenticated_user_id'] = $current_user->id;
             $_SESSION['unique_key'] = $sugar_config['unique_key'];
@@ -238,7 +267,8 @@ public function authenticationError($message = '') {
         }
     }
 
-    public function getLoginData() {
+    public function getLoginData()
+    {
         global $current_user;
 
         // clear the tem session ... seemingly we came via login so the session shoudl be kept
@@ -249,8 +279,22 @@ public function authenticationError($message = '') {
             'userid' => $current_user->id,
             'user_name' => $current_user->user_name,
             'first_name' => $current_user->first_name,
-            'last_name' => $current_user->last_name
+            'last_name' => $current_user->last_name,
+            'email' => $current_user->email1,
+            'admin' => $current_user->is_admin
         );
+    }
+
+    public function getProxyFiles()
+    {
+        $headers = getallheaders();
+
+        if($headers['proxyfiles']){
+            $files = json_decode(base64_decode($headers['proxyfiles']), true);
+            $_FILES = $files;
+        }
+
+
     }
 
 }

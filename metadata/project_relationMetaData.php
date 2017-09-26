@@ -90,24 +90,24 @@ $dictionary['project_relation'] = array(
 
  	'relationships' => 
  		array ('projects_accounts' => array('lhs_module'=> 'Accounts', 'lhs_table'=> 'accounts', 'lhs_key' => 'id',
-		'rhs_module'=> 'Project', 'rhs_table'=> 'project', 'rhs_key' => 'id',
+		'rhs_module'=> 'Projects', 'rhs_table'=> 'projects', 'rhs_key' => 'id',
 		'relationship_type'=>'many-to-many',
 		'join_table'=> 'project_relation', 'join_key_lhs'=>'relation_id', 'join_key_rhs'=>'project_id',
 		'relationship_role_column'=>'relation_type','relationship_role_column_value'=>'Accounts'),
 						  
-		'projects_contacts' => array('lhs_module'=> 'Project', 'lhs_table'=> 'project', 'lhs_key' => 'id',
+		'projects_contacts' => array('lhs_module'=> 'Projects', 'lhs_table'=> 'projects', 'lhs_key' => 'id',
 		'rhs_module'=> 'Contacts', 'rhs_table'=> 'contacts', 'rhs_key' => 'id',
 		'relationship_type'=>'many-to-many',
 		'join_table'=> 'project_relation', 'join_key_lhs'=>'project_id', 'join_key_rhs'=>'relation_id',
 		'relationship_role_column'=>'relation_type','relationship_role_column_value'=>'Contacts'),							  
 
-		'projects_opportunities' => array('lhs_module'=> 'Project', 'lhs_table'=> 'project', 'lhs_key' => 'id',
+		'projects_opportunities' => array('lhs_module'=> 'Projects', 'lhs_table'=> 'projects', 'lhs_key' => 'id',
 		'rhs_module'=> 'Opportunities', 'rhs_table'=> 'opportunities', 'rhs_key' => 'id',
 		'relationship_type'=>'many-to-many',
 		'join_table'=> 'project_relation', 'join_key_lhs'=>'project_id', 'join_key_rhs'=>'relation_id',
 		'relationship_role_column'=>'relation_type','relationship_role_column_value'=>'Opportunities'),							  
 
-		'projects_quotes' => array('lhs_module'=> 'Project', 'lhs_table'=> 'project', 'lhs_key' => 'id',
+		'projects_quotes' => array('lhs_module'=> 'Projects', 'lhs_table'=> 'projects', 'lhs_key' => 'id',
 		'rhs_module'=> 'Quotes', 'rhs_table'=> 'quotes', 'rhs_key' => 'id',
 		'relationship_type'=>'many-to-many',
 		'join_table'=> 'project_relation', 'join_key_lhs'=>'project_id', 'join_key_rhs'=>'relation_id',

@@ -97,6 +97,7 @@ $mod_strings = array (
 	'LBL_EMAIL' => 'Email Address:',
 	'LBL_EMAIL_OPT_OUT' => 'Email Opt Out:',
 	'LBL_EMAIL_ADDRESSES' => 'Email Addresses',
+	'LBL_EMAIL_ADDRESS' => 'Email Address',
 	'LBL_EMPLOYEES' => 'Employees:',
 	'LBL_FAX' => 'Fax:',
 	'LBL_HISTORY_SUBPANEL_TITLE'=>'History',
@@ -182,13 +183,18 @@ $mod_strings = array (
 	'LBL_COPY' => 'Copy' /*for 508 compliance fix*/,
     //For export labels
     'LBL_ACCOUNT_TYPE' => 'Account Type',
-    'LBL_CAMPAIGN_ID' => 'Campaign ID',
     'LBL_PARENT_ID' => 'Parent ID',
     'LBL_PHONE_ALTERNATE' => 'Phone Alternate',
     'LBL_EXPORT_ASSIGNED_USER_NAME' => 'Assigned User Name',
     // SNIP
     'LBL_CONTACT_HISTORY_SUBPANEL_TITLE' => 'Related Contacts\' Emails',
 	'LBL_PROPOSALS_SUBPANEL_TITLE' => 'Proposals',
-
+    //links
+    'LBL_PROPOSALS_LINK' => 'Proposals',
+    'LBL_EXT_ID' => 'external ID',
+    'LBL_VAT_NR' => 'VAT Number',
+    'LBL_VAT_DETAILS' => 'VAT Details',
+    'LBL_ACCOUNTS_BANKACCOUNTS_LINK' => 'Bank Accounts',
+    'LBL_ACCOUNTS_ACCOUNTKPIS_LINK' => 'Account KPIs',
 );
 

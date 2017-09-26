@@ -168,7 +168,7 @@ class KReportChartData {
               //this is a scatter chart
               if(empty($dataSeries)){
                   //handle it like a COUNT
-                  $isScatter = true;
+                  //$isScatter = true;
                   $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]]++;
               }
               else{ //end
@@ -189,6 +189,10 @@ class KReportChartData {
                                $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]]++;
                                break;
                             default:
+                                //begin for AmChart marimekko
+                                if(isset($chartParams['type']) && preg_match("/marimekko/", $chartParams['type']))
+                                    $chartData[$thisResultRecord[$dimensions[0]['fieldid']]]['total_'.$dimensions[0]['fieldid']] += $thisResultRecord[$thisDataSeries['fieldid']];
+                                //end
                                $chartData[$thisResultRecord[$dimensions[0]['fieldid']]][$thisResultRecord[$dimensions[1]['fieldid']]] += $thisResultRecord[$thisDataSeries['fieldid']];
                                break;
                          }

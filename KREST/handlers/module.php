@@ -33,6 +33,39 @@ class KRESTModuleHandler
         $disable_date_format = true;
     }
 
+    protected function _trackAction($action, $module, $bean)
+    {
+        $action = strtolower($action);
+        //Skip save, tracked in SugarBean instead
+        if ($action == 'save') {
+            return;
+        }
+
+
+        $trackerManager = TrackerManager::getInstance();
+        $timeStamp = TimeDate::getInstance()->nowDb();
+        if ($monitor = $trackerManager->getMonitor('tracker')) {
+            $monitor->setValue('action', $action);
+            $monitor->setValue('user_id', $GLOBALS['current_user']->id);
+            $monitor->setValue('module_name', $module);
+            $monitor->setValue('date_modified', $timeStamp);
+            $monitor->setValue('visible', (($monitor->action == 'detailview') || ($monitor->action == 'editview')) ? 1 : 0);
+
+            if (!empty($bean->id)) {
+                $monitor->setValue('item_id', $bean->id);
+                $monitor->setValue('item_summary', $bean->get_summary_text());
+            }
+
+            //If visible is true, but there is no bean, do not track (invalid/unauthorized reference)
+            //Also, do not track save actions where there is no bean id
+            if ($monitor->visible && empty($bean->id)) {
+                $trackerManager->unsetMonitor($monitor);
+                return;
+            }
+            $trackerManager->saveMonitor($monitor, true, true);
+        }
+    }
+
     public function get_mod_language($modules, $lang)
     {
         $modLang = array();
@@ -43,7 +76,8 @@ class KRESTModuleHandler
         return $modLang;
     }
 
-    public function get_dynamic_domains($modules, $language) {
+    public function get_dynamic_domains($modules, $language)
+    {
 
         global $beanList, $dictionary;
 
@@ -52,15 +86,19 @@ class KRESTModuleHandler
         foreach ($modules as $module) {
 
             $thisBean = BeanFactory::getBean($module);
-            $fieldDefs = $thisBean->getFieldDefinitions();
+            if ($thisBean) {
+                $fieldDefs = $thisBean->getFieldDefinitions();
 
-            //$domainFunctions = array_map(function($fieldDef) { return isset($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function'] : array();} , $dictionary[$beanList[$module]]['fields']);
-            $fieldDefsWithDomainFunction = array_filter($fieldDefs, function($fieldDef) { return isset($fieldDef['spice_domain_function']);});
+                //$domainFunctions = array_map(function($fieldDef) { return isset($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function'] : array();} , $dictionary[$beanList[$module]]['fields']);
+                $fieldDefsWithDomainFunction = array_filter($fieldDefs, function ($fieldDef) {
+                    return isset($fieldDef['spice_domain_function']);
+                });
 
-            foreach($fieldDefsWithDomainFunction as $fieldDef) {
-                $functionName = is_array($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function']['name'] : $fieldDef['spice_domain_function'];
-                $domainKey = 'spice_domain_function_' . strtolower($functionName) . '_dom';
-                $dynamicDomains[$domainKey] = $this->processSpiceDomainFunction($thisBean, $fieldDef, $language);
+                foreach ($fieldDefsWithDomainFunction as $fieldDef) {
+                    $functionName = is_array($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function']['name'] : $fieldDef['spice_domain_function'];
+                    $domainKey = 'spice_domain_function_' . strtolower($functionName) . '_dom';
+                    $dynamicDomains[$domainKey] = $this->processSpiceDomainFunction($thisBean, $fieldDef, $language);
+                }
             }
         }
 
@@ -69,7 +107,7 @@ class KRESTModuleHandler
 
     public function get_bean_list($beanModule, $searchParams)
     {
-        global $current_user, $sugar_config, $dictionary;
+        global $db, $current_user, $sugar_config, $dictionary;
 
         // whitelist currencies modules
         $aclWhitelist = array(
@@ -129,6 +167,36 @@ class KRESTModuleHandler
 
                     $searchParams['whereclause'] .= '(' . implode(' OR ', $searchTerms) . ')';
                 }
+            }
+        }
+
+        // handle the listid
+        if (!empty($searchParams['listid'])) {
+            switch ($searchParams['listid']) {
+                case 'all':
+                    // do nothing
+                    break;
+                case 'owner':
+                    $searchParams['searchmyitems'] = true;
+                    break;
+                case 'recent':
+                    // todo: not implemented yet
+                    break;
+                default:
+                    $listDef = $db->fetchByAssoc($db->query("SELECT * FROM sysmodulelists WHERE id = '" . $searchParams['listid'] . "'"));
+                    if ($listDef['basefilter'] == 'own')
+                        $searchParams['searchmyitems'] = true;
+                    $filterdefs = json_decode(html_entity_decode_utf8(base64_decode($listDef['filterdefs'])), true);
+                    if ($filterdefs) {
+                        $listWhereClause = $this->buildFilerdefsWhereClause($thisBean, $filterdefs, $addJoins);
+                        if ($listWhereClause) {
+                            if ($searchParams['whereclause'] != '')
+                                $searchParams['whereclause'] .= ' AND ';
+
+                            $searchParams['whereclause'] .= '(' . $listWhereClause . ')';
+                        }
+                    }
+                    break;
             }
         }
 
@@ -200,7 +268,7 @@ class KRESTModuleHandler
         if (empty($searchParams['limit']))
             $searchParams['limit'] = $sugar_config['list_max_entries_per_page'] ?: 25;
 
-        $beanList = $thisBean->process_list_query($query, $searchParams['offset'], $searchParams['limit'] + 1);
+        $beanList = $thisBean->process_list_query($query, $searchParams['offset'], $searchParams['limit'], $searchParams['limit']);
 
         $includeReminder = $searchParams['includeReminder'] ? true : false;
         $includeNotes = $searchParams['includeNotes'] ? true : false;
@@ -250,8 +318,87 @@ class KRESTModuleHandler
         );
     }
 
-    private
-    function buildConditionsWhereClause($bean, $conditions, &$addJoins)
+    private function buildFilerdefsWhereClause($bean, $filterdefs, &$addJoins)
+    {
+        global $timedate;
+
+        $conditionsArray = [];
+
+        foreach ($filterdefs as $filterdef) {
+            $condition = '';
+            $fieldName = $filterdef['field'];
+            if (strpos($fieldName, '.') === false) {
+                if (!empty($bean->field_name_map[$fieldName]['join_name']))
+                    $fieldName = $bean->field_name_map[$fieldName]['join_name'] . '.' . $bean->field_name_map[$fieldName]['rname'];
+                else
+                    $fieldName = $bean->table_name . '.' . $filterdef['field'];
+            }
+
+            switch ($filterdef['operator']) {
+                case 'equals':
+                    $condition = $fieldName . " = '" . $filterdef['filtervalue'] . "'";
+                    break;
+                case 'oneof':
+                    $condition = $fieldName . " IN ('" . implode("','", $filterdef['filtervalue']) . "')";
+                    break;
+                case 'starts':
+                    $condition = $fieldName . " LIKE '" . $filterdef['filtervalue'] . "%'";
+                    break;
+                case 'contains':
+                    $condition = $fieldName . " LIKE '%" . $filterdef['filtervalue'] . "%'";
+                    break;
+                case 'ncontains':
+                    $condition = $fieldName . " NOT LIKE '%" . $filterdef['filtervalue'] . "%'";
+                    break;
+                case 'greater':
+                    $condition = $fieldName . " > '" . $filterdef['filtervalue'] . "'";
+                    break;
+                case 'gequal':
+                    $condition = $fieldName . " >= '" . $filterdef['filtervalue'] . "'";
+                    break;
+                case 'smaller':
+                    $condition = $fieldName . " < '" . $filterdef['filtervalue'] . "'";
+                    break;
+                case 'sequal':
+                    $condition = $fieldName . " <= '" . $filterdef['filtervalue'] . "'";
+                    break;
+                case 'future':
+                    $condition = $fieldName . " > '" . $timedate->nowDb() . "'";
+                    break;
+                case 'past':
+                    $condition = $fieldName . " < '" . $timedate->nowDb() . "'";
+                    break;
+                case 'thisyear':
+                    $date = new DateTime();
+                    $condition = $fieldName . " >= '" . $date->format('Y') . "-01-01 00:00:00' AND " .$fieldName . " <= '" . $date->format('Y') . "-12-31 23:59:59'";
+                    break;
+                case 'nextyear':
+                    $date = new DateTime();
+                    $date->add(new DateInterval('P1Y'));
+                    $condition = $fieldName . " >= '" . $date->format('Y') . "-01-01 00:00:00' AND " .$fieldName . " <= '" . $date->format('Y') . "-12-31 23:59:59'";
+                    break;
+                case 'thismonth':
+                    $datestart = new DateTime();
+                    $dateend = new DateTime();
+                    $dateend->add(new DateInterval('P1M'));
+                    $condition = $fieldName . " >= '" . $datestart->format('Y-m-01 00:00:00') . "-01-01 00:00:00' AND " .$fieldName . " < '" . $dateend->format('Y-m-01 00:00:00') . "'";
+                    break;
+                case 'nextmonth':
+                    $datestart = new DateTime();
+                    $datestart->add(new DateInterval('P1M'));
+                    $dateend = new DateTime();
+                    $dateend->add(new DateInterval('P2M'));
+                    $condition = $fieldName . " >= '" . $datestart->format('Y-m-01 00:00:00') . "-01-01 00:00:00' AND " .$fieldName . " < '" . $dateend->format('Y-m-01 00:00:00') . "'";
+                    break;
+            }
+
+            if (!empty($condition)) $conditionsArray[] = $condition;
+        }
+
+        return implode(' AND ', $conditionsArray);
+    }
+
+    private function buildConditionsWhereClause($bean, $conditions, &$addJoins)
     {
         $condWhereClause = '';
         if (!empty($conditions['join'])) {
@@ -264,14 +411,14 @@ class KRESTModuleHandler
                 else
                     $condWhereClause .= $this->buildConditionWhereClause($bean, $condition, $addJoins);
             }
-        } else
+        } else {
             $condWhereClause .= $this->buildConditionWhereClause($bean, $conditions, $addJoins);
+        }
 
         return $condWhereClause;
     }
 
-    private
-    function buildConditionWhereClause($bean, $condition, &$addJoins)
+    private function buildConditionWhereClause($bean, $condition, &$addJoins)
     {
         // check if we have to add the table to the field name
         $fieldName = $condition['field'];
@@ -301,15 +448,33 @@ class KRESTModuleHandler
             case 'currentuser':
                 return $fieldName . ' = \'' . $GLOBALS['current_user']->id . '\'';
                 break;
+            case 'empty':
+                return "($fieldName = '' OR $fieldName IS NULL)";
+                break;
             default:
                 return $fieldName . ' ' . $condition['operator'] . ' \'' . $condition['value'] . '\'';
                 break;
         }
     }
 
-    public
-    function get_bean_detail($beanModule, $beanId, $requestParams)
+    public function merge_bean($beanModule, $beanId, $requestParams)
     {
+        global $current_language;
+        // acl check if user can get the detail
+        if (!ACLController::checkAccess($beanModule, 'delete', true)) {
+            http_response_code(403);
+            echo('not authorized for module ' . $beanModule);
+            exit;
+        }
+
+        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        $thisBean->merge($requestParams);
+
+    }
+
+    public function get_bean_detail($beanModule, $beanId, $requestParams)
+    {
+        global $current_language, $app_list_strings;
 
         // acl check if user can get the detail
         if (!ACLController::checkAccess($beanModule, 'view', true)) {
@@ -317,6 +482,8 @@ class KRESTModuleHandler
             echo('not authorized for module ' . $beanModule);
             exit;
         }
+
+        $app_list_strings = return_app_list_strings_language($current_language);
 
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if (!$thisBean) {
@@ -327,6 +494,10 @@ class KRESTModuleHandler
 
         if ($requestParams['writetracker']) {
             $this->write_spiceuitracker($beanModule, $thisBean);
+        }
+
+        if ($requestParams['trackaction']) {
+            $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
         }
 
         $includeReminder = $requestParams['includeReminder'] ? true : false;
@@ -343,11 +514,100 @@ class KRESTModuleHandler
          */
     }
 
-    public
-    function get_bean_attachment($beanModule, $beanId)
+    public function get_bean_auditlog($beanModule, $beanId)
     {
-// acl check if user can get the detail
-        if (!ACLController::checkAccess($beanModule, 'detail', true)) {
+        global $db;
+
+        // acl check if user can get the detail
+        if (!ACLController::checkAccess($beanModule, 'view', true)) {
+            http_response_code(403);
+            echo('not authorized for module ' . $beanModule);
+            exit;
+        }
+
+        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        if (!$thisBean) {
+            http_response_code(404);
+            echo('record not found');
+            exit;
+        }
+
+        if (!$thisBean->is_AuditEnabled()) {
+            http_response_code(404);
+            echo('record not audit enabled');
+            exit;
+        }
+
+        $auditLog = Array();
+
+        $auditRecords = $db->query("SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' ORDER BY date_created DESC");
+        while ($auditRecord = $db->fetchByAssoc($auditRecords))
+            $auditLog[] = $auditRecord;
+
+        return $auditLog;
+
+    }
+
+    public function get_bean_surrounding($beanModule, $beanId, $params)
+    {
+        global $db;
+    }
+
+    public function check_bean_duplicates($beanModule, $beanData)
+    {
+        // acl check if user can get the detail
+        if (!ACLController::checkAccess($beanModule, 'view', true)) {
+            http_response_code(403);
+            echo('not authorized for module ' . $beanModule);
+            exit;
+        }
+
+        // load the bean and populate from row
+        $seed = BeanFactory::getBean($beanModule);
+        $seed->populateFromRow($beanData);
+        $duplicates = $seed->checkForDuplicates();
+
+        $retArray = array();
+        foreach ($duplicates as $duplicate) {
+            $retArray[] = $this->mapBeanToArray($beanModule, $duplicate);
+        }
+        return $retArray;
+    }
+
+    public function get_bean_duplicates($beanModule, $beanId)
+    {
+        global $db;
+
+        // acl check if user can get the detail
+        if (!ACLController::checkAccess($beanModule, 'view', true)) {
+            http_response_code(403);
+            echo('not authorized for module ' . $beanModule);
+            exit;
+        }
+
+        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        if (!$thisBean) {
+            http_response_code(404);
+            echo('record not found');
+            exit;
+        }
+
+
+        $duplicates = $thisBean->checkForDuplicates();
+
+        $retArray = array();
+        foreach ($duplicates as $duplicate) {
+            $retArray[] = $this->mapBeanToArray($beanModule, $duplicate);
+        }
+        return $retArray;
+
+    }
+
+
+    public function get_bean_attachment($beanModule, $beanId)
+    {
+        // acl check if user can get the detail
+        if (!ACLController::checkAccess($beanModule, 'view', true)) {
             http_response_code(403);
             echo('not authorized for module ' . $beanModule);
             exit;
@@ -378,6 +638,40 @@ class KRESTModuleHandler
         exit;
     }
 
+    public function set_bean_attachment($beanModule, $beanId)
+    {
+        require_once('include/upload_file.php');
+        $upload_file = new UploadFile('file');
+        if (isset($_FILES['file']) && $upload_file->confirm_upload()) {
+            $filename = $upload_file->get_stored_file_name();
+            $file_mime_type = $upload_file->mime_type;
+            $filesize = $upload_file->get_uploaded_file_size();
+            $filemd5 = $upload_file->get_uploaded_file_md5();
+            $upload_file->use_proxy = $_FILES['file']['proxy'] ? true : false;
+            $upload_file->final_move($beanId, true);
+        }
+    }
+
+    public function download_bean_attachment($beanModule, $beanId)
+    {
+        $seed = BeanFactory::getBean($beanModule, $beanId);
+        if ($seed) {
+            $download_location = "upload://" . $beanId;
+
+            // make sure to clean the buffer
+            while (ob_get_level() && @ob_end_clean()) ;
+
+            header("Pragma: public");
+            header("Cache-Control: maxage=1, post-check=0, pre-check=0");
+            header('Content-type: application/octet-stream');
+            header("Content-Disposition: attachment; filename=\"" . $seed->filename . "\";");
+            header("X-Content-Type-Options: nosniff");
+            header("Content-Length: " . filesize($download_location));
+            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 2592000));
+            readfile($download_location);
+        }
+    }
+
     private
     function get_acl_actions($bean)
     {
@@ -389,12 +683,11 @@ class KRESTModuleHandler
         return $aclArray;
     }
 
-    public
-    function get_related($beanModule, $beanId, $linkName)
+    public function get_related($beanModule, $beanId, $linkName, $params)
     {
 
-// acl check if user can get the detail
-        if (!ACLController::checkAccess($beanModule, 'detail', true)) {
+        // acl check if user can get the detail
+        if (!ACLController::checkAccess($beanModule, 'view', true)) {
             http_response_code(403);
             echo('not authorized for module ' . $beanModule);
             exit;
@@ -415,7 +708,9 @@ class KRESTModuleHandler
         $thisBean->load_relationship($linkName);
 
         // get related beans and related module
-        $relBeans = $thisBean->get_linked_beans($linkName);
+        // get_linked_beans($field_name, $bean_name, $sort_array = array(), $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
+        $relBeans = $thisBean->get_linked_beans($linkName, '', json_decode($params['sort'], true) ?: array(), $params['offset'] ?: 0, $params['limit'] ?: 5);
+
         $relModule = $thisBean->field_defs[$linkName]['module'];
 
         $retArray = array();
@@ -423,13 +718,24 @@ class KRESTModuleHandler
             if (empty($relBean->relid))
                 $relBean->relid = create_guid();
             $retArray[$relBean->relid] = $this->mapBeanToArray($relModule, $relBean);
+
+            if ($params['relationshipFields']) {
+                $relFields = json_decode(html_entity_decode($params['relationshipFields']), true);
+                if (count($relFields) > 0) ;
+            }
         }
 
-        return $retArray;
+        if ($params['getcount']) {
+            $relCount = $thisBean->get_linked_beans_count($linkName);
+            return array(
+                'count' => $relCount,
+                'list' => $retArray
+            );
+        } else
+            return $retArray;
     }
 
-    public
-    function add_related($beanModule, $beanId, $linkName)
+    public function add_related($beanModule, $beanId, $linkName)
     {
 
         if (!ACLController::checkAccess($beanModule, 'edit', true)) {
@@ -462,8 +768,37 @@ class KRESTModuleHandler
         return $retArray;
     }
 
-    public
-    function delete_related($beanModule, $beanId, $linkName)
+    public function set_related($beanModule, $beanId, $linkName, $postparams)
+    {
+
+        if (!ACLController::checkAccess($beanModule, 'edit', true)) {
+            http_response_code(403);
+            echo('not authorized for module ' . $beanModule);
+            exit;
+        }
+        $retArray = array();
+
+        $relatedIds = json_decode($this->app->request->getBody());
+
+        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        if (!$thisBean) {
+            http_response_code(404);
+            echo('record not found');
+            exit;
+        }
+
+        if (!ACLController::checkAccess($thisBean->field_defs[$linkName]['module'], 'list', true)) {
+            http_response_code(403);
+            echo('not authorized for module ' . $thisBean->field_defs[$linkName]['module']);
+            exit;
+        }
+
+        $thisBean->load_relationship($linkName);
+
+        return $retArray;
+    }
+
+    public function delete_related($beanModule, $beanId, $linkName)
     {
 
         if (!ACLController::checkAccess($beanModule, 'edit', true)) {
@@ -489,8 +824,13 @@ class KRESTModuleHandler
         }
         $thisBean->load_relationship($linkName);
 
-        foreach (json_decode($postParams['relatedids'], true) as $relatedId) {
-            $thisBean->$linkName->delete($beanId, $relatedId);
+        $relatedArray = json_decode($postParams['relatedids'], true);
+        if ($relatedArray) {
+            foreach ($relatedArray as $relatedId) {
+                $thisBean->$linkName->delete($beanId, $relatedId);
+            }
+        } else {
+            $thisBean->$linkName->delete($beanId, $postParams['relatedids']);
         }
 
         return $retArray;
@@ -521,16 +861,63 @@ class KRESTModuleHandler
         }
 
         foreach ($thisBean->field_name_map as $fieldId => $fieldData) {
-            if (isset($post_params[$fieldData['name']]))
-                $thisBean->{$fieldData['name']} = $post_params[$fieldData['name']];
+            if ($fieldId == 'date_entered')
+                continue;
+
+            switch ($fieldData['type']) {
+                case 'link':
+                    break;
+                default:
+                    if (isset($post_params[$fieldData['name']]))
+                        $thisBean->{
+                        $fieldData['name']
+                        } = $post_params[$fieldData['name']];
+                    break;
+            }
         }
 
         // make sure we have an assigned user
         if (empty($thisBean->assigned_user_id))
             $thisBean->assigned_user_id = $current_user->id;
 
-        // save the bean
-        $thisBean->save();
+        // save the bean bbut do not index .. indexing is handled later here since we might save related beans
+        $thisBean->update_date_entered = true;
+        $thisBean->save(false, false);
+
+        // process links if sent
+        foreach ($thisBean->field_name_map as $fieldId => $fieldData) {
+            switch ($fieldData['type']) {
+                case 'link':
+                    if ($fieldData['module'] && isset($post_params[$fieldData['name']])) {
+                        $thisBean->load_relationship($fieldId);
+                        $beans = $post_params[$fieldData['name']]['beans'];
+                        foreach ($beans as $beanId => $beanData) {
+                            $seed = BeanFactory::getBean($fieldData['module'], $beanId);
+                            // if it does not exist create new bean
+                            if (!$seed) {
+                                $seed = BeanFactory::getBean($fieldData['module']);
+                                $seed->id = $beanId;
+                                $seed->new_with_id = true;
+                            }
+
+                            // populate and save and add
+                            $changed = false;
+                            foreach ($seed->field_defs as $field => $field_value) {
+                                if (isset($beanData[$field]) && $beanData[$field] !== $seed->$field) {
+                                    $seed->$field = $beanData[$field];
+                                    $changed = true;
+                                }
+                            }
+                            // save if we had changes
+                            if ($changed)
+                                $seed->save();
+
+                            $thisBean->$fieldId->add($seed);
+                        }
+                    }
+                    break;
+            }
+        }
 
         if ($post_params['emailaddresses']) {
             $this->setEmailAddresses($beanModule, $beanId, $post_params['emailaddresses']);
@@ -551,6 +938,10 @@ class KRESTModuleHandler
             else
                 $this->delete_favorite($beanModule, $beanId);
         }
+
+        // index the bean now
+        $spiceFTSHandler = new SpiceFTSHandler();
+        $spiceFTSHandler->indexBean($thisBean);
 
         return $this->mapBeanToArray($beanModule, $thisBean);
     }
@@ -612,7 +1003,7 @@ class KRESTModuleHandler
     function set_favorite($beanModule, $beanId)
     {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
-        if($spiceFavoriteClass)
+        if ($spiceFavoriteClass)
             $spiceFavoriteClass::set_favorite($beanModule, $beanId);
     }
 
@@ -795,24 +1186,36 @@ class KRESTModuleHandler
         return return_module_language('', $beanModule);
     }
 
-//private helper functions
-    private
+    //private helper functions
     function mapBeanToArray($beanModule, $thisBean, $returnFields = array(), $includeReminder = false, $includeNotes = false)
     {
 
-        global $current_language;
+        global $current_language, $current_user;
 
 
         $app_list_strings = return_app_list_strings_language($current_language);
         $beanDataArray = array();
         foreach ($thisBean->field_name_map as $fieldId => $fieldData) {
-            if ($fieldId == 'id' || ($fieldData['type'] != 'link' && (count($returnFields) == 0 || (count($returnFields) > 0 && in_array($fieldId, $returnFields))))) {
-                $beanDataArray[$fieldId] = html_entity_decode($thisBean->$fieldId, ENT_QUOTES);
+            switch ($fieldData['type']) {
+                case 'link':
+                    if ($fieldData['default'] === true && $fieldData['module']) {
+                        $thisBean->load_relationship($fieldId);
+                        $relatedBeans = $thisBean->get_linked_beans($fieldId, $fieldData['module']);
+                        foreach ($relatedBeans as $relatedBean) {
+                            $beanDataArray[$fieldId]['beans'][$relatedBean->id] = $this->mapBeanToArray($fieldData['module'], $relatedBean);
+                        }
+                    }
+                    break;
+                default:
+                    if ($fieldId == 'id' || count($returnFields) == 0 || (count($returnFields) > 0 && in_array($fieldId, $returnFields))) {
+                        $beanDataArray[$fieldId] = html_entity_decode($thisBean->$fieldId, ENT_QUOTES);
+                    }
+                    break;
             }
         }
 
         // get the summary text
-        $beanDataArray['summary_text'] = $thisBean->get_summary_text();
+        $beanDataArray['summary_text'] = $thisBean ? $thisBean->get_summary_text() : '';
 
         $beanDataArray['favorite'] = $this->get_favorite($beanModule, $thisBean->id) ? 1 : 0;
 
@@ -830,6 +1233,28 @@ class KRESTModuleHandler
         // get the ACL Array
         $beanDataArray['acl'] = $this->get_acl_actions($thisBean);
 
+        if (!$current_user->is_admin && $GLOBALS['ACLController'] && method_exists($GLOBALS['ACLController'], 'getFieldAccess')) {
+            $beanDataArray['acl_fieldcontrol']['edit'] = $GLOBALS['ACLController']->getFieldAccess($thisBean, 'edit', false);
+            $beanDataArray['acl_fieldcontrol']['display'] = $GLOBALS['ACLController']->getFieldAccess($thisBean, 'display', false);
+
+            // remove any field that is hidden
+            $controlArray = [];
+            foreach ($beanDataArray['acl_fieldcontrol']['display'] as $field => $fieldcontrol) {
+                if (!isset($controlArray[$field]) || (isset($controlArray[$field]) && $fieldcontrol > $controlArray[$field]))
+                    $controlArray[$field] = $fieldcontrol;
+            }
+            foreach ($beanDataArray['acl_fieldcontrol']['edit'] as $field => $fieldcontrol) {
+                if (!isset($controlArray[$field]) || (isset($controlArray[$field]) && $fieldcontrol > $controlArray[$field]))
+                    $controlArray[$field] = $fieldcontrol;
+            }
+
+            foreach ($controlArray as $field => $fieldcontrol) {
+                if ($fieldcontrol == 1)
+                    unset($beanDataArray[$field]);
+            }
+
+            $beanDataArray['acl_fieldcontrol'] = $controlArray;
+        }
         return $beanDataArray;
     }
 
@@ -1021,7 +1446,8 @@ class KRESTModuleHandler
         }
     }
 
-    private function processSpiceDomainFunction($thisBean, $fieldDef, $language) {
+    private function processSpiceDomainFunction($thisBean, $fieldDef, $language)
+    {
 
         if (isset($fieldDef['spice_domain_function'])) {
             $function = $fieldDef['spice_domain_function'];
@@ -1037,7 +1463,7 @@ class KRESTModuleHandler
 
             $domain = call_user_func($function, $thisBean, $fieldDef['name'], $language);
             return $domain;
-            
+
         } else {
             return array();
         }

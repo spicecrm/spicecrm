@@ -67,6 +67,7 @@ class kreportpresentationstandard extends kreportpresentationplugin {
       $columnArray = array();
       foreach ($arrayList as $thisList) {
          if ($thisList['display'] != 'hid') {
+            $thisFieldType = ($thisList['overridetype'] == '' ? $thisReport->getFieldTypeById($thisList['fieldid']) : $thisList['overridetype']);
             $thisColumn = array(
                 //2013-03-05 html entities to support special chars in Text
                 //2013-04-19 added UTF-8 support
@@ -75,7 +76,8 @@ class kreportpresentationstandard extends kreportpresentationplugin {
                 'sortable' => ($thisList['sort'] != '' && $thisList['sort'] != '-' ? true : false),
                 'dataIndex' => trim($thisList['fieldid'], ':') ,
                 'hidden' => ($thisList['display'] != 'yes' ? true : false),
-                'renderer' => 'renderField'
+                'renderer' => 'renderField',
+                'align' => $thisReport->getXtypeAlignment($thisFieldType, $thisList['fieldid'])
             );
 
             // see if we have renderer we need to process

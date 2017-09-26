@@ -200,8 +200,20 @@ $layout_defs['Campaigns'] = array(
             'subpanel_name' => 'default',
             'title_key' => 'LBL_OPPORTUNITY_SUBPANEL_TITLE',
             'top_buttons' => array(),
-        ),           
-        
-	),
+        ),
+        'eventregistrations' => array(
+            'order' => 200,
+            'sort_order' => 'desc',
+            'sort_by' => 'name',
+            'module' => 'EventRegistrations',
+            'get_subpanel_data' => 'eventregistrations',
+            'subpanel_name' => 'ForCampaigns',
+            'title_key' => 'LBL_EVENTREGISTRATIONS_SUBPANEL_TITLE',
+            'top_buttons' => array(
+                array('widget_class' => 'SubPanelTopButtonQuickCreate'),
+            ),
+        ),
+
+    ),
 );		
 ?>
