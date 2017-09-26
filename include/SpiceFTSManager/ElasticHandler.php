@@ -53,6 +53,9 @@ class ElasticHandler
         global $db;
 
         $indexes = array();
+        //catch installation process and abort. table sysfts will not exist at the point during installation
+        if($GLOBALS['installing'] === true)
+            return array();
 
         $indexObjects = $db->query("SELECT module FROM sysfts");
         while ($indexObject = $db->fetchByAssoc($indexObjects)) {
@@ -220,6 +223,9 @@ class ElasticHandler
     private function addLogEntry($method, $url, $status, $request, $response, $rtlocal, $rtremote)
     {
         global $db, $timedate;
+        //catch installation process and abort. table sysfts will not exist at the point during installation
+        if($GLOBALS['installing'] === true)
+            return false;
 
         $db->query("INSERT INTO sysftslog (id, date_created, request_method, request_url, response_status, index_request, index_response) values('" . create_guid() . "', '" . $timedate->nowDb() . "', '$method', '$url', '$status', '$request', '$response')");
     }
