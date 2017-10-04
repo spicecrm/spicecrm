@@ -326,6 +326,7 @@ $mod_strings = array (
     'LBL_MSSQL_SQLSRV'				    => 'SQL Server (Microsoft SQL Server Driver für PHP)',
     'LBL_MYSQL'							=> 'MySQL',
     'LBL_MYSQLI'						=> 'MySQL (mysqli Erweiterung)',
+    'LBL_PGSQL'							=> 'PgSQL (pgsql Erweiterung)',
     'LBL_IBM_DB2'						=> 'IBM DB2',
     'LBL_NEXT'							=> 'Weiter',
     'LBL_NO'							=> 'Nein',
