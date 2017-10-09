@@ -3880,6 +3880,8 @@ $app_list_strings['productattribute_usage_dom'] =  array (
     'none' 		=> 'no input',
 );
 
+$app_list_strings['moduleList']['AccountKPIs'] = 'Account KPIs';
+
 $app_strings = array_merge($app_strings, $addAppStrings);
 
 include('include/SpiceBeanGuide/SpiceBeanGuideLanguage.php');

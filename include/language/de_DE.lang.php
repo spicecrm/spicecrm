@@ -3575,5 +3575,6 @@ $app_list_strings['productattribute_usage_dom'] =  array (
     'none' 		=> 'keine Eingabe',
 );
 
+$app_list_strings['moduleList']['AccountKPIs'] = 'Key Performance Indicators';
 
 include('include/SpiceBeanGuide/SpiceBeanGuideLanguage.php');

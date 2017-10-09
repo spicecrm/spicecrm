@@ -502,6 +502,11 @@ $modInvisList['CompanyFiscalPeriods'] = 'CompanyFiscalPeriods';
 $beanList['CompanyFiscalPeriods'] = 'CompanyFiscalPeriod';
 $beanFiles['CompanyFiscalPeriod'] = 'modules/CompanyFiscalPeriods/CompanyFiscalPeriod.php';
 
+/** include Account KeyPerformanceIndicators */
+$moduleList['AccountKPIs'] = 'AccountKPIs';
+$beanList['AccountKPIs'] = 'AccountKPI';
+$beanFiles['AccountKPI'] = 'modules/AccountKPIs/AccountKPI.php';
+
 if (file_exists('include/modules_override.php')) {
     include('include/modules_override.php');
 }
