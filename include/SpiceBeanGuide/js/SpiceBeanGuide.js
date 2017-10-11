@@ -2,10 +2,16 @@ SpiceCRM.SpiceBeanGuide = {
     salesStageDetails: {},
     detailsVisible: true,
     setStageDesctiption: function (_event, _stage) {
-        if (this.detailsVisible) {
+        if (this.detailsVisible)
+        {
             if (this.salesStageDetails[_stage]) {
                 $('.guidedetailinstructions')[0].innerHTML = this.salesStageDetails[_stage].stage_description;
                 $('.guidedetailchecks')[0].innerHTML = this.salesStageDetails[_stage].checkcontent;
+            }
+            else
+            {
+                $('.guidedetailinstructions')[0].innerHTML = SUGAR.language.translate('Opportunities','LBL_GUIDE_NO_STAGE_DESC');
+                $('.guidedetailchecks')[0].innerHTML = SUGAR.language.translate('Opportunities','LBL_GUIDE_NO_STAGE_CHECKS');
             }
 
             // toggle the active Class

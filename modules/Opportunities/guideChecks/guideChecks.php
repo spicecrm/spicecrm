@@ -1,12 +1,13 @@
 <?php
 class standardOpportunityGuideChecks{
 
-    public function qualification_activitiy($opportunity){
-        $calls = $opportunity->get_linked_beans('calls', 'Calls', array(),0, -1, 0, "calls.status ='held'");
+    public function qualification_activitiy($opportunity)
+    {
+        $calls = $opportunity->get_linked_beans('calls', 'Calls', array(),0, -1, 0, "calls.status = 'held'");
         if(count($calls) > 0)
             return true;
 
-        $meetings = $opportunity->get_linked_beans('meetings', 'Meetings', array(),0, -1, 0, "calls.status ='held'");
+        $meetings = $opportunity->get_linked_beans('meetings', 'Meetings', array(),0, -1, 0, "meetings.status = 'held'");
         if(count($meetings) > 0)
             return true;
 

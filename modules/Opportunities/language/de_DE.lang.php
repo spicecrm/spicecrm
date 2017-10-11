@@ -132,5 +132,10 @@ $mod_strings = array (
 
   // SNIP
   'LBL_CONTACT_HISTORY_SUBPANEL_TITLE' => 'Verknüpfte Kontakt E-Mails',
+
+    //links
+    'LBL_PROPOSALS_LINK' => 'Angebote',
+
+	'LBL_GUIDE_NO_STAGE_DESC' => 'Keine Beschreibung vorhanden...',
+    'LBL_GUIDE_NO_STAGE_CHECKS' => 'Keine Checks gefunden...',
 );
-?>

@@ -43,7 +43,8 @@ while ($stage = $db->fetchByAssoc($stagesObj)) {
     }
 
     // set the stage /also for multi stage
-    if($stage['stage'].$stage['secondary_stage'] == $GLOBALS['FOCUS']->$statusField) {
+    $name = trim($stage['stage'].' '.$stage['secondary_stage']);
+    if($name == $GLOBALS['FOCUS']->$statusField) {
         $ss->assign('active_stage', $stage['stage']);
         $stagePassed = true;
     }

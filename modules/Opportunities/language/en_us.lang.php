@@ -169,5 +169,8 @@ $mod_strings = array(
     'LBL_CUST_VALUEPROPOSITION' => 'Value Proposition',
 
 //links
-	'LBL_PROPOSALS_LINK' => 'Angebote',
+	'LBL_PROPOSALS_LINK' => 'Proposals',
+
+    'LBL_GUIDE_NO_STAGE_DESC' => 'no guide defined...',
+    'LBL_GUIDE_NO_STAGE_CHECKS' => 'no checks found...',
 );
