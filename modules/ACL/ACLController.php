@@ -164,7 +164,7 @@ class ACLController {
 
 	}
 
-    function checkAccess($category, $action, $is_owner = false, $type = 'module')
+    public static function checkAccess($category, $action, $is_owner = false, $type = 'module')
     {
         // for the territorry management we pass int he full object
         if(is_object($category))
@@ -183,21 +183,20 @@ class ACLController {
         return ACLAction::userHasAccess($current_user->id, $category, $action, $type, $is_owner);
     }
 
-    function requireOwner($category, $value, $type = 'module')
+    public static function requireOwner($category, $value, $type = 'module')
     {
         global $current_user;
         if (is_admin($current_user)) return false;
         return ACLAction::userNeedsOwnership($current_user->id, $category, $value, $type);
 	}
 
-
-
 	function addJavascript($category,$form_name='', $is_owner=false){
 		$jscontroller = new ACLJSController($category, $form_name, $is_owner);
 		echo $jscontroller->getJavascript();
 	}
 
-	function moduleSupportsACL($module){
+	public static function moduleSupportsACL($module)
+    {
 		static $checkModules = array();
 		global $beanFiles, $beanList;
 		if(isset($checkModules[$module])){
@@ -229,7 +228,7 @@ class ACLController {
 	    global $current_user;
 
         $thisFilter = [];
-        if ($this->requireOwner($module, 'list')) {
+        if (self::requireOwner($module, 'list')) {
             $thisFilter[] = array(
                 'match' => array(
                     'assigned_user_id' => $current_user->id

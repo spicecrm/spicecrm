@@ -176,5 +176,10 @@ $mod_strings = array (
     'LBL_WARNING_CHANGING_AUTO_IMPORT' => 'Warnung: Sie modifizieren ihre automatische Import-Einstellung, welches zu Datenverlust führen kann.',
     'LBL_WARNING_CHANGING_AUTO_IMPORT_WITH_CREATE_CASE' => 'Warning: Auto import must be enabled when automatically creating cases.',
 	'LBL_EDIT_LAYOUT' => 'Layout bearbeiten',
+
+    'LBL_PROCESSING_OPTIONS' => 'Inbound Processing',
+    'LBL_PROCESSING_FILE' => 'processing File',
+    'LBL_PROCESSING_CLASS' => 'processing Class',
+    'LBL_PROCESSING_FUNCTION' => 'processing Function',
 );
 ?>

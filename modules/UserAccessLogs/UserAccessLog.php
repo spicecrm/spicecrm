@@ -46,15 +46,16 @@ class UserAccessLog extends SugarBean
 
     public function __construct()
     {
-        parent::SugarBean();
+        parent::__construct();
         $this->tracker_visibility = false;
     }
 
 
-    public function addRecord()
+    public function addRecord($action = 'loginsuccess')
     {
         $this->ipaddress = $_SERVER['REMOTE_ADDR'];
         $this->assigned_user_id = $GLOBALS['current_user']->id;
+        $this->action = $action;
         $this->save();
     }
 }

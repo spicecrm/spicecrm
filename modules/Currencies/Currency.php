@@ -72,9 +72,9 @@ class Currency extends SugarBean
 	var $disable_num_format = true;
 
 
-    function Currency()
+    public function __construct()
 	{
-		parent::SugarBean();
+		parent::__construct();
 		global $app_strings, $current_user, $sugar_config, $locale;
 		$this->field_defs['hide'] = array('name'=>'hide', 'source'=>'non-db', 'type'=>'varchar','len'=>25);
 		$this->field_defs['unhide'] = array('name'=>'unhide', 'source'=>'non-db', 'type'=>'varchar','len'=>25);
@@ -401,14 +401,34 @@ function format_number($amount, $round = null, $decimals = null, $params = array
 } //end function format_number
 
 
-
-function format_place_symbol($amount, $symbol, $symbol_space) {
+/**
+ * @param $amount
+ * @param $symbol
+ * @param $symbol_space
+ * @param string $symbol_position : added in Winter release 2017
+ * @return string
+ */
+function format_place_symbol($amount, $symbol, $symbol_space, $symbol_position = 'left') {
 	if($symbol != '') {
-		if($symbol_space == true) {
-			$amount = $symbol . '&nbsp;' . $amount;
-		} else {
-			$amount = $symbol . $amount;
-		}
+        //get symbol_position from sugar_config
+        if (isset($GLOBALS['sugar_config']['default_currency_symbol_position']))
+            $symbol_position = $GLOBALS['sugar_config']['default_currency_symbol_position'];
+
+        switch ($symbol_position) {
+            case 'right':
+                if ($symbol_space == true) {
+                    $amount = $amount . '&nbsp;' . $symbol;
+                } else {
+                    $amount = $amount . $symbol;
+                }
+                break;
+            default:
+                if ($symbol_space == true) {
+                    $amount = $symbol . '&nbsp;' . $amount;
+                } else {
+                    $amount = $symbol . $amount;
+                }
+        }
 	}
 	return $amount;
 }

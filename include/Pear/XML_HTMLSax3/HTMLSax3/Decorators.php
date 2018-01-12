@@ -32,7 +32,8 @@
 * @package XML_HTMLSax3
 * @access protected
 */
-class XML_HTMLSax3_Trim {
+class XML_HTMLSax3_Trim
+{
     /**
     * Original handler object
     * @var object
@@ -51,7 +52,8 @@ class XML_HTMLSax3_Trim {
     * @param string original handler method
     * @access protected
     */
-    function XML_HTMLSax3_Trim(&$orig_obj, $orig_method) {
+    public function __construct(&$orig_obj, $orig_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_method = $orig_method;
     }
@@ -73,7 +75,8 @@ class XML_HTMLSax3_Trim {
 * @package XML_HTMLSax3
 * @access protected
 */
-class XML_HTMLSax3_CaseFolding {
+class XML_HTMLSax3_CaseFolding
+{
     /**
     * Original handler object
     * @var object
@@ -99,7 +102,8 @@ class XML_HTMLSax3_CaseFolding {
     * @param string original close handler method
     * @access protected
     */
-    function XML_HTMLSax3_CaseFolding(&$orig_obj, $orig_open_method, $orig_close_method) {
+    public function __construct(&$orig_obj, $orig_open_method, $orig_close_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_open_method = $orig_open_method;
         $this->orig_close_method = $orig_close_method;
@@ -130,7 +134,8 @@ class XML_HTMLSax3_CaseFolding {
 * @package XML_HTMLSax3
 * @access protected
 */
-class XML_HTMLSax3_Linefeed {
+class XML_HTMLSax3_Linefeed
+{
     /**
     * Original handler object
     * @var object
@@ -149,7 +154,8 @@ class XML_HTMLSax3_Linefeed {
     * @param string original handler method
     * @access protected
     */
-    function XML_HTMLSax3_LineFeed(&$orig_obj, $orig_method) {
+    public function __construct(&$orig_obj, $orig_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_method = $orig_method;
     }
@@ -191,7 +197,8 @@ class XML_HTMLSax3_Tab {
     * @param string original handler method
     * @access protected
     */
-    function XML_HTMLSax3_Tab(&$orig_obj, $orig_method) {
+    public function __construct(&$orig_obj, $orig_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_method = $orig_method;
     }
@@ -234,7 +241,8 @@ class XML_HTMLSax3_Entities_Parsed {
     * @param string original handler method
     * @access protected
     */
-    function XML_HTMLSax3_Entities_Parsed(&$orig_obj, $orig_method) {
+    public function __construct(&$orig_obj, $orig_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_method = $orig_method;
     }
@@ -286,7 +294,8 @@ class XML_HTMLSax3_Entities_Unparsed {
     * @param string original handler method
     * @access protected
     */
-    function XML_HTMLSax3_Entities_Unparsed(&$orig_obj, $orig_method) {
+    public function __construct(&$orig_obj, $orig_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_method = $orig_method;
     }
@@ -329,7 +338,8 @@ class XML_HTMLSax3_Escape_Stripper {
     * @param string original handler method
     * @access protected
     */
-    function XML_HTMLSax3_Escape_Stripper(&$orig_obj, $orig_method) {
+    public function __construct(&$orig_obj, $orig_method)
+    {
         $this->orig_obj =& $orig_obj;
         $this->orig_method = $orig_method;
     }

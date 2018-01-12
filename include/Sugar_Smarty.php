@@ -57,7 +57,7 @@ class Sugar_Smarty extends SmartyBC
     public $_compile_id;
 
     //END
-	function Sugar_Smarty()
+	public function __construct()
 	{
 		if(!file_exists(SUGAR_SMARTY_DIR))mkdir_recursive(SUGAR_SMARTY_DIR, true);
 		if(!file_exists(SUGAR_SMARTY_DIR . 'templates_c'))mkdir_recursive(SUGAR_SMARTY_DIR . 'templates_c', true);

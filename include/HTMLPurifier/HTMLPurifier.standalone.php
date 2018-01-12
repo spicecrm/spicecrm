@@ -2141,7 +2141,7 @@ class HTMLPurifier_ConfigSchema {
      * @param $allow_null Whether or not to allow null values
      */
     public function add($key, $default, $type, $allow_null) {
-        $obj = new stdclass();
+        $obj = new stdClass();
         $obj->type = is_int($type) ? $type : HTMLPurifier_VarParser::$types[$type];
         if ($allow_null) $obj->allow_null = true;
         $this->info[$key] = $obj;
@@ -2187,7 +2187,7 @@ class HTMLPurifier_ConfigSchema {
      * @param $new_name Directive that the alias will be to
      */
     public function addAlias($key, $new_key) {
-        $obj = new stdclass;
+        $obj = new stdClass;
         $obj->key = $new_key;
         $obj->isAlias = true;
         $this->info[$key] = $obj;
@@ -4075,7 +4075,7 @@ class HTMLPurifier_Generator
             $attr = $this->generateAttributes($token->attr, $token->name);
             if ($this->_flashCompat) {
                 if ($token->name == "object") {
-                    $flash = new stdclass();
+                    $flash = new stdClass();
                     $flash->attr = $token->attr;
                     $flash->param = array();
                     $this->_flashStack[] = $flash;

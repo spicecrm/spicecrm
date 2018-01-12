@@ -166,6 +166,7 @@ $mod_strings = array(
     'LBL_EMAIL_SIGNATURE_ERROR1' => 'This signature requires a name.',
     'LBL_EMAIL_SMTP_SSL' => 'Enable SMTP over SSL',
     'LBL_EMAIL_TEMPLATE_MISSING' => 'No email template is selected for the email containing the password that will be sent to the user.  Please select an email template in the Password Management page.',
+    'LBL_EMAIL_SIGNATURE' => 'Email Signature',
     'LBL_EMPLOYEE_STATUS' => 'Employee Status',
     'LBL_EMPLOYEE_INFORMATION' => 'Employee Information',
     'LBL_ERROR' => 'Error',

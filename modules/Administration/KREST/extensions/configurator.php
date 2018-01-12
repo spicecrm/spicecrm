@@ -15,7 +15,12 @@ $app->group('/configurator', function () use ($app) {
 
         $entries = $db->query("SELECT * FROM $table");
         while($entry = $db->fetchByAssoc($entries)){
-            $retArray[] = $entry;
+            $retArrayEntry = [];
+            foreach($entry as $key => $value){
+                $retArrayEntry[$key] = html_entity_decode($value);
+            }
+
+            $retArray[] = $retArrayEntry;
         }
 
         echo json_encode($retArray);

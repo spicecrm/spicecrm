@@ -35,3 +35,25 @@
 function showHelp(step)
 {url='http://www.spicecrm.io';name='helpWindowPopup';window.open(url,name);}
 function setFocus(){focus=document.getElementById('button_next2');focus.focus();}
+
+//added for postgre support:
+// let user enter LC_COLLATE and LC_TYPE
+// default is en_US.UTF-8
+function displayAdditionalParamsForDbType(dbtype){
+    switch(dbtype){
+        case 'pgsql':
+            //add 2 input fields LC_COLLATE + LC_TYPE
+            if(!document.getElementById('additional_pgsql')){
+                _pgsql_params = "<ul id='additional_pgsql'><li><label for='LC_COLLATE'>LC_COLLATE</label>: <input name='setup_db_lc_collate' id='setup_db_lc_collate' value='en_US.UTF-8' /></li><li><label for='LC_TYPE'>LC_TYPE</label>: <input name='setup_db_lc_type' id='setup_db_lc_type' value='en_US.UTF-8' /></li></ul>";
+                _dbtypeField = document.getElementById('input_'+dbtype);
+                _dbtypeField.innerHTML+=_pgsql_params;
+                document.getElementById('setup_db_type_'+dbtype).checked=true;
+            }
+            break;
+
+        default:
+            //remove any additional_params container
+            _additional_pgsql = document.getElementById('additional_pgsql');
+            _additional_pgsql.parentNode.removeChild(_additional_pgsql);
+    }
+}

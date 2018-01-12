@@ -43,11 +43,11 @@ require_once('include/Dashlets/DashletGeneric.php');
 
 
 class MyEmailsDashlet extends DashletGeneric {
-    function MyEmailsDashlet($id, $def = null) {
+    function __construct($id, $def = null) {
         global $current_user, $app_strings, $dashletData;
 		require('modules/Emails/Dashlets/MyEmailsDashlet/MyEmailsDashlet.data.php');
 
-        parent::DashletGeneric($id, $def);
+        parent::__construct($id, $def);
 
         if(empty($def['title']))
             $this->title = translate('LBL_MY_EMAILS', 'Emails');

@@ -66,30 +66,31 @@ function get_currency()
 
 class SugarWidgetFieldCurrency extends SugarWidgetFieldInt
 {
-    function SugarWidgetFieldCurrency(&$layout_manager) {
+    public function __construct(&$layout_manager)
+    {
         parent::__construct($layout_manager);
         $this->reporter = $this->layout_manager->getAttribute('reporter');  
     }
     
 
     function & displayList($layout_def)
-        {
-            global $locale;
-            $symbol = $locale->getPrecedentPreference('default_currency_symbol');
-            $currency_id = $locale->getPrecedentPreference('currency');
+    {
+        global $locale;
+        $symbol = $locale->getPrecedentPreference('default_currency_symbol');
+        $currency_id = $locale->getPrecedentPreference('currency');
 
-            // If it's not grouped, or if it's grouped around a system currency column, look up the currency symbol so we can display it next to the amount
-            if ( empty($layout_def['group_function']) || $this->isSystemCurrency($layout_def) ) {
-                $c = $this->getCurrency($layout_def);
-                if(!empty($c['currency_id']) && !empty($c['currency_symbol']))
-                {
-                    $symbol = $c['currency_symbol'];
-                    $currency_id = $c['currency_id'];
-                }
+        // If it's not grouped, or if it's grouped around a system currency column, look up the currency symbol so we can display it next to the amount
+        if ( empty($layout_def['group_function']) || $this->isSystemCurrency($layout_def) ) {
+            $c = $this->getCurrency($layout_def);
+            if(!empty($c['currency_id']) && !empty($c['currency_symbol']))
+            {
+                $symbol = $c['currency_symbol'];
+                $currency_id = $c['currency_id'];
             }
-            $layout_def['currency_symbol'] = $symbol;
-            $layout_def['currency_id'] = $currency_id;
-            $display = $this->displayListPlain($layout_def);
+        }
+        $layout_def['currency_symbol'] = $symbol;
+        $layout_def['currency_id'] = $currency_id;
+        $display = $this->displayListPlain($layout_def);
             
         if(!empty($layout_def['column_key'])){
             $field_def = $this->reporter->all_fields[$layout_def['column_key']];    

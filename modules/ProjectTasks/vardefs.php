@@ -256,42 +256,12 @@ $dictionary['ProjectTask'] = array(
         'projects' => array(
             'name' => 'projects',
             'type' => 'link',
-            'relationship' => 'projects_prjecttasks',
+            'relationship' => 'projects_projecttasks',
             'source' => 'non-db',
             'side' => 'right',
             'vname' => 'LBL_PROJECTS',
         ),
 
-        'projectwbs_name' => array(
-            'name' => 'projectwbs_name',
-            'rname' => 'name',
-            'id_name' => 'projectwbs_id',
-            'vname' => 'LBL_PROJECTWBS_NAME',
-            'type' => 'relate',
-            'join_name' => 'projectwbss',
-            'table' => 'projectwbss',
-            'isnull' => 'true',
-            'module' => 'ProjectWBSs',
-            'link' => 'projectwbss',
-            'massupdate' => false,
-            'source' => 'non-db'
-        ),
-
-        'projectwbs_id' => array(
-            'name' => 'projectwbs_id',
-            'vname' => 'LBL_PROJECTWBS_ID',
-            'required' => true,
-            'type' => 'id',
-            'reportable' => false
-        ),
-        'projectwbss' => array(
-            'name' => 'projectwbss',
-            'type' => 'link',
-            'relationship' => 'projectwbss_prjecttasks',
-            'source' => 'non-db',
-            'side' => 'right',
-            'vname' => 'LBL_PROJECTWBSS',
-        ),
 
         'notes' =>
             array(
@@ -334,20 +304,12 @@ $dictionary['ProjectTask'] = array(
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAILS',
             ),
-        'projects' =>
-            array(
-                'name' => 'projects',
-                'type' => 'link',
-                'relationship' => 'projects_projecttasks',
-                'source' => 'non-db',
-                'vname' => 'LBL_LIST_PARENT_NAME',
-            ),
     ),
     'indices' => array(
 
     ),
     'relationships' => array(
-        'projects_prjecttasks' => array(
+        'projects_projecttasks' => array(
             'lhs_module' => 'Projects',
             'lhs_table' => 'projects',
             'lhs_key' => 'id',
@@ -413,12 +375,38 @@ $dictionary['ProjectTask'] = array(
         )
     )
 );
+//Only for CE
+if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
+    $dictionary['ProjectTask']['fields']['projectwbs_name'] = array(
+        'name' => 'projectwbs_name',
+        'rname' => 'name',
+        'id_name' => 'projectwbs_id',
+        'vname' => 'LBL_PROJECTWBS_NAME',
+        'type' => 'relate',
+        'join_name' => 'projectwbss',
+        'table' => 'projectwbss',
+        'isnull' => 'true',
+        'module' => 'ProjectWBSs',
+        'link' => 'projectwbss',
+        'massupdate' => false,
+        'source' => 'non-db'
+    );
 
-if(!file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
-    unset($dictionary['ProjectTask']['fields']['projectwbss']);
-    unset($dictionary['ProjectTask']['fields']['projectwbs_name']);
-    unset($dictionary['ProjectTask']['fields']['projectwbs_id']);
+    $dictionary['ProjectTask']['fields']['projectwbs_id'] = array(
+        'name' => 'projectwbs_id',
+        'vname' => 'LBL_PROJECTWBS_ID',
+        'required' => true,
+        'type' => 'id',
+        'reportable' => false
+    );
+    $dictionary['ProjectTask']['fields']['projectwbss'] = array(
+        'name' => 'projectwbss',
+        'type' => 'link',
+        'relationship' => 'projectwbss_prjecttasks',
+        'source' => 'non-db',
+        'side' => 'right',
+        'vname' => 'LBL_PROJECTWBSS',
+    );
 }
-
 VardefManager::createVardef('ProjectTasks', 'ProjectTask', array('default', 'assignable'));
 

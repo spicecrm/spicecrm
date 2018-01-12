@@ -34,10 +34,13 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-class LeadsController extends SugarController{
-	function LeadsController(){
-		parent::SugarController();
+class LeadsController extends SugarController
+{
+	public function __construct()
+    {
+		parent::__construct();
 	}
+
 	function pre_editview(){
 		//IF we have a prospect id leads convert it to a lead
 		if (empty($this->bean->id) && !empty($_REQUEST['return_module']) &&$_REQUEST['return_module'] == 'Prospects' ) {

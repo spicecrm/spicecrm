@@ -181,7 +181,7 @@ class Zend_Gdata_Gapps_ServiceException extends Zend_Exception
             foreach ($rootElement->childNodes as $errorNode) {
                 if (!($errorNode instanceof DOMText)) {
                     $error = new Zend_Gdata_Gapps_Error();
-                    $error->transferFromDom($errorNode);
+                    $error->transferFromDOM($errorNode);
                     $this->addError($error);
                 }
             }

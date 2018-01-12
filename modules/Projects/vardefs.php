@@ -125,14 +125,6 @@ $dictionary['Project'] = array(
             'duplicate_merge' => 'disabled',
             'hideacl' => true,
         ),
-        'quotes' => array(
-            'name' => 'quotes',
-            'type' => 'link',
-            'relationship' => 'projects_quotes',
-            'source' => 'non-db',
-            'ignore_role' => true,
-            'vname' => 'LBL_QUOTES',
-        ),
         'contacts' => array(
             'name' => 'contacts',
             'type' => 'link',
@@ -208,40 +200,7 @@ $dictionary['Project'] = array(
             'source' => 'non-db',
             'vname' => 'LBL_BUGS',
         ),
-        'products' => array(
-            'name' => 'products',
-            'vname' => 'LBL_PRODUCTS',
-            'type' => 'link',
-            'relationship' => 'projects_products',
-            'side' => 'right',
-            'source' => 'non-db',
-        ),
-        'projectwbss' => array(
-            'name' => 'projectwbss',
-            'vname' => 'LBL_PROJECTS_PROJECTWBSS_LINK',
-            'type' => 'link',
-            'relationship' => 'projects_projectwbss',
-            'source'=>'non-db',
-            'side' => 'right',
-            'module' => 'ProjectWBSs'
-        ),
-        'projectactivities' => array(
-            'name' => 'projectactivities',
-            'vname' => 'LBL_PROJECTS_PROJECTACTIVITIES_LINK',
-            'type' => 'link',
-            'relationship' => 'projects_projectactivities',
-            'source'=>'non-db',
-            'module' => 'ProjectActivities',
-            'side' => 'right',
-        ),
-        'projectmilestones' => array(
-            'name' => 'projectmilestones',
-            'vname' => 'LBL_PROJECTS_PROJECTMILESTONES_LINK',
-            'type' => 'link',
-            'relationship' => 'projects_projectmilestones',
-            'source'=>'non-db',
-            'side' => 'right',
-        )
+
     ),
     'indices' => array(
 
@@ -362,6 +321,50 @@ $dictionary['Project'] = array(
 
     ),
 );
+
+// CE version has not all projects modules...
+if(is_file('modules/ProjectMilestones/ProjectMilestone.php')) {
+    $dictionary['Project']['fields']['projectmilestones'] = array(
+        'name' => 'projectmilestones',
+        'vname' => 'LBL_PROJECTS_PROJECTMILESTONES_LINK',
+        'type' => 'link',
+        'relationship' => 'projects_projectmilestones',
+        'source' => 'non-db',
+        'side' => 'right',
+    );
+}
+if(is_file('modules/ProjectActivities/ProjectActivity.php')) {
+    $dictionary['Project']['fields']['projectactivities'] = array(
+        'name' => 'projectactivities',
+        'vname' => 'LBL_PROJECTS_PROJECTACTIVITIES_LINK',
+        'type' => 'link',
+        'relationship' => 'projects_projectactivities',
+        'source'=>'non-db',
+        'module' => 'ProjectActivities',
+        'side' => 'right',
+    );
+}
+if(is_file('modules/ProjectWBSs/ProjectWBS.php')) {
+    $dictionary['Project']['fields']['projectwbss'] = array(
+        'name' => 'projectwbss',
+        'vname' => 'LBL_PROJECTS_PROJECTWBSS_LINK',
+        'type' => 'link',
+        'relationship' => 'projects_projectwbss',
+        'source'=>'non-db',
+        'side' => 'right',
+        'module' => 'ProjectWBSs'
+    );
+}
+if(is_file('modules/Products/Product.php')) {
+    $dictionary['Project']['fields']['products'] = array(
+        'name' => 'products',
+        'vname' => 'LBL_PRODUCTS',
+        'type' => 'link',
+        'relationship' => 'projects_products',
+        'side' => 'right',
+        'source' => 'non-db',
+    );
+}
 
 if ($GLOBALS['sugar_flavor'] != 'CE')
     VardefManager::createVardef('Projects', 'Project', array('default', 'assignable', 'team_security'));

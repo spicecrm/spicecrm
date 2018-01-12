@@ -1,7 +1,8 @@
 SpiceCRM.SpiceBeanGuide = {
     salesStageDetails: {},
     detailsVisible: true,
-    setStageDesctiption: function (_event, _stage) {
+    setStageDesctiption: function (_event, _stage)
+    {
         if (this.detailsVisible)
         {
             if (this.salesStageDetails[_stage]) {

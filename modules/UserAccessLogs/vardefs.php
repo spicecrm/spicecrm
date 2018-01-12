@@ -44,6 +44,11 @@ $GLOBALS['dictionary']['UserAccessLog'] = array(
             'type' => 'varchar',
             'len' => 15
         ),
+        'action' => array(
+            'name' => 'action',
+            'type' => 'varchar',
+            'len' => 30
+        ),
         'user' => array(
             'name' => 'user',
             'type' => 'link',

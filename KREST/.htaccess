@@ -12,3 +12,6 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
+
+# use the rewrite rule below if loaded as CLI in Apache
+# RewriteRule ^ index.php?PHP_AUTH_DIGEST_RAW=%{HTTP:Authorization} [QSA,L]

@@ -72,8 +72,8 @@ class Version extends SugarBean {
 	// This is used to retrieve related fields from form posts.
 	var $additional_column_fields = Array();
 
-	function Version() {
-		parent::SugarBean();
+	function __construct() {
+		parent::__construct();
 	}
 
 	

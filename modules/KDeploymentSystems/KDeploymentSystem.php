@@ -12,9 +12,9 @@ class KDeploymentSystem extends SugarBean
     var $table_name = 'kdeploymentsystems';
     var $importable = false;
 
-    function KDeploymentSystem()
+    function __construct()
     {
-        parent::SugarBean();
+        parent::__construct();
     }
 
     function get_summary_text()

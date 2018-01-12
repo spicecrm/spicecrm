@@ -636,7 +636,7 @@ class HTTP_WebDAV_Server
                             break;
                         case "getlastmodified":
                             echo "     <D:getlastmodified ns0:dt=\"dateTime.rfc1123\">"
-                                . TimeDate::httptime($prop['val'])
+                                . TimeDate::httpTime($prop['val'])
                                 . "</D:getlastmodified>\n";
                             break;
                         case "resourcetype":

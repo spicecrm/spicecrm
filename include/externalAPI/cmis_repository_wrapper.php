@@ -656,7 +656,7 @@ class CMISService extends CMISRepositoryWrapper
     var $_type_cache;
     function __construct($url, $username, $password, $options = null, array $addlCurlOptions = array())
     {
-        parent :: __construct($url, $username, $password, $options, $addlCurlOptions);
+        parent::__construct($url, $username, $password, $options, $addlCurlOptions);
         $this->_link_cache = array ();
         $this->_title_cache = array ();
         $this->_objTypeId_cache = array ();

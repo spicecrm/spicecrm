@@ -138,5 +138,7 @@ $mod_strings = array (
 'LBL_TRIMTRACKER' => 'Prune Tracker Tables',
 'LBL_SENDEMAILREMINDERS'=> 'E-Mail Erinnerungsbenachrichtigungen ausführen',
 'LBL_CLEANJOBQUEUE' => 'Cleanup Job Queue',
+    'LBL_FULLTEXTINDEX' => 'Full Text Indexing',
+    'LBL_KDEPLOYMENTMWNOTIFICATION' => 'Wartungsfenster: User benachrichtigen'
 );
 ?>

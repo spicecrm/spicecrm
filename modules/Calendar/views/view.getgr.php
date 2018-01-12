@@ -38,8 +38,8 @@ require_once('include/MVC/View/SugarView.php');
 
 class CalendarViewGetGR extends SugarView {
 
-	function CalendarViewGetGR(){
- 		parent::SugarView();
+	function __construct(){
+ 		parent::__construct();
 	}
 	
 	function process(){

@@ -277,6 +277,7 @@ $dictionary['Task'] = array('table' => 'tasks',
         array('name' => 'idx_task_par_del', 'type' => 'index', 'fields' => array('parent_id', 'parent_type', 'deleted')),
         array('name' => 'idx_task_assigned', 'type' => 'index', 'fields' => array('assigned_user_id')),
         array('name' => 'idx_task_status', 'type' => 'index', 'fields' => array('status')),
+        array('name' => 'idx_task_assigned_del_status', 'type' => 'index', 'fields' => array('assigned_user_id', 'deleted', 'status')), //for UI assistant
     )
 
     //This enables optimistic locking for Saves From EditView

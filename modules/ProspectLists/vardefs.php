@@ -219,7 +219,4 @@ $dictionary['ProspectList'] = array (
 )
 );
 
-VardefManager::createVardef('ProspectLists','ProspectList', array(
-'assignable',
-));
-?>
+VardefManager::createVardef('ProspectLists','ProspectList', array('assignable', 'default'));

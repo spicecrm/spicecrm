@@ -41,8 +41,8 @@ class SoapResourceObserver extends ResourceObserver {
 
 private $soapServer;
 
-function SoapResourceObserver($module) {
-   parent::ResourceObserver($module);
+function __construct($module) {
+   parent::__construct($module);
 }
 
 

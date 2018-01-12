@@ -115,8 +115,8 @@ class EmailTemplate extends SugarBean {
      */
     protected $storedVariables = array();
 
-	function EmailTemplate() {
-		parent::SugarBean();
+	function __construct() {
+		parent::__construct();
 	}
 
     static function getTypeOptionsForSearch()
@@ -744,5 +744,53 @@ class EmailTemplate extends SugarBean {
         }
         return $this->storedVariables[$text[0]];
     }
+
+    function parse($bean){
+        global $app_list_strings, $current_language, $current_user, $sugar_config;
+        $app_list_strings = return_app_list_strings_language($current_language);
+
+        $retArray = array(
+            'subject' => $this->subject,
+            'body' => $this->body,
+            'body_html' => $this->body_html,
+        );
+
+        foreach ($bean->field_defs as $key => $field) {
+            $value = "";
+            if ($field['type'] == "link") continue;
+            if ($field['type'] != "enum" && $field['type'] != "radioenum") {
+                $value = $bean->$key;
+            } else {
+                $value = $app_list_strings[$field['options']][$bean->$key];
+            }
+            $retArray['subject'] = str_replace("{bean." . $key . "}", $value, $retArray['subject']);
+            $retArray['body'] = str_replace("{bean." . $key . "}", $value, $retArray['body']);
+            $retArray['body_html'] = str_replace("{bean." . $key . "}", $value, $retArray['body_html']);
+        }
+        foreach ($current_user->field_defs as $key => $field) {
+            if ($field['type'] == "link" || $field['type'] == "relate") continue;
+            if ($field['type'] != "enum" && $field['type'] != "radioenum") {
+                $value = html_entity_decode($current_user->$key);
+            } else {
+                $value = $app_list_strings[$field['options']][$current_user->$key];
+            }
+            $retArray['subject'] = str_replace("{current_user." . $key . "}", $value, $retArray['subject']);
+            $retArray['body'] = str_replace("{current_user." . $key . "}", $value, $retArray['body']);
+            $retArray['body_html'] = str_replace("{current_user." . $key . "}", $value, $retArray['body_html']);
+        }
+
+        //site url, module name, object_name for a link to the bean
+        if(!isset($sugar_config['site_url_ui']))
+            $sugar_config['site_url_ui'] = $sugar_config['site_url'];
+        $retArray['body'] = str_replace("{site_url_ui}", $sugar_config['site_url_ui'], $retArray['body']);
+        $retArray['body_html'] = str_replace("{site_url_ui}", $sugar_config['site_url_ui'], $retArray['body_html']);
+        $retArray['body'] = str_replace("{module_name}", $bean->module_name, $retArray['body']);
+        $retArray['body_html'] = str_replace("{module_name}", $bean->module_name, $retArray['body_html']);
+        $retArray['body'] = str_replace("{object_name}", $bean->object_name, $retArray['body']);
+        $retArray['body_html'] = str_replace("{object_name}", $bean->object_name, $retArray['body_html']);
+
+        if($this->text_only == 1) unset($retArray['body_html']);
+        return $retArray;
+    }
 }
-?>
+

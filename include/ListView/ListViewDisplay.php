@@ -41,7 +41,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 require_once('include/ListView/ListViewData.php');
 require_once('include/MassUpdate.php');
 
-class ListViewDisplay {
+class ListViewDisplay
+{
     static $listViewCounter = 0;
 
 	var $show_mass_update_form = false;
@@ -68,10 +69,12 @@ class ListViewDisplay {
 	 * Constructor
 	 * @return null
 	 */
-	function ListViewDisplay() {
+	public function __construct()
+    {
 		$this->lvd = new ListViewData();
 		$this->searchColumns = array () ;
 	}
+
 	function shouldProcess($moduleDir){
 		$searching = false;
 		$sessionSearchQuery = "{$moduleDir}2_QUERY_QUERY";

@@ -28,3 +28,23 @@ $app->group('/login', function () use ($app, $KRESTManager) {
     });
 });
 
+require_once('KREST/handlers/user.php');
+
+$KRESTUserHandler = new KRESTUserHandler($app);
+$KRESTManager->registerExtension('forgotPassword', '1.0');
+$KRESTManager->excludeFromAuthentication('/forgotPassword');
+$app->group('/forgotPassword', function () use ($app, $KRESTManager, $KRESTUserHandler) {
+    $app->post('/:email/:token', function ($email,$token) use ($app, $KRESTManager, $KRESTUserHandler) {
+        echo json_encode($KRESTUserHandler->checkToken($email,$token));
+    });
+    $app->post('/resetPass', function () use ($app, $KRESTManager, $KRESTUserHandler) {
+        $postBody = $body = json_decode($app->request->getBody(), true);
+        echo json_encode($KRESTUserHandler->resetPass($postBody));
+    });
+    $app->get('/:email', function ($email) use ($app, $KRESTManager, $KRESTUserHandler) {
+        echo json_encode($KRESTUserHandler->sendTokenToUser($email));
+    });
+    $app->delete('/', function () use ($app, $KRESTManager, $KRESTUserHandler) {
+        session_destroy();
+    });
+});

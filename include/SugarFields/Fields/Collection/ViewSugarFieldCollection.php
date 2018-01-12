@@ -37,7 +37,8 @@
 require_once('include/SugarFields/Fields/Collection/SugarFieldCollection.php');
 
 
-class ViewSugarFieldCollection{
+class ViewSugarFieldCollection
+{
     var $ss; // Sugar Smarty Object
     var $bean;
     var $bean_id;
@@ -58,7 +59,8 @@ class ViewSugarFieldCollection{
     var $action_type;
     var $form_name;
 
-    function ViewSugarFieldCollection($fill_data = true){
+    public function __construct($fill_data = true)
+    {
     	$this->json = getJSONobj();
     	if($fill_data){
 	        $this->displayParams = $this->json->decode(html_entity_decode($_REQUEST['displayParams']));
@@ -210,7 +212,7 @@ class ViewSugarFieldCollection{
         if(isset($this->displayParams['collection_field_list'])){
 
             $relatedObject = BeanFactory::getObjectName($this->related_module);
-            vardefmanager::loadVardef($this->related_module, $relatedObject);
+            VardefManager::loadVardef($this->related_module, $relatedObject);
             foreach($this->displayParams['collection_field_list'] as $k=>$v){
                 $javascript='';
                 $collection_field_vardef = $GLOBALS['dictionary'][$relatedObject]['fields'][$v['name']];

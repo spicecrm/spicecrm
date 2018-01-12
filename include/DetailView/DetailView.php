@@ -47,8 +47,8 @@ class DetailView extends ListView {
 	var $offset_key_mismatch=false;
 	var $no_record_found=false;
 
-	function DetailView(){
-		parent::ListView();
+	function __construct(){
+		parent::__construct();
 
 		global $theme, $app_strings, $currentModule;
 		$this->local_theme = $theme;

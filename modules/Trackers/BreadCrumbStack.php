@@ -36,7 +36,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 ********************************************************************************/
 
 
-class BreadCrumbStack {
+class BreadCrumbStack
+{
 
    /**
 	* Maintain an ordered list of items in the breadcrumbs
@@ -65,7 +66,8 @@ class BreadCrumbStack {
     * @param $user_id String value of user id to get bread crumb items for
     * @param $modules mixed value of module name(s) to provide extra filtering
     */
-   public function BreadCrumbStack($user_id, $modules='') {
+   public function __construct($user_id, $modules='')
+   {
       $this->stack = array();
       $this->stackMap = array();
       

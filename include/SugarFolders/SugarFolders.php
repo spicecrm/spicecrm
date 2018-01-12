@@ -48,8 +48,8 @@ require_once("include/ytree/ExtNode.php");
 /**
  * Polymorphic buckets - place any item in a folder
  */
-class SugarFolder {
-
+class SugarFolder
+{
 	// public attributes
 	var $id;
 	var $name;
@@ -94,7 +94,8 @@ class SugarFolder {
 	/**
 	 * Sole constructor
 	 */
-	function SugarFolder() {
+	public function __construct()
+    {
 		$this->db = DBManagerFactory::getInstance();
 	}
 

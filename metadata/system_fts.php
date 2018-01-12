@@ -30,8 +30,8 @@ $dictionary['sysfts'] = array(
     ),
     'indices' => array(
         array(
-            'name' => 'idx_sysfts',
-            'type' => 'index',
+            'name' => 'sysftspk',
+            'type' => 'primary',
             'fields' => array('module'))
     )
 );
@@ -81,8 +81,8 @@ $dictionary['sysftslog'] = array(
     ),
     'indices' => array(
         array(
-            'name' => 'idx_sysftslog',
-            'type' => 'index',
+            'name' => 'sysftslogpk',
+            'type' => 'primary',
             'fields' => array('id'))
     )
 );

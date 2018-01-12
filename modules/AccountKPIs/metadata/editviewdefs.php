@@ -16,6 +16,7 @@ $viewdefs[$module_name]['EditView'] = array(
                 ),
                 array(
                     'description',
+
                 ),
             ),
     ),

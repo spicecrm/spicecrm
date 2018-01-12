@@ -203,5 +203,6 @@ $mod_strings = array(
 	'LBL_PROCESSING_FILE' => 'processing File',
     'LBL_PROCESSING_CLASS' => 'processing Class',
     'LBL_PROCESSING_FUNCTION' => 'processing Function',
+	'LBL_MAIN' => 'Email Details'
 );
 ?>

@@ -28,7 +28,7 @@ $viewdefs['CompanyCodes']['EditView'] = array(
                         'maxlength' => 150,
                     ),
                 ),
-                ''
+                'companycode'
             )
         ),
         'lbl_output_panel' => array(

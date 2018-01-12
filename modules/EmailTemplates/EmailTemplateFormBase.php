@@ -44,12 +44,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
-class EmailTemplateFormBase {
-
-    function __construct()
-    {
-
-    }
+class EmailTemplateFormBase
+{
 
 	function getFormBody($prefix, $mod='',$formname='', $size='30') {
 

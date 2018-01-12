@@ -36,7 +36,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 ********************************************************************************/
 
 
-class Meeting extends SugarBean {
+class Meeting extends SugarBean
+{
 	// Stored fields
 	var $id;
 	var $date_entered;
@@ -111,8 +112,9 @@ class Meeting extends SugarBean {
 	/**
 	 * sole constructor
 	 */
-	function Meeting() {
-		parent::SugarBean();
+	public function __construct()
+    {
+		parent::__construct();
 		$this->setupCustomFields('Meetings');
 		foreach($this->field_defs as $field) {
 			$this->field_name_map[$field['name']] = $field;
@@ -252,7 +254,7 @@ class Meeting extends SugarBean {
                 $GLOBALS['log']->warn('ERR_EXTERNAL_API_SAVE_FAIL' . ": " . $this->type . " - " .  $response['errorMessage']);
             }
 
-            $api->logoff();
+            $api->logOff();
         }
 
 		$return_id = parent::save($check_notify, $fts_index_bean);
@@ -595,7 +597,7 @@ class Meeting extends SugarBean {
 		$content = vCal::get_ical_event($this, $GLOBALS['current_user']);
 				
 		if(file_put_contents($path,$content)){
-			$notify_mail->AddAttachment($path, 'meeting.ics', 'base64', 'text/calendar');
+			$notify_mail->addAttachment($path, 'meeting.ics', 'base64', 'text/calendar');
 		}
 		return $notify_mail;		
 	}

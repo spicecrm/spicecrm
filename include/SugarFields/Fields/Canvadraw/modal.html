@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="canvadraw.js"></script>
+    <style type="text/css" src="../../../../../themes/20reasons/css/style.css"></style>
+</head>
+<body class="popupBody">
+<script type="text/javascript">
+    //grab params from url
+    var canvaParamshashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    var canvaParams = [];
+    for(var i = 0; i < canvaParamshashes.length; i++)
+    {
+        _hash = canvaParamshashes[i].split('=');
+        canvaParams.push(_hash[0]);
+        canvaParams[_hash[0]] = _hash[1];
+    }
+    canvaParams['canvaDiv'] = canvaParams.canvaField + '_canvaDiv';
+
+    //append header
+    var canvaHeader = document.createElement('h4');
+    canvaHeader.innerHTML = decodeURIComponent(canvaParams.canvaHeader);
+    document.getElementsByTagName('body')[0].appendChild(canvaHeader);
+
+    //append div
+    var canvaDiv = document.createElement('div');
+    canvaDiv.setAttribute('id', canvaParams.canvaDiv);
+    canvaDiv.setAttribute('class', 'detail view');
+    document.getElementsByTagName('body')[0].appendChild(canvaDiv);
+
+    //initiate App Variable
+    if(typeof canvaApps == 'undefined')
+        var canvaApps = [];
+    //init canva
+    canvaApps[canvaParams.canvaDiv] = new canvaApp();
+    canvaApps[canvaParams.canvaDiv].init(canvaParams.canvaDiv, canvaParams.canvaDivWidth, canvaParams.canvaDivHeight);
+
+    //focus
+    window.focus();
+</script>
+
+<div>
+    <button onClick="window.opener.canvaSetData(canvaParams.canvaField, canvaApps[canvaParams.canvaDiv].canvas.toDataURL('image/png')); window.opener.canvaSetImg(canvaParams.canvaField, canvaApps[canvaParams.canvaDiv].canvas.toDataURL('image/png')); window.close();">OK</button>
+</div>
+</body>
+</html>

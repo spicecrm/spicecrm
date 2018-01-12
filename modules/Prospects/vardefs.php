@@ -172,6 +172,17 @@ $dictionary['Prospect'] = array(
 			'source' => 'non-db',
 			'vname' => 'LBL_EMAILS',
 		),
+        // Used for non-primary mail import
+        'email_addresses_non_primary' =>
+            array(
+                'name' => 'email_addresses_non_primary',
+                'type' => 'email',
+                'source' => 'non-db',
+                'vname' => 'LBL_EMAIL_NON_PRIMARY',
+                'studio' => false,
+                'reportable' => false,
+                'massupdate' => false,
+            ),
 	),
 
 	'indices' =>

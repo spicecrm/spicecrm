@@ -50,8 +50,8 @@ class ViewList extends SugarView{
     var $listViewDefs;
     var $storeQuery;
     var $where = '';
-    function ViewList(){
-        parent::SugarView();
+    function __construct(){
+        parent::__construct();
     }
 
 

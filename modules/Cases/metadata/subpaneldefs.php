@@ -130,6 +130,13 @@ $layout_defs['Cases'] = array(
 					'subpanel_name' => 'ForHistory',
 					'get_subpanel_data' => 'notes',
 				),
+                // BEGIN SpicecRM Release 20180100 Postgres support: use this subpanel if you use postgres database
+                //'emails' => array(
+                //   'module' => 'Emails',
+                //   'subpanel_name' => 'ForHistory',
+                //   'get_subpanel_data' => 'emails',
+                //),
+                // END
 				'emails' => array(
 					'module' => 'Emails',
 					'subpanel_name' => 'ForUnlinkedEmailHistory',

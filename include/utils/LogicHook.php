@@ -60,12 +60,10 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  *
  * @api
  */
-class LogicHook{
+class LogicHook
+{
 
 	var $bean = null;
-
-	function LogicHook(){
-	}
 
 	/**
 	 * Static Function which returns and instance of LogicHook

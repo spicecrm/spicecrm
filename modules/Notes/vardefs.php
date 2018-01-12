@@ -203,7 +203,7 @@ $dictionary['Note'] = array(
     'name' => 'portal_flag',
     'vname' => 'LBL_PORTAL_FLAG',
     'type' => 'bool',
-	'required' => true,
+	'required' => false,
 	'comment' => 'Portal flag indicator determines if note created via portal'
   ),
   'embed_flag' =>
@@ -455,7 +455,6 @@ $dictionary['Note'] = array(
 
 )
                                                       , 'indices' => array (
-       array('name' =>'notespk', 'type' =>'primary', 'fields'=>array('id')),
        array('name' =>'idx_note_name', 'type'=>'index', 'fields'=>array('name')),
        array('name' =>'idx_notes_parent', 'type'=>'index', 'fields'=>array('parent_id', 'parent_type')),
        array('name' =>'idx_note_contact', 'type'=>'index', 'fields'=>array('contact_id')),
@@ -467,6 +466,4 @@ $dictionary['Note'] = array(
 	,'optimistic_locking'=>true,
                             );
 
-VardefManager::createVardef('Notes','Note', array('assignable',
-));
-?>
+VardefManager::createVardef('Notes','Note', array('assignable', 'default'));

@@ -1,13 +1,13 @@
 <?php
 $mod_strings = array(
 // MODULE LABELS
-    'LBL_MODULE_NAME' => 'Account KPIs',
-    'LBL_MODULE_TITLE' => 'Account KPIs: Home',
-    'LBL_MODULE_ID' => 'Account KPIs',
+    'LBL_MODULE_NAME' => 'Bank Accounts',
+    'LBL_MODULE_TITLE' => 'Bank Accounts: Home',
+    'LBL_MODULE_ID' => 'Bank Account',
 
-    'LBL_NEW_FORM_TITLE' => 'New Account KPI',
-    'LBL_SEARCH_FORM_TITLE' => 'Account KPIs Search',
-    'LBL_VIEW_FORM_TITLE' => 'Account KPIs View',
+    'LBL_NEW_FORM_TITLE' => 'New Bank Account',
+    'LBL_SEARCH_FORM_TITLE' => 'Bank Account Search',
+    'LBL_VIEW_FORM_TITLE' => 'Bank Account',
 
 // DEFAULT LABELS
     'LBL_ASSIGNED_TO_NAME' => 'Assigned to:',
@@ -28,12 +28,10 @@ $mod_strings = array(
     'LBL_CREATED_USER' => 'Created by User',
     'LBL_MODIFIED_USER' => 'Modified by User',
     'LBL_LIST_NAME' => 'Name',
-    'LBL_ACCOUNTKPIS_SUBPANEL_TITLE' => 'Account KPIs',
-    'LBL_ACCOUNTS_ACCOUNTKPIS_LINK' => 'Account LINK',
+    'LBL_BANKACCOUNTS_SUBPANEL_TITLE' => 'Bank Accounts',
+    'LBL_ACCOUNTS_BANKACCOUNTS_LINK' => 'Account',
     'LBL_ACCOUNTS_NAME' => 'Account',
     'LBL_ACCOUNTS_ID' => 'Account ID',
-    'LBL_YEAR' => 'Year',
-    'LBL_PERIOD' => 'Period',
-    'LBL_REVENUE' => 'Revenue',
-    'LBL_QUANTITY' => 'Quantity'
+    'LBL_ACCOUNTNR' => 'Account number',
+    'LBL_SWIFT' => 'SWIFT',
 );

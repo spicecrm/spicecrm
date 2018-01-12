@@ -127,7 +127,7 @@ class ManyToOneRelationship extends AbstractRelationship
     public function setName ($relationshipName)
     {
         parent::setName($relationshipName);
-    	$this->one_to_many->setname($relationshipName);
+    	$this->one_to_many->setName($relationshipName);
     }
     
     public function setReadonly ()

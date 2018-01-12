@@ -472,7 +472,14 @@ $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activ
         array(
             'name' => 'idx_calls_assigned_del',
             'type' => 'index',
-            'fields' => array('deleted', 'assigned_user_id')),
+            'fields' => array('deleted', 'assigned_user_id')
+        ),
+        array(
+            'name' => 'idx_calls_assigned_del_status', //for UI assistant
+            'type' => 'index',
+            'fields' => array('assigned_user_id','deleted', 'status')
+        )
+
     ),
     'relationships' => array(
         'calls_assigned_user' => array(

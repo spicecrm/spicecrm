@@ -451,7 +451,7 @@ class MBModule
             if ($template == 'basic')
                 continue ;
             $class [ 'templates' ] .= ",'$template'" ;
-            $class [ 'extends' ] = ucFirst ( $template ) ;
+            $class [ 'extends' ] = ucfirst ( $template ) ;
             $class [ 'requires' ] [] = MB_TEMPLATES . '/' . $template . '/' . ucfirst ( $template ) . '.php' ;
         }
         $class [ 'importable' ] = $this->config [ 'importable' ] ;

@@ -27,7 +27,7 @@ class SystemUIRESTHandler
     function getModuleRepository()
     {
         $retArray = array();
-        $modules = $this->db->query("SELECT * FROM sysuimodulerepository");
+        $modules = $this->db->query("SELECT * FROM sysuimodulerepository UNION SELECT * FROM sysuicustommodulerepository");
         while ($module = $this->db->fetchByAssoc($modules)) {
             $retArray[$module['id']] = array(
                 'id' => $module['id'],
@@ -42,13 +42,13 @@ class SystemUIRESTHandler
     function getComponents()
     {
         $retArray = array();
-        $components = $this->db->query("SELECT * FROM sysuiobjectrepository");
+        $components = $this->db->query("SELECT * FROM sysuiobjectrepository UNION SELECT * FROM sysuicustomobjectrepository");
         while ($component = $this->db->fetchByAssoc($components)) {
             $retArray[$component['object']] = array(
                 'path' => $component['path'],
                 'component' => $component['component'],
                 'module' => $component['module'],
-                'componentconfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($component['componentconfig'])), true) ?: array()
+                'componentconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($component['componentconfig'])), true) ?: array()
             );
         }
 
@@ -62,14 +62,8 @@ class SystemUIRESTHandler
         $GLOBALS['ACLController']->filterModuleList($moduleList);
 
         $retArray = array();
-        $modules = $this->db->query("SELECT * FROM sysmodules");
+        $modules = $this->db->query("SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules");
         while ($module = $this->db->fetchByAssoc($modules)) {
-            // load menu items
-            $menuItemsArray = [];
-            $menuItems = $this->db->query("SELECT * FROM sysmodulemenus WHERE module='" . $module['module'] . "'");
-            while ($menuItem = $this->db->fetchByAssoc($menuItems))
-                $menuItemsArray[] = $menuItem;
-
             // load custom lists for the module
             $listArray = [];
             $lists = $this->db->query("SELECT * FROM sysmodulelists WHERE module='" . $module['module'] . "' AND (created_by_id = '$current_user->id' OR global = 1)");
@@ -97,9 +91,10 @@ class SystemUIRESTHandler
                     'icon' => $module['icon'],
                     'actionset' => $module['actionset'],
                     'singular' => $module['singular'],
-                    'menu' => $menuItemsArray,
                     'track' => $module['track'],
                     'visible' => $module['visible'] ? true : false,
+                    'tagging' => $module['tagging'] ? true : false,
+                    'workflow' => $module['workflow'] ? true : false,
                     'duplicatecheck' => $module['duplicatecheck'],
                     'favorites' => $module['favorites'],
                     'listtypes' => $listArray,
@@ -111,6 +106,10 @@ class SystemUIRESTHandler
         return $retArray;
     }
 
+    /**
+     * http://localhost/spicecrm_dev/KREST/spiceui/core/components
+     * @return array
+     */
     function getComponentSets()
     {
         $retArray = array();
@@ -122,6 +121,7 @@ class SystemUIRESTHandler
                     'id' => $componentset['componentset_id'],
                     'name' => $componentset['name'],
                     'module' => $componentset['module'] ?: '*',
+                    'type' => 'global',
                     'items' => []
                 );
             }
@@ -130,7 +130,29 @@ class SystemUIRESTHandler
                 'id' => $componentset['id'],
                 'sequence' => $componentset['sequence'],
                 'component' => $componentset['component'],
-                'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($componentset['componentConfig'])), true) ?: new stdClass()
+                //'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($componentset['componentConfig'], ENT_QUOTES)), true) ?: new stdClass()
+                'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;", "'"), array('', '', '"', '"'), $componentset['componentConfig']), true) ?: (object) array()
+            );
+        }
+
+        $componentsets = $this->db->query("SELECT sysuicustomcomponentsets.name, sysuicustomcomponentsets.module, sysuicustomcomponentsetscomponents.* FROM sysuicustomcomponentsetscomponents, sysuicustomcomponentsets WHERE sysuicustomcomponentsets.id = sysuicustomcomponentsetscomponents.componentset_id  ORDER BY componentset_id, sequence");
+        while ($componentset = $this->db->fetchByAssoc($componentsets)) {
+
+            if (!isset($retArray[$componentset['componentset_id']])) {
+                $retArray[$componentset['componentset_id']] = array(
+                    'id' => $componentset['componentset_id'],
+                    'name' => $componentset['name'],
+                    'module' => $componentset['module'] ?: '*',
+                    'type' => 'custom',
+                    'items' => []
+                );
+            }
+
+            $retArray[$componentset['componentset_id']]['items'][] = array(
+                'id' => $componentset['id'],
+                'sequence' => $componentset['sequence'],
+                'component' => $componentset['component'],
+                'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;", "'"), array('', '', '"', '"'), $componentset['componentConfig']),true) ?: array()
             );
         }
 
@@ -139,26 +161,28 @@ class SystemUIRESTHandler
 
     function setComponentSets($data)
     {
-        global $db;
+        global $db, $sugar_config;
 
         $this->checkAdmin();
 
-        // add items
         foreach ($data['add'] as $componentsetid => $componentsetdata) {
-            $db->query("INSERT INTO sysuicomponentsets (id, module, name) VALUES('$componentsetid', '" . $componentsetdata['module'] . "', '" . $componentsetdata['name'] . "')");
+
+            $componentsettable = $componentsetdata['type'] == 'custom' ? 'sysuicustomcomponentsets' : 'sysuicomponentsets';
+
+            $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets (id, module, name) VALUES('$componentsetid', '" . $componentsetdata['module'] . "', '" . $componentsetdata['name'] . "')");
             foreach ($componentsetdata['items'] as $componentsetitem) {
-                $db->query("INSERT INTO sysuicomponentsetscomponents (id, componentset_id, component, sequence, componentconfig) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentConfig']) . "')");
+                $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents (id, componentset_id, component, sequence, componentconfig) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentConfig']) . "')");
             }
         }
 
         // handle the update
         foreach ($data['update'] as $componentsetid => $componentsetdata) {
-            $db->query("UPDATE sysuicomponentsets SET name='" . $componentsetdata['name'] . "' WHERE id='$componentsetid'");
+            $db->query("UPDATE sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets SET name='" . $componentsetdata['name'] . "' WHERE id='$componentsetid'");
             // delete all current items
-            $db->query("DELETE FROM sysuicomponentsetscomponents WHERE componentset_id = '$componentsetid'");
+            $db->query("DELETE FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents WHERE componentset_id = '$componentsetid'");
             // add all items
             foreach ($componentsetdata['items'] as $componentsetitem) {
-                $db->query("INSERT INTO sysuicomponentsetscomponents (id, componentset_id, component, sequence, componentconfig) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentConfig']) . "')");
+                $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents (id, componentset_id, component, sequence, componentconfig) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentConfig']) . "')");
             }
         }
 
@@ -177,6 +201,7 @@ class SystemUIRESTHandler
                     'id' => $actionset['actionset_id'],
                     'name' => $actionset['name'],
                     'module' => $actionset['module'],
+                    'type' => 'global',
                     'actions' => array()
                 );
             }
@@ -185,7 +210,28 @@ class SystemUIRESTHandler
             $retArray[$actionset['actionset_id']]['actions'][] = array(
                 'action' => $actionset['action'],
                 'component' => $actionset['component'],
-                'actionconfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($actionset['actionconfig'])), true) ?: new stdClass()
+                'actionconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($actionset['actionconfig'])), true) ?: new stdClass()
+            );
+        }
+
+        $actionsets = $this->db->query("SELECT sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name  FROM sysuicustomactionsetitems, sysuicustomactionsets WHERE sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        while ($actionset = $this->db->fetchByAssoc($actionsets)) {
+
+            if (!isset($retArray[$actionset['actionset_id']])) {
+                $retArray[$actionset['actionset_id']] = array(
+                    'id' => $actionset['actionset_id'],
+                    'name' => $actionset['name'],
+                    'module' => $actionset['module'],
+                    'type' => 'custom',
+                    'actions' => array()
+                );
+            }
+
+
+            $retArray[$actionset['actionset_id']]['actions'][] = array(
+                'action' => $actionset['action'],
+                'component' => $actionset['component'],
+                'actionconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($actionset['actionconfig'])), true) ?: new stdClass()
             );
         }
 
@@ -209,6 +255,18 @@ class SystemUIRESTHandler
             }
         }
 
+        // same for custom
+        if ($current_user->portal_only)
+            $sysuiroles = $this->db->query("select * from (SELECT sysuicustomroles.*, sysuiuserroles.defaultrole FROM sysuicustomroles, sysuiuserroles WHERE sysuicustomroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE sysuicustomroles.portaldefault = 1) roles order by name");
+        else
+            $sysuiroles = $this->db->query("select * from (SELECT sysuicustomroles.*, sysuiuserroles.defaultrole FROM sysuicustomroles, sysuiuserroles WHERE sysuicustomroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE sysuicustomroles.systemdefault = 1) roles order by name");
+        while ($sysuirole = $this->db->fetchByAssoc($sysuiroles)) {
+            if (array_search($sysuirole['id'], $roleids) === false) {
+                $retArray[] = $sysuirole;
+                $roleids[] = $sysuirole['id'];
+            }
+        }
+
         return $retArray;
     }
 
@@ -217,14 +275,37 @@ class SystemUIRESTHandler
         global $current_user;
 
         $retArray = array();
-        $sysuiroles = $this->db->query("select * from (SELECT sysuiroles.*, sysuiuserroles.defaultrole FROM sysuiroles, sysuiuserroles WHERE sysuiroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuiroles.*, 0 defaultrole FROM sysuiroles WHERE sysuiroles.systemdefault = 1) roles order by name");
+        if ($current_user->portal_only)
+            $sysuiroles = $this->db->query("select * from (SELECT sysuiroles.*, sysuiuserroles.defaultrole FROM sysuiroles, sysuiuserroles WHERE sysuiroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuiroles.*, 0 defaultrole FROM sysuiroles WHERE sysuiroles.portaldefault = 1) roles order by name");
+        else
+            $sysuiroles = $this->db->query("select * from (SELECT sysuiroles.*, sysuiuserroles.defaultrole FROM sysuiroles, sysuiuserroles WHERE sysuiroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuiroles.*, 0 defaultrole FROM sysuiroles WHERE sysuiroles.systemdefault = 1) roles order by name");
         while ($sysuirole = $this->db->fetchByAssoc($sysuiroles)) {
             if (isset($retArray[$sysuirole['id']])) continue;
             $sysuirolemodules = $this->db->query("SELECT * FROM sysuirolemodules WHERE sysuirole_id in ('*', '" . $sysuirole['id'] . "') ORDER BY sequence");
             while ($sysuirolemodule = $this->db->fetchByAssoc($sysuirolemodules)) {
                 $retArray[$sysuirole['id']][] = $sysuirolemodule;
             }
+
+            // get potential custom modules added to the role
+            $sysuirolemodules = $this->db->query("SELECT * FROM sysuicustomrolemodules WHERE sysuirole_id in ('*', '" . $sysuirole['id'] . "') ORDER BY sequence");
+            while ($sysuirolemodule = $this->db->fetchByAssoc($sysuirolemodules)) {
+                $retArray[$sysuirole['id']][] = $sysuirolemodule;
+            }
         }
+
+        // same for custom
+        if ($current_user->portal_only)
+            $sysuiroles = $this->db->query("select * from (SELECT sysuicustomroles.*, sysuiuserroles.defaultrole FROM sysuicustomroles, sysuiuserroles WHERE sysuicustomroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE sysuicustomroles.portaldefault = 1) roles order by name");
+        else
+            $sysuiroles = $this->db->query("select * from (SELECT sysuicustomroles.*, sysuiuserroles.defaultrole FROM sysuicustomroles, sysuiuserroles WHERE sysuicustomroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE sysuicustomroles.systemdefault = 1) roles order by name");
+        while ($sysuirole = $this->db->fetchByAssoc($sysuiroles)) {
+            if (isset($retArray[$sysuirole['id']])) continue;
+            $sysuirolemodules = $this->db->query("SELECT * FROM sysuicustomrolemodules WHERE sysuirole_id in ('*', '" . $sysuirole['id'] . "') ORDER BY sequence");
+            while ($sysuirolemodule = $this->db->fetchByAssoc($sysuirolemodules)) {
+                $retArray[$sysuirole['id']][] = $sysuirolemodule;
+            }
+        }
+
         return $retArray;
     }
 
@@ -249,7 +330,12 @@ class SystemUIRESTHandler
         $retArray = array();
         $componentconfigs = $this->db->query("SELECT * FROM sysuicomponentdefaultconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][$componentconfig['role_id']] = json_decode(str_replace(array("\r", "\n", "\t", "&#039;"), array('', '', '', '"'), html_entity_decode($componentconfig['componentconfig'])), true) ?: array();
+            $retArray[$componentconfig['component']][$componentconfig['role_id']] = json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($componentconfig['componentconfig'])), true) ?: array();
+        }
+
+        $componentconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentdefaultconf");
+        while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
+            $retArray[$componentconfig['component']][$componentconfig['role_id']] = json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($componentconfig['componentconfig'])), true) ?: array();
         }
 
         return $retArray;
@@ -260,7 +346,12 @@ class SystemUIRESTHandler
         $retArray = array();
         $componentconfigs = $this->db->query("SELECT * FROM sysuicomponentmoduleconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][$componentconfig['role_id']] = json_decode(str_replace(array("\r", "\n", "\t", "&#039;"), array('', '', '', '"'), html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['module']][$componentconfig['component']][$componentconfig['role_id']] = json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+        }
+
+        $componentconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentmoduleconf");
+        while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
+            $retArray[$componentconfig['module']][$componentconfig['component']][$componentconfig['role_id']] = json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
         }
 
         return $retArray;
@@ -276,6 +367,7 @@ class SystemUIRESTHandler
                 $retArray[$fieldset['fieldset_id']] = array(
                     'name' => $fieldset['name'],
                     'module' => $fieldset['module'] ?: '*',
+                    'type' => 'global',
                     'items' => []
                 );
             }
@@ -284,14 +376,42 @@ class SystemUIRESTHandler
                 $retArray[$fieldset['fieldset_id']]['items'][] = array(
                     'id' => $fieldset['id'],
                     'field' => $fieldset['field'],
-                    'fieldconfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
+                    'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
                 );
             elseif (!empty($fieldset['fieldset']))
                 $retArray[$fieldset['fieldset_id']]['items'][] = array(
                     'id' => $fieldset['id'],
                     'fieldset' => $fieldset['fieldset'],
-                    'fieldconfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
+                    'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
+                    'sequence' => $fieldset['sequence']
+                );
+        }
+
+        $fieldsets = $this->db->query("SELECT sysuicustomfieldsetsitems.*, sysuicustomfieldsets.module, sysuicustomfieldsets.name FROM sysuicustomfieldsetsitems, sysuicustomfieldsets WHERE sysuicustomfieldsetsitems.fieldset_id = sysuicustomfieldsets.id ORDER BY fieldset_id, sequence");
+        while ($fieldset = $this->db->fetchByAssoc($fieldsets)) {
+
+            if (!isset($retArray[$fieldset['fieldset_id']])) {
+                $retArray[$fieldset['fieldset_id']] = array(
+                    'name' => $fieldset['name'],
+                    'module' => $fieldset['module'] ?: '*',
+                    'type' => 'custom',
+                    'items' => []
+                );
+            }
+
+            if (!empty($fieldset['field']))
+                $retArray[$fieldset['fieldset_id']]['items'][] = array(
+                    'id' => $fieldset['id'],
+                    'field' => $fieldset['field'],
+                    'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
+                    'sequence' => $fieldset['sequence']
+                );
+            elseif (!empty($fieldset['fieldset']))
+                $retArray[$fieldset['fieldset_id']]['items'][] = array(
+                    'id' => $fieldset['id'],
+                    'fieldset' => $fieldset['fieldset'],
+                    'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
                 );
         }
@@ -307,20 +427,20 @@ class SystemUIRESTHandler
 
         // add items
         foreach ($data['add'] as $fieldsetid => $fieldsetdata) {
-            $db->query("INSERT INTO sysuifieldsets (id, module, name) VALUES('$fieldsetid', '" . $fieldsetdata['module'] . "', '" . $fieldsetdata['name'] . "')");
+            $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets (id, module, name) VALUES('$fieldsetid', '" . $fieldsetdata['module'] . "', '" . $fieldsetdata['name'] . "')");
             foreach ($fieldsetdata['items'] as $fieldsetitem) {
-                $db->query("INSERT INTO sysuifieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "')");
+                $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "')");
             }
         }
 
         // handle the update
         foreach ($data['update'] as $fieldsetid => $fieldsetdata) {
-            $db->query("UPDATE sysuifieldsets SET name='" . $fieldsetdata['name'] . "' WHERE id='$fieldsetid'");
+            $db->query("UPDATE sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets SET name='" . $fieldsetdata['name'] . "' WHERE id='$fieldsetid'");
             // delete all current items
-            $db->query("DELETE FROM sysuifieldsetsitems WHERE fieldset_id = '$fieldsetid'");
+            $db->query("DELETE FROM sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems WHERE fieldset_id = '$fieldsetid'");
             // add all items
             foreach ($fieldsetdata['items'] as $fieldsetitem) {
-                $db->query("INSERT INTO sysuifieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "')");
+                $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "')");
             }
         }
 
@@ -341,12 +461,173 @@ class SystemUIRESTHandler
         return $retArray;
     }
 
+    /**
+     * VALIDATIONs
+     */
+
+    public function setModelValidation(array $data)
+    {
+        $failed = false;
+
+        $sql = "INSERT IGNORE INTO sysuimodelvalidations SET
+                  id = '{$data[id]}',
+                  name = '{$data[name]}',
+                  module = '{$data[module]}',
+                  onevents = '".$this->db->quote($data[onevents])."',
+                  active = ".(int)$data['active'].",
+                  logicoperator = '{$data[logicoperator]}',
+                  priority = ".(int)$data['priority'].",
+                  deleted = ".(int)$data['deleted']."
+                ON DUPLICATE KEY UPDATE
+                  name = '{$data[name]}',
+                  module = '{$data[module]}',
+                  onevents = '".$this->db->quote($data[onevents])."',
+                  active = ".(int)$data['active'].",
+                  logicoperator = '{$data[logicoperator]}',
+                  priority = ".(int)$data['priority'].",
+                  deleted = ".(int)$data['deleted'];
+        if( !$this->db->query($sql) ){  $failed = true; $error = 'Insert into sysuimodelvalidations failed!';   }
+
+        if( !$failed ) {
+            foreach ($data['conditions'] as $con) {
+                $sql = "INSERT IGNORE INTO sysuimodelvalidationconditions SET
+                      id = '{$con[id]}',
+                      sysuimodelvalidation_id = '{$con[sysuimodelvalidation_id]}',
+                      fieldname = '{$con[fieldname]}',
+                      comparator = '{$con[comparator]}',
+                      valuations = '".$this->db->quote($con[valuations])."',
+                      onchange = '{$con[onchange]}',
+                      deleted = ".(int)$con['deleted']."
+                    ON DUPLICATE KEY UPDATE
+                      sysuimodelvalidation_id = '{$con[sysuimodelvalidation_id]}',
+                      fieldname = '{$con[fieldname]}',
+                      comparator = '{$con[comparator]}',
+                      valuations = '".$this->db->quote($con[valuations])."',
+                      onchange = '{$con[onchange]}',
+                      deleted = ".(int)$con['deleted'];
+                if (!$this->db->query($sql)) {
+                    $failed = true;
+                    $error = 'INSERT INTO sysuimodelvalidationconditions failed!';
+                }
+            }
+
+            foreach ($data['actions'] as $act)
+            {
+                $sql = "INSERT IGNORE INTO sysuimodelvalidationactions SET
+                      id = '{$act[id]}',
+                      sysuimodelvalidation_id = '{$act[sysuimodelvalidation_id]}',
+                      fieldname = '{$act[fieldname]}',
+                      action = '{$act[action]}',
+                      params = '".$this->db->quote($act[params])."',
+                      priority = ".(int)$act['priority'].",
+                      deleted = ".(int)$act['deleted']."
+                    ON DUPLICATE KEY UPDATE
+                      sysuimodelvalidation_id = '{$act[sysuimodelvalidation_id]}',
+                      fieldname = '{$act[fieldname]}',
+                      action = '{$act[action]}',
+                      params = '".$this->db->quote($act[params])."',
+                      priority = ".(int)$act['priority'].",
+                      deleted = ".(int)$act['deleted'];
+                if (!$this->db->query($sql)) {
+                    $failed = true;
+                    $error = 'INSERT INTO sysuimodelvalidationactions failed!';
+                }
+            }
+        }
+        if( $failed )
+        {
+            http_response_code(500);
+
+            var_dump($error);
+            HttpResponse::send($error);
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getAllModelValidations()
+    {
+        $sql = "SELECT id, `module` 
+                FROM sysuimodelvalidations 
+                WHERE deleted = 0 AND active = 1
+                ORDER BY priority ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res))
+        {
+            $return[$row['module']]['validations'][] = $this->getModelValidations($row['id']);
+        }
+        return $return;
+    }
+
+    public function getModuleModelValidations($module)
+    {
+        $sql = "SELECT id FROM sysuimodelvalidations 
+                WHERE `module` = '{$module}' AND deleted = 0 AND active = 1
+                ORDER BY priority ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))
+        {
+            $return['validations'] = $this->getModelValidations($row['id']);
+        }
+        return $return;
+    }
+
+    public function getModelValidations($id)
+    {
+        $sql = "SELECT * FROM sysuimodelvalidations WHERE id = '{$id}'";
+        $res = $this->db->query($sql);
+        $return = $this->db->fetchByAssoc($res, false);
+        if( !$return['logicoperator'] ){    $return['logicoperator'] = 'and';   }
+        if( json_decode($return['onevents']) ){$return['onevents'] = json_decode($return['onevents']);}
+
+        $return['conditions'] = $return['actions'] = [];
+
+        $sql = "SELECT * FROM sysuimodelvalidationconditions 
+                WHERE sysuimodelvalidation_id = '{$return[id]}' AND deleted = 0";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))
+        {
+            if( json_decode($row['valuations']) ){$row['valuations'] = json_decode($row['valuations']);}
+            $return['conditions'][] = $row;
+        }
+
+        $sql = "SELECT * FROM sysuimodelvalidationactions 
+                WHERE sysuimodelvalidation_id = '{$return[id]}' AND deleted = 0
+                ORDER BY priority ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))  // <--- fucking dont encode html entities...!!!
+        {
+            if( json_decode($row['params']) ){$row['params'] = json_decode($row['params']);}
+            $return['actions'][] = $row;
+        }
+
+        return $return;
+    }
+
+    public function deleteModelValidation($id)
+    {
+        $sql = "UPDATE sysuimodelvalidations SET deleted = 1 WHERE id = '$id'";
+        //$sql = "DELETE FROM sysuimodelvalidations WHERE id = '$id'";
+        $res = $this->db->query($sql);
+
+        $sql = "UPDATE sysuimodelvalidationconditions SET deleted = 1 WHERE sysuimodelvalidation_id = '$id'";
+        //$sql = "DELETE FROM sysuimodelvalidationconditions WHERE sysuimodelvalidation_id = '$id'";
+        $res = $this->db->query($sql);
+
+        $sql = "UPDATE sysuimodelvalidationactions SET deleted = 1 WHERE sysuimodelvalidation_id = '$id'";
+        //$sql = "DELETE FROM sysuimodelvalidationactions WHERE sysuimodelvalidation_id = '$id'";
+        $res = $this->db->query($sql);
+
+        return true;
+    }
+
     function getFieldDefMapping()
     {
         global $db;
         $mappingArray = [];
 
-        $mappings = $db->query("SELECT * FROM sysuifieldtypemapping");
+        $mappings = $db->query("SELECT * FROM sysuifieldtypemapping UNION SELECT * FROM sysuicustomfieldtypemapping");
         while ($mapping = $db->fetchByAssoc($mappings)) {
             $mappingArray[$mapping['fieldtype']] = $mapping['component'];
         }
@@ -357,28 +638,13 @@ class SystemUIRESTHandler
     function getRoutes()
     {
         $routeArray = array();
-        $routes = $this->db->query("SELECT * FROM sysuiroutes");
+        $routes = $this->db->query("SELECT * FROM sysuiroutes UNION SELECT * FROM sysuicustomroutes");
         while ($route = $this->db->fetchByAssoc($routes)) {
-            $routeItem = array(
-                'path' => $route['path']
-            );
 
-            if ($route['component'])
-                $routeItem['component'] = $route['component'];
-
-            if ($route['redirectto'])
-                $routeItem['redirectTo'] = $route['redirectto'];
-
-            if ($route['pathmatch'])
-                $routeItem['pathMatch'] = $route['pathmatch'];
-
-            if ($route['loginrequired'])
-                $routeItem['canActivate'] = array('loginCheck');
-
-            $routeArray[] = $routeItem;
+            $routeArray[] = $route;
 
         }
-        return json_encode($routeArray);
+        return $routeArray;
     }
 
     function getRecent($module = '', $limit = 5)
@@ -464,7 +730,7 @@ class SystemUIRESTHandler
                 $navElements[$admincomponent['admingroup']][] = array(
                     'adminaction' => $admincomponent['adminaction'],
                     'component' => $admincomponent['component'],
-                    'componentconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;"), array('', '', '', '"'), html_entity_decode($admincomponent['componentconfig'])), true) ?: new stdClass()
+                    'componentconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($admincomponent['componentconfig'])), true) ?: new stdClass()
                 );
             }
         }
@@ -479,12 +745,23 @@ class SystemUIRESTHandler
         $modules = [];
 
         if ($current_user->is_admin) {
-            $sysmodules = $db->query("SELECT * FROM sysmodules ORDER BY module");
+            $sysmodules = $db->query("SELECT * FROM sysmodules  UNION SELECT * FROM syscustommodules");
             while ($sysmodule = $db->fetchByAssoc($sysmodules)) {
                 $modules[] = $sysmodule;
             }
-        }
+        };
+
+        usort($modules, function ($a, $b){
+            return $a['module'] > $b['module'] ? 1 : -1;
+        });
 
         return $modules;
+    }
+
+    public function createDefaultConf(){
+        require_once 'modules/SystemUI/SpiceUICreator.php';
+        $spiceuiconf = new SpiceUICreator();
+        $spiceuiconf->createDefaultConf();
+        return true;
     }
 }

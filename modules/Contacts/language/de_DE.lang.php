@@ -218,5 +218,14 @@ $mod_strings = array (
     // SNIP
     'LBL_CONTACT_HISTORY_SUBPANEL_TITLE' => 'Verknüpfte Kontakt E-Mails',
     'LBL_USER_SYNC' => 'Benutzer Synchronisation',
+
+    'LBL_CONTACT_DATA' => 'Kontaktdaten',
+    'LBL_CONTACT_INTERESTS' => 'Interessen',
+    'LBL_PERSONAL_INTERESTS' => 'Interessen',
+
+
+    'LBL_DEGREE1' => 'Titel 1',
+    'LBL_DEGREE2' => 'Titel 2',
+    'LBL_TITLE_DD' => 'Funktion',
+    'LBL_EXT_ID' => 'externe ID'
 );
-?>

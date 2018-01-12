@@ -70,7 +70,7 @@ $app->group('/mobile', function () use ($app, $KRESTManager) {
             $controller = new KRESTSpiceCRMMobileHandler();
             $syncData = $app->request->get();
             echo json_encode($controller->getReminders($syncData));
-        });
+        });    
         $app->post('/:beanName/:beanId', function ($beanName, $beanId) use ($app) {
             $postBody = $body = $app->request->getBody();
             $postParams = $app->request->get();

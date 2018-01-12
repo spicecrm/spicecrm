@@ -80,7 +80,9 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             $restHandler = new KReporterRESTHandler();
             echo json_encode($restHandler->getLabels());
         });
-
+        $app->get('/currencies', function () use ($app, $KReportRestHandler) {
+            echo json_encode($KReportRestHandler->getCurrencies());
+        });
     });
 
     $app->group('/securitygroups', function () use ($app, $KRESTManager, $KReportRestHandler) {
@@ -153,13 +155,7 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
                 $postBody = json_decode($formBody, true);
 
                 if(!$postBody && $formBody != ''){
-                    $formBody = urldecode($formBody);
-                    $formBodyArray = explode('&', $formBody);
-                    foreach($formBodyArray as $formBodyArrayItem){
-                        $itemArray = explode('=', $formBodyArrayItem, 2);
-                        if(count($itemArray) === 2)
-                            $postBody[$itemArray[0]] = $itemArray[1];
-                    }
+                    parse_str($app->request->getBody(), $postBody);
                 }
 
                 if(!$postBody) $postBody = array();
@@ -212,8 +208,9 @@ $app->group('/KReporter', function () use ($app, $KRESTManager, $KReportRestHand
             });
             $app->group('/assigneduserid/:assigneduserid', function () use ($app, $KRESTManager, $KReportRestHandler) {
                 $app->get('', function ($reportId, $assignedUserId) use ($app, $KRESTManager, $KReportRestHandler) {
+                    global $current_user;
                     $requestParams = $app->request->get();
-                    $requestParams = array('reportid' => $reportId, 'assigneduserid' => $assignedUserId, 'context' => $requestParams['context']);
+                    $requestParams = array('reportid' => $reportId, 'assigneduserid' => $assignedUserId == 'own' ? $current_user->id : $assignedUserId, 'context' => $requestParams['context']);
                     echo json_encode($KReportRestHandler->getSavedFilters($requestParams));
                 });
             });

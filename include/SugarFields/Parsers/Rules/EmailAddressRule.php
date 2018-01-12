@@ -48,75 +48,70 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  
 require_once('include/SugarFields/Parsers/Rules/BaseRule.php');
  
-class EmailAddressRule extends BaseRule {
+class EmailAddressRule extends BaseRule
+{
+	function parsePanels(& $panels, $view) {
 
-function EmailAddressRule() {
-	
-}
+	   if($view == 'DetailView') {
 
-function parsePanels(& $panels, $view) {
+			foreach($panels as $name=>$panel) {
 
-   if($view == 'DetailView') {
+			  if(preg_match('/lbl_email_addresses/si', $name)) {
+				 continue;
+			  }
 
-		foreach($panels as $name=>$panel) {
+			  foreach($panel as $rowCount=>$row) {
+				 foreach($row as $key=>$column) {
 
-	   	  if(preg_match('/lbl_email_addresses/si', $name)) {
-	   	  	 continue;
-	   	  }
-			
-	   	  foreach($panel as $rowCount=>$row) {
-	   	  	 foreach($row as $key=>$column) {
-	   	  	 	
-                if($this->isCustomField($column)) {
-                   continue;	
-                } else if(is_array($column) && !empty($column['name']) && preg_match('/^email(s|2)$/si', $column['name']) && !isset($column['type'])) {             
-		           $panels[$name][$rowCount][$key] = '';
-                } else if($this->matches($column, '/^email[1]_link$/si')) {
-                   $panels[$name][$rowCount][$key] = 'email1';
-	   	  	 	} else if($this->matches($column, '/^email[2]_link$/si')) {
-	   	  	 	   $panels[$name][$rowCount][$key] = '';
-	   	  	 	} else if(!is_array($column) && !empty($column)) {
-	   	  	 	   if(preg_match('/^email(s|2)$/si', $column) ||
-	   	  	 	      preg_match('/^invalid_email$/si', $column) ||
-	   	  	 	      preg_match('/^email_opt_out$/si', $column) ||
-	   	  	 	      preg_match('/^primary_email$/si', $column)) {
-	   	  	 	   	  $panels[$name][$rowCount][$key] = '';
-	   	  	 	   }
-	   	  	 	}
+					if($this->isCustomField($column)) {
+					   continue;
+					} else if(is_array($column) && !empty($column['name']) && preg_match('/^email(s|2)$/si', $column['name']) && !isset($column['type'])) {
+					   $panels[$name][$rowCount][$key] = '';
+					} else if($this->matches($column, '/^email[1]_link$/si')) {
+					   $panels[$name][$rowCount][$key] = 'email1';
+					} else if($this->matches($column, '/^email[2]_link$/si')) {
+					   $panels[$name][$rowCount][$key] = '';
+					} else if(!is_array($column) && !empty($column)) {
+					   if(preg_match('/^email(s|2)$/si', $column) ||
+						  preg_match('/^invalid_email$/si', $column) ||
+						  preg_match('/^email_opt_out$/si', $column) ||
+						  preg_match('/^primary_email$/si', $column)) {
+						  $panels[$name][$rowCount][$key] = '';
+					   }
+					}
 
-	   	  	 } //foreach
-	   	  } //foreach
-	   } //foreach
-   
-   } else if($view == 'EditView') {
+				 } //foreach
+			  } //foreach
+		   } //foreach
 
-		foreach($panels as $name=>$panel) {
+	   } else if($view == 'EditView') {
 
-	   	  if(preg_match('/lbl_email_addresses/si', $name)) {
-	   	  	 continue;
-	   	  }
-	   	
-	   	  foreach($panel as $rowCount=>$row) {
-	   	  	 foreach($row as $key=>$column) {
+			foreach($panels as $name=>$panel) {
 
-                if($this->isCustomField($column)) {
-                   continue;	
-                }
+			  if(preg_match('/lbl_email_addresses/si', $name)) {
+				 continue;
+			  }
 
-                if($this->matches($column, '/email(s)*?([1|2])*?/si')) {
-                   $panels[$name][$rowCount][$key] = '';
-                }
+			  foreach($panel as $rowCount=>$row) {
+				 foreach($row as $key=>$column) {
 
-	   	  	 } //foreach
+					if($this->isCustomField($column)) {
+					   continue;
+					}
 
-	   	  } //foreach
-	   } //foreach
-   }
-   
+					if($this->matches($column, '/email(s)*?([1|2])*?/si')) {
+					   $panels[$name][$rowCount][$key] = '';
+					}
 
-   return $panels;
-}
+				 } //foreach
+
+			  } //foreach
+		   } //foreach
+	   }
+
+
+	   return $panels;
+	}
 
 }
-
 ?>

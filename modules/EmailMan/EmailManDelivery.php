@@ -250,7 +250,7 @@ do {
 }while ($send_all == true);
 
 if ($admin->settings['mail_sendtype'] == "SMTP") {
-	$mail->SMTPClose();
+	$mail->smtpClose();
 }
 if(isset($temp_user)){
 	$current_user = $temp_user;

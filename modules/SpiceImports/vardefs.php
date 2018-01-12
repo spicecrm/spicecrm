@@ -24,4 +24,4 @@ $dictionary['SpiceImport'] = array(
 );
 
 require_once('include/SugarObjects/VardefManager.php');
-VarDefManager::createVardef('SpiceImports', 'SpiceImport', array('default', 'assignable'));
+VardefManager::createVardef('SpiceImports', 'SpiceImport', array('default', 'assignable'));

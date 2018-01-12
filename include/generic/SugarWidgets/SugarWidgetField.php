@@ -43,8 +43,8 @@ if(!defined('sugarEntry') || !sugarEntry)
 
 class SugarWidgetField extends SugarWidget {
 
-	function SugarWidgetField(&$layout_manager) {
-        parent::SugarWidget($layout_manager);
+	function __construct(&$layout_manager) {
+        parent::__construct($layout_manager);
     }
 
 	function display($layout_def) {

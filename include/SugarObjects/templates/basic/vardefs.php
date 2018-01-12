@@ -168,6 +168,13 @@ $vardefs = array(
                 'reportable' => false,
                 'comment' => 'Record deletion indicator'
             ),
+        'tags' =>
+            array(
+                'name' => 'tags',
+                'vname' => 'LBL_TAGS',
+                'type' => 'tags',
+                'dbType' => 'text'
+            ),
 
 /////////////////RELATIONSHIP LINKS////////////////////////////
         'created_by_link' =>
@@ -180,6 +187,7 @@ $vardefs = array(
                 'module' => 'Users',
                 'bean_name' => 'User',
                 'source' => 'non-db',
+                'recover' => false
             ),
         'modified_user_link' =>
             array(
@@ -191,6 +199,7 @@ $vardefs = array(
                 'module' => 'Users',
                 'bean_name' => 'User',
                 'source' => 'non-db',
+                'recover' => false
             ),
 
     ),

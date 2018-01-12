@@ -144,8 +144,8 @@ class Lead extends Person {
 	var $additional_column_fields = Array('assigned_user_name', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id');
 	var $relationship_fields = Array('email_id'=>'emails','call_id'=>'calls','meeting_id'=>'meetings','task_id'=>'tasks',);
 
-	function Lead() {
-		parent::Person();
+	function __construct() {
+		parent::__construct();
 	}
 
 	function get_account()

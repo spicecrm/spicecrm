@@ -39,7 +39,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 //tree by default.
 //predefined properties for a node are  id, label, target and href. label is required property.
 //set the target and href property for cases where target is an iframe.
-class ExtNode {
+class ExtNode
+{
 	//predefined node properties.
 	var $_label;		//this is the only required property for a node.
 	var $_href;
@@ -58,7 +59,8 @@ class ExtNode {
 	var $dynamicloadfunction='loadDataForNode'; //default script to load node data (children)
 	var $expanded=false;  //show node expanded during initial load.
 	 
-	function ExtNode($id,$label,$show_expanded=true) {
+	public function __construct($id,$label,$show_expanded=true)
+    {
 		$this->_label=$label;
 		$this->id = $id;	
 		$this->_properties['text']=$label;

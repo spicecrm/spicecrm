@@ -48,7 +48,8 @@ require_once("include/SugarFolders/SugarFolders.php");
 
 
 
-class EmailUI {
+class EmailUI
+{
 	var $db;
 	var $folder; // place holder for SugarFolder object
 	var $folderStates = array(); // array of folderPath names and their states (1/0)
@@ -69,7 +70,8 @@ class EmailUI {
 	/**
 	 * Sole constructor
 	 */
-	function EmailUI() {
+	public function __construct()
+    {
 		global $sugar_config;
 		global $current_user;
 

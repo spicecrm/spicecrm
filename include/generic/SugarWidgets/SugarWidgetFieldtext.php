@@ -40,8 +40,8 @@ require_once('include/generic/SugarWidgets/SugarWidgetFieldvarchar.php');
 
 class SugarWidgetFieldText extends SugarWidgetFieldVarchar
 {
-    function SugarWidgetFieldText(&$layout_manager) {
-        parent::SugarWidgetFieldVarchar($layout_manager);
+    function __construct(&$layout_manager) {
+        parent::__construct($layout_manager);
     }
 
     function queryFilterEquals($layout_def)

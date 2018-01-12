@@ -76,7 +76,7 @@ class Google_Http_REST
     $body = $response->getResponseBody();
     $decoded = null;
 
-    if ((intVal($code)) >= 300) {
+    if ((intval($code)) >= 300) {
       $decoded = json_decode($body, true);
       $err = 'Error calling ' . $response->getRequestMethod() . ' ' . $response->getUrl();
       if (isset($decoded['error']) &&

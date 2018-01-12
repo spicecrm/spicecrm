@@ -1,5 +1,5 @@
 <?php
-if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -42,12 +42,13 @@ include_once("modules/TableDictionary.php");
 require_once("data/BeanFactory.php");
 
 
-define('REL_LHS','LHS');
-define('REL_RHS','RHS');
-define('REL_BOTH','BOTH_SIDES');
+define('REL_LHS', 'LHS');
+define('REL_RHS', 'RHS');
+define('REL_BOTH', 'BOTH_SIDES');
 define('REL_MANY_MANY', 'many-to-many');
 define('REL_ONE_MANY', 'one-to-many');
 define('REL_ONE_ONE', 'one-to-one');
+
 /**
  * A relationship is between two modules.
  * It contains at least two links.
@@ -93,7 +94,8 @@ abstract class SugarRelationship
     public abstract function getQuery($link, $params = array());
 
 
-    public function getCount($link, $params){
+    public function getCount($link, $params)
+    {
         $params['return_as_array'] = true;
         $queryArray = $this->getQuery($link, $params);
         $queryArray['select'] = 'SELECT count(*) relcount';
@@ -134,20 +136,20 @@ abstract class SugarRelationship
         $focus = $link->getFocus();
         $related = $link->getBeans();
         $result = true;
-        foreach($related as $relBean)
-        {
+        foreach ($related as $relBean) {
             if (empty($relBean->id)) {
                 continue;
             }
 
-            if ($link->getSide() == REL_LHS)
-            {
+            if ($link->getSide() == REL_LHS) {
                 $sub_result = $this->remove($focus, $relBean);
-            }
-            else
-            {
+            } else {
                 $sub_result = $this->remove($relBean, $focus);
             }
+
+            // write trash record
+            if ($link->def['recover'] !== false)
+                SystemTrashCan::addRecord('related', get_class($focus), $focus->id, $relBean->get_summary_text(), $link->name, get_class($relBean), $relBean->id);
 
             $result = $result && $sub_result;
         }
@@ -159,7 +161,8 @@ abstract class SugarRelationship
      * @param $rowID id of SugarBean to remove from the relationship
      * @return void
      */
-    public function removeById($rowID){
+    public function removeById($rowID)
+    {
         $this->removeRow(array("id" => $rowID));
     }
 
@@ -214,18 +217,15 @@ abstract class SugarRelationship
             return $this->updateRow($existing['id'], array_merge($existing, $row));
 
         $values = array();
-        foreach($this->getFields() as  $def)
-        {
+        foreach ($this->getFields() as $def) {
             $field = $def['name'];
-            if (isset($row[$field]))
-            {
+            if (isset($row[$field])) {
                 $values[$field] = "'{$row[$field]}'";
             }
         }
         $columns = implode(',', array_keys($values));
         $values = implode(',', $values);
-        if (!empty($values))
-        {
+        if (!empty($values)) {
             $query = "INSERT INTO {$this->getRelationshipTable()} ($columns) VALUES ($values)";
             DBManagerFactory::getInstance()->query($query);
         }
@@ -241,12 +241,11 @@ abstract class SugarRelationship
         $newVals = array();
         //Unset the ID since we are using it to update the row
         if (isset($values['id'])) unset($values['id']);
-        foreach($values as $field => $val)
-        {
+        foreach ($values as $field => $val) {
             $newVals[] = "$field='$val'";
         }
 
-        $newVals = implode(",",$newVals);
+        $newVals = implode(",", $newVals);
 
         $query = "UPDATE {$this->getRelationshipTable()} set $newVals WHERE id='$id'";
 
@@ -265,13 +264,13 @@ abstract class SugarRelationship
 
         $date_modified = TimeDate::getInstance()->getNow()->asDb();
         $stringSets = array();
-        foreach ($where as $field => $val)
-        {
+        foreach ($where as $field => $val) {
             $stringSets[] = "$field = '$val'";
         }
         $whereString = "WHERE " . implode(" AND ", $stringSets);
 
         $query = "UPDATE {$this->getRelationshipTable()} set deleted=1 , date_modified = '$date_modified' $whereString";
+
 
         return DBManagerFactory::getInstance()->query($query);
 
@@ -286,7 +285,7 @@ abstract class SugarRelationship
     {
         $leftIDName = $this->def['join_key_lhs'];
         $rightIDName = $this->def['join_key_rhs'];
-        if (empty($row[$leftIDName]) ||  empty($row[$rightIDName]))
+        if (empty($row[$leftIDName]) || empty($row[$rightIDName]))
             return false;
 
         $leftID = $row[$leftIDName];
@@ -299,10 +298,9 @@ abstract class SugarRelationship
         $db = DBManagerFactory::getInstance();
         $result = $db->query($query);
         $row = $db->fetchByAssoc($result);
-        if (!empty($row))
-        {
+        if (!empty($row)) {
             return $row;
-        } else{
+        } else {
             return false;
         }
     }
@@ -318,18 +316,16 @@ abstract class SugarRelationship
         $roleCheck = "";
         if (empty ($table))
             $table = $this->getRelationshipTable();
-        if (!empty($this->def['relationship_role_column']) && !empty($this->def["relationship_role_column_value"]) && !$ignore_role_filter )
-        {
+        if (!empty($this->def['relationship_role_column']) && !empty($this->def["relationship_role_column_value"]) && !$ignore_role_filter) {
             if (empty($table))
                 $roleCheck = " AND $this->relationship_role_column";
             else
                 $roleCheck = " AND $table.{$this->relationship_role_column}";
             //role column value.
-            if (empty($this->def['relationship_role_column_value']))
-            {
-                $roleCheck.=' IS NULL';
+            if (empty($this->def['relationship_role_column_value'])) {
+                $roleCheck .= ' IS NULL';
             } else {
-                $roleCheck.= " = '$this->relationship_role_column_value'";
+                $roleCheck .= " = '$this->relationship_role_column_value'";
             }
         }
         return $roleCheck;
@@ -362,7 +358,7 @@ abstract class SugarRelationship
      * @param string $link_name name of link being triggerd
      * @return void
      */
-    protected function callBeforeAdd($focus, $related, $link_name="")
+    protected function callBeforeAdd($focus, $related, $link_name = "")
     {
         $custom_logic_arguments = $this->getCustomLogicArguments($focus, $related, $link_name);
         $focus->call_custom_logic('before_relationship_add', $custom_logic_arguments);
@@ -375,7 +371,7 @@ abstract class SugarRelationship
      * @param string $link_name name of link being triggerd
      * @return void
      */
-    protected function callAfterAdd($focus, $related, $link_name="")
+    protected function callAfterAdd($focus, $related, $link_name = "")
     {
         $custom_logic_arguments = $this->getCustomLogicArguments($focus, $related, $link_name);
         $focus->call_custom_logic('after_relationship_add', $custom_logic_arguments);
@@ -387,7 +383,7 @@ abstract class SugarRelationship
      * @param string $link_name
      * @return void
      */
-    protected function callBeforeDelete($focus, $related, $link_name="")
+    protected function callBeforeDelete($focus, $related, $link_name = "")
     {
         $custom_logic_arguments = $this->getCustomLogicArguments($focus, $related, $link_name);
         $focus->call_custom_logic('before_relationship_delete', $custom_logic_arguments);
@@ -399,7 +395,7 @@ abstract class SugarRelationship
      * @param string $link_name
      * @return void
      */
-    protected function callAfterDelete($focus, $related, $link_name="")
+    protected function callAfterDelete($focus, $related, $link_name = "")
     {
         $custom_logic_arguments = $this->getCustomLogicArguments($focus, $related, $link_name);
         $focus->call_custom_logic('after_relationship_delete', $custom_logic_arguments);
@@ -411,14 +407,15 @@ abstract class SugarRelationship
      * @param string $prefix
      * @return string
      */
-    protected function getOptionalWhereClause($optional_array) {
+    protected function getOptionalWhereClause($optional_array)
+    {
         //lhs_field, operator, and rhs_value must be set in optional_array
-        foreach(array("lhs_field", "operator", "rhs_value") as $required){
+        foreach (array("lhs_field", "operator", "rhs_value") as $required) {
             if (empty($optional_array[$required]))
                 return "";
         }
 
-        return $optional_array['lhs_field']."".$optional_array['operator']."'".$optional_array['rhs_value']."'";
+        return $optional_array['lhs_field'] . "" . $optional_array['operator'] . "'" . $optional_array['rhs_value'] . "'";
     }
 
     /**
@@ -429,8 +426,7 @@ abstract class SugarRelationship
      */
     public static function addToResaveList($bean)
     {
-        if (!isset(self::$beansToResave[$bean->module_dir]))
-        {
+        if (!isset(self::$beansToResave[$bean->module_dir])) {
             self::$beansToResave[$bean->module_dir] = array();
         }
         self::$beansToResave[$bean->module_dir][$bean->id] = $bean;
@@ -446,19 +442,13 @@ abstract class SugarRelationship
         $GLOBALS['resavingRelatedBeans'] = true;
 
         //Resave any bean not currently in the middle of a save operation
-        foreach(self::$beansToResave as $module => $beans)
-        {
-            foreach ($beans as $bean)
-            {
-                if (empty($bean->deleted) && empty($bean->in_save))
-                {
+        foreach (self::$beansToResave as $module => $beans) {
+            foreach ($beans as $bean) {
+                if (empty($bean->deleted) && empty($bean->in_save)) {
                     $bean->save();
-                }
-                else
-                {
+                } else {
                     // Bug 55942 save the in-save id which will be used to send workflow alert later
-                    if (isset($bean->id) && !empty($_SESSION['WORKFLOW_ALERTS']))
-                    {
+                    if (isset($bean->id) && !empty($_SESSION['WORKFLOW_ALERTS'])) {
                         $_SESSION['WORKFLOW_ALERTS']['id'] = $bean->id;
                     }
                 }
@@ -477,9 +467,9 @@ abstract class SugarRelationship
     public function isParentRelationship()
     {
         //check role fields to see if this is a parent (flex relate) relationship
-        if(!empty($this->def["relationship_role_column"]) && !empty($this->def["relationship_role_column_value"])
-           && $this->def["relationship_role_column"] == "parent_type" && $this->def['rhs_key'] == "parent_id")
-        {
+        if (!empty($this->def["relationship_role_column"]) && !empty($this->def["relationship_role_column_value"])
+            && $this->def["relationship_role_column"] == "parent_type" && $this->def['rhs_key'] == "parent_id"
+        ) {
             return true;
         }
         return false;
@@ -490,8 +480,7 @@ abstract class SugarRelationship
         if (isset($this->def[$name]))
             return $this->def[$name];
 
-        switch($name)
-        {
+        switch ($name) {
             case "relationship_type":
                 return $this->type;
             case 'relationship_name':

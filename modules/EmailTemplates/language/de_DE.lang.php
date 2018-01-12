@@ -27,7 +27,8 @@ $mod_strings = array (
 	'LBL_ADD_DOCUMENT'			=> 'Sugar Dokument hinzufügen',
 	'LBL_ADD_FILE'				=> 'Datei hinzufügen',
 	'LBL_ATTACHMENTS'			=> 'Anhänge',
-	'LBL_BODY'					=> 'Text:',
+	'LBL_BODY'					=> 'Text',
+	'LBL_BODY_HTML'				=> 'HTML',
 	'LBL_CLOSE'					=> 'Beenden:',
 	'LBL_COLON'					=> ':',
 	'LBL_DESCRIPTION'			=> 'Beschreibung:',
@@ -94,5 +95,7 @@ $mod_strings = array (
 	'LBL_SELECT' => 'Auswählen',
 	'LBL_ID_FF_CLEAR' => 'Leeren',
     'LBL_TYPE' => 'Typ:',
+    'LBL_FOR_BEAN' => 'für Modul',
+    'LBL_MARK_CLOSED' => 'abschliessen',
+    'LBL_UNREAD_ONLY' => 'nur ungelesene',
 );
-?>

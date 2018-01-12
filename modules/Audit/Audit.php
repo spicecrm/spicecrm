@@ -54,8 +54,8 @@ class Audit extends SugarBean {
 	// This is used to retrieve related fields from form posts.
 	var $additional_column_fields = Array();
 
-	function Audit() {
-		parent::SugarBean();
+	public function __construct() {
+		parent::__construct();
 	}
 
 	var $new_schema = true;
@@ -90,8 +90,8 @@ class Audit extends SugarBean {
 
     }
 
-   function get_audit_list()
-    {
+   public static function get_audit_list()
+   {
 
         global $focus, $genericAssocFieldsArray, $moduleAssocFieldsArray, $current_user, $timedate, $app_strings;   
         $audit_list = array();

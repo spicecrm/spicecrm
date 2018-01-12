@@ -13,8 +13,6 @@
 ******************************************************************************* */
 
 
-
-
 if (!defined('sugarEntry') || !sugarEntry)
     die('Not A Valid Entry Point');
 
@@ -54,10 +52,10 @@ class KReporterRESTHandler
         );
         $customFunctionInclude = '';
         $kreportCustomFunctions = array();
-        include('modules/KReports/kreportsConfig.php');
+        include 'modules/KReports/kreportsConfig.php';
         global $kreportCustomFunctions;
         if ($customFunctionInclude != '') {
-            include($customFunctionInclude);
+            include $customFunctionInclude;
             if (is_array($kreportCustomFunctions) && count($kreportCustomFunctions) > 0) {
                 foreach ($kreportCustomFunctions as $functionname => $functiondescription) {
                     $retarray[] = array(
@@ -171,7 +169,7 @@ class KReporterRESTHandler
         if (empty($timef)) {
             $timef = '';
         }
-        
+
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
             $datef = $GLOBALS['sugar_config']['default_date_format'];
@@ -182,8 +180,9 @@ class KReporterRESTHandler
 
         return array('timef' => $timef, 'datef' => $datef);
     }
-    
-    function get_user_prefs(){
+
+    function get_user_prefs()
+    {
         global $current_user;
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
@@ -192,7 +191,7 @@ class KReporterRESTHandler
         if (empty($timef)) {
             $timef = '';
         }
-        
+
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
             $datef = $GLOBALS['sugar_config']['default_date_format'];
@@ -209,9 +208,9 @@ class KReporterRESTHandler
             $precision = '';
         }
 
-        return array('timef' => $timef, 'datef' => $datef, 'precision' => $precision );
+        return array('timef' => $timef, 'datef' => $datef, 'precision' => $precision);
     }
-    
+
     function get_users_list($params = array())
     {
         $responseArray = array();
@@ -219,39 +218,39 @@ class KReporterRESTHandler
         $order_by = "users.last_name ASC";
         $where = ""; // status='Active' ?
         $row_offset = 0;
-        $limit=-1;
+        $limit = -1;
         //begin handle search param
-        if(isset($params['searchterm']) && !empty($params['searchterm'])){
-            if(isset($params['searchtermfields'])){
+        if (isset($params['searchterm']) && !empty($params['searchterm'])) {
+            if (isset($params['searchtermfields'])) {
                 $whereParts = array();
                 $searchtermfields = json_decode($params['searchtermfields'], true);
-                foreach($searchtermfields as $searchfield){
-                    $whereParts[] = "users.$searchfield LIKE '%".$params['searchterm']."%'";
+                foreach ($searchtermfields as $searchfield) {
+                    $whereParts[] = "users.$searchfield LIKE '%" . $params['searchterm'] . "%'";
                 }
-                if(!empty($whereParts))
-                    $where.= "(".implode(" OR ", $whereParts).")";
+                if (!empty($whereParts))
+                    $where .= "(" . implode(" OR ", $whereParts) . ")";
             }
         }
-        if(isset($params['limit'])){
+        if (isset($params['limit'])) {
             $limit = $params['limit'];
         }
-        if(isset($params['start'])){
+        if (isset($params['start'])) {
             $row_offset = $params['start'];
         }
         //end handle search param
-        
+
         $users = $tmpBean->get_list($order_by, $where, $row_offset, $limit);
 
         //get total count
         $usersForCount = $tmpBean->get_list($order_by, $where);
         $responseArray = array('list' => array(), 'totalcount' => $usersForCount['row_count']);
-        
-        foreach($users['list'] as $user){
+
+        foreach ($users['list'] as $user) {
             $responseArray['list'][] = array('id' => $user->id, 'user_name' => $user->user_name, 'name' => $user->full_name);
         }
         return $responseArray;
     }
-    
+
     function whereInitialize()
     {
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -331,7 +330,7 @@ class KReporterRESTHandler
     }
 
     function getWhereOperators($path, $grouping, $designer)
-    {        
+    {
         global $app_list_strings, $beanFiles, $beanList, $db, $current_language;
 
         $app_list_strings = return_app_list_strings_language($current_language);
@@ -346,7 +345,7 @@ class KReporterRESTHandler
             'values' => $kreporterWhereOperatorCount['ignore'],
             'display' => $mod_strings['LBL_OP_IGNORE']
         );
-        
+
 
         //2013-08-07 check if path is set
         if (empty($path)) {
@@ -376,7 +375,7 @@ class KReporterRESTHandler
                 $parentModule->load_relationship($moduleArray[2]);
 
                 // load the Module
-                
+
                 //PHP7 - 5.6 COMPAT
                 //ORIGINAL: require_once($beanFiles[$beanList[$parentModule->$moduleArray[2]->getRelatedModuleName()]]);
                 $moduleArrayEl = $moduleArray[2];
@@ -436,8 +435,8 @@ class KReporterRESTHandler
             } else {
                 // parse the options into the return array
                 $wheretype = $kreporterWhereOperatorAssignments[isset($thisModule->field_name_map[$fieldArray[1]]['kreporttype']) ? $thisModule->field_name_map[$fieldArray[1]]['kreporttype'] : $thisModule->field_name_map[$fieldArray[1]]['type']];
-                if(!empty($grouping) && isset($kreporterWhereOperatorTypes[$wheretype . 'grouped']))
-                    $wheretype.= 'grouped';
+                if (!empty($grouping) && isset($kreporterWhereOperatorTypes[$wheretype . 'grouped']))
+                    $wheretype .= 'grouped';
 
                 foreach ($kreporterWhereOperatorTypes[$wheretype] as $operator)
                     $retarray[] = array(
@@ -795,7 +794,7 @@ class KReporterRESTHandler
                             'bean' => $nodeModule->$field_name->focus->object_name,
                             'leaf' => false
                         );
-                    else{
+                    else {
                         $field_defs_rel = $field_defs['relationship'];
                         $returnArray[] = array(
                             'path' => /* ($requester != '' ? $requester. '#': '') . */
@@ -890,7 +889,8 @@ class KReporterRESTHandler
         return $returnArray;
     }
 
-    private function  buildAuditFieldArray() {
+    private function buildAuditFieldArray()
+    {
 
         //date_created
         $returnArray[] = array(
@@ -951,7 +951,8 @@ class KReporterRESTHandler
         return $returnArray;
     }
 
-    private function buildLinkFieldArray($thisLink) {
+    private function buildLinkFieldArray($thisLink)
+    {
 
         global $db;
         // bug #528
@@ -975,10 +976,9 @@ class KReporterRESTHandler
     }
 
 
-
     function getPresentation($reportId, $requestParams)
     {
-        
+
         global $db, $current_language;
         $app_list_strings = return_app_list_strings_language($current_language);
 
@@ -1004,7 +1004,7 @@ class KReporterRESTHandler
             $reportParams['sortseq'] = $sortParams[0]->direction;
         }
         //extractWhereClause conditions
-        if (isset($requestParams['whereConditions'])) {
+        if (isset($requestParams['whereConditions']) && !empty($requestParams['whereConditions'])) {
             $thisReport->whereOverride = json_decode(html_entity_decode($requestParams['whereConditions'], ENT_QUOTES), true);
         }
 
@@ -1013,15 +1013,16 @@ class KReporterRESTHandler
         $whereoverride = array();
         if (isset($requestParams['dynamicoptionsfromurl']) && !empty($requestParams['dynamicoptionsfromurl'])) {
             $dynamicoptions = json_decode(html_entity_decode(base64_decode($requestParams['dynamicoptionsfromurl'])), true);
-            foreach($whereconditions as $idx => $wherecondition){
-                foreach($dynamicoptions as $idxdo => $dynamicoption){
-                    if( (!empty($dynamicoption['fieldid']) && $dynamicoption['fieldid'] == $wherecondition['fieldid']) ||
-                        (!empty($dynamicoption['reference']) && $dynamicoption['reference'] == $wherecondition['reference'])){
+            foreach ($whereconditions as $idx => $wherecondition) {
+                foreach ($dynamicoptions as $idxdo => $dynamicoption) {
+                    if ((!empty($dynamicoption['fieldid']) && $dynamicoption['fieldid'] == $wherecondition['fieldid']) ||
+                        (!empty($dynamicoption['reference']) && $dynamicoption['reference'] == $wherecondition['reference'])
+                    ) {
                         $whereconditions[$idx]['operator'] = $dynamicoption['operator'];
-                        if(isset($dynamicoption['value'])) $whereconditions[$idx]['value'] = $dynamicoption['value'];
-                        if(isset($dynamicoption['valuekey'])) $whereconditions[$idx]['valuekey'] = $dynamicoption['valuekey'];
-                        if(isset($dynamicoption['valueto'])) $whereconditions[$idx]['valueto'] = $dynamicoption['valueto'];
-                        if(isset($dynamicoption['valuetokey'])) $whereconditions[$idx]['valuetokey'] = $dynamicoption['valuetokey'];
+                        if (isset($dynamicoption['value'])) $whereconditions[$idx]['value'] = $dynamicoption['value'];
+                        if (isset($dynamicoption['valuekey'])) $whereconditions[$idx]['valuekey'] = $dynamicoption['valuekey'];
+                        if (isset($dynamicoption['valueto'])) $whereconditions[$idx]['valueto'] = $dynamicoption['valueto'];
+                        if (isset($dynamicoption['valuetokey'])) $whereconditions[$idx]['valuetokey'] = $dynamicoption['valuetokey'];
                         $whereoverride [] = $whereconditions[$idx];
                     }
                 }
@@ -1029,40 +1030,38 @@ class KReporterRESTHandler
         }
 
         //allocate dynamicoptions to whereOverride
-        if(is_array($thisReport->whereOverride)){
+        if (is_array($thisReport->whereOverride)) {
             $thisReport->whereOverride = array_merge($thisReport->whereOverride, $whereoverride);
-        }
-        else
+        } else
             $thisReport->whereOverride = $whereoverride;
 
 
-
         // if a filter is set evaluate it .. comes from the dashlet
-        if(!empty($requestParams['filter'])){
-            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '".$requestParams['filter']."'"));
+        if (!empty($requestParams['filter'])) {
+            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '" . $requestParams['filter'] . "'"));
             $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
         }
 
         //get parent bean 
-        if(isset($requestParams['parentbeanId']) && isset($requestParams['parentbeanModule'])){
+        if (isset($requestParams['parentbeanId']) && isset($requestParams['parentbeanModule'])) {
             $parentbean = BeanFactory::getBean($requestParams['parentbeanModule'], $requestParams['parentbeanId']);
-            if($parentbean->id)
+            if ($parentbean->id)
                 $reportParams['parentbean'] = $parentbean;
         }
-        
+
         // print_r(json_decode(html_entity_decode($requestParams['whereConditions']), true));
 
         //catch dynamic options sent by drilldown plugin at first load
         if (isset($requestParams['dynamicoptions']) && !empty($requestParams['dynamicoptions']) && !$requestParams['blockDynamicoptions']) {
             $dynamicoptions = json_decode(html_entity_decode($requestParams['dynamicoptions']), true);
-            if(count($thisReport->whereOverride) <= 0)
+            if (count($thisReport->whereOverride) <= 0)
                 $thisReport->whereOverride = $dynamicoptions;
-            else{
-                foreach($thisReport->whereOverride as $idx => $whereOverride){
-                    foreach($dynamicoptions as $idxdo => $dynamicoption){
-                        if($dynamicoption['fieldid'] == $whereOverride['fieldid'] ||
+            else {
+                foreach ($thisReport->whereOverride as $idx => $whereOverride) {
+                    foreach ($dynamicoptions as $idxdo => $dynamicoption) {
+                        if ($dynamicoption['fieldid'] == $whereOverride['fieldid'] ||
                             (isset($whereOverride['reference']) && $dynamicoption['reference'] == $whereOverride['reference'])
-                        ){
+                        ) {
                             $thisReport->whereOverride[$idx] = $dynamicoption;
                         }
                     }
@@ -1070,7 +1069,7 @@ class KReporterRESTHandler
             }
         }
         $retData['records'] = $thisReport->getSelectionResults($reportParams, isset($requestParams['snapshotid']) ? $requestParams['snapshotid'] : '0', false);
-        
+
         // rework ... load from kQuery fieldArray
         $fieldArr = array();
 
@@ -1081,6 +1080,7 @@ class KReporterRESTHandler
             $thisFieldArray = array('name' => $fieldname);
             switch ($thisReport->fieldNameMap[$fieldid]['type']) {
                 case 'int':
+                case 'currencyint':
                     $thisFieldArray['type'] = 'integer';
                     break;
                 case 'currency':
@@ -1098,7 +1098,7 @@ class KReporterRESTHandler
             }
 
             // BUG #524 if we have a custom function then send string sicne we do not know what tpye is returned
-            if($thisReport->fieldNameMap[$fieldid]['customFunction'] != '')
+            if ($thisReport->fieldNameMap[$fieldid]['customFunction'] != '')
                 $thisFieldArray['type'] = 'string';
 
             if (isset($linkArray[$fieldid]))
@@ -1147,7 +1147,7 @@ class KReporterRESTHandler
 
         // do a count
         $parameters = array('start' => $requestParams['start'], 'limit' => $requestParams['limit']);
-        if($parentbean)
+        if ($parentbean)
             $parameters['parentbean'] = $parentbean;
         $retData['count'] = $thisReport->getSelectionResults($parameters, isset($requestParams['snapshotid']) ? $requestParams['snapshotid'] : '0', true);
         return $retData;
@@ -1189,15 +1189,16 @@ class KReporterRESTHandler
         $whereoverride = array();
         if (isset($requestParams['dynamicoptionsfromurl']) && !empty($requestParams['dynamicoptionsfromurl'])) {
             $dynamicoptions = json_decode(html_entity_decode(base64_decode($requestParams['dynamicoptionsfromurl'])), true);
-            foreach($whereconditions as $idx => $wherecondition){
-                foreach($dynamicoptions as $idxdo => $dynamicoption){
-                    if( (!empty($dynamicoption['fieldid']) && $dynamicoption['fieldid'] == $wherecondition['fieldid']) ||
-                        (!empty($dynamicoption['reference']) && $dynamicoption['reference'] == $wherecondition['reference'])){
+            foreach ($whereconditions as $idx => $wherecondition) {
+                foreach ($dynamicoptions as $idxdo => $dynamicoption) {
+                    if ((!empty($dynamicoption['fieldid']) && $dynamicoption['fieldid'] == $wherecondition['fieldid']) ||
+                        (!empty($dynamicoption['reference']) && $dynamicoption['reference'] == $wherecondition['reference'])
+                    ) {
                         $whereconditions[$idx]['operator'] = $dynamicoption['operator'];
-                        if(isset($dynamicoption['value'])) $whereconditions[$idx]['value'] = $dynamicoption['value'];
-                        if(isset($dynamicoption['valuekey'])) $whereconditions[$idx]['valuekey'] = $dynamicoption['valuekey'];
-                        if(isset($dynamicoption['valueto'])) $whereconditions[$idx]['valueto'] = $dynamicoption['valueto'];
-                        if(isset($dynamicoption['valuetokey'])) $whereconditions[$idx]['valuetokey'] = $dynamicoption['valuetokey'];
+                        if (isset($dynamicoption['value'])) $whereconditions[$idx]['value'] = $dynamicoption['value'];
+                        if (isset($dynamicoption['valuekey'])) $whereconditions[$idx]['valuekey'] = $dynamicoption['valuekey'];
+                        if (isset($dynamicoption['valueto'])) $whereconditions[$idx]['valueto'] = $dynamicoption['valueto'];
+                        if (isset($dynamicoption['valuetokey'])) $whereconditions[$idx]['valuetokey'] = $dynamicoption['valuetokey'];
                         $whereoverride [] = $whereconditions[$idx];
                     }
                 }
@@ -1205,22 +1206,21 @@ class KReporterRESTHandler
         }
 
         //allocate dynamicoptions to whereOverride
-        if(is_array($thisReport->whereOverride)){
+        if (is_array($thisReport->whereOverride)) {
             $thisReport->whereOverride = array_merge($thisReport->whereOverride, $whereoverride);
-        }
-        else
+        } else
             $thisReport->whereOverride = $whereoverride;
 
         // if a filter is set evaluate it .. comes from the dashlet
-        if(!empty($requestParams['filter'])){
-            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '".$requestParams['filter']."'"));
+        if (!empty($requestParams['filter'])) {
+            $filter = $db->fetchByAssoc($db->query("SELECT selectedfilters FROM kreportsavedfilters WHERE id = '" . $requestParams['filter'] . "'"));
             $thisReport->whereOverride = json_decode(html_entity_decode($filter['selectedfilters']), true);
         }
 
         //get parent bean 
-        if(isset($requestParams['parentbeanId']) && isset($requestParams['parentbeanModule'])){
+        if (isset($requestParams['parentbeanId']) && isset($requestParams['parentbeanModule'])) {
             $parentbean = BeanFactory::getBean($requestParams['parentbeanModule'], $requestParams['parentbeanId']);
-            if($parentbean->id)
+            if ($parentbean->id)
                 $reportParams['parentbean'] = $parentbean;
         }
 
@@ -1228,14 +1228,14 @@ class KReporterRESTHandler
         //catch dynamic options sent by drilldown plugin at first load
         if (isset($requestParams['dynamicoptions']) && !empty($requestParams['dynamicoptions']) && !$requestParams['blockDynamicoptions']) {
             $dynamicoptions = json_decode(html_entity_decode($requestParams['dynamicoptions']), true);
-            if(count($thisReport->whereOverride) <= 0)
+            if (count($thisReport->whereOverride) <= 0)
                 $thisReport->whereOverride = $dynamicoptions;
-            else{
-                foreach($thisReport->whereOverride as $idx => $whereOverride){
-                    foreach($dynamicoptions as $idxdo => $dynamicoption){
-                        if($dynamicoption['fieldid'] == $whereOverride['fieldid'] ||
+            else {
+                foreach ($thisReport->whereOverride as $idx => $whereOverride) {
+                    foreach ($dynamicoptions as $idxdo => $dynamicoption) {
+                        if ($dynamicoption['fieldid'] == $whereOverride['fieldid'] ||
                             (isset($whereOverride['reference']) && $dynamicoption['reference'] == $whereOverride['reference'])
-                        ){
+                        ) {
                             $thisReport->whereOverride[$idx] = $dynamicoption;
                         }
                     }
@@ -1244,15 +1244,14 @@ class KReporterRESTHandler
         }
 
 
-
         $vizData = json_decode(html_entity_decode($thisReport->visualization_params, ENT_QUOTES, 'UTF-8'), true);
 
         // get the managers
         $vizManager = new KReportVisualizationManager();
         $pluginManager = new KReportPluginManager();
-        
-        if(!is_array($reportParams)) $reportParams = array();
-        
+
+        if (!is_array($reportParams)) $reportParams = array();
+
         // loop over the plugins
         for ($i = 0; $i < count($vizManager->layouts[$vizData['layout']]['items']); $i++) {
             // add the layout
@@ -1314,81 +1313,87 @@ class KReporterRESTHandler
         $thisReport->listfields = json_encode($listFields);
         $thisReport->save();
     }
-    
+
 ###################### BEGIN SavedFilters ksavedfilters ######################    
-    public function getSavedFilters($params = array()){
-        global $db;
+    public function getSavedFilters($params = array())
+    {
+        global $db, $current_user;
         $whereClause = "";
-        if(!empty($params['assigneduserid'])) $whereClause = " AND (ksf.assigned_user_id='".$params['assigneduserid']."' OR ksf.is_global > 0)";
+        if (!empty($params['assigneduserid'])) {
+            if ($params['assigneduserid'] == 'own')
+                $whereClause = " AND (ksf.assigned_user_id='" . $current_user->id . "' OR ksf.is_global > 0) AND deleted=0";
+            else
+                $whereClause = " AND (ksf.assigned_user_id='" . $params['assigneduserid'] . "' OR ksf.is_global > 0) AND deleted=0";
+        }
         $results = array();
         $mod_strings = return_module_language($GLOBALS['current_language'], 'KReports');
-        
+
         //set empty record for Viewer only
-        if(isset($params['context']) && $params['context'] == "Viewer"){
+        if (isset($params['context']) && $params['context'] == "Viewer") {
             $results[] = array(
-                    'savedfilter_id' => 'none',
-                    'name' => '---',
-                    'kreport_id' => $params['reportid'],
-                    'assigned_user_id' => null,
-                    'assigned_user_name' => null,
-                    'is_global' => 1,
-                    'selectedfilters' => null
+                'savedfilter_id' => 'none',
+                'name' => '---',
+                'kreport_id' => $params['reportid'],
+                'assigned_user_id' => null,
+                'assigned_user_name' => null,
+                'is_global' => 1,
+                'selectedfilters' => null
             );
         }
-        
+
         //read passed whereConditions
         $whereconditions = array();
-        if(isset($params['currentWhereConditions'])){
+        if (isset($params['currentWhereConditions'])) {
             $whereconditions = json_decode(html_entity_decode($params['currentWhereConditions'], ENT_QUOTES), true);
         }
 
         //get data
         $records = $db->query("SELECT ksf.*, u.user_name FROM kreportsavedfilters ksf "
-                . "INNER JOIN users u ON u.id = ksf.assigned_user_id "
-                . "WHERE ksf.deleted= 0 AND ksf.kreport_id='".$params['reportid']."' "
-                . $whereClause   
-                . " ORDER BY ksf.name ASC");
+            . "INNER JOIN users u ON u.id = ksf.assigned_user_id "
+            . "WHERE ksf.deleted= 0 AND ksf.kreport_id='" . $params['reportid'] . "' "
+            . $whereClause
+            . " ORDER BY ksf.name ASC");
 
         //prepare records
         while ($record = $db->fetchByAssoc($records)) {
             $selectedfilters = json_decode(html_entity_decode($record['selectedfilters'], ENT_QUOTES), true);
             $whereconditionsFieldids = array();
-            foreach($whereconditions as $idx => $condition){
+            foreach ($whereconditions as $idx => $condition) {
                 $whereconditionsFieldids[] = $condition['fieldid'];
             }
-            
+
             //loop selectedfilters over whereconditions and set status
             //if one of the filters IDs does not correspond to whereconditions, the whole savedfilter is status =0 
             $status = 1;
-            foreach($selectedfilters as $idxfi => $filter){
-                if(!in_array($filter['fieldid'], $whereconditionsFieldids)){
+            foreach ($selectedfilters as $idxfi => $filter) {
+                if (!in_array($filter['fieldid'], $whereconditionsFieldids)) {
                     $status = 0;
                     break;
                 }
             }
-            
+
             //set entry values
             $results[] = array(
                 'savedfilter_id' => $record['id'],
-                'name' => ($record['is_global'] ? $mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL_MARK'].' ' : '').$record['name'],
+                'name' => ($record['is_global'] ? $mod_strings['LBL_KSAVEDFILTERS_IS_GLOBAL_MARK'] . ' ' : '') . $record['name'],
                 'kreport_id' => $record['kreport_id'],
                 'assigned_user_id' => $record['assigned_user_id'],
                 'assigned_user_name' => $record['user_name'],
                 'is_global' => $record['is_global'],
-                'selectedfilters' => $record['selectedfilters'],
-                'status' => $status,
+                'selectedfilters' => html_entity_decode($record['selectedfilters']),
+                'status' => $status
             );
         }
-        
+
         return $results;
     }
-       
-    
+
+
 ###################### END SavedFilters ksavedfilters ######################    
-    
-    
+
+
 ###################### BEGIN BucketManager ######################    
-    
+
     /**
      * Handler for Bucketmanager
      * @global type $_REQUEST
@@ -1401,20 +1406,20 @@ class KReporterRESTHandler
     {
         $returnArray = array();
         $queryOnTable = false;
-        
+
         //check first if table exists (PRO version). If not, just return empty array
         $resArray = $GLOBALS['db']->query("SHOW TABLES like 'kreportgroupings'");
-        if($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
-        
+        if ($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
+
         //get groupings
-        if($queryOnTable){
+        if ($queryOnTable) {
             $resArray = $GLOBALS['db']->query('SELECT id, name, description, modulename, fieldname, fieldtype, mapping FROM kreportgroupings WHERE deleted = \'0\'');
 
             while ($thisEntry = $GLOBALS['db']->fetchByAssoc($resArray)) {
                 $returnArray[] = array(
                     'id' => $thisEntry['id'],
                     'name' => $thisEntry['name'],
-    //                'description' => $thisEntry['description'],
+                    //                'description' => $thisEntry['description'],
                     'modulename' => $thisEntry['modulename'],
                     'fieldname' => $thisEntry['fieldname'],
                     'fieldtype' => $thisEntry['fieldtype'],
@@ -1439,23 +1444,22 @@ class KReporterRESTHandler
     {
         $allowedFieldTypes = array('enum', 'char', 'varchar', 'text', 'name');
         $fieldsArray = $this->buildFieldArray($module);
-        if(is_array($fieldsArray)){
-            foreach($fieldsArray as $idx => $field){
-                if(!in_array($field['type'], $allowedFieldTypes)){
+        if (is_array($fieldsArray)) {
+            foreach ($fieldsArray as $idx => $field) {
+                if (!in_array($field['type'], $allowedFieldTypes)) {
                     unset($fieldsArray[$idx]);
                 }
             }
             //re-index
             $fieldsArray = array_values($fieldsArray);
-        }
-        else
+        } else
             $fieldsArray = array();
-        
+
         return $fieldsArray;
     }
-    
+
     /**
-     *@todo: when dom is an array because values are generated by a function
+     * @todo: when dom is an array because values are generated by a function
      * For now case when dom is a string
      * @global type $app_list_strings
      * @global type $app_strings
@@ -1466,7 +1470,7 @@ class KReporterRESTHandler
     public function getEnumfieldvalues($params)
     {
         global $app_list_strings, $app_strings, $current_language;
-        
+
         //process params: make keys to variables conatining values
 //        foreach($params as $p => $pp)
 //            $$p = $pp;
@@ -1476,120 +1480,119 @@ class KReporterRESTHandler
         $start = $params['start'];
         $limit = $params['limit'];
 
-        
-        if(empty($module) || empty($fieldname))
+
+        if (empty($module) || empty($fieldname))
             return array();
-        
+
         $useArray = array();
         $fieldsArray = $this->buildFieldArray($module);
-        foreach($fieldsArray as $idx => $field){
-            if($field['type'] == 'enum' && $field['name'] == $fieldname){
+        foreach ($fieldsArray as $idx => $field) {
+            if ($field['type'] == 'enum' && $field['name'] == $fieldname) {
                 $dom = $fieldsArray[$idx]['options'];
                 $getValuesFrom = 'dom';
                 break;
-            }elseif($field['name'] == $fieldname && !empty($fieldvalue)){
+            } elseif ($field['name'] == $fieldname && !empty($fieldvalue)) {
                 $getValuesFrom = 'db';
                 break;
-            }            
+            }
         }
-        
-        switch($getValuesFrom){
+
+        switch ($getValuesFrom) {
             case 'dom':
                 $app_list_strings = return_app_list_strings_language($current_language);
                 $app_strings = return_application_language($current_language);
 
-                if(isset($app_list_strings[$dom])){
+                if (isset($app_list_strings[$dom])) {
                     $useArray = $app_list_strings[$dom];
-                }
-                elseif(isset($app_strings[$dom])){
+                } elseif (isset($app_strings[$dom])) {
                     $useArray = $app_strings[$dom];
                 }
-                
+
                 //splice array according to start and limit
                 $totalCount = count($useArray);
-                if(isset($limit)){
+                if (isset($limit)) {
                     $useArray = array_slice($useArray, $start, $limit);
-                }                
+                }
                 break;
             case 'db':
                 //query on table
                 $bean = BeanFactory::getBean($module);
                 //Get table_name from $module                
                 $q = "SELECT DISTINCT(" . $fieldname . ") colvalue "
-                        . " FROM " . $bean->table_name . " "
-                        . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 "
-                        . " LIMIT " .$start . ", " . $limit . ";";
-                if(!$res = $GLOBALS['db']->query($q))
-                    $GLOBALS['log']->fatal("DB query error ".$GLOBALS['db']->last_error);
-                while($row = $GLOBALS['db']->fetchByAssoc($res)){
+                    . " FROM " . $bean->table_name . " "
+                    . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 "
+                    . " LIMIT " . $start . ", " . $limit . ";";
+                if (!$res = $GLOBALS['db']->query($q))
+                    $GLOBALS['log']->fatal("DB query error " . $GLOBALS['db']->last_error);
+                while ($row = $GLOBALS['db']->fetchByAssoc($res)) {
                     $useArray[$row['colvalue']] = $row['colvalue'];
                 }
-                
+
                 //total count
                 $q = "SELECT count(DISTINCT(" . $fieldname . ")) total "
-                        . " FROM " . $bean->table_name . " "
-                        . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 ";
-                if(!$res = $GLOBALS['db']->query($q))
-                    $GLOBALS['log']->fatal("DB query error count ".$GLOBALS['db']->last_error);
-                while($row = $GLOBALS['db']->fetchByAssoc($res)){
+                    . " FROM " . $bean->table_name . " "
+                    . " WHERE " . $fieldname . " LIKE '" . $fieldvalue . "%' AND deleted = 0 ";
+                if (!$res = $GLOBALS['db']->query($q))
+                    $GLOBALS['log']->fatal("DB query error count " . $GLOBALS['db']->last_error);
+                while ($row = $GLOBALS['db']->fetchByAssoc($res)) {
                     $totalCount = $row['total'];
                 }
                 break;
         }
-        
+
         $fieldsArray = array();
-        foreach($useArray as $value => $lbl)
+        foreach ($useArray as $value => $lbl)
             $fieldsArray[] = array('enumvalue' => $value, 'label' => (empty($value) ? '-- empty --' : $lbl));
 
         return array('items' => $fieldsArray, 'total' => $totalCount);
     }
-    
-    public function saveNewGrouping($params){
+
+    public function saveNewGrouping($params)
+    {
         $returnArray = array();
         $q = "INSERT INTO kreportgroupings (id,name,modulename,fieldname,fieldtype) "
-                . "VALUES('".$params['id']."','".$params['name']."','".$params['modulename']."','".$params['fieldname']."', '".$this->getFieldType($params['modulename'], $params['fieldname'])."')";
-        if($GLOBALS['db']->query($q)){
+            . "VALUES('" . $params['id'] . "','" . $params['name'] . "','" . $params['modulename'] . "','" . $params['fieldname'] . "', '" . $this->getFieldType($params['modulename'], $params['fieldname']) . "')";
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'groupingid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not insert record into DB.kreportgroupings');
-        
+
         return $returnArray;
     }
-    
-    public function deleteGrouping($params){
+
+    public function deleteGrouping($params)
+    {
         $returnArray = array();
         $q = "UPDATE kreportgroupings SET "
-                . "deleted = 1 "
-                . "WHERE id='".$params['id']."'";
-        if($GLOBALS['db']->query($q)){
+            . "deleted = 1 "
+            . "WHERE id='" . $params['id'] . "'";
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'groupingid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not set record deleted into DB.kreportgroupings');
-        
+
         return $returnArray;
     }
-    
-    public function updateGrouping($params){
+
+    public function updateGrouping($params)
+    {
         $returnArray = array();
         $q = "UPDATE kreportgroupings SET "
-                . "name = '".$GLOBALS['db']->quote($params['name'])."', "
-                . "modulename = '".$GLOBALS['db']->quote($params['modulename'])."', "
-                . "fieldname = '".$GLOBALS['db']->quote($params['fieldname'])."', "
-                . "fieldtype = '".(empty($params['fieldtype']) ? $this->getFieldType($params['modulename'], $params['fieldname']) : $params['fieldtype'])."', "
-                . "mapping='".$GLOBALS['db']->quote($params['mapping'])."' "
-                . "WHERE id='".$params['id']."'";
-        
-        if($GLOBALS['db']->query($q)){
+            . "name = '" . $GLOBALS['db']->quote($params['name']) . "', "
+            . "modulename = '" . $GLOBALS['db']->quote($params['modulename']) . "', "
+            . "fieldname = '" . $GLOBALS['db']->quote($params['fieldname']) . "', "
+            . "fieldtype = '" . (empty($params['fieldtype']) ? $this->getFieldType($params['modulename'], $params['fieldname']) : $params['fieldtype']) . "', "
+            . "mapping='" . $GLOBALS['db']->quote($params['mapping']) . "' "
+            . "WHERE id='" . $params['id'] . "'";
+
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'groupingid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not update record in DB.kreportgroupings');
-        
+
         return $returnArray;
     }
-    
+
 //    public function saveMapping($params){
 //        $return = array();
 //        $q = "UPDATE kreportgroupings SET "
@@ -1606,7 +1609,7 @@ class KReporterRESTHandler
 ###################### END BucketManager ######################    
 
 ###################### BEGIN DListManager ######################    
-    
+
     /**
      * Handler for DListManager
      * @global type $_REQUEST
@@ -1619,25 +1622,26 @@ class KReporterRESTHandler
     {
         $returnArray = array();
         $queryOnTable = false;
-        
+
         //check first if table exists (PRO version). If not, just return empty array
         $resArray = $GLOBALS['db']->query("SHOW TABLES like 'kreportdlists'");
-        if($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
+        if ($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
 
         //get dlists
-        if($queryOnTable){
+        if ($queryOnTable) {
             $resArray = $GLOBALS['db']->query('SELECT id, name, description, dlistdata FROM kreportdlists WHERE deleted = \'0\'');
             while ($thisEntry = $GLOBALS['db']->fetchByAssoc($resArray)) {
                 $returnArray[] = array(
                     'id' => $thisEntry['id'],
                     'name' => $thisEntry['name'],
-    //                'description' => $thisEntry['description'],
+                    //                'description' => $thisEntry['description'],
                     'dlistdata' => $thisEntry['dlistdata'],
                 );
             }
         }
         return $returnArray;
     }
+
     /**
      * Handler for DListManager
      * @global type $_REQUEST
@@ -1649,8 +1653,8 @@ class KReporterRESTHandler
     public function getDList($id)
     {
         $returnArray = array();
-        $resArray = $GLOBALS['db']->query('SELECT id, name, description, dlistdata FROM kreportdlists WHERE id = \''.$id.'\'');
-       
+        $resArray = $GLOBALS['db']->query('SELECT id, name, description, dlistdata FROM kreportdlists WHERE id = \'' . $id . '\'');
+
         while ($thisEntry = $GLOBALS['db']->fetchByAssoc($resArray)) {
             $returnArray[] = array(
                 'id' => $thisEntry['id'],
@@ -1661,7 +1665,7 @@ class KReporterRESTHandler
         }
         return $returnArray;
     }
-    
+
     public function getUsers($params)
     {
         $returnArray = array();
@@ -1669,31 +1673,30 @@ class KReporterRESTHandler
         $callGetList = false;
         $user = new User();
         $order_by = "users.last_name ASC";
-            
-        if(!empty($params['userids'])){
-            $where = "users.id IN('".implode("','", json_decode($params['userids'], true))."')";            
+
+        if (!empty($params['userids'])) {
+            $where = "users.id IN('" . implode("','", json_decode($params['userids'], true)) . "')";
             $callGetList = true;
-        }        
-        elseif($params['all'] == '*'){
+        } elseif ($params['all'] == '*') {
             $where = "";
             $callGetList = true;
         }
 
-        if(!empty($params['nameFilter'])){
-            $where = " users.first_name like '%".$params['nameFilter']."%' OR users.last_name like '%".$params['nameFilter']."%' OR users.user_name like '%".$params['nameFilter']."%' ";
+        if (!empty($params['nameFilter'])) {
+            $where = " users.first_name like '%" . $params['nameFilter'] . "%' OR users.last_name like '%" . $params['nameFilter'] . "%' OR users.user_name like '%" . $params['nameFilter'] . "%' ";
         }
-        
-        if($callGetList){
+
+        if ($callGetList) {
             $users = $user->get_list($order_by, $where);
 
-            if(is_array($users)){
-                foreach($users['list'] as $thisEntry){
+            if (is_array($users)) {
+                foreach ($users['list'] as $thisEntry) {
                     //grab accoutn data
                     $thisEntry->fill_in_additional_detail_fields();
                     //grab primary e-mail
-                    if(empty($thisEntry->email1)){
-                        $emails = $thisEntry->get_linked_beans('email_addresses_primary', 'EmailAddress');      
-                        for($i=0; $i<count($emails); $i++){
+                    if (empty($thisEntry->email1)) {
+                        $emails = $thisEntry->get_linked_beans('email_addresses_primary', 'EmailAddress');
+                        for ($i = 0; $i < count($emails); $i++) {
                             $thisEntry->email1[] = $emails[0]->email_address;
                         }
                         unset($emails);
@@ -1703,7 +1706,7 @@ class KReporterRESTHandler
                         'firstname' => $thisEntry->first_name,
                         'lastname' => $thisEntry->last_name,
                         'username' => $thisEntry->user_name,
-                        'email1' => (is_array($thisEntry->email1) ? implode(", ",  $thisEntry->email1) :  $thisEntry->email1),
+                        'email1' => (is_array($thisEntry->email1) ? implode(", ", $thisEntry->email1) : $thisEntry->email1),
                     );
                 }
             }
@@ -1711,39 +1714,38 @@ class KReporterRESTHandler
         }
         unset($user);
         return $returnArray;
-    }    
-    
+    }
+
     public function getContacts($params)
     {
         $returnArray = array();
-        
+
 //get contacts list
         $callGetList = false;
         $contact = new Contact();
         $order_by = "contacts.last_name ASC";
-            
-        if(!empty($params['contactids'])){
-            $where = "contacts.id IN('".implode("','", json_decode($params['contactids'], true))."')";            
+
+        if (!empty($params['contactids'])) {
+            $where = "contacts.id IN('" . implode("','", json_decode($params['contactids'], true)) . "')";
             $callGetList = true;
-        }        
-        elseif(!empty($params['like'])){
-            $where = "contacts.last_name LIKE '".$params['like']."%' "
-                    . "OR contacts.first_name LIKE '".$params['like']."%'";
+        } elseif (!empty($params['like'])) {
+            $where = "contacts.last_name LIKE '" . $params['like'] . "%' "
+                . "OR contacts.first_name LIKE '" . $params['like'] . "%'";
             $callGetList = true;
         }
         //get contact list
-        if($callGetList){
+        if ($callGetList) {
             //get contact beans
             $contacts = $contact->get_list($order_by, $where);
-            
-            if(is_array($contacts)){
-                foreach($contacts['list'] as $thisEntry){
+
+            if (is_array($contacts)) {
+                foreach ($contacts['list'] as $thisEntry) {
                     //grab accoutn data
                     $thisEntry->fill_in_additional_detail_fields();
                     //grab primary e-mail
-                    if(empty($thisEntry->email1)){
-                        $emails = $thisEntry->get_linked_beans('email_addresses_primary', 'EmailAddress');      
-                        for($i=0; $i<count($emails); $i++){
+                    if (empty($thisEntry->email1)) {
+                        $emails = $thisEntry->get_linked_beans('email_addresses_primary', 'EmailAddress');
+                        for ($i = 0; $i < count($emails); $i++) {
                             $thisEntry->email1[] = $emails[0]->email_address;
                         }
                         unset($emails);
@@ -1753,7 +1755,7 @@ class KReporterRESTHandler
                         'firstname' => $thisEntry->first_name,
                         'lastname' => $thisEntry->last_name,
                         'username' => $thisEntry->user_name,
-                        'email1' => (is_array($thisEntry->email1) ? implode(", ",  $thisEntry->email1) :  $thisEntry->email1),
+                        'email1' => (is_array($thisEntry->email1) ? implode(", ", $thisEntry->email1) : $thisEntry->email1),
                         'accountname' => $thisEntry->account_name,
                         'accountid' => $thisEntry->account_id,
                     );
@@ -1763,37 +1765,37 @@ class KReporterRESTHandler
             unset($contact);
         }
         return $returnArray;
-    }    
+    }
+
     public function getKReports($params)
     {
         $returnArray = array();
-       
+
         //get kreports list
         $callGetList = false;
         $kreport = new KReport();
         $order_by = "kreports.name ASC";
-        
-        if(!empty($params['kreportids'])){
-            $where = "kreports.id IN('".implode("','", json_decode($params['kreportids'], true))."')";
+
+        if (!empty($params['kreportids'])) {
+            $where = "kreports.id IN('" . implode("','", json_decode($params['kreportids'], true)) . "')";
             $callGetList = true;
-        }
-        elseif($params['all'] == '*'){
+        } elseif ($params['all'] == '*') {
             $where = "";
             $callGetList = true;
         }
 
-        if(!empty($params['nameFilter'])){
-            $where = " kreports.name like '%".$params['nameFilter']."%'";
+        if (!empty($params['nameFilter'])) {
+            $where = " kreports.name like '%" . $params['nameFilter'] . "%'";
             $callGetList = true;
         }
 
-        if(!empty($where)) $where .= ' AND ';
+        if (!empty($where)) $where .= ' AND ';
         $where .= " kreports.report_module in ('Users', 'Contacts') ";
 
-        if($callGetList){
+        if ($callGetList) {
             $kreports = $kreport->get_list($order_by, $where, 0, 100);
-            if(is_array($kreports)){
-                foreach($kreports['list'] as $thisEntry){
+            if (is_array($kreports)) {
+                foreach ($kreports['list'] as $thisEntry) {
                     $returnArray[] = array(
                         'id' => $thisEntry->id,
                         'name' => $thisEntry->name,
@@ -1805,75 +1807,78 @@ class KReporterRESTHandler
         }
         unset($kreport);
         return $returnArray;
-    } 
-    
-    
-    public function saveNewDList($params){
+    }
+
+
+    public function saveNewDList($params)
+    {
         $returnArray = array();
         $q = "INSERT INTO kreportdlists (id, name, description) "
-                . "VALUES('".$params['id']."','".$params['name']."', null)";
-        if($GLOBALS['db']->query($q)){
+            . "VALUES('" . $params['id'] . "','" . $params['name'] . "', null)";
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'dlistid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not insert record into DB.kreportdlists');
-        
+
         return $returnArray;
     }
-    public function deleteDList($params){
-        
+
+    public function deleteDList($params)
+    {
+
         $returnArray = array();
         $q = "UPDATE kreportdlists SET "
-                . "deleted = 1 "
-                . "WHERE id='".$params['id']."'";
-        if($GLOBALS['db']->query($q)){
+            . "deleted = 1 "
+            . "WHERE id='" . $params['id'] . "'";
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'dlistid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not set record deleted into DB.kreportdlists');
-        
+
         return $returnArray;
     }
-    
-    public function updateDList($params){
+
+    public function updateDList($params)
+    {
         $returnArray = array();
         $q = "UPDATE kreportdlists SET "
-                . "name = '".$GLOBALS['db']->quote($params['name'])."', "
-                . "dlistdata = '".$GLOBALS['db']->quote($params['dlistdata'])."' "
-                . "WHERE id='".$params['id']."'";
-        
-        if($GLOBALS['db']->query($q)){
+            . "name = '" . $GLOBALS['db']->quote($params['name']) . "', "
+            . "dlistdata = '" . $GLOBALS['db']->quote($params['dlistdata']) . "' "
+            . "WHERE id='" . $params['id'] . "'";
+
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'dlistid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not update record in DB.kreportdlists');
-        
+
         return $returnArray;
     }
 ###################### END DListManager ######################
 
 ###################### BEGIN SecurityGroups ######################
-    public function saveSecurityGroups($record){
+    public function saveSecurityGroups($record)
+    {
 //        file_put_contents("sugarcrm.log", print_r($record, true)."\n", FILE_APPEND);
-        if(!empty($record['id']) && !empty($record['securitygroup_id'])) {
+        if (!empty($record['id']) && !empty($record['securitygroup_id'])) {
             $GLOBALS['db']->query("DELETE FROM securitygroups_records WHERE record_id = '" . $record['id'] . "'");
             $GLOBALS['db']->query("INSERT INTO securitygroups_records (id, securitygroup_id, record_id, module, modified_user_id, created_by, deleted, date_modified) values ('" . create_guid() . "', '" . $record['securitygroup_id'] . "', '" . $record['id'] . "', 'KReports', '" . $GLOBALS['current_user']->id . "', '" . $GLOBALS['current_user']->id . "', 0, '" . gmdate('Y-m-d H:i:s') . "')");
         }
     }
-    public function getSecurityGroups($report_id){
-        if(!empty($report_id)) {
+
+    public function getSecurityGroups($report_id)
+    {
+        if (!empty($report_id)) {
             $res = $GLOBALS['db']->query("SELECT securitygroup_id, name securitygroup_name 
               FROM securitygroups_records 
               INNER JOIN securitygroups ON securitygroups.id = securitygroups_records.securitygroup_id
-              WHERE securitygroups_records.record_id='".$report_id."' AND securitygroups_records.deleted=0");
-            $row =$GLOBALS['db']->fetchByAssoc($res);
-            return (empty($row) ? array(): $row);
+              WHERE securitygroups_records.record_id='" . $report_id . "' AND securitygroups_records.deleted=0");
+            $row = $GLOBALS['db']->fetchByAssoc($res);
+            return (empty($row) ? array() : $row);
         }
         return array();
     }
 
 ###################### END SecurityGroups ######################
-
 
 
 ###################### BEGIN CategoriesManager ######################
@@ -1890,7 +1895,7 @@ class KReporterRESTHandler
     {
 
         $returnArray = array();
-        if($params['addBlank']){
+        if ($params['addBlank']) {
             $returnArray[] = array(
                 'id' => '',
                 'name' => '-',
@@ -1903,10 +1908,10 @@ class KReporterRESTHandler
 
         //check first if table exists (PRO version). If not, just return empty array
         $resArray = $GLOBALS['db']->query("SHOW TABLES like 'kreportcategories'");
-        if($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
+        if ($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
 
         //get dlists
-        if($queryOnTable){
+        if ($queryOnTable) {
             $resArray = $GLOBALS['db']->query('SELECT id, name, priority, is_admin_only 
             FROM kreportcategories WHERE deleted = \'0\'');
             while ($thisEntry = $GLOBALS['db']->fetchByAssoc($resArray)) {
@@ -1920,6 +1925,7 @@ class KReporterRESTHandler
         }
         return $returnArray;
     }
+
     /**
      * Handler for DListManager
      * @global type $_REQUEST
@@ -1932,7 +1938,7 @@ class KReporterRESTHandler
     {
         $returnArray = array();
         $resArray = $GLOBALS['db']->query('SELECT id, name, priority, is_admin_only 
-          FROM kreportcategories WHERE id = \''.$id.'\'');
+          FROM kreportcategories WHERE id = \'' . $id . '\'');
 
         while ($thisEntry = $GLOBALS['db']->fetchByAssoc($resArray)) {
             $returnArray[] = array(
@@ -1945,48 +1951,48 @@ class KReporterRESTHandler
         return $returnArray;
     }
 
-    public function saveNewCategory($params){
+    public function saveNewCategory($params)
+    {
         $returnArray = array();
         $q = "INSERT INTO kreportcategories (id, name, priority, is_admin_only) "
-            . "VALUES('".$params['id']."','".$GLOBALS['db']->quote($params['name'])."', ".$params['priority'].", ".$params['is_admin_only'].")";
-        if($GLOBALS['db']->query($q)){
+            . "VALUES('" . $params['id'] . "','" . $GLOBALS['db']->quote($params['name']) . "', " . $params['priority'] . ", " . $params['is_admin_only'] . ")";
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'categoryid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not insert record into DB.kreportcategories');
 
         return $returnArray;
     }
 
-    public function deleteCategory($params){
+    public function deleteCategory($params)
+    {
 
         $returnArray = array();
         $q = "UPDATE kreportcategories SET "
             . "deleted = 1 "
-            . "WHERE id='".$params['id']."'";
-        if($GLOBALS['db']->query($q)){
-            $qD = "UPDATE kreports SET category_id = null, category_priority = null WHERE category_id='".$params['id']."';";
+            . "WHERE id='" . $params['id'] . "'";
+        if ($GLOBALS['db']->query($q)) {
+            $qD = "UPDATE kreports SET category_id = null, category_priority = null WHERE category_id='" . $params['id'] . "';";
             $GLOBALS['db']->query($qD);
             $returnArray = array('success' => 1, 'catgoryid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not set record deleted into DB.kreportcategories');
 
         return $returnArray;
     }
 
-    public function updateCategory($params){
+    public function updateCategory($params)
+    {
         $returnArray = array();
         $q = "UPDATE kreportcategories SET "
-            . "name = '".$GLOBALS['db']->quote($params['name'])."', "
-            . "priority = ".intval($params['priority']).", "
-            . "is_admin_only = ".intval($params['is_admin_only'])." "
-            . "WHERE id='".$params['id']."'";
+            . "name = '" . $GLOBALS['db']->quote($params['name']) . "', "
+            . "priority = " . intval($params['priority']) . ", "
+            . "is_admin_only = " . intval($params['is_admin_only']) . " "
+            . "WHERE id='" . $params['id'] . "'";
 
-        if($GLOBALS['db']->query($q)){
+        if ($GLOBALS['db']->query($q)) {
             $returnArray = array('success' => 1, 'categoryid' => $params['id']);
-        }
-        else
+        } else
             $returnArray = array('success' => 0, 'msg' => 'Could not update record in DB.kreportcategories');
 
         return $returnArray;
@@ -2001,13 +2007,13 @@ class KReporterRESTHandler
 
         //check first if table exists (PRO version). If not, just return empty array
         $resArray = $GLOBALS['db']->query("SHOW TABLES like 'kreportcategories'");
-        if($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
+        if ($GLOBALS['db']->getRowCount($resArray) > 0) $queryOnTable = true;
 
         //get dlists
-        if($queryOnTable){
+        if ($queryOnTable) {
             $addWhere = "";
-            if(!$GLOBALS['current_user']->is_admin)
-                $addWhere.= " AND  kc.is_admin_only < 1";
+            if (!$GLOBALS['current_user']->is_admin)
+                $addWhere .= " AND  kc.is_admin_only < 1";
 
             $q = 'SELECT kreports.id kreport_id, kreports.name kreport_name,
               kreports.category_priority kreport_priority, kreports.description kreport_description,
@@ -2022,7 +2028,7 @@ class KReporterRESTHandler
                 //make a bean of it and check on access
                 $kreport = new KReport();
                 $kreport->retrieve($thisEntry['kreport_id']);
-                if($kreport->ACLAccess('list')) {
+                if ($kreport->ACLAccess('list')) {
                     $returnArray[$thisEntry['category_name']][] = array(
                         'kreport_id' => $thisEntry['kreport_id'],
                         'kreport_name' => html_entity_decode($thisEntry['kreport_name']),
@@ -2038,19 +2044,21 @@ class KReporterRESTHandler
         }
         return $returnArray;
     }
+
 ###################### END Cockpit ######################
 
 
-    public function getFieldType($modulename, $fieldname){
+    public function getFieldType($modulename, $fieldname)
+    {
         $fieldtype = "";
         $modulefields = $this->getModuleFields($modulename);
-        foreach($modulefields as $idx => $fielddata){
-            if($fielddata['field'] == $fieldname)
+        foreach ($modulefields as $idx => $fielddata) {
+            if ($fielddata['field'] == $fieldname)
                 $fieldtype = $fielddata['type'];
         }
-        
+
         //simplify field types
-        switch($fieldtype){
+        switch ($fieldtype) {
             case 'char':
             case 'varchar':
             case 'name':
@@ -2062,39 +2070,42 @@ class KReporterRESTHandler
                 break;
             case 'int':
             case 'currency':
+            case 'currencyint':
                 $fieldtype = 'number';
                 break;
         }
-        
+
         return $fieldtype;
     }
-    
+
     /**
      * get KReporter related config vars from config.php and config_override.php
      */
-    public function getConfig(){
+    public function getConfig()
+    {
         require_once 'modules/Configurator/Configurator.php';
         $configurator = new Configurator();
         $configurator->loadConfig();
         $default_currency_symbol = $configurator->config['default_currency_symbol'];
         $kreporter_version = 'ce';
-        if(file_exists('modules/KReports/plugins.dictionary.extended'))
+        if (file_exists('modules/KReports/plugins.dictionary.extended'))
             $kreporter_version = 'pro';
         $kreporter_cockpit = false;
-        if(file_exists('modules/KReports/views/view.cockpit.php') || file_exists('custom/modules/KReports/views/view.cockpit.php'))
+        if (file_exists('modules/KReports/views/view.cockpit.php') || file_exists('custom/modules/KReports/views/view.cockpit.php'))
             $kreporter_cockpit = true;
         return array('KReports' => $configurator->config['KReports'], 'default_currency_symbol' => $default_currency_symbol, 'kreporter_version' => $kreporter_version, 'kreporter_cockpit' => $kreporter_cockpit);
     }
-    
+
     /**
      * get KReporter labels (needed in kpublishing to subpanel
      */
-    public function getLabels(){
+    public function getLabels()
+    {
         $labels = return_module_language((empty($GLOBALS['current_language']) ? $GLOBALS['sugar_config']['default_language'] : $GLOBALS['current_language']), 'KReports');
 
         return $labels;
     }
-    
+
 }
 
 /*

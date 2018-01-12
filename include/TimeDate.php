@@ -557,7 +557,7 @@ class TimeDate
                 return $this->asDbDate($date);
                 break;
             case 'time':
-                return $this->asDbtime($date);
+                return $this->asDbTime($date);
                 break;
             case 'datetime':
             case 'datetimecombo':
@@ -920,7 +920,7 @@ class TimeDate
                 return '';
             }
             if ($fromTZ !== $toTZ && $toTZ != null) {
-                $phpdate->setTimeZone($toTZ);
+                $phpdate->setTimezone($toTZ);
             }
             return $phpdate->format($toFormat);
         } catch (Exception $e) {
@@ -1167,7 +1167,7 @@ class TimeDate
     public function getNow($userTz = false)
     {
         if(!$this->allow_cache) {
-            return new SugarDateTime("now", $userTz?$this->_getUserTz():self::$gmtTimezone);
+            return new SugarDateTime("now", $userTz?$this->_getUserTZ():self::$gmtTimezone);
         }
         // TODO: should we return clone?
         $now = clone $this->now;
@@ -1264,7 +1264,7 @@ class TimeDate
         $result['starttime'] = $this->asDbTime($min);
         $result['end'] = $this->asDb($max);
         $result['enddate'] = $this->asDbDate($max);
-        $result['endtime'] = $this->asDbtime($max);
+        $result['endtime'] = $this->asDbTime($max);
 
         return $result;
     }
@@ -1531,7 +1531,7 @@ class TimeDate
 			{
         			$year = $time['year'];
 			}
-			return $now->setDate($year, $month, $day)->setTime($hour, $min, $sec)->setTimeZone(self::$gmtTimezone);
+			return $now->setDate($year, $month, $day)->setTime($hour, $min, $sec)->setTimezone(self::$gmtTimezone);
 		}
         return null;
 	}

@@ -83,7 +83,7 @@ class Scheduler extends SugarBean {
 
     public function __construct($init=true)
     {
-        parent::SugarBean();
+        parent::__construct();
         $job = new SchedulersJob();
         $this->job_queue_table = $job->table_name;
     }

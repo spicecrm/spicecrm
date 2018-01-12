@@ -22,7 +22,7 @@ require_once realpath(dirname(__FILE__) . '/../src/Google/autoload.php');
 /************************************************
   We'll setup an empty 1MB file to upload.
  ************************************************/
-DEFINE("TESTFILE", 'testfile-small.txt');
+define("TESTFILE", 'testfile-small.txt');
 if (!file_exists(TESTFILE)) {
   $fh = fopen(TESTFILE, 'w');
   fseek($fh, 1024 * 1024);

@@ -1,0 +1,16 @@
+1.)Poriesit dalsie def priecinky, vycistit a nastavit spravne premenne
+2.)Spravime link to SpiceMailRelease
+3.)Pre zakaznika spristupnit servis na posielanie mailov z nazho softu.
+-- vytvorime dropdown a dialog ci si chce vybrat mail servise a aky typ si chce vybrat
+-- aby sme vedeli obojstranne prehliadat spojenia medzi spolocnostou a emailom => z emailu na spolocnost aj zo spolocnosti na email
+4.) spravit vsetko o com sme sa bavili a upravit to do deadlinu
+
+
+Stretneme sa:
+3.januara 2018
+21.december.2017
+
+Deadline: 5.januar.2018
+
+padalton86@gmail.com
++436769195542

@@ -59,6 +59,6 @@ $listViewDefs['KReports'] = array(
         'default' => true),
 );
 
+//category name shall not appear in KReporter basic
 if(!file_exists('modules/KReports/plugins.dictionary.extended'))
     unset($listViewDefs['KReports']['CATEGORY_NAME'] );
-

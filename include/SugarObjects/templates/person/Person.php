@@ -50,9 +50,9 @@ class Person extends Basic
      */
     public $email_addresses;
 
-	public function Person()
+	public function __construct()
 	{
-		parent::Basic();
+		parent::__construct();
 		$this->emailAddress = new SugarEmailAddress();
 	}
 

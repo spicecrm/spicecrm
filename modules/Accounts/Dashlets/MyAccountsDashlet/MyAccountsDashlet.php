@@ -43,11 +43,11 @@ require_once('include/Dashlets/DashletGeneric.php');
 
 
 class MyAccountsDashlet extends DashletGeneric { 
-    function MyAccountsDashlet($id, $def = null) {
+    function __construct($id, $def = null) {
 		global $current_user, $app_strings;
 		require('modules/Accounts/Dashlets/MyAccountsDashlet/MyAccountsDashlet.data.php');
 
-        parent::DashletGeneric($id, $def);
+        parent::__construct($id, $def);
 
         if(empty($def['title'])) $this->title = translate('LBL_HOMEPAGE_TITLE', 'Accounts');
 

@@ -11,7 +11,7 @@ $app->group('/dashboards', function () use ($app) {
     $app->get('/dashlets', function () use ($app) {
         global $db;
         $dashBoardDashlets = array();
-        $dashBoardDashletsObj = $db->query("SELECT * FROM sysuidashboarddashlets");
+        $dashBoardDashletsObj = $db->query("SELECT * FROM sysuidashboarddashlets UNION SELECT * FROM sysuicustomdashboarddashlets");
         while ($dashBoardDashlet = $db->fetchByAssoc($dashBoardDashletsObj))
             $dashBoardDashlets[] = $dashBoardDashlet;
         echo json_encode($dashBoardDashlets);
@@ -26,7 +26,7 @@ $app->group('/dashboards', function () use ($app) {
             $dashBoardComponent['componentconfig'] = json_decode(html_entity_decode($dashBoardComponent['componentconfig']), true);
 
             if ($dashBoardComponent['componentconfig']['dashletid']) {
-                $dashletconfig = $db->fetchByAssoc($db->query("SELECT componentconfig FROM sysuidashboarddashlets WHERE id = '{$dashBoardComponent['componentconfig']['dashletid']}'"));
+                $dashletconfig = $db->fetchByAssoc($db->query("SELECT componentconfig FROM sysuidashboarddashlets WHERE id = '{$dashBoardComponent['componentconfig']['dashletid']}' UNION SELECT componentconfig FROM sysuicustomdashboarddashlets WHERE id = '{$dashBoardComponent['componentconfig']['dashletid']}'"));
                 $dashBoardComponent['componentconfig'] = json_decode(html_entity_decode($dashletconfig['componentconfig'], ENT_QUOTES), true);
             }
 

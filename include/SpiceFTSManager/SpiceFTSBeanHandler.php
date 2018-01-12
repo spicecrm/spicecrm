@@ -24,7 +24,7 @@ class SpiceFTSBeanHandler
         foreach ($this->indexProperties as $indexProperty) {
             $indexValue = $this->getFieldValue($indexProperty);
             if ($indexValue['fieldvalue'] == '0' || !empty($indexValue['fieldvalue'])) {
-                $indexArray[$indexValue['fieldname']] = $indexValue['fieldvalue'];
+                $indexArray[$indexValue['fieldname']] = from_html($indexValue['fieldvalue']); //use from_html to avoid things like ' being translated to &#039 on bean::save()
             }
 
             if(isset($indexValue['fields'])) {
@@ -57,7 +57,7 @@ class SpiceFTSBeanHandler
                 $indexArray[$indexfield] = $indexValue;
         }
 
-        $indexArray['summary_text'] = $this->seed->get_summary_text();
+        $indexArray['summary_text'] = from_html($this->seed->get_summary_text()); //use from_html to avoid things like ' being translated to &#039 on bean::save()
 
         if(method_exists($this->seed, 'add_fts_fields')){
             $addFields = $this->seed->add_fts_fields();
@@ -187,6 +187,7 @@ class SpiceFTSBeanHandler
                     $retvalue = $timedate->to_db($value) ?: $value;
                 break;
             case 'datetime':
+            case 'datetimecombo':
                 if ($GLOBALS['disable_date_format'] !== true)
                     $retvalue = $timedate->to_db($value) ?: $value;
                 break;

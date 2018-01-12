@@ -41,7 +41,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  */
 class SugarTab
 {
-    function SugarTab($type='singletabmenu')
+    public function __construct($type='singletabmenu')
     {
         $this->type = $type;
         $this->ss = new Sugar_Smarty();

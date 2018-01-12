@@ -36,11 +36,11 @@
 
 $viewdefs['Campaigns']['EditView'] = array(
     'templateMeta' => array('maxColumns' => '2',
-                            'widths' => array(
-                                            array('label' => '10', 'field' => '30'),
-                                            array('label' => '10', 'field' => '30')
-                                            ),
- 'javascript' => '<script type="text/javascript" src="' . getJSPath('include/javascript/popup_parent_helper.js') . '"></script>
+        'widths' => array(
+            array('label' => '10', 'field' => '30'),
+            array('label' => '10', 'field' => '30')
+        ),
+        'javascript' => '<script type="text/javascript" src="' . getJSPath('include/javascript/popup_parent_helper.js') . '"></script>
 <script type="text/javascript">
 function type_change() {ldelim}
 	type = document.getElementsByName(\'campaign_type\');
@@ -85,65 +85,67 @@ function ConvertItems(id)  {ldelim}
 	actual_cost.value = formatNumber(actual_cost.value, num_grp_sep, dec_sep);
  {rdelim}
 </script>',
-),
- 'panels' =>array (
-  'lbl_campaign_information' =>
-  array (
-
-    array (
-      array('name'=>'name'),
-      array('name' => 'status'),
     ),
+    'panels' => array(
+        'lbl_campaign_information' =>
+            array(
 
-    array (
-       array('name'=>'start_date', 'displayParams'=>array('required'=>false, 'showFormats'=>true)),
-       array('name'=>'campaign_type',
-            'displayParams'=>array('javascript'=>'onchange="type_change();"'),
-       ),
-    ),
+                array(
+                    array('name' => 'name'),
+                    array('name' => 'status'),
+                ),
 
-    array (
-      array('name'=>'end_date', 'displayParams'=>array('showFormats'=>true)),
-      array (
- 		  'name' => 'frequency',
-	      'customCode' => '<div style=\'none\' id=\'freq_field\'>{html_options name="frequency" options=$fields.frequency.options selected=$fields.frequency.value}</div></TD>',
-	      'customLabel' => '<div style=\'none\' id=\'freq_label\'>{$MOD.LBL_CAMPAIGN_FREQUENCY}</div>',
-	  ),
-    ),
+                array(
+                    array('name' => 'start_date', 'displayParams' => array('required' => false, 'showFormats' => true)),
+                    array('name' => 'campaign_type',
+                        'displayParams' => array('javascript' => 'onchange="type_change();"'),
+                    ),
+                ),
 
-   array (
-      'currency_id',
-      'impressions',
-    ),
+                array(
+                    array('name' => 'end_date', 'displayParams' => array('showFormats' => true)),
+                    array(
+                        'name' => 'frequency',
+                        'customCode' => '<div style=\'none\' id=\'freq_field\'>{html_options name="frequency" options=$fields.frequency.options selected=$fields.frequency.value}</div></TD>',
+                        'customLabel' => '<div style=\'none\' id=\'freq_label\'>{$MOD.LBL_CAMPAIGN_FREQUENCY}</div>',
+                    ),
+                ),
 
-    array (
-        'budget',
-    	'expected_cost',
-    ),
+                array(
+                    'currency_id',
+                    'impressions',
+                ),
 
-    array (
-    	'actual_cost',
-        'expected_revenue',
-    ),
+                array(
+                    'budget',
+                    'expected_cost',
+                ),
 
-    array (
-      array('name'=>'objective','displayParams'=>array('rows'=>8,'cols'=>80)),
-    ),
+                array(
+                    'actual_cost',
+                    'expected_revenue',
+                ),
 
-    array (
-      array('name'=>'content','displayParams'=>array('rows'=>8, 'cols'=>80)),
-    ),
+                array(
+                    array('name' => 'objective', 'displayParams' => array('rows' => 8, 'cols' => 80)),
+                ),
+                array(
+                    array('name' => 'mailbox_name'),
+                ),
+                array(
+                    array('name' => 'content', 'displayParams' => array('rows' => 8, 'cols' => 80)),
+                ),
 
-  ),
-  'LBL_PANEL_ASSIGNMENT' => array(
-        array (
-          array (
-            'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO',
-          ),
-        ),  
-  ),
-)
+            ),
+        'LBL_PANEL_ASSIGNMENT' => array(
+            array(
+                array(
+                    'name' => 'assigned_user_name',
+                    'label' => 'LBL_ASSIGNED_TO',
+                ),
+            ),
+        ),
+    )
 
 
 );

@@ -1505,7 +1505,7 @@ eoq;
     case "addContactsMultiple":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: addContacts");
         if (isset($_REQUEST['contactData'])) {
-            $contacts = $json->decode(from_HTML($_REQUEST['contactData']));
+            $contacts = $json->decode(from_html($_REQUEST['contactData']));
             if ($contacts) {
             	//_ppd($contacts);
                 $email->et->setContacts($contacts);

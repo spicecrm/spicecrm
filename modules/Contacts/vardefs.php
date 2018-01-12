@@ -521,7 +521,7 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'vname' => 'LBL_PORTAL_USER_ID',
                 'type' => 'varchar',
                 'len' => 36
-            )
+            ),
         ),
     'indices' => array(
         array(
@@ -663,6 +663,47 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
     //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
 );
+
+// CE version has not all modules...
+if(is_file("modules/SalesDocs/SalesDoc.php")){
+    $dictionary['Contact']['fields']['salesdocsop'] = array(
+        'name' => 'salesdocsop',
+        'type' => 'link',
+        'vname' => 'LBL_SALESDOCSOP',
+        'relationship' => 'salesdocs_contactsop',
+        'module' => 'SalesDocs',
+        'source' => 'non-db',
+    );
+    $dictionary['Contact']['fields']['salesdocsrp'] = array(
+        'name' => 'salesdocsrp',
+        'type' => 'link',
+        'vname' => 'LBL_SALESDOCSRP',
+        'relationship' => 'salesdocs_contactsrp',
+        'module' => 'SalesDocs',
+        'source' => 'non-db',
+    );
+}
+if(is_file("modules/ContactsOnlineProfiles/ContactsOnlineProfile.php")) {
+    $dictionary['Contact']['fields']['contactsonlineprofiles'] = array(
+        'name' => 'contactsonlineprofiles',
+        'type' => 'link',
+        'vname' => 'LBL_CONTACTSONLINEPROFILES',
+        'relationship' => 'contact_contactonlineprofiles',
+        'module' => 'ContactsOnlineProfiles',
+        'source' => 'non-db',
+    );
+}
+if(is_file("modules/Addresses/Address.php")) {
+    $dictionary['Contact']['fields']['addresses'] = array(
+        'name' => 'addresses',
+        'type' => 'link',
+        'relationship' => 'contact_addresses',
+        'source' => 'non-db',
+        'vname' => 'LBL_ADDRESSES',
+        'module' => 'Addresses',
+        'default' => true
+    );
+}
 
 VardefManager::createVardef('Contacts', 'Contact', array('default', 'assignable',
     'person'));

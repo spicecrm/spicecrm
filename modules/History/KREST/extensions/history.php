@@ -13,10 +13,10 @@ $app->group('/module/History', function () use ($app) {
 
         $queryArray[] = "SELECT calls.id, date_start sortdate, 'Calls' module FROM calls LEFT JOIN calls_contacts ON calls.id = calls_contacts.call_id where ((parent_type = '$parentmodule' and parent_id = '$parentid') OR calls_contacts.contact_id = '$parentid' ) and calls.deleted = 0 and status not in ('Planned')";
         $queryArray[] = "SELECT meetings.id, date_start sortdate, 'Meetings' module FROM meetings LEFT JOIN meetings_contacts on meetings.id = meetings_contacts.meeting_id where ((parent_type = '$parentmodule' and parent_id = '$parentid') OR meetings_contacts.contact_id='$parentid') and meetings.deleted = 0 and status not in ('Planned')";
+        $queryArray[] = "SELECT notes.id, date_entered sortdate, 'Notes' module FROM notes where ((parent_type = '$parentmodule' and parent_id = '$parentid') OR notes.contact_id='$parentid') and notes.deleted = 0";
         $queryArray[] = "SELECT id, date_due sortdate, 'Tasks' module FROM tasks where ((parent_type = '$parentmodule' and parent_id = '$parentid') or contact_id = '$parentid') and deleted = 0 and status not in ('In Progress', 'Not Started', 'Pending Input')";
         $queryArray[] = "SELECT id, date_entered sortdate, 'Emails' module FROM emails where parent_type = '$parentmodule' and parent_id = '$parentid' and deleted = 0";
         $queryArray[] = "SELECT emails.id, date_entered sortdate, 'Emails' module FROM emails, emails_beans where emails.id = emails_beans.email_id and emails_beans.bean_id = '$parentid' and emails.deleted = 0 and emails_beans.deleted = 0";
-        $queryArray[] = "SELECT id, date_entered sortdate, 'Notes' module FROM notes where parent_type = '$parentmodule' and parent_id = '$parentid' and deleted = 0";
 
         //echo implode(' UNION ALL ', $queryArray);
         //return;

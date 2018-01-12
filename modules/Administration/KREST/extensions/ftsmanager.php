@@ -20,6 +20,10 @@ $app->group('/ftsmanager', function () use ($app, $spiceFTSManager) {
         $app->get('/analyzers', function () use ($app, $spiceFTSManager) {
             echo json_encode($spiceFTSManager->getAnalyzers());
         });
+        $app->post('/initialize', function () use ($app, $spiceFTSManager) {
+
+            echo json_encode($spiceFTSManager->initialize());
+        });
     });
     $app->group('/:module', function () use ($app, $spiceFTSManager) {
         $app->get('/fields', function ($module) use ($app, $spiceFTSManager) {

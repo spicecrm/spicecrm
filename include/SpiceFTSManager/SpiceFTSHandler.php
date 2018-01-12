@@ -32,8 +32,8 @@ class SpiceFTSHandler
         global $db;
 
         $seed = BeanFactory::getBean($module);
-
-        $db->query('UPDATE ' . $seed->table_name . ' SET date_indexed = NULL');
+        if($seed)
+            $db->query('UPDATE ' . $seed->table_name . ' SET date_indexed = NULL');
 
     }
 
@@ -48,7 +48,7 @@ class SpiceFTSHandler
         // $ids = $db->limitQuery('SELECT id FROM ' . $seed->table_name . ' WHERE deleted = 0', 0, 5);
         $ids = $db->query('SELECT id FROM ' . $seed->table_name . ' WHERE deleted = 0');
         while ($id = $db->fetchByAssoc($ids)) {
-            $seed->retrieve($id['id']);
+            $seed->retrieve($id['id'], false); //set encode to false to avoid things like ' being translated to &#039;
             $this->indexBean($seed);
         }
 
@@ -106,7 +106,8 @@ class SpiceFTSHandler
 
             }
 
-            require_once($metadataFile);
+            if(file_exists($metadataFile))
+                require_once($metadataFile);
 
             $modLang = return_module_language($current_language, $module['module'], true);
 
@@ -132,6 +133,8 @@ class SpiceFTSHandler
             }
         }
 
+        //make sure any module is only once in modArray else angular duplicatekeys error on display
+        $modArray = array_unique($modArray);
         return array('modules' => $modArray, 'moduleLabels' => $modLangArray, 'viewdefs' => $viewDefs);
 
     }
@@ -191,6 +194,7 @@ class SpiceFTSHandler
 
         // check all related beans
         $relatedRecords = $this->elasticHandler->filter('related_ids', $bean->id);
+        if ($relatedRecords == null) return true;
         if(is_array($relatedRecords['hits']['hits'])) {
             foreach ($relatedRecords['hits']['hits'] as $relatedRecord) {
                 $relatedBean = BeanFactory::getBean($relatedRecord['_type'], $relatedRecord['_id']);
@@ -260,7 +264,7 @@ class SpiceFTSHandler
     /*
      * function to search in a module
      */
-    function searchModule($module, $searchterm = '', $aggregatesFilters = array(), $size = 25, $from = 0, $sort = array(), $addFilters = array())
+    function searchModule($module, $searchterm = '', $aggregatesFilters = array(), $size = 25, $from = 0, $sort = array(), $addFilters = array(), $useWildcard = false)
     {
         global $current_user;
 
@@ -320,6 +324,20 @@ class SpiceFTSHandler
 
             if ($indexSettings['multimatch_type'])
                 $queryParam['query']['bool']['must']['multi_match']['type'] = $indexSettings['multimatch_type'];
+
+            //wildcard capability: change elasticsearch params!
+            if($useWildcard) {
+                $queryParam['query'] = array(
+                    "bool" => array(
+                        "should" => array(
+                        )
+                    )
+                );
+                foreach($searchFields as $searchField){
+                    $queryParam['query']['bool']['should'][] = array("wildcard" => array(substr($searchField, 0, (strpos($searchField, "^") > 0 ? strpos($searchField, "^"): strlen($searchField) )) => "$searchterm"));
+                }
+
+            };
         }
 
         // check if we have an org management has array
@@ -603,7 +621,10 @@ class SpiceFTSHandler
     {
         $seed = BeanFactory::getBean($module);
 
-        $searchresults = $this->searchModule($module, $searchTerm, array());
+        $useWildcard = false;
+        if(preg_match("/\*/", $searchTerm))
+            $useWildcard= true;
+        $searchresults = $this->searchModule($module, $searchTerm, array(), 25,0, array(), array(), $useWildcard);
 
         $rows = array();
         foreach ($searchresults['hits']['hits'] as $searchresult) {
@@ -660,7 +681,12 @@ class SpiceFTSHandler
                 );
             }
 
-            $searchresultsraw = $this->searchModule($module, $searchterm, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters);
+            //check if we use a wildcard for the search
+            $useWildcard = false;
+            if(preg_match("/\*/", $searchterm))
+                $useWildcard= true;
+
+            $searchresultsraw = $this->searchModule($module, $searchterm, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, $useWildcard);
             $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => 0];
 
             foreach ($searchresults[$module]['hits'] as &$hit) {

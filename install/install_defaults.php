@@ -83,6 +83,7 @@
             'default_charset' => 'UTF-8',
             'default_currency_name' => 'US Dollars',
             'default_currency_symbol' => '$',
+            'default_currency_symbol_position' => 'left', //added Winter Release 2017
             'default_currency_iso4217' => 'USD',
             'default_locale_name_format' => 's f l',
             'default_email_charset' => 'UTF-8',

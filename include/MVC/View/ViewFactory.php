@@ -46,7 +46,8 @@ require_once('include/MVC/View/SugarView.php');
  * Sugar view factory
  * @api
  */
-class ViewFactory{
+class ViewFactory
+{
 	/**
 	 * load the correct view
 	 * @param string $type View Type

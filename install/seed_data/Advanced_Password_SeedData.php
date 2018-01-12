@@ -67,6 +67,19 @@ $EmailTemp->text_only = 0;
 $id =$EmailTemp->save();
 $sugar_config['passwordsetting']['lostpasswordtmpl'] = $id;
 
+//User generate a token to set a new password
+$EmailTemp = new EmailTemplate();
+$EmailTemp->name = $mod_strings['advanced_password_forgot_password_token_email']['name'];
+$EmailTemp->description = $mod_strings['advanced_password_forgot_password_token_email']['description'];
+$EmailTemp->subject = $mod_strings['advanced_password_forgot_password_token_email']['subject'];
+$EmailTemp->body = $mod_strings['advanced_password_forgot_password_token_email']['txt_body'];
+$EmailTemp->body_html = $mod_strings['advanced_password_forgot_password_token_email']['body'];
+$EmailTemp->deleted = 0;
+$EmailTemp->published = 'off';
+$EmailTemp->text_only = 0;
+$id =$EmailTemp->save();
+$sugar_config['passwordsetting']['tokentmpl'] = $id;
+
 // set all other default settings
 $sugar_config['passwordsetting']['forgotpasswordON'] = true;
 $sugar_config['passwordsetting']['SystemGeneratedPasswordON'] = true;
@@ -79,5 +92,6 @@ $sugar_config['passwordsetting']['minpwdlength'] = 6;
 $sugar_config['passwordsetting']['oneupper'] = true;
 $sugar_config['passwordsetting']['onelower'] = true;
 $sugar_config['passwordsetting']['onenumber'] = true;
+$sugar_config['passwordsetting']['tokenexpire'] = 30;
 
 write_array_to_file( "sugar_config", $sugar_config, "config.php");

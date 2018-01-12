@@ -104,7 +104,7 @@ EOQ;
 foreach($drivers as $type => $driver) {
     $oci = ($type == "oci8")?"":'none'; // hack for special oracle message
     $out.=<<<EOQ
-        <input type="radio" class="checkbox" name="setup_db_type" id="setup_db_type" value="$type" {$checked[$type]} onclick="document.getElementById('ociMsg').style.display='$oci'"/>{$mod_strings[$driver->label]}
+        <p id="input_$type"><input type="radio" class="checkbox" name="setup_db_type" id="setup_db_type_$type" value="$type" {$checked[$type]} onclick="document.getElementById('ociMsg').style.display='$oci';displayAdditionalParamsForDbType(this.value);" />{$mod_strings[$driver->label]}</p>        
 EOQ;
 }
 

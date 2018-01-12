@@ -11,6 +11,12 @@ $listViewDefs['CompanyCodes'] = array(
         'link' => true,
         'default' => true,
     ),
+    'COMPANYCODE' => array(
+        'width' => '20%',
+        'label' => 'LBL_LIST_NAME',
+        'link' => false,
+        'default' => true,
+    ),
     'VATID' => array(
         'width' => '20%',
         'label' => 'LBL_VATID',

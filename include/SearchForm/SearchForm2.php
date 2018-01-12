@@ -41,7 +41,8 @@ require_once('include/TemplateHandler/TemplateHandler.php');
 require_once('include/EditView/EditView2.php');
 
 
- class SearchForm extends EditView{
+ class SearchForm extends EditView
+ {
  	var $seed = null;
  	var $module = '';
  	var $action = 'index';
@@ -78,7 +79,7 @@ require_once('include/EditView/EditView2.php');
      */
     protected $options;
 
-    public function SearchForm($seed, $module, $action = 'index', $options = array())
+    public function __construct($seed, $module, $action = 'index', $options = array())
     {
  		$this->th = new TemplateHandler();
  		$this->th->loadSmarty();

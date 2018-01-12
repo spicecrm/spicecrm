@@ -41,9 +41,6 @@
 class SugarFieldHandler
 {
 
-    function SugarFieldHandler() {
-    }
-
     static function fixupFieldType($field) {
             switch($field) {
                case 'double':

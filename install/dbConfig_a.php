@@ -41,11 +41,11 @@ global $sugar_version, $js_custom_version;
 
 
 if(empty($_SESSION['setup_db_host_name'])){
-      $_SESSION['setup_db_host_name'] = (isset($sugar_config['db_host_name']))  ? $sugar_config['db_host_name'] :  $_SERVER['SERVER_NAME'];
+    $_SESSION['setup_db_host_name'] = (isset($sugar_config['db_host_name']))  ? $sugar_config['db_host_name'] :  $_SERVER['SERVER_NAME'];
 }
 
 if( !isset( $install_script ) || !$install_script ){
-	die($mod_strings['ERR_NO_DIRECT_SCRIPT']);
+    die($mod_strings['ERR_NO_DIRECT_SCRIPT']);
 }
 
 
@@ -55,12 +55,12 @@ $createDb = (!empty($_SESSION['setup_db_create_database'])) ? 'checked="checked"
 $dropCreate = (!empty($_SESSION['setup_db_drop_tables'])) ? 'checked="checked"' : '';
 $instanceName = '';
 if (isset($_SESSION['setup_db_host_instance']) && !empty($_SESSION['setup_db_host_instance'])){
-	$instanceName = $_SESSION['setup_db_host_instance'];
+    $instanceName = $_SESSION['setup_db_host_instance'];
 }
 
 $setupDbPortNum ='';
 if (isset($_SESSION['setup_db_port_num']) && !empty($_SESSION['setup_db_port_num'])){
-	$setupDbPortNum = $_SESSION['setup_db_port_num'];
+    $setupDbPortNum = $_SESSION['setup_db_port_num'];
 }
 
 $db = getInstallDbInstance();
@@ -127,7 +127,7 @@ foreach($config_params as $group => $gdata) {
         if(!empty($value)) {
             $form .= "<tr>";
             if(!empty($value['required'])) {
-               $form .= "<td><span class=\"required\">*</span></td>\n";
+                $form .= "<td><span class=\"required\">*</span></td>\n";
             } else {
                 $form .= "<td>&nbsp;</td>\n";
             }
@@ -170,30 +170,30 @@ $out2 .= $form;
 //if we are installing in custom mode, include the following html
 if($db->supports("create_user")){
 // create / set db user dropdown
-$auto_select = '';$provide_select ='';$create_select = '';$same_select = '';
-if(isset($_SESSION['dbUSRData'])){
+    $auto_select = '';$provide_select ='';$create_select = '';$same_select = '';
+    if(isset($_SESSION['dbUSRData'])){
 //    if($_SESSION['dbUSRData']=='auto')    {$auto_select ='selected';}
-    if($_SESSION['dbUSRData']=='provide') {$provide_select ='selected';}
-if(isset($_SESSION['install_type'])  && !empty($_SESSION['install_type'])  && strtolower($_SESSION['install_type'])=='custom'){
-    if($_SESSION['dbUSRData']=='create')  {$create_select ='selected';}
-}
-    if($_SESSION['dbUSRData']=='same')  {$same_select ='selected';}
-}else{
-    $same_select ='selected';
-}
-$dbUSRDD   = "<select name='dbUSRData' id='dbUSRData' onchange='toggleDBUser();'>";
-$dbUSRDD  .= "<option value='provide' $provide_select>".$mod_strings['LBL_DBCONFIG_PROVIDE_DD']."</option>";
-$dbUSRDD  .= "<option value='create' $create_select>".$mod_strings['LBL_DBCONFIG_CREATE_DD']."</option>";
-$dbUSRDD  .= "<option value='same' $same_select>".$mod_strings['LBL_DBCONFIG_SAME_DD']."</option>";
-$dbUSRDD  .= "</select><br>&nbsp;";
+        if($_SESSION['dbUSRData']=='provide') {$provide_select ='selected';}
+        if(isset($_SESSION['install_type'])  && !empty($_SESSION['install_type'])  && strtolower($_SESSION['install_type'])=='custom'){
+            if($_SESSION['dbUSRData']=='create')  {$create_select ='selected';}
+        }
+        if($_SESSION['dbUSRData']=='same')  {$same_select ='selected';}
+    }else{
+        $same_select ='selected';
+    }
+    $dbUSRDD   = "<select name='dbUSRData' id='dbUSRData' onchange='toggleDBUser();'>";
+    $dbUSRDD  .= "<option value='provide' $provide_select>".$mod_strings['LBL_DBCONFIG_PROVIDE_DD']."</option>";
+    $dbUSRDD  .= "<option value='create' $create_select>".$mod_strings['LBL_DBCONFIG_CREATE_DD']."</option>";
+    $dbUSRDD  .= "<option value='same' $same_select>".$mod_strings['LBL_DBCONFIG_SAME_DD']."</option>";
+    $dbUSRDD  .= "</select><br>&nbsp;";
 
 
 
-$setup_db_sugarsales_password = urldecode($_SESSION['setup_db_sugarsales_password']);
-$setup_db_sugarsales_user = urldecode($_SESSION['setup_db_sugarsales_user']);
-$setup_db_sugarsales_password_retype = urldecode($_SESSION['setup_db_sugarsales_password_retype']);
+    $setup_db_sugarsales_password = urldecode($_SESSION['setup_db_sugarsales_password']);
+    $setup_db_sugarsales_user = urldecode($_SESSION['setup_db_sugarsales_user']);
+    $setup_db_sugarsales_password_retype = urldecode($_SESSION['setup_db_sugarsales_password_retype']);
 
-$out2 .=<<<EOQ2
+    $out2 .=<<<EOQ2
 
 <table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
 <tr><td colspan="3" align="left"><br>{$mod_strings['LBL_DBCONFIG_SECURITY']}</td></tr>
@@ -240,7 +240,12 @@ $out3 =<<<EOQ3
     </td>
 </tr>
 </table>
+EOQ3;
 
+
+$demoFts = "<select name='demoDataFTS' id='demoDataFTS'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='yes'>".$mod_strings['LBL_YES']."</option>";
+$demoFts .= "</select><br>&nbsp;";
+$out4 =<<<EOQ4
 <table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
 <tr><th colspan="3" align="left">{$mod_strings['LBL_FTS']} {$mod_strings['LBL_FTS_REQUIREMENTS']}</th></tr>
 <tr>
@@ -264,12 +269,33 @@ $out3 =<<<EOQ3
         <input type="text" name="fts_prefix" value="{$_SESSION['fts_prefix']}">
     </td>
 </tr>
+<tr>
+    <td width='1%'>&nbsp;</td>
+    <td  width='60%'nowrap><b>{$mod_strings['LBL_DBCONF_DEMO_FTS_DATA']}</b></td>
+    <td  width='35%'nowrap align="left">
+	{$demoFts} 
+    </td>
+</tr>
 </table>
-EOQ3;
+EOQ4;
 
 
+$demoUi = "<select name='demoDataUI' id='demoDataUI'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='yes'>".$mod_strings['LBL_YES']."</option>";
+$demoUi .= "</select><br>&nbsp;";
+$out5 =<<<EOQ5
+<table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
+<tr><th colspan="3" align="left">{$mod_strings['LBL_UI']} {$mod_strings['LBL_UI_REQUIREMENTS']}</th></tr>
+<tr>
+    <td width='1%'>&nbsp;</td>
+    <td  width='60%'nowrap><b>{$mod_strings['LBL_DBCONF_DEMO_UI_DATA']}</b></td>
+    <td  width='35%'nowrap align="left">
+	{$demoUi} 
+    </td>
+</tr>
+</table>
+EOQ5;
 
-$out4 =<<<EOQ4
+$out6 =<<<EOQ6
 </td>
 </tr>
 <tr>
@@ -430,12 +456,18 @@ function callDBCheck(){
                 if(typeof(document.setConfig.fts_prefix) != 'undefined'){
                     postData += "&fts_prefix="+document.setConfig.fts_prefix.value;
                 }
+                if(typeof(document.setConfig.demoDataFTS) != 'undefined'){
+                    postData += "&demoDataFTS="+document.setConfig.demoDataFTS.value;
+                }
+                if(typeof(document.setConfig.demoDataUI) != 'undefined'){
+                    postData += "&demoDataUI="+document.setConfig.demoDataUI.value;
+                }
 
-EOQ4;
+EOQ6;
 
 
 $out_dd = 'postData += "&demoData="+document.setConfig.demoData.value;';
-$out5 =<<<EOQ5
+$out7 =<<<EOQ7
                 postData += "&to_pdf=1&sugar_body_only=1";
 
                 //if this is a call already in progress, then just return
@@ -500,7 +532,7 @@ function confirm_drop_tables(yes_no){
 
 
 
-EOQ5;
+EOQ7;
 
 
 
@@ -512,9 +544,11 @@ EOQ5;
 
 echo $out;
 echo $out2;
-    echo $out3;
+echo $out3;
 echo $out4;
-    echo $out_dd;
 echo $out5;
+echo $out6;
+echo $out_dd;
+echo $out7;
 
 ?>

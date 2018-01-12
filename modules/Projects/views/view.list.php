@@ -47,10 +47,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/View/views/view.list.php');
 
-class ProjectViewList extends ViewList{
- 	function ProjectViewList()
+class ProjectViewList extends ViewList
+{
+ 	function __construct()
  	{
- 		parent::ViewList();
+ 		parent::__construct();
  	}
  	
  	/*

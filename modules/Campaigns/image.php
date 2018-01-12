@@ -42,7 +42,7 @@ if(!empty($_REQUEST['identifier'])) {
 	$keys=log_campaign_activity($_REQUEST['identifier'],'viewed');
 }
 sugar_cleanup();
-Header("Content-Type: image/gif");
+header("Content-Type: image/gif");
 $fn=sugar_fopen(SugarThemeRegistry::current()->getImageURL("blank.gif",false),"r");
 fpassthru($fn);
 ?>

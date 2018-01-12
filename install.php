@@ -386,6 +386,14 @@ if($next_clicked) {
             if(isset($_REQUEST['setup_db_type'])) {
               $_SESSION['setup_db_type'] = $_REQUEST['setup_db_type'];
             }
+            //postgres
+            if(isset($_REQUEST['setup_db_lc_collate'])) {
+                $_SESSION['setup_db_lc_collate'] = $_REQUEST['setup_db_lc_collate'];
+            }
+            if(isset($_REQUEST['setup_db_lc_type'])) {
+                $_SESSION['setup_db_lc_type'] = $_REQUEST['setup_db_lc_type'];
+            }
+
             $validation_errors = validate_systemOptions();
             if(count($validation_errors) > 0) {
                 $next_step--;

@@ -22,11 +22,11 @@ require_once('modules/KReports/Plugins/prototypes/kreportpresentationplugin.php'
 class kreportpresentationstandard extends kreportpresentationplugin {
 
 //function standarddetailviewdisplay(&$thisview) {
-   public function display($thisReport) {
+   public function display(&$thisReport) {
       global $app_list_strings, $mod_strings, $current_language, $current_user;
 
       // $fieldArray = htmlentities($fieldArray, ENT_QUOTES, 'UTF-8');
-      $viewJS .= '<script type="text/javascript">FieldsArray = ' . htmlentities($this->buildFieldArray($thisReport)) . ';</script>';
+      $viewJS = '<script type="text/javascript">FieldsArray = ' . htmlentities($this->buildFieldArray($thisReport)) . ';</script>';
 
       // TODO .. JSON Encode with Bitmask ... need Doku
       // $thisview->ss->assign('columnmodeldarray', str_replace('"', '', json_encode($columnArray)));

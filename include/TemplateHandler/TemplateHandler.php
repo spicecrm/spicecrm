@@ -42,11 +42,14 @@
  * cache/modules/moduleName/view
  * @api
  */
-class TemplateHandler {
+class TemplateHandler
+{
     var $cacheDir;
     var $templateDir = 'modules/';
     var $ss;
-    function TemplateHandler() {
+
+    public function __construct()
+    {
       $this->cacheDir = sugar_cached('');
     }
 

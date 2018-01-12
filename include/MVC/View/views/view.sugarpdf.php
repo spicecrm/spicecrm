@@ -55,8 +55,8 @@ class ViewSugarpdf extends SugarView{
     var $sugarpdfBean=NULL;
 
     
-    function ViewSugarpdf(){
-         parent::SugarView();
+    function __construct(){
+         parent::__construct();
          if (isset($_REQUEST["sugarpdf"]))
          	$this->sugarpdf = $_REQUEST["sugarpdf"];
          else 

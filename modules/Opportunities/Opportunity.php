@@ -100,23 +100,28 @@ class Opportunity extends SugarBean {
 	var $additional_column_fields = Array('assigned_user_name', 'assigned_user_id', 'account_name', 'account_id', 'contact_id', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id'
 	);
 
-	var $relationship_fields = Array('task_id'=>'tasks', 'note_id'=>'notes', 'account_id'=>'accounts',
-									'meeting_id'=>'meetings', 'call_id'=>'calls', 'email_id'=>'emails', 'project_id'=>'project',
-									// Bug 38529 & 40938
-									'currency_id' => 'currencies',
-									);
+	var $relationship_fields = Array(
+	    'task_id'=>'tasks',
+        'note_id'=>'notes',
+        'account_id'=>'accounts',
+		'meeting_id'=>'meetings',
+        'call_id'=>'calls',
+        'email_id'=>'emails',
+        'project_id'=>'project',
+		// Bug 38529 & 40938
+		'currency_id' => 'currencies',
+    );
 
-	function Opportunity() {
-		parent::SugarBean();
+    var $new_schema = true;
+
+	public function __construct()
+    {
+		parent::__construct();
 		global $sugar_config;
 		if(!$sugar_config['require_accounts']){
 			unset($this->required_fields['account_name']);
 		}
 	}
-
-	var $new_schema = true;
-
-
 
 	function get_summary_text()
 	{

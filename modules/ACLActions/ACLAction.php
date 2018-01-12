@@ -36,14 +36,17 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 ********************************************************************************/
 
 require_once('modules/ACLActions/actiondefs.php');
-class ACLAction  extends SugarBean{
+class ACLAction  extends SugarBean
+{
     var $module_dir = 'ACLActions';
     var $object_name = 'ACLAction';
     var $table_name = 'acl_actions';
     var $new_schema = true;
     var $disable_custom_fields = true;
-    function ACLAction(){
-        parent::SugarBean();
+
+    public function __construct()
+    {
+        parent::__construct();
     }
 
     /**
@@ -329,8 +332,8 @@ class ACLAction  extends SugarBean{
     * @param int $access
     * @return true or false
     */
-    static function hasAccess($is_owner=false, $access = 0){
-
+    public function hasAccess($is_owner=false, $access = 0)
+    {
         if($access != 0 && $access == ACL_ALLOW_ALL || ($is_owner && $access == ACL_ALLOW_OWNER))return true;
        //if this exists, then this function is not static, so check the aclaccess parameter
         if(isset($this) && isset($this->aclaccess)){
@@ -369,7 +372,8 @@ class ACLAction  extends SugarBean{
         }
 
         if(!empty($_SESSION['ACL'][$user_id][$category][$type][$action])){
-            return ACLAction::hasAccess($is_owner, $_SESSION['ACL'][$user_id][$category][$type][$action]['aclaccess']);
+            $aclaction = new ACLAction();
+            return $aclaction->hasAccess($is_owner, $_SESSION['ACL'][$user_id][$category][$type][$action]['aclaccess']);
         }
         return false;
 

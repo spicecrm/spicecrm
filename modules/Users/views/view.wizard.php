@@ -52,7 +52,7 @@ class ViewWizard extends SugarView
 	 */
 	public function __construct()
 	{
-		parent::SugarView();
+		parent::__construct();
 
         $this->options['show_header'] = false;
         $this->options['show_footer'] = false;

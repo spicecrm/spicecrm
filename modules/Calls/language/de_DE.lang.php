@@ -28,7 +28,7 @@ $mod_strings = array (
     'LBL_MODULE_TITLE' => 'Anrufe: Home',
     'LBL_SEARCH_FORM_TITLE' => 'Anrufe Suche',
     'LBL_LIST_FORM_TITLE' => 'Anrufliste',
-    'LBL_NEW_FORM_TITLE' => 'Neuer Termin',
+    'LBL_NEW_FORM_TITLE' => 'Neuer Anruf',
     'LBL_LIST_CLOSE' => 'Schließen',
     'LBL_LIST_SUBJECT' => 'Betreff',
     'LBL_LIST_CONTACT' => 'Kontakt',
@@ -134,7 +134,8 @@ $mod_strings = array (
     'LBL_REPEAT_COUNT' => 'Wiederholanzahl',
     'LBL_REPEAT_PARENT_ID' => 'Wiederhole Eltern-ID',
     'LBL_RECURRING_SOURCE' => 'Wiederholquelle',
+
+    'LBL_PARTICIPANTS' => 'Participants',
     
     'LBL_SYNCED_RECURRING_MSG' => 'Dieses Meeting wurde in einem anderem System erstellt und wurde nach Sugar synchronisiert. Um es zu ändern, öffnen Sie das original meeting im anderen System und ändern Sie es dort. Änderungen können dann wieder synchronisiert werden.',
 );
-?>

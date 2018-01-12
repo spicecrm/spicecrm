@@ -28,14 +28,17 @@ $app->group('/user', function () use ($app, $KRESTUserHandler) {
         $postBody = json_decode($app->request->getBody(), true);
         echo json_encode($KRESTUserHandler->set_password($postBody));
     });
-    $app->group('/preferences', function () use ($app, $KRESTUserHandler) {
-        $app->get('/:category/:name', function ($category, $name) use ($app, $KRESTUserHandler) {
-            echo json_encode($KRESTUserHandler->get_user_preferences($category, $name));
+    $app->group('/preferences', function () use ($app, $KRESTUserHandler)
+    {
+        $app->get('/:category', function ($category) use ($app, $KRESTUserHandler) {
+            echo json_encode($KRESTUserHandler->get_user_preferences($category));
         });
-        $app->post('/:category', function ($category, $name) use ($app, $KRESTUserHandler) {
+        $app->get('/:category/:name', function ($category, $name) use ($app, $KRESTUserHandler) {
+            echo json_encode($KRESTUserHandler->get_user_preference($category, $name));
+        });
+        $app->post('/:category', function ($category) use ($app, $KRESTUserHandler) {
             $postBody = json_decode($app->request->getBody(), true);
             echo json_encode($KRESTUserHandler->set_user_preferences($category, $postBody));
         });
     });
-
 });

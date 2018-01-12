@@ -39,7 +39,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * Localization manager
  * @api
  */
-class Localization {
+class Localization
+{
 	var $availableCharsets = array(
 		'BIG-5',        //Taiwan and Hong Kong
 		/*'CP866'			  // ms-dos Cyrillic */
@@ -69,7 +70,7 @@ class Localization {
 		'KOI8-U',       //Cyrillic Ukranian
 		'SJIS',         //MS Japanese
 		'UTF-8',        //UTF-8
-		);
+    );
 	var $localeNameFormat;
 	var $localeNameFormatDefault;
 	var $default_export_charset = 'UTF-8';
@@ -80,12 +81,13 @@ class Localization {
     var $iconvCharsetMap = array(
         'KS_C_5601-1987' => 'CP949',
         'ISO-8859-8-I' => 'ISO-8859-8'            
-        );
+    );
 
 	/**
 	 * sole constructor
 	 */
-	function Localization() {
+	public function __cunstruct()
+    {
 		global $sugar_config;
 		$this->localeNameFormatDefault = empty($sugar_config['locale_name_format_default']) ? 's f l' : $sugar_config['default_name_format'];
 		$this->loadCurrencies();

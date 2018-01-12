@@ -52,7 +52,7 @@ class SpiceFTSUtils
         //catch installation process and abort. table sysfts will not exist at the point during installation
         if($GLOBALS['installing'] === true)
             return false;
-        
+
         $moduleProperties = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
         if ($moduleProperties) {
             $modulePropertiesarray = json_decode(html_entity_decode($moduleProperties['ftsfields']), true);

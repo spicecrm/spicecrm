@@ -40,7 +40,8 @@ require_once('include/MVC/View/SugarView.php');
  * Main SugarCRM controller
  * @api
  */
-class SugarController{
+class SugarController
+{
 	/**
 	 * remap actions in here
 	 * e.g. make all detail views go to edit views
@@ -159,7 +160,7 @@ class SugarController{
 	 * Constructor. This ie meant tot load up the module, action, record as well
 	 * as the mapping arrays.
 	 */
-	function SugarController(){
+	public function __construct(){
 	}
 
 	/**

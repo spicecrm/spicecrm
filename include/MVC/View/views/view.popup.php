@@ -37,8 +37,8 @@
 class ViewPopup extends SugarView{
     protected $override_popup = array();
 	var $type ='list';
-	function ViewPopup(){
-		parent::SugarView();
+	function __construct(){
+		parent::__construct();
 	}
 
 	function display(){

@@ -51,7 +51,9 @@ $app_list_strings = array(
         array(
             'Home' => 'Home',
             'Contacts' => 'Contacts',
+            'ContactsOnlineProfiles' => 'Online Profiles',
             'Accounts' => 'Accounts',
+            'Addresses' => 'Addresses',
             'Opportunities' => 'Opportunities',
             'Cases' => 'Cases',
             'Notes' => 'Notes',
@@ -72,6 +74,7 @@ $app_list_strings = array(
             'Schedulers' => 'Schedulers',
             'Projects' => 'Projects',
             'ProjectTasks' => 'Project Tasks',
+            'ProjectMilestones' => 'Project Milestones',
             'Campaigns' => 'Campaigns',
             'CampaignLog' => 'Campaign Log',
             'Documents' => 'Documents',
@@ -127,6 +130,10 @@ $app_list_strings = array(
 //end
             'CompanyCodes' => 'Company',
             'CompanyFiscalPeriods' => 'Fiscal Periods',
+            'AccountCCDetails' => 'Business Areas',
+            'Mailboxes' => 'Mailboxes',
+            'ServiceOrders' => 'Service Orders',
+            'ServiceTickets' => 'Service Tickets',
         ),
 
     'moduleListSingular' =>
@@ -152,6 +159,7 @@ $app_list_strings = array(
             'TimePeriods' => 'Time Period',
             'Projects' => 'Project',
             'ProjectTasks' => 'Project Task',
+            'ProjectMilestones' => 'Project Milestone',
             'Prospects' => 'Target',
             'Campaigns' => 'Campaign',
             'Documents' => 'Document',
@@ -177,9 +185,12 @@ $app_list_strings = array(
 //            'QuestionOptionCategories' => 'Question Option Category',
 // end
             'CompanyCodes' => 'Company',
-			'CompanyFiscalPeriods' => 'Fiscal Period',
-            'AccountBankAccount' => 'Bank Accounts'
-
+            'CompanyFiscalPeriods' => 'Fiscal Period',
+            'AccountBankAccounts' => 'Bank Accounts',
+            'AccountCCDetails' => 'Business Area',
+            'Mailboxes' => 'Mailbox',
+            'ServiceOrders' => 'Service Order',
+            'ServiceTickets' => 'Service Ticket',
         ),
 
     'checkbox_dom' => array(
@@ -357,25 +368,25 @@ $app_list_strings = array(
         '--' => 'very low'
     ),
     'competitive_status_dom' => array(
-        'active' => 'active in Sales Cylce',
+        'active' => 'active in Sales Cycle',
         'withdrawn' => 'withdrawn by Competitor',
         'rejected' => 'rejected by Customer'
     ),
-    'activity_dom' =>        array(
-            'Call' => 'Call',
-            'Meeting' => 'Meeting',
-            'Task' => 'Task',
-            'Email' => 'Email',
-            'Note' => 'Note',
-        ),
-    'salutation_dom' =>        array(
-            '' => '',
-            'Mr.' => 'Mr.',
-            'Ms.' => 'Ms.',
-            'Mrs.' => 'Mrs.',
-            'Dr.' => 'Dr.',
-            'Prof.' => 'Prof.',
-        ),
+    'activity_dom' => array(
+        'Call' => 'Call',
+        'Meeting' => 'Meeting',
+        'Task' => 'Task',
+        'Email' => 'Email',
+        'Note' => 'Note',
+    ),
+    'salutation_dom' => array(
+        '' => '',
+        'Mr.' => 'Mr.',
+        'Ms.' => 'Ms.',
+        'Mrs.' => 'Mrs.',
+        'Dr.' => 'Dr.',
+        'Prof.' => 'Prof.',
+    ),
     'contacts_title_dom' => array(
         '' => '',
         'ceo' => 'CEO',
@@ -415,6 +426,27 @@ $app_list_strings = array(
         'single' => 'Single Choice',
         'multi' => 'Multiple Choice',
         'text' => 'Text Input',
+        'ist' => 'IST'
+    ),
+    'evaluationtypes_dom' => array(
+        'default' => 'Standard',
+        'spiderweb' => 'Spiderweb',
+        'default_sorted_points' => 'Standard, sorted by points'
+    ),
+    'interpretationsuggestions_dom' => array(
+        'top3' => 'top 3',
+        'top5' => 'top 5',
+        'over20' => 'over 20 points',
+        'over30' => 'over 30 points',
+        'over40' => 'over 40 points',
+        'top3_over20' => 'top 3 or over 20 points',
+        'top5_over20' => 'top 5 or over 20 points',
+        'top3_over30' => 'top 3 or over 30 points',
+        'top5_over30' => 'top 5 or over 30 points',
+        'top3_over40' => 'top 3 or over 40 points',
+        'top5_over40' => 'top 5 or over 40 points',
+        'all' => 'all Interpretations',
+        'mbti' => 'MBTI'
     ),
     //time is in seconds; the greater the time the longer it takes;
     'reminder_max_time' => 90000,
@@ -1062,8 +1094,8 @@ $app_list_strings = array(
             'targeted' => 'Message Sent/Attempted',
             'send error' => 'Bounced Messages,Other',
             'invalid email' => 'Bounced Messages,Invalid Email',
-            'link' => 'Click-thru Link',
-            'viewed' => 'Viewed Message',
+            'link' => 'clicked',
+            'viewed' => 'opened',
             'removed' => 'Opted Out',
             'lead' => 'Leads Created',
             'contact' => 'Contacts Created',
@@ -1222,7 +1254,13 @@ $app_list_strings = array(
             'donothing' => 'Do Nothing'
         ),
     'salesdoc_doctypes' => array(
-        'QT' => 'Quote'
+        'QT' => 'Quote',
+        'OR' => 'Order',
+        'IV' => 'Invoice'
+    ),
+    'salesdoc_docparties' => array(
+        'I' => 'Individual',
+        'B' => 'Business'
     ),
     'salesdoc_uoms' => array(
         'm2' => 'm²',
@@ -1240,6 +1278,53 @@ $app_list_strings = array(
         1 => 'Bild',
         2 => 'Audio',
         3 => 'Video'
+    ),
+    'workflowftastktypes_dom' => array(
+        'task' => 'Task',
+        'decision' => 'Decision',
+        'email' => 'Email',
+        'system' => 'System',
+    ),
+    'workflowdefinition_status' => array(
+        'active' => 'active',
+        'active_once' => 'active (run once)',
+        'active_scheduled' => 'active scheduled',
+        'inactive' => 'inactive'
+    ),
+    'workflowdefinition_precondition' => array(
+        'a' => 'always',
+        'u' => 'on update',
+        'n' => 'when new'
+    ),
+    'workflowdefinition_emailtypes' => array(
+        '1' => 'user assgined to Task',
+        '2' => 'user assgined to Bean',
+        '3' => 'user created Bean',
+        '4' => 'manager assigned to Bean',
+        '5' => 'manager created Bean',
+        '6' => 'email address',
+        '7' => 'system routine'
+    ),
+    'workflowdefinition_assgintotypes' => array(
+        '1' => 'User',
+        '2' => 'Workgroup',
+        '3' => 'User assigned to Parent Object',
+        '4' => 'Manager of User assgined to Parent Object',
+        '5' => 'system routine'
+    ),
+    'workflowdefinition_conditionoperators' => array(
+        'EQ' => '=',
+        'NE' => '≠',
+        'GT' => '>',
+        'GE' => '≥',
+        'LT' => '<',
+        'LE' => '≤',
+    ),
+    'workflowtask_status' => array(
+        '10' => 'New',
+        '20' => 'in process',
+        '30' => 'completed',
+        '40' => 'closed by System'
     )
 );
 
@@ -1792,6 +1877,7 @@ $app_strings = array(
     'LBL_OLD_ACCOUNT_LINK' => 'Old Account',
     'LBL_ACCOUNTS' => 'Accounts',
     'LBL_ACTIVITIES_SUBPANEL_TITLE' => 'Activities',
+    'LBL_HISTORY_SUBPANEL_TITLE' => 'History',
     'LBL_ACCUMULATED_HISTORY_BUTTON_KEY' => 'H',
     'LBL_ACCUMULATED_HISTORY_BUTTON_LABEL' => 'View Summary',
     'LBL_ACCUMULATED_HISTORY_BUTTON_TITLE' => 'View Summary',
@@ -2645,6 +2731,8 @@ $app_strings = array(
     'LBL_CLEAR' => 'Clear',
     'LBL_SELECT' => 'Select',
     'LBL_SEARCH' => 'Search',
+    'LBL_SEARCH_RESET' => 'Reset Search',
+    'LBL_SEARCH_HERE' => 'Search here...',
     'LBL_PREFERENCES' => 'Preferences',
     'LBL_INSPICECRM' => 'in SpiceCRM',
     'LBL_TOPRESULTS' => 'Top Results',
@@ -2660,6 +2748,7 @@ $app_strings = array(
     'LBL_DISPLAYAS' => 'Display as',
     'LBL_CLOSE' => 'Close',
     'LBL_SAVE' => 'Save',
+    'LBL_SEND' => 'Send',
     'LBL_DELETE' => 'Delete',
     'LBL_OPTIONS' => 'Options',
     'LBL_DELETE_RECORD' => 'Delete Record',
@@ -2792,6 +2881,14 @@ $app_strings = array(
     'LBL_COPYRIGHT_OWNER' => 'Copyright owner',
     'LBL_COPYRIGHT_LICENSE' => 'Copyright license',
     'LBL_IMAGENAME' => 'Image name',
+    'LBL_EVALUATION' => 'Auswertung',
+    'LBL_CATEGORY' => 'Kategorie',
+    'LBL_IMAGE' => 'Image',
+    'LBL_ACCEPT' => 'Accept',
+    'LBL_PAUSE' => 'Pause',
+    'LBL_DENIED' => 'denied',
+    'LBL_BLOCKED' => 'blocked',
+    'LBL_CONTINUE' => 'Continue',
 
     /* Questionnaires, QuestionSets, etc. date_*/
 
@@ -2807,6 +2904,7 @@ $app_strings = array(
     'LBL_EDIT_QUESTION' => 'Edit question',
     'LBL_MIN_ANSWERS' => 'min. answers',
     'LBL_MAX_ANSWERS' => 'max. answers',
+    'LBL_MIN_MAX_ANSWERS' => 'min./max. answers',
     'LBL_CATEGORIES' => 'Categories',
     'LBL_ADD_ANSWER_OPTION' => 'Add answer option',
     'LBL_CORRECT_ANSWER' => 'Correct Answer',
@@ -2817,58 +2915,138 @@ $app_strings = array(
     'MSG_CANTCHANGE_QUESTIONSEXISTS' => 'Can not change because there are already questions.',
     'QST_CONFIRM_DELETE_QUESTION' => 'Delete Question?',
     'QST_CONFIRM_DELETE_QUESTION_LONG' => 'Are you sure you want to delete the question „%s“?',
+    'QST_CONFIRM_DELETE_ANSWER_OPTION' => 'Delete answer option?',
+    'QST_CONFIRM_DELETE_ANSWER_OPTION_LONG' => 'Are you sure you want to delete the answer option „%s“?',
     'MSG_NO_QUESTIONTYPE_NO_QUESTION' => 'The creation of a question is not yet possible, since no question type has yet been selected for the question set.',
     'LBL_NUMBER_QUESTIONS_COMPLETED' => '%s of %s Questions completed.',
+    'LBL_TEXT_SHORT' => 'Text in short form',
+    'LBL_TEXT_LONG' => 'Text in long form',
+    'LBL_INTERPRETATION_ASSIGNMENT' => 'Interpretation assignment',
+    'LBL_ASSIGNED_INTERPRETATIONS' => 'Assigned interpretations',
+    'LBL_AUTO_COMPLETE_LIST' => 'Automatically complete the list',
+    'LBL_NO_INTERPRETATIONS_ASSIGNED_YET' => 'No interpretations assigned yet.',
+    'LBL_NO_UNASSIGNED_INTERPRETATIONS_AVAILABLE' => 'There are <b>no interpretations available</b> (which are not already assigned).',
+    'LBL_ADD_INTERPRETATION' => 'Add interpretation …',
+
+    /* Speech Recognition */
+    'LBL_SPEECH_RECOGNITION' => 'Speech Recognition',
+    'LBL_WAITING_START_SPEAKING' => 'Waiting … Please start speaking!',
+    'ERR_SPEECH_RECOGNITION' => 'Speech Recognition Error',
+    'MSG_NO_NETWORK' => 'No network',
+    'MSG_NO_MICROPHONE' => 'No microphone',
+
+    /* Tagging */
+    'LBL_NO_TAGS_ASSIGNED' => 'No tags choosen yet.',
+    'LBL_NUMBER_OF_SHOWN_TAGS' => '%s of %s matching tags are shown.',
+    'LBL_ASSIGN_TAGS' => 'Assign Tags',
+    'LBL_TAGS_FOUND' => 'No tags found.',
+    'LBL_ENTER_TAGS_FOR_TAGS' => 'Enter text to search tags …',
 
     'LBL_MY' => 'My',
-    'LBL_ALL' => 'All'
+    'LBL_ALL' => 'All',
 
+    'LBL_MORE' => 'More',
+    'LBL_APPLY' => 'Apply',
+    'LBL_FILTER' => 'Filter',
 
+    /* MediaFiles */
+
+    'LBL_NEW_IMAGE' => 'New Image',
+    'LBL_IMGUPLOADED_INPUTDATA' => 'Image successfully uploaded. Now input image data:',
+    'LBL_MEDIAFILE_PICKER' => 'Image Selection',
+    'LBL_UPLOAD_NEW_FILE' => 'Upload new file',
+    'LBL_WAITING_FILE_SELECTION' => 'Waiting for file selection',
+    'LBL_SELECT_FILE' => 'Select file',
+
+    'LBL_STARTDATE' => 'Start Date',
+    'LBL_STARTTIME' => 'Start Time',
+    'LBL_ENDDATE' => 'End Date',
+    'LBL_ENDTIME' => 'End Time',
+
+    'LBL_STREET' => 'Street',
+    'LBL_POSTALCODE' => 'Postalcode',
+    'LBL_CITY' => 'City',
+    'LBL_STATE' => 'State',
+    'LBL_COUNTRY' => 'Country',
+    'LBL_SEARCH_ADDRESS' => 'search address',
+
+    'LBL_RECENT_ITEMS' => 'Recent Items',
+
+    'LBL_YEAR' => 'Year',
+    'LBL_QUARTER' => 'Quarter',
+    'LBL_MONTH' => 'Month',
+
+    //add for CanvaDraw FieldType
+    'LBL_OPEN_SIGNATURE_POPUP' => 'Open signature box',
 );
 
 //Some modules shall not be included for SpiceCRM CE
-if(file_exists('modules/Products/Product.php')){
-    $app_list_strings['moduleList']['Products'] =  'Products';
-    $app_list_strings['moduleList']['ProductGroups'] =  'Product Groups';
-    $app_list_strings['moduleList']['ProductVariants'] =  'Product Variants';
-    $app_list_strings['moduleList']['ProductAttributes'] =  'Product Attributes';
-    $app_list_strings['moduleListSingular']['Products'] =  'Product';
-    $app_list_strings['moduleListSingular']['ProductGroups'] =  'Product Group';
-    $app_list_strings['moduleListSingular']['ProductAttributes'] =  'Product Attribute';
+if (file_exists('modules/Products/Product.php')) {
+    $app_list_strings['moduleList']['Products'] = 'Products';
+    $app_list_strings['moduleList']['ProductGroups'] = 'Product Groups';
+    $app_list_strings['moduleList']['ProductVariants'] = 'Product Variants';
+    $app_list_strings['moduleList']['ProductAttributes'] = 'Product Attributes';
+    $app_list_strings['moduleListSingular']['Products'] = 'Product';
+    $app_list_strings['moduleListSingular']['ProductGroups'] = 'Product Group';
+    $app_list_strings['moduleListSingular']['ProductAttributes'] = 'Product Attribute';
 }
-if(file_exists('modules/Questionnaires/Questionnaire.php')) {
-    $app_list_strings['moduleList']['Questionnaires'] =  'Questionnaires';
-    $app_list_strings['moduleList']['Questions'] =  'Questions';
-    $app_list_strings['moduleList']['QuestionSets'] =  'Question Sets';
-    $app_list_strings['moduleList']['QuestionAnswers'] =  'Question Answers';
-    $app_list_strings['moduleList']['QuestionnaireParticipations'] =  'Questionnaire Participations';
-    $app_list_strings['moduleList']['QuestionOptions'] =  'Question Options';
-    $app_list_strings['moduleList']['QuestionOptionCategories'] =  'Question Option Categories';
-    $app_list_strings['moduleListSingular']['Questionnaires'] =  'Questionnaire';
-    $app_list_strings['moduleListSingular']['Questions'] =  'Question';
-    $app_list_strings['moduleListSingular']['QuestionSets'] =  'Question Set';
-    $app_list_strings['moduleListSingular']['QuestionAnswers'] =  'Question Answer';
-    $app_list_strings['moduleListSingular']['QuestionnaireParticipations'] =  'Question Participation';
-    $app_list_strings['moduleListSingular']['QuestionOptions'] =  'Question Option';
-    $app_list_strings['moduleListSingular']['QuestionOptionCategories'] =  'Question Option Category';
+if (file_exists('modules/Questionnaires/Questionnaire.php')) {
+    $app_list_strings['moduleList']['QuestionnaireInterpretations'] = 'Questionnaire Interpretations';
+    $app_list_strings['moduleList']['Questionnaires'] = 'Questionnaires';
+    $app_list_strings['moduleList']['Questions'] = 'Questions';
+    $app_list_strings['moduleList']['QuestionSets'] = 'Question Sets';
+    $app_list_strings['moduleList']['QuestionAnswers'] = 'Question Answers';
+    $app_list_strings['moduleList']['QuestionnaireParticipations'] = 'Questionnaire Participations';
+    $app_list_strings['moduleList']['QuestionOptions'] = 'Question Options';
+    $app_list_strings['moduleList']['QuestionOptionCategories'] = 'Question Option Categories';
+    $app_list_strings['moduleListSingular']['QuestionnaireInterpretations'] = 'Questionnaire Interpretation';
+    $app_list_strings['moduleListSingular']['Questionnaires'] = 'Questionnaire';
+    $app_list_strings['moduleListSingular']['Questions'] = 'Question';
+    $app_list_strings['moduleListSingular']['QuestionSets'] = 'Question Set';
+    $app_list_strings['moduleListSingular']['QuestionAnswers'] = 'Question Answer';
+    $app_list_strings['moduleListSingular']['QuestionnaireParticipations'] = 'Question Participation';
+    $app_list_strings['moduleListSingular']['QuestionOptions'] = 'Question Option';
+    $app_list_strings['moduleListSingular']['QuestionOptionCategories'] = 'Question Option Category';
 }
-if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
+if (file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
     $app_list_strings['moduleList']['ProjectWBSs'] = 'Project WBSs';
-    $app_list_strings['moduleListSingular']['ProjectWBSs'] =  'Project WBS';
+    $app_list_strings['moduleListSingular']['ProjectWBSs'] = 'Project WBS';
 }
-if(file_exists('modules/ProjectActivities/ProjectActivity.php')) {
+if (file_exists('modules/ProjectActivities/ProjectActivity.php')) {
     $app_list_strings['moduleList']['ProjectActivities'] = 'Project Activities';
-    $app_list_strings['moduleListSingular']['ProjectActivities'] =  'Project Activity';
+    $app_list_strings['moduleListSingular']['ProjectActivities'] = 'Project Activity';
 }
-if(file_exists('modules/ProjectPlannedActivities/ProjectPlannedActivity.php')) {
+if (file_exists('modules/ProjectPlannedActivities/ProjectPlannedActivity.php')) {
     $app_list_strings['moduleList']['ProjectPlannedActivities'] = 'Project Planned Activities';
-    $app_list_strings['moduleListSingular']['ProjectPlannedActivities'] =  'Project Planned Activity';
+    $app_list_strings['moduleListSingular']['ProjectPlannedActivities'] = 'Project Planned Activity';
 }
-if(file_exists('modules/SalesDocs/SalesDoc.php')) {
+if (file_exists('modules/SalesDocs/SalesDoc.php')) {
     $app_list_strings['moduleList']['SalesDocs'] = 'Sales Documents';
-    $app_list_strings['moduleListSingular']['SalesDocs'] =  'Sales Document';
+    $app_list_strings['moduleListSingular']['SalesDocs'] = 'Sales Document';
+    $app_list_strings['moduleList']['SalesDocItems'] = 'Sales Document Items';
+    $app_list_strings['moduleListSingular']['SalesDocItems'] = 'Sales Document Item';
+    $app_list_strings['moduleList']['SalesVouchers'] = 'Sales Vouchers';
+    $app_list_strings['moduleListSingular']['SalesDocs'] = 'Sales Voucher';
 }
-if(file_exists('modules/Library/Library.php')) {
+if(file_exists('modules/Workflows/Workflow.php')){
+    $app_list_strings['moduleList']['Workflows'] = 'Workflows';
+    $app_list_strings['moduleListSingular']['Workflows'] = 'Workflow';
+    $app_list_strings['moduleList']['WorkflowDefinitions'] = 'Workflow Definitions';
+    $app_list_strings['moduleListSingular']['WorkflowDefinitions'] = 'Workflow Definition';
+    $app_list_strings['moduleList']['WorkflowTasks'] = 'Workflow Tasks';
+    $app_list_strings['moduleListSingular']['WorkflowTasks'] = 'Workflow Task';
+    $app_list_strings['moduleList']['WorkflowTaskComments'] = 'Workflow Task Comments';
+    $app_list_strings['moduleListSingular']['WorkflowTaskComments'] = 'Workflow Task Comment';
+    $app_list_strings['moduleList']['WorkflowTaskDefinitions'] = 'Workflow Task Definitions';
+    $app_list_strings['moduleListSingular']['WorkflowTaskDefinitions'] = 'Workflow Task Definition';
+    $app_list_strings['moduleList']['WorkflowConditions'] = 'Workflow Conditions';
+    $app_list_strings['moduleListSingular']['WorkflowConditions'] = 'Workflow Condition';
+    $app_list_strings['moduleList']['WorkflowSystemActions'] = 'Workflow System Actions';
+    $app_list_strings['moduleListSingular']['WorkflowSystemActions'] = 'Workflow System Action';
+    $app_list_strings['moduleList']['WorkflowTaskDecisions'] = 'Workflow Task Decisions';
+    $app_list_strings['moduleListSingular']['WorkflowTaskDecisions'] = 'Workflow Task Decision';
+}
+if (file_exists('modules/Library/Library.php')) {
     $app_list_strings['moduleList']['Library'] = 'Library';
 }
 
@@ -3750,10 +3928,11 @@ $addAppStrings = array(
     'LBL_ADVANCED_SETTINGS' => 'Advanced Settings',
     'LBL_SEARCH_DELAY' => 'Search Delay',
     'LBL_TIMESTREAM' => 'Timestream',
-    'LBL_TASKMANAGER' => 'Taskmanager'
+    'LBL_TASKMANAGER' => 'Taskmanager',
+    'LBL_ACOUNTCCDETAILS_LINK' => 'Account Company Code Detials',
 );
 
-if(file_exists('modules/KDeploymentCRs/KDeploymentCR.php'))
+if (file_exists('modules/KDeploymentCRs/KDeploymentCR.php'))
     $app_list_strings['moduleList']['KDeploymentCRs'] = 'K Changerequests';
 
 $app_list_strings['crstatus_dom'] = array(
@@ -3874,14 +4053,85 @@ $app_list_strings['productattributedatatypes_dom'] = array(
     's' => 'Multiselect',
     'vc' => 'Text'
 );
-$app_list_strings['productattribute_usage_dom'] =  array (
-    'required' 		=> 'required',
-    'optional' 		=> 'optional',
-    'none' 		=> 'no input',
+$app_list_strings['productattribute_usage_dom'] = array(
+    'required' => 'required',
+    'optional' => 'optional',
+    'none' => 'no input',
+    'hidden' => 'hidden'
+);
+
+//AccountCCDetails
+$app_list_strings['abccategory_dom'] = array(
+    '' => '',
+    'A' => 'A',
+    'B' => 'B',
+    'C' => 'C',
+);
+
+$app_list_strings['logicoperators_dom'] = array(
+    'and' => 'and',
+    'or' => 'or',
+);
+
+$app_list_strings['comparators_dom'] = array(
+    'equal' => 'equals',
+    'unequal' => 'unequal',
+    'greater' => 'greater',
+    'greaterequal' => 'greaterequals',
+    'less' => 'less',
+    'lessequal' => 'lessequals',
+    'contain' => 'contains',
 );
 
 $app_list_strings['moduleList']['AccountKPIs'] = 'Account KPIs';
 
+$app_list_strings['moduleList']['Mailboxes'] = 'Mailboxes';
+
+$app_list_strings['mailboxes_imap_pop3_protocol_dom'] = array(
+    'imap' => 'IMAP',
+    'pop3' => 'POP3',
+);
+
+$app_list_strings['mailboxes_imap_pop3_encryption_dom'] = array(
+    'ssl_enable' => 'Enable SSL',
+    'ssl_disable' => 'Disable SSL'
+);
+
 $app_strings = array_merge($app_strings, $addAppStrings);
+
+$app_list_strings['smtp_authentication_types'] = array(
+    'no_auth' => 'no authentication',
+    'plain' => 'PLAIN',
+    'login' => 'LOGIN',
+    'cram-md5' => 'CRAM-MD5',
+    'digest-md5' => 'Digest-MD5',
+);
+
+if(file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+    $app_list_strings['serviceorder_status_dom'] = array(
+        'new' => 'New',
+        'planned' => 'Planned',
+        'completed' => 'Completed',
+        'cancelled' => 'Cancelled',
+    );
+    $app_list_strings['parent_type_display']['ServiceOrders'] = 'Serviceaufträge';
+    $app_list_strings['record_type_display']['ServiceOrders'] = 'Serviceaufträge';
+    $app_list_strings['record_type_display_notes']['ServiceOrders'] = 'Serviceaufträge';
+}
+if(file_exists('modules/ServiceTickets/ServiceTicket.php')) {
+    $app_list_strings['serviceticket_status_dom'] = array(
+        'New' => 'Neu',
+        'Assigned' => 'Zugewiesen',
+        'Closed' => 'Geschlossen',
+        'Pending Input' => 'Rückmeldung ausstehend',
+        'Rejected' => 'Abgelehnt',
+        'Duplicate' => 'Duplicate',
+    );
+    $app_list_strings['parent_type_display']['ServiceTickets'] = 'Servicetickets';
+    $app_list_strings['record_type_display']['ServiceTickets'] = 'Servicetickets';
+    $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Servicetickets';
+}
+
+
 
 include('include/SpiceBeanGuide/SpiceBeanGuideLanguage.php');

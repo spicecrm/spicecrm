@@ -43,7 +43,7 @@ require_once('include/generic/SugarWidgets/SugarWidgetSubPanelTopButton.php');
 class SugarWidgetSubPanelTopSelectButton extends SugarWidgetSubPanelTopButton
 {
 	//button_properties is a collection of properties associated with the widget_class definition. layoutmanager
-	function SugarWidgetSubPanelTopSelectButton($button_properties=array())
+	public function __construct($button_properties=array())
 	{
 		$this->button_properties=$button_properties;
 	}

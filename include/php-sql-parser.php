@@ -1071,7 +1071,7 @@ EOREGEX
 	           processes these sections.  Recursive.
 		*/
 		private function process_expr_list($tokens) {
-			$expr = "";
+			$expr = array();
 			$type = "";
 			$prev_token = "";
 			$skip_next = false;

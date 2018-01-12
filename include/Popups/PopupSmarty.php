@@ -67,8 +67,8 @@ class PopupSmarty extends ListViewSmarty{
     var $module;
     var $massUpdateData = '';
 
-	function PopupSmarty($seed, $module){
-		parent::ListViewSmarty();
+	function __construct($seed, $module){
+		parent::__construct();
 		$this->th = new TemplateHandler();
 		$this->th->loadSmarty();
 		$this->seed = $seed;
@@ -278,7 +278,11 @@ class PopupSmarty extends ListViewSmarty{
 			}
 		}
 	    if(!empty($this->_popupMeta['create'])){
-			$formBase = new $this->_popupMeta['create']['formBaseClass']();
+            //BEGIN PHP7 Compatibility
+			//ORIGINAL: $formBase = new $this->_popupMeta['create']['formBaseClass']();
+			$formBaseClass = $this->_popupMeta['create']['formBaseClass'];
+			$formBase = new $formBaseClass();
+			//END
 			if(isset($_REQUEST['doAction']) && $_REQUEST['doAction'] == 'save')
 			{
 				//If it's a new record, set useRequired to false
@@ -290,7 +294,13 @@ class PopupSmarty extends ListViewSmarty{
 		$params = array();
 		if(!empty($this->_popupMeta['orderBy'])){
 			$params['orderBy'] = $this->_popupMeta['orderBy'];
-		}
+            //BEGIN CORE MODIFICATION
+			/*  Bugfix
+			 *  Performance Workshop
+			 */
+            $params['overrideOrder']=true;
+			//END CORE MODIFICATION
+        }
 
 		if(file_exists('custom/modules/'.$this->module.'/metadata/metafiles.php')){
 			require('custom/modules/'.$this->module.'/metadata/metafiles.php');
@@ -298,6 +308,7 @@ class PopupSmarty extends ListViewSmarty{
 			require('modules/'.$this->module.'/metadata/metafiles.php');
 		}
 
+		global $searchFields;
 		if(!empty($metafiles[$this->module]['searchfields'])) {
 			require($metafiles[$this->module]['searchfields']);
 		} elseif(file_exists('modules/'.$this->module.'/metadata/SearchFields.php')) {
@@ -498,7 +509,11 @@ class PopupSmarty extends ListViewSmarty{
             return;
         }
 		if(!empty($this->_popupMeta['create'])){
-			$formBase = new $this->_popupMeta['create']['formBaseClass']();
+			//BEGIN PHP7 Compatibility
+			//ORIGINAL: $formBase = new $this->_popupMeta['create']['formBaseClass']();
+			$formBaseClass = $this->_popupMeta['create']['formBaseClass'];
+			$formBase = new $formBaseClass();
+			//END
 
 
 

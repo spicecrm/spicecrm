@@ -48,7 +48,7 @@ class ViewConvertLead extends SugarView
         $view_object_map = array()
         )
     {
-        parent::SugarView($bean, $view_object_map);
+        parent::__construct($bean, $view_object_map);
     	$this->medataDataFile = $this->fileName;
         if (file_exists("custom/$this->fileName"))
         {
@@ -74,7 +74,7 @@ class ViewConvertLead extends SugarView
         	return $this->handleSave();
         }
 
-    	global $beanList;
+    	global $beanList, $viewdefs;
 
     	// get the EditView defs to check if opportunity_name exists, for a check below for populating data
     	$opportunityNameInLayout = false;
@@ -463,14 +463,14 @@ class ViewConvertLead extends SugarView
                 $fieldDef = $beans['Contacts']->field_defs[$select];
                 if (!empty($fieldDef['id_name']) && !empty($_REQUEST[$fieldDef['id_name']]))
                 {
-                    $beans['Contacts']->$fieldDef['id_name'] = $_REQUEST[$fieldDef['id_name']];
+                    $beans['Contacts']->{$fieldDef['id_name']} = $_REQUEST[$fieldDef['id_name']];
                     $selects[$module] = $_REQUEST[$fieldDef['id_name']];
                     if (!empty($_REQUEST[$select]))
                     {
                         $beans['Contacts']->$select = $_REQUEST[$select];
                     }
                     // Bug 39268 - Add the existing beans to a list of beans we'll potentially add the lead's activities to
-                    $bean = loadBean($module);
+                    $bean = BeanFactory::getBean($module);
                     $bean->retrieve($_REQUEST[$fieldDef['id_name']]);
                     $selectedBeans[$module] = $bean;
                     // If we selected the Contact, just overwrite the $beans['Contacts']
@@ -498,7 +498,13 @@ class ViewConvertLead extends SugarView
         {
             $beans['Contacts']->account_id = $beans['Accounts']->id;
         }
-        
+
+        // link account to contact, if contact has no account_id
+        if(empty($beans['Contacts']->account_id)) {
+            $bean->account_id = $beans['Accounts']->id;
+            $beans['Contacts']->account_id = $beans['Accounts']->id;
+        }
+
         // Saving beans with priorities.
         // Contacts and Accounts should be saved before lead activities to create correct relations
         $saveBeanPriority = array('Contacts', 'Accounts');
@@ -866,7 +872,7 @@ class ViewConvertLead extends SugarView
 			{
 				$bean->id = create_guid();
 				$bean->new_with_id = true;
-				$contact->$fieldDef['id_name'] = $bean->id ;
+				$contact->{$fieldDef['id_name']} = $bean->id ;
 				if ($fieldDef['id_name'] != $select) {
 					$rname = isset($fieldDef['rname']) ? $fieldDef['rname'] : "";
 					if (!empty($rname) && isset($bean->$rname))

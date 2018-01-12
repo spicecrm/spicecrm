@@ -35,8 +35,8 @@
 ********************************************************************************/
 
 class EmployeesController extends SugarController{
-	function EmployeesController(){
-		parent::SugarController();
+	function __construct(){
+		parent::__construct();
 	}
 
 	function action_editview(){

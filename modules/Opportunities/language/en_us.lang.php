@@ -173,4 +173,6 @@ $mod_strings = array(
 
     'LBL_GUIDE_NO_STAGE_DESC' => 'no guide defined...',
     'LBL_GUIDE_NO_STAGE_CHECKS' => 'no checks found...',
+    'LBL_LOSS_REASON' => 'Loss Reason',
+    'LBL_BUYINGCENTER' => 'Buying Center'
 );

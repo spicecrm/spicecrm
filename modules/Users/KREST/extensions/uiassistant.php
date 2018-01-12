@@ -4,7 +4,7 @@ require_once('KREST/handlers/module.php');
 $KRESTModuleHandler = new KRESTModuleHandler($app);
 
 $app->group('/assistant', function () use ($app, $KRESTModuleHandler) {
-    $app->get('/list', function ($table) use ($app, $KRESTModuleHandler) {
+    $app->get('/list', function () use ($app, $KRESTModuleHandler) {
         global $db, $current_user;
         $retArray = array();
         // todo: this needs to be done nicer ... just a workarodun now to get a feed for the front page

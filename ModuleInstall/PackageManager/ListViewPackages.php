@@ -41,8 +41,8 @@ class ListViewPackages extends ListViewSmarty{
     /**
      * Constructor  Call ListViewSmarty
      */
-    function ListViewPackages(){
-        parent::ListViewSmarty();   
+    function __construct(){
+        parent::__construct();
     } 
     
     /**

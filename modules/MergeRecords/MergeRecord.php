@@ -82,7 +82,7 @@ class MergeRecord extends SugarBean {
         if (isset ($_REQUEST['action']) && $_REQUEST['action'] == 'Step2')
             $this->load_merge_bean($this->merge_bean, false, $id);
         else
-            parent :: retrieve($id);
+            parent::retrieve($id);
     }
 
     function load_merge_bean($merge_module, $load_module_strings = false, $merge_id = '') {
@@ -192,7 +192,7 @@ class MergeRecord extends SugarBean {
     //keep save function to handle anything special on merges
     function save($check_notify = FALSE) {
             //something here
-    return parent :: save($check_notify);
+    return parent::save($check_notify);
     }
 
     function populate_search_params($search_params) {

@@ -259,17 +259,17 @@ function get_relationship_information(& $target_bean, $get_upstream_rel_field_na
 	//Does a downstream relationship exist
 	if($rel_array!=null){
 		if($rel_array['relationship_type']=="many-to-many"){
-			$target_bean->$rel_array['join_key_lhs'] = $this->base_bean->id;
+			$target_bean->{$rel_array['join_key_lhs']} = $this->base_bean->id;
 			if($rel_array['relationship_role_column']!=""){
-				$target_bean->$rel_array['relationship_role_column'] = $rel_array['relationship_role_column_value'];
+				$target_bean->{$rel_array['relationship_role_column']} = $rel_array['relationship_role_column_value'];
 			}				
 		//end if many-to-many	
 		}	
 		
 		if($rel_array['relationship_type']=="one-to-many"){
-			$target_bean->$rel_array['rhs_key'] = $this->base_bean->id;
+			$target_bean->{$rel_array['rhs_key']} = $this->base_bean->id;
 			if($rel_array['relationship_role_column']!=""){
-				$target_bean->$rel_array['relationship_role_column'] = $rel_array['relationship_role_column_value'];
+				$target_bean->{$rel_array['relationship_role_column']} = $rel_array['relationship_role_column_value'];
 			}
 		//end if one-to-many
 		}
@@ -286,17 +286,17 @@ function get_relationship_information(& $target_bean, $get_upstream_rel_field_na
 	//Does an upstream relationship exist
 	if($rel_array!=null){
 		if($rel_array['relationship_type']=="many-to-many"){
-			$target_bean->$rel_array['join_key_rhs'] = $this->base_bean->id;
+			$target_bean->{$rel_array['join_key_rhs']} = $this->base_bean->id;
 			if($rel_array['relationship_role_column']!=""){
-				$target_bean->$rel_array['relationship_role_column'] = $rel_array['relationship_role_column_value'];
+				$target_bean->{$rel_array['relationship_role_column']} = $rel_array['relationship_role_column_value'];
 			}				
 		//end if many-to-many	
 		}	
 		
 		if($rel_array['relationship_type']=="one-to-many"){
-			$this->$rel_array['rhs_key'] = $this->base_bean->id;
+			$this->{$rel_array['rhs_key']} = $this->base_bean->id;
 			if($rel_array['relationship_role_column']!=""){
-				$this->$rel_array['relationship_role_column'] = $rel_array['relationship_role_column_value'];
+				$this->{$rel_array['relationship_role_column']} = $rel_array['relationship_role_column_value'];
 			}
 		//end if one-to-many
 		}

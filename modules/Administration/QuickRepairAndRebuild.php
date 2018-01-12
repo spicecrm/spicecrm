@@ -163,7 +163,7 @@ class RepairAndClear
 						$focus = new $bean_name ();
 						#30273
 						if($focus->disable_vardefs == false) {
-							include('modules/' . $focus->module_dir . '/vardefs.php');
+							include(get_custom_file_if_exists('modules/' . $focus->module_dir . '/vardefs.php'));
 
 
 							if($this->show_output)

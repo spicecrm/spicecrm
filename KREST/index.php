@@ -40,24 +40,8 @@ define('sugarEntry', 'SLIM');
 require 'KREST/KRESTManager.php';
 $KRESTManager = new KRESTManager($app, $app->request->get());
 
-
-$KRestDirHandle = opendir('./KREST/extensions');
-while (false !== ($KRestNextFile = readdir($KRestDirHandle))) {
-    $statusInclude = 'NOP';
-    if (preg_match('/.php$/', $KRestNextFile)) {
-        $statusInclude = 'included';
-        require_once('./KREST/extensions/' . $KRestNextFile);
-    }
-}
-
-$KRestDirHandle = opendir('./custom/KREST/extensions');
-if ($KRestDirHandle) {
-    while (false !== ($KRestNextFile = readdir($KRestDirHandle))) {
-        if (preg_match('/.php$/', $KRestNextFile)) {
-            require_once('./custom/KREST/extensions/' . $KRestNextFile);
-        }
-    }
-}
+// set a global transactionid
+$GLOBALS['transactionID'] = create_guid();
 
 // check if we have extension in the local path
 $checkRootPaths= ['include', 'modules', 'custom/modules'];
@@ -78,6 +62,25 @@ foreach($checkRootPaths as $checkRootPath) {
         }
     }
 }
+
+$KRestDirHandle = opendir('./custom/KREST/extensions');
+if ($KRestDirHandle) {
+    while (false !== ($KRestNextFile = readdir($KRestDirHandle))) {
+        if (preg_match('/.php$/', $KRestNextFile)) {
+            require_once('./custom/KREST/extensions/' . $KRestNextFile);
+        }
+    }
+}
+
+$KRestDirHandle = opendir('./KREST/extensions');
+while (false !== ($KRestNextFile = readdir($KRestDirHandle))) {
+    $statusInclude = 'NOP';
+    if (preg_match('/.php$/', $KRestNextFile)) {
+        $statusInclude = 'included';
+        require_once('./KREST/extensions/' . $KRestNextFile);
+    }
+}
+
 // authenticate
 $KRESTManager->authenticate();
 
@@ -85,21 +88,22 @@ $KRESTManager->authenticate();
 $KRESTManager->getProxyFiles();
 
 // SpiceCRM Deployment Maintenance Windows Check
-global $db, $timedate;
-$date = new DateTime('now',new DateTimeZone('UTC'));
-$res = $db->query("SELECT * FROM kdeploymentmws WHERE deleted = 0 AND from_date <= '".date_format($date, $timedate->get_db_date_time_format())."' AND to_date > '".date_format($date, $timedate->get_db_date_time_format())."'");
-while($row = $db->fetchByAssoc($res)){
-    $logged_in_user = new User();
-    $logged_in_user->retrieve($_SESSION['authenticated_user_id']);
-    if($row['disable_krest'] > 0 && !$logged_in_user->is_admin && !$KRESTManager->noAuthentication) {
-        unset($_GET['PHPSESSID']);
-        session_destroy();
-        $to_date = $timedate->fromDb($row['to_date']);
-        $KRESTManager->authenticationError('System in Deployment Maintenance Window till '.$timedate->asUser($to_date)." !");
-        exit;
+if(file_exists("modules/KDeploymentMWs/KDeploymentMW.php")) {
+    global $db, $timedate;
+    $date = new DateTime('now', new DateTimeZone('UTC'));
+    $res = $db->query("SELECT * FROM kdeploymentmws WHERE deleted = 0 AND from_date <= '" . date_format($date, $timedate->get_db_date_time_format()) . "' AND to_date > '" . date_format($date, $timedate->get_db_date_time_format()) . "'");
+    while ($row = $db->fetchByAssoc($res)) {
+        $logged_in_user = new User();
+        $logged_in_user->retrieve($_SESSION['authenticated_user_id']);
+        if ($row['disable_krest'] > 0 && !$logged_in_user->is_admin && !$KRESTManager->noAuthentication) {
+            unset($_GET['PHPSESSID']);
+            session_destroy();
+            $to_date = $timedate->fromDb($row['to_date']);
+            $KRESTManager->authenticationError('System in Deployment Maintenance Window till ' . $timedate->asUser($to_date) . " !");
+            exit;
+        }
     }
 }
-
 // run the request
 $app->contentType('application/json');
 $app->run();

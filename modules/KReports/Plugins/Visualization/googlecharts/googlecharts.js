@@ -14,7 +14,7 @@ Ext.define('SpiceCRM.KReporter.Designer.visualizationplugins.googlechartspanel',
             frame: false,
             border: false,
             padding: 5,
-			overflowY: 'scroll',
+            scrollable: true,
             items: [
                 {
                     xtype: 'fieldset',

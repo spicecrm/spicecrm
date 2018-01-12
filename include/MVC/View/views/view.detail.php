@@ -59,9 +59,9 @@ class ViewDetail extends SugarView
      *
      * @see SugarView::SugarView()
      */
-    public function ViewDetail()
+    public function __construct()
     {
-        parent::SugarView();
+        parent::__construct();
     }
 	
     /**

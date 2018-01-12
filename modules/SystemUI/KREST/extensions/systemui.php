@@ -3,10 +3,14 @@
 require_once 'modules/SystemUI/SystemUIRESTHandler.php';
 $uiRestHandler = new SystemUIRESTHandler();
 
-$app->group('/spiceui', function () use ($app, $uiRestHandler) {
-    $app->group('/core', function () use ($app, $uiRestHandler) {
-        $app->group('/modules', function () use ($app, $uiRestHandler) {
-            $app->get('', function () use ($app, $uiRestHandler) {
+$app->group('/spiceui', function () use ($app, $uiRestHandler)
+{
+    $app->group('/core', function () use ($app, $uiRestHandler)
+    {
+        $app->group('/modules', function () use ($app, $uiRestHandler)
+        {
+            $app->get('', function () use ($app, $uiRestHandler)
+            {
                 echo json_encode(array(
                     'modules' => $uiRestHandler->getModules(),
                     'roles' => $uiRestHandler->getSysRoles(),
@@ -35,7 +39,8 @@ $app->group('/spiceui', function () use ($app, $uiRestHandler) {
                 'componentdefaultconfigs' => $uiRestHandler->getComponentDefaultConfigs(),
                 'componentmoduleconfigs' => $uiRestHandler->getComponentModuleConfigs(),
                 'componentsets' => $uiRestHandler->getComponentSets(),
-                'actionsets' => $uiRestHandler->getActionSets()
+                'actionsets' => $uiRestHandler->getActionSets(),
+                'routes' => $uiRestHandler->getRoutes()
             ));
         });
         $app->post('/componentsets', function () use ($app, $uiRestHandler) {
@@ -98,7 +103,28 @@ $app->group('/spiceui', function () use ($app, $uiRestHandler) {
                 SpiceReminders::removeReminder($id);
                 echo json_encode(array('status' => 'success'));
             });
+        });
 
+        $app->group('/modelvalidations', function () use ($app, $uiRestHandler)
+        {
+            $app->get('', function () use ($app, $uiRestHandler)
+            {
+                //var_dump($uiRestHandler->getAllModelValidations());
+                echo json_encode($uiRestHandler->getAllModelValidations());
+            });
+            $app->get('/:module', function ($module) use ($app, $uiRestHandler)
+            {
+                echo json_encode($uiRestHandler->getModuleModelValidations($module),JSON_HEX_TAG);
+            });
+            $app->post('', function () use ($app, $uiRestHandler)
+            {
+                $postbody = json_decode($app->request->getBody(), true);
+                echo json_encode($uiRestHandler->setModelValidation($postbody));
+            });
+            $app->delete('/:id', function ($id) use ($app, $uiRestHandler)
+            {
+                echo json_encode($uiRestHandler->deleteModelValidation($id));
+            });
         });
     });
     $app->group('/admin', function () use ($app, $uiRestHandler) {

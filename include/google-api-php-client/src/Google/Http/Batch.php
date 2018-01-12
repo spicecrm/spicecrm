@@ -111,7 +111,7 @@ class Google_Http_Batch
           $status = explode(" ", $status);
           $status = $status[1];
 
-          list($partHeaders, $partBody) = $this->client->getIo()->ParseHttpResponse($part, false);
+          list($partHeaders, $partBody) = $this->client->getIo()->parseHttpResponse($part, false);
           $response = new Google_Http_Request("");
           $response->setResponseHttpCode($status);
           $response->setResponseHeaders($partHeaders);

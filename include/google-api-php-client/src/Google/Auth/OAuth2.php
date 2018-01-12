@@ -483,7 +483,7 @@ class Google_Auth_OAuth2 extends Google_Auth_Abstract
     if (!$id_token) {
       $id_token = $this->token['id_token'];
     }
-    $certs = $this->getFederatedSignonCerts();
+    $certs = $this->getFederatedSignOnCerts();
     if (!$audience) {
       $audience = $this->client->getClassConfig($this, 'client_id');
     }

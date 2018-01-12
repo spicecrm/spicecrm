@@ -441,6 +441,9 @@ class KRESTModuleHandler
             case 'doy<=':
                 return 'DAYOFYEAR(' . $fieldName . ') <= ' . $condition['value'];
                 break;
+            case 'today':
+                return "date_format($fieldName, '%Y%m%d') = date_format(now(), '%Y%m%d')";
+                break;
             case 'in':
             case 'not in':
                 return $fieldName . ' ' . $condition['operator'] . ' (' . $condition['value'] . ') ';
@@ -475,7 +478,6 @@ class KRESTModuleHandler
     public function get_bean_detail($beanModule, $beanId, $requestParams)
     {
         global $current_language, $app_list_strings;
-
         // acl check if user can get the detail
         if (!ACLController::checkAccess($beanModule, 'view', true)) {
             http_response_code(403);
@@ -485,7 +487,7 @@ class KRESTModuleHandler
 
         $app_list_strings = return_app_list_strings_language($current_language);
 
-        $thisBean = BeanFactory::getBean($beanModule, $beanId);
+        $thisBean = BeanFactory::getBean($beanModule, $beanId, array('encode' => false)); //set encode to false to avoid things like ' being translated to &#039;
         if (!$thisBean) {
             http_response_code(404);
             echo('record not found');
@@ -705,11 +707,14 @@ class KRESTModuleHandler
             echo('not authorized for module ' . $thisBean->field_defs[$linkName]['module']);
             exit;
         }
+
+
+
         $thisBean->load_relationship($linkName);
 
         // get related beans and related module
         // get_linked_beans($field_name, $bean_name, $sort_array = array(), $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
-        $relBeans = $thisBean->get_linked_beans($linkName, '', json_decode($params['sort'], true) ?: array(), $params['offset'] ?: 0, $params['limit'] ?: 5);
+        $relBeans = $thisBean->get_linked_beans($linkName, $GLOBALS['beanList'][$beanModule], json_decode($params['sort'], true) ?: array(), $params['offset'] ?: 0, $params['limit'] ?: 5);
 
         $relModule = $thisBean->field_defs[$linkName]['module'];
 
@@ -719,6 +724,11 @@ class KRESTModuleHandler
                 $relBean->relid = create_guid();
             $retArray[$relBean->relid] = $this->mapBeanToArray($relModule, $relBean);
 
+            // add relationship fields
+            if(is_array($relBean->relationhshipfields)) {
+                $retArray[$relBean->relid]['relationhshipfields'] = $relBean->relationhshipfields;
+            }
+
             if ($params['relationshipFields']) {
                 $relFields = json_decode(html_entity_decode($params['relationshipFields']), true);
                 if (count($relFields) > 0) ;
@@ -726,7 +736,7 @@ class KRESTModuleHandler
         }
 
         if ($params['getcount']) {
-            $relCount = $thisBean->get_linked_beans_count($linkName);
+            $relCount = $thisBean->get_linked_beans_count($linkName, $GLOBALS['beanList'][$beanModule]);
             return array(
                 'count' => $relCount,
                 'list' => $retArray
@@ -778,8 +788,6 @@ class KRESTModuleHandler
         }
         $retArray = array();
 
-        $relatedIds = json_decode($this->app->request->getBody());
-
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if (!$thisBean) {
             http_response_code(404);
@@ -793,9 +801,35 @@ class KRESTModuleHandler
             exit;
         }
 
-        $thisBean->load_relationship($linkName);
+        // set the relate module
+        $relBean = BeanFactory::getBean($thisBean->field_defs[$linkName]['module'], $postparams['id']);
+        $beanResponse = $this->add_bean($thisBean->field_defs[$linkName]['module'], $postparams['id'], $postparams);
 
-        return $retArray;
+        $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
+        if(is_array($relFields) && count($relFields)>0) {
+            $thisBean->load_relationship($linkName);
+            switch($thisBean->{$linkName}->getSide()){
+                case 'RHS':
+                    $relid = $thisBean->{$linkName}->relationship->relationship_exists($relBean, $thisBean);
+                    break;
+                default:
+                    $relid = $thisBean->{$linkName}->relationship->relationship_exists($thisBean, $relBean);
+                    break;
+            }
+
+            if($relid) {
+                $valArray = Array();
+                foreach($relFields as $relfield => $relmapdata) {
+                    $fieldArray[] = $relfield;
+                    $valArray[] = $relfield . " = '" . $postparams[$relmapdata['map']] . "'";
+                }
+
+                $thisBean->db->query("UPDATE " . $thisBean->{$linkName}->relationship->getRelationshipTable() . " SET " . implode(', ', $valArray) . " WHERE id ='$relid'");
+
+            }
+        }
+
+        return $beanResponse;
     }
 
     public function delete_related($beanModule, $beanId, $linkName)
@@ -940,8 +974,10 @@ class KRESTModuleHandler
         }
 
         // index the bean now
-        $spiceFTSHandler = new SpiceFTSHandler();
-        $spiceFTSHandler->indexBean($thisBean);
+        if(class_exists('SpiceFTSHandler', false)) {
+            $spiceFTSHandler = new SpiceFTSHandler();
+            $spiceFTSHandler->indexBean($thisBean);
+        }
 
         return $this->mapBeanToArray($beanModule, $thisBean);
     }

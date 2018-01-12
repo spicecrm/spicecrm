@@ -256,7 +256,7 @@ for( $iii = 0; $iii < $_REQUEST['copy_count']; $iii++ ){
         $file_to_copy = $_REQUEST["copy_" . $iii];
         $src_file   = clean_path( "$unzip_dir/$zip_from_dir/$file_to_copy" );
 
-        $sugar_home_dir = getCwd();
+        $sugar_home_dir = getcwd();
         $dest_file  = clean_path( "$sugar_home_dir/$zip_to_dir/$file_to_copy" );
         if($zip_to_dir != '.')
         	$rest_file  = clean_path("$rest_dir/$zip_to_dir/$file_to_copy");

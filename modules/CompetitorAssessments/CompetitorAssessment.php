@@ -49,7 +49,7 @@ class CompetitorAssessment extends SugarBean {
 
 
     public function __construct(){
-        parent::SugarBean();
+        parent::__construct();
     }
 
     public function get_summary_text(){

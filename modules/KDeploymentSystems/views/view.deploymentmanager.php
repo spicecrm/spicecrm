@@ -5,9 +5,9 @@ require_once('include/MVC/View/SugarView.php');
 class KDeploymentSystemsViewDeploymentManager extends SugarView
 {
 
-    function KDeploymentSystemsViewDeploymentManager()
+    function __construct()
     {
-        parent::SugarView();
+        parent::__construct();
     }
 
     function display()

@@ -34,7 +34,7 @@ require_once('include/MVC/View/views/view.detail.php');
 class ProposalsViewDetail extends ViewDetail {
 
     public function __construct(){
-        parent::ViewDetail();
+        parent::__construct();
     }
 
     public function display() {

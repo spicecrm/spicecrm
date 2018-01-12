@@ -71,8 +71,8 @@ class EmailMan extends SugarBean{
     // This is used to retrieve related fields from form posts.
 	var $additional_column_fields = array();
 
-	function EmailMan() {
-		parent::SugarBean();
+	function __construct() {
+		parent::__construct();
 
 	}
 

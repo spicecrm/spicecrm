@@ -240,7 +240,7 @@ $viewdefs['Calls']['ConvertLead'] = array(
     }
 </script>{/literal}
 <input name="Callsduration_hours" tabindex="1" size="2" maxlength="2" type="text" value="{$fields.duration_hours.value}"/>
-{php}$this->_tpl_vars["minutes_values"] = $this->_tpl_vars["bean"]->minutes_values;{/php}
+{php}$_smarty_tpl->_tpl_vars["minutes_values"] = $_smarty_tpl->_tpl_vars["bean"]->minutes_values;{/php}
 {html_options name="Callsduration_minutes" options=$minutes_values selected=$fields.duration_minutes.value} &nbsp;
 <span class="dateFormat">{sugar_translate label="LBL_HOURS_MINUTES" module="Calls"}',
                     'displayParams' => 
@@ -299,7 +299,7 @@ $viewdefs['Meetings']['ConvertLead'] = array(
     }
 </script>{/literal}
 <input name="Meetingsduration_hours" tabindex="1" size="2" maxlength="2" type="text" value="{$fields.duration_hours.value}" />
-{php}$this->_tpl_vars["minutes_values"] = $this->_tpl_vars["bean"]->minutes_values;{/php}
+{php}$_smarty_tpl->_tpl_vars["minutes_values"] = $_smarty_tpl->_tpl_vars["bean"]->minutes_values;{/php}
 {html_options name="Meetingsduration_minutes" options=$minutes_values selected=$fields.duration_minutes.value} &nbsp;
 <span class="dateFormat">{sugar_translate label="LBL_HOURS_MINUTES" module="Calls"}',
                     'displayParams' => 

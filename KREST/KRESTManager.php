@@ -73,7 +73,18 @@ class KRESTManager
                 $accessLog->addRecord();
             } else
                 $this->authenticationError();
-        } elseif (!empty($this->requestParams['user_name']) && !empty($this->requestParams['password'])) {
+        } elseif(!empty($_GET['PHP_AUTH_DIGEST_RAW'])){
+            // handling for CLI
+            $auth = explode(':', base64_decode($_GET['PHP_AUTH_DIGEST_RAW']));
+            $loginData = $this->login(array('user_name' => $auth[0], 'password' => $auth[1], 'encryption' => 'PLAIN'));
+            if ($loginData !== false) {
+                $this->sessionId = $loginData;
+                $this->tmpSessionId = $loginData;
+                $accessLog = BeanFactory::getBean('UserAccessLogs');
+                $accessLog->addRecord();
+            } else
+                $this->authenticationError();
+        }elseif (!empty($this->requestParams['user_name']) && !empty($this->requestParams['password'])) {
             $loginData = $this->login(array('user_name' => $this->requestParams['user_name'], 'password' => $this->requestParams['password'], 'encryption' => $this->requestParams['encryption']));
             if ($loginData !== false) {
                 $this->sessionId = $loginData;
@@ -87,12 +98,17 @@ class KRESTManager
                 $this->sessionId = $startedSession;
             else
                 $this->authenticationError('session invalid');
-        } elseif (!empty($this->requestParams['session_id']) || !empty($_COOKIE['PHPSESSID'])) {
-            $startedSession = $this->startSession($this->requestParams['session_id']);
+        } elseif (!empty($this->requestParams['session_id']) || !empty($this->requestParams['sessionid']) || !empty($_COOKIE['PHPSESSID'])) {
+
+            $sessionId = $this->requestParams['session_id'] ?: ( $this->requestParams['sessionid'] ?: $_COOKIE['PHPSESSID']);
+
+            $startedSession = $this->startSession($sessionId);
             if ($startedSession !== false)
                 $this->sessionId = $startedSession;
             else
                 $this->authenticationError('session invalid');
+        } else {
+            $this->authenticationError('auth data missing');
         }
     }
 
@@ -113,8 +129,11 @@ class KRESTManager
 
         // set for cors
         header("Access-Control-Allow-Origin: *");
+        // todo: what if HttpResponse is missing??? windows???
         HttpResponse::send('session invalid');
 
+        $accessLog = BeanFactory::getBean('UserAccessLogs');
+        $accessLog->addRecord('loginfail');
         exit;
     }
 
@@ -281,7 +300,8 @@ class KRESTManager
             'first_name' => $current_user->first_name,
             'last_name' => $current_user->last_name,
             'email' => $current_user->email1,
-            'admin' => $current_user->is_admin
+            'admin' => $current_user->is_admin,
+            'renewPass' => $current_user->system_generated_password
         );
     }
 
@@ -289,11 +309,10 @@ class KRESTManager
     {
         $headers = getallheaders();
 
-        if($headers['proxyfiles']){
+        if ($headers['proxyfiles']) {
             $files = json_decode(base64_decode($headers['proxyfiles']), true);
             $_FILES = $files;
         }
-
 
     }
 

@@ -260,6 +260,11 @@ $dictionary['InboundEmail'] = array('table' => 'inbound_email', 'comment' => 'In
             'vname' => 'LBL_PROCESSING_FUNCTION',
             'type' => 'varchar'
         ),
+        'actionset' => array (
+            'name' => 'actionset',
+            'vname' => 'LBL_ACTIONSET',
+            'type' => 'id',
+        ),
 	), /* end fields() */
 	'indices' => array (
 		array(

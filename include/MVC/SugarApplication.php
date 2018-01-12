@@ -54,9 +54,6 @@ class SugarApplication
  	var $default_module = 'Home';
  	var $default_action = 'index';
 
- 	function SugarApplication()
- 	{}
-
  	/**
  	 * Perform execution of the application. This method is called from index2.php
  	 */
@@ -81,7 +78,9 @@ class SugarApplication
 
         SugarThemeRegistry::buildRegistry();
         $this->loadLanguages();
-		$this->checkDatabaseVersion();
+		//begin deprecated in SpiceCRM
+        //$this->checkDatabaseVersion();
+        //end
 		$this->loadDisplaySettings();
 		$this->loadLicense();
 		$this->loadGlobals();
@@ -357,7 +356,8 @@ class SugarApplication
 		$GLOBALS['mod_strings'] = return_module_language($GLOBALS['current_language'], $this->controller->module);
 	}
 	/**
-	* checkDatabaseVersion
+	* @deprecated in SpiceCRM
+    * checkDatabaseVersion
 	* Check the db version sugar_version.php and compare to what the version is stored in the config table.
 	* Ensure that both are the same.
 	*/

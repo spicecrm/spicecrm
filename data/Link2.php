@@ -442,11 +442,11 @@ class Link2 {
                     $result[$id] = $this->beans[$id];
                 }
                 //20reasons .. add the relid
-                if($vals['relid'])
+                if($result[$id] instanceof SugarBean && $vals['relid'])
                     $result[$id]->relid = $vals['relid'];
 
                 foreach ($this->relationship_fields as $field => $data) {
-                    if ($data['map']) {
+                    if ($data['map'] && $result[$id]) { //check on $result[$id] in case no bean was found
                         $result[$id]->{$data['map']} = $vals[$field];
                     }
                 }

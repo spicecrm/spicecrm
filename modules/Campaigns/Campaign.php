@@ -428,5 +428,44 @@ class Campaign extends SugarBean {
 
         return (int)$result['count'];
     }
+
+    function track_prospects($status = 'targeted'){
+        $campaign_id = $GLOBALS['db']->quote($this->id);
+        $delete_query="delete from campaign_log where campaign_id='".$campaign_id."' and activity_type='$status'";
+        $this->db->query($delete_query);
+
+        $current_date = $this->db->now();
+        $guidSQL = $this->db->getGuidSQL();
+
+        $insert_query= "INSERT INTO campaign_log (id,activity_date, campaign_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted";
+        $insert_query.=')';
+        $insert_query.="SELECT {$guidSQL}, $current_date, plc.campaign_id,{$guidSQL},plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0 ";
+        $insert_query.="FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
+        $insert_query.=" INNER JOIN prospect_list_campaigns plc ON plc.prospect_list_id = prospect_lists.id";
+        $insert_query.=" WHERE plc.campaign_id='".$GLOBALS['db']->quote($this->id)."'";
+        $insert_query.=" AND prospect_lists.deleted=0";
+        $insert_query.=" AND plc.deleted=0";
+        $insert_query.=" AND plp.deleted=0";
+        $insert_query.=" AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
+        $this->db->query($insert_query);
+
+        global $mod_strings;
+        //return success message
+        return $mod_strings['LBL_DEFAULT_LIST_ENTRIES_WERE_PROCESSED'];
+    }
+
+    function validateTemplate(){
+        if(!empty($this->email_template_id)) {
+            if (!class_exists('EmailTemplate')) {
+                include('modules/EmailTemplates/EmailTemplate.php');
+            }
+            $current_emailtemplate= new EmailTemplate();
+            $current_emailtemplate->retrieve($campaign->email_template_id);
+            if(!empty($current_emailtemplate->subject) && (!empty($current_emailtemplate->body) || !empty($current_emailtemplate->body_html))){
+                $template_status[$campaign->email_template_id] = 'ok';
+            }else{
+                $template_status[$campaign->email_template_id] = 'nok';
+            }
+        }
+    }
 }
-?>

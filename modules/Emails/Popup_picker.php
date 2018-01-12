@@ -43,17 +43,8 @@ global $theme;
 
 
 
-
-
-
-
-
-class Popup_Picker {
-	/*
-	 * 
-	 */
-	function Popup_Picker() {
-	}
+class Popup_Picker
+{
 	
 	/*
 	 * 

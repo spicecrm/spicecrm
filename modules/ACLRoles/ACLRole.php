@@ -49,8 +49,8 @@ class ACLRole extends SugarBean{
 
     var $created_by;
 
-    function ACLRole(){
-        parent::SugarBean();
+    function __construct(){
+        parent::__construct();
     }
 
     // bug 16790 - missing get_summary_text method led Tracker to display SugarBean's "base implementation"

@@ -174,11 +174,11 @@ class EwsService {
                             $ewsFieldName = $ewsFieldDef['elementName'];
                             $ewsItem->$ewsFieldName = $businessObject->$businessObjectField;
                         } else {
-                            if(empty($ewsItem->$ewsFieldDef['dictionary'])) {
+                            if(empty($ewsItem->{$ewsFieldDef['dictionary']})) {
                                 $dictionary = new $businessObjectMapping['dictionaries'][$ewsFieldDef['dictionary']];
-                                $ewsItem->$ewsFieldDef['dictionary'] = $dictionary;
+                                $ewsItem->{$ewsFieldDef['dictionary']} = $dictionary;
                             } else {
-                                $dictionary = $ewsItem->$ewsFieldDef['dictionary'];
+                                $dictionary = $ewsItem->{$ewsFieldDef['dictionary']};
                             }
                             $entryExists = false;
                             foreach($dictionary->Entry as $existingDictionaryEntry) {
@@ -193,7 +193,7 @@ class EwsService {
                                 $dictionaryEntry->Key = $ewsFieldDef['dictionaryKey'];
                                 $ewsItem->{$ewsFieldDef['dictionary']}->Entry[] = $dictionaryEntry;                                
                             }
-                            $dictionaryEntry->$ewsFieldDef['elementName'] = $businessObject->$businessObjectField;
+                            $dictionaryEntry->{$ewsFieldDef['elementName']} = $businessObject->$businessObjectField;
                         }
                     }
                 }

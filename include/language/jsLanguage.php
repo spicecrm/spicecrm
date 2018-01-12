@@ -36,15 +36,14 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 ********************************************************************************/
 
  
-class jsLanguage {
+class jsLanguage
+{
     
     /**
      * Creates javascript versions of language files
      */
-    function jsLanguage() {
-    }
     
-    function createAppStringsCache($lang = 'en_us') {
+    public static function createAppStringsCache($lang = 'en_us') {
         // cn: bug 8242 - non-US langpack chokes
         $app_strings = return_application_language($lang);
         $app_list_strings = return_app_list_strings_language($lang);
@@ -65,7 +64,8 @@ EOQ;
         }
     }
     
-    function createModuleStringsCache($moduleDir, $lang = 'en_us', $return = false) {
+    public static function createModuleStringsCache($moduleDir, $lang = 'en_us', $return = false)
+    {
         $json = getJSONobj();
 
         // cn: bug 8242 - non-US langpack chokes

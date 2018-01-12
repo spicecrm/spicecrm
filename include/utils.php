@@ -12,7 +12,8 @@
 require_once('include/SugarObjects/SugarConfig.php');
 require_once('include/utils/security_utils.php');
 
-function make_sugar_config(&$sugar_config) {
+function make_sugar_config(&$sugar_config)
+{
     /* used to convert non-array config.php file to array format */
     global $admin_export_only;
     global $cache_dir;
@@ -791,6 +792,19 @@ function return_app_list_strings_language($language) {
             $GLOBALS['log']->info("Found override language file: $lang.lang.php.override");
         }
 
+        //check custom
+        if (file_exists("custom/include/language/$lang.lang.php")) {
+            include("custom/include/language/$lang.lang.php");
+            $GLOBALS['log']->info("Found language file: $lang.lang.php");
+        }
+        if (file_exists("custom/include/language/$lang.lang.override.php")) {
+            include("custom/include/language/$lang.lang.override.php");
+            $GLOBALS['log']->info("Found override language file: $lang.lang.override.php");
+        }
+        if (file_exists("custom/include/language/$lang.lang.php.override")) {
+            include("custom/include/language/$lang.lang.php.override");
+            $GLOBALS['log']->info("Found override language file: $lang.lang.php.override");
+        }
         $app_list_strings_array[] = $app_list_strings;
     }
 

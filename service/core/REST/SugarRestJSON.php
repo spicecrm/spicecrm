@@ -51,7 +51,7 @@ class SugarRestJSON extends SugarRestSerialize{
 	 * @return String - echos json encoded string of $input
 	 */
 	function generateResponse($input){
-		$json = getJSONObj();
+		$json = getJSONobj();
 		ob_clean();
 		header('Content-Type: application/json; charset=UTF-8');
 		if (isset($this->faultObject)) {
@@ -82,7 +82,7 @@ class SugarRestJSON extends SugarRestSerialize{
 			$this->fault($er);
 		}else{
 			$method = $_REQUEST['method'];
-			$json = getJSONObj();
+			$json = getJSONobj();
 			$data = $json->decode($json_data);
 			if(!is_array($data))$data = array($data);
 			$res = call_user_func_array(array( $this->implementation, $method),$data);
@@ -104,7 +104,7 @@ class SugarRestJSON extends SugarRestSerialize{
 	function generateFaultResponse($errorObject){
 		$error = $errorObject->number . ': ' . $errorObject->name . '<br>' . $errorObject->description;
 		$GLOBALS['log']->error($error);
-		$json = getJSONObj();
+		$json = getJSONobj();
 		ob_clean();
 		// JSONP support
 		if ( isset($_GET["jsoncallback"]) ) {

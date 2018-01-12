@@ -80,7 +80,7 @@ class MBField{
 				if(empty($this->options)){
 					$this->options = $this->name . '_list';
 				}
-				$vardef['options'] = $this->addDropdown();
+				$vardef['options'] = $this->addDropDown();
 				return $vardef;
 			default:
 				$vardef['type']='varchar';

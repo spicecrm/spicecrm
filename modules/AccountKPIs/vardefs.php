@@ -66,4 +66,4 @@ $dictionary['AccountKPI'] = array(
 );
 
 require_once('include/SugarObjects/VardefManager.php');
-VarDefManager::createVardef('AccountKPIs', 'AccountKPI', array('default', 'assignable'));
+VardefManager::createVardef('AccountKPIs', 'AccountKPI', array('default', 'assignable'));

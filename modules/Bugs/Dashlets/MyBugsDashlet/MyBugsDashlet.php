@@ -42,11 +42,11 @@ require_once('include/Dashlets/DashletGeneric.php');
 
 
 class MyBugsDashlet extends DashletGeneric { 
-    function MyBugsDashlet($id, $def = null) {
+    function __construct($id, $def = null) {
         global $current_user, $app_strings;
 		require('modules/Bugs/Dashlets/MyBugsDashlet/MyBugsDashlet.data.php');
 		
-        parent::DashletGeneric($id, $def);
+        parent::__construct($id, $def);
         
         $this->searchFields = $dashletData['MyBugsDashlet']['searchFields'];
         $this->columns = $dashletData['MyBugsDashlet']['columns'];

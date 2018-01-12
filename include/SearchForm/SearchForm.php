@@ -40,7 +40,8 @@ require_once('include/tabs.php');
  * Old search form
  * @api
  */
-class SearchForm {
+class SearchForm
+{
    /**
      * SearchForm Template to use (xtpl)
      * @var string
@@ -85,7 +86,8 @@ class SearchForm {
      * @param string $tpl template to use, defaults to moduleDir/SearchForm.html
      *
      */
-    function SearchForm($module, &$seedBean, $tpl = null) {
+    public function __construct($module, &$seedBean, $tpl = null)
+    {
         global $app_strings;
 
         $this->module = $module;
@@ -123,7 +125,7 @@ class SearchForm {
                                   'key'    => $module . '|saved_views');
         }
 
-        }
+    }
 
     /**
      * Populate the searchFields from an array

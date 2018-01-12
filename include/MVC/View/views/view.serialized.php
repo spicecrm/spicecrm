@@ -36,8 +36,8 @@
 
 class ViewSerialized extends SugarView{
 	var $type ='detail';
-	function ViewSerialized(){
- 		parent::SugarView();
+	function __construct(){
+ 		parent::__construct();
  	}
  	
 	function display(){

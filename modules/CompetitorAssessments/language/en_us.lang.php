@@ -53,7 +53,7 @@ $mod_strings = array (
     'LBL_LIST_COMPETITIVE_STATUS' => 'Status',
 
 //=> Links
-    'LBL_OPPORTUNITIES_LINK' => 'Opportunities',
+    'LBL_OPPORTUNITIES' => 'Opportunities',
 
 //=> Subpanels
 

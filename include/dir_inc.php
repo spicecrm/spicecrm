@@ -237,7 +237,7 @@ function findAllFilesRelative( $the_dir, $the_array ){
     if(!is_dir($the_dir)) {
 		return $the_array;
 	}
-    $original_dir   = getCwd();
+    $original_dir   = getcwd();
     if(is_dir($the_dir)){
     	chdir( $the_dir );
     	$the_array = findAllFiles( ".", $the_array );

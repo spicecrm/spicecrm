@@ -68,8 +68,8 @@ class Release extends SugarBean {
 	// This is used to retrieve related fields from form posts.
 	var $additional_column_fields = Array();
 
-	function Release() {
-		parent::SugarBean();
+	function __construct() {
+		parent::__construct();
 	}
 
 	function get_summary_text()

@@ -96,6 +96,7 @@ $mod_strings = array (
 	'LBL_DATE'					=> 'Date Sent:',
     'LBL_DELETE_FROM_SERVER'    => 'Delete message from server',
 	'LBL_DESCRIPTION'			=> 'Description',
+	'LBL_DESCRIPTION_HTML'		=> 'Body',
 	'LBL_EDIT_ALT_TEXT'			=> 'Edit Plain Text',
 	'LBL_SEND_IN_PLAIN_TEXT'	=> 'Send in Plain Text',
 	'LBL_EDIT_MY_SETTINGS'		=> 'Edit My Settings',
@@ -107,7 +108,9 @@ $mod_strings = array (
 	'LBL_EMAILS_ACCOUNTS_REL'	=> 'Emails:Accounts',
 	'LBL_EMAILS_BUGS_REL'		=> 'Emails:Bugs',
 	'LBL_EMAILS_CASES_REL'		=> 'Emails:Cases',
-	'LBL_EMAILS_CONTACTS_REL'	=> 'Emails:Contacts',
+    'LBL_EMAILS_SERVICETICKETS_REL' => 'E-Mails:Service Tickets',
+    'LBL_EMAILS_SERVICEORDERS_REL'	=> 'E-Mails:Service Orders',
+    'LBL_EMAILS_CONTACTS_REL'	=> 'Emails:Contacts',
 	'LBL_EMAILS_LEADS_REL'		=> 'Emails:Leads',
 	'LBL_EMAILS_OPPORTUNITIES_REL'=> 'Emails:Opportunities',
     'LBL_EMAILS_NOTES_REL'      => 'Emails:Notes',
@@ -349,7 +352,7 @@ $mod_strings = array (
     'LBL_NO_SUBJECT' =>'(no subject)',
     'LBL_CHECKING_ACCOUNT'	=> 'Checking Account',
     'LBL_OF'	=> 'of',
-    'LBL_TEST_EMAIL_BODY' => 'This email was sent in order to test the outgoing mail server information provided in the Sugar application.  A successful receipt of this email indicates that the outgoing mail server information provided is valid.',
+    'LBL_TEST_EMAIL_BODY' => 'This email was sent in order to test the outgoing mail server information provided in the Spice application.  A successful receipt of this email indicates that the outgoing mail server information provided is valid.',
 
     // for outbound email dialog
     'LBL_MAIL_SMTPUSER'	=> 'Username',
@@ -398,5 +401,10 @@ $mod_strings = array (
 	'LBL_EMAILS_MEETINGS_REL' => 'Emails:Meetings',
 	'LBL_DATE_CREATED' => 'Date Created',
 	'LBL_DATE_MODIFIED' => 'Date Modified',
+
+    'LBL_ADDRESSES' => 'Address Details'
 );
+$mod_strings['LBL_EMAILTEMPLATES_EMAILS_LINK'] = 'EmailTemplate LINK';
+$mod_strings['LBL_EMAILTEMPLATES_NAME'] = 'EmailTemplate';
+$mod_strings['LBL_EMAILTEMPLATES_ID'] = 'EmailTemplate ID';
 

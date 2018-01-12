@@ -43,7 +43,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 class SugarWidgetSubPanelTopSelectContactsButton extends SugarWidgetSubPanelTopSelectButton
 {
 	//button_properties is a collection of properties associated with the widget_class definition. layoutmanager
-	function SugarWidgetSubPanelTopSelectContactsButton($button_properties=array())
+	public function __construct($button_properties=array())
 	{
 		$this->button_properties=$button_properties;
 	}

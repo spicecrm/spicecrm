@@ -3402,7 +3402,7 @@ protected function checkQuery($sql, $object_name = false)
 	 * @param  bool $encode Need to HTML-encode the result?
 	 * @return array    returns false if there are no more rows available to fetch
 	 */
-	public function fetchByAssoc($result, $encode = true)
+	public function fetchByAssoc($result, $encode = false)
 	{
 	    if (empty($result))	return false;
 

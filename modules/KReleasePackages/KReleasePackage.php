@@ -11,8 +11,8 @@ class KReleasePackage extends SugarBean {
     var $table_name = 'kreleasepackages';
     var $importable = false;
 
-    function KReleasePackage() {
-        parent::SugarBean();
+    function __construct() {
+        parent::__construct();
     }
 
     function get_summary_text() {
@@ -548,19 +548,19 @@ class KReleasePackage extends SugarBean {
         $total = $db->fetchByAssoc($db->query("SELECT COUNT(id) cnt FROM kreleasepackages WHERE deleted = 0"));
         $res = $db->limitQuery("SELECT * FROM kreleasepackages WHERE deleted = 0 ORDER BY date_entered DESC",$start,50);
         $auth_rights = 0;
-        if($this->aclAccess("list")){
+        if($this->ACLAccess("list")){
             $auth_rights = 1;
         }
-        if($this->aclAccess("view")){
+        if($this->ACLAccess("view")){
             $auth_rights = 2;
         }
-        if($this->aclAccess("edit")){
+        if($this->ACLAccess("edit")){
             $auth_rights = 3;
         }
-        if($this->aclAccess("create")){
+        if($this->ACLAccess("create")){
             $auth_rights = 4;
         }
-        if($this->aclAccess("delete")){
+        if($this->ACLAccess("delete")){
             $auth_rights = 5;
         }
         if($auth_rights == 0){ //no rights in this module

@@ -90,7 +90,7 @@ class Crypt_Blowfish
      * @param string $key
      * @access public
      */
-    function Crypt_Blowfish($key)
+    public function __construct($key)
     {
 		/*
         if (extension_loaded('mcrypt')) {

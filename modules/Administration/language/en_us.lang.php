@@ -1113,7 +1113,7 @@ $mod_strings = array (
    'LBL_SAML_LOGIN_URL' => 'Login URL',
    'LBL_SAML_LOGIN_URL_DESC' => 'Enter Login URL',
 
-    'LBL_GLOBAL_SEARCH_SETTINGS_TITLE' => 'Select the module(s) that users will be able to search against using the Global Search.',
+    'LBL_GLOBAL_SEARCH_SETTINGS_TITLE' => 'Select the module(s) that users will be able to search against using the Global Search. <br><strong>CAUTION: if you configured Full Text Search these settings will be ignored and only FTS configuration will be considered.</strong>',
    'LBL_SELECT_MODULES' => 'Advanced',
    'LBL_SELECT_MODULES_TITLE' => 'Drag and drop to select modules and to change the display order. Perform a search to apply the changes.',
    'LBL_SELECT_FTS_MODULES_TITLE' => 'Drag and drop to select modules to be used in the Global Search. Click Save to apply the changes.',

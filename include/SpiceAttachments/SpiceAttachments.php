@@ -155,14 +155,43 @@ class SpiceAttachments
         }
 
         $filename = $upload_file->get_stored_file_name();
-        $file_mime_type = $upload_file->getMimeSoap($filename);
+        $file_mime_type = $post['filemimetype'] ?: $upload_file->getMimeSoap($filename);
         $filesize = strlen($decodedFile);
         $filemd5 = md5($decodedFile);
 
         $upload_file->final_move($guid);
 
-        $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, deleted, file_mime_type) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$post['text']}', 0, '{$file_mime_type}')");
+        // if we have an image create a thumbnail
+        $supportedimagetypes = ['jpeg', 'png', 'gif', 'bmp'];
+        $filetypearray = explode('/', $file_mime_type);
+        if (count($filetypearray) == 2 && $filetypearray[0] == 'image' && array_search($filetypearray[1], $supportedimagetypes) >= 0) {
+            if (list($width, $height) = getimagesize("upload://" . $guid)) {
+                if ($width > $height) {
+                    $newwidth = 30;
+                    $newheight = round(30 * $height / $width);
+                } else {
+                    $newwidth = round(30 * $width / $height);
+                    $newheight = 30;
+                }
+
+                $thumb = imagecreatetruecolor($newwidth, $newheight);
+
+                // create
+                $createfunction = 'imagecreatefrom' . $filetypearray[1];
+                $source = $createfunction("upload://" . $guid);
+
+                imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+                ob_start();
+                imagejpeg($thumb);
+                $thumbnail = base64_encode(ob_get_contents());
+                ob_end_clean();
+                imagedestroy($thumb);
+            }
+        }
+
+        $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$post['text']}', '$thumbnail', 0, '{$file_mime_type}')");
         $file = base64_encode(file_get_contents("upload://" . $guid));
+
         $attachments[] = array(
             'id' => $guid,
             'user_id' => $current_user->id,
@@ -172,7 +201,8 @@ class SpiceAttachments
             'filename' => $filename,
             'filesize' => $filesize,
             'file_mime_type' => $file_mime_type,
-            'file' => $file
+            'file' => $file,
+            'thumbnail' => $thumbnail,
         );
         return json_encode($attachments);
     }

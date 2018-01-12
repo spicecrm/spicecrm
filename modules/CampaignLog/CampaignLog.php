@@ -57,9 +57,10 @@ class CampaignLog extends SugarBean {
     var $hits;
     var $more_information;
     var $marketing_id;
-    function CampaignLog() {
+
+    function __construct() {
         global $sugar_config;
-        parent::SugarBean();
+        parent::__construct();
 
     }
 
@@ -185,6 +186,9 @@ class CampaignLog extends SugarBean {
         }
 		return $related_id.$related_type;
 	}
-}
 
-?>
+	static function setStatus($id,$status){
+        global $db;
+        $db->query("UPDATE campaign_log SET activity_type = '$status', activity_date = NOW() WHERE id = '$id'");
+    }
+}

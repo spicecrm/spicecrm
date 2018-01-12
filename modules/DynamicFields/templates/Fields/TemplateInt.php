@@ -89,7 +89,7 @@ class TemplateInt extends TemplateRange
 			if ((empty($this->autoinc_next)) && isset($this->module) && isset($this->module->table_name))
 			{
 				global $db;
-                $helper = $db->gethelper();
+                $helper = $db->getHelper();
                 $auto = $helper->getAutoIncrement($this->module->table_name, $this->name);
                 $this->autoinc_next = $vardef['autoinc_next'] = $auto;
 			}
@@ -107,7 +107,7 @@ class TemplateInt extends TemplateRange
 			}
 			if(isset($this->module->table_name)){
 				global $db;
-	            $helper = $db->gethelper();
+	            $helper = $db->getHelper();
 	            //Check that the new value is greater than the old value
 	            $oldNext = $helper->getAutoIncrement($this->module->table_name, $this->name);
 	            if ($this->autoinc_next > $oldNext)

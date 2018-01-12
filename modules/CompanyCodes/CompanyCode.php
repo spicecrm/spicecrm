@@ -8,8 +8,8 @@ class CompanyCode extends SugarBean {
     var $table_name = 'companycodes';
     var $importable = false;
 
-    function CompanyCode() {
-        parent::SugarBean();
+    function __construct() {
+        parent::__construct();
     }
 
     function get_summary_text() {

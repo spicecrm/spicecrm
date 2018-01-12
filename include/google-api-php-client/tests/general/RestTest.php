@@ -130,7 +130,7 @@ class RestTest extends BaseTest
          }
         }'
     );
-    Google_Http_Rest::decodeHttpResponse($request);
+    Google_Http_REST::decodeHttpResponse($request);
   }
 
   /**
@@ -156,6 +156,6 @@ class RestTest extends BaseTest
           "message": "Invalid Credentials"
         }'
     );
-    Google_Http_Rest::decodeHttpResponse($request);
+    Google_Http_REST::decodeHttpResponse($request);
   }
 }

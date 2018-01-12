@@ -120,7 +120,7 @@ class EmailAuthenticateUser extends SugarAuthenticateUser {
         $OBCharset = $locale->getPrecedentPreference('default_email_charset');
         $notify_mail = new SugarPHPMailer();
 		$notify_mail->CharSet = $sugar_config['default_charset'];
-		$notify_mail->AddAddress(((!empty($row['email1']))?$row['email1']: $row['email2']),$locale->translateCharsetMIME(trim($row['first_name'] . ' ' . $row['last_name']), 'UTF-8', $OBCharset));
+		$notify_mail->addAddress(((!empty($row['email1']))?$row['email1']: $row['email2']),$locale->translateCharsetMIME(trim($row['first_name'] . ' ' . $row['last_name']), 'UTF-8', $OBCharset));
 
 		if (empty($_SESSION['authenticated_user_language'])) {
 			$current_language = $sugar_config['default_language'];
@@ -134,7 +134,7 @@ class EmailAuthenticateUser extends SugarAuthenticateUser {
         $notify_mail->From = 'no-reply@sugarcrm.com';
         $notify_mail->FromName = 'Sugar Authentication';
 
-        if(!$notify_mail->Send()) {
+        if(!$notify_mail->send()) {
             $GLOBALS['log']->warn("Notifications: error sending e-mail (method: {$notify_mail->Mailer}), (error: {$notify_mail->ErrorInfo})");
         }
         else {

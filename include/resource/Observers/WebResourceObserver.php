@@ -44,8 +44,8 @@ require_once('include/resource/Observers/ResourceObserver.php');
  */
 class WebResourceObserver extends ResourceObserver {
 
-function WebResourceObserver($module) {
-   parent::ResourceObserver($module);
+function __construct($module) {
+   parent::__construct($module);
 }
 
 /**

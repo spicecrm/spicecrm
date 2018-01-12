@@ -25,9 +25,9 @@ class KDeploymentMW extends SugarBean
     var $description;
     var $name;
 
-    function KDeploymentMW()
+    function __construct()
     {
-        parent::SugarBean();
+        parent::__construct();
     }
 
     function bean_implements($interface)

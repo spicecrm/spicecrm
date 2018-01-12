@@ -94,6 +94,8 @@ include("metadata/users_signaturesMetaData.php");
 //linked documents.
 include("metadata/linked_documentsMetaData.php");
 
+include("metadata/salesdocuments_beansMetaData.php");
+
 // Documents, so we can start replacing Notes as the primary way to attach something to something else.
 include("metadata/documents_accountsMetaData.php");
 include("metadata/documents_contactsMetaData.php");
@@ -126,8 +128,12 @@ include('metadata/kdeploypack_contents.Metadata.php');
 include('metadata/kdeploypack_sysstatus.Metadata.php');
 include("metadata/kreleasemanager.metadata.php");
 
+include('metadata/system_number_ranges.php');
+include('metadata/system_tags.php');
+include('metadata/system_trashcan.php');
+
 if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
-    include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+	include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
 }
 
 if(file_exists('modules/SalesDocs/dictionarydata/SalesDocs.dictionary.php')){

@@ -36,8 +36,8 @@
 
 class ViewJson extends SugarView{
 	var $type ='detail';
-	function ViewJson(){
- 		parent::SugarView();
+	function __construct(){
+ 		parent::__construct();
  	}
  	
 	function display(){

@@ -53,10 +53,17 @@ if(typeof SugarFeed == 'undefined') { // since the dashlet can be included multi
 	        	ajaxStatus.showStatus('{/literal}{$saving}{literal}'); // show that AJAX call is happening
 	        	// what data to post to the dashlet
     	    	
-    	    	postData = 'to_pdf=1&module=Home&action=CallMethodDashlet&method=pushUserFeed&id=' + id ;
-				YAHOO.util.Connect.setForm(document.getElementById('form_' + id));
-				var cObj = YAHOO.util.Connect.asyncRequest('POST','index.php', 
-								  {success: SugarFeed.saved, failure: SugarFeed.saved, argument: id}, postData);
+                // BEGIN SpiceCRM angularJS workaround because of parse error when using guids as element id
+				// ORIGINAL:
+                // postData = 'to_pdf=1&module=Home&action=CallMethodDashlet&method=pushUserFeed&id=' + id ;
+                // YAHOO.util.Connect.setForm(document.getElementById('form_' + id));
+                // var cObj = YAHOO.util.Connect.asyncRequest('POST','index.php',
+                //    {success: SugarFeed.saved, failure: SugarFeed.saved, argument: id}, postData);
+                postData = 'to_pdf=1&module=Home&action=CallMethodDashlet&method=pushUserFeed&id=' + id.replace(/_/g, '-') ;
+				YAHOO.util.Connect.setForm(document.getElementById('form_' + id.replace(/-/g, "_")));
+				var cObj = YAHOO.util.Connect.asyncRequest('POST','index.php',
+								  {success: SugarFeed.saved, failure: SugarFeed.saved, argument: id.replace(/_/g, '-')}, postData);
+                // END
 	        },
 		    /**
 	    	 * handle the response of the saveText method
@@ -89,7 +96,10 @@ if(typeof SugarFeed == 'undefined') { // since the dashlet can be included multi
                }
 
                // Move the reply form up over here
-               var formElem = document.getElementById('SugarFeedReplyForm_'+id);
+			   // BEGIN SpiceCRM angularJS workaround because of parse error when using guids as element id
+               // ORIGINAL: var formElem = document.getElementById('SugarFeedReplyForm_'+id);
+               var formElem = document.getElementById('SugarFeedReplyForm_'+id.replace(/-/g, "_"));
+               // END
                formElem.parentNode.removeChild(formElem);
                blockElem.appendChild(formElem);
                formElem.getElementsByTagName('div')[0].style.display = 'block';
@@ -99,17 +109,26 @@ if(typeof SugarFeed == 'undefined') { // since the dashlet can be included multi
             replyToFeed: function( id ) {
 	        	ajaxStatus.showStatus('{/literal}{$saving}{literal}'); // show that AJAX call is happening
 	        	// what data to post to the dashlet
-    	    	
                 var formElem = document.getElementById('SugarFeedReplyForm_' + id);
-    	    	postData = 'to_pdf=1&module=Home&action=CallMethodDashlet&method=pushUserFeedReply&id=' + id ;
-				YAHOO.util.Connect.setForm(formElem);
-				var cObj = YAHOO.util.Connect.asyncRequest('POST','index.php', 
-								  {success: SugarFeed.saved, failure: SugarFeed.saved, argument: id}, postData);
-               
+                // BEGIN SpiceCRM angularJS workaround because of parse error when using guids as element id
+    	    	// ORIGINAL:
+				// postData = 'to_pdf=1&module=Home&action=CallMethodDashlet&method=pushUserFeedReply&id=' + id;
+                // YAHOO.util.Connect.setForm(formElem);
+                // var cObj = YAHOO.util.Connect.asyncRequest('POST','index.php',
+                //    {success: SugarFeed.saved, failure: SugarFeed.saved, argument: id}, postData);
+                postData = 'to_pdf=1&module=Home&action=CallMethodDashlet&method=pushUserFeedReply&id=' + id.replace(/_/g, '-') ;
+                YAHOO.util.Connect.setForm(formElem);
+                var cObj = YAHOO.util.Connect.asyncRequest('POST','index.php',
+                    {success: SugarFeed.saved, failure: SugarFeed.saved, argument: id.replace(/_/g, '-')}, postData);
+                // END
+
             },
             loaded: function(id) {
             	var scrollConent;
-            	scrollContent = new iScroll('contentScroller' + id);
+                // BEGIN SpiceCRM angularJS workaround because of parse error when using guids as element id
+            	// ORIGINAL: scrollContent = new iScroll('contentScroller' + id);
+            	scrollContent = new iScroll('contentScroller' + id.replace(/-/g, "_"));
+            	// END
             }
 	    };
 	}();

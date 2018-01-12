@@ -98,7 +98,7 @@ abstract class DashletGenericChart extends Dashlet
         array $options = null
         )
     {
-        parent::Dashlet($id);
+        parent::__construct($id);
 
         if ( isset($options) ) {
             foreach ( $options as $key => $value ) {

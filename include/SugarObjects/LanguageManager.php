@@ -179,8 +179,21 @@ class LanguageManager
 					'custom/modules/'.$module.'/language/'.$lang.'.lang.php',
 					'custom/modules/'.$module.'/Ext/Language/'.$lang.'.lang.ext.php',
 				 );
+        //begin maretval 2017-12-19 not sure what this about but it's not the right to include language files
+		//custom module: add all files located in custom/Extension/modules/$module/Ext/Vardefs to support Extension Vardefs
+//        if(is_dir('custom/Extension/modules/'.$module.'/Ext/Language')) {
+//            $fileSystemIterator = new FilesystemIterator('custom/Extension/modules/' . $module . '/Ext/Language');
+//            foreach ($fileSystemIterator as $fileInfo){
+//                $additional_search_paths[] = 'custom/Extension/modules/' . $module . '/Ext/Language/'.$fileInfo->getFilename();
+//            }
+//        }
+        //end
 
-		#27023, if this module template language file was not attached , get the template from this module vardef cache file if exsits and load the template language files.
+        if(is_array($additional_search_paths) && !empty($additional_search_paths))
+            $lang_paths = array_merge($lang_paths, $additional_search_paths);
+
+
+        #27023, if this module template language file was not attached , get the template from this module vardef cache file if exsits and load the template language files.
 		static $createdModules;
 		if(empty($createdModules[$module]) && isset($GLOBALS['beanList'][$module])){
 				$object = $GLOBALS['beanList'][$module];

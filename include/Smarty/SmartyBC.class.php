@@ -410,7 +410,7 @@ class SmartyBC extends Smarty
      */
     public function config_load($file, $section = null, $scope = 'global')
     {
-        $this->ConfigLoad($file, $section, $scope);
+        $this->configLoad($file, $section, $scope);
     }
 
     /**

@@ -346,6 +346,23 @@ if (!class_exists("ZipArchive"))
 
 }
 
+// check zip file support
+    if (!function_exists('curl_init'))
+    {
+        $curlStatus = "<span class='stop'><b>{$mod_strings['ERR_CHECKSYS_CURL']}</b></span>";
+
+        installLog("ERROR: CURL support not found.");
+        $error_found = true;
+        $error_txt .= '
+          <tr>
+            <td><strong>'.$mod_strings['LBL_CHECKSYS_CURL'].'</strong></td>
+            <td  align="right" class="error">'.$curlStatus.'</td>
+          </tr>';
+    } else {
+        installLog("/curl check passed");
+
+    }
+
 
 // check PCRE version
 if (defined('PCRE_VERSION'))

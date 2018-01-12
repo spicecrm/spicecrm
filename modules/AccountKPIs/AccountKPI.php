@@ -25,9 +25,9 @@ class AccountKPI extends SugarBean
     var $description;
     var $name;
 
-    function AccountKPI()
+    function __construct()
     {
-        parent::SugarBean();
+        parent::__construct();
     }
 
     function bean_implements($interface)

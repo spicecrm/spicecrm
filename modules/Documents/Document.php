@@ -40,8 +40,8 @@ require_once ('include/upload_file.php');
 
 
 // User is used to store Forecast information.
-class Document extends SugarBean {
-
+class Document extends SugarBean
+{
 	var $id;
 	var $document_name;
 	var $description;
@@ -94,14 +94,15 @@ class Document extends SugarBean {
 	 );
 
 
-	function Document() {
-		parent :: SugarBean();
+	function __construct()
+    {
+		parent::__construct();
 		$this->setupCustomFields('Documents'); //parameter is module name
 		$this->disable_row_level_security = false;
 	}
 
-	function save($check_notify = false) {
-
+	function save($check_notify = false)
+    {
         if (empty($this->doc_type)) {
 			$this->doc_type = 'Sugar';
 		}
@@ -201,7 +202,7 @@ class Document extends SugarBean {
             }
         }
 
-		return parent :: save($check_notify);
+		return parent::save($check_notify);
 	}
 	function get_summary_text() {
 		return "$this->document_name";

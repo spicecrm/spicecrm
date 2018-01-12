@@ -53,7 +53,7 @@ class Smarty_Internal_Extension_CodeFrame
                 foreach ($_template->required_plugins['compiled'] as $tmp) {
                     foreach ($tmp as $data) {
                         $file = addslashes($data['file']);
-                        if (is_Array($data['function'])) {
+                        if (is_array($data['function'])) {
                             $output .= "if (!is_callable(array('{$data['function'][0]}','{$data['function'][1]}'))) require_once '{$file}';\n";
                         } else {
                             $output .= "if (!is_callable('{$data['function']}')) require_once '{$file}';\n";
@@ -67,7 +67,7 @@ class Smarty_Internal_Extension_CodeFrame
                 foreach ($_template->required_plugins['nocache'] as $tmp) {
                     foreach ($tmp as $data) {
                         $file = addslashes($data['file']);
-                        if (is_Array($data['function'])) {
+                        if (is_array($data['function'])) {
                             $output .= addslashes("if (!is_callable(array('{$data['function'][0]}','{$data['function'][1]}'))) require_once '{$file}';\n");
                         } else {
                             $output .= addslashes("if (!is_callable('{$data['function']}')) require_once '{$file}';\n");

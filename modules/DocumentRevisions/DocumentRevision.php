@@ -111,8 +111,8 @@ class DocumentRevision extends SugarBean {
 	
 	
 
-	function DocumentRevision() {
-		parent::SugarBean();
+	function __construct() {
+		parent::__construct();
 		$this->setupCustomFields('DocumentRevisions');  //parameter is module name
 		$this->disable_row_level_security =true; //no direct access to this module. 
 	}

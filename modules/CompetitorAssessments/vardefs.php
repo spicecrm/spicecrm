@@ -123,23 +123,22 @@ $dictionary['CompetitorAssessment'] = array(
         ),
         'opportunities' => array (
             'name' => 'opportunities',
-			'vname' => 'LBL_OPPORTUNITIES_LINK',
+            'vname'=>'LBL_OPPORTUNITIES',
             'type' => 'link',
             'relationship' => 'competitorassessments_opportunities',
             'link_type'=>'one',
             'side'=>'right',
             'source'=>'non-db',
-            'vname'=>'LBL_OPPORTUNITIES',
         ),
     ),
     'indices' => array(
         array(
-            'name' => 'idx_opp',
+            'name' => 'idx_compass_opp',
             'type' => 'index',
             'fields' => array('opportunity_id'),
         ),
         array(
-            'name' => 'idx_oppdel',
+            'name' => 'idx_compass_oppdel',
             'type' => 'index',
             'fields' => array('opportunity_id', 'deleted'),
         ),

@@ -56,7 +56,8 @@ class SugarPHPMailer extends PHPMailer
 	/**
 	 * Sole constructor
 	 */
-	function SugarPHPMailer() {
+	public function __construct()
+    {
 		global $locale;
 		global $current_user;
 		global $sugar_config;
@@ -72,13 +73,13 @@ class SugarPHPMailer extends PHPMailer
 		$this->oe = new OutboundEmail();
 		$this->oe->getUserMailerSettings($current_user);
 
-		$this->SetLanguage('en', 'include/phpmailer/language/');
+		$this->setLanguage('en', 'include/phpmailer/language/');
 		$this->PluginDir	= 'include/phpmailer/';
 		$this->Mailer	 	= 'smtp';
         // cn: i18n
         $this->CharSet		= $locale->getPrecedentPreference('default_email_charset');
 		$this->Encoding		= 'quoted-printable';
-        $this->IsHTML(false);  // default to plain-text email
+        $this->isHTML(false);  // default to plain-text email
         $this->Hostname = $sugar_config['host_name'];
         $this->WordWrap		= 996;
 		// cn: gmail fix
@@ -177,8 +178,8 @@ class SugarPHPMailer extends PHPMailer
             }
 
 			// cn: overriding parent class' method to perform encode on the following
-            $filename    = $this->EncodeHeader(trim($this->attachment[$i][1]));
-            $name        = $this->EncodeHeader(trim($this->attachment[$i][2]));
+            $filename    = $this->encodeHeader(trim($this->attachment[$i][1]));
+            $name        = $this->encodeHeader(trim($this->attachment[$i][2]));
             $encoding    = $this->attachment[$i][3];
             $type        = $this->attachment[$i][4];
             $disposition = $this->attachment[$i][6];
@@ -196,13 +197,13 @@ class SugarPHPMailer extends PHPMailer
 
             // Encode as string attachment
             if($bString) {
-                $mime[] = $this->EncodeString($string, $encoding);
-                if($this->IsError()) { return ""; }
+                $mime[] = $this->encodeString($string, $encoding);
+                if($this->isError()) { return ""; }
                 $mime[] = $this->LE.$this->LE;
             } else {
-                $mime[] = $this->EncodeFile($path, $encoding);
+                $mime[] = $this->encodeFile($path, $encoding);
 
-                if($this->IsError()) {
+                if($this->isError()) {
                 	return "";
                 }
                 $mime[] = $this->LE.$this->LE;
@@ -322,7 +323,7 @@ eoq;
 			    $mime_type = "image/".strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 			}
 		    if (!$this->embeddedAttachmentExists($cid)) {
-		    	$this->AddEmbeddedImage($file_location, $cid, $filename, 'base64', $mime_type);
+		    	$this->addEmbeddedImage($file_location, $cid, $filename, 'base64', $mime_type);
 		    }
 		    $i++;
         }
@@ -339,7 +340,7 @@ eoq;
 		global $sugar_config;
 
 		// cn: bug 4864 - reusing same SugarPHPMailer class, need to clear attachments
-		$this->ClearAttachments();
+		$this->clearAttachments();
 
 		//replace references to cache/images with cid tag
         $this->Body = preg_replace(';=\s*"'.preg_quote(sugar_cached('images/'), ';').';','="cid:',$this->Body);
@@ -376,7 +377,7 @@ eoq;
 
 				$filename = substr($filename, 36, strlen($filename)); // strip GUID	for PHPMailer class to name outbound file
 				if (!$note->embed_flag) {
-					$this->AddAttachment($file_location, $filename, 'base64', $mime_type);
+					$this->addAttachment($file_location, $filename, 'base64', $mime_type);
 				} // else
 			}
 	}
@@ -387,11 +388,11 @@ eoq;
 	 */
 	function SetError($msg) {
 		$GLOBALS['log']->fatal("SugarPHPMailer encountered an error: {$msg}");
-		parent::SetError($msg);
+		parent::setError($msg);
 	}
 
 	function SmtpConnect() {
-		$connection = parent::SmtpConnect();
+		$connection = parent::smtpConnect();
 		if (!$connection) {
 			global $app_strings;
 			if(isset($this->oe) && $this->oe->type == "system") {
@@ -406,13 +407,13 @@ eoq;
     /*
      * overloads PHPMailer::PreSend() to allow for empty messages to go out.
      */
-    public function PreSend() {
+    public function preSend() {
         //check to see if message body is empty
         if(empty($this->Body)){
             //PHPMailer will throw an error if the body is empty, so insert a blank space if body is empty
             $this->Body = " ";
         }
-        return parent::PreSend();
+        return parent::preSend();
     }
 
     /**

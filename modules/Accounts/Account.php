@@ -135,8 +135,8 @@ class Account extends Company {
     var $push_billing;
     var $push_shipping;
 
-	function Account() {
-        parent::Company();
+	function __construct() {
+        parent::__construct();
 
         $this->setupCustomFields('Accounts');
 

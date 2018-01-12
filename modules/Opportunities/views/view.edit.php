@@ -47,26 +47,25 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 class OpportunitiesViewEdit extends ViewEdit {
 
- 	function OpportunitiesViewEdit(){
- 		parent::ViewEdit();
+ 	function __construct(){
+ 		parent::__construct();
  		$this->useForSubpanel = true;
  	}
-
-
-    function display()
+ 	
+ 	function display()
     {
-        global $app_list_strings;
+		global $app_list_strings;
 
-        $json = getJSONobj();
+		$json = getJSONobj();
 
-        $prob_array = $json->encode($app_list_strings['sales_probability_dom']);
+		$prob_array = $json->encode($app_list_strings['sales_probability_dom']);
 
-        $prePopProb = '';
-        if(empty($this->bean->id) && empty($_REQUEST['probability'])) {
-            $prePopProb = 'document.getElementsByName(\'sales_stage\')[0].onchange();';
-        }
-
-        $probability_script=<<<EOQ
+		$prePopProb = '';
+ 		if(empty($this->bean->id) && empty($_REQUEST['probability'])) {
+		   $prePopProb = 'document.getElementsByName(\'sales_stage\')[0].onchange();';
+		}
+		
+$probability_script=<<<EOQ
 	<script>
 	prob_array = $prob_array;
 	
@@ -75,7 +74,7 @@ class OpportunitiesViewEdit extends ViewEdit {
 	    //console.log(prob_array[this.value]);
 		if(
 		    typeof(this.value) != "undefined" &&
-		    typeof(prob_array[this.value]) === 'number' && 
+//		    typeof(prob_array[this.value]) === 'number' && 
 		    typeof(document.getElementsByName('probability')[0]) != "undefined"
 		) {
             document.getElementsByName('probability')[0].value = prob_array[document.getElementsByName('sales_stage')[0].value];
@@ -86,9 +85,9 @@ class OpportunitiesViewEdit extends ViewEdit {
 	$prePopProb
 	</script>
 EOQ;
-
-        $this->ss->assign('PROBABILITY_SCRIPT', $probability_script);
-        parent::display();
-    }
+	    
+	    $this->ss->assign('PROBABILITY_SCRIPT', $probability_script);    
+ 		parent::display();
+ 	}
 }
 ?>

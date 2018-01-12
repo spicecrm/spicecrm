@@ -360,26 +360,33 @@ class KReport extends SugarBean
       var $rootGuid;
       var $fromString;
      */
-    var $whereOverride;
+    public $whereOverride;
     //2010-02-10 add Field name Mapping
-    var $fieldNameMap;
+    public $fieldNameMap;
     // the query Array
-    var $kQueryArray;
+    public $kQueryArray;
     //2011-02-03 for the total values
-    var $totalResult = '';
+    public $totalResult = '';
     // 2011-03-29 array for the formula evaluation
-    var $formulaArray = '';
+    public $formulaArray = '';
     // variable taht allows to turn off the evaluation of SQL Functions
     // needed if we let the Grid do this
-    var $evalSQLFunctions = true;
+    public $evalSQLFunctions = true;
     // varaible to hold the depth of the join tree
-    var $maxDepth;
+    public $maxDepth;
     // var to hold an array of all list fields with index fieldid
-    var $listFieldArrayById = array();
+    public $listFieldArrayById = array();
     // for the context handling
-    var $hasContext = false;
-    var $contextFields = array();
-    var $contexts = array();
+    public $hasContext = false;
+    public $contextFields = array();
+    public $contexts = array();
+    //for csv export
+    public $tocsv = false;
+    public $presentation_params;
+    public $visualization_params;
+    public $integration_params;
+    public $listfields;
+    public $whereconditions;
 
     function __construct()
     {
@@ -417,7 +424,13 @@ class KReport extends SugarBean
         return $this->name;
     }
 
-    function retrieve($id = -1, $encode = true, $deleted = true)
+    function set_notification_body($xtpl, $kreport)
+    {
+        $xtpl->assign("KREPORT_NAME", $kreport->name);
+        return $xtpl;
+    }
+
+    function retrieve($id = -1, $encode = false, $deleted = true)
     {
 
         parent::retrieve($id, $encode, $deleted);
@@ -431,7 +444,7 @@ class KReport extends SugarBean
         return $this;
     }
 
-    function save($checkNotify, $fts_index_bean = true)
+    function save($notify = true, $fts_index_bean = true)
     {
         global $sugar_config;
 
@@ -449,7 +462,7 @@ class KReport extends SugarBean
 //                $this->korgobjectmultiple = json_encode(array('primary' => $_REQUEST['authaccess_id'], 'secondary' => array()));
 //                break;
 //        }
-        parent::save($checkNotify, $fts_index_bean);
+        parent::save($notify, $fts_index_bean);
 
         switch ($sugar_config['KReports']['authCheck']) {
             case 'SecurityGroups':
@@ -688,27 +701,27 @@ class KReport extends SugarBean
 
         // this is ugly .. whould bring this to the front
         foreach ($this->kQueryArray->queryArray ['root'] ['kQuery']->listArray as $thisFieldData) {
-            if ($thisFieldData ['valuetype'] != '' && $thisFieldData ['valuetype'] != '-' && isset($this->totalResult [$thisFieldData ['fieldid'] . '_total']) && $this->totalResult [$thisFieldData ['fieldid'] . '_total'] > 0) {
+            if ($thisFieldData ['valuetype'] != '' && $thisFieldData ['valuetype'] != '-' && isset($this->totalResult[$thisFieldData['fieldid'] . '_total']) && $this->totalResult[$thisFieldData['fieldid'] . '_total'] > 0) {
                 $valuetypeArray = explode('OF', $thisFieldData ['valuetype']);
                 switch ($valuetypeArray [0]) {
                     case 'P' :
                         // calculate the value
-                        $returnArray [$thisFieldData ['fieldid']] = round((double)$returnArray [$thisFieldData ['fieldid']] / (double)$this->totalResult [$thisFieldData ['fieldid'] . '_total'] * 100, 2);
+                        $returnArray [$thisFieldData['fieldid']] = round((double)$returnArray [$thisFieldData['fieldid']] / (double)$this->totalResult[$thisFieldData['fieldid'] . '_total'] * 100, 2);
 
                         // set the format to float so we interpret this as number
-                        $this->fieldNameMap [$thisFieldData ['fieldid']] ['type'] = 'float';
-                        $this->fieldNameMap [$thisFieldData ['fieldid']] ['format_suffix'] = '%';
+                        $this->fieldNameMap [$thisFieldData['fieldid']] ['type'] = 'float';
+                        $this->fieldNameMap [$thisFieldData['fieldid']] ['format_suffix'] = '%';
                         break;
                     case 'D' :
                         // calculate the value
-                        $returnArray [$thisFieldData ['fieldid']] = round((double)$returnArray [$thisFieldData ['fieldid']] - (double)$this->totalResult [$thisFieldData ['fieldid'] . '_total'], 2);
+                        $returnArray[$thisFieldData ['fieldid']] = round((double)$returnArray[$thisFieldData['fieldid']] - (double)$this->totalResult[$thisFieldData['fieldid'] . '_total'], 2);
                         break;
                     case 'C':
                         if (!empty($cumulatedArray[$thisFieldData ['fieldid']])) {
-                            $returnArray [$thisFieldData ['fieldid']] += $cumulatedArray[$thisFieldData ['fieldid']];
-                            $cumulatedArray[$thisFieldData ['fieldid']] += $fieldArray[$thisFieldData ['fieldid']];
+                            $returnArray[$thisFieldData['fieldid']] += $cumulatedArray[$thisFieldData['fieldid']];
+                            $cumulatedArray[$thisFieldData['fieldid']] += $fieldArray[$thisFieldData['fieldid']];
                         } else
-                            $cumulatedArray[$thisFieldData ['fieldid']] = $fieldArray[$thisFieldData ['fieldid']];
+                            $cumulatedArray[$thisFieldData['fieldid']] = $fieldArray[$thisFieldData['fieldid']];
                         break;
                 }
             }
@@ -961,7 +974,8 @@ class KReport extends SugarBean
     {
 
         // check if we have a custom SQL function -- then reset the value .. we do  not know how to format
-        $listFieldArray = $this->kQueryArray->queryArray ['root'] ['kQuery']->get_listfieldentry_by_fieldid($fieldID);
+		if($this->kQueryArray->queryArray['root']['kQuery']) //fix 20171128 check if object!
+			$listFieldArray = $this->kQueryArray->queryArray['root']['kQuery']->get_listfieldentry_by_fieldid($fieldID);
 
         //2013-03-01 maual alignmetn setting rules
         if (!empty($listFieldArray ['overridealignment']) && $listFieldArray ['overridealignment'] != "-")
@@ -1000,6 +1014,7 @@ class KReport extends SugarBean
     function createCSV($dynamicolsOverride = '')
     {
         global $current_user;
+        $this->tocsv = true;
 
         $header = '';
         $rows = '';
@@ -1007,7 +1022,8 @@ class KReport extends SugarBean
 
         $reportParams = array('toCSV' => true);
         if ($dynamicolsOverride != '') {
-            $dynamicolsOverride = json_decode(html_entity_decode($dynamicolsOverride), true);
+            if(!is_array($dynamicolsOverride))
+                $dynamicolsOverride = json_decode(html_entity_decode($dynamicolsOverride), true);
             foreach ($dynamicolsOverride as $thisOverrideKey => $thisOverrideEntry) {
                 if (!empty($thisOverrideEntry['sortState'])) {
                     $reportParams['sortseq'] = $thisOverrideEntry['sortState'];
@@ -1026,7 +1042,7 @@ class KReport extends SugarBean
             $selParam .= "\n";
         }
 
-        $selParam .= "\n";
+//        $selParam .= "\n"; //will add a empty first line in CSV export
 
         $arrayList = json_decode(html_entity_decode($this->listfields, ENT_QUOTES, 'UTF-8'), true);
 
@@ -1060,12 +1076,12 @@ class KReport extends SugarBean
             usort($arrayList, 'sortFieldArrayBySequence');
         }
 
-        $fieldArray = '';
+        $fieldArray = array();
         $fieldIdArray = array();
         foreach ($arrayList as $thisList) {
-            if ($thisList ['display'] == 'yes') {
-                $fieldArray [] = array('label' => utf8_decode($thisList ['name']), 'width' => (isset($thisList ['width']) && $thisList ['width'] != '' && $thisList ['width'] != '0') ? $thisList ['width'] : '100', 'display' => $thisList ['display']);
-                $fieldIdArray [] = $thisList ['fieldid'];
+            if ($thisList['display'] == 'yes') {
+                $fieldArray[] = array('label' => utf8_decode($thisList ['name']), 'width' => (isset($thisList['width']) && $thisList ['width']!= '' && $thisList['width'] != '0') ? $thisList['width'] : '100', 'display' => $thisList['display']);
+                $fieldIdArray[] = $thisList['fieldid'];
             }
         }
 
@@ -1079,8 +1095,8 @@ class KReport extends SugarBean
                     if (array_search($key, $fieldIdArray) !== false) {
                         if ($getHeader) {
                             foreach ($arrayList as $fieldId => $fieldArray)
-                                if ($fieldArray ['fieldid'] == $key)
-                                    $header .= iconv("UTF-8", $current_user->getPreference('default_export_charset'), $fieldArray ['name']) . $current_user->getPreference('export_delimiter');
+                                if ($fieldArray['fieldid'] == $key)
+                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $fieldArray ['name']) . '"' . $current_user->getPreference('export_delimiter');
                         }
 
                         $rows .= '"' . iconv("UTF-8", $current_user->getPreference('default_export_charset') . '//IGNORE', preg_replace(array('/"/'), array('""'), strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $current_user->getPreference(('export_delimiter'));
@@ -1669,7 +1685,7 @@ class KReport extends SugarBean
         if (count($results) > 0) {
 
             $mapService = new kReportBingMaps ();
-            require_once('modules/Accounts/Account.php');
+            require_once(get_custom_file_if_exists('modules/Accounts/Account.php'));
 
             foreach ($results as $thisResult) {
                 if (($thisResult [$mapDetails->latitude] == '' || $thisResult [$mapDetails->latitude] == null || $thisResult [$mapDetails->latitude] == '0,00') || ($thisResult [$mapDetails->longitude] == '' || $thisResult [$mapDetails->longitude] == null || $thisResult [$mapDetails->longitude] == '0,00')) {
@@ -2020,9 +2036,9 @@ class KReport extends SugarBean
     }
 
     // for the listing (exclude utility Reports unless we ae admin
-    function create_new_list_query($order_by, $where, $filter = array(), $params = array(), $show_deleted = 0, $join_type = '', $return_array = false, $parentbean = null, $singleSelect = false)
-    {
-        $ret_array = parent::create_new_list_query($order_by, $where, $filter, $params, $show_deleted, $join_type, true, $parentbean, $singleSelect);
+    function create_new_list_query($order_by, $where, $filter = array(), $params = array(), $show_deleted = 0, $join_type = '', $return_array = false, $parentbean = null, $singleSelect = false, $ifListForExport = false)
+        {
+        $ret_array = parent::create_new_list_query($order_by, $where, $filter, $params, $show_deleted, $join_type, true, $parentbean, $singleSelect, $ifListForExport);
 
         // add selection clause to $ret:array['where']
 
@@ -2044,7 +2060,7 @@ class KReportRenderer
 
     var $report = null;
 
-    public function __construct($thisReport)
+    public function __construct($thisReport = null)
     {
         $this->report = $thisReport;
     }
@@ -2158,8 +2174,8 @@ class KReportRenderer
 
     public static function kdatetimeRenderer($fieldid, $record)
     {
-        global $timedate;
-        return ($record[$fieldid] != '' ? $timedate->to_display_date_time($record[$fieldid]) : '');
+        global $timedate, $db;
+        return ($record[$fieldid] != '' ? $timedate->to_display_date_time($db->fromConvert($record[$fieldid], 'datetime')) : '');
     }
 
     public static function kdatetutcRenderer($fieldid, $record)
@@ -2168,8 +2184,10 @@ class KReportRenderer
         return ($record[$fieldid] != '' ? $timedate->to_display_date_time($record[$fieldid], true, false) : '');
     }
 
-    public static function kboolRenderer($fieldid, $record)
+    public function kboolRenderer($fieldid, $record)
     {
+        if($this->report->tocsv)
+            return $record[$fieldid];
         global $mod_strings;
         return ($record[$fieldid] == '1' ? ($mod_strings['LBL_BOOL_1'] ?: 1) : ($mod_strings['LBL_BOOL_0'] ?: 0));
     }

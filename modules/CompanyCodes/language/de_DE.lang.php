@@ -18,6 +18,7 @@ $mod_strings = array(
     'LBL_OUTPUT_PANEL' => 'PDF Output',
     'LBL_SECURITY_PANEL' => 'assignment',
     'LBL_ADMIN_PANEL' => 'Admin Data',
+    'LBL_COMPANYCODE' => 'Code',
 // => SEARCH DEFS
     'LBL_SEARCH_FORM_TITLE' => 'Unternehmen',
 // => Subpanels

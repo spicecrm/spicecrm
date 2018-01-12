@@ -1046,8 +1046,8 @@ class Zend_Gdata_YouTube_VideoEntry extends Zend_Gdata_YouTube_MediaEntry
      */
     public function ensureMediaGroupIsNotNull()
     {
-        if ($this->getMediagroup() == null) {
-            $this->setMediagroup(new Zend_Gdata_YouTube_Extension_MediaGroup());
+        if ($this->getMediaGroup() == null) {
+            $this->getMediaGroup(new Zend_Gdata_YouTube_Extension_MediaGroup());
         }
     }
 

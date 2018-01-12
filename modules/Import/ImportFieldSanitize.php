@@ -62,7 +62,7 @@ class ImportFieldSanitize
      * array of modules/users_last_import ids pairs that are created in this class
      * needs to be reset after the row is imported
      */
-    public static $createdBeans = array();
+    public $createdBeans = array();
 
     /**
      * true if we will create related beans during the sanitize process

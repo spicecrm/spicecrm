@@ -38,8 +38,8 @@
 
 class ProjectViewEdit extends ViewEdit {
 
- 	function ProjectViewEdit(){
- 		parent::ViewEdit();
+ 	function __construct(){
+ 		parent::__construct();
  	}
 
  	function display() {

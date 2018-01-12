@@ -47,7 +47,7 @@ class StandardField extends DynamicField
 	
 
     function __construct($module = '') {
-        parent::DynamicField($module);
+        parent::__construct($module);
     }
     
     protected function loadCustomDef($field){

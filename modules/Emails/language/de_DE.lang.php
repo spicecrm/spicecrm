@@ -64,6 +64,7 @@ $mod_strings = array (
 	'LBL_CC'					=> 'Cc:',
 	'LBL_COLON'					=> ':',
 	'LBL_COMPOSE_MODULE_NAME'	=> 'Neue E-Mail',
+    'LBL_RELATED_TO'	        => 'gehört zu',
 	'LBL_CONTACT_FIRST_NAME'	=> 'Kontakt Vorname',
 	'LBL_CONTACT_LAST_NAME'		=> 'Kontakt Nachname',
 	'LBL_CONTACT_NAME'			=> 'Kontakt:',
@@ -74,6 +75,7 @@ $mod_strings = array (
 	'LBL_DATE'					=> 'Sendetag:',
     'LBL_DELETE_FROM_SERVER'    => 'Nachricht vom Server löschen',
 	'LBL_DESCRIPTION'			=> 'Beschreibung',
+    'LBL_DESCRIPTION_HTML'		=> 'Email',
 	'LBL_EDIT_ALT_TEXT'			=> 'Als Text bearbeiten',
 	'LBL_SEND_IN_PLAIN_TEXT'	=> 'Im Textformat senden',
 	'LBL_EDIT_MY_SETTINGS'		=> 'Meine Einstellungen bearbeiten',
@@ -85,6 +87,8 @@ $mod_strings = array (
 	'LBL_EMAILS_ACCOUNTS_REL'	=> 'E-Mails:Firmen',
 	'LBL_EMAILS_BUGS_REL'		=> 'E-Mails:Fehler',
 	'LBL_EMAILS_CASES_REL'		=> 'E-Mails:Tickets',
+    'LBL_EMAILS_SERVICETICKETS_REL'		=> 'E-Mails:Servicetickets',
+    'LBL_EMAILS_SERVICEORDERS_REL'		=> 'E-Mails:Serviceaufträge',
 	'LBL_EMAILS_CONTACTS_REL'	=> 'E-Mails:Kontakte',
 	'LBL_EMAILS_LEADS_REL'		=> 'E-Mails:Interessenten',
 	'LBL_EMAILS_OPPORTUNITIES_REL'=> 'E-Mails:Verkaufschancen',
@@ -325,7 +329,7 @@ $mod_strings = array (
     'LBL_NO_SUBJECT' => '(kein Betreff)',
     'LBL_CHECKING_ACCOUNT'	=> 'Überprüfe Account',
     'LBL_OF'	=> 'von',
-    'LBL_TEST_EMAIL_BODY' => 'This email was sent in order to test the outgoing mail server information provided in the Sugar application.  A successful receipt of this email indicates that the outgoing mail server information provided is valid.',
+    'LBL_TEST_EMAIL_BODY' => 'This email was sent in order to test the outgoing mail server information provided in the Spice application.  A successful receipt of this email indicates that the outgoing mail server information provided is valid.',
 
     // for outbound email dialog
     'LBL_MAIL_SMTPUSER'	=> 'SMTP User-Name:',
@@ -375,4 +379,7 @@ $mod_strings = array (
 	'LBL_DATE_CREATED' => 'Erstellt am',
 	'LBL_DATE_MODIFIED' => 'Geändert am',
 );
-?>
+
+$mod_strings['LBL_EMAILTEMPLATES_EMAILS_LINK'] = 'EmailTemplate LINK';
+$mod_strings['LBL_EMAILTEMPLATES_NAME'] = 'EmailTemplate';
+$mod_strings['LBL_EMAILTEMPLATES_ID'] = 'EmailTemplate ID';

@@ -49,12 +49,12 @@ var $userfeed_created;
 var $selectedCategories = array();
 
 
-    function SugarFeedDashlet($id, $def = null) {
+    function __construct($id, $def = null) {
 		global $current_user, $app_strings, $app_list_strings;
 
 		require('modules/SugarFeed/metadata/dashletviewdefs.php');
 		$this->myItemsOnly = false;
-        parent::DashletGeneric($id, $def);
+        parent::__construct($id, $def);
 		$this->myItemsOnly = false;
 		$this->isConfigurable = true;
 		$this->hasScript = true;
@@ -499,7 +499,10 @@ enableQS(false);
 		$ss->assign('LBL_POST', translate('LBL_POST', 'SugarFeed'));
 		$ss->assign('LBL_SELECT', translate('LBL_SELECT', 'SugarFeed'));
 		$ss->assign('LBL_IS', translate('LBL_IS', 'SugarFeed'));
-		$ss->assign('id', $this->id);
+        // BEGIN SpiceCRM angularJS workaround because of parse error when using guids as element id
+		//ORIGINAL: $ss->assign('id',$this->id);
+		$ss->assign('id', str_replace("-", "_", $this->id));
+		// END
 		$ss->assign('more_img', $moreimg);
 		$ss->assign('less_img', $lessimg);
         if($current_user->getPreference('use_real_names') == 'on'){

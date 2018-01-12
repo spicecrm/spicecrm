@@ -86,11 +86,11 @@ class CampaignTracker extends SugarBean {
     * when fetching or saving data for the bean. As you modify a table you need to keep this up to date.
     */
     var $column_fields = Array(
-            'id'
-            ,'tracker_key'
-            ,'tracker_url'
-            ,'tracker_name'
-            ,'campaign_id'
+        'id',
+        'tracker_key',
+        'tracker_url',
+        'tracker_name',
+        'campaign_id'
     );
 
     // This is used to retrieve related fields from form posts.
@@ -99,8 +99,8 @@ class CampaignTracker extends SugarBean {
 
     var $required_fields =  array('tracker_name'=>1,'tracker_url'=>1);
     /*This bean's constructor*/
-    function CampaignTracker() {
-        parent::SugarBean();
+    public function __construct() {
+        parent::__construct();
     }
 
     function save() {

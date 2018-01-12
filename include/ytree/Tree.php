@@ -46,7 +46,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 require_once ('include/ytree/Tree.php');
 require_once ('include/JSON.php');
 
-class Tree {
+class Tree
+{
   var $tree_style='include/ytree/TreeView/css/folders/tree.css';	
   var $_header_files=array(	
 		'include/javascript/yui/build/treeview/treeview.js',
@@ -61,7 +62,8 @@ class Tree {
   //collection of parmeter properties;
   var $_params=array();
   				   
-  function Tree($name) {
+  public function __construct($name)
+  {
 		$this->_name=$name;
 		$this->json=new JSON(JSON_LOOSE_TYPE);  
   }

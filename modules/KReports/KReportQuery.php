@@ -116,9 +116,9 @@ class KReportQueryArray
             }
 
             if ($originalData['operator'] == 'parent_assign') {
-                if (!isset($this->addParams['parentbean']) 
-                        //|| (isset($this->addParams['parentbean']) && $originalData['valuekey'] == '')
-                        ) {
+                if (!isset($this->addParams['parentbean'])
+                    //|| (isset($this->addParams['parentbean']) && $originalData['valuekey'] == '')
+                ) {
                     // if we do not have a parentbean we do not evaluate this condition
                     unset($this->whereArray[$originalKey]);
                 } else {
@@ -165,13 +165,13 @@ class KReportQueryArray
                 $userTimezZone = $GLOBALS['current_user']->getPreference('timezone');
                 if($whereArrayEntry['valuekey'] != ''){
                     $valuefromdate = SugarDateTime::createFromFormat('Y-m-d H:i:s', $whereArrayEntry['valuekey'], new DateTimeZone($userTimezZone));
-                    $valuefromdate->setTimeZone(new DateTimeZone('UTC'));
+                    $valuefromdate->setTimezone(new DateTimeZone('UTC'));
                     $this->whereArray[$whereId]['valuekey'] = $valuefromdate->format('Y-m-d H:i:s');
                     $this->whereArray[$whereId]['value'] = $valuefromdate->format('Y-m-d H:i:s');
                 }
                 if($whereArrayEntry['valuetokey'] != ''){
                     $valuetodate = SugarDateTime::createFromFormat('Y-m-d H:i:s', $whereArrayEntry['valuetokey'],  new DateTimeZone($userTimezZone));
-                    $valuetodate->setTimeZone(new DateTimeZone('UTC'));
+                    $valuetodate->setTimezone(new DateTimeZone('UTC'));
                     $this->whereArray[$whereId]['valuetokey'] = $valuetodate->format('Y-m-d H:i:s');
                     $this->whereArray[$whereId]['valueto'] = $valuetodate->format('Y-m-d H:i:s');
                 }
@@ -724,7 +724,7 @@ class KReportQuery
     function build_query_strings()
     {
         // if ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')
-            $this->check_groupby($this->additionalGroupBy);
+        $this->check_groupby($this->additionalGroupBy);
 
         $this->build_path();
         $this->build_from_string();
@@ -929,9 +929,10 @@ class KReportQuery
                 case 'SecurityGroups':
                     if ($this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL') && ACLController::requireSecurityGroup($this->joinSegments['root:' . $this->root_module]['object']->module_dir, 'list')) {
                         require_once('modules/SecurityGroups/SecurityGroup.php');
+                        $securitygroup = new SecurityGroup();
                         global $current_user;
                         $owner_where = str_replace($this->joinSegments['root:' . $this->root_module]['object']->table_name, $this->rootGuid, $this->joinSegments['root:' . $this->root_module]['object']->getOwnerWhere($current_user->id));
-                        $group_where = SecurityGroup::getGroupWhere($this->rootGuid, $this->joinSegments['root:' . $this->root_module]['object']->module_dir, $current_user->id);
+                        $group_where = $securitygroup->getGroupWhere($this->rootGuid, $this->joinSegments['root:' . $this->root_module]['object']->module_dir, $current_user->id);
                         if (!empty($owner_where)) {
                             if (empty($this->whereString)) {
                                 $this->whereString = " (" . $owner_where . " or " . $group_where . ") ";
@@ -1013,7 +1014,7 @@ class KReportQuery
                             // ... funny enough so
                             //PHP7 - 5.6 COMPAT: used created variable as dynamic property name
                             $rightArrayEl = $rightArray[2];
-                            
+
                             //2011-12-29 check if we have a jointpye
                             if ($thisPathDetails['jointype'] != '') {
                                 //2011-12-29 see if the relationship vuilds on a custom field
@@ -1049,7 +1050,7 @@ class KReportQuery
 
                             //bugfix 2010-08-19, respect ACL role access for owner reuqired in select
                             if ($this->joinSegments[$leftPath]['object']->bean_implements('ACL') && ACLController::requireOwner($this->joinSegments[$leftPath]['object']->module_dir, 'list')) {
-                                //2013-02-22 missing check if we have a wherestring at all 
+                                //2013-02-22 missing check if we have a wherestring at all
                                 if ($this->whereString != '')
                                     $this->whereString .= ' AND ';
                                 $this->whereString .= $this->joinSegments[$leftPath]['alias'] . '.assigned_user_id=\'' . $current_user->id . '\'';
@@ -1090,9 +1091,10 @@ class KReportQuery
                                     case 'SecurityGroups':
                                         if ($this->joinSegments[$thisPath]['object']->bean_implements('ACL') && ACLController::requireSecurityGroup($this->joinSegments[$thisPath]['object']->module_dir, 'list')) {
                                             require_once('modules/SecurityGroups/SecurityGroup.php');
+                                            $securitygroup = new SecurityGroup();
                                             global $current_user;
                                             $owner_where = str_replace($this->joinSegments[$thisPath]['object']->table_name, $this->joinSegments[$thisPath]['alias'], $this->joinSegments[$thisPath]['object']->getOwnerWhere($current_user->id));
-                                            $group_where = SecurityGroup::getGroupWhere($this->joinSegments[$thisPath]['alias'], $this->joinSegments[$thisPath]['object']->module_dir, $current_user->id);
+                                            $group_where = $securitygroup->getGroupWhere($this->joinSegments[$thisPath]['alias'], $this->joinSegments[$thisPath]['object']->module_dir, $current_user->id);
                                             if (!empty($owner_where)) {
                                                 if (empty($this->whereString)) {
                                                     $this->whereString = " (" . $owner_where . " or " . $group_where . ") ";
@@ -1139,7 +1141,7 @@ class KReportQuery
 
         // build select
         // 2016-11-23 added count select stzring into the swicth for mssql and oci8
-        if ($this->isGrouped /* && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/) {
+        if ($this->isGrouped && !$GLOBALS['sugar_config']['KReports']['olderMySqlVersion'] /* && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/) {
             $this->selectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
             $this->countSelectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
         }
@@ -1179,10 +1181,10 @@ class KReportQuery
             foreach ($unionJoinSegments as $thisAlias => $thisJoinIdData) {
                 if ($thisJoinIdData['unionid'] == $this->unionId) {
                     // this is for this join ... so we select the id
-                    if ($this->isGrouped /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/)
+                    if ($this->isGrouped && !$GLOBALS['sugar_config']['KReports']['olderMySqlVersion'] /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/)
                         $this->selectString .= ', MIN(' . $thisAlias . '.id) as ' . $thisAlias . 'id';
                     else
-                        $this->selectString .= ', ' . $thisAlias . '.id as "' . $thisAlias . 'id"';
+                    $this->selectString .= ', ' . $thisAlias . '.id as "' . $thisAlias . 'id"';
 
                     $this->selectString .= ', \'' . $thisJoinIdData['path'] . '\' as "' . $thisAlias . 'path"';
                 } else {
@@ -1204,7 +1206,7 @@ class KReportQuery
                 // 2011-12-29 check if Jointype is set
                 //if( $joinsegment['jointype'] != '')
                 //{
-                if ($this->isGrouped /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8')*/)
+                if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8'))
                     $this->selectString .= ', MIN(' . $joinsegment['alias'] . '.id) as ' . $joinsegment['alias'] . 'id';
                 else
                     $this->selectString .= ', ' . $joinsegment['alias'] . '.id as "' . $joinsegment['alias'] . 'id"';
@@ -1250,7 +1252,7 @@ class KReportQuery
                         //2013-04-22 also for Count Distinct ... Bug #469
                         //elseif ($thisListEntry['sqlfunction'] == 'COUNT_DISTINCT') {
                         //    $this->unionSelectString .= ', COUNT(DISTINCT ' . $thisListEntry['fieldid'] . ')';
-                        // } 
+                        // }
                         else {
                             //2011-05-31 if function is count - sum in union
                             //2013-04-22 also for Count Distinct ... Bug #469
@@ -1404,7 +1406,7 @@ class KReportQuery
                         //getWhereOperatorClause($operator, $fieldname, $alias,  $value, $valuekey, $valueto)
                         //$thisWhereString .= $this->getWhereOperatorClause($thisWhere['operator'], $fieldArray[1], $this->joinSegments[$pathName]['alias'],  $thisWhere['value'], $thisWhere['valuekey'], $thisWhere['valueto']);
                         //2012-11-24 ... changed to fill into temnpWherestring
-                        //2013-08-07 .. process fixed value 
+                        //2013-08-07 .. process fixed value
                         if (!empty($thisWhere['fixedvalue']))
                             $tempWhereString = $this->getWhereOperatorClause($thisWhere['operator'], $fieldArray[1], '\'' . $thisWhere['fixedvalue'] . '\'', $pathName, $thisWhere['value'], $thisWhere['valuekey'], $thisWhere['valueto'], $thisWhere['valuetokey'], $thisWhere['jointype']);
                         elseif (!empty($pathName))
@@ -1462,7 +1464,7 @@ class KReportQuery
         }
 
         // 2013-01-16 check if we have a where string already from the auth check
-        // 2013-02-22 moved into the adding of the where clause ... 
+        // 2013-02-22 moved into the adding of the where clause ...
         //if ($this->whereString != '')
         //    $this->whereString .= ' AND ';
         // process now topDown
@@ -1509,7 +1511,7 @@ class KReportQuery
 
         // bugfix 2010-08-19, respect ACL access for owner required
         // check for Role based access on root module
-        // 2013-02-22 ... added anyway for each segment ... no need to add here again ... 
+        // 2013-02-22 ... added anyway for each segment ... no need to add here again ...
         /*
           if (!$current_user->is_admin && $this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL') && ACLController::requireOwner($this->joinSegments['root:' . $this->root_module]['object']->module_dir, 'list')) {
           $this->whereString .= ' AND ' . $this->rootGuid . '.assigned_user_id=\'' . $current_user->id . '\'';
@@ -1881,13 +1883,13 @@ class KReportQuery
                 $thisWhereString .= ' >= \'' . gmdate('Y-m-d H:i:s', $endStamp - $value * 604800 + 1) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . gmdate('Y-m-d H:i:s', $endStamp) . '\'';
                 break;
             case 'lastnmonthDaily':
-                $currentDate = new DateTime(gmdate('Y-m-d'));                
+                $currentDate = new DateTime(gmdate('Y-m-d'));
                 $toDate = $currentDate->format('Y-m-d');
                 $currentDate->sub(new DateInterval('P'.$value.'M'));
                 $fromDate = $currentDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
-            
+
             case 'lastnfmonth':
                 $endMonth = date('n');
                 $endYear = date('Y');
@@ -1996,22 +1998,22 @@ class KReportQuery
                 //MySQL way
                 //$thisWhereString .= ' >= \'DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'DATE_ADD(LAST_DAY(DATE_ADD(CURDATE(), INTERVAL '.$value.' MONTH)), INTERVAL 1 DAY)\'';
                 //do it per dates to be comaptible with other databases
-                $calcDate = new DateTime(gmdate('Y-m-d'));                
+                $calcDate = new DateTime(gmdate('Y-m-d'));
                 $calcDate->add(new DateInterval('P1M')); //Add 1 month
                 $fromDate = $calcDate->format('Y-m-01');   //Get the first day of the next month as string
                 $calcDate->add(new DateInterval('P'.$value.'M'));
                 $toDate = $calcDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnmonthDaily':
                 //MySQL way
                 //$thisWhereString .= ' >= \'CURDATE()\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'DATE_ADD(CURDATE(), INTERVAL '.$value.' MONTH)\'';
                 //do it per dates to be comaptible with other databases
-                $calcDate = new DateTime(gmdate('Y-m-d'));                
-                $fromDate = $calcDate->format('Y-m-d'); 
+                $calcDate = new DateTime(gmdate('Y-m-d'));
+                $fromDate = $calcDate->format('Y-m-d');
                 $calcDate->add(new DateInterval('P'.$value.'M'));
                 $toDate = $calcDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'next3month':
                 $dateArray = getdate();
@@ -2057,11 +2059,11 @@ class KReportQuery
                 $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'lastnfquarter':
-                $calcDate = new DateTime(gmdate('Y-m-d'));                
+                $calcDate = new DateTime(gmdate('Y-m-d'));
                 $subToGetLastQuarterEnd = array(
                     1 => 1,
                     2 => 2,
-                    3 => 3,                    
+                    3 => 3,
                     4 => 1,
                     5 => 2,
                     6 => 3,
@@ -2072,19 +2074,19 @@ class KReportQuery
                     11 => 2,
                     12 => 3,
                 );
-                
+
                 $calcDate->sub(new DateInterval('P'.($subToGetLastQuarterEnd[date('n')]-1).'M')); //calculate next quarter start
                 $toDate = $calcDate->format('Y-m-01');   //Get the first day of the next month as string
                 $calcDate->sub(new DateInterval('P'.($value*3).'M'));
                 $fromDate = $calcDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnfquarter':
-                $calcDate = new DateTime(gmdate('Y-m-d'));                
+                $calcDate = new DateTime(gmdate('Y-m-d'));
                 $addToGetNextQuarterStart = array(
                     1 => 3,
                     2 => 2,
-                    3 => 1,                    
+                    3 => 1,
                     4 => 3,
                     5 => 2,
                     6 => 1,
@@ -2095,12 +2097,12 @@ class KReportQuery
                     11 => 2,
                     12 => 1,
                 );
-                
+
                 $calcDate->add(new DateInterval('P'.$addToGetNextQuarterStart[date('n')].'M')); //calculate next quarter start
                 $fromDate = $calcDate->format('Y-m-01');   //Get the first day of the next month as string
                 $calcDate->add(new DateInterval('P'.($value*3).'M'));
                 $toDate = $calcDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
 
             case 'thisyear':
@@ -2130,33 +2132,33 @@ class KReportQuery
                 $thisWhereString .= ' >= \'' . $fromDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \'' . $toDate . ' 00:00:00\'';
                 break;
             case 'lastnyear':
-                $firstOfYearDate = new DateTime(gmdate('Y-01-01'));      
+                $firstOfYearDate = new DateTime(gmdate('Y-01-01'));
                 $toDate = $firstOfYearDate->format('Y-m-d');
                 $firstOfYearDate->sub(new DateInterval('P'.$value.'Y'));
                 $fromDate = $firstOfYearDate->format('Y-m-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'lastnyearDaily':
-                $currentDate = new DateTime(gmdate('Y-m-d'));                
+                $currentDate = new DateTime(gmdate('Y-m-d'));
                 $toDate = $currentDate->format('Y-m-d');
                 $currentDate->sub(new DateInterval('P'.$value.'Y'));
                 $fromDate = $currentDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnyear':
-                $calcDate = new DateTime(gmdate('Y-m-d'));                
+                $calcDate = new DateTime(gmdate('Y-m-d'));
                 $calcDate->add(new DateInterval('P1Y')); //Add 1 Year
                 $fromDate = $calcDate->format('Y-01-01');   //Get the first day of the next year as string
                 $calcDate->add(new DateInterval('P'.$value.'Y'));
                 $toDate = $calcDate->format('Y-01-01');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'nextnyearDaily':
-                $calcDate = new DateTime(date('Y-m-d'));                
+                $calcDate = new DateTime(date('Y-m-d'));
                 $fromDate = $calcDate->format('Y-m-d');   //Get the first day of the next year as string
                 $calcDate->add(new DateInterval('P'.$value.'Y'));
                 $toDate = $calcDate->format('Y-m-d');
-                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';                
+                $thisWhereString .= ' >= \''.$fromDate.'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . ' < \''.$toDate.'\'';
                 break;
             case 'tyytd':
                 $year = date('Y');
@@ -2167,7 +2169,7 @@ class KReportQuery
                 $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid) . '<=\'' . $year . '-' . date('m-d') . '\'';
                 break;
         }
-        
+
         //check on custom operators and their handler
         if(file_exists('custom/modules/KReports/KReportQueryCustom.php')){
             require_once 'custom/modules/KReports/KReportQueryCustom.php';
@@ -2202,7 +2204,7 @@ class KReportQuery
         }
         if ($this->isGrouped)
             foreach ($this->listArray as $listArrayIndex => $thisList) {
-                if ($thisList['groupby'] == 'no' && /*($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') &&*/ $this->evalSQLFunctions && ($thisList['sqlfunction'] == '' || $thisList['sqlfunction'] == '-'))
+                if ($thisList['groupby'] == 'no' && !$GLOBALS['sugar_config']['KReports']['olderMySqlVersion'] && /*($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') &&*/ $this->evalSQLFunctions && ($thisList['sqlfunction'] == '' || $thisList['sqlfunction'] == '-'))
                     $this->listArray[$listArrayIndex]['sqlfunction'] = 'MIN';
             }
     }
@@ -2360,7 +2362,7 @@ class KReportQuery
                     }
                 }
             } else {
-                if ($this->isGrouped /*&& ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') */) {
+                if ($this->isGrouped && ($GLOBALS['db']->dbType == 'mssql' || $GLOBALS['db']->dbType == 'oci8') ) {
                     if ($this->orderByFieldID)
                         $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
                     else

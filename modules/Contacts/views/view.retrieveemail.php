@@ -49,8 +49,8 @@ require_once("include/JSON.php");
 
 class ContactsViewRetrieveEmail extends SugarView {
 	
- 	function ContactsViewRetrieveEmail(){
- 		parent::SugarView();
+ 	function __construct(){
+ 		parent::__construct();
  	}
  	
  	function process() {

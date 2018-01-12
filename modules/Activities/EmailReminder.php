@@ -176,10 +176,10 @@ class EmailReminder
         }
 
         foreach($recipients as $r ) {
-            $mail->ClearAddresses();
-            $mail->AddAddress($r['email'],$GLOBALS['locale']->translateCharsetMIME(trim($r['name']), 'UTF-8', $OBCharset));    
+            $mail->clearAddresses();
+            $mail->addAddress($r['email'],$GLOBALS['locale']->translateCharsetMIME(trim($r['name']), 'UTF-8', $OBCharset));
             $mail->prepForOutbound();
-            if ( !$mail->Send() ) {
+            if ( !$mail->send() ) {
                 $GLOBALS['log']->fatal("Email Reminder: error sending e-mail (method: {$mail->Mailer}), (error: {$mail->ErrorInfo})");
             }
         }

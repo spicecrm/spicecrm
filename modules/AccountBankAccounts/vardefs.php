@@ -72,4 +72,4 @@ $dictionary['AccountBankAccount'] = array(
 );
 
 require_once('include/SugarObjects/VardefManager.php');
-VarDefManager::createVardef('AccountBankAccounts', 'AccountBankAccount', array('default', 'assignable'));
+VardefManager::createVardef('AccountBankAccounts', 'AccountBankAccount', array('default', 'assignable'));

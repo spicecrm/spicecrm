@@ -54,16 +54,26 @@ $app->group('/module', function () use ($app, $KRESTManager, $KRESTModuleHandler
 
         echo json_encode($KRESTModuleHandler->get_bean_list($beanName, $searchParams));
     });
-    $app->post('/:beanName', function ($beanName) use ($app, $KRESTModuleHandler) {
+    $app->post('/:beanName', function ($beanName) use ($app, $KRESTManager, $KRESTModuleHandler) {
         $requestParams = $app->request->get();
 
         $retArray = array();
+
+        // acl check
+        $seed = BeanFactory::getBean($beanName);
+        if(!$seed){
+            $KRESTManager->authenticationError('no access to module ' . $beanName);
+        }
+
+        if(!ACLController::checkAccess($beanName, 'edit', true)){
+            $KRESTManager->authenticationError('no edit rights for module ' . $beanName);
+        }
 
         $items = json_decode($app->request->getBody(), true);
 
         foreach ($items as $item) {
             $beanId = $KRESTModuleHandler->add_bean($beanName, $item['id'], array_merge($item, $requestParams));
-            $item['id'] = $beanId;
+            $item['data'] = $beanId;
             $retArray[] = $item;
         }
 

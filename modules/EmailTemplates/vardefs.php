@@ -99,7 +99,7 @@ $dictionary['EmailTemplate'] = array(
             'bean_name' => 'User',
             'source' => 'non-db',
         ),
-		//end
+        //end
 		'created_by' => array(
 			'name' => 'created_by',
 			'vname' => 'LBL_CREATED_BY',
@@ -245,13 +245,26 @@ $dictionary['EmailTemplate'] = array(
             'options' => 'emailTemplates_type_list',
             'comment' => 'Type of the email template'
        ),
+        'for_bean' => array(
+            'name' => 'for_bean',
+            'vname' => 'LBL_FOR_BEAN',
+            'type' => 'enum',
+            'required' => false,
+            'reportable'=> false,
+            'options' => 'kreleasepackage_repair_modules_dom'
+        ),
 	),
 	'indices' => array(
 		array(
 			'name' => 'idx_email_template_name',
 			'type'=>'index',
 			'fields'=>array('name')
-		)
+		),
+        array(
+            'name' => 'idx_email_template_forbean',
+            'type'=>'index',
+            'fields'=>array('for_bean')
+        )
 	),
 	'relationships' => array(
         'emailtemplates_assigned_user' =>
@@ -270,5 +283,26 @@ $dictionary['EmailTemplate'] = array(
         //end
     ),
 );
+//BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
+global $dictionary;
+//END
+$dictionary['EmailTemplate']['relationships']['emailtemplates_emails'] = array(
+    'lhs_module' => 'EmailTemplates',
+    'lhs_table' => 'email_templates',
+    'lhs_key' => 'id',
+    'rhs_module' => 'Emails',
+    'rhs_table' => 'emails',
+    'rhs_key' => 'emailtemplate_id',
+    'relationship_type' => 'one-to-many'
+);
 
-VardefManager::createVardef('EmailTemplates','EmailTemplate', array('assignable'));
+$dictionary['EmailTemplate']['fields']['emails'] = array(
+    'name' => 'emails',
+    'type' => 'link',
+    'relationship' => 'emailtemplates_emails',
+    'source'=>'non-db',
+    'side' => 'right',
+    'vname' => 'LBL_EMAILTEMPLATES_EMAILS_LINK'
+);
+
+VardefManager::createVardef('EmailTemplates','EmailTemplate', array('default', 'assignable'));

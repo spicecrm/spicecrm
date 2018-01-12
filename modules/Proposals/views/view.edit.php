@@ -34,7 +34,7 @@ require_once('include/MVC/View/views/view.detail.php');
 class ProposalsViewEdit extends ViewEdit {
 
     public function __construct(){
-        parent::ViewEdit();
+        parent::__construct();
     }
 
     public function preDisplay() {

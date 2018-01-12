@@ -170,7 +170,7 @@ class KReportVisualizationManager {
                                 die('pluginError');
                         }
 
-                        $this->itemData[$thisElement]['divID'] = 'vis' . ($thisData[$thisData['plugin']]['uid'] != '' ? $thisData[$thisData['plugin']]['uid'] : 'gc' . create_guid);
+                        $this->itemData[$thisElement]['divID'] = 'vis' . ($thisData[$thisData['plugin']]['uid'] != '' ? $thisData[$thisData['plugin']]['uid'] : 'gc' . create_guid());
                         $this->itemData[$thisElement]['addDivData'] =  $this->headerData[$thisData['plugin']]['object']->getAddVizDiv($this->itemData[$thisElement]['divID']);
                         
                         if ($thisData[$thisData['plugin']]['uid'] != '')

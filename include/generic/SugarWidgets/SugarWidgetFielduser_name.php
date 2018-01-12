@@ -38,7 +38,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 
-class SugarWidgetFielduser_name extends SugarWidgetFieldname
+class SugarWidgetFielduser_name extends SugarWidgetFieldName
 {
  function displayInput(&$layout_def) 
  {

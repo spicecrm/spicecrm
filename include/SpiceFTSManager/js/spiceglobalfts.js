@@ -1,9 +1,6 @@
 SpiceCRM.controller('GlobalFTSController', ['$scope', 'GlobalFTSService', function (_scope, _globalFTSService) {
     angular.extend(_scope, {
-        globalFTSService: _globalFTSService,
-        keyup: function(event){
-            //console.log(event.altKey );
-        }
+        globalFTSService: _globalFTSService
     });
 
     _scope.$watch('globalFTSService.gloablSearchTerm', function (_newVal, _oldVal) {
@@ -13,7 +10,6 @@ SpiceCRM.controller('GlobalFTSController', ['$scope', 'GlobalFTSService', functi
             if (queryInput)queryInput.value = _newVal;
         }
     });
-
 }]);
 
 SpiceCRM.controller('GlobalFTSModuleItemController', ['$scope', 'GlobalFTSService', function (_scope, _globalFTSService) {

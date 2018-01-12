@@ -38,7 +38,6 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
     'comment' => 'Accounts are organizations or entities that are the target of selling, support, and marketing activities, or have already purchased products or services',
     'fields' => array(
-
         'parent_id' =>
             array(
                 'name' => 'parent_id',
@@ -136,7 +135,7 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
             'query_type' => 'default',
             'source' => 'non-db',
             'operator' => 'subquery',
-            'subquery' => 'SELECT eabr.bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (ea.id = eabr.email_address_id) WHERE eabr.deleted=0 AND ea.email_address LIKE',
+            'subquery' => "SELECT eabr.bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (ea.id = eabr.email_address_id) WHERE eabr.deleted=0 AND ea.email_address LIKE",
             'db_field' => array(
                 'id',
             ),
@@ -408,7 +407,7 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
             'name' => 'accountkpis',
             'type' => 'link',
             'relationship' => 'accounts_accountkpis',
-            'source'=>'non-db',
+            'source' => 'non-db',
             'side' => 'right',
             'vname' => 'LBL_ACCOUNTS_ACCOUNTKPIS_LINK'
         ),
@@ -416,46 +415,61 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
             'name' => 'accountbankaccounts',
             'type' => 'link',
             'relationship' => 'accounts_bankaccounts',
-            'source'=>'non-db',
+            'source' => 'non-db',
             'side' => 'right',
             'vname' => 'LBL_ACCOUNTS_BANKACCOUNTS_LINK'
-        )
-    )
-, 'indices' => array(
+        ),
+
+        'accountccdetails' => array(
+            'name' => 'accountccdetails',
+            'vname' => 'LBL_ACOUNTCCDETAILS_LINK',
+            'type' => 'link',
+            'relationship' => 'accounts_accountccdetails',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'duplicate_merge' => 'disabled',
+            'massupdate' => false,
+            'default' => true, //UI: load related beans on account load. module property required!
+            'module' => 'AccountCCDetails'
+        ),
+
+    ),
+    'indices' => array(
         array('name' => 'idx_accnt_id_del', 'type' => 'index', 'fields' => array('id', 'deleted')),
         array('name' => 'idx_accnt_name_del', 'type' => 'index', 'fields' => array('name', 'deleted')),//bug #5530
         array('name' => 'idx_accnt_assigned_del', 'type' => 'index', 'fields' => array('deleted', 'assigned_user_id')),
         array('name' => 'idx_accnt_parent_id', 'type' => 'index', 'fields' => array('parent_id')),
-    )
-
-, 'relationships' => array(
+    ),
+    'relationships' => array(
         'member_accounts' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many')
-
-    , 'account_cases' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+            'relationship_type' => 'one-to-many'
+        ),
+        'account_cases' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Cases', 'rhs_table' => 'cases', 'rhs_key' => 'account_id',
-            'relationship_type' => 'one-to-many')
-
-    , 'account_tasks' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+            'relationship_type' => 'one-to-many'
+        ),
+        'account_tasks' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts')
-
-    , 'account_notes' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+            'relationship_role_column_value' => 'Accounts'
+        ),
+        'account_notes' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts')
-
-    , 'account_meetings' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+            'relationship_role_column_value' => 'Accounts'
+        ),
+        'account_meetings' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts')
-
-    , 'account_calls' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+            'relationship_role_column_value' => 'Accounts'
+        ),
+        'account_calls' => array(
+            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts')
+            'relationship_role_column_value' => 'Accounts'
+        ),
 
         /*,'accounts_emails' => array(
             'rhs_module'        => 'Emails',
@@ -470,35 +484,33 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
             'join_key_lhs'      => 'account_id'
         )
         */
-    , 'account_emails' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
-            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts')
-
-    , 'account_leads' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
-            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'account_id',
-            'relationship_type' => 'one-to-many')
-    ,
-
-        'accounts_assigned_user' =>
-            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-                'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'assigned_user_id',
-                'relationship_type' => 'one-to-many'),
-
-        'accounts_modified_user' =>
-            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-                'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'modified_user_id',
-                'relationship_type' => 'one-to-many'),
-
-        'accounts_created_by' =>
-            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-                'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'created_by',
-                'relationship_type' => 'one-to-many'),
-
+        'account_emails' => array(
+            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id', 'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Accounts'
+        ),
+        'account_leads' => array(
+            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'account_id', 'relationship_type' => 'one-to-many'
+        ),
+        'accounts_assigned_user' => array(
+            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'assigned_user_id',
+            'relationship_type' => 'one-to-many'
+        ),
+        'accounts_modified_user' => array(
+            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'modified_user_id',
+            'relationship_type' => 'one-to-many'
+        ),
+        'accounts_created_by' => array(
+            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'created_by',
+            'relationship_type' => 'one-to-many'
+        ),
         'account_campaign_log' => array('lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'CampaignLog', 'rhs_table' => 'campaign_log', 'rhs_key' => 'target_id',
             'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'target_type', 'relationship_role_column_value' => 'Accounts'),
+            'relationship_role_column' => 'target_type', 'relationship_role_column_value' => 'Accounts'
+        ),
         'accounts_accountkpis' => array(
             'lhs_module' => 'Accounts',
             'lhs_table' => 'accounts',
@@ -514,12 +526,37 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
     'optimistic_locking' => true,
 );
 
-VardefManager::createVardef('Accounts', 'Account', array('default', 'assignable',
-    'company',
-));
+
+// CE version has not all modules...
+if(is_file("modules/SalesDocs/SalesDoc.php")){
+    $dictionary['Account']['fields']['salesdocs'] = array(
+        'name' => 'salesdocs',
+        'type' => 'link',
+        'vname' => 'LBL_SALESDOCS',
+        'relationship' => 'salesdocs_accountsop',
+        'module' => 'SalesDocs',
+        'source' => 'non-db',
+    );
+}
+if(is_file("modules/Addresses/Address.php")) {
+    $dictionary['Account']['fields']['addresses'] = array(
+        'name' => 'addresses',
+        'type' => 'link',
+        'relationship' => 'account_addresses',
+        'source' => 'non-db',
+        'vname' => 'LBL_ADDRESSES',
+        'module' => 'Addresses',
+        'default' => true
+    );
+}
+
+
+VardefManager::createVardef('Accounts', 'Account', array('default', 'assignable', 'company'));
 
 //jc - adding for refactor for import to not use the required_fields array
 //defined in the field_arrays.php file
+//BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
+global $dictionary;
+//END
 $dictionary['Account']['fields']['name']['importable'] = 'required';
 
-?>

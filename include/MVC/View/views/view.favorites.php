@@ -47,7 +47,7 @@ class ViewFavorites extends SugarView
 		$this->options['show_javascript'] = false; 
 		$this->options['show_subpanels'] = false; 
 		$this->options['show_search'] = false; 
- 		parent::SugarView();
+ 		parent::__construct();
  	}	
  	
  	public function display()

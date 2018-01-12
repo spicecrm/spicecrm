@@ -65,5 +65,7 @@ $mod_strings = array (
 	'LBL_DOC_ID' => 'Dokument Quell-ID',
 	'LBL_DOC_TYPE' => 'Quelle',
 	'LBL_DOC_URL' => 'Dokument Quell-URL',
+
+    'LBL_DATE_ENTERED' => 'angelegt am',
+    'LBL_CREATED_BY_NAME' => 'angelegt von',
 );
-?>

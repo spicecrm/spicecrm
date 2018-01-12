@@ -154,11 +154,11 @@ class Email extends SugarBean {
 	/**
 	 * sole constructor
 	 */
-	function Email()
+	function __construct()
 	{
 	    global $current_user;
 	    $this->cachePath = sugar_cached('modules/Emails');
-		parent::SugarBean();
+		parent::__construct();
 
 		$this->emailAddress = new SugarEmailAddress();
 
@@ -381,12 +381,12 @@ class Email extends SugarBean {
         }
 
         $mail->Sender = $mail->From;
-		$mail->AddAddress($toaddress);
+		$mail->addAddress($toaddress);
 		$mail->Body = $mod_strings['LBL_TEST_EMAIL_BODY'];
 
 		$return = array();
 
-		if(!$mail->Send()) {
+		if(!$mail->send()) {
 	        ob_clean();
 	        $return['status'] = false;
 	        $return['errorMessage'] = $app_strings['LBL_EMAIL_ERROR_PREPEND']. $mail->ErrorInfo;
@@ -613,9 +613,9 @@ class Email extends SugarBean {
 		$mail->Sender = $mail->From; /* set Return-Path field in header to reduce spam score in emails sent via Sugar's Email module */
 
 		if (!empty($replyToAddress)) {
-			$mail->AddReplyTo($replyToAddress,$locale->translateCharsetMIME(trim( $replyToName), 'UTF-8', $OBCharset));
+			$mail->addReplyTo($replyToAddress,$locale->translateCharsetMIME(trim( $replyToName), 'UTF-8', $OBCharset));
 		} else {
-			$mail->AddReplyTo($mail->From,$locale->translateCharsetMIME(trim( $mail->FromName), 'UTF-8', $OBCharset));
+			$mail->addReplyTo($mail->From,$locale->translateCharsetMIME(trim( $mail->FromName), 'UTF-8', $OBCharset));
 		} // else
         $emailAddressCollection = array(); // used in linking to beans below
 		// handle to/cc/bcc
@@ -623,9 +623,9 @@ class Email extends SugarBean {
 			if(empty($addr_arr['email'])) continue;
 
 			if(empty($addr_arr['display'])) {
-				$mail->AddAddress($addr_arr['email'], "");
+				$mail->addAddress($addr_arr['email'], "");
 			} else {
-				$mail->AddAddress($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
+				$mail->addAddress($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
 			}
 			$emailAddressCollection[] = $addr_arr['email'];
 		}
@@ -633,9 +633,9 @@ class Email extends SugarBean {
 			if(empty($addr_arr['email'])) continue;
 
 			if(empty($addr_arr['display'])) {
-				$mail->AddCC($addr_arr['email'], "");
+				$mail->addCC($addr_arr['email'], "");
 			} else {
-				$mail->AddCC($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
+				$mail->addCC($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
 			}
 			$emailAddressCollection[] = $addr_arr['email'];
 		}
@@ -644,9 +644,9 @@ class Email extends SugarBean {
 			if(empty($addr_arr['email'])) continue;
 
 			if(empty($addr_arr['display'])) {
-				$mail->AddBCC($addr_arr['email'], "");
+				$mail->addBCC($addr_arr['email'], "");
 			} else {
-				$mail->AddBCC($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
+				$mail->addBCC($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
 			}
 			$emailAddressCollection[] = $addr_arr['email'];
 		}
@@ -675,7 +675,7 @@ class Email extends SugarBean {
 					$fileLocation = $this->et->userCacheDir."/{$fileGUID}";
 					$filename = substr($file, 36, strlen($file)); // strip GUID	for PHPMailer class to name outbound file
 
-					$mail->AddAttachment($fileLocation,$filename, 'base64', $this->email2GetMime($fileLocation));
+					$mail->addAttachment($fileLocation,$filename, 'base64', $this->email2GetMime($fileLocation));
 					//$mail->AddAttachment($fileLocation, $filename, 'base64');
 
 					// only save attachments if we're archiving or drafting
@@ -715,7 +715,7 @@ class Email extends SugarBean {
 					$docGUID = preg_replace('/[^a-z0-9\-]/', "", $docRev->id);
 					$fileLocation = "upload://{$docGUID}";
 					$mime_type = $docRev->file_mime_type;
-					$mail->AddAttachment($fileLocation,$locale->translateCharsetMIME(trim($filename), 'UTF-8', $OBCharset), 'base64', $mime_type);
+					$mail->addAttachment($fileLocation,$locale->translateCharsetMIME(trim($filename), 'UTF-8', $OBCharset), 'base64', $mime_type);
 
 					// only save attachments if we're archiving or drafting
 					if((($this->type == 'draft') && !empty($this->id)) || (isset($request['saveToSugar']) && $request['saveToSugar'] == 1)) {
@@ -753,7 +753,7 @@ class Email extends SugarBean {
 						$fileLocation = "upload://{$noteGUID}";
 						$mime_type = $note->file_mime_type;
 						if (!$note->embed_flag) {
-							$mail->AddAttachment($fileLocation,$filename, 'base64', $mime_type);
+							$mail->addAttachment($fileLocation,$filename, 'base64', $mime_type);
 							// only save attachments if we're archiving or drafting
 							if((($this->type == 'draft') && !empty($this->id)) || (isset($request['saveToSugar']) && $request['saveToSugar'] == 1)) {
 
@@ -769,7 +769,7 @@ class Email extends SugarBean {
 						//$fileLocation = $this->et->userCacheDir."/{$noteId}";
 						$filename = substr($noteId, 36, strlen($noteId)); // strip GUID	for PHPMailer class to name outbound file
 
-						$mail->AddAttachment($fileLocation,$locale->translateCharsetMIME(trim($filename), 'UTF-8', $OBCharset), 'base64', $this->email2GetMime($fileLocation));
+						$mail->addAttachment($fileLocation,$locale->translateCharsetMIME(trim($filename), 'UTF-8', $OBCharset), 'base64', $this->email2GetMime($fileLocation));
 
 						//If we are saving an email we were going to forward we need to save the attachments as well.
 						if( (($this->type == 'draft') && !empty($this->id))
@@ -810,7 +810,7 @@ class Email extends SugarBean {
             $mail->prepForOutbound();
             $mail->Body = $this->decodeDuringSend($mail->Body);
             $mail->AltBody = $this->decodeDuringSend($mail->AltBody);
-            if (!$mail->Send()) {
+            if (!$mail->send()) {
                 $this->status = 'send_error';
                 ob_clean();
                 echo($app_strings['LBL_EMAIL_ERROR_PREPEND']. $mail->ErrorInfo);
@@ -917,7 +917,7 @@ class Email extends SugarBean {
 			if (isset($ie->id) && !$ie->isPop3Protocol() && $mail->oe->mail_smtptype != 'gmail') {
 				$sentFolder = $ie->get_stored_options("sentFolder");
 				if (!empty($sentFolder)) {
-					$data = $mail->CreateHeader() . "\r\n" . $mail->CreateBody() . "\r\n";
+					$data = $mail->createHeader() . "\r\n" . $mail->createBody() . "\r\n";
 					$ie->mailbox = $sentFolder;
 					if ($ie->connectMailserver() == 'true') {
 						$connectString = $ie->getConnectString($ie->getServiceString(), $ie->mailbox);
@@ -1035,7 +1035,9 @@ class Email extends SugarBean {
 				$this->new_with_id = true;
 			}
 			$this->from_addr_name = $this->cleanEmails($this->from_addr_name);
+            $this->from_addr = $this->from_addr_name;
 			$this->to_addrs_names = $this->cleanEmails($this->to_addrs_names);
+            $this->to_addrs = $this->to_addrs_names;
 			$this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
 			$this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
 			$this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
@@ -1273,12 +1275,15 @@ class Email extends SugarBean {
 			}
 			if(isset($return['to'])) {
 				$this->to_addrs = implode(", ", $return['to']);
+				foreach($return['to'] as $mail) $this->to_addrs_arr[] = array('email' => $mail);
 			}
 			if(isset($return['cc'])) {
 				$this->cc_addrs = implode(", ", $return['cc']);
+                foreach($return['cc'] as $mail) $this->cc_addrs_arr[] = array('email' => $mail);
 			}
 			if(isset($return['bcc'])) {
 				$this->bcc_addrs = implode(", ", $return['bcc']);
+                foreach($return['bcc'] as $mail) $this->bcc_addrs_arr[] = array('email' => $mail);
 			}
 		}
 	}
@@ -1995,7 +2000,7 @@ class Email extends SugarBean {
 		} else {
 			// plain text only
 			$this->description_html = '';
-			$mail->IsHTML(false);
+			$mail->isHTML(false);
 			$plainText = from_html($this->description);
 			$plainText = str_replace("&nbsp;", " ", $plainText);
 			$plainText = str_replace("</p>", "</p><br />", $plainText);
@@ -2029,7 +2034,7 @@ class Email extends SugarBean {
 		global $sugar_config;
 		// wp: if body is html, then insert new lines at 996 characters. no effect on client side
 		// due to RFC 2822 which limits email lines to 998
-		$mail->IsHTML(true);
+		$mail->isHTML(true);
 		$body = from_html(wordwrap($this->description_html, 996));
 		$mail->Body = $body;
 
@@ -2062,24 +2067,24 @@ class Email extends SugarBean {
 
 		foreach ($this->to_addrs_arr as $addr_arr) {
 			if ( empty($addr_arr['display'])) {
-				$mail->AddAddress($addr_arr['email'], "");
+				$mail->addAddress($addr_arr['email'], "");
 			} else {
-				$mail->AddAddress($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
+				$mail->addAddress($addr_arr['email'],$locale->translateCharsetMIME(trim( $addr_arr['display']), 'UTF-8', $OBCharset));
 			}
 		}
 		foreach ($this->cc_addrs_arr as $addr_arr) {
 			if ( empty($addr_arr['display'])) {
-				$mail->AddCC($addr_arr['email'], "");
+				$mail->addCC($addr_arr['email'], "");
 			} else {
-				$mail->AddCC($addr_arr['email'],$locale->translateCharsetMIME(trim($addr_arr['display']), 'UTF-8', $OBCharset));
+				$mail->addCC($addr_arr['email'],$locale->translateCharsetMIME(trim($addr_arr['display']), 'UTF-8', $OBCharset));
 			}
 		}
 
 		foreach ($this->bcc_addrs_arr as $addr_arr) {
 			if ( empty($addr_arr['display'])) {
-				$mail->AddBCC($addr_arr['email'], "");
+				$mail->addBCC($addr_arr['email'], "");
 			} else {
-				$mail->AddBCC($addr_arr['email'],$locale->translateCharsetMIME(trim($addr_arr['display']), 'UTF-8', $OBCharset));
+				$mail->addBCC($addr_arr['email'],$locale->translateCharsetMIME(trim($addr_arr['display']), 'UTF-8', $OBCharset));
 			}
 		}
 
@@ -2175,7 +2180,7 @@ class Email extends SugarBean {
 		////	END I18N TRANSLATION
 		///////////////////////////////////////////////////////////////////////
 
-		if($mail->Send()) {
+		if($mail->send()) {
 			///////////////////////////////////////////////////////////////////
 			////	INBOUND EMAIL HANDLING
 			// mark replied
@@ -2185,6 +2190,10 @@ class Email extends SugarBean {
 				$ieMail->status = 'replied';
 				$ieMail->save();
 			}
+			global $timedate;
+            $this->status = 'sent';
+			$this->date_sent = $timedate->now();
+            $this->save();
 			$GLOBALS['log']->debug(' --------------------- buh bye -- sent successful');
 			////	END INBOUND EMAIL HANDLING
 			///////////////////////////////////////////////////////////////////
@@ -2386,7 +2395,7 @@ class Email extends SugarBean {
 		if ( empty($this->name ) &&  empty($_REQUEST['record'])) {
 			$this->name = $mod_strings['LBL_NO_SUBJECT'];
 		}
-
+        $this->retrieveEmailText();
 		$this->fill_in_additional_parent_fields();
 	}
 

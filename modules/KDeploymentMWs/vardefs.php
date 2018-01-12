@@ -57,4 +57,4 @@ $dictionary['KDeploymentMW'] = array(
 );
 
 require_once('include/SugarObjects/VardefManager.php');
-VarDefManager::createVardef('KDeploymentMWs', 'KDeploymentMW', array('default', 'assignable'));
+VardefManager::createVardef('KDeploymentMWs', 'KDeploymentMW', array('default', 'assignable'));

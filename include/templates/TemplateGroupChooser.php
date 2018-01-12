@@ -40,14 +40,12 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $js_loaded = false;
 require_once("include/templates/Template.php");
 
-class TemplateGroupChooser extends Template {
+class TemplateGroupChooser extends Template
+{
     var $args;
     var $js_loaded = false;
     var $display_hide_tabs = true;
     var $display_third_tabs = false;
-
-    function TemplateGroupChooser() {
-    }
 
     function display() {
         global $app_strings, $mod_strings, $js_loaded;

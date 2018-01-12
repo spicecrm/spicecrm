@@ -65,7 +65,7 @@ class SugarWebServiceImplv3 extends SugarWebServiceImpl {
      *                                         - user_default_team_id, user_is_admin, user_default_dateformat, user_default_timeformat
      * @exception 'SoapFault' -- The SOAP error, if any
      */
-    public function login($user_auth, $application, $name_value_list){
+    public function login($user_auth, $application = '', $name_value_list = array()){
         $GLOBALS['log']->info('Begin: SugarWebServiceImpl->login');
         global $sugar_config, $system_config;
         $error = new SoapError();

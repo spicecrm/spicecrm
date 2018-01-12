@@ -54,7 +54,7 @@ class StoreQuery{
 	 * @see SavedSearch
 	 * @param $name String name  to identify this query
 	 */
-	function SaveQuery($name)
+	function saveQuery($name)
 	{
 		global $current_user, $timedate;
 		if(isset($this->query['module']))
@@ -111,7 +111,7 @@ class StoreQuery{
 	
 	function clearQuery($name){
 		$this->query = array();
-		$this->saveQuery($name);	
+		$this->saveQuery($name);
 	}
 	
 	function loadQuery($name){
@@ -233,7 +233,7 @@ class StoreQuery{
                 foreach($blockVariables as $block) {
                     unset($this->query[$block]);
                 }
-				$this->saveQuery($name);	
+				$this->saveQuery($name);
 			}
 		}
 	}

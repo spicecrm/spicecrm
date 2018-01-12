@@ -43,9 +43,9 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField
 	var $reporter;
 	var $assigned_user=null;
 
-    function SugarWidgetFieldDateTime($layout_manager)
+    function __construct($layout_manager)
     {
-        parent::SugarWidgetReportField($layout_manager);
+        parent::__construct($layout_manager);
     }
 
 	// get the reporter attribute
@@ -489,7 +489,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField
 				return $this-> $func_name ($layout_def)." \n";
 			}
 		}
-		return parent :: queryGroupBy($layout_def)." \n";
+		return parent::queryGroupBy($layout_def)." \n";
 	}
 
 	function queryOrderBy($layout_def)
@@ -500,13 +500,13 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField
 				return $this-> $func_name ($layout_def)."\n";
 			}
 		}
-		$order_by = parent :: queryOrderBy($layout_def)."\n";
+		$order_by = parent::queryOrderBy($layout_def)."\n";
 		return $order_by;
 	}
 
     function displayListPlain($layout_def) {
         global $timedate;
-        $content = parent:: displayListPlain($layout_def);
+        $content = parent::displayListPlain($layout_def);
         // awu: this if condition happens only in Reports where group by month comes back as YYYY-mm format
         if (count(explode('-',$content)) == 2){
             return $content;
@@ -544,7 +544,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField
                 return $this-> $func_name ($layout_def);
             }
         }
-        $content = parent :: displayListPlain($layout_def);
+        $content = parent::displayListPlain($layout_def);
         return $timedate->to_display_date_time($content);
     }
 
@@ -556,7 +556,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField
 				return $this-> $func_name ($layout_def)." \n";
 			}
 		}
-		return parent :: querySelect($layout_def)." \n";
+		return parent::querySelect($layout_def)." \n";
 	}
 	function & displayListday(& $layout_def) {
         $value = parent:: displayListPlain($layout_def);

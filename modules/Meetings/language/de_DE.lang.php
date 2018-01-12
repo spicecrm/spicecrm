@@ -108,6 +108,8 @@ $mod_strings = array (
 	'LNK_NEW_APPOINTMENT' => 'Neuer Termin',
 	'LNK_NEW_MEETING'=> 'Neues Meeting',
 	'LNK_IMPORT_MEETINGS' => 'Meetings importieren',
+	'LBL_RESULTS' => 'Ergebnisse',
+	'LBL_NEXTSTEPS' => 'Nächste Schritte',
 
 	'NTC_REMOVE_INVITEE' => 'Möchten Sie diesen Teilnehmer wirklich aus diesem Meeting entfernen?',
     'LBL_CREATED_USER' => 'Erstellter Benutzer',
@@ -161,7 +163,7 @@ $mod_strings = array (
     'LBL_REPEAT_COUNT' => 'Wiederholanzahl',
     'LBL_REPEAT_PARENT_ID' => 'Wiederhole Eltern-ID',
     'LBL_RECURRING_SOURCE' => 'Wiederholquelle',
+    'LBL_PARTICIPANTS' => 'Teilnehmer',
     
     'LBL_SYNCED_RECURRING_MSG' => 'Dieses Meeting wurde in einem anderem System erstellt und wurde nach Sugar synchronisiert. Um es zu ändern, öffnen Sie das original meeting im anderen System und ändern Sie es dort. Änderungen können dann wieder synchronisiert werden.',
 );
-?>

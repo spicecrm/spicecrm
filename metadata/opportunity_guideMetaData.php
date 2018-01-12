@@ -57,6 +57,10 @@ $dictionary['spicebeanguides'] = array(
             'name' => 'build_language',
             'type' => 'text'
         )
+    ),
+    'indices' => array(
+        array('name' => 'spicebeanguides_pk', 'type' => 'primary', 'fields' => array('id') ),
+        array('name' => 'idx_spicebeanguides_module', 'type' => 'index', 'fields' => array('module') ),
     )
 );
 
@@ -96,6 +100,10 @@ $dictionary['spicebeanguidestages'] = array(
             'name' => 'stage_add_data',
             'type' => 'text'
         )
+    ),
+   'indices' => array(
+        array('name' => 'spicebeanguidestages_pk', 'type' => 'primary', 'fields' => array('id') ),
+        array('name' => 'idx_spicebeanguidestages_guideid', 'type' => 'index', 'fields' => array('spicebeanguide_id') ),
     )
 );
 
@@ -131,6 +139,10 @@ $dictionary['spicebeanguidestages_texts'] = array(
             'name' => 'stage_description',
             'type' => 'text'
         )
+    ),
+    'indices' => array(
+        array('name' => 'spicebeanguidestages_texts_pk', 'type' => 'primary', 'fields' => array('id') ),
+        array('name' => 'idx_spicebeanguidestagestexts_stageid', 'type' => 'index', 'fields' => array('stage_id') ),
     )
 );
 
@@ -171,6 +183,11 @@ $dictionary['spicebeanguidestages_checks'] = array(
             'type' => 'varchar',
             'len' => '80'
         )
+    ),
+    'indices' => array(
+        array('name' => 'spicebeanguidestages_checks_pk', 'type' => 'primary', 'fields' => array('id') ),
+        array('name' => 'idx_spicebeanguidestageschecks_stageid', 'type' => 'index', 'fields' => array('stage_id') ),
+        array('name' => 'idx_spicebeanguidestageschecks_guideid', 'type' => 'index', 'fields' => array('spicebeanguide_id') ),
     )
 );
 
@@ -197,5 +214,9 @@ $dictionary['spicebeanguidestages_check_texts'] = array(
             'type' => 'varchar',
             'len' => '50'
         )
+    ),
+    'indices' => array(
+        array('name' => 'spicebeanguidestages_check_texts_pk', 'type' => 'primary', 'fields' => array('id') ),
+        array('name' => 'idx_spicebeanguidestageschecktexts_stagecheckid', 'type' => 'index', 'fields' => array('stage_check_id') ),
     )
 );

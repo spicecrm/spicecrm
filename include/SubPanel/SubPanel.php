@@ -54,8 +54,9 @@ class SubPanel
 	var $subpanel_define = null;  // contains the layout_def.php
 	var $subpanel_defs;
 	var $subpanel_query=null;
-        var $layout_def_key='';
-	function SubPanel($module, $record_id, $subpanel_id, $subpanelDef, $layout_def_key='')
+	var $layout_def_key='';
+
+	public function __construct($module, $record_id, $subpanel_id, $subpanelDef, $layout_def_key='')
 	{
 		global $theme, $beanList, $beanFiles, $focus, $app_strings;
 
@@ -219,22 +220,22 @@ class SubPanel
 
 		$result_array = array();
 
-		//BEGIN KReporter Report as SubPanel
-                if (strpos($this->subpanel_id, 'kreporterpres') !== false || strpos($this->subpanel_id, 'kreportervisu') !== false) {
-                    if (file_exists('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php')) {
-                        require_once('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php');
-                        $return_string = kpublishing::renderSubpanel($this, $this->parent_bean);
-                    }
-                } else if($this->subpanel_defs->_instance_properties['customsubpanel']) {
-                    $subpanelModule = BeanFactory::getBean($this->subpanel_defs->_instance_properties['module']);
-                    $method = $this->subpanel_defs->_instance_properties['displaymethod'];
-                    $return_string = $subpanelModule->$method();
-                } else {
-                    //END KReporter
-                    $return_string = $this->ProcessSubPanelListView($this->template_file, $result_array);
-                    //BEGIN KReporter Report as SubPanel
-                }
-                //END KReporter
+        //BEGIN KReporter Report as SubPanel
+			if (strpos($this->subpanel_id, 'kreporterpres') !== false || strpos($this->subpanel_id, 'kreportervisu') !== false) {
+				if (file_exists('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php')) {
+					require_once('modules/KReports/Plugins/Integration/kpublishing/kpublishing.php');
+					$return_string = kpublishing::renderSubpanel($this, $this->parent_bean);
+				}
+			} else if($this->subpanel_defs->_instance_properties['customsubpanel']) {
+				$subpanelModule = BeanFactory::getBean($this->subpanel_defs->_instance_properties['module']);
+				$method = $this->subpanel_defs->_instance_properties['displaymethod'];
+				$return_string = $subpanelModule->$method();
+			} else {
+				//END KReporter
+				$return_string = $this->ProcessSubPanelListView($this->template_file, $result_array);
+				//BEGIN KReporter Report as SubPanel
+			}
+		//END KReporter
 
 		print $return_string;
 	}

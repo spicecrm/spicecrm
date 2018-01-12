@@ -571,7 +571,7 @@ class EWSAutodiscover
             CURLOPT_URL             => $url,
             CURLOPT_HTTPAUTH        => CURLAUTH_NTLM,
             CURLOPT_CUSTOMREQUEST   => 'POST',
-            CURLOPT_POSTFIELDS      => $this->getAutoDiscoverRequest(),
+            CURLOPT_POSTFIELDS      => $this->getAutodiscoverRequest(),
             CURLOPT_RETURNTRANSFER  => true,
             CURLOPT_USERPWD         => $this->username.':'.$this->password,
             CURLOPT_TIMEOUT         => $timeout,

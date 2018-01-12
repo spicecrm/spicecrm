@@ -46,8 +46,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  require_once('include/SugarObjects/templates/basic/Basic.php');
  class Sale extends Basic{
 
- 	function Sale(){
- 		parent::Basic();
+ 	function __construct(){
+ 		parent::__construct();
 
  	}
  	

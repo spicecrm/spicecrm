@@ -100,7 +100,7 @@ class KDeploymentMWNotification{
         require_once("include/SugarPHPMailer.php");
         global $locale;
         $mail = new SugarPHPMailer();
-        $mail->IsHTML(true);
+        $mail->isHTML(true);
         $mail->setMailerForSystem();
         $mail->From = $from['email'];
         $mail->FromName = $from['name'];
@@ -118,11 +118,11 @@ class KDeploymentMWNotification{
 
         if(!empty($oe->mail_smtpserver) ) {
             //to
-            $mail->ClearAddresses();
-            $mail->AddAddress($recipient->email1, $locale->translateCharsetMIME(trim($recipient->full_name), 'UTF-8', $OBCharset));
+            $mail->clearAddresses();
+            $mail->addAddress($recipient->email1, $locale->translateCharsetMIME(trim($recipient->full_name), 'UTF-8', $OBCharset));
 
             $mail->prepForOutbound();
-            if (!$mail->Send()) {
+            if (!$mail->send()) {
                 $errmsg = "Maintenance Window User notification: error sending e-mail (method: {$mail->Mailer}), (error: {$mail->ErrorInfo})";
                 $GLOBALS['log']->fatal($errmsg);
                 $errors[] = array('errmsg' => $errmsg);

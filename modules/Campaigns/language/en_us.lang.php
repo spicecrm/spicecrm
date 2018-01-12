@@ -439,5 +439,8 @@ $mod_strings = array(
     'ERR_REVIEW_EMAIL_SETTINGS' => 'Please review Inbound Email settings.',
     'LBL_LEADS_DELETED_SINCE_CREATED' => '{0} leads that were created through this campaign have been deleted since creation.',
     'LBL_ACTIVITY_TYPE' => 'Status',
-    'LBL_ACTIVITY_DATE' => 'Date'
+    'LBL_ACTIVITY_DATE' => 'Date',
+    'LBL_EMAIL_TEMPLATE_NAME' => 'Email Template',
+    'LBL_MAILBOXES_NAME' => 'Mailboxes',
+    'LBL_MAILRELAIS' => 'Mail Relais'
 );

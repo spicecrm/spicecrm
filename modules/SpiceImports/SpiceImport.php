@@ -25,9 +25,9 @@ class SpiceImport extends SugarBean
     var $description;
     var $name;
 
-    function SpiceImport()
+    function __construct()
     {
-        parent::SugarBean();
+        parent::__construct();
     }
 
     function bean_implements($interface)
@@ -135,8 +135,8 @@ class SpiceImport extends SugarBean
                 $newBean->retrieve_by_string_fields($retrieve);
                 if(empty($newBean->id)) {
                     foreach ($row as $idx => $col) {
-                        if(!empty($objectimport->fileMapping->$fileHeader[$idx])) {
-                            $newBean->{$objectimport->fileMapping->$fileHeader[$idx]} = $col;
+                        if(!empty($objectimport->fileMapping->{$fileHeader[$idx]})) {
+                            $newBean->{$objectimport->fileMapping->{$fileHeader[$idx]}} = $col;
                         }
                     }
                     foreach ($objectimport->fixedFields as $field) {

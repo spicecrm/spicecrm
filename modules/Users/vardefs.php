@@ -38,6 +38,7 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $dictionary['User'] = array(
     'table' => 'users',
     'fields' => array(
+
         'id' => array(
             'name' => 'id',
             'vname' => 'LBL_ID',
@@ -79,7 +80,7 @@ $dictionary['User'] = array(
             'name' => 'system_generated_password',
             'vname' => 'LBL_SYSTEM_GENERATED_PASSWORD',
             'type' => 'bool',
-            'required' => true,
+            'required' => false,
             'reportable' => false,
             'massupdate' => false,
             'studio' => array(
@@ -210,6 +211,11 @@ $dictionary['User'] = array(
                 'editview' => false,
                 'quickcreate' => false,
             ),
+        ),
+        'date_indexed' => array(
+            'name' => 'date_indexed',
+            'vname' => 'LBL_DATE_INDEXED',
+            'type' => 'datetime'
         ),
         'date_modified' => array(
             'name' => 'date_modified',
@@ -503,6 +509,11 @@ $dictionary['User'] = array(
             'duplicate_merge' => 'disabled',
             'required' => false,
         ),
+        'email_signature' => array(
+            'vname' => 'LBL_EMAIL_SIGNATURE',
+            'name' => 'email_signature',
+            'type' => 'html',
+        ),
         /* Virtual email fields so they will display on the main user page */
         'email_link_type' => array(
             'name' => 'email_link_type',
@@ -594,14 +605,6 @@ $dictionary['User'] = array(
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS'
         ),
-        'holidays' => array(
-            'name' => 'holidays',
-            'type' => 'link',
-            'relationship' => 'users_holidays',
-            'source' => 'non-db',
-            'side' => 'right',
-            'vname' => 'LBL_HOLIDAYS',
-        ),
         'eapm' =>
             array(
                 'name' => 'eapm',
@@ -622,14 +625,14 @@ $dictionary['User'] = array(
                 'source' => 'non-db',
                 'side' => 'left',
             ),
-        'project_resource' =>
-            array(
-                'name' => 'project_resource',
-                'type' => 'link',
-                'relationship' => 'projects_users_resources',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROJECTS',
-            ),
+//        'project_resource' =>
+//            array(
+//                'name' => 'project_resource',
+//                'type' => 'link',
+//                'relationship' => 'projects_users_resources',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_PROJECTS',
+//            ),
         'userquotas' => array(
             'name' => 'userquotas',
             'type' => 'link',

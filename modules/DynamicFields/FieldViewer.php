@@ -34,12 +34,15 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-class FieldViewer{
-	function FieldViewer(){
+class FieldViewer
+{
+	public function __construct()
+    {
 		$this->ss = new Sugar_Smarty();
 	}
-	function getLayout($vardef){
 
+	function getLayout($vardef)
+    {
 		if(empty($vardef['type']))$vardef['type'] = 'varchar';
 		$mod = return_module_language($GLOBALS['current_language'], 'DynamicFields');
 		$this->ss->assign('vardef', $vardef);

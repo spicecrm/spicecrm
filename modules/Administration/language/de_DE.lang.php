@@ -1079,7 +1079,7 @@ $mod_strings = array (
    'LBL_SAML_LOGIN_URL' => 'Anmelde URL',
    'LBL_SAML_LOGIN_URL_DESC' => 'gene Sie die Anmelde URL ein',
 
-    'LBL_GLOBAL_SEARCH_SETTINGS_TITLE' => 'Module auswählen, die die User über die Globale Suchfunktion verwenden können.',
+    'LBL_GLOBAL_SEARCH_SETTINGS_TITLE' => 'Module auswählen, die die User über die Globale Suchfunktion verwenden können.<br><strong>ACHTUNG! Wenn Full Text Search konfiguriert ist, so werden diese Settings ignoriert. Alleine die FTS wird gezogen.</strong>',
    'LBL_SELECT_MODULES' => 'Erweitert',
    'LBL_SELECT_MODULES_TITLE' => 'Modul über Drag und Drop schieben, um die Anzeige Reihenfolge zu verändern.',
    'LBL_SELECT_FTS_MODULES_TITLE' => 'Drag und Drop die gewünschten Module die in der Globale Suche einbezogen werden sollen. Danach Speichern',

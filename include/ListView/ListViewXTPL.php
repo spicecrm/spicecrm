@@ -40,7 +40,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/ListView/ListViewDisplay.php');
 	
-class ListViewXTPL extends ListViewDisplay{
+class ListViewXTPL extends ListViewDisplay
+{
 	var $row_block = 'main.row';
 	var $main_block = 'main';
 	var $pro_block = 'main.row.pro';
@@ -50,8 +51,9 @@ class ListViewXTPL extends ListViewDisplay{
 	var $data;
 	var $xtpl;
 
-	function ListViewXTPL() {
-		parent::ListViewDisplay();
+	public function __construct()
+    {
+		parent::__construct();
 	}
 	
     /**

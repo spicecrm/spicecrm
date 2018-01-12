@@ -41,8 +41,8 @@ if (!defined('sugarEntry') || !sugarEntry)
 require_once('include/SugarObjects/templates/person/Person.php');
 
 // User is used to store customer information.
-class User extends Person {
-
+class User extends Person
+{
     // Stored fields
     var $name = '';
     var $full_name;
@@ -102,8 +102,9 @@ class User extends Person {
     var $emailAddress;
     var $new_schema = true;
 
-    function User() {
-        parent::Person();
+    public function __construct()
+    {
+        parent::__construct();
 
         $this->_loadUserPreferencesFocus();
     }
@@ -423,7 +424,7 @@ class User extends Person {
         return "1<>1";
     }
 
-    function save($check_notify = false, $fts_index_bean) {
+    function save($check_notify = false, $fts_index_bean = true) {
         $isUpdate = !empty($this->id) && !$this->new_with_id;
 
 
@@ -1695,11 +1696,11 @@ EOQ;
         //$mail->IsHTML(true);
         $mail->From = $defaults['email'];
         $mail->FromName = $defaults['name'];
-        $mail->ClearAllRecipients();
-        $mail->ClearReplyTos();
+        $mail->clearAllRecipients();
+        $mail->clearReplyTos();
         $mail->Subject = from_html($emailTemp->subject);
         if ($emailTemp->text_only != 1) {
-            $mail->IsHTML(true);
+            $mail->isHTML(true);
             $mail->Body = from_html($emailTemp->body_html);
             $mail->AltBody = from_html($emailTemp->body);
         } else {
@@ -1721,14 +1722,14 @@ EOQ;
 
         if (!empty($itemail)) {
             if ($hasRecipients) {
-                $mail->AddBCC($itemail);
+                $mail->addBCC($itemail);
             } else {
-                $mail->AddAddress($itemail);
+                $mail->addAddress($itemail);
             }
             $hasRecipients = true;
         }
         if ($hasRecipients) {
-            $result['status'] = @$mail->Send();
+            $result['status'] = @$mail->send();
         }
 
         if ($result['status'] == true) {

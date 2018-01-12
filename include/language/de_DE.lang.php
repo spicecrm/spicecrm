@@ -30,7 +30,9 @@ $app_list_strings = array(
     'moduleList' => array(
         'Home' => 'Home',
         'Contacts' => 'Kontakte',
+        'ContactsOnlineProfiles' => 'Online Profile',
         'Accounts' => 'Firmen',
+        'Addresses' => 'Adressen',
         'Opportunities' => 'Verkaufschancen',
         'Cases' => 'Tickets',
         'Notes' => 'Notizen',
@@ -51,6 +53,7 @@ $app_list_strings = array(
         'Schedulers' => 'Geplante Aufgaben',
         'Projects' => 'Projekte',
         'ProjectTasks' => 'Projektaufgaben',
+        'ProjectMilestones' => 'Projekt-Milestones',
         'Campaigns' => 'Kampagnen',
         'CampaignLog' => 'Kampagnenlog',
         'Documents' => 'Dokumente',
@@ -86,7 +89,7 @@ $app_list_strings = array(
         'DashboardComponents' => 'DashboardComponents',
         'OAuthKeys' => 'OAuth Anwendungsschlüssel',
         'OAuthTokens' => 'OAuth Tokens',
-        'KReports' => 'Reports',
+        'KReports' => 'Berichte',
         'Proposals' => 'Angebote',
         'CompetitorAssessments' => 'Mitbewerber Bewertungen',
         'EventRegistrations' => 'Event-Anmeldungen',
@@ -101,7 +104,12 @@ $app_list_strings = array(
 //        'SalesDocs' => 'Vertriebsbelege',
 // end
         'CompanyCodes' => 'Unternehmen',
-        'CompanyFiscalPeriods' => 'Buchungsperioden'
+        'CompanyFiscalPeriods' => 'Buchungsperioden',
+        'AccountBankAccounts' => 'Bankkonten',
+        'AccountCCDetails' => 'Buchungskreise',
+        'Mailboxes' => 'Mailboxen',
+        'ServiceOrders' => 'Serviceaufträge',
+        'ServiceTickets' => 'Servicetickets',
     ),
 
 
@@ -126,6 +134,7 @@ $app_list_strings = array(
         'TimePeriods' => 'Zeitraum',
         'Projects' => 'Projekt',
         'ProjectTasks' => 'Projektaufgabe',
+        'ProjectMilestones' => 'Projekt-Milestone',
         'Prospects' => 'Zielkontakt',
         'Campaigns' => 'Kampagne',
         'Documents' => 'Dokument',
@@ -133,7 +142,7 @@ $app_list_strings = array(
         'Sync' => 'Sync',
         'Users' => 'User',
         'SpiceFavorites' => 'SpiceFavorites',
-        'KReports' => 'KReport',
+        'KReports' => 'Bericht',
         'Proposals' => 'Angebot',
         'CompetitorAssessments' => 'Mitbewerber Bewertung',
         'EventRegistrations' => 'Event-Anmeldung',
@@ -149,7 +158,11 @@ $app_list_strings = array(
 // end
         'CompanyCodes' => 'Unternehmen',
 		'CompanyFiscalPeriods' => 'Buchungsperiode',
-        'AccountBankAccount' => 'Bankkonten'
+        'AccountBankAccounts' => 'Bankkonto',
+        'AccountCCDetails' => 'Buchungskreis',
+        'Mailboxes' => 'Mailbox',
+        'ServiceOrders' => 'Serviceauftrag',
+        'ServiceTickets' => 'Serviceticket',
     ),
 
     'checkbox_dom' => array(
@@ -345,6 +358,12 @@ $app_list_strings = array(
         'single' => 'Einfache Auswahl',
         'multi' => 'Mehrfache Auswahl',
         'text' => 'Text-Eingabe',
+        'ist' => 'IST'
+    ),
+    $app_list_strings['evaluationtypes_dom'] = array(
+        'default' => 'Standard',
+        'spiderweb' => 'Spinnennetz',
+        'default_sorted_points' => 'Standard, sortiert nach Punkten'
     ),
     'contacts_title_dom' => array(
         '' => '',
@@ -977,8 +996,8 @@ $app_list_strings = array(
             'targeted' => 'Nachricht gesendet/versucht',
             'send error' => 'Unzustellbar, anderer Grund',
             'invalid email' => 'Unzustellbar,ungültige E-Mail',
-            'link' => 'Klickrate',
-            'viewed' => 'Nachricht gelesen',
+            'link' => 'clicked',
+            'viewed' => 'gelesen',
             'removed' => 'Abgemeldet',
             'lead' => 'Erstellte Interessenten',
             'contact' => 'Erstellte Kontakte',
@@ -1137,7 +1156,13 @@ $app_list_strings = array(
             'donothing' => 'Nichts machen'
         ),
     'salesdoc_doctypes' => array(
-        'QT' => 'Angebot'
+        'QT' => 'Angebot',
+        'OR' => 'Auftrag',
+        'IV' => 'Rechnung'
+    ),
+    'salesdoc_docparties' => array(
+        'I' => 'Person',
+        'B' => 'Unternehmen'
     ),
     'salesdocs_paymentterms' => array(
         '7DN' => '7 Tage Netto',
@@ -1152,6 +1177,39 @@ $app_list_strings = array(
         2 => 'Audio',
         3 => 'Video'
     ),
+    'workflowftastktypes_dom' => array(
+        'task' => 'Task',
+        'decision' => 'Decision',
+        'email' => 'Email',
+        'system' => 'System',
+    ),
+    'workflowdefinition_status' => array(
+        'active' => 'active',
+        'active_once' => 'active (run once)',
+        'active_scheduled' => 'active scheduled',
+        'inactive' => 'inactive'
+    ),
+    'workflowdefinition_precondition' => array(
+        'a' => 'always',
+        'u' => 'on update',
+        'n' => 'when new'
+    ),
+    'workflowdefinition_emailtypes' => array(
+        '1' => 'user assgined to Task',
+        '2' => 'user assgined to Bean',
+        '3' => 'user created Bean',
+        '4' => 'manager assigned to Bean',
+        '5' => 'manager created Bean',
+        '6' => 'email address',
+        '7' => 'system routine'
+    ),
+    'workflowdefinition_assgintotypes' => array(
+        '1' => 'User',
+        '2' => 'Workgroup',
+        '3' => 'User assigned to Parent Object',
+        '4' => 'Manager of User assgined to Parent Object',
+        '5' => 'system routine'
+    )
 );
 
 $app_strings = array(
@@ -1701,6 +1759,7 @@ $app_strings = array(
     'LBL_OLD_ACCOUNT_LINK' => 'Alte Firma',
     'LBL_ACCOUNTS' => 'Firmen',
     'LBL_ACTIVITIES_SUBPANEL_TITLE' => 'Aktivitäten',
+    'LBL_HISTORY_SUBPANEL_TITLE' => 'Verlauf',
     'LBL_ACCUMULATED_HISTORY_BUTTON_KEY' => 'H',
     'LBL_ACCUMULATED_HISTORY_BUTTON_LABEL' => 'Zusammenfassung zeigen',
     'LBL_ACCUMULATED_HISTORY_BUTTON_TITLE' => 'Zusammenfassung zeigen [Alt+H]',
@@ -2542,6 +2601,8 @@ $app_strings = array(
     'LBL_CLEAR' => 'Zurückseten',
     'LBL_SELECT' => 'Auswählen',
     'LBL_SEARCH' => 'Suchen',
+    'LBL_SEARCH_RESET' => 'Suche zurücksetzen',
+    'LBL_SEARCH_HERE' => 'hier suchen...',
     'LBL_PREFERENCES' => 'Einstellungen',
     'LBL_INSPICECRM' => 'in SpiceCRM',
     'LBL_TOPRESULTS' => 'beste Ergebnisse',
@@ -2557,17 +2618,18 @@ $app_strings = array(
     'LBL_DISPLAYAS' => 'Anzeigen als',
     'LBL_CLOSE' => 'Schließen',
     'LBL_SAVE' => 'Sichern',
+    'LBL_SEND' => 'Senden',
     'LBL_DELETE' => 'Löschen',
     'LBL_OPTIONS' => 'Optionen',
     'LBL_DELETE_RECORD' => 'Eintrag löschen',
-    'MSG_DELETE_CONFIRM' => 'Sind Sie sciher, daß Sie diesen Eintrag löschen wollen?',
+    'MSG_DELETE_CONFIRM' => 'Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?',
     'LBL_DONE' => 'Fertig',
     'LBL_REMOVE' => 'Entfernen',
     'LBL_LISTVIEWSETTINGS' => 'Listen Einstellungen',
     'LBL_ADDLIST' => 'Neue Liste hinzufügen',
     'LBL_EDITLIST' => 'Liste bearbeiten',
     'LBL_DELETELIST' => 'Liste löschen',
-    'MSG_DELETELIST' => 'Sind Sie sicher, daß Sie diese Liste löschen wollen?',
+    'MSG_DELETELIST' => 'Sind Sie sicher, dass Sie diese Liste löschen wollen?',
     'LBL_NEWLISTNAME' => 'Listen Name',
     'LBL_GLOBALVISIBLE' => 'global sichtbar',
     'LBL_DISPLAY' => 'Anzeige',
@@ -2686,6 +2748,15 @@ $app_strings = array(
     'LBL_COPYRIGHT_OWNER' => 'Urheberrechtsinhaber',
     'LBL_COPYRIGHT_LICENSE' => 'Urheberrechtslizenz',
     'LBL_IMAGENAME' => 'Bildname',
+    'LBL_EVALUATION' => 'Evaluation',
+    'LBL_CATEGORY' => 'Category',
+    'LBL_IMAGE' => 'Bild',
+    'LBL_ACCEPT' => 'Akzeptieren',
+    'LBL_PAUSE' => 'Pause',
+    'LBL_DENIED' => 'verweigert',
+    'LBL_BLOCKED' => 'gesperrt',
+    'LBL_CONTINUE' => 'Fortsetzen',
+    'LBL_CLOSE_EDITOR' => 'Editor schließen',
 
     /* Questionnaires */
 
@@ -2699,10 +2770,11 @@ $app_strings = array(
     'LBL_ADD_QUESTION' => 'Frage hinzufügen',
     'LBL_QUESTION_TEXT' => 'Fragetext',
     'LBL_EDIT_QUESTION' => 'Frage ändern',
-    'LBL_MIN_ANSWERS' => 'Min. Antworten',
-    'LBL_MAX_ANSWERS' => 'Max. Antworten',
+    'LBL_MIN_ANSWERS' => 'min. Antworten',
+    'LBL_MAX_ANSWERS' => 'max. Antworten',
+    'LBL_MIN_MAX_ANSWERS' => 'min./max. Antworten',
     'LBL_CATEGORIES' => 'Kategorien',
-    'LBL_ADD_ANSWER_OPTION' => 'Antwortoption hinzufügen',
+    'LBL_ADD_ANSWER_OPTION' => 'Antwort-Option hinzufügen',
     'LBL_CORRECT_ANSWER' => 'Korrekte Antwort',
     'QST_CONFIRM_DELETE_ENTRIES' => 'Einträge löschen?',
     'QST_CONFIRM_DELETE_ENTRIES_LONG' => 'Die Liste wird gekürzt, es werden Einträge entfernt!',
@@ -2711,13 +2783,88 @@ $app_strings = array(
     'MSG_CANTCHANGE_QUESTIONSEXISTS' => 'Ändern nicht möglich, da bereits Fragen angelegt sind.',
     'QST_CONFIRM_DELETE_QUESTION' => 'Frage löschen?',
     'QST_CONFIRM_DELETE_QUESTION_LONG' => 'Möchten sie die Frage „%s“ tatsächlich löschen?',
+    'QST_CONFIRM_DELETE_ANSWER_OPTION' => 'Antwort-Option löschen?',
+    'QST_CONFIRM_DELETE_ANSWER_OPTION_LONG' => 'Möchten sie die Antwort-Option „%s“ tatsächlich löschen?',
     'MSG_NO_QUESTIONTYPE_NO_QUESTION' => 'Das Anlegen einer Frage ist noch nicht möglich, denn für die Fragengruppe wurde noch kein Fragentyp ausgewählt.',
     'LBL_NUMBER_QUESTIONS_COMPLETED' => '%s von %s Fragen vollständig.',
+    'LBL_TEXT_SHORT' => 'Text in Kurzfassung',
+    'LBL_TEXT_LONG' => 'Text in Langfassung',
+    'LBL_INTERPRETATION_ASSIGNMENT' => 'Interpretationen-Zuweisung',
+    'LBL_ASSIGNED_INTERPRETATIONS' => 'Zugewiesene Interpretationen',
+    'LBL_AUTO_COMPLETE_LIST' => 'Liste automatisch ergänzen',
+    'LBL_NO_INTERPRETATIONS_ASSIGNED_YET' => 'Noch keine Interpretationen zugewiesen.',
+    'LBL_NO_UNASSIGNED_INTERPRETATIONS_AVAILABLE' => 'Es sind <b>keine Interpretationen verfügbar</b> (die nicht schon zugewiesen sind).',
+    'LBL_ADD_INTERPRETATION' => 'Interpretation hinzufügen …',
+
+    /* Speech Recognition */
+    'LBL_SPEECH_RECOGNITION' => 'Spracherkennung',
+    'LBL_WAITING_START_SPEAKING' => 'Wartend … Beginnen sie zu sprechen!',
+    'ERR_SPEECH_RECOGNITION' => 'Fehler bei der Spracherkennung', //Speech recognition error
+    'MSG_NO_NETWORK' => 'Kein Netzwerk',
+    'MSG_NO_MICROPHONE' => 'Kein Mikrofon',
+
+    /* Tagging */
+    'LBL_NO_TAGS_ASSIGNED' => 'Noch keine Schlagworte zugewiesen.',
+    'LBL_NUMBER_OF_SHOWN_TAGS' => '%s von %s passenden Schlagworten angezeigt.',
+    'LBL_ASSIGN_TAGS' => 'Schlagwort-Zuweisung',
+    'LBL_TAGS_FOUND' => 'Keine Schlagworte gefunden.',
+    'LBL_ENTER_TAGS_FOR_TAGS' => 'Text eingeben, um Schlagworte zu suchen …',
 
     'LBL_MY' => 'Meine',
     'LBL_ALL' => 'Alle',
-    'LBL_TIMESTREAM' => 'Timestream',
-    'LBL_TASKMANAGER' => 'Taskmanager'
+    'LBL_TIMESTREAM' => 'Zeitleiste',
+    'LBL_TASKMANAGER' => 'Taskmanager',
+
+    'LBL_MORE' => 'Mehr',
+    'LBL_APPLY' => 'Anwenden',
+    'LBL_FILTER' => 'Filter',
+
+    /* MediaFiles */
+    'LBL_NEW_IMAGE' => 'Neues Bild',
+    'LBL_IMGUPLOADED_INPUTDATA' => 'Bild erfolgreich hochgeladen. Jetzt Bilddaten eingeben:',
+    'LBL_MEDIAFILE_PICKER' => 'Bildauswahl',
+    'LBL_UPLOAD_NEW_FILE' => 'Neue Datei hochladen',
+    'LBL_WAITING_FILE_SELECTION' => 'Warte auf Dateiauswahl',
+    'LBL_SELECT_FILE' => 'Datei auswählen',
+
+    'LBL_STARTDATE' => 'Start Datum',
+    'LBL_STARTTIME' => 'Start Zeit',
+    'LBL_ENDDATE' => 'End Datum',
+    'LBL_ENDTIME' => 'End Zeit',
+
+    'LBL_STREET' => 'Straße',
+    'LBL_POSTALCODE' => 'Postleitzahl',
+    'LBL_CITY' => 'Stadt',
+    'LBL_STATE' => 'Bezirk',
+    'LBL_COUNTRY' => 'Land',
+    'LBL_SEARCH_ADDRESS' => 'Adresse suchen',
+
+    'LBL_RECENT_ITEMS' => 'Zuletzt angesehen Einträge',
+
+    'LBL_YEAR' => 'Jahr',
+    'LBL_QUARTER' => 'Quartal',
+    'LBL_MONTH' => 'Monat',
+
+    'LBL_STARTDATE' => 'Start Datum',
+    'LBL_STARTTIME' => 'Start Zeit',
+    'LBL_ENDDATE' => 'End Datum',
+    'LBL_ENDTIME' => 'End Zeit',
+
+    'LBL_STREET' => 'Straße',
+    'LBL_POSTALCODE' => 'Postleitzahl',
+    'LBL_CITY' => 'Stadt',
+    'LBL_STATE' => 'Bezirk',
+    'LBL_COUNTRY' => 'Land',
+    'LBL_SEARCH_ADDRESS' => 'Adresse suchen',
+
+    'LBL_RECENT_ITEMS' => 'Zuletzt angesehen Einträge',
+
+    'LBL_YEAR' => 'Jahr',
+    'LBL_QUARTER' => 'Quartal',
+    'LBL_MONTH' => 'Monat',
+
+    //add for CanvaDraw FieldType
+    'LBL_OPEN_SIGNATURE_POPUP' => 'Unterschrift setzen',
 
 );
 //Some modules shall not be included for CE
@@ -2732,6 +2879,7 @@ if(file_exists('modules/Products/Product.php')){
 }
 
 if(file_exists('modules/Questionnaires/Questionnaire.php')) {
+    $app_list_strings['moduleList']['QuestionnaireInterpretations'] =  'Fragebogen-Interpretationen';
     $app_list_strings['moduleList']['Questionnaires'] =  'Fragebögen';
     $app_list_strings['moduleList']['Questions'] =  'Fragen';
     $app_list_strings['moduleList']['QuestionSets'] =  'Frage-Gruppen';
@@ -2739,6 +2887,7 @@ if(file_exists('modules/Questionnaires/Questionnaire.php')) {
     $app_list_strings['moduleList']['QuestionnaireParticipations'] =  'Fragebogen Teilnahmen';
     $app_list_strings['moduleList']['QuestionOptions'] =  'Frage Optionen';
     $app_list_strings['moduleList']['QuestionOptionCategories'] =  'Frage Option Kategorien';
+    $app_list_strings['moduleListSingular']['QuestionnaireInterpretations'] =  'Fragebogen-Interpretation';
     $app_list_strings['moduleListSingular']['Questionnaires'] =  'Fragebogen';
     $app_list_strings['moduleListSingular']['Questions'] =  'Frage';
     $app_list_strings['moduleListSingular']['QuestionSets'] =  'Frage-Gruppen';
@@ -2762,6 +2911,28 @@ if(file_exists('modules/ProjectPlannedActivities/ProjectPlannedActivity.php')) {
 if(file_exists('modules/SalesDocs/SalesDoc.php')) {
     $app_list_strings['moduleList']['SalesDocs'] = 'Vertriebsbelege';
     $app_list_strings['moduleListSingular']['SalesDocs'] =  'Vertriebsbeleg';
+    $app_list_strings['moduleList']['SalesDocItems'] = 'Vertriebsbeleg Positionen';
+    $app_list_strings['moduleListSingular']['SalesDocItems'] = 'Vertriebsbeleg Position';
+    $app_list_strings['moduleList']['SalesVouchers'] = 'Gutschriften';
+    $app_list_strings['moduleListSingular']['SalesDocs'] = 'Gutschrift';
+}
+if(file_exists('modules/Workflows/Workflow.php')){
+    $app_list_strings['moduleList']['Workflows'] = 'Workflows';
+    $app_list_strings['moduleListSingular']['Workflows'] = 'Workflow';
+    $app_list_strings['moduleList']['WorkflowDefinitions'] = 'Workflow Definitionen';
+    $app_list_strings['moduleListSingular']['WorkflowDefinitions'] = 'Workflow Definition';
+    $app_list_strings['moduleList']['WorkflowTasks'] = 'Workflow Aufgaben';
+    $app_list_strings['moduleListSingular']['WorkflowTasks'] = 'Workflow Aufgabe';
+    $app_list_strings['moduleList']['WorkflowTaskComments'] = 'Workflow Aufgabe Kommentare';
+    $app_list_strings['moduleListSingular']['WorkflowTaskComments'] = 'Workflow Aufgabe Kommentar';
+    $app_list_strings['moduleList']['WorkflowTaskDefinitions'] = 'Workflow Aufgabe Definitionen';
+    $app_list_strings['moduleListSingular']['WorkflowTaskDefinitions'] = 'Workflow Aufgabe Definition';
+    $app_list_strings['moduleList']['WorkflowConditions'] = 'Workflow Bedingungen';
+    $app_list_strings['moduleListSingular']['WorkflowConditions'] = 'Workflow Bedingunge';
+    $app_list_strings['moduleList']['WorkflowSystemActions'] = 'Workflow Systemaktionen';
+    $app_list_strings['moduleListSingular']['WorkflowSystemActions'] = 'Workflow Systemaktion';
+    $app_list_strings['moduleList']['WorkflowTaskDecisions'] = 'Workflow Aufgabe Entscheidungen';
+    $app_list_strings['moduleListSingular']['WorkflowTaskDecisions'] = 'Workflow Aufgabe Entscheidung';
 }
 
 if(file_exists('modules/Library/Library.php')) {
@@ -3573,8 +3744,56 @@ $app_list_strings['productattribute_usage_dom'] =  array (
     'required' 		=> 'pflichtig',
     'optional' 		=> 'optional',
     'none' 		=> 'keine Eingabe',
+    'hidden' => 'nicht sichtbar'
+);
+
+//AccountCCDetails
+$app_list_strings['abccategory_dom'] = array(
+    '' => '',
+    'A' => 'A',
+    'B' => 'B',
+    'C' => 'C',
+);
+
+$app_list_strings['logicoperators_dom'] = array(
+    'and' => 'und',
+    'or' => 'oder',
+);
+
+$app_list_strings['comparators_dom'] = array(
+    'equal' => 'gleich',
+    'unequal' => 'ungleich',
+    'greater' => 'größer',
+    'greaterequal' => 'größergleich',
+    'less' => 'kleiner',
+    'lessequal' => 'kleinergleich',
+    'contain' => 'beinhaltet',
 );
 
 $app_list_strings['moduleList']['AccountKPIs'] = 'Key Performance Indicators';
 
+if(file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+    $app_list_strings['serviceorder_status_dom'] = array(
+        'new' => 'Neu',
+        'planned' => 'Geplant',
+        'completed' => 'Erfüllt',
+        'cancelled' => 'Abgesagt',
+    );
+    $app_list_strings['parent_type_display']['ServiceOrders'] = 'Serviceaufträge';
+    $app_list_strings['record_type_display']['ServiceOrders'] = 'Serviceaufträge';
+    $app_list_strings['record_type_display_notes']['ServiceOrders'] = 'Serviceaufträge';
+}
+if(file_exists('modules/ServiceTickets/ServiceTicket.php')) {
+    $app_list_strings['serviceticket_status_dom'] = array(
+        'New' => 'Neu',
+        'Assigned' => 'Zugewiesen',
+        'Closed' => 'Geschlossen',
+        'Pending Input' => 'Rückmeldung ausstehend',
+        'Rejected' => 'Abgelehnt',
+        'Duplicate' => 'Duplicate',
+    );
+    $app_list_strings['parent_type_display']['ServiceTickets'] = 'Servicetickets';
+    $app_list_strings['record_type_display']['ServiceTickets'] = 'Servicetickets';
+    $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Servicetickets';
+}
 include('include/SpiceBeanGuide/SpiceBeanGuideLanguage.php');

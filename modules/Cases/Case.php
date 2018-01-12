@@ -108,8 +108,8 @@ class aCase extends Basic {
 									'meeting_id'=>'meetings', 'call_id'=>'calls', 'email_id'=>'emails',
 									);
 
-	function aCase() {
-		parent::SugarBean();
+	function __construct() {
+		parent::__construct();
 		global $sugar_config;
 		if(!$sugar_config['require_accounts']){
 			unset($this->required_fields['account_name']);

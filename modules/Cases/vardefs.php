@@ -261,5 +261,8 @@ VardefManager::createVardef('Cases','Case', array('default', 'assignable',
 
 //jc - adding for refactor for import to not use the required_fields array
 //defined in the field_arrays.php file
+//BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
+global $dictionary;
+//END
 $dictionary['Case']['fields']['name']['importable'] = 'required';
-?>
+

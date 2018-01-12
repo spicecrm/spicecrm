@@ -38,7 +38,8 @@
  * Base Sugar view
  * @api
  */
-class SugarView {
+class SugarView
+{
 
     /**
      * This array is meant to hold an objects/data that we would like to pass between
@@ -89,7 +90,7 @@ class SugarView {
     /**
      * Constructor which will peform the setup.
      */
-    public function SugarView(
+    public function __construct(
     $bean = null, $view_object_map = array()
     ) {
         
@@ -1125,7 +1126,7 @@ EOHTML;
      * Checks to see if the module name passed is valid; dies if it is not
      */
     protected function _checkModule() {
-        if (!empty($this->module) && !file_exists('modules/' . $this->module)) {
+        if (!empty($this->module) && !file_exists('modules/' . $this->module) && !file_exists('custom/modules/' . $this->module)) {
             $error = str_replace("[module]", "$this->module", $GLOBALS['app_strings']['ERR_CANNOT_FIND_MODULE']);
             $GLOBALS['log']->fatal($error);
             echo $error;
@@ -1255,6 +1256,9 @@ EOHTML;
         }
         if (file_exists('custom/modules/' . $module . '/Ext/Menus/menu.ext.php')) {
             require('custom/modules/' . $module . '/Ext/Menus/menu.ext.php');
+        }
+        if (file_exists('custom/modules/' . $module . '/Menu.php')) {
+            require('custom/modules/' . $module . '/Menu.php');
         }
         if (!file_exists('modules/' . $module . '/Menu.php') && !file_exists('custom/modules/' . $module . '/Ext/Menus/menu.ext.php') && !empty($GLOBALS['mod_strings']['LNK_NEW_RECORD'])) {
             $module_menu[] = array("index.php?module=$module&action=EditView&return_module=$module&return_action=DetailView",

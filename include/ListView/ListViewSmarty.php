@@ -41,7 +41,8 @@ require_once('include/ListView/ListViewDisplay.php');
 
 require_once('include/contextMenus/contextMenu.php');
 
-class ListViewSmarty extends ListViewDisplay{
+class ListViewSmarty extends ListViewDisplay
+{
 
 	var $data;
 	var $ss; // the smarty object
@@ -66,8 +67,9 @@ class ListViewSmarty extends ListViewDisplay{
      * Constructor, Smarty object immediately available after
      *
      */
-	function ListViewSmarty() {
-		parent::ListViewDisplay();
+	public function __construct()
+    {
+		parent::__construct();
 		$this->ss = new Sugar_Smarty();
 	}
 

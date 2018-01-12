@@ -45,7 +45,8 @@ class pluginkcsvexportcontroller {
 
         // force Download
         //$filename = "kreporter.csv";
-        $filename = preg_replace("/(\W)/", "", $thisReport->name. "_" . date("Ymd_His") . ".csv");
+        $filename = preg_replace("/(\W)/", "", $thisReport->name. "_" . date("Ymd_His"));
+        $filename.= ".csv";
         header('Content-type: application/ms-excel');
         header('Content-Disposition: attachment; filename=' . $filename);
 

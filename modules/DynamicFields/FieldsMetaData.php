@@ -47,7 +47,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 
-class FieldsMetaData extends SugarBean {
+class FieldsMetaData extends SugarBean
+{
 	// database table columns
 	var $id;
 	var $name;
@@ -109,9 +110,9 @@ class FieldsMetaData extends SugarBean {
 	// METHODS
 	//////////////////////////////////////////////////////////////////
 
-	function FieldsMetaData()
+	public function __construct()
 	{
-		parent::SugarBean();
+		parent::__construct();
 		$this->disable_row_level_security = true;
 	}
 	

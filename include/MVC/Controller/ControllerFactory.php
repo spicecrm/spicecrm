@@ -40,7 +40,8 @@ require_once('include/MVC/Controller/SugarController.php');
  * MVC Controller Factory
  * @api
  */
-class ControllerFactory {
+class ControllerFactory
+{
 
     /**
      * Obtain an instance of the correct controller.

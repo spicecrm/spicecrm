@@ -94,6 +94,12 @@ $dictionary['CompanyCode'] = array(
             'relationship' => 'cfperiods_companycodes',
             'source' => 'non-db',
             'coment' => 'Link to CompanyFiscalPeriods module'
+        ),
+        'companycode' => array(
+            'name' => 'companycode',
+            'vname' => 'LBL_COMPANYCODE',
+            'type' => 'varchar',
+            'len' => 12
         )
     ),
     'indices' => array(

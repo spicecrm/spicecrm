@@ -277,6 +277,39 @@ $dictionary['emails_beans'] = array('table' => 'emails_beans',
 	)
 );
 
+if(file_exists('modules/ServiceOrders/ServiceOrder.php')){
+    $dictionary['emails_beans']['relationships']['emails_serviceorders_rel'] = array(
+        'lhs_module'		=> 'Emails',
+        'lhs_table'			=> 'emails',
+        'lhs_key'			=> 'id',
+        'rhs_module'		=> 'ServiceOrders',
+        'rhs_table'			=> 'serviceorders',
+        'rhs_key'			=> 'id',
+        'relationship_type'	=> 'many-to-many',
+        'join_table'		=> 'emails_beans',
+        'join_key_lhs'		=> 'email_id',
+        'join_key_rhs'		=> 'bean_id',
+        'relationship_role_column' => 'bean_module',
+        'relationship_role_column_value' => 'ServiceOrders',
+    );
+}
+
+if(file_exists('modules/ServiceTickets/ServiceTicket.php')){
+    $dictionary['emails_beans']['relationships']['emails_servicetickets_rel'] = array(
+        'lhs_module'		=> 'Emails',
+        'lhs_table'			=> 'emails',
+        'lhs_key'			=> 'id',
+        'rhs_module'		=> 'ServiceTickets',
+        'rhs_table'			=> 'servicetickets',
+        'rhs_key'			=> 'id',
+        'relationship_type'	=> 'many-to-many',
+        'join_table'		=> 'emails_beans',
+        'join_key_lhs'		=> 'email_id',
+        'join_key_rhs'		=> 'bean_id',
+        'relationship_role_column' => 'bean_module',
+        'relationship_role_column_value' => 'ServiceTickets',
+    );
+}
 
 /**
  * Large text field table, shares a 1:1 with the emails table.  Moving all longtext fields to this table allows more
@@ -285,8 +318,6 @@ $dictionary['emails_beans'] = array('table' => 'emails_beans',
 $dictionary['emails_text'] = array(
 	'table' => 'emails_text',
 	'comment' => 'Large email text fields',
-	'mysqlengine' => 'MyISAM',
-	'engine' => 'MyISAM',
 	'fields' => array(
 		'email_id' => array (
 			'name'			=> 'email_id',

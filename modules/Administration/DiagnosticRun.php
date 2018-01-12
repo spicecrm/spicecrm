@@ -52,7 +52,7 @@ if (isset($GLOBALS['sugar_config']['hide_admin_diagnostics']) && $GLOBALS['sugar
 
 
 global $skip_md5_diff;
-$skip_md5_diff = false;
+$skip_md5_diff = true; //SpiceCRM: skip comparison. Original:false
 
 set_time_limit(3600);
 // get all needed globals

@@ -183,17 +183,17 @@ class SugarCleaner
         if($encoded) {
             $html = from_html($html);
         }
-        if(!preg_match('<[^-A-Za-z0-9 `~!@#$%^&*()_=+{}\[\];:\'",./\\?\r\n|\x80-\xFF]>', $html)) {
+        //if(!preg_match('<[^-A-Za-z0-9 `~!@#$%^&*()_=+{}\[\];:\'",./\\?\r\n|\x80-\xFF]>', $html)) {
             /* if it only has "safe" chars, don't bother */
             $cleanhtml = $html;
-        } else {
+        /*} else {
             $purifier = self::getInstance()->purifier;
             $cleanhtml = $purifier->purify($html);
 //            $styles = $purifier->context->get('StyleBlocks');
 //            if(count($styles) > 0) {
 //                $cleanhtml = "<style>".join("</style><style>", $styles)."</style>".$cleanhtml;
 //            }
-        }
+        }*/
         if($encoded) {
             $cleanhtml = to_html($cleanhtml);
         }

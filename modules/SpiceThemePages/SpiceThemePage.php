@@ -39,8 +39,8 @@ class SpiceThemePage extends SugarBean {
     var $table_name = 'spicethemepages';
     var $importable = false;
 
-    function SpiceThemePage() {
-        parent::SugarBean();
+    function __construct() {
+        parent::__construct();
     }
 
     function get_summary_text() {

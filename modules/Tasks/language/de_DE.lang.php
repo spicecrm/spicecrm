@@ -95,6 +95,7 @@ $mod_strings = array (
   'LBL_EXPORT_CREATED_BY' => 'Ersteller',
   'LBL_EXPORT_PARENT_TYPE' => 'Verknüpft mit Modul',
   'LBL_EXPORT_PARENT_ID' => 'Eltern ID:',
+    'LBL_PROJECTWBS_NAME' => 'PSP Element'
 
 );
 ?>

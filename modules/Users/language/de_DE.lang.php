@@ -291,6 +291,7 @@ $mod_strings = array (
 	'LBL_RECEIVE_NOTIFICATIONS'			=> 'Meldung wenn zugewiesen',
 	'LBL_REGISTER'                      => 'Neuer Benutzer? Bitte registrieren Sie sich',
 	'LBL_REGULAR_USER'                  => 'Regulärer Benutzer',
+	'LBL_PORTAL_USER'                   => 'Portal Benutzer',
 	'LBL_REMINDER_TEXT'					=> 'Setzen Sie einen Standardwert für Erinnerungen.',
 	'LBL_REMINDER'						=> 'Erinnerungen',
 	'LBL_REMINDER_POPUP' => 'Popup',
@@ -479,6 +480,7 @@ $mod_strings = array (
         'LBL_CANCEL'    => 'Abbrechen',
         'LBL_DELETE_USER' => 'Benutzer löschen',
 	// Wizard
+	'LBL_EMAIL_SIGNATURE' => 'Email Signatur',
 	'LBL_WIZARD_TITLE' => 'Benutzer Assistent',
     'LBL_WIZARD_WELCOME_TAB' => 'Start',
     'LBL_WIZARD_WELCOME_TITLE' => 'Willkommen bei Sugar',
@@ -555,5 +557,6 @@ $mod_strings = array (
     'LBL_HIDEOPTIONS' => 'Optionen verstecken',
     'LBL_SHOWOPTIONS' => 'Optionen anzeigen',
 
+    'LBL_INBOUND_PROCESSING_ALLOWED' => 'Inbound Mail Processing aktiv'
 );
 ?>

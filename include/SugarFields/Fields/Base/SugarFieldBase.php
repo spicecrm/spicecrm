@@ -40,13 +40,17 @@
  * to handle searching
  *
  */
-class SugarFieldBase {
+class SugarFieldBase
+{
     var $ss; // Sugar Smarty Object
     var $hasButton = false;
-    function SugarFieldBase($type) {
+
+    public function __construct($type)
+    {
     	$this->type = $type;
         $this->ss = new Sugar_Smarty();
     }
+
     function fetch($path){
     	$additional = '';
     	if(!$this->hasButton && !empty($this->button)){

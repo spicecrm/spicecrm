@@ -209,6 +209,8 @@ $mod_strings = array (
     'LBL_DBCONF_DB_ADMIN_PASSWORD'      => 'Passwort des Datenbank Administrators',
     'LBL_DBCONF_DEMO_DATA'				=> 'Datenbank mit Demodaten füllen?',
     'LBL_DBCONF_DEMO_DATA_TITLE'        => 'Demo Daten',
+    'LBL_DBCONF_DEMO_FTS_DATA'			=> 'Standard index Konfiguration für ElasticSearch laden?',
+    'LBL_DBCONF_DEMO_UI_DATA'			=> 'Standard UI Konfiguration laden?',
     'LBL_DBCONF_HOST_NAME'				=> 'Host Name',
     'LBL_DBCONF_HOST_INSTANCE'			=> 'Host Instanz',
     'LBL_DBCONF_HOST_PORT'				=> 'Port',
@@ -230,7 +232,9 @@ $mod_strings = array (
     'LBL_FTS_SERVER'                    => 'Server',
     'LBL_FTS_PORT'                      => 'Port',
     'LBL_FTS_PREFIX'                    => 'Prefix',
-    'LBL_FTS_REQUIREMENTS'              => '(setzt elastic search version 2.x - 5.x voraus)',
+    'LBL_FTS_REQUIREMENTS'              => '(setzt elastic search version 2.x -5.x voraus)',
+    'LBL_UI'                            => 'Spice UI',
+    'LBL_UI_REQUIREMENTS'               => '(nur relevant, wenn Spice UI verwendet wird)',
     'LBL_DBCONF_PRIV_PASS'				=> 'Passwort des privilegierten Benutzers',
     'LBL_DBCONF_PRIV_USER_2'			=> 'Ist obiges Datenbank Konto ein privilegierter Benutzer?',
     'LBL_DBCONF_PRIV_USER_DIRECTIONS'	=> 'Dieser privilegierte Datenbank Benutzer muss die Berechtigung haben, Datenbank, Tabellen und Benutzer anzulegen und löschen zu können. Dieser Benutzer wird nur dazu verwendet, diese Aufgaben während der Installation durchzuführen. Sie können den gleichen Datenbank Benutzer wie oben verwenden wenn dieser genügend Rechte besitzt.',
@@ -326,7 +330,7 @@ $mod_strings = array (
     'LBL_MSSQL_SQLSRV'				    => 'SQL Server (Microsoft SQL Server Driver für PHP)',
     'LBL_MYSQL'							=> 'MySQL',
     'LBL_MYSQLI'						=> 'MySQL (mysqli Erweiterung)',
-    'LBL_PGSQL'							=> 'PgSQL (pgsql Erweiterung)',
+    'LBL_PGSQL'							=> 'PgSQL (pgsql extension)',
     'LBL_IBM_DB2'						=> 'IBM DB2',
     'LBL_NEXT'							=> 'Weiter',
     'LBL_NO'							=> 'Nein',
@@ -345,7 +349,11 @@ $mod_strings = array (
     'LBL_PERFORM_DEFAULT_SCHEDULER'		=> 'Standard Zeitplaner Aufgaben erstellen',
     'LBL_PERFORM_DEFAULT_SETTINGS'		=> 'Standard Einstellungen werden eingefügt',
     'LBL_PERFORM_DEFAULT_USERS'			=> 'Standard Benutzer werden erstellt',
+    'LBL_PERFORM_DEFAULT_FTS'		    => 'Standard FTS Konfiguration erstellt',
+    'LBL_PERFORM_DEFAULT_UI'		    => 'Standard UI Konfiguration erstellt',
     'LBL_PERFORM_DEMO_DATA'				=> 'Die Datenbank wird mit Demo Daten gefüllt (dies kann einige Zeit dauern)',
+    'LBL_PERFORM_DEMO_DATA_FTS'			=> 'sysfts Tabelle wird mit Daten gefüllt',
+    'LBL_PERFORM_DEMO_DATA_UI'			=> 'sysui Tabellen werden mit Daten gefüllt',
     'LBL_PERFORM_DONE'					=> 'fertig',
     'LBL_PERFORM_DROPPING'				=> 'lösche /',
     'LBL_PERFORM_FINISH'				=> 'Ende',
@@ -418,7 +426,7 @@ $mod_strings = array (
     'REQUIRED_SYS_COMP' => 'Benötigte Systemkomponenten',
     'REQUIRED_SYS_COMP_MSG' => 'Bevor Sie beginnen stellen Sie bitte sicher, dass Sie unterstützte Versionen folgender Systemkomponenten installiert haben:<br />   Datenbank/Datenbank Management System (Beispiele: MySQL, SQL Server, Oracle)<br />   Web Server (Apache, IIS)<br />Konsultieren sie die Kompatibilitätsmatrix in den Release Notes für die unterstützten Systemkomponenten für Ihr Sugar System.',
     'REQUIRED_SYS_CHK' => 'Initiale System Überprüfung',
-    'REQUIRED_SYS_CHK_MSG' => 'Wenn Sie den Prozess starten, wird eine Systemüberprüfung auf dem Webserver wo die Sugardateien hinkopiert sind durchgeführt, um festzustellen, ob alle Parameter für eine erfolgreiche Installation richtig gesetzt sind.<br /><br><br><br />Das System überprüft folgendes:<br /><br><br />                      <ul><br />                      <li><b>PHP Version</b> &#8211; muss mit der Anwendung kompatibel sein.</li><br />                                        <li><b>Session Variablen</b> &#8211; muss richtig funktionieren.</li><br />                                            <li> <b>MB Strings</b> &#8211; muss installiert und in php.ini aktivert</li><br /><br />                      <li> <b>Datenbank Support</b> &#8211; muss für MySQL, SQL<br />                      Server oder Oracle existieren</li><br /><br />                      <li> <b>Config.php</b> &#8211; muss existieren und die richtige Schreib-Zugriffsrechte haben</li><br />					  <li>Die folgende Sugar Verzeichnisse müssen Schreibrechte haben:<ul><li><b>/custom</li><br /><li>/cache</li><br /><li>/modules</b></li></ul></li></ul><br />                                  Wenn die Überprüfung fehlschlägt, kann die Installation nicht fortgesetzt werden. Eine Fehlermeldung zeigt die fehlende Punkte an. Wenn die Punkte korrigiert sind, können Sie mit der Installation fortfahren<br>',
+    'REQUIRED_SYS_CHK_MSG' => 'Wenn Sie den Prozess starten, wird eine Systemüberprüfung auf dem Webserver wo die Sugardateien hinkopiert sind durchgeführt, um festzustellen, ob alle Parameter für eine erfolgreiche Installation richtig gesetzt sind.<br /><br><br><br />Das System überprüft Folgendes:<br /><br />                      <ul><br />                      <li><b>PHP Version</b> &#8211; muss mit der Anwendung kompatibel sein.</li><br />                                        <li><b>Session Variablen</b> &#8211; muss richtig funktionieren.</li><br />                                            <li> <b>MB Strings</b> &#8211; muss installiert und in php.ini aktivert</li><br /><br />                      <li> <b>Datenbank Support</b> &#8211; muss für MySQL, SQL<br />                      Server oder Oracle existieren</li><br /><br />                      <li> <b>Config.php</b> &#8211; muss existieren und die richtige Schreib-Zugriffsrechte haben</li><br />					  <li>Die folgende Sugar Verzeichnisse müssen Schreibrechte haben:<ul><li><b>/custom</li><br /><li>/cache</li><br /><li>/modules</b></li></ul></li></ul><br />                                  Wenn die Überprüfung fehlschlägt, kann die Installation nicht fortgesetzt werden. Eine Fehlermeldung listet die Mängel auf. Wenn diese korrigiert sind, können Sie mit der Installation fortfahren<br>',
     'Am Annfang des Installationsprozesses erfolgt eine Systemüberprüfung, um sicher zu stellen, dass die Systemanforderungen erfüllt sind.
                       <br><br>
                       Folgende Einstellungen werden geprüft:<br>
@@ -438,7 +446,7 @@ $mod_strings = array (
                                   Die Installation wird abgebrochen, wenn die Systemüberprüfung fehlschlägt. Eine Fehlermeldung, die den Abbruch begründet, erscheint am Bildschirm.<br />
                                   Nachdem Sie die notwendigen Änderungen vorgenommen haben, starten Sie erneut die Systemprüfung.<br>',
     'REQUIRED_INSTALLTYPE' => 'Typische oder benutzerdefinierte Installation',
-    'REQUIRED_INSTALLTYPE_MSG' => 'Nachdem die Prüfung der Systemumgebung erfolgt ist, können Sie zwischen<br />                      der Typical oder der Custom Installation wählen.<br><br><br />                      Für beide Installationsvarianten werden Sie folgende Information brauchen:<br><br />                      <ul><br />                      <li> <b>Die Art von Datenbank</b>, wo die Daten gespeichert werden <ul><li>Kompatible Datenbanktypen<br /> : MySQL, MS SQL Server, Oracle.<br><br></li></ul></li><br />                      <li> <b>Name des Servers</b> oder der Maschine auf dem/der die Datenbank läuft (host)<br />                      <ul><li>Es kann <i>localhost</i> heißen, wenn die Datenbank lokal am eigenen Computer oder am selben Webserver wie die Sugar-Instanz läuft.<br><br></li></ul></li><br />                      <li><b>Name der Datenbank</b>, den Sie verwenden möchten</li><br />                        <ul><br />                          <li> Eventuell besteht bereits eine Datenbank, die Sie verwenden möchten.<br />  Wenn Sie den Namen einer bestehenden DAtenbank angegeben, werden alle vorhandenen Tabellen in dieser Datenbank gelöscht.</li><br />                          <li> Wenn die DAtenbank noch nicht vorhanden ist, so wird sie während des Intallationsprozesses angelegt.<br><br></li><br />                        </ul><br />                      <li><b>Datenbank-Administrator Benutzername und Passwort</b> <ul><li>Der Datenbankadministrator sollte genug Rechte haben, um Benutzer und Tabellen anzulegen. Schreibrechte auf die Datenbank sollte er auch besitzen.</li>
+    'REQUIRED_INSTALLTYPE_MSG' => 'Nachdem die Prüfung der Systemumgebung erfolgt ist, können Sie <br /> die typische oder die benutzerdefinierte Installation wählen.<br><br />                      Für beide Installationsvarianten werden Sie folgende Information brauchen:<br><br />                      <ul><br />                      <li> <b>Die Art von Datenbank</b>, wo die Daten gespeichert werden.<br />Kompatible Datenbanktypen<br /> : MySQL, MS SQL Server, Oracle.</li><br />                      <li> <b>Name des Servers</b> oder der Maschine auf dem/der die Datenbank läuft (host)<br />                      <ul><li>Es kann <i>localhost</i> heißen, wenn die Datenbank lokal am eigenen Computer oder am selben Webserver wie die Sugar-Instanz läuft.<br><br></li></ul></li><br />                      <li><b>Name der Datenbank</b>, den Sie verwenden möchten</li><br />                        <ul><br />                          <li> Eventuell besteht bereits eine Datenbank, die Sie verwenden möchten.<br />  Wenn Sie den Namen einer bestehenden DAtenbank angegeben, werden alle vorhandenen Tabellen in dieser Datenbank gelöscht.</li><br />                          <li> Wenn die DAtenbank noch nicht vorhanden ist, so wird sie während des Intallationsprozesses angelegt.<br><br></li><br />                        </ul><br />                      <li><b>Datenbank-Administrator Benutzername und Passwort</b> <ul><li>Der Datenbankadministrator sollte genug Rechte haben, um Benutzer und Tabellen anzulegen. Schreibrechte auf die Datenbank sollte er auch besitzen.</li>
     <li>Eventuell müssen Sie den Datenbankadministrator kontaktieren, um diese Information zu erhalten, wenn die Datenbank nicht auf Ihrem Lokalcomputer
     läuft, und/oder wenn Sie nicht der Admnistrator sind.<br><br></ul></li></li><br /> 
                          <li> <b>Name der Datenbank, Benutzername und Passwort</b><br />    
@@ -456,7 +464,7 @@ $mod_strings = array (
                                                              Die URL sollte den Namen von Webserver oder der Maschine oder die IP-Addresse enthalten.<br><br></li>
                                                              <br /><li> [Optional] <b>Pfad zu einem eigenen Session-Verzeichnis</b>, wenn Sie ein eigenes Verzeichnis verwenden möchten
                                                               <br />                                 <br /><br><br></li><br />                                  
-                                                              <li> [Optional] <b>Pfad zu einem eigenen Log-Verzeichnis</b>, wenn Sie das Standard-Verzeichnis nicht nutzen wollen.<br><br></li>
+                                                              <li> [Optional] <b>Pfad zu einem eigenen Log-Verzeichnis</b>, wenn Sie das Standard-Verzeichnis nicht nutzen wollen.<br></li>
                                                               
                                                               <br />                                  
                                                               <li> [Optional] <b>Application ID</b>, wenn Sie die automatisch angelegte ID überschreiben möchten. Diese ID dient dazu, jede CRM-Instanz zu erkennen<br><br></li>
@@ -532,6 +540,19 @@ Klicken Sie bitte folgenden Link, um Ihr Kennwort zurückzusetzen:
 
 $contact_user_link_guid',
         'name' => 'Passwort vergessen',
+    ),
+    'advanced_password_forgot_password_token_email' => array(
+        'subject' => 'Reset your account password',
+        'description' => "This template is used to send a user a token to reset the user's account password.",
+        'body' => '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>You recently requested to be able to reset your account password. </p><p>Return to $config_site_url and enter the Token: </p><p> $token </p>  </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>',
+        'txt_body' =>
+            '
+You recently requested to be able to reset your account password.
+
+Return to $config_site_url and enter the Token: 
+
+$token',
+        'name' => 'Forgot Password Token email',
     ),
 
 );

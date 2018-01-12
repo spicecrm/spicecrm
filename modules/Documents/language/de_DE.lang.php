@@ -71,7 +71,12 @@ $mod_strings = array (
 	'LBL_DOC_VERSION' => 'Version:',
 	'LBL_FILE_UPLOAD' => 'Anhang',
 
-	'LBL_CATEGORY_VALUE' => 'Kategorie',
+    // for the panels
+    'LBL_MAIN' => 'Haupt Daten',
+    'LBL_ADMIN' => 'Admin Daten',
+
+
+    'LBL_CATEGORY_VALUE' => 'Kategorie',
 	'LBL_LIST_CATEGORY' => 'Kategorie',
 	'LBL_SUBCATEGORY_VALUE'=> 'Unterkategorie:',
 	'LBL_DOC_STATUS'=> 'Status:',

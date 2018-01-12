@@ -1,13 +1,13 @@
 <?php
 $mod_strings = array(
 // MODULE LABELS
-    'LBL_MODULE_NAME' => 'Firma KPIs',
-    'LBL_MODULE_TITLE' => 'Firma KPIs: Home',
-    'LBL_MODULE_ID' => 'Firma KPIs',
+    'LBL_MODULE_NAME' => 'Bankkonten',
+    'LBL_MODULE_TITLE' => 'Bankkonten: Home',
+    'LBL_MODULE_ID' => 'Bankkonten ID',
 
-    'LBL_NEW_FORM_TITLE' => 'neue Firma KPI',
-    'LBL_SEARCH_FORM_TITLE' => 'Firma KPIs Suche',
-    'LBL_VIEW_FORM_TITLE' => 'Firma KPIs View',
+    'LBL_NEW_FORM_TITLE' => 'neues Konto',
+    'LBL_SEARCH_FORM_TITLE' => 'Konten Suche',
+    'LBL_VIEW_FORM_TITLE' => 'Konto',
 
 // DEFAULT LABELS
     'LBL_ASSIGNED_TO_NAME' => 'Zugewiesen an:',
@@ -28,12 +28,10 @@ $mod_strings = array(
     'LBL_CREATED_USER' => 'Erstellt von Benutzer',
     'LBL_MODIFIED_USER' => 'Bearbeitet von Benutzer',
     'LBL_LIST_NAME' => 'Name',
-    'LBL_ACCOUNTKPIS_SUBPANEL_TITLE' => 'Firma KPIs',
-    'LBL_ACCOUNTS_ACCOUNTKPIS_LINK' => 'Firma LINK',
+    'LBL_BANKACCOUNTS_SUBPANEL_TITLE' => 'Bankkonten',
+    'LBL_ACCOUNTS_BANKACCOUNTS_LINK' => 'Firma',
     'LBL_ACCOUNTS_NAME' => 'Firma',
     'LBL_ACCOUNTS_ID' => 'Firma ID',
-    'LBL_YEAR' => 'Jahr',
-    'LBL_PERIOD' => 'Periode',
-    'LBL_REVENUE' => 'Umsatz',
-    'LBL_QUANTITY' => 'Quantity'
+    'LBL_ACCOUNTNR' => 'Kontonummer',
+    'LBL_SWIFT' => 'SWIFT',
 );

@@ -38,7 +38,7 @@ $dictionary['kdeploypack_sysstatus'] = array(
     ),
     'indices' => array(
         array(
-            'name' => 'kdeploypack_sysstatus',
+            'name' => 'kdeploypack_sysstatuspk',
             'type' => 'primary',
             'fields' => array('id')
         )

@@ -76,7 +76,7 @@ class aSubPanel
 	var $bean_name ;
 	var $template_instance ;
 
-	function aSubPanel ( $name , $instance_properties , $parent_bean , $reload = false , $original_only = false )
+	public function __construct( $name , $instance_properties , $parent_bean , $reload = false , $original_only = false )
 	{
 
 		$this->_instance_properties = $instance_properties ;
@@ -576,7 +576,7 @@ class SubPanelDefinitions
 	 * @param ARRAY $layout_def_override - if you wish to override the default loaded layout defs you pass them in here.
 	 * @return SubPanelDefinitions
 	 */
-	function SubPanelDefinitions ( $focus , $layout_def_key = '' , $layout_def_override = '' )
+	public function __construct( $focus , $layout_def_key = '' , $layout_def_override = '' )
 	{
 		$this->_focus = $focus ;
 		if (! empty ( $layout_def_override ))
@@ -677,8 +677,10 @@ class SubPanelDefinitions
 	 */
 	function load_subpanel ( $name , $reload = false , $original_only = false )
 	{
-		if (!is_dir('modules/' . $this->layout_defs [ 'subpanel_setup' ][ strtolower ( $name ) ] [ 'module' ]))
-		  return false;
+        if (!is_dir('custom/modules/' . $this->layout_defs [ 'subpanel_setup' ][ strtolower ( $name ) ] [ 'module' ])){
+            if (!is_dir('modules/' . $this->layout_defs [ 'subpanel_setup' ][ strtolower ( $name ) ] [ 'module' ]))
+                return false;
+        }
 
         $subpanel = new aSubPanel ( $name, $this->layout_defs [ 'subpanel_setup' ] [ strtolower ( $name ) ], $this->_focus, $reload, $original_only ) ;
 
@@ -701,8 +703,10 @@ class SubPanelDefinitions
 
 		if (empty ( $this->layout_defs ) || $reload || (! empty ( $layout_def_key ) && ! isset ( $layout_defs [ $layout_def_key ] )))
 		{
-			if (file_exists ( 'modules/' . $this->_focus->module_dir . '/metadata/subpaneldefs.php' ))
-				require ('modules/' . $this->_focus->module_dir . '/metadata/subpaneldefs.php') ;
+            if (file_exists ( 'custom/modules/' . $this->_focus->module_dir . '/metadata/subpaneldefs.php' ))
+                require ('custom/modules/' . $this->_focus->module_dir . '/metadata/subpaneldefs.php') ;
+            else if (file_exists ( 'modules/' . $this->_focus->module_dir . '/metadata/subpaneldefs.php' ))
+                require ('modules/' . $this->_focus->module_dir . '/metadata/subpaneldefs.php') ;
 
 			if (! $original_only && file_exists ( 'custom/modules/' . $this->_focus->module_dir . '/Ext/Layoutdefs/layoutdefs.ext.php' ))
 				require ('custom/modules/' . $this->_focus->module_dir . '/Ext/Layoutdefs/layoutdefs.ext.php') ;

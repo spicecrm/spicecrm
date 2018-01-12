@@ -51,6 +51,6 @@ require_once($GLOBALS['beanFiles'][$entity]);
 $GLOBALS['focus'] = new $entity();
 $GLOBALS['focus']->retrieve(clean_string($_REQUEST['record']));
 
-include("modules/$currentModule/$action.php");
+include(get_custom_file_if_exists("modules/$currentModule/$action.php"));
 
 ?>

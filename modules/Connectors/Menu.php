@@ -40,11 +40,12 @@ global $mod_strings;
 global $current_user;
 $actions = array('ModifyProperties', 'ModifyDisplay', 
 'ModifyMapping', 'ConnectorSettings');
-if(in_array($GLOBALS['action'], $actions)){
-	$module_menu[]=Array("index.php?module=Connectors&action=ConnectorSettings", $mod_strings['LBL_ADMINISTRATION_MAIN'],"icon_Connectors");
-	$module_menu[]=Array("index.php?module=Connectors&action=ModifyProperties", $mod_strings['LBL_MODIFY_PROPERTIES_TITLE'],"icon_ConnectorConfig_16");
-	$module_menu[]=Array("index.php?module=Connectors&action=ModifyDisplay", $mod_strings['LBL_MODIFY_DISPLAY_TITLE'],"icon_ConnectorEnable_16");
-	$module_menu[]=Array("index.php?module=Connectors&action=ModifyMapping", $mod_strings['LBL_MODIFY_MAPPING_TITLE'],"icon_ConnectorMap_16");
+if(in_array($_REQUEST['action'], $actions)){
+
+    $module_menu[]=Array("index.php?module=Connectors&action=ConnectorSettings", $mod_strings['LBL_ADMINISTRATION_MAIN'],"icon_Connectors", "Connectors");
+	$module_menu[]=Array("index.php?module=Connectors&action=ModifyProperties", $mod_strings['LBL_MODIFY_PROPERTIES_TITLE'],"icon_ConnectorConfig_16", "Connectors");
+	$module_menu[]=Array("index.php?module=Connectors&action=ModifyDisplay", $mod_strings['LBL_MODIFY_DISPLAY_TITLE'],"icon_ConnectorEnable_16", "Connectors");
+	$module_menu[]=Array("index.php?module=Connectors&action=ModifyMapping", $mod_strings['LBL_MODIFY_MAPPING_TITLE'],"icon_ConnectorMap_16", "Connectors");
 
 
 }

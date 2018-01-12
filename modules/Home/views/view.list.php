@@ -37,10 +37,11 @@
 
 require_once('include/MVC/View/views/view.list.php');
 
-class HomeViewList extends ViewList{
- 	function ActivitiesViewList(){
- 		parent::ViewList();
- 		
+class HomeViewList extends ViewList
+{
+ 	function __construct()
+    {
+ 		parent::__construct();
  	}
 
  	function display(){
@@ -49,7 +50,8 @@ class HomeViewList extends ViewList{
  		include('modules/Home/index.php');
  	}
 
-    function processMaxPostErrors() {
+    function processMaxPostErrors()
+    {
         if($this->checkPostMaxSizeError()){
             $this->errors[] = $GLOBALS['app_strings']['UPLOAD_ERROR_HOME_TEXT'];
             $contentLength = $_SERVER['CONTENT_LENGTH'];

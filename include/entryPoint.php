@@ -174,9 +174,13 @@ require_once('include/SugarCache/SugarCache.php');
 require('modules/Currencies/Currency.php');
 require_once('include/MVC/SugarApplication.php');
 require_once('modules/KDeploymentMWs/KDeploymentMW.php');
+require_once('include/SpiceNumberRanges/SpiceNumberRanges.php');
 
 // include the FTS Handler
 require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
+
+// the trashcan handler
+require_once ('include/SysTrashCan/SysTrashCan.php');
 
 require_once('include/upload_file.php');
 UploadStream::register();

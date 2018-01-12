@@ -41,8 +41,8 @@ require_once('include/MVC/View/views/view.detail.php');
 
 class EmployeesViewDetail extends ViewDetail {
 
- 	function EmployeesViewDetail(){
- 		parent::ViewDetail();
+ 	function __construct(){
+ 		parent::__construct();
  	}
  	
    /**

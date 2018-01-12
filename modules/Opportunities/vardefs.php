@@ -284,7 +284,7 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
             'name' => 'probability',
             'vname' => 'LBL_PROBABILITY',
             'type' => 'int',
-            'dbType' => 'double',
+            'dbtype' => 'double',
             'audited' => true,
             'comment' => 'The probability of closure',
             'validation' => array('type' => 'range', 'min' => 0, 'max' => 100),
@@ -309,6 +309,11 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
         'cust_valueproposition' => array(
             'name' => 'cust_valueproposition',
             'vname' => 'LBL_CUST_VALUEPROPOSITION',
+            'type' => 'text'
+        ),
+        'loss_reason' => array(
+            'name' => 'loss_reason',
+            'vname' => 'LBL_LOSS_REASON',
             'type' => 'text'
         ),
         // links
@@ -473,6 +478,11 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
             'name' => 'idx_opp_id_deleted',
             'type' => 'index',
             'fields' => array('id', 'deleted'),
+        ),
+        array(
+            'name' => 'idx_opp_assigned_del_sales_stage', //for UI assitant
+            'type' => 'index',
+            'fields' => array('assigned_user_id', 'deleted', 'sales_stage'),
         ),
     ),
 

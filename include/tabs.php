@@ -45,7 +45,7 @@ class SugarWidgetTabs extends SugarWidget
  var $tabs;
  var $current_key;
 
- function SugarWidgetTabs(&$tabs,$current_key,$jscallback)
+ public function __construct(&$tabs,$current_key,$jscallback)
  {
    $this->tabs = $tabs;
    $this->current_key = $current_key;

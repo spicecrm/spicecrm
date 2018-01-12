@@ -368,6 +368,8 @@ if(true) {
             $xtpl->assign("TYPEDROPDOWN", get_select_options_with_id($app_list_strings['emailTemplates_type_list_no_workflow'],$templateType));
         }
     }
+    $forbean = !empty($focus->for_bean) ? $focus->for_bean : '';
+    $xtpl->assign("FOR_BEAN_DD", get_select_options_with_id($app_list_strings['kreleasepackage_repair_modules_dom'],$forbean));
 	// done and parse
 	$xtpl->parse("main.textarea");
 }

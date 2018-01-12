@@ -39,10 +39,9 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once("include/templates/Template.php");
 
-class TemplateDragDropChooser extends Template {
+class TemplateDragDropChooser extends Template
+{
     var $args;
-    function TemplateDragDropChooser() {
-    }
 
 /*
  * This function creates the html and uses the args parameter to call the class file

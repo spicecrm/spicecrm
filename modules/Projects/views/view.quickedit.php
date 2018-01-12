@@ -49,7 +49,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 require_once('include/MVC/View/views/view.quickedit.php');
 require_once('include/EditView/EditView2.php');
 
-class ProjectViewQuickedit extends ViewQuickEdit
+class ProjectViewQuickedit extends ViewQuickedit
 {
     /**
      * @var headerTpl String variable of the Smarty template file used to render the header portion

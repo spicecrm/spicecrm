@@ -240,6 +240,8 @@ $mod_strings = array(
     'LBL_DBCONF_DB_ADMIN_PASSWORD'      => 'Database Admin Password',
 	'LBL_DBCONF_DEMO_DATA'				=> 'Populate Database with Demo Data?',
     'LBL_DBCONF_DEMO_DATA_TITLE'        => 'Choose Demo Data',
+    'LBL_DBCONF_DEMO_FTS_DATA'			=> 'Create default index setup for ElasticSearch?',
+    'LBL_DBCONF_DEMO_UI_DATA'			=> 'Create default configuration for UI?',
 	'LBL_DBCONF_HOST_NAME'				=> 'Host Name',
 	'LBL_DBCONF_HOST_INSTANCE'			=> 'Host Instance',
 	'LBL_DBCONF_HOST_PORT'				=> 'Port',
@@ -262,6 +264,8 @@ $mod_strings = array(
     'LBL_FTS_PORT'                      => 'Port',
     'LBL_FTS_PREFIX'                    => 'Prefix',
     'LBL_FTS_REQUIREMENTS'              => '(requires elastic search version 2.x - 5.x)',
+    'LBL_UI'                            => 'Spice UI',
+    'LBL_UI_REQUIREMENTS'               => '(for Spice UI use only)',
 	'LBL_DBCONF_PRIV_PASS'				=> 'Privileged Database User Password',
 	'LBL_DBCONF_PRIV_USER_2'			=> 'Database Account Above Is a Privileged User?',
 	'LBL_DBCONF_PRIV_USER_DIRECTIONS'	=> 'This privileged database user must have the proper permissions to create a database, drop/create tables, and create a user.  This privileged database user will only be used to perform these tasks as needed during the installation process.  You may also use the same database user as above if that user has sufficient privileges.',
@@ -376,7 +380,11 @@ $mod_strings = array(
 	'LBL_PERFORM_DEFAULT_SCHEDULER'		=> 'Creating default scheduler jobs',
 	'LBL_PERFORM_DEFAULT_SETTINGS'		=> 'Inserting default settings',
 	'LBL_PERFORM_DEFAULT_USERS'			=> 'Creating default users',
+    'LBL_PERFORM_DEFAULT_FTS'		    => 'Creating default FTS config',
+    'LBL_PERFORM_DEFAULT_UI'		    => 'Creating default UI config',
 	'LBL_PERFORM_DEMO_DATA'				=> 'Populating the database tables with demo data (this may take a little while)',
+	'LBL_PERFORM_DEMO_DATA_FTS'			=> 'Populating fts table with data',
+    'LBL_PERFORM_DEMO_DATA_UI'			=> 'Populating sysui tables with data',
 	'LBL_PERFORM_DONE'					=> 'done<br>',
 	'LBL_PERFORM_DROPPING'				=> 'dropping / ',
 	'LBL_PERFORM_FINISH'				=> 'Finish',
@@ -596,6 +604,19 @@ Click on the link below to reset your password:
 $contact_user_link_guid',
         'name' => 'Forgot Password email',
         ),
+    'advanced_password_forgot_password_token_email' => array(
+        'subject' => 'Reset your account password',
+        'description' => "This template is used to send a user a token to reset the user's account password.",
+        'body' => '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>You recently requested to be able to reset your account password. </p><p>Return to $config_site_url and enter the Token: </p><p> $token </p>  </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>',
+        'txt_body' =>
+            '
+You recently requested to be able to reset your account password.
+
+Return to $config_site_url and enter the Token: 
+
+$token',
+        'name' => 'Forgot Password Token email',
+    ),
 );
 
 ?>

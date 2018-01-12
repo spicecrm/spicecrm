@@ -92,7 +92,17 @@ class Call extends SugarBean {
 	var $contacts_arr;
 	var $users_arr;
 	var $leads_arr;
-	var $default_call_name_values = array('Assemble catalogs', 'Make travel arrangements', 'Send a letter', 'Send contract', 'Send fax', 'Send a follow-up letter', 'Send literature', 'Send proposal', 'Send quote');
+	var $default_call_name_values = array(
+	    'Assemble catalogs',
+        'Make travel arrangements',
+        'Send a letter',
+        'Send contract',
+        'Send fax',
+        'Send a follow-up letter',
+        'Send literature',
+        'Send proposal',
+        'Send quote'
+    );
 	var $minutes_value_default = 15;
 	var $minutes_values = array('0'=>'00','15'=>'15','30'=>'30','45'=>'45');
 	var $table_name = "calls";
@@ -107,19 +117,27 @@ class Call extends SugarBean {
 	var $recurring_source;
 
 	// This is used to retrieve related fields from form posts.
-	var $additional_column_fields = array('assigned_user_name', 'assigned_user_id', 'contact_id', 'user_id', 'contact_name');
-	var $relationship_fields = array(	'account_id'		=> 'accounts',
-										'opportunity_id'	=> 'opportunities',
-										'contact_id'		=> 'contacts',
-										'case_id'			=> 'cases',
-										'user_id'			=> 'users',
-										'assigned_user_id'	=> 'users',
-										'note_id'			=> 'notes',
-                                        'lead_id'			=> 'leads',
-								);
+	var $additional_column_fields = array(
+	    'assigned_user_name',
+        'assigned_user_id',
+        'contact_id',
+        'user_id',
+        'contact_name'
+    );
+	var $relationship_fields = array(
+	    'account_id'		=> 'accounts',
+        'opportunity_id'	=> 'opportunities',
+        'contact_id'		=> 'contacts',
+        'case_id'			=> 'cases',
+        'user_id'			=> 'users',
+        'assigned_user_id'	=> 'users',
+        'note_id'			=> 'notes',
+        'lead_id'			=> 'leads',
+    );
 
-	function Call() {
-		parent::SugarBean();
+	function __construct()
+    {
+		parent::__construct();
 		global $app_list_strings;
 
        	$this->setupCustomFields('Calls');

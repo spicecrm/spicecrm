@@ -39,7 +39,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * Outbuound email management
  * @api
  */
-class OutboundEmail {
+class OutboundEmail
+{
 	/**
 	 * Necessary
 	 */
@@ -80,7 +81,8 @@ class OutboundEmail {
 	/**
 	 * Sole constructor
 	 */
-	function OutboundEmail() {
+	public function __construct()
+    {
 		$this->db = DBManagerFactory::getInstance();
 	}
 

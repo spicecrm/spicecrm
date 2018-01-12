@@ -239,8 +239,17 @@ class VardefManager{
         $vardef_paths = array(
                     'modules/'.$module.'/vardefs.php',
                     'custom/modules/'.$module.'/Ext/Vardefs/vardefs.ext.php',
+                    'custom/modules/'.$module.'/vardefs.php',
                     'custom/Extension/modules/'.$module.'/Ext/Vardefs/vardefs.php'
                  );
+
+        //custom module: add all files located in custom/Extension/modules/$module/Ext/Vardefs to support Extension Vardefs
+        if(is_dir('custom/Extension/modules/'.$module.'/Ext/Vardefs')) {
+            $fileSystemIterator = new FilesystemIterator('custom/Extension/modules/' . $module . '/Ext/Vardefs');
+            foreach ($fileSystemIterator as $fileInfo){
+                $additional_search_paths[] = 'custom/Extension/modules/' . $module . '/Ext/Vardefs/'.$fileInfo->getFilename();
+            }
+        }
 
         // Add in additional search paths if they were provided.
         if(!empty($additional_search_paths) && is_array($additional_search_paths))

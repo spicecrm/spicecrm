@@ -69,8 +69,8 @@ class SugarEmailAddress extends SugarBean {
     /**
      * Sole constructor
      */
-    function SugarEmailAddress() {
-        parent::SugarBean();
+    function __construct() {
+        parent::__construct();
         $this->index = self::$count;
         self::$count++;
     }
@@ -904,7 +904,15 @@ class SugarEmailAddress extends SugarBean {
             $this->smarty->assign('useInvalid', true);
         }
 
-        $template = empty($tpl) ? "include/SugarEmailAddress/templates/forEditView.tpl" : $tpl;
+        //BEGIN CORE MODIFICATION: make forEditView customizable
+        //$template = empty($tpl) ? "include/SugarEmailAddress/templates/forEditView.tpl" : $tpl;
+        if (empty($tpl) && (file_exists("custom/include/SugarEmailAddress/templates/forEditView.tpl"))) {
+            $template = "custom/include/SugarEmailAddress/templates/forEditView.tpl";
+        } else {
+            $template = empty($tpl) ? "include/SugarEmailAddress/templates/forEditView.tpl" : $tpl;
+        }
+        //END CORE MODIFICATION
+
         $newEmail = $this->smarty->fetch($template);
 
 

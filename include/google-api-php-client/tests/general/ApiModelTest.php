@@ -74,7 +74,7 @@ class ApiModelTest extends BaseTest
     $event = new Google_Service_Calendar_Event($data);
     $date = new Google_Service_Calendar_EventDateTime();
     date_default_timezone_set('UTC');
-    $dateString = Date("c");
+    $dateString = date("c");
     $summary = "hello";
     $date->setDate($dateString);
     $event->setStart($date);

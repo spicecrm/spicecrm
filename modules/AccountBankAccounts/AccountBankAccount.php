@@ -22,9 +22,9 @@ class AccountBankAccount extends SugarBean
     var $description;
     var $name;
 
-    function AccountBankAccount()
+    function __construct()
     {
-        parent::SugarBean();
+        parent::__construct();
     }
 
     function bean_implements($interface)

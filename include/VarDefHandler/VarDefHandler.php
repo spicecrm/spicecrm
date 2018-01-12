@@ -52,7 +52,7 @@ class VarDefHandler {
 	var $start_none_lbl = null;
 
 
-    function VarDefHandler($module, $meta_array_name=null)
+    public function __construct($module, $meta_array_name=null)
     {
         $this->meta_array_name = $meta_array_name;
 		$this->module_object = $module;
@@ -102,10 +102,10 @@ class VarDefHandler {
 				 $label_name = '';
                  if($value_array['type'] == 'link' && !$use_field_label){
                  	$this->module_object->load_relationship($value_array['name']);
-                    if(!empty($app_list_strings['moduleList'][$this->module_object->$value_array['name']->getRelatedModuleName()])){
-                    	$label_name = $app_list_strings['moduleList'][$this->module_object->$value_array['name']->getRelatedModuleName()];
+                    if(!empty($app_list_strings['moduleList'][$this->module_object->{$value_array['name']}->getRelatedModuleName()])){
+                    	$label_name = $app_list_strings['moduleList'][$this->module_object->{$value_array['name']}->getRelatedModuleName()];
                     }else{
-                    	$label_name = $this->module_object->$value_array['name']->getRelatedModuleName();
+                    	$label_name = $this->module_object->{$value_array['name']}->getRelatedModuleName();
                     }
                 }
 				else if(!empty($value_array['vname'])){

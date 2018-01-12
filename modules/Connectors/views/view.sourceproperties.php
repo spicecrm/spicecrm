@@ -41,8 +41,8 @@ require_once('include/MVC/View/views/view.list.php');
 
 class ViewSourceProperties extends ViewList {
    
- 	function ViewSourceProperties(){
- 		parent::ViewList();
+ 	function __construct(){
+ 		parent::__construct();
  	}
 
     public function display()

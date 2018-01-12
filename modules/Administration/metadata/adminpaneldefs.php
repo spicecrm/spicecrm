@@ -203,12 +203,21 @@ $links['SpiceThemeConfig']['link2'] = array(
 //    'Configuration for the SpiceTheme Theme'
 //);
 
-
+//@todo: create language labels....
 $admin_option_defs=array();
-$admin_option_defs['FTS']['FulltextSearchManager']= array('Releases','FTS Manager','Full Text Search Configuration','./index.php?module=Administration&action=FTSManager');
 $admin_option_defs['FTS']['FulltextSearchManager']= array('FTSManager','FTS Manager','Full Text Search Configuration','./index.php?module=Administration&action=FTSManager');
+$admin_option_defs['FTS']['FulltextSearchDefault']= array('FTSDefault','FTS Default Settings','Load default settings for all modules','./index.php?module=Administration&action=FTSDefault');
 $admin_group_header[]= array('Full Text Search','',false,$admin_option_defs, 'Manage Full Text Search Options and Settings');
 
+//@todo: create language labels....
+$admin_option_defs=array();
+$admin_option_defs['UI']['SpiceUIDefaultConfig']= array('UIDefault','UI Config','Default UI Configuration','./index.php?module=Administration&action=UIDefault');
+$admin_group_header[]= array('SpiceUI Config','',false,$admin_option_defs, 'Load default UI settings for default modules');
+
+//@todo: create language labels....
+$admin_option_defs=array();
+$admin_option_defs['SpiceBeanGuide']['SpiceBeanGuideDefault']= array('SpiceBeanGuide','SpiceBeanGuide Load','Load Default SpiceBeanGuides','./index.php?module=Administration&action=SpiceBeanGuideDefault');
+$admin_group_header[]= array('SpiceBeanGuideDefault','',false,$admin_option_defs, 'Load default SpiceBeanGuides settings for selected modules');
 
 // add the settings for the Auth management
 if(file_exists('modules/KOrgObjects/KOrgObject.php')) {
@@ -217,7 +226,7 @@ if(file_exists('modules/KOrgObjects/KOrgObject.php')) {
     $admin_option_defs['TAM']['OrgManager'] = array('orgchart', 'Define Organization Objects', 'Definition of rg Units and Territorries', './index.php?module=KOrgObjects&action=OrgObjectManager');
     $admin_option_defs['TAM']['AuthTypes'] = array('kauthtypes', 'Define Authorization Types', 'Authorization Type Definition', './index.php?module=KAuthProfiles&action=AuthTypeManager');
     $admin_option_defs['TAM']['AuthProfiles'] = array('KAuthProfiles', 'Define Authorization Profiles', 'Authorization Profile Definition', './index.php?module=KAuthProfiles&action=AuthProfileManager');
-    $admin_group_header[] = array('Territorry and Authorization Management', '', false, $admin_option_defs, 'Define Settings for territorry and Authorization management');
+    $admin_group_header[] = array('Territory and Authorization Management', '', false, $admin_option_defs, 'Define Settings for territorry and Authorization management');
 }
 
 if(file_exists('custom/modules/Administration/Ext/Administration/administration.ext.php')){

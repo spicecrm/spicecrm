@@ -36,8 +36,8 @@
 
 class ViewXML extends SugarView{
 	var $type ='detail';
-	function ViewXML(){
- 		parent::SugarView();
+	function __construct(){
+ 		parent::__construct();
  	}
  	
 	function display(){

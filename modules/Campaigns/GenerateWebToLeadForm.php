@@ -303,15 +303,15 @@ for($i= 0; $i<$columns;$i++){
           	{
           		if (!isset($part[0]))
           			continue;
-          		if (strToUpper($part[0]) == "M" )
+          		if (strtoupper($part[0]) == "M" )
           			$Web_To_Lead_Form_html .= translate("LBL_MONTH") . ":<input class=\"text\"
 					name=\"{$field_name}_month\" size='2' maxlength='2' id='{$field_name}_month' value=''
 					onblur=\"update{$field_name}Value()\">";
-				else if (strToUpper($part[0]) == "D" )
+				else if (strtoupper($part[0]) == "D" )
 					$Web_To_Lead_Form_html .=  translate("LBL_DAY") . ":<input class=\"text\"
 					name=\"{$field_name}_day\" size='2' maxlength='2' id='{$field_name}_day' value=''
 					onblur=\"update{$field_name}Value()\">";
-				else if (strToUpper($part[0]) == "Y" )
+				else if (strtoupper($part[0]) == "Y" )
 					$Web_To_Lead_Form_html .= translate("LBL_YEAR") . ":<input class=\"text\"
 					name=\"{$field_name}_year\" size='4' maxlength='4' id='{$field_name}_year' value=''
 					onblur=\"update{$field_name}Value()\">";
@@ -432,15 +432,15 @@ for($i= 0; $i<$columns;$i++){
           	{
           		if (!isset($part[0]))
           			continue;
-          		if (strToUpper($part[0]) == "M" )
+          		if (strtoupper($part[0]) == "M" )
           			$Web_To_Lead_Form_html .= translate("LBL_MONTH") . ":<input class=\"text\"
 					name=\"{$field1_name}_month\" size='2' maxlength='2' id='{$field1_name}_month' value='' 
 					onblur=\"update{$field1_name}Value()\">";
-				else if (strToUpper($part[0]) == "D" ) 
+				else if (strtoupper($part[0]) == "D" )
 					$Web_To_Lead_Form_html .=  translate("LBL_DAY") . ":<input class=\"text\"
 					name=\"{$field1_name}_day\" size='2' maxlength='2' id='{$field1_name}_day' value='' 
 					onblur=\"update{$field1_name}Value()\">";
-				else if (strToUpper($part[0]) == "Y" ) 
+				else if (strtoupper($part[0]) == "Y" )
 					$Web_To_Lead_Form_html .= translate("LBL_YEAR") . ":<input class=\"text\"
 					name=\"{$field1_name}_year\" size='4' maxlength='4' id='{$field1_name}_year' value='' 
 					onblur=\"update{$field1_name}Value()\">";

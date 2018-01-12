@@ -17,7 +17,7 @@ class CompanyFiscalPeriod extends SugarBean {
 
 
     public function __construct(){
-        parent::SugarBean();
+        parent::__construct();
     }
 
     public function get_summary_text(){
@@ -32,11 +32,11 @@ class CompanyFiscalPeriod extends SugarBean {
     }
 
 
-    public function save($notify = false){
+    public function save($notify = false, $fts_index_bean = true){
         //set name
         $this->name = $this->fiscal_year."-".$this->fiscal_month;
 
-        return parent::save($notify);
+        return parent::save($notify, $fts_index_bean);
     }
 
 

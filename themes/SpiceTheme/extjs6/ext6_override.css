@@ -1,3 +1,10 @@
+/* begin overwrite html height set in SuiteP Theme */
+html{
+    height:inherit;
+    max-height:100%;
+}
+/* end overwrite SuiteP Theme */
+
 /* some enhnancement to correct what EXT overwrites and messes up the layout*/
 /*
 body {

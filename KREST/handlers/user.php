@@ -148,11 +148,11 @@ class KRESTUserHandler
             //$mail->IsHTML(true);
             $mail->From = $defaults['email'];
             $mail->FromName = $defaults['name'];
-            $mail->ClearAllRecipients();
-            $mail->ClearReplyTos();
+            $mail->clearAllRecipients();
+            $mail->clearReplyTos();
             $mail->Subject = from_html($emailTemp->subject);
             if ($emailTemp->text_only != 1) {
-                $mail->IsHTML(true);
+                $mail->isHTML(true);
                 $mail->Body = from_html($emailTemp->body_html);
                 $mail->AltBody = from_html($emailTemp->body);
             } else {
@@ -162,9 +162,9 @@ class KRESTUserHandler
 
             $mail->prepForOutbound();
 
-            $mail->AddAddress($email);
+            $mail->addAddress($email);
 
-            $result['status'] = @$mail->Send();
+            $result['status'] = @$mail->send();
 
             if ($result['status'] == true) {
                 $emailObj->team_id = 1;

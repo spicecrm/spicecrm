@@ -32,7 +32,7 @@ $viewdefs['CompanyCodes']['DetailView'] = array(
                         'key' => 'company',
                     ),
                 ),
-                ''
+                'companycode'
             )
         ),
         'lbl_output_panel' => array(

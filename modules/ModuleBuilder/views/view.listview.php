@@ -194,7 +194,7 @@ class ViewListView extends SugarView
                 $subList =  SubPanel::getModuleSubpanels ( $this->editModule);
                 $subRef = $subList[strtolower($this->subpanel)];
                 $subTitleKey = !empty($subRef) ? $subRef : "LBL_" . strtoupper($this->subpanel) . "_SUBPANEL_TITLE";
-                $subTitle    = !empty($subRef) ? translate($subTitleKey, $this->editModule) : UCfirst($this->subpanel);
+                $subTitle    = !empty($subRef) ? translate($subTitleKey, $this->editModule) : ucfirst($this->subpanel);
             	$smarty->assign ( 'subpanel_label', $subTitleKey ) ;
             	$smarty->assign ( 'subpanel_title', $subTitle ) ;
             }

@@ -40,14 +40,8 @@ require_once('modules/Trackers/monitor/Monitor.php');
 require_once('modules/Trackers/Metric.php');
 require_once('modules/Trackers/Trackable.php');
 
-class BlankMonitor extends Monitor implements Trackable {
-    
-    /**
-     * BlankMonitor constructor
-     */
-    function BlankMonitor() {
-
-    }
+class BlankMonitor extends Monitor implements Trackable
+{
     
     /**
      * setValue

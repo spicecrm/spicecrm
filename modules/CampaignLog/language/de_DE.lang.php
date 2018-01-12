@@ -78,5 +78,7 @@ $mod_strings = array (
     
     'LBL_CAMPAIGNS' => 'Kampagnen',
 	'LBL_LIST_MARKETING_NAME' => 'Marketing ID',
+
+	'LBL_ACTIVITY_TYPE' => 'Status',
+	'LBL_ACTIVITY_DATE' => 'Datum'
 );
-?>

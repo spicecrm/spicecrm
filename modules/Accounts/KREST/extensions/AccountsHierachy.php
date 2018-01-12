@@ -8,7 +8,7 @@ $app->group('/AccountsHierachy/:id', function () use ($app) {
 
         $seed = BeanFactory::getBean('Accounts', $id);
         $seed->load_relationship('members');
-        $memberAccounts = $seed->get_linked_beans('members', 'Accounts');
+        $memberAccounts = $seed->get_linked_beans('members', 'Account');
         foreach ($memberAccounts as $memberAccount) {
             $memberCount = $db->fetchByAssoc($db->query("SELECT count(id) membercount FROM accounts WHERE parent_id = '$memberAccount->id' AND deleted = 0"));
             $hierarchy[] = array(

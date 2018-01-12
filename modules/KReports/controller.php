@@ -28,9 +28,13 @@ require_once('include/utils.php');
 class KReportsController extends SugarController {
 
     //2013-02-18 make sure we disable display_errors
-    public function KReportsController() {
+    public function __construct() {
         ini_set('display_errors', '0');
-        parent::SugarController();
+
+        $class = new ReflectionClass('SugarController');
+        $constructor = $class->getConstructor();
+        $constructorName = $constructor->name;
+        parent::$constructorName();
     }
 
 
@@ -213,10 +217,10 @@ class KReportsController extends SugarController {
         return true;
     }
 
-    /*
+    /**
      * function to deliuver html data for Rpeort and Dashlet
+     * @deprecated
      */
-
     function action_getReportHtmlResults() {
         require_once('modules/KReports/views/view.htmlpremium.php');
         $thisReport = new KReport();

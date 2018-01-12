@@ -53,6 +53,7 @@ class ElasticHandler
         global $db;
 
         $indexes = array();
+
         //catch installation process and abort. table sysfts will not exist at the point during installation
         if($GLOBALS['installing'] === true)
             return array();
@@ -154,7 +155,7 @@ class ElasticHandler
 
     function getIndex()
     {
-        $response = $this->query('GET');
+        $response = $this->query('GET', '_cat/indices?v'); //PHP7.1 compatibility: 2 parameters expected!
         return $response;
     }
 
@@ -190,7 +191,7 @@ class ElasticHandler
 
         $cURL = 'http://' . $this->server . ':' . $this->port . '/';
         if (!empty($url)) $cURL .=  $url;
-
+//        file_put_contents("sugarcrm.log", print_r($cURL, true)."\n", FILE_APPEND);
         $ch = curl_init($cURL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -223,10 +224,9 @@ class ElasticHandler
     private function addLogEntry($method, $url, $status, $request, $response, $rtlocal, $rtremote)
     {
         global $db, $timedate;
-        //catch installation process and abort. table sysfts will not exist at the point during installation
+        //catch installation process and abort. table sysftslog will not exist at the point during installation
         if($GLOBALS['installing'] === true)
             return false;
-
         $db->query("INSERT INTO sysftslog (id, date_created, request_method, request_url, response_status, index_request, index_response) values('" . create_guid() . "', '" . $timedate->nowDb() . "', '$method', '$url', '$status', '$request', '$response')");
     }
 }

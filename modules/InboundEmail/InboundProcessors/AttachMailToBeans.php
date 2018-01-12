@@ -1,13 +1,13 @@
 <?php
 class AttachMailToBeans{
-    private $email;
-    private $addresses;
-    private $beans;
-    private $skip = true;
+    var $email;
+    var $addresses;
+    var $beans;
+    var $skip = true;
 
     function processMail(Email $mail){
         global $sugar_config;
-        if(isset($sugar_config['developerMode']) && $sugar_config['developerMode']) $GLOBALS['log']->fatal("AttachMailToBeans mail: ".$mail->subject);
+        if(isset($sugar_config['developerMode']) && $sugar_config['developerMode']) $GLOBALS['log']->fatal("AttachMailToBeans mail: ".$mail->name);
         $this->email = $mail;
         $this->checkAuthFrom();
         if(isset($sugar_config['developerMode']) && $sugar_config['developerMode']) $GLOBALS['log']->fatal("AttachMailToBeans inbound_processing_allowed: ".!$this->skip);
@@ -21,7 +21,12 @@ class AttachMailToBeans{
     private function checkAuthFrom(){
         global $db;
         $addr = explode(', ',$this->email->from_addr);
-        $sql = "SELECT u.id FROM users u INNER JOIN email_addr_bean_rel eb ON eb.bean_id = u.id AND eb.bean_module = 'Users' AND u.inbound_processing_allowed = 1 INNER JOIN email_addresses ea ON ea.id = eb.email_address_id AND ea.email_address_caps = '{$addr[0]}' WHERE u.deleted = 0 AND eb.deleted = 0 AND ea.deleted = 0";
+        $res = preg_match_all(
+            "/[a-z0-9]+[_a-z0-9\.-]*[a-z0-9]+@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})/i",
+            $addr[0],
+            $matches
+        );
+        $sql = "SELECT u.id FROM users u INNER JOIN email_addr_bean_rel eb ON eb.bean_id = u.id AND eb.bean_module = 'Users' AND u.inbound_processing_allowed = 1 INNER JOIN email_addresses ea ON ea.id = eb.email_address_id AND ea.email_address_caps = '".strtoupper($matches[0][0])."' WHERE u.deleted = 0 AND eb.deleted = 0 AND ea.deleted = 0";
         $res = $db->query($sql);
         while($row = $db->fetchByAssoc($res))$this->skip = false;
     }
@@ -29,7 +34,11 @@ class AttachMailToBeans{
     private function getAddresses(){
         global $sugar_config;
         $this->email->retrieveEmailAddresses();
-        $this->addresses = array_merge(explode(', ',$this->email->from_addr),explode(', ',$this->email->to_addrs),explode(', ',$this->email->cc_addrs),explode(', ',$this->email->bcc_addrs));
+        $this->addresses = array();
+        $this->getAddressesFromTxt($this->email->bcc_addrs);
+        $this->getAddressesFromTxt($this->email->cc_addrs);
+        $this->getAddressesFromTxt($this->email->to_addrs);
+        $this->getAddressesFromTxt($this->email->from_addr);
         $this->getAddressesFromTxt($this->email->description);
         $this->getAddressesFromTxt($this->email->description_html);
         $this->addresses = array_unique($this->addresses);
@@ -46,9 +55,9 @@ class AttachMailToBeans{
             $matches
         );
         if ($res) {
-            $return = array_unique($matches[0]);
+            $return = $matches[0];
         }
-        $this->addresses = array_merge($return,$this->addresses);
+        $this->addresses = array_merge($this->addresses,$return);
     }
 
     private function findBeans(){

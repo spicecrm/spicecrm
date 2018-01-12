@@ -32,7 +32,7 @@ ini_set('display_errors','0');
 if(isset($_REQUEST['ajaxAction']) && !empty($_REQUEST['ajaxAction']))
 {
     $SpiceThemeController = new SpiceThemeController();
-    echo $SpiceThemeController->$_REQUEST['ajaxAction']($this);
+    echo $SpiceThemeController->{$_REQUEST['ajaxAction']}($this);
 }
 
 require_once('modules/SpiceThemeController/SpiceThemeSideBarManager.php');
@@ -40,6 +40,6 @@ require_once('modules/SpiceThemeController/SpiceThemeSideBarManager.php');
 if(isset($_REQUEST['ThemeAjaxAction']) && !empty($_REQUEST['ThemeAjaxAction']))
 {
 	$SpiceThemeSideBarManager = new SpiceThemeSideBarManager();
-	echo $SpiceThemeSideBarManager->$_REQUEST['ThemeAjaxAction']($this);
+	echo $SpiceThemeSideBarManager->{$_REQUEST['ThemeAjaxAction']}($this);
 }
 ?>

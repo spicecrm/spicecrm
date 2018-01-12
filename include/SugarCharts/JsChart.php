@@ -94,8 +94,9 @@ class JsChart extends SugarChart {
 		    $xmlStr = $this->processXML($this->xmlFile);
 		    $json = $this->buildJson($xmlStr);
         }
-        catch(Exception $e) {
-            $GLOBALS['log']->fatal("Unable to return chart data, invalid xml for file {$this->xmlFile}");
+        catch(Exception $e)
+		{
+            $GLOBALS['log']->fatal("Unable to return chart data, invalid xml for file {$this->xmlFile}: ".$e->getMessage());
             return '';
         }
 		$this->saveJsonFile($json);
@@ -712,11 +713,17 @@ class JsChart extends SugarChart {
 		$replacement = array();
 		$content = file_get_contents($xmlFile);
 		$content = $GLOBALS['locale']->translateCharset($content,'UTF-16LE', 'UTF-8');
-		$pattern[] = '/\<link\>([a-zA-Z0-9#?&%.;\[\]\/=+_-\s]+)\<\/link\>/e';
-		$replacement[] = "'<link>'.urlencode(\"$1\").'</link>'";
-//		$pattern[] = '/NULL/e';
-//		$replacement[] = "";
-		return preg_replace($pattern,$replacement, $content);
+//BEGIN PHP7 Compatiblity: use preg_replace_callback since modifier /e was removed in PHP 7
+////fix pattern
+////		$pattern[] = '/\<link\>([a-zA-Z0-9#?&%.;\[\]\/=+_-\s]+)\<\/link\>/e';
+//        $pattern[] = '/\<link\>([a-zA-Z0-9#?&%.;\[\]\/=+\s\-\_]+)\<\/link\>/e';
+//        $replacement[] = "'<link>'.urlencode(\"$1\").'</link>'";
+////		$pattern[] = '/NULL/e';
+////		$replacement[] = "";
+//		return preg_replace($pattern,$replacement, $content);
+//END
+
+        return preg_replace_callback('(<link>(.*?)</link>)',function($m){return "<link>" . urlencode($m[1]) . "</link>";}, $content);
 	}
 
 
