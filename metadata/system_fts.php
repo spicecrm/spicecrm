@@ -5,7 +5,8 @@ $dictionary['sysfts'] = array(
         'module' => array(
             'name' => 'module',
             'type' => 'varchar',
-            'len' => 255
+            'len' => 255,
+            'required' => true
         ),
         'index_priority' => array(
             'name' => 'index_priority',
