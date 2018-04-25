@@ -832,7 +832,7 @@ function getValidPatchName($returnFull = true) {
 					<b>{$mod_strings['LBL_ML_UNINSTALLABLE']}</b>
 				</td>
 				<td align=left>
-					<b>{$mod_strings['LBL_ML_DESCRIPTION']}</b>
+					<b>{$mod_strings['LBL_DESCRIPTION']}</b>
 				</td>
 			</tr>";
 	$disabled = '';

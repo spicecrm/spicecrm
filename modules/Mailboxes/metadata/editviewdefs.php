@@ -83,7 +83,7 @@ $viewdefs['Mailboxes']['EditView'] = array(
         'javascript' => ''
     ),
     'panels' => array(
-        'LBL_MAILBOX' =>
+        'LBL_GENERAL' =>
             array(
                 array(
                     array('name' => 'name'),
@@ -111,7 +111,7 @@ $viewdefs['Mailboxes']['EditView'] = array(
             array(
                 array(
                     'name' => 'imap_pop3_username',
-                    'label' => 'LBL_USERNAME'
+                    'label' => 'LBL_USER_NAME'
                 ),
                 array(
                     'name' => 'imap_pop3_password',
@@ -146,7 +146,7 @@ $viewdefs['Mailboxes']['EditView'] = array(
             array(
                 array(
                     'name' => 'smtp_username',
-                    'label' => 'LBL_USERNAME'
+                    'label' => 'LBL_USER_NAME'
                 ),
                 array(
                     'name' => 'smtp_password',

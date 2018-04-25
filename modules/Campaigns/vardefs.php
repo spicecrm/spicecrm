@@ -41,27 +41,27 @@ $dictionary['Campaign'] = array('audited' => true,
     'unified_search' => true,
     'full_text_search' => true,
     'fields' => array(
-        'tracker_key' => array(
-            'name' => 'tracker_key',
-            'vname' => 'LBL_TRACKER_KEY',
-            'type' => 'int',
-            'required' => true,
-            'studio' => array('editview' => false),
-            'len' => '11',
-            'auto_increment' => true,
-            'comment' => 'The internal ID of the tracker used in a campaign; no longer used as of 4.2 (see campaign_trkrs)'
-        ),
-        'tracker_count' => array(
-            'name' => 'tracker_count',
-            'vname' => 'LBL_TRACKER_COUNT',
-            'type' => 'int',
-            'len' => '11',
-            'default' => '0',
-            'comment' => 'The number of accesses made to the tracker URL; no longer used as of 4.2 (see campaign_trkrs)'
-        ),
+//        'tracker_key' => array(
+//            'name' => 'tracker_key',
+//            'vname' => 'LBL_TRACKER_KEY',
+//            'type' => 'int',
+//            'required' => true,
+//            'studio' => array('editview' => false),
+//            'len' => '11',
+//            'auto_increment' => true,
+//            'comment' => 'The internal ID of the tracker used in a campaign; no longer used as of 4.2 (see campaign_trkrs)'
+//        ),
+//        'tracker_count' => array(
+//            'name' => 'tracker_count',
+//            'vname' => 'LBL_TRACKER_COUNT',
+//            'type' => 'int',
+//            'len' => '11',
+//            'default' => '0',
+//            'comment' => 'The number of accesses made to the tracker URL; no longer used as of 4.2 (see campaign_trkrs)'
+//        ),
         'name' => array(
             'name' => 'name',
-            'vname' => 'LBL_CAMPAIGN_NAME',
+            'vname' => 'LBL_NAME',
             'dbType' => 'varchar',
             'type' => 'name',
             'len' => '50',
@@ -90,7 +90,7 @@ $dictionary['Campaign'] = array('audited' => true,
 
         'start_date' => array(
             'name' => 'start_date',
-            'vname' => 'LBL_CAMPAIGN_START_DATE',
+            'vname' => 'LBL_DATE_START',
             'type' => 'date',
             'audited' => true,
             'comment' => 'Starting date of the campaign',
@@ -100,7 +100,7 @@ $dictionary['Campaign'] = array('audited' => true,
         ),
         'end_date' => array(
             'name' => 'end_date',
-            'vname' => 'LBL_CAMPAIGN_END_DATE',
+            'vname' => 'LBL_DATE_END',
             'type' => 'date',
             'audited' => true,
             'comment' => 'Ending date of the campaign',
@@ -111,7 +111,7 @@ $dictionary['Campaign'] = array('audited' => true,
         ),
         'status' => array(
             'name' => 'status',
-            'vname' => 'LBL_CAMPAIGN_STATUS',
+            'vname' => 'LBL_STATUS',
             'type' => 'enum',
             'options' => 'campaign_status_dom',
             'len' => 100,
@@ -142,35 +142,35 @@ $dictionary['Campaign'] = array('audited' => true,
             ),
         'budget' => array(
             'name' => 'budget',
-            'vname' => 'LBL_CAMPAIGN_BUDGET',
+            'vname' => 'LBL_BUDGET',
             'type' => 'currency',
             'dbType' => 'double',
             'comment' => 'Budgeted amount for the campaign'
         ),
         'expected_cost' => array(
             'name' => 'expected_cost',
-            'vname' => 'LBL_CAMPAIGN_EXPECTED_COST',
+            'vname' => 'LBL_EXPECTED_COST',
             'type' => 'currency',
             'dbType' => 'double',
             'comment' => 'Expected cost of the campaign'
         ),
         'actual_cost' => array(
             'name' => 'actual_cost',
-            'vname' => 'LBL_CAMPAIGN_ACTUAL_COST',
+            'vname' => 'LBL_ACTUAL_COST',
             'type' => 'currency',
             'dbType' => 'double',
             'comment' => 'Actual cost of the campaign'
         ),
         'expected_revenue' => array(
             'name' => 'expected_revenue',
-            'vname' => 'LBL_CAMPAIGN_EXPECTED_REVENUE',
+            'vname' => 'LBL_EXPECTED_REVENUE',
             'type' => 'currency',
             'dbType' => 'double',
             'comment' => 'Expected revenue stemming from the campaign'
         ),
         'campaign_type' => array(
             'name' => 'campaign_type',
-            'vname' => 'LBL_CAMPAIGN_TYPE',
+            'vname' => 'LBL_TYPE',
             'type' => 'enum',
             'options' => 'campaign_type_dom',
             'len' => 100,
@@ -181,13 +181,13 @@ $dictionary['Campaign'] = array('audited' => true,
         ),
         'objective' => array(
             'name' => 'objective',
-            'vname' => 'LBL_CAMPAIGN_OBJECTIVE',
+            'vname' => 'LBL_OBJECTIVE',
             'type' => 'text',
             'comment' => 'The objective of the campaign'
         ),
         'content' => array(
             'name' => 'content',
-            'vname' => 'LBL_CAMPAIGN_CONTENT',
+            'vname' => 'LBL_CONTENT',
             'type' => 'text',
             'comment' => 'The campaign description'
         ),
@@ -225,7 +225,7 @@ $dictionary['Campaign'] = array('audited' => true,
         ),
         'frequency' => array(
             'name' => 'frequency',
-            'vname' => 'LBL_CAMPAIGN_FREQUENCY',
+            'vname' => 'LBL_FREQUENCY',
             'type' => 'enum',
             //'options' => 'campaign_status_dom',
             'len' => 100,
@@ -271,7 +271,7 @@ $dictionary['Campaign'] = array('audited' => true,
         // non db fields for campaign log
         'activity_type' => array(
             'name' => 'activity_type',
-            'vname' => 'LBL_ACTIVITY_TYPE',
+            'vname' => 'LBL_ACTIVITY',
             'type' => 'enum',
             'options' => 'campainglog_activity_type_dom',
             'len' => 100,
@@ -280,7 +280,7 @@ $dictionary['Campaign'] = array('audited' => true,
         ),
         'activity_date' => array(
             'name' => 'activity_date',
-            'vname' => 'LBL_ACTIVITY_DATE',
+            'vname' => 'LBL_DATE',
             'type' => 'datetime',
             'comment' => 'The date the activity occurred',
             'source' => 'non-db'
@@ -305,7 +305,7 @@ $dictionary['Campaign'] = array('audited' => true,
                 'name' => 'email_template_name',
                 'rname' => 'name',
                 'id_name' => 'email_template_id',
-                'vname' => 'LBL_EMAIL_TEMPLATE_NAME',
+                'vname' => 'LBL_EMAILTEMPLATE',
                 'type' => 'relate',
                 'table' => 'email_templates',
                 'isnull' => 'true',
@@ -363,16 +363,20 @@ $dictionary['Campaign'] = array('audited' => true,
             'duplicate_merge' => 'disabled',
             'massupdate' => false,
         ),
-
-
-
+        'campaigntasks' => array(
+            'name' => 'campaigntasks',
+            'type' => 'link',
+            'relationship' => 'campaign_campaigntasks',
+            'source' => 'non-db',
+            'module' => 'CampaignTasks'
+        )
     ),
     'indices' => array(
-        array(
-            'name' => 'camp_auto_tracker_key',
-            'type' => 'unique',
-            'fields' => array('tracker_key')
-        ),
+//        array(
+//            'name' => 'camp_auto_tracker_key',
+//            'type' => 'unique',
+//            'fields' => array('tracker_key')
+//        ),
         array(
             'name' => 'idx_campaign_name',
             'type' => 'index',

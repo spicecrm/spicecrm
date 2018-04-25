@@ -83,7 +83,7 @@ $listViewDefs[$module_name] = array(
         'label' => 'LBL_DATE_ENTERED'),
     'CREATED_BY_NAME' => array(
         'width' => '10',
-        'label' => 'LBL_CREATED'),
+        'label' => 'LBL_CREATED_BY'),
 	'ASSIGNED_USER_NAME' => array(
 		'width' => '5',
 		'label' => 'LBL_LIST_ASSIGNED_USER',
@@ -92,7 +92,7 @@ $listViewDefs[$module_name] = array(
         'default' => true),
     'MODIFIED_BY_NAME' => array(
         'width' => '5',
-        'label' => 'LBL_MODIFIED')
+        'label' => 'LBL_MODIFIED_BY_ID')
 );
 
 ?>

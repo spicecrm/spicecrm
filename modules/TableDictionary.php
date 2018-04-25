@@ -53,6 +53,7 @@ include("metadata/email_addressesMetaData.php");
 include("metadata/emails_beansMetaData.php");
 include("metadata/foldersMetaData.php");
 include("metadata/import_mapsMetaData.php");
+include('metadata/mailbox_processorsMetaData.php');
 include("metadata/meetings_contactsMetaData.php");
 include("metadata/meetings_usersMetaData.php");
 include("metadata/meetings_leadsMetaData.php");
@@ -60,6 +61,7 @@ include("metadata/opportunities_contactsMetaData.php");
 include("metadata/user_feedsMetaData.php");
 include("metadata/users_passwordLinkMetaData.php");
 include("metadata/prospect_list_campaignsMetaData.php");
+include("metadata/prospect_list_campaigntasksMetaData.php");
 include("metadata/prospect_lists_prospectsMetaData.php");
 include("metadata/roles_modulesMetaData.php");
 include("metadata/roles_usersMetaData.php");
@@ -77,7 +79,12 @@ include("metadata/projects_opportunitiesMetaData.php");
 // sys data
 include("metadata/system_fts.php");
 include("metadata/system_ui.php");
-
+if(file_exists('metadata/system_service.php')){
+    include("metadata/system_service.php");
+}
+if(file_exists('metadata/system_languages.php')){
+    include("metadata/system_languages.php");
+}
 // products data
 if(file_exists('metadata/products_MetaData.php'))
     include('metadata/products_MetaData.php');
@@ -94,14 +101,17 @@ include("metadata/users_signaturesMetaData.php");
 //linked documents.
 include("metadata/linked_documentsMetaData.php");
 
-include("metadata/salesdocuments_beansMetaData.php");
+if(file_exists("metadata/salesdocuments_beansMetaData.php"))
+    include("metadata/salesdocuments_beansMetaData.php");
 
 // Documents, so we can start replacing Notes as the primary way to attach something to something else.
 include("metadata/documents_accountsMetaData.php");
 include("metadata/documents_contactsMetaData.php");
 include("metadata/documents_opportunitiesMetaData.php");
+include("metadata/documents_projectsMetaData.php");
 include("metadata/documents_casesMetaData.php");
 include("metadata/documents_bugsMetaData.php");
+include("metadata/documents_projectsMetaData.php");
 include("metadata/oauth_nonce.php");
 include("metadata/cron_remove_documentsMetaData.php");
 
@@ -122,15 +132,26 @@ include('metadata/opportunity_guideMetaData.php');
 include('metadata/exchangesync.objectsyncstate.metadata.php');
 include('metadata/exchangesync.syncdefs.metadata.php');
 
-include('metadata/kdeploymentsystems_kdeploymentsystems.Metadata.php');
-include('metadata/kdeploypack_items.Metadata.php');
-include('metadata/kdeploypack_contents.Metadata.php');
-include('metadata/kdeploypack_sysstatus.Metadata.php');
-include("metadata/kreleasemanager.metadata.php");
+if(file_exists('metadata/systemdeployment.metadata.php')) {
+    include("metadata/systemdeployment.metadata.php");
+}
 
-include('metadata/system_number_ranges.php');
-include('metadata/system_tags.php');
-include('metadata/system_trashcan.php');
+//system
+if(file_exists('metadata/system_number_ranges.php')) {
+    include('metadata/system_number_ranges.php');
+}
+if(file_exists('metadata/system_tags.php')) {
+    include('metadata/system_tags.php');
+}
+if(file_exists('metadata/system_trashcan.php')) {
+    include('metadata/system_trashcan.php');
+}
+
+//service
+if(file_exists('metadata/servicequeues_usersMetaData.php')){
+    include('metadata/servicequeues_usersMetaData.php');
+}
+
 
 if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
 	include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');

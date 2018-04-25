@@ -39,14 +39,14 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
 
-* Description:  Represents a relationship from a single bean's perspective.
-* Does not actively do work but is used by sugarbean to manipulate relationships.
-* Work is deferred to the relationship classes.
+ * Description:  Represents a relationship from a single bean's perspective.
+ * Does not actively do work but is used by sugarbean to manipulate relationships.
+ * Work is deferred to the relationship classes.
  *
-* Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
-* All Rights Reserved.
-* Contributor(s): ______________________________________..
-********************************************************************************/
+ * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
+ * All Rights Reserved.
+ * Contributor(s): ______________________________________..
+ ********************************************************************************/
 global $dictionary;
 require_once("data/Relationships/RelationshipFactory.php");
 
@@ -171,10 +171,10 @@ class Link2 {
      *  rhs_value: The value to search for.<br/>
      *  Example:<pre>
      *  'where' => array(
-             'lhs_field' => 'source',
-             'operator' => '=',
-             'rhs_value' => 'external'
-         )</pre>
+    'lhs_field' => 'source',
+    'operator' => '=',
+    'rhs_value' => 'external'
+    )</pre>
      *  </li>
      * <li><b>limit:</b> The maximum number of rows</li>
      * <li><b>deleted:</b> If deleted is set to 1, only deleted records related to the current record will be returned.</li></ul>
@@ -278,7 +278,7 @@ class Link2 {
      * @return SugarRelationship the relationship object this link references
      */
     public function getRelationshipObject() {
-       return $this->relationship;
+        return $this->relationship;
     }
 
     /**
@@ -386,10 +386,10 @@ class Link2 {
      *  rhs_value: The value to search for.<br/>
      *  Example:<pre>
      *  'where' => array(
-             'lhs_field' => 'source',
-             'operator' => '=',
-             'rhs_value' => 'external'
-         )</pre>
+    'lhs_field' => 'source',
+    'operator' => '=',
+    'rhs_value' => 'external'
+    )</pre>
      *  </li>
      * <li><b>limit:</b> The maximum number of beans to load.</li>
      * <li><b>deleted:</b> If deleted is set to 1, only deleted records related to the current record will be returned.</li></ul>
@@ -398,7 +398,7 @@ class Link2 {
     function getBeans($params = array()) {
         //Some depricated code attempts to pass in the old format to getBeans with a large number of useless paramters.
         //reset the parameters if they are not in the new array format.
-    	if (!is_array($params))
+        if (!is_array($params))
             $params = array();
 
         if (!$this->loaded && empty($params)) {
@@ -435,7 +435,19 @@ class Link2 {
             {
                 if (empty($this->beans[$id]))
                 {
-                    $tmpBean = BeanFactory::getBean($rel_module, $id);
+
+                    //mod for deviating id in relationship
+                    $idField = 'id';
+                    if($this->relationship->def['relationship_type'] == 'many-to-many') {
+                        $idField = $this->relationship->def['rhs_module'] == $rel_module ? $this->relationship->def['rhs_key'] : $this->relationship->def['lhs_key'];
+                    }
+
+                    if(!empty($idField) && $idField != 'id'){
+                        $tmpBean = BeanFactory::getBean($rel_module);
+                        $tmpBean->retrieve_by_string_fields(array($idField => $id));
+                    } else {
+                        $tmpBean = BeanFactory::getBean($rel_module, $id);
+                    }
                     if($tmpBean !== FALSE)
                         $result[$id] = $tmpBean;
                 } else {
@@ -466,7 +478,7 @@ class Link2 {
     function getBeanCount($params = array()) {
         //Some depricated code attempts to pass in the old format to getBeans with a large number of useless paramters.
         //reset the parameters if they are not in the new array format.
-    	if (!is_array($params))
+        if (!is_array($params))
             $params = array();
 
         if (!$this->loaded && empty($params)) {

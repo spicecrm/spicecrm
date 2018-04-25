@@ -25,42 +25,42 @@ $app->group('/mobile', function () use ($app, $KRESTManager) {
         echo json_encode($controller->getMetadata());
     });
     $app->group('/sync', function () use ($app, $KRESTManager) {
-        $app->post('/module/:beanName', function ($beanName) use ($app, $KRESTManager) {
+        $app->post('/module/{beanName}', function($req, $res, $args) use ($app, $KRESTManager) {
             include 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
-            $syncData = json_decode($app->request->getBody(), true);
-            echo json_encode($controller->determineSync($beanName, $syncData));
+            $syncData = json_decode($_POST, true);
+            echo json_encode($controller->determineSync($args['beanName'], $syncData));
         });
-        $app->group('/relationship/:tablename', function () use ($app, $KRESTManager) {
-            $app->post('/set', function ($tablename) use ($app, $KRESTManager) {
+        $app->group('/relationship/{tablename}', function () use ($app, $KRESTManager) {
+            $app->post('/set', function($req, $res, $args) use ($app, $KRESTManager) {
                 include 'KREST/handlers/spicecrmmobile.php';
                 $controller = new KRESTSpiceCRMMobileHandler();
-                $syncData = json_decode($app->request->getBody(), true);
-                echo json_encode($controller->setRelationshipsMultiple($tablename, $syncData));
+                $syncData = json_decode($_POST, true);
+                echo json_encode($controller->setRelationshipsMultiple($args['tablename'], $syncData));
             });
-            $app->post('/get', function ($tablename) use ($app, $KRESTManager) {
+            $app->post('/get', function($req, $res, $args) use ($app, $KRESTManager) {
                 include 'KREST/handlers/spicecrmmobile.php';
                 $controller = new KRESTSpiceCRMMobileHandler();
-                $syncData = json_decode($app->request->getBody(), true);
-                echo json_encode($controller->getRelationshipsChanges($tablename, $syncData));
+                $syncData = json_decode($_POST, true);
+                echo json_encode($controller->getRelationshipsChanges($args['tablename'], $syncData));
             });
-            $app->post('/massload', function ($tablename) use ($app, $KRESTManager) {
+            $app->post('/massload', function($req, $res, $args) use ($app, $KRESTManager) {
                 include 'KREST/handlers/spicecrmmobile.php';
                 $controller = new KRESTSpiceCRMMobileHandler();
-                $syncData = json_decode($app->request->getBody(), true);
-                echo json_encode($controller->getMassRelationships($tablename, $syncData));
+                $syncData = json_decode($_POST, true);
+                echo json_encode($controller->getMassRelationships($args['tablename'], $syncData));
             });
         });
         $app->post('/reminder', function () use ($app, $KRESTManager) {
             include 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
-            $syncData = json_decode($app->request->getBody(), true);
+            $syncData = json_decode($_POST, true);
             echo json_encode($controller->syncReminder($syncData));
         });
         $app->post('/quicknote', function () use ($app, $KRESTManager) {
             include 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
-            $syncData = json_decode($app->request->getBody(), true);
+            $syncData = json_decode($_POST, true);
             echo json_encode($controller->syncQuicknotes($syncData));
         });
     });
@@ -68,21 +68,21 @@ $app->group('/mobile', function () use ($app, $KRESTManager) {
         $app->get('', function () use ($app) {
             include 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
-            $syncData = $app->request->get();
+            $syncData = $_GET;
             echo json_encode($controller->getReminders($syncData));
         });    
-        $app->post('/:beanName/:beanId', function ($beanName, $beanId) use ($app) {
-            $postBody = $body = $app->request->getBody();
-            $postParams = $app->request->get();
-            $data = array_merge(json_decode($postBody, true), $postParams);
+        $app->post('/{beanName}/{beanId}', function($req, $res, $args) use ($app) {
+            $postBody = $body = $_POST;
+            $postParams = $_GET;
+            $data = array_merge($postBody , $postParams);
             require_once 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
-            echo json_encode($controller->addReminder($beanName, $beanId, $data));
+            echo json_encode($controller->addReminder($args['beanName'], $args['beanId'], $data));
         });
-        $app->delete('/:beanName/:beanId', function ($beanName, $beanId) {
+        $app->delete('/{beanName}/{beanId}', function($req, $res, $args){
             require_once 'KREST/handlers/spicecrmmobile.php';
             $controller = new KRESTSpiceCRMMobileHandler();
-            echo $controller->removeReminder($beanName, $beanId);
+            echo $controller->removeReminder($args['beanName'], $args['beanId']);
         });
     });
 });

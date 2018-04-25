@@ -113,3 +113,5 @@ $dictionary['CompanyCode'] = array(
 require_once('include/SugarObjects/VardefManager.php');
 
 VardefManager::createVardef('CompanyCodes', 'CompanyCode', array('default', 'assignable'));
+global $dictionary; //COMPAT php7.1
+$dictionary['CompanyCode']['fields']['name']['vname'] = 'LBL_COMPANYCODE';

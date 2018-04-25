@@ -396,4 +396,57 @@ class Task extends SugarBean {
         return '';
     }
 
+
+    function get_user_tasks($user, $timespan = 'today'){
+
+        global $timedate;
+
+        $template = $this;
+
+        // get the own meetings
+        $myquery = "SELECT id FROM tasks WHERE deleted = 0 AND assigned_user_id = '$user->id' AND status in ('Not Started', 'In Progress', 'Pending Input')";
+
+        // add the timespan
+        switch($timespan){
+            case 'all':
+                $end = new DateTime();
+                $end->setTime(23, 59, 59);
+                $myquery .= " AND tasks.date_due <= '" . $timedate->asDb($end) . "'";
+                break;
+            case 'today':
+                $start = new DateTime();
+                $start->setTime(0, 0, 0);
+                $end = new DateTime();
+                $end->setTime(23, 59, 59);
+                $myquery .= " AND tasks.date_due >= '" . $timedate->asDb($start) . "' AND tasks.date_due <= '".$timedate->asDb($end)."'";
+                break;
+            case 'overdue':
+                $end = new DateTime();
+                $end->setTime(0, 0, 0);
+                $myquery .= " AND tasks.date_due < '" . $timedate->asDb($end) . "'";
+                break;
+            case 'future':
+                $start = new DateTime();
+                $start->setTime(0, 0, 0);
+                $myquery .= " AND tasks.date_due > '" . $timedate->asDb($start) . "''";
+                break;
+        }
+
+        $result = $this->db->query( $myquery, true);
+
+        $list = Array();
+
+        while($row = $this->db->fetchByAssoc($result))
+        {
+            $record = BeanFactory::getBean('Tasks',$row['id']);
+
+            if($record != null){
+                // this copies the object into the array
+                $list[] = $record;
+            }
+        }
+        return $list;
+
+    }
+
 }

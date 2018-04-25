@@ -136,7 +136,7 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
           ),
           array (
             'name' => 'parent_name',
-            'label' => 'LBL_LIST_RELATED_TO',
+            'label' => 'LBL_RELATED_TO',
           ),
         ),
         array (

@@ -85,6 +85,7 @@ class SugarAuthenticate {
         $_SESSION['waiting_error'] = '';
         $_SESSION['hasExpiredPassword'] = '0';
         if ($this->userAuthenticate->loadUserOnLogin($username, $password, $fallback, $PARAMS)) {
+
             require_once('modules/Users/password_utils.php');
             if (hasPasswordExpired($username)) {
                 $_SESSION['hasExpiredPassword'] = '1';
@@ -200,15 +201,15 @@ class SugarAuthenticate {
 
             $authenticated = $this->postSessionAuthenticate();
         } else
-        if (isset($action) && isset($module) && $action == "Authenticate" && $module == "Users") {
-            $GLOBALS['log']->debug("We are authenticating user now");
-        } else {
-            $GLOBALS['log']->debug("The current user does not have a session.  Going to the login page");
-            $action = "Login";
-            $module = "Users";
-            $_REQUEST['action'] = $action;
-            $_REQUEST['module'] = $module;
-        }
+            if (isset($action) && isset($module) && $action == "Authenticate" && $module == "Users") {
+                $GLOBALS['log']->debug("We are authenticating user now");
+            } else {
+                $GLOBALS['log']->debug("The current user does not have a session.  Going to the login page");
+                $action = "Login";
+                $module = "Users";
+                $_REQUEST['action'] = $action;
+                $_REQUEST['module'] = $module;
+            }
         if (empty($GLOBALS['current_user']->id) && !in_array($action, $allowed_actions)) {
 
             $GLOBALS['log']->debug("The current user is not logged in going to login page");
@@ -246,7 +247,7 @@ class SugarAuthenticate {
         }
         if (!$this->userAuthenticate->loadUserOnSession($_SESSION['authenticated_user_id'])) {
             session_destroy();
-            header("Location: index.php?action=Login&module=Users&loginErrorMessage=LBL_SESSION_EXPIRED");
+            header("Location: index.php?action=Login&module=Users&loginErrorMessage=ERR_LOGGED_OUT_SESSION_EXPIRED");
             $GLOBALS['log']->debug('Current user session does not exist redirecting to login');
             sugar_cleanup(true);
         }
@@ -350,7 +351,7 @@ class SugarAuthenticate {
 
     /**
      * Redirect to login page
-     * 
+     *
      * @param SugarApplication $app
      */
     public function redirectToLogin(SugarApplication $app) {

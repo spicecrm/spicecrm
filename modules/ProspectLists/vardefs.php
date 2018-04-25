@@ -77,7 +77,7 @@ $dictionary['ProspectList'] = array (
 			'name' => 'modified_user_id',
 			'rname' => 'user_name',
 			'id_name' => 'modified_user_id',
-			'vname' => 'LBL_MODIFIED',
+			'vname' => 'LBL_MODIFIED_BY',
 			'type' => 'assigned_user_name',
 			'table' => 'modified_user_id_users',
 			'isnull' => 'false',
@@ -86,7 +86,7 @@ $dictionary['ProspectList'] = array (
 			),
 	    'modified_by_name' => array (
 		      'name' => 'modified_by_name',
-		      'vname' => 'LBL_MODIFIED',
+		      'vname' => 'LBL_MODIFIED_BY',
 		      'type' => 'relate',
 		      'reportable' => false,
 		      'source' => 'non-db',
@@ -175,6 +175,12 @@ $dictionary['ProspectList'] = array (
     		'relationship' => 'prospect_list_campaigns',
     		'source'=>'non-db',
   		),
+        'campaigntasks' => array(
+            'name' => 'campaigntasks',
+            'type' => 'link',
+            'relationship' => 'prospect_list_campaigntasks',
+            'source' => 'non-db',
+        ),
   		'users' =>
   			array (
   			'name' => 'users',

@@ -33,7 +33,7 @@ $dictionary['Task'] = array('table' => 'tasks',
         'date_due_flag' =>
         array(
             'name' => 'date_due_flag',
-            'vname' => 'LBL_DATE_DUE_FLAG',
+            'vname' => 'LBL_NO_DUE_DATE',
             'type' => 'bool',
             'default' => 0,
             'group' => 'date_due',
@@ -42,7 +42,7 @@ $dictionary['Task'] = array('table' => 'tasks',
         'date_due' =>
         array(
             'name' => 'date_due',
-            'vname' => 'LBL_DUE_DATE',
+            'vname' => 'LBL_DATE_DUE',
             'type' => 'datetimecombo',
             'dbType' => 'datetime',
             'group' => 'date_due',
@@ -63,7 +63,7 @@ $dictionary['Task'] = array('table' => 'tasks',
         'date_start_flag' =>
         array(
             'name' => 'date_start_flag',
-            'vname' => 'LBL_DATE_START_FLAG',
+            'vname' => 'LBL_NO_START_DATE',
             'type' => 'bool',
             'group' => 'date_start',
             'default' => 0,
@@ -72,7 +72,7 @@ $dictionary['Task'] = array('table' => 'tasks',
         'date_start' =>
         array(
             'name' => 'date_start',
-            'vname' => 'LBL_START_DATE',
+            'vname' => 'LBL_DATE_START',
             'type' => 'datetimecombo',
             'dbType' => 'datetime',
             'group' => 'date_start',
@@ -84,7 +84,7 @@ $dictionary['Task'] = array('table' => 'tasks',
         'parent_type' =>
         array(
             'name' => 'parent_type',
-            'vname' => 'LBL_PARENT_NAME',
+            'vname' => 'LBL_PARENT',
             'type' => 'parent_type',
             'dbType' => 'varchar',
             'group' => 'parent_name',
@@ -92,7 +92,6 @@ $dictionary['Task'] = array('table' => 'tasks',
             'required' => false,
             'len' => '255',
             'comment' => 'The Sugar object to which the call is related',
-            'options' => 'parent_type_display',
         ),
         'parent_name' =>
         array(
@@ -100,7 +99,7 @@ $dictionary['Task'] = array('table' => 'tasks',
             'parent_type' => 'record_type_display',
             'type_name' => 'parent_type',
             'id_name' => 'parent_id',
-            'vname' => 'LBL_LIST_RELATED_TO',
+            'vname' => 'RELATED_TOCONTACT',
             'type' => 'parent',
             'group' => 'parent_name',
             'source' => 'non-db',
@@ -130,7 +129,7 @@ $dictionary['Task'] = array('table' => 'tasks',
             'source' => 'non-db',
             'len' => '510',
             'group' => 'contact_name',
-            'vname' => 'LBL_CONTACT_NAME',
+            'vname' => 'LBL_CONTACT',
             'reportable' => false,
             'id_name' => 'contact_id',
             'join_name' => 'contacts',
@@ -283,6 +282,33 @@ $dictionary['Task'] = array('table' => 'tasks',
     //This enables optimistic locking for Saves From EditView
     , 'optimistic_locking' => true,
 );
+
+// CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
+if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+    $dictionary['Task']['fields']['servicetickets'] = array(
+        'name' => 'servicetickets',
+        'type' => 'link',
+        'relationship' => 'servicetickets_tasks',
+        'module' => 'ServiceTickets',
+        'bean_name' => 'ServiceTicket',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICETICKET',
+    );
+}
+if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+    $dictionary['Task']['fields']['serviceorders'] = array(
+        'name' => 'serviceorders',
+        'type' => 'link',
+        'relationship' => 'serviceorders_tasks',
+        'module' => 'ServiceOrders',
+        'bean_name' => 'ServiceOrder',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEORDER',
+    );
+}
+
 VardefManager::createVardef('Tasks', 'Task', array('default', 'assignable',
 ));
 ?>

@@ -60,7 +60,7 @@ array (
       array (
         'type' => 'name',
         'link' => 'contact',
-        'label' => 'LBL_CONTACT_NAME',
+        'label' => 'LBL_CONTACT',
         'width' => '10%',
         'default' => true,
         'name' => 'contact_name',

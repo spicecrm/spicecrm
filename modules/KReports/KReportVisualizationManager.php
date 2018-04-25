@@ -35,6 +35,7 @@ class KReportVisualizationManager {
     var $pluginManager;
 
     public function __construct() {
+        global $kreportLayouts;
         include('modules/KReports/config/KReportLayouts.php');
         if (is_array($kreportLayouts))
             $this->layouts = $kreportLayouts;
@@ -58,6 +59,7 @@ class KReportVisualizationManager {
 
         // manage Colorschemas
         $colors = array();
+        global $kreportColors;
         include('modules/KReports/config/KReportColors.php');
         foreach ($kreportColors as $colorSchema => $colorDetails) {
             $colors[] = array(
@@ -75,6 +77,7 @@ class KReportVisualizationManager {
 
         //$layoutString = '<script type="text/javascript" src="modules/KReports/javascript/kreportsvisualizationmanager.js"></script>';
         // write the registry
+        $layoutString = "";
         if (count($this->pluginRegistry) > 0)
             $layoutString .= '<script type="text/javascript">K.kreports.visualizationmanager.myID="vis' . $layoutGuid . '";K.kreports.visualizationmanager.registeredPlugins=' . json_encode($this->pluginRegistry) . '</script>';
 

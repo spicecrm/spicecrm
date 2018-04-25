@@ -16,6 +16,7 @@
 
 $KRESTManager->excludeFromAuthentication('/');
 $KRESTManager->excludeFromAuthentication('/sysinfo');
+$KRESTManager->excludeFromAuthentication('/test');
 
 $KRESTManager->registerExtension('core', '2.0');
 
@@ -26,17 +27,32 @@ $app->get('/', function () use ($KRESTManager) {
     ));
 });
 
+$app->get('/test', function() use ($KRESTManager)
+{
+    throw new Exception('test');
+    echo "test!";
+});
+
+$app->post('/test', function() use ($KRESTManager)
+{
+    //throw new Exception('test');
+    echo "post test!";
+});
+
 $app->get('/sysinfo', function () use ($KRESTManager) {
     global $sugar_config;
+
     echo json_encode(array(
         'version' => '2.0',
         'extensions' => $KRESTManager->extensions,
         'languages' => array(
             'available' => $sugar_config['languages'],
             'default' => $sugar_config['default_language']
-        )
+        ),
+        'loginSidebarUrl' => isset ( $sugar_config['uiLoginSidebarUrl']{0} ) ? $sugar_config['uiLoginSidebarUrl'] : false
     ));
-});
+}); #
+
 
 $app->group('/system', function () use ($app, $KRESTManager) {
     $app->get('/guid', function () use ($KRESTManager) {
@@ -48,15 +64,15 @@ $app->group('/system', function () use ($app, $KRESTManager) {
 });
 
 $app->get('/validatesession', function () use ($app) {
-    $sessionData = $app->request->get();
+    $sessionData = $_GET;
     $KRESTManager = new KRESTManager($app);
     echo json_encode($KRESTManager->validate_session($sessionData['session_id']));
 });
 
-$app->post('/tmpfile', function () use ($app) {
-    $postBody = $body = $app->request->getBody();
+$app->post('/tmpfile', function ($req, $res, $args) use ($app) {
+    $postBody = file_get_contents( 'php://input' );
     $temppath = sys_get_temp_dir();
     $filename = create_guid();
     file_put_contents($temppath . '/' . $filename, base64_decode($postBody));
-    echo $temppath . '/' . $filename;
+    echo json_encode( array( 'filepath' => $temppath.'/'.$filename ));
 });

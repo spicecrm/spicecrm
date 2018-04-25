@@ -56,7 +56,7 @@ array (
   'BILLING_ADDRESS_COUNTRY' => 
   array (
     'width' => '10%',
-    'label' => 'LBL_BILLING_ADDRESS_COUNTRY',
+    'label' => 'LBL_COUNTRY',
     'default' => true,
   ),
   'PHONE_OFFICE' => 
@@ -100,19 +100,19 @@ array (
   'BILLING_ADDRESS_STREET' => 
   array (
     'width' => '15%',
-    'label' => 'LBL_BILLING_ADDRESS_STREET',
+    'label' => 'LBL_STREET',
     'default' => false,
   ),
   'BILLING_ADDRESS_STATE' => 
   array (
     'width' => '7%',
-    'label' => 'LBL_BILLING_ADDRESS_STATE',
+    'label' => 'LBL_STATE',
     'default' => false,
   ),
   'BILLING_ADDRESS_POSTALCODE' => 
   array (
     'width' => '10%',
-    'label' => 'LBL_BILLING_ADDRESS_POSTALCODE',
+    'label' => 'LBL_POSTALCODE',
     'default' => false,
   ),
   'SHIPPING_ADDRESS_STREET' => 
@@ -202,7 +202,7 @@ array (
   'MODIFIED_BY_NAME' => 
   array (
     'width' => '10%',
-    'label' => 'LBL_MODIFIED',
+    'label' => 'LBL_MODIFIED_BY',
     'default' => false,
   ),
   'EMAIL1' => 

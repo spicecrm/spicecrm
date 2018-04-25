@@ -16,14 +16,15 @@
 
 $KRESTManager->registerExtension('login', '1.0');
 $app->group('/login', function () use ($app, $KRESTManager) {
-    $app->post('/', function () use ($app, $KRESTManager) {
+
+    $app->post('', function () use ($app, $KRESTManager) {
         echo json_encode($KRESTManager->getLoginData());
         $KRESTManager->tmpSessionId = null;
     });
-    $app->get('/', function () use ($app, $KRESTManager) {
+    $app->get('', function () use ($app, $KRESTManager) {
         echo json_encode($KRESTManager->getLoginData());
     });
-    $app->delete('/', function () use ($app, $KRESTManager) {
+    $app->delete('', function () use ($app, $KRESTManager) {
         session_destroy();
     });
 });
@@ -34,15 +35,15 @@ $KRESTUserHandler = new KRESTUserHandler($app);
 $KRESTManager->registerExtension('forgotPassword', '1.0');
 $KRESTManager->excludeFromAuthentication('/forgotPassword');
 $app->group('/forgotPassword', function () use ($app, $KRESTManager, $KRESTUserHandler) {
-    $app->post('/:email/:token', function ($email,$token) use ($app, $KRESTManager, $KRESTUserHandler) {
-        echo json_encode($KRESTUserHandler->checkToken($email,$token));
+    $app->post('/{email}/{token}', function($req, $res, $args) use ($app, $KRESTManager, $KRESTUserHandler) {
+        echo json_encode($KRESTUserHandler->checkToken($args['email'],$args['token']));
     });
     $app->post('/resetPass', function () use ($app, $KRESTManager, $KRESTUserHandler) {
-        $postBody = $body = json_decode($app->request->getBody(), true);
+        $postBody = $body = json_decode($_POST, true);
         echo json_encode($KRESTUserHandler->resetPass($postBody));
     });
-    $app->get('/:email', function ($email) use ($app, $KRESTManager, $KRESTUserHandler) {
-        echo json_encode($KRESTUserHandler->sendTokenToUser($email));
+    $app->get('/{email}', function($req, $res, $args) use ($app, $KRESTManager, $KRESTUserHandler) {
+        echo json_encode($KRESTUserHandler->sendTokenToUser($args['email']));
     });
     $app->delete('/', function () use ($app, $KRESTManager, $KRESTUserHandler) {
         session_destroy();

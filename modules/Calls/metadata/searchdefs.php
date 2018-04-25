@@ -67,7 +67,7 @@ array (
       'parent_name' => 
       array (
         'type' => 'parent',
-        'label' => 'LBL_LIST_RELATED_TO',
+        'label' => 'LBL_RELATED_TO',
         'width' => '10%',
         'default' => true,
         'name' => 'parent_name',

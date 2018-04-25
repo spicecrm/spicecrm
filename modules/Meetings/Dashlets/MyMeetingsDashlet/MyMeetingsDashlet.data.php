@@ -59,7 +59,7 @@ $dashletData['MyMeetingsDashlet']['columns'] = array('set_complete' => array('wi
                                                                    'link'    => true,
                                                                    'default' => true),
                                                    'parent_name' => array('width' => '29', 
-                                                                          'label' => 'LBL_LIST_RELATED_TO',
+                                                                          'label' => 'LBL_RELATED_TO',
                                                                           'sortable' => false,
                                                                           'dynamic_module' => 'PARENT_TYPE',
                                                                           'link' => true,

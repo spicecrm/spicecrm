@@ -227,6 +227,6 @@ class ElasticHandler
         //catch installation process and abort. table sysftslog will not exist at the point during installation
         if($GLOBALS['installing'] === true)
             return false;
-        $db->query("INSERT INTO sysftslog (id, date_created, request_method, request_url, response_status, index_request, index_response) values('" . create_guid() . "', '" . $timedate->nowDb() . "', '$method', '$url', '$status', '$request', '$response')");
+        $db->query( sprintf('INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( "%s", "%s", "%s", "%s", "%s", "%s", "%s" )', create_guid(), $db->quote( $timedate->nowDb() ), $db->quote( $method ), $db->quote( $url ), $db->quote( $status ), $db->quote( $request ), $db->quote( $response )));
     }
 }

@@ -66,7 +66,7 @@ $subpanel_layout = array(
 		),
 		'assigned_user_name' => array (
 			'name' => 'assigned_user_name',
-			'vname' => 'LBL_ASSIGNED_TO_NAME',
+			'vname' => 'LBL_ASSIGNED_TO',
 			'widget_class' => 'SubPanelDetailViewLink',
 		 	'target_record_key' => 'assigned_user_id',
 			'target_module' => 'Employees',

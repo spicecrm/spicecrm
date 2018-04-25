@@ -101,7 +101,7 @@ array (
   'REFERED_BY' => 
   array (
     'width' => '10%',
-    'label' => 'LBL_REFERED_BY',
+    'label' => 'LBL_REFERRED_BY',
     'default' => false,
   ),
   'LEAD_SOURCE' => 
@@ -143,7 +143,7 @@ array (
   'PHONE_FAX' => 
   array (
     'width' => '10%',
-    'label' => 'LBL_FAX_PHONE',
+    'label' => 'LBL_PHONE_FAX',
     'default' => false,
   ),
   'PRIMARY_ADDRESS_COUNTRY' => 
@@ -215,7 +215,7 @@ array (
   'MODIFIED_BY_NAME' => 
   array (
     'width' => '5%',
-    'label' => 'LBL_MODIFIED',
+    'label' => 'LBL_MODIFIED_BY',
     'default' => false,
   ),
   'DATE_ENTERED' => 

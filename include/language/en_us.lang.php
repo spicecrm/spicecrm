@@ -134,6 +134,10 @@ $app_list_strings = array(
             'Mailboxes' => 'Mailboxes',
             'ServiceOrders' => 'Service Orders',
             'ServiceTickets' => 'Service Tickets',
+            'ServiceCalls' => 'Service Calls',
+            'ServiceQueues' => 'Service Queues',
+            'ServiceFeedbacks' => 'Service Feedbacks',
+            'MediaCategories' => 'Media Categories'
         ),
 
     'moduleListSingular' =>
@@ -188,9 +192,12 @@ $app_list_strings = array(
             'CompanyFiscalPeriods' => 'Fiscal Period',
             'AccountBankAccounts' => 'Bank Accounts',
             'AccountCCDetails' => 'Business Area',
+            'SUPConsultingOrderItems' => 'Consulting Order Item',
             'Mailboxes' => 'Mailbox',
             'ServiceOrders' => 'Service Order',
             'ServiceTickets' => 'Service Ticket',
+            'ServiceCalls' => 'Service Call',
+            'MediaCategories' => 'Media Category'
         ),
 
     'checkbox_dom' => array(
@@ -383,9 +390,9 @@ $app_list_strings = array(
         '' => '',
         'Mr.' => 'Mr.',
         'Ms.' => 'Ms.',
-        'Mrs.' => 'Mrs.',
-        'Dr.' => 'Dr.',
-        'Prof.' => 'Prof.',
+        // 'Mrs.' => 'Mrs.',
+        // 'Dr.' => 'Dr.',
+        //  'Prof.' => 'Prof.',
     ),
     'contacts_title_dom' => array(
         '' => '',
@@ -430,21 +437,25 @@ $app_list_strings = array(
     ),
     'evaluationtypes_dom' => array(
         'default' => 'Standard',
-        'spiderweb' => 'Spiderweb',
-        'default_sorted_points' => 'Standard, sorted by points'
+        'spiderweb' => 'Spiderweb'
+    ),
+    'evaluationsorting_dom' => array(
+        'categories' => 'by Categories (alphabetical)',
+        'points asc' => 'by Points, ascending',
+        'points desc' => 'by Points, descending'
     ),
     'interpretationsuggestions_dom' => array(
         'top3' => 'top 3',
         'top5' => 'top 5',
-        'over20' => 'over 20 points',
-        'over30' => 'over 30 points',
-        'over40' => 'over 40 points',
-        'top3_over20' => 'top 3 or over 20 points',
-        'top5_over20' => 'top 5 or over 20 points',
-        'top3_over30' => 'top 3 or over 30 points',
-        'top5_over30' => 'top 5 or over 30 points',
-        'top3_over40' => 'top 3 or over 40 points',
-        'top5_over40' => 'top 5 or over 40 points',
+        'over20' => 'up from 20 points',
+        'over30' => 'up from 30 points',
+        'over40' => 'up from 40 points',
+        'top3_upfrom20' => 'top 3 or up from 20 points',
+        'top5_upfrom20' => 'top 5 or up from 20 points',
+        'top3_upfrom30' => 'top 3 or up from 30 points',
+        'top5_upfrom30' => 'top 5 or up from 30 points',
+        'top3_upfrom40' => 'top 3 or up from 40 points',
+        'top5_upfrom40' => 'top 5 or up from 40 points',
         'all' => 'all Interpretations',
         'mbti' => 'MBTI'
     ),
@@ -517,6 +528,12 @@ $app_list_strings = array(
             'Recycled' => 'Recycled',
             'Dead' => 'Dead',
         ),
+    'lead_classification_dom' =>
+        array(
+            'cold' => 'cold',
+            'warm' => 'warm',
+            'hot' => 'hot'
+        ),
     'gender_list' =>
         array(
             'male' => 'Male',
@@ -586,8 +603,16 @@ $app_list_strings = array(
         '75' => '75',
         '100' => '100',
     ),
-
+    'project_type_dom' => array(
+        'customer' => 'customer',
+        'development' => 'development',
+        'sales' => 'sales'
+    ),
     'project_status_dom' => array(
+        'planned' => 'Planned',
+        'active' => 'Active',
+        'completed' => 'Completed',
+        'cancelled' => 'Cancelled',
         'Draft' => 'Draft',
         'In Review' => 'In Review',
         'Published' => 'Published',
@@ -793,20 +818,30 @@ $app_list_strings = array(
             'In Queue' => 'In Queue',
             'Sending' => 'Sending',
         ),
-    'campaign_type_dom' =>
-        array(
-            '' => '',
-            'Event' => 'Event',
-            'Telesales' => 'Telesales',
-            'Mail' => 'Mail',
-            'Email' => 'Email',
-            'Print' => 'Print',
-            'Web' => 'Web',
-            'Radio' => 'Radio',
-            'Television' => 'Television',
-            'NewsLetter' => 'Newsletter',
-        ),
-
+    'campaign_type_dom' => array(
+        '' => '',
+        'Event' => 'Event',
+        'Telesales' => 'Telesales',
+        'Mail' => 'Mail',
+        'Email' => 'Email',
+        'Print' => 'Print',
+        'Web' => 'Web',
+        'Radio' => 'Radio',
+        'Television' => 'Television',
+        'NewsLetter' => 'Newsletter',
+    ),
+    'campaigntask_type_dom' => array(
+        '' => '',
+        'Event' => 'Event',
+        'Telesales' => 'Telesales',
+        'Mail' => 'Mail',
+        'Email' => 'Email',
+        'Print' => 'Print',
+        'Web' => 'Web',
+        'Radio' => 'Radio',
+        'Television' => 'Television',
+        'NewsLetter' => 'Newsletter',
+    ),
     'newsletter_frequency_dom' =>
         array(
             '' => '',
@@ -1945,6 +1980,7 @@ $app_strings = array(
     'LBL_CREATE_BUTTON_LABEL' => 'Create',
     'LBL_CREATED_BY_USER' => 'Created by User',
     'LBL_CREATED_USER' => 'Created by User',
+    'LBL_CREATED_BY' => 'Created by',
     'LBL_CREATED_ID' => 'Created By Id',
     'LBL_CREATED' => 'Created by',
     'LBL_CURRENT_USER_FILTER' => 'My Items:',
@@ -2053,7 +2089,8 @@ $app_strings = array(
     'LBL_MEMBER_OF' => 'Member Of',
     'LBL_MODIFIED_BY_USER' => 'Modified by User',
     'LBL_MODIFIED_USER' => 'Modified by User',
-    'LBL_MODIFIED' => 'Modified by',
+    'LBL_MODIFIED' => 'modified by',
+    'LBL_MODIFIED_BY' => 'modified by',
     'LBL_MODIFIED_NAME' => 'Modified By Name',
     'LBL_MODIFIED_ID' => 'Modified By Id',
     'LBL_MORE' => 'More',
@@ -2065,6 +2102,7 @@ $app_strings = array(
     'LBL_NEXT_BUTTON_LABEL' => 'Next',
     'LBL_NONE' => '--None--',
     'LBL_NOTES' => 'Notes',
+    'LBL_NOTE' => 'Note',
     'LBL_OPENALL_BUTTON_KEY' => 'O',
     'LBL_OPENALL_BUTTON_LABEL' => 'Open All',
     'LBL_OPENALL_BUTTON_TITLE' => 'Open All',
@@ -2217,6 +2255,7 @@ $app_strings = array(
     'LBL_STATUS_UPDATED' => 'Your Status for this event has been updated!',
     'LBL_STATUS' => 'Status:',
     'LBL_STREET' => 'Street',
+    'LBL_ATTN' => 'Attention/Company',
     'LBL_SUBJECT' => 'Subject',
 
     'LBL_INBOUNDEMAIL_ID' => 'Inbound Email ID',
@@ -2244,6 +2283,7 @@ $app_strings = array(
     'LBL_TABGROUP_SALES' => 'Sales',
     'LBL_TABGROUP_SUPPORT' => 'Support',
     'LBL_TABGROUP_TOOLS' => 'Tools',
+    'LBL_TASK' => 'Task',
     'LBL_TASKS' => 'Tasks',
     'LBL_TEAMS_LINK' => 'Teams',
     'LBL_THEME_COLOR' => 'Color',
@@ -2473,6 +2513,8 @@ $app_strings = array(
     //adding a label for address copy from left
     'LBL_COPY_ADDRESS_FROM_LEFT' => 'Copy address from left:',
     'LBL_SAVE_AND_CONTINUE' => 'Save and Continue',
+    'LBL_SAVE_AND_GO_TO_RECORD' => 'Save and go to record',
+    'LBL_SAVE_AND_GO_TO' => 'Save and go to',
 
     'LBL_SEARCH_HELP_TEXT' => '<p><br /><strong>Multiselect controls</strong></p><ul><li>Click on the values to select an attribute.</li><li>Ctrl-click&nbsp;to&nbsp;select multiple. Mac users use CMD-click.</li><li>To select all values between two attributes,&nbsp; click first value&nbsp;and then shift-click last value.</li></ul><p><strong>Advanced Search & Layout Options</strong><br><br>Using the <b>Saved Search & Layout</b> option, you can save a set of search parameters and/or a custom List View layout in order to quickly obtain the desired search results in the future. You can save an unlimited number of custom searches and layouts. All saved searches appear by name in the Saved Searches list, with the last loaded saved search appearing at the top of the list.<br><br>To customize the List View layout, use the Hide Columns and Display Columns boxes to select which fields to display in the search results. For example, you can view or hide details such as the record name, and assigned user, and assigned team in the search results. To add a column to List View, select the field from the Hide Columns list and use the left arrow to move it to the Display Columns list. To remove a column from List View, select it from the Display Columns list and use the right arrow to move it to the Hide Columns list.<br><br>If you save layout settings, you will be able to load them at any time to view the search results in the custom layout.<br><br>To save and update a search and/or layout:<ol><li>Enter a name for the search results in the <b>Save this search as</b> field and click <b>Save</b>.The name now displays in the Saved Searches list adjacent to the <b>Clear</b> button.</li><li>To view a saved search, select it from the Saved Searches list. The search results are displayed in the List View.</li><li>To update the properties of a saved search, select the saved search from the list, enter the new search criteria and/or layout options in the Advanced Search area, and click <b>Update</b> next to <b>Modify Current Search</b>.</li><li>To delete a saved search, select it in the Saved Searches list, click <b>Delete</b> next to <b>Modify Current Search</b>, and then click <b>OK</b> to confirm the deletion.</li></ol><p><strong>Tips</strong><br><br>By using the % as a wildcard operator you can make your search more broad.  For example instead of just searching for results that equal "Apples" you could change your search to "Apples%" which would match all results that start with the word Apples but could contain other characters as well.</p>',
 
@@ -2797,10 +2839,6 @@ $app_strings = array(
     'LBL_LOGOFF' => 'Log Off',
     'LBL_SELECT_LANGUAGE' => 'Select Language',
     'LBL_DETAILS' => 'Details',
-    'LBL_CHANGE_PWD' => 'Change Password',
-    'LBL_CURRENT_PWD' => 'Current Password',
-    'LBL_NEW_PWD' => 'New Password',
-    'LBL_REPEAT_PWD' => 'Retype Password',
 
     'LBL_ACTIVITIES' => 'Activities',
     'LBL_QUICKNOTES' => 'Notes',
@@ -2819,6 +2857,8 @@ $app_strings = array(
     'LBL_PAST_ACTIVITIES' => 'Past Activities',
     'LBL_SUMMARY' => 'Summary',
     'LBL_ACTIVITY' => 'Activity',
+    'LBL_ACTIVITY_START' => 'Activity Start',
+    'LBL_ACTIVITY_END' => 'Activity End',
     'LBL_USER' => 'User',
     'LBL_DATE' => 'Date',
 
@@ -2858,6 +2898,13 @@ $app_strings = array(
 
     /* Common */
 
+    'LBL_FILES' => 'Files',
+    'LBL_FILE' => 'File',
+    'LBL_PHOTO' => 'Photo',
+    'LBL_PHOTOS' => 'Photos',
+    'LBL_UPLOAD' => 'upload',
+    'ERR_SESSION_EXPIRED' => 'Session expired',
+    'ERR_LOGGED_OUT_SESSION_EXPIRED' => 'You have been logged out because your session has expired.',
     'LBL_PREVIEW' => 'Preview',
     'LBL_VALUE' => 'Value',
     'LBL_TEXT' => 'Text',
@@ -2881,39 +2928,73 @@ $app_strings = array(
     'LBL_COPYRIGHT_OWNER' => 'Copyright owner',
     'LBL_COPYRIGHT_LICENSE' => 'Copyright license',
     'LBL_IMAGENAME' => 'Image name',
-    'LBL_EVALUATION' => 'Auswertung',
-    'LBL_CATEGORY' => 'Kategorie',
+    'LBL_EVALUATION' => 'Evaluation',
+    'LBL_CATEGORY' => 'Category',
     'LBL_IMAGE' => 'Image',
     'LBL_ACCEPT' => 'Accept',
     'LBL_PAUSE' => 'Pause',
     'LBL_DENIED' => 'denied',
     'LBL_BLOCKED' => 'blocked',
     'LBL_CONTINUE' => 'Continue',
+    'LBL_CLOSE_EDITOR' => 'Close Editor',
+    'LBL_MAINDATA' => 'Main Data',
+    'LBL_MAIN_DATA' => 'Main Data',
+    'LBL_GENERALDATA' => 'General Data',
+    'LBL_GENERAL' => 'General',
+    'LBL_ADMINISTRATION' => 'Administration',
+    'ERR_NETWORK' => 'Network Error',
+    'ERR_NETWORK_SAVING' => 'Network Error while Saving',
+    'ERR_NETWORK_LOADING' => 'Network Error while Loading',
+    'LBL_STEP' => 'Step',
+    'LBL_COMPLETED' => 'completed',
+    'MSG_DELETE_RECORD' => 'Delete Record?',
+
+    /* Password */
+
+    'LBL_PASSWORD' => 'Password',
+    'LBL_CHANGE_PWD' => 'Change Password',
+    'LBL_CURRENT_PWD' => 'Current Password',
+    'LBL_NEW_PWD' => 'New Password',
+    'LBL_REPEAT_PWD' => 'Retype Password',
+    'LBL_OLD_PWD' => 'Old Password',
+    'LBL_NEW_PWD' => 'New Password',
+    'LBL_NEW_PWD_REPEATED' => 'New Password, repeated',
+    'LBL_PWD_GUIDELINE' => 'Password Guideline',
+    'MSG_PWD_NOT_LEGAL' => 'Password does not match the Guideline.',
+    'MSG_PWDS_DONT_MATCH' => 'Inputs for the new Password does not match.',
+    'MSG_PWD_CHANGED' => 'Password successfully changed.',
+    'ERR_CHANGING_PWD' => 'Error changing Password.',
+    'MSG_CURRENT_PWD_NOT_OK' => 'Current password not entered correctly.',
+
+    'LBL_PORTAL_INFORMATION' => 'Portal Information',
+    'LBL_USER_NAME' => 'User Name',
+    'LBL_ACL_ROLE' => 'ACL Role',
+    'LBL_PORTAL_ROLE' => 'Portal Role',
 
     /* Questionnaires, QuestionSets, etc. date_*/
 
     'LBL_QUESTIONS' => 'Questions',
-    'LBL_QUESTIONTYPE' => 'Question type',
-    'LBL_QUESTION_NAME' => 'Question name',
-    'LBL_QUESTIONSET_PREVIEW' => 'Question set preview',
+    'LBL_QUESTIONTYPE' => 'Question Type',
+    'LBL_QUESTION_NAME' => 'Question Name',
+    'LBL_QUESTIONSET_PREVIEW' => 'Question Set Preview',
     'LBL_NO_QUESTIONSETS_TO_DISPLAY' => 'No question sets to display.',
     'LBL_NO_QUESTIONS_TO_DISPLAY' => 'No questions to display.',
-    'LBL_QUESTION_MANAGER' => 'Question manager',
-    'LBL_ADD_QUESTION' => 'Add question',
-    'LBL_QUESTION_TEXT' => 'Question text',
-    'LBL_EDIT_QUESTION' => 'Edit question',
-    'LBL_MIN_ANSWERS' => 'min. answers',
-    'LBL_MAX_ANSWERS' => 'max. answers',
-    'LBL_MIN_MAX_ANSWERS' => 'min./max. answers',
+    'LBL_QUESTION_MANAGER' => 'Question Manager',
+    'LBL_ADD_QUESTION' => 'Add Question',
+    'LBL_QUESTION_TEXT' => 'Question Text',
+    'LBL_EDIT_QUESTION' => 'Edit Question',
+    'LBL_MIN_ANSWERS' => 'min. Answers',
+    'LBL_MAX_ANSWERS' => 'max. Answers',
+    'LBL_MIN_MAX_ANSWERS' => 'min./max. Answers',
     'LBL_CATEGORIES' => 'Categories',
-    'LBL_ADD_ANSWER_OPTION' => 'Add answer option',
+    'LBL_ADD_ANSWER_OPTION' => 'Add Answer Option',
     'LBL_CORRECT_ANSWER' => 'Correct Answer',
     'QST_CONFIRM_DELETE_ENTRIES' => 'Delete entries?',
     'QST_CONFIRM_DELETE_ENTRIES_LONG' => 'The list will be shortened, entries will be removed!',
     'LBL_CATEGORYPOOL' => 'Category Pool',
-    'LBL_POSS_CATEGORIES' => 'Possible categories',
+    'LBL_POSS_CATEGORIES' => 'Possible Categories',
     'MSG_CANTCHANGE_QUESTIONSEXISTS' => 'Can not change because there are already questions.',
-    'QST_CONFIRM_DELETE_QUESTION' => 'Delete Question?',
+    'QST_CONFIRM_DELETE_QUESTION' => 'Delete question?',
     'QST_CONFIRM_DELETE_QUESTION_LONG' => 'Are you sure you want to delete the question „%s“?',
     'QST_CONFIRM_DELETE_ANSWER_OPTION' => 'Delete answer option?',
     'QST_CONFIRM_DELETE_ANSWER_OPTION_LONG' => 'Are you sure you want to delete the answer option „%s“?',
@@ -2921,12 +3002,12 @@ $app_strings = array(
     'LBL_NUMBER_QUESTIONS_COMPLETED' => '%s of %s Questions completed.',
     'LBL_TEXT_SHORT' => 'Text in short form',
     'LBL_TEXT_LONG' => 'Text in long form',
-    'LBL_INTERPRETATION_ASSIGNMENT' => 'Interpretation assignment',
-    'LBL_ASSIGNED_INTERPRETATIONS' => 'Assigned interpretations',
-    'LBL_AUTO_COMPLETE_LIST' => 'Automatically complete the list',
+    'LBL_INTERPRETATION_ASSIGNMENT' => 'Interpretation Assignment',
+    'LBL_ASSIGNED_INTERPRETATIONS' => 'Assigned Interpretations',
+    'LBL_AUTO_COMPLETE_LIST' => 'Automatically Complete the List',
     'LBL_NO_INTERPRETATIONS_ASSIGNED_YET' => 'No interpretations assigned yet.',
     'LBL_NO_UNASSIGNED_INTERPRETATIONS_AVAILABLE' => 'There are <b>no interpretations available</b> (which are not already assigned).',
-    'LBL_ADD_INTERPRETATION' => 'Add interpretation …',
+    'LBL_ADD_INTERPRETATION' => 'Add Interpretation …',
 
     /* Speech Recognition */
     'LBL_SPEECH_RECOGNITION' => 'Speech Recognition',
@@ -2957,6 +3038,13 @@ $app_strings = array(
     'LBL_UPLOAD_NEW_FILE' => 'Upload new file',
     'LBL_WAITING_FILE_SELECTION' => 'Waiting for file selection',
     'LBL_SELECT_FILE' => 'Select file',
+    'LBL_MEDIACATEGORY_NAME' => 'Media Category',
+    'LBL_MEDIACATEGORY' => 'Media Category',
+    'LBL_SUBCATEGORIES' => 'Subcategories',
+    'LBL_BELONGS_TO' => 'Belongs to',
+    'LBL_MAKE_SELECTION' => 'Make selection',
+    'LBL_ALL_FILES' => 'all Files',
+    'LBL_FILES_WITHOUT_CATEGORIES' => 'Files without categories',
 
     'LBL_STARTDATE' => 'Start Date',
     'LBL_STARTTIME' => 'Start Time',
@@ -2978,6 +3066,65 @@ $app_strings = array(
 
     //add for CanvaDraw FieldType
     'LBL_OPEN_SIGNATURE_POPUP' => 'Open signature box',
+    'LBL_SIGNING' => 'Sign',
+
+    //Projects
+    'LBL_RECORD_PROJECTACTIVITY' => 'Record Project Activity',
+    'LBL_WBS_ELEMENT' => 'WBS Element',
+
+    // (activities)
+    'LBL_NO_ENTRIES' => 'No Entries',
+
+    //Panels
+    'LBL_PROJECT_DATA' => 'Project Data',
+    'LBL_ADMIN_DATA' => 'System Administrator',
+    'LBL_CAMPAIGN_DATA' => 'Campaign Data',
+    'LBL_COMPETITIVE_DATA' => 'Competitive Data',
+    'LBL_CONVERSION_DATA' => 'Conversion Data',
+    'LBL_REGISTRATION_DATA' => 'Registration Data',
+    'LBL_SALES_DATA' => 'Sales Data',
+    'LBL_LEAD_DATA' => 'Lead Data',
+    'LBL_CONTACT_DATA' => 'Contacts Data',
+    'LBL_GDPR_DATA_AGREEMENT' => '',
+    'LBL_API_DATA' => 'API Data',
+    'LBL_BASIC_DATA' => 'Basic Data',
+
+    'LBL_LOGGED_ON_SYSTEM' => 'Logged on to System',
+    'LBL_ASSISTANT' => 'Assistant',
+    'LBL_NO_ACTIVITIES' => 'no Activities',
+    'LBL_ROLES' => 'Roles',
+    'LBL_MODULES' => 'Modules',
+    'LBL_AGGREGATES' => 'Aggregates',
+
+    # Roles
+
+    'ROLE_SALES' => 'Sales',
+    'ROLE_ADMIN' => 'Admin',
+    'ROLE_SERVICE' => 'Service',
+    'ROLE_MARKETING' => 'Marketing',
+    'ROLE_PRODUCTMANAGEMENT' => 'Productmanagement',
+    'ROLE_PROJECTMANAGEMENT' => 'Projectmanagement',
+
+    # Modules
+
+    'LBL_WORKFLOWS' => 'Workflows',
+    'LBL_SYSTEMDEPLOYMENTCRS' => 'Change Requests',
+    'LBL_SERVICETICKETS' => 'Service Tickets', # Servicemeldungen
+    'LBL_SERVICEORDERS' => 'Service Orders', # Serviceaufträge
+    'LBL_SERVICECALLS' => 'Service Calls', # Service Anrufe
+    'LBL_SALESVOUCHERS' => 'Vouchers', # Gutscheine
+    'LBL_SALESDOCS' => 'Sales Documents', # Vertriebsbelege
+    'LBL_QUESTIONNAIRES' => 'Questionnaires', # Fragebögen
+    'LBL_PROSPECTS' => 'Prospects', # pot. Kunden
+    'LBL_PROSPECTLISTS' => 'Targetlists', # Zielgruppen
+    'LBL_PROPOSALS' => 'Proposals', # Angebote
+    'LBL_MEDIACATEGORIES' => 'Media Categories', # Medienkategorien
+    'LBL_KREPORTS' => 'Reports', # Auswertungen
+    'LBL_INBOUNDEMAIL' => 'Inbound Email', # Inbound Email
+    'LBL_EVENTREGISTRATIONS' => 'Event Registrations', # Veranstaltungsanmeldungen
+    'LBL_EMAILTEMPLATES' => 'Email Templates', # E-Mail-Vorlagen
+    'LBL_COMPETITORASSESSMENTS' => 'Competitor Assessments', # Wettbewerbsanalysen
+
 );
 
 //Some modules shall not be included for SpiceCRM CE
@@ -3028,7 +3175,7 @@ if (file_exists('modules/SalesDocs/SalesDoc.php')) {
     $app_list_strings['moduleList']['SalesVouchers'] = 'Sales Vouchers';
     $app_list_strings['moduleListSingular']['SalesDocs'] = 'Sales Voucher';
 }
-if(file_exists('modules/Workflows/Workflow.php')){
+if (file_exists('modules/Workflows/Workflow.php')) {
     $app_list_strings['moduleList']['Workflows'] = 'Workflows';
     $app_list_strings['moduleListSingular']['Workflows'] = 'Workflow';
     $app_list_strings['moduleList']['WorkflowDefinitions'] = 'Workflow Definitions';
@@ -3897,7 +4044,7 @@ $addAppStrings = array(
     'LBL_SYNCACTIVE' => 'active',
     'LBL_UNLINK' => 'Unlink Record',
     'LBL_CONFIRM_UNLINK' => 'Are you sure you want to unlink the record?',
-    'LBL_DELETE' => 'Delete Record',
+    'LBL_DELETE' => 'Delete',
     'LBL_CONFIRM_DELETE' => 'Are you sure you want to delete the record?',
     'LBL_SORT_BY' => 'Sort by',
     'LBL_ACTION_IMPORTCONTACT' => 'import from phone',
@@ -3929,7 +4076,7 @@ $addAppStrings = array(
     'LBL_SEARCH_DELAY' => 'Search Delay',
     'LBL_TIMESTREAM' => 'Timestream',
     'LBL_TASKMANAGER' => 'Taskmanager',
-    'LBL_ACOUNTCCDETAILS_LINK' => 'Account Company Code Detials',
+    'LBL_ACOUNTCCDETAILS_LINK' => 'Account Company Code Details',
 );
 
 if (file_exists('modules/KDeploymentCRs/KDeploymentCR.php'))
@@ -3969,7 +4116,7 @@ $app_list_strings['rptype_dom'] = array(
     '4' => 'imported'
 );
 
-$app_list_strings['kreleasepackage_repair_dom'] = array(
+$app_list_strings['systemdeploymentpackage_repair_dom'] = array(
     'repairDatabase' => 'repair Database',
     'rebuildExtensions' => 'rebuild Extensions',
     'clearTpls' => 'clear Templates',
@@ -3985,11 +4132,11 @@ $app_list_strings['kreleasepackage_repair_dom'] = array(
 );
 include('include/modules.php');
 include('modules/Administration/');
-$app_list_strings['kreleasepackage_repair_modules_dom'] = array(
+$app_list_strings['systemdeploymentpackage_repair_modules_dom'] = array(
     translate('LBL_ALL_MODULES', 'Administration') => translate('LBL_ALL_MODULES', 'Administration')
 );
 foreach ($beanList as $module => $bean) {
-    $app_list_strings['kreleasepackage_repair_modules_dom'][$module] = $module;
+    $app_list_strings['systemdeploymentpackage_repair_modules_dom'][$module] = $module;
 }
 
 $app_list_strings['moduleList']['KDeploymentMWs'] = 'Deployment Maintenance Windows';
@@ -4097,28 +4244,27 @@ $app_list_strings['mailboxes_imap_pop3_encryption_dom'] = array(
     'ssl_disable' => 'Disable SSL'
 );
 
+$app_list_strings['mailboxes_smtp_encryption_dom'] = [
+    'none' => 'No Encryption',
+    'ssl' => 'SSL',
+    'tls' => 'TLS/STARTTLS',
+];
+
 $app_strings = array_merge($app_strings, $addAppStrings);
 
-$app_list_strings['smtp_authentication_types'] = array(
-    'no_auth' => 'no authentication',
-    'plain' => 'PLAIN',
-    'login' => 'LOGIN',
-    'cram-md5' => 'CRAM-MD5',
-    'digest-md5' => 'Digest-MD5',
-);
-
-if(file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
     $app_list_strings['serviceorder_status_dom'] = array(
         'new' => 'New',
         'planned' => 'Planned',
         'completed' => 'Completed',
         'cancelled' => 'Cancelled',
+        'signed' => 'Signed',
     );
     $app_list_strings['parent_type_display']['ServiceOrders'] = 'Serviceaufträge';
     $app_list_strings['record_type_display']['ServiceOrders'] = 'Serviceaufträge';
     $app_list_strings['record_type_display_notes']['ServiceOrders'] = 'Serviceaufträge';
 }
-if(file_exists('modules/ServiceTickets/ServiceTicket.php')) {
+if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     $app_list_strings['serviceticket_status_dom'] = array(
         'New' => 'Neu',
         'Assigned' => 'Zugewiesen',
@@ -4127,11 +4273,51 @@ if(file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'Rejected' => 'Abgelehnt',
         'Duplicate' => 'Duplicate',
     );
+    $app_list_strings['serviceticket_resaction_dom'] = array(
+        '' => '',
+        'credit' => 'issue creditnote',
+        'replace' => 'send replacement',
+        'return' => 'return goods'
+    );
     $app_list_strings['parent_type_display']['ServiceTickets'] = 'Servicetickets';
     $app_list_strings['record_type_display']['ServiceTickets'] = 'Servicetickets';
     $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Servicetickets';
+
+}
+if (file_exists('modules/ServiceFeedbacks/ServiceFeedback.php')) {
+    $app_list_strings['service_satisfaction_scale_dom'] = array(
+        1 => '1 - not satisfied',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5 - happy',
+    );
+    $app_list_strings['servicefeedback_status_dom'] = array(
+        'sent' => 'sent',
+        'completed' => 'completed',
+    );
+    $app_list_strings['servicefeedback_parent_type_display'] = array(
+        'ServiceTickets' => 'Service Tickets',
+        'ServiceOrders' => 'Service Orders',
+        'ServiceCalls' => 'Service Calls',
+    );
+    $app_list_strings['record_type_display'] = array(
+        'ServiceTickets' => 'Service Tickets',
+        'ServiceOrders' => 'Service Orders',
+        'ServiceCalls' => 'Service Calls',
+    );
 }
 
+$app_list_strings['mailboxes_transport_dom'] = array(
+    'imap' => 'IMAP/SMTP',
+    'mailgun' => 'Mailgun',
+    'sendgrid' => 'Sendgrid',
+);
 
+$app_list_strings['mailboxes_outbound_comm'] = [
+    'no' => 'Not Allowed',
+    'single' => 'Only Single Emails',
+    'mass' => 'Single and Mass Emails',
+];
 
 include('include/SpiceBeanGuide/SpiceBeanGuideLanguage.php');

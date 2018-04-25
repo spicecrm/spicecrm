@@ -62,8 +62,8 @@ $mod_strings = array (
 	'LBL_DOC_STATUS'=> 'Status:',
 	'LBL_DET_TEMPLATE_TYPE'=> 'Dokumenttyp:',
 	'LBL_DOC_DESCRIPTION'=> 'Beschreibung:',
-	'LBL_DOC_ACTIVE_DATE'=> 'Veröffentlichungsdatum:',
-	'LBL_DOC_EXP_DATE'=> 'Ablaufdatum:',
+	'LBL_ACTIVE_DATE'=> 'Veröffentlichungsdatum:',
+	'LBL_EXP_DATE'=> 'Ablaufdatum:',
 
 	//document list view.
 	'LBL_LIST_FORM_TITLE' => 'Dokumente Liste',
@@ -81,8 +81,8 @@ $mod_strings = array (
 
 	//document search form.
 	'LBL_SF_DOCUMENT' => 'Dokument Name:',
-	'LBL_SF_CATEGORY' => 'Kategorie',
-	'LBL_SF_SUBCATEGORY'=> 'Unterkategorie:',
+	'LBL_CATEGORY' => 'Kategorie',
+	'LBL_SUBCATEGORY'=> 'Unterkategorie:',
 	'LBL_SF_ACTIVE_DATE' => 'Veröffentlichungsdatum:',
 	'LBL_SF_EXP_DATE'=> 'Ablaufdatum:',
 

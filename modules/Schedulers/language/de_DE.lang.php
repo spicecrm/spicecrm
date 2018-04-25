@@ -34,6 +34,7 @@ $mod_strings = array (
 'LBL_UPDATE_TRACKER_SESSIONS' => 'Update tracker_sessions Tabelle',
 'LBL_OOTB_SEND_EMAIL_REMINDERS'	=> 'E-Mail Erinnerungsbenachrichtigungen ausführen',
 'LBL_OOTB_CLEANUP_QUEUE' => 'Clean Jobs Queue',
+'LBL_OOTB_FTS_INDEX' => 'Volltextsuche index',
 
 // List Labels
 'LBL_LIST_JOB_INTERVAL' => 'Intervall:',

@@ -105,7 +105,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 'active_date' =>
   array (
     'name' => 'active_date',
-    'vname' => 'LBL_DOC_ACTIVE_DATE',
+    'vname' => 'LBL_ACTIVE_DATE',
     'type' => 'date',
 	'required'=>true,
     'importable' => 'required',
@@ -115,14 +115,14 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 'exp_date' =>
   array (
     'name' => 'exp_date',
-    'vname' => 'LBL_DOC_EXP_DATE',
+    'vname' => 'LBL_EXP_DATE',
     'type' => 'date',
   ),
 
   'category_id' =>
   array (
     'name' => 'category_id',
-    'vname' => 'LBL_SF_CATEGORY',
+    'vname' => 'LBL_CATEGORY',
     'type' => 'enum',
     'len' => 100,
     'options' => 'document_category_dom',
@@ -132,7 +132,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
   'subcategory_id' =>
   array (
     'name' => 'subcategory_id',
-    'vname' => 'LBL_SF_SUBCATEGORY',
+    'vname' => 'LBL_SUBCATEGORY',
     'type' => 'enum',
     'len' => 100,
     'options' => 'document_subcategory_dom',

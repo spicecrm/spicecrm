@@ -13,6 +13,16 @@
 
 
 if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+/**
+ * SpiceUI Language Compatibility
+ * Merge labels
+ */
+
+$kreporter_ui_labels = array(
+    'LBL_ID' => 'ID',
+
+);
+
 
 $mod_strings = array(
     'LBL_SAVE_LAYOUT_BUTTON_LABEL' => 'Layout speichern',
@@ -270,18 +280,18 @@ $mod_strings = array(
     'LBL_ONOFF_YO2' => 'nein',
     'LBL_ONOFF_COLUMN' => 'j/n',
     'LBL_MUTLISELECT_POPUP_TITLE' => 'Werte auswählen',
-    'LBL_MULTISELECT_VALUE_HEADER' => 'ID',
+    'LBL_MULTISELECT_VALUE_HEADER' => $kreporter_ui_labels['LBL_ID'],
     'LBL_MULTISELECT_TEXT_HEADER' => 'Wert',
     'LBL_MUTLISELECT_CLOSE_BUTTON' => 'Sichern',
     'LBL_MUTLISELECT_CANCEL_BUTTON' => 'Abbrechen',
     'LBL_DATETIMEPICKER_POPUP_TITLE' => 'Datum/Uhrzeit auswählen',
     'LBL_DATETIMEPICKER_CLOSE_BUTTON' => 'Aktualisieren',
     'LBL_DATETIMEPICKER_CANCEL_BUTTON' => 'Abbrechen',
-    'LBL_DATETIMEPICKER_DATE' => 'Datum',
+    'LBL_DATE' => 'Datum',
     'LBL_SNAPSHOTCOMPARISON_POPUP_TITLE' => 'Diagrammvergleich',
     'LBL_SNAPSHOTTRENDANALYSIS_POPUP_TITLE' => 'Trend Analyse',
     'LBL_SNAPSHOTCOMPARISON_SNAPHOT_HEADER' => 'Snapshot',
-    'LBL_SNAPSHOTCOMPARISON_DESCRIPTION_HEADER' => 'Beschreibung',
+    'LBL_DESCRIPTION' => 'Beschreibung',
     'LBL_SNAPSHOTCOMPARISON_SELECT_CHART' => 'Diagramm auswählem:',
     'LBL_SNAPSHOTCOMPARISON_SELECT_LEFT' => 'Linke Quelle auswählen:',
     'LBL_SNAPSHOTCOMPARISON_SELECT_RIGHT' => 'Rechte Quelle auswählen:',
@@ -802,8 +812,8 @@ $mod_strings['LNK_MANAGE_BUCKETS'] = 'Bucket Manager';
 $mod_strings['LBL_GROUPING'] = 'Gruppierung';
 $mod_strings['LBL_GROUPING_ID'] = 'Gruppierung ID';
 $mod_strings['LBL_GROUPING_NAME'] = 'Gruppierungsname';
-$mod_strings['LBL_GROUPING_DESCRIPTION'] = 'Beschreibung';
-$mod_strings['LBL_GROUPING_MODULENAME'] = 'Modulname';
+$mod_strings['LBL_DESCRIPTION'] = 'Beschreibung';
+$mod_strings['LBL_MODULENAME'] = 'Modulname';
 $mod_strings['LBL_GROUPING_FIELDNAME'] = 'Feldname';
 $mod_strings['LBL_GROUPING_MAPPING'] = 'Mapping';
 $mod_strings['LBL_GROUPING_CREATE'] = 'Gruppierung anlegen';
@@ -811,7 +821,7 @@ $mod_strings['LBL_GROUPING_ENUMFIELDS'] = 'Verfügbare Felder';
 $mod_strings['LBL_MAPPING_VALUE'] = 'Gruppierter Wert';
 $mod_strings['LBL_MAPPING_NEWVALUE'] = 'Neuer Wert';
 $mod_strings['LBL_MAPPING_PROMPT_NAME'] = 'Bitte geben Sie einen Wert ein';
-$mod_strings['LBL_ENUMVALUE_ID'] = 'ID';
+$mod_strings['LBL_ENUMVALUE_ID'] = $kreporter_ui_labels['LBL_ID'];
 $mod_strings['LBL_ENUMVALUE_VALUE'] = 'Wert';
 $mod_strings['LBL_ENUMVALUE_LABEL'] = 'Name';
 $mod_strings['LBL_ENUMVALUE_HANDLER'] = 'Restliche Werte unter \'sonstiges\' gruppieren';
@@ -830,7 +840,7 @@ $mod_strings['LNK_MANAGE_DLISTS'] = 'DList Manager';
 $mod_strings['LBL_GRID_DLISTS'] = 'Distributions lists';
 $mod_strings['LBL_DLIST_FILTER'] = 'Filter';
 $mod_strings['LBL_DLIST_SEARCH'] = 'Search';
-$mod_strings['LBL_DLIST_ID'] = 'ID';
+$mod_strings['LBL_DLIST_ID'] = $kreporter_ui_labels['LBL_ID'];
 $mod_strings['LBL_DLIST_NAME'] = 'Name';
 $mod_strings['LBL_DLIST_USER_ID'] = 'Benutzer ID';
 $mod_strings['LBL_DLIST_USER_USERNAME'] = 'Benutzernaname';

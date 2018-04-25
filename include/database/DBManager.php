@@ -493,6 +493,86 @@ protected function checkQuery($sql, $object_name = false)
 		return $this->query($sql,true,$msg);
 	}
 
+    /**
+     * custom function, to generically insert records into db, no warranty
+     * it uses insertParams
+     * created by sebastian franz
+     * @param string $table the table name
+     * @param array $data key/value pairs
+     * @return bool query result
+     */
+	public function insertQuery($table, array $data)
+    {
+        $fields = [];
+        //todo: if exists in dictionary, use the vardefs
+        foreach($data as $key => $val)
+        {
+            $fields[$key] = [];
+        }
+        if( array_key_exists('id', $data) && !$data['id'] )
+        {
+            $data['id'] = create_guid();
+        }
+
+        $result = $this->insertParams($table, $fields, $data);
+        if( $result )
+            return $data['id'];
+        else
+            return $result;
+    }
+
+    /**
+     * custom function, to update an existing record in db, no warranty
+     * created by sebastian franz
+     * @param sring $table the table name
+     * @param array $pks key/value pairs of primary/unique keys
+     * @param array $data key/values of fields to update
+     * @return bool query result
+     */
+    public function updateQuery($table, array $pks, array $data)
+    {
+        foreach($data as $key => $val)
+        {
+            $sets[] = "`$key` = '$val'";
+        }
+
+        foreach($pks as $key => $val)
+        {
+            $wheres[] = "`$key` = '".$this->quote($val)."'";
+        }
+        $sql = "UPDATE $table SET ".implode(',', $sets)." WHERE ".implode(' AND ', $wheres);
+        //var_dump($sql);
+        return $this->query($sql);
+    }
+
+    /**
+     * custom function, a combination of insert or update query...
+     * created by sebastian franz
+     * @param string $table the table name
+     * @param array $pks key/value pairs of primary/unique keys
+     * @param array $data key/values of fields to update
+     * @return mixed query result, could be an id (if inserted) or boolean (if updated)
+     * @throws Exception if queries failing
+     */
+    public function upsertQuery($table, array $pks, array $data)
+    {
+        $id = $this->insertQuery($table, $data);
+        if( $id )
+            return $id;
+
+        /*
+        // ignore duplicate key errors...
+        if( $this->last_error )
+            throw new Exception($this->last_error);
+        */
+        $result = $this->updateQuery($table, $pks, $data);
+        if( $result )
+            return $result;
+        else
+            throw new Exception($this->last_error);
+
+    }
+
 	/**
 	 * Insert data into table by parameter definition
 	 * @param string $table Table name

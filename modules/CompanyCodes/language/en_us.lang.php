@@ -22,10 +22,10 @@ $mod_strings = array(
 // => SEARCH DEFS
     'LBL_SEARCH_FORM_TITLE' => 'Companies',
 // => Subpanels
-    'LBL_USERS_SUBPANEL_TITLE' => 'assigned Users',
-    'LBL_ACLROLES_SUBPANEL_TITLE' => 'assigned Roles',
-    'LBL_BANKACCOUNTS_SUBPANEL_TITLE' => 'Bank Accounts',
-    'LBL_COMPANYFISCALPERIODS_SUBPANEL_TITLE' => 'Fiscal Period',
+    'LBL_USERS' => 'assigned Users',
+    'LBL_ACLROLES' => 'assigned Roles',
+    'LBL_ACCOUNTBANKACCOUNTS' => 'Bank Accounts',
+    'LBL_COMPANYFISCALPERIODS' => 'Fiscal Period',
 // => ListView
     'LBL_VATID' => 'VAT ID',
     'LBL_COMPANY_ADDRESS_CITY' => 'Company City',
@@ -39,7 +39,5 @@ $mod_strings = array(
     'LBL_FOOTER1' => 'Footer 1',
     'LBL_FOOTER2' => 'Footer 2',
     'LBL_FOOTER3' => 'Footer 3',
-//=> links
-    'LBL_COMPANYFISCALPERIODS' => 'Fiscal Periods'
 
 );

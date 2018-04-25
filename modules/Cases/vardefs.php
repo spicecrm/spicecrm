@@ -46,7 +46,7 @@ $dictionary['Case'] = array('table' => 'cases','audited'=>true, 'unified_search'
     'name' => 'account_name',
     'rname' => 'name',
     'id_name' => 'account_id',
-    'vname' => 'LBL_ACCOUNT_NAME',
+    'vname' => 'LBL_ACCOUNT',
     'type' => 'relate',
     'link'=>'accounts',
     'table' => 'accounts',
@@ -156,7 +156,7 @@ $dictionary['Case'] = array('table' => 'cases','audited'=>true, 'unified_search'
       'type' => 'link',
       'relationship' => 'documents_cases',
       'source' => 'non-db',
-      'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+      'vname' => 'LBL_DOCUMENTS',
   ),
   'calls' =>
   array (
@@ -265,4 +265,5 @@ VardefManager::createVardef('Cases','Case', array('default', 'assignable',
 global $dictionary;
 //END
 $dictionary['Case']['fields']['name']['importable'] = 'required';
+$dictionary['Case']['fields']['name']['vname'] = 'LBL_SUMMARY';
 

@@ -67,6 +67,7 @@ class Mailbox extends SugarBean {
 	// This is used to retrieve related fields from form posts.
 	var $additional_column_fields = Array('assigned_user_name', 'assigned_user_id'	);
 	var $relationship_fields = Array();
+	public $transport_handler;
 
 	function __construct() {
         parent::__construct();
@@ -95,4 +96,21 @@ class Mailbox extends SugarBean {
 		}
 		return false;
 	}
+
+	public function initTransportHandler()
+    {
+        switch ($this->transport) {
+            case 'imap':
+                $this->transport_handler = new \SpiceCRM\modules\Mailboxes\SMTPHandler($this);
+                break;
+            case 'mailgun':
+                //$this->transport_handler = new MailgunHandler($this);
+                break;
+            case 'sendgrid':
+                //$this->transport_handler = new SendgridHandler($this);
+                break;
+            default:
+                $this->transport_handler = null;
+        }
+    }
 }

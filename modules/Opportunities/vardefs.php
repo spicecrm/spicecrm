@@ -42,7 +42,7 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
         'name' =>
             array(
                 'name' => 'name',
-                'vname' => 'LBL_OPPORTUNITY_NAME',
+                'vname' => 'LBL_NAME',
                 'type' => 'name',
                 'dbType' => 'varchar',
                 'len' => '50',
@@ -69,7 +69,7 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
                 'name' => 'account_name',
                 'rname' => 'name',
                 'id_name' => 'account_id',
-                'vname' => 'LBL_ACCOUNT_NAME',
+                'vname' => 'LBL_ACCOUNT',
                 'type' => 'relate',
                 'table' => 'accounts',
                 'join_name' => 'accounts',
@@ -126,7 +126,7 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
             array(
                 'name' => 'campaign_opportunities',
                 'type' => 'link',
-                'vname' => 'LBL_CAMPAIGN_OPPORTUNITY',
+                'vname' => 'LBL_CAMPAIGN',
                 'relationship' => 'campaign_opportunities',
                 'source' => 'non-db',
             ),
@@ -222,7 +222,7 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
                 'name' => 'currency_name',
                 'rname' => 'name',
                 'id_name' => 'currency_id',
-                'vname' => 'LBL_CURRENCY_NAME',
+                'vname' => 'LBL_CURRENCY',
                 'type' => 'relate',
                 'isnull' => 'true',
                 'table' => 'currencies',
@@ -456,7 +456,7 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
         ),
         'proposals' => array(
             'name' => 'proposals',
-            'vname' => 'LBL_PROPOSALS_LINK',
+            'vname' => 'LBL_PROPOSALS',
             'type' => 'link',
             'relationship' => 'opportunities_proposals_rel',
             'link_type' => 'one',

@@ -61,7 +61,7 @@ $viewdefs[$module_name]['DetailView'] = array(
 		array(
             array('name'=>'date_modified', 'label'=>'LBL_DATE_MODIFIED', 'customCode'=>'{$fields.date_modified.value} {$APP.LBL_BY} {$fields.modified_by_name.value}'),
         ),
-		array(array('name'=>'assigned_user_name', 'label'=>'LBL_ASSIGNED_TO_NAME'),
+		array(array('name'=>'assigned_user_name', 'label'=>'LBL_ASSIGNED_TO'),
               array('name'=>'date_entered', 'customCode'=>'{$fields.date_entered.value} {$APP.LBL_BY} {$fields.created_by_name.value}')),
 		array (
 		      array (

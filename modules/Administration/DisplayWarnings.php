@@ -150,10 +150,11 @@ if (is_admin($current_user)) {
     unset($_SESSION['administrator_error']);
 
     // SpiceCRM software updates check
+    /*
     $dev = $db->fetchByAssoc($db->query("SELECT type, id FROM kdeploymentsystems WHERE this_system = 1 AND deleted = 0"));
     if($dev['type'] == "dev" && !isset($_SESSION['spice_updates'])){
-        require_once('modules/KDeploymentSystems/KDeploymentSystem.php');
-        $thisSystem = new KDeploymentSystem();
+
+        $thisSystem = BeanFactory::getBean('SystemDeploymentSystems');
         $thisSystem->retrieve($dev['id']);
         $updates = $thisSystem->getUpdates();
         if($updates['count'] > 0) {
@@ -164,7 +165,6 @@ if (is_admin($current_user)) {
             displayAdminError($msg);
         }
     }
+    */
 
 }
-
-?>

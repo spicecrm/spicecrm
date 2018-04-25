@@ -25,34 +25,35 @@ require_once('modules/KReports/utils.php');
 class KReportQueryArray
 {
 
-    var $thisKReport;
-    var $root_module;
-    var $union_modules;
-    var $listArray;
-    var $whereArray;
-    var $whereAddtionalFilter;
-    var $whereGroupsArray;
-    var $groupsByLimit;
-    var $additionalGroupBy;
-    var $evalSQLFunctions;
-    var $whereOverrideArray;
-    var $unionListArray;
-    var $fieldNameMap;
+    public $thisKReport;
+    public $root_module;
+    public $union_modules;
+    public $listArray;
+    public $whereArray;
+    public $whereAddtionalFilter;
+    public $whereGroupsArray;
+    public $groupsByLimit;
+    public $additionalGroupBy;
+    public $evalSQLFunctions;
+    public $whereOverrideArray;
+    public $unionListArray;
+    public $fieldNameMap;
     // the selct strings
-    var $selectString;
-    var $countSelectString;
-    var $totalSelectString;
-    var $summarySelectString;
-    var $fromString;
-    var $whereString;
-    var $groupbyString;
-    var $havingString;
-    var $orderbyString;
-    var $queryContext = array();
-    var $addParams;
-    var $queryArray;
+    public $selectString;
+    public $countSelectString;
+    public $totalSelectString;
+    public $summarySelectString;
+    public $fromString;
+    public $whereString;
+    public $groupbyString;
+    public $havingString;
+    public $orderbyString;
+    public $queryContext = array();
+    public $addParams;
+    public $queryArray;
+    public $dynamicoptions = false; //fix 2018-02-22 for KReportQuery referencefields looping
 
-    function __construct($rootModule = '', $whereOverride = array(), $unionModules = '', $evalSQLFunctions = true, $listFields = array(), $unionListFields = array(), $whereFields = array(), $additonalFilter = '', $whereGroupFields = array(), $additionalGroupBy = array(), $addParams = array())
+    function __construct($rootModule = '', $whereOverride = array(), $unionModules = '', $evalSQLFunctions = true, $listFields = array(), $unionListFields = array(), $whereFields = array(), $additonalFilter = '', $whereGroupFields = array(), $additionalGroupBy = array(), $addParams = array(), $dynamicoptions = false)
     {
         // set the various Fields
         $this->root_module = $rootModule;
@@ -65,6 +66,7 @@ class KReportQueryArray
         // $this->groupByLimit = $groupByLimit;
         $this->additionalGroupBy = $additionalGroupBy;
         $this->evalSQLFunctions = $evalSQLFunctions;
+        $this->dynamicoptions = $dynamicoptions; //fix 2018-02-22 for KReportQuery referencefields looping
 
         $this->addParams = $addParams;
 
@@ -240,7 +242,7 @@ class KReportQueryArray
                 $this->whereArray[$originalKey]['valuekey'] = $_REQUEST[$referenceValue];
                 $this->whereArray[$originalKey]['valueto'] = '';
                 $this->whereArray[$originalKey]['valuetokey'] = '';
-            } else
+            } elseif(!$this->dynamicoptions) //fix 2018-02-22 for KReportQuery referencefields looping
                 unset($this->whereArray[$originalKey]);
         }
 
@@ -1272,6 +1274,9 @@ class KReportQuery
                         'fields_name_map_entry' => '',
                         'type' => /* 'fixedvalue' */
                             (isset($this->joinSegments[$pathName]) ?  $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] ?: $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] : 'fixedvalue'),
+                        //BEGIN ticket 0000926 maretval: pass overridetype needed later on for proper sorting
+                        'overridetype' => $thisListEntry['overridetype'],
+                        //END
                         'module' => $this->root_module,
                         'fields_name_map_entry' => (isset($this->joinSegments[$pathName]) ? $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]] : array()));
                 } else {
@@ -1605,15 +1610,17 @@ class KReportQuery
 
 
         //change if valuekey is set
-        if (isset($valuekey) && $valuekey != '' && $valuekey != 'undefined')
+        //ticket 0000914 bug fix 2018-04-18 maretval: value might be 0, check on value type!
+        if (isset($valuekey) && ( (is_string($valuekey) && $valuekey !== '' && $valuekey != 'undefined') || is_numeric($valuekey)))
             $value = $valuekey;
-        if (isset($valuetokey) && $valuetokey != '' && $valuetokey != 'undefined')
+        if (isset($valuetokey) && ( (is_string($valuetokey) && $valuetokey !== '' && $valuetokey != 'undefined') || is_numeric($valuetokey)))
             $valueto = $valuetokey;
 
         // replace the current _user_id if that one is set
         // bugfix 2010-09-28 since id was asisgned and not user name ..  no properly evaluates active user
-        if ($value == 'current_user_id')
+        if (is_string($value) && $value == 'current_user_id') { //ticket 0000914 bug fix 2018-04-18 maretval: check on string!
             $value = $current_user->user_name;
+        }
 
 
         // 2011-07-15 manage Date & DateTime Fields

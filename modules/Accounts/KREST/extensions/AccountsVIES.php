@@ -1,9 +1,9 @@
 <?php
 
-$app->get('/module/Accounts/VIES/:vatid', function ($vatid) use ($app) {
+$app->get('/module/Accounts/VIES/{vatid}', function($req, $res, $args) use ($app) {
 
-    $countryCode = substr($vatid, 0, 2);
-    $vatNumber = substr($vatid, 2);
+    $countryCode = substr($args['vatid'], 0, 2);
+    $vatNumber = substr($args['vatid'], 2);
 
 
     $soapUrl = "http://ec.europa.eu/taxation_customs/vies/services/checkVatService"; // asmx URL of WSDL

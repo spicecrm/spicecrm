@@ -15,66 +15,66 @@ $app->group('/theme', function () use ($app) {
             $SpiceThemeController = new SpiceThemeController();
             echo $SpiceThemeController->resetPages();
         });
-        $app->group('/:pageId', function () use ($app) {
-            $app->get('', function ($pageId) use ($app) {
+        $app->group('/{pageId}', function () use ($app) {
+            $app->get('', function($req, $res, $args) use ($app) {
                 require_once('modules/SpiceThemeController/SpiceThemeController.php');
                 $SpiceThemeController = new SpiceThemeController();
-                echo $SpiceThemeController->getPage($pageId);
+                echo $SpiceThemeController->getPage($args['pageId']);
             });
-            $app->post('', function ($pageId) use ($app) {
+            $app->post('', function($req, $res, $args) use ($app) {
                 require_once('modules/SpiceThemeController/SpiceThemeController.php');
-                $postBody = $body = $app->request->getBody();
-                $postParams = $app->request->get();
-                $data = array_merge(json_decode($postBody, true), $postParams);
+                $postBody = $req->getParsedBody();
+                $postParams = $_GET;
+                $data = array_merge($postBody, $postParams);
                 $SpiceThemeController = new SpiceThemeController();
-                echo $SpiceThemeController->setPage($pageId,$data);
+                echo $SpiceThemeController->setPage($args['pageId'],$data);
             });
-            $app->delete('', function ($pageId) use ($app) {
+            $app->delete('', function($req, $res, $args) use ($app) {
                 require_once('modules/SpiceThemeController/SpiceThemeController.php');
-                $postBody = $body = $app->request->getBody();
-                $postParams = $app->request->get();
-                $data = array_merge(json_decode($postBody, true), $postParams);
+                $postBody = $req->getParsedBody();
+                $postParams = $_GET;
+                $data = array_merge($postBody, $postParams);
                 $SpiceThemeController = new SpiceThemeController();
-                echo json_encode($SpiceThemeController->deletePage($pageId,$data));
+                echo json_encode($SpiceThemeController->deletePage($args['pageId'],$data));
             });
         });
     });
 
-    $app->get('/changeGroup/:currentModule/:newGroup', function ($currentModule, $newGroup) use ($app) {
+    $app->get('/changeGroup/{currentModule}/{newGroup}', function($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
         $SpiceThemeController = new SpiceThemeController();
-        echo $SpiceThemeController->changeGroup($currentModule, $newGroup);
+        echo $SpiceThemeController->changeGroup($args['currentModule'], $args['newGroup']);
     });
-    $app->get('/getMenu/:activeModule/:currentModule', function ($activeModule, $currentModule) use ($app) {
+    $app->get('/getMenu/{activeModule}/{currentModule}', function($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
         $SpiceThemeController = new SpiceThemeController();
-        echo $SpiceThemeController->getMenu($activeModule, $currentModule);
+        echo $SpiceThemeController->getMenu($args['activeModule'], $args['currentModule']);
     });
 
 
-    $app->post('/setToggleFooterline', function () use ($app) {
+    $app->post('/setToggleFooterline', function ($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
-        $postBody = $body = $app->request->getBody();
-        $postParams = $app->request->get();
-        $data = array_merge(json_decode($postBody, true), $postParams);
+        $postBody = $req->getParsedBody();
+        $postParams = $_GET;
+        $data = array_merge($postBody, $postParams);
         $SpiceThemeController = new SpiceThemeController();
         echo json_encode($SpiceThemeController->setToggleFooterline($data));
     });
-    $app->get('/refresh/:currentModule/:widget', function ($currentModule, $widget) use ($app) {
+    $app->get('/refresh/{currentModule}/{widget}', function($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
         $SpiceThemeController = new SpiceThemeController();
-        echo $SpiceThemeController->refresh($currentModule, $widget);
+        echo $SpiceThemeController->refresh($args['currentModule'], $args['widget']);
     });
-    $app->get('/setToggle/:menu/:collapsed', function ($menu,$collapsed) use ($app) {
+    $app->get('/setToggle/{menu}/{collapsed}', function($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
         $SpiceThemeController = new SpiceThemeController();
-        echo $SpiceThemeController->setToggle($menu,$collapsed);
+        echo $SpiceThemeController->setToggle($args['menu'],$args['collapsed']);
     });
-    $app->post('/saveSort', function () use ($app) {
+    $app->post('/saveSort', function ($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
-        $postBody = $body = $app->request->getBody();
-        $postParams = $app->request->get();
-        $data = array_merge(json_decode($postBody, true), $postParams);
+        $postBody = $req->getParsedBody();
+        $postParams = $_GET;
+        $data = array_merge($postBody, $postParams);
         $SpiceThemeController = new SpiceThemeController();
         echo json_encode($SpiceThemeController->saveSort($data));
     });
@@ -83,11 +83,11 @@ $app->group('/theme', function () use ($app) {
         $SpiceThemeController = new SpiceThemeController();
         echo $SpiceThemeController->showConfigSideBar();
     });
-    $app->post('/setWidgetUserConfig', function () use ($app) {
+    $app->post('/setWidgetUserConfig', function ($req, $res, $args) use ($app) {
         require_once('modules/SpiceThemeController/SpiceThemeController.php');
-        $postBody = $body = $app->request->getBody();
-        $postParams = $app->request->get();
-        $data = array_merge(json_decode($postBody, true), $postParams);
+        $postBody = $req->getParsedBody();
+        $postParams = $_GET;
+        $data = array_merge($postBody, $postParams);
         $SpiceThemeController = new SpiceThemeController();
         echo json_encode($SpiceThemeController->setWidgetUserConfig($data));
     });
@@ -95,7 +95,7 @@ $app->group('/theme', function () use ($app) {
         global $current_user;
         require_once('modules/Trackers/Tracker.php');
         $tracker = new Tracker();
-        $getParams = $app->request->get();
+        $getParams = $_GET;
         $history = $tracker->get_recently_viewed($current_user->id, $getParams['module'] ? array($getParams['module']) : '', $getParams['limit'] ?: 10);
         foreach ($history as $key => $row) {
             if(empty($history[$key]['module_name'])) {
@@ -120,10 +120,10 @@ $app->group('/theme', function () use ($app) {
         }
         echo json_encode($return_array);
     });
-    $app->get('/getShortcuts/:currentModule', function ($currentModule) use ($app) {
+    $app->get('/getShortcuts/{currentModule}', function($req, $res, $args) use ($app) {
         require_once('include/MVC/View/SugarView.php');
         $view = new SugarView();
-        $view->module = $currentModule;
+        $view->module = $args['currentModule'];
         // build the shortcut menu
         $shortcut_menu = array();
         foreach ( $view->getMenu() as $key => $menu_item ) {
@@ -142,19 +142,19 @@ $app->group('/theme', function () use ($app) {
             $favorites = SpiceFavorites::getFavoritesRaw();
             echo json_encode($favorites);
         });
-        $app->group('/:module/:beanId', function () use ($app) {
-            $app->get('', function ($module,$beanId) use ($app) {
+        $app->group('/{module}/{beanId}', function () use ($app) {
+            $app->get('', function($req, $res, $args) use ($app) {
                 require_once('include/SpiceFavorites/SpiceFavorites.php');
-                $isFavorite = SpiceFavorites::get_favorite($module,$beanId);
+                $isFavorite = SpiceFavorites::get_favorite($args['module'],$args['beanId']);
                 echo json_encode(array('isFavorite' => $isFavorite));
             });
-            $app->post('', function ($module,$beanId) use ($app) {
+            $app->post('', function($req, $res, $args) use ($app) {
                 require_once('include/SpiceFavorites/SpiceFavorites.php');
-                $favorite = SpiceFavorites::set_favorite($module,$beanId);
+                $favorite = SpiceFavorites::set_favorite($args['module'],$args['beanId']);
             });
-            $app->delete('', function ($module,$beanId) use ($app) {
+            $app->delete('', function($req, $res, $args) use ($app) {
                 require_once('include/SpiceFavorites/SpiceFavorites.php');
-                $favorite = SpiceFavorites::delete_favorite($module,$beanId);
+                $favorite = SpiceFavorites::delete_favorite($args['module'],$args['beanId']);
             });
         });
     });

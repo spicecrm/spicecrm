@@ -20,25 +20,41 @@ $KRESTUserHandler = new KRESTUserHandler($app);
 
 $KRESTManager->registerExtension('user', '1.0');
 
-$app->group('/user', function () use ($app, $KRESTUserHandler) {
+$app->group('/user', function () use ($app, $KRESTUserHandler)
+{
     $app->get('/acl', function () use ($app, $KRESTUserHandler) {
         echo json_encode($KRESTUserHandler->get_modules_acl());
     });
-    $app->post('/password', function () use ($app, $KRESTUserHandler) {
-        $postBody = json_decode($app->request->getBody(), true);
-        echo json_encode($KRESTUserHandler->set_password($postBody));
+
+    $app->post('/password', function( $req, $res, $args ) use ($app, $KRESTUserHandler) {
+        $postBody = $req->getParsedBody();
+        echo json_encode( $KRESTUserHandler->set_password( $postBody ));
     });
+
+    $app->get('/password/info', function ( $req, $res, $args ) use ($app, $KRESTUserHandler) {
+
+        $response = array(
+            'pwdCheck' => array(
+                'regex' => '^'.KRESTUserHandler::getPwdCheckRegex().'$',
+                'guideline' => KRESTUserHandler::getPwdGuideline( $req->getParam('lang'))
+            )
+        );
+
+        echo json_encode( $response );
+
+    });
+
     $app->group('/preferences', function () use ($app, $KRESTUserHandler)
     {
-        $app->get('/:category', function ($category) use ($app, $KRESTUserHandler) {
-            echo json_encode($KRESTUserHandler->get_user_preferences($category));
+        $app->get('/{category}', function($request, $response, $args) use ($app, $KRESTUserHandler) {
+            echo json_encode($KRESTUserHandler->get_user_preferences($args['category']));
         });
-        $app->get('/:category/:name', function ($category, $name) use ($app, $KRESTUserHandler) {
-            echo json_encode($KRESTUserHandler->get_user_preference($category, $name));
+        $app->get('/{category}/{name}', function($request, $response, $args) use ($app, $KRESTUserHandler) {
+            echo json_encode($KRESTUserHandler->get_user_preference($args['category'], $args['name']));
         });
-        $app->post('/:category', function ($category) use ($app, $KRESTUserHandler) {
-            $postBody = json_decode($app->request->getBody(), true);
-            echo json_encode($KRESTUserHandler->set_user_preferences($category, $postBody));
+        $app->post('/{category}', function($request, $response, $args) use ($app, $KRESTUserHandler) {
+            $postBody = json_decode($request->getParsedBody(), true);
+            echo json_encode($KRESTUserHandler->set_user_preferences($args['category'], $postBody));
         });
     });
 });

@@ -126,7 +126,7 @@ CL: Bug fix for 9291 and 9427 - parent_id should be parent_type, not the module 
 	<tr>
 	<td scope="row" valign="top"><slot>{$MOD.LBL_DURATION} <span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span></slot></td>
 	<td valign="top" >
-	<slot><input name='duration_hours' tabindex="2" size='2' maxlength='2' type="text" value='{$DURATION_HOURS}'> <select tabindex="2" name='duration_minutes'>{$DURATION_MINUTES_OPTIONS}</select> {$MOD.LBL_HOURS_MINS}</slot></td>
+	<slot><input name='duration_hours' tabindex="2" size='2' maxlength='2' type="text" value='{$DURATION_HOURS}'> <select tabindex="2" name='duration_minutes'>{$DURATION_MINUTES_OPTIONS}</select> {$MOD.LBL_HOURS_MINUTES}</slot></td>
 	</tr>
 	</table>
 </td>

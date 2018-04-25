@@ -257,7 +257,7 @@ $dictionary['User'] = array(
         ),
         'created_by_name' => array(
             'name' => 'created_by_name',
-            'vname' => 'LBL_CREATED_BY_NAME', //bug 48978
+            'vname' => 'LBL_CREATED_BY', //bug 48978
             'type' => 'varchar',
             'source' => 'non-db',
             'importable' => 'false',
@@ -276,28 +276,28 @@ $dictionary['User'] = array(
         ),
         'phone_home' => array(
             'name' => 'phone_home',
-            'vname' => 'LBL_HOME_PHONE',
+            'vname' => 'LBL_PHONE_HOME',
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
         ),
         'phone_mobile' => array(
             'name' => 'phone_mobile',
-            'vname' => 'LBL_MOBILE_PHONE',
+            'vname' => 'LBL_PHONE_MOBILE',
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
         ),
         'phone_work' => array(
             'name' => 'phone_work',
-            'vname' => 'LBL_WORK_PHONE',
+            'vname' => 'LBL_PHONE_WORK',
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
         ),
         'phone_other' => array(
             'name' => 'phone_other',
-            'vname' => 'LBL_OTHER_PHONE',
+            'vname' => 'LBL_PHONE_OTHER',
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
@@ -351,7 +351,7 @@ $dictionary['User'] = array(
         // This is a fake field for the edit view
         'UserType' => array(
             'name' => 'UserType',
-            'vname' => 'LBL_USER_TYPE',
+            'vname' => 'LBL_TYPE',
             'type' => 'enum',
             'len' => 50,
             'options' => 'user_type_dom',
@@ -446,7 +446,7 @@ $dictionary['User'] = array(
             'name' => 'reports_to_name',
             'rname' => 'last_name',
             'id_name' => 'reports_to_id',
-            'vname' => 'LBL_REPORTS_TO_NAME',
+            'vname' => 'LBL_REPORTS_TO',
             'type' => 'relate',
             'isnull' => 'true',
             'module' => 'Users',
@@ -700,3 +700,18 @@ $dictionary['User'] = array(
 
 
 );
+
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
+if(file_exists('modules/ServiceQueues/ServiceQueue.php')){
+    $dictionary['User']['fields']['servicequeues'] = array(
+            'vname' => 'LBL_SERVICEQUEUES',
+            'name' => 'servicequeues',
+            'type' => 'link',
+            'module_name' => 'ServiceQueues',
+            'bean_name' => 'ServiceQueue',
+            'relationship' => 'servicequeues_users',
+            'source' => 'non-db'
+    );
+
+}

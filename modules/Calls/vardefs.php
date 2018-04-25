@@ -77,7 +77,7 @@ $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activ
         'date_start' =>
             array(
                 'name' => 'date_start',
-                'vname' => 'LBL_DATE',
+                'vname' => 'LBL_DATE_START',
                 'type' => 'datetimecombo',
                 'dbType' => 'datetime',
                 'comment' => 'Date in which call is schedule to (or did) start',
@@ -118,7 +118,7 @@ $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activ
                 'parent_type' => 'record_type_display',
                 'type_name' => 'parent_type',
                 'id_name' => 'parent_id',
-                'vname' => 'LBL_LIST_RELATED_TO',
+                'vname' => 'LBL_RELATED_TO',
                 'type' => 'parent',
                 'group' => 'parent_name',
                 'source' => 'non-db',
@@ -237,7 +237,7 @@ $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activ
                 'db_concat_fields' => array(0 => 'first_name', 1 => 'last_name'),
                 'id_name' => 'contact_id',
                 'massupdate' => false,
-                'vname' => 'LBL_CONTACT_NAME',
+                'vname' => 'LBL_CONTACT',
                 'type' => 'relate',
                 'link' => 'contacts',
                 'table' => 'contacts',
@@ -524,6 +524,33 @@ $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activ
 //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
 );
+
+// CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
+if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+    $dictionary['Call']['fields']['servicetickets'] = array(
+        'name' => 'servicetickets',
+        'type' => 'link',
+        'relationship' => 'servicetickets_calls',
+        'module' => 'ServiceTickets',
+        'bean_name' => 'ServiceTicket',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICETICKET',
+    );
+}
+if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+    $dictionary['Call']['fields']['serviceorders'] = array(
+        'name' => 'serviceorders',
+        'type' => 'link',
+        'relationship' => 'serviceorders_calls',
+        'module' => 'ServiceOrders',
+        'bean_name' => 'ServiceOrder',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEORDER',
+    );
+}
+
 
 VardefManager::createVardef('Calls', 'Call', array('default', 'assignable',
 ));

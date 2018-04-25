@@ -43,8 +43,6 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 $mod_strings = array(
-    'LBL_DELETE_USER_CONFIRM' => 'When the User record is deleted, the corresponding Employee record will also be deleted. After the user is deleted, any workflow definitions and reports involving the user might need to be updated.<br/><br/>' .
-        'Deleting a User record cannot be undone.',
     'LBL_DELETE_GROUP_CONFIRM' => 'Are you sure you want to delete this Group User? Click OK to delete the User record.<br/>After clicking OK, you will be given the ability to reassign records assigned to the Group User to another user.',
     'LBL_DELETE_PORTAL_CONFIRM' => 'Are you sure you want to delete this Portal API User? Click OK to delete the User record.',
     'LBL_DELETE_USER_CONFIRM' => 'When the User record is deleted, the corresponding Employee record will also be deleted.<br/><br/>' .
@@ -186,7 +184,7 @@ $mod_strings = array(
     'LBL_GROUP_USER_STATUS' => 'Group User',
     'LBL_GROUP_USER' => 'Group User',
     'LBL_HIDE_TABS' => 'Hide Modules',
-    'LBL_HOME_PHONE' => 'Home Phone',
+    'LBL_PHONE_HOME' => 'Home Phone',
     'LBL_INBOUND_TITLE' => 'Account Information',
     'LBL_IS_ADMIN' => 'Is Administrator',
     'LBL_LANGUAGE' => 'Language',
@@ -254,9 +252,9 @@ $mod_strings = array(
     'LBL_MAX_SUBTAB_DESCRIPTION' => 'Number of subtabs shown per tab before an overflow menu appears.',
     'LBL_MESSENGER_ID' => 'IM Name',
     'LBL_MESSENGER_TYPE' => 'IM Type',
-    'LBL_MOBILE_PHONE' => 'Mobile',
+    'LBL_PHONE_MOBILE' => 'Mobile',
     'LBL_MODIFIED_BY' => 'Modified By',
-    'LBL_CREATED_BY_NAME' => 'Created By', //bug 48978
+    'LBL_CREATED_BY' => 'Created By', //bug 48978
     'LBL_MODIFIED_BY_ID' => 'Modified By ID',
     'LBL_MODULE_NAME' => 'Users',
     'LBL_MODULE_TITLE' => 'Users: Home',
@@ -280,7 +278,7 @@ $mod_strings = array(
     'LBL_OFFICE_PHONE' => 'Office Phone',
     'LBL_OLD_PASSWORD' => 'Current Password',
     'LBL_OTHER_EMAIL' => 'Other email address',
-    'LBL_OTHER_PHONE' => 'Other Phone',
+    'LBL_PHONE_OTHER' => 'Other Phone',
     'LBL_OTHER' => 'Other',
     'LBL_PASSWORD' => 'Password',
     'LBL_PASSWORD_GENERATED' => 'New password generated',
@@ -322,7 +320,7 @@ $mod_strings = array(
     'LBL_REMINDER_EMAIL' => 'Email',
     'LBL_REMINDER_EMAIL_ALL_INVITEES' => 'Email all invitees',
     'LBL_REMOVED_TABS' => 'Admin Remove Tabs',
-    'LBL_REPORTS_TO_NAME' => 'Reports to',
+    'LBL_REPORTS_TO' => 'Reports to',
     'LBL_REPORTS_TO' => 'Reports to',
     'LBL_REPORTS_TO_ID' => 'Reports to ID:',
     'LBL_REQUEST_SUBMIT' => 'Your request has been submitted.',
@@ -377,10 +375,10 @@ $mod_strings = array(
     'LBL_USER_LOCALE' => 'Locale Settings',
     'LBL_USER_NAME' => 'User Name',
     'LBL_USER_SETTINGS' => 'User Settings',
-    'LBL_USER_TYPE' => 'User Type',
+    'LBL_TYPE' => 'User Type',
     'LBL_USER_ACCESS' => 'Access',
     'LBL_USER' => 'Users',
-    'LBL_WORK_PHONE' => 'Work Phone',
+    'LBL_PHONE_WORK' => 'Work Phone',
     'LBL_YOUR_PUBLISH_URL' => 'Publish at my location',
     'LBL_ICAL_PUB_URL' => 'iCal integration URL',
     'LBL_ICAL_PUB_URL_HELP' => 'Use this URL to subscribe to the Spice calendar within iCal.',
@@ -398,7 +396,7 @@ $mod_strings = array(
     'LBL_AFFECTED' => 'affected',
 
     'LBL_USER_NAME_FOR_ROLE' => 'Users/Teams/Roles',
-    'LBL_SESSION_EXPIRED' => 'You have been logged out because your session has expired.',
+    'ERR_LOGGED_OUT_SESSION_EXPIRED' => 'You have been logged out because your session has expired.',
 
 // INBOUND EMAIL STRINGS
     'LBL_APPLY_OPTIMUMS' => 'Apply Optimums',
@@ -582,7 +580,9 @@ $mod_strings = array(
     'LBL_HIDEOPTIONS' => 'Hide Options',
     'LBL_SHOWOPTIONS' => 'Show Options',
 
-    'LBL_INBOUND_PROCESSING_ALLOWED' => 'Inbound Mail Processing active'
+    'LBL_INBOUND_PROCESSING_ALLOWED' => 'Inbound Mail Processing active',
+
+    'LBL_SERVICEQUEUES' => 'Service Queues'
 
 ); // END STRINGS DEFS
 

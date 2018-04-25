@@ -689,6 +689,13 @@ class SpiceFTSHandler
             $searchresultsraw = $this->searchModule($module, $searchterm, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, $useWildcard);
             $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => 0];
 
+            if( $searchresultsraw['error'] )
+            {
+                // no error handling accepted... just trash it into some logs...
+                $GLOBALS['log']->fatal(json_encode($searchresultsraw['error']['root_cause']));
+                //throw new Exception(json_encode($searchresultsraw['error']['root_cause']));
+            }
+
             foreach ($searchresults[$module]['hits'] as &$hit) {
                 $seed = BeanFactory::getBean($module, $hit['_id']);
                 $hit['acl'] = $this->get_acl_actions($seed);

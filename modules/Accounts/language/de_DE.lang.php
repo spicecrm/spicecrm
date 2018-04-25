@@ -68,7 +68,7 @@ $mod_strings = array (
 	'LBL_COUNTRY' => 'Land:',
 	'LBL_DATE_ENTERED' => 'Erstellt:',
 	'LBL_DATE_MODIFIED' => 'Geändert am:',
-	'LBL_MODIFIED_ID'=> 'Geändert von ID',
+	'LBL_MODIFIED_BY_ID'=> 'Geändert von ID',
 	'LBL_DEFAULT_SUBPANEL_TITLE' => 'Firmen',
 	'LBL_DESCRIPTION_INFORMATION' => 'Beschreibungsinformation',
 	'LBL_DESCRIPTION' => 'Beschreibung:',
@@ -140,7 +140,7 @@ $mod_strings = array (
 	'LBL_USERS_MODIFIED_LINK'=> 'Bearbeitet von Benutzern',
 	'LBL_VIEW_FORM_TITLE' => 'Firmen Listenansicht',
 	'LBL_WEBSITE' => 'Webseite:',
-	'LBL_CREATED_ID'=> 'Erstellt von ID:',
+	'LBL_CREATED_BY_ID'=> 'Erstellt von ID:',
 	'LBL_CAMPAIGNS' => 'Kampagnen',
 	'LNK_ACCOUNT_LIST' => 'Firmen',
 	'LNK_NEW_ACCOUNT' => 'Neue Firma',
@@ -172,7 +172,11 @@ $mod_strings = array (
     'LBL_EXT_ID' => 'external ID',
     'LBL_VAT_NR' => 'UID Nummer',
     'LBL_VAT_DETAILS' => 'UID Details',
-    'LBL_ACCOUNTS_BANKACCOUNTS_LINK' => 'Bankverbindungen',
-    'LBL_ACCOUNTS_ACCOUNTKPIS_LINK' => 'Account KPIs',
+    'LBL_ACCOUNTSBANKACCOUNTS' => 'Bankverbindungen',
+    'LBL_ACCOUNTSACCOUNTKPIS' => 'Account KPIs',
+    'LBL_SERVICEORDERS' => 'Serviceaufträge',
+    'LBL_SERVICETICKETS' => 'Servicetickets',
+    'LBL_SERVICEEQUIPMENTS' => 'Service Maschinen',
+
 );
 

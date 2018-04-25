@@ -267,7 +267,7 @@ $upgrade_contents = findAllFiles( "$base_upgrade_dir", array() );
 $upgrades_available = 0;
 
 print( "<table>\n" );
-print( "<tr><th></th><th align=left>{$mod_strings['LBL_ML_NAME']}</th><th>{$mod_strings['LBL_ML_TYPE']}</th><th>{$mod_strings['LBL_ML_VERSION']}</th><th>{$mod_strings['LBL_ML_PUBLISHED']}</th><th>{$mod_strings['LBL_ML_UNINSTALLABLE']}</th><th>{$mod_strings['LBL_ML_DESCRIPTION']}</th></tr>\n" );
+print( "<tr><th></th><th align=left>{$mod_strings['LBL_ML_NAME']}</th><th>{$mod_strings['LBL_ML_TYPE']}</th><th>{$mod_strings['LBL_ML_VERSION']}</th><th>{$mod_strings['LBL_ML_PUBLISHED']}</th><th>{$mod_strings['LBL_ML_UNINSTALLABLE']}</th><th>{$mod_strings['LBL_DESCRIPTION']}</th></tr>\n" );
 foreach($upgrade_contents as $upgrade_content)
 {
 	if(!preg_match("#.*\.zip\$#", $upgrade_content))

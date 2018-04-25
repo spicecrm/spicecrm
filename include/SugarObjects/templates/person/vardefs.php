@@ -36,56 +36,63 @@
 
 $vardefs = array(
     'fields' => array(
-        'salutation' =>
-            array(
-                'name' => 'salutation',
-                'vname' => 'LBL_SALUTATION',
-                'type' => 'enum',
-                'options' => 'salutation_dom',
-                'massupdate' => false,
-                'len' => '255',
-                'comment' => 'Contact salutation (e.g., Mr, Ms)'
-            ),
-        'first_name' =>
-            array(
-                'name' => 'first_name',
-                'vname' => 'LBL_FIRST_NAME',
-                'type' => 'varchar',
-                'len' => '100',
-                'unified_search' => true,
-                'full_text_search' => array('boost' => 3),
-                'comment' => 'First name of the contact',
-                'merge_filter' => 'selected',
-
-            ),
-        'last_name' =>
-            array(
-                'name' => 'last_name',
-                'vname' => 'LBL_LAST_NAME',
-                'type' => 'varchar',
-                'len' => '100',
-                'unified_search' => true,
-                'full_text_search' => array('boost' => 3),
-                'comment' => 'Last name of the contact',
-                'merge_filter' => 'selected',
-                'required' => true,
-                'importable' => 'required',
-            ),
-        'name' =>
-            array(
-                'name' => 'name',
-                'rname' => 'name',
-                'vname' => 'LBL_NAME',
-                'type' => 'name',
-                'link' => true, // bug 39288
-                'fields' => array('first_name', 'last_name'),
-                'sort_on' => 'last_name',
-                'source' => 'non-db',
-                'group' => 'last_name',
-                'len' => '255',
-                'db_concat_fields' => array(0 => 'first_name', 1 => 'last_name'),
-                'importable' => 'false',
-            ),
+        'salutation' => array(
+            'name' => 'salutation',
+            'vname' => 'LBL_SALUTATION',
+            'type' => 'enum',
+            'options' => 'salutation_dom',
+            'massupdate' => false,
+            'len' => '255',
+            'comment' => 'Contact salutation (e.g., Mr, Ms)'
+        ),
+        'first_name' => array(
+            'name' => 'first_name',
+            'vname' => 'LBL_FIRST_NAME',
+            'type' => 'varchar',
+            'len' => '100',
+            'unified_search' => true,
+            'full_text_search' => array('boost' => 3),
+            'comment' => 'First name of the contact',
+            'merge_filter' => 'selected',
+        ),
+        'last_name' => array(
+            'name' => 'last_name',
+            'vname' => 'LBL_LAST_NAME',
+            'type' => 'varchar',
+            'len' => '100',
+            'unified_search' => true,
+            'full_text_search' => array('boost' => 3),
+            'comment' => 'Last name of the contact',
+            'merge_filter' => 'selected',
+            'required' => true,
+            'importable' => 'required',
+        ),
+        'degree1' => array(
+            'name' => 'degree1',
+            'vname' => 'LBL_DEGREE1',
+            'type' => 'varchar',
+            'len' => 50
+        ),
+        'degree2' => array(
+            'name' => 'degree2',
+            'vname' => 'LBL_DEGREE2',
+            'type' => 'varchar',
+            'len' => 50
+        ),
+        'name' => array(
+            'name' => 'name',
+            'rname' => 'name',
+            'vname' => 'LBL_NAME',
+            'type' => 'name',
+            'link' => true, // bug 39288
+            'fields' => array('first_name', 'last_name'),
+            'sort_on' => 'last_name',
+            'source' => 'non-db',
+            'group' => 'last_name',
+            'len' => '255',
+            'db_concat_fields' => array(0 => 'first_name', 1 => 'last_name'),
+            'importable' => 'false',
+        ),
         'full_name' =>
             array(
                 'name' => 'full_name',
@@ -100,6 +107,13 @@ $vardefs = array(
                 'db_concat_fields' => array(0 => 'first_name', 1 => 'last_name'),
                 'studio' => array('listview' => false),
             ),
+        'title_dd' => array(
+            'name' => 'title_dd',
+            'vname' => 'LBL_TITLE_DD',
+            'type' => 'enum',
+            'len' => 25,
+            'options' => 'contacts_title_dom'
+        ),
         'title' =>
             array(
                 'name' => 'title',
@@ -129,7 +143,7 @@ $vardefs = array(
         'phone_home' =>
             array(
                 'name' => 'phone_home',
-                'vname' => 'LBL_HOME_PHONE',
+                'vname' => 'LBL_PHONE_HOME',
                 'type' => 'phone',
                 'dbType' => 'varchar',
                 'len' => 100,
@@ -156,7 +170,7 @@ $vardefs = array(
         'phone_mobile' =>
             array(
                 'name' => 'phone_mobile',
-                'vname' => 'LBL_MOBILE_PHONE',
+                'vname' => 'LBL_PHONE_MOBILE',
                 'type' => 'phone',
                 'dbType' => 'varchar',
                 'len' => 100,
@@ -168,7 +182,7 @@ $vardefs = array(
         'phone_work' =>
             array(
                 'name' => 'phone_work',
-                'vname' => 'LBL_OFFICE_PHONE',
+                'vname' => 'LBL_PHONE_OFFICE',
                 'type' => 'phone',
                 'dbType' => 'varchar',
                 'len' => 100,
@@ -181,7 +195,7 @@ $vardefs = array(
         'phone_other' =>
             array(
                 'name' => 'phone_other',
-                'vname' => 'LBL_OTHER_PHONE',
+                'vname' => 'LBL_PHONE_OTHER',
                 'type' => 'phone',
                 'dbType' => 'varchar',
                 'len' => 100,
@@ -193,7 +207,7 @@ $vardefs = array(
         'phone_fax' =>
             array(
                 'name' => 'phone_fax',
-                'vname' => 'LBL_FAX_PHONE',
+                'vname' => 'LBL_PHONE_FAX',
                 'type' => 'phone',
                 'dbType' => 'varchar',
                 'len' => 100,
@@ -206,7 +220,7 @@ $vardefs = array(
             'name' => 'personal_interests',
             'type' => 'multienum',
             'isMultiSelect' => true,
-            'dbType'=> 'text',
+            'dbType' => 'text',
             'options' => 'personalinterests_dom',
             'vname' => 'LBL_PERSONAL_INTERESTS',
             'comment' => 'Personal Interests'
@@ -265,6 +279,17 @@ $vardefs = array(
                 'len' => '150',
                 'group' => 'primary_address',
                 'comment' => 'Street address for primary address',
+                'merge_filter' => 'enabled',
+            ),
+
+        'primary_address_attn' =>
+            array(
+                'name' => 'primary_address_attn',
+                'vname' => 'LBL_PRIMARY_ADDRESS_ATTN',
+                'type' => 'varchar',
+                'len' => '150',
+                'comment' => 'additonal attention field for the address',
+                'group' => 'primary_address',
                 'merge_filter' => 'enabled',
             ),
         'primary_address_street_2' =>
@@ -363,6 +388,13 @@ $vardefs = array(
                 'type' => 'varchar',
                 'len' => '150',
                 'source' => 'non-db',
+            ),
+        'alt_address_attn' =>
+            array(
+                'name' => 'alt_address_attn',
+                'vname' => 'LBL_ALT_ADDRESS_ATTN',
+                'type' => 'varchar',
+                'len' => '150'
             ),
         'alt_address_city' =>
             array(

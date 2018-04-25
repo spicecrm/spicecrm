@@ -147,7 +147,7 @@ $xtpl->assign("DATE_ENTERED", $focus->date_entered);
 $xtpl->assign("ASSIGNED_USER_NAME", $focus->assigned_user_name);
 
 $xtpl->assign("TYPE", $app_list_strings['emailTemplates_type_list'][$focus->type]);
-$xtpl->assign("FOR_BEAN", $app_list_strings['kreleasepackage_repair_modules_dom'][$focus->for_bean]);
+$xtpl->assign("FOR_BEAN", $app_list_strings['systemdeploymentpackage_repair_modules_dom'][$focus->for_bean]);
 
 if($focus->ACLAccess('EditView')) {
 	$xtpl->parse("main.edit");

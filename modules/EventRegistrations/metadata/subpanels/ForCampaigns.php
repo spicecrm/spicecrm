@@ -25,12 +25,12 @@ $subpanel_layout = array(
             'target_record_key' => 'contact_id',
             'target_module' => 'Contacts',
             'module' => 'Contacts',
-            'vname' => 'LBL_CONTACT_NAME',
+            'vname' => 'LBL_CONTACT',
             'width' => '15%',
             'sortable' => false,
         ),
         'registration_status' => array(
-            'vname' => 'LBL_REGISTRATION_STATUS',
+            'vname' => 'LBL_STATUS',
             'width' => '10%',
         ),
 //        'assigned_user_name' => array(

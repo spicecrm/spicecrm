@@ -17,6 +17,27 @@
 class KRESTUserHandler
 {
 
+    public function getPwdCheckRegex()
+    {
+        $pwdCheck = '';
+        if ( @$GLOBALS['sugar_config']['passwordsetting']['oneupper'] )
+            $pwdCheck .= '(?=.*[A-Z])';
+        if ( @$GLOBALS['sugar_config']['passwordsetting']['onelower'] )
+            $pwdCheck .= '(?=.*[a-z])';
+        if ( @$GLOBALS['sugar_config']['passwordsetting']['onenumber'] )
+            $pwdCheck .= '(?=.*\d)';
+        if ( @$GLOBALS['sugar_config']['passwordsetting']['minpwdlength'] )
+            $pwdCheck .= '.{'.$GLOBALS['sugar_config']['passwordsetting']['minpwdlength'].',}';
+        else
+            $pwdCheck .= '.+';
+        return $pwdCheck;
+    }
+
+    public function getPwdGuideline( $lang ) {
+        return (string) @$GLOBALS['sugar_config']['passwordsetting']['guideline'][$lang];
+    }
+
+
     public function get_modules_acl()
     {
         global $moduleList;
@@ -54,7 +75,8 @@ class KRESTUserHandler
         } else {
             return array(
                 'status' => 'error',
-                'msg' => 'current password not OK'
+                'msg' => 'current password not OK',
+                'lbl' => 'MSG_CURRENT_PWD_NOT_OK'
             );
         }
     }

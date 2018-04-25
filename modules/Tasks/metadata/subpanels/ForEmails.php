@@ -70,7 +70,7 @@ $subpanel_layout = array(
 		),
 		
 		'parent_name'=>array(
-			 'vname' => 'LBL_LIST_RELATED_TO',
+			 'vname' => 'RELATED_TOCONTACT',
 			 'width' => '22%',
 			 'target_record_key' => 'parent_id',
 			 'target_module_key'=>'parent_type',

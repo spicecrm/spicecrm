@@ -5,12 +5,12 @@ $dictionary['AccountKPI'] = array(
         'account_id' => array (
             'name' => 'account_id',
             'type' => 'id',
-            'vname' => 'LBL_ACCOUNTS_ID'
+            'vname' => 'LBL_ACCOUNT_ID'
         ),
         'account_name' => array (
             'source' => 'non-db',
             'name' => 'account_name',
-            'vname' => 'LBL_ACCOUNTS_NAME',
+            'vname' => 'LBL_ACCOUNT',
             'type' => 'relate',
             'len' => '255',
             'id_name' => 'account_id',
@@ -26,7 +26,7 @@ $dictionary['AccountKPI'] = array(
             'link_type' => 'one',
             'side' => 'right',
             'source' => 'non-db',
-            'vname' => 'LBL_ACCOUNTS_ACCOUNTKPIS_LINK',
+            'vname' => 'LBL_ACCOUNTS',
         ),
         'year' => array (
             'name' => 'year',

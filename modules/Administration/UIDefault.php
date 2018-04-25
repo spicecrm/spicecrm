@@ -28,18 +28,32 @@
 ********************************************************************************/
 
 /**
- * delete current content in sysfts table
- * insert default FTS settings for all modules
+ * Administration
+ * display form <> load config
  */
 
-
-require_once 'modules/SystemUI/SpiceUICreator.php';
-$spiceuiconf = new SpiceUICreator();
-
-
-if($_POST['uidefaultconf_process'] > 0){
-    $spiceuiconf->createDefaultConf();
-}else{
-    $spiceuiconf->displayDefaultConfForm();
+if ($current_user->is_admin) {
+    require_once 'modules/SystemUI/SpiceUIConfLoader.php';
+    $loader = new SpiceUIConfLoader();
+    if ($_POST['uidefaultconf_process'] > 0) {
+        if(empty($_POST['uidefaultconf_package']) || empty($_POST['uidefaultconf_version'])){
+            die('Missing Parameters. Please Check Package and version.');
+        }
+        //collect values for REST call
+        //https://packages.spicecrm.io/referenceconfig/*/2018.02.001
+        $route = "referenceconfig";
+        $package = (isset($_POST['uidefaultconf_package']) ? $_POST['uidefaultconf_package'] : "*");
+        $version = $_POST['uidefaultconf_version'];
+        $endpoint = implode("/", array($route, $package, $version));
+        $loader->loadDefaultConf($endpoint, array('route' => $route, 'package' => $package, 'version' => $version));
+        $loader->cleanDefaultConf();
+    } else {
+        //get current config
+        $currentconf = $loader->getCurrentConf();
+        //display form
+        $loader->displayDefaultConfForm($currentconf);
+    }
 }
-
+else{
+    die("Access denied");
+}

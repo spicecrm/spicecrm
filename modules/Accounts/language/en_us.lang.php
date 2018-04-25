@@ -89,7 +89,7 @@ $mod_strings = array (
 	'LBL_COUNTRY' => 'Country:',
 	'LBL_DATE_ENTERED' => 'Date Created:',
 	'LBL_DATE_MODIFIED' => 'Date Modified:',
-	'LBL_MODIFIED_ID'=>'Modified By Id',
+	'LBL_MODIFIED_BY_ID'=>'Modified By Id',
 	'LBL_DEFAULT_SUBPANEL_TITLE' => 'Accounts',
 	'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
 	'LBL_DESCRIPTION' => 'Description:',
@@ -162,7 +162,7 @@ $mod_strings = array (
 	'LBL_USERS_MODIFIED_LINK'=>'Modified Users',
 	'LBL_VIEW_FORM_TITLE' => 'Account View',
 	'LBL_WEBSITE' => 'Website:',
-	'LBL_CREATED_ID'=>'Created By Id',
+	'LBL_CREATED_BY_ID'=>'Created By Id',
 	'LBL_CAMPAIGNS' =>'Campaigns',
 	'LNK_ACCOUNT_LIST' => 'View Accounts',
 	'LNK_NEW_ACCOUNT' => 'Create Account',
@@ -196,5 +196,9 @@ $mod_strings = array (
     'LBL_VAT_DETAILS' => 'VAT Details',
     'LBL_ACCOUNTS_BANKACCOUNTS_LINK' => 'Bank Accounts',
     'LBL_ACCOUNTS_ACCOUNTKPIS_LINK' => 'Account KPIs',
+    'LBL_SERVICEORDERS' => 'Service Orders',
+    'LBL_SERVICETICKETS' => 'Service Tickets',
+    'LBL_SERVICEEQUIPMENTS' => 'Service Equipment',
+
 );
 

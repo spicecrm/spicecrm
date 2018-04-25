@@ -1,6 +1,6 @@
 <?php
 $app->group('/systrashcan', function () use ($app) {
-    $app->get('/', function () use ($app) {
+    $app->get('', function () use ($app) {
         global $current_user;
 
         echo json_encode(SystemTrashCan::getRecords());
@@ -13,7 +13,7 @@ $app->group('/systrashcan', function () use ($app) {
     $app->post('/recover/:id', function ($id) use ($app) {
         global $current_user;
 
-        $requestData = $app->request->get();
+        $requestData = $_GET;
 
         $recovery = SystemTrashCan::recover($id, $requestData['recoverrelated'] == 'true' ? true : false);
 

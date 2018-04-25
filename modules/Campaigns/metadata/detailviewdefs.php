@@ -120,7 +120,7 @@ $viewdefs['Campaigns']['DetailView'] = array(
                 'name',
                 array(
                     'name' => 'status',
-                    'label' => 'LBL_CAMPAIGN_STATUS',
+                    'label' => 'LBL_STATUS',
                 ),
             ),
 
@@ -128,7 +128,7 @@ $viewdefs['Campaigns']['DetailView'] = array(
 
                 array(
                     'name' => 'start_date',
-                    'label' => 'LBL_CAMPAIGN_START_DATE',
+                    'label' => 'LBL_DATE_START',
                 ),
                 'campaign_type',
             ),
@@ -136,12 +136,12 @@ $viewdefs['Campaigns']['DetailView'] = array(
             array(
                 array(
                     'name' => 'end_date',
-                    'label' => 'LBL_CAMPAIGN_END_DATE',
+                    'label' => 'LBL_DATE_END',
                 ),
                 array(
                     'name' => 'frequency',
                     'customCode' => '{if $fields.campaign_type.value == "NewsLetter"}<div style=\'none\' id=\'freq_field\'>{$APP_LIST.newsletter_frequency_dom[$fields.frequency.value]}</div>{/if}&nbsp;',
-                    'customLabel' => '{if $fields.campaign_type.value == "NewsLetter"}<div style=\'none\' id=\'freq_label\'>{$MOD.LBL_CAMPAIGN_FREQUENCY}</div>{/if}&nbsp;'
+                    'customLabel' => '{if $fields.campaign_type.value == "NewsLetter"}<div style=\'none\' id=\'freq_label\'>{$MOD.LBL_FREQUENCY}</div>{/if}&nbsp;'
                 ),
             ),
 
@@ -156,22 +156,22 @@ $viewdefs['Campaigns']['DetailView'] = array(
 
                 array(
                     'name' => 'budget',
-                    'label' => '{$MOD.LBL_CAMPAIGN_BUDGET} ({$CURRENCY})',
+                    'label' => '{$MOD.LBL_BUDGET} ({$CURRENCY})',
                 ),
                 array(
                     'name' => 'expected_cost',
-                    'label' => '{$MOD.LBL_CAMPAIGN_EXPECTED_COST} ({$CURRENCY})',
+                    'label' => '{$MOD.LBL_EXPECTED_COST} ({$CURRENCY})',
                 ),
             ),
 
             array(
                 array(
                     'name' => 'actual_cost',
-                    'label' => '{$MOD.LBL_CAMPAIGN_ACTUAL_COST} ({$CURRENCY})',
+                    'label' => '{$MOD.LBL_ACTUAL_COST} ({$CURRENCY})',
                 ),
                 array(
                     'name' => 'expected_revenue',
-                    'label' => '{$MOD.LBL_CAMPAIGN_EXPECTED_REVENUE} ({$CURRENCY})',
+                    'label' => '{$MOD.LBL_EXPECTED_REVENUE} ({$CURRENCY})',
                 ),
             ),
 
@@ -179,7 +179,7 @@ $viewdefs['Campaigns']['DetailView'] = array(
 
                 array(
                     'name' => 'objective',
-                    'label' => 'LBL_CAMPAIGN_OBJECTIVE',
+                    'label' => 'LBL_OBJECTIVE',
                 ),
             ),
 
@@ -187,7 +187,7 @@ $viewdefs['Campaigns']['DetailView'] = array(
 
                 array(
                     'name' => 'content',
-                    'label' => 'LBL_CAMPAIGN_CONTENT',
+                    'label' => 'LBL_CONTENT',
                 ),
                 array(
                     'name' => 'mailbox_name',

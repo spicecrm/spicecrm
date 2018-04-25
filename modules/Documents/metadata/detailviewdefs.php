@@ -105,7 +105,7 @@ $viewdefs['Documents']['DetailView'] = array(
        array (
         array (
             'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO_NAME',
+            'label' => 'LBL_ASSIGNED_TO',
             ),
 
         ),

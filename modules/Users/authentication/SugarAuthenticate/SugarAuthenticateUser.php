@@ -90,7 +90,6 @@ class SugarAuthenticateUser{
 	 */
 	function loadUserOnLogin($name, $password, $fallback = false, $PARAMS = array()) {
 		global $login_error;
-
 		$GLOBALS['log']->debug("Starting user load for ". $name);
 		if(empty($name) || empty($password)) return false;
 		$input_hash = $password;

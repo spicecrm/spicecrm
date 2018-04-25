@@ -532,6 +532,62 @@ class Call extends SugarBean {
 	}
 
 
+	function get_user_calls($user, $timespan = 'today'){
+
+	    global $timedate;
+
+        $template = $this;
+
+        // First, get the list of IDs.
+        $myquery = "SELECT id FROM calls WHERE calls.assigned_user_id = '$user->id' AND calls.deleted = 0 and calls.status = 'planned'";
+        $invitedquery = "SELECT calls_users.call_id id from calls_users, calls where calls.id = calls_users.call_id AND calls_users.user_id='$user->id' AND ( calls_users.accept_status IS NULL OR  calls_users.accept_status='none') AND calls_users.deleted=0 AND calls.deleted = 0 and calls.status = 'planned'";
+
+        switch($timespan){
+            case 'all':
+                $end = new DateTime();
+                $end->setTime(23, 59, 59);
+                $myquery .= " AND date_start <= '".$timedate->asDb($end)."'";
+                $invitedquery .= " AND date_start <= '".$timedate->asDb($end)."'";
+                break;
+            case 'today':
+                $start = new DateTime();
+                $start->setTime(0, 0, 0);
+                $end = new DateTime();
+                $end->setTime(23, 59, 59);
+                $myquery .= " AND calls.date_start >= '" . $timedate->asDb($start) . "' AND date_start <= '".$timedate->asDb($end)."'";
+                $invitedquery .= " AND calls.date_start >= '" . $timedate->asDb($start) . "' AND date_start <= '".$timedate->asDb($end)."'";
+                break;
+            case 'overdue':
+                $end = new DateTime();
+                $end->setTime(0, 0, 0);
+                $myquery .= " AND calls.date_start < '" . $timedate->asDb($end) . "'";
+                $invitedquery .= " AND calls.date_start < '" . $timedate->asDb($end) . "'";
+                break;
+            case 'future':
+                $start = new DateTime();
+                $start->setTime(0, 0, 0);
+                $myquery .= " AND calls.date_start > '" . $timedate->asDb($start) . "''";
+                $invitedquery .= " AND calls.date_start > '" . $timedate->asDb($start) . "''";
+                break;
+        }
+
+        $result = $this->db->query($myquery . ' UNION ' . $invitedquery, true);
+
+        $list = Array();
+
+        while($row = $this->db->fetchByAssoc($result))
+        {
+            $record = BeanFactory::getBean('Calls',$row['id']);
+
+            if($record != null){
+                // this copies the object into the array
+                $list[] = $record;
+            }
+        }
+        return $list;
+
+    }
+
 	function get_call_users() {
 		$template = new User();
 		// First, get the list of IDs.

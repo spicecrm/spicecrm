@@ -409,7 +409,7 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
             'relationship' => 'accounts_accountkpis',
             'source' => 'non-db',
             'side' => 'right',
-            'vname' => 'LBL_ACCOUNTS_ACCOUNTKPIS_LINK'
+            'vname' => 'LBL_ACCOUNTKPIS'
         ),
         'accountbankaccounts' => array(
             'name' => 'accountbankaccounts',
@@ -417,7 +417,7 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
             'relationship' => 'accounts_bankaccounts',
             'source' => 'non-db',
             'side' => 'right',
-            'vname' => 'LBL_ACCOUNTS_BANKACCOUNTS_LINK'
+            'vname' => 'LBL_ACCOUNTBANKACCOUNTS'
         ),
 
         'accountccdetails' => array(
@@ -528,6 +528,8 @@ $dictionary['Account'] = array('table' => 'accounts', 'audited' => true, 'unifie
 
 
 // CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
 if(is_file("modules/SalesDocs/SalesDoc.php")){
     $dictionary['Account']['fields']['salesdocs'] = array(
         'name' => 'salesdocs',
@@ -549,8 +551,39 @@ if(is_file("modules/Addresses/Address.php")) {
         'default' => true
     );
 }
-
-
+if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+    $dictionary['Account']['fields']['serviceorders'] = array(
+        'name' => 'serviceorders',
+        'type' => 'link',
+        'relationship' => 'serviceorders_accounts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEORDERS',
+        'module' => 'ServiceOrders',
+        'default' => false
+    );
+}
+if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+    $dictionary['Account']['fields']['servicetickets'] = array(
+        'name' => 'servicetickets',
+        'type' => 'link',
+        'relationship' => 'servicetickets_accounts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICETICKETS',
+        'module' => 'ServiceTickets',
+        'default' => false
+    );
+}
+if(is_file("modules/ServiceEquipments/ServiceEquipment.php")) {
+    $dictionary['Account']['fields']['serviceequipments'] = array(
+        'name' => 'serviceequipments',
+        'type' => 'link',
+        'relationship' => 'serviceequipments_accounts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEEQUIPMENTS',
+        'module' => 'ServiceEquipments',
+        'default' => false
+    );
+}
 VardefManager::createVardef('Accounts', 'Account', array('default', 'assignable', 'company'));
 
 //jc - adding for refactor for import to not use the required_fields array

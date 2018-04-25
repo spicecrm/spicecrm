@@ -10,11 +10,11 @@ $app->group('/ftsmanager', function () use ($app, $spiceFTSManager) {
             echo json_encode($spiceFTSManager->getIndex());
         });
         $app->get('/nodes', function () use ($app, $spiceFTSManager) {
-            $getParams = $app->request->get();
+            $getParams = $_GET;
             echo json_encode($spiceFTSManager->getNodes($getParams['nodeid']));
         });
         $app->get('/fields', function () use ($app, $spiceFTSManager) {
-            $getParams = $app->request->get();
+            $getParams = $_GET;
             echo json_encode($spiceFTSManager->getFields($getParams['nodeid']));
         });
         $app->get('/analyzers', function () use ($app, $spiceFTSManager) {
@@ -25,49 +25,49 @@ $app->group('/ftsmanager', function () use ($app, $spiceFTSManager) {
             echo json_encode($spiceFTSManager->initialize());
         });
     });
-    $app->group('/:module', function () use ($app, $spiceFTSManager) {
-        $app->get('/fields', function ($module) use ($app, $spiceFTSManager) {
-            echo json_encode($spiceFTSManager->getFTSFields($module));
+    $app->group('/{module}', function() use ($app, $spiceFTSManager) {
+        $app->get('/fields', function($req, $res, $args) use ($app, $spiceFTSManager) {
+            echo json_encode($spiceFTSManager->getFTSFields($args['module']));
         });
-        $app->get('/settings', function ($module) use ($app, $spiceFTSManager) {
-            echo json_encode($spiceFTSManager->getFTSSettings($module));
+        $app->get('/settings', function($req, $res, $args) use ($app, $spiceFTSManager) {
+            echo json_encode($spiceFTSManager->getFTSSettings($args['module']));
         });
-        $app->delete('/', function ($module) use ($app, $spiceFTSManager) {
-            echo json_encode($spiceFTSManager->deleteIndex($module));
+        $app->delete('', function($req, $res, $args) use ($app, $spiceFTSManager) {
+            echo json_encode($spiceFTSManager->deleteIndex($args['module']));
         });
-        $app->post('/', function ($module) use ($app, $spiceFTSManager) {
-            $items = json_decode($app->request->getBody(), true);
-            echo json_encode($spiceFTSManager->setFTSFields($module, $items));
+        $app->post('', function($req, $res, $args) use ($app, $spiceFTSManager) {
+            $items = $req->getParsedBody();
+            echo json_encode($spiceFTSManager->setFTSFields($args['module'], $items));
         });
-        $app->post('/resetindex', function ($module) use ($app, $spiceFTSManager) {
+        $app->post('/resetindex', function($req, $res, $args) use ($app, $spiceFTSManager) {
             require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
             $ftsHandler = new SpiceFTSHandler();
 
             // delete and recreate the index
-            $spiceFTSManager->deleteIndex($module);
-            $spiceFTSManager->mapModule($module);
+            $spiceFTSManager->deleteIndex($args['module']);
+            $spiceFTSManager->mapModule($args['module']);
 
             // index the beans
-            $ftsHandler->resetIndexModule($module);
+            $ftsHandler->resetIndexModule($args['module']);
 
             echo json_encode(array('status' => 'success'));
         });
-        $app->post('/index', function ($module) use ($app, $spiceFTSManager) {
+        $app->post('/index', function($req, $res, $args) use ($app, $spiceFTSManager) {
             require_once('include/SpiceFTSManager/SpiceFTSHandler.php');
             $ftsHandler = new SpiceFTSHandler();
 
             // delete and recreate the index
-            $spiceFTSManager->deleteIndex($module);
-            $spiceFTSManager->mapModule($module);
+            $spiceFTSManager->deleteIndex($args['module']);
+            $spiceFTSManager->mapModule($args['module']);
 
             // index the beans
-            $ftsHandler->indexModule($module);
+            $ftsHandler->indexModule($args['module']);
 
             echo json_encode(array('status' => 'success'));
         });
-        $app->post('/map', function ($module) use ($app, $spiceFTSManager) {
-            $spiceFTSManager->mapModule($module);
-            echo json_encode(array('status' => 'success'));
+        $app->post('/map', function($req, $res, $args) use ($app, $spiceFTSManager) {
+            $result = $spiceFTSManager->mapModule($args['module']);
+            echo json_encode(array('status' => 'success', 'result' => $result));
         });
     });
 });

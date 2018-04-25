@@ -349,6 +349,7 @@ class KReport extends SugarBean
     public $object_name = "KReport";
     public $module_dir = 'KReports';
     public $importable = true;
+    public $dynamicoptions = false; //fix 2018-02-22 for KReportQuery referencefields looping
     // This is used to retrieve related fields from form posts.
     // var $additional_column_fields = Array('assigned_user_name', 'assigned_user_id', 'contact_name', 'contact_phone', 'contact_email', 'parent_name');
 

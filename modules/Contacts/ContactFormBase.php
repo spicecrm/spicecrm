@@ -200,7 +200,7 @@ $form .= <<<EOQ
 		<tr>
 		<td nowrap scope='row'>$lbl_phone</td>
 		<td nowrap scope='row'>${mod_strings['LBL_MOBILE_PHONE']}</td>
-		<td nowrap scope='row'>${mod_strings['LBL_FAX_PHONE']}</td>
+		<td nowrap scope='row'>${mod_strings['LBL_PHONE_FAX']}</td>
 		<td nowrap scope='row'>${mod_strings['LBL_HOME_PHONE']}</td>
 		</tr>
 

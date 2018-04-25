@@ -123,10 +123,23 @@ class KRESTModuleHandler
 
         $thisBean = BeanFactory::getBean($beanModule);
 
-        //echo(print_r($searchParams, true));
-        if (is_array(json_decode($searchParams['fields'], true))) {
-            $returnFields = json_decode($searchParams['fields'], true);
-        } else {
+        //var_dump($searchParams['fields'], html_entity_decode($searchParams['fields']));
+        if($searchParams['fields'] == '*')
+        {
+            // get all fields...
+            $returnFields = array();
+            foreach($thisBean->field_name_map as $field)
+            {
+                $returnFields[] = $field['name'];
+            }
+        }
+        elseif(is_array(json_decode(html_entity_decode($searchParams['fields']), true)))
+        {
+            // {"name","global"} <--- no valid json!
+            // ["name","global"] <--- valid!
+            $returnFields = json_decode(html_entity_decode($searchParams['fields']), true);
+        }
+        else {
             $returnFields = array();
             $listFields = $this->getModuleListdefs($beanModule, $thisBean, ($searchParams['client'] == 'mobile' ? true : false));
             foreach ($listFields as $thisField)
@@ -136,7 +149,7 @@ class KRESTModuleHandler
         $facets = array();
         $totalcount = 0;
 
-        // build the where claues is searchterm is specified
+        // build the where clause if searchterm is specified
         if (!empty($searchParams['searchterm'])) {
             $searchParams['whereclause'] = '';
             $searchtermArray = explode(' ', $searchParams['searchterm']);
@@ -186,7 +199,7 @@ class KRESTModuleHandler
                     $listDef = $db->fetchByAssoc($db->query("SELECT * FROM sysmodulelists WHERE id = '" . $searchParams['listid'] . "'"));
                     if ($listDef['basefilter'] == 'own')
                         $searchParams['searchmyitems'] = true;
-                    $filterdefs = json_decode(html_entity_decode_utf8(base64_decode($listDef['filterdefs'])), true);
+                    $filterdefs = json_decode(html_entity_decode(base64_decode($listDef['filterdefs'])), true);
                     if ($filterdefs) {
                         $listWhereClause = $this->buildFilerdefsWhereClause($thisBean, $filterdefs, $addJoins);
                         if ($listWhereClause) {
@@ -203,7 +216,8 @@ class KRESTModuleHandler
 
         $addJoins = '';
         if (!empty($searchParams['searchfields'])) {
-            $searchConditions = json_decode(html_entity_decode($searchParams['searchfields']), true);
+            // decode with ENT_QUOTES for single quotes... else they will be encoded...
+            $searchConditions = json_decode(html_entity_decode($searchParams['searchfields'], ENT_QUOTES), true);
             if (is_array($searchConditions) && count($searchConditions) > 0) {
                 $searchConditionWhereClause = $this->buildConditionsWhereClause($thisBean, $searchConditions, $addJoins);
                 if ($searchConditionWhereClause) {
@@ -336,7 +350,8 @@ class KRESTModuleHandler
 
             switch ($filterdef['operator']) {
                 case 'equals':
-                    $condition = $fieldName . " = '" . $filterdef['filtervalue'] . "'";
+                    // fix for enums
+                    $condition = $fieldName . " = '" . (is_array($filterdef['filtervalue']) ? $filterdef['filtervalue'][0] : $filterdef['filtervalue']) . "'";
                     break;
                 case 'oneof':
                     $condition = $fieldName . " IN ('" . implode("','", $filterdef['filtervalue']) . "')";
@@ -361,6 +376,10 @@ class KRESTModuleHandler
                     break;
                 case 'sequal':
                     $condition = $fieldName . " <= '" . $filterdef['filtervalue'] . "'";
+                    break;
+                case 'today':
+                    $date = new DateTime();
+                    $condition = $fieldName . " >= '" . $date->format('Y-m-d') . " 00:00:00' AND " .$fieldName . " <= '" . $date->format('Y-m-d') . " 23:59:59'";
                     break;
                 case 'future':
                     $condition = $fieldName . " > '" . $timedate->nowDb() . "'";
@@ -444,6 +463,12 @@ class KRESTModuleHandler
             case 'today':
                 return "date_format($fieldName, '%Y%m%d') = date_format(now(), '%Y%m%d')";
                 break;
+            case 'future':
+                return "date_format($fieldName, '%Y%m%d') > date_format(now(), '%Y%m%d')";
+                break;
+            case 'past':
+                return "date_format($fieldName, '%Y%m%d') < date_format(now(), '%Y%m%d')";
+                break;
             case 'in':
             case 'not in':
                 return $fieldName . ' ' . $condition['operator'] . ' (' . $condition['value'] . ') ';
@@ -488,7 +513,8 @@ class KRESTModuleHandler
         $app_list_strings = return_app_list_strings_language($current_language);
 
         $thisBean = BeanFactory::getBean($beanModule, $beanId, array('encode' => false)); //set encode to false to avoid things like ' being translated to &#039;
-        if (!$thisBean) {
+
+        if (!isset($thisBean)) {
             http_response_code(404);
             echo('record not found');
             exit;
@@ -678,9 +704,11 @@ class KRESTModuleHandler
     function get_acl_actions($bean)
     {
         $aclArray = [];
-        $aclActions = ['list', 'detail', 'edit', 'delete', 'export'];
+        $aclActions = ['list', 'detail', 'edit', 'delete', 'export', 'import'];
         foreach ($aclActions as $aclAction) {
-            $aclArray[$aclAction] = $bean->ACLAccess($aclAction);
+            $aclArray[$aclAction] = false;
+            if($bean)
+                $aclArray[$aclAction] = $bean->ACLAccess($aclAction);
         }
         return $aclArray;
     }
@@ -745,7 +773,7 @@ class KRESTModuleHandler
             return $retArray;
     }
 
-    public function add_related($beanModule, $beanId, $linkName)
+    public function add_related($beanModule, $beanId, $linkName, $relatedIds)
     {
 
         if (!ACLController::checkAccess($beanModule, 'edit', true)) {
@@ -754,8 +782,6 @@ class KRESTModuleHandler
             exit;
         }
         $retArray = array();
-
-        $relatedIds = json_decode($this->app->request->getBody());
 
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if (!$thisBean) {
@@ -821,7 +847,7 @@ class KRESTModuleHandler
                 $valArray = Array();
                 foreach($relFields as $relfield => $relmapdata) {
                     $fieldArray[] = $relfield;
-                    $valArray[] = $relfield . " = '" . $postparams[$relmapdata['map']] . "'";
+                    $valArray[] = $relfield . " = '" . ( is_bool( $postparams[$relmapdata['map']] ) ? (int)$postparams[$relmapdata['map']] : $postparams[$relmapdata['map']] ) . "'";
                 }
 
                 $thisBean->db->query("UPDATE " . $thisBean->{$linkName}->relationship->getRelationshipTable() . " SET " . implode(', ', $valArray) . " WHERE id ='$relid'");
@@ -927,26 +953,32 @@ class KRESTModuleHandler
                         $beans = $post_params[$fieldData['name']]['beans'];
                         foreach ($beans as $beanId => $beanData) {
                             $seed = BeanFactory::getBean($fieldData['module'], $beanId);
-                            // if it does not exist create new bean
-                            if (!$seed) {
-                                $seed = BeanFactory::getBean($fieldData['module']);
-                                $seed->id = $beanId;
-                                $seed->new_with_id = true;
-                            }
+                            if($beanData['deleted'] == 0) {
+                                // if it does not exist create new bean
+                                if (!$seed) {
+                                    $seed = BeanFactory::getBean($fieldData['module']);
+                                    $seed->id = $beanId;
+                                    $seed->new_with_id = true;
+                                }
 
-                            // populate and save and add
-                            $changed = false;
-                            foreach ($seed->field_defs as $field => $field_value) {
-                                if (isset($beanData[$field]) && $beanData[$field] !== $seed->$field) {
-                                    $seed->$field = $beanData[$field];
-                                    $changed = true;
+                                // populate and save and add
+                                $changed = false;
+                                foreach ($seed->field_defs as $field => $field_value) {
+                                    if (isset($beanData[$field]) && $beanData[$field] !== $seed->$field) {
+                                        $seed->$field = $beanData[$field];
+                                        $changed = true;
+                                    }
+                                }
+                                // save if we had changes
+                                if ($changed)
+                                    $seed->save();
+
+                                $thisBean->$fieldId->add($seed);
+                            } else {
+                                if($seed) {
+                                    $seed->mark_deleted($seed->id);
                                 }
                             }
-                            // save if we had changes
-                            if ($changed)
-                                $seed->save();
-
-                            $thisBean->$fieldId->add($seed);
                         }
                     }
                     break;
@@ -1223,7 +1255,7 @@ class KRESTModuleHandler
     }
 
     //private helper functions
-    function mapBeanToArray($beanModule, $thisBean, $returnFields = array(), $includeReminder = false, $includeNotes = false)
+    function mapBeanToArray($beanModule, $thisBean, $returnFields = array(), $includeReminder = false, $includeNotes = false, $resolvelinks = true)
     {
 
         global $current_language, $current_user;
@@ -1234,11 +1266,12 @@ class KRESTModuleHandler
         foreach ($thisBean->field_name_map as $fieldId => $fieldData) {
             switch ($fieldData['type']) {
                 case 'link':
-                    if ($fieldData['default'] === true && $fieldData['module']) {
+                    if ($resolvelinks && $fieldData['default'] === true && $fieldData['module']) {
+                        $beanDataArray[$fieldId]['beans'] = new stdClass();
                         $thisBean->load_relationship($fieldId);
                         $relatedBeans = $thisBean->get_linked_beans($fieldId, $fieldData['module']);
                         foreach ($relatedBeans as $relatedBean) {
-                            $beanDataArray[$fieldId]['beans'][$relatedBean->id] = $this->mapBeanToArray($fieldData['module'], $relatedBean);
+                            $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($fieldData['module'], $relatedBean);
                         }
                     }
                     break;
@@ -1290,6 +1323,14 @@ class KRESTModuleHandler
             }
 
             $beanDataArray['acl_fieldcontrol'] = $controlArray;
+        }else{
+            //workaround to unset edit icon when bean edit is prohibited until we have our ACLController
+            //build fake $beanDataArray['acl_fieldcontrol']['edit']
+            if(!$beanDataArray['acl']['edit']) {
+                foreach ($thisBean->field_defs as $field => $def) {
+                    $beanDataArray['acl_fieldcontrol'][$def['name']] = 1;
+                }
+            }
         }
         return $beanDataArray;
     }

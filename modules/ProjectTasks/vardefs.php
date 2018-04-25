@@ -74,7 +74,7 @@ $dictionary['ProjectTask'] = array(
         ),
         'name' => array(
             'name' => 'name',
-            'vname' => 'LBL_NAME',
+            'vname' => 'LBL_SUMMARY',
             'required' => true,
             'dbType' => 'varchar',
             'type' => 'name',
@@ -121,7 +121,7 @@ $dictionary['ProjectTask'] = array(
         ),
         'time_finish' => array(
             'name' => 'time_finish',
-            'vname' => 'LBL_TIME_FINISH',
+            'vname' => 'LBL_TIME_END',
             'type' => 'int',
             'reportable' => false,
             // 'validation'=>array('type' => 'isbefore', 'compareto'=>'date_due', 'blank' => true),
@@ -129,7 +129,7 @@ $dictionary['ProjectTask'] = array(
         ),
         'date_finish' => array(
             'name' => 'date_finish',
-            'vname' => 'LBL_DATE_FINISH',
+            'vname' => 'LBL_DATE_END',
             'type' => 'date',
             'validation' => array('type' => 'isafter', 'compareto' => 'date_start', 'blank' => true),
             'audited' => true,
@@ -162,7 +162,7 @@ $dictionary['ProjectTask'] = array(
         ),
         'date_due' => array(
             'name' => 'date_due',
-            'vname' => 'LBL_DATE_DUE',
+            'vname' => 'LBL_DUE_DATE',
             'type' => 'date',
             'rel_field' => 'time_due',
             'audited' => true
@@ -190,7 +190,7 @@ $dictionary['ProjectTask'] = array(
         ),
         'milestone_flag' => array(
             'name' => 'milestone_flag',
-            'vname' => 'LBL_MILESTONE_FLAG',
+            'vname' => 'LBL_PROJECTMILESTONE',
             'type' => 'bool',
             'required' => false,
         ),
@@ -203,19 +203,19 @@ $dictionary['ProjectTask'] = array(
         ),
         'task_number' => array(
             'name' => 'task_number',
-            'vname' => 'LBL_TASK_NUMBER',
+            'vname' => 'LBL_NUMBER',
             'required' => false,
             'type' => 'int',
         ),
         'estimated_effort' => array(
             'name' => 'estimated_effort',
-            'vname' => 'LBL_ESTIMATED_EFFORT',
+            'vname' => 'LBL_TOTAL_ESTIMATED_EFFORT',
             'required' => false,
             'type' => 'int',
         ),
         'actual_effort' => array(
             'name' => 'actual_effort',
-            'vname' => 'LBL_ACTUAL_EFFORT',
+            'vname' => 'LBL_TOTAL_ACTUAL_EFFORT',
             'required' => false,
             'type' => 'int',
         ),
@@ -234,7 +234,7 @@ $dictionary['ProjectTask'] = array(
             'name' => 'project_name',
             'rname' => 'name',
             'id_name' => 'project_id',
-            'vname' => 'LBL_PARENT_NAME',
+            'vname' => 'LBL_PROJECT',
             'type' => 'relate',
             'join_name' => 'projects',
             'table' => 'projects',
@@ -375,13 +375,16 @@ $dictionary['ProjectTask'] = array(
         )
     )
 );
-//Only for CE
+
+// CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
 if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
     $dictionary['ProjectTask']['fields']['projectwbs_name'] = array(
         'name' => 'projectwbs_name',
         'rname' => 'name',
         'id_name' => 'projectwbs_id',
-        'vname' => 'LBL_PROJECTWBS_NAME',
+        'vname' => 'LBL_PROJECTWBS',
         'type' => 'relate',
         'join_name' => 'projectwbss',
         'table' => 'projectwbss',
@@ -395,7 +398,6 @@ if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
     $dictionary['ProjectTask']['fields']['projectwbs_id'] = array(
         'name' => 'projectwbs_id',
         'vname' => 'LBL_PROJECTWBS_ID',
-        'required' => true,
         'type' => 'id',
         'reportable' => false
     );
@@ -403,6 +405,7 @@ if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
         'name' => 'projectwbss',
         'type' => 'link',
         'relationship' => 'projectwbss_prjecttasks',
+        'module' => 'ProjectWBSs',
         'source' => 'non-db',
         'side' => 'right',
         'vname' => 'LBL_PROJECTWBSS',
@@ -410,3 +413,4 @@ if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
 }
 VardefManager::createVardef('ProjectTasks', 'ProjectTask', array('default', 'assignable'));
 
+$dictionary['ProjectTask']['fields']['name']['vname'] = 'LBL_SUMMARY';

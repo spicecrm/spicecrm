@@ -484,7 +484,7 @@ $mod_strings = array (
     'LBL_ML_ACTION' => 'Aktion',
     'LBL_ML_CANCEL'             => 'Abbrechen',
     'LBL_ML_COMMIT'=> 'Durchführen',
-    'LBL_ML_DESCRIPTION' => 'Beschreibung',
+    'LBL_DESCRIPTION' => 'Beschreibung',
     'LBL_ML_INSTALLED' => 'Installiert am',
     'LBL_ML_NAME' => 'Name',
     'LBL_ML_PUBLISHED' => 'Veröffentlicht am',
@@ -657,11 +657,6 @@ $mod_strings = array (
     'LBL_REPAIR_DATABASE_PROCESSING' => 'Datenbank und vardef werden verglichen...',
     'LBL_REPAIR_DATABASE_DIFFERENCES' => 'Unterschiede zwischen Datenbank und Vardefs gefunden',
     'LBL_REPAIR_DATABASE_TEXT' => 'Mit diesem Tool wird die Datenbankstruktur mit jener in vardefs abgeglichen. Sie können diesen Script exportieren und ihn dann z.B. in PHPMyAdmin laufen lassen oder Sie erlauben dem Administrationstool, den Script auszuführen.<br><br><b>Bemerkung: Alle Änderungen die Sie am gezeigten Script durchführen, werden auch exportiert bzw. exekutiert.</b>',
-                    "in the vardefs. You have the option of exporting this script and then running it " .
-                    "against your database using external database management tools, or to allow the " .
-                    "administration module to run the script." .
-                    "<br><br><strong>NOTE: any changes you make to the script in the textbox will be reflected " .
-                    "in the exported or executed code.<br><br>",
     'LBL_REPAIR_DATABASE_SYNCED' => 'Datenbank Tabellen sind mit vardefs erfolgreich abgeglichen',
     'LBL_REPAIR_DATABASE_EXECUTE' => 'Ausführen',
     'LBL_REPAIR_DATABASE_EXPORT' => 'Exportieren',
@@ -759,7 +754,7 @@ $mod_strings = array (
     'LBL_UPDATE_CHECK_AUTO'=> 'Automatisch',
     'LBL_UPDATE_CHECK_MANUAL'=> 'Manuell',
     'LBL_UPDATE_CHECK_TYPE'=> '<b>Automatische Prüfung auf Updates</b> - Wenn aktiviert, überprüft das System regelmäßig ob neue Updates vorhanden sind.',
-    'LBL_UPDATE_DESCRIPTIONS'=> 'Beschreibung',
+    'LBL_DESCRIPTIONS'=> 'Beschreibung',
     'LBL_UPDATE_TITLE'=> 'Sugar Updates',
     'LBL_UPGRADE_ADDED_TO_GROUP' => 'Zu Gruppe hinzugefügt',
     'LBL_UPGRADE_ALREADY_EXISTS_GROUP' => 'eine Gruppe ist schon vorhanden',
@@ -794,7 +789,7 @@ $mod_strings = array (
     'LBL_UPLOAD_UPGRADE' => 'Upgrade hochladen:',
     'LBL_UPTODATE'=> 'Sie haben bereits die aktuellste Version',
     'LBL_USER_NAME' => 'Benutzername:',
-    'LBL_USERNAME'             => 'Benutzername',
+    'LBL_USER_NAME'             => 'Benutzername',
     'LBL_USERS_TITLE' => 'Benutzer',
 
     'LBL_USERS_DESC' => 'Sugar Benutzer erstellen, anpassen, aktivieren und deaktivieren. Teams erstellen und verwalten.',

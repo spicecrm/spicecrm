@@ -178,6 +178,8 @@ $dictionary['Relationship'] =
 	, 'indices' => array (
        array('name' =>'relationshippk', 'type' =>'primary', 'fields'=>array('id')),
        array('name' =>'idx_rel_name', 'type' =>'index', 'fields'=>array('relationship_name')),
+       array('name' =>'idx_relationship_lhs_module', 'type' =>'index', 'fields'=>array('lhs_module')),
+       array('name' =>'idx_relationship_rhs_module', 'type' =>'index', 'fields'=>array('rhs_module')),
     )
 );
 

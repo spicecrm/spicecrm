@@ -164,9 +164,9 @@ function constructDDSubscriptionList($focus,$classname=''){
 */
 function printOriginalValues($focus){
     global $app_strings;
-    $unsubs_arr = '';
-    $subs_arr =  '';
-    $return_arr =  '';
+    $unsubs_arr = array();
+    $subs_arr =  array();
+    $return_arr =  array();
 
      // Lets start by creating the subscription and unsubscription arrays
         $subscription_arrays = get_subscription_lists($focus);

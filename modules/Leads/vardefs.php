@@ -50,7 +50,7 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
         'refered_by' =>
             array(
                 'name' => 'refered_by',
-                'vname' => 'LBL_REFERED_BY',
+                'vname' => 'LBL_REFERRED_BY',
                 'type' => 'varchar',
                 'len' => '100',
                 'comment' => 'Identifies who refered the lead',
@@ -59,7 +59,7 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
         'lead_source' =>
             array(
                 'name' => 'lead_source',
-                'vname' => 'LBL_LEAD_SOURCE',
+                'vname' => 'LBL_SOURCE',
                 'type' => 'enum',
                 'options' => 'lead_source_dom',
                 'len' => '100',
@@ -70,10 +70,21 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
         'lead_source_description' =>
             array(
                 'name' => 'lead_source_description',
-                'vname' => 'LBL_LEAD_SOURCE_DESCRIPTION',
+                'vname' => 'LBL_SOURCE_DESCRIPTION',
                 'type' => 'text',
                 'group' => 'lead_source',
                 'comment' => 'Description of the lead source'
+            ),
+        'classification' =>
+            array(
+                'name' => 'classification',
+                'vname' => 'LBL_CLASSIFICATION',
+                'type' => 'enum',
+                'len' => '100',
+                'options' => 'lead_classification_dom',
+                'audited' => true,
+                'comment' => 'Classification of the lead',
+                'merge_filter' => 'enabled',
             ),
         'status' =>
             array(
@@ -179,15 +190,13 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
         'account_name' =>
             array(
                 'name' => 'account_name',
-                'vname' => 'LBL_ACCOUNT_NAME',
+                'vname' => 'LBL_ACCOUNT',
                 'type' => 'varchar',
                 'len' => '255',
                 'unified_search' => true,
                 'full_text_search' => 1,
                 'comment' => 'Account name for lead',
             ),
-
-
         'accounts' =>
             array(
                 'name' => 'accounts',
@@ -195,10 +204,9 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
                 'relationship' => 'account_leads',
                 'link_type' => 'one',
                 'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNT',
+                'vname' => 'LBL_ACCOUNTS',
                 'duplicate_merge' => 'disabled',
             ),
-
         'account_description' =>
             array(
                 'name' => 'account_description',
@@ -213,7 +221,7 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
                 'name' => 'contact_linked_name',
                 'rname' => 'name',
                 'id_name' => 'contact_id',
-                'vname' => 'LBL_CONTACT_LINKED_NAME',
+                'vname' => 'LBL_CONTACT',
                 'type' => 'relate',
                 'link' => 'contact',
                 'table' => 'contacts',
@@ -235,7 +243,7 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
             'link_type' => 'one',
             'relationship' => 'contact_leads',
             'source' => 'non-db',
-            'vname' => 'LBL_LEADS',
+            'vname' => 'LBL_CONTACT',
             'reportable' => false,
         ),
         'account_linked_name' =>
@@ -243,7 +251,7 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
                 'name' => 'account_linked_name',
                 'rname' => 'name',
                 'id_name' => 'account_id',
-                'vname' => 'LBL_ACCOUNT_LINKED_NAME',
+                'vname' => 'LBL_ACCOUNT',
                 'type' => 'relate',
                 'link' => 'accounts',
                 'table' => 'accounts',
@@ -274,12 +282,12 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
             'link_type' => 'one',
             'relationship' => 'opportunity_leads',
             'source' => 'non-db',
-            'vname' => 'LBL_OPPORTUNITIES',
+            'vname' => 'LBL_OPPORTUNITY',
         ),
         'opportunity_name' =>
             array(
                 'name' => 'opportunity_name',
-                'vname' => 'LBL_OPPORTUNITY_NAME',
+                'vname' => 'LBL_OPPORTUNITY',
                 'type' => 'varchar',
                 'len' => '255',
                 'comment' => 'Opportunity name associated with lead'
@@ -320,7 +328,7 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
             array(
                 'name' => 'campaign_leads',
                 'type' => 'link',
-                'vname' => 'LBL_CAMPAIGN_LEAD',
+                'vname' => 'LBL_CAMPAIGN',
                 'relationship' => 'campaign_leads',
                 'source' => 'non-db',
             ),
@@ -553,6 +561,10 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
                 'source' => 'non-db',
                 'vname' => 'LBL_PROSPECT_LIST',
             ),
+        'checks' => array(
+            'name' => 'checks',
+            'type' => 'text'
+        )
 
     )
 , 'indices' => array(

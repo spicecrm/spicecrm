@@ -114,7 +114,7 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'name' => 'opportunity_role',
                 'type' => 'enum',
                 'source' => 'non-db',
-                'vname' => 'LBL_OPPORTUNITY_ROLE',
+                'vname' => 'LBL_ROLE',
                 'options' => 'opportunity_relationship_type_dom',
             ),
             'opportunity_propensity_to_buy' => array(
@@ -366,7 +366,7 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                     'name' => 'assigned_user_link',
                     'type' => 'link',
                     'relationship' => 'contacts_assigned_user',
-                    'vname' => 'LBL_ASSIGNED_TO_USER',
+                    'vname' => 'LBL_ASSIGNED_TO',
                     'link_type' => 'one',
                     'module' => 'Users',
                     'bean_name' => 'User',
@@ -493,22 +493,6 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
                 'type' => 'link',
                 'relationship' => 'eventregistration_contact_rel',
                 'source' => 'non-db',
-            ),
-            'degree1' => array(
-                'name' => 'degree1',
-                'vname' => 'LBL_DEGREE1',
-                'type' => 'varchar'
-            ),
-            'degree2' => array(
-                'name' => 'degree2',
-                'vname' => 'LBL_DEGREE2',
-                'type' => 'varchar'
-            ),
-            'title_dd' => array(
-                'name' => 'title_dd',
-                'vname' => 'LBL_TITLE_DD',
-                'type' => 'enum',
-                'options' => 'contacts_title_dom'
             ),
             'ext_id' => array(
                 'name' => 'ext_id',
@@ -665,6 +649,8 @@ $dictionary['Contact'] = array('table' => 'contacts', 'audited' => true,
 );
 
 // CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
 if(is_file("modules/SalesDocs/SalesDoc.php")){
     $dictionary['Contact']['fields']['salesdocsop'] = array(
         'name' => 'salesdocsop',
@@ -704,6 +690,61 @@ if(is_file("modules/Addresses/Address.php")) {
         'default' => true
     );
 }
+if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+    $dictionary['Contact']['fields']['serviceorders'] = array(
+        'name' => 'serviceorders',
+        'type' => 'link',
+        'relationship' => 'serviceorders_contacts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEORDERS',
+        'module' => 'ServiceOrders',
+        'default' => false
+    );
+}
+if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+    $dictionary['Contact']['fields']['servicetickets'] = array(
+        'name' => 'servicetickets',
+        'type' => 'link',
+        'relationship' => 'servicetickets_contacts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICETICKETS',
+        'module' => 'ServiceTickets',
+        'default' => false
+    );
+}
+if(is_file("modules/ServiceCalls/ServiceCall.php")) {
+    $dictionary['Contact']['fields']['servicecalls'] = array(
+        'name' => 'servicecalls',
+        'type' => 'link',
+        'relationship' => 'servicecalls_contacts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICECALLS',
+        'module' => 'ServiceCalls',
+        'default' => false
+    );
+}
 
-VardefManager::createVardef('Contacts', 'Contact', array('default', 'assignable',
-    'person'));
+if(is_file("modules/ServiceFeedbacks/ServiceFeedback.php")) {
+    $dictionary['Contact']['fields']['servicefeedbacks'] = array(
+        'name' => 'servicefeedbacks',
+        'type' => 'link',
+        'relationship' => 'servicefeedbacks_contacts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEFEEDBACKS',
+        'module' => 'ServiceFeedbacks',
+        'default' => false
+    );
+
+}
+if(is_file("modules/ServiceEquipments/ServiceEquipment.php")) {
+    $dictionary['Contact']['fields']['serviceequipments'] = array(
+        'name' => 'serviceequipments',
+        'type' => 'link',
+        'relationship' => 'serviceequipments_contacts',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEEQUIPMENTS',
+        'module' => 'ServiceEquipments',
+        'default' => false
+    );
+}
+VardefManager::createVardef('Contacts', 'Contact', array('default', 'assignable','person'));

@@ -924,6 +924,14 @@ function return_application_language($language) {
             include("custom/include/language/$lang.lang.php");
             $GLOBALS['log']->info("Found custom language file: $lang.lang.php");
         }
+        // BEGIN syslanguages
+        if (file_exists("custom/application/Ext/Language/$lang.override.ext.php")) {
+            global $extlabels;
+            include("custom/application/Ext/Language/$lang.override.ext.php");
+            $app_strings = array_merge($app_strings, $extlabels);
+            $GLOBALS['log']->info("Found extended language file: $lang.override.ext.php");
+        }
+        //END syslanguages
         $app_strings_array[] = $app_strings;
     }
 
@@ -1915,42 +1923,52 @@ function clean_incoming_data() {
     global $sugar_config;
     global $RAW_REQUEST;
 
-    if (get_magic_quotes_gpc()) {
-        // magic quotes screw up data, we'd have to clean up
-        $RAW_REQUEST = array_map("cleanup_slashes", $_REQUEST);
-    } else {
+    #   code about "magic quotes" is commented out, because php doesn´t use magic quotes any more
+
+    #    if (get_magic_quotes_gpc()) {
+    #    // magic quotes screw up data, we'd have to clean up
+    #    $RAW_REQUEST = array_map("cleanup_slashes", $_REQUEST);
+    # else {
         $RAW_REQUEST = $_REQUEST;
-    }
+    #}
 
-    if (get_magic_quotes_gpc() == 1) {
-        $req = array_map("preprocess_param", $_REQUEST);
-        $post = array_map("preprocess_param", $_POST);
-        $get = array_map("preprocess_param", $_GET);
-    } else {
+    # If the request is a REST request, we don´t edit the input parameter of the request - like sugar does normally.
+    # So $_GET, $_POST and $_REQUEST stay untouched.
+    if ( !$GLOBALS['isREST'] ) {
 
-        $req = array_map("securexss", $_REQUEST);
-        $post = array_map("securexss", $_POST);
-        $get = array_map("securexss", $_GET);
-    }
+        #if (get_magic_quotes_gpc() == 1) {
+        #    $req = array_map("preprocess_param", $_REQUEST);
+        #    $post = array_map("preprocess_param", $_POST);
+        #    $get = array_map("preprocess_param", $_GET);
+        #} else {
 
-    // PHP cannot stomp out superglobals reliably
-    foreach ($post as $k => $v) {
-        $_POST[$k] = $v;
-    }
-    foreach ($get as $k => $v) {
-        $_GET[$k] = $v;
-    }
-    foreach ($req as $k => $v) {
-        $_REQUEST[$k] = $v;
+        $req = array_map( "securexss", $_REQUEST );
+        $post = array_map( "securexss", $_POST );
+        $get = array_map( "securexss", $_GET );
 
-        //ensure the keys are safe as well.  If mbstring encoding translation is on, the post keys don't
-        //get translated, so scrub the data but don't die
-        if (ini_get('mbstring.encoding_translation') === '1') {
-            securexsskey($k, false);
-        } else {
-            securexsskey($k, true);
+        #}
+
+        // PHP cannot stomp out superglobals reliably
+        foreach ( $post as $k => $v ) {
+            $_POST[$k] = $v;
         }
+        foreach ( $get as $k => $v ) {
+            $_GET[$k] = $v;
+        }
+        foreach ( $req as $k => $v ) {
+            $_REQUEST[$k] = $v;
+
+            //ensure the keys are safe as well.  If mbstring encoding translation is on, the post keys don't
+            //get translated, so scrub the data but don't die
+            if ( ini_get( 'mbstring.encoding_translation' ) === '1' ) {
+                securexsskey( $k, false );
+            } else {
+                securexsskey( $k, true );
+            }
+        }
+
     }
+
     // Any additional variables that need to be cleaned should be added here
     if (isset($_REQUEST['login_theme']))
         clean_string($_REQUEST['login_theme']);

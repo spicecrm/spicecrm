@@ -136,7 +136,7 @@ function formSubmitCheck(){ldelim}if(check_form(\'EditView\')){ldelim}document.E
           
           array (
             'name' => 'parent_name',
-            'label' => 'LBL_LIST_RELATED_TO',
+            'label' => 'LBL_RELATED_TO',
           ),
         ),
         
@@ -200,7 +200,7 @@ function formSubmitCheck(){ldelim}if(check_form(\'EditView\')){ldelim}document.E
         array (
           array (
             'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO_NAME',
+            'label' => 'LBL_ASSIGNED_TO',
           ),
         ),
       ),

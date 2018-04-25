@@ -54,7 +54,7 @@ $dashletData['<module_name>Dashlet']['columns'] =  array(   'document_name' => a
                                                       'date_modified' => array('width'   => '15', 
                                                                               'label'   => 'LBL_DATE_MODIFIED'),    
                                                       'created_by' => array('width'   => '8', 
-                                                                            'label'   => 'LBL_CREATED'),
+                                                                            'label'   => 'LBL_CREATED_BY'),
                                                       'assigned_user_name' => array('width'   => '8', 
                                                                                      'label'   => 'LBL_LIST_ASSIGNED_USER'),
                                                );

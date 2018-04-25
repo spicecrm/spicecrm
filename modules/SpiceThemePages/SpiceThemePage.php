@@ -62,6 +62,9 @@ class SpiceThemePage extends SugarBean {
         // $themePage = BeanFactory::getBean('SpiceThemePages');
         $refPages = $current_user->get_linked_beans('spicethemepages_link', 'SpiceThemePage');
 
+        if(!is_array($pages))
+            $pages = array();
+
         $prePages = array();
         $postPages = array();
 

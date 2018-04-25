@@ -2048,7 +2048,8 @@ EOQ;
     public function isDatabaseNameValid($name)
     {
         // No funny chars, does not begin with number
-        return preg_match('/^[0-9#@]+|[\"\'\*\/\\?\:\\<\>\-\ \&\!\(\)\[\]\{\}\;\,\.\`\~\|\\\\]+/', $name)==0;
+        return preg_match('/^[0-9#@]+|[\"\'\*\/\\?\:\\<\>\ \&\!\(\)\[\]\{\}\;\,\.\`\~\|\\\\]+/', $name)==0;
+
     }
 
     public function installConfig()

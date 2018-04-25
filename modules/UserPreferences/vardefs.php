@@ -84,7 +84,7 @@ $GLOBALS['dictionary']['UserPreference'] = array('table' => 'user_preferences',
   'assigned_user_name' => 
   array (
     'name' => 'assigned_user_name',
-    'vname' => 'LBL_ASSIGNED_TO_NAME',
+    'vname' => 'LBL_ASSIGNED_TO',
     'type' => 'varchar',
     'reportable'=>false,
     'massupdate' => false,

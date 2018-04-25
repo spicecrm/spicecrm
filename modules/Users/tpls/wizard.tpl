@@ -138,7 +138,7 @@ function disableReturnSubmission(e) {
                         <td  ><slot>{$MESSENGER_TYPE_OPTIONS}</slot></td>
                     </tr>
                     <tr>
-                        <td scope="row"><slot>{$MOD.LBL_MOBILE_PHONE}:</slot></td>
+                        <td scope="row"><slot>{$MOD.LBL_PHONE_MOBILE}:</slot></td>
                         <td  ><slot><input name='phone_mobile' type="text" tabindex='6' size='20' maxlength='25' value='{$PHONE_MOBILE}'></slot></td>
                         <td scope="row" nowrap="nowrap"><slot>{$MOD.LBL_MESSENGER_ID}:</slot></td>
                         <td  ><slot><input name='messenger_id' type="text" tabindex='6' size='30' maxlength='100' value='{$MESSENGER_ID}'></slot></td>

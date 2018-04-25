@@ -46,16 +46,16 @@
 		<tr><td class="datalabel" colspan="3">{$MOD.LBL_WIZARD_BUDGET_MESSAGE}<br></td><td>&nbsp;</td></tr>
 		<tr><td class="datalabel" colspan="4">&nbsp;</td></tr>
 		<tr>
-		<td scope="col"><span sugar='slot14'>{$MOD.LBL_CAMPAIGN_BUDGET}</span sugar='slot'></td>
-		<td ><span sugar='slot14b'><input type="text" size="10" maxlength="15" id="budget" name="wiz_step2_budget" title="{$MOD.LBL_CAMPAIGN_BUDGET}" value="{$CAMP_BUDGET}"></span sugar='slot'></td>
-		<td scope="col"><span sugar='slot15'>{$MOD.LBL_CAMPAIGN_ACTUAL_COST}</span sugar='slot'></td>
-		<td ><span sugar='slot15b'><input type="text" size="10" maxlength="15" id="actual_cost" name="wiz_step2_actual_cost" title="{$MOD.LBL_CAMPAIGN_ACTUAL_COST}" value="{$CAMP_ACTUAL_COST}"></span sugar='slot'></td>
+		<td scope="col"><span sugar='slot14'>{$MOD.LBL_BUDGET}</span sugar='slot'></td>
+		<td ><span sugar='slot14b'><input type="text" size="10" maxlength="15" id="budget" name="wiz_step2_budget" title="{$MOD.LBL_BUDGET}" value="{$CAMP_BUDGET}"></span sugar='slot'></td>
+		<td scope="col"><span sugar='slot15'>{$MOD.LBL_ACTUAL_COST}</span sugar='slot'></td>
+		<td ><span sugar='slot15b'><input type="text" size="10" maxlength="15" id="actual_cost" name="wiz_step2_actual_cost" title="{$MOD.LBL_ACTUAL_COST}" value="{$CAMP_ACTUAL_COST}"></span sugar='slot'></td>
 		</tr>
 		<tr>
-		<td scope="col"><span sugar='slot16'>{$MOD.LBL_CAMPAIGN_EXPECTED_REVENUE}</span sugar='slot'></td>
-		<td ><span sugar='slot16b'><input type="text" size="10" maxlength="15" id="expected_revenue" name="wiz_step2_expected_revenue" title="{$MOD.LBL_CAMPAIGN_EXPECTED_REVENUE}" value="{$CAMP_EXPECTED_REVENUE}"></span sugar='slot'></td>
-		<td scope="col"><span sugar='slot17'>{$MOD.LBL_CAMPAIGN_EXPECTED_COST}</span sugar='slot'></td>
-		<td ><span sugar='slot17b'><input type="text" size="10" maxlength="15" id="expected_cost" name="wiz_step2_expected_cost" title="{$MOD.LBL_CAMPAIGN_EXPECTED_COST}" value="{$CAMP_EXPECTED_COST}"></span sugar='slot'></td>
+		<td scope="col"><span sugar='slot16'>{$MOD.LBL_EXPECTED_REVENUE}</span sugar='slot'></td>
+		<td ><span sugar='slot16b'><input type="text" size="10" maxlength="15" id="expected_revenue" name="wiz_step2_expected_revenue" title="{$MOD.LBL_EXPECTED_REVENUE}" value="{$CAMP_EXPECTED_REVENUE}"></span sugar='slot'></td>
+		<td scope="col"><span sugar='slot17'>{$MOD.LBL_EXPECTED_COST}</span sugar='slot'></td>
+		<td ><span sugar='slot17b'><input type="text" size="10" maxlength="15" id="expected_cost" name="wiz_step2_expected_cost" title="{$MOD.LBL_EXPECTED_COST}" value="{$CAMP_EXPECTED_COST}"></span sugar='slot'></td>
 		</tr>
 		<tr>
 		<td scope="col"><span sugar='slot18'>{$MOD.LBL_CURRENCY}</span sugar='slot'></td>
@@ -69,8 +69,8 @@
 		<td><span sugar='slot19b'>&nbsp;</span sugar='slot'></td>
 		</tr>
 		<tr>
-		<td valign="top" scope="row"><span sugar='slot20'>{$MOD.LBL_CAMPAIGN_OBJECTIVE}</span sugar='slot'></td>
-		<td colspan="4"><span sugar='slot20b'><textarea id="objective" name="wiz_step2_objective" title='{$MOD.LBL_CAMPAIGN_OBJECTIVE}' cols="110" rows="5">{$OBJECTIVE}</textarea></span sugar='slot'></td>
+		<td valign="top" scope="row"><span sugar='slot20'>{$MOD.LBL_OBJECTIVE}</span sugar='slot'></td>
+		<td colspan="4"><span sugar='slot20b'><textarea id="objective" name="wiz_step2_objective" title='{$MOD.LBL_OBJECTIVE}' cols="110" rows="5">{$OBJECTIVE}</textarea></span sugar='slot'></td>
 		</tr>
 		<tr>
 		<td >&nbsp;</td>

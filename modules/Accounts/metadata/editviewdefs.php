@@ -76,7 +76,7 @@ $viewdefs['Accounts']['EditView'] = array(
 
           array (
             'name' => 'phone_fax',
-            'label' => 'LBL_FAX',
+            'label' => 'LBL_PHONE_FAX',
           ),
         ),
 

@@ -64,7 +64,7 @@ $dictionary['Role'] = array('table' => 'roles'
     'name' => 'modified_user_id',
     'rname' => 'user_name',
     'id_name' => 'modified_user_id',
-    'vname' => 'LBL_MODIFIED',
+    'vname' => 'LBL_MODIFIED_BY',
     'type' => 'assigned_user_name',
     'table' => 'modified_user_id_users',
     'isnull' => 'false',

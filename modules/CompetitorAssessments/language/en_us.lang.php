@@ -46,10 +46,10 @@ $mod_strings = array (
     'LBL_STRENGTHS' => 'Strengths',
     'LBL_DIFFERENTIATION' => 'Differentiation',
     'LBL_OPPORTUNITY_ID' => 'Opportunity ID',
-    'LBL_OPPORTUNITY_NAME' => 'Opportunity',
+    'LBL_OPPORTUNITY' => 'Opportunity',
     'LBL_COMPETITIVE_THREAT' => 'Competitive Threat',
     'LBL_LIST_COMPETITIVE_THREAT' => 'Threat',
-    'LBL_COMPETITIVE_STATUS' => 'Competitor Status',
+    'LBL_STATUS' => 'Competitor Status',
     'LBL_LIST_COMPETITIVE_STATUS' => 'Status',
 
 //=> Links

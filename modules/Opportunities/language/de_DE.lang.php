@@ -104,14 +104,14 @@ $mod_strings = array(
     'LBL_CONTACTS_SUBPANEL_TITLE' => 'Kontakte',
     'LBL_DOCUMENTS_SUBPANEL_TITLE' => 'Dokumente',
     'LBL_PROJECTS_SUBPANEL_TITLE' => 'Projekte',
-    'LBL_ASSIGNED_TO_NAME' => 'Zugewiesen an:',
+    'LBL_ASSIGNED_TO' => 'Zugewiesen an',
     'LBL_LIST_ASSIGNED_TO_NAME' => 'Zugew. Benutzer',
     'LBL_MY_CLOSED_OPPORTUNITIES' => 'Meine geschlossenen Verkaufschancen',
     'LBL_TOTAL_OPPORTUNITIES' => 'Summe Verkaufschancen',
     'LBL_CLOSED_WON_OPPORTUNITIES' => 'Gewonnene Verkaufschancen',
-    'LBL_ASSIGNED_TO_ID' => 'Bearbeiter',
-    'LBL_CREATED_ID' => 'Ersteller',
-    'LBL_MODIFIED_ID' => 'Geändert von ID',
+    'LBL_ASSIGNED_TO_ID' => 'Zugewiesen an ID',
+    'LBL_CREATED_BY_ID' => 'Ersteller',
+    'LBL_MODIFIED_BY_ID' => 'Geändert von ID',
     'LBL_MODIFIED_NAME' => 'Modifizierter Benutzer',
     'LBL_CREATED_USER' => 'Erstellter Benutzer',
     'LBL_MODIFIED_USER' => 'Veränderter Benutzer',
@@ -131,7 +131,23 @@ $mod_strings = array(
 
     // SNIP
     'LBL_CONTACT_HISTORY_SUBPANEL_TITLE' => 'Verknüpfte Kontakt E-Mails',
+    'LBL_COMPETITORASSESSMENTS_SUBPANEL_TITLE' => 'Mitbewerber Bewertungen',
+    'LBL_PROPOSALS_SUBPANEL_TITLE' => 'Angebote',
 
+    // enhanced opp management fields
+    'LBL_MAINDATA' => 'Main data',
+    'LBL_PANEL_ANALYSIS' => 'Analysis',
+    'LBL_PANEL_VALUEPROPOSITION' => 'Value Proposition',
+    'LBL_PANEL_SALES' => 'Sales Data',
+    'LBL_FORECAST' => 'include in Forecast',
+    'LBL_LIST_FORECAST' => 'Fcst',
+    'LBL_BUDGET' => 'Customers Budget',
+    'LBL_BESTCASE' => 'Bester Fall',
+    'LBL_WORSTCASE' => 'Schlimmster Fall',
+    'LBL_CUST_BUSNEEDS' => 'Business Needs',
+    'LBL_CUST_PAINPOINTS' => 'Pain Points',
+    'LBL_CUST_SOLUTIONPROPOSAL' => 'Solution Proposal',
+    'LBL_CUST_VALUEPROPOSITION' => 'Value Proposition',
     //links
     'LBL_PROPOSALS_LINK' => 'Angebote',
 

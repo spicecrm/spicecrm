@@ -328,7 +328,7 @@ $uwHistory .= <<<eoq
 			<b>{$mod_strings['LBL_ML_INSTALLED']}</b>
 		</td>
 		<td align=left>
-			<b>{$mod_strings['LBL_ML_DESCRIPTION']}</b>
+			<b>{$mod_strings['LBL_DESCRIPTION']}</b>
 		</td>
 		<td align=left>
 			<b>{$mod_strings['LBL_ML_ACTION']}</b>

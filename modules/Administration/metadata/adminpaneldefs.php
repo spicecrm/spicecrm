@@ -203,18 +203,16 @@ $links['SpiceThemeConfig']['link2'] = array(
 //    'Configuration for the SpiceTheme Theme'
 //);
 
-//@todo: create language labels....
 $admin_option_defs=array();
 $admin_option_defs['FTS']['FulltextSearchManager']= array('FTSManager','FTS Manager','Full Text Search Configuration','./index.php?module=Administration&action=FTSManager');
 $admin_option_defs['FTS']['FulltextSearchDefault']= array('FTSDefault','FTS Default Settings','Load default settings for all modules','./index.php?module=Administration&action=FTSDefault');
 $admin_group_header[]= array('Full Text Search','',false,$admin_option_defs, 'Manage Full Text Search Options and Settings');
 
-//@todo: create language labels....
 $admin_option_defs=array();
 $admin_option_defs['UI']['SpiceUIDefaultConfig']= array('UIDefault','UI Config','Default UI Configuration','./index.php?module=Administration&action=UIDefault');
+$admin_option_defs['UI']['SpiceUILanguageConfig']= array('UILanguage','UI Language Config','Default Language UI Configuration','./index.php?module=Administration&action=UILanguage');
 $admin_group_header[]= array('SpiceUI Config','',false,$admin_option_defs, 'Load default UI settings for default modules');
 
-//@todo: create language labels....
 $admin_option_defs=array();
 $admin_option_defs['SpiceBeanGuide']['SpiceBeanGuideDefault']= array('SpiceBeanGuide','SpiceBeanGuide Load','Load Default SpiceBeanGuides','./index.php?module=Administration&action=SpiceBeanGuideDefault');
 $admin_group_header[]= array('SpiceBeanGuideDefault','',false,$admin_option_defs, 'Load default SpiceBeanGuides settings for selected modules');

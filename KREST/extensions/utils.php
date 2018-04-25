@@ -21,26 +21,26 @@ $KRESTManager->registerExtension('utils', '1.0');
 
 $app->group('/pdf', function () use ($app, $KRESTManager, $KRESTUtilsHandler) {
     $app->group('/toImage', function () use ($app, $KRESTManager, $KRESTUtilsHandler) {
-        $app->get('/base64data/:filepath', function ($filepath) use ($app, $KRESTUtilsHandler) {
-            $data = $KRESTUtilsHandler->pdfToBase64Image($filepath);
+        $app->get('/base64data/{filepath}', function($req, $res, $args) use ($app, $KRESTUtilsHandler) {
+            $data = $KRESTUtilsHandler->pdfToBase64Image($args['filepath']);
             echo json_encode($data);
         });
-        $app->get('/url/:filepath', function ($filepath) use ($app, $KRESTUtilsHandler) {
-            $urls = $KRESTUtilsHandler->pdfToUrlImage($filepath);
+        $app->get('/url/{filepath}', function($req, $res, $args) use ($app, $KRESTUtilsHandler) {
+            $urls = $KRESTUtilsHandler->pdfToUrlImage($args['filepath']);
             echo json_encode($urls);
         });
     });
     $app->group('/upload', function () use ($app, $KRESTManager, $KRESTUtilsHandler) {
-        $app->post('/tmp', function () use ($app, $KRESTUtilsHandler) {
-            $postBody = $body = $app->request->getBody();
+        $app->post('/tmp', function ($req, $res, $args) use ($app, $KRESTUtilsHandler) {
+            $postBody = $req->getParsedBody();
             $temppath = sys_get_temp_dir();
             $filename = create_guid() . '.pdf';
             file_put_contents($temppath . '/' . $filename, base64_decode($postBody));
             echo $temppath . '/' . $filename;
         });
-        $app->post('/uploadsDir', function () use ($app, $KRESTUtilsHandler) {
+        $app->post('/uploadsDir', function ($req, $res, $args) use ($app, $KRESTUtilsHandler) {
             global $sugar_config;
-            $postBody = $body = $app->request->getBody();
+            $postBody = $req->getParsedBody();
             $filename = create_guid() . '.pdf';
             file_put_contents($sugar_config['upload_dir'] . $filename, base64_decode($postBody));
             echo $sugar_config['upload_dir'] . $filename;

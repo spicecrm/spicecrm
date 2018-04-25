@@ -36,14 +36,14 @@ $mod_strings = array (
 	'LBL_REVISION' => 'Version',
 	'LBL_DOCUMENT' => 'Verknüpftes Dokument',
 	'LBL_LATEST_REVISION' => 'Letzte Version',
-	'LBL_CHANGE_LOG'=> 'Änderungs-Log:',
+	'LBL_LOGGED_CHANGES'=> 'Änderungs-Log:',
 	'LBL_ACTIVE_DATE'=> 'Veröffentlichungsdatum',
 	'LBL_EXPIRATION_DATE' => 'Ablaufdatum',
 	'LBL_FILE_EXTENSION'  => 'Dateiendung',
 	'LBL_DET_CREATED_BY' => 'Erstellt von:',
-	'LBL_DET_DATE_CREATED' => 'Erstellt am:',
+	'LBL_DATE_CREATED' => 'Erstellt am:',
 
-	'LBL_DOC_NAME' => 'Dokument Name:',
+	'LBL_DOCUMENT' => 'Dokument Name:',
 	'LBL_DOC_VERSION' => 'Version:',
 
 	//document revisions.
@@ -67,5 +67,5 @@ $mod_strings = array (
 	'LBL_DOC_URL' => 'Dokument Quell-URL',
 
     'LBL_DATE_ENTERED' => 'angelegt am',
-    'LBL_CREATED_BY_NAME' => 'angelegt von',
+    'LBL_CREATED_BY' => 'Erstellt von',
 );

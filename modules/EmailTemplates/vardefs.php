@@ -77,7 +77,7 @@ $dictionary['EmailTemplate'] = array(
         // for EmailTemplates module is email_templates and not emailtemplates
         'modified_by_name' => array (
             'name' => 'modified_by_name',
-            'vname' => 'LBL_MODIFIED_NAME',
+            'vname' => 'LBL_MODIFIED_BY',
             'type' => 'relate',
             'reportable' => false,
             'source' => 'non-db',
@@ -204,7 +204,7 @@ $dictionary['EmailTemplate'] = array(
     	 'assigned_user_name' => array (
         	 'name' => 'assigned_user_name',
         	 'link'=>'assigned_user_link' ,
-        	 'vname' => 'LBL_ASSIGNED_TO_NAME',
+        	 'vname' => 'LBL_ASSIGNED_TO',
         	 'rname' => 'user_name',
         	 'type' => 'relate',
         	 'reportable'=>false,
@@ -218,7 +218,7 @@ $dictionary['EmailTemplate'] = array(
     		 'name' => 'assigned_user_link',
     		 'type' => 'link',
     		 'relationship' => 'emailtemplates_assigned_user',
-    		 'vname' => 'LBL_ASSIGNED_TO_USER',
+    		 'vname' => 'LBL_ASSIGNED_TO',
     		 'link_type' => 'one',
     		 'module'=>'Users',
     		 'bean_name'=>'User',
@@ -247,11 +247,11 @@ $dictionary['EmailTemplate'] = array(
        ),
         'for_bean' => array(
             'name' => 'for_bean',
-            'vname' => 'LBL_FOR_BEAN',
+            'vname' => 'LBL_FOR_MODULE',
             'type' => 'enum',
             'required' => false,
             'reportable'=> false,
-            'options' => 'kreleasepackage_repair_modules_dom'
+            'options' => 'systemdeploymentpackage_repair_modules_dom'
         ),
 	),
 	'indices' => array(

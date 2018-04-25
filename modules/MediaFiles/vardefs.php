@@ -37,8 +37,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 $dictionary['MediaFile'] = array(
     'table' => 'mediafiles',
-	'comment' => 'Media Files: Images, Audios, Videos, …',
-	'fields' => array (
+    'comment' => 'Media Files: Images, Audios, Videos, …',
+    'fields' => array (
         'mediatype' => array(
             'name' => 'mediatype',
             'vname' => 'LBL_MEDIATYPE',
@@ -105,14 +105,21 @@ $dictionary['MediaFile'] = array(
             'len' => 32,
             'isnull' => false,
             'required' => false
-        )
+        ),
+        'category' => array(
+            'name' => 'category',
+            'vname' => 'LBL_CATEGORY',
+            'type' => 'id',
+            'required' => false
+        ),
     ),
     'indices' => array (
         array( 'name' =>'idx_mediafiles_name', 'type' => 'index', 'fields' => array('name') ),
         array( 'name' =>'idx_mediafiles_upload_completed', 'type' => 'index', 'fields' => array('upload_completed') ),
         array( 'name' =>'idx_mediafiles_copyright_owner', 'type' => 'index', 'fields' => array('copyright_owner') ),
         array( 'name' =>'idx_mediafiles_mediatype', 'type' => 'index', 'fields' => array('mediatype') ),
-        array( 'name' =>'idx_mediafiles_deleted', 'type' => 'index', 'fields' => array('deleted') )
+        array( 'name' =>'idx_mediafiles_deleted', 'type' => 'index', 'fields' => array('deleted') ),
+        array( 'name' =>'idx_mediafiles_category', 'type' => 'index', 'fields' => array('category') )
     )
 );
 

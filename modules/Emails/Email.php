@@ -367,6 +367,12 @@ class Email extends SugarBean {
     			$mail->Username = $smtp_username;
     			$mail->Password = $smtppassword;
     		}
+
+            //BEGIN CORE MODIFICATION DRU-4 2018-04-11 maretval
+            if(isset($GLOBALS['sugar_config']['SugarPHPMailer']['SMTPOptions'])){
+                $this->SMTPOptions = $GLOBALS['sugar_config']['SugarPHPMailer']['SMTPOptions'];
+            }
+            //END
 		}
 		else
 		    $mail->Mailer = 'sendmail';
@@ -1026,18 +1032,29 @@ class Email extends SugarBean {
 	function save($check_notify = false, $fts_index_bean = true) {
         global $current_user;
 
-		if($this->isDuplicate) {
+		if ($this->isDuplicate) {
 			$GLOBALS['log']->debug("EMAIL - tried to save a duplicate Email record");
 		} else {
 
-			if(empty($this->id)) {
+            if ($this->load_relationship('mailboxes')) {
+                $mailbox = $this->mailboxes->getBeans()[$this->mailbox_id];
+            }
+
+			if (empty($this->id)) {
 				$this->id = create_guid();
 				$this->new_with_id = true;
 			}
+
 			$this->from_addr_name = $this->cleanEmails($this->from_addr_name);
-            $this->from_addr = $this->from_addr_name;
-			$this->to_addrs_names = $this->cleanEmails($this->to_addrs_names);
-            $this->to_addrs = $this->to_addrs_names;
+			if (empty($this->from_addr) && isset($mailbox)) {
+                $this->from_addr = $mailbox->imap_pop3_username;
+            } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
+                $this->from_addr = $this->from_addr_name;
+            }
+            if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
+                $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
+            }
+            $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
 			$this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
 			$this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
 			$this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
@@ -1079,6 +1096,11 @@ class Email extends SugarBean {
 			}
 		}
 		$GLOBALS['log']->debug('-------------------------------> Email save() done');
+
+		// todo check the send flag
+        if ($this->to_be_sent) {
+            $this->sendEmail();
+        }
 	}
 
 	/**
@@ -1188,22 +1210,36 @@ class Email extends SugarBean {
 
 	function cleanEmails($emails)
 	{
-	    if(empty($emails)) return '';
-		$emails = str_replace(array(",",";"), "::", from_html($emails));
-		$addrs = explode("::", $emails);
-		$res = array();
-		foreach($addrs as $addr) {
-            $parts = $this->emailAddress->splitEmailAddress($addr);
-            if(empty($parts["email"])) {
-                continue;
+	    if (empty($emails)) {
+	        return '';
+        }
+
+        $res = [];
+
+        if (is_array($emails)) {
+            foreach ($emails as $email) {
+                if (!empty($email['email'])) {
+                    $res[] = $email['email'];
+                }
             }
-            if(!empty($parts["name"])) {
-                $res[] = "{$parts['name']} <{$parts['email']}>";
-            } else {
-                $res[] .= $parts["email"];
+        } else {
+            $emails = str_replace([",",";"], "::", from_html($emails));
+            $addrs = explode("::", $emails);
+
+            foreach ($addrs as $addr) {
+                $parts = $this->emailAddress->splitEmailAddress($addr);
+                if (empty($parts["email"])) {
+                    continue;
+                }
+                if (!empty($parts["name"])) {
+                    $res[] = "{$parts['name']} <{$parts['email']}>";
+                } else {
+                    $res[] .= $parts["email"];
+                }
             }
-		}
-		return join(", ", $res);
+        }
+
+        return join(", ", $res);
 	}
 
 	protected function saveEmailText()
@@ -2203,6 +2239,16 @@ class Email extends SugarBean {
 		return false;
 	}
 
+    public function sendEmail()
+    {
+        if ($this->load_relationship('mailboxes')) {
+            //$mailbox = $this->mailboxes->getBeans();
+            $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
+            $mailbox->initTransportHandler();
+            $result = $mailbox->transport_handler->sendMail($this);
+            return $result;
+        }
+    }
 
 	function listviewACLHelper(){
 		$array_assign = parent::listviewACLHelper();
@@ -3127,6 +3173,30 @@ eoq;
             }
 
             unset($this->modifiedFieldDefs[$field]);
+        }
+    }
+
+    private function extractAddresses($items)
+    {
+        if (is_array($items)) {
+            $addresses = [];
+
+            foreach ($items as $item) {
+                $address = [];
+
+                if (!empty($item['displayname'])) {
+                    $address['name'] = substr($item['displayname'], 0, strpos($item['displayname'], '<'));
+                }
+                if (!empty($item['email'])) {
+                    $address['email'] = $item['email'];
+                }
+
+                array_push($addresses, $address);
             }
-    	}
+
+            return json_encode($addresses);
+        } else {
+            return $this->cleanEmails($items);
+        }
+    }
 } // end class def

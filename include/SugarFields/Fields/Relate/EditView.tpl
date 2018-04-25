@@ -48,6 +48,7 @@
 {{if empty($displayParams.hideButtons) }}
 <span class="id-ff multiple">
 <button type="button" name="btn_{{$idname}}" id="btn_{{$idname}}" tabindex="{{$tabindex}}"
+        {if $displayParams.readOnly = "readOnly"}style="display:none"{/if}
         title="{sugar_translate label="{{$displayParams.accessKeySelectTitle}}"}" class="firstChild"
         value="{sugar_translate label="{{$displayParams.accessKeySelectLabel}}"}"
         onclick='open_popup(
@@ -63,6 +64,7 @@
                 );' {{if isset($displayParams.javascript.btn)}}{{$displayParams.javascript.btn}}{{/if}}><img
             src="{sugar_getimagepath file="id-ff-select.png"}"></button>{{if empty($displayParams.selectOnly) }}
     <button type="button" name="btn_clr_{{$idname}}" id="btn_clr_{{$idname}}" tabindex="{{$tabindex}}"
+            {if $displayParams.readOnly = "readOnly"}style="display:none"{/if}
             title="{sugar_translate label="{{$displayParams.accessKeyClearTitle}}"}" class="lastChild"
             onclick="SUGAR.clearRelateField(this.form, '{{$idname}}', '{{if !empty($displayParams.idName)}}{{$displayParams.idName}}_{{/if}}{{sugarvar key='id_name'}}');"
             value="{sugar_translate label="{{$displayParams.accessKeyClearLabel}}"}" {{if isset($displayParams.javascript.btn_clear)}}{{$displayParams.javascript.btn_clear}}{{/if}}><img

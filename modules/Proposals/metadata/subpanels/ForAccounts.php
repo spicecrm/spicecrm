@@ -52,7 +52,7 @@ $subpanel_layout = array(
             'usage'=>'query_only',
         ),
         'proposalstatus' => array(
-            'vname' => 'LBL_PROPOSALSTATUS',
+            'vname' => 'LBL_STATUS',
             'width' => '5%',
         ),
         'opportunity_name' => array(

@@ -2,18 +2,18 @@
 
 
 $app->group('/module/Activities', function () use ($app) {
-    $app->get('/:parentmodule/:parentid/', function ($parentmodule, $parentid) use ($app) {
+    $app->get('/{parentmodule}/{parentid}', function($req, $res, $args) use ($app) {
         global $db;
 
         $retArray = array();
 
-        $getParams = $app->request->get();
+        $getParams = $_GET;
         $start = $getParams['start'] ?: 0;
         $limit = $getParams['limit'] ?: 5;
 
-        $queryArray[] = "SELECT calls.id, date_start sortdate, 'Calls' module FROM calls LEFT JOIN calls_contacts on calls.id = calls_contacts.call_id where ((parent_type = '$parentmodule' and parent_id = '$parentid') OR calls_contacts.contact_id = '$parentid' ) and calls.deleted = 0 and status in ('Planned')";
-        $queryArray[] = "SELECT meetings.id, date_start sortdate, 'Meetings' module FROM meetings LEFT JOIN meetings_contacts on meetings.id = meetings_contacts.meeting_id where ((parent_type = '$parentmodule' and parent_id = '$parentid') OR meetings_contacts.contact_id='$parentid') and meetings.deleted = 0 and status in ('Planned')";
-        $queryArray[] = "SELECT id, date_due sortdate, 'Tasks' module FROM tasks where ((parent_type = '$parentmodule' and parent_id = '$parentid') or contact_id = '$parentid') and deleted = 0 and status in ('In Progress', 'Not Started', 'Pending Input')";
+        $queryArray[] = "SELECT calls.id, date_start sortdate, 'Calls' module FROM calls LEFT JOIN calls_contacts on calls.id = calls_contacts.call_id where ((parent_type = '{$args['parentmodule']}' and parent_id = '{$args['parentid']}') OR calls_contacts.contact_id = '{$args['parentid']}' ) and calls.deleted = 0 and status in ('Planned')";
+        $queryArray[] = "SELECT meetings.id, date_start sortdate, 'Meetings' module FROM meetings LEFT JOIN meetings_contacts on meetings.id = meetings_contacts.meeting_id where ((parent_type = '{$args['parentmodule']}' and parent_id = '{$args['parentid']}') OR meetings_contacts.contact_id='{$args['parentid']}') and meetings.deleted = 0 and status in ('Planned')";
+        $queryArray[] = "SELECT id, date_due sortdate, 'Tasks' module FROM tasks where ((parent_type = '{$args['parentmodule']}' and parent_id = '{$args['parentid']}') or contact_id = '{$args['parentid']}') and deleted = 0 and status in ('In Progress', 'Not Started', 'Pending Input')";
 
         //echo implode(' UNION ALL ', $queryArray);
         //return;

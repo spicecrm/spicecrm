@@ -90,7 +90,10 @@ class SystemUIRESTHandler
                 $retArray[$module['module']] = array(
                     'icon' => $module['icon'],
                     'actionset' => $module['actionset'],
+                    'module' => $module['module'],
+                    'module_label' => $module['module_label'],
                     'singular' => $module['singular'],
+                    'singular_label' => $module['singular_label'],
                     'track' => $module['track'],
                     'visible' => $module['visible'] ? true : false,
                     'tagging' => $module['tagging'] ? true : false,
@@ -113,13 +116,14 @@ class SystemUIRESTHandler
     function getComponentSets()
     {
         $retArray = array();
-        $componentsets = $this->db->query("SELECT sysuicomponentsets.name, sysuicomponentsets.module, sysuicomponentsetscomponents.* FROM sysuicomponentsetscomponents, sysuicomponentsets WHERE sysuicomponentsets.id = sysuicomponentsetscomponents.componentset_id  ORDER BY componentset_id, sequence");
+        $componentsets = $this->db->query("SELECT sysuicomponentsets.name, sysuicomponentsets.package componentsetpackage, sysuicomponentsets.module, sysuicomponentsetscomponents.* FROM sysuicomponentsets LEFT JOIN sysuicomponentsetscomponents ON sysuicomponentsets.id = sysuicomponentsetscomponents.componentset_id  ORDER BY componentset_id, sequence");
         while ($componentset = $this->db->fetchByAssoc($componentsets)) {
 
             if (!isset($retArray[$componentset['componentset_id']])) {
                 $retArray[$componentset['componentset_id']] = array(
                     'id' => $componentset['componentset_id'],
                     'name' => $componentset['name'],
+                    'package' => $componentset['componentsetpackage'],
                     'module' => $componentset['module'] ?: '*',
                     'type' => 'global',
                     'items' => []
@@ -130,18 +134,20 @@ class SystemUIRESTHandler
                 'id' => $componentset['id'],
                 'sequence' => $componentset['sequence'],
                 'component' => $componentset['component'],
-                //'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($componentset['componentConfig'], ENT_QUOTES)), true) ?: new stdClass()
-                'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;", "'"), array('', '', '"', '"'), $componentset['componentConfig']), true) ?: (object) array()
+                'package' => $componentset['package'],
+                //'componentconfig' => json_decode(str_replace(array("\r", "\n", "&#039;"), array('', '', '"'), html_entity_decode($componentset['componentconfig'], ENT_QUOTES)), true) ?: new stdClass()
+                'componentconfig' => json_decode(str_replace(array("\r", "\n", "&#039;", "'"), array('', '', '"', '"'), $componentset['componentconfig']), true) ?: (object)array()
             );
         }
 
-        $componentsets = $this->db->query("SELECT sysuicustomcomponentsets.name, sysuicustomcomponentsets.module, sysuicustomcomponentsetscomponents.* FROM sysuicustomcomponentsetscomponents, sysuicustomcomponentsets WHERE sysuicustomcomponentsets.id = sysuicustomcomponentsetscomponents.componentset_id  ORDER BY componentset_id, sequence");
+        $componentsets = $this->db->query("SELECT sysuicustomcomponentsets.name, sysuicustomcomponentsets.package componentsetpackage, sysuicustomcomponentsets.module, sysuicustomcomponentsetscomponents.* FROM sysuicustomcomponentsetscomponents, sysuicustomcomponentsets WHERE sysuicustomcomponentsets.id = sysuicustomcomponentsetscomponents.componentset_id  ORDER BY componentset_id, sequence");
         while ($componentset = $this->db->fetchByAssoc($componentsets)) {
 
             if (!isset($retArray[$componentset['componentset_id']])) {
                 $retArray[$componentset['componentset_id']] = array(
                     'id' => $componentset['componentset_id'],
                     'name' => $componentset['name'],
+                    'package' => $componentset['componentsetpackage'],
                     'module' => $componentset['module'] ?: '*',
                     'type' => 'custom',
                     'items' => []
@@ -152,7 +158,8 @@ class SystemUIRESTHandler
                 'id' => $componentset['id'],
                 'sequence' => $componentset['sequence'],
                 'component' => $componentset['component'],
-                'componentConfig' => json_decode(str_replace(array("\r", "\n", "&#039;", "'"), array('', '', '"', '"'), $componentset['componentConfig']),true) ?: array()
+                'package' => $componentset['package'],
+                'componentconfig' => json_decode(str_replace(array("\r", "\n", "&#039;", "'"), array('', '', '"', '"'), $componentset['componentconfig']), true) ?: array()
             );
         }
 
@@ -165,24 +172,81 @@ class SystemUIRESTHandler
 
         $this->checkAdmin();
 
+        // check if we have a CR set
+        if ($_SESSION['SystemDeploymentCRsActiveCR'])
+            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
+
         foreach ($data['add'] as $componentsetid => $componentsetdata) {
 
             $componentsettable = $componentsetdata['type'] == 'custom' ? 'sysuicustomcomponentsets' : 'sysuicomponentsets';
 
-            $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets (id, module, name) VALUES('$componentsetid', '" . $componentsetdata['module'] . "', '" . $componentsetdata['name'] . "')");
+            $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets (id, module, name, package) VALUES('$componentsetid', '" . $componentsetdata['module'] . "', '" . $componentsetdata['name'] . "', '" . $componentsetdata['package'] . "')");
+
+            // add to the CR
+            if($cr) $cr->addDBEntry("sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets", $componentsetid, 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name']);
+
+
             foreach ($componentsetdata['items'] as $componentsetitem) {
-                $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents (id, componentset_id, component, sequence, componentconfig) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentConfig']) . "')");
+                $db->query("INSERT INTO sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents (id, componentset_id, component, sequence, componentconfig, package, version) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentconfig']) . "','" . $componentsetitem['pakage'] . "', '{$_SESSION['confversion']}')");
+
+                // add to the CR
+                if($cr) $cr->addDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+
             }
         }
 
         // handle the update
         foreach ($data['update'] as $componentsetid => $componentsetdata) {
-            $db->query("UPDATE sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets SET name='" . $componentsetdata['name'] . "' WHERE id='$componentsetid'");
+
+            $record = $db->fetchByAssoc($db->query("SELECT * FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets WHERE id='$componentsetid'"));
+            if($record['name'] != $componentsetdata['name'] || $record['package'] != $componentsetdata['package']) {
+                $db->query("UPDATE sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets SET name='" . $componentsetdata['name'] . "',  package='" . $componentsetdata['package'] . "', version = '{$_SESSION['confversion']}' WHERE id='$componentsetid'");
+
+                // add to the CR
+                if ($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets", $componentsetid, 'U', $componentsetdata['module'] . "/" . $componentsetdata['name']);
+            }
+
             // delete all current items
-            $db->query("DELETE FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents WHERE componentset_id = '$componentsetid'");
+            // $db->query("DELETE FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents WHERE componentset_id = '$componentsetid'");
+
+            // get all componentset components
+            $items = $db->query("SELECT * FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents WHERE componentset_id = '$componentsetid'");
+            while($item = $db->fetchByAssoc($items)){
+                $i = 0;$itemIndex = false;
+                foreach ($componentsetdata['items'] as $index => $componentsetitem) {
+                    if($componentsetitem['id'] == $item['id']){
+                        unset($componentsetdata['items'][$index]);
+                        $itemIndex = true;
+                        break;
+                    }
+                }
+
+                // if we have the entry
+                if($itemIndex !== false){
+                    if($item['sequence'] != $componentsetitem['sequence'] ||
+                        $item['package'] != $componentsetitem['package'] ||
+                        md5($item['componentconfig']) != md5(json_encode($componentsetitem['componentconfig']))){
+                        $db->query("UPDATE sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents  SET package = '" . $componentsetitem['package'] . "', sequence = '" . $componentsetitem['sequence'] . "', componentconfig = '" . json_encode($componentsetitem['componentconfig']) . "', version = '{$_SESSION['confversion']}' WHERE id='{$item['id']}'");
+
+                        // add to the CR
+                        if($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'U',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+                    }
+
+                } else {
+                    // remove it
+                    $db->query("DELETE FROM sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents WHERE id='{$item['id']}'");
+                    // add to the CR
+                    if($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'D',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+
+                }
+            }
+
             // add all items
             foreach ($componentsetdata['items'] as $componentsetitem) {
-                $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents (id, componentset_id, component, sequence, componentconfig) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentConfig']) . "')");
+                $db->query("INSERT INTO sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents (id, componentset_id, component, sequence, componentconfig, package, version) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentconfig']) . "','" . $componentsetitem['package'] . "', '{$_SESSION['confversion']}')");
+
+                // add to the CR
+                if($cr) $cr->addDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
             }
         }
 
@@ -275,6 +339,7 @@ class SystemUIRESTHandler
         global $current_user;
 
         $retArray = array();
+        $modules = array();
         if ($current_user->portal_only)
             $sysuiroles = $this->db->query("select * from (SELECT sysuiroles.*, sysuiuserroles.defaultrole FROM sysuiroles, sysuiuserroles WHERE sysuiroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuiroles.*, 0 defaultrole FROM sysuiroles WHERE sysuiroles.portaldefault = 1) roles order by name");
         else
@@ -283,13 +348,13 @@ class SystemUIRESTHandler
             if (isset($retArray[$sysuirole['id']])) continue;
             $sysuirolemodules = $this->db->query("SELECT * FROM sysuirolemodules WHERE sysuirole_id in ('*', '" . $sysuirole['id'] . "') ORDER BY sequence");
             while ($sysuirolemodule = $this->db->fetchByAssoc($sysuirolemodules)) {
-                $retArray[$sysuirole['id']][] = $sysuirolemodule;
+                    $retArray[$sysuirole['id']][] = $sysuirolemodule;
             }
 
             // get potential custom modules added to the role
             $sysuirolemodules = $this->db->query("SELECT * FROM sysuicustomrolemodules WHERE sysuirole_id in ('*', '" . $sysuirole['id'] . "') ORDER BY sequence");
             while ($sysuirolemodule = $this->db->fetchByAssoc($sysuirolemodules)) {
-                $retArray[$sysuirole['id']][] = $sysuirolemodule;
+                    $retArray[$sysuirole['id']][] = $sysuirolemodule;
             }
         }
 
@@ -299,10 +364,10 @@ class SystemUIRESTHandler
         else
             $sysuiroles = $this->db->query("select * from (SELECT sysuicustomroles.*, sysuiuserroles.defaultrole FROM sysuicustomroles, sysuiuserroles WHERE sysuicustomroles.id = sysuiuserroles.sysuirole_id AND sysuiuserroles.user_id = '$current_user->id' UNION SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE sysuicustomroles.systemdefault = 1) roles order by name");
         while ($sysuirole = $this->db->fetchByAssoc($sysuiroles)) {
-            if (isset($retArray[$sysuirole['id']])) continue;
+            // if (isset($retArray[$sysuirole['id']])) continue;
             $sysuirolemodules = $this->db->query("SELECT * FROM sysuicustomrolemodules WHERE sysuirole_id in ('*', '" . $sysuirole['id'] . "') ORDER BY sequence");
             while ($sysuirolemodule = $this->db->fetchByAssoc($sysuirolemodules)) {
-                $retArray[$sysuirole['id']][] = $sysuirolemodule;
+                    $retArray[$sysuirole['id']][] = $sysuirolemodule;
             }
         }
 
@@ -313,6 +378,16 @@ class SystemUIRESTHandler
     {
         $retArray = array();
         $sysuirules = $this->db->query("SELECT * FROM sysuicopyrules");
+        while ($sysuirule = $this->db->fetchByAssoc($sysuirules)) {
+            $retArray[$sysuirule['frommodule']][$sysuirule['tomodule']][] = array(
+                'fromfield' => $sysuirule['fromfield'],
+                'tofield' => $sysuirule['tofield'],
+                'fixedvalue' => $sysuirule['fixedvalue'],
+                'calculatedvalue' => $sysuirule['calculatedvalue']
+            );
+        }
+
+        $sysuirules = $this->db->query("SELECT * FROM sysuicustomcopyrules");
         while ($sysuirule = $this->db->fetchByAssoc($sysuirules)) {
             $retArray[$sysuirule['frommodule']][$sysuirule['tomodule']][] = array(
                 'fromfield' => $sysuirule['fromfield'],
@@ -360,12 +435,13 @@ class SystemUIRESTHandler
     function getFieldSets()
     {
         $retArray = array();
-        $fieldsets = $this->db->query("SELECT sysuifieldsetsitems.*, sysuifieldsets.module, sysuifieldsets.name FROM sysuifieldsetsitems, sysuifieldsets WHERE sysuifieldsetsitems.fieldset_id = sysuifieldsets.id ORDER BY fieldset_id, sequence");
+        $fieldsets = $this->db->query("SELECT sysuifieldsetsitems.*, sysuifieldsets.module, sysuifieldsets.name, sysuifieldsets.package fieldsetpackage FROM sysuifieldsetsitems, sysuifieldsets WHERE sysuifieldsetsitems.fieldset_id = sysuifieldsets.id ORDER BY fieldset_id, sequence");
         while ($fieldset = $this->db->fetchByAssoc($fieldsets)) {
 
             if (!isset($retArray[$fieldset['fieldset_id']])) {
                 $retArray[$fieldset['fieldset_id']] = array(
                     'name' => $fieldset['name'],
+                    'package' => $fieldset['fieldsetpackage'],
                     'module' => $fieldset['module'] ?: '*',
                     'type' => 'global',
                     'items' => []
@@ -375,6 +451,7 @@ class SystemUIRESTHandler
             if (!empty($fieldset['field']))
                 $retArray[$fieldset['fieldset_id']]['items'][] = array(
                     'id' => $fieldset['id'],
+                    'package' => $fieldset['package'],
                     'field' => $fieldset['field'],
                     'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
@@ -382,18 +459,20 @@ class SystemUIRESTHandler
             elseif (!empty($fieldset['fieldset']))
                 $retArray[$fieldset['fieldset_id']]['items'][] = array(
                     'id' => $fieldset['id'],
+                    'package' => $fieldset['package'],
                     'fieldset' => $fieldset['fieldset'],
                     'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
                 );
         }
 
-        $fieldsets = $this->db->query("SELECT sysuicustomfieldsetsitems.*, sysuicustomfieldsets.module, sysuicustomfieldsets.name FROM sysuicustomfieldsetsitems, sysuicustomfieldsets WHERE sysuicustomfieldsetsitems.fieldset_id = sysuicustomfieldsets.id ORDER BY fieldset_id, sequence");
+        $fieldsets = $this->db->query("SELECT sysuicustomfieldsetsitems.*, sysuicustomfieldsets.module, sysuicustomfieldsets.name, sysuicustomfieldsets.package fieldsetpackage FROM sysuicustomfieldsetsitems, sysuicustomfieldsets WHERE sysuicustomfieldsetsitems.fieldset_id = sysuicustomfieldsets.id ORDER BY fieldset_id, sequence");
         while ($fieldset = $this->db->fetchByAssoc($fieldsets)) {
 
             if (!isset($retArray[$fieldset['fieldset_id']])) {
                 $retArray[$fieldset['fieldset_id']] = array(
                     'name' => $fieldset['name'],
+                    'package' => $fieldset['fieldsetpackage'],
                     'module' => $fieldset['module'] ?: '*',
                     'type' => 'custom',
                     'items' => []
@@ -403,6 +482,7 @@ class SystemUIRESTHandler
             if (!empty($fieldset['field']))
                 $retArray[$fieldset['fieldset_id']]['items'][] = array(
                     'id' => $fieldset['id'],
+                    'package' => $fieldset['package'],
                     'field' => $fieldset['field'],
                     'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
@@ -410,6 +490,7 @@ class SystemUIRESTHandler
             elseif (!empty($fieldset['fieldset']))
                 $retArray[$fieldset['fieldset_id']]['items'][] = array(
                     'id' => $fieldset['id'],
+                    'package' => $fieldset['package'],
                     'fieldset' => $fieldset['fieldset'],
                     'fieldconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
@@ -425,22 +506,80 @@ class SystemUIRESTHandler
 
         $this->checkAdmin();
 
+        // check if we have a CR set
+        if ($_SESSION['SystemDeploymentCRsActiveCR'])
+            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
+
+
         // add items
         foreach ($data['add'] as $fieldsetid => $fieldsetdata) {
-            $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets (id, module, name) VALUES('$fieldsetid', '" . $fieldsetdata['module'] . "', '" . $fieldsetdata['name'] . "')");
+            $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets (id, module, name, package, version) VALUES('$fieldsetid', '" . $fieldsetdata['module'] . "', '" . $fieldsetdata['name'] . "', '" . $fieldsetdata['package'] . "', '{$_SESSION['confversion']}')");
+
+            // add to the CR
+            if($cr) $cr->addDBEntry("sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets", $fieldsetid, 'I',  $fieldsetdata['module'] . "/" . $fieldsetdata['name']);
+
             foreach ($fieldsetdata['items'] as $fieldsetitem) {
-                $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "')");
+                $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig, package, version) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "','" . $fieldsetitem['package'] . "', '{$_SESSION['confversion']}')");
+
+                // add to the CR
+                if($cr) $cr->addDBEntry("sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems", $fieldsetitem['id'], 'I',  $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
             }
         }
 
         // handle the update
         foreach ($data['update'] as $fieldsetid => $fieldsetdata) {
-            $db->query("UPDATE sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets SET name='" . $fieldsetdata['name'] . "' WHERE id='$fieldsetid'");
-            // delete all current items
-            $db->query("DELETE FROM sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems WHERE fieldset_id = '$fieldsetid'");
-            // add all items
+
+            // get the record and check for change
+            $record = $db->fetchByAssoc($db->query("SELECT * FROM sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsets WHERE id='$fieldsetid'"));
+            if($record['name'] != $fieldsetdata['name'] || $record['package'] != $fieldsetdata['package']) {
+                // update the record
+                $db->query("UPDATE sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets SET name='" . $fieldsetdata['name'] . "', package='" . $fieldsetdata['package'] . "', version='{$_SESSION['confversion']}' WHERE id='$fieldsetid'");
+
+                // add to the CR
+                if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets", $fieldsetid, 'U', $fieldsetdata['module'] . "/" . $fieldsetdata['name']);
+            }
+
+            // get all fieldset items
+            $items = $db->query("SELECT * FROM sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems WHERE fieldset_id = '$fieldsetid'");
+            while($item = $db->fetchByAssoc($items)){
+                 $i = 0;$itemIndex = false;
+                foreach ($fieldsetdata['items'] as $index => $fieldsetitem) {
+                    if($fieldsetitem['id'] == $item['id']){
+                        unset($fieldsetdata['items'][$index]);
+                        $itemIndex = true;
+                        break;
+                    }
+                }
+
+                // if we have the entry
+                if($itemIndex !== false){
+                    if($item['sequence'] != $fieldsetitem['sequence'] ||
+                        $item['package'] != $fieldsetitem['package'] ||
+                        $item['field'] != $fieldsetitem['field'] ||
+                        $item['fieldset'] != $fieldsetitem['fieldset'] ||
+                        md5($item['fieldconfig']) != md5(json_encode($fieldsetitem['fieldconfig']))){
+                        $db->query("UPDATE sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems  SET package = '" . $fieldsetitem['package'] . "', field = '" . $fieldsetitem['field'] . "', fieldset = '" . $fieldsetitem['fieldset'] . "', sequence = '" . $fieldsetitem['sequence'] . "', fieldconfig = '" . json_encode($fieldsetitem['fieldconfig']) . "', version = '{$_SESSION['confversion']}' WHERE id='{$item['id']}'");
+
+                        // add to the CR
+                        if($cr) $cr->addDBEntry("sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems", $fieldsetitem['id'], 'U',  $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
+                    }
+
+                } else {
+                    // remove it
+                    $db->query("DELETE FROM sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems WHERE id='{$item['id']}'");
+                    // add to the CR
+                    if($cr) $cr->addDBEntry("sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems", $fieldsetitem['id'], 'D',  $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
+
+                }
+            }
+
+            // add all items we did not find
             foreach ($fieldsetdata['items'] as $fieldsetitem) {
-                $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "')");
+                $db->query("INSERT INTO sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems (id, fieldset_id, package, field, fieldset, sequence, fieldconfig, version) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['package'] . "','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "', '{$_SESSION['confversion']}')");
+
+                // add to the CR
+                if($cr) $cr->addDBEntry("sysui".($fieldsetdata['type'] == 'custom' ? 'custom': '')."fieldsetsitems", $fieldsetitem['id'], 'I',  $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
+
             }
         }
 
@@ -622,6 +761,113 @@ class SystemUIRESTHandler
         return true;
     }
 
+    public function getLibraries()
+    {
+        $return = [];
+        $sql = "SELECT * FROM sysuilibs UNION(SELECT * FROM sysuicustomlibs) ORDER BY rank ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))
+        {
+            $return[$row['name']][] = ['loaded' => false, 'src' => $row['src']];
+        }
+
+        return $return;
+    }
+
+    public function getServiceCategories()
+    {
+        $return = [];
+        $sql = "SELECT * FROM sysservicecategories ORDER BY keyname ASC, name ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))
+        {
+            $return[$row['id']] = $row;
+        }
+        return $return;
+    }
+
+    public function getServiceCategoryTree()
+    {
+        $return = [];
+        $sql = "SELECT cat.*, queue.name AS servicequeue_name 
+                FROM sysservicecategories AS cat 
+                LEFT JOIN servicequeues AS queue ON(queue.id = cat.servicequeue_id) 
+                WHERE IFNULL(parent_id,'') = ''
+                ORDER BY keyname ASC, cat.name ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))
+        {
+            $row['level'] = 0;
+            $return[] = $this->getServiceCategoryChilds($row);
+        }
+        return $return;
+    }
+
+    private function getServiceCategoryChilds(&$cat)
+    {
+        $sql = "SELECT cat.*, queue.name AS servicequeue_name 
+                FROM sysservicecategories AS cat 
+                LEFT JOIN servicequeues AS queue ON(queue.id = cat.servicequeue_id) 
+                WHERE parent_id = '".$cat['id']."' 
+                ORDER BY keyname ASC, cat.name ASC";
+        $res = $this->db->query($sql);
+        while($row = $this->db->fetchByAssoc($res, false))
+        {
+            $row['level'] = $cat['level'] + 1;
+            $cat['categories'][] = $this->getServiceCategoryChilds($row);
+        }
+        return $cat;
+    }
+
+    public function setServiceCategoryTree($tree)
+    {
+        $sql = "TRUNCATE TABLE sysservicecategories";
+        $this->db->query($sql);
+
+        $categories = $this->flattenOutServiceCategoryTree($tree);
+        //var_dump($tree, $categories);
+
+        # start rewriting by looping through the tree...
+        foreach($categories as $cat)
+        {
+            $sql = "INSERT INTO sysservicecategories SET 
+                      id = '".$cat['id']."',
+                      name = '".$cat['name']."',
+                      keyname = '".$cat['keyname']."',
+                      selectable = '".$cat['selectable']."',
+                      favorite = '".$cat['favorite']."',
+                      parent_id = '".$cat['parent_id']."',
+                      servicequeue_id = '".$cat['servicequeue_id']."'";
+            $this->db->query($sql);
+        }
+    }
+
+    private function flattenOutServiceCategoryTree($tree)
+    {
+        $cats = [];
+        foreach($tree as $cat)
+        {
+            $cats[] = $cat;
+            if( $cat['categories'] )
+            {
+                $this->flattenOutServiceCategoryChildren($cat['categories'],$cats);
+            }
+        }
+        return $cats;
+    }
+
+    private function flattenOutServiceCategoryChildren($childs, &$cats)
+    {
+        foreach($childs as $cat)
+        {
+            $cats[] = $cat;
+            if( $cat['categories'] )
+            {
+                $this->flattenOutServiceCategoryChildren($cat['categories'],$cats);
+            }
+        }
+    }
+
     function getFieldDefMapping()
     {
         global $db;
@@ -724,11 +970,15 @@ class SystemUIRESTHandler
 
         $navElements = [];
 
-        if ($current_user->is_admin) {
+        if ($current_user->is_admin)
+        {
             $admincomponents = $db->query("SELECT * FROM sysuiadmincomponents ORDER BY sequence");
-            while ($admincomponent = $db->fetchByAssoc($admincomponents)) {
+            while ($admincomponent = $db->fetchByAssoc($admincomponents))
+            {
                 $navElements[$admincomponent['admingroup']][] = array(
+                    'id' => $admincomponent['id'],
                     'adminaction' => $admincomponent['adminaction'],
+                    'admin_label' => $admincomponent['admin_label'],
                     'component' => $admincomponent['component'],
                     'componentconfig' => json_decode(str_replace(array("\r", "\n", "\t", "&#039;", "'"), array('', '', '', '"','"'), html_entity_decode($admincomponent['componentconfig'])), true) ?: new stdClass()
                 );
@@ -759,9 +1009,9 @@ class SystemUIRESTHandler
     }
 
     public function createDefaultConf(){
-        require_once 'modules/SystemUI/SpiceUICreator.php';
-        $spiceuiconf = new SpiceUICreator();
-        $spiceuiconf->createDefaultConf();
+        require_once 'modules/SystemUI/SpiceUILoader.php';
+        $spiceuiconf = new SpiceUILoader();
+        $spiceuiconf->loadDefaultConf();
         return true;
     }
 }

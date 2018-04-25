@@ -71,14 +71,14 @@ $dictionary['Document'] = array('table' => 'documents',
         'doc_type' =>
             array(
                 'name' => 'doc_type',
-                'vname' => 'LBL_DOC_TYPE',
+                'vname' => 'LBL_SOURCE',
                 'type' => 'enum',
                 'function' => 'getDocumentsExternalApiDropDown',
                 'len' => '100',
                 'comment' => 'Document type (ex: Google, box.net, IBM SmartCloud)',
                 'popupHelp' => 'LBL_DOC_TYPE_POPUP',
                 'massupdate' => false,
-                'options' => 'eapm_li`st',
+                'options' => 'eapm_list',
                 'default' => 'Sugar',
                 'studio' => 'false',
             ),
@@ -112,7 +112,7 @@ $dictionary['Document'] = array('table' => 'documents',
         'active_date' =>
             array(
                 'name' => 'active_date',
-                'vname' => 'LBL_DOC_ACTIVE_DATE',
+                'vname' => 'LBL_ACTIVE_DATE',
                 'type' => 'date',
                 'importable' => 'required',
                 'required' => true,
@@ -122,14 +122,14 @@ $dictionary['Document'] = array('table' => 'documents',
         'exp_date' =>
             array(
                 'name' => 'exp_date',
-                'vname' => 'LBL_DOC_EXP_DATE',
+                'vname' => 'LBL_EXP_DATE',
                 'type' => 'date',
             ),
 
         'category_id' =>
             array(
                 'name' => 'category_id',
-                'vname' => 'LBL_SF_CATEGORY',
+                'vname' => 'LBL_CATEGORY',
                 'type' => 'enum',
                 'len' => 100,
                 'options' => 'document_category_dom',
@@ -139,7 +139,7 @@ $dictionary['Document'] = array('table' => 'documents',
         'subcategory_id' =>
             array(
                 'name' => 'subcategory_id',
-                'vname' => 'LBL_SF_SUBCATEGORY',
+                'vname' => 'LBL_SUBCATEGORY',
                 'type' => 'enum',
                 'len' => 100,
                 'options' => 'document_subcategory_dom',
@@ -149,7 +149,7 @@ $dictionary['Document'] = array('table' => 'documents',
         'status_id' =>
             array(
                 'name' => 'status_id',
-                'vname' => 'LBL_DOC_STATUS',
+                'vname' => 'LBL_STATUS',
                 'type' => 'enum',
                 'len' => 100,
                 'options' => 'document_status_dom',
@@ -159,7 +159,7 @@ $dictionary['Document'] = array('table' => 'documents',
         'status' =>
             array(
                 'name' => 'status',
-                'vname' => 'LBL_DOC_STATUS',
+                'vname' => 'LBL_STATUS',
                 'type' => 'varchar',
                 'source' => 'non-db',
                 'comment' => 'Document status for Meta-Data framework',
@@ -197,7 +197,7 @@ $dictionary['Document'] = array('table' => 'documents',
         'revision' =>
             array(
                 'name' => 'revision',
-                'vname' => 'LBL_DOC_VERSION',
+                'vname' => 'LBL_VERSION',
                 'type' => 'varchar',
                 'reportable' => false,
                 'required' => true,
@@ -296,6 +296,14 @@ $dictionary['Document'] = array('table' => 'documents',
                 'source' => 'non-db',
                 'vname' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
             ),
+        'projects' =>
+            array(
+                'name' => 'projects',
+                'type' => 'link',
+                'relationship' => 'documents_projects',
+                'source' => 'non-db',
+                'vname' => 'LBL_PROJECTS_SUBPANEL_TITLE',
+            ),
         'cases' =>
             array(
                 'name' => 'cases',
@@ -311,6 +319,15 @@ $dictionary['Document'] = array('table' => 'documents',
                 'relationship' => 'documents_bugs',
                 'source' => 'non-db',
                 'vname' => 'LBL_BUGS_SUBPANEL_TITLE',
+            ),
+        'projects' =>
+            array(
+                'name' => 'projects',
+                'type' => 'link',
+                'relationship' => 'documents_projects',
+                'source' => 'non-db',
+                'module' => 'Projects',
+                'vname' => 'LBL_PROJECTS',
             ),
         'related_doc_id' =>
             array(

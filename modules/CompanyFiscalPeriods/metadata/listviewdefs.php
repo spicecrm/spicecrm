@@ -47,7 +47,7 @@ $listViewDefs['CompanyFiscalPeriods'] = array(
 	),
     'MODIFIED_BY_NAME' => array(
         'width' => '5',
-        'label' => 'LBL_MODIFIED',
+        'label' => 'LBL_MODIFIED_BY',
         'default' => true
 	),
     'DATE_MODIFIED' => array(

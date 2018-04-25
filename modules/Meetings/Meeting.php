@@ -634,6 +634,66 @@ class Meeting extends SugarBean
 		return $list;
 	}
 
+
+    function get_user_meetings($user, $timespan = 'today'){
+
+        global $timedate;
+
+        $template = $this;
+
+        // get the own meetings
+        $myquery = "SELECT id FROM meetings WHERE deleted = 0 AND assigned_user_id = '$user->id' AND status = 'planned'";
+
+        // First, get the list of IDs.
+        $invitedquery = "SELECT meetings.id FROM meetings, meetings_users WHERE meetings.id = meetings_users.meeting_id AND meetings_users.user_id='$user->id' AND meetings_users.deleted=0 AND meetings.deleted = 0 AND meetings.status = 'planned'";
+
+        // add the timespan
+        switch($timespan){
+            case 'all':
+                $end = new DateTime();
+                $end->setTime(23, 59, 59);
+                $invitedquery .= " AND meetings.date_start <= '" . $timedate->asDb($end) . "'";
+                $myquery .= " AND meetings.date_start <= '" . $timedate->asDb($end) . "'";
+                break;
+            case 'today':
+                $start = new DateTime();
+                $start->setTime(0, 0, 0);
+                $end = new DateTime();
+                $end->setTime(23, 59, 59);
+                $invitedquery .= " AND meetings.date_start >= '" . $timedate->asDb($start) . "' AND meetings.date_start <= '".$timedate->asDb($end)."'";
+                $myquery .= " AND meetings.date_start >= '" . $timedate->asDb($start) . "' AND meetings.date_start <= '".$timedate->asDb($end)."'";
+                break;
+            case 'overdue':
+                $end = new DateTime();
+                $end->setTime(0, 0, 0);
+                $invitedquery .= " AND meetings.date_start < '" . $timedate->asDb($end) . "'";
+                $myquery .= " AND meetings.date_start < '" . $timedate->asDb($end) . "'";
+                break;
+            case 'future':
+                $start = new DateTime();
+                $start->setTime(0, 0, 0);
+                $invitedquery .= " AND meetings.date_start > '" . $timedate->asDb($start) . "''";
+                $myquery .= " AND meetings.date_start > '" . $timedate->asDb($start) . "''";
+                break;
+        }
+
+        $result = $this->db->query($invitedquery . ' UNION ' . $myquery, true);
+
+        $list = Array();
+
+        while($row = $this->db->fetchByAssoc($result))
+        {
+            $record = BeanFactory::getBean('Meetings',$row['id']);
+
+            if($record != null){
+                // this copies the object into the array
+                $list[] = $record;
+            }
+        }
+        return $list;
+
+    }
+
 	function get_invite_meetings(&$user) {
 		$template = $this;
 		// First, get the list of IDs.

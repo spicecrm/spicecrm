@@ -329,19 +329,6 @@ $moduleList[] = 'CompetitorAssessments';
 $beanList['CompetitorAssessments'] = 'CompetitorAssessment';
 $beanFiles['CompetitorAssessment'] = 'modules/CompetitorAssessments/CompetitorAssessment.php';
 
-$moduleList[] = 'KReleasePackages';
-$beanList['KReleasePackages'] = 'KReleasePackage';
-$beanFiles['KReleasePackage'] = 'modules/KReleasePackages/KReleasePackage.php';
-
-$moduleList[] = 'KDeploymentSystems';
-$beanList['KDeploymentSystems'] = 'KDeploymentSystem';
-$beanFiles['KDeploymentSystem'] = 'modules/KDeploymentSystems/KDeploymentSystem.php';
-$modules_exempt_from_availability_check["KDeploymentSystems"] = "KDeploymentSystems";
-
-$moduleList[] = 'KDeploymentMWs';
-$beanList['KDeploymentMWs'] = 'KDeploymentMW';
-$beanFiles['KDeploymentMW'] = 'modules/KDeploymentMWs/KDeploymentMW.php';
-
 /** include EventRegistrations **/
 $moduleList[] = 'EventRegistrations';
 $beanList['EventRegistrations'] = 'EventRegistration';
@@ -404,10 +391,15 @@ if (file_exists('modules/Questionnaires/Questionnaire.php')) {
     $beanFiles['QuestionnaireInterpretation'] = 'modules/QuestionnaireInterpretations/QuestionnaireInterpretation.php';
 }
 
-/** include MediaFiles */
+/** include MediaFiles and MediaFileCategories */
+
 $moduleList[] = 'MediaFiles';
 $beanList['MediaFiles'] = 'MediaFile';
 $beanFiles['MediaFile'] = 'modules/MediaFiles/MediaFile.php';
+
+$moduleList[] = 'MediaCategories';
+$beanList['MediaCategories'] = 'MediaCategory';
+$beanFiles['MediaCategory'] = 'modules/MediaCategories/MediaCategory.php';
 
 
 // introduced in version 20180100

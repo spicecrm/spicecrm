@@ -93,5 +93,9 @@ $sugar_config['passwordsetting']['oneupper'] = true;
 $sugar_config['passwordsetting']['onelower'] = true;
 $sugar_config['passwordsetting']['onenumber'] = true;
 $sugar_config['passwordsetting']['tokenexpire'] = 30;
+$sugar_config['passwordsetting']['guideline'] = array(
+    'en_us' => 'At least one uppercase character, one lowercase character, one digit. At least 6 characters.',
+    'de_DE' => 'Mindestens ein Großbuchstabe, ein Kleinbuchstabe, eine Ziffer. Mindestens 6 Zeichen.'
+);
 
 write_array_to_file( "sugar_config", $sugar_config, "config.php");

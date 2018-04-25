@@ -44,7 +44,7 @@
 <tr><td>
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td scope="row" noWrap><span sugar='slot1'>{MOD.LBL_CAMPAIGN_NAME}</span sugar='slot'>&nbsp;&nbsp;<span sugar='slot1b'><input type=text size="20" name="name_basic" class=dataField  value="{NAME}" /></span sugar='slot'></td>
+		<td scope="row" noWrap><span sugar='slot1'>{MOD.LBL_CAMPAIGN}</span sugar='slot'>&nbsp;&nbsp;<span sugar='slot1b'><input type=text size="20" name="name_basic" class=dataField  value="{NAME}" /></span sugar='slot'></td>
 		<td scope="row">{APP.LBL_CURRENT_USER_FILTER}&nbsp;&nbsp;<input name='current_user_only_basic' onchange='this.form.submit();' class="checkbox" type="checkbox" {CURRENT_USER_ONLY}></td>
 	</tr>
 	</table>
@@ -60,18 +60,18 @@
 <td>
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-	<td width="20%" scope="row"><span sugar='slot2'>{MOD.LBL_CAMPAIGN_NAME}</span sugar='slot'></td>
+	<td width="20%" scope="row"><span sugar='slot2'>{MOD.LBL_NAME}</span sugar='slot'></td>
 	<td width="25%" ><span sugar='slot2b'><input name='name' type="text" tabindex='1' size='25' maxlength='50' value="{NAME}"></span sugar='slot'></td>
-	<td width="20%" scope="row"><span sugar='slot3'>{MOD.LBL_CAMPAIGN_STATUS}</span sugar='slot'></td>
+	<td width="20%" scope="row"><span sugar='slot3'>{MOD.LBL_STATUS}</span sugar='slot'></td>
 	<td width="25%" ><span sugar='slot3b'><select tabindex='2' name='status'>{STATUS_OPTIONS}</select></span sugar='slot'></td>
 	<tr>
-	<td  scope="row"><span sugar='slot4'>{MOD.LBL_CAMPAIGN_START_DATE}</span sugar='slot'></td>
+	<td  scope="row"><span sugar='slot4'>{MOD.LBL_DATE_START}</span sugar='slot'></td>
 	<td  ><span sugar='slot4b'><input name='start_date' onblur="parseDate(this, '{CALENDAR_DATEFORMAT}');" id='search_jscal_field' type="text" tabindex='2' size='11' maxlength='10' value="{START_DATE}"> <img src="index.php?entryPoint=getImage&themeName={THEME}&imageName=jscalendar.gif" alt="{APP.LBL_ENTER_DATE}"  id="search_jscal_trigger" align="absmiddle"> <span class="dateFormat">{USER_DATEFORMAT}</span></span sugar='slot'></td>
-	<td scope="row"><span sugar='slot5'>{MOD.LBL_CAMPAIGN_TYPE}</span sugar='slot'></td>
+	<td scope="row"><span sugar='slot5'>{MOD.LBL_TYPE}</span sugar='slot'></td>
 	<td ><span sugar='slot5b'>{MOD.LBL_NEWSLETTER}<input type='hidden' name='campaign_type' value='NewsLetter'></span sugar='slot'></td>
 </tr>
 <tr>
-		<td  scope="row"><span sugar='slot6'>{MOD.LBL_CAMPAIGN_END_DATE}</span sugar='slot'></td>
+		<td  scope="row"><span sugar='slot6'>{MOD.LBL_DATE_END}</span sugar='slot'></td>
 	<td  ><span sugar='slot6b'><input name='end_date' onblur="parseDate(this, '{CALENDAR_DATEFORMAT}');" id='search_enddate_jscal_field' type="text" tabindex='2' size='11' maxlength='10' value="{END_DATE}"> <img src="index.php?entryPoint=getImage&themeName={THEME}&imageName=jscalendar.gif" alt="{APP.LBL_ENTER_DATE}"  id="search_enddate_jscal_trigger" align="absmiddle"> <span class="dateFormat">{USER_DATEFORMAT}</span></span sugar='slot'></td>
 	
 	<td  scope="row"><span sugar='slot7'>{APP.LBL_ASSIGNED_TO}</span sugar='slot'></td>

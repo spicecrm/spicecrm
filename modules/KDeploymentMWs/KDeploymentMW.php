@@ -60,7 +60,7 @@ class KDeploymentMW extends SugarBean
                     $logged_in_user->retrieve($_SESSION['authenticated_user_id']);
                 }
                 if (!$logged_in_user->is_admin) {
-                    unset($_GET['PHPSESSID']);
+                    unset($_GET[session_name()]); //PHPSESSID
                     session_destroy();
                 }
                 $GLOBALS['kdeploymentmw_now'] = $row;

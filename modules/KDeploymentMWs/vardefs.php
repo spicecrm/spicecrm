@@ -52,7 +52,7 @@ $dictionary['KDeploymentMW'] = array(
         )
     ),
     'indices' => array(
-        'id' => array('name' => 'kdeploymentmws_pk', 'type' => 'primary', 'fields' => array('id')),
+        array('name' => 'idx_kdeploymentmws_deleted', 'type' => 'index', 'fields' => array('deleted')),
     ),
 );
 

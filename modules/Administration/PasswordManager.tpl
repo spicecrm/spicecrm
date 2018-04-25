@@ -479,10 +479,8 @@
 					</td>
 				</tr>
 			</table>
-			<div style="padding-top: 2px;">
-                     <input title="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button primary" id="btn_save" type="submit" onclick="addcheck(form);return check_form('ConfigurePasswordSettings');" name="save" value="{$APP.LBL_SAVE_BUTTON_LABEL}" />
-                     &nbsp;<input title="{$MOD.LBL_CANCEL_BUTTON_TITLE}"  onclick="document.location.href='index.php?module=Administration&action=index'" class="button"  type="button" name="cancel" value="{$APP.LBL_CANCEL_BUTTON_LABEL}" />
-                  </div>
+
+
 		</td>
 	</tr>
 </table>

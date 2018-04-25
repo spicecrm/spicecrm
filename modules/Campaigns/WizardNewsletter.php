@@ -173,7 +173,7 @@ else
 //hide frequency options if this is not a newsletter
 if($campaign_type == 'newsletter'){
     $ss->assign("HIDE_FREQUENCY_IF_NEWSLETTER", "Select");
-    $ss->assign("FREQUENCY_LABEL", $mod_strings['LBL_CAMPAIGN_FREQUENCY']);
+    $ss->assign("FREQUENCY_LABEL", $mod_strings['LBL_FREQUENCY']);
     if((!isset($focus->frequency)) && (!isset($focus->id))){
         $ss->assign("FREQ_OPTIONS", get_select_options_with_id($app_list_strings['newsletter_frequency_dom'], 'Monthly'));
     }else{

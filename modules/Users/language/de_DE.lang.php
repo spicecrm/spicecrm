@@ -23,11 +23,9 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
  
 $mod_strings = array (
-    'LBL_DELETE_USER_CONFIRM'           => 'Dieser Mitarbeiter ist auch ein Benutzer. Wird dieser Mitarbeiter gelöscht, wird auch der Benutzer gelöscht und kann daher nicht mehr das System nutzen. Außerdem müssen WorkFlow_Definitionen und Berichte, bei denen dieser Benutzer involviert ist, aktualisiert werden. Wollen Sie den Datensatz trotzdem löschen?',
-                                                'Deleting a User record cannot be undone.',
 	'LBL_DELETE_GROUP_CONFIRM'          => 'Wollen Sie wirklich diesen Gruppen User löschen? OK auswählen, um der User Datensatz zu löschen.<br /><br />Nachdem Sie OK gewählt haben, können Sie Datensätze des Gruppen Users anderen User zuweisen.',
 	'LBL_DELETE_PORTAL_CONFIRM'         => 'Wollen Sie wirklich diesen Portal API User löschen? OK auswählen, um diesen User zu löschen.',
-    'LBL_DELETE_USER_CONFIRM'           => 'Dieser Mitarbeiter ist auch ein Benutzer. Wird dieser Mitarbeiter gelöscht, wird auch der Benutzer gelöscht und kann daher nicht mehr das System nutzen. Außerdem müssen WorkFlow_Definitionen und Berichte, bei denen dieser Benutzer involviert ist, aktualisiert werden. Wollen Sie den Datensatz trotzdem löschen?',
+    'LBL_DELETE_USER_CONFIRM'           => 'Dieser Mitarbeiter ist auch ein Benutzer. Wird dieser Mitarbeiter gelöscht, wird auch der Benutzer gelöscht und kann daher nicht mehr das System nutzen. Außerdem müssen WorkFlow_Definitionen und Berichte, bei denen dieser Benutzer involviert ist, aktualisiert werden. Wollen Sie den Datensatz trotzdem löschen?<br/><br/>'.
                                                   'Click OK to delete the User record.',
 
 	'LNK_IMPORT_USERS'                 => 'Benutzer importieren',
@@ -165,7 +163,7 @@ $mod_strings = array (
 	'LBL_GROUP_USER_STATUS'				=> 'Gruppen Benutzer',
 	'LBL_GROUP_USER'					=> 'Benutzergruppen',
 	'LBL_HIDE_TABS'						=> 'Tabs verstecken',
-	'LBL_HOME_PHONE'					=> 'Telefon privat',
+	'LBL_PHONE_HOME'					=> 'Telefon privat',
 	'LBL_INBOUND_TITLE'					=> 'Firmeninformation',
 	'LBL_IS_ADMIN'						=> 'Ist Administrator',
 	'LBL_LANGUAGE'						=> 'Sprache',
@@ -230,9 +228,9 @@ $mod_strings = array (
     'LBL_MAX_SUBTAB_DESCRIPTION'        => 'Anzahl Subtabs, die angezeigt werden, bevor ein aufklappbares Menü erscheint.',
 	'LBL_MESSENGER_ID'					=> 'IM Name',
 	'LBL_MESSENGER_TYPE'				=> 'IM Typ',
-	'LBL_MOBILE_PHONE'					=> 'Mobiltelefon',
+	'LBL_PHONE_MOBILE'					=> 'Mobiltelefon',
 	'LBL_MODIFIED_BY'                  => 'Geändert von',
-	'LBL_CREATED_BY_NAME' => 'Erstellt von',
+	'LBL_CREATED_BY' 					=> 'Erstellt von',
     'LBL_MODIFIED_BY_ID'               => 'Geändert von ID',
     'LBL_MODULE_NAME'					=> 'Benutzer',
 	'LBL_MODULE_TITLE'					=> 'Benutzer: Home',
@@ -256,7 +254,7 @@ $mod_strings = array (
 	'LBL_OFFICE_PHONE'					=> 'Telefon Büro',
 	'LBL_OLD_PASSWORD'					=> 'Altes Passwort',
 	'LBL_OTHER_EMAIL'					=> 'Weitere E-Mail Adresse',
-	'LBL_OTHER_PHONE'					=> 'Weiteres Telefon',
+	'LBL_PHONE_OTHER'					=> 'Weiteres Telefon',
 	'LBL_OTHER'							=> 'Andere',
 	'LBL_PASSWORD'						=> 'Passwort',
     'LBL_PASSWORD_GENERATED'            => 'Neues Passwort wurde generiert',
@@ -297,7 +295,7 @@ $mod_strings = array (
 	'LBL_REMINDER_POPUP' => 'Popup',
 	'LBL_REMINDER_EMAIL' => 'E-Mail',
 	'LBL_REMOVED_TABS'					=> 'Admin Tabs Entfernen',
-	'LBL_REPORTS_TO_NAME'				=> 'Berichtet an',
+	'LBL_REPORTS_TO'				=> 'Berichtet an',
 	'LBL_REPORTS_TO'					=> 'Berichtet an',
     'LBL_REPORTS_TO_ID'                => 'Berichtet an ID',
 	'LBL_REQUEST_SUBMIT'				=> 'Deine Anfrage wurde verschickt',
@@ -352,10 +350,10 @@ $mod_strings = array (
 	'LBL_USER_LOCALE'					=> 'Lokale Einstellungen',
 	'LBL_USER_NAME'						=> 'Benutzername',
 	'LBL_USER_SETTINGS'					=> 'Benutzereinstellungen',
-	'LBL_USER_TYPE'		   			    => 'U',
+	'LBL_TYPE'		   			    => 'U',
 	'LBL_USER_ACCESS'                  => 'Zugang',
 	'LBL_USER'							=> 'Benutzer',
-	'LBL_WORK_PHONE'					=> 'Telefon Büro',
+	'LBL_PHONE_WORK'					=> 'Telefon Büro',
 	'LBL_YOUR_PUBLISH_URL'				=> 'An meinem Standort publizieren',
     'LBL_ICAL_PUB_URL'                  => 'iCal integration URL',
     'LBL_ICAL_PUB_URL_HELP'             => 'Dieser URL verwenden, um iCal im Sugar Kalender zu abonnieren',
@@ -372,7 +370,7 @@ $mod_strings = array (
     'LBL_AFFECTED'                      => 'beeinträchtig',
 
     'LBL_USER_NAME_FOR_ROLE'            => 'Benutzer/Teams/Rollen',
-    'LBL_SESSION_EXPIRED'               => 'Sie wurden abgemeldet, weil Ihre Session abgelaufen ist.',
+    'ERR_LOGGED_OUT_SESSION_EXPIRED'    => 'Sie wurden abgemeldet, weil Ihre Session abgelaufen ist.',
 
 // INBOUND EMAIL STRINGS
 	'LBL_APPLY_OPTIMUMS'				=> 'Optimums anwenden',
@@ -425,7 +423,7 @@ $mod_strings = array (
 // PROJECT RESOURCES STRINGS
 	'LBL_USER_HOLIDAY_SUBPANEL_TITLE' => 'Benutzer Urlaub',
 	'LBL_RESOURCE_NAME' => 'Name',
-	'LBL_RESOURCE_TYPE' => 'Typ:',
+	'LBL_RESOURCE_TYPE' => 'Typ',
 
 	'LBL_PDF_SETTINGS'  => 'PDF Einstellungen',
 	'LBL_PDF_PAGE_FORMAT'  => 'Seiten Format',
@@ -557,6 +555,9 @@ $mod_strings = array (
     'LBL_HIDEOPTIONS' => 'Optionen verstecken',
     'LBL_SHOWOPTIONS' => 'Optionen anzeigen',
 
-    'LBL_INBOUND_PROCESSING_ALLOWED' => 'Inbound Mail Processing aktiv'
+    'LBL_INBOUND_PROCESSING_ALLOWED' => 'Inbound Mail Processing aktiv',
+
+    'LBL_SERVICEQUEUES' => 'Service Queues'
+
 );
 ?>

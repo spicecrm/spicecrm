@@ -60,6 +60,13 @@ $dictionary['Project'] = array(
             'importable' => 'required',
             'enable_range_search' => true,
         ),
+        'project_type' => array(
+            'name' => 'project_type',
+            'vname' => 'LBL_TYPE',
+            'type' => 'enum',
+            'len' => 10,
+            'options' => 'project_type_dom',
+        ),
         'status' => array(
             'name' => 'status',
             'vname' => 'LBL_STATUS',
@@ -76,13 +83,13 @@ $dictionary['Project'] = array(
             'name' => 'total_estimated_effort',
             'type' => 'int',
             'source' => 'non-db',
-            'vname' => 'LBL_LIST_TOTAL_ESTIMATED_EFFORT',
+            'vname' => 'LBL_TOTAL_ESTIMATED_EFFORT',
         ),
         'total_actual_effort' => array(
             'name' => 'total_actual_effort',
             'type' => 'int',
             'source' => 'non-db',
-            'vname' => 'LBL_LIST_TOTAL_ACTUAL_EFFORT',
+            'vname' => 'LBL_TOTAL_ACTUAL_EFFORT',
         ),
         'accounts' => array(
             'name' => 'accounts',
@@ -97,7 +104,7 @@ $dictionary['Project'] = array(
             'name' => 'account_name',
             'rname' => 'name',
             'id_name' => 'account_id',
-            'vname' => 'LBL_ACCOUNT_NAME',
+            'vname' => 'LBL_ACCOUNT',
             'join_name' => 'accounts',
             'type' => 'relate',
             'link' => 'accounts',
@@ -128,6 +135,7 @@ $dictionary['Project'] = array(
         'contacts' => array(
             'name' => 'contacts',
             'type' => 'link',
+            'module' => 'Contacts',
             'relationship' => 'projects_contacts',
             'source' => 'non-db',
             'ignore_role' => true,
@@ -136,6 +144,7 @@ $dictionary['Project'] = array(
         'opportunities' => array(
             'name' => 'opportunities',
             'type' => 'link',
+            'module' => 'Opportunities',
             'relationship' => 'projects_opportunities',
             'source' => 'non-db',
             'ignore_role' => true,
@@ -144,6 +153,7 @@ $dictionary['Project'] = array(
         'notes' => array(
             'name' => 'notes',
             'type' => 'link',
+            'module' => 'Notes',
             'relationship' => 'projects_notes',
             'source' => 'non-db',
             'vname' => 'LBL_NOTES',
@@ -151,6 +161,7 @@ $dictionary['Project'] = array(
         'tasks' => array(
             'name' => 'tasks',
             'type' => 'link',
+            'module' => 'Tasks',
             'relationship' => 'projects_tasks',
             'source' => 'non-db',
             'vname' => 'LBL_TASKS',
@@ -158,6 +169,7 @@ $dictionary['Project'] = array(
         'meetings' => array(
             'name' => 'meetings',
             'type' => 'link',
+            'module' => 'Meetings',
             'relationship' => 'projects_meetings',
             'source' => 'non-db',
             'vname' => 'LBL_MEETINGS',
@@ -165,6 +177,7 @@ $dictionary['Project'] = array(
         'calls' => array(
             'name' => 'calls',
             'type' => 'link',
+            'module' => 'Calls',
             'relationship' => 'projects_calls',
             'source' => 'non-db',
             'vname' => 'LBL_CALLS',
@@ -173,6 +186,7 @@ $dictionary['Project'] = array(
         'emails' => array(
             'name' => 'emails',
             'type' => 'link',
+            'module' => 'Emails',
             'relationship' => 'emails_projects_rel',
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
@@ -180,13 +194,15 @@ $dictionary['Project'] = array(
         'projecttasks' => array(
             'name' => 'projecttasks',
             'type' => 'link',
+            'module' => 'ProjectTasks',
             'relationship' => 'projects_projecttasks',
             'source' => 'non-db',
-            'vname' => 'LBL_PROJECT_TASKS',
+            'vname' => 'LBL_PROJECTTASKS',
         ),
         'cases' => array(
             'name' => 'cases',
             'type' => 'link',
+            'module' => 'Cases',
             'relationship' => 'projects_cases',
             'side' => 'right',
             'source' => 'non-db',
@@ -195,10 +211,19 @@ $dictionary['Project'] = array(
         'bugs' => array(
             'name' => 'bugs',
             'type' => 'link',
+            'module' => 'Bugs',
             'relationship' => 'projects_bugs',
             'side' => 'right',
             'source' => 'non-db',
             'vname' => 'LBL_BUGS',
+        ),
+        'documents' => array(
+            'name' => 'documents',
+            'type' => 'link',
+            'relationship' => 'documents_projects',
+            'source' => 'non-db',
+            'module' => 'Documents',
+            'vname' => 'LBL_DOCUMENTS',
         ),
 
     ),
@@ -323,11 +348,14 @@ $dictionary['Project'] = array(
 );
 
 // CE version has not all projects modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
 if(is_file('modules/ProjectMilestones/ProjectMilestone.php')) {
     $dictionary['Project']['fields']['projectmilestones'] = array(
         'name' => 'projectmilestones',
-        'vname' => 'LBL_PROJECTS_PROJECTMILESTONES_LINK',
+        'vname' => 'LBL_PROJECTMILESTONES',
         'type' => 'link',
+        'module' => 'ProjectMilestones',
         'relationship' => 'projects_projectmilestones',
         'source' => 'non-db',
         'side' => 'right',
@@ -336,18 +364,17 @@ if(is_file('modules/ProjectMilestones/ProjectMilestone.php')) {
 if(is_file('modules/ProjectActivities/ProjectActivity.php')) {
     $dictionary['Project']['fields']['projectactivities'] = array(
         'name' => 'projectactivities',
-        'vname' => 'LBL_PROJECTS_PROJECTACTIVITIES_LINK',
+        'vname' => 'LBL_PROJECTACTIVITIES',
         'type' => 'link',
         'relationship' => 'projects_projectactivities',
         'source'=>'non-db',
         'module' => 'ProjectActivities',
-        'side' => 'right',
     );
 }
 if(is_file('modules/ProjectWBSs/ProjectWBS.php')) {
     $dictionary['Project']['fields']['projectwbss'] = array(
         'name' => 'projectwbss',
-        'vname' => 'LBL_PROJECTS_PROJECTWBSS_LINK',
+        'vname' => 'LBL_PROJECTWBSS',
         'type' => 'link',
         'relationship' => 'projects_projectwbss',
         'source'=>'non-db',
@@ -360,6 +387,7 @@ if(is_file('modules/Products/Product.php')) {
         'name' => 'products',
         'vname' => 'LBL_PRODUCTS',
         'type' => 'link',
+        'module' => 'Products',
         'relationship' => 'projects_products',
         'side' => 'right',
         'source' => 'non-db',

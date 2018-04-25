@@ -45,7 +45,7 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $mod_strings = array(
     //=> panels
     'LBL_MAINDATA' => 'Main Data',
-    'LBL_IMAP_POP3' => 'IMAP POP3 protocol',
+    'LBL_IMAP_POP3' => 'IMAP / POP3 protocol',
     'LBL_SMTP' => 'SMTP protocol',
     'LBL_PANEL_ASSIGNMENT' => 'Other',
 
@@ -59,7 +59,7 @@ $mod_strings = array(
 //=> fields
     'LBL_NAME' => 'Name',
     'LBL_DESCRIPTION' => 'Description',
-    'LBL_MAILBOX' => 'Mailbox',
+    'LBL_GENERAL' => 'General',
     'LBL_TITLE' => 'Title',
     'LBL_RELAIS' => 'Relais',
     'LBL_EMAILS_SUBPANEL_TITLE' => 'Emails',
@@ -67,27 +67,21 @@ $mod_strings = array(
     // common email protocol fields
     'LBL_HOST' => 'Host',
     'LBL_PORT' => 'Port',
-    'LBL_USERNAME' => 'Username',
+    'LBL_USER_NAME' => 'Username',
     'LBL_PASSWORD' => 'Password',
 
     // IMAP/POP3 protocol fields
-    'LBL_HOST_IMAP_POP3' => 'IMAP/POP3 host',
-    'LBL_PORT_IMAP_POP3' => 'IMAP/POP3 port',
-    'LBL_USERNAME_IMAP_POP3' => 'IMAP/POP3 username',
-    'LBL_PASSWORD_IMAP_POP3' => 'IMAP/POP3 password',
-    'LBL_PROTOCOL_TYPE' => 'Protocol:',
-    'LBL_ENCRYPTION' => 'Encryption: ',
-    'LBL_IMAP_INBOX_DIR' => 'Imap directory',
-    'LBL_CAMPAIGNs' => 'Campaigns',
+    'LBL_PROTOCOL' => 'Protocol',
+    'LBL_ENCRYPTION' => 'Encryption ',
+    'LBL_INBOX_DIR' => 'IMAP directory',
+    'LBL_CAMPAIGNS' => 'Campaigns',
 
-    // SMTP fields
-    'LBL_HOST_SMTP' => 'SMTP host',
-    'LBL_PORT_SMTP' => 'SMTP port',
-    'LBL_USERNAME_SMTP' => 'SMTP username',
-    'LBL_PASSWORD_SMTP' => 'SMTP password',
     'LBL_AUTH_TYPE' => 'Authentication type',
     'LBL_AUTH_ENABLED' => 'Authentication',
     'LBL_DEBUG' => 'Debug information',
+
+    //Traffic
+//    'LBL_TRAFFIC_JSON' => 'Traffic information',
 
 //    'LBL_CONTACT_INFORMATION' => 'Contact information',
 
@@ -105,6 +99,7 @@ $mod_strings = array(
 
 //=> test email strings
     'EMAIL_SUBJECT' => 'Test email',
-    'EMAIL_BODY' => 'This is a body of a test email.'
+    'EMAIL_BODY' => 'This is a body of a test email.',
+    'LBL_TRANSPORT' => 'Transport'
 
 );

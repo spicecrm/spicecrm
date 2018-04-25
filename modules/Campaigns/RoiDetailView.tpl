@@ -73,22 +73,22 @@
 	<td width="20%"><slot>{$MOD.LBL_ASSIGNED_TO}</slot></td>
 	<td width="30%"><slot>{$ASSIGNED_TO}</slot></td>
 	</tr><tr>
-	<td width="20%"><slot>{$MOD.LBL_CAMPAIGN_STATUS}</slot></td>
+	<td width="20%"><slot>{$MOD.LBL_STATUS}</slot></td>
 	<td width="30%"><slot>{$STATUS}</slot></td>
 	<td width="20%"><slot>&nbsp;</slot></td>
 	<td width="30%"><slot>&nbsp;</slot></td>
 	</tr><tr>
-	<td width="20%"><slot>{$MOD.LBL_CAMPAIGN_START_DATE}</slot></td>
+	<td width="20%"><slot>{$MOD.LBL_DATE_START}</slot></td>
 	<td width="30%"><slot>{$START_DATE}</slot></td>
 	<td ><slot>{$APP.LBL_DATE_MODIFIED}&nbsp;</slot></td>
 	<td ><slot>{$DATE_MODIFIED} {$APP.LBL_BY} {$MODIFIED_BY}</slot></td>
 	</tr><tr>
-	<td width="20%"><slot>{$MOD.LBL_CAMPAIGN_END_DATE}</slot></td>
+	<td width="20%"><slot>{$MOD.LBL_DATE_END}</slot></td>
 	<td width="30%"><slot>{$END_DATE}</slot></td>
 	<td ><slot>{$APP.LBL_DATE_ENTERED}&nbsp;</slot></td>
 	<td ><slot>{$DATE_ENTERED} {$APP.LBL_BY} {$CREATED_BY}</slot></td>
 	</tr><tr>
-	<td width="20%"><slot>{$MOD.LBL_CAMPAIGN_TYPE}</slot></td>
+	<td width="20%"><slot>{$MOD.LBL_TYPE}</slot></td>
 	<td width="30%"><slot>{$TYPE}</slot></td>
 	<td width="20%"><slot>&nbsp;</slot></td>
 	<td width="30%"><slot>&nbsp;</slot></td>
@@ -98,23 +98,23 @@
 	<td width="20%"><slot>&nbsp;</slot></td>
 	<td width="30%"><slot>&nbsp;</slot></td>
 	</tr><tr>
-	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_BUDGET} ({$CURRENCY})</slot></td>
+	<td width="20%" nowrap><slot>{$MOD.LBL_BUDGET} ({$CURRENCY})</slot></td>
 	<td width="30%"><slot>{$BUDGET}</slot></td>
 	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_IMPRESSIONS}</slot></td>
 	<td width="30%" nowrap><slot>{$IMPRESSIONS}</slot></td>
 	</tr><tr>
-	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_EXPECTED_COST} ({$CURRENCY})</slot></td>
+	<td width="20%" nowrap><slot>{$MOD.LBL_EXPECTED_COST} ({$CURRENCY})</slot></td>
 	<td width="30%"><slot>{$EXPECTED_COST}</slot></td>
 		<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_OPPORTUNITIES_WON}</slot></td>
 	<td width="30%"><slot>{$OPPORTUNITIES_WON}</slot></td>
 	</tr><tr>
 	</tr><tr>
-	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_ACTUAL_COST} ({$CURRENCY})</slot></td>
+	<td width="20%" nowrap><slot>{$MOD.LBL_ACTUAL_COST} ({$CURRENCY})</slot></td>
 	<td width="30%"><slot>{$ACTUAL_COST}</slot></td>
 	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_COST_PER_IMPRESSION} ({$CURRENCY})</slot></td>
 	<td width="30%" nowrap><slot>{$COST_PER_IMPRESSION}</slot></td>
 	</tr><tr>
-	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_EXPECTED_REVENUE} ({$CURRENCY})</slot></td>
+	<td width="20%" nowrap><slot>{$MOD.LBL_EXPECTED_REVENUE} ({$CURRENCY})</slot></td>
 	<td width="30%" nowrap><slot>{$EXPECTED_REVENUE}</slot></td>
 	<td width="20%" nowrap><slot>{$MOD.LBL_CAMPAIGN_COST_PER_CLICK_THROUGH} ({$CURRENCY})</slot></td>
 	<td width="30%"><slot>{$COST_PER_CLICK_THROUGH}</slot></td>
@@ -126,10 +126,10 @@
 	</tr>
 <!--
 	<tr>
-	<td width="20%" valign="top" valign="top"><slot>{$MOD.LBL_CAMPAIGN_OBJECTIVE}</slot></td>
+	<td width="20%" valign="top" valign="top"><slot>{$MOD.LBL_OBJECTIVE}</slot></td>
 	<td colspan="3"><slot>{$OBJECTIVE}</slot></td>
 </tr><tr>
-	<td width="20%" valign="top" valign="top"><slot>{$MOD.LBL_CAMPAIGN_CONTENT}</slot></td>
+	<td width="20%" valign="top" valign="top"><slot>{$MOD.LBL_CONTENT}</slot></td>
 	<td colspan="3"><slot>{$CONTENT}</slot></td>
 </tr>
 -->

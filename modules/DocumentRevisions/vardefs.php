@@ -51,7 +51,7 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
         'change_log' =>
             array(
                 'name' => 'change_log',
-                'vname' => 'LBL_CHANGE_LOG',
+                'vname' => 'LBL_LOGGED_CHANGES',
                 'type' => 'varchar',
                 'len' => '255',
             ),
@@ -78,7 +78,7 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
         'doc_type' =>
             array(
                 'name' => 'doc_type',
-                'vname' => 'LBL_DOC_TYPE',
+                'vname' => 'LBL_TYPE',
                 'type' => 'enum',
                 'function' => 'getDocumentsExternalApiDropDown',
                 'len' => '100',
@@ -189,7 +189,7 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
                 'rname' => 'user_name',
                 'db_concat_fields' => array(0 => 'first_name', 1 => 'last_name'),
                 'id_name' => 'created_by',
-                'vname' => 'LBL_CREATED_BY_NAME',
+                'vname' => 'LBL_CREATED_BY',
                 'type' => 'relate',
                 'table' => 'users',
                 'isnull' => 'true',
@@ -219,7 +219,7 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
             'name' => 'document_name',
             'rname' => 'name',
             'id_name' => 'document_id',
-            'vname' => 'LBL_DOC_NAME',
+            'vname' => 'LBL_DOCUMENT',
             'join_name' => 'documents',
             'type' => 'relate',
             'link' => 'documents',

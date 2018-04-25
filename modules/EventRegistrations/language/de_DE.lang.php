@@ -16,9 +16,9 @@ $mod_strings = array (
 
 //=> fields	
     'LBL_NAME' => 'EventRegistration Number',
-    'LBL_REGISTRATION_STATUS' => 'Status',
-    'LBL_CAMPAIGN_NAME' => 'Event',
-    'LBL_CONTACT_NAME' => 'Kontakt',
+    'LBL_STATUS' => 'Status',
+    'LBL_EVENT' => 'Event',
+    'LBL_CONTACT' => 'Kontakt',
 
 //=> links
 

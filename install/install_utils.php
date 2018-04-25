@@ -786,6 +786,33 @@ function handleSugarConfig() {
     $sugar_config['fts']['loglevel'] = '0';
     $sugar_config['fts']['schedulerpackagesize'] = 25000;
 
+    $sugar_config['media_files_dir'] = 'media/';
+    $sugar_config['media_files_thumbs_dir'] = 'media/.thumbs/';
+    $sugar_config['media_files_sizes_dir'] = 'media/.sizes/';
+    $sugar_config['media_files_trash_dir'] = 'media/.trash/';
+    $sugar_config['media_files_thumb_sizes'] = array(
+        0 => 30,
+        1 => 48,
+        2 => 64,
+        3 => 80,
+        4 => 120,
+        5 => 160,
+        6 => 200,
+        7 => 300
+    );
+    $sugar_config['media_files_thumb_sizes_auto_step'] = 300;
+    $sugar_config['media_files_image_widths'] = array(
+        0 => 60,
+        1 => 90,
+        2 => 120,
+        3 => 150,
+        4 => 180,
+        5 => 210,
+        6 => 240,
+        7 => 300
+    );
+    $sugar_config['media_files_image_widths_auto_step'] = 300;
+
     $sugar_config['cache_dir']                      = $cache_dir;
     $sugar_config['default_charset']                = $mod_strings['DEFAULT_CHARSET'];
     $sugar_config['default_email_client']           = 'sugar';

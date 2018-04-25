@@ -80,6 +80,7 @@ $viewdefs['Documents']['QuickCreate'] = array(
 
     array (
       array('name'=>'description', 'displayParams'=>array('rows'=>10, 'cols'=>120)),
+      array('name' => 'assigned_user_name')
     ),
   ),
 )

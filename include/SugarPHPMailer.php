@@ -119,6 +119,12 @@ class SugarPHPMailer extends PHPMailer
     			$this->Username = $oe->mail_smtpuser;
     			$this->Password = $oe->mail_smtppass;
     		}
+
+            //BEGIN CORE MODIFICATION DRU-4 2018-04-11 maretval
+            if(isset($GLOBALS['sugar_config']['SugarPHPMailer']['SMTPOptions'])){
+                $this->SMTPOptions = $GLOBALS['sugar_config']['SugarPHPMailer']['SMTPOptions'];
+            }
+            //END
 		}
 		else
 			$this->Mailer = "sendmail";
@@ -152,6 +158,12 @@ class SugarPHPMailer extends PHPMailer
     			$this->Username = $oe->mail_smtpuser;
     			$this->Password = $oe->mail_smtppass;
     		}
+
+            //BEGIN CORE MODIFICATION DRU-4 2018-04-11 maretval
+            if(isset($GLOBALS['sugar_config']['SugarPHPMailer']['SMTPOptions'])){
+                $this->SMTPOptions = $GLOBALS['sugar_config']['SugarPHPMailer']['SMTPOptions'];
+            }
+            //END
 		}
 		else
 		  $this->Mailer = "sendmail";

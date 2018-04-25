@@ -2061,8 +2061,7 @@ ul.cssmenu li a {
 /* module title */
 div.moduleTitle {
   height: 2em;
-overflow:hidden;
-}
+  overflow: hidden; }
 
 .moduleTitle img {
   margin-right: 3px;
@@ -5707,29 +5706,24 @@ div.moduleTitle {
   height: auto;
   margin-top: 5px;
   padding-bottom: 5px;
-  margin-bottom: 0px;
-  overflow:hidden;  }
+  margin-bottom: 0px; }
 
 #moduleTitleDummy {
   height: auto;
   margin-top: 5px;
   padding-bottom: 5px;
-  margin-bottom: 0px;
-  overflow:hidden;}
+  margin-bottom: 0px; }
 
 #moduleTitleDummy h2 {
   color: #2d2d2d;
-  padding-left: 5px;
-  overflow:hidden;
-  text-overflow: ellipsis;}
+  padding-left: 5px; }
 
 #moduleTitleDummy span.utils {
   display: none; }
 
 .moduleTitle h2 {
   color: #2d2d2d;
-  padding-left: 5px;
-  overflow:hidden; }
+  padding-left: 5px; }
 
 .moduleTitle span.utils {
   display: none; }

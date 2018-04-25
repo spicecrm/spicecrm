@@ -15,13 +15,15 @@ $mod_strings = array (
     'LNK_IMPORT_ACCCCDET' => 'Import Company Code Details',
 
 //=> fields
-    'LBL_ACCOUNT_NAME' => 'Account Name',
-    'LBL_COMPANYCODE_NAME' => 'Companycode Name',
+    'LBL_ACCOUNT' => 'Account',
+    'LBL_COMPANYCODE' => 'Companycode',
     'LBL_PAYMENTTERMS' => 'Payment Terms',
     'LBL_INCOTERM1' => 'Incoterm1',
     'LBL_INCOTERM2' => 'Incoterm2',
     'LBL_ABCCATEGORY' => 'ABC Category',
 //=> links
+    'LBL_ACCOUNTS' => 'Accounts',
+    'LBL_COMPANYCODES' => 'Company Codes',
 
 //=> subpanels
 

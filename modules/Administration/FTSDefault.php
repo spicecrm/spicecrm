@@ -30,15 +30,33 @@
 /**
  * delete current content in sysfts table
  * insert default FTS settings for all modules
+ * initiliaze indexes
  */
 
 require_once 'include/SpiceFTSManager/SpiceFTSCreator.php';
-$spiceftsconf = new SpiceFTSCreator();
+require_once 'include/SpiceFTSManager/SpiceFTSLoader.php';
 
-if($_POST['ftsdefaultconf_process'] > 0){
-    $spiceftsconf->createDefaultConf();
-    $spiceftsconf->initialize();
-}else{
-    $spiceftsconf->displayDefaultConfForm();
+if ($current_user->is_admin) {
+
+    $loader = new SpiceFTSLoader();
+    if ($_POST['ftsdefaultconf_process'] > 0) {
+        //collect values for REST call
+        //https://packages.spicecrm.io/ftsconfig
+        $route = "referencefts";
+        $package = (isset($_POST['ftsdefaultconf_package']) ? $_POST['ftsdefaultconf_package'] : "*");
+        $version = $_POST['ftsdefaultconf_version'];
+        $endpoint = implode("/", array($route, $package, $version));
+        $loader->loadDefaultConf($endpoint, array('route' => $route, 'package' => $package, 'version' => $version));
+
+        //initialize
+        $spiceftsconf = new SpiceFTSCreator();
+        $spiceftsconf->initialize();
+
+    } else {
+        //display form
+        $loader->displayDefaultConfForm($currentconf);
+    }
 }
-
+else{
+    die("Access denied");
+}

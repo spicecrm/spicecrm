@@ -25,12 +25,12 @@ $subpanel_layout = array(
             'target_record_key' => 'campaign_id',
             'target_module' => 'Campaigns',
             'module' => 'Campaigns',
-            'vname' => 'LBL_CAMPAIGN_NAME',
+            'vname' => 'LBL_EVENT',
             'width' => '11%',
             'sortable' => false,
         ),
         'registration_status' => array(
-            'vname' => 'LBL_REGISTRATION_STATUS',
+            'vname' => 'LBL_STATUS',
             'width' => '10%',
         ),
 //        'assigned_user_name' => array(

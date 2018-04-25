@@ -90,7 +90,7 @@ $mod_strings = array (
 	'LBL_STYLE_ADVANCED' => 'Erweitert',
 
 	'LBL_INFO_TITLE' => 'Weitere Details',
-	'LBL_INFO_DESC' => 'Beschreibung',
+	'LBL_DESCRIPTION' => 'Beschreibung',
 	'LBL_INFO_START_DT' => 'Datum Zeit Start',
 	'LBL_INFO_DUE_DT' => 'Datum Zeit fällig',
 	'LBL_INFO_DURATION' => 'Dauer:',

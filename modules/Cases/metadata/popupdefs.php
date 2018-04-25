@@ -57,7 +57,7 @@ $popupMeta = array(
 	        'default' => true), 
 		'ACCOUNT_NAME' => array(
 			'width' => '25', 
-			'label' => 'LBL_LIST_ACCOUNT_NAME', 
+			'label' => 'LBL_ACCOUNT',
 			'module' => 'Accounts',
 			'id' => 'ACCOUNT_ID',
 			'link' => true,
@@ -66,15 +66,15 @@ $popupMeta = array(
 	        'related_fields' => array('account_id')),
 		'PRIORITY' => array(
 			'width' => '8', 
-			'label' => 'LBL_LIST_PRIORITY',
+			'label' => 'LBL_PRIORITY',
 	        'default' => true),  
 		'STATUS' => array(
 			'width' => '8', 
-			'label' => 'LBL_LIST_STATUS',
+			'label' => 'LBL_STATUS',
 	        'default' => true),
 	    'ASSIGNED_USER_NAME' => array(
 	        'width' => '2', 
-	        'label' => 'LBL_LIST_ASSIGNED_USER',
+	        'label' => 'LBL_ASSIGNED_TO',
 	        'default' => true,
 	       ),
 		),

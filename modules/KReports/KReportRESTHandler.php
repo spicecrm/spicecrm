@@ -52,8 +52,8 @@ class KReporterRESTHandler
         );
         $customFunctionInclude = '';
         $kreportCustomFunctions = array();
-        include 'modules/KReports/kreportsConfig.php';
         global $kreportCustomFunctions;
+        include 'modules/KReports/kreportsConfig.php';
         if ($customFunctionInclude != '') {
             include $customFunctionInclude;
             if (is_array($kreportCustomFunctions) && count($kreportCustomFunctions) > 0) {
@@ -71,6 +71,7 @@ class KReporterRESTHandler
 
     function getLayouts()
     {
+        global $kreportLayouts;
         include('modules/KReports/config/KReportLayouts.php');
         $layouts = array();
         $layouts[] = array(
@@ -110,6 +111,7 @@ class KReporterRESTHandler
     function getVizColors()
     {
         $colors = [];
+        global $kreportColors;
         include('modules/KReports/config/KReportColors.php');
         foreach ($kreportColors as $colorSchema => $colorDetails) {
             $colors[] = array(
@@ -264,7 +266,6 @@ class KReporterRESTHandler
         global $beanFiles, $beanList, $db;
 
         $returnArray = array();
-        $fieldArray = array();
 
 
         // explode the path
@@ -320,8 +321,8 @@ class KReporterRESTHandler
 
         $app_list_strings = return_app_list_strings_language($current_language);
 
+        global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
-
         return array(
             'operatorCount' => $kreporterWhereOperatorCount,
             'operatorTypes' => $kreporterWhereOperatorTypes,
@@ -335,6 +336,7 @@ class KReporterRESTHandler
 
         $app_list_strings = return_app_list_strings_language($current_language);
 
+        global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
 
         //2013-01-18 take in account the users language
@@ -1053,6 +1055,7 @@ class KReporterRESTHandler
 
         //catch dynamic options sent by drilldown plugin at first load
         if (isset($requestParams['dynamicoptions']) && !empty($requestParams['dynamicoptions']) && !$requestParams['blockDynamicoptions']) {
+            $thisReport->dynamicoptions = true; //fix 2018-02-22 for KReportQuery referencefields looping
             $dynamicoptions = json_decode(html_entity_decode($requestParams['dynamicoptions']), true);
             if (count($thisReport->whereOverride) <= 0)
                 $thisReport->whereOverride = $dynamicoptions;
@@ -1078,16 +1081,38 @@ class KReporterRESTHandler
 
         foreach ($thisReport->kQueryArray->queryArray['root']['kQuery']->fieldArray as $fieldid => $fieldname) {
             $thisFieldArray = array('name' => $fieldname);
-            switch ($thisReport->fieldNameMap[$fieldid]['type']) {
+
+            //BEGIN ticket 0000926 maretval: check on overridetype if set! (mostly for fixedvalue fields). Necessary for proper column sorting
+            $fieldType = $thisReport->fieldNameMap[$fieldid]['type'];
+            if(isset($thisReport->fieldNameMap[$fieldid]['overridetype']) &&
+                strlen($thisReport->fieldNameMap[$fieldid]['overridetype']) > 1) //empty or "-"
+                $fieldType = $thisReport->fieldNameMap[$fieldid]['overridetype'];
+
+            //BEGIN ticket 0000926 maretval: set type string on customFunction without override type
+            if($thisReport->fieldNameMap[$fieldid]['customFunction'] != '' &&
+                strlen($thisReport->fieldNameMap[$fieldid]['overridetype']) < 2 ) {
+                $fieldType = 'string';
+            }
+            if($thisReport->fieldNameMap[$fieldid]['sqlFunction'] != '' &&
+                strlen($thisReport->fieldNameMap[$fieldid]['overridetype']) < 2 ) {
+                $fieldType = 'string';
+            }
+            //END
+
+            //ORIGINAL: switch ($thisReport->fieldNameMap[$fieldid]['type']) {
+            switch ($fieldType) {
+                //END
                 case 'int':
-                case 'currencyint':
+                case 'currencyint': //ticket 0000926 added
                     $thisFieldArray['type'] = 'integer';
                     break;
                 case 'currency':
+                case 'percentage'://ticket 0000926 added
+                case 'number'://ticket 0000926 added
                 case 'float':
                     $thisFieldArray['type'] = 'number';
                     break;
-//type date will modified date format in store and check on timezone on user's machine! 
+//type date will modified date format in store and check on timezone on user's machine!
 //2016-06-25 will become Sat Jun 24 2016 20:00:00 GMT-0400 (Zentalbrasilianische Normalzeit)                
 //                case 'date':
 //                    $thisFieldArray['type'] = 'date'; 
@@ -1098,9 +1123,10 @@ class KReporterRESTHandler
             }
 
             // BUG #524 if we have a custom function then send string sicne we do not know what tpye is returned
-            if ($thisReport->fieldNameMap[$fieldid]['customFunction'] != '')
-                $thisFieldArray['type'] = 'string';
-
+//BEGIN ticket 00000926: not needed here anymore. Handled above
+//            if($thisReport->fieldNameMap[$fieldid]['customFunction'] != '')
+//                $thisFieldArray['type'] = 'string';
+//END
             if (isset($linkArray[$fieldid]))
                 $thisFieldArray['linkInfo'] = json_encode($linkArray[$fieldid]);
             $fieldArr[] = $thisFieldArray;
@@ -1130,7 +1156,7 @@ class KReporterRESTHandler
                 'fieldname' => $reportField['fieldname'],
                 'fieldrenderer' => $thisReport->getXtypeRenderer($thisReport->getFieldTypeById($reportField['fieldid']), $reportField['fieldid']),
                 'name' => $reportField['name'],
-                'type' => !empty($reportField['overridetype']) ? $reportField['overridetype'] : $thisReport->fieldNameMap[$reportField['fieldid']]['type'],
+                'type' => (!empty($reportField['overridetype']) && $reportField['overridetype']!="-" ? $reportField['overridetype'] : $thisReport->fieldNameMap[$reportField['fieldid']]['type']),
                 'display' => $reportField['display'],
                 'width' => $reportField['width'],
                 'path' => $reportField['path'],
@@ -1180,7 +1206,7 @@ class KReporterRESTHandler
         }
 
         //extractWhereClause conditions
-        if (isset($requestParams['whereConditions'])) {
+        if (isset($requestParams['whereConditions']) && !empty($requestParams['whereConditions'])) {
             $thisReport->whereOverride = $requestParams['whereConditions'];
         }
 
@@ -1188,6 +1214,7 @@ class KReporterRESTHandler
         $whereconditions = json_decode(html_entity_decode($thisReport->whereconditions), true);
         $whereoverride = array();
         if (isset($requestParams['dynamicoptionsfromurl']) && !empty($requestParams['dynamicoptionsfromurl'])) {
+            $thisReport->dynamicoptions = true; //fix 2018-02-22 for KReportQuery referencefields looping
             $dynamicoptions = json_decode(html_entity_decode(base64_decode($requestParams['dynamicoptionsfromurl'])), true);
             foreach ($whereconditions as $idx => $wherecondition) {
                 foreach ($dynamicoptions as $idxdo => $dynamicoption) {
@@ -1675,13 +1702,12 @@ class KReporterRESTHandler
         $order_by = "users.last_name ASC";
 
         if (!empty($params['userids'])) {
-            $where = "users.id IN('" . implode("','", json_decode($params['userids'], true)) . "')";
+            $where = "users.id IN('" . implode("','", json_decode(html_entity_decode($params['userids'], ENT_QUOTES), true)) . "')";
             $callGetList = true;
         } elseif ($params['all'] == '*') {
             $where = "";
             $callGetList = true;
         }
-
         if (!empty($params['nameFilter'])) {
             $where = " users.first_name like '%" . $params['nameFilter'] . "%' OR users.last_name like '%" . $params['nameFilter'] . "%' OR users.user_name like '%" . $params['nameFilter'] . "%' ";
         }
@@ -1696,6 +1722,7 @@ class KReporterRESTHandler
                     //grab primary e-mail
                     if (empty($thisEntry->email1)) {
                         $emails = $thisEntry->get_linked_beans('email_addresses_primary', 'EmailAddress');
+                        if(!is_array($thisEntry->email1)) $thisEntry->email1 = array();
                         for ($i = 0; $i < count($emails); $i++) {
                             $thisEntry->email1[] = $emails[0]->email_address;
                         }
@@ -1720,11 +1747,11 @@ class KReporterRESTHandler
     {
         $returnArray = array();
 
-//get contacts list
+        //get contacts list
         $callGetList = false;
         $contact = new Contact();
         $order_by = "contacts.last_name ASC";
-
+        $where = "";
         if (!empty($params['contactids'])) {
             $where = "contacts.id IN('" . implode("','", json_decode($params['contactids'], true)) . "')";
             $callGetList = true;
@@ -1733,6 +1760,7 @@ class KReporterRESTHandler
                 . "OR contacts.first_name LIKE '" . $params['like'] . "%'";
             $callGetList = true;
         }
+
         //get contact list
         if ($callGetList) {
             //get contact beans
@@ -1777,7 +1805,7 @@ class KReporterRESTHandler
         $order_by = "kreports.name ASC";
 
         if (!empty($params['kreportids'])) {
-            $where = "kreports.id IN('" . implode("','", json_decode($params['kreportids'], true)) . "')";
+            $where = "kreports.id IN('" . implode("','", json_decode(html_entity_decode($params['kreportids'], ENT_QUOTES), true)) . "')";
             $callGetList = true;
         } elseif ($params['all'] == '*') {
             $where = "";

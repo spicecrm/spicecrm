@@ -20,3 +20,13 @@ global $mod_strings,$app_strings;
 if(ACLController::checkAccess('KReports', 'edit', true))$module_menu[]=Array("index.php?module=KReports&action=EditView&return_module=KReports&return_action=DetailView", $mod_strings['LNK_NEW_REPORT'],"CreateReport");
 if(ACLController::checkAccess('KReports', 'list', true))$module_menu[]=Array("index.php?module=KReports&action=index&return_module=KReports&return_action=DetailView", $mod_strings['LNK_REPORT_LIST'],"Reports");
 
+if(ACLController::checkAccess('KReports', 'edit', true) && file_exists('modules/KReports/views/view.bucketmanager.php'))
+    $module_menu[]=Array("index.php?module=KReports&action=BucketmanagerView", $mod_strings['LNK_MANAGE_BUCKETS'],"ManageBuckets");
+if(ACLController::checkAccess('KReports', 'edit', true) && file_exists('modules/KReports/views/view.dlistmanager.php'))
+    $module_menu[]=Array("index.php?module=KReports&action=DListManagerView", $mod_strings['LNK_MANAGE_DLISTS'],"ManageDLists");
+if(ACLController::checkAccess('KReports', 'edit', true) && file_exists('modules/KReports/views/view.categories.php'))
+    $module_menu[]=Array("index.php?module=KReports&action=CategoriesView", $mod_strings['LNK_MANAGE_CATEGORIES'],"ManageCategories");
+if(ACLController::checkAccess('KReports', 'list', true) && file_exists('modules/KReports/views/view.cockpit.php'))
+    $module_menu[]=Array("index.php?module=KReports&action=CockpitView", $mod_strings['LNK_REPORT_COCKPIT'],"ReportCockpit");
+
+

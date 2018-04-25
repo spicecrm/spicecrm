@@ -152,10 +152,10 @@ $dictionary['Email'] = array(
             'vname' => 'LBL_FROM',
             'source' => 'non-db',
         ),
-        'reply_to_addr' => array(
-            'name' => 'reply_to_addr',
+        'reply_to_addr_name' => array(
+            'name' => 'reply_to_addr_name',
             'type' => 'varchar',
-            'vname' => 'reply_to_addr',
+            'vname' => 'LBL_REPLY_TO_ADDR_NAME',
             'source' => 'non-db',
         ),
         'to_addrs_names' => array(
@@ -185,19 +185,18 @@ $dictionary['Email'] = array(
         'description_html' => array(
             'name' => 'description_html',
             'type' => 'html',
-            'vname' => 'LBL_DESCRIPTION_HTML',
+            'vname' => 'LBL_BODY_HTML',
             'source' => 'non-db',
         ),
         'description' => array(
             'name' => 'description',
             'type' => 'text',
-            'vname' => 'description',
+            'vname' => 'LBL_BODY',
             'source' => 'non-db',
         ),
         'date_sent' => array(
             'name' => 'date_sent',
             'vname' => 'LBL_DATE_SENT',
-            'type' => 'datetime',
             'type' => 'datetime',
         ),
         'message_id' => array(
@@ -442,6 +441,13 @@ $dictionary['Email'] = array(
             'source' => 'non-db',
             'default' => true
         ),
+        'to_be_sent' => [
+            'name'    => 'to_be_sent',
+            'vname'   => 'LBL_TO_BE_SENT',
+            'source'  => 'non-db',
+            'type'    => 'bool',
+            'default' => false,
+        ],
         // SNIP
         'meetings' => array(
             'name' => 'meetings',
@@ -484,6 +490,48 @@ $dictionary['Email'] = array(
             'unified_search' => true,
             'required' => true,
             'importable' => 'required',
+        ),
+
+        'body' => array(
+            'name' => 'body',
+            'type' => 'blob',
+            'vname' => 'LBL_EMAIL_BODY',
+            'comment' => 'the body of the email',
+        ),
+
+        'from_addr' => array(
+            'name' => 'from_addr',
+            'type' => 'varchar',
+            'vname' => 'LBL_FROM_ADDR',
+            'comment' => 'sender\'s address',
+        ),
+
+        'reply_to_addr' => array(
+            'name' => 'reply_to_addr',
+            'type' => 'varchar',
+            'vname' => 'LBL_REPLY_TO_ADDR',
+            'comment' => 'reply-to address',
+        ),
+
+        'to_addrs' => array(
+            'name' => 'to_addrs',
+            'type' => 'text',
+            'vname' => 'LBL_TO_ADDRS',
+            'comment' => 'recipients\' addresses',
+        ),
+
+        'cc_addrs' => array(
+            'name' => 'cc_addrs',
+            'type' => 'text',
+            'vname' => 'LBL_CC_ADDRS',
+            'comment' => 'carbon copy addresses',
+        ),
+
+        'bcc_addrs' => array(
+            'name' => 'bcc_addrs',
+            'type' => 'text',
+            'vname' => 'LBL_BCC_ADDRS',
+            'comment' => 'blind carbon copy addresses',
         ),
 
         /* end relationship collections */

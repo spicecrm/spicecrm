@@ -72,7 +72,7 @@ $subpanel_layout = array(
 	   'active_date' =>
           array (
             'name' => 'active_date',
-            'vname' => 'LBL_DOC_ACTIVE_DATE',
+            'vname' => 'LBL_ACTIVE_DATE',
             'width' => '45%',
           ),
 

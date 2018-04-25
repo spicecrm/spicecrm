@@ -1717,6 +1717,22 @@ class ModuleInstaller{
 	                	LanguageManager::clearLanguageCache($module, $language);
 	                }
 	            }
+
+                // BEGIN syslanguages
+                // save db labels to file
+                if(isset($GLOBALS['sugar_config']['syslanguages']['spicecrmsource_overwrite_with_db']) &&
+                    $GLOBALS['sugar_config']['syslanguages']['spicecrmsource_overwrite_with_db'] === true ) {
+                    $file = 'custom/application/Ext/Language/'.$language.'.override.ext.php';
+                    $extlabels = LanguageManager::loadDatabaseLanguage($language);
+                    $extlblstr = "<?php\n";
+                    $extlblstr.= "\$extlabels = array(\n";
+                    foreach($extlabels as $lbl => $lblcfg){
+                        $extlblstr.= "'".$lbl."' => '".addslashes($extlabels[$lbl]['default'])."',\n";
+                    }
+                    $extlblstr.= ");\n";
+                    sugar_file_put_contents($file, $extlblstr);
+                }
+                // END syslanguages
 			}
 			sugar_cache_reset();
 	}

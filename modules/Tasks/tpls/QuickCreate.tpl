@@ -121,7 +121,7 @@ CL: Bug fix for 9291 and 9427 - parent_id should be parent_type, not the module 
 	</td>
 	</tr>
 	<tr>
-	<td scope="row"><slot>{$MOD.LBL_START_DATE_AND_TIME}</slot></td>
+	<td scope="row"><slot>{$MOD.LBL_DATE_TIME}</slot></td>
 	<td  nowrap="nowrap"><slot>
 		<table border="0" cellpadding="0" cellspacing="0">
 		<tr>

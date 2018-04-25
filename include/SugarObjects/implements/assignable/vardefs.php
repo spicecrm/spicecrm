@@ -57,7 +57,7 @@ $vardefs = array(
             array(
                 'name' => 'assigned_user_name',
                 'link' => 'assigned_user_link',
-                'vname' => 'LBL_ASSIGNED_TO_NAME',
+                'vname' => 'LBL_ASSIGNED_TO',
                 'rname' => 'user_name',
                 'type' => 'relate',
                 'reportable' => false,

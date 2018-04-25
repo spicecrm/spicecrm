@@ -46,7 +46,10 @@ class KRESTManager
 
     public function excludeFromAuthentication($path)
     {
-        $currentPath = $this->app->environment()->offsetGet("PATH_INFO");
+        $currentPath = $this->app->getContainer()['environment']->get("REDIRECT_URL");
+        $currentPath = explode('/KREST',$currentPath, 2)[1];
+        //var_dump($currentPath);
+        //$this->noAuthentication = true;
         if (substr($path, -1) === '*' && strpos($currentPath, $path) === 0)
             $this->noAuthentication = true;
         else if ($currentPath === $path)
@@ -55,7 +58,7 @@ class KRESTManager
 
     public function authenticate()
     {
-        $enviroment = $this->app->environment();
+        //$enviroment = $this->app->getContainer()['environment'];
         if ($this->noAuthentication)
             return;
 
@@ -93,16 +96,17 @@ class KRESTManager
                 $this->authenticationError();
 
         } elseif (!empty($headers['OAuth-Token'])) {
+
             $startedSession = $this->startSession($headers['OAuth-Token']);
             if ($startedSession !== false)
                 $this->sessionId = $startedSession;
             else
                 $this->authenticationError('session invalid');
-        } elseif (!empty($this->requestParams['session_id']) || !empty($this->requestParams['sessionid']) || !empty($_COOKIE['PHPSESSID'])) {
+        } elseif (!empty($this->requestParams['session_id']) || !empty($this->requestParams['sessionid']) || !empty($_COOKIE[session_name()])) { //PHPSESSID
 
-            $sessionId = $this->requestParams['session_id'] ?: ( $this->requestParams['sessionid'] ?: $_COOKIE['PHPSESSID']);
-
+            $sessionId = $this->requestParams['session_id'] ?: ( $this->requestParams['sessionid'] ?: $_COOKIE[session_name()]); //PHPSESSID
             $startedSession = $this->startSession($sessionId);
+
             if ($startedSession !== false)
                 $this->sessionId = $startedSession;
             else
@@ -123,25 +127,27 @@ class KRESTManager
     public function authenticationError($message = '')
     {
         http_response_code(401);
-
+//var_dump($message);
         if ($message !== '')
             header('HTTP/1.0 401 ' . $message, true, 401);
 
         // set for cors
         header("Access-Control-Allow-Origin: *");
         // todo: what if HttpResponse is missing??? windows???
-        HttpResponse::send('session invalid');
+        if( class_exists('HttpResponse') )
+            HttpResponse::send('session invalid');
 
         $accessLog = BeanFactory::getBean('UserAccessLogs');
         $accessLog->addRecord('loginfail');
-        exit;
+
+        throw new Exception( 'Authentication failed: '.$message );
     }
 
     // BEGMOD KORGOBJECTS change private to public..
     public function startSession($session_id = '')
     {
         if (empty($session_id)) {
-            $requestparams = $this->app->request->get();
+            $requestparams = $_GET;
             if (isset($requestparams['session_id']))
                 $session_id = $requestparams['session_id'];
         }
@@ -161,9 +167,9 @@ class KRESTManager
 
                 return $session_id;
             }
-        } elseif (!empty($_COOKIE['PHPSESSID'])) {
+        } elseif (!empty($_COOKIE[session_name()])) {
             if (!session_id()) {
-                session_id($_COOKIE['PHPSESSID']);
+                session_id($_COOKIE[session_name()]);
                 session_start();
             }
 
@@ -174,7 +180,7 @@ class KRESTManager
                 $current_user = new User();
                 $current_user->retrieve($_SESSION['authenticated_user_id']);
 
-                return $_COOKIE['PHPSESSID'];
+                return $_COOKIE[session_name()]; //PHPSESSID
             }
         }
 
@@ -220,6 +226,7 @@ class KRESTManager
         $authController = new AuthenticationController();
         $passwordEncrypted = true;
         //rrs
+        //var_dump($user_auth);
         if (!empty($user_auth['encryption']) && $user_auth['encryption'] === 'PLAIN' && $authController->authController->userAuthenticateClass != "LDAPAuthenticateUser") {
             $user_auth['password'] = md5($user_auth['password']);
         }
@@ -301,7 +308,8 @@ class KRESTManager
             'last_name' => $current_user->last_name,
             'email' => $current_user->email1,
             'admin' => $current_user->is_admin,
-            'renewPass' => $current_user->system_generated_password
+            'renewPass' => $current_user->system_generated_password,
+            'display_name' => $current_user->get_summary_text()
         );
     }
 

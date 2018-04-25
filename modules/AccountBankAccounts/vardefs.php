@@ -10,7 +10,7 @@ $dictionary['AccountBankAccount'] = array(
         'account_name' => array(
             'source' => 'non-db',
             'name' => 'account_name',
-            'vname' => 'LBL_ACCOUNTS_NAME',
+            'vname' => 'LBL_ACCOUNT',
             'type' => 'relate',
             'len' => '255',
             'id_name' => 'account_id',
@@ -27,13 +27,13 @@ $dictionary['AccountBankAccount'] = array(
             'link_type' => 'one',
             'side' => 'right',
             'source' => 'non-db',
-            'vname' => 'LBL_ACCOUNTS_BANKACCOUNTS_LINK',
+            'vname' => 'LBL_ACCOUNTS',
         ),
         'accountnr' => array(
             'name' => 'accountnr',
             'type' => 'varchar',
             'len' => 50,
-            'vname' => 'LBL_ACCOUNTNR'
+            'vname' => 'LBL_BANKACCOUNTNUMBER'
         ),
         'swift' => array(
             'name' => 'swift',

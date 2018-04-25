@@ -59,7 +59,7 @@ class SpiceFTSRESTManager
         else{
             if(!function_exists('create_date')) require_once 'install/install_utils.php';
             $scheduler = BeanFactory::newBean('Schedulers');
-            $scheduler->name = "SpiceCRM Full Text Indexing";
+            $scheduler->name = (!empty($mod_strings['LBL_OOTB_FTS_INDEX']) ? $mod_strings['LBL_OOTB_FTS_INDEX'] : "SpiceCRM Full Text Indexing");
             $scheduler->date_time_start = create_date(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
             $scheduler->job = "function::fullTextIndex";
             $scheduler->job_interval = '*/1::*::*::*::*';
@@ -153,7 +153,7 @@ class SpiceFTSRESTManager
     {
         $this->checkAdmin();
 
-        $response = $this->elasticHandler->putMapping($module, SpiceFTSBeanHandler::mapModule($module));
+        return json_decode($this->elasticHandler->putMapping($module, SpiceFTSBeanHandler::mapModule($module)));
     }
 
     function setFTSFields($module, $items)

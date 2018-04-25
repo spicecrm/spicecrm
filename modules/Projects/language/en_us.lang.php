@@ -44,17 +44,17 @@ $mod_strings = array (
     'LBL_HISTORY_TITLE' => 'History',
 
 	'LBL_ID' => 'Id:',
-	'LBL_DATE_ENTERED' => 'Date Created:',
-	'LBL_DATE_MODIFIED' => 'Date Modified:',
-	'LBL_ASSIGNED_USER_ID' => 'Assigned To:',
-    'LBL_ASSIGNED_USER_NAME' => 'Assigned to:',
-	'LBL_MODIFIED_USER_ID' => 'Modified User Id:',
-	'LBL_CREATED_BY' => 'Created By:',
-	'LBL_TEAM_ID' => 'Team:',
-	'LBL_NAME' => 'Name:',
-    'LBL_PDF_PROJECT_NAME' => 'Project Name:',
-	'LBL_DESCRIPTION' => 'Description:',
-	'LBL_DELETED' => 'Deleted:',
+	'LBL_DATE_ENTERED' => 'Date Created',
+	'LBL_DATE_MODIFIED' => 'Date Modified',
+	'LBL_ASSIGNED_USER_ID' => 'Assigned To',
+    'LBL_ASSIGNED_USER_NAME' => 'Assigned to',
+	'LBL_MODIFIED_USER_ID' => 'Modified User Id',
+	'LBL_CREATED_BY' => 'Created By',
+	'LBL_TEAM_ID' => 'Team',
+	'LBL_NAME' => 'Name',
+    'LBL_PDF_PROJECT_NAME' => 'Project Name',
+	'LBL_DESCRIPTION' => 'Description',
+	'LBL_DELETED' => 'Deleted',
     'LBL_DATE' => 'Date:',
 	'LBL_DATE_START' => 'Start Date:',
 	'LBL_DATE_END' => 'End Date:',
@@ -63,8 +63,8 @@ $mod_strings = array (
     'LBL_MY_PROJECTS' => 'My Projects',
     'LBL_MY_PROJECT_TASKS' => 'My Project Tasks',
     
-	'LBL_TOTAL_ESTIMATED_EFFORT' => 'Total Estimated Effort (hrs):',
-	'LBL_TOTAL_ACTUAL_EFFORT' => 'Total Actual Effort (hrs):',
+	'LBL_TOTAL_ESTIMATED_EFFORT' => 'Total Estimated Effort (hrs)',
+	'LBL_TOTAL_ACTUAL_EFFORT' => 'Total Actual Effort (hrs)',
 
 	'LBL_LIST_NAME' => 'Name',
     'LBL_LIST_DAYS' => 'days',
@@ -121,7 +121,7 @@ $mod_strings = array (
     'LBL_MORE'  => 'More...',
 
     'LBL_PERCENT_BUSY' => '% Busy',
-    'LBL_TASK_ID_WIDGET' => 'id',
+    'LBL_ID' => 'ID',
     'LBL_TASK_NAME_WIDGET' => 'description',
     'LBL_DURATION_WIDGET' => 'duration',
     'LBL_START_WIDGET' => 'date_start',
@@ -141,13 +141,13 @@ $mod_strings = array (
 	'LBL_PROJECT_INFORMATION' => 'Overview',
     'LBL_ACCOUNT_NAME' => 'Account Name',
     'LBL_ACCOUNT_ID' => 'Account ID',
+    'LBL_TYPE' => 'Type',
 
 // LINKS
-    'LBL_PROJECTS_PROJECTWBSS_LINK' => 'Projects WBS',
-    'LBL_PROJECTS_PROJECTACTIVITIES_LINK' => 'Project Activities',
+    'LBL_ACCOUNTS' => 'Accounts',
+    'LBL_PROJECTTASKS' => 'Projects Tasks',
+    'LBL_PROJECTWBSS' => 'Work Breakdown Structure',
+    'LBL_PROJECTACTIVITIES' => 'Project Activities',
+    'LBL_PROJECTMILESTONES' => 'Milestones',
 
-//SUBPANELS
-    'LBL_PROJECTACTIVITIES_SUBPANEL_TITLE' => 'Project Activities',
-    'LBL_PROJECTMILESTONES_SUBPANEL_TITLE' => 'Milestones',
-    'LBL_PROJECTWBSS_SUBPANEL_TITLE' => 'Work Breakdown Structure',
 );

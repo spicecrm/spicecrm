@@ -78,7 +78,7 @@ $mod_strings = array (
 	'LBL_EDIT_USERLIST' => 'User List',
 	'LBL_SELECT_USERS' => 'Select users for calendar display',
 	'LBL_FILTER_BY_TEAM' => 'Filter user list by team:',
-	'LBL_ASSIGNED_TO_NAME' => 'Assigned to',
+	'LBL_ASSIGNED_TO' => 'Assigned to',
 	'LBL_DATE' => 'Start Date & Time',  
 	'LBL_CREATE_MEETING' => 'Schedule Meeting',
 	'LBL_CREATE_CALL' => 'Log Call',
@@ -104,7 +104,7 @@ $mod_strings = array (
 	'LBL_STYLE_ADVANCED' => 'Advanced',
 
 	'LBL_INFO_TITLE' => 'Additional Details',
-	'LBL_INFO_DESC' => 'Description',
+	'LBL_DESCRIPTION' => 'Description',
 	'LBL_INFO_START_DT' => 'Start Date',
 	'LBL_INFO_DUE_DT' => 'Due Date',
 	'LBL_INFO_DURATION' => 'Duration',

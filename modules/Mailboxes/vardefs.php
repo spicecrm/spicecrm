@@ -35,186 +35,229 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-$dictionary['Mailbox'] = array('table' => 'mailboxes', 'audited' => true,
-
-    'unified_search' => true,
-    'full_text_search' => true,
+$dictionary['Mailbox'] = [
+    'table'                          => 'mailboxes',
+    'audited'                        => true,
+    'unified_search'                 => true,
+    'full_text_search'               => true,
     'unified_search_default_enabled' => true,
-    'duplicate_merge' => false,
+    'duplicate_merge'                => false,
 
-    'fields' => array(
+    'fields' => [
 
         // general Mailbox fields
-        'name' => array(
-            'name' => 'name',
-            'vname' => 'LBL_NAME',
-            'type' => 'varchar',
+        'name' => [
+            'name'    => 'name',
+            'vname'   => 'LBL_NAME',
+            'type'    => 'varchar',
             'comment' => 'Mailbox name'
-        ),
-        'description' => array(
-            'name' => 'description',
-            'vname' => 'LBL_DESCRIPTION',
-            'type' => 'varchar',
+        ],
+        'description' => [
+            'name'    => 'description',
+            'vname'   => 'LBL_DESCRIPTION',
+            'type'    => 'varchar',
             'comment' => 'Mailbox description'
-        ),
-
+        ],
+        'transport' => [
+            'name'    => 'transport',
+            'vname'   => 'LBL_TRANSPORT',
+            'type'    => 'enum',
+            'len'     => 15,
+            'options' => 'mailboxes_transport_dom',
+            'comment' => 'Mailbox transport method'
+        ],
+        'inbound_comm' => [
+            'name'    => 'inbound_comm',
+            'vname'   => 'LBL_INBOUND_COMM',
+            'type'    => 'bool',
+            'comment' => 'Inbound communication permitted flag',
+        ],
+        'outbound_comm' => [
+            'name'    => 'outbound_comm',
+            'vname'   => 'LBL_OUTBOUND_COMM',
+            'type'    => 'enum',
+            'len'     => 15,
+            'options' => 'mailboxes_outbound_comm',
+            'comment' => 'Outbound communication type'
+        ],
+        'last_message' => [
+            'name'    => 'last_message',
+            'vname'   => 'LBL_LAST_MESSAGE',
+            'type'    => 'varchar',
+            'length'  => 255,
+            'comment' => 'ID of the last downloaded email'
+        ],
         // IMAP / POP3 fields
-        'imap_pop3_host' => array(
-            'name' => 'imap_pop3_host',
-            'vname' => 'LBL_HOST_IMAP_POP3',
-            'type' => 'varchar',
+        'imap_pop3_host' => [
+            'name'    => 'imap_pop3_host',
+            'vname'   => 'LBL_HOST',
+            'type'    => 'varchar',
             'comment' => 'imap / pop3 host',
-        ),
-        'imap_pop3_port' => array(
-            'name' => 'imap_pop3_port',
-            'vname' => 'LBL_PORT_IMAP_POP3',
-            'type' => 'int',
+        ],
+        'imap_pop3_port' => [
+            'name'    => 'imap_pop3_port',
+            'vname'   => 'LBL_PORT',
+            'type'    => 'int',
             'comment' => 'imap / pop3 port',
-        ),
-        'imap_pop3_data_valid' => array(
-            'name' => 'imap_pop3_data_valid',
-            'vname' => 'LBL_IPDV',
-            'type' => 'bool',
-            'value' => 'false',
-            'hidden' => 'true',
+        ],
+        'imap_pop3_data_valid' => [
+            'name'    => 'imap_pop3_data_valid',
+            'vname'   => 'LBL_IPDV',
+            'type'    => 'bool',
+            'value'   => 'false',
+            'hidden'  => 'true',
             'comment' => 'imap_pop3_data_valid validation'
-        ),
-        'imap_pop3_protocol_type' => array(
-            'name' => 'imap_pop3_protocol_type',
-            'vname' => 'LBL_PROTOCOL_TYPE',
-            'type' => 'enum',
+        ],
+        'imap_pop3_protocol_type' => [
+            'name'    => 'imap_pop3_protocol_type',
+            'vname'   => 'LBL_PROTOCOL',
+            'type'    => 'enum',
             'options' => 'mailboxes_imap_pop3_protocol_dom',
             'comment' => 'imap_pop_dropdown_to_choose'
-        ),
-        'imap_pop3_encryption' => array(
-            'name' => 'imap_pop3_encryption',
-            'vname' => 'LBL_ENCRYPTION',
-            'type' => 'enum',
+        ],
+        'imap_pop3_encryption' => [
+            'name'    => 'imap_pop3_encryption',
+            'vname'   => 'LBL_ENCRYPTION',
+            'type'    => 'enum',
             'options' => 'mailboxes_imap_pop3_encryption_dom',
             'comment' => 'imap_pop_encryption_set'
-        ),
-        'imap_pop3_username' => array(
-            'name' => 'imap_pop3_username',
-            'vname' => 'LBL_USERNAME_IMAP_POP3',
-            'type' => 'varchar',
+        ],
+        'imap_pop3_username' => [
+            'name'    => 'imap_pop3_username',
+            'vname'   => 'LBL_USER_NAME',
+            'type'    => 'varchar',
             'comment' => 'username',
-        ),
-        'imap_pop3_password' => array(
-            'name' => 'imap_pop3_password',
-            'vname' => 'LBL_PASSWORD_IMAP_POP3',
-            'type' => 'varchar',
+        ],
+        'imap_pop3_password' => [
+            'name'    => 'imap_pop3_password',
+            'vname'   => 'LBL_PASSWORD',
+            'type'    => 'varchar',
             'comment' => 'password',
-        ),
+        ],
+        'imap_inbox_dir' => [
+            'name'    => 'imap_inbox_dir',
+            'vname'   => 'LBL_INBOX_DIR',
+            'value'   => 'No Files',
+            'type'    => 'enum',
+            'comment' => 'imap_inbox_dir popup window to choose directory of imap'
+        ],
+        'imap_sent_dir' => [
+            'name'    => 'imap_sent_dir',
+            'vname'   => 'LBL_IMAP_SENT_DIR',
+            'type'    => 'enum',
+            'comment' => 'imap_sent_dir popup window to choose directory of imap'
+        ],
+        'imap_trash_dir' => [
+            'name'    => 'imap_trash_dir',
+            'vname'   => 'LBL_IMAP_TRASH_DIR',
+            'type'    => 'enum',
+            'comment' => 'imap_trash_dir popup window to choose directory of imap'
+        ],
 
         // SMTP fields
-        'smtp_host' => array(
-            'name' => 'smtp_host',
-            'vname' => 'LBL_HOST_SMTP',
-            'type' => 'varchar',
+        'smtp_host' => [
+            'name'    => 'smtp_host',
+            'vname'   => 'LBL_HOST',
+            'type'    => 'varchar',
             'comment' => 'smtp host',
-        ),
-        'smtp_port' => array(
-            'name' => 'smtp_port',
-            'vname' => 'LBL_PORT_SMTP',
-            'type' => 'int',
+        ],
+        'smtp_port' => [
+            'name'    => 'smtp_port',
+            'vname'   => 'LBL_PORT',
+            'type'    => 'int',
             'comment' => 'smtp port',
             'default' => 25,
-        ),
-        'smtp_debug' => array(
-            'name' => 'smtp_debug',
-            'vname' => 'LBL_DEBUG',
-            'type' => 'int',
-            'comment' => 'smtp debug information',
-            'default' => 0,
-        ),
-        'smtp_auth' => array(
-            'name' => 'smtp_auth',
-            'vname' => 'LBL_AUTH_ENABLED',
-            'type' => 'bool',
+        ],
+        'smtp_auth' => [
+            'name'    => 'smtp_auth',
+            'vname'   => 'LBL_AUTH_ENABLED',
+            'type'    => 'bool',
             'comment' => 'smtp authentication enabled',
             'default' => 0,
-        ),
-        'smtp_username' => array(
-            'name' => 'smtp_username',
-            'vname' => 'LBL_USERNAME_SMTP',
-            'type' => 'varchar',
-            'comment' => 'username',
-        ),
-        'smtp_password' => array(
-            'name' => 'smtp_password',
-            'vname' => 'LBL_PASSWORD_SMTP',
-            'type' => 'varchar',
-            'comment' => 'password',
-        ),
-        'smtp_auth_type' => array(
-            'name' => 'smtp_auth_type',
-            'vname' => 'LBL_AUTH_TYPE',
-            'type' => 'enum',
-            'options' => 'smtp_authentication_types',
-            'comment' => 'authentication type'
-        ),
-        'imap_inbox_dir' => array(
-            'name' => 'imap_inbox_dir',
-            'vname' => 'LBL_IMAP_INBOX_DIR',
-            'value' => 'No Files',
-            'type' => 'text',
-            'comment' => 'imap_inbox_dir popup window to choose directory of imap'
-        ),
-        'emails' => array(
-            'name' => 'emails',
-            'vname' => 'LBL_EMAILS_LINK',
-            'type' => 'link',
-            'relationship' => 'mailboxes_emails_rel',
-            'link_type' => 'one',
-            'source' => 'non-db',
+        ],
+        'smtp_encryption' => [
+            'name'    => 'smtp_encryption',
+            'vname'   => 'LBL_ENCRYPTION',
+            'type'    => 'enum',
+            'options' => 'mailboxes_smtp_encryption_dom',
+            'comment' => 'smtp_encryption_set'
+        ],
+        'smtp_verify_peer' => [
+            'name'    => 'smtp_verify_peer',
+            'vname'   => 'LBL_VERIFY_PEER',
+            'type'    => 'bool',
+            'comment' => 'smtp verify peer',
+            'default' => 0,
+        ],
+        'smtp_verify_peer_name' => [
+            'name'    => 'smtp_verify_peer_name',
+            'vname'   => 'LBL_VERIFY_PEER_NAME',
+            'type'    => 'bool',
+            'comment' => 'smtp verify peer name',
+            'default' => 0,
+        ],
+        'smtp_allow_self_signed' => [
+            'name'    => 'smtp_allow_self_signed',
+            'vname'   => 'LBL_ALLOW_SELF_SIGNED',
+            'type'    => 'bool',
+            'comment' => 'smtp allow self signed',
+            'default' => 1,
+        ],
+        'emails' => [
+            'name'            => 'emails',
+            'vname'           => 'LBL_EMAILS_LINK',
+            'type'            => 'link',
+            'relationship'    => 'mailboxes_emails_rel',
+            'link_type'       => 'one',
+            'source'          => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
-            'module' => 'Emails',
-            'bean_name' => 'Email',
-        ),
-        'sysmailrelais_id' => array(
-            'name' => 'sysmailrelais_id',
-            'vname' => 'LBL_SYSMAILRELAIS_ID',
-            'type' => 'varchar',
+            'massupdate'      => false,
+            'module'          => 'Emails',
+            'bean_name'       => 'Email',
+        ],
+        'sysmailrelais_id' => [
+            'name'    => 'sysmailrelais_id',
+            'vname'   => 'LBL_SYSMAILRELAIS_ID',
+            'type'    => 'varchar',
             'comment' => 'FK to SYSMAILRELAIS',
-        ),
+        ],
         //link to the campaigns
-        'campaigns' => array(
-            'name' => 'campaigns',
-            'vname' => 'LBL_CAMPAIGNS_LINK',
-            'type' => 'link',
-            'relationship' => 'campaigns_mailboxes_rel',
-            'link_type' => 'one',
-            'source' => 'non-db',
+        'campaigns' => [
+            'name'            => 'campaigns',
+            'vname'           => 'LBL_CAMPAIGNS_LINK',
+            'type'            => 'link',
+            'relationship'    => 'campaigns_mailboxes_rel',
+            'link_type'       => 'one',
+            'source'          => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
-        ),
-    ),
-    'relationships' => array(
-        'mailboxes_emails_rel' => array(
-            'lhs_module' => 'Mailboxes',
-            'lhs_table' => 'mailboxes',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'mailbox_id',
+            'massupdate'      => false,
+        ],
+    ],
+    'relationships' => [
+        'mailboxes_emails_rel' => [
+            'lhs_module'        => 'Mailboxes',
+            'lhs_table'         => 'mailboxes',
+            'lhs_key'           => 'id',
+            'rhs_module'        => 'Emails',
+            'rhs_table'         => 'emails',
+            'rhs_key'           => 'mailbox_id',
             'relationship_type' => 'one-to-many',
-        ),
-        'campaigns_mailboxes_rel' => array(
-            'lhs_module' => 'Mailboxes',
-            'lhs_table' => 'mailboxes',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns',
-            'rhs_table' => 'campaigns',
-            'rhs_key' => 'mailbox_id',
+        ],
+        'campaigns_mailboxes_rel' => [
+            'lhs_module'        => 'Mailboxes',
+            'lhs_table'         => 'mailboxes',
+            'lhs_key'           => 'id',
+            'rhs_module'        => 'Campaigns',
+            'rhs_table'         => 'campaigns',
+            'rhs_key'           => 'mailbox_id',
             'relationship_type' => 'one-to-many',
-        ),
-    ),
+        ],
+    ],
 
-    'indices' => array(),
+    'indices' => [],
 
     //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
-);
+];
 
-VardefManager::createVardef('Mailboxes', 'Mailbox', array('default', 'assignable'));
+VardefManager::createVardef('Mailboxes', 'Mailbox', ['default', 'assignable']);

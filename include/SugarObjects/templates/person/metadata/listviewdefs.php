@@ -95,6 +95,6 @@ $listViewDefs[$module_name] = array(
         'label' => 'LBL_DATE_ENTERED'),
     'CREATED_BY_NAME' => array(
         'width' => '10', 
-        'label' => 'LBL_CREATED'),
+        'label' => 'LBL_CREATED_BY'),
 );
 ?>

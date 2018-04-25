@@ -65,7 +65,7 @@ $layout_defs['Projects'] = array(
 				array('widget_class' => 'SubPanelTopCreateButton', ),
 			),
 			'subpanel_name' => 'default',
-			'title_key' => 'LBL_PROJECT_TASKS_SUBPANEL_TITLE',
+			'title_key' => 'LBL_PROJECTTASKS',
 		),
         'projectactivities' => array(
             'order' => 20,
@@ -89,7 +89,7 @@ $layout_defs['Projects'] = array(
             'top_buttons' => array(
                 array('widget_class' => 'SubPanelTopCreateButton', ),
             ),
-            'title_key' => 'LBL_PROJECTMILESTONES_SUBPANEL_TITLE',
+            'title_key' => 'LBL_PROJECTMILESTONES',
         ),
         'projectwbss' => array(
             'order' => 20,
@@ -101,14 +101,14 @@ $layout_defs['Projects'] = array(
             'top_buttons' => array(
                 array('widget_class' => 'SubPanelTopCreateButton', ),
             ),
-            'title_key' => 'LBL_PROJECTWBSS_SUBPANEL_TITLE',
+            'title_key' => 'LBL_PROJECTWBSS',
         ),
 
 		'activities' => array(
 			'order' => 40,
 			'sort_order' => 'desc',
 			'sort_by' => 'date_start',
-			'title_key' => 'LBL_ACTIVITIES_SUBPANEL_TITLE',
+			'title_key' => 'LBL_ACTIVITIES',
 			'type' => 'collection',
 			'subpanel_name' => 'activities',   //this values is not associated with a physical file.
 			'module'=>'Activities',
@@ -143,7 +143,7 @@ $layout_defs['Projects'] = array(
 			'order' => 50,
 			'sort_order' => 'desc',
 			'sort_by' => 'date_entered',
-			'title_key' => 'LBL_HISTORY_SUBPANEL_TITLE',
+			'title_key' => 'LBL_HISTORY',
 			'type' => 'collection',
 			'subpanel_name' => 'history',   //this values is not associated with a physical file.
 			'module'=>'History',
@@ -193,7 +193,7 @@ $layout_defs['Projects'] = array(
 			'subpanel_name' => 'default',
 			'get_subpanel_data' => 'contacts',
 			'add_subpanel_data' => 'contact_id',
-			'title_key' => 'LBL_CONTACTS_SUBPANEL_TITLE',
+			'title_key' => 'LBL_CONTACTS',
 		),
 
       'accounts' => array(
@@ -207,7 +207,7 @@ $layout_defs['Projects'] = array(
 			'subpanel_name' => 'default',
 			'get_subpanel_data' => 'accounts',
 			'add_subpanel_data' => 'account_id',
-			'title_key' => 'LBL_ACCOUNTS_SUBPANEL_TITLE',
+			'title_key' => 'LBL_ACCOUNTS',
 		),
 		'opportunities' => array(
             'top_buttons' => array(
@@ -220,7 +220,7 @@ $layout_defs['Projects'] = array(
 			'subpanel_name' => 'default',
 			'get_subpanel_data' => 'opportunities',
 			'add_subpanel_data' => 'opportunity_id',
-			'title_key' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
+			'title_key' => 'LBL_OPPORTUNITIES',
 		),
         'cases' => array(
             'top_buttons' => array(
@@ -233,7 +233,7 @@ $layout_defs['Projects'] = array(
             'subpanel_name' => 'default',
             'get_subpanel_data' => 'cases',
             'add_subpanel_data' => 'case_id',
-            'title_key' => 'LBL_CASES_SUBPANEL_TITLE',
+            'title_key' => 'LBL_CASES',
         ),
         'bugs' => array(
             'top_buttons' => array(
@@ -246,7 +246,7 @@ $layout_defs['Projects'] = array(
             'subpanel_name' => 'default',
             'get_subpanel_data' => 'bugs',
             'add_subpanel_data' => 'bug_id',
-            'title_key' => 'LBL_BUGS_SUBPANEL_TITLE',
+            'title_key' => 'LBL_BUGS',
         ),
    ),
 );
@@ -262,7 +262,7 @@ $layout_defs['ProjectTemplates'] = array(
 			'sort_by' => 'id',
 			'module' => 'ProjectTask',
 			'subpanel_name' => 'default',
-			'title_key' => 'LBL_PROJECT_TASKS_SUBPANEL_TITLE',
+			'title_key' => 'LBL_PROJECTTASKS',
 			'get_subpanel_data' => 'projecttask',
 		),
 

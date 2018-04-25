@@ -123,7 +123,7 @@ array (
 
           array (
             'name' => 'parent_name',
-            'label' => 'LBL_LIST_RELATED_TO',
+            'label' => 'LBL_RELATED_TO',
           ),
         ),
         

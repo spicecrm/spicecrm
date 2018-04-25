@@ -35,7 +35,6 @@ class MediaFile extends SugarBean {
 
     // Use thumbnailSizeAllowed() to check if generating a thumbnail in a specific size is allowed, before calling this method.
     public function generateThumb( $destSize ) {
-        global $sugar_config;
         $supportedImageTypes = ['jpeg', 'png', 'gif', 'bmp'];
         if ( in_array( $this->filetype, $supportedImageTypes )) {
             if ( !isset( $this->width{0} ) or !isset( $this->height{0} ))
@@ -244,6 +243,21 @@ class MediaFile extends SugarBean {
         if ( isset( $this->hash{0} )) header( 'ETag: "'.$this->hash.'"' );
     }
 
+    public function deliverOriginal() {
+        $this->outputHeaders();
+        readfile( self::getMediaPath( $this->id ));
+    }
+
+    public function deliverSize( $size ) {
+        $this->outputHeaders();
+        readfile( self::getFolderOfSizes() . $this->id . ".w" . $size );
+    }
+
+    public function deliverThumb( $size ) {
+        $this->outputHeaders();
+        readfile( self::getFolderOfThumbs() . $this->id . ".thumb" . $size );
+    }
+
     public static function deleteMedia( $mediaId ) {
         global $current_user, $db;
         $db->query( 'UPDATE mediafiles SET deleted = 1 WHERE id="'.$mediaId.'"' . ( !$current_user->is_admin ? ' AND user_id="' . $current_user->id . '"' : '' ));
@@ -279,17 +293,16 @@ class MediaFile extends SugarBean {
         if ( isset( $_FILES['file'] )) { // && $upload_file->confirm_upload() ) {
             $upload = new MediaFile();
             list( $mediatype,  $upload->filetype ) = explode( '/', $upload_file->getMime( $_FILES['file'] ));
-            $upload->mediatype = $mediatype === 'image' ? 1:0; // todo
+            $upload->mediatype = ( $mediatype === 'image' ? "1":"0" );
             $upload->filesize = $_FILES['file']['size'];
             $upload->hash = md5_file( $_FILES['file']['tmp_name'] );
             list( $upload->width, $upload->height  ) = getimagesize( $_FILES['file']['tmp_name'] );
             $mediaId = $upload->save();
+            $upload->retrieve( $mediaId ); # important workaround, to get db data into property fetched_row (otherwise fetched_row is false)
+            $filedata = $upload->fetched_row;
             rename( $_FILES['file']['tmp_name'], self::getMediaPath( $mediaId ));
+            return json_encode( $filedata );
         }
-        $filedata = $upload->get_list_view_data();
-        foreach ( $filedata as $k => $v ) $filedata[strtolower($k)] = $v;
-        $filedata['id'] = $filedata['ID'];
-        return json_encode( $filedata );
     }
 
     public static function getMediaPath( $mediaId ) {

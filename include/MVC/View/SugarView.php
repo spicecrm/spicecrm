@@ -1535,6 +1535,9 @@ EOHTML;
 
         // Set all the config parameters in the JS config as necessary
         $config_js = array();
+        //added 2018-04-20 maretval: store session name for SpiceTheme
+        $config_js[] = "SUGAR.config.session_name = '".session_name()."';";
+
         // AjaxUI stock banned modules
         $config_js[] = "SUGAR.config.stockAjaxBannedModules = " . json_encode(ajaxBannedModules()) . ";";
         if (isset($sugar_config['quicksearch_querydelay'])) {

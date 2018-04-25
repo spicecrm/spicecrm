@@ -57,6 +57,7 @@ $mod_strings = array(
     'LBL_OOTB_SEND_EMAIL_REMINDERS' => 'Run Email Reminder Notifications',
     'LBL_OOTB_CLEANUP_QUEUE' => 'Clean Jobs Queue',
     'LBL_OOTB_REMOVE_DOCUMENTS_FROM_FS' => 'Removal of documents from filesystem',
+    'LBL_OOTB_FTS_INDEX' => 'FullTextSearch index',
 
     // List Labels
     'LBL_LIST_JOB_INTERVAL' => 'Interval:',

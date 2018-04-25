@@ -73,7 +73,7 @@ $dictionary['Note'] = array(
 	    'name' => 'modified_user_id',
 	    'rname' => 'user_name',
 	    'id_name' => 'modified_user_id',
-	    'vname' => 'LBL_MODIFIED',
+	    'vname' => 'LBL_MODIFIED_BY_ID',
 	    'type' => 'assigned_user_name',
 	    'table' => 'users',
 	    'isnull' => 'false',
@@ -126,7 +126,7 @@ $dictionary['Note'] = array(
   'name' =>
   array (
     'name' => 'name',
-    'vname' => 'LBL_NOTE_SUBJECT',
+    'vname' => 'LBL_SUBJECT',
     'dbType' => 'varchar',
     'type' => 'name',
     'len' => '255',
@@ -250,7 +250,7 @@ $dictionary['Note'] = array(
 		'name'=>'contact_name',
 		'rname'=>'name',
 		'id_name'=>'contact_id',
-		'vname'=>'LBL_CONTACT_NAME',
+		'vname'=>'LBL_CONTACT',
         'table'=>'contacts',
 		'type'=>'relate',
 		'link'=>'contact',
@@ -464,6 +464,32 @@ $dictionary['Note'] = array(
 
                                                       //This enables optimistic locking for Saves From EditView
 	,'optimistic_locking'=>true,
-                            );
+);
+
+// CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
+if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+    $dictionary['Note']['fields']['servicetickets'] = array(
+        'name' => 'servicetickets',
+        'type' => 'link',
+        'relationship' => 'servicetickets_notes',
+        'module' => 'ServiceTickets',
+        'bean_name' => 'ServiceTicket',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICETICKET',
+    );
+}
+if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+    $dictionary['Note']['fields']['serviceorders'] = array(
+        'name' => 'serviceorders',
+        'type' => 'link',
+        'relationship' => 'serviceorders_notes',
+        'module' => 'ServiceOrders',
+        'bean_name' => 'ServiceOrder',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEORDER',
+    );
+}
 
 VardefManager::createVardef('Notes','Note', array('assignable', 'default'));

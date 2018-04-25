@@ -37,3 +37,42 @@ $dictionary['sysnumberranges'] = array(
             'fields' => array('id'))
     )
 );
+
+$dictionary['sysnumberrangeallocation'] = array(
+    'table' => 'sysnumberrangeallocation',
+    'fields' => array(
+        'id' => array(
+            'name' => 'id',
+            'type' => 'id'
+        ),
+        'module' => array(
+            'name' => 'module',
+            'type' => 'varchar',
+            'len' => 50
+        ),
+        'field' => array(
+            'name' => 'field',
+            'type' => 'varchar',
+            'len' => 50
+        ),
+        'numberrange' => array(
+            'name' => 'numberrange',
+            'type' => 'varchar',
+            'len' => 36,
+        ),
+        'valid_from' => array(
+            'name' => 'valid_from',
+            'type' => 'date'
+        ),
+        'valid_to' => array(
+            'name' => 'valid_to',
+            'type' => 'date'
+        )
+    ),
+    'indices' => array(
+        array(
+            'name' => 'idx_sysnumberrangeallocation',
+            'type' => 'primary',
+            'fields' => array('id'))
+    )
+);

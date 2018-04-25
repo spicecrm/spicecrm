@@ -2,6 +2,13 @@
 $dictionary['sysfts'] = array(
     'table' => 'sysfts',
     'fields' => array(
+        'id' => array(
+            'name' => 'id',
+            'type' => 'char',
+            'len' => 36,
+            'required' => true,
+            'isnull' => false,
+        ),
         'module' => array(
             'name' => 'module',
             'type' => 'varchar',
@@ -31,10 +38,8 @@ $dictionary['sysfts'] = array(
         )
     ),
     'indices' => array(
-        array(
-            'name' => 'sysftspk',
-            'type' => 'primary',
-            'fields' => array('module'))
+        array('name' => 'sysftspk', 'type' => 'primary', 'fields' => array('id')),
+        array('name' => 'sysftsmodule', 'type' => 'unique', 'fields' => array('module')),
     )
 );
 
@@ -60,8 +65,7 @@ $dictionary['sysftslog'] = array(
         ),
         'request_url' => array(
             'name' => 'request_url',
-            'type' => 'varchar',
-            'len' => 255
+            'type' => 'longtext',
         ),
         'index_request' => array(
             'name' => 'index_request',

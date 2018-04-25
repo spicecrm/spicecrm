@@ -46,6 +46,7 @@ class SpiceImport extends SugarBean
 
     public static function saveImportFiles($post)
     {
+
         global $current_user, $db;
         $guid = create_guid();
 
@@ -62,15 +63,18 @@ class SpiceImport extends SugarBean
         $row = 0;
         $fileData = Array();
         $fileTooBig = false;
+        $delimiter = ";";
         global $sugar_config;
         $file = file("upload://" . $filemd5);
-        if(count($file) > $sugar_config['import_max_records_per_file']){
+        $import_max_records_per_file = (isset($sugar_config['import_max_records_per_file']) ? $sugar_config['import_max_records_per_file'] : 500);
+
+        if(count($file) > $import_max_records_per_file){
             $fileTooBig = true;
         }
         if (($handle = fopen("upload://" . $filemd5, "r")) !== FALSE) {
-            $fileHeader = fgetcsv($handle, 1000, ",");
+            $fileHeader = fgetcsv($handle, 0, $delimiter);
 
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            while (($data = fgetcsv($handle, 0, $delimiter)) !== FALSE) {
                 if($row < 2)
                     $fileData[] = $data;
                 $row++;
@@ -126,13 +130,15 @@ class SpiceImport extends SugarBean
         $error = false;
         $list = array();
         if (($handle = fopen("upload://" . $objectimport->fileId, "r")) !== FALSE) {
-            $fileHeader = fgetcsv($handle, 1000, ",");
-            while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            $fileHeader = fgetcsv($handle, 1000, ";");
+            while (($row = fgetcsv($handle, 1000, ";")) !== FALSE) {
                 $retrieve = array();
                 foreach ($objectimport->checkFields as $check_field) $retrieve[$check_field->field] = $row[array_search($check_field->field,$fileHeader)];
                 require_once('data/BeanFactory.php');
                 $newBean = BeanFactory::getBean($data['module']);
-                $newBean->retrieve_by_string_fields($retrieve);
+                if($objectimport->importDuplicateAction!= "ignore" && !empty($retrieve))
+                    $newBean->retrieve_by_string_fields($retrieve);
+
                 if(empty($newBean->id)) {
                     foreach ($row as $idx => $col) {
                         if(!empty($objectimport->fileMapping->{$fileHeader[$idx]})) {
@@ -142,7 +148,9 @@ class SpiceImport extends SugarBean
                     foreach ($objectimport->fixedFields as $field) {
                         $newBean->{$field->field} = $fixedData->{$field->field};
                     }
-                    $newBean->save();
+                    $idsaved = $newBean->save();
+
+                    file_put_contents('sugarcrm.log', print_r(array('save bean', $idsaved), true)."\n", FILE_APPEND);
                     $list[] = array('status' => 'imported','data' => array($row[0],$row[1],$row[2],$row[3]));
                 }else{
                     $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '".$data['import_id']."', 'Duplicate Entry', '".implode(',',$row)."')";

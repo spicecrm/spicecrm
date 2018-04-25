@@ -99,14 +99,14 @@ $mod_strings = array (
 
 
     'LBL_CONTACTS_SUBPANEL_TITLE' => 'Kontakte',
-	'LBL_ASSIGNED_TO_NAME' => 'Zugewiesen an:',
+	'LBL_ASSIGNED_TO' => 'Zugewiesen an',
 	'LBL_LIST_ASSIGNED_TO_NAME' => 'Zugew. Benutzer',
   'LBL_MY_CLOSED_SALES' => 'Meine abgeschlossenen Verkäufe',
   'LBL_TOTAL_SALES' => 'Verkäufe gesamt',
   'LBL_CLOSED_WON_SALES' => 'Geschlossene gewonnene Verkäufe',
-  'LBL_ASSIGNED_TO_ID' => 'Bearbeiter',
-  'LBL_CREATED_ID'=> 'Ersteller',
-  'LBL_MODIFIED_ID'=> 'Geändert von ID',
+  'LBL_ASSIGNED_TO_ID' => 'Zugewiesen an ID',
+  'LBL_CREATED_BY_ID'=> 'Ersteller',
+  'LBL_MODIFIED_BY_ID'=> 'Geändert von ID',
   'LBL_MODIFIED_NAME'=> 'Modifizierter Benutzer',
   'LBL_SALE_INFORMATION'=> 'Verkauf Information',
   'LBL_CURRENCY_ID'=> 'Währungs ID',

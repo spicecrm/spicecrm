@@ -11,21 +11,21 @@ $listViewDefs['EventRegistrations'] = array(
 //	),
     'CAMPAIGN_NAME' => array(
         'width' => '10%',
-        'label' => 'LBL_CAMPAIGN_NAME',
+        'label' => 'LBL_EVENT',
         'module' => 'Campaigns',
         'id' => 'CAMPAIGN_ID',
         'default' => true
     ),
     'CONTACT_NAME' => array(
         'width' => '10%',
-        'label' => 'LBL_CONTACT_NAME',
+        'label' => 'LBL_CONTACT',
         'module' => 'Contacts',
         'id' => 'CONTACT_ID',
         'default' => true
     ),
     'REGISTRATION_STATUS' => array(
         'width' => '10%',
-        'label' => 'LBL_REGISTRATION_STATUS',
+        'label' => 'LBL_STATUS',
         'default' => true
     ),
     'ASSIGNED_USER_NAME' => array(
@@ -42,7 +42,7 @@ $listViewDefs['EventRegistrations'] = array(
 	),
     'MODIFIED_BY_NAME' => array(
         'width' => '5',
-        'label' => 'LBL_MODIFIED',
+        'label' => 'LBL_MODIFIED_BY',
         'default' => true
 	),
     'DATE_MODIFIED' => array(

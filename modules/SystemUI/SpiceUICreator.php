@@ -28,8 +28,10 @@
 ********************************************************************************/
 
 /**
+ * @deprecated
+ * Load should come from reference database. We will see how it goes... Keep this code just in case
  * Class SpiceUICreator
- * load SQLs containing SYSUI configuration
+ * load SQLs containing SYSUI configuration located in file
  * delete current one listed in $sysuitables
  */
 

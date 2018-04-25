@@ -91,7 +91,7 @@ $dictionary['CompetitorAssessment'] = array(
         ),
         'competitive_status' => array (
             'name' => 'competitive_status',
-            'vname' => 'LBL_COMPETITIVE_STATUS',
+            'vname' => 'LBL_STATUS',
             'type' => 'enum',
             'options' => 'competitive_status_dom',
             'len' => 10,
@@ -110,7 +110,7 @@ $dictionary['CompetitorAssessment'] = array(
         'opportunity_name' => array(
             'name'=>'opportunity_name',
             'rname'=>'name',
-            'vname' => 'LBL_OPPORTUNITY_NAME',
+            'vname' => 'LBL_OPPORTUNITY',
             'type' => 'relate',
             'reportable'=>false,
             'source'=>'non-db',

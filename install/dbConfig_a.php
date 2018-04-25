@@ -242,7 +242,6 @@ $out3 =<<<EOQ3
 </table>
 EOQ3;
 
-
 $demoFts = "<select name='demoDataFTS' id='demoDataFTS'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='yes'>".$mod_strings['LBL_YES']."</option>";
 $demoFts .= "</select><br>&nbsp;";
 $out4 =<<<EOQ4
@@ -269,6 +268,7 @@ $out4 =<<<EOQ4
         <input type="text" name="fts_prefix" value="{$_SESSION['fts_prefix']}">
     </td>
 </tr>
+<!-- deprecated since 20180400
 <tr>
     <td width='1%'>&nbsp;</td>
     <td  width='60%'nowrap><b>{$mod_strings['LBL_DBCONF_DEMO_FTS_DATA']}</b></td>
@@ -276,24 +276,25 @@ $out4 =<<<EOQ4
 	{$demoFts} 
     </td>
 </tr>
+-->
 </table>
 EOQ4;
 
-
-$demoUi = "<select name='demoDataUI' id='demoDataUI'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='yes'>".$mod_strings['LBL_YES']."</option>";
-$demoUi .= "</select><br>&nbsp;";
-$out5 =<<<EOQ5
-<table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
-<tr><th colspan="3" align="left">{$mod_strings['LBL_UI']} {$mod_strings['LBL_UI_REQUIREMENTS']}</th></tr>
-<tr>
-    <td width='1%'>&nbsp;</td>
-    <td  width='60%'nowrap><b>{$mod_strings['LBL_DBCONF_DEMO_UI_DATA']}</b></td>
-    <td  width='35%'nowrap align="left">
-	{$demoUi} 
-    </td>
-</tr>
-</table>
-EOQ5;
+//@deprecated since 20180400
+//$demoUi = "<select name='demoDataUI' id='demoDataUI'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='yes'>".$mod_strings['LBL_YES']."</option>";
+//$demoUi .= "</select><br>&nbsp;";
+//$out5 =<<<EOQ5
+//<table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
+//<tr><th colspan="3" align="left">{$mod_strings['LBL_UI']} {$mod_strings['LBL_UI_REQUIREMENTS']}</th></tr>
+//<tr>
+//    <td width='1%'>&nbsp;</td>
+//    <td  width='60%'nowrap><b>{$mod_strings['LBL_DBCONF_DEMO_UI_DATA']}</b></td>
+//    <td  width='35%'nowrap align="left">
+//	{$demoUi}
+//    </td>
+//</tr>
+//</table>
+//EOQ5;
 
 $out6 =<<<EOQ6
 </td>
@@ -456,12 +457,13 @@ function callDBCheck(){
                 if(typeof(document.setConfig.fts_prefix) != 'undefined'){
                     postData += "&fts_prefix="+document.setConfig.fts_prefix.value;
                 }
-                if(typeof(document.setConfig.demoDataFTS) != 'undefined'){
-                    postData += "&demoDataFTS="+document.setConfig.demoDataFTS.value;
-                }
-                if(typeof(document.setConfig.demoDataUI) != 'undefined'){
-                    postData += "&demoDataUI="+document.setConfig.demoDataUI.value;
-                }
+//@deprecated since 20180400                
+//                if(typeof(document.setConfig.demoDataFTS) != 'undefined'){
+//                    postData += "&demoDataFTS="+document.setConfig.demoDataFTS.value;
+//                }
+//                if(typeof(document.setConfig.demoDataUI) != 'undefined'){
+//                    postData += "&demoDataUI="+document.setConfig.demoDataUI.value;
+//                }
 
 EOQ6;
 

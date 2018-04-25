@@ -111,7 +111,7 @@ array (
            
           array (
             'name' => 'parent_name',
-            'label' => 'LBL_LIST_RELATED_TO',
+            'label' => 'RELATED_TOCONTACT',
           ),
         ),
          
@@ -129,7 +129,7 @@ array (
            
           array (
             'name' => 'contact_name',
-            'label' => 'LBL_CONTACT_NAME',
+            'label' => 'LBL_CONTACT',
           ),
         ),
          
@@ -146,7 +146,7 @@ array (
          array (
           array (
             'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO_NAME',
+            'label' => 'LBL_ASSIGNED_TO',
           ),
         ),
         array (

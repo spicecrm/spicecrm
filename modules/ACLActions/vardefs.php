@@ -70,7 +70,7 @@ $dictionary['ACLAction'] = array('table' => 'acl_actions', 'comment' => 'Determi
     'name' => 'modified_user_id',
     'rname' => 'user_name',
     'id_name' => 'modified_user_id',
-    'vname' => 'LBL_MODIFIED',
+    'vname' => 'LBL_MODIFIED_BY_ID',
     'type' => 'assigned_user_name',
     'table' => 'modified_user_id_users',
     'isnull' => 'false',

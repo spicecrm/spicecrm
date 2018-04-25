@@ -67,7 +67,7 @@ array (
       'contact_name' => 
       array (
         'name' => 'contact_name',
-        'label' => 'LBL_CONTACT_NAME',
+        'label' => 'LBL_CONTACT',
         'type' => 'name',
         'default' => true,
         'width' => '10%',
@@ -89,7 +89,7 @@ array (
       'parent_name' => 
       array (
         'type' => 'parent',
-        'label' => 'LBL_LIST_RELATED_TO',
+        'label' => 'RELATED_TOCONTACT',
         'width' => '10%',
         'default' => true,
         'name' => 'parent_name',

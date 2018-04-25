@@ -110,6 +110,9 @@ $app_list_strings = array(
         'Mailboxes' => 'Mailboxen',
         'ServiceOrders' => 'Serviceaufträge',
         'ServiceTickets' => 'Servicetickets',
+        'ServiceCalls' => 'Service Calls',
+        'ServiceFeedbacks' => 'Service Feedbacks',
+        'MediaCategories' => 'Medienkategorien'
     ),
 
 
@@ -157,12 +160,15 @@ $app_list_strings = array(
 //        'SalesDocs' => 'Vertriebsbeleg',
 // end
         'CompanyCodes' => 'Unternehmen',
-		'CompanyFiscalPeriods' => 'Buchungsperiode',
+        'CompanyFiscalPeriods' => 'Buchungsperiode',
         'AccountBankAccounts' => 'Bankkonto',
         'AccountCCDetails' => 'Buchungskreis',
         'Mailboxes' => 'Mailbox',
         'ServiceOrders' => 'Serviceauftrag',
         'ServiceTickets' => 'Serviceticket',
+        'ServiceCalls' => 'Service Call',
+        'ServiceQueues' => 'Service Queues',
+        'MediaCategories' => 'Medienkategorie'
     ),
 
     'checkbox_dom' => array(
@@ -334,9 +340,9 @@ $app_list_strings = array(
         '' => '',
         'Mr.' => 'Herr',
         'Ms.' => 'Frau',
-        'Mrs.' => 'Frau',
-        'Dr.' => 'Dr.',
-        'Prof.' => 'Prof.',
+        //'Mrs.' => 'Frau',
+        //'Dr.' => 'Dr.',
+        //'Prof.' => 'Prof.',
     ),
     'personalinterests_dom' => array(
         'sports' => 'Sport',
@@ -360,10 +366,14 @@ $app_list_strings = array(
         'text' => 'Text-Eingabe',
         'ist' => 'IST'
     ),
-    $app_list_strings['evaluationtypes_dom'] = array(
+    'evaluationtypes_dom' => array(
         'default' => 'Standard',
         'spiderweb' => 'Spinnennetz',
-        'default_sorted_points' => 'Standard, sortiert nach Punkten'
+    ),
+    'evaluationsorting_dom' => array(
+        'categories' => 'nach Kategorien (alphabetisch)',
+        'points asc' => 'nach Punkten, aufsteigend',
+        'points desc' => 'nach Punkten, absteigend'
     ),
     'contacts_title_dom' => array(
         '' => '',
@@ -445,6 +455,12 @@ $app_list_strings = array(
         'Recycled' => 'Wiederaufgenommen',
         'Dead' => 'Kalt',
     ),
+    'lead_classification_dom' =>
+        array(
+            'cold' => 'kalt',
+            'warm' => 'warm',
+            'hot' => 'heiß'
+        ),
     'gender_list' => array(
         'male' => 'Männlich',
         'female' => 'Weiblich',
@@ -507,8 +523,16 @@ $app_list_strings = array(
         '75' => '75',
         '100' => '100',
     ),
-
+    'project_type_dom' => array(
+        'customer' => 'Kunde',
+        'development' => 'Entwicklung',
+        'sales' => 'Vertrieb'
+    ),
     'project_status_dom' => array(
+        'planned' => 'Planned',
+        'active' => 'Active',
+        'completed' => 'Completed',
+        'cancelled' => 'Cancelled',
         'Draft' => 'Entwurf',
         'In Review' => 'In Prüfung',
         'Published' => 'Veröffentlicht',
@@ -710,7 +734,18 @@ $app_list_strings = array(
         'Television' => 'Fernsehen',
         'NewsLetter' => 'Newsletter',
     ),
-
+    'campaigntask_type_dom' => array(
+        '' => '',
+        'Event' => 'Event',
+        'Telesales' => 'Telesales',
+        'Mail' => 'Mail',
+        'Email' => 'Email',
+        'Print' => 'Print',
+        'Web' => 'Web',
+        'Radio' => 'Radio',
+        'Television' => 'Television',
+        'NewsLetter' => 'Newsletter',
+    ),
     'newsletter_frequency_dom' => array(
         '' => '',
         'Weekly' => 'Wöchentlich',
@@ -1248,7 +1283,6 @@ $app_strings = array(
     'LBL_MODULE_FILTER' => 'Gefiltert nach',
     'LBL_CONNECTORS_POPUPS' => 'Konnektoren Popups',
     'LBL_CLOSEINLINE' => 'Beenden:',
-    'LBL_MOREDETAIL' => 'Mehr Details',
     'LBL_EDITINLINE' => 'Bearbeiten',
     'LBL_VIEWINLINE' => 'Ansicht:',
     'LBL_INFOINLINE' => 'Info',
@@ -1826,6 +1860,7 @@ $app_strings = array(
     'LBL_COUNTRY' => 'Land:',
     'LBL_CREATE_BUTTON_LABEL' => 'Erstellen',
     'LBL_CREATED_BY_USER' => 'Erstellt von Benutzer:',
+    'LBL_CREATED_BY' => 'Erstellt von',
     'LBL_CREATED_USER' => 'Erstellt von Benutzer:',
     'LBL_CREATED_ID' => 'Erstellt von ID:',
     'LBL_CREATED' => 'Erstellt von:',
@@ -1930,9 +1965,10 @@ $app_strings = array(
     'LBL_MEETING_GO_BACK' => 'Zurück zum Meeting',
     'LBL_MEMBERS' => 'Mitglieder',
     'LBL_MEMBER_OF' => 'Mitglied von',
-    'LBL_MODIFIED_BY_USER' => 'Geändert von',
-    'LBL_MODIFIED_USER' => 'Geändert von',
-    'LBL_MODIFIED' => 'Geändert von',
+    'LBL_MODIFIED_BY_USER' => 'geändert von Benutzer',
+    'LBL_MODIFIED_USER' => 'geändert von Benutzer',
+    'LBL_MODIFIED' => 'geändert von',
+    'LBL_MODIFIED_BY' => 'geändert von',
     'LBL_MODIFIED_NAME' => 'Geändert von Name',
     'LBL_MODIFIED_ID' => 'Geändert von ID',
     'LBL_MORE' => 'mehr',
@@ -1944,6 +1980,7 @@ $app_strings = array(
     'LBL_NEXT_BUTTON_LABEL' => 'Weiter',
     'LBL_NONE' => '--Kein(e)--',
     'LBL_NOTES' => 'Notizen',
+    'LBL_NOTE' => 'Notiz',
     'LBL_OPENALL_BUTTON_KEY' => 'O',
     'LBL_OPENALL_BUTTON_LABEL' => 'Alle öffnen',
     'LBL_OPENALL_BUTTON_TITLE' => 'Alle öffnen [Alt+O]',
@@ -2094,8 +2131,9 @@ $app_strings = array(
     'LBL_SQS_INDICATOR' => '',
     'LBL_STATE' => 'Bundesland:',
     'LBL_STATUS_UPDATED' => 'Der Status für dieses Ereignis wurde aktualisiert!',
-    'LBL_STATUS' => 'Status:',
+    'LBL_STATUS' => 'Status',
     'LBL_STREET' => 'Straße',
+    'LBL_ATTN' => 'zu Handen / Firma',
     'LBL_SUBJECT' => 'Betreff',
 
     'LBL_INBOUNDEMAIL_ID' => 'Inbound Email ID',
@@ -2123,6 +2161,7 @@ $app_strings = array(
     'LBL_TABGROUP_SALES' => 'Verkauf',
     'LBL_TABGROUP_SUPPORT' => 'Support',
     'LBL_TABGROUP_TOOLS' => 'Werkzeuge',
+    'LBL_TASK' => 'Aufgabe',
     'LBL_TASKS' => 'Aufgaben',
     'LBL_TEAMS_LINK' => 'Team',
     'LBL_THEME_COLOR' => 'Farbe',
@@ -2347,6 +2386,8 @@ $app_strings = array(
     //adding a label for address copy from left
     'LBL_COPY_ADDRESS_FROM_LEFT' => 'Adresse von links kopieren:',
     'LBL_SAVE_AND_CONTINUE' => 'Speichern und weiter',
+    'LBL_SAVE_AND_GO_TO_RECORD' => 'Speichern und Eintrag öffnen',
+    'LBL_SAVE_AND_GO_TO' => 'Speichern und öffnen',
 
     'LBL_SEARCH_HELP_TEXT' => '<p><br /><strong>Multiselect Steuerungen</p><ul><li>Klicken Sie auf die Werte um ein Attribut auszuwählen.</li><li>STRG-Klick um mehrere auszuwählen. Mac Benutzer verwenden CMD-Klick.</li><li>Um alle Werte zwischen zwei Attributen auszuwählen, klicken Sie zuerst auf den ersten Wert und dann mit UMSCH-Klick auf den zweiten.</li></ul><p><strong>Erweiterte Suche und Layout Optionen</strong><br><br>Wenn Sie die <b>Gespeicherte Suche & Layout</b> Option verwenden, können Sie eine vordefinierte Suche bzw. eine angepasste Listenansicht speichern, um später schnell zu den gewünschten Ergebnissen zu kommen. Sie können eine unbegrenzet Anzahl solcher Selektionen speichern. Alle gespeicherten Selektionen scheinen in der &#39;Gespeicherte Suche&#39; Liste mit Namen auf, wobei die aktuell geladene Suche an der Spitze steht.<br><br>Um die Listenansicht anzupassen, verwenden Sie die &#39;Spalten anzeigen&#39; bzw. &#39;Spalten verstecken&#39; Kästchen. Sie können zum Beispiel Angaben wie Teams, zugewiesener Benutzer oder Datensatzname verbergen oder anzeigen. Um eine Spalte zur Listenansicht hinzuzufügen, wählen Sie das Feld aus der Liste der verborgenen Spalten und bewegen es mit der linken Pfeiltaste in die Spalte der angezeigten Begriffe. Um eine Spalte aus der Listenansicht zu entfernen, verfahren Sie genau umgekehrt.<br><br>Wenn Sie die Layout Einstellungen speichern, können Sie Ihre Suchergebnisse später immer in diesem Layout ausgeben.<br><br>Um eine Suche bzw. ein Layout zu speichern:<ol><li>Geben Sie einen Namen für das Suchresultat unter <b>Suche speichern unter</b> Feld ein und klicken Sie auf <b>Speichern</b>. Der Name wird nun in der Gespeicherten Suche Liste angezeigt, direkt neben der  Schaltfläche <b>Leeren</b>.</li><li>Um eine gespeicherte Suche aufzurufen, wählen Sie sie aus der Liste aus. Die Suchergebnisse werden in der Listenansicht dargestellt.</li><li>Um eine Gespeicherte Suche zu ändern wählen Sie die Suche aus der Liste aus, ändern die entsprechenden Such- und/oder Darstellungsparameter und klicken auf <b>Aktualisieren</b> neben <b>Aktuelle Suche ändern</b>.</li><li>Um eine Gespeicherte Suche zu löschen, wählen Sie die Suche aus der Liste aus, klicken <b>Löschen</b> neben <b>Aktuelle Suche ändern</b>, und klicken dann auf <b>OK</b> um das Löschen zu bestätigen.</li></ol>',
 
@@ -2667,10 +2708,6 @@ $app_strings = array(
     'LBL_LOGOFF' => 'Abmelden',
     'LBL_SELECT_LANGUAGE' => 'Sprache wählen',
     'LBL_DETAILS' => 'Details',
-    'LBL_CHANGE_PWD' => 'Passwort ändern',
-    'LBL_CURRENT_PWD' => 'aktuelles Passwort',
-    'LBL_NEW_PWD' => 'Neues Passwort',
-    'LBL_REPEAT_PWD' => 'Passwort Wiederholen',
 
     'LBL_ACTIVITIES' => 'Aktivitäten',
     'LBL_QUICKNOTES' => 'Notizen',
@@ -2689,6 +2726,8 @@ $app_strings = array(
     'LBL_PAST_ACTIVITIES' => 'Bisherige Aktivitäten',
     'LBL_SUMMARY' => 'Zusammenfassung',
     'LBL_ACTIVITY' => 'Aktivität',
+    'LBL_ACTIVITY_START' => 'Aktivität Beginn',
+    'LBL_ACTIVITY_END' => 'Aktivität Ende',
     'LBL_USER' => 'Benutzer',
     'LBL_DATE' => 'Datum',
 
@@ -2719,12 +2758,19 @@ $app_strings = array(
     'LBL_NEXT_QUARTER' => 'nächstes Quartal',
     'LBL_NEXT_YEAR' => 'nächstes Jahr',
 
-    'LBL_STRCTURE' => 'Struktur',
+    'LBL_STRUCTURE' => 'Struktur',
     'LBL_ADMIN_TAB' => 'Verwaltungsdaten',
     'LBL_DUPLICATES_FOUND' => 'Dubletten gefunden',
 
     /* Common */
 
+    'LBL_FILES' => 'Dateien',
+    'LBL_FILE' => 'Datei',
+    'LBL_PHOTO' => 'Foto',
+    'LBL_PHOTOS' => 'Fotos',
+    'LBL_UPLOAD' => 'hochladen',
+    'ERR_SESSION_EXPIRED' => 'Sitzung abgelaufen',
+    'ERR_LOGGED_OUT_SESSION_EXPIRED' => 'Sie wurden abgemeldet, weil Ihre Session abgelaufen ist.',
     'LBL_PREVIEW' => 'Vorschau',
     'LBL_VALUE' => 'Wert',
     'LBL_TEXT' => 'Text',
@@ -2748,8 +2794,8 @@ $app_strings = array(
     'LBL_COPYRIGHT_OWNER' => 'Urheberrechtsinhaber',
     'LBL_COPYRIGHT_LICENSE' => 'Urheberrechtslizenz',
     'LBL_IMAGENAME' => 'Bildname',
-    'LBL_EVALUATION' => 'Evaluation',
-    'LBL_CATEGORY' => 'Category',
+    'LBL_EVALUATION' => 'Auswertung',
+    'LBL_CATEGORY' => 'Kategorie',
     'LBL_IMAGE' => 'Bild',
     'LBL_ACCEPT' => 'Akzeptieren',
     'LBL_PAUSE' => 'Pause',
@@ -2757,6 +2803,39 @@ $app_strings = array(
     'LBL_BLOCKED' => 'gesperrt',
     'LBL_CONTINUE' => 'Fortsetzen',
     'LBL_CLOSE_EDITOR' => 'Editor schließen',
+    'LBL_MAINDATA' => 'Hauptdaten',
+    'LBL_MAIN_DATA' => 'Hauptdaten',
+    'LBL_GENERALDATA' => 'Allgemeine Daten',
+    'LBL_GENERAL' => 'Allgemeines',
+    'LBL_ADMINISTRATION' => 'Administration',
+    'ERR_NETWORK' => 'Netzwerkfehler',
+    'ERR_NETWORK_SAVING' => 'Netzwerkfehler beim Speichern',
+    'ERR_NETWORK_LOADING' => 'Netzwerkfehler beim Laden',
+    'LBL_STEP' => 'Schritt',
+    'LBL_COMPLETED' => 'abgeschlossen',
+    'MSG_DELETE_RECORD' => 'Datensatz löschen?',
+
+    /* Password */
+
+    'LBL_PASSWORD' => 'Passwort',
+    'LBL_CHANGE_PWD' => 'Passwort ändern',
+    'LBL_CURRENT_PWD' => 'Aktuelles Passwort',
+    'LBL_NEW_PWD' => 'Neues Passwort',
+    'LBL_REPEAT_PWD' => 'Passwort Wiederholen',
+    'LBL_OLD_PWD' => 'Altes Passwort',
+    'LBL_NEW_PWD' => 'Neues Passwort',
+    'LBL_NEW_PWD_REPEATED' => 'Neues Passwort, wiederholt',
+    'LBL_PWD_GUIDELINE' => 'Passwort-Richtlinie',
+    'MSG_PWD_NOT_LEGAL' => 'Passwort entspricht nicht der Richtlinie.',
+    'MSG_PWDS_DONT_MATCH' => 'Eingaben für das neue Passwort sind nicht ident.',
+    'MSG_PWD_CHANGED_SUCCESSFULLY' => 'Passwort erfolgreich geändert.',
+    'ERR_CHANGING_PWD' => 'Fehler beim Ändern des Passworts.',
+    'MSG_CURRENT_PWD_NOT_OK' => 'Aktuelles Passwort nicht korrekt eingegeben.',
+
+    'LBL_PORTAL_INFORMATION' => 'Portal-Information',
+    'LBL_USER_NAME' => 'Benutzername',
+    'LBL_ACL_ROLE' => 'ACL-Rolle',
+    'LBL_PORTAL_ROLE' => 'Portal-Rolle',
 
     /* Questionnaires */
 
@@ -2764,7 +2843,7 @@ $app_strings = array(
     'LBL_QUESTIONS' => 'Fragen',
     'LBL_QUESTIONTYPE' => 'Fragentyp',
     'LBL_QUESTION_NAME' => 'Fragename',
-    'LBL_NO_QUESTION_SETS_TO_DISPLAY' => 'Keine Fragengruppe anzuzeigen.',
+    'LBL_NO_QUESTIONSETS_TO_DISPLAY' => 'Keine Fragengruppe anzuzeigen.',
     'LBL_NO_QUESTIONS_TO_DISPLAY' => 'Keine Fragen anzuzeigen.',
     'LBL_QUESTION_MANAGER' => 'Fragen-Manager',
     'LBL_ADD_QUESTION' => 'Frage hinzufügen',
@@ -2826,6 +2905,13 @@ $app_strings = array(
     'LBL_UPLOAD_NEW_FILE' => 'Neue Datei hochladen',
     'LBL_WAITING_FILE_SELECTION' => 'Warte auf Dateiauswahl',
     'LBL_SELECT_FILE' => 'Datei auswählen',
+    'LBL_MEDIACATEGORY_NAME' => 'Medienkategorie',
+    'LBL_MEDIACATEGORY' => 'Medienkategorie',
+    'LBL_SUBCATEGORIES' => 'Unterkategorien',
+    'LBL_BELONGS_TO' => 'Gehört zu',
+    'LBL_MAKE_SELECTION' => 'Auswahl treffen',
+    'LBL_ALL_FILES' => 'alle Dateien',
+    'LBL_FILES_WITHOUT_CATEGORIES' => 'Dateien ohne Kategorien',
 
     'LBL_STARTDATE' => 'Start Datum',
     'LBL_STARTTIME' => 'Start Zeit',
@@ -2850,12 +2936,6 @@ $app_strings = array(
     'LBL_ENDDATE' => 'End Datum',
     'LBL_ENDTIME' => 'End Zeit',
 
-    'LBL_STREET' => 'Straße',
-    'LBL_POSTALCODE' => 'Postleitzahl',
-    'LBL_CITY' => 'Stadt',
-    'LBL_STATE' => 'Bezirk',
-    'LBL_COUNTRY' => 'Land',
-    'LBL_SEARCH_ADDRESS' => 'Adresse suchen',
 
     'LBL_RECENT_ITEMS' => 'Zuletzt angesehen Einträge',
 
@@ -2865,58 +2945,116 @@ $app_strings = array(
 
     //add for CanvaDraw FieldType
     'LBL_OPEN_SIGNATURE_POPUP' => 'Unterschrift setzen',
+    'LBL_SIGNING' => 'Unterschreiben',
+
+    //Projects
+    'LBL_RECORD_PROJECTACTIVITY' => 'Projektaufzeichnung eingeben',
+    'LBL_WBS_ELEMENT' => 'WBS Element',
+
+    // (activities)
+    'LBL_NO_ENTRIES' => 'Keine Einträge',
+
+    //Panels
+    'LBL_PROJECT_DATA' => 'Projektdaten',
+    'LBL_ADMIN_DATA' => 'Systemadministrator',
+    'LBL_CAMPAIGN_DATA' => 'Kampagnendaten',
+    'LBL_COMPETITIVE_DATA' => 'Wettbewerbsdaten',
+    'LBL_CONVERSION_DATA' => 'Konvertierungsdaten',
+    'LBL_REGISTRATION_DATA' => 'Registrierungsdaten',
+    'LBL_SALES_DATA' => 'Verkaufsdaten',
+    'LBL_LEAD_DATA' => 'Interessent Daten',
+    'LBL_CONTACT_DATA' => 'Kontaktdaten',
+    'LBL_API_DATA' => 'API Daten',
+    'LBL_BASIC_DATA' => 'Hauptdaten',
+
+
+    'LBL_LOGGED_ON_SYSTEM' => 'angemeldet an',
+    'LBL_ASSISTANT' => 'Assistant',
+    'LBL_NO_ACTIVITIES' => 'keine Aktivitäten',
+    'LBL_ROLES' => 'Rollen',
+    'LBL_MODULES' => 'Module',
+    'LBL_AGGREGATES' => 'Aggregate',
+
+    # Roles
+
+    'ROLE_SALES' => 'Vertrieb',
+    'ROLE_ADMIN' => 'Admin',
+    'ROLE_SERVICE' => 'Service',
+    'ROLE_MARKETING' => 'Marketing',
+    'ROLE_PRODUCTMANAGEMENT' => 'Produktmanagement',
+    'ROLE_PROJECTMANAGEMENT' => 'Projektmanagement',
+
+    # Modules
+
+    'LBL_WORKFLOWS' => 'Workflows',
+    'LBL_SYSTEMDEPLOYMENTCRS' => 'Change Requests',
+    'LBL_SERVICETICKETS' => 'Servicemeldungen',
+    'LBL_SERVICEORDERS' => 'Serviceaufträge',
+    'LBL_SERVICECALLS' => 'Service Anrufe',
+    'LBL_SALESVOUCHERS' => 'Gutscheine',
+    'LBL_SALESDOCS' => 'Vertriebsbelege',
+    'LBL_QUESTIONNAIRES' => 'Fragebögen',
+    'LBL_PROSPECTS' => 'pot. Kunden',
+    'LBL_PROSPECTLISTS' => 'Zielgruppen',
+    'LBL_PROPOSALS' => 'Angebote',
+    'LBL_MEDIACATEGORIES' => 'Medienkategorien',
+    'LBL_KREPORTS' => 'Auswertungen',
+    'LBL_INBOUNDEMAIL' => 'Eingegangene E-Mails',
+    'LBL_EVENTREGISTRATIONS' => 'Veranstaltungsanmeldungen',
+    'LBL_EMAILTEMPLATES' => 'E-Mail-Vorlagen',
+    'LBL_COMPETITORASSESSMENTS' => 'Wettbewerbsanalysen',
 
 );
 //Some modules shall not be included for CE
-if(file_exists('modules/Products/Product.php')){
-    $app_list_strings['moduleList']['Products'] =  'Produkte';
-    $app_list_strings['moduleList']['ProductGroups'] =  'Produkt Gruppen';
-    $app_list_strings['moduleList']['ProductVariants'] =  'Produkt Varianten';
-    $app_list_strings['moduleList']['ProductAttributes'] =  'Produkt Atribute';
-    $app_list_strings['moduleListSingular']['Products'] =  'Produkt';
-    $app_list_strings['moduleListSingular']['ProductGroups'] =  'Produkt Gruppe';
-    $app_list_strings['moduleListSingular']['ProductAttributes'] =  'Produkt Attribut';
+if (file_exists('modules/Products/Product.php')) {
+    $app_list_strings['moduleList']['Products'] = 'Produkte';
+    $app_list_strings['moduleList']['ProductGroups'] = 'Produkt Gruppen';
+    $app_list_strings['moduleList']['ProductVariants'] = 'Produkt Varianten';
+    $app_list_strings['moduleList']['ProductAttributes'] = 'Produkt Attribute';
+    $app_list_strings['moduleListSingular']['Products'] = 'Produkt';
+    $app_list_strings['moduleListSingular']['ProductGroups'] = 'Produkt Gruppe';
+    $app_list_strings['moduleListSingular']['ProductAttributes'] = 'Produkt Attribut';
 }
 
-if(file_exists('modules/Questionnaires/Questionnaire.php')) {
-    $app_list_strings['moduleList']['QuestionnaireInterpretations'] =  'Fragebogen-Interpretationen';
-    $app_list_strings['moduleList']['Questionnaires'] =  'Fragebögen';
-    $app_list_strings['moduleList']['Questions'] =  'Fragen';
-    $app_list_strings['moduleList']['QuestionSets'] =  'Frage-Gruppen';
-    $app_list_strings['moduleList']['QuestionAnswers'] =  'Antwortmöglichkeiten';
-    $app_list_strings['moduleList']['QuestionnaireParticipations'] =  'Fragebogen Teilnahmen';
-    $app_list_strings['moduleList']['QuestionOptions'] =  'Frage Optionen';
-    $app_list_strings['moduleList']['QuestionOptionCategories'] =  'Frage Option Kategorien';
-    $app_list_strings['moduleListSingular']['QuestionnaireInterpretations'] =  'Fragebogen-Interpretation';
-    $app_list_strings['moduleListSingular']['Questionnaires'] =  'Fragebogen';
-    $app_list_strings['moduleListSingular']['Questions'] =  'Frage';
-    $app_list_strings['moduleListSingular']['QuestionSets'] =  'Frage-Gruppen';
-    $app_list_strings['moduleListSingular']['QuestionAnswers'] =  'Antwortmöglichkeit';
-    $app_list_strings['moduleListSingular']['QuestionnaireParticipations'] =  'Fragebogen Teilnahme';
-    $app_list_strings['moduleListSingular']['QuestionOptions'] =  'Frage Option';
-    $app_list_strings['moduleListSingular']['QuestionOptionCategories'] =  'Frage Option Kategorie';
+if (file_exists('modules/Questionnaires/Questionnaire.php')) {
+    $app_list_strings['moduleList']['QuestionnaireInterpretations'] = 'Fragebogen-Interpretationen';
+    $app_list_strings['moduleList']['Questionnaires'] = 'Fragebögen';
+    $app_list_strings['moduleList']['Questions'] = 'Fragen';
+    $app_list_strings['moduleList']['QuestionSets'] = 'Frage-Gruppen';
+    $app_list_strings['moduleList']['QuestionAnswers'] = 'Antwortmöglichkeiten';
+    $app_list_strings['moduleList']['QuestionnaireParticipations'] = 'Fragebogen Teilnahmen';
+    $app_list_strings['moduleList']['QuestionOptions'] = 'Frage Optionen';
+    $app_list_strings['moduleList']['QuestionOptionCategories'] = 'Frage Option Kategorien';
+    $app_list_strings['moduleListSingular']['QuestionnaireInterpretations'] = 'Fragebogen-Interpretation';
+    $app_list_strings['moduleListSingular']['Questionnaires'] = 'Fragebogen';
+    $app_list_strings['moduleListSingular']['Questions'] = 'Frage';
+    $app_list_strings['moduleListSingular']['QuestionSets'] = 'Frage-Gruppen';
+    $app_list_strings['moduleListSingular']['QuestionAnswers'] = 'Antwortmöglichkeit';
+    $app_list_strings['moduleListSingular']['QuestionnaireParticipations'] = 'Fragebogen Teilnahme';
+    $app_list_strings['moduleListSingular']['QuestionOptions'] = 'Frage Option';
+    $app_list_strings['moduleListSingular']['QuestionOptionCategories'] = 'Frage Option Kategorie';
 }
-if(file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
+if (file_exists('modules/ProjectWBSs/ProjectWBS.php')) {
     $app_list_strings['moduleList']['ProjectWBSs'] = 'Projekt WBSs';
-    $app_list_strings['moduleListSingular']['ProjectWBSs'] =  'Projekt WBS';
+    $app_list_strings['moduleListSingular']['ProjectWBSs'] = 'Projekt WBS';
 }
-if(file_exists('modules/ProjectActivities/ProjectActivity.php')) {
+if (file_exists('modules/ProjectActivities/ProjectActivity.php')) {
     $app_list_strings['moduleList']['ProjectActivities'] = 'Projektaufzeichnungen';
-    $app_list_strings['moduleListSingular']['ProjectActivities'] =  'Projektaufzeichnung';
+    $app_list_strings['moduleListSingular']['ProjectActivities'] = 'Projektaufzeichnung';
 }
-if(file_exists('modules/ProjectPlannedActivities/ProjectPlannedActivity.php')) {
+if (file_exists('modules/ProjectPlannedActivities/ProjectPlannedActivity.php')) {
     $app_list_strings['moduleList']['ProjectPlannedActivities'] = 'Projekt geplante Aktivitäten';
-    $app_list_strings['moduleListSingular']['ProjectPlannedActivities'] =  'Projekt geplante Aktivität';
+    $app_list_strings['moduleListSingular']['ProjectPlannedActivities'] = 'Projekt geplante Aktivität';
 }
-if(file_exists('modules/SalesDocs/SalesDoc.php')) {
+if (file_exists('modules/SalesDocs/SalesDoc.php')) {
     $app_list_strings['moduleList']['SalesDocs'] = 'Vertriebsbelege';
-    $app_list_strings['moduleListSingular']['SalesDocs'] =  'Vertriebsbeleg';
+    $app_list_strings['moduleListSingular']['SalesDocs'] = 'Vertriebsbeleg';
     $app_list_strings['moduleList']['SalesDocItems'] = 'Vertriebsbeleg Positionen';
     $app_list_strings['moduleListSingular']['SalesDocItems'] = 'Vertriebsbeleg Position';
     $app_list_strings['moduleList']['SalesVouchers'] = 'Gutschriften';
     $app_list_strings['moduleListSingular']['SalesDocs'] = 'Gutschrift';
 }
-if(file_exists('modules/Workflows/Workflow.php')){
+if (file_exists('modules/Workflows/Workflow.php')) {
     $app_list_strings['moduleList']['Workflows'] = 'Workflows';
     $app_list_strings['moduleListSingular']['Workflows'] = 'Workflow';
     $app_list_strings['moduleList']['WorkflowDefinitions'] = 'Workflow Definitionen';
@@ -2928,14 +3066,14 @@ if(file_exists('modules/Workflows/Workflow.php')){
     $app_list_strings['moduleList']['WorkflowTaskDefinitions'] = 'Workflow Aufgabe Definitionen';
     $app_list_strings['moduleListSingular']['WorkflowTaskDefinitions'] = 'Workflow Aufgabe Definition';
     $app_list_strings['moduleList']['WorkflowConditions'] = 'Workflow Bedingungen';
-    $app_list_strings['moduleListSingular']['WorkflowConditions'] = 'Workflow Bedingunge';
+    $app_list_strings['moduleListSingular']['WorkflowConditions'] = 'Workflow Bedingungen';
     $app_list_strings['moduleList']['WorkflowSystemActions'] = 'Workflow Systemaktionen';
     $app_list_strings['moduleListSingular']['WorkflowSystemActions'] = 'Workflow Systemaktion';
     $app_list_strings['moduleList']['WorkflowTaskDecisions'] = 'Workflow Aufgabe Entscheidungen';
     $app_list_strings['moduleListSingular']['WorkflowTaskDecisions'] = 'Workflow Aufgabe Entscheidung';
 }
 
-if(file_exists('modules/Library/Library.php')) {
+if (file_exists('modules/Library/Library.php')) {
     $app_list_strings['moduleList']['Library'] = 'Medienbibliothek';
 }
 $app_list_strings['library_type'] = array('Books' => 'Bücher', 'Music' => 'Musik', 'DVD' => 'DVD', 'Magazines' => 'Magazine');
@@ -3740,10 +3878,10 @@ $app_list_strings['productattributedatatypes_dom'] = array(
     's' => 'Multiselect',
     'vc' => 'Text'
 );
-$app_list_strings['productattribute_usage_dom'] =  array (
-    'required' 		=> 'pflichtig',
-    'optional' 		=> 'optional',
-    'none' 		=> 'keine Eingabe',
+$app_list_strings['productattribute_usage_dom'] = array(
+    'required' => 'pflichtig',
+    'optional' => 'optional',
+    'none' => 'keine Eingabe',
     'hidden' => 'nicht sichtbar'
 );
 
@@ -3772,18 +3910,19 @@ $app_list_strings['comparators_dom'] = array(
 
 $app_list_strings['moduleList']['AccountKPIs'] = 'Key Performance Indicators';
 
-if(file_exists('modules/ServiceOrders/ServiceOrder.php')) {
+if (file_exists('modules/ServiceOrders/ServiceOrder.php')) {
     $app_list_strings['serviceorder_status_dom'] = array(
         'new' => 'Neu',
         'planned' => 'Geplant',
         'completed' => 'Erfüllt',
         'cancelled' => 'Abgesagt',
+        'signed' => 'Unterzeichnet',
     );
     $app_list_strings['parent_type_display']['ServiceOrders'] = 'Serviceaufträge';
     $app_list_strings['record_type_display']['ServiceOrders'] = 'Serviceaufträge';
     $app_list_strings['record_type_display_notes']['ServiceOrders'] = 'Serviceaufträge';
 }
-if(file_exists('modules/ServiceTickets/ServiceTicket.php')) {
+if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     $app_list_strings['serviceticket_status_dom'] = array(
         'New' => 'Neu',
         'Assigned' => 'Zugewiesen',
@@ -3792,8 +3931,50 @@ if(file_exists('modules/ServiceTickets/ServiceTicket.php')) {
         'Rejected' => 'Abgelehnt',
         'Duplicate' => 'Duplicate',
     );
+    $app_list_strings['serviceticket_resaction_dom'] = array(
+        '' => '',
+        'credit' => 'Gutschrift ausstellen',
+        'replace' => 'Ersatz zusenden',
+        'return' => 'Ware wird retourniert'
+    );
     $app_list_strings['parent_type_display']['ServiceTickets'] = 'Servicetickets';
     $app_list_strings['record_type_display']['ServiceTickets'] = 'Servicetickets';
     $app_list_strings['record_type_display_notes']['ServiceTickets'] = 'Servicetickets';
 }
+
+if (file_exists('modules/ServiceFeedbacks/ServiceFeedback.php')) {
+    $app_list_strings['service_satisfaction_scale_dom'] = array(
+        1 => '1 - unzufrieden',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5 - sehr zufrieden',
+    );
+    $app_list_strings['servicefeedback_status_dom'] = array(
+        'sent' => 'Gesendet',
+        'completed' => 'Ausgefüllt',
+    );
+    $app_list_strings['servicefeedback_parent_type_display'] = array(
+        'ServiceTickets' => 'Service Tickets',
+        'ServiceOrders' => 'Service Aufträge',
+        'ServiceCalls' => 'Service Anrufe',
+    );
+    $app_list_strings['record_type_display'] = array(
+        'ServiceTickets' => 'Service Tickets',
+        'ServiceOrders' => 'Service Aufträge',
+        'ServiceCalls' => 'Service Anrufe',
+    );
+}
 include('include/SpiceBeanGuide/SpiceBeanGuideLanguage.php');
+
+$app_list_strings['mailboxes_transport_dom'] = array(
+    'imap' => 'IMAP/SMTP',
+    'mailgun' => 'Mailgun',
+    'sendgrid' => 'Sendgrid',
+);
+
+$app_list_strings['mailboxes_outbound_comm'] = [
+    'no' => 'Nichet erlaubt',
+    'single' => 'Nur individuelle Emails',
+    'mass' => 'Individuelle und Massenmails',
+];

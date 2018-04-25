@@ -46,7 +46,7 @@ class LanguageManager
 	 * @param module - the name of the module we are working with
 	 * @param templates - an array of templates this module uses
 	 */
-	function createLanguageFile($module , $templates=array('default'), $refresh = false){
+	public static function createLanguageFile($module , $templates=array('default'), $refresh = false){
 		global $mod_strings, $current_language;
 		if(inDeveloperMode() || !empty($_SESSION['developerMode'])){
         	$refresh = true;
@@ -57,12 +57,74 @@ class LanguageManager
             $lang = $GLOBALS['sugar_config']['default_language'];
 		static $createdModules = array();
 		if(empty($createdModules[$module]) && ($refresh || !file_exists(sugar_cached('modules/').$module.'/language/'.$lang.'.lang.php'))){
-			$loaded_mod_strings = array();
+            $loaded_mod_strings = array();
 			$loaded_mod_strings = LanguageManager::loadTemplateLanguage($module , $templates, $lang , $loaded_mod_strings);
 			$createdModules[$module] = true;
 			LanguageManager::refreshLanguage($module,$lang, $loaded_mod_strings);
 		}
 	}
+
+	public static function loadDatabaseLanguage($syslang){
+        $retArray = array();
+
+        // get default Labels
+        $q = "SELECT syslanguagetranslations.*, syslanguagelabels.name label
+        FROM syslanguagetranslations, syslanguagelabels
+        WHERE syslanguagetranslations.syslanguagelabel_id = syslanguagelabels.id
+          AND syslanguagetranslations.syslanguage = '".$syslang."'
+        ORDER BY label ASC";
+
+        if($res = $GLOBALS['db']->query($q)) {
+            while ($row = $GLOBALS['db']->fetchByAssoc($res)) {
+                $retArray[$row['label']] = array(
+                    'label' => $row['label'],
+                    'default' => $row['translation_default'],
+                    'short' => $row['translation_short'],
+                    'long' => $row['translation_long'],
+                );
+            }
+        }
+
+        // custom translations to default labels
+        $q = "SELECT syslanguagecustomtranslations.*, syslanguagelabels.name label
+        FROM syslanguagecustomtranslations, syslanguagelabels
+        WHERE (syslanguagecustomtranslations.syslanguagelabel_id = syslanguagelabels.id )
+          AND syslanguagecustomtranslations.syslanguage = '".$syslang."' ORDER BY label ASC";
+        if($res = $GLOBALS['db']->query($q)) {
+            while ($row = $GLOBALS['db']->fetchByAssoc($res)) {
+                $retArray[$row['label']] = array(
+                    'label' => $row['label'],
+                    'default' => $row['translation_default'],
+                    'short' => $row['translation_short'],
+                    'long' => $row['translation_long'],
+                );
+            }
+        }
+
+        // get custom labels
+        $q = "SELECT  syslanguagecustomtranslations.*, syslanguagecustomlabels.name label
+        FROM syslanguagecustomtranslations, syslanguagecustomlabels
+        WHERE syslanguagecustomtranslations.syslanguagelabel_id = syslanguagecustomlabels.id
+          AND syslanguagecustomtranslations.syslanguage = '".$syslang."' ORDER BY label ASC";
+        if($res = $GLOBALS['db']->query($q)) {
+            while ($row = $GLOBALS['db']->fetchByAssoc($res)) {
+                $retArray[$row['label']] = array(
+                    'label' => $row['label'],
+                    'default' => $row['translation_default'],
+                    'short' => $row['translation_short'],
+                    'long' => $row['translation_long'],
+                );
+            }
+        }
+
+        /*
+        no exception handling wanted...
+        elseif($GLOBALS['db']->last_error){
+            throw new Exception($GLOBALS['db']->last_error);
+        }
+        */
+        return $retArray;
+    }
 
 	/**
 	 * Load the module  tempalte lauguage files
@@ -71,7 +133,7 @@ class LanguageManager
 	 * @param lang - current language this module use
 	 * @param loaded_mod_strings - the string that we will add the module template language  into
 	 */
-	function loadTemplateLanguage($module , $templates , $lang, $loaded_mod_strings){
+	public static function loadTemplateLanguage($module , $templates , $lang, $loaded_mod_strings){
 		$templates = array_reverse($templates);
 		foreach($templates as $template){
 			$temp = LanguageManager::addTemplate($module,$lang, $template);
@@ -80,7 +142,7 @@ class LanguageManager
 		return $loaded_mod_strings;
 	}
 
-	function addTemplate($module, $lang, $template){
+    public static function addTemplate($module, $lang, $template){
 		if($template == 'default')$template = 'basic';
 		$templates = array();
 		$fields = array();
@@ -102,7 +164,7 @@ class LanguageManager
 		}
 	}
 
-	function saveCache($module,$lang, $loaded_mod_strings, $additonal_objects= array()){
+	public static function saveCache($module,$lang, $loaded_mod_strings, $additonal_objects= array()){
 		if(empty($lang))
 			$lang = $GLOBALS['sugar_config']['default_language'];
 
@@ -121,7 +183,7 @@ class LanguageManager
 	 *                      clear language cache for all modules.
 	 * @param string lang the name of the object we are clearing this is for sugar_cache
 	 */
-	function clearLanguageCache($module_dir = '', $lang = ''){
+	public static function clearLanguageCache($module_dir = '', $lang = ''){
 		if(empty($lang)) {
 			$languages = array_keys($GLOBALS['sugar_config']['languages']);
 		} else {
@@ -171,7 +233,7 @@ class LanguageManager
 	 * @param string $lang the given language we wish to load
 	 * @param array $additional_search_paths an array which allows a consumer to pass in additional vardef locations to search
 	 */
-	function refreshLanguage($module, $lang, $loaded_mod_strings = array(), $additional_search_paths = null){
+	public static function refreshLanguage($module, $lang, $loaded_mod_strings = array(), $additional_search_paths = null){
 		// Some of the vardefs do not correctly define dictionary as global.  Declare it first.
 		$lang_paths = array(
 					'modules/'.$module.'/language/'.$lang.'.lang.php',
@@ -230,13 +292,30 @@ class LanguageManager
 			}
 		}
 
+        // BEGIN syslanguages
+        // not sure it makes sense to overwrite module labels ($mod_strings) with global labels ($app_strings)
+        if(isset($GLOBALS['sugar_config']['syslanguages']['spicecrmsource_overwrite_with_db']) &&
+            $GLOBALS['sugar_config']['syslanguages']['spicecrmsource_overwrite_with_db'] === true &&
+            file_exists('custom/application/Ext/Language/'.$lang.'.override.ext.php')) {
+            global $extlabels;
+            require_once 'custom/application/Ext/Language/' . $lang . '.override.ext.php';
+            if ($extlabels)
+                $syslanguagelabelskeys = array_keys($extlabels);
+            foreach ($loaded_mod_strings as $lbl => $value) {
+                if (in_array($lbl, $syslanguagelabelskeys)) {
+                    $loaded_mod_strings[$lbl] = $extlabels[$lbl]['default'];
+                }
+            }
+        }
+        // END
+
 		//great! now that we have loaded all of our vardefs.
 		//let's go save them to the cache file.
 		if(!empty($loaded_mod_strings))
 			LanguageManager::saveCache($module, $lang, $loaded_mod_strings);
 	}
 
-	static function loadModuleLanguage($module, $lang, $refresh=false){
+	public static function loadModuleLanguage($module, $lang, $refresh=false){
 		//here check if the cache file exists, if it does then load it, if it doesn't
 		//then call refreshVardef
 		//if either our session or the system is set to developerMode then refresh is set to true

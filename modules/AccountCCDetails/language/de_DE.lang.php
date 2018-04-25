@@ -15,13 +15,15 @@ $mod_strings = array (
     'LNK_IMPORT_ACCCCDET' => 'Buchungskreisdetails importieren',
 
 //=> fields
-    'LBL_ACCOUNT_NAME' => 'Firmenname',
-    'LBL_COMPANYCODE_NAME' => 'Buchungskreis Bez.',
+    'LBL_ACCOUNT' => 'Firma',
+    'LBL_COMPANYCODE' => 'Buchungskreis Bez.',
     'LBL_PAYMENTTERMS' => 'Zahlungsbedingungen',
     'LBL_INCOTERM1' => 'Incoterm1',
     'LBL_INCOTERM2' => 'Incoterm2',
-    'LBL_ABCCATEGORY' => 'ABC-Kategorie',
+    'LBL_CATEGORY' => 'ABC-Kategorie',
 //=> links
+    'LBL_ACCOUNTS' => 'Firmen',
+    'LBL_COMPANYCODES' => 'Buchungskreise',
 
 //=> subpanels
 

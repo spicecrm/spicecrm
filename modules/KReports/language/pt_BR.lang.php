@@ -14,7 +14,15 @@
 
 
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+/**
+ * SpiceUI Language Compatibility
+ * Merge labels
+ */
 
+$kreporter_ui_labels = array(
+    'LBL_ID' => 'ID',
+
+);
 $mod_strings['LBL_SAVE_BUTTON_LABEL'] = 'gravar';
 $mod_strings['LBL_CANCEL_BUTTON_LABEL'] = 'cancelar';
 $mod_strings['LBL_REPORT_NAME_LABEL'] = 'Nome do relatório: &nbsp;';
@@ -111,18 +119,18 @@ $mod_strings['LBL_ONOFF_YO1'] = 'yes';
 $mod_strings['LBL_ONOFF_YO2'] = 'no';
 $mod_strings['LBL_ONOFF_COLUMN'] = 'y/n';
 $mod_strings['LBL_MUTLISELECT_POPUP_TITLE'] = 'Selecionar valores';
-$mod_strings['LBL_MULTISELECT_VALUE_HEADER'] = 'ID';
+$mod_strings['LBL_MULTISELECT_VALUE_HEADER'] = $kreporter_ui_labels['LBL_ID'];
 $mod_strings['LBL_MULTISELECT_TEXT_HEADER'] = 'Valor';
 $mod_strings['LBL_MUTLISELECT_CLOSE_BUTTON'] = 'Update';
 $mod_strings['LBL_MUTLISELECT_CANCEL_BUTTON'] = 'Cancelar';
 $mod_strings['LBL_DATETIMEPICKER_POPUP_TITLE'] = 'Select Date/Time';
 $mod_strings['LBL_DATETIMEPICKER_CLOSE_BUTTON'] = 'Update';
 $mod_strings['LBL_DATETIMEPICKER_CANCEL_BUTTON'] = 'Cancel';
-$mod_strings['LBL_DATETIMEPICKER_DATE'] = 'Date';
+$mod_strings['LBL_DATE'] = 'Date';
 $mod_strings['LBL_SNAPSHOTCOMPARISON_POPUP_TITLE'] = 'Gráfico por Gráfico';
 $mod_strings['LBL_SNAPSHOTTRENDANALYSIS_POPUP_TITLE'] = 'Análise de tendência';
 $mod_strings['LBL_SNAPSHOTCOMPARISON_SNAPHOT_HEADER'] = 'Snapshot';
-$mod_strings['LBL_SNAPSHOTCOMPARISON_DESCRIPTION_HEADER'] = 'Descrição';
+$mod_strings['LBL_DESCRIPTION'] = 'Descrição';
 $mod_strings['LBL_SNAPSHOTCOMPARISON_SELECT_CHART'] = 'Selecionar gráfico:';
 $mod_strings['LBL_SNAPSHOTCOMPARISON_SELECT_LEFT'] = 'Selecionar fonte esquerda:';
 $mod_strings['LBL_SNAPSHOTCOMPARISON_SELECT_RIGHT'] = 'Selecionar fonte direita:';

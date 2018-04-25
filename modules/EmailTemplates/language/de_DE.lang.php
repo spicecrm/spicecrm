@@ -95,7 +95,7 @@ $mod_strings = array (
 	'LBL_SELECT' => 'Auswählen',
 	'LBL_ID_FF_CLEAR' => 'Leeren',
     'LBL_TYPE' => 'Typ:',
-    'LBL_FOR_BEAN' => 'für Modul',
+    'LBL_FOR_MODULE' => 'für Modul',
     'LBL_MARK_CLOSED' => 'abschliessen',
     'LBL_UNREAD_ONLY' => 'nur ungelesene',
 );

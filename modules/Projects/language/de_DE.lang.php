@@ -49,8 +49,8 @@ $mod_strings = array (
     'LBL_MY_PROJECTS' => 'Meine Projekte',
     'LBL_MY_PROJECT_TASKS' => 'Meine Projektaufgaben',
     
-	'LBL_TOTAL_ESTIMATED_EFFORT' => 'Gesamtaufwand geplant (Std):',
-	'LBL_TOTAL_ACTUAL_EFFORT' => 'Gesamtaufwant tats. (Std):',
+	'LBL_TOTAL_ESTIMATED_EFFORT' => 'Gesamtaufwand geplant (Std)',
+	'LBL_TOTAL_ACTUAL_EFFORT' => 'Gesamtaufwant tats. (Std)',
 
 	'LBL_LIST_NAME' => 'Name',
     'LBL_LIST_DAYS' => 'Tage',
@@ -107,7 +107,7 @@ $mod_strings = array (
     'LBL_MORE'  => 'Mehr...',
 
     'LBL_PERCENT_BUSY' => '% Ausgelastet',
-    'LBL_TASK_ID_WIDGET' => 'ID',
+    'LBL_ID' => 'ID',
     'LBL_TASK_NAME_WIDGET' => 'description',
     'LBL_DURATION_WIDGET' => 'duration',
     'LBL_START_WIDGET' => 'date_start',
@@ -130,13 +130,12 @@ $mod_strings = array (
 
 
 // LINKS
-    'LBL_PROJECTS_PROJECTWBSS_LINK' => 'Projekte WBS',
-    'LBL_PROJECTS_PROJECTACTIVITIES_LINK' => 'Projektaufzeichnungen',
     'LBL_ACCOUNTS' => 'Firmen',
+    'LBL_PROJECTACTIVITIES' => 'Projektaufzeichnungen',
+    'LBL_PROJECTMILESTONES' => 'Milestones',
+    'LBL_PROJECTWBSS' => 'Projekt Struktur Elemente',
+    'LBL_PROJECTTASKS' => 'Projects Tasks',
+    'LBL_TYPE' => 'Typ',
 
-//SUBPANELS
-    'LBL_PROJECTACTIVITIES_SUBPANEL_TITLE' => 'Projektaufzeichnungen',
-    'LBL_PROJECTMILESTONES_SUBPANEL_TITLE' => 'Milestones',
-    'LBL_PROJECTWBSS_SUBPANEL_TITLE' => 'Projet Strktur Elemente',
 
 );

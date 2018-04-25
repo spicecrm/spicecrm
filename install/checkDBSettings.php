@@ -106,7 +106,7 @@ function checkDBSettings($silent=false) {
     }
 
     // Bug 29855 - Check to see if given db name is valid
-    if (preg_match("![\"'*/\\?:<>-]+!i", $_SESSION['setup_db_database_name']) ) {
+    if (preg_match("![\"'*/\\?:<>]+!i", $_SESSION['setup_db_database_name']) ) {
         $errors['ERR_DB_MSSQL_DB_NAME'] = $mod_strings['ERR_DB_MSSQL_DB_NAME_INVALID'];
         installLog("ERROR::  {$errors['ERR_DB_MSSQL_DB_NAME']}");
     }
@@ -195,6 +195,34 @@ function checkDBSettings($silent=false) {
     $sugar_config['fts']['prefix'] = $_SESSION['fts_prefix'];
     $sugar_config['fts']['loglevel'] = '0';
     $sugar_config['fts']['schedulerpackagesize'] = 25000;
+
+    $sugar_config['media_files_dir'] = 'media/';
+    $sugar_config['media_files_thumbs_dir'] = 'media/.thumbs/';
+    $sugar_config['media_files_sizes_dir'] = 'media/.sizes/';
+    $sugar_config['media_files_trash_dir'] = 'media/.trash/';
+    $sugar_config['media_files_thumb_sizes'] = array(
+        0 => 30,
+        1 => 48,
+        2 => 64,
+        3 => 80,
+        4 => 120,
+        5 => 160,
+        6 => 200,
+        7 => 300
+    );
+    $sugar_config['media_files_thumb_sizes_auto_step'] = 300;
+    $sugar_config['media_files_image_widths'] = array(
+        0 => 60,
+        1 => 90,
+        2 => 120,
+        3 => 150,
+        4 => 180,
+        5 => 210,
+        6 => 240,
+        7 => 300
+    );
+    $sugar_config['media_files_image_widths_auto_step'] = 300;
+
 
     if($silent){
         return $errors;
@@ -348,15 +376,17 @@ function copyInputsIntoSession(){
     }
     if(isset($_REQUEST['demoData'])){$_SESSION['demoData'] = $_REQUEST['demoData'] ;}
 
-    if(!isset($_SESSION['demoDataFTS']) || empty($_SESSION['demoDataFTS'])){
-        $_SESSION['demoDataFTS'] = 'no';
-    }
-    if(isset($_REQUEST['demoDataFTS'])){$_SESSION['demoDataFTS'] = $_REQUEST['demoDataFTS'] ;}
+//@deprecated since 20180400
+//    if(!isset($_SESSION['demoDataFTS']) || empty($_SESSION['demoDataFTS'])){
+//        $_SESSION['demoDataFTS'] = 'no';
+//    }
+//    if(isset($_REQUEST['demoDataFTS'])){$_SESSION['demoDataFTS'] = $_REQUEST['demoDataFTS'] ;}
 
-    if(!isset($_SESSION['demoDataUI']) || empty($_SESSION['demoDataUI'])){
-        $_SESSION['demoDataUI'] = 'no';
-    }
-    if(isset($_REQUEST['demoDataUI'])){$_SESSION['demoDataUI'] = $_REQUEST['demoDataUI'] ;}
+//@deprecated since 20180400
+//    if(!isset($_SESSION['demoDataUI']) || empty($_SESSION['demoDataUI'])){
+//        $_SESSION['demoDataUI'] = 'no';
+//    }
+//    if(isset($_REQUEST['demoDataUI'])){$_SESSION['demoDataUI'] = $_REQUEST['demoDataUI'] ;}
 
 
     if($db->supports('create_db')) {

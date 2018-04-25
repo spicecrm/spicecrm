@@ -1,12 +1,12 @@
 <?php
 
-$app->group('/AccountsHierachy/:id', function () use ($app) {
-    $app->get('', function ($id) use ($app) {
+$app->group('/AccountsHierachy/{id}', function () use ($app) {
+    $app->get('', function($req, $res, $args) use ($app) {
         global $db;
 
         $hierarchy = array();
 
-        $seed = BeanFactory::getBean('Accounts', $id);
+        $seed = BeanFactory::getBean('Accounts', $args['id']);
         $seed->load_relationship('members');
         $memberAccounts = $seed->get_linked_beans('members', 'Account');
         foreach ($memberAccounts as $memberAccount) {
@@ -20,21 +20,21 @@ $app->group('/AccountsHierachy/:id', function () use ($app) {
 
         echo json_encode($hierarchy);
     });
-    $app->get('/:addfields', function ($id, $addfields) use ($app) {
+    $app->get('/{addfields}', function($req, $res, $args) use ($app) {
         global $db;
 
         $hierarchy = array();
 
-        $addfields = json_decode(html_entity_decode($addfields));
+        $args['addfields'] = json_decode(html_entity_decode($args['addfields']));
 
-        $seed = BeanFactory::getBean('Accounts', $id);
+        $seed = BeanFactory::getBean('Accounts', $args['id']);
         $seed->load_relationship('members');
         $memberAccounts = $seed->get_linked_beans('members', 'Accounts');
         foreach ($memberAccounts as $memberAccount) {
             $memberCount = $db->fetchByAssoc($db->query("SELECT count(id) membercount FROM accounts WHERE parent_id = '$memberAccount->id' AND deleted = 0"));
 
             $addData = array();
-            foreach($addfields as $addfield)
+            foreach($args['addfields'] as $addfield)
                 $addData[$addfield] = $memberAccount->$addfield;
 
             $aclActions = ['list', 'detail', 'edit', 'delete', 'export'];

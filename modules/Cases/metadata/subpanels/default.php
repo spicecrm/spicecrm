@@ -71,7 +71,7 @@ $subpanel_layout = array(
 			'width' => '10%',
 		),
 		'date_entered'=>array(
-	 		'vname' => 'LBL_LIST_DATE_CREATED',
+	 		'vname' => 'LBL_DATE_ENTERED',
 			'width' => '15%',
 		),
 		'assigned_user_name' => array (

@@ -156,7 +156,7 @@ $dictionary['Meeting'] = array('table' => 'meetings',
         'date_start' =>
             array(
                 'name' => 'date_start',
-                'vname' => 'LBL_DATE',
+                'vname' => 'LBL_DATE_START',
                 'type' => 'datetimecombo',
                 'dbType' => 'datetime',
                 'comment' => 'Date of start of meeting',
@@ -220,7 +220,7 @@ $dictionary['Meeting'] = array('table' => 'meetings',
             ),
         'nextsteps' => array(
                 'name' => 'nextsteps',
-                'vname' => 'LBL_NEXTSTEPS',
+                'vname' => 'LBL_NEXT_STEPS',
                 'type' => 'text'
             ),
         // Bug 24170 - Added only to allow the sidequickcreate form to work correctly
@@ -324,7 +324,7 @@ $dictionary['Meeting'] = array('table' => 'meetings',
                 'db_concat_fields' => array(0 => 'first_name', 1 => 'last_name'),
                 'id_name' => 'contact_id',
                 'massupdate' => false,
-                'vname' => 'LBL_CONTACT_NAME',
+                'vname' => 'LBL_CONTACT',
                 'type' => 'relate',
                 'link' => 'contacts',
                 'table' => 'contacts',
@@ -353,7 +353,7 @@ $dictionary['Meeting'] = array('table' => 'meetings',
                 'parent_type' => 'record_type_display',
                 'type_name' => 'parent_type',
                 'id_name' => 'parent_id',
-                'vname' => 'LBL_LIST_RELATED_TO',
+                'vname' => 'LBL_RELATED_TO',
                 'type' => 'parent',
                 'group' => 'parent_name',
                 'source' => 'non-db',
@@ -546,6 +546,32 @@ $dictionary['Meeting'] = array('table' => 'meetings',
 //This enables optimistic locking for Saves From EditView
 , 'optimistic_locking' => true,
 );
+
+// CE version has not all modules...
+//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+global  $dictionary;
+if(is_file("modules/ServiceTickets/ServiceTicket.php")) {
+    $dictionary['Meeting']['fields']['servicetickets'] = array(
+        'name' => 'servicetickets',
+        'type' => 'link',
+        'relationship' => 'servicetickets_meetings',
+        'module' => 'ServiceTickets',
+        'bean_name' => 'ServiceTicket',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICETICKET',
+    );
+}
+if(is_file("modules/ServiceOrders/ServiceOrder.php")) {
+    $dictionary['Meeting']['fields']['serviceorders'] = array(
+        'name' => 'serviceorders',
+        'type' => 'link',
+        'relationship' => 'serviceorders_meetings',
+        'module' => 'ServiceOrders',
+        'bean_name' => 'ServiceOrder',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICEORDER',
+    );
+}
 
 VardefManager::createVardef('Meetings', 'Meeting', array('default', 'assignable',
 ));

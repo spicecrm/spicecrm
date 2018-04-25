@@ -1,36 +1,38 @@
 <?php
 $app->group('/dictionary', function () use ($app) {
-    $app->get('/list/:table', function ($table) use ($app) {
+    $app->get('/list/{table}', function($req, $res, $args) use ($app) {
         global $db;
 
         $dictionary = array();
 
         include('modules/TableDictionary.php');
         $return = array( 'fields' => array(), 'items' => array() );
-        foreach($dictionary[$table]['fields'] as $field){
+        foreach($dictionary[$args['table']]['fields'] as $field){
             $return['fields'][] = $field['name'];
         }
-        $res = $db->query("SELECT ".implode(',',$return['fields'])." FROM ".$dictionary[$table]['table']);
+        $res = $db->query("SELECT ".implode(',',$return['fields'])." FROM ".$dictionary[$args['table']]['table']);
         while($row = $db->fetchByAssoc($res)){
             $return['items'][] = $row;
         }
         echo json_encode($return);
     });
-    $app->delete('/:id', function ($id) use ($app) {
+    /*
+    $app->delete('/{id}', function($req, $res, $args) use ($app) {
         echo json_encode();
     });
     $app->post('/new', function () use ($app) {
-        $postBody = $body = $app->request->getBody();
-        $postParams = $app->request->get();
+        $postBody = $body = $_POST;
+        $postParams = $_GET;
         $data = array_merge(json_decode($postBody, true), $postParams);
         echo json_encode();
     });
     $app->post('/update', function () use ($app) {
-        $postBody = $body = $app->request->getBody();
-        $postParams = $app->request->get();
+        $postBody = $body = $_POST;
+        $postParams = $_GET;
         $data = array_merge(json_decode($postBody, true), $postParams);
         echo json_encode();
     });
+    */
     $app->get('/repair', function () use ($app) {
         global $current_user, $beanFiles, $db;
         $sql = '';
@@ -86,7 +88,7 @@ $app->group('/dictionary', function () use ($app) {
         global $current_user, $beanFiles, $db;
         $response = '';
         if (is_admin($current_user)) {
-            $postBody = json_decode($app->request->getBody());
+            $postBody = json_decode($_POST);
             $sql = base64_decode($postBody->sql);
             $db->query($sql);
 

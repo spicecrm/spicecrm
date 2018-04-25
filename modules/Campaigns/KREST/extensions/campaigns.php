@@ -3,15 +3,15 @@ require_once 'modules/Campaigns/utils.php';
 require_once 'include/SpiceMailRelais/SpiceMailRelais.php';
 
 $app->group('/campaigns', function () use ($app) {
-    $app->get('/sendmail/:campaignid', function ($campaignid) use ($app) {
+    $app->get('/sendmail/{campaignid}', function($req, $res, $args) use ($app) {
         global $db, $current_user;
-        $campaign = BeanFactory::getBean('Campaigns',$campaignid);
+        $campaign = BeanFactory::getBean('Campaigns',$args['campaignid']);
         $campaign->track_prospects('queued');
         echo json_encode(array('success' => true));
     });
-    $app->get('/sendtestmail/:campaignid', function ($campaignid) use ($app) {
+    $app->get('/sendtestmail/{campaignid}', function($req, $res, $args) use ($app) {
         global $db;
-        $campaign = BeanFactory::getBean('Campaigns',$campaignid);
+        $campaign = BeanFactory::getBean('Campaigns',$args['campaignid']);
 
         $mailrelais = new SpiceMailRelais($campaign->mailrelais);
 

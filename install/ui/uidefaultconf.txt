@@ -570,7 +570,7 @@ INSERT INTO sysuicomponentsetscomponents (id, componentset_id, sequence, compone
 	('F053698F-2B27-4359-B47D-74AA7C6DBF95', '223b6bea-3e1a-45f4-a6ce-ba6d4b2361d5', 0, 'ObjectTabContainer', '{"tabs":[{"name":"LBL_ACTIVITIES","componentset":"d2a9fd08-e1a7-4552-96bd-e534332f0415"},{"name":"LBL_ANALYTICS","componentset":"a3d5cf9a-1f23-cf10-9821-6c5c5f58ac11"}]}'),
 	('f05cf655-5471-4b76-b850-4cb1590cf76b', '12326139-d654-4266-8fe6-06e56b1c916c', 1, 'ObjectRecordViewDetail2and1', NULL),
 	('f2b1ca48-9ef6-4536-a276-24c4577999ea', '5a6728ba-7234-4e36-819f-069b71c0fcb5', 0, 'ObjectRecordDetailsTab', '{\r\n                    "name": "Registration Data",\r\n                    "fieldset": "1d5cba86-90af-49f9-90d9-2a519d9ab106"\r\n                }'),
-	('F3CB921A-6E84-4706-8DBA-FDCB14E7B546', 'c12ae2ed-a371-4f05-9d8e-0c85f58f0fc6', 0, 'ObjectTabContainer', '{"tabs":[{"name":"LBL_STRCTURE","componentset":"6330ac33-795e-621a-34ad-0a7048c4c8b2"},{"name":"LBL_DETAIL","componentset":"750a1910-014b-4f20-a491-efe724565be5"},{"name":"LBL_RELATED","componentset":"662979fb-033b-4077-9e6e-482cee7772c0"}]}'),
+	('F3CB921A-6E84-4706-8DBA-FDCB14E7B546', 'c12ae2ed-a371-4f05-9d8e-0c85f58f0fc6', 0, 'ObjectTabContainer', '{"tabs":[{"name":"LBL_STRUCTURE","componentset":"6330ac33-795e-621a-34ad-0a7048c4c8b2"},{"name":"LBL_DETAIL","componentset":"750a1910-014b-4f20-a491-efe724565be5"},{"name":"LBL_RELATED","componentset":"662979fb-033b-4077-9e6e-482cee7772c0"}]}'),
 	('f4a20ce1-5a35-8a1b-d1a5-21b2a725b861', '5439c0f8-4700-89c9-0a74-d16cf7d24d59', 2, 'ObjectRelatedlistList', '{"object":"Products","fieldset":"1cdc0fa2-548b-5855-2ff0-a43039b012a3","actionset":"29f645fe-0ba8-47b1-b73f-0429d09eca53"}'),
 	('f4bbd2da-bcd6-4b0a-86c2-a56c2e1c334c', '18f9e8db-877b-449b-a472-be58d453ba55', 0, 'ObjectRelatedlistList', '{\r\n	"object": "Campaigns",\r\n	"fieldset": "051e0f95-071c-46e6-89ba-cb92381c7637"\r\n}'),
 	('f7aaa912-a291-4cb2-807e-ce3edf8f8e55', '326d0a6f-f084-47ee-9fde-e73d0c7cfb5a', 1, 'ObjectRelatedlistList', '{\r\n	"object": "EventRegistrations",\r\n	"fieldset": "fed6cd0c-8f99-46ae-977f-558766bc9b23"\r\n}'),
@@ -2000,6 +2000,7 @@ INSERT INTO sysuiobjectrepository (id, object, module, path, component, descript
 	('fcf50168-957b-720f-4adf-5920d67713ec', 'SystemCaptureImage', '352d010b-eb37-4886-97d7-15789da807d4', NULL, 'SystemCaptureImage', NULL, NULL),
 	('fd22bf1d-9559-44c2-bb9c-e05d2efb4778', 'SpiceKanban', 'd395a327-5c06-499d-872c-d7432ff050a0', './app/addcomponents/components/spicekanban', 'SpiceKanban', NULL, NULL);
 /*!40000 ALTER TABLE sysuiobjectrepository ENABLE KEYS */;
+REPLACE INTO `sysuiobjectrepository` (`id`, `object`, `module`, `path`, `component`, `description`, `componentconfig`) VALUES ('A4EA0DBE-54FA-4FA1-A648-22798E6548E8', 'ObjectModalModuleLookup', '46115065-3bc7-4df4-afbf-66954175c0f3', './app/objectcomponents.module/components/objectmodalmodulelookup', 'ObjectModalModuleLookup', NULL, NULL);
 
 /*!40000 ALTER TABLE sysuirolemodules DISABLE KEYS */;
 INSERT INTO sysuirolemodules (id, sysuirole_id, module, sequence) VALUES
