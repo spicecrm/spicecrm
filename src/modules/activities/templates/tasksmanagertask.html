@@ -1,0 +1,28 @@
+<div class="slds-p-horizontal--medium slds-p-vertical--medium slds-border--bottom" [ngClass]="focusClass">
+    <div class="slds-grid slds-grid--align-spread" (click)="selectTask()" style="cursor: pointer;">
+        <div class="slds-grid">
+            <div class="slds-form-element">
+            <span class="slds-checkbox">
+              <input type="checkbox" [disabled]="isCompleted || !canEdit" [checked]="isCompleted" [id]="model.id" (click)="completeTask()">
+              <label class="slds-checkbox__label" [attr.for]="model.id">
+                <span class="slds-checkbox_faux"></span>
+              </label>
+            </span>
+            </div>
+            <div>
+                <div class="slds-text-title_caps" [ngStyle]="nameStyle">{{model.data.name}}</div>
+                <div class="slds-grid">
+                    <ng-container *ngFor="let field of fielsetFields; let i = index;">
+                        <ng-container *ngIf="model.data[field.field]">
+                        <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+                        <span *ngIf="i < fielsetFields.length - 1">&nbsp;•&nbsp;</span>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div>
+            <field-container [field]="'date_due'" [fieldconfig]="{highlightpast: true}" [fielddisplayclass]="'slds-truncate'"></field-container>
+        </div>
+    </div>
+</div>

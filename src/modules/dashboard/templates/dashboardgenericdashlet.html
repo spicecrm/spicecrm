@@ -1,0 +1,27 @@
+<div #headercontainer class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+    <system-icon [module]="dashletModule" [size]="'small'"></system-icon>
+    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}})</h2>
+</div>
+<div class="slds-table--header-fixed_container" style="width: 100%" [ngStyle]="tablestyle">
+    <div #tablecontainer class="slds-scrollable--y" style="width: 100%;height:100%" (scroll)="onScroll()">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_header-fixed" style="border-top: 0">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col" *ngFor="let field of dashletFields">
+                        <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center">
+                            <field-label *ngIf="!field.fieldconfig.hidelabel" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dashboard-generic-dashlet-row *ngFor="let record of records" [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record">
+                    <td *ngFor="let field of listfields">
+                        <field-container [fieldname]="field.field" [fieldconfig]="field.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
+        </table>
+    </div>
+</div>

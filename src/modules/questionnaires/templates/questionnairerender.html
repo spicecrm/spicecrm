@@ -1,0 +1,8 @@
+<div *ngIf="questionsets.length; else noQuestionsetsTemplate">
+    <div *ngFor="let questionset of questionsets">
+        <questionset-render [questionsetidorobject]="questionset"></questionset-render>
+    </div>
+</div>
+<ng-template #noQuestionsetsTemplate>
+    <p>{{language.getLabel('LBL_NO_QUESTIONSETS_TO_DISPLAY')}}</p>
+</ng-template>

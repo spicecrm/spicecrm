@@ -1,0 +1,30 @@
+<div class="slds-p-horizontal--medium">
+    <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-center slds-p-bottom--medium">
+        <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_QUESTION_MANAGER')}}</h2>
+        <div>
+            <button class="slds-button slds-button--neutral slds-button--brand" *ngIf="changeOrderMode" (click)="changeOrderSave()">{{language.getLabel('LBL_SAVE_ORDER')}}</button>
+            <button class="slds-button slds-button--neutral" *ngIf="changeOrderMode" (click)="changeOrderCancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--neutral" *ngIf="!changeOrderMode" (click)="changeOrderStart()" [disabled]="questions.length < 2">{{language.getLabel('LBL_CHANGE_ORDER')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="addQuestion()" [disabled]="changeOrderMode">{{language.getLabel('LBL_ADD_QUESTION')}}</button>
+        </div>
+    </div>
+    <div *ngFor="let question of questions; let i = index;" class="slds-box slds-box_xx-small slds-m-bottom_small">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div style="white-space: nowrap" *ngIf="changeOrderMode">
+                <button class="slds-button slds-button_icon slds-button_icon-border" (click)="questionUp(i)" title="{{language.getLabel('LBL_HOCH')}}" [disabled]="i == 0">
+                    <system-button-icon [icon]="'arrowup'"></system-button-icon>
+                    <span class="slds-assistive-text">{{language.getLabel('LBL_UP')}}</span>
+                </button>
+                <button class="slds-button slds-button_icon slds-button_icon-border" (click)="questionDown(i)" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="i >= questions.length-1">
+                    <system-button-icon [icon]="'arrowdown'"></system-button-icon>
+                    <span class="slds-assistive-text">{{language.getLabel('LBL_DOWN')}}</span>
+                </button>
+            </div>
+            <p class="slds-truncate slds-p-left_x-small">{{question.name}}</p>
+            <div class="slds-col_bump-left" style="white-space:nowrap">
+                <button class="slds-button slds-button--neutral" (click)="editQuestion(question.id)" [disabled]="changeOrderMode">{{language.getLabel('LBL_EDIT')}}</button>
+                <button class="slds-button slds-button--neutral" (click)="deleteQuestion(question.id)" [disabled]="changeOrderMode">{{language.getLabel('LBL_DELETE')}}</button>
+            </div>
+        </div>
+    </div>
+</div>

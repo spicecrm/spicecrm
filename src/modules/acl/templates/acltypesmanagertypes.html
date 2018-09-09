@@ -1,0 +1,36 @@
+<div style="height: 100%;">
+    <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+        <h2 class="slds-text-heading--small">{{language.getLabel('LBL_MODULES')}}</h2>
+    </div>
+    <div class="slds-scrollable" [ngStyle]="contentStyle">
+        <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-template #typesdisplay>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_MODULE')}}</div>
+                    </th>
+                    <th scope="col" style="width: 3rem;"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let acltype of acltypes" (click)="selectType(acltype)"
+                    [ngClass]="{'slds-theme--shade': acltype.id == activeTypeId}">
+                    <td>
+                        <div class="slds-truncate"><system-link>{{acltype.module}}</system-link></div>
+                    </td>
+                    <td style="width: 3rem;">
+                        <system-utility-icon *ngIf="acltype.usagecount > 0" icon="lock" size="x-small"
+                                             addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
+                        <system-utility-icon *ngIf="acltype.usagecount == 0" icon="unlock" size="x-small"
+                                             addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="slds-card">
+    <div class="slds-card__header">
+        <h2>{{model.data.name}} ({{language.getLabel('LBL_SERVICEORDER_NUMBER', model.module)}}: {{model.data.serviceorder_number}})</h2>
+    </div>
+    <div class="slds-card__body slds-card__body_inner slds-p-top--small">
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-2">
+                <field-label [fieldname]="'account_name'"></field-label>
+                <field-container [fieldname]="'account_name'"></field-container>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2">
+                <field-label [fieldname]="'assigned_user_name'"></field-label>
+                <field-container [fieldname]="'assigned_user_name'"></field-container>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-2">
+                <field-label [fieldname]="'date_start'"></field-label>
+                <field-container [fieldname]="'date_start'"></field-container>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2">
+                <field-label [fieldname]="'date_end'"></field-label>
+                <field-container [fieldname]="'date_end'"></field-container>
+            </div>
+        </div>
+        <p>{{model.data.description}}</p>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        {{language.getLabel('LBL_ADD_FIELD')}}
+    </system-modal-header>
+    <system-modal-content>
+        <fieldset class="slds-form-element">
+            <div class="slds-form-element__control">
+                <span class="slds-radio" *ngFor="let thisfield of fields">
+                    <input type="radio" [id]="'id'+thisfield" [value]="thisfield" [(ngModel)]="field"  name="availablefields" />
+                    <label class="slds-radio__label" [attr.for]="'id'+thisfield">
+                    <span class="slds-radio_faux"></span>
+                    <span class="slds-form-element__label">{{thisfield}}</span>
+                    </label>
+                </span>
+            </div>
+        </fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button [disabled]="field == ''" class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+    </system-modal-footer>
+</system-modal>

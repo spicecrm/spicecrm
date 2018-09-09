@@ -1,0 +1,51 @@
+<div class="slds-container--fluid slds-m-vertical--small">
+    <div  *ngIf="companyCodes.length > 0" class="slds-table--header-fixed_container" [ngStyle]="tableContainerStyle">
+        <div class="slds-scrollable--y" style="height:100%;">
+            <table class="slds-table slds-table_bordered slds-table_header-fixed slds-theme--default">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-p-left--x-small slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center"
+                             title="companyCode">
+                            {{ language.getLabel('LBL_COMPANYCODE') }}
+                        </div>
+                    </th>
+                    <th scope="col" *ngFor="let year of years">
+                        <div class="slds-p-left--x-small slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center"
+                             title="year">
+                            {{ year }}
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-p-left--x-small slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center"
+                             title="currency" style="width: fit-content">
+                            {{ language.getLabel('LBL_CURRENCY') }}
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let CCode of companyCodes">
+                    <th scope="row" class="slds-theme_shade slds-text-title_caps">
+                        <div class="slds-truncate" title="Company Code">
+                            {{ CCode.companycode }}
+                        </div>
+                    </th>
+                    <td scope="row" *ngFor="let year of years">
+                        <div class="slds-truncate" title="Revenue">
+                            {{ getKPI(CCode.id, year)}}
+                        </div>
+                    </td>
+                    <th scope="row" class="slds-theme_shade">
+                        <div class="slds-truncate slds-text-title_caps" title="EUR">EUR</div>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <system-spinner *ngIf="isLoading"></system-spinner>
+    <div *ngIf="!isLoading && companyCodes.length == 0" class="slds-align_absolute-center slds-p-vertical--medium">
+        <span> No Company Codes found </span>
+    </div>
+</div>

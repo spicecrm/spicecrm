@@ -1,0 +1,14 @@
+<div class="slds-grid" [ngStyle]="getHomeStyle()" *ngIf="displayHomeAssistant()">
+    <div class="slds-col slds-size--3-of-4">
+        <home-dashboard></home-dashboard>
+    </div>
+    <div class="slds-col slds-size--1-of-4">
+        <home-assistant></home-assistant>
+    </div>
+</div>
+
+<div class="slds-grid" [ngStyle]="getHomeStyle()" *ngIf="!displayHomeAssistant()">
+    <div class="slds-col slds-size--1-of-1">
+        <home-dashboard></home-dashboard>
+    </div>
+</div>

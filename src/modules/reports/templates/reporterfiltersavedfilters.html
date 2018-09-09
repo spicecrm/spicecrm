@@ -1,0 +1,12 @@
+<div>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="selectedFilter" [disabled]="isDisabled">
+                    <option value="">---</option>
+                    <option *ngFor="let savedFilter of savedFilters" [value]="savedFilter.savedfilter_id">{{savedFilter.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

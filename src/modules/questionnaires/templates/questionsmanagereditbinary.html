@@ -1,0 +1,32 @@
+<div *ngIf="options.length > 1" class="slds-grid slds-grid_vertical-align-center">
+    <div class="slds-col">
+        <table class="slds-table slds-table_bordered x-slds-table_cell-buffer">
+            <thead>
+                <tr>
+                    <td></td>
+                    <th scope="col" width="50%">
+                        {{language.getLabel('LBL_TEXT')}}
+                    </th>
+                    <th scope="col" width="4rem">
+                        {{language.getLabel('LBL_IMAGE')}}
+                    </th>
+                    <th scope="col" width="50%">
+                        {{language.getLabel('LBL_CATEGORIES')}}
+                    </th>
+                    <th scope="col" class="slds-text-align_right">
+                        {{language.getLabel('LBL_POINTS')}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let option of options; let i = index;">
+                <tr questions-manager-edit-binary-option [option]="option" [categorypool]="categorypool" [side]="i == 0 ? 'l':'r'" (data_changed)="handleChange($event)"></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="slds-col">
+        <button class="slds-button slds-button_icon slds-button_icon-border slds-m-left--x-small slds-m-top--x-large" (click)="exchangeOptions()">
+            <system-button-icon [icon]="'replace'"></system-button-icon>
+            <span class="slds-assistive-text">{{language.getLabel('LBL_EXCHANGE')}}</span>
+        </button>
+    </div>
+</div>

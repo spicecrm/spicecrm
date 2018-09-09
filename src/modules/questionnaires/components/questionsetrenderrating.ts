@@ -1,0 +1,174 @@
+import { Component, EventEmitter, Input, OnInit, Output, Pipe } from '@angular/core';
+import {language} from '../../../services/language.service';
+import {backend} from "../../../services/backend.service";
+import {session} from '../../../services/session.service';
+import {toast} from "../../../services/toast.service";
+//import { ApplicationRef } from '@angular/core';
+
+@Component({
+    selector: 'questionset-render-rating',
+    templateUrl: './app/modules/questionnaires/templates/questionsetrenderrating.html',
+    styles: [
+        "table { border-top: none; }",
+        "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",
+        "tr:first-child td { border-top: none; }"
+    ]
+})
+export class QuestionsetRenderRating implements OnInit {
+
+    @Input() answers: any = {};
+    @Input() hideFinishedQuestions: boolean = false;
+    @Input() imageWidthQuestion = 200;
+    @Input() in_modal: boolean = true;
+    @Input() no_edit: boolean = false;
+    @Input() options: any = {};
+    @Input() participation_id: string;
+    @Input() previewMode: boolean;
+    @Input() questions: Array<any> = [];
+    @Input() questionset: any;
+    @Input() questionsMeta = {};
+
+    @Output() numOfFinishedQuestionsChange = new EventEmitter();
+    numOfFinishedQuestionsValue: number = 0;
+
+    backupForNetworkError: string;
+    ratingEntries: Array<any> = [];
+    ratingNumEntries: number = 0;
+    ratingValuesHaveAlsoText = false;
+
+    constructor(private language: language, private backend: backend, private session: session, private toast: toast ) { }//private appref: ApplicationRef
+
+    @Input()
+    get numOfFinishedQuestions() {
+        return this.numOfFinishedQuestionsValue;
+    }
+
+    set numOfFinishedQuestions( val ) {
+        this.numOfFinishedQuestionsValue = val;
+        this.numOfFinishedQuestionsChange.emit( this.numOfFinishedQuestionsValue );
+    }
+
+    ngOnInit() {
+
+        // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
+        // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
+        if (this.questionset.questiontypeparameter !== '') {
+            let config = JSON.parse(this.questionset.questiontypeparameter);
+            if (config.rating) {
+                this.ratingNumEntries = config.rating.numEntries;
+                this.ratingEntries = config.rating.entries;
+            }
+        }
+        for (let question of this.questions) {
+            let sortedOptions = [], sortedAnswers = [];
+            for (let entry of this.ratingEntries) {
+                let isOptionFound: boolean = false;
+                for (let i = 0; i < this.options[question.id].length; i++) {
+                    if (this.options[question.id][i].questionset_type_parameter_id === entry.id) {
+                        isOptionFound = true;
+                        sortedOptions.push(this.options[question.id][i]);
+                        if (!this.previewMode) sortedAnswers.push(this.answers[question.id][i]);
+                        break;
+                    }
+                }
+                if (!isOptionFound) {
+                    sortedOptions.push({});
+                    if (!this.previewMode) sortedAnswers.push({});
+                }
+            }
+            this.options[question.id] = sortedOptions;
+            if (!this.previewMode) this.answers[question.id] = sortedAnswers;
+
+        }
+
+        // Is there any rating value with an alternative text?
+        for ( let entry of this.ratingEntries ) if ( entry.text !== '' ) { this.ratingValuesHaveAlsoText = true; break; }
+
+        if ( !this.previewMode ) {
+            this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
+                data => {
+                    for( let question of this.questions ) {
+                        if( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
+                        this.questionsMeta[question.id].readonly = false;
+                    }
+                    this.determineNumOfFinishedQuestions();
+                } );
+
+        }
+
+    }
+
+    setFieldsOfQuestion(questionId: string, answervalues: any) {
+        for (let answer of this.answers[questionId])
+            answer.value = ( answervalues[answer.optionId] || false );
+    }
+
+    onClick(questionId: string, answerIndex: number, event: any): boolean {
+
+        // If the preview mode is set, a click is allowed but is not to be treated. --> Do nothing and return true.
+        if (this.previewMode) return true;
+
+        // If the edit mode is not set, a click is not allowed and is not to be treated. --> Do nothing and return false.
+        if (this.no_edit) return false;
+
+        // Are the input fields of the question currently disabled? --> Do nothing and return.
+        // Info: While waiting for the response of the server the input fields are disabled.
+        if ( this.questionsMeta[questionId].readonly ) return false;
+
+        // At the beginning disable the input field(s) of the question. They will stay disabled until server response at the end.
+        this.questionsMeta[questionId].readonly = true;
+
+        // Radio button already set? --> Nothing to do.
+        if ( this.answers[questionId][answerIndex].value ) {
+            this.questionsMeta[questionId].readonly = false;
+            return;
+        }
+
+        this.backupForNetworkError = JSON.stringify( this.answers[questionId] );
+
+        // Set the (other) answers to false.
+        for ( let i = 0; i < this.answers[questionId].length; i++ )
+            this.answers[questionId][i].value = false;
+
+        // Store the answer (true)
+        this.answers[questionId][answerIndex].value = true;
+
+        // The data for the server request with the answer values (true or false).
+        var requestData = {};
+        for (let i = 0; i < this.answers[questionId].length; i++)
+            requestData[this.options[questionId][i].id] = this.answers[questionId][i].value;
+
+        // Do the request to the server to store the current answer state of the whole question.
+        this.backend.postRequest('module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData).subscribe(
+            data => {
+                this.setFieldsOfQuestion(questionId, data);
+                this.questionsMeta[questionId].readonly = false; //this.appref.tick();
+                this.determineNumOfFinishedQuestions();
+            },
+            error => {
+                this.questionsMeta[questionId].readonly = false;
+                console.log('Error:',error);
+                this.toast.sendToast( this.language.getLabel('ERR_NETWORK_SAVING'),'error', error.message+'. '+ ( error.error.error.message ? error.error.error.message:'' ),false );
+                this.answers[questionId] = JSON.parse( this.backupForNetworkError );
+            }
+        );
+
+        return true;
+
+    }
+
+    determineNumOfFinishedQuestions() {
+        let numberQuestions: number = 0;
+        for( let question of this.questions ) {
+            for( let answer of this.answers[question.id] ) {
+                if( answer.value ) {
+                    this.questionsMeta[question.id].finished = true;
+                    numberQuestions++;
+                    continue;
+                }
+            }
+        }
+        this.numOfFinishedQuestions = numberQuestions;
+    }
+
+}

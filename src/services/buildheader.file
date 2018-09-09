@@ -1,0 +1,13 @@
+import {Injectable, Inject, Injector, NgZone, EventEmitter,    ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler} from '@angular/core';
+import {Title, DomSanitizer} from '@angular/platform-browser';
+import {CanActivate}    from '@angular/router';
+declare var moment: any;
+import {Router, Route} from '@angular/router';
+import {Subject, Observable, of} from 'rxjs';
+import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/throw';
+declare var System: any;
+declare var _: any ;
+
+//import { Http, Request, RequestOptionsArgs, Response, XHRBackend, RequestOptions, ConnectionBackend, Headers, ResponseContentType, RequestMethod} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpResponse, HttpParams} from "@angular/common/http";

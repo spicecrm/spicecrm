@@ -1,0 +1,51 @@
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-form-element__control">
+            <select class="slds-select" [(ngModel)]="mailboxselection" (change)="selectMailbox()" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0">
+                <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
+                    {{mailbox.name}}
+                </option>
+            </select>
+        </div>
+        <div class="slds-form-element__control slds-p-left--small">
+            <span class="slds-checkbox">
+              <input type="checkbox" [disabled]="refreshDisabled"
+                     name="options" id="unread_only" value="1"
+                     [(ngModel)]="mailboxesEmails.unreadonly" (change)="reloadList()"/>
+              <label class="slds-checkbox__label" for="unread_only">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">{{language.getLabel('LBL_UNREAD_ONLY', 'EmailTemplates')}}</span>
+              </label>
+            </span>
+        </div>
+        <div class="slds-form-element__control">
+            <select class="slds-select" [(ngModel)]="emailopenness"
+                    (change)="selectEmailOpenness()" id="email_openness">
+                <option value=""
+                        selected>{{language.getLabel('LBL_EMAILS_ALL',
+                    'EmailTemplates')}}</option>
+                <option value="open">{{language.getLabel('LBL_EMAILS_OPEN',
+                    'EmailTemplates')}}</option>
+                <option
+                        value="user_closed">{{language.getLabel('LBL_EMAILS_USER_CLOSED',
+                    'EmailTemplates')}}</option>
+                <option
+                        value="system_closed">{{language.getLabel('LBL_EMAILS_SYSTEM_CLOSED', 'EmailTemplates')}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="slds-col--bump-left">
+        <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="reloadList()">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-button-icon [icon]="'refresh'"></system-button-icon>
+                <span>{{language.getLabel('LBL_REFRESH')}}</span>
+            </div>
+        </button>
+        <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="fetchEmails()">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-button-icon [icon]="'email'"></system-button-icon>
+                <span>{{language.getLabel('LBL_FETCH_EMAILS')}}</span>
+            </div>
+        </button>
+    </div>
+</div>

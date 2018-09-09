@@ -1,0 +1,15 @@
+<div #variantsheader class="slds-p-vertical--x-small slds-p-horizontal--small">
+    <h4 class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small">{{language.getModuleName('ProductVariants')}}</h4>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--right'"  (click)="search()"></system-utility-icon>
+            <input type="text" class="slds-input" placeholder="search by" [(ngModel)]="productfinder.searchterm" (keyup)="keyUp($event)">
+        </div>
+    </div>
+</div>
+<div #variantscontent class="slds-scrollable" [ngStyle]="variantsstyle" (scroll)="onScroll($event)">
+    <product-brwoser-variant *ngFor="let productvariant of productvariants" [productvariant]="productvariant" (selectionchanged)="handleSelection($event)"></product-brwoser-variant>
+    <div *ngIf="loading" class="slds-size--1-of-1 slds-p-around--medium slds-align--absolute-center">
+        <system-spinner></system-spinner>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">
+        {{language.getModuleLabel('Leads', 'LBL_NEW_FORM_TITLE')}}
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid" style="height: 70vh;">
+            <div class="slds-size--1-of-2 slds-p-around--small" style="height: 100%;">
+                <mailbox-email-to-lead-emailtext [emailmodule]="model.module" [emailtext]="email.data.description"
+                                                 [emailhtml]="email.data.body"
+                                                 [emailfields]="leadFields"
+                                                 (setfield)="setField($event)">
+
+                </mailbox-email-to-lead-emailtext>
+            </div>
+            <div class="slds-size--1-of-2 slds-scrollable" style="height: 100%;">
+                <div #detailcontainer></div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()">
+            {{language.getLabel('LBL_CANCEL')}}
+        </button>
+        <button class="slds-button slds-button--brand" (click)="saveLead()">
+            {{language.getLabel('LBL_SAVE')}}
+        </button>
+    </system-modal-footer>
+</system-modal>

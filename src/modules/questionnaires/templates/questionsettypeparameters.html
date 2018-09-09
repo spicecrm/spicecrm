@@ -1,0 +1,19 @@
+<div class="slds-section" [ngClass]="{'slds-is-open':sectionIsOpen}">
+    <h3 class="slds-section__title">
+        <button class="slds-button slds-section__title-action" (click)="toggleSection()">
+            <system-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+            <span class="slds-truncate" title="Section Title">{{language.getModuleLabel(model.module,'LBL_QUESTIONTYPE')}}</span>
+        </button>
+    </h3>
+    <div [ngStyle]="getOpenStyle()" class="slds-p-around--x-small">
+        <div class="slds-form-element">
+            <field-label [fieldname]="'questiontype'"></field-label>
+            <field-container [field]="'questiontype'" [fielddisplayclass]="'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight'" [fieldconfig]="questiontypeFieldconfig"></field-container><!-- (change)="change()" -->
+        </div>
+        <div [ngSwitch]="model.data.questiontype">
+            <questionset-type-parameters-rating *ngSwitchCase="'rating'" class="slds-box slds-m-top--medium" style="display: block"></questionset-type-parameters-rating>
+            <questionset-type-parameters-text *ngSwitchCase="'text'" class="slds-box slds-m-top--medium" style="display: block"></questionset-type-parameters-text>
+            <div *ngSwitchDefault></div>
+        </div>
+    </div>
+</div>

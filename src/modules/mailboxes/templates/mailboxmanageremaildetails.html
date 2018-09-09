@@ -1,0 +1,42 @@
+<div [ngStyle]="containerStyle" class="slds-theme--shade slds-scrollable--y">
+    <div [ngClass]="{'slds-hide': !model.id}">
+        <div class="slds-page-header" *ngIf="model.id">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-no-space slds-grow">
+                        <object-icon [module]="model.module"></object-icon>
+                        <div class="slds-media__body">
+                            <div class="slds-text-title--caps slds-line-height--reset slds-grid">
+                                <field-container field="date_sent" fielddisplayclass="slds-truncate"></field-container>
+                                <div class="slds-p-horizontal--small">•</div>
+                                <field-container field="status" fielddisplayclass="slds-truncate"></field-container>
+                            </div>
+                            <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                                <field-container field="name" fielddisplayclass="slds-truncate"></field-container>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <object-action-container [actionset]="actionSet" (actionemitter)="handleAction($event)"></object-action-container>
+                <div class="slds-p-left--small">
+                    <button class="slds-button slds-button--neutral" *ngIf="!isUserClosed" (click)="completeMail()">
+                        {{language.getLabel('LBL_MARK_USER_CLOSED')}}
+                    </button>
+                    <button class="slds-button slds-button--neutral" *ngIf="isRead" (click)="markUnread()">
+                        {{language.getLabel('LBL_MARK_UNREAD')}}
+                    </button>
+                    <button class="slds-button slds-button--neutral"
+                            *ngIf="isUserClosed" (click)="reopen()">
+                        {{language.getLabel('LBL_REOPEN')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-around--x-small slds-p-around--x-small slds-theme--default">
+            <div #detailscontent></div>
+        </div>
+    </div>
+    <div *ngIf="!model.id" class="slds-align--absolute-center" style="height:100%">
+        Please select an Email
+    </div>
+</div>

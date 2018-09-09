@@ -1,0 +1,32 @@
+<table *ngIf="!hideFinishedQuestions || numOfFinishedQuestions !== questions.length" width="100%" class="slds-table slds-table_bordered slds-table_col-bordered">
+    <thead >
+    <tr class="slds-text-title_caps" >
+        <th width="100%" class="slds-text-align_center" scope="col"></th>
+        <th *ngFor="let entry of ratingEntries" class="slds-text-align_center" scope="col">
+            <div *ngIf="ratingValuesHaveAlsoText" class="slds-border--bottom slds-p-bottom--xx-small slds-m-bottom--xx-small">
+                <ng-container *ngIf="entry.text !== ''; else nbsp">{{entry.text}}</ng-container>
+                <ng-template #nbsp>&nbsp;</ng-template>
+            </div>
+            {{entry.value}}
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let question of questions; let i=index">
+            <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
+                <td>
+                    <ng-container *ngIf="question.image_id">
+                        <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
+                    </ng-container>
+                    <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.name}}</div>
+                </td>
+                <td class="slds-text-align_center"
+                    *ngFor="let option of options[question.id]; let j = index;"><input
+                        title="{{ratingEntries[j].text}}" type="radio"
+                        [checked]="!previewMode && answers[question.id][j].value" name="{{question.id}}"
+                        (click)="onClick(question.id,j,$event)"
+                        [disabled]="questionsMeta[question.id].readonly || no_edit"></td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table>

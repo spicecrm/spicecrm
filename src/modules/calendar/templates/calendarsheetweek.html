@@ -1,0 +1,37 @@
+<div class="slds-border--bottom">
+    <div class="slds-grid" style="margin-right:15px">
+        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getTimeColStyle()">
+            <system-utility-icon [icon]="'clock'" [size]="'x-small'"></system-utility-icon>
+            {{getOffset()}}
+        </div>
+        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getDayColStyle()"
+             *ngFor="let sheetDay of sheetDays">
+            <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.index)">{{sheetDay.text}}</a>
+        </div>
+    </div>
+</div>
+<div class="slds-border--bottom">
+    <div class="slds-grid" style="margin-right:15px">
+        <div class="slds-text-align--center slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
+            <system-utility-icon [icon]="'chevronright'" [size]="'x-small'"></system-utility-icon>
+        </div>
+        <div class="slds-text-align--center slds-border--left " [ngStyle]="getDayColStyle()"
+             *ngFor="let sheetDay of sheetDays"></div>
+    </div>
+</div>
+<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
+    <ng-container *ngFor="let sheetHour of sheetHours">
+        <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(sheetHour)"></div>
+        <ng-container *ngIf="notLastHour(sheetHour)">
+            <div class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(sheetHour)"></div>
+            <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(sheetHour)">{{sheetHour}}:00</div>
+            <calendar-sheet-drop-target [hour]="sheetHour" [day]="sheetDay" class="slds-is-absolute" *ngFor="let sheetDay of sheetDays" [ngStyle]="getDropTargetStyle(sheetHour, sheetDay.index)" (rearrange)="rearrangeEvents()">{{sheetHour + ',' + sheetDay.index}}</calendar-sheet-drop-target>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngFor="let sheetDay of sheetDays">
+        <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
+    </ng-container>
+    <ng-container *ngFor="let event of calendarevents">
+        <calendar-sheet-week-event [ngStyle]="getEventStyle(event)" [event]="event" (rearrange)="rearrangeEvents()"></calendar-sheet-week-event>
+    </ng-container>
+</div>

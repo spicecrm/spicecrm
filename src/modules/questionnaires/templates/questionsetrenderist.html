@@ -1,0 +1,29 @@
+<ng-container *ngFor="let question of questions;let i = index">
+    <ng-container *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
+        <div class="slds-box slds-m-bottom--medium questionset-render-question">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div class="slds-grid slds-grid--vertical-align-center">
+                    <ng-container *ngFor="let textitem of question.name|questiontypeisttextspipe">
+                        <h3 class="slds-text-heading_small slds-p-horizontal--x-small"
+                            *ngIf="textitem.type == 'text'">
+                            {{textitem.text}}
+                        </h3>
+                        <div class="slds-form-element slds-p-horizontal--x-small" *ngIf="textitem.type == 'option'">
+                            <div class="slds-form-element__control">
+                                <div *ngIf="options[question.id][textitem.index].description && options[question.id][textitem.index].description != ''" class="slds-select_container">
+                                    <select  class="slds-select" [disabled]="questionsMeta[question.id].readonly || no_edit" [value]="getAnswerValue(question.id, textitem.index)" (change)="onChange(question.id, textitem.index, $event)">
+                                        <option value=""></option>
+                                        <option *ngFor="let seloption of options[question.id][textitem.index].description|questiontypeistoptionspipe"
+                                                [ngValue]="seloption">{{seloption}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <input *ngIf="!options[question.id][textitem.index].description || options[question.id][textitem.index].description == ''" style="width: 50px" type="text" class="slds-input" [value]="getAnswerValue(question.id, textitem.index)" (blur)="onChange(question.id, textitem.index, $event)"/>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

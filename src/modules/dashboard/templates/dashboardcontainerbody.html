@@ -1,0 +1,16 @@
+<div #bodycontainer class="slds-is-relative slds-scrollable--y" [ngStyle]="bodyContainerStyle">
+    <ng-container *ngIf="isEditing">
+        <ng-container *ngFor="let row of dashboardlayout.dashboardGrid">
+            <ng-container *ngFor="let column of row">
+                <div [ngStyle]="column" style="padding:10px;border: 1px solid #ddd;position: absolute;">
+                    <button class="slds-button slds-button--icon slds-align--absolute-center"  style="height: 100%; width: 100%" (click)="addDashlet(column)">
+                        <system-button-icon [icon]="'add'" [size]="'medium'"  style="height: 100%; width: 100%"></system-button-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngFor="let item of dashboardlayout.dashboardElements">
+        <dashboard-container-element [item]="item"></dashboard-container-element>
+    </ng-container>
+</div>

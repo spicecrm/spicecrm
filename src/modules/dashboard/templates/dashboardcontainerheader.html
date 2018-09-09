@@ -1,0 +1,20 @@
+<div class="slds-grid slds-p-vertical--small">
+    <div class="slds-col slds-has-flexi-truncate slds-grid slds-grid--vertical-align-center">
+        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+            {{dashboardlayout.model.data.name}}
+        </h1>
+        <button *ngIf="editable" class="slds-button" (click)="edit()">
+            <system-button-icon [icon]="'edit'"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-col slds-no-flex slds-grid slds-align-top">
+        <div *ngIf="editable" class="slds-button-group" role="group">
+            <button class="slds-button slds-button--neutral" (click)="toggleEditMode()">{{language.getLabel('LBL_EDIT')}}</button>
+            <!--button *ngIf="canDelete"  class="slds-button slds-button--neutral" (click)="deleteDashlet()">{{language.getLabel('LBL_DELETE')}}</button-->
+        </div>
+        <div *ngIf="dashboardlayout.editMode" class="slds-button-group" role="group">
+            <button class="slds-button slds-button--neutral" (click)="dashboardlayout.cancelEdit()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="dashboardlayout.saveDashboard()">{{language.getLabel('LBL_SAVE')}}</button>
+        </div>
+    </div>
+</div>

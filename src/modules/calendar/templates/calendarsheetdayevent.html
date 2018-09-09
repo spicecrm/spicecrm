@@ -1,0 +1,20 @@
+<div class="slds-m-around--xxx-small slds-p-around--xx-small" draggable="true" style="height:100%; border-radius: 2px;" [ngStyle]="getEventStyle()">
+    <ng-container *ngIf="!event.saving; else saving">
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-truncate" style="height: 100%;">
+                <calendar-event-summary></calendar-event-summary>
+                <field-container *ngFor="let field of fields" [field]="field.field" [fieldconfig]="field.fieldconfig"
+                                 [fielddisplayclass]="'slds-truncate'"></field-container>
+            </div>
+            <object-action-menu style="height: 1px;" class="slds-theme--default" [standardactions]="true"
+                                [buttonsize]="'xx-small'"></object-action-menu>
+        </div>
+        <div class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;"
+             (mousedown)="onMouseDown($event)">
+            <system-utility-icon [icon]="'threedots'" [size]="'x-small'"></system-utility-icon>
+        </div>
+    </ng-container>
+    <ng-template #saving>
+        <system-spinner style="opacity: 0.5;"></system-spinner>
+    </ng-template>
+</div>

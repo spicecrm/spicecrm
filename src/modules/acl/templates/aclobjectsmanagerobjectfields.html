@@ -1,0 +1,45 @@
+<div class="slds-box" *ngIf="showFieldControls; else nofieldcontrols">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_CONTROL')}}</div>
+            </th>
+            <th scope="col">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let field of fields">
+            <td>
+                <div class="slds-truncate">{{field.field}}</div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [value]="getFieldControl(field.field)"
+                                (change)="setFieldControl(field.field, $event)">
+                            <option value="1">{{language.getLabel('LBL_HIDE')}}</option>
+                            <option value="2">{{language.getLabel('LBL_DISPLAY')}}</option>
+                            <option value="3">{{language.getLabel('LBL_EDIT')}}</option>
+                        </select>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <system-utility-icon class="slds-float--right" icon="clear" size="x-small"
+                                     (click)="removeField(field.field)"></system-utility-icon>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="slds-align_absolute-center slds-p-top--medium">
+        <system-utility-icon icon="new" size="x-small" (click)="addField()"></system-utility-icon>
+    </div>
+</div>
+<ng-template #nofieldcontrols>
+    <div class="slds-p-around--medium slds-align_absolute-center">{{language.getLabel('LBL_NOFIELDCONTROLSFORTHISTYPE')}}</div>
+</ng-template>

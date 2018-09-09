@@ -1,0 +1,48 @@
+<div class="slds-grid slds-page-header slds-p-horizontal--none slds-p-vertical--xx-small slds-grid--vertical-align-center"
+     style="border-radius: 0; border-left: 0; height: 50px">
+    <div class="slds-text-title_caps slds-p-left--small">{{ activeLogName }}</div>
+    <div class="slds-p-around_xx-small slds-col--bump-left">
+        <button *ngIf="activeLogName" class="slds-button slds-button--brand" (click)="delete()">
+            {{language.getLabel('LBL_DELETE')}}
+        </button>
+    </div>
+</div>
+
+<div #logscontainer class="slds-scrollable--y" [ngStyle]="mainStyle()">
+    <div *ngIf="!spiceimportsservice.isloadingLogs && spiceimportsservice.activeImportData && itemLogs?.length <= 0"
+         class="slds-align_absolute-center slds-m-around--xx-large slds-text-heading--medium">
+        {{language.getLabel('MSG_NO_LOGS_FOUND')}}
+    </div>
+    <div *ngIf="!spiceimportsservice.isloadingLogs && !spiceimportsservice.activeImportData"
+         class="slds-align_absolute-center slds-m-around--xx-large slds-text-heading--medium">
+        {{language.getLabel('LBL_MAKE_SELECTION')}}
+    </div>
+    <system-spinner *ngIf="spiceimportsservice.isloadingLogs"></system-spinner>
+
+    <div *ngFor="let log of itemLogs">
+        <div (click)="toggleOpen(log.id)" style="cursor: pointer"
+             class="slds-p-left--small slds-border--bottom slds-border--right slds-grid">
+            <div class="slds-p-vertical--small  slds-col slds-size--2-of-12 slds-border--right">
+                {{ log.msg }}
+            </div>
+            <div [hidden]="opened && log.id == activeLogId"
+                 class="slds-p-around--small  slds-col slds-size--9-of-12 slds-truncate">
+                {{ log.data.join(' , ') }}
+            </div>
+            <div class="slds-p-around--small slds-size--1-of-12 slds-col_bump-left">
+                <button class="slds-button slds-button_icon">
+                    <system-button-icon [icon]="getButtonicon(log.id)"></system-button-icon>
+                </button>
+            </div>
+        </div>
+
+        <table *ngIf="opened && log.id == activeLogId" class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <tbody>
+            <tr *ngFor="let field of log.data; let index = index">
+                <td class="slds-truncate">{{ itemHeader[index] }}</td>
+                <td class="slds-truncate">{{ field }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

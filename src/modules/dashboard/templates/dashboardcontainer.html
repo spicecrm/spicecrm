@@ -1,0 +1,5 @@
+<ng-container [ngSwitch]="context">
+    <dashboard-container-homeheader *ngSwitchCase="'Home'" [dashboardid]="dashboardid"></dashboard-container-homeheader>
+    <dashboard-container-header *ngSwitchDefault [dashboardid]="dashboardid"></dashboard-container-header>
+</ng-container>
+<dashboard-container-body [dashboardid]="dashboardid"></dashboard-container-body>

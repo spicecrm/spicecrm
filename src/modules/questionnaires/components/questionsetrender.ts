@@ -1,0 +1,152 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { language } from '../../../services/language.service';
+import { backend } from "../../../services/backend.service";
+import { Subject ,  Observable } from 'rxjs';
+import { helper } from '../../../services/helper.service';
+
+declare var _: any;
+
+@Component( {
+    selector: 'questionset-render',
+    templateUrl: './app/modules/questionnaires/templates/questionsetrender.html',
+    styles: [
+        '.questionset-render.in-modal .questionset-render-header, .questionset-render.in-modal .questionset-render-footer { flex-grow: 0; flex-shrink: 0; }',
+        '.questionset-render.in-modal .questionset-render-questions { flex-shrink: 1; flex-grow: 1; overflow-y: scroll; }',
+        '.questionset-render.in-modal { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }',
+        '.questionset-render-text.collapsed { border-bottom-style: dashed; border-bottom-width: 2px; }',
+        '.questionset-render-text.collapsed div:first-child { overflow-y: hidden; position: relative; height: 3rem; }',
+        '.questionset-render-transition { background: linear-gradient(to bottom, rgba(243,242,242,0) 0%, rgba(243,242,242,1) 100%); height: 2rem; position: absolute; bottom: 0; left: 0; right: 0; }'
+    ],
+    providers: [helper]
+} )
+export class QuestionsetRender implements OnInit {
+
+    @Input() questionsetidorobject: any;
+    @Input() participation_id: string;
+    @Input() no_edit: boolean = false;
+    @Input() in_modal: boolean = true;
+    @Input() timerText: string = null;
+    @Input() timerWarning: boolean = false;
+    @Input() hideFinishedQuestions: boolean = false;
+
+    answers = {};
+    imageWidthOption = 200;
+    imageWidthQuestion = 200;
+    isLoading: boolean = true;
+    numOfFinishedQuestionsValue: number = 0;
+    options = {};
+    previewMode: boolean = false;
+    questions: Array<any> = [];
+    questionset: any;
+    questionsMeta = {};
+    textIsCollapsed = false;
+
+    isCompleteChange = new EventEmitter();
+
+    constructor( private language: language, private backend: backend, private helperservice: helper ) { }
+
+    set numOfFinishedQuestions( val ) {
+        this.numOfFinishedQuestionsValue = val;
+        this.isCompleteChange.emit( this.questions.length === val );
+    }
+
+    get numOfFinishedQuestions() {
+        return this.numOfFinishedQuestionsValue;
+    }
+
+    ngOnInit() {
+
+        if( this.participation_id )
+            this.previewMode = false;
+        else
+            this.previewMode = true;
+
+        if( typeof this.questionsetidorobject === 'string' ) {
+            this.backend.getRequest( 'module/QuestionSets/renderer/' + this.questionsetidorobject ).subscribe( ( response: any ) => {
+                this.questionset = response;
+                this.doWhenLoaded();
+            } );
+        } else {
+            this.questionset = this.questionsetidorobject;
+            this.doWhenLoaded();
+        }
+
+    }
+
+    doWhenLoaded() {
+
+        if( this.questionset.data ) this.questionset = this.questionset.data;
+
+        if( this.questionset.questions && this.questionset.questions.beans ) {
+
+            // Put the questions into an array, sort them by the field "position" (and date_entered) or shuffle them.
+            let keys = Object.keys( this.questionset.questions.beans );
+            if( this.questionset.shuffle == 1 ) {
+                this.helperservice.shuffle( keys );
+            } else keys.sort( ( a, b ) => {
+                let dummy = this.questionset.questions.beans[a].position - this.questionset.questions.beans[b].position;
+                if( dummy !== 0 ) return dummy;
+                else {
+                    if( this.questionset.questions.beans[a].date_entered < this.questionset.questions.beans[b].date_entered ) return -1;
+                    if( this.questionset.questions.beans[a].date_entered > this.questionset.questions.beans[b].date_entered ) return 1;
+                    return 0;
+                }
+            } );
+            for( let key of keys )
+                this.questions.push( this.questionset.questions.beans[key] );
+
+            // Build meta data for all questions.
+            for( let question of this.questions ) {
+                this.questionsMeta[question.id] = {
+                    readonly: !this.previewMode,
+                    finished: false,
+                    parameter: {}
+                };
+            }
+
+        }
+
+        // Put the answer options into an object/array, grouped by the questions.
+        for( let question of this.questions ) {
+            if( question.questionoptions && question.questionoptions.beans ) {
+                let keys = Object.keys( question.questionoptions.beans );
+                if( this.questionset.questiontype.match( /^binary|single|multi|ist$/ ) ) {
+                    // Sort or shuffle the options.
+                    if( this.questionset.shuffle == 1 && this.questionset.questiontype.match( /^binary|single|multi$/ ))
+                        this.helperservice.shuffle( keys );
+                    else keys.sort( ( a, b ) => {
+                        return question.questionoptions.beans[a].position - question.questionoptions.beans[b].position;
+                    } );
+                }
+                this.options[question.id] = [];
+                if( !this.previewMode ) this.answers[question.id] = [];
+                for( let key of keys ) {
+                    this.options[question.id].push( question.questionoptions.beans[key] );
+                    if( !this.previewMode ) this.answers[question.id].push( {
+                        'optionId': question.questionoptions.beans[key].id,
+                        'value': false
+                    } );
+                }
+            }
+        }
+
+        /*
+        // needed?
+        let i = 0;
+        for ( let question of this.questions ) {
+            if ( this.options[question.id] )
+                for ( let option of this.options[question.id] ) {
+                    this.indexOfOptions[option.id] = i;
+            }
+        }
+        */
+
+        this.isLoading = false;
+
+    }
+
+    toggleText() {
+        this.textIsCollapsed = !this.textIsCollapsed;
+    }
+
+}

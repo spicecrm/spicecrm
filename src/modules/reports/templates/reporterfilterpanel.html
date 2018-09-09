@@ -1,0 +1,20 @@
+<div class="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters" style="height:100%; width: 350px;">
+    <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y slds-grid slds-grid_vertical">
+        <div class="slds-filters">
+            <div class="slds-filters__header slds-grid slds-has-divider_bottom-space">
+                <h2 class="slds-align-middle slds-text-heading_small">{{language.getLabel('LBL_FILTER')}}</h2>
+                <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="saveFilter()">
+                    {{language.getLabel('LBL_APPLY')}}
+                </button>
+            </div>
+            <div *ngIf="displaySavedFilters" class="slds-filters__header slds-has-divider_bottom-space">
+                <reporter-filter-saved-filters  [reportid]="model.id"></reporter-filter-saved-filters>
+            </div>
+            <div class="slds-filters__body">
+                <reporter-filter-item *ngFor="let whereCondition of whereConditions"
+                                      [wherecondition]="whereCondition"></reporter-filter-item>
+            </div>
+
+        </div>
+    </div>
+</div>

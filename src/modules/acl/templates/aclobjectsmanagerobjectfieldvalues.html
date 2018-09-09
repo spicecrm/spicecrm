@@ -1,0 +1,62 @@
+<div class="slds-box">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_OPERATOR')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_VALUE1')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_VALUE2')}}</div>
+            </th>
+            <th scope="col">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let field of fields">
+            <td>
+                <div class="slds-truncate">{{field.name}}</div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [value]="getFieldValue('operator', field.id)" (change)="setFieldValue('operator', field.id, 'change', $event)">
+                            <option value="">ignore</option>
+                            <option value="EQ">=</option>
+                            <option value="NE">≠</option>
+                            <option value="GT">></option>
+                            <option value="GTE">≥</option>
+                            <option value="LT"><</option>
+                            <option value="LTE">≤</option>
+                            <option value="LK">Like</option>
+                            <option value="IN">in</option>
+                        </select>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
+                </div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [value]="getFieldValue('value2', field.id)" (change)="setFieldValue('value2', field.id, 'change', $event)"/>
+                </div>
+            </td>
+            <td>
+                <system-utility-icon icon="clear" size="x-small" (click)="resetid(field.id)"></system-utility-icon>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="slds-p-top--small">
+    <object-record-fieldset direction="vertical" [fieldset]="fieldset"></object-record-fieldset>
+</div>

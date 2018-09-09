@@ -1,0 +1,24 @@
+<div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+    <h2 class="slds-text-heading--small">{{language.getLabel('LBL_FIELDS')}}</h2>
+    <button class="slds-col--bump-left slds-button slds-button--brand" (click)="addField()">{{language.getLabel('LBL_ADD')}}</button>
+</div>
+<table class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <thead>
+    <tr class="slds-text-title_caps">
+        <th scope="col">
+            <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+        </th>
+        <th scope="col" style="width: 3rem;"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let field of authtypefields">
+        <td>
+            <div class="slds-truncate">{{field.name}}</div>
+        </td>
+        <td style="width: 3rem;">
+            <system-utility-icon icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deleteField(field.id)"></system-utility-icon>
+        </td>
+    </tr>
+    </tbody>
+</table>

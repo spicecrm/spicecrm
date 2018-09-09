@@ -1,0 +1,143 @@
+import {
+    AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Output,
+    EventEmitter, OnInit
+} from '@angular/core';
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {backend} from '../../../services/backend.service';
+import {toast} from '../../../services/toast.service';
+import {navigation} from '../../../services/navigation.service';
+
+declare var moment: any;
+
+@Component({
+    templateUrl: './app/modules/products/templates/productgroupslongtextcodeassignments.html',
+    host: {
+        'class': 'slds-button slds-button--neutral',
+        '[style.display]': 'getDisplay()'
+    },
+    styles: [
+        ':host >>> span {cursor:pointer;}'
+    ]
+})
+export class ProductGroupsLongtextCodeAssignments {
+
+    dialogvisible: boolean = false;
+    assignedAttributes: Array<any> = [];
+    allAttributes: Array<any> = [];
+    selectedAttribute: string = '';
+    isLoading: boolean = false;
+
+    constructor(private language: language, private model: model, private navigation: navigation, private backend: backend, private toast: toast) {
+
+    }
+
+    getDisplay() {
+        if (this.model.data.acl && !this.model.data.acl.edit)
+            return 'none';
+
+        return this.model.isEditing ? 'none' : 'inherit';
+    }
+
+    editDisable(productgroup_id) {
+        return productgroup_id != this.model.id;
+    }
+
+    showDialog() {
+        // get the attributes
+        this.assignedAttributes = [];
+        this.isLoading = true;
+        this.backend.getRequest('module/ProductGroups/' + this.model.id + '/productattributes/longtextgenerator').subscribe((attributes: any) => {
+
+            // write the assigned attributes
+            for (let attributeid in attributes.assignedattributes) {
+                this.assignedAttributes.push(attributes.assignedattributes[attributeid]);
+            }
+            this.assignedAttributes.sort((a, b) => {
+                return a.name > b.name ? 1 : -1;
+            })
+
+            // get all availabel attriobutes
+            this.allAttributes = attributes.allattributes;
+            this.allAttributes.sort((a, b) => {
+                return a.name > b.name ? 1 : -1;
+            })
+
+            this.isLoading = false;
+        })
+
+
+        this.dialogvisible = true;
+    }
+
+    hideDialog() {
+        this.dialogvisible = false;
+    }
+
+    save() {
+        this.isLoading = true;
+        let attributes = [];
+        for (let attribute of this.assignedAttributes) {
+            if (attribute.productgroup_id === this.model.id)
+                attributes.push({
+                    id: attribute.id,
+                    contentcode: attribute.contentcode,
+                    contentcode2: attribute.contentcode2,
+                    textpattern: attribute.textpattern,
+                    sequence: attribute.sequence
+                });
+        }
+        this.backend.postRequest('module/ProductGroups/' + this.model.id + '/productattributes/longtextgenerator', {}, attributes).subscribe(response => {
+            this.hideDialog();
+            this.toast.sendToast('changes saved');
+            this.isLoading = false;
+        })
+    }
+
+    get addDisabled() {
+        // check that we have a value
+        if (!this.selectedAttribute) return true;
+
+        // check that the value is not assigned already
+        let attribfound = false;
+        this.assignedAttributes.some(attribute => {
+            if (attribute.id == this.selectedAttribute) {
+                attribfound = true;
+                return true;
+            }
+        })
+
+        return attribfound;
+    }
+
+    addAttribute() {
+        this.allAttributes.some(attribute => {
+            if (attribute.id == this.selectedAttribute) {
+                this.assignedAttributes.push({
+                    id: attribute.id,
+                    name: attribute.name,
+                    contentcode: '',
+                    contentcode2: '',
+                    textpattern: '',
+                    sequence: '',
+                    productgroup_id: this.model.id,
+                })
+                return true;
+            }
+        })
+    }
+
+    removeAttribute(attribute) {
+        let foundindex = 0;
+
+        this.assignedAttributes.some(thisAttribute => {
+            if (thisAttribute.id == attribute.id) {
+                this.assignedAttributes.splice(foundindex, 1);
+                return true;
+            }
+            foundindex++;
+        })
+
+    }
+
+}

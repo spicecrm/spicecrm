@@ -1,0 +1,25 @@
+<div class="slds-grid slds-m-horizontal--small  slds-p-around--xxx-small" [ngStyle]="containerStyle">
+    <div *ngIf="!isLoading && companyCodes.length > 0" class="slds-tabs--default">
+        <ul class="slds-tabs--default__nav" role="tablist">
+            <li *ngFor="let CCode of companyCodes; let tabindex = index"
+                class="slds-tabs--default__item slds-text-title--caps"
+                [ngClass]="{'slds-active': tabindex === activeTab}"
+                role="presentation" (click)="setActiveTab(tabindex)">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
+                    {{ CCode.companycode }}
+                </a>
+            </li>
+        </ul>
+        <ng-container *ngFor="let CCode of companyCodes let tabindex = index">
+            <div class="slds-tabs--default__content slds-show" role="tabpanel"
+                 [ngStyle]="getContentContainerStyle(tabindex)">
+                <account-cc-details-tab [ccid]="CCode.id" [ccname]="CCode.companycode" [contactid]="model.id" [data]="getCCDetailsData(CCode)">
+                </account-cc-details-tab>
+            </div>
+    </ng-container>
+    </div>
+    <system-spinner *ngIf="isLoading"></system-spinner>
+    <div *ngIf="!isLoading && companyCodes.length == 0" class="slds-align_absolute-center slds-p-vertical--medium">
+        <span> No Company Codes found </span>
+    </div>
+</div>

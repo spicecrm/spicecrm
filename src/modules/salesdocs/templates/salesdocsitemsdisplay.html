@@ -1,0 +1,111 @@
+<table class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <thead>
+    <tr>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_center">#</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_center">sub</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">{{language.getLabel('LBL_PRODUCT', 'SalesDocItems')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_QUANTITY', 'SalesDocItems')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_PRICEPERUNIT', 'SalesDocItems')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_AMOUNT_NET', 'SalesDocItems')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_AMOUNT_GROSS', 'SalesDocItems')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">tc</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of items">
+        <td>
+            <div class="slds-truncate slds-text-align_center">{{item.itemnr}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_center">{{getParentItemNr(item.parentitem_id)}}</div>
+        </td>
+        <td>
+            <div class="slds-grid">
+                <div class="slds-truncate" style="max-width: 300px;">{{item.productvariant_name}}</div>
+                <system-tooltip *ngIf="item.description" class="slds-col_bump-left" [tooltiptext]="item.description"></system-tooltip>
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{item.quantity}} {{item.uom}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(item.amount_net_per_uom)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(item.amount_net)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(item.amount_gross)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate">{{item.tax_category}}</div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <div class="slds-truncate slds-text-align_right"></div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(totalnet)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(totalgross)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate"></div>
+        </td>
+    </tr>
+    <tr *ngIf="voucher_sum !== ''">
+        <td colspan="3">
+            <div class="slds-truncate slds-text-align_right">{{language.getModuleName('SalesVouchers', true)}}</div>
+        </td>
+        <td colspan="2">
+            <div class="slds-truncate slds-text-align_right slds-form-element" *ngIf="voucher_sum !== ''">
+                <div class="slds-form-element__control">
+                    {{voucher.name}}
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">
+                {{voucher_value}}
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">
+                {{voucher_sum}}
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate"></div>
+        </td>
+    </tr>
+    <tr *ngIf="voucher_sum !== ''">
+        <td colspan="6">
+            <div class="slds-truncate slds-text-align_right"></div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(totalgross2)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate"></div>
+        </td>
+    </tr>
+    </tbody>
+</table>

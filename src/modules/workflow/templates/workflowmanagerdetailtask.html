@@ -1,0 +1,29 @@
+<div *ngIf="currenttask; else notaskselected" class="slds-tabs_scoped">
+    <ul class="slds-tabs_scoped__nav" role="tablist">
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='T'}" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="activeTab='T'">{{language.getLabel('LBL_DETAILS', 'WorkflowDefinitions')}}</a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='D'}" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="activeTab='D'">{{language.getLabel('LBL_DESCRIPTION', 'WorkflowDefinitions')}}</a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='A'}" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="activeTab='A'">{{language.getLabel('LBL_ASSIGNMENT', 'WorkflowDefinitions')}}</a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='E'}" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="activeTab='E'">{{language.getLabel('LBL_EMAILNOTIFICATIONS', 'WorkflowDefinitions')}}</a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='S'}" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="activeTab='S'">{{language.getLabel('LBL_SYSTEMACTIONS', 'WorkflowDefinitions')}}</a></li>
+    </ul>
+    <div class="slds-tabs_scoped__content slds-hide" [ngClass]="{'slds-show' : activeTab=='T'}" role="tabpanel">
+        <workflow-manager-detail-task-taskpanel [tasks]="tasks"></workflow-manager-detail-task-taskpanel>
+    </div>
+    <div class="slds-tabs_scoped__content slds-hide" [ngClass]="{'slds-show' : activeTab=='D'}" role="tabpanel">
+        <workflow-manager-detail-task-descriptionpanel></workflow-manager-detail-task-descriptionpanel>
+    </div>
+    <div class="slds-tabs_scoped__content slds-hide" [ngClass]="{'slds-show' : activeTab=='A'}" role="tabpanel">
+        <workflow-manager-detail-task-assignmentpanel></workflow-manager-detail-task-assignmentpanel>
+    </div>
+    <div class="slds-tabs_scoped__content slds-hide" [ngClass]="{'slds-show' : activeTab=='E'}" role="tabpanel">
+        <workflow-manager-detail-task-emailpanel></workflow-manager-detail-task-emailpanel>
+    </div>
+    <div class="slds-tabs_scoped__content slds-hide" [ngClass]="{'slds-show' : activeTab=='S'}" role="tabpanel">
+        <workflow-manager-detail-task-systemactionspanel [module]="module"></workflow-manager-detail-task-systemactionspanel>
+    </div>
+</div>
+<ng-template #notaskselected>
+    <div class="slds-p-around--medium slds-align--absolute-center">
+        no task selected - please select a task
+    </div>
+</ng-template>

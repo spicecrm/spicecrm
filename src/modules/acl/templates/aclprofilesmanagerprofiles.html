@@ -1,0 +1,38 @@
+<div style="height: 100%;">
+    <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+        <input class="slds-input" type="text" [(ngModel)]="searchterm" (keyup)="keyUp($event)"/>
+        <div class="slds-p-left--xx-small">
+            <button class="slds-button slds-button--icon-border" (click)="addProfile()"><system-button-icon icon="new"></system-button-icon></button>
+        </div>
+    </div>
+    <div class="slds-scrollable" [ngStyle]="contentStyle">
+        <div *ngIf="loading; else profilesdisplay" class="slds-p-around--medium slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-template #profilesdisplay>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                    </th>
+                    <th scope="col" style="width: 3rem;"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let aclprofile of aclprofiles" (click)="selectProfile(aclprofile)" [ngClass]="{'slds-theme--shade': aclprofile.id == activeProfileId}">
+                    <td>
+                        <div class="slds-truncate">{{aclprofile.name}}</div>
+                    </td>
+                    <td style="width: 3rem;">
+                        <div class="slds-grid">
+                            <system-custom-icon *ngIf="aclprofile.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deactivateProfile(aclprofile.id)"></system-custom-icon>
+                            <system-custom-icon *ngIf="aclprofile.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light" (click)="activateProfile(aclprofile.id)"></system-custom-icon>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </ng-template>
+    </div>
+</div>

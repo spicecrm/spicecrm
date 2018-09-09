@@ -1,0 +1,15 @@
+<th scope="row">
+    {{side === 'l' ? language.getLabel('LBL_LEFT'):language.getLabel('LBL_RIGHT')}}
+</th>
+<td>
+    <input type="text" class="slds-input" [(ngModel)]="option.name" (change)="change()">
+</td>
+<td width="4rem">
+    <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafile'}" [fielddisplayclass]="''" (change)="change()"></field-container>
+</td>
+<td>
+    <questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories>
+</td>
+<td>
+    <input type="text" class="slds-input slds-text-align_right" style="width:unset" size="4" [(ngModel)]="option.points" (change)="change()">
+</td>

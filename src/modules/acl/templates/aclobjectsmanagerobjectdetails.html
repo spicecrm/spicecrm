@@ -1,0 +1,35 @@
+<div class="slds-box--border">
+    <h2 class="slds-text-heading--small slds-p-around--x-small">{{language.getLabel('LBL_DETAILS')}}</h2>
+    <object-record-fieldset direction="vertical" [fieldset]="fieldset"></object-record-fieldset>
+</div>
+<div class="slds-box--border slds-m-vertical--x-small" *ngIf="showActions">
+    <h2 class="slds-text-heading--small slds-p-around--x-small">{{language.getLabel('LBL_OBJECT_ACTIONS')}}</h2>
+    <div class="slds-grid slds-p-horizontal--small slds-p-bottom--x-small">
+        <div class="slds-size--1-of-2">
+            <div *ngFor="let standardaction of standardactions" class="slds-form-element slds-p-horizontal--xxx-small">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox" (click)="setActionValue(standardaction.id, $event)">
+                      <input type="checkbox" [id]="'action_'+standardaction.id" [checked]="getActionValue(standardaction.id)"/>
+                      <label class="slds-checkbox__label" [attr.for]="'action_'+standardaction.id">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel(standardaction.action)}}</span>
+                      </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2">
+            <div *ngFor="let objectaction of objectactions" class="slds-form-element slds-p-horizontal--xxx-small">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox" (click)="setActionValue(objectaction.id, $event)">
+                        <input type="checkbox" [id]="'action_'+objectaction.id" [checked]="getActionValue(objectaction.id)"/>
+                        <label class="slds-checkbox__label" [attr.for]="'action_'+objectaction.id">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">{{objectaction.action}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

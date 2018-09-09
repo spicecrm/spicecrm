@@ -1,0 +1,53 @@
+<div class="slds-grid">
+    <div class="slds-size--1-of-6">
+        <field-label [fieldname]="'sendemail'"
+                     [fieldconfig]="{label: 'LBL_SENDEMAIL'}"></field-label>
+        <field-container [field]="'sendemail'"></field-container>
+    </div>
+    <div class="slds-size--5-of-6">
+        <field-label [fieldname]="'emailtype'"
+                     [fieldconfig]="{label: 'LBL_TYPE'}"></field-label>
+        <field-container [field]="'emailtype'"></field-container>
+    </div>
+</div>
+<div *ngIf="model.data.emailtype == '6'">
+    <field-label [fieldname]="'emailto'" [fieldconfig]="{label: 'LBL_TO'}"></field-label>
+    <field-container [field]="'emailto'"></field-container>
+</div>
+<div>
+    <field-label [fieldname]="'emailtemplate_name'"
+                 [fieldconfig]="{label: 'LBL_EMAILTEMPLATE'}"></field-label>
+    <field-container [field]="'emailtemplate_name'"></field-container>
+</div>
+<div class="slds-section slds-is-open slds-p-vertical--x-small" *ngIf="model.data.emailtype == '7'">
+    <h3 class="slds-section__title slds-m-bottom--small">
+        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
+            <span class="slds-truncate" title="Section Title">System Action</span>
+        </button>
+    </h3>
+    <div>
+        <field-label [fieldname]="'emailfile'"
+                     [fieldconfig]="{label: 'LBL__FILE'}"></field-label>
+        <field-container [field]="'emailfile'"></field-container>
+    </div>
+    <div>
+        <field-label [fieldname]="'emailclass'"
+                     [fieldconfig]="{label: 'LBL_CLASS'}"></field-label>
+        <field-container [field]="'emailclass'"></field-container>
+    </div>
+    <div>
+        <field-label [fieldname]="'emailmethod'"
+                     [fieldconfig]="{label: 'LBL_METHOD'}"></field-label>
+        <field-container [field]="'emailmethod'"></field-container>
+    </div>
+    <div>
+        <field-label [fieldname]="'emailcontmethod'"
+                     [fieldconfig]="{label: 'LBL_METHOD_CONTENT'}"></field-label>
+        <field-container [field]="'emailcontmethod'"></field-container>
+    </div>
+    <div>
+        <field-label [fieldname]="'emailparams'"
+                     [fieldconfig]="{label: 'LBL_PARAMS'}"></field-label>
+        <field-container [field]="'emailparams'"></field-container>
+    </div>
+</div>

@@ -1,9 +1,8 @@
 # Dependency directories
 node_modules
 .idea
-app/**/*.js.map
-app/**/*.js
+src/**/*.js.map
+src/**/*.js
 config.json
 /config/sites
 dist
-pkg

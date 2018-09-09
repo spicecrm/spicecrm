@@ -1,0 +1,68 @@
+import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {language} from '../../../services/language.service';
+import {toast} from '../../../services/toast.service';
+import {backend} from '../../../services/backend.service';
+
+declare var moment: any;
+
+@Component({
+    selector: 'account-cc-details-tab',
+    templateUrl: './app/modules/accounts/templates/accountccdetailstab.html',
+    providers: [model]
+})
+
+export class AccountCCDetailsTab {
+    @ViewChild('ccdetailscontainer', {read: ViewContainerRef}) ccdetailscontainer: ViewContainerRef;
+
+    @Input() data: any = undefined;
+    @Input('contactid') contactId: string = undefined;
+    @Input('ccid') ccId: string = undefined;
+    @Input('ccname') ccName: string = undefined;
+
+    constructor(private language: language,
+                private metadata: metadata,
+                private view: view,
+                private toast: toast,
+                private backend: backend,
+                private model: model) {
+    }
+
+    ngOnInit() {
+        this.model.module = 'AccountCCDetails';
+
+        if (this.data) {
+            this.model.id = this.data.id;
+            this.model.data = this.data;
+        } else {
+            this.model.id = this.model.generateGuid();
+            this.model.data = {
+                id: this.model.id,
+                name: this.ccName,
+                contact_id: this.contactId,
+                companycode_id: this.ccId,
+                date_entered: new moment(),
+                date_modified: new moment(),
+            }
+        }
+    }
+
+    ngAfterViewInit() {
+        this.buildContainer();
+    }
+
+    buildContainer() {
+        let componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
+        let componentSet = componentconfig.componentset;
+        if (componentSet) {
+            let components = this.metadata.getComponentSetObjects(componentSet);
+            for (let component of components) {
+                this.metadata.addComponent(component.component, this.ccdetailscontainer).subscribe(componentref => {
+                    componentref.instance.componentconfig = component.componentconfig;
+                });
+            }
+        }
+    }
+}

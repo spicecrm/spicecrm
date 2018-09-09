@@ -1,0 +1,33 @@
+import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Output, EventEmitter} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {model} from '../../../services/model.service';
+import {modellist} from '../../../services/modellist.service';
+import {backend} from '../../../services/backend.service';
+import {navigation} from '../../../services/navigation.service';
+import {broadcast} from "../../../services/broadcast.service";
+import {language} from "../../../services/language.service";
+
+
+@Component({
+    templateUrl: './app/modules/aclterritories/templates/aclterritorrieselementmanagerelementsaddmodal.html',
+})
+export class ACLTerritorriesElementmanagerElementsAddModal {
+
+    self: any = {};
+
+    elementname: string = '';
+    @Output() newelementname: EventEmitter<any> = new EventEmitter<any>();
+
+    constructor(private backend: backend, private language: language, private elementRef: ElementRef) {
+    }
+
+    close(){
+        this.self.destroy();
+    }
+
+    save(){
+        this.newelementname.emit(this.elementname);
+        this.close();
+    }
+
+}

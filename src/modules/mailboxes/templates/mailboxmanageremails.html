@@ -1,0 +1,6 @@
+<div class="slds-scrollable--y slds-border--right" [ngStyle]="containerStyle" (scroll)="onScroll($event)">
+    <mailbox-manager-email *ngFor="let email of mailboxesEmails.emails" [email]="email"></mailbox-manager-email>
+    <div *ngIf="mailboxesEmails.isLoading" class="slds-p-around--medium">
+        <system-spinner></system-spinner>
+    </div>
+</div>

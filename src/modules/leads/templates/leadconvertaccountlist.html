@@ -1,0 +1,15 @@
+<div>
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let item of listfields" scope="col">
+                <div class="slds-truncate">{{language.getFieldDisplayName(model.module, item.field)}}</div>
+            </th>
+            <th class="slds-cell-shrink" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr lead-convert-account-list-item *ngFor="let matchedaccount of matchedaccounts" [listfields]="listfields" [matchedaccount]="matchedaccount" (selectitem)="selectitem($event)"></tr>
+        </tbody>
+    </table>
+</div>

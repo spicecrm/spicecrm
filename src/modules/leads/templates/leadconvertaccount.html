@@ -1,0 +1,32 @@
+<div>
+    <div class="slds-theme--shade slds-p-around--small slds-border--bottom slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-form--inline">
+            <div class="slds-form-element__control">
+                <span class="slds-checkbox">
+                  <input type="checkbox" name="options" id="createaccount" [(ngModel)]="create"/>
+                  <label class="slds-checkbox__label" for="createaccount">
+                    <span class="slds-checkbox--faux"></span>
+                    <span class="slds-form-element__label">Create Account</span>
+                  </label>
+                </span>
+            </div>
+        </div>
+        <div *ngIf="selectedAccount && !createAccount" class="slds-grid slds-grid--vertical-align-center">
+            <div class="slds-m-right--x-small">Selected Account:</div>
+            <div class="slds-pill">
+              <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                <object-icon [module]="model.module"></object-icon>
+              </span><a href="javascript:void(0);" class="slds-pill__label">{{selectedAccount.name}}, {{selectedAccount.billing_address_city}}</a>
+              <button class="slds-button slds-button--icon slds-pill__remove" title="Remove">
+                  <system-button-icon [icon]="'clear'" (click)="unlinkAccount()"></system-button-icon>
+              </button>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="createAccount">
+        <lead-convert-account-list [matchedaccounts]="matchedAccounts" (selectaccount)="selectAccount($event)"></lead-convert-account-list>
+    </div>
+    <div [hidden]="!createAccount">
+        <div #detailcontainer></div>
+    </div>
+</div>

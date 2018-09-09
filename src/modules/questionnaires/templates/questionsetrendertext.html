@@ -1,0 +1,41 @@
+<ng-container *ngIf="!sequenced">
+    <ng-container *ngFor="let question of questions;let i = index">
+        <div *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" class="slds-box slds-m-bottom--medium questionset-render-question">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div>
+                    <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_small" [class.slds-m-bottom_xx-small]="question.image_id">{{question.name}}</h3>
+                    <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
+                </div>
+                <div class="slds-col slds-p-left--large">
+                    <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;" *ngIf="previewMode">
+                    <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;"
+                           *ngIf="!previewMode" [(ngModel)]="answers[question.id].text_input"
+                           (focus)="onTextFocus(question.id)"
+                           (change)="onTextChange(question.id,$event)"
+                           [disabled]="questionsMeta[question.id].readonly || no_edit">
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>
+
+<ng-container *ngIf="!hideFinishedQuestions || numOfFinishedQuestions !== questions.length">
+    <table *ngIf="sequenced" class="sequenced slds-text-align--right slds-table--bordered" style="border-top:none">
+        <ng-container *ngFor="let question of questions;let i = index">
+            <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
+                <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right--large slds-p-vertical--small slds-text-align--right slds-text-heading--small">
+                    {{questionNamesSplitted[i][j]}}
+                </td>
+                <td width="100%"></td>
+                <td class="slds-text-align--right slds-p-vertical--small">
+                    <input type="text" *ngIf="previewMode" size="5">
+                    <input type="text" *ngIf="!previewMode"
+                           [(ngModel)]="answers[question.id].text_input"
+                           (focus)="onTextFocus(question.id)"
+                           (change)="onTextChange(question.id,$event)"
+                           [disabled]="questionsMeta[question.id].readonly || no_edit" size="5">
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+</ng-container>

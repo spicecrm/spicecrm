@@ -1,0 +1,45 @@
+<div class="slds-modal slds-fade-in-open slds-modal_large">
+    <div class="slds-modal__container">
+        <div *ngIf="!isLoading" class="slds-modal__header slds-theme_shade">
+            <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_MEDIAFILE_PICKER')}}</h2>
+        </div>
+
+        <div class="slds-modal__content slds-p-around--medium" style="height:100%">
+
+            <system-spinner *ngIf="pickerIsLoading"></system-spinner>
+
+            <ng-container *ngIf="!pickerIsLoading">
+
+                <div class="slds-form-element slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-mediacategory">{{language.getLabel('LBL_FILTER')}}: {{language.getLabel('LBL_CATEGORY')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" id="select-mediacategory" (change)="onChangeCategory($event)">
+                                <option *ngIf="dropdownUnused" value="" style="font-style: italic" selected>{{language.getLabel('LBL_MAKE_SELECTION')}} …</option>
+                                <option value="*" style="font-style: italic">{{language.getLabel('LBL_ALL_FILES')}}</option>
+                                <option value="-" style="font-style: italic">{{language.getLabel('LBL_FILES_WITHOUT_CATEGORIES')}}</option>
+                                <option *ngFor="let category of mediafiles.categoriesSorted" value="{{category.id}}">{{category.fullName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="media-file-picker">
+                    <ng-container *ngFor="let file of files; let i=index">
+                        <li *ngIf="( file.category == '' && selectedCategoryID === '-' ) || selectedCategoryID === '*' || ( file.category && selectedCategory && mediafiles.fileIsInCategory( file.category, selectedCategory ))" class="slds-m-right--small slds-m-bottom--small">
+                            <a class="slds-theme_shade" href="javascript:void(0);" (click)="pick(i)"><media-file-image [media_id]="file.id" [variant]="'mwh'" [title]="file.name"></media-file-image></a>
+                        </li>
+                    </ng-container>
+                </ul>
+
+            </ng-container>
+
+        </div>
+
+        <div class="slds-modal__footer slds-modal__footer_directional">
+            <button class="slds-button slds-button--brand" (click)="changeToUploadDialog()">{{language.getLabel('LBL_UPLOAD_NEW_FILE')}} …</button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CLOSE')}}</button>
+        </div>
+
+    </div>
+</div>
