@@ -1,5 +1,5 @@
 
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, of} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
@@ -57,7 +57,7 @@ export class calendar {
                 if(event.start >= start && event.end <= end)
                     filteredEntries.push(event);
             };
-            return Observable.of(filteredEntries);
+            return of(filteredEntries);
         }
     }
 
