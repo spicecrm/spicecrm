@@ -6,7 +6,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'serviceorder-summary',
-    templateUrl: 'app/modules/servicecomponents/templates/serviceordersummary.html',
+    templateUrl: './src/modules/servicecomponents/templates/serviceordersummary.html',
     providers: [view]
 })
 export class ServiceOrderSummaryComponent

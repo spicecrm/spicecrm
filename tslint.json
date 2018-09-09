@@ -9,6 +9,7 @@
     "no-unused-variable": false,
     "variable-name": false,
     "whitespace" : false,
+    "class-name": false,
     "object-literal-sort-keys": false,
     "no-arg": true,
     "no-bitwise": true,

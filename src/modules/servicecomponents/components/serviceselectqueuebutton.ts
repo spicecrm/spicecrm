@@ -9,7 +9,7 @@ import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
 
 @Component({
     selector: 'service-select-queue-button',
-    templateUrl: 'app/modules/servicecomponents/templates/serviceselectqueuebutton.html',
+    templateUrl: './src/modules/servicecomponents/templates/serviceselectqueuebutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': 'getDisplay()'

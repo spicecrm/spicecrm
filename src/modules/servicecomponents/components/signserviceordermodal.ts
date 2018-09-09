@@ -5,7 +5,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'sign-serviceorder-modal',
-    templateUrl: 'app/modules/servicecomponents/templates/signserviceordermodal.html',
+    templateUrl: './src/modules/servicecomponents/templates/signserviceordermodal.html',
     providers: [model,view],
 })
 export class SignServiceOrderModalComponent

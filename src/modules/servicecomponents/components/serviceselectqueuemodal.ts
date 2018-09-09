@@ -6,7 +6,7 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'service-select-queue-modal',
-    templateUrl: 'app/modules/servicecomponents/templates/serviceselectqueuemodal.html',
+    templateUrl: './src/modules/servicecomponents/templates/serviceselectqueuemodal.html',
     providers: [model]
 })
 export class ServiceSelectQueueModal
