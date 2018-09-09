@@ -21,7 +21,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-container',
-    templateUrl: './app/modules/dashboard/templates/dashboardcontainer.html',
+    templateUrl: './src/modules/dashboard/templates/dashboardcontainer.html',
     providers: [model, dashboardlayout]
 })
 export class DashboardContainer {

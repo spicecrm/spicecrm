@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-gdpr',
-    templateUrl: './app/objectfields/templates/fieldgdpr.html'
+    templateUrl: './src/objectfields/templates/fieldgdpr.html'
 })
 export class fieldGDPR extends fieldGeneric implements OnInit {
 

@@ -7,7 +7,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'media-file-uploader',
-    templateUrl: './app/modules/mediafiles/templates/mediafileuploader.html',
+    templateUrl: './src/modules/mediafiles/templates/mediafileuploader.html',
     providers: [ mediafiles ],
     styles: [
         ':host {height: 100%;}',

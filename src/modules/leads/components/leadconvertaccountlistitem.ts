@@ -12,7 +12,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: '[lead-convert-account-list-item]',
-    templateUrl: './app/modules/leads/templates/leadconvertaccountlistitem.html',
+    templateUrl: './src/modules/leads/templates/leadconvertaccountlistitem.html',
     providers: [model, view]
 })
 export class LeadConvertAccountListItem implements OnInit{

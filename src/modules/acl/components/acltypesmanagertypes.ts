@@ -18,7 +18,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types',
-    templateUrl: './app/modules/acl/templates/acltypesmanagertypes.html',
+    templateUrl: './src/modules/acl/templates/acltypesmanagertypes.html',
 })
 export class ACLTypesManagerTypes {
 

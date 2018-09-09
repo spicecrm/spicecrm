@@ -12,7 +12,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'reporter-field-enum',
-    templateUrl: './app/modules/reports/templates/reporterfieldenum.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldenum.html'
 })
 export class ReporterFieldEnum {
 

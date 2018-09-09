@@ -11,7 +11,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-panel-header',
-    templateUrl: './app/modules/workflow/templates/workflowpanelheader.html'
+    templateUrl: './src/modules/workflow/templates/workflowpanelheader.html'
 
 })
 export class WorkflowPanelHeader implements OnDestroy{

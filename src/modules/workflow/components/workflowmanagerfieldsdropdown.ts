@@ -18,7 +18,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-fieldsdropdown',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerfieldsdropdown.html'
+    templateUrl: './src/modules/workflow/templates/workflowmanagerfieldsdropdown.html'
 })
 export class WorkflowManagerFieldsdropdown implements OnChanges {
 

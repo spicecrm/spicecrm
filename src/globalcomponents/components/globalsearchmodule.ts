@@ -12,7 +12,7 @@ declare var _;
 
 @Component({
     selector: '[global-search-module]',
-    templateUrl: './app/globalcomponents/templates/globalsearchmodule.html',
+    templateUrl: './src/globalcomponents/templates/globalsearchmodule.html',
     host: {
         '[style.display]': 'getDisplay()'
     }

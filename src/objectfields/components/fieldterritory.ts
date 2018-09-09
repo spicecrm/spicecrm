@@ -12,7 +12,7 @@ import {territories} from "../../services/territories.service";
 
 @Component({
     selector: 'field-territory',
-    templateUrl: './app/objectfields/templates/fieldterritory.html'
+    templateUrl: './src/objectfields/templates/fieldterritory.html'
 })
 export class fieldTerritory extends fieldGeneric implements OnInit {
 

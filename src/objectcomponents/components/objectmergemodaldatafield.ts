@@ -8,7 +8,7 @@ import { popup } from '../../services/popup.service';
 
 @Component({
     selector: 'object-merge-modal-data-field',
-    templateUrl: './app/objectcomponents/templates/objectmergemodaldatafield.html',
+    templateUrl: './src/objectcomponents/templates/objectmergemodaldatafield.html',
     providers: [model]
 })
 export class ObjectMergeModalDataField implements OnInit{

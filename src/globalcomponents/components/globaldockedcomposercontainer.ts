@@ -17,7 +17,7 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 
 @Component({
     selector: 'global-docked-composer-container',
-    templateUrl: './app/globalcomponents/templates/globaldockedcomposercontainer.html',
+    templateUrl: './src/globalcomponents/templates/globaldockedcomposercontainer.html',
 })
 export class GlobalDockedComposerContainer {
 

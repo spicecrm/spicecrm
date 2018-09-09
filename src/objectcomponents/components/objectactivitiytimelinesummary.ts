@@ -13,7 +13,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-activitiytimeline-summary',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelinesummary.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinesummary.html',
     providers: [model]
 })
 export class ObjectActivitiyTimelineSummary{

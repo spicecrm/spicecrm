@@ -18,7 +18,7 @@ import {ACLProfilesManagerAddObjectModal} from "./aclprofilesmanageraddobjectmod
 
 @Component({
     selector: 'aclprofiles-manager-profile',
-    templateUrl: './app/modules/acl/templates/aclprofilesmanagerprofile.html',
+    templateUrl: './src/modules/acl/templates/aclprofilesmanagerprofile.html',
 })
 export class ACLProfilesManagerProfile implements OnChanges {
 

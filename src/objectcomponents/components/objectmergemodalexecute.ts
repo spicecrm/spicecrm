@@ -7,7 +7,7 @@ import { popup } from '../../services/popup.service';
 
 @Component({
     selector: 'object-merge-modal-execute',
-    templateUrl: './app/objectcomponents/templates/objectmergemodalexecute.html'
+    templateUrl: './src/objectcomponents/templates/objectmergemodalexecute.html'
 })
 export class ObjectMergeModalExecute {
 

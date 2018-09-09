@@ -9,7 +9,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser',
-    templateUrl: './app/modules/products/templates/productbrowser.html',
+    templateUrl: './src/modules/products/templates/productbrowser.html',
     providers:[productfinder, model]
 })
 export class ProductBrowser {

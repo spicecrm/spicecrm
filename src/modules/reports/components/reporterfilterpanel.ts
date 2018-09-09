@@ -21,7 +21,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-panel',
-    templateUrl: './app/modules/reports/templates/reporterfilterpanel.html'
+    templateUrl: './src/modules/reports/templates/reporterfilterpanel.html'
 })
 export class ReporterFilterPanel {
 

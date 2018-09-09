@@ -6,7 +6,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'questionnaire-interpretation-categories',
-    templateUrl: './app/modules/questionnaires/templates/questionnaireinterpretationcategories.html',
+    templateUrl: './src/modules/questionnaires/templates/questionnaireinterpretationcategories.html',
     styles:['.slds-pill { padding: 0.25rem 0.5rem }','.slds-pill:hover { background-color: inherit; }']
 })
 export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy {

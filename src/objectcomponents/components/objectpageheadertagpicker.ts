@@ -5,7 +5,7 @@ import { toast } from '../../services/toast.service';
 
 @Component({
     selector: 'object-page-header-tag-picker',
-    templateUrl: './app/objectcomponents/templates/objectpageheadertagpicker.html',
+    templateUrl: './src/objectcomponents/templates/objectpageheadertagpicker.html',
     styles: [
         '.offeredTags span { cursor: pointer; }',
         '.selectedTags li { margin-bottom: 0.125rem; }',

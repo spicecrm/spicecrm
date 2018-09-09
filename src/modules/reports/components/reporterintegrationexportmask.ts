@@ -18,7 +18,7 @@ import {language} from '../../../services/language.service';
 import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
-    templateUrl: './app/modules/reports/templates/reporterintegrationexportmask.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationexportmask.html'
 })
 export class ReporterIntegrationExportMask {
 

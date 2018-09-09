@@ -14,7 +14,7 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-field-date',
-    templateUrl: './app/modules/reports/templates/reporterfielddate.html'
+    templateUrl: './src/modules/reports/templates/reporterfielddate.html'
 })
 export class ReporterFieldDate {
 

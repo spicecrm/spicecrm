@@ -11,7 +11,7 @@ import {navigation} from '../../../services/navigation.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/modules/products/templates/productgroupslongtextcodeassignments.html',
+    templateUrl: './src/modules/products/templates/productgroupslongtextcodeassignments.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': 'getDisplay()'

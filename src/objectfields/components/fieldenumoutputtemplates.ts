@@ -11,7 +11,7 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'field-output-templates',
-    templateUrl: './app/objectfields/templates/fieldoutputtemplates.html'
+    templateUrl: './src/objectfields/templates/fieldoutputtemplates.html'
 })
 export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit{
 

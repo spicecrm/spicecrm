@@ -14,7 +14,7 @@ import { ActivationStart, Router } from '@angular/router';
 
 @Component({
     selector: 'global-header',
-    templateUrl: './app/globalcomponents/templates/globalheader.html',
+    templateUrl: './src/globalcomponents/templates/globalheader.html',
     providers: []
 })
 export class GlobalHeader {

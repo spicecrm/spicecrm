@@ -5,7 +5,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-action-edit-button',
-    templateUrl: './app/objectcomponents/templates/objectactioneditbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactioneditbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)' : 'this.editModel()',

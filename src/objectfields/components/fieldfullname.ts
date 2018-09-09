@@ -9,7 +9,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-full-name',
-    templateUrl: './app/objectfields/templates/fieldfullname.html'
+    templateUrl: './src/objectfields/templates/fieldfullname.html'
 })
 export class fieldFullName extends fieldGeneric {
     private isValid: boolean = true;

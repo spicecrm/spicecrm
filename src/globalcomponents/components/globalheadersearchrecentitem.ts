@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: '[global-header-search-recent-item]',
-    templateUrl: './app/globalcomponents/templates/globalheadersearchresultsitem.html',
+    templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitem.html',
     providers: [model],
     host: {
         "(click)": "navigateTo()"

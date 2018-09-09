@@ -28,7 +28,7 @@ export class filteractualpipe {
 
 @Component({
     selector: 'workflow-manager-taskdropdown',
-    templateUrl: './app/modules/workflow/templates/workflowmanagertaskdropdown.html'
+    templateUrl: './src/modules/workflow/templates/workflowmanagertaskdropdown.html'
 })
 export class WorkflowManagerTaskdropdown{
 

@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-enum',
-    templateUrl: './app/objectfields/templates/fieldlanguage.html'
+    templateUrl: './src/objectfields/templates/fieldlanguage.html'
 })
 export class fieldLanguage extends fieldGeneric implements OnInit
 {

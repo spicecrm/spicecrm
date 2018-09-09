@@ -10,7 +10,7 @@ import {Subject, Observable} from 'rxjs';
 
 @Component({
     selector: 'lead-convert',
-    templateUrl: './app/modules/leads/templates/leadconvert.html',
+    templateUrl: './src/modules/leads/templates/leadconvert.html',
     providers: [model, view],
     styles: [
         ':host >>> global-button-icon svg {fill:#CA1B1F}',

@@ -20,7 +20,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-n',
-    templateUrl: './app/modules/products/templates/productvariantsattributen.html'
+    templateUrl: './src/modules/products/templates/productvariantsattributen.html'
 })
 export class ProductVariantsAttributeN extends ProductVariantsAttributeVC {
 

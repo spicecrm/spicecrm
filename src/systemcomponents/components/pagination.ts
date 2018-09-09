@@ -3,7 +3,7 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: 'pagination-controls',
-    templateUrl: './app/systemcomponents/templates/pagination.html'
+    templateUrl: './src/systemcomponents/templates/pagination.html'
 })
 export class PaginationControlsComponent implements OnInit
 {

@@ -6,7 +6,7 @@ import {backend} from "../../services/backend.service";
 import {view} from '../../services/view.service';
 
 @Component({
-    templateUrl: './app/workbench/templates/workbenchconfig.html',
+    templateUrl: './src/workbench/templates/workbenchconfig.html',
     selector: 'workbench-config'
 })
 

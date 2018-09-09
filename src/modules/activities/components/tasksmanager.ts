@@ -8,7 +8,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     // selector: 'object-home',
-    templateUrl: './app/modules/activities/templates/tasksmanager.html',
+    templateUrl: './src/modules/activities/templates/tasksmanager.html',
 })
 export class TasksManager {
 

@@ -6,7 +6,7 @@ import {navigation} from '../../../services/navigation.service';
 import {metadata} from '../../../services/metadata.service';
 @Component({
     // selector: 'object-home',
-    templateUrl: './app/modules/home/templates/home.html',
+    templateUrl: './src/modules/home/templates/home.html',
 })
 export class Home {
     componentconfig: any = {};

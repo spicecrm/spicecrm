@@ -3,7 +3,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'questions-manager-edit-categories',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanagereditcategories.html'
+    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditcategories.html'
 })
 export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
 

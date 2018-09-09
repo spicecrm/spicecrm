@@ -13,7 +13,7 @@ import {activitiyTimeLineService} from '../../services/activitiytimeline.service
 
 @Component({
     selector: 'object-activitiytimeline-summary-button',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelinesummarybutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinesummarybutton.html',
 })
 export class ObjectActivitiyTimelineSummaryButton{
 

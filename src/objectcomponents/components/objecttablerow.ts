@@ -10,7 +10,7 @@ declare var _;
 
 @Component({
     selector: '[object-table-row]',
-    templateUrl: './app/objectcomponents/templates/objecttablerow.html',
+    templateUrl: './src/objectcomponents/templates/objecttablerow.html',
     providers: [view],
     host: {
         'class': 'slds-hint-parent',

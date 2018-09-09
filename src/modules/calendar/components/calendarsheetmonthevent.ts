@@ -14,7 +14,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-month-event',
-    templateUrl: './app/modules/calendar/templates/calendarsheetmonthevent.html',
+    templateUrl: './src/modules/calendar/templates/calendarsheetmonthevent.html',
     providers: [model, view]
 })
 export class CalendarSheetMonthEvent implements OnInit {

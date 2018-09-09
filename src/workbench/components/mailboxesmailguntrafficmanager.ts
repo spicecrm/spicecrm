@@ -12,7 +12,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-mailgun-traffic-manager",
-    templateUrl: "./app/workbench/templates/mailboxesmailguntrafficmanager.html",
+    templateUrl: "./src/workbench/templates/mailboxesmailguntrafficmanager.html",
 })
 export class MailboxesMailgunTrafficManager implements OnInit {
 

@@ -10,7 +10,7 @@ import {toast} from '../../services/toast.service';
 
 @Component({
     selector: 'global-login-reset-password',
-    templateUrl: './app/globalcomponents/templates/globalloginresetpassword.html',
+    templateUrl: './src/globalcomponents/templates/globalloginresetpassword.html',
     host: {
         '(window:keypress)': 'this.keypressed($event)'
     }

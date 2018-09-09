@@ -14,7 +14,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-presentation-dashlet',
-    templateUrl: './app/modules/reports/templates/reporterpresentationdashlet.html',
+    templateUrl: './src/modules/reports/templates/reporterpresentationdashlet.html',
     providers: [model, reporterconfig],
     styles:[
         ':host {width:100%; height: 100%;}'

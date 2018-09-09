@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-modal-content',
-    templateUrl: './app/systemcomponents/templates/systemmodalcontent.html',
+    templateUrl: './src/systemcomponents/templates/systemmodalcontent.html',
     host: {
         '[class]' : 'this.marginclass'
     }

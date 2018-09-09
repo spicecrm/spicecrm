@@ -9,7 +9,7 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'global-navigation',
-    templateUrl: './app/globalcomponents/templates/globalnavigation.html',
+    templateUrl: './src/globalcomponents/templates/globalnavigation.html',
     providers: [MenuService]
 })
 export class GlobalNavigation{

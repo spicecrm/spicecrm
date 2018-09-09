@@ -7,7 +7,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'language-label-modal',
-    templateUrl: './app/workbench/templates/languagelabelmodal.html',
+    templateUrl: './src/workbench/templates/languagelabelmodal.html',
 })
 export class LanguageLabelModal
 {

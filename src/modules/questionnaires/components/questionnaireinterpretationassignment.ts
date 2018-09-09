@@ -8,7 +8,7 @@ import { configurationService } from '../../../services/configuration.service';
 
 @Component({
     selector: 'questionnaire-interpretation-assignment',
-    templateUrl: './app/modules/questionnaires/templates/questionnaireinterpretationassignment.html',
+    templateUrl: './src/modules/questionnaires/templates/questionnaireinterpretationassignment.html',
     styles: [
         "ul.interpretations { margin-right: -1rem; }",
         "ul.interpretations > li { float: left; width: 50%; }",

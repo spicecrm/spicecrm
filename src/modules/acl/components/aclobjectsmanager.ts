@@ -3,7 +3,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 import {modellist} from "../../../services/modellist.service";
 
 @Component({
-    templateUrl: "./app/modules/acl/templates/aclobjectsmanager.html",
+    templateUrl: "./src/modules/acl/templates/aclobjectsmanager.html",
 })
 export class ACLObjectsManager {
 

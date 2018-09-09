@@ -6,7 +6,7 @@ import { toast } from '../../services/toast.service';
 declare var window: any;
 
 @Component({
-    templateUrl: './app/systemcomponents/templates/speechrecognition.html'
+    templateUrl: './src/systemcomponents/templates/speechrecognition.html'
 })
 export class SpeechRecognition implements OnInit {
 

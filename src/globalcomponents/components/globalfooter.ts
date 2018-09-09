@@ -7,7 +7,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'global-footer',
-    templateUrl: './app/globalcomponents/templates/globalfooter.html'
+    templateUrl: './src/globalcomponents/templates/globalfooter.html'
 })
 export class GlobalFooter implements AfterViewInit {
 

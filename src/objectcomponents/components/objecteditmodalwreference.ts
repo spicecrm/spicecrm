@@ -16,7 +16,7 @@ import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
 @Component({
-    templateUrl: './app/objectcomponents/templates/objecteditmodalwreference.html',
+    templateUrl: './src/objectcomponents/templates/objecteditmodalwreference.html',
     providers: [model, view]
 })
 export class ObjectEditModalWReference {

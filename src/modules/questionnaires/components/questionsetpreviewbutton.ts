@@ -8,7 +8,7 @@ import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: 'questionset-preview-button',
-    templateUrl: './app/modules/questionnaires/templates/questionsetpreviewbutton.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetpreviewbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
     },

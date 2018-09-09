@@ -11,7 +11,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-activitiytimeline-add-meeting',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelineaddmeeting.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddmeeting.html',
     providers: [model, view]
 })
 export class ObjectActivitiyTimelineAddMeeting implements OnInit {

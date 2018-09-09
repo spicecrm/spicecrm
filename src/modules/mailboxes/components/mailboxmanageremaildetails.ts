@@ -19,7 +19,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-email-details",
-    templateUrl: "./app/modules/mailboxes/templates/mailboxmanageremaildetails.html",
+    templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremaildetails.html",
 })
 export class MailboxmanagerEmailDetails implements AfterViewInit {
 

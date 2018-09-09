@@ -11,7 +11,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'reporter-detail-visualization',
-    templateUrl: './app/modules/reports/templates/reporterdetailvisualization.html'
+    templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html'
 })
 export class ReporterDetailVisualization implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('vizcontainer', {read: ViewContainerRef}) vizcontainer: ViewContainerRef;

@@ -13,7 +13,7 @@ declare var google: any;
 
 @Component({
     selector: 'reporter-detail-visualization-googlecharts',
-    templateUrl: './app/modules/reports/templates/reporterdetailvisualizationgooglecharts.html',
+    templateUrl: './src/modules/reports/templates/reporterdetailvisualizationgooglecharts.html',
     providers: [model]
 })
 export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, OnInit, OnDestroy {

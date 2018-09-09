@@ -18,7 +18,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-emailpanel',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerdetailtaskemailpanel.html'
+    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtaskemailpanel.html'
 })
 export class WorkflowManagerDetailTaskEmailpanel {
 

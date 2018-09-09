@@ -7,7 +7,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclterritorries-elementmanager-element-values',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorrieselementmanagerelementvalues.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanagerelementvalues.html',
 })
 export class ACLTerritorriesElementmanagerElementValues implements OnChanges{
 

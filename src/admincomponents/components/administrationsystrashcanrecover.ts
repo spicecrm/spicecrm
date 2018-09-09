@@ -19,7 +19,7 @@ import {toast} from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/admincomponents/templates/administrationsystrashcanrecover.html'
+    templateUrl: './src/admincomponents/templates/administrationsystrashcanrecover.html'
 })
 export class AdministrationSysTrashcanRecover implements OnInit {
 

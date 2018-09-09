@@ -6,7 +6,7 @@ import { toast } from '../../services/toast.service';
 declare var window: any;
 
 @Component({
-    templateUrl: './app/systemcomponents/templates/systemtinymcemodal.html'
+    templateUrl: './src/systemcomponents/templates/systemtinymcemodal.html'
 })
 export class SystemTinyMCEModal implements OnInit {
 

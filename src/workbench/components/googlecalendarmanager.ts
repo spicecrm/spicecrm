@@ -9,7 +9,7 @@ import {view} from "../../services/view.service";
 @Component({
     providers: [model, view],
     selector: "google-calendar-manager",
-    templateUrl: "./app/workbench/templates/googlecalendarmanager.html",
+    templateUrl: "./src/workbench/templates/googlecalendarmanager.html",
 })
 export class GoogleCalendarManager {
     public beans: any[];

@@ -7,7 +7,7 @@ import {language} from '../../../services/language.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/modules/accounts/templates/accountskpisoverview.html'
+    templateUrl: './src/modules/accounts/templates/accountskpisoverview.html'
 })
 export class AccountsKPIsOverview {
 

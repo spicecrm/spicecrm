@@ -10,7 +10,7 @@ import {fieldGeneric} from './fieldgeneric';
 
 @Component({
     selector: 'field-relate',
-    templateUrl: './app/objectfields/templates/fieldrelate.html',
+    templateUrl: './src/objectfields/templates/fieldrelate.html',
     providers: [popup],
     host: {
         // '(document:click)' : 'this.onClick($event)'

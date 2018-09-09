@@ -20,7 +20,7 @@ import {GlobalAppLauncherDialog} from "./globalapplauncherdialog";
 
 @Component({
     selector: 'global-app-launcher',
-    templateUrl: './app/globalcomponents/templates/globalapplauncher.html',
+    templateUrl: './src/globalcomponents/templates/globalapplauncher.html',
     host: {
         'class': 'slds-context-bar__primary slds-context-bar__item--divider-right'
     }

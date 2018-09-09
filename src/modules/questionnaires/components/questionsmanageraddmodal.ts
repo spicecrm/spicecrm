@@ -9,7 +9,7 @@ import { QuestionsManagerEditMulti } from './questionsmanagereditmulti';
 
 @Component({
     selector: 'questions-manager-addmodal',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanageraddmodal.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsmanageraddmodal.html',
     providers: [model,view]
 })
 export class QuestionsManagerAddModal implements OnInit {

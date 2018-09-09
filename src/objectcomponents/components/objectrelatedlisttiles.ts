@@ -7,7 +7,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'object-relatedlist-tiles',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlisttiles.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlisttiles.html',
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistTiles implements OnInit, AfterViewInit {

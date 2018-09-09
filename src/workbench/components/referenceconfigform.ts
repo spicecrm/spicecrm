@@ -10,7 +10,7 @@ declare var _;
 
 @Component({
     selector: 'reference-config-form',
-    templateUrl: './app/workbench/templates/referenceconfigform.html',
+    templateUrl: './src/workbench/templates/referenceconfigform.html',
 })
 export class ReferenceConfigForm extends BasicReferenceForm
 {

@@ -24,7 +24,7 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-drop-target',
     template: '',
-    // templateUrl: './app/modules/calendar/templates/calendarsheetdroptarget.html',
+    // templateUrl: './src/modules/calendar/templates/calendarsheetdroptarget.html',
     providers:[model],
     host: {
         '(dragover)': 'this.dragOver($event)',

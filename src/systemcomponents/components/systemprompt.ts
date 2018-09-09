@@ -4,7 +4,7 @@ import { Observable ,  Subject } from 'rxjs';
 
 @Component({
     selector: 'system-prompt',
-    templateUrl: './app/systemcomponents/templates/systemprompt.html',
+    templateUrl: './src/systemcomponents/templates/systemprompt.html',
     host: {
         '( window:keydown )': 'this.keyPressed( $event )'
     }

@@ -16,7 +16,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'salesdocs-items-container',
-    templateUrl: './app/modules/salesdocs/templates/salesdocsitemscontainer.html'
+    templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
 })
 export class SalesDocsItemsContainer  {
 

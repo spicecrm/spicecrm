@@ -13,7 +13,7 @@ import {popup} from '../../services/popup.service';
 
 @Component({
     selector: 'global-user',
-    templateUrl: './app/globalcomponents/templates/globaluser.html',
+    templateUrl: './src/globalcomponents/templates/globaluser.html',
     providers:[popup]
 })
 export class GlobalUser {

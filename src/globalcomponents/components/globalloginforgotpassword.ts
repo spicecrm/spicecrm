@@ -6,7 +6,7 @@ import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'global-login-forgot-password',
-    templateUrl: './app/globalcomponents/templates/globalloginforgotpassword.html',
+    templateUrl: './src/globalcomponents/templates/globalloginforgotpassword.html',
     host: {
         '(window:keypress)': 'this.keypressed($event)'
     }

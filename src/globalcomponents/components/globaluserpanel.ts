@@ -14,7 +14,7 @@ import {cookie} from '../../services/cookie.service';
 
 @Component({
     selector: 'global-user-panel',
-    templateUrl: './app/globalcomponents/templates/globaluserpanel.html',
+    templateUrl: './src/globalcomponents/templates/globaluserpanel.html',
 })
 export class GlobaUserPanel {
 

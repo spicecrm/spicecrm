@@ -6,7 +6,7 @@ import {objectimport} from '../services/objectimport.service';
 
 @Component({
     selector: 'object-import-update',
-    templateUrl: './app/objectcomponents/templates/objectimportupdate.html',
+    templateUrl: './src/objectcomponents/templates/objectimportupdate.html',
 })
 
 export class ObjectImportUpdate {

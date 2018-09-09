@@ -8,7 +8,7 @@ import {activitiyTimeLineService} from '../../services/activitiytimeline.service
 
 @Component({
     selector: 'object-activitiy-timeline-filter',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelinefilter.html'
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelinefilter.html'
 })
 export class ObjectActivityTimelineFilter {
 

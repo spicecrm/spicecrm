@@ -6,7 +6,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-multienum-checkbox',
-    templateUrl: './app/objectfields/templates/fieldmultienumcheckbox.html'
+    templateUrl: './src/objectfields/templates/fieldmultienumcheckbox.html'
 })
 export class fieldMultienumCheckBox {
 

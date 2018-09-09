@@ -8,7 +8,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'reporter-integration-targetlistexport-modal',
-    templateUrl: './app/modules/reports/templates/reporterintegrationtargetlistexportmodal.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationtargetlistexportmodal.html'
 })
 export class ReporterIntegrationTargetlistexportModal {
 

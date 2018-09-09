@@ -10,7 +10,7 @@ import { userpreferences } from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: './app/objectfields/templates/fieldcurrency.html'
+    templateUrl: './src/objectfields/templates/fieldcurrency.html'
 })
 export class fieldCurrency extends fieldGeneric implements OnInit {
 

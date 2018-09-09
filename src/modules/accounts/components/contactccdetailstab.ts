@@ -10,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'contact-cc-details-tab',
-    templateUrl: './app/modules/accounts/templates/contactccdetailstab.html',
+    templateUrl: './src/modules/accounts/templates/contactccdetailstab.html',
     providers: [model]
 })
 export class ContactCCDetailsTab {

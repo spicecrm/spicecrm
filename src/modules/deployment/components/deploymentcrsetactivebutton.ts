@@ -7,7 +7,7 @@ import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 
 @Component({
-    templateUrl: './app/modules/deployment/templates/deploymentcrsetactivebutton.html',
+    templateUrl: './src/modules/deployment/templates/deploymentcrsetactivebutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)': 'setActive()',

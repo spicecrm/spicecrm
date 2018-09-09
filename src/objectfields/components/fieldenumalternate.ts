@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-enum-alternate',
-    templateUrl: './app/objectfields/templates/fieldenumalternate.html'
+    templateUrl: './src/objectfields/templates/fieldenumalternate.html'
 })
 
 export class fieldEnumAlternate extends fieldGeneric

@@ -7,7 +7,7 @@ declare var gapi: any;
 
 @Component({
     selector: 'google-signin',
-    templateUrl: './app/globalcomponents/templates/googlesignin.html'
+    templateUrl: './src/globalcomponents/templates/googlesignin.html'
 })
 export class GoogleSigninComponent {
 

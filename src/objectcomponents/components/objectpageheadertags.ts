@@ -9,7 +9,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'object-page-header-tags',
-    templateUrl: './app/objectcomponents/templates/objectpageheadertags.html',
+    templateUrl: './src/objectcomponents/templates/objectpageheadertags.html',
     styles: [
         '.badgeListContainer { overflow-y: hidden; margin-bottom: -0.125rem; }',
         'ul { line-height: 1.7; }',

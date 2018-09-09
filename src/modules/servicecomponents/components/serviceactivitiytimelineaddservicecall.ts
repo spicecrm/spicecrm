@@ -10,7 +10,7 @@ import {activitiyTimeLineService} from '../../../services/activitiytimeline.serv
 
 @Component({
     selector: 'service-activitiytimeline-add-servicecall',
-    templateUrl: './app/modules/servicecomponents/templates/serviceactivitytimelineaddservicecall.html',
+    templateUrl: './src/modules/servicecomponents/templates/serviceactivitytimelineaddservicecall.html',
     providers: [model, view]
 })
 export class ServiceActivitiyTimelineAddServiceCall implements OnInit {

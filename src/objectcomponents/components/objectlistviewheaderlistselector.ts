@@ -7,7 +7,7 @@ import { model } from '../../services/model.service';
 
 @Component({
     selector: 'object-listview-header-list-selector',
-    templateUrl: './app/objectcomponents/templates/objectlistviewheaderlistselector.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewheaderlistselector.html'
 })
 export class ObjectListViewHeaderListSelector implements OnInit{
     @Input() parentconfig: any = [];

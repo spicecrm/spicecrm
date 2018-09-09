@@ -3,7 +3,7 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
     selector: 'system-tree-item',
-    templateUrl: './app/systemcomponents/templates/systemtreeitem.html'
+    templateUrl: './src/systemcomponents/templates/systemtreeitem.html'
 })
 export class SystemTreeItem {
 

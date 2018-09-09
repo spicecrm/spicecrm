@@ -15,7 +15,7 @@
     import {view} from "../../services/view.service";
 
     @Component({
-        templateUrl: './app/workbench/templates/moduleconfigmanager.html',
+        templateUrl: './src/workbench/templates/moduleconfigmanager.html',
         providers: [view]
     })
     export class ModuleConfigManager {

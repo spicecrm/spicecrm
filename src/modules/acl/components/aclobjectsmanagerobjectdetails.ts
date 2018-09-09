@@ -20,7 +20,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclobjects-manager-object-details',
-    templateUrl: './app/modules/acl/templates/aclobjectsmanagerobjectdetails.html',
+    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjectdetails.html',
     providers: [view]
 })
 export class ACLObjectsManagerObjectDetails implements OnInit {

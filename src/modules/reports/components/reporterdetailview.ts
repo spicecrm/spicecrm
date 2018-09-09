@@ -19,7 +19,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-detilview',
-    templateUrl: './app/modules/reports/templates/reporterdetailview.html',
+    templateUrl: './src/modules/reports/templates/reporterdetailview.html',
     providers: [model, reporterconfig]
 })
 export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {

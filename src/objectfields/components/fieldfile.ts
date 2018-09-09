@@ -12,7 +12,7 @@ import {Subject, Observable} from 'rxjs';
 
 @Component({
     selector: 'field-file',
-    templateUrl: './app/objectfields/templates/fieldfile.html'
+    templateUrl: './src/objectfields/templates/fieldfile.html'
 })
 export class fieldFile extends fieldGeneric{
 

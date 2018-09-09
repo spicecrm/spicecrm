@@ -6,7 +6,7 @@ import {recent} from '../../services/recent.service';
 
 @Component({
     selector: 'field-lookup-recent',
-    templateUrl: './app/objectfields/templates/fieldlookuprecent.html'
+    templateUrl: './src/objectfields/templates/fieldlookuprecent.html'
 })
 export class fieldLookupRecent implements OnInit{
 

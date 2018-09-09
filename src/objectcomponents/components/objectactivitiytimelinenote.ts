@@ -5,7 +5,7 @@ import { metadata } from '../../services/metadata.service';
 
 @Component({
     selector: 'object-activitiytimeline-note',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelinenote.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinenote.html',
     providers:[model, view]
 })
 export class ObjectActivitiyTimelineNote implements OnInit{

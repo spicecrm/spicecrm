@@ -16,7 +16,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-docked-composer-overflow',
-    templateUrl: './app/globalcomponents/templates/globaldockedcomposeroverflow.html'
+    templateUrl: './src/globalcomponents/templates/globaldockedcomposeroverflow.html'
 })
 export class GlobalDockedComposerOverflow implements OnDestroy{
     showHiddenComposers: boolean = false;

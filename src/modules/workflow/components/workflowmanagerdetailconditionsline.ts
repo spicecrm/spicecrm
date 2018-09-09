@@ -18,7 +18,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 @Component({
     selector: '[workflow-manager-detail-conditions-line]',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerdetailconditionsline.html',
+    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailconditionsline.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetailConditionsLine {

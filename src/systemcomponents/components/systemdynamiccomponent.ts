@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-dynamic-component',
-    templateUrl: './app/systemcomponents/templates/systemdynamiccomponent.html'
+    templateUrl: './src/systemcomponents/templates/systemdynamiccomponent.html'
 })
 export class SystemDynamicComponent implements AfterViewInit{
 

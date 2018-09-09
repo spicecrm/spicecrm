@@ -11,7 +11,7 @@ import {objectimport} from '../services/objectimport.service';
 
 @Component({
     selector: 'object-import-select',
-    templateUrl: './app/objectcomponents/templates/objectimportselect.html',
+    templateUrl: './src/objectcomponents/templates/objectimportselect.html',
     styles: [
         ':host {height: 100%;}',
         ':host >>> div.uploadbar {margin-left:-16px;margin-right:-16px;margin-top:16px;margin-bottom:-16px;width:calc(100% + 32px);height:8px;}',

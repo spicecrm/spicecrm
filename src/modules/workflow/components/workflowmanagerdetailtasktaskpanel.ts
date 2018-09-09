@@ -18,7 +18,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerdetailtasktaskpanel.html'
+    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasktaskpanel.html'
 })
 export class WorkflowManagerDetailTaskTaskpanel {
 

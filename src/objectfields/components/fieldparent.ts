@@ -12,7 +12,7 @@ import {fieldGeneric} from './fieldgeneric';
 
 @Component({
     selector: 'field-parent',
-    templateUrl: './app/objectfields/templates/fieldparent.html',
+    templateUrl: './src/objectfields/templates/fieldparent.html',
     providers: [popup],
     host: {
         // '(document:click)': 'this.onClick($event)'

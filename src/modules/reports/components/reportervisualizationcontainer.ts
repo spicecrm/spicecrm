@@ -11,7 +11,7 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'reporter-visualization-container',
-    templateUrl: './app/modules/reports/templates/reportervisualizationcontainer.html',
+    templateUrl: './src/modules/reports/templates/reportervisualizationcontainer.html',
     styles:[
         ':host {width:100%; height: 300px;}'
     ]

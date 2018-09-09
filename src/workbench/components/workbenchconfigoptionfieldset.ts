@@ -34,7 +34,7 @@ export class ComponentsetManagerModulePipe {
 
 @Component({
     selector: 'workbench-config-option-fieldset',
-    templateUrl: './app/workbench/templates/workbenchconfigoptionfieldset.html'
+    templateUrl: './src/workbench/templates/workbenchconfigoptionfieldset.html'
 })
 export class WorkbenchConfigOptionFieldset implements OnInit, AfterViewInit{
 

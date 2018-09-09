@@ -11,7 +11,7 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'reporter-visualization-dashlet',
-    templateUrl: './app/modules/reports/templates/reportervisualizationdashlet.html',
+    templateUrl: './src/modules/reports/templates/reportervisualizationdashlet.html',
     providers: [model]
 })
 export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {

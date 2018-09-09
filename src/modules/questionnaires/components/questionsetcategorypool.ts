@@ -6,7 +6,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'questionset-category-pool',
-    templateUrl: './app/modules/questionnaires/templates/questionsetcategorypool.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetcategorypool.html',
     styles:['.slds-pill { padding: 0.25rem 0.5rem }','.slds-pill:hover { background-color: inherit; }']
 })
 export class QuestionsetCategoryPool implements OnInit, OnDestroy {

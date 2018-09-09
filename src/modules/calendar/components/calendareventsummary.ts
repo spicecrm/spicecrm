@@ -10,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-event-summary',
-    templateUrl: './app/modules/calendar/templates/calendareventsummary.html'
+    templateUrl: './src/modules/calendar/templates/calendareventsummary.html'
 
 })
 export class CalendarEventSummary {

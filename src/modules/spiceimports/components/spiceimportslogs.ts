@@ -8,7 +8,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 @Component({
     selector: 'spice-imports-logs',
-    templateUrl: './app/modules/spiceimports/templates/spiceimportslogs.html',
+    templateUrl: './src/modules/spiceimports/templates/spiceimportslogs.html',
 })
 export class Spiceimportslogs {
     @ViewChild('logscontainer', {read: ViewContainerRef}) logscontainer: ViewContainerRef;

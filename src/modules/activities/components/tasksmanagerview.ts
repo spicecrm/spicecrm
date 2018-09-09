@@ -8,7 +8,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     // selector: 'object-home',
-    templateUrl: './app/modules/activities/templates/tasksmanagerview.html',
+    templateUrl: './src/modules/activities/templates/tasksmanagerview.html',
 })
 export class TasksManagerView implements OnDestroy{
 

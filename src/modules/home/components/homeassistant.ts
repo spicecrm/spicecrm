@@ -7,7 +7,7 @@ import {assistant} from '../../../services/assistant.service';
 
 @Component({
     selector: 'home-assistant',
-    templateUrl: './app/modules/home/templates/homeassistant.html'
+    templateUrl: './src/modules/home/templates/homeassistant.html'
 })
 export class HomeAssistant {
     constructor(private assistant: assistant, private navigation: navigation, private language: language) {

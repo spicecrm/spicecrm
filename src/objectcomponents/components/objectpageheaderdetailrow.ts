@@ -5,7 +5,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-page-header-detail-row',
-    templateUrl: './app/objectcomponents/templates/objectpageheaderdetailrow.html',
+    templateUrl: './src/objectcomponents/templates/objectpageheaderdetailrow.html',
     providers: [view]
 })
 export class ObjectPageHeaderDetailRow implements OnInit{

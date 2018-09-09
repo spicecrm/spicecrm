@@ -19,7 +19,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types-fields',
-    templateUrl: './app/modules/acl/templates/acltypesmanagertypesfields.html',
+    templateUrl: './src/modules/acl/templates/acltypesmanagertypesfields.html',
 })
 export class ACLTypesManagerTypesFields {
 

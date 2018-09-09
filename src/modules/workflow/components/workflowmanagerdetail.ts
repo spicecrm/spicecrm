@@ -18,7 +18,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 @Component({
     selector: 'workflow-manager-detail',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerdetail.html',
+    templateUrl: './src/modules/workflow/templates/workflowmanagerdetail.html',
     providers: [model, view]
 })
 export class WorkflowManagerDetail implements OnChanges{

@@ -3,7 +3,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'system-modal-wrapper',
-    templateUrl: './app/systemcomponents/templates/systemmodalwrapper.html',
+    templateUrl: './src/systemcomponents/templates/systemmodalwrapper.html',
 })
 export class SystemModalWrapper implements OnDestroy {
 

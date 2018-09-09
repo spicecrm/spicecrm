@@ -22,7 +22,7 @@ import {ACLTypesManagerTypesAddFields} from "./acltypesmanagertypesaddfields";
 
 @Component({
     selector: 'aclobjects-manager-object-fields',
-    templateUrl: './app/modules/acl/templates/aclobjectsmanagerobjectfields.html'
+    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjectfields.html'
 })
 export class ACLObjectsManagerObjectFields {
 

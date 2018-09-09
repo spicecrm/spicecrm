@@ -5,7 +5,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-button',
-    templateUrl: './app/modules/reports/templates/reporterfilterbutton.html'
+    templateUrl: './src/modules/reports/templates/reporterfilterbutton.html'
 })
 export class ReporterFilterButton implements OnChanges, OnDestroy{
 

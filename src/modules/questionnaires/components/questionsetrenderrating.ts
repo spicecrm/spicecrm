@@ -7,7 +7,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'questionset-render-rating',
-    templateUrl: './app/modules/questionnaires/templates/questionsetrenderrating.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetrenderrating.html',
     styles: [
         "table { border-top: none; }",
         "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",

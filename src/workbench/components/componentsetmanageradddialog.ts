@@ -20,7 +20,7 @@ import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'componensetmanager-add-dialog',
-    templateUrl: './app/workbench/templates/componentsetmanageradddialog.html'
+    templateUrl: './src/workbench/templates/componentsetmanageradddialog.html'
 })
 export class ComponentsetManagerAddDialog  {
     @Input() module: string = '';

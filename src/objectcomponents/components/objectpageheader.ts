@@ -17,7 +17,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-page-header',
-    templateUrl: './app/objectcomponents/templates/objectpageheader.html',
+    templateUrl: './src/objectcomponents/templates/objectpageheader.html',
     providers: [view]
 })
 export class ObjectPageHeader implements OnInit{

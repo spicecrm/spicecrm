@@ -12,7 +12,7 @@ import {listfilters} from '../services/listfilters.service';
 
 @Component({
     selector: '[object-listview-aggregate]',
-    templateUrl: './app/objectcomponents/templates/objectlistviewaggregate.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewaggregate.html'
 })
 export class ObjectListViewAggregate {
 

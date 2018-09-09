@@ -5,7 +5,7 @@ import { view } from '../../../services/view.service';
 
 @Component({
     selector: 'questions-manager-edit-ist',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanagereditist.html'
+    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditist.html'
 })
 export class QuestionsManagerEditIst implements OnInit {
 

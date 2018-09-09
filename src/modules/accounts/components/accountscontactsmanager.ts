@@ -7,7 +7,7 @@ import {ACManagerService} from "../services/acmanager.service";
 
 @Component({
     selector: 'accounts-contacts-manager',
-    templateUrl: './app/modules/accounts/templates/accountscontactsmanager.html',
+    templateUrl: './src/modules/accounts/templates/accountscontactsmanager.html',
     providers: [relatedmodels, ACManagerService]
 })
 export class AccountsContactsManager implements AfterViewInit, OnDestroy {

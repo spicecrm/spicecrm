@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-button-group',
-    templateUrl: './app/systemcomponents/templates/systembuttongroup.html'
+    templateUrl: './src/systemcomponents/templates/systembuttongroup.html'
 })
 export class SystemButtonGroup{
     @Input() items: Array<any> = [];

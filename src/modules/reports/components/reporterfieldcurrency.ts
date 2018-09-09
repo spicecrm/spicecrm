@@ -12,7 +12,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'reporter-field-curreny',
-    templateUrl: './app/modules/reports/templates/reporterfieldcurrency.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldcurrency.html'
 })
 export class ReporterFieldCurrency {
 

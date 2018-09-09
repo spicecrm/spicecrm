@@ -21,7 +21,7 @@ interface menuItem {
 
 @Component({
     selector: 'global-navigation-menu-more',
-    templateUrl: './app/globalcomponents/templates/globalnavigationmenumore.html',
+    templateUrl: './src/globalcomponents/templates/globalnavigationmenumore.html',
     host: {
         '[class.slds-context-bar__item]': 'true'
     }

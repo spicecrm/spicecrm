@@ -14,7 +14,7 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: './app/modules/deployment/templates/deploymentcrdbsql.html',
+    templateUrl: './src/modules/deployment/templates/deploymentcrdbsql.html',
 })
 export class DeploymentCRDBSQL implements OnInit {
 

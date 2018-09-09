@@ -6,7 +6,7 @@ declare var moment: any;
 
 @Component({
     selector: 'administration-dict-repair',
-    templateUrl: './app/admincomponents/templates/administrationdictrepair.html'
+    templateUrl: './src/admincomponents/templates/administrationdictrepair.html'
 })
 export class AdministrationDictRepair implements OnInit {
 

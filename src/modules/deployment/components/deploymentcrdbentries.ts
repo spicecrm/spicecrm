@@ -15,7 +15,7 @@ import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';
 
 @Component({
-    templateUrl: './app/modules/deployment/templates/deploymentcrdbentries.html',
+    templateUrl: './src/modules/deployment/templates/deploymentcrdbentries.html',
 })
 export class DeploymentCRDBEntries implements OnInit {
 

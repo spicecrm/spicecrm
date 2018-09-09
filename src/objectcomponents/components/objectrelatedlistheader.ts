@@ -7,7 +7,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'object-relatedlist-header',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistheader.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistheader.html'
 })
 export class ObjectRelatedlistHeader{
 

@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-checklist-item',
-    templateUrl: './app/objectcomponents/templates/objectrecordchecklistitem.html',
+    templateUrl: './src/objectcomponents/templates/objectrecordchecklistitem.html',
     providers: [view]
 })
 export class ObjectRecordChecklistItem {

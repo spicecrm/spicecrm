@@ -10,7 +10,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'field-base64',
-    templateUrl: './app/objectfields/templates/fieldbase64.html'
+    templateUrl: './src/objectfields/templates/fieldbase64.html'
 })
 export class fieldBase64 extends fieldGeneric{
 

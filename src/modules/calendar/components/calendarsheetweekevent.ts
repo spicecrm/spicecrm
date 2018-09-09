@@ -15,7 +15,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-week-event',
-    templateUrl: './app/modules/calendar/templates/calendarsheetweekevent.html',
+    templateUrl: './src/modules/calendar/templates/calendarsheetweekevent.html',
     providers:[model, view],
     host:{
         'class' : 'slds-is-absolute',

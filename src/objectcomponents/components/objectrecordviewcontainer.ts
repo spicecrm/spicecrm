@@ -13,7 +13,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'object-recordview-container',
-    templateUrl: './app/objectcomponents/templates/objectrecordviewcontainer.html',
+    templateUrl: './src/objectcomponents/templates/objectrecordviewcontainer.html',
     providers: [model]
 })
 export class ObjectRecordViewContainer implements AfterViewInit, OnDestroy {

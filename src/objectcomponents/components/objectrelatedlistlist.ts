@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-relatedlist-list',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistlist.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistlist.html',
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit

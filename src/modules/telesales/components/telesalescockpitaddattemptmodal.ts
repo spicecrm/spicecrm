@@ -12,7 +12,7 @@ declare var moment: any;
 
 @Component({
     selector: 'tele_sales_cockpit_add_attempt_modal',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitaddattemptmodal.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptmodal.html',
     providers: [model, view]
 })
 export class TeleSalesCockpitAddAttemptModal implements OnInit {

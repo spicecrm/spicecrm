@@ -5,7 +5,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 @Component({
 
-    templateUrl: './app/modules/spiceimports/templates/spiceimports.html',
+    templateUrl: './src/modules/spiceimports/templates/spiceimports.html',
     providers: [
         spiceimportsservice
     ]

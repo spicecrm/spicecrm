@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-modal',
-    templateUrl: './app/systemcomponents/templates/systemmodal.html'
+    templateUrl: './src/systemcomponents/templates/systemmodal.html'
 })
 export class SystemModal {
 

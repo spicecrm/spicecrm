@@ -17,7 +17,7 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'object-listview-filter-panel-export-targetlist',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelexporttargetlist.html',
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelexporttargetlist.html',
 })
 export class ObjectListViewFilterPanelExportTargetlist {
 

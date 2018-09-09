@@ -9,7 +9,7 @@ import {popup} from '../../services/popup.service';
 
 @Component({
     selector: 'object-merge-modal-records',
-    templateUrl: './app/objectcomponents/templates/objectmergemodalrecords.html',
+    templateUrl: './src/objectcomponents/templates/objectmergemodalrecords.html',
     providers: [view]
 })
 export class ObjectMergeModalRecords {

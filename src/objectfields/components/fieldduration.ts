@@ -11,7 +11,7 @@ declare var moment: any;
 
 @Component({
     selector: 'field-duration',
-    templateUrl: './app/objectfields/templates/fieldduration.html',
+    templateUrl: './src/objectfields/templates/fieldduration.html',
     providers: [popup]
 })
 export class fieldDuration extends fieldGeneric {

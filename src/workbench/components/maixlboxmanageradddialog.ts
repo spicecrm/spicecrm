@@ -7,7 +7,7 @@ import {model} from "../../services/model.service";
 
 @Component({
     selector: 'mailboxmanager-add-dialog',
-    templateUrl: './app/workbench/templates/mailboxmanageradddialog.html',
+    templateUrl: './src/workbench/templates/mailboxmanageradddialog.html',
     providers: [model]
 })
 export class MailboxManagerAddDialog {

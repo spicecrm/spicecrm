@@ -9,7 +9,7 @@ import { helper } from '../../services/helper.service';
 
 @Component({
     selector: 'object-action-menu',
-    templateUrl: './app/objectcomponents/templates/objectactionmenu.html',
+    templateUrl: './src/objectcomponents/templates/objectactionmenu.html',
     providers: [popup, helper],
     host: {
         //    '(document:click)': 'onClick($event)'

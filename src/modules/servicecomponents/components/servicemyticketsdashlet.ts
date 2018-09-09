@@ -12,7 +12,7 @@ declare var moment: any;
 
 @Component({
     selector: 'service-my-tickets-dashlet',
-    templateUrl: './app/modules/servicecomponents/templates/servicemyticketsdashlet.html'
+    templateUrl: './src/modules/servicecomponents/templates/servicemyticketsdashlet.html'
 })
 export class ServiceMyTicketsDashlet implements OnInit{
 

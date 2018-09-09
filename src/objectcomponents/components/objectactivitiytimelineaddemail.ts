@@ -11,7 +11,7 @@ import {ObjectRelatedlistFiles} from "./objectrelatedlistfiles";
 
 @Component({
     selector: 'object-activitiytimeline-add-email',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelineaddemail.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddemail.html',
     providers: [model, view]
 })
 export class ObjectActivitiyTimelineAddEmail implements OnInit {

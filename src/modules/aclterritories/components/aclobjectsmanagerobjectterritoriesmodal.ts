@@ -5,7 +5,7 @@ import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
-    templateUrl: './app/modules/aclterritories/templates/aclobjectsmanagerobjectterritoriesmodal.html'
+    templateUrl: './src/modules/aclterritories/templates/aclobjectsmanagerobjectterritoriesmodal.html'
 })
 export class ACLObjectsManagerObjectTerritoriesModal {
 

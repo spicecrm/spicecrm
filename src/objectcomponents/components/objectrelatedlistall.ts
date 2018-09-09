@@ -10,7 +10,7 @@ declare var _;
 
 @Component({
     selector: 'object-relatedlist-all',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistall.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistall.html',
     providers: [model, relatedmodels]
 })
 export class ObjectRelatedlistAll implements OnInit {

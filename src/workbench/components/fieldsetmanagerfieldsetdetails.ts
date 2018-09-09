@@ -19,7 +19,7 @@ import {Subject} from 'rxjs';
 
 @Component({
     selector: 'fieldsetmanager-fieldset-details',
-    templateUrl: './app/workbench/templates/fieldsetmanagerfieldsetdetails.html',
+    templateUrl: './src/workbench/templates/fieldsetmanagerfieldsetdetails.html',
     providers: [view]
 })
 export class FieldsetManagerFieldsetDetails implements OnChanges{

@@ -9,7 +9,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-integration-queryanalyzer-button',
-    templateUrl: './app/modules/reports/templates/reporterintegrationqueryanalyzerbutton.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationqueryanalyzerbutton.html'
 })
 export class ReporterIntegrationQueryanalyzerButton {
 

@@ -9,7 +9,7 @@ declare var moment: any;
 
 @Component({
     selector: 'service-myqueues-tickets-dashlet-item',
-    templateUrl: './app/modules/servicecomponents/templates/servicemyqueuesticketsdashletitem.html',
+    templateUrl: './src/modules/servicecomponents/templates/servicemyqueuesticketsdashletitem.html',
     providers: [model, view]
 })
 export class ServiceMyQueuesTicketsDashletItem implements OnInit{

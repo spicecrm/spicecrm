@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-action-icon',
-    templateUrl: './app/systemcomponents/templates/systemactionicon.html'
+    templateUrl: './src/systemcomponents/templates/systemactionicon.html'
 })
 export class SystemActionIcon {
     @Input() icon: string = '';

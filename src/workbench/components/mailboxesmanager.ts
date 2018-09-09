@@ -11,7 +11,7 @@ import {view} from "../../services/view.service";
 @Component({
     providers: [model, view],
     selector: "mailboxes-manager",
-    templateUrl: "./app/workbench/templates/mailboxesmanager.html",
+    templateUrl: "./src/workbench/templates/mailboxesmanager.html",
 })
 export class MailboxesManager {
 

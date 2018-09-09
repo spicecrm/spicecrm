@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-spinner',
-    templateUrl: './app/systemcomponents/templates/systemspinner.html'
+    templateUrl: './src/systemcomponents/templates/systemspinner.html'
 })
 export class SystemSpinner {
 

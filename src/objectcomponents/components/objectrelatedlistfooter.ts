@@ -7,7 +7,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'object-relatedlist-footer',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistfooter.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistfooter.html'
 })
 export class ObjectRelatedlistFooter {
 

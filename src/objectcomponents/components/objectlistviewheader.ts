@@ -10,7 +10,7 @@ import { model } from '../../services/model.service';
 
 @Component({
     selector: 'object-listview-header',
-    templateUrl: './app/objectcomponents/templates/objectlistviewheader.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewheader.html'
 })
 export class ObjectListViewHeader {
     @Input() parentconfig: any = [];

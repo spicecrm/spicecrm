@@ -12,7 +12,7 @@ declare var SpiceCRM: any;
 
 @Component({
     selector: '[administration-ftsmanager]',
-    templateUrl: './app/admincomponents/templates/administrationftsmanager.html',
+    templateUrl: './src/admincomponents/templates/administrationftsmanager.html',
     providers: [ftsconfiguration]
 })
 export class AdministrationFTSManager {

@@ -23,7 +23,7 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'selecttree-add-dialog',
-    templateUrl: './app/workbench/templates/selecttreeadddialog.html'
+    templateUrl: './src/workbench/templates/selecttreeadddialog.html'
 })
 export class SelectTreeAddDialog{
 

@@ -15,7 +15,7 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'global-docked-composer',
-    templateUrl: './app/globalcomponents/templates/globaldockedcomposer.html',
+    templateUrl: './src/globalcomponents/templates/globaldockedcomposer.html',
     providers: [model, view]
 })
 export class GlobalDockedComposer implements OnInit {

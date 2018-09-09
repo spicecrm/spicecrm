@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-custom-icon',
-    templateUrl: './app/systemcomponents/templates/systemcustomicon.html'
+    templateUrl: './src/systemcomponents/templates/systemcustomicon.html'
 })
 export class SystemCustomIcon {
     @Input() icon: string = '';

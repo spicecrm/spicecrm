@@ -10,7 +10,7 @@ import { userpreferences } from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: './app/objectfields/templates/fieldweightedamount.html'
+    templateUrl: './src/objectfields/templates/fieldweightedamount.html'
 })
 export class fieldWeightedAmount extends fieldCurrency {
 

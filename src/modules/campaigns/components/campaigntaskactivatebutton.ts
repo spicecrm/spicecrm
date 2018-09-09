@@ -7,7 +7,7 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: './app/modules/campaigns/templates/campaigntaskactivatebutton.html',
+    templateUrl: './src/modules/campaigns/templates/campaigntaskactivatebutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': 'getDisplay()'

@@ -9,7 +9,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-list-item]',
-    templateUrl: './app/objectcomponents/templates/objectlistitem.html',
+    templateUrl: './src/objectcomponents/templates/objectlistitem.html',
     providers: [model, view],
     styles: [
         ':host /deep/ field-container global-button-icon {display:none;}',

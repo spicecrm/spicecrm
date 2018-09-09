@@ -8,7 +8,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'tasks-manager-task-details',
-    templateUrl: './app/modules/activities/templates/tasksmanagertaskdetails.html',
+    templateUrl: './src/modules/activities/templates/tasksmanagertaskdetails.html',
     host: {
         'class': 'slds-theme--shade'
     },

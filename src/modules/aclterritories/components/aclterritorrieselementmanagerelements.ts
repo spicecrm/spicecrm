@@ -9,7 +9,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'aclterritorries-elementmanager-elements',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorrieselementmanagerelements.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanagerelements.html',
 })
 export class ACLTerritorriesElementmanagerElements {
 

@@ -8,7 +8,7 @@ import {broadcast} from '../../../services/broadcast.service';
 import {session} from '../../../services/session.service';
 
 @Component({
-    templateUrl: './app/modules/deployment/templates/deploymentcractive.html',
+    templateUrl: './src/modules/deployment/templates/deploymentcractive.html',
     host: {
         '[style.display]': 'getDisplay()'
     },

@@ -18,7 +18,7 @@ import {language} from '../../services/language.service';
 import {Subject} from 'rxjs';
 
 @Component({
-    templateUrl: './app/workbench/templates/domainmanager.html',
+    templateUrl: './src/workbench/templates/domainmanager.html',
     providers: [metadata]
 })
 export class DomainManager {

@@ -6,7 +6,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-blank',
-    templateUrl: './app/objectfields/templates/fieldblank.html'
+    templateUrl: './src/objectfields/templates/fieldblank.html'
 })
 export class fieldBlank {
 

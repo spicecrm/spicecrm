@@ -19,7 +19,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'aclterritorries-manager-territories',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriesmanagerterritories.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritories.html',
 })
 export class ACLTerritorriesManagerTerritories {
 

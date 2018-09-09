@@ -10,7 +10,7 @@ import {configurationService} from "../../../services/configuration.service";
 
 
 @Component({
-    templateUrl: './app/modules/servicecomponents/templates/servicecategorymanager.html',
+    templateUrl: './src/modules/servicecomponents/templates/servicecategorymanager.html',
 })
 export class ServiceCategoryManagerComponent
 {

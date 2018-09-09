@@ -9,7 +9,7 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: '[dashboard-generic-dashlet-row]',
-    templateUrl: './app/modules/dashboard/templates/dashboardgenericdashletrow.html',
+    templateUrl: './src/modules/dashboard/templates/dashboardgenericdashletrow.html',
     providers: [model, view]
 })
 export class DashboardGenericDashletRow implements OnInit {

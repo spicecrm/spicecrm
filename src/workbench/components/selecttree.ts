@@ -13,7 +13,7 @@ import { modal } from '../../services/modal.service';
 import {SelectTreeAddDialog} from "./selecttreeadddialog";
 
 @Component({
-    templateUrl: './app/workbench/templates/selecttree.html',
+    templateUrl: './src/workbench/templates/selecttree.html',
 })
 export class SelectTreeComponent
 {

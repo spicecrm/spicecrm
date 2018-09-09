@@ -23,7 +23,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-day',
-    templateUrl: './app/modules/calendar/templates/calendarsheetday.html',
+    templateUrl: './src/modules/calendar/templates/calendarsheetday.html',
 })
 export class CalendarSheetDay implements OnChanges, AfterViewInit {
 

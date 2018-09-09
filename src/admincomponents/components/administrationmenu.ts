@@ -13,7 +13,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: '[administration-menu]',
-    templateUrl: './app/admincomponents/templates/administrationmenu.html'
+    templateUrl: './src/admincomponents/templates/administrationmenu.html'
 })
 export class AdministrationMenu
 {

@@ -9,7 +9,7 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './app/objectcomponents/templates/objectactionoutputbeanmodal.html',
+    templateUrl: './src/objectcomponents/templates/objectactionoutputbeanmodal.html',
     providers: [model, view],
 })
 export class ObjectActionOutputBeanModal {

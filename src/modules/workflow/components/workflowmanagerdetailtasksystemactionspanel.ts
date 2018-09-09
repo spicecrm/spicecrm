@@ -18,7 +18,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-systemactionspanel',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerdetailtasksystemactionspanel.html'
+    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksystemactionspanel.html'
 })
 export class WorkflowManagerDetailTaskSystemactionspanel {
     @Input() module : string = '';

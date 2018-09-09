@@ -12,7 +12,7 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-integration-xlsexport-button',
-    templateUrl: './app/modules/reports/templates/reporterintegrationxlsexportbutton.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationxlsexportbutton.html'
 })
 export class ReporterIntegrationXLSexportButton {
 

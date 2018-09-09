@@ -10,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'tele_sales_cockpit_add_attempt_button',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitaddattemptbutton.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptbutton.html',
     host: {
 
         'class': 'slds-button slds-button--neutral',

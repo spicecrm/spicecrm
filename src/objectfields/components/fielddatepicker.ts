@@ -9,7 +9,7 @@ declare var moment: any;
 
 @Component({
     selector: 'field-date-picker',
-    templateUrl: './app/objectfields/templates/fielddatepicker.html'
+    templateUrl: './src/objectfields/templates/fielddatepicker.html'
 })
 export class fieldDatePicker implements OnInit {
 

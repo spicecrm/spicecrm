@@ -10,7 +10,7 @@ declare var _: any;
 
 @Component({
     selector: 'object-import-fixed',
-    templateUrl: './app/objectcomponents/templates/objectimportfixed.html',
+    templateUrl: './src/objectcomponents/templates/objectimportfixed.html',
     providers: [view]
 })
 

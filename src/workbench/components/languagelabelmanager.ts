@@ -13,7 +13,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'language-label-manager',
-    templateUrl: './app/workbench/templates/languagelabelmanager.html',
+    templateUrl: './src/workbench/templates/languagelabelmanager.html',
 })
 export class LanguageLabelManagerComponent
 {

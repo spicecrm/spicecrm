@@ -21,7 +21,7 @@ import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'fieldsetmanager-edit-dialog',
-    templateUrl: './app/workbench/templates/fieldsetmanagereditdialog.html'
+    templateUrl: './src/workbench/templates/fieldsetmanagereditdialog.html'
 })
 export class FieldsetManagerEditDialog implements OnInit{
 

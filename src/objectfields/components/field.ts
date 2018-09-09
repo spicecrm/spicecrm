@@ -2,7 +2,7 @@ import {Component, Input, ViewChild, ViewContainerRef, AfterViewInit} from '@ang
 
 @Component({
     selector: 'field',
-    templateUrl: './app/objectfields/templates/field.html',
+    templateUrl: './src/objectfields/templates/field.html',
     host:{
         '[class.slds-form-element]' : 'true'
     }

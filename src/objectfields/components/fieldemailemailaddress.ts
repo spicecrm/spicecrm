@@ -7,7 +7,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-email-emailaddress',
-    templateUrl: './app/objectfields/templates/fieldemailemailaddress.html'
+    templateUrl: './src/objectfields/templates/fieldemailemailaddress.html'
 })
 export class fieldEmailEmailAddress  {
 

@@ -9,7 +9,7 @@ declare var _: any;
 
 @Component({
     selector: 'object-import-map',
-    templateUrl: './app/objectcomponents/templates/objectimportmap.html',
+    templateUrl: './src/objectcomponents/templates/objectimportmap.html',
 })
 export class ObjectImportMap {
 

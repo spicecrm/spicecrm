@@ -10,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-event-popover',
-    templateUrl: './app/modules/calendar/templates/calendareventpopover.html'
+    templateUrl: './src/modules/calendar/templates/calendareventpopover.html'
 
 })
 export class CalendarEventPopover {

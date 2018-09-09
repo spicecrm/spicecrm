@@ -18,7 +18,7 @@ import {Subject} from 'rxjs';
 
 @Component({
     selector: 'domainmanager-field-details',
-    templateUrl: './app/workbench/templates/domainmanagerfielddetails.html'
+    templateUrl: './src/workbench/templates/domainmanagerfielddetails.html'
 })
 export class DomainManagerFieldDetails{
 

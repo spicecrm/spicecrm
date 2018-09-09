@@ -22,7 +22,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-variant',
-    templateUrl: './app/modules/products/templates/productbrowservariant.html',
+    templateUrl: './src/modules/products/templates/productbrowservariant.html',
     providers: [model, view]
 })
 export class ProductBrowserVariant implements OnInit{

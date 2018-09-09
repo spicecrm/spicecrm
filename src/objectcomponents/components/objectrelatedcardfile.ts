@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: '[object-related-card-file]',
-    templateUrl: './app/objectcomponents/templates/objectrelatedcardfile.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedcardfile.html'
 })
 export class ObjectRelatedCardFile {
 

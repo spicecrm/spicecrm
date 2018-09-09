@@ -16,7 +16,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'object-recordview-detail-2and1',
-    templateUrl: './app/objectcomponents/templates/objectrecordviewdetail2and1.html'
+    templateUrl: './src/objectcomponents/templates/objectrecordviewdetail2and1.html'
 
 })
 export class ObjectRecordViewDetail2and1 implements AfterViewInit, OnInit, OnDestroy {

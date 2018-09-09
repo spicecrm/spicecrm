@@ -7,7 +7,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'object-relatedlist-table',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlisttable.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedlisttable.html'
 })
 export class ObjectRelatedlistTable {
 

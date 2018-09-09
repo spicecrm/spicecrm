@@ -6,7 +6,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'questionset-type-parameters',
-    templateUrl: './app/modules/questionnaires/templates/questionsettypeparameters.html'
+    templateUrl: './src/modules/questionnaires/templates/questionsettypeparameters.html'
 })
 export class QuestionsetTypeParameters implements OnInit {
 

@@ -6,7 +6,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'questionset-type-parameters-text',
-    templateUrl: './app/modules/questionnaires/templates/questionsettypeparameterstext.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsettypeparameterstext.html',
 })
 export class QuestionsetTypeParametersText implements OnInit {
 

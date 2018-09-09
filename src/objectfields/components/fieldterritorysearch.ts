@@ -9,7 +9,7 @@ import {territories} from '../../services/territories.service';
 
 @Component({
     selector: 'field-territory-search',
-    templateUrl: './app/objectfields/templates/fieldterritorysearch.html'
+    templateUrl: './src/objectfields/templates/fieldterritorysearch.html'
 })
 export class fieldTerritorySearch {
     searchTerm: string = '';

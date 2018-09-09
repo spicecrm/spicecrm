@@ -8,7 +8,7 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-lookup-search',
-    templateUrl: './app/objectfields/templates/fieldlookupsearch.html'
+    templateUrl: './src/objectfields/templates/fieldlookupsearch.html'
 })
 export class fieldLookupSearch {
     searchTerm: string = '';

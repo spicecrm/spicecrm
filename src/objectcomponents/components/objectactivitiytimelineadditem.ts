@@ -13,7 +13,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-activitiytimeline-add-item',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelineadditem.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelineadditem.html',
     providers: [model, view]
 })
 export class ObjectActivitiyTimelineAddItem implements OnInit {

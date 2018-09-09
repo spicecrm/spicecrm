@@ -8,7 +8,7 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: '[object-popover-header]',
-    templateUrl: './app/objectcomponents/templates/objectpopoverheader.html',
+    templateUrl: './src/objectcomponents/templates/objectpopoverheader.html',
     providers: [view],
     host:{
         'class' : 'slds-popover__header'

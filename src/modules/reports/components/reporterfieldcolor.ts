@@ -12,7 +12,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'reporter-field-Color',
-    templateUrl: './app/modules/reports/templates/reporterfieldcolor.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldcolor.html'
 })
 export class ReporterFieldColor {
 

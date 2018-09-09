@@ -8,7 +8,7 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'lead-openleads-dashlet',
-    templateUrl: './app/modules/leads/templates/leadopenleadsdashlet.html',
+    templateUrl: './src/modules/leads/templates/leadopenleadsdashlet.html',
     providers: [model]
 })
 export class LeadOpenLeadsDashlet implements OnInit {

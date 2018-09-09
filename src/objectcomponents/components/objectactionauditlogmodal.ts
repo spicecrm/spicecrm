@@ -6,7 +6,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-action-auditlog-modal',
-    templateUrl: './app/objectcomponents/templates/objectactionauditlogmodal.html'
+    templateUrl: './src/objectcomponents/templates/objectactionauditlogmodal.html'
 })
 export class ObjectActionAuditlogModal implements OnInit{
 

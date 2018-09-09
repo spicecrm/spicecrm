@@ -11,7 +11,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 
 @Component({
-    templateUrl: './app/modules/workflow/templates/workflowmanager.html',
+    templateUrl: './src/modules/workflow/templates/workflowmanager.html',
     //providers: [metadata]
 })
 export class WorkflowManager {

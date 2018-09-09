@@ -19,7 +19,7 @@ import { userpreferences } from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'salesdocs-items-edit',
-    templateUrl: './app/modules/salesdocs/templates/salesdocsitemsedit.html'
+    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsedit.html'
 })
 export class SalesDocsItemsEdit {
 

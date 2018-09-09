@@ -11,7 +11,7 @@ import {fieldSelectTree} from "./fieldselecttree";
 
 @Component({
     selector: 'select-tree-search',
-    templateUrl: './app/objectfields/templates/fieldselecttreesearch.html'
+    templateUrl: './src/objectfields/templates/fieldselecttreesearch.html'
 })
 export class fieldSelectTreeSearch
 {

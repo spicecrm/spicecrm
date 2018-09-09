@@ -7,7 +7,7 @@ import { view } from '../../../services/view.service';
 
 @Component({
     selector: 'questions-manager-edit-rating',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanagereditrating.html'
+    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditrating.html'
 })
 export class QuestionsManagerEditRating implements OnInit {
 

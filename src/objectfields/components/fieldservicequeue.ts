@@ -9,7 +9,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-servicequeue',
-    templateUrl: './app/objectfields/templates/fieldservicequeue.html'
+    templateUrl: './src/objectfields/templates/fieldservicequeue.html'
 })
 export class fieldServiceQueue extends fieldGeneric
 {

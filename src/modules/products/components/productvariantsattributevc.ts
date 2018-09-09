@@ -19,7 +19,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-vc',
-    templateUrl: './app/modules/products/templates/productvariantsattributevc.html'
+    templateUrl: './src/modules/products/templates/productvariantsattributevc.html'
 })
 export class ProductVariantsAttributeVC implements OnInit{
 

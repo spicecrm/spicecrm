@@ -9,7 +9,7 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'tele_sales_cockpit_list',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitlist.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitlist.html',
     providers: [
         view, model, modellist
     ]

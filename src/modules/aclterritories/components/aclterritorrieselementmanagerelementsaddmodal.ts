@@ -9,7 +9,7 @@ import {language} from "../../../services/language.service";
 
 
 @Component({
-    templateUrl: './app/modules/aclterritories/templates/aclterritorrieselementmanagerelementsaddmodal.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanagerelementsaddmodal.html',
 })
 export class ACLTerritorriesElementmanagerElementsAddModal {
 

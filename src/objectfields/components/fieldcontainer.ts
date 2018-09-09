@@ -5,7 +5,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'field-container',
-    templateUrl: './app/objectfields/templates/fieldcontainer.html'
+    templateUrl: './src/objectfields/templates/fieldcontainer.html'
 })
 export class fieldContainer implements AfterViewInit
 {

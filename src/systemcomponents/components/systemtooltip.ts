@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-tooltip',
-    templateUrl: './app/systemcomponents/templates/systemtooltip.html'
+    templateUrl: './src/systemcomponents/templates/systemtooltip.html'
 })
 export class SystemTooltip {
     @Input() tooltiptext: string = '';

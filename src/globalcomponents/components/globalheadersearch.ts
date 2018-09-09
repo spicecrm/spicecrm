@@ -19,7 +19,7 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'global-header-search',
-    templateUrl: './app/globalcomponents/templates/globalheadersearch.html',
+    templateUrl: './src/globalcomponents/templates/globalheadersearch.html',
     providers: [popup],
     host:{
        //  '(document:click)': 'this.onClick($event)'

@@ -7,7 +7,7 @@ import {view} from "../../../services/view.service";
 
 @Component({
     providers: [model, view],
-    templateUrl: "./app/modules/mailboxes/templates/mailboxemailtoleadmodal.html",
+    templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleadmodal.html",
 })
 export class MailboxEmailToLeadModal implements OnInit, AfterViewInit {
 

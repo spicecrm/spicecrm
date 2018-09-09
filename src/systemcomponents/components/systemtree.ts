@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 
 @Component({
     selector: 'system-tree',
-    templateUrl: './app/systemcomponents/templates/systemtree.html'
+    templateUrl: './src/systemcomponents/templates/systemtree.html'
 })
 export class SystemTree implements OnChanges {
     @Input() treelist: any = [];

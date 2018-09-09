@@ -16,7 +16,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'object-edit-modal-dialog-container',
-    templateUrl: './app/objectcomponents/templates/objecteditmodaldialogcontainer.html'
+    templateUrl: './src/objectcomponents/templates/objecteditmodaldialogcontainer.html'
 })
 export class ObjectEditModalDialogContainer implements AfterViewInit {
     @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;

@@ -14,7 +14,7 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
 @Component({
     selector: 'object-tab-container-item-header',
-    templateUrl: './app/objectcomponents/templates/objecttabcntaineritemheader.html'
+    templateUrl: './src/objectcomponents/templates/objecttabcntaineritemheader.html'
 })
 export class ObjectTabContainerItemHeader implements AfterViewInit {
     @ViewChild('headercontainer', {read: ViewContainerRef}) headercontainer: ViewContainerRef;
@@ -47,7 +47,7 @@ export class ObjectTabContainerItemHeader implements AfterViewInit {
 
 @Component({
     selector: 'object-tab-container-item',
-    templateUrl: './app/objectcomponents/templates/objecttabcontaineritem.html',
+    templateUrl: './src/objectcomponents/templates/objecttabcontaineritem.html',
     providers: [fielderrorgrouping]
 })
 export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
@@ -89,7 +89,7 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
 
 @Component({
     selector: 'object-tab-container',
-    templateUrl: './app/objectcomponents/templates/objecttabcontainer.html'
+    templateUrl: './src/objectcomponents/templates/objecttabcontainer.html'
 })
 export class ObjectTabContainer implements OnInit {
     activeTab: number = 0;

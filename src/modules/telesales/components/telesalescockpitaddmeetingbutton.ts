@@ -11,7 +11,7 @@ declare var moment: any;
 
 @Component({
     selector: 'tele_sales_cockpit_add_meeting_button',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitaddmeetingbutton.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitaddmeetingbutton.html',
     host: {
 
         'class': 'slds-button slds-button--neutral',

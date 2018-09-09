@@ -12,7 +12,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'workflow-panel-tasks',
-    templateUrl: './app/modules/workflow/templates/workflowpaneltasks.html'
+    templateUrl: './src/modules/workflow/templates/workflowpaneltasks.html'
 
 })
 export class WorkflowPanelTasks implements OnInit{

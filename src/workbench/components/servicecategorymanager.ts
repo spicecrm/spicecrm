@@ -11,7 +11,7 @@ import {configurationService} from "../../services/configuration.service";
 
 
 @Component({
-    templateUrl: './app/workbench/templates/servicecategorymanager.html',
+    templateUrl: './src/workbench/templates/servicecategorymanager.html',
 })
 export class ServiceCategoryManagerComponent
 {

@@ -8,7 +8,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-status-network-button-item',
-    templateUrl: './app/objectcomponents/templates/objectstatusnetworkbuttonitem.html',
+    templateUrl: './src/objectcomponents/templates/objectstatusnetworkbuttonitem.html',
     host:{
         '(click)' : 'this.setStatus()'
     }

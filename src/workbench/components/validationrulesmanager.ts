@@ -9,7 +9,7 @@ import {toast} from "../../services/toast.service";
 import {AppDataService} from "../../services/appdata.service";
 
 @Component({
-    templateUrl: './app/workbench/templates/validationrulesmanager.html',
+    templateUrl: './src/workbench/templates/validationrulesmanager.html',
 })
 export class ValidationRulesManager
 {

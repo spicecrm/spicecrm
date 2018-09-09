@@ -12,7 +12,7 @@ declare var moment: any;
 
 @Component({
     selector: 'dashboard-reminders-dashlet',
-    templateUrl: './app/modules/dashboard/templates/dashboardremindersdashlet.html'
+    templateUrl: './src/modules/dashboard/templates/dashboardremindersdashlet.html'
 })
 export class DashboardRemindersDashlet implements OnInit{
 

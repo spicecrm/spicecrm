@@ -11,7 +11,7 @@ import {toast} from "../../services/toast.service";
 
 @Component( {
     selector: 'field-media-file-image',
-    templateUrl: './app/objectfields/templates/fieldmediafileimage.html',
+    templateUrl: './src/objectfields/templates/fieldmediafileimage.html',
     providers: [ mediafiles ],
     styles: [
         'div.field-media-file-image-popover { position: absolute; width: 160px; height: 160px; left: calc(50% - 80px); top: calc(50% - 80px); z-index: 1; background-color: #ccc; border-radius: 0.25rem; background-color: #fdfdfd; box-shadow: 0 2px 3px 0 rgba(0,0,0,.16); border: 1px solid #d8dde6 }',

@@ -8,7 +8,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'reporter-integration-queryanalyzer-modal',
-    templateUrl: './app/modules/reports/templates/reporterintegrationqueryanalyzermodal.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationqueryanalyzermodal.html'
 })
 export class ReporterIntegrationQueryanalyzerModal implements OnInit{
 

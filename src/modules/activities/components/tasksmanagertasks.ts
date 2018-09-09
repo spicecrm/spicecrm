@@ -6,7 +6,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'tasks-manager-tasks',
-    templateUrl: './app/modules/activities/templates/tasksmanagertasks.html',
+    templateUrl: './src/modules/activities/templates/tasksmanagertasks.html',
 })
 export class TasksManagerTasks {
     @ViewChild('taskscontent', {read: ViewContainerRef}) taskscontent: ViewContainerRef;

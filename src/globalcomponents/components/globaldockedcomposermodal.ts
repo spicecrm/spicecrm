@@ -17,7 +17,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-docked-composer-modal',
-    templateUrl: './app/globalcomponents/templates/globaldockedcomposermodal.html',
+    templateUrl: './src/globalcomponents/templates/globaldockedcomposermodal.html',
     // providers: [model, view]
 })
 export class GlobalDockedComposerModal implements OnInit {

@@ -7,7 +7,7 @@ import {modelutilities} from "../../services/modelutilities.service";
 
 @Component({
     selector: 'label-selector',
-    templateUrl: './app/workbench/templates/labelselector.html'
+    templateUrl: './src/workbench/templates/labelselector.html'
 })
 export class LabelSelectorComponent
 {

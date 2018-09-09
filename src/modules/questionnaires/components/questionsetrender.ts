@@ -8,7 +8,7 @@ declare var _: any;
 
 @Component( {
     selector: 'questionset-render',
-    templateUrl: './app/modules/questionnaires/templates/questionsetrender.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetrender.html',
     styles: [
         '.questionset-render.in-modal .questionset-render-header, .questionset-render.in-modal .questionset-render-footer { flex-grow: 0; flex-shrink: 0; }',
         '.questionset-render.in-modal .questionset-render-questions { flex-shrink: 1; flex-grow: 1; overflow-y: scroll; }',

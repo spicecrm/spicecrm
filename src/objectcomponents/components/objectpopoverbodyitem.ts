@@ -8,7 +8,7 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: '[object-popover-body-item]',
-    templateUrl: './app/objectcomponents/templates/objectpopoverbodyitem.html',
+    templateUrl: './src/objectcomponents/templates/objectpopoverbodyitem.html',
     providers:[model, view],
     host:{
         'class' : 'slds-popover__body-list'

@@ -11,7 +11,7 @@ import {activitiyTimeLineService} from '../../services/activitiytimeline.service
 
 @Component({
     selector: 'object-activitiytimeline',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimeline.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimeline.html',
     providers: [activitiyTimeLineService]
 })
 export class ObjectActivitiyTimeline implements OnInit, OnDestroy{

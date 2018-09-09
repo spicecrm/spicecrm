@@ -16,7 +16,7 @@ declare var moment: any;
  */
 @Component({
     selector: 'field-worklog',
-    templateUrl: './app/objectfields/templates/fieldworklog.html'
+    templateUrl: './src/objectfields/templates/fieldworklog.html'
 })
 export class fieldWorklog extends fieldGeneric
 {

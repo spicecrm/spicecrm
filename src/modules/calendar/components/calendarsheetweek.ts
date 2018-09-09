@@ -13,7 +13,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-week',
-    templateUrl: './app/modules/calendar/templates/calendarsheetweek.html',
+    templateUrl: './src/modules/calendar/templates/calendarsheetweek.html',
 })
 export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 

@@ -10,7 +10,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-search',
-    templateUrl: './app/globalcomponents/templates/globalsearch.html'
+    templateUrl: './src/globalcomponents/templates/globalsearch.html'
 })
 export class GlobalSearch {
 

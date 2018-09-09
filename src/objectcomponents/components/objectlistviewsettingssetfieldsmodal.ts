@@ -7,7 +7,7 @@ import {multicast} from "rxjs/operator/multicast";
 
 @Component({
     selector: 'object-listview-settings-setfields-modal',
-    templateUrl: './app/objectcomponents/templates/objectlistviewsettingssetfieldsmodal.html',
+    templateUrl: './src/objectcomponents/templates/objectlistviewsettingssetfieldsmodal.html',
     host: {
         '(document:keydown)': 'this.keypressed($event)',
         '(document:keyup)': 'this.keypressed($event)'

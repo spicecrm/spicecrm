@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-bool',
-    templateUrl: './app/objectfields/templates/fieldbool.html'
+    templateUrl: './src/objectfields/templates/fieldbool.html'
 })
 export class fieldBool extends fieldGeneric{
 

@@ -12,7 +12,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-activitiytimeline-add-call',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelineaddcall.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddcall.html',
     providers: [model, view]
 })
 export class ObjectActivitiyTimelineAddCall implements OnInit {

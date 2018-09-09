@@ -7,7 +7,7 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 
 @Component({
     selector: 'global-compose-button',
-    templateUrl: './app/globalcomponents/templates/globalcomposebutton.html'
+    templateUrl: './src/globalcomponents/templates/globalcomposebutton.html'
 })
 export class GlobalComposeButton {
 

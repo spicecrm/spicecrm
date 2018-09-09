@@ -7,7 +7,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'object-action-beantomail-button',
-    templateUrl: './app/objectcomponents/templates/objectactionbeantomailbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionbeantomailbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)' : 'displayMailModal()'

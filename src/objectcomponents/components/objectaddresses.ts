@@ -24,7 +24,7 @@ export class ObjectAddressesPipe {
 
 @Component({
     selector: 'object-addresses',
-    templateUrl: './app/objectcomponents/templates/objectaddresses.html',
+    templateUrl: './src/objectcomponents/templates/objectaddresses.html',
     host: {
         '[style.display]': 'getDisplay()'
     },

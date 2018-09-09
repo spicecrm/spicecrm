@@ -7,7 +7,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-action-select-button',
-    templateUrl: './app/objectcomponents/templates/objectactionselectbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionselectbutton.html',
     providers: [model],
     host: {
         'class': 'slds-button slds-button--neutral'

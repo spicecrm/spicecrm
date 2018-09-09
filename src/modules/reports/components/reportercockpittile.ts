@@ -13,7 +13,7 @@ import {Router, ActivatedRoute}   from '@angular/router';
 
 @Component({
     selector: 'reporter-cockpit-tile',
-    templateUrl: './app/modules/reports/templates/reportercockpittile.html',
+    templateUrl: './src/modules/reports/templates/reportercockpittile.html',
     host:{
         'class': 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent'
     }

@@ -9,7 +9,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-address',
-    templateUrl: './app/objectcomponents/templates/objectaddress.html',
+    templateUrl: './src/objectcomponents/templates/objectaddress.html',
     providers: [model]
 })
 export class ObjectAddress implements OnInit{

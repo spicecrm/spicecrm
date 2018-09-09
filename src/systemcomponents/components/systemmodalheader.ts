@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-modal-header',
-    templateUrl: './app/systemcomponents/templates/systemmodalheader.html'
+    templateUrl: './src/systemcomponents/templates/systemmodalheader.html'
 })
 export class SystemModalHeader {
 

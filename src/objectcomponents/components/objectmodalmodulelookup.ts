@@ -7,7 +7,7 @@ import { metadata } from '../../services/metadata.service';
 
 @Component({
     selector: 'object-modal-module-lookup',
-    templateUrl: './app/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
     providers: [view, model, modellist],
     styles:[
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',

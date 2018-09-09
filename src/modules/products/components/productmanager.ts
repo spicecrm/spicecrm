@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/modules/products/templates/productmanager.html',
+    templateUrl: './src/modules/products/templates/productmanager.html',
     providers:[model]
 })
 export class ProductManager {

@@ -9,7 +9,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_module_actions',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitmoduleactions.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitmoduleactions.html',
 })
 export class TeleSalesCockpitModuleActions {
 

@@ -13,7 +13,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'aclterritorries-manager-territory-values',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriesmanagerterritoryvalues.html'
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritoryvalues.html'
 })
 export class ACLTerritorriesManagerTerritoryValues{
 

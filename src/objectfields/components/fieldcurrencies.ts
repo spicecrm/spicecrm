@@ -9,7 +9,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-currencies',
-    templateUrl: './app/objectfields/templates/fieldcurrencies.html'
+    templateUrl: './src/objectfields/templates/fieldcurrencies.html'
 })
 export class fieldCurrencies extends fieldGeneric{
 

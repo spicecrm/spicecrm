@@ -7,7 +7,7 @@ import {view} from '../../../services/view.service';
 
 @Component({
     selector: 'accounts-contacts-manager-list',
-    templateUrl: './app/modules/accounts/templates/accountscontactsmanagerlist.html',
+    templateUrl: './src/modules/accounts/templates/accountscontactsmanagerlist.html',
     providers: [view, model]
 })
 export class AccountsContactsManagerList {

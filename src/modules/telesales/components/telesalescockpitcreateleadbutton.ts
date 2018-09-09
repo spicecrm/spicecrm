@@ -6,7 +6,7 @@ import { language } from '../../../services/language.service';
 
 @Component({
     selector: 'tele_sales_cockpit_create_lead_button',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitcreateleadbutton.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitcreateleadbutton.html',
     providers: [model],
     host: {
         'class': 'slds-button slds-button--neutral',

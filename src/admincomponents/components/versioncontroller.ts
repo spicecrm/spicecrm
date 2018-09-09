@@ -4,7 +4,7 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'version-controller',
-    templateUrl: './app/admincomponents/templates/versioncontroller.html'
+    templateUrl: './src/admincomponents/templates/versioncontroller.html'
 })
 export class VersionControllerComponent
 {

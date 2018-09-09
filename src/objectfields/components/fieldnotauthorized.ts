@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: 'field-not-authorized',
-    templateUrl: './app/objectfields/templates/fieldnotauthorized.html'
+    templateUrl: './src/objectfields/templates/fieldnotauthorized.html'
 })
 export class fieldNotAuthorized extends fieldGeneric {
 

@@ -7,7 +7,7 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'field-model-info',
-    templateUrl: './app/objectfields/templates/fieldmodelinfo.html'
+    templateUrl: './src/objectfields/templates/fieldmodelinfo.html'
 })
 export class FieldModelInfoComponent
 {

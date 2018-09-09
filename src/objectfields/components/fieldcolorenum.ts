@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-enum',
-    templateUrl: './app/objectfields/templates/fieldColorEnum.html'
+    templateUrl: './src/objectfields/templates/fieldColorEnum.html'
 })
 export class fieldColorEnum extends fieldGeneric
 {

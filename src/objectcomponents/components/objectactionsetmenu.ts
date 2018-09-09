@@ -11,7 +11,7 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     selector: 'object-actionset-menu',
-    templateUrl: './app/objectcomponents/templates/objectactionsetmenu.html',
+    templateUrl: './src/objectcomponents/templates/objectactionsetmenu.html',
     providers: [popup, helper]
 })
 export class ObjectActionsetMenu implements  OnDestroy {

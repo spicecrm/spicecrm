@@ -10,7 +10,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'global-recent-items',
-    templateUrl: './app/globalcomponents/templates/globalrecentitems.html'
+    templateUrl: './src/globalcomponents/templates/globalrecentitems.html'
 })
 export class GlobalRecentItems {
     constructor(private language: language, navigation: navigation,private router: Router, private recent: recent){

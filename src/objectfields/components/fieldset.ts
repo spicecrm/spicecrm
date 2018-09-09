@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-set',
-    templateUrl: './app/objectfields/templates/fieldset.html',
+    templateUrl: './src/objectfields/templates/fieldset.html',
     host:{
         '[class.slds-form-element]' : 'true'
     }

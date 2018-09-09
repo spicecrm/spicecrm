@@ -8,7 +8,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     providers: [mailboxesEmails],
     selector: 'mailbox-manager',
-    templateUrl: './app/modules/mailboxes/templates/mailboxmanager.html',
+    templateUrl: './src/modules/mailboxes/templates/mailboxmanager.html',
 })
 export class MailboxManager {
     @ViewChild('mailboxdetail', {read: ViewContainerRef}) private mailboxdetail: ViewContainerRef;

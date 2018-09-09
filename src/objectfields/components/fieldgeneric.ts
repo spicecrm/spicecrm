@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-generic',
-    templateUrl: './app/objectfields/templates/fieldgeneric.html'
+    templateUrl: './src/objectfields/templates/fieldgeneric.html'
 })
 export class fieldGeneric implements OnInit
 {

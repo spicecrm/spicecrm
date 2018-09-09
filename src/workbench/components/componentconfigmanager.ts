@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 
 import {Subject} from 'rxjs';
 @Component({
-    templateUrl: './app/workbench/templates/componentconfigmanager.html'
+    templateUrl: './src/workbench/templates/componentconfigmanager.html'
 })
 export class ComponentConfigManager {
 

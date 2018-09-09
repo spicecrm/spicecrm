@@ -9,7 +9,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'global-newsfeed',
-    templateUrl: './app/globalcomponents/templates/globalnewsfeed.html',
+    templateUrl: './src/globalcomponents/templates/globalnewsfeed.html',
 
 })
 export class GlobalNewsFeed{

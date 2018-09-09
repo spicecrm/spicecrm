@@ -11,7 +11,7 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     selector: 'object-actionset-menu-container-edit',
-    templateUrl: './app/objectcomponents/templates/objectactionsetmenucontaineredit.html',
+    templateUrl: './src/objectcomponents/templates/objectactionsetmenucontaineredit.html',
 })
 export class ObjectActionsetMenuContainerEdit {
 

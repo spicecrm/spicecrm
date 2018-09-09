@@ -9,7 +9,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'home-assistant-tile',
-    templateUrl: './app/modules/home/templates/homeassistanttile.html',
+    templateUrl: './src/modules/home/templates/homeassistanttile.html',
     providers: [model, view]
 })
 export class HomeAssistantTile implements OnInit {

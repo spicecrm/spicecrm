@@ -6,7 +6,7 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-action-container',
-    templateUrl: './app/objectcomponents/templates/objectactioncontainer.html',
+    templateUrl: './src/objectcomponents/templates/objectactioncontainer.html',
     //styles: [
     //    ':host  >>>.slds-button-group .slds-button:nth-child(2) {border-radius: .25rem 0 0 .25rem;}'
     //]

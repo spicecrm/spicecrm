@@ -21,7 +21,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-tree',
-    templateUrl: './app/modules/products/templates/productbrowsertree.html'
+    templateUrl: './src/modules/products/templates/productbrowsertree.html'
 })
 export class ProductBrowserTree {
 

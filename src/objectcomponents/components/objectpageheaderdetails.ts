@@ -19,7 +19,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-page-header-details',
-    templateUrl: './app/objectcomponents/templates/objectpageheaderdetails.html',
+    templateUrl: './src/objectcomponents/templates/objectpageheaderdetails.html',
 
 })
 export class ObjectPageHeaderDetails implements OnInit{

@@ -8,7 +8,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-list-header-actionmenu',
-    templateUrl: './app/objectcomponents/templates/objectlistheaderactionmenu.html'
+    templateUrl: './src/objectcomponents/templates/objectlistheaderactionmenu.html'
 })
 export class ObjectListHeaderActionMenu {
 

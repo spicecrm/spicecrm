@@ -6,7 +6,7 @@ import {activitiyTimeLineService} from '../../services/activitiytimeline.service
 
 @Component({
     selector: 'object-activitiytimeline-add-container',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelineaddcontainer.html'
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddcontainer.html'
 })
 export class ObjectActivitiyTimelineAddContainer implements OnInit{
 

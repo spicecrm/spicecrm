@@ -12,7 +12,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-select',
-    templateUrl: './app/systemcomponents/templates/systemselect.html'
+    templateUrl: './src/systemcomponents/templates/systemselect.html'
 })
 export class SystemSelect implements OnChanges {
     @Input() selectList: any = [];

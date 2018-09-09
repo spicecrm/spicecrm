@@ -6,7 +6,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component( {
     selector: 'questionset-render-binary-single-multi',
-    templateUrl: './app/modules/questionnaires/templates/questionsetrenderbinarysinglemulti.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetrenderbinarysinglemulti.html',
     styles: [
         'td.binary-left-text, td.binary-right-radio { border-right-width: 0; }',
         'td.binary-right-text, td.binary-left-radio { border-left-width: 0; }',

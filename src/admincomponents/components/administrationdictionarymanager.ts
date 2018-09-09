@@ -17,7 +17,7 @@ declare var SpiceCRM: any;
 
 @Component({
     selector: '[administration-dictionarymanager-item-field]',
-    templateUrl: './app/admincomponents/templates/administrationdictionarymanageritemfield.html'
+    templateUrl: './src/admincomponents/templates/administrationdictionarymanageritemfield.html'
 })
 export class AdministrationDictionaryManagerItemField implements AfterViewInit, OnInit {
     @Input() field: string = "";
@@ -68,7 +68,7 @@ export class AdministrationDictionaryManagerItemField implements AfterViewInit, 
 
 @Component({
     selector: 'administration-dictionarymanager',
-    templateUrl: './app/admincomponents/templates/administrationdictionarymanager.html',
+    templateUrl: './src/admincomponents/templates/administrationdictionarymanager.html',
     providers: [dictionary]
 })
 export class AdministrationDictionaryManager implements AfterViewInit {
@@ -97,7 +97,7 @@ export class AdministrationDictionaryManager implements AfterViewInit {
 
 @Component({
     selector: '[administration-dictionarymanager-item]',
-    templateUrl: './app/admincomponents/templates/administrationdictionarymanageritem.html'
+    templateUrl: './src/admincomponents/templates/administrationdictionarymanageritem.html'
 })
 export class AdministrationDictionaryManagerItem implements AfterViewInit, OnInit {
     @Input() item: any = {};

@@ -5,7 +5,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-dynamicroute-container',
-    templateUrl: './app/systemcomponents/templates/systemdynamicroutecontainer.html'
+    templateUrl: './src/systemcomponents/templates/systemdynamicroutecontainer.html'
 })
 export class SystemDynamicRouteContainer implements AfterViewInit{
 

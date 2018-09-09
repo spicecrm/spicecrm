@@ -8,7 +8,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-status-network-button',
-    templateUrl: './app/objectcomponents/templates/objectstatusnetworkbutton.html'
+    templateUrl: './src/objectcomponents/templates/objectstatusnetworkbutton.html'
 })
 export class ObjectStatusNetworkButton implements OnInit{
 

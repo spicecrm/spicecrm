@@ -7,7 +7,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'global-header-favorite',
-    templateUrl: './app/globalcomponents/templates/globalheaderfavorite.html',
+    templateUrl: './src/globalcomponents/templates/globalheaderfavorite.html',
     providers: [popup],
     styles: [
         ':host >>> .spicecrm-favorite--inactive svg {fill: transparent; stroke: grey;}',

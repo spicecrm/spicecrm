@@ -20,7 +20,7 @@ interface menuItem {
 
 @Component({
     selector: 'global-navigation-menu-item',
-    templateUrl: './app/globalcomponents/templates/globalnavigationmenuitem.html',
+    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitem.html',
     host: {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()',

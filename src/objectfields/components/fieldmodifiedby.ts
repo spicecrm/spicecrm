@@ -9,7 +9,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'field-generic',
-    templateUrl: './app/objectfields/templates/fieldmodifiedby.html'
+    templateUrl: './src/objectfields/templates/fieldmodifiedby.html'
 })
 export class fieldModifiedBy extends fieldRelate
 {

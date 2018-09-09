@@ -5,7 +5,7 @@ import { view } from '../../../services/view.service';
 
 @Component({
     selector: 'questions-manager-edit-multi',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanagereditmulti.html'
+    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditmulti.html'
 })
 export class QuestionsManagerEditMulti implements OnInit {
 

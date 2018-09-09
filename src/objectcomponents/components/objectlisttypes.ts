@@ -7,7 +7,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-list-types',
-    templateUrl: './app/objectcomponents/templates/objectlisttypes.html'
+    templateUrl: './src/objectcomponents/templates/objectlisttypes.html'
 })
 export class ObjectListTypes{
 

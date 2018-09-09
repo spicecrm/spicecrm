@@ -10,7 +10,7 @@ import { model } from '../../services/model.service';
 
 @Component({
     selector: '[global-search-module-item]',
-    templateUrl: './app/globalcomponents/templates/globalsearchmoduleitem.html',
+    templateUrl: './src/globalcomponents/templates/globalsearchmoduleitem.html',
     providers:[view, model]
 })
 export class GlobalSearchModuleItem implements OnInit{

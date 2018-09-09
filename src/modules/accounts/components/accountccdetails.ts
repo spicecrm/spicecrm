@@ -6,7 +6,7 @@ import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: './app/modules/accounts/templates/accountccdetails.html',
+    templateUrl: './src/modules/accounts/templates/accountccdetails.html',
     providers: [view]
 })
 export class AccountCCDetails implements OnInit {

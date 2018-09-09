@@ -19,7 +19,7 @@ import {view} from '../../services/view.service';
 import {Subject} from 'rxjs';
 @Component({
     selector: 'workbench-config-option-actionset',
-    templateUrl: './app/workbench/templates/workbenchconfigoptionactionset.html'
+    templateUrl: './src/workbench/templates/workbenchconfigoptionactionset.html'
 })
 export class WorkbenchConfigOptionActionset implements OnInit {
 

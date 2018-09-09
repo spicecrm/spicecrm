@@ -17,7 +17,7 @@ import {popup} from '../../services/popup.service';
 
 @Component({
     selector: 'object-select-button',
-    templateUrl: './app/objectcomponents/templates/objectselectbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectselectbutton.html',
     providers: [model, popup]
 })
 export class ObjectSelectButton implements OnInit {

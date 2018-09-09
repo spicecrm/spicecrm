@@ -11,7 +11,7 @@ import {fieldSelectTree} from "./fieldselecttree";
 
 @Component({
     selector: 'select-tree-tree',
-    templateUrl: './app/objectfields/templates/fieldselecttreetree.html'
+    templateUrl: './src/objectfields/templates/fieldselecttreetree.html'
 })
 export class fieldSelectTreeTree
 {

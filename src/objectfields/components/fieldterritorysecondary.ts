@@ -27,7 +27,7 @@ export class fieldTerritorySecondaryPipe {
 
 
 @Component({
-    templateUrl: './app/objectfields/templates/fieldterritorysecondary.html',
+    templateUrl: './src/objectfields/templates/fieldterritorysecondary.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldTerritorySecondary extends fieldGeneric {

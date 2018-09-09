@@ -3,7 +3,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-button-icon',
-    templateUrl: './app/systemcomponents/templates/systembuttonicon.html'
+    templateUrl: './src/systemcomponents/templates/systembuttonicon.html'
 })
 export class SystemButtonIcon {
     @Input() icon: string = '';

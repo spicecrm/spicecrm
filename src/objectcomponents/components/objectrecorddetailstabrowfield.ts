@@ -8,7 +8,7 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-record-details-tab-row-field',
-    templateUrl: './app/objectcomponents/templates/objectrecorddetailstabrowfield.html'
+    templateUrl: './src/objectcomponents/templates/objectrecorddetailstabrowfield.html'
 })
 export class ObjectRecordDetailsTabRowField {
 

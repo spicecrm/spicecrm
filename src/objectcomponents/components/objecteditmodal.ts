@@ -15,7 +15,7 @@ import {metadata} from '../../services/metadata.service';
 
 
 @Component({
-    templateUrl: './app/objectcomponents/templates/objecteditmodal.html',
+    templateUrl: './src/objectcomponents/templates/objecteditmodal.html',
     providers: [view]
 })
 export class ObjectEditModal implements OnInit {

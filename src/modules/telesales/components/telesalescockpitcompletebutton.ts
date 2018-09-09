@@ -9,7 +9,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_complete_button',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitccompletebutton.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitccompletebutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)': 'complete()'

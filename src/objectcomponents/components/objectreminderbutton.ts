@@ -10,7 +10,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-reminder-button',
-    templateUrl: './app/objectcomponents/templates/objectreminderbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectreminderbutton.html',
     providers: [popup]
 })
 export class ObjectReminderButton {

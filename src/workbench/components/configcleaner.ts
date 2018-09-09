@@ -11,7 +11,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'language-label-manager',
-    templateUrl: './app/workbench/templates/configcleaner.html',
+    templateUrl: './src/workbench/templates/configcleaner.html',
 })
 export class ConfigCleaner
 {

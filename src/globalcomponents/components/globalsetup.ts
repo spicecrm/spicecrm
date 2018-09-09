@@ -11,7 +11,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'global-setup',
-    templateUrl: './app/globalcomponents/templates/globalsetup.html'
+    templateUrl: './src/globalcomponents/templates/globalsetup.html'
 })
 export class GlobalSetup {
     systemid: string = '000';

@@ -7,7 +7,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-action-duplicate-button',
-    templateUrl: './app/objectcomponents/templates/objectactionduplicatebutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionduplicatebutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)': 'this.duplicateModel()'

@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'fieldsetmanager-copy-dialog',
-    templateUrl: './app/workbench/templates/fieldsetmanagercopydialog.html'
+    templateUrl: './src/workbench/templates/fieldsetmanagercopydialog.html'
 })
 export class FieldsetManagerCopyDialog implements OnInit{
 

@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-utility-icon',
-    templateUrl: './app/systemcomponents/templates/systemutilityicon.html'
+    templateUrl: './src/systemcomponents/templates/systemutilityicon.html'
 })
 export class SystemUtilityIcon
 {

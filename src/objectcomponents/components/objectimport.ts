@@ -13,7 +13,7 @@ declare var _: any;
 
 @Component({
     selector: 'object-import',
-    templateUrl: './app/objectcomponents/templates/objectimport.html',
+    templateUrl: './src/objectcomponents/templates/objectimport.html',
     providers: [model, objectimport],
     styles: [
         ':host >>> .slds-progress__marker global-button-icon svg {fill:#CA1B1F}',

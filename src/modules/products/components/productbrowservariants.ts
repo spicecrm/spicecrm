@@ -21,7 +21,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-variants',
-    templateUrl: './app/modules/products/templates/productbrowservariants.html',
+    templateUrl: './src/modules/products/templates/productbrowservariants.html',
     host:{
         'style' : '{height: 100%}'
     }

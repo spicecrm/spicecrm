@@ -9,7 +9,7 @@ import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'object-relatedlist-files',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistfiles.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistfiles.html',
     providers: [modelattachments],
     host: {
         '(drop)': 'this.onDrop($event)',

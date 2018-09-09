@@ -14,7 +14,7 @@ declare var SignaturePad:any;
  */
 @Component({
     selector: 'field-signature',
-    templateUrl: './app/objectfields/templates/fieldsignature.html'
+    templateUrl: './src/objectfields/templates/fieldsignature.html'
 })
 export class FieldSignatureComponent extends fieldGeneric
 {

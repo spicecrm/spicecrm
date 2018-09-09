@@ -3,7 +3,7 @@ import {mediafiles} from '../../../services/mediafiles.service';
 
 @Component({
     selector: 'media-file-image',
-    templateUrl: './app/modules/mediafiles/templates/mediafileimage.html',
+    templateUrl: './src/modules/mediafiles/templates/mediafileimage.html',
     providers: [ mediafiles ],
     styles: [
         'img.withFrameHeight { position:absolute; top:0; left:0; bottom:0; right:0; margin:auto; }'

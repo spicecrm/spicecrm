@@ -7,7 +7,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclterritorries-typesmanager-type-elements',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriestypesmanagertypeelements.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanagertypeelements.html',
 })
 export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges{
 

@@ -3,7 +3,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-collapsable-tab',
-    templateUrl: './app/systemcomponents/templates/systemcollapsabletab.html'
+    templateUrl: './src/systemcomponents/templates/systemcollapsabletab.html'
 })
 export class SystemCollabsableTab {
 

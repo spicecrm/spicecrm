@@ -16,7 +16,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'object-recordview-detail-split',
-    templateUrl: './app/objectcomponents/templates/objectrecordviewdetailsplit.html'
+    templateUrl: './src/objectcomponents/templates/objectrecordviewdetailsplit.html'
 
 })
 export class ObjectRecordViewDetailsplit implements AfterViewInit, OnInit, OnDestroy {

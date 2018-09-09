@@ -18,7 +18,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'aclobjects-manager-add-object-modal',
-    templateUrl: './app/modules/acl/templates/aclobjectsmanageraddobjectmodal.html',
+    templateUrl: './src/modules/acl/templates/aclobjectsmanageraddobjectmodal.html',
     providers: [model, view]
 })
 export class ACLObjectsManagerAddObjectModal implements OnInit{

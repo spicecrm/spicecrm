@@ -7,7 +7,7 @@ import {
 import {language} from '../../services/language.service';
 
 @Component({
-    templateUrl: './app/objectcomponents/templates/objectgdprmodal.html'
+    templateUrl: './src/objectcomponents/templates/objectgdprmodal.html'
 })
 export class ObjectGDPRModal
 {

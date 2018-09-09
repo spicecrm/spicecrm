@@ -5,7 +5,7 @@ import { metadata } from '../../services/metadata.service';
 
 @Component({
     selector: 'object-activitiytimeline-email',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelineemail.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelineemail.html',
     providers:[model, view]
 })
 export class ObjectActivitiyTimelineEmail implements OnInit{

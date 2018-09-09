@@ -8,7 +8,7 @@ declare var _;
  */
 @Component({
     selector: 'system-card',
-    templateUrl: './app/systemcomponents/templates/card.html',
+    templateUrl: './src/systemcomponents/templates/card.html',
 })
 export class SystemCard
 {

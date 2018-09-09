@@ -8,7 +8,7 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 
 @Component({
     selector: 'global-header-action-item',
-    templateUrl: './app/globalcomponents/templates/globalheaderactionitem.html',
+    templateUrl: './src/globalcomponents/templates/globalheaderactionitem.html',
     providers: [model]
 })
 export class GlobalHeaderActionItem implements OnInit {

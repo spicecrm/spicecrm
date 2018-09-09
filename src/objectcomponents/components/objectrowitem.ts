@@ -8,7 +8,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-row-item]',
-    templateUrl: './app/objectcomponents/templates/objectrowitem.html',
+    templateUrl: './src/objectcomponents/templates/objectrowitem.html',
     providers: [model, view],
 })
 /**

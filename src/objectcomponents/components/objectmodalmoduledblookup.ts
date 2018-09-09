@@ -15,7 +15,7 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'object-modal-module-db-lookup',
-    templateUrl: './app/objectcomponents/templates/objectmodalmodulelookup.html',
+    templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
     providers: [view, model, modellist]
 })
 export class ObjectModalModuleDBLookup implements OnInit {

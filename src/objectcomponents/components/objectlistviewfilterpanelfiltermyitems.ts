@@ -15,7 +15,7 @@ import {listfilters} from '../services/listfilters.service';
 
 @Component({
     selector: 'object-listview-filter-panel-filter-myitems',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelfiltermyitems.html',
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfiltermyitems.html',
     host: {
         '(click)': 'this.onClick()',
         '(document:click)': 'this.onDocumentClick($event)'

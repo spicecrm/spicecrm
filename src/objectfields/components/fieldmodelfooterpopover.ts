@@ -5,7 +5,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-model-footer-popover',
-    templateUrl: './app/objectfields/templates/fieldmodelfooterpopover.html',
+    templateUrl: './src/objectfields/templates/fieldmodelfooterpopover.html',
     providers: [model, view]
 })
 export class fieldModelFooterPopover implements OnInit{

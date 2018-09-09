@@ -16,7 +16,7 @@ import {footer} from '../../../services/footer.service';
 
 @Component({
     selector: 'reporter-field-container',
-    templateUrl: './app/modules/reports/templates/reporterfieldcontainer.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html'
 })
 export class ReporterFieldContainer implements OnInit{
 

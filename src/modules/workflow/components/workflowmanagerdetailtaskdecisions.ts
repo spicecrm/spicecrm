@@ -18,7 +18,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 @Component({
     selector: 'workflow-manager-detail-taskdecisions',
-    templateUrl: './app/modules/workflow/templates/workflowmanagerdetailtaskdecisions.html',
+    templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtaskdecisions.html',
 })
 export class WorkflowManagerDetailTaskDecisions{
 

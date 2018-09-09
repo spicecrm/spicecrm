@@ -7,7 +7,7 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: './app/objectcomponents/templates/objectactionoutputbeanbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionoutputbeanbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)' : 'openModal()'

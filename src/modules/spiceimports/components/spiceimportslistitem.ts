@@ -5,7 +5,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 @Component({
     selector: 'spice-imports-list-item',
-    templateUrl: './app/modules/spiceimports/templates/spiceimportslistitem.html',
+    templateUrl: './src/modules/spiceimports/templates/spiceimportslistitem.html',
 })
 export class SpiceImportsListItem {
 

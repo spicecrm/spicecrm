@@ -16,7 +16,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'product-variants-attributes-table',
-    templateUrl: './app/modules/products/templates/productvariantsattributestable.html'
+    templateUrl: './src/modules/products/templates/productvariantsattributestable.html'
 })
 export class ProductVariantsAttributesTable implements OnInit, OnDestroy {
 

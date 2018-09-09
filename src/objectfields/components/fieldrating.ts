@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-rating',
-    templateUrl: './app/objectfields/templates/fieldrating.html'
+    templateUrl: './src/objectfields/templates/fieldrating.html'
 })
 export class fieldRating extends fieldGeneric
 {

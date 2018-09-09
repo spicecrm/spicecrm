@@ -19,7 +19,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 import {view} from "../../../services/view.service";
 
 @Component({
-    templateUrl: './app/modules/acl/templates/aclprofilesmanageraddprofilemodal.html',
+    templateUrl: './src/modules/acl/templates/aclprofilesmanageraddprofilemodal.html',
     providers: [model, view]
 })
 export class ACLProfilesManagerAddProfileModal {

@@ -22,7 +22,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-text-generator',
-    templateUrl: './app/modules/products/templates/producttextgenerator.html'
+    templateUrl: './src/modules/products/templates/producttextgenerator.html'
 })
 export class ProductTextGenerator {
 

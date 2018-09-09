@@ -9,7 +9,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-title',
-    templateUrl: './app/objectfields/templates/fieldtitle.html'
+    templateUrl: './src/objectfields/templates/fieldtitle.html'
 })
 export class fieldTitle extends fieldGeneric {
     private isValid: boolean = true;

@@ -19,7 +19,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'aclobjects-manager-object',
-    templateUrl: './app/modules/acl/templates/aclobjectsmanagerobject.html',
+    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobject.html',
     providers: [model]
 })
 export class ACLObjectsManagerObject implements OnChanges {

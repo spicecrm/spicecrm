@@ -6,7 +6,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'tasks-assistant-tile-close',
-    templateUrl: './app/modules/activities/templates/tasksassitanttileclose.html',
+    templateUrl: './src/modules/activities/templates/tasksassitanttileclose.html',
 })
 export class TasksAssitantTileClose {
 

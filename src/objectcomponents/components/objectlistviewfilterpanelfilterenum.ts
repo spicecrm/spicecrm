@@ -5,7 +5,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-listview-filter-panel-filter-enum',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelfilterenum.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilterenum.html'
 })
 export class ObjectListViewFilterPanelFilterEnum implements OnInit {
     @Input() filter: any = {};

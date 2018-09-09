@@ -18,7 +18,7 @@ import {language} from '../../services/language.service';
 import {Subject} from 'rxjs';
 
 @Component({
-    templateUrl: './app/workbench/templates/dictionarymanager.html',
+    templateUrl: './src/workbench/templates/dictionarymanager.html',
     providers: [metadata]
 })
 export class DictionaryManager {

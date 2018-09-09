@@ -10,7 +10,7 @@ declare var _;
  */
 @Component({
     selector: 'system-checkbox',
-    templateUrl: './app/systemcomponents/templates/checkbox.html',
+    templateUrl: './src/systemcomponents/templates/checkbox.html',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,

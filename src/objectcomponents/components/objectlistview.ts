@@ -9,7 +9,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'object-listview',
-    templateUrl: './app/objectcomponents/templates/objectlistview.html',
+    templateUrl: './src/objectcomponents/templates/objectlistview.html',
     providers: [modellist, model]
 })
 export class ObjectListView implements OnInit, AfterViewInit {

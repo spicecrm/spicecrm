@@ -12,7 +12,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-account-list',
-    templateUrl: './app/modules/leads/templates/leadconvertaccountlist.html'
+    templateUrl: './src/modules/leads/templates/leadconvertaccountlist.html'
 })
 export class LeadConvertAccountList {
 

@@ -7,7 +7,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-action-delete-button',
-    templateUrl: './app/objectcomponents/templates/objectactiondeletebutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactiondeletebutton.html',
     providers: [helper],
     host: {
         'class': 'slds-button slds-button--neutral',

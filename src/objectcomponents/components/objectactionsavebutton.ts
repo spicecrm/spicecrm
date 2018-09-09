@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-action-save-button',
-    templateUrl: './app/objectcomponents/templates/objectactionsavebutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionsavebutton.html',
     host: {
         'class': 'slds-button slds-button--brand',
         '(click)': 'this.saveModel()'

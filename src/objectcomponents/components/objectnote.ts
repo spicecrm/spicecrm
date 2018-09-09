@@ -11,7 +11,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-note',
-    templateUrl: './app/objectcomponents/templates/objectnote.html'
+    templateUrl: './src/objectcomponents/templates/objectnote.html'
 })
 export class ObjectNote implements OnInit {
 

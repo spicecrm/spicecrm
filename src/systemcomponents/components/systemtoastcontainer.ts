@@ -3,7 +3,7 @@ import {toast} from '../../services/toast.service';
 
 @Component({
     selector: 'system-toast-container',
-    templateUrl: './app/systemcomponents/templates/systemtoastcontainer.html'
+    templateUrl: './src/systemcomponents/templates/systemtoastcontainer.html'
 })
 export class SystemToastContainer {
 

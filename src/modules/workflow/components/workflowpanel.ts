@@ -13,7 +13,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'workflow-panel',
-    templateUrl: './app/modules/workflow/templates/workflowpanel.html',
+    templateUrl: './src/modules/workflow/templates/workflowpanel.html',
     providers: [workflow]
 })
 export class WorkflowPanel implements OnInit, OnDestroy{

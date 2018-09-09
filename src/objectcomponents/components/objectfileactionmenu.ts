@@ -7,7 +7,7 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'object-file-action-menu',
-    templateUrl: './app/objectcomponents/templates/objectfileactionmenu.html',
+    templateUrl: './src/objectcomponents/templates/objectfileactionmenu.html',
     providers: [popup]
 })
 export class ObjectFileActionMenu {

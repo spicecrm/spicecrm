@@ -21,7 +21,7 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 @Component({
     selector: 'administration-ftsmanager-fields',
-    templateUrl: './app/admincomponents/templates/administrationftsmanagerfields.html'
+    templateUrl: './src/admincomponents/templates/administrationftsmanagerfields.html'
 })
 export class AdministrationFTSManagerFields {
 

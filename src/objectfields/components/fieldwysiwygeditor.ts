@@ -7,7 +7,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-wysiwyg-editor',
-    templateUrl: './app/objectfields/templates/fieldwysiwygeditor.html',
+    templateUrl: './src/objectfields/templates/fieldwysiwygeditor.html',
 })
 export class fieldWYSIWYGEditor implements AfterViewInit{
     @ViewChild('editor', {read: ViewContainerRef}) editor: ViewContainerRef;

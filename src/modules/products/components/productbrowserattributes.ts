@@ -18,7 +18,7 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attributes',
-    templateUrl: './app/modules/products/templates/productbrowserattributes.html'
+    templateUrl: './src/modules/products/templates/productbrowserattributes.html'
 })
 export class ProductBrowserAttributes {
 

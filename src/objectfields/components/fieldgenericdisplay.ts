@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-generic-display',
-    templateUrl: './app/objectfields/templates/fieldgenericdisplay.html'
+    templateUrl: './src/objectfields/templates/fieldgenericdisplay.html'
 })
 export class fieldGenericDisplay
 {

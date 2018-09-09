@@ -14,7 +14,7 @@ import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: './app/workbench/templates/fieldsetmanager.html',
+    templateUrl: './src/workbench/templates/fieldsetmanager.html',
     providers: [metadata, view]
 })
 export class FieldsetManager {

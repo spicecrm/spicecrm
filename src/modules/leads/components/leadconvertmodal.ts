@@ -5,7 +5,7 @@ import { language } from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-modal',
-    templateUrl: './app/modules/leads/templates/leadconvertmodal.html'
+    templateUrl: './src/modules/leads/templates/leadconvertmodal.html'
 })
 export class LeadConvertModal {
 

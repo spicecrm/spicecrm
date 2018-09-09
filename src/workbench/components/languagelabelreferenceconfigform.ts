@@ -11,7 +11,7 @@ declare var _;
 
 @Component({
     selector: 'language-label-reference-config-form',
-    templateUrl: './app/workbench/templates/languagelabelreferenceconfigform.html',
+    templateUrl: './src/workbench/templates/languagelabelreferenceconfigform.html',
 })
 export class LanguageLabelReferenceConfigForm extends BasicReferenceForm
 {

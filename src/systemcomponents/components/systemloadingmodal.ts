@@ -5,7 +5,7 @@ import {
 import {language} from '../../services/language.service';
 
 @Component({
-    templateUrl: './app/systemcomponents/templates/systemloadingmodal.html'
+    templateUrl: './src/systemcomponents/templates/systemloadingmodal.html'
 })
 export class SystemLoadingModal {
 

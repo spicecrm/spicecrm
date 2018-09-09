@@ -19,7 +19,7 @@ import {Subject} from 'rxjs';
 import {view} from "../../services/view.service";
 @Component({
     selector: 'workbench-config-option-boolean',
-    templateUrl: './app/workbench/templates/workbenchconfigoptionboolean.html'
+    templateUrl: './src/workbench/templates/workbenchconfigoptionboolean.html'
 })
 export class WorkbenchConfigOptionBoolean implements OnInit {
 

@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
     selector: '[system-table-stencils]',
-    templateUrl: './app/systemcomponents/templates/systemtablestencils.html'
+    templateUrl: './src/systemcomponents/templates/systemtablestencils.html'
 })
 export class SystemTableStencils implements OnInit{
 

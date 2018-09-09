@@ -10,7 +10,7 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-service-category-tree',
-    templateUrl: './app/objectfields/templates/fieldcategorytree.html'
+    templateUrl: './src/objectfields/templates/fieldcategorytree.html'
 })
 export class fieldServiceCategoryTree
 {

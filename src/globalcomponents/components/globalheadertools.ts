@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-header-tools',
-    templateUrl: './app/globalcomponents/templates/globalheadertools.html'
+    templateUrl: './src/globalcomponents/templates/globalheadertools.html'
 })
 export class GlobalHeaderTools implements AfterViewInit{
 

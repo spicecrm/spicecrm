@@ -15,7 +15,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-container-body',
-    templateUrl: './app/modules/dashboard/templates/dashboardcontainerbody.html',
+    templateUrl: './src/modules/dashboard/templates/dashboardcontainerbody.html',
     styles: [
         `.slds-button--icon {color: #eeeeee}
         .slds-button--icon:hover {color: #5B5B5B}`

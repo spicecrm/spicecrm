@@ -10,7 +10,7 @@ declare var _;
 
 @Component({
     selector: 'contact-cc-details',
-    templateUrl: './app/modules/accounts/templates/contactccdetails.html',
+    templateUrl: './src/modules/accounts/templates/contactccdetails.html',
     providers: [view]
 })
 export class ContactCCDetails implements OnInit {

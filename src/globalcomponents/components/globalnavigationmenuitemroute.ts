@@ -29,7 +29,7 @@ interface menuItem {
 
 @Component({
     selector: 'global-navigation-menu-item-route',
-    templateUrl: './app/globalcomponents/templates/globalnavigationmenuitemroute.html'
+    templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemroute.html'
 })
 export class GlobalNavigationMenuItemRoute {
     clickListener: any;

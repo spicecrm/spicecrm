@@ -6,7 +6,7 @@ import {modellist} from '../../services/modellist.service';
 
 @Component({
     selector: 'object-list',
-    templateUrl: './app/objectcomponents/templates/objectlist.html'
+    templateUrl: './src/objectcomponents/templates/objectlist.html'
 })
 export class ObjectList implements OnDestroy{
 

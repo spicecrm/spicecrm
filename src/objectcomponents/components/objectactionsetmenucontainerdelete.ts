@@ -10,7 +10,7 @@ import {view} from '../../services/view.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: './app/objectcomponents/templates/objectactionsetmenucontainerdelete.html',
+    templateUrl: './src/objectcomponents/templates/objectactionsetmenucontainerdelete.html',
 })
 export class ObjectActionsetMenuContainerDelete {
 

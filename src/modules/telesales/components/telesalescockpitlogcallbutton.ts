@@ -9,7 +9,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_log_call_button',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitlogcallbutton.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitlogcallbutton.html',
     host: {
         'class': 'slds-button slds-button--brand',
         '(click)': 'logCall()'

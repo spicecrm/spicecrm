@@ -12,7 +12,7 @@ import {activitiyTimeLineService} from '../../services/activitiytimeline.service
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelinesummarymodal.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinesummarymodal.html',
     providers: [activitiyTimeLineService, model]
 })
 export class ObjectActivitiyTimelineSummaryModal implements OnInit {

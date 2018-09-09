@@ -13,7 +13,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-detail-presentation-standard',
-    templateUrl: './app/modules/reports/templates/reporterdetailpresentationstandard.html'
+    templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html'
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
 

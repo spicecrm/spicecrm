@@ -7,7 +7,7 @@ import {broadcast} from "../../../services/broadcast.service";
 
 
 @Component({
-    templateUrl: './app/modules/acl/templates/acltypesmanager.html',
+    templateUrl: './src/modules/acl/templates/acltypesmanager.html',
 })
 export class ACLTypesManager {
 

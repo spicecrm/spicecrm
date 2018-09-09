@@ -8,7 +8,7 @@ import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
 
 @Component({
     selector: 'questions-manager',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanager.html'
+    templateUrl: './src/modules/questionnaires/templates/questionsmanager.html'
 })
 export class QuestionsManager implements OnInit {
 

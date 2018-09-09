@@ -10,7 +10,7 @@ import {activitiyTimeLineService} from '../../../services/activitiytimeline.serv
 
 @Component({
     selector: 'service-add-ticket-button',
-    templateUrl: './app/modules/servicecomponents/templates/serviceaddticketbutton.html',
+    templateUrl: './src/modules/servicecomponents/templates/serviceaddticketbutton.html',
     providers: [model]
 })
 export class ServiceAddTicketButton {

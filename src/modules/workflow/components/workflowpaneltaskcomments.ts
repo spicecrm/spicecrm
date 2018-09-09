@@ -13,7 +13,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'workflow-panel-task-comments',
-    templateUrl: './app/modules/workflow/templates/workflowpaneltaskcomments.html'
+    templateUrl: './src/modules/workflow/templates/workflowpaneltaskcomments.html'
 
 })
 export class WorkflowPanelTaskComments{

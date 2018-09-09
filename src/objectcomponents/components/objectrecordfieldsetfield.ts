@@ -6,7 +6,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-record-fieldset-field',
-    templateUrl: './app/objectcomponents/templates/objectrecordfieldsetfield.html'
+    templateUrl: './src/objectcomponents/templates/objectrecordfieldsetfield.html'
 })
 export class ObjectRecordFieldsetField{
 

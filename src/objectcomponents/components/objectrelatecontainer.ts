@@ -9,7 +9,7 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-tab-container',
-    templateUrl: './app/objectcomponents/templates/objectrelatecontainer.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatecontainer.html'
 })
 export class ObjectRelateContainer implements AfterViewInit, OnDestroy {
     @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;

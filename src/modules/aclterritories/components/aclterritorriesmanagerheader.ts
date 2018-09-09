@@ -3,7 +3,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'aclterritorries-manager-header',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriesmanagerheader.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerheader.html',
 })
 export class ACLTerritorriesManagerHeader {
 

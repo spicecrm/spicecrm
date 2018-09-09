@@ -12,7 +12,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-sendgrid-traffic-manager",
-    templateUrl: "./app/workbench/templates/mailboxessendgridtrafficmanager.html",
+    templateUrl: "./src/workbench/templates/mailboxessendgridtrafficmanager.html",
 })
 export class MailboxesSendgridTrafficManager implements OnInit {
 

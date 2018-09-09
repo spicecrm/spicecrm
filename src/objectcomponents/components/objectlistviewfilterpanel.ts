@@ -15,7 +15,7 @@ import {listfilters} from '../services/listfilters.service';
 
 @Component({
     selector: 'object-listview-filter-panel',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanel.html',
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
     providers: [listfilters]
 })
 export class ObjectListViewFilterPanel {

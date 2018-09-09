@@ -3,7 +3,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'questionset-preview',
-    templateUrl: './app/modules/questionnaires/templates/questionsetpreview.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetpreview.html',
 })
 export class QuestionsetPreview {
 

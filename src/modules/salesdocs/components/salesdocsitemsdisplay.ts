@@ -17,7 +17,7 @@ import { userpreferences } from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'salesdocs-items-display',
-    templateUrl: './app/modules/salesdocs/templates/salesdocsitemsdisplay.html'
+    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsdisplay.html'
 })
 export class SalesDocsItemsDisplay {
 

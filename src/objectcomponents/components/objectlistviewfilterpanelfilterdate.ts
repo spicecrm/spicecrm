@@ -4,7 +4,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-listview-filter-panel-filter-date',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelfilterdate.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilterdate.html'
 })
 export class ObjectListViewFilterPanelFilterDate implements OnInit
 {

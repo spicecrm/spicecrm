@@ -10,7 +10,7 @@ import {AppDataService} from "../../services/appdata.service";
 
 @Component({
     selector: 'validationrules-conditions',
-    templateUrl: './app/workbench/templates/validationrulesconditions.html',
+    templateUrl: './src/workbench/templates/validationrulesconditions.html',
 })
 export class ValidationRulesConditions implements OnInit
 {

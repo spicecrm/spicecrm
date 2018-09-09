@@ -3,7 +3,7 @@ import {toast} from '../../services/toast.service';
 
 @Component({
     selector: 'system-component-container',
-    templateUrl: './app/systemcomponents/templates/systemcomponentcontainer.html'
+    templateUrl: './src/systemcomponents/templates/systemcomponentcontainer.html'
 })
 export class SystemComponentContainer implements AfterViewInit{
 

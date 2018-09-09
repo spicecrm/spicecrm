@@ -19,7 +19,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item-enum',
-    templateUrl: './app/modules/reports/templates/reporterfilteritemenum.html'
+    templateUrl: './src/modules/reports/templates/reporterfilteritemenum.html'
 })
 export class ReporterFilterItemEnum implements OnInit {
 

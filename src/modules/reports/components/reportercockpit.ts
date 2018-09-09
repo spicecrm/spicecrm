@@ -12,7 +12,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'reporter-cockpit',
-    templateUrl: './app/modules/reports/templates/reportercockpit.html'
+    templateUrl: './src/modules/reports/templates/reportercockpit.html'
 })
 export class ReporterCockpit {
 

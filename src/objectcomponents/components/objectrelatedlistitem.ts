@@ -10,7 +10,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-related-list-item]',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistitem.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistitem.html',
     providers: [model, view]
 })
 export class ObjectRelatedListItem implements OnInit {

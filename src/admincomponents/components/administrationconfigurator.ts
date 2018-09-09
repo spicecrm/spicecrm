@@ -14,7 +14,7 @@ import {administrationconfigurator} from '../services/administrationconfigurator
 
 @Component({
     selector: 'administration-configurator',
-    templateUrl: './app/admincomponents/templates/administrationconfigurator.html',
+    templateUrl: './src/admincomponents/templates/administrationconfigurator.html',
     providers: [administrationconfigurator]
 })
 export class AdministrationConfigurator implements OnInit {

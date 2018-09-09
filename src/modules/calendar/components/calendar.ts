@@ -9,7 +9,7 @@ import {calendar} from '../services/calendar.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/modules/calendar/templates/calendar.html',
+    templateUrl: './src/modules/calendar/templates/calendar.html',
     providers: [calendar]
 })
 export class Calendar {

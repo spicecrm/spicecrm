@@ -14,7 +14,7 @@ declare var _;
 
 @Component({
     selector: 'field-html-editor',
-    templateUrl: './app/objectfields/templates/fieldhtmleditor.html',
+    templateUrl: './src/objectfields/templates/fieldhtmleditor.html',
     styles: [
         ':host >>> .mce-ico{font-size: 12px; color: #54698d;}',
         ':host >>> .mce-text{font-size: 12px; color: #54698d;}',

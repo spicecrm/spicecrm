@@ -7,7 +7,7 @@ import { toast } from '../../../services/toast.service';
 
 @Component({
     selector: 'media-file-picker',
-    templateUrl: './app/modules/mediafiles/templates/mediafilepicker.html',
+    templateUrl: './src/modules/mediafiles/templates/mediafilepicker.html',
     providers: [ mediafiles ],
     styles: [ 'img.thumb { background-color: #fff; border: 1px solid #d8dde6; padding: 1px; margin-right: 3px; width: 32px; height: 32px; }',
         'li { display: inline-block; vertical-align: middle; border-radius: .25rem; width: 160px; height: 160px;  box-sizing: content-box; position: relative;  }',

@@ -5,7 +5,7 @@ import {popup} from '../../services/popup.service';
 
 @Component({
     selector: '[field-lookup-search-add]',
-    templateUrl: './app/objectfields/templates/fieldlookupsearchadd.html',
+    templateUrl: './src/objectfields/templates/fieldlookupsearchadd.html',
     providers: [model]
 })
 export class fieldLookupSearchAdd implements OnInit {

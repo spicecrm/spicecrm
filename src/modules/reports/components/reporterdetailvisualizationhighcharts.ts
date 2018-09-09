@@ -14,7 +14,7 @@ declare var Highcharts: any;
 
 @Component({
     selector: 'reporter-detail-visualization-highcharts',
-    templateUrl: './app/modules/reports/templates/reporterdetailvisualizationhighcharts.html',
+    templateUrl: './src/modules/reports/templates/reporterdetailvisualizationhighcharts.html',
     providers: [model]
 })
 export class ReporterDetailVisualizationHighcharts implements AfterViewInit, OnInit, OnDestroy {

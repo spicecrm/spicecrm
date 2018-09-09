@@ -12,7 +12,7 @@ declare var _: any;
 
 @Component({
     selector: 'global-login',
-    templateUrl: './app/globalcomponents/templates/globallogin.html',
+    templateUrl: './src/globalcomponents/templates/globallogin.html',
     host: {
         '(window:keypress)': 'this.keypressed($event)'
     }

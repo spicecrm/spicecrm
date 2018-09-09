@@ -10,7 +10,7 @@ import { broadcast } from '../../services/broadcast.service';
 
 @Component({
     selector: 'global-header-search-results-items',
-    templateUrl: './app/globalcomponents/templates/globalheadersearchresultsitems.html'
+    templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitems.html'
 })
 export class GlobalHeaderSearchResultsItems {
     @Input() searchTerm: string = '';

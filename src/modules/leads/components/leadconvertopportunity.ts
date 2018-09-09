@@ -8,7 +8,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-opportunity',
-    templateUrl: './app/modules/leads/templates/leadconvertopportunity.html',
+    templateUrl: './src/modules/leads/templates/leadconvertopportunity.html',
     providers: [view, model]
 })
 export class LeadConvertOpportunity implements AfterViewInit {

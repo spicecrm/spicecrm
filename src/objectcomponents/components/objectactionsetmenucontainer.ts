@@ -11,7 +11,7 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     selector: 'object-actionset-menu-container',
-    templateUrl: './app/objectcomponents/templates/objectactionsetmenucontainer.html',
+    templateUrl: './src/objectcomponents/templates/objectactionsetmenucontainer.html',
     providers: [popup, helper]
 })
 export class ObjectActionsetMenuContainer implements AfterViewInit {

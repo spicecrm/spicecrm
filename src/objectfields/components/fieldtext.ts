@@ -12,7 +12,7 @@ declare const window: any;
 
 @Component({
     selector: 'field-text',
-    templateUrl: './app/objectfields/templates/fieldtext.html'
+    templateUrl: './src/objectfields/templates/fieldtext.html'
 })
 export class fieldText extends fieldGeneric{
 

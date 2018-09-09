@@ -10,7 +10,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-vat',
-    templateUrl: './app/objectfields/templates/fieldvat.html'
+    templateUrl: './src/objectfields/templates/fieldvat.html'
 })
 
 export class fieldVat extends fieldGeneric

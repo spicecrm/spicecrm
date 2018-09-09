@@ -14,7 +14,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'aclterritorries-manager-territory-add-modal',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriesmanagerterritoryaddmodal.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritoryaddmodal.html',
     providers: [model, view]
 })
 export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {

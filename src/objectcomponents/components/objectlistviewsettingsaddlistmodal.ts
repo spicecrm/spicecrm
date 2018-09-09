@@ -8,7 +8,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-listview-settings-addlist-modal',
-    templateUrl: './app/objectcomponents/templates/objectlistviewsettingsaddlistmodal.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewsettingsaddlistmodal.html'
 })
 export class ObjectListViewSettingsAddlistModal implements OnInit {
     @Input() modalmode: string = '';

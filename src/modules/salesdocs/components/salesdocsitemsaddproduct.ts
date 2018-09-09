@@ -18,7 +18,7 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: 'salesdocs-items-addproduct',
-    templateUrl: './app/modules/salesdocs/templates/salesdocsitemsaddproduct.html'
+    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsaddproduct.html'
 })
 export class SalesDocsItemsAddProduct implements AfterViewInit{
 

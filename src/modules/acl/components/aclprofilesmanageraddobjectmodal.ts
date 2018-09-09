@@ -18,7 +18,7 @@ import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
-    templateUrl: './app/modules/acl/templates/aclprofilesmanageraddobjectmodal.html',
+    templateUrl: './src/modules/acl/templates/aclprofilesmanageraddobjectmodal.html',
     providers: [model]
 })
 export class ACLProfilesManagerAddObjectModal {

@@ -18,7 +18,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "mailbox-email-to-lead-emailtext",
-    templateUrl: "./app/modules/mailboxes/templates/mailboxemailtoleademailtext.html",
+    templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleademailtext.html",
 })
 export class MailboxEmailToLeadEmailText implements OnDestroy {
 

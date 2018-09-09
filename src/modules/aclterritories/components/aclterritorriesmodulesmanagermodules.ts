@@ -8,7 +8,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'aclterritorries-modulesmanager-modules',
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriesmodulesmanagermodules.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriesmodulesmanagermodules.html',
 })
 export class ACLTerritorriesModulesmanagerModules {
 

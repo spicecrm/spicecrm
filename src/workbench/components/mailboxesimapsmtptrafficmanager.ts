@@ -15,7 +15,7 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
-    templateUrl: "./app/workbench/templates/mailboxesimapsmtptrafficmanager.html",
+    templateUrl: "./src/workbench/templates/mailboxesimapsmtptrafficmanager.html",
 })
 export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
     private mailboxes: any[] = [];

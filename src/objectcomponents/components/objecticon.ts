@@ -3,7 +3,7 @@ import { metadata } from '../../services/metadata.service';
 
 @Component({
     selector: 'object-icon',
-    templateUrl: './app/objectcomponents/templates/objecticon.html'
+    templateUrl: './src/objectcomponents/templates/objecticon.html'
 })
 export class ObjectIcon {
     @Input() module: string = '';

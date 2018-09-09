@@ -22,7 +22,7 @@ import { ComponentsetManagerAddDialog } from './componentsetmanageradddialog';
 import { view } from '../../services/view.service';
 
 @Component({
-    templateUrl: './app/workbench/templates/componentsetmanager.html',
+    templateUrl: './src/workbench/templates/componentsetmanager.html',
     providers: [view]
 })
 export class ComponentsetManager {

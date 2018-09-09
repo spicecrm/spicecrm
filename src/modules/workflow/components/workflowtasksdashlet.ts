@@ -16,7 +16,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'workflow-taks-dashlet',
-    templateUrl: './app/modules/workflow/templates/workflowtasksdashlet.html',
+    templateUrl: './src/modules/workflow/templates/workflowtasksdashlet.html',
     providers: [model],
     styles:[
         ':host {width:100%; height: 100%;}'

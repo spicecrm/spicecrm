@@ -7,7 +7,7 @@ declare var Highcharts: any;
 
 @Component({
     selector: 'questionnaire-evaluation-bar',
-    templateUrl: './app/modules/questionnaires/templates/questionnaireevaluationbar.html',
+    templateUrl: './src/modules/questionnaires/templates/questionnaireevaluationbar.html',
 })
 export class QuestionnaireEvaluationBar implements AfterViewInit {
 

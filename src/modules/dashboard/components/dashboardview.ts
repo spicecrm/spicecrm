@@ -19,7 +19,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'dashboard-view',
-    templateUrl: './app/modules/dashboard/templates/dashboardview.html',
+    templateUrl: './src/modules/dashboard/templates/dashboardview.html',
     providers: [model, modellist]
 })
 export class DashboardView implements OnInit {

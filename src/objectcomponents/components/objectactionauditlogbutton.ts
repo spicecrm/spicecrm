@@ -7,7 +7,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-action-auditlog-button',
-    templateUrl: './app/objectcomponents/templates/objectactionauditlogbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionauditlogbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)' : 'displayAuditLog()'

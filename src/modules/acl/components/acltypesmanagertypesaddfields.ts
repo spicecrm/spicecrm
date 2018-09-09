@@ -20,7 +20,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types-add-fields',
-    templateUrl: './app/modules/acl/templates/acltypesmanagertypesaddfields.html',
+    templateUrl: './src/modules/acl/templates/acltypesmanagertypesaddfields.html',
 })
 export class ACLTypesManagerTypesAddFields implements OnInit{
 

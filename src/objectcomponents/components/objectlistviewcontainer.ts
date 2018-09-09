@@ -13,7 +13,7 @@ import {modellist} from '../../services/modellist.service';
 
 @Component({
     selector: 'object-listview-container',
-    templateUrl: './app/objectcomponents/templates/objectlistviewcontainer.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewcontainer.html'
 })
 export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;

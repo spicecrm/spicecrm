@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-relatedlist-duplicates',
-    templateUrl: './app/objectcomponents/templates/objectrelatedduplicates.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedduplicates.html'
 })
 export class ObjectRelatedDuplicates implements AfterViewInit {
     componentconfig: any = {};

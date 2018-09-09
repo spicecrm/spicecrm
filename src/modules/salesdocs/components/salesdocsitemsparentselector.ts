@@ -23,7 +23,7 @@ export class SalesDocsItemsParentPipe {
 
 @Component({
     selector: 'salesdocs-items-parent-selector',
-    templateUrl: './app/modules/salesdocs/templates/salesdocsitemsparentselector.html'
+    templateUrl: './src/modules/salesdocs/templates/salesdocsitemsparentselector.html'
 })
 export class SalesDocsItemsParentSelector {
 

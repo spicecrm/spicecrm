@@ -3,7 +3,7 @@ import {backend} from '../../services/backend.service';
 
 @Component({
     selector: 'system-capture-image',
-    templateUrl: './app/systemcomponents/templates/systemcaptureimage.html'
+    templateUrl: './src/systemcomponents/templates/systemcaptureimage.html'
 })
 export class SystemCaptureImage implements AfterViewInit{
 

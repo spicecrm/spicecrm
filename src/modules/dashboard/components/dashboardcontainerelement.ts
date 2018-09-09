@@ -14,7 +14,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-container-element',
-    templateUrl: './app/modules/dashboard/templates/dashboardcontainerelement.html'
+    templateUrl: './src/modules/dashboard/templates/dashboardcontainerelement.html'
 })
 export class DashboardContainerElement implements AfterViewInit {
     @ViewChild('containerelement', {read: ViewContainerRef}) containerelement: ViewContainerRef;

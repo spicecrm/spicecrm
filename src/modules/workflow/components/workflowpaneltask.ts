@@ -15,7 +15,7 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'workflow-panel-task',
-    templateUrl: './app/modules/workflow/templates/workflowpaneltask.html'
+    templateUrl: './src/modules/workflow/templates/workflowpaneltask.html'
 
 })
 export class WorkflowPanelTask{

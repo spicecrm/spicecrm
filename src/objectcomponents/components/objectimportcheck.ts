@@ -6,7 +6,7 @@ import {objectimport} from '../services/objectimport.service';
 
 @Component({
     selector: 'object-import-check',
-    templateUrl: './app/objectcomponents/templates/objectimportcheck.html',
+    templateUrl: './src/objectcomponents/templates/objectimportcheck.html',
 })
 
 export class ObjectImportCheck {

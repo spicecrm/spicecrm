@@ -12,7 +12,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'reporter-field-standard',
-    templateUrl: './app/modules/reports/templates/reporterfieldstandard.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldstandard.html'
 })
 export class ReporterFieldStandard {
 

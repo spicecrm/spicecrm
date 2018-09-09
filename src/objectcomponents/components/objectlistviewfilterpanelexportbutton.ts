@@ -20,7 +20,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-listview-filter-panel-export-button',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelexportbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelexportbutton.html',
 })
 export class ObjectListViewFilterPanelExportButton {
 

@@ -10,7 +10,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "mailboxes-processors",
-    templateUrl: "./app/workbench/templates/mailboxesprocessors.html",
+    templateUrl: "./src/workbench/templates/mailboxesprocessors.html",
 })
 export class MailboxesProcessors {
     public processors: any[] = [];

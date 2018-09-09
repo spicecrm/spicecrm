@@ -13,7 +13,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'administration-configurator-item-role',
-    templateUrl: './app/admincomponents/templates/administrationconfiguratoritemrole.html'
+    templateUrl: './src/admincomponents/templates/administrationconfiguratoritemrole.html'
 })
 export class AdministrationConfiguratorItemRole implements OnInit{
 

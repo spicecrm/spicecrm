@@ -10,7 +10,7 @@ import {objectimport} from '../services/objectimport.service';
 
 @Component({
     selector: 'object-import-result',
-    templateUrl: './app/objectcomponents/templates/objectimportresult.html',
+    templateUrl: './src/objectcomponents/templates/objectimportresult.html',
     styles: [
         ':host {height: 100%;}'
     ]

@@ -4,7 +4,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'questionnaire-render',
-    templateUrl: './app/modules/questionnaires/templates/questionnairerender.html',
+    templateUrl: './src/modules/questionnaires/templates/questionnairerender.html',
 })
 export class QuestionnaireRender {
 

@@ -14,7 +14,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[dictionarymanager-item]',
-    templateUrl: './app/workbench/templates/dictionarymanageritem.html',
+    templateUrl: './src/workbench/templates/dictionarymanageritem.html',
     providers: [view]
 })
 export class DictionaryManagerItem{

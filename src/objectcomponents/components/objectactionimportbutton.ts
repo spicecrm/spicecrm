@@ -6,7 +6,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-action-import-button',
-    templateUrl: './app/objectcomponents/templates/objectactionimportbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionimportbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)' : 'this.import()'

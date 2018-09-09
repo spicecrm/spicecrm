@@ -5,7 +5,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'questions-manager-edit-binary',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanagereditbinary.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditbinary.html',
 })
 export class QuestionsManagerEditBinary implements OnInit {
 

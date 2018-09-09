@@ -7,7 +7,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'dashboard-generic-dashlet',
-    templateUrl: './app/modules/dashboard/templates/dashboardgenericdashlet.html',
+    templateUrl: './src/modules/dashboard/templates/dashboardgenericdashlet.html',
     providers: [model, view]
 })
 export class DashboardGenericDashlet implements OnInit {

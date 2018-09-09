@@ -6,7 +6,7 @@ import { view } from '../../../services/view.service';
 
 @Component({
     selector: '[questions-manager-edit-binary-option]',
-    templateUrl: './app/modules/questionnaires/templates/questionsmanagereditbinaryoption.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsmanagereditbinaryoption.html',
     providers: [model]
 })
 export class QuestionsManagerEditBinaryOption implements OnInit {

@@ -18,7 +18,7 @@ import {language} from '../../services/language.service';
 import {Subject} from 'rxjs';
 @Component({
     selector: 'componentconfigmanager-component-details',
-    templateUrl: './app/workbench/templates/componentsetmanagercomponentsetdetails.html'
+    templateUrl: './src/workbench/templates/componentsetmanagercomponentsetdetails.html'
 })
 export class ComponentConfigManagerComponentDetails implements OnChanges {
 

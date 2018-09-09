@@ -16,7 +16,7 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
 @Component({
     selector: 'object-vertical-tab-container-item-header',
-    templateUrl: './app/objectcomponents/templates/objectverticaltabcontaineritemheader.html'
+    templateUrl: './src/objectcomponents/templates/objectverticaltabcontaineritemheader.html'
 })
 export class ObjectVerticalTabContainerItemHeader {
 
@@ -42,7 +42,7 @@ export class ObjectVerticalTabContainerItemHeader {
 
 @Component({
     selector: 'object-vertical-tab-container-item',
-    templateUrl: './app/objectcomponents/templates/objectverticaltabcontaineritem.html',
+    templateUrl: './src/objectcomponents/templates/objectverticaltabcontaineritem.html',
     providers: [fielderrorgrouping]
 })
 export class ObjectVerticalTabContainerItem implements AfterViewInit, OnDestroy {
@@ -88,7 +88,7 @@ export class ObjectVerticalTabContainerItem implements AfterViewInit, OnDestroy 
 
 @Component({
     selector: 'object-vertical-tab-container',
-    templateUrl: './app/objectcomponents/templates/objectverticaltabcontainer.html',
+    templateUrl: './src/objectcomponents/templates/objectverticaltabcontainer.html',
     styles: [
             `.slds-is-active {
             font-weight: 600;

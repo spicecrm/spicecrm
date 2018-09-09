@@ -8,7 +8,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-list-header',
-    templateUrl: './app/objectcomponents/templates/objectlistheader.html',
+    templateUrl: './src/objectcomponents/templates/objectlistheader.html',
     providers: [view]
 })
 export class ObjectListHeader implements OnInit {

@@ -19,7 +19,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-integration-export-button',
-    templateUrl: './app/modules/reports/templates/reporterintegrationexportbutton.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationexportbutton.html'
 })
 export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
 

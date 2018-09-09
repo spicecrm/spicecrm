@@ -11,7 +11,7 @@ import {Router, ActivatedRoute}   from '@angular/router';
 
 @Component({
     selector: '[object-related-card-tile]',
-    templateUrl: './app/objectcomponents/templates/objectrelatedcardtile.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedcardtile.html',
     providers: [model, view]
 })
 export class ObjectRelatedCardTile{

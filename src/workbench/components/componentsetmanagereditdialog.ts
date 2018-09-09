@@ -20,7 +20,7 @@ import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'componensetmanager-edit-dialog',
-    templateUrl: './app/workbench/templates/componentsetmanagereditdialog.html'
+    templateUrl: './src/workbench/templates/componentsetmanagereditdialog.html'
 })
 export class ComponentsetManagerEditDialog implements OnInit{
     @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();

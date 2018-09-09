@@ -21,7 +21,7 @@ import {view} from '../../services/view.service';
 import {Subject} from 'rxjs';
 @Component({
     selector: 'workbench-config-option-default',
-    templateUrl: './app/workbench/templates/workbenchconfigoptiondefault.html'
+    templateUrl: './src/workbench/templates/workbenchconfigoptiondefault.html'
 })
 export class WorkbenchConfigOptionDefault implements OnInit{
 

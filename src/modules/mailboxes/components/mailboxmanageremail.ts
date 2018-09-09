@@ -18,7 +18,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-email",
-    templateUrl: "./app/modules/mailboxes/templates/mailboxmanageremail.html",
+    templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremail.html",
 })
 export class MailboxManagerEmail implements OnInit {
 

@@ -5,7 +5,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-listview-filter-panel-filter-text',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelfiltertext.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfiltertext.html'
 })
 export class ObjectListViewFilterPanelFilterText{
     @Input() filter: any = {};

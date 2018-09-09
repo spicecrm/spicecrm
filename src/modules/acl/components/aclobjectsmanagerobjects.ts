@@ -15,7 +15,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'aclobjects-manager-objects',
-    templateUrl: './app/modules/acl/templates/aclobjectsmanagerobjects.html',
+    templateUrl: './src/modules/acl/templates/aclobjectsmanagerobjects.html',
 })
 export class ACLObjectsManagerObjects {
 

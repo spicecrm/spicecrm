@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-email',
-    templateUrl: './app/objectfields/templates/fieldemail.html'
+    templateUrl: './src/objectfields/templates/fieldemail.html'
 })
 export class fieldEmail extends fieldGeneric {
 

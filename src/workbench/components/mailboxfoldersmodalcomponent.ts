@@ -6,7 +6,7 @@ import {view} from "../../services/view.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-folders-modal",
-    templateUrl: "./app/workbench/templates/mailboxfoldersmodal.html",
+    templateUrl: "./src/workbench/templates/mailboxfoldersmodal.html",
 })
 export class MailboxFoldersModalComponent implements OnInit
 {

@@ -8,7 +8,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: '[object-related-list-seqeunced-item]',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistsequenceditem.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequenceditem.html',
     providers: [model, view]
 })
 export class ObjectRelatedListSequencedItem implements OnInit {

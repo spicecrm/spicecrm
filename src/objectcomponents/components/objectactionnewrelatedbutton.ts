@@ -6,7 +6,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-action-newrelated-button',
-    templateUrl: './app/objectcomponents/templates/objectactionnewbutton.html',
+    templateUrl: './src/objectcomponents/templates/objectactionnewbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': 'getDisplay()',

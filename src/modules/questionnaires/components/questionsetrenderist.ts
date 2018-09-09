@@ -81,7 +81,7 @@ export class QuestionTypeISTOptionsPipe {
 
 @Component( {
     selector: 'questionset-render-ist',
-    templateUrl: './app/modules/questionnaires/templates/questionsetrenderist.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetrenderist.html',
     styles: [ 'div.questionset-render-question:last-child { margin-bottom: 0 !important; }' ]
 } )
 export class QuestionsetRenderIST implements OnChanges{

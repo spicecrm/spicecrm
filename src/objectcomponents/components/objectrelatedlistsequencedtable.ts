@@ -10,7 +10,7 @@ import {ObjectRelatedlistTable} from './objectrelatedlisttable';
 
 @Component({
     selector: 'object-relatedlist-sequenced-table',
-    templateUrl: './app/objectcomponents/templates/objectrelatedlistsequencedtable.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequencedtable.html'
 })
 export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
 

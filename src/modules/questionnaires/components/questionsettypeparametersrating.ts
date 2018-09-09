@@ -8,7 +8,7 @@ import {helper} from "../../../services/helper.service";
 
 @Component({
     selector: 'questionset-type-parameters-rating',
-    templateUrl: './app/modules/questionnaires/templates/questionsettypeparametersrating.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsettypeparametersrating.html',
     providers: [helper]
 })
 export class QuestionsetTypeParametersRating implements OnInit {

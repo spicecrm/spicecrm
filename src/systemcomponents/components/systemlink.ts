@@ -2,7 +2,7 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
     selector: 'system-link',
-    templateUrl: './app/systemcomponents/templates/systemlink.html'
+    templateUrl: './src/systemcomponents/templates/systemlink.html'
 })
 export class SystemLink {
 

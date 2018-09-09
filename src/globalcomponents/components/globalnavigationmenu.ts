@@ -10,7 +10,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-navigation-menu',
-    templateUrl: './app/globalcomponents/templates/globalnavigationmenu.html',
+    templateUrl: './src/globalcomponents/templates/globalnavigationmenu.html',
     providers: [MenuService],
     host: {
         '(window:resize)': 'handleResize()'

@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-details-tab',
-    templateUrl: './app/objectcomponents/templates/objectrecordadministrationtab.html'
+    templateUrl: './src/objectcomponents/templates/objectrecordadministrationtab.html'
 })
 export class ObjectRecordAdministrationTab implements OnInit {
 

@@ -19,7 +19,7 @@ import {language} from "../../../services/language.service";
 
 
 @Component({
-    templateUrl: './app/modules/aclterritories/templates/aclterritorriestypesmanagertypeelementsaddmodal.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanagertypeelementsaddmodal.html',
 })
 export class ACLTerritorriesTypesmanagerTypeelementsAddModal {
 

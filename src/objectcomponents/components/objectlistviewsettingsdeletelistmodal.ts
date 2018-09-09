@@ -8,7 +8,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-listview-settings-deletelist-modal',
-    templateUrl: './app/objectcomponents/templates/objectlistviewsettingsdeletelistmodal.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewsettingsdeletelistmodal.html'
 })
 export class ObjectListViewSettingsDeletelistModal {
 

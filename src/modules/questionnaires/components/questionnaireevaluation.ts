@@ -5,7 +5,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'questionnaire-evaluation',
-    templateUrl: './app/modules/questionnaires/templates/questionnaireevaluation.html',
+    templateUrl: './src/modules/questionnaires/templates/questionnaireevaluation.html',
 })
 export class QuestionnaireEvaluation implements OnInit {
 

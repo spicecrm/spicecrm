@@ -17,7 +17,7 @@ import {listfilters} from '../services/listfilters.service';
 
 @Component({
     selector: '[object-listview-filter-panel-filter-item]',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelfilteritem.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilteritem.html'
 })
 export class ObjectListViewFilterPanelFilterItem implements OnInit, OnDestroy {
     @ViewChild('popover', {read: ViewContainerRef}) popover: ViewContainerRef;

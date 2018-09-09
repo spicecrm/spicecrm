@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-multienum',
-    templateUrl: './app/objectfields/templates/fieldmultienum.html'
+    templateUrl: './src/objectfields/templates/fieldmultienum.html'
 })
 export class fieldMultienum extends fieldGeneric implements OnInit
 {

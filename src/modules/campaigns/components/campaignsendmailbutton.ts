@@ -9,7 +9,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaign-send-mail-button',
-    templateUrl: './app/modules/campaigns/templates/campaignsendmailbutton.html',
+    templateUrl: './src/modules/campaigns/templates/campaignsendmailbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)': 'sendMail()',

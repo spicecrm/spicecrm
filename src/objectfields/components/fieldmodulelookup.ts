@@ -9,7 +9,7 @@ import {fieldGeneric} from './fieldgeneric';
 
 @Component({
     selector: 'field-module-lookup',
-    templateUrl: './app/objectfields/templates/fieldmodulelookup.html',
+    templateUrl: './src/objectfields/templates/fieldmodulelookup.html',
     providers: [popup],
 })
 export class FieldModuleLookupComponent extends fieldGeneric implements OnInit

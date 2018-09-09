@@ -3,7 +3,7 @@ import {AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild,
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 @Component({
     selector: 'global-header-top',
-    templateUrl: './app/globalcomponents/templates/globalheadertop.html'
+    templateUrl: './src/globalcomponents/templates/globalheadertop.html'
 })
 export class GlobalHeaderTop {
 

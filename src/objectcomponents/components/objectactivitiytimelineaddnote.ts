@@ -11,7 +11,7 @@ declare var moment: any;
 
 @Component({
     selector: 'object-activitiytimeline-add-note',
-    templateUrl: './app/objectcomponents/templates/objectactivitytimelineaddnote.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddnote.html',
     providers: [model, view]
 })
 export class ObjectActivitiyTimelineAddNote implements OnInit {

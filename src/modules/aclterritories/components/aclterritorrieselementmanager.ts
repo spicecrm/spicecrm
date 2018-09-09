@@ -8,7 +8,7 @@ import {broadcast} from "../../../services/broadcast.service";
 
 
 @Component({
-    templateUrl: './app/modules/aclterritories/templates/aclterritorrieselementmanager.html',
+    templateUrl: './src/modules/aclterritories/templates/aclterritorrieselementmanager.html',
 })
 export class ACLTerritorriesElementmanager {
 

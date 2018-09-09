@@ -9,7 +9,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'salesdocs-print-button',
-    templateUrl: './app/modules/salesdocs/templates/salesdocsprintbutton.html',
+    templateUrl: './src/modules/salesdocs/templates/salesdocsprintbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '[style.display]': "getDisplay()"

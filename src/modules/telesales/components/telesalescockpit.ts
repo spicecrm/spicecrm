@@ -8,7 +8,7 @@ import {view} from '../../../services/view.service';
 import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
-    templateUrl: './app/modules/telesales/templates/telesalescockpit.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpit.html',
     providers: [
         telecockpitservice,
         view,

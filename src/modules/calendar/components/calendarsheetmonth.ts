@@ -13,7 +13,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-month',
-    templateUrl: './app/modules/calendar/templates/calendarsheetmonth.html',
+    templateUrl: './src/modules/calendar/templates/calendarsheetmonth.html',
 })
 export class CalendarSheetMonth implements OnChanges {
 

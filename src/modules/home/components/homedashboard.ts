@@ -11,7 +11,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'home-dashboard',
-    templateUrl: './app/modules/home/templates/homedashboard.html',
+    templateUrl: './src/modules/home/templates/homedashboard.html',
 })
 export class HomeDashboard implements AfterViewInit, OnDestroy {
 

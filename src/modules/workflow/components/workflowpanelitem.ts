@@ -12,7 +12,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 @Component({
     selector: 'workflow-panel-item',
-    templateUrl: './app/modules/workflow/templates/workflowpanelitem.html',
+    templateUrl: './src/modules/workflow/templates/workflowpanelitem.html',
     //providers: [model]
 
 })

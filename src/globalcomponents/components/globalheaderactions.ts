@@ -6,7 +6,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-actions',
-    templateUrl: './app/globalcomponents/templates/globalheaderactions.html'
+    templateUrl: './src/globalcomponents/templates/globalheaderactions.html'
 })
 export class GlobalHeaderActions implements AfterViewInit {
 

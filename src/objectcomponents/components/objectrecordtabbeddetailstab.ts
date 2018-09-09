@@ -7,7 +7,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-tabbed-details-tab',
-    templateUrl: './app/objectcomponents/templates/objectrecordtabbeddetailstab.html'
+    templateUrl: './src/objectcomponents/templates/objectrecordtabbeddetailstab.html'
 })
 export class ObjectRecordTabbedDetailsTab implements AfterViewInit {
 

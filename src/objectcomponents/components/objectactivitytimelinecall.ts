@@ -6,7 +6,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'object-activitiytimeline-call',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelinecall.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinecall.html',
     providers:[model, view]
 })
 export class ObjectActivitiyTimelineCall implements OnInit{

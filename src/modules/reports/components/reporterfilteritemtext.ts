@@ -19,7 +19,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item-text',
-    templateUrl: './app/modules/reports/templates/reporterfilteritemtext.html'
+    templateUrl: './src/modules/reports/templates/reporterfilteritemtext.html'
 })
 export class ReporterFilterItemText {
 

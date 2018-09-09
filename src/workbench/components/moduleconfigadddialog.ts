@@ -18,7 +18,7 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'moduleconfig-add-dialog',
-    templateUrl: './app/workbench/templates/moduleconfigadddialog.html'
+    templateUrl: './src/workbench/templates/moduleconfigadddialog.html'
 })
 export class ModuleConfigAddDialog implements OnInit{
 

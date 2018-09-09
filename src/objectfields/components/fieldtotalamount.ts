@@ -10,7 +10,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: './app/objectfields/templates/fieldtotalamount.html'
+    templateUrl: './src/objectfields/templates/fieldtotalamount.html'
 })
 export class fieldTotalAmount extends fieldCurrency {
 

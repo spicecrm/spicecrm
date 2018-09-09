@@ -10,7 +10,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'object-action-mail-modal',
-    templateUrl: './app/objectcomponents/templates/objectactionmailmodal.html',
+    templateUrl: './src/objectcomponents/templates/objectactionmailmodal.html',
     providers: [model, view]
 })
 export class ObjectActionMailModal implements OnInit {

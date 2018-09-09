@@ -16,7 +16,7 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'administration-configeditor',
-    templateUrl: './app/admincomponents/templates/administrationconfigeditor.html'
+    templateUrl: './src/admincomponents/templates/administrationconfigeditor.html'
 })
 export class AdministrationConfigEditor implements OnInit {
 

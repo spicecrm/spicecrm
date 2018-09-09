@@ -9,7 +9,7 @@ import {fieldGeneric} from "./fieldgeneric";
 
 @Component({
     selector: 'field-mailboxes',
-    templateUrl: './app/objectfields/templates/fieldmailboxes.html'
+    templateUrl: './src/objectfields/templates/fieldmailboxes.html'
 })
 export class fieldMailboxes extends fieldGeneric{
     options: Array<any> = [];

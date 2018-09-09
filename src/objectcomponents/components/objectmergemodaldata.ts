@@ -11,7 +11,7 @@ import { objectmerge } from '../services/objectmerge.service';
 
 @Component({
     selector: 'object-merge-modal-data',
-    templateUrl: './app/objectcomponents/templates/objectmergemodaldata.html',
+    templateUrl: './src/objectcomponents/templates/objectmergemodaldata.html',
     providers: [view]
 })
 export class ObjectMergeModalData{

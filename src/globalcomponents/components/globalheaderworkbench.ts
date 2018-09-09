@@ -6,7 +6,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-workbench',
-    templateUrl: './app/globalcomponents/templates/globalheaderworkbench.html'
+    templateUrl: './src/globalcomponents/templates/globalheaderworkbench.html'
 })
 export class GlobalHeaderWorkbench {
 

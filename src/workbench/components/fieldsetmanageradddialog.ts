@@ -20,7 +20,7 @@ import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'fieldsetmanager-add-dialog',
-    templateUrl: './app/workbench/templates/fieldsetmanageradddialog.html'
+    templateUrl: './src/workbench/templates/fieldsetmanageradddialog.html'
 })
 export class FieldsetManagerAddDialog implements OnInit {
     @Output() closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();

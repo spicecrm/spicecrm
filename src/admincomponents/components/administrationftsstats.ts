@@ -10,7 +10,7 @@ import {backend} from '../../services/backend.service';
 
 
 @Component({
-    templateUrl: './app/admincomponents/templates/administrationftsstats.html'
+    templateUrl: './src/admincomponents/templates/administrationftsstats.html'
 })
 export class AdministrationFTSStats {
 

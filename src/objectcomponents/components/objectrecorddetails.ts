@@ -7,7 +7,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-details',
-    templateUrl: './app/objectcomponents/templates/objectrecorddetails.html',
+    templateUrl: './src/objectcomponents/templates/objectrecorddetails.html',
     providers: [view]
 })
 export class ObjectRecordDetails implements OnInit, AfterViewInit {

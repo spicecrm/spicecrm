@@ -17,7 +17,7 @@ import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'object-recordview',
-    templateUrl: './app/objectcomponents/templates/objectrecordview.html',
+    templateUrl: './src/objectcomponents/templates/objectrecordview.html',
     providers: [model]
 
 })

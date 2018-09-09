@@ -7,7 +7,7 @@ import {modellist} from '../../services/modellist.service';
 
 @Component({
     selector: 'object-listview-aggregates-panel',
-    templateUrl: './app/objectcomponents/templates/objectlistviewaggregatespanel.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewaggregatespanel.html'
 })
 export class ObjectListViewAggregatesPanel
 {

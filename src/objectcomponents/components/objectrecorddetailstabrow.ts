@@ -8,7 +8,7 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-record-details-tab-row',
-    templateUrl: './app/objectcomponents/templates/objectrecorddetailstabrow.html'
+    templateUrl: './src/objectcomponents/templates/objectrecorddetailstabrow.html'
 })
 export class ObjectRecordDetailsTabRow implements OnInit {
     // @ViewChild('fieldsetcontainer', {read: ViewContainerRef}) fieldsetcontainer: ViewContainerRef;

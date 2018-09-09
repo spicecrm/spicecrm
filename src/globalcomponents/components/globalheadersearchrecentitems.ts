@@ -9,7 +9,7 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'global-header-search-recent-items',
-    templateUrl: './app/globalcomponents/templates/globalheadersearchrecentitems.html',
+    templateUrl: './src/globalcomponents/templates/globalheadersearchrecentitems.html',
 
 })
 export class GlobalHeaderSearchRecentItems {

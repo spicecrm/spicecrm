@@ -11,7 +11,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-contact',
-    templateUrl: './app/modules/leads/templates/leadconvertcontact.html',
+    templateUrl: './src/modules/leads/templates/leadconvertcontact.html',
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {

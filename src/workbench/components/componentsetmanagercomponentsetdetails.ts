@@ -12,7 +12,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'componentsetmanager-componentset-details',
-    templateUrl: './app/workbench/templates/componentsetmanagercomponentsetdetails.html'
+    templateUrl: './src/workbench/templates/componentsetmanagercomponentsetdetails.html'
 })
 export class ComponentsetManagerComponentsetDetails implements OnChanges {
 

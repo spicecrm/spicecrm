@@ -11,7 +11,7 @@ import {objectnote} from '../services/objectnote.service';
 
 @Component({
     selector: 'object-notes',
-    templateUrl: './app/objectcomponents/templates/objectnotes.html',
+    templateUrl: './src/objectcomponents/templates/objectnotes.html',
     providers: [objectnote]
 
 })

@@ -12,7 +12,7 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'object-merge-modal',
-    templateUrl: './app/objectcomponents/templates/objectmergemodal.html',
+    templateUrl: './src/objectcomponents/templates/objectmergemodal.html',
     providers: [model, modellist, objectmerge],
     styles: [
         ':host >>> .slds-progress__marker global-button-icon svg {fill:#CA1B1F}',

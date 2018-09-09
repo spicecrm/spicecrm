@@ -11,7 +11,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'object-activitiytimeline-event',
-    templateUrl: './app/objectcomponents/templates/objectactivitiytimelineevent.html',
+    templateUrl: './src/objectcomponents/templates/objectactivitiytimelineevent.html',
     providers:[model, view],
     host:{
         'class' : 'slds-timeline__item'

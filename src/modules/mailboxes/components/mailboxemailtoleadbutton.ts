@@ -15,7 +15,7 @@ import {MailboxEmailToLeadModal} from "./mailboxemailtoleadmodal";
     styles: [
         ":host {cursor:pointer;}",
     ],
-    templateUrl: "./app/modules/mailboxes/templates/mailboxemailtoleadbutton.html",
+    templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleadbutton.html",
 })
 export class MailboxEmailToLeadButton {
 

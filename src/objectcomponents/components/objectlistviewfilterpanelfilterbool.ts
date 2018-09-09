@@ -5,7 +5,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-listview-filter-panel-filter-bool',
-    templateUrl: './app/objectcomponents/templates/objectlistviewfilterpanelfilterbool.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilterbool.html'
 })
 export class ObjectListViewFilterPanelFilterBool implements OnInit{
     @Input() filter: any = {};

@@ -5,7 +5,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'tasks-manager-header',
-    templateUrl: './app/modules/activities/templates/tasksmanagerheader.html',
+    templateUrl: './src/modules/activities/templates/tasksmanagerheader.html',
 })
 export class TasksManagerHeader {
     constructor(private language: language, private elementRef: ElementRef) {

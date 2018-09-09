@@ -12,7 +12,7 @@ declare var _;
 
 @Component({
     selector: 'reference-config-manager',
-    templateUrl: './app/workbench/templates/referenceconfigmanager.html',
+    templateUrl: './src/workbench/templates/referenceconfigmanager.html',
 })
 export class ReferenceConfigManager
 {

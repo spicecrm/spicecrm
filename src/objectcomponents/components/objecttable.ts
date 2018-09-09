@@ -14,7 +14,7 @@ declare var _;
  */
 @Component({
     selector: 'object-table',
-    templateUrl: './app/objectcomponents/templates/objecttable.html'
+    templateUrl: './src/objectcomponents/templates/objecttable.html'
 })
 export class ObjectTable implements OnInit
 {

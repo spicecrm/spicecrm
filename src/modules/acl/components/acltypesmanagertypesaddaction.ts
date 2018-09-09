@@ -20,7 +20,7 @@ import {navigation} from '../../../services/navigation.service';
 
 @Component({
     selector: 'acltypes-manager-types-add-action',
-    templateUrl: './app/modules/acl/templates/acltypesmanagertypesaddaction.html',
+    templateUrl: './src/modules/acl/templates/acltypesmanagertypesaddaction.html',
 })
 export class ACLTypesManagerTypesAddAction implements OnInit{
 

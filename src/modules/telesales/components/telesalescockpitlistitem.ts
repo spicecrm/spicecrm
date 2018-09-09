@@ -7,7 +7,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_list_item',
-    templateUrl: './app/modules/telesales/templates/telesalescockpitlistitem.html',
+    templateUrl: './src/modules/telesales/templates/telesalescockpitlistitem.html',
     providers: [model, view]
 })
 export class TeleSalesCockpitListItem implements OnInit{

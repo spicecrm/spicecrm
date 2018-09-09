@@ -6,7 +6,7 @@ import {HttpClient} from "@angular/common/http";
 declare var moment: any;
 
 @Component({
-    templateUrl: './app/modules/dashboard/templates/dashboardweatherdashlet.html',
+    templateUrl: './src/modules/dashboard/templates/dashboardweatherdashlet.html',
 })
 export class DashboardWeatherDashlet implements OnInit{
 

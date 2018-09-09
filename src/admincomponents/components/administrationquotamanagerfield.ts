@@ -4,7 +4,7 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: 'administration-quotamanager-field',
-    templateUrl: './app/admincomponents/templates/administrationquotamanagerfield.html'
+    templateUrl: './src/admincomponents/templates/administrationquotamanagerfield.html'
 })
 export class AdministrationQuotaManagerField {
     @Input() userid: string = "";

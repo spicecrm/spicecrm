@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-app-launcher-dialog',
-    templateUrl: './app/globalcomponents/templates/globalapplauncherdialog.html',
+    templateUrl: './src/globalcomponents/templates/globalapplauncherdialog.html',
     host: {
         'class': 'slds-context-bar__primary slds-context-bar__item--divider-right'
     }

@@ -5,7 +5,7 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-model-popover',
-    templateUrl: './app/objectfields/templates/fieldmodelpopover.html',
+    templateUrl: './src/objectfields/templates/fieldmodelpopover.html',
     providers: [model, view]
 })
 export class fieldModelPopover implements OnInit{

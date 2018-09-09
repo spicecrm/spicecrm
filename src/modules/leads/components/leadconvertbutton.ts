@@ -8,7 +8,7 @@ import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: 'lead-convert-button',
-    templateUrl: './app/modules/leads/templates/leadconvertbutton.html',
+    templateUrl: './src/modules/leads/templates/leadconvertbutton.html',
     host: {
         'class': 'slds-button slds-button--neutral',
         '(click)' : 'this.convertlead()',

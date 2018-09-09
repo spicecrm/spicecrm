@@ -14,7 +14,7 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'field-service-categories',
-    templateUrl: './app/objectfields/templates/fieldcategories.html'
+    templateUrl: './src/objectfields/templates/fieldcategories.html'
 })
 export class fieldServiceCategories extends fieldGeneric
 {

@@ -8,7 +8,7 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-module-icon',
-    templateUrl: './app/objectfields/templates/fieldmoduleicon.html'
+    templateUrl: './src/objectfields/templates/fieldmoduleicon.html'
 })
 export class fieldModuleIcon extends fieldGeneric
 {

@@ -11,7 +11,7 @@ declare var moment: any;
 
 @Component({
     selector: 'global-newsfeed-item',
-    templateUrl: './app/globalcomponents/templates/globalnewsfeeditem.html',
+    templateUrl: './src/globalcomponents/templates/globalnewsfeeditem.html',
 
 })
 export class GlobalNewsFeedItem {

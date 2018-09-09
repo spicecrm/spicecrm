@@ -9,7 +9,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-date-picker',
-    templateUrl: './app/modules/calendar/templates/calendardatepicker.html',
+    templateUrl: './src/modules/calendar/templates/calendardatepicker.html',
 })
 export class CalendarDatePicker implements OnInit, OnChanges {
 

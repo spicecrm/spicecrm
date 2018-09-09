@@ -19,7 +19,7 @@ import {ACLObjectsManagerAddObjectModal} from "./aclobjectsmanageraddobjectmodal
 
 @Component({
     selector: 'aclprofiles-manager-profiles',
-    templateUrl: './app/modules/acl/templates/aclprofilesmanagerprofiles.html',
+    templateUrl: './src/modules/acl/templates/aclprofilesmanagerprofiles.html',
 })
 export class ACLProfilesManagerProfiles {
 

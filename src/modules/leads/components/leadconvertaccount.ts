@@ -13,7 +13,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-account',
-    templateUrl: './app/modules/leads/templates/leadconvertaccount.html',
+    templateUrl: './src/modules/leads/templates/leadconvertaccount.html',
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {

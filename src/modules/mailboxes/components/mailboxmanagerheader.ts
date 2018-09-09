@@ -7,7 +7,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 
 @Component({
     selector: 'mailbox-manager-header',
-    templateUrl: './app/modules/mailboxes/templates/mailboxmanagerheader.html',
+    templateUrl: './src/modules/mailboxes/templates/mailboxmanagerheader.html',
 })
 export class MailboxManagerHeader {
 

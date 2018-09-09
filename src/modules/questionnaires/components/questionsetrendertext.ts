@@ -6,7 +6,7 @@ import {toast} from "../../../services/toast.service";
 
 @Component( {
     selector: 'questionset-render-text',
-    templateUrl: './app/modules/questionnaires/templates/questionsetrendertext.html',
+    templateUrl: './src/modules/questionnaires/templates/questionsetrendertext.html',
     styles: [
         '.questionset-render .sequenced { font-family: monospace; }',
         '.questionset-render table.sequenced { margin: 0 0 0 auto; }',

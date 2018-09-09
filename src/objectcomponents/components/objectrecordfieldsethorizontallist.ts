@@ -6,7 +6,7 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-record-fieldset-horizontal-list',
-    templateUrl: './app/objectcomponents/templates/objectrecordfieldsethorizontallist.html'
+    templateUrl: './src/objectcomponents/templates/objectrecordfieldsethorizontallist.html'
 })
 export class ObjectRecordFieldsetHorizontalList implements OnInit{
 

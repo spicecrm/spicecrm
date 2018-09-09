@@ -9,7 +9,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-month-day',
-    templateUrl: './app/modules/calendar/templates/calendarsheetmonthday.html',
+    templateUrl: './src/modules/calendar/templates/calendarsheetmonthday.html',
     host:{
         'class' : 'slds-is-absolute slds-truncate'
     }

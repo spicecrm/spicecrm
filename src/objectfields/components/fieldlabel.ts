@@ -5,7 +5,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'field-label',
-    templateUrl: './app/objectfields/templates/fieldlabel.html'
+    templateUrl: './src/objectfields/templates/fieldlabel.html'
 })
 export class fieldLabel
 {

@@ -19,7 +19,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'lead-convert-opportunity-modal',
-    templateUrl: './app/modules/leads/templates/leadconvertopportunitymodal.html',
+    templateUrl: './src/modules/leads/templates/leadconvertopportunitymodal.html',
     providers: [model, view]
 })
 export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {

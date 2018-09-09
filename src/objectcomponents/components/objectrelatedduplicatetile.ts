@@ -9,7 +9,7 @@ import {Router, ActivatedRoute}   from '@angular/router';
 
 @Component({
     selector: '[object-related-duplicate-tile]',
-    templateUrl: './app/objectcomponents/templates/objectrelatedduplicatetile.html',
+    templateUrl: './src/objectcomponents/templates/objectrelatedduplicatetile.html',
     providers: [model, view]
 })
 export class ObjectRelatedDuplicateTile implements OnInit{
