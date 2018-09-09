@@ -9,7 +9,6 @@ import {
     Output,
     EventEmitter
 } from '@angular/core';
-import {Http, RequestOptions, Headers} from '@angular/http';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';

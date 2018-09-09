@@ -12,7 +12,6 @@ import {
     OnChanges,
     OnInit
 } from '@angular/core';
-import {Http, RequestOptions, Headers} from '@angular/http';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';

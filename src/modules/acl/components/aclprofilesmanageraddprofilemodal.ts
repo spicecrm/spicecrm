@@ -11,7 +11,6 @@ import {
     Input,
     OnChanges
 } from '@angular/core';
-import {Http, RequestOptions, Headers} from '@angular/http';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';

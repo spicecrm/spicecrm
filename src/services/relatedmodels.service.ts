@@ -91,7 +91,6 @@ export class relatedmodels {
                 break;
             case 'model.save':
                 this.getData();
-                /*
                 let eventHandled = false;
                 for (let item of this.items) {
                     if (item.id === message.messagedata.id) {
@@ -103,7 +102,6 @@ export class relatedmodels {
                         eventHandled = true;
                     }
                 }
-                */
 
 
                 if (!eventHandled)

@@ -1,6 +1,5 @@
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from '@angular/core';
-import {Http, RequestOptions, Headers} from '@angular/http';
 import {FormsModule}   from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 

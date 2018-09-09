@@ -1,5 +1,4 @@
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {Http, RequestOptions, Headers} from '@angular/http';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {modellist} from '../../../services/modellist.service';
 import {backend} from '../../../services/backend.service';

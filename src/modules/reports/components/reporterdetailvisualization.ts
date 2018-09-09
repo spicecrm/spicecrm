@@ -1,5 +1,5 @@
 import {
-    Component, Input, AfterViewInit, trigger, state, style, transition, animate, OnInit,
+    Component, Input, AfterViewInit, OnInit,
     OnDestroy, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
