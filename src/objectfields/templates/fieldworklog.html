@@ -1,0 +1,45 @@
+<div *ngIf="!isEditMode()">
+    <!--div>
+        <span>{{value}}</span>
+        <button *ngIf="isEditable()" class="slds-button slds-button--icon" (click)="setEditMode()">
+            <system-button-icon [icon]="'edit'"></system-button-icon>
+        </button>
+    </div-->
+    <div class="slds-scrollable--y" [ngStyle]="styles">
+        <div *ngFor="let log of logs" class="slds-p-around--x-small slds-border--bottom" >
+            <div class="slds-p-around--x-small slds-theme--shade">{{log.user_name}} • {{formatTimestamp(log.timestamp)}}</div>
+            <div class="slds-p-around--x-small" style="white-space: pre-line;">{{log.text}}</div>
+        </div>
+    </div>
+</div>
+<div *ngIf="isEditMode()">
+    <div class="slds-grid">
+        <div class="slds-form-element slds-size--1-of-2 slds-m-right--xx-small">
+            <div class="slds-form-element__control">
+                <textarea class="slds-textarea" placeholder="Write your log here..." [(ngModel)]="new_log_entry" [ngStyle]="styles"></textarea>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2 slds-scrollable--y slds-m-left--xx-small" [ngStyle]="styles">
+            <div *ngFor="let log of logs" class="slds-p-around--x-small slds-border--bottom">
+                <div class="slds-p-around--x-small slds-theme--shade">{{log.user_name}} • {{formatTimestamp(log.timestamp)}}</div>
+                <div class="slds-p-around--x-small">{{log.text}}</div>
+            </div>
+            <!--section class="slds-chat">
+                <ul class="slds-chat-list">
+                    <li *ngFor="let log of logs" class="slds-chat-listitem slds-chat-listitem_inbound">
+                        <div class="slds-chat-message">
+                            <div class="slds-chat-message__body">
+                                <div class="slds-chat-message__text slds-chat-message__text_inbound">
+                                    <span>{{log.text}}</span>
+                                </div>
+                            </div>
+                            <div class="slds-chat-message__meta">
+                                {{log.user_name}} • {{log.timestamp}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section-->
+        </div>
+    </div>
+</div>

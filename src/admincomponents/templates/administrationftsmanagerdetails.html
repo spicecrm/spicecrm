@@ -1,0 +1,71 @@
+<div class="slds-p-top--x-small slds-p-horizontal--x-small">
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Index Priority</label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="ftsconfiguration.moduleFtsSettings.index_priority"/>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">fuzziness</label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="ftsconfiguration.moduleFtsSettings.fuzziness"/>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Operator</label>
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.operator">
+                    <option value='and'>and</option>
+                    <option value='or'>or</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Minimum Should Match</label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input"
+                   [(ngModel)]="ftsconfiguration.moduleFtsSettings.minimum_should_match"/>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Multimatch Type</label>
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.multimatch_type">
+                    <option value=''>default</option>
+                    <option value='best_fields'>Best Fields</option>
+                    <option value='most_fields'>Most Fields</option>
+                    <option value='phrase'>Phrase</option>
+                    <option value='phrase_prefix'>Phrase Prefix</option>
+                    <option value='cross_fields'>Cross Fields</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+        <span class="slds-checkbox">
+          <input type="checkbox" name="options" id="globalsearch"
+                 [(ngModel)]="ftsconfiguration.moduleFtsSettings.globalsearch"/>
+          <label class="slds-checkbox__label" for="globalsearch">
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label">Global Search</span>
+          </label>
+        </span>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+        <span class="slds-checkbox">
+          <input type="checkbox" name="options" id="emailsearch"
+                 [(ngModel)]="ftsconfiguration.moduleFtsSettings.emailsearch"/>
+          <label class="slds-checkbox__label" for="emailsearch">
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label">Email Search</span>
+          </label>
+        </span>
+        </div>
+    </div>
+</div>

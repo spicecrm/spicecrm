@@ -1,0 +1,17 @@
+<table class="slds-table slds-table--bordered slds-table--fixed-layout">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let item of listfields" class="slds-is-sortable" scope="col">
+                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="setSortField(item)">
+                    <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
+                    <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
+                </a>
+            </th>
+            <th class="slds-cell-shrink" scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+    </tbody>
+    <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [tools]="true"></tbody>
+</table>

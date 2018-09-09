@@ -1,0 +1,7 @@
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label">{{option.option}}</label>
+    <div class="slds-form-element__control">
+        <input *ngIf="objtype == 'component'" [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="component.componentconfig[option.option]"/>
+        <input *ngIf="objtype == 'field'" [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="component.fieldconfig[option.option]"/>
+    </div>
+</div>

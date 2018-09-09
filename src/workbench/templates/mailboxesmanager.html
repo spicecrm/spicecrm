@@ -1,0 +1,116 @@
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">{{language.getLabel('LBL_MAILBOX')}}</label>
+        <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="selected_mailbox">
+                    <option value="" disabled></option>
+                    <option *ngFor="let mailbox of this.mailboxes"
+                            [value]="mailbox.id">{{mailbox.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element slds-col--bump-left">
+        <div class="slds-button-group" role="group">
+            <button type="button" class="slds-button slds-button--neutral"
+                    (click)="addMailbox()">{{language.getLabel('LBL_ADD')}}
+            </button>
+            <button type="button" class="slds-button slds-button--neutral"
+                    [disabled]="!selected_mailbox"
+                    (click)="deleteMailbox()">
+                {{language.getLabel('LBL_DELETE')}}
+            </button>
+            <button type="button" class="slds-button slds-button--neutral"
+                    [disabled]="!selected_mailbox"
+                    (click)="setAsDefault()">{{language.getLabel('LBL_SET_DEFAULT_MAILBOX')}}
+            </button>
+            <button type="button" class="slds-button slds-button--brand"
+                    (click)="saveChanges()">{{language.getLabel('LBL_SAVE')}}
+            </button>
+        </div>
+    </div>
+</div>
+<div class="slds-p-horizontal--medium slds-p-vertical--small slds-border--bottom"
+     *ngIf="selected_mailbox">
+    <div class="slds-form--compound slds-p-vertical--x-small">
+        <field-label [fieldname]="'name'"></field-label>
+        <field-container [fieldname]="'name'"></field-container>
+    </div>
+    <div class="slds-form--compound slds-p-vertical--x-small">
+        <field-label [fieldname]="'description'"></field-label>
+        <field-container [fieldname]="'description'"></field-container>
+    </div>
+    <div class="slds-form--compound slds-p-vertical--x-small">
+        <field-label [fieldname]="'transport'"></field-label>
+        <field-container [fieldname]="'transport'"></field-container>
+    </div>
+    <div class="slds-form--compound slds-p-vertical--x-small">
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <label class="slds-form-element__label">Actionset</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="model.data.actionset">
+                        <option></option>
+                        <option *ngFor="let actionset of getActionSets()" [value]="actionset.id">
+                            {{actionset.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form--compound slds-p-vertical--x-small">
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <label class="slds-form-element__label">Stylesheet</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="model.data.stylesheet">
+                        <option></option>
+                        <option *ngFor="let stylesheet of getStylesheets()" [value]="stylesheet.id">
+                            {{stylesheet.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="model.data.transport"
+     class="slds-border--bottom slds-p-vertical--x-small">
+    <mailboxes-imap-smtp-traffic-manager
+            *ngIf="model.data.transport == 'imap'"></mailboxes-imap-smtp-traffic-manager>
+    <mailboxes-mailgun-traffic-manager
+            *ngIf="model.data.transport == 'mailgun'"></mailboxes-mailgun-traffic-manager>
+    <mailboxes-sendgrid-traffic-manager
+            *ngIf="model.data.transport == 'sendgrid'"></mailboxes-sendgrid-traffic-manager>
+</div>
+<div class="slds-form--compound slds-p-vertical--x-small"
+     *ngIf="selected_mailbox">
+</div>
+<div *ngIf="model.data.transport"
+     class="slds-grid slds-p-horizontal--medium slds-p-vertical--small slds-border--bottom">
+    <div class="slds-form-element slds-size--1-of-2">
+        <field-label [fieldname]="'inbound_comm'"></field-label>
+        <field-container [fieldname]="'inbound_comm'"></field-container>
+    </div>
+    <div class="slds-form-element slds-size--1-of-2">
+        <field-label [fieldname]="'outbound_comm'"></field-label>
+        <field-container [fieldname]="'outbound_comm'"></field-container>
+    </div>
+</div>
+<div *ngIf="selected_mailbox" class="slds-grid slds-p-horizontal--medium slds-p-vertical--small slds-border--bottom">
+    <div class="slds-form-element slds-size--1-of-2">
+        <field-label [fieldname]="'mailbox_header'"></field-label>
+        <field-container [fieldname]="'mailbox_header'"></field-container>
+    </div>
+    <div class="slds-form-element slds-size--1-of-2">
+        <field-label [fieldname]="'mailbox_footer'"></field-label>
+        <field-container [fieldname]="'mailbox_footer'"></field-container>
+    </div>
+</div>
+<mailboxes-processors *ngIf="selected_mailbox"></mailboxes-processors>
+<div class="slds-p-around--small">
+    <div #relatecontainer></div>
+</div>

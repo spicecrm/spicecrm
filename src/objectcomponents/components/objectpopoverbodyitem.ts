@@ -1,0 +1,42 @@
+import {Component, ElementRef, Renderer, Input, Output, OnDestroy, EventEmitter, OnInit} from '@angular/core';
+import {metadata} from '../../services/metadata.service';
+import {language} from '../../services/language.service';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {popup} from '../../services/popup.service';
+import {broadcast} from '../../services/broadcast.service';
+
+@Component({
+    selector: '[object-popover-body-item]',
+    templateUrl: './app/objectcomponents/templates/objectpopoverbodyitem.html',
+    providers:[model, view],
+    host:{
+        'class' : 'slds-popover__body-list'
+    }
+})
+export class ObjectPopoverBodyItem implements OnInit{
+
+    @Input() module:string = '';
+    @Input() id:string = '';
+    modelIsLoading: boolean = true;
+
+    fields: Array<any> = [];
+    constructor(private language: language, private model: model, private metadata: metadata) {
+
+    }
+
+    ngOnInit(){
+
+        this.model.module = this.module;
+        this.model.id = this.id;
+        this.modelIsLoading = true;
+        this.model.getData(true).subscribe(data => {
+            this.modelIsLoading = false;
+        });
+
+        let componentconfig = this.metadata.getComponentConfig('ObjectPopoverBodyItem', this.model.module);
+        if(componentconfig.fieldset){
+            this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+        }
+    }
+}

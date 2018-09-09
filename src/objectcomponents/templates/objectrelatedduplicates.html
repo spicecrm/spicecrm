@@ -1,0 +1,21 @@
+<article  class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <object-icon [icon]="'merge'" [size]="'small'" [sprite]="'standard'"></object-icon>
+            <div class="slds-grid slds-grid--vertical-align-center slds-media__body slds-truncate">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{duplicates.length}})</span>
+                    </a>
+                </h2>
+                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicates.length > 0" [icon]="getToggleIcon()" [size]="'x-small'" (click)="toggleDuplicates()"></system-utility-icon>
+            </div>
+        </header>
+        <object-merge-button *ngIf="showMergeButton" [mergemodels]="duplicates" (merged)="merged($event)"></object-merge-button>
+    </div>
+    <div class="slds-card__body" [hidden]="hideDuplicates">
+        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+            <div *ngFor="let duplicate of duplicates" class="slds-tile slds-media slds-card__tile  slds-p-vertical--small slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent" object-related-duplicate-tile  [duplicate]="duplicate" [parent]="model"></div>
+        </div>
+    </div>
+</article>

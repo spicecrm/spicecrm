@@ -1,0 +1,49 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43"  class="slds-modal slds-fade-in-open slds-modal_medium">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" *ngIf="this.mode == 'copy'" class="slds-text-heading--medium">{{language.getAppLanglabel('LBL_COPY_COMPONENT')}}</h2>
+            <h2 id="header44" *ngIf="this.mode == 'add'" class="slds-text-heading--medium">{{language.getAppLanglabel('LBL_ADD_COMPONENT')}}</h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium" style="height: 355px;">
+
+
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" >{{language.getAppLanglabel('LBL_TYPE')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="currentType">
+                            <option *ngFor="let type of types" [value]="type.value">{{language.getAppLanglabel(type.text)}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <system-select [selectList]="moduleSelectList" [selectedItem]="moduleSelectedItem" [label]="'LBL_MODULES'" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
+
+
+            <system-select [selectList]="compSelectList" [disabled]="compDisabled" [selectedItem]="compSelectedItem" [label]="'LBL_COMPONENT'" (selectedOutputItem)="selectedOutputItemComp($event)"></system-select>
+
+
+            <system-select [selectList]="roleSelectList" [selectedItem]="roleSelectedItem" [label]="'LBL_ROLES'" (selectedOutputItem)="selectedOutputItemRole($event)"></system-select>
+
+
+            <div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
+                {{language.getLabel('LBL_NOTE_COPY_CONFIG_INFO')}}
+            </div>
+
+
+
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()">{{language.getAppLanglabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="validate()">
+                <span *ngIf="this.mode == 'add'">{{language.getAppLanglabel('LBL_ADD')}}</span>
+                <span *ngIf="this.mode == 'copy'">{{language.getAppLanglabel('LBL_COPY')}}</span>
+            </button>
+        </div>
+    </div>
+</div>

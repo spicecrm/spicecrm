@@ -1,0 +1,68 @@
+import {
+    Component,
+    Input,
+    Output,
+    AfterViewInit,
+    OnInit,
+    ViewChild,
+    ViewContainerRef,
+    OnDestroy,
+    EventEmitter,
+} from '@angular/core';
+import {model} from '../../services/model.service';
+import {backend} from '../../services/backend.service';
+import {metadata} from '../../services/metadata.service';
+import {modelutilities} from '../../services/modelutilities.service';
+import {language} from '../../services/language.service';
+import {configurationService} from '../../services/configuration.service';
+
+import {Subject} from 'rxjs';
+import {field} from "../../objectfields/components/field";
+
+@Component({
+    selector: 'fieldsetmanager-edit-dialog',
+    templateUrl: './app/workbench/templates/fieldsetmanagereditdialog.html'
+})
+export class FieldsetManagerEditDialog implements OnInit{
+
+    @Input() fieldset: string = '';
+    @Input() edit_mode: string = '';
+
+    @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();
+
+    fieldsetname: string = '';
+    fieldsettype: string = '';
+
+    adding: boolean = false;
+    globalEdit: boolean = false;
+
+    self;
+
+    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private configurationService: configurationService) {
+    }
+
+    ngOnInit(){
+        if(this.fieldset) {
+            this.fieldsetname = this.metadata.getFieldsetName(this.fieldset);
+            this.fieldsettype = this.metadata.getFieldset(this.fieldset).type;
+            this.adding = false;
+        } else {
+            this.fieldsettype = 'custom';
+            this.adding = true;
+        }
+    }
+
+    closeDialog() {
+        this.self.destroy();
+    }
+
+    onModalEscX() {
+        this.closeDialog();
+    }
+
+    add() {
+        this.closedialog.emit({name: this.fieldsetname, type: this.fieldsettype});
+        this.self.destroy();
+    }
+
+}

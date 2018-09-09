@@ -1,0 +1,2 @@
+<button class="slds-button slds-button--neutral" (click)="openModal()">Select</button>
+<object-modal-module-lookup *ngIf="displayModal" (selectedItems)="emitSelectedItems($event)"></object-modal-module-lookup>

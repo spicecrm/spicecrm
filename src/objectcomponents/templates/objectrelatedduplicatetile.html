@@ -1,0 +1,20 @@
+<object-icon [module]="model.module" [size]="'small'"></object-icon>
+<div class="slds-media__body">
+    <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
+        <h3 class="slds-truncate slds-text-heading--small slds-m-bottom--small" (click)="navgiateDetail()">
+            <a href="javascript:void(0);">{{model.data.summary_text}}</a>
+        </h3>
+    </div>
+    <div class="slds-tile__detail slds-text-body--small">
+        <dl class="slds-dl--horizontal">
+            <ng-container *ngFor="let field of getFields()">
+                <dt class="slds-dl--horizontal__label">
+                    <span class="slds-truncate">{{language.getFieldDisplayName(model.module, field.field)}}</span>
+                </dt>
+                <dd class="slds-dl--horizontal__detail slds-tile__meta">
+                    <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+                </dd>
+            </ng-container>
+        </dl>
+    </div>
+</div>

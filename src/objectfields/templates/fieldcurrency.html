@@ -1,0 +1,30 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div class="slds-grid slds-grid--align-spread">
+        <div>
+            {{getCurrencySymbol()}}&nbsp;
+        </div>
+        <div cass="slds-text-align--right">
+            <span>{{getTextValue()}}</span>
+        </div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <div class="slds-grid slds-m-vertical--xx-small">
+        <div *ngIf="currencyidfield" class="slds-form-element slds-size--1-of-4 slds-p-right--x-small">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="model.data[currencyidfield]">
+                        <option *ngFor="let currency of currencies" [value]="currency.id">{{currency.iso}}
+                            ({{currency.symbol}})
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element"
+             [ngClass]="{'slds-size--3-of-4':currencyidfield, 'slds-size--1-of-1': !currencyidfield}">
+            <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

@@ -1,0 +1,41 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <ul class="slds-list_horizontal slds-has-dividers_left">
+        <li *ngFor="let territory of territories|fieldterritorysecondarypipe:primary_territory_id" class="slds-item">{{territory.name}}</li>
+    </ul>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()"
+     class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small"
+     [ngClass]="css_classes">
+    <div class="slds-form-element__control slds-size--1-of-1">
+        <div class="slds-combobox_container">
+            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox"
+                 [ngClass]="{'slds-is-open':isAdding && territorySearchTerm}">
+                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                    <div class="slds-pill_container" (click)="onClick()">
+                        <ul class="slds-listbox slds-listbox_horizontal" role="listbox">
+                            <li class="slds-listbox-item" role="presentation" *ngFor="let territory of territories|fieldterritorysecondarypipe:primary_territory_id">
+                                  <span class="slds-pill" role="option">
+                                        <span class="slds-icon_container">
+                                            <system-icon module="SpiceACLTerritories" size="x-small" divClass="slds-p-right--x-small"></system-icon>
+                                        </span>
+                                        <span class="slds-pill__label">{{territory.name}}</span>
+                                        <span class="slds-icon_container slds-pill__remove">
+                                          <system-button-icon [icon]="'close'" (click)="removeTerritory($event, territory.id)"></system-button-icon>
+                                        </span>
+                                  </span>
+                            </li>
+                            <li class="slds-listbox-item" role="presentation">
+                                <input spoiceui-autofocus *ngIf="isAdding" type="text" style="min-width: 12rem;"
+                                       class="slds-p-horizontal--x-small" [(ngModel)]="territorySearchTerm" (blur)="onBlur()" [placeholder]="language.getLabel('LBL_ADD_TERRITORY')"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                    <field-territory-search [searchterm]="territorySearchTerm" (selectedTerritory)="addTerritory($event)"></field-territory-search>
+                </div>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

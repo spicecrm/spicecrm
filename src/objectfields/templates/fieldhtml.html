@@ -1,0 +1,23 @@
+<div style="position:relative"><!-- class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-bottom--xx-small" -->
+    <!--field-label [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label-->
+    <span style="position:absolute;margin-top:-20px;right:0;top:0">
+        <button class="slds-button slds-button--icon" (click)="print()">
+            <system-custom-icon size="x-small" icon="print"></system-custom-icon>
+        </button>
+        <iframe #printframe [srcdoc]="htmlValue" style="width:0;height:0;border:0"></iframe>
+        <button *ngIf="isEditable() && !isEditMode()" class="slds-button slds-button--icon" (click)="setEditMode()">
+            <system-button-icon [icon]="'edit'"></system-button-icon>
+        </button>
+        <button *ngIf="isEditMode()" class="slds-button slds-button--icon" (click)="expand()">
+            <system-button-icon [icon]="'expand_alt'"></system-button-icon>
+        </button>
+    </span>
+</div>
+<div *ngIf="!isEditMode()" class="slds-scrollable--y" style="max-height: 300px;" [ngClass]="fielddisplayclass">
+    <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue"></div>
+    <iframe *ngIf="asiframe" [srcdoc]="htmlValue" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
+</div>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <field-html-editor [fieldid]="fieldid" [fieldvalue]="value" [fieldconfig]="fieldconfig" [useStylesheets]="useStylesheets" [useStylesheetSwitcher]="useStylesheetSwitcher" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></field-html-editor>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

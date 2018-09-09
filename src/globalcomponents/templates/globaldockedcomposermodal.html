@@ -1,0 +1,47 @@
+<!--section role="dialog" tabindex="-1" class="slds-modal slds-modal_large slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__content">
+            <header class="slds-modal__header slds-grid slds-shrink-none" aria-live="assertive">
+                <div class="slds-media slds-media_center slds-no-space">
+                    <div class="slds-media__figure slds-m-right_x-small">
+                            <span class="slds-icon_container">
+                              <system-icon [module]="model.module" [size]="'small'"></system-icon>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-truncate">{{displayLabel}}</h2>
+                    </div>
+                </div>
+                <div class="slds-col_bump-left slds-shrink-none">
+                    <button class="slds-button slds-button_icon slds-button_icon" (click)="minimize()">
+                        <system-button-icon [icon]="'minimize_window'"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button_icon slds-button_icon" (click)="closeComposer()">
+                        <system-button-icon [icon]="'close'"></system-button-icon>
+                    </button>
+                </div>
+            </header>
+            <div class="slds-modal__content" style="max-height: 90%;">
+                <div #containercontent></div>
+            </div>
+            <footer class="slds-modal__footer slds-shrink-none">
+                <div class="slds-col_bump-left slds-text-align_right">
+                    <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
+                    <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
+                </div>
+            </footer>
+        </div>
+    </div>
+</section-->
+<system-modal size="medium">
+    <system-modal-header [module]="model.module" (close)="minimize()">{{displayLabel}}</system-modal-header>
+    <system-modal-content>
+        <div #containercontent></div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-col_bump-left slds-text-align_right">
+            <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
+        </div>
+    </system-modal-footer>
+</system-modal>

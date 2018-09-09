@@ -1,0 +1,28 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <object-icon [module]="moduleName" (click)="goToModule()"></object-icon>
+                <div class="slds-media__body">
+                    <p class="slds-text-title--caps slds-line-height--reset">
+                        <a routerLink="/module/{{moduleName}}">{{language.getModuleName(moduleName)}}</a>
+                    </p>
+                    <div>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            {{model.data.summary_text}}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-horizontal--x-small">
+            <object-reminder-button></object-reminder-button>
+            <object-status-network-button></object-status-network-button>
+        </div>
+        <object-action-container [actionset]="actionSet"></object-action-container>
+    </div>
+    <object-page-header-tags></object-page-header-tags>
+</div>
+<!--div class="slds-page-header slds-p-top--none">
+    <object-page-header-detail-row *ngFor="let thisFieldSet of fieldSets" [fieldSet]="thisFieldSet"></object-page-header-detail-row>
+</div-->

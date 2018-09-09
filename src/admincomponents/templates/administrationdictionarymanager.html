@@ -1,0 +1,36 @@
+<div class="slds-page-header" role="banner">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <div class="slds-media__body">
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">Dictionary {{dictionaryitem}}</h1>
+                    <p class="slds-text-title--caps slds-line-height--reset">{{dictionary.data.length}} Items</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th *ngFor="let field of dictionary.getFields()" class="slds-is-sortable slds-is-resizable" scope="col">
+            <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                <span class="slds-truncate">{{field}}</span>
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr administration-dictionarymanager-item class="slds-hint-parent" *ngFor="let item of dictionary.data" [item]="item"></tr>
+    </tbody>
+</table>
+<footer class="slds-utility-bar_container" role="footer" *ngIf="isEditMode()">
+    <ul class="slds-utility-bar">
+        <li class="slds-utility-bar__item">
+            <button class="slds-button slds-utility-bar__action slds-button--brand">Save</button>
+        </li>
+        <li class="slds-utility-bar__item">
+            <button class="slds-button slds-utility-bar__action slds-button--brand" (click)="closeEditMode()">Cancel</button>
+        </li>
+    </ul>
+</footer>

@@ -1,0 +1,59 @@
+<div class="slds-grid" [ngStyle]="getContainerStyle()">
+    <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse slds-border--right" style="height:100%;width: 250px;">
+        <div class="slds-p-horizontal--xx-small slds-p-vertical--small slds-border--bottom">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-vertical--xx-small">
+                <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="itemfilter" />
+                <system-utility-icon *ngIf="itemfilter == ''" [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
+                <div *ngIf="itemfilter != ''" class="slds-input__icon-group slds-input__icon-group_right">
+                    <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"  (click)="itemfilter = ''">
+                        <system-button-icon [icon]="'clear'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div #adminitemscontainer class="slds-scrollable--y" [ngStyle]="getItemsStyle()">
+            <ng-container  *ngFor="let adminNavigationBlock of getNavigationBlocks()" >
+                <h2 class="slds-text-title--caps slds-p-around--medium">{{adminNavigationBlock}}</h2>
+                <ul>
+                    <li *ngFor="let item of getNavigationItems(adminNavigationBlock)">
+                        <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="openContent(adminNavigationBlock, item)" [ngClass]="{'slds-theme_inverse': item == opened_item}">
+                            {{item.name}}
+                        </a>
+                    </li>
+                </ul>
+            </ng-container>
+        </div>
+    </div>
+    <div style="width:100%; height: 100%;" class="slds-scrollable" >
+        <div #admincontentcontainer></div>
+    </div>
+    <!--footer class="slds-utility-bar_container" aria-label="Utility Bar">
+        <h2 class="slds-assistive-text">Utility Bar</h2>
+        <ul class="slds-utility-bar">
+            <li class="slds-utility-bar__item">
+                <button class="slds-button slds-utility-bar__action" aria-pressed="false">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call" />
+                    </svg>
+                    <span class="slds-utility-bar__text">Call</span>
+                </button>
+            </li>
+            <li class="slds-utility-bar__item">
+                <button class="slds-button slds-utility-bar__action" aria-pressed="false">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#clock" />
+                    </svg>
+                    <span class="slds-utility-bar__text">History</span>
+                </button>
+            </li>
+            <li class="slds-utility-bar__item">
+                <button class="slds-button slds-utility-bar__action" aria-pressed="false">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#note" />
+                    </svg>
+                    <span class="slds-utility-bar__text">Notes</span>
+                </button>
+            </li>
+        </ul>
+    </footer-->
+</div>

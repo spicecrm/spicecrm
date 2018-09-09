@@ -1,0 +1,40 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    {{display_value}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container slds-has-inline-listbox">
+                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-lookup  slds-size_2-of-2" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+
+                    <div *ngIf="display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <div class="slds-pill_container">
+                          <span class="slds-pill slds-size--1-of-1">
+                            <span class="slds-pill__label">{{display_value}}</span>
+                            <button class="slds-button slds-button--icon slds-pill__remove" (click)="unchooseSelField()">
+                              <system-button-icon [icon]="'close'"></system-button-icon>
+                            </button>
+                          </span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                        <input (focus)="onFocus()" class="slds-input slds-combobox__input" type="search" placeholder="{{language.getLabel('LBL_SEARCH')}}" [(ngModel)]="search" (click)="checkUserAction($event)" (keyup)="checkUserAction($event)" />
+                    </div>
+
+
+                    <div *ngIf="show_tree" class="slds-dropdown dropdown-trigger_click slds-dropdown_length-with-icon-1 slds-dropdown_fluid" style="display: block">
+                        <select-tree-tree [treekey]="fieldconfig.key" [maxlevels]="maxlevels" (choose)="chooseSelField($event)"></select-tree-tree>
+                    </div>
+
+
+                    <!--<div *ngIf="show_search" class="slds-dropdown_length-with-icon-1 slds-dropdown_fluid">-->
+
+                        <div *ngIf="show_search"  class="slds-dropdown dropdown-trigger_click slds-dropdown_length-with-icon-1 slds-dropdown_fluid" style="display: block">
+                        <select-tree-search [treekey]="fieldconfig.key" [search]="search" (choose)="chooseSelField($event)"></select-tree-search>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+</div>

@@ -1,0 +1,39 @@
+<div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-m-bottom--x-small">
+    <div class="slds-truncate slds-size--1-of-2">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="emailadr">
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-grid--align-end slds-m-left--x-small slds-size--1-of-2">
+        <div class="slds-form-element__control" (click)="primary = true">
+            <span class="slds-radio">
+              <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="primary">
+              <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
+                <span class="slds-radio--faux"></span>
+                <span class="slds-form-element__label">primary</span>
+              </label>
+            </span>
+        </div>
+
+        <div class="slds-form-element__control">
+            <span class="slds-checkbox">
+              <input type="checkbox" [id]="emailaddress.id + 'optout'" [(ngModel)]="opt_out">
+              <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label">opt out</span>
+              </label>
+            </span>
+        </div>
+        <div class="slds-form-element__control">
+            <span class="slds-checkbox">
+              <input type="checkbox" [id]="emailaddress.id + 'invalid'" [(ngModel)]="invalid_email">
+              <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label">invalid</span>
+              </label>
+            </span>
+        </div>
+    </div>
+</div>

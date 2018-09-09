@@ -1,0 +1,52 @@
+<div class="slds-form--stacked slds-p-around--x-small">
+    <div class="slds-form-element" (click)="onFocus()">
+        <field-label [fieldname]="'name'" [fieldconfig]="{required:true}"></field-label>
+        <!--div class="slds-form-element__control">
+            <div class="slds-truncate" title="{{field}}">
+                <input class="slds-input slds-m-vertical--xx-small" type="text" (focus)="onFocus()"
+                       [(ngModel)]="model.data.name" placeholder="Email Subject"/>
+            </div>
+        </div-->
+        <field-container field="name"></field-container>
+    </div>
+    <ng-container *ngIf="isExpanded">
+        <div class="slds-form-element">
+            <div class="slds-form-element">
+                <field-label [fieldname]="'mailbox_id'"></field-label>
+                <field-container [field]="'mailbox_id'"></field-container>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <field-label [fieldname]="'to_addrs_names'"></field-label>
+            <field-container field="to_addrs_names" [fieldconfig]="{fieldtype:'emailrecipients', addresstype: 'to'}"></field-container>
+        </div>
+        <div class="slds-form-element">
+            <field-label [fieldname]="'cc_addrs_names'"></field-label>
+            <field-container field="cc_addrs_names" [fieldconfig]="{fieldtype:'emailrecipients', addresstype: 'cc'}"></field-container>
+        </div>
+        <div class="slds-form-element">
+            <div class="slds-form-element">
+                <field-label [fieldname]="'emailtemplate_id'"></field-label>
+                <field-container field="emailtemplate_id" [fieldconfig]="{fieldtype:'emailtemplate'}"></field-container>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <field-label [fieldname]="'body'"></field-label>
+            <div class="slds-form-element__control">
+                <field-html [fieldname]="'body'"></field-html>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <field-label [fieldname]="'parent_name'"></field-label>
+            <field-container [field]="'parent_name'"></field-container>
+        </div>
+        <object-relatedlist-files></object-relatedlist-files>
+        <div class="slds-form-element">
+            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}
+            </button>
+            <button class="slds-button slds-button--brand .slds-button-space-left slds-float--right" (click)="send()">
+                Send
+            </button>
+        </div>
+    </ng-container>
+</div>

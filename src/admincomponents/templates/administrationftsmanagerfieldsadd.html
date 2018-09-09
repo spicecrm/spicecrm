@@ -1,0 +1,61 @@
+<div role="dialog" class="slds-modal slds-fade-in-open slds-modal--large" style="min-height: 90%;">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" (click)="close()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading--medium">Add Field</h2>
+        </div>
+        <div class="slds-modal__content" style="height: 80%">
+            <div class="slds-grid">
+                <div class="slds-size--1-of-3 slds-scrollable" style="height: 100%;">
+                    <nav class="slds-p-around--small" role="navigation">
+                        <ol class="slds-breadcrumb slds-list--horizontal">
+                            <li class="slds-breadcrumb__item slds-text-title--caps" *ngFor="let item of path; let i = index"><a href="javascript:void(0);" (click)="chooseBreadcrumb(i)">{{item.module}}</a></li>
+                        </ol>
+                    </nav>
+                    <ul class="slds-p-horizontal--small">
+                        <li class="slds-item slds-p-vertical--xxx-small" *ngFor="let link of links"><a href="javascript:void(0)" (click)="setLink(link)">{{link.module}}</a></li>
+                    </ul>
+                </div>
+                <div class="slds-size--2-of-3 slds-border--left slds-scrollable" style="height: 100%;">
+                    <table class="slds-table slds-table--cell-buffer">
+                        <thead>
+                        <tr class="slds-text-title--caps slds-theme--shade">
+                            <th>
+                                Add
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">Fieldname</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">Fieldlabel</div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="slds-border--bottom" *ngFor="let field of fields">
+                            <td>
+                                <button class="slds-button slds-button--icon-border" [disabled]="field.exists" [ngClass]="{'slds-is-selected': fieldSelected(field.name)}" (click)="selectField(field)">
+                                    <system-button-icon [icon]="field.exists || fieldSelected(field.fieldname) ? 'check' : 'add'"></system-button-icon>
+                                </button>
+                            </td>
+                            <td data-label="Account Name">
+                                <div class="slds-truncate">{{field.name}}</div>
+                            </td>
+                            <td data-label="Account Name">
+                                <div class="slds-truncate">{{getFieldLabel(field.name)}}</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        </div>
+    </div>
+</div>
+<div class="slds-backdrop slds-backdrop--open"></div>

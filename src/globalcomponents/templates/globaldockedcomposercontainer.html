@@ -1,0 +1,2 @@
+<global-docked-composer-overflow *ngIf="displayOverflow"></global-docked-composer-overflow>
+<global-docked-composer *ngFor="let composer of dockedComposer.composers; let i = index;" [composerindex]="i" [composerdata]="composer" [ngStyle]="getComposerStyle(i)"></global-docked-composer>

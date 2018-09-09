@@ -1,0 +1,19 @@
+<div class="spicecrm-globalsearch-container" [ngStyle]="getContainerStyle()">
+    <div class="spicecrm-globalsearch-menu slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse">
+        <h2 class="slds-text-title--caps slds-p-around--medium" id="entity-header">{{language.getLabel('LBL_SEARCHRESULTS')}}</h2>
+        <ul>
+            <li [ngClass]="getScopeClass('*')">
+                <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="setSearchScope('*')">{{language.getLabel('LBL_TOPRESULTS')}}</a>
+            </li>
+            <li *ngFor="let module of fts.searchModules" [ngClass]="getScopeClass(module)">
+                <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="setSearchScope(module)">{{language.getModuleName(module)}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="spicecrm-globalsearch-results" [ngStyle]="getContainerStyle()">
+        <div *ngIf="fts.runningmodulesearch" class="slds-p-around--medium">
+            <system-spinner></system-spinner>
+        </div>
+        <div global-search-module class="slds-m-bottom--medium" *ngFor="let result of fts.moduleSearchresults" [module]="result.module" [infinitescroll]="infiniteScroll()"></div>
+    </div>
+</div>

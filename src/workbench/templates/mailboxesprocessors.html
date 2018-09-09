@@ -1,0 +1,71 @@
+<table *ngIf="processorsvisible"
+       class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <thead>
+    <tr class="slds-text-title">
+        <th scope="col">
+            <div class="slds-truncate" title="Class">Class</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Method">Method</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Priority">Priority</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Stop on success">Stop on
+                success
+            </div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container
+            *ngFor="let mailbox_processor of model.data.mailbox_processors">
+        <tr *ngIf="!mailbox_processor.deleted">
+            <input type="hidden" [(ngModel)]="mailbox_processor.id">
+            <td scope="row" data-label="Class">
+                <select [disabled]="processors.length == 0"
+                        [(ngModel)]="mailbox_processor.processor_class"
+                        type="text" class="slds-select ng-pristine ng-valid">
+                    <option *ngFor="let processor of processors"
+                            value="{{ processor.processor_class }}">
+                        {{ processor.name }}
+                    </option>
+                </select>
+            </td>
+            <td scope="row" data-label="Method">
+                <select [disabled]="!mailbox_processor.processor_class"
+                        [(ngModel)]="mailbox_processor.processor_method"
+                        type="text" class="slds-select ng-pristine ng-valid">
+                    <ng-container *ngIf="mailbox_processor.processor_class">
+                        <option *ngFor="let method of getProcessorMethods(mailbox_processor.processor_class)"
+                                value="{{ method }}">
+                            {{ method }}
+                        </option>
+                    </ng-container>
+                </select>
+            </td>
+            <td scope="row" data-label="Priority">
+                <input class="slds-input ng-pristine ng-valid ng-touched"
+                       [(ngModel)]="mailbox_processor.priority"
+                       title="Priority">
+            </td>
+            <td scope="row" data-label="Stop on success">
+                <input class="slds-input ng-pristine ng-valid ng-touched"
+                       [(ngModel)]="mailbox_processor.stop_on_success"
+                       title="Stop on success">
+            </td>
+            <td scope="row">
+                <button class="slds-button slds-button_destructive"
+                        (click)="removeProcessor(mailbox_processor.id)">X
+                </button>
+            </td>
+        </tr>
+    </ng-container>
+    </tbody>
+</table>
+<button type="button"
+        class="slds-col--bump-left slds-button slds-button--neutral"
+        (click)="addProcessor()">
+    Add Processor
+</button>

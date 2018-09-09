@@ -1,0 +1,89 @@
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {language} from '../../services/language.service';
+import {metadata} from "../../services/metadata.service";
+import {Router} from "@angular/router";
+import {fieldGeneric} from "./fieldgeneric";
+import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
+
+@Component({
+    selector: 'field-service-category-search',
+    templateUrl: './app/objectfields/templates/fieldcategorysearch.html'
+})
+export class fieldServiceCategorySearch
+{
+    @Input() search:string;
+    categories = [];
+    selected_categorys = [];
+    @Output('choose') choose_emitter = new EventEmitter();
+
+    constructor(
+        private model:model,
+        private backend:backend,
+        private config:configurationService,
+        private language:language,
+    )
+    {
+        if( !this.config.getData('service_category_tree') )
+        {
+            this.backend.getRequest('spiceui/core/servicecategories/tree').subscribe(
+                (res:any) => {
+                    //console.log(res);
+                    this.config.setData('service_category_tree', res);
+                    this.flatteningOutCategoryTree(res);
+                }
+            );
+        }
+        else {
+            this.flatteningOutCategoryTree(this.config.getData('service_category_tree'));
+        }
+    }
+
+    get results()
+    {
+        return this.categories.filter((e) => {return e.display_name.includes(this.search)});
+    }
+
+    flatteningOutCategoryTree(tree)
+    {
+        for(let cat of tree)
+        {
+            cat.parents = [];
+            this.loopThroughTree(cat);
+        }
+        //console.log(this.categories);
+    }
+
+    private loopThroughTree(cat)
+    {
+        cat.display_name = '';
+        if( cat.parents.length > 0 ) {
+            for (let p of cat.parents) {
+                cat.display_name += this.language.getLabel(p.name) + '\\';
+            }
+        }
+        cat.display_name += this.language.getLabel(cat.name);
+
+        this.categories.push(cat);
+
+        if(cat.categories)
+        {
+            for(let c of cat.categories)
+            {
+                c.parents = [...cat.parents];
+                c.parents.push(cat);
+
+                this.loopThroughTree(c);
+            }
+        }
+    }
+
+    choose(cat)
+    {
+        let cats = [...cat.parents];
+        cats.push(cat);
+        this.choose_emitter.emit(cats);
+    }
+}

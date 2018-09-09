@@ -1,0 +1,39 @@
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >{{language.getAppLanglabel('LBL_NAME')}}</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.name"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="fieldset.id" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
+    <label class="slds-form-element__label" >{{language.getAppLanglabel('LBL_PACKAGE')}}</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.package"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
+    <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_FORMCLASS')}}</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetConfig.formclass"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
+    <span class="slds-checkbox">
+        <input [disabled]="!view.isEditMode()" name="options" id="cbDirection" value="vertical" type="checkbox" [checked]="currentFieldSetConfig.direction === 'vertical'" (change)="currentFieldSetConfig.direction = currentFieldSetConfig.direction === 'vertical' ? null : 'vertical'" />
+          <label class="slds-checkbox__label" for="cbDirection">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_VERTICAL')}}</span>
+          </label>
+    </span>
+</div>
+<div class="slds-form-element slds-m-top--x-small">
+    <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_WIDTH')}} (number of parts, leave blank for 1)</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetConfig.width"/>
+    </div>
+</div>

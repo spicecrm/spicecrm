@@ -1,0 +1,14 @@
+<div class="slds-section" [ngClass]="{'slds-is-open': expanded, 'slds-hide': hidden}">
+    <h3 *ngIf="showTitle" class="slds-section__title">
+        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">
+            <system-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+            <span class="slds-truncate" title="Section Title">{{language.getModuleLabel(model.module, componentconfig.name)}}</span>
+        </button>
+    </h3>
+    <div [ngStyle]="getContainerStyle()">
+        <div [ngStyle]="getTabStyle()">
+            <object-record-fieldset [fieldset]="fieldSet" [direction]="'vertical'"></object-record-fieldset>
+            <!--object-record-details-tab-row *ngFor="let fieldset of getFieldsets()" [fieldset]="fieldset"></object-record-details-tab-row-->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="slds-filters__item slds-grid slds-grid--vertical-align-center">
+    <a href="javascript:void(0);" class="slds-grow slds-has-blur-focus" (click)="onClick()" (focus)="onFocus($event)">
+        <p class="slds-text-body--small">{{getDisplayName()}}</p>
+        <p>{{operator}} {{filter.filtervalue}}</p>
+    </a>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <span class="slds-checkbox">
+              <input type="checkbox" name="options" checked=""/>
+            </span>
+        </div>
+    </div>
+    <button class="slds-button slds-button--icon slds-button--icon-small" (click)="deleteFilter()">
+        <system-button-icon [icon]="'close'"></system-button-icon>
+        <span class="slds-assistive-text">{{language.getLabel('LBL_REMOVE')}}</span>
+    </button>
+</div>
+<div #popover [ngStyle]="getPopoverStyle()">
+    <div *ngIf="showPopover" class="slds-popover slds-nubbin--right" role="dialog">
+        <div class="slds-popover__body">
+            <fieldset class="slds-form--stacked">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_FIELD')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="filter.field" (change)="fieldChanged()">
+                                <ng-container *ngFor="let o of listFields">
+                                    <option [value]="o.field">{{o.displayName}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- switch the entry data type field-->
+                <ng-container  [ngSwitch]="currentFieldType">
+                    <object-listview-filter-panel-filter-enum *ngSwitchCase="'enum'" [filter]="filter"></object-listview-filter-panel-filter-enum>
+                    <object-listview-filter-panel-filter-bool *ngSwitchCase="'bool'" [filter]="filter"></object-listview-filter-panel-filter-bool>
+                    <object-listview-filter-panel-filter-date *ngSwitchCase="'date'" [filter]="filter"></object-listview-filter-panel-filter-date>
+                    <object-listview-filter-panel-filter-text *ngSwitchDefault [filter]="filter"></object-listview-filter-panel-filter-text>
+                </ng-container>
+            </fieldset>
+            <div class="spicecrm-popup-buttoncontainer">
+                <button type="button" class="slds-button slds-button--neutral slds-button-space-left"
+                        (click)="closePopover()">{{language.getLabel('LBL_DONE')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,24 @@
+<article class="slds-card {{additional_css_classes}}">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div *ngIf="header_icon" class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                    <system-icon icon="{{header_icon}}"></system-icon>
+                </span>
+            </div>
+            <div class="slds-media__body" (click)="toggleCollapsed()">
+                <h2 class="slds-card__header-title">
+                    <span class="slds-text-heading_small">
+                        <ng-content select="system-card-header-title"></ng-content>
+                    </span>
+                </h2>
+            </div>
+            <div *ngIf="actionset_id" class="slds-no-flex">
+                <!-- action set here... -->
+            </div>
+        </header>
+    </div>
+    <!-- don't use linebreaks below (in the footer or body)! otherwise the .slds-card__body:empty, .slds-card__footer:empty will not be set!  -->
+    <div class="slds-card__body slds-card__body_inner"><ng-content select="system-card-body"></ng-content></div>
+    <footer class="slds-card__footer"><ng-content select="system-card-footer"></ng-content></footer>
+</article>

@@ -1,0 +1,16 @@
+<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters" [ngStyle]="getPanelStyle()">
+    <div class="slds-form--stacked slds-grow slds-scrollable--y slds-grid slds-grid--vertical">
+        <div class="slds-filters">
+            <div class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
+                <h4 class="slds-align-middle slds-text-heading--small">{{language.getLabel('LBL_AGGREGATES')}}</h4>
+                <button [disabled]="!modellist.hasAggregates()" class="slds-button slds-button--brand" (click)="clearAggregates()">{{language.getLabel('LBL_CLEARALL')}}</button>
+            </div>
+            <div class="slds-filters__body">
+                <ol class="slds-list--vertical slds-list--vertical-space">
+                    <li class="slds-item slds-hint-parent" object-listview-aggregate
+                        *ngFor="let aggregate of getAggregates()" [aggregate]="aggregate"></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

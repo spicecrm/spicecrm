@@ -1,0 +1,13 @@
+<div *ngIf="!editmode">
+    <div class="slds-truncate">{{rolename}}</div>
+</div>
+<div *ngIf="editmode" class="slds-form-element">
+    <div class="slds-form-element__control">
+        <div class="slds-select_container slds-m-vertical--xx-small">
+            <select class="slds-select" [(ngModel)]="roleValue">
+                <option value="*">*</option>
+                <option *ngFor="let role of roles" [value]="role.id">{{role.name}}</option>
+            </select>
+        </div>
+    </div>
+</div>

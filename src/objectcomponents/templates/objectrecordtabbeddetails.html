@@ -1,0 +1,18 @@
+<div class="slds-tabs--scoped slds-p-bottom--small">
+    <ul class="slds-tabs--scoped__nav" role="tablist">
+        <li *ngFor="let tab of tabs; let tabindex = index"
+            class="slds-tabs--scoped__item slds-text-title--caps slds-active"
+            [ngClass]="{'slds-active': tabindex === activeTab}"
+            role="presentation" (click)="setActiveTab(tabindex)"><a class="slds-tabs--scoped__link"
+                                                                    href="javascript:void(0);" role="tab"
+                                                                    aria-selected="false"><span class="slds-badge" *ngIf="tab.hasErrors" title="Invalid fields!">{{tab.hasErrors}}</span> {{language.getLabel(tab.name,
+            model.module)}}</a>
+        </li>
+    </ul>
+    <ng-container *ngFor="let tab of tabs; let tabindex = index">
+        <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--scoped__content slds-p-vertical--xxx-small slds-p-horizontal--none"
+             [ngClass]="{'slds-active': showTab(tabindex)}" role="tabpanel" [hidden]="!showTab(tabindex)">
+            <object-tab-container-item *ngIf="tab.componentset" (taberrors)="showErrorsOnTab(tabindex,$event)" [componentset]="tab.componentset"></object-tab-container-item>
+        </div>
+    </ng-container>
+</div>

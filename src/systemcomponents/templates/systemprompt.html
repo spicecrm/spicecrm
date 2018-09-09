@@ -1,0 +1,21 @@
+<section role="alertdialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_prompt">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header slds-theme_{{theme}}" [style.height]="headertext ? 'auto':'1rem'">
+            <h2 *ngIf="headertext" class="slds-text-heading_medium slds-hyphenate">{{headertext}}</h2>
+        </header>
+        <div *ngIf="text || type === 'input'" class="slds-modal__content slds-text-align_center ">
+            <div *ngIf="text" class="slds-m-vertical_medium">{{text}}</div>
+            <div *ngIf="type === 'input'" class="slds-form-element slds-m-vertical_medium">
+                <div class="slds-form-element__control">
+                    <input #inputField class="slds-input" type="text" [(ngModel)]="value" />
+                </div>
+            </div>
+        </div>
+        <footer class="slds-modal__footer">
+            <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button #okButton class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
+        </footer>
+    </div>
+</section>
+
+

@@ -1,0 +1,11 @@
+<div class="slds-form-element__control slds-p-top--xx-small">
+    <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+        <div class="slds-size--1-of-2">
+            <input *ngIf="isEditMode()" class="slds-input" type="text" [(ngModel)]="value"/>
+            <div *ngIf="!isEditMode()" class="slds-truncate">{{value}}</div>
+        </div>
+        <div class="slds-size--1-of-2 slds-text-align--right">
+            <field-barcode-renderer [code]="value" [fieldId]="'id_'+fieldid"></field-barcode-renderer>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="slds-media">
+    <div class="slds-media__body" style="z-index: 0;">
+        <div class="slds-media slds-media--timeline slds-timeline__media--event">
+            <div class="slds-media__figure slds-timeline__icon">
+                <object-icon [icon]="'event'" [size]="'small'"></object-icon>
+            </div>
+            <div class="slds-media__body">
+                <h3 class="slds-truncate" (click)="goDetail()">
+                    <a *ngIf="enableDetail" href="javascript:void(0);">{{model.data.name}}</a>
+                    <span *ngIf="!enableDetail">{{model.data.name}}</span>
+                </h3>
+                <p class="slds-truncate slds-p-vertical--xxx-small" [title]="model.data.description">{{model.data.description}}</p>
+                <div>
+                    <ul class="slds-list--horizontal slds-wrap">
+                        <li *ngFor="let formField of formFields" class="slds-m-right--large slds-grid_vertical-align-center" style="display:inherit">
+                            <span class="slds-text-title">
+                                <field-label [fieldname]="formField.field" [addclasses]="'slds-m-bottom--none'"></field-label>
+                            </span>
+                            <span class="slds-text-body--small slds-p-left--xxx-small">
+                                <field-container [field]="formField.field" [fielddisplayclass]="'slds-text-body--small'"></field-container>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-media__figure slds-media__figure--reverse">
+        <div class="slds-timeline__actions">
+            <p class="slds-timeline__date">
+                <field-container [field]="'date_start'" [fieldconfig]="{displayfromnow: true}"
+                                 [fielddisplayclass]="'slds-truncate'"></field-container>
+            </p>
+            <object-action-menu *ngIf="showtoolset" [buttonsize]="'x-small'"></object-action-menu>
+        </div>
+    </div>
+</div>

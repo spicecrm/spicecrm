@@ -1,0 +1,14 @@
+<div class="slds-lookup__menu" style="display:block">
+    <ul class="slds-lookup__list" role="listbox">
+        <li role="presentation" (click)="goSearch()">
+           <span class="slds-lookup__item-action slds-media slds-media--center" role="option">
+               <system-icon icon="search" size="small" sprite="utility"></system-icon>
+               <div class="slds-media__body">
+                    <div class="slds-lookup__result-text">{{language.getLabel('LBL_SEARCH')}} "{{searchTerm}}" {{language.getLabel('LBL_INSPICECRM')}}</div>
+                    <!--span class="slds-lookup__result-meta slds-text-body--small">(total found {{fts.found}} items)</span-->
+               </div>
+           </span>
+        </li>
+        <li global-header-search-results-item *ngFor="let hit of fts.hits" [hit]="hit"></li>
+    </ul>
+</div>

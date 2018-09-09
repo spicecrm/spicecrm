@@ -1,0 +1,34 @@
+<div class="slds-p-around--small">
+    <p>
+        <b>CAUTION!</b> Following processes will be triggered:
+    </p>
+    <ol class="slds-list--ordered slds-p-bottom--large">
+        <li class="slds-list__item"><strong>delete</strong> current UI settings stored in sysui tables</li>
+        <li class="slds-list__item">load default UI settings into sysui tables</li>
+    </ol>
+    <div class="slds-form-element">
+        <label>{{language.getLabel('LBL_PACKAGES')}}:</label>
+        <div class="slds-form-element__control">
+            <system-checkbox-group [(ngModel)]="package_names">
+                <system-checkbox-group-checkbox *ngFor="let pack of available_packages" value="{{pack.package}}">{{pack.package}}</system-checkbox-group-checkbox>
+            </system-checkbox-group>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label>{{language.getLabel('LBL_VERSIONS')}}:</label>
+        <div class="slds-form-element__control">
+            <system-checkbox-group [(ngModel)]="version_names">
+                <system-checkbox-group-checkbox *ngFor="let vers of available_versions" value="{{vers.version}}">{{vers.version}}</system-checkbox-group-checkbox>
+            </system-checkbox-group>
+        </div>
+    </div>
+    <div *ngIf="pull_result" class="slds-form-element">
+        <label>{{language.getLabel('LBL_RESULT')}}:</label>
+        <pre>{{pull_result}}</pre>
+    </div>
+    <div class="slds-form-element slds-p-top--medium">
+        <system-spinner *ngIf="is_pulling"></system-spinner>
+        <button *ngIf="!is_pulling" class="slds-button slds-button--brand" (click)="submit()">{{language.getLabel('LBL_SUBMIT')}}</button>
+        <!--button (click)="test()">test me!</button-->
+    </div>
+</div>

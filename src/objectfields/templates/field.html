@@ -1,0 +1,6 @@
+<div class="slds-form-element">
+    <field-label *ngIf="field.fieldconfig.hidelabel !== true" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+    <div class="slds-form-element__control">
+        <field-container [field]="field.field" [fieldconfig]="field.fieldconfig"></field-container>
+    </div>
+</div>

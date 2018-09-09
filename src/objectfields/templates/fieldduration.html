@@ -1,0 +1,38 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    {{getDisplay()}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()">
+    <div *ngIf="!fieldconfig.freeentry" class="slds-grid">
+        <div class="slds-form-element__control slds-size--1-of-2">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="editDurationHours">
+                    <option *ngFor="let duration of durationHours">{{duration}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-form-element__control slds-m-left--x-small slds-size--1-of-2">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="editDurationMinutes">
+                    <option *ngFor="let duration of durationMinutes">{{duration}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="fieldconfig.freeentry" class="slds-grid">
+        <div class="slds-form-element slds-size--1-of-2">
+            <div class="slds-form-element__control slds-input-has-fixed-addon">
+                <input type="number" min="0" class="slds-input" title="hours" [(ngModel)]="editDurationHours" [ngModelOptions]="modelOptions" />
+                <span class="slds-form-element__addon" id="fixed-text-addon-post">h</span>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-left--x-small slds-size--1-of-2">
+            <div class="slds-form-element__control slds-input-has-fixed-addon">
+                <input type="number" min="0" max="59" class="slds-input" title="minutes" [(ngModel)]="editDurationMinutes" [ngModelOptions]="modelOptions" />
+                <span class="slds-form-element__addon" id="fixed-text-addon-post2">min</span>
+            </div>
+        </div>
+    </div>
+    <!--div *ngIf="errorMessage !== ''" class="slds-form-element__help">{{errorMessage}}</div-->
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
+<field-date-picker *ngIf="showDatePicker" [(setdate)]="value"></field-date-picker>

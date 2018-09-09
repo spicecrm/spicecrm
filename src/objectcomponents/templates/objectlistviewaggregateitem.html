@@ -1,0 +1,8 @@
+<!-- the id (bucketitem.aggdata) used below isn't unique... don't use that! -->
+<!--span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--x-small">
+    <input type="checkbox" [id]="bucketitem.aggdata" [(ngModel)]="checked"/>
+    <label class="slds-checkbox__label" [attr.for]="bucketitem.aggdata">
+        <span class="slds-checkbox--faux"></span>{{bucketitem.displayName}} ({{bucketitem.doc_count}})
+    </label>
+</span-->
+<system-checkbox [(ngModel)]="checked">{{bucketitem.displayName}} ({{bucketitem.doc_count}})</system-checkbox>

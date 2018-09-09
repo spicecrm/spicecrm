@@ -1,0 +1,59 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div type="text" class="slds-pill_container" style="border:none;">
+        <ul class="slds-listbox slds-listbox_horizontal" role="listbox">
+            <li class="slds-pill slds-pill_link" *ngFor="let addr of addrArray">
+                <a href="javascript:void(0);" class="slds-pill__action" style="padding-right:.125rem;">
+                    <span class="slds-pill__label">{{addr.email_address}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()"
+     class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small"
+     [ngClass]="css_classes">
+    <div class="slds-form-element__control slds-size--1-of-1">
+        <div class="slds-combobox_container">
+            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox"
+                 [ngClass]="{'slds-is-open':showSearchResults}">
+                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                    <div class="slds-pill_container" (click)="onClick()">
+                        <ul class="slds-listbox slds-listbox_horizontal" role="listbox">
+                            <li class="slds-listbox-item" role="presentation" *ngFor="let addr of addrArray">
+                                  <span class="slds-pill" role="option">
+                                        <span *ngIf="addr.parent_id" class="slds-icon_container">
+                                            <system-icon [module]="addr.parent_type" size="x-small" divClass="slds-p-right--x-small"></system-icon>
+                                        </span>
+                                        <span class="slds-pill__label">{{addr.email_address}}</span>
+                                        <span class="slds-icon_container slds-pill__remove">
+                                          <system-button-icon [icon]="'close'" (click)="removeAddress($event, addr.id)"></system-button-icon>
+                                        </span>
+                                  </span>
+                            </li>
+                            <li class="slds-listbox-item" role="presentation">
+                                <input spoiceui-autofocus *ngIf="isAdding" type="text" style="min-width: 12rem;"
+                                       class="slds-p-horizontal--x-small" [(ngModel)]="addAddress" (blur)="onBlur()"
+                                       (keyup)="onKeyUp($event)" [title]="language.getLabel('LBL_ADD_EMAILADDRESS')"
+                                       [placeholder]="language.getLabel('LBL_ADD_EMAILADDRESS')"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                    <system-spinner *ngIf="searchResultsLoading" size="12"></system-spinner>
+                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                        <li role="presentation" class="slds-listbox__item" *ngFor="let searchResult of searchResults" (click)="selectAddress(searchResult)">
+                            <div class="slds-listbox__option slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+                                <system-icon class="slds-p-right--x-small" [module]="searchResult.module" size="x-small"></system-icon>
+                                <div class="slds-media__body">
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">{{searchResult.email_address}} • {{searchResult.summary_text}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

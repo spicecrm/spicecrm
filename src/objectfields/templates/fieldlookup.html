@@ -1,0 +1,90 @@
+<div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
+    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
+            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+              <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+            </span>
+            <span class="slds-pill__label">{{pill.summary_text}}</span>
+          </span>
+        <button *ngIf="isEditable()" style="float: right" class="slds-button slds-button--icon"
+                (click)="setEditMode()">
+            <system-button-icon [icon]="'edit'"></system-button-icon>
+        </button>
+    </ng-template>
+</div>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <div class="slds-form-element slds-lookup">
+        <!-- the input box -->
+        <div class="slds-form-element__control slds-grid slds-box--border">
+            <!-- the module selector -->
+            <div class="slds-grid slds-m-vertical--xx-small slds-p-left--xx-small">
+                <div class="slds-col">
+                    <system-icon [module]="lookupType" [size]="'small'" [divClass]="'slds-m-horizontal--xxx-small'"></system-icon>
+                </div>
+                <div class="slds-col">
+                    <button class="slds-button slds-button--icon slds-button--icon-small" aria-haspopup="true"   (click)="toggleParentTypeSelect()">
+                        <system-button-icon [icon]="'down'" [size]="'small'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+            <!-- the input field  -->
+            <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
+                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="lookupSearchTerm" (focus)="onFocus()" [placeholder]="'Search ' + language.getModuleName(lookupType)" role="combobox"/>
+            </div>
+        </div>
+        <!-- the pill container -->
+        <!--div *ngIf="pills.length > 0" class="slds-form-element__control slds-p-top--xx-small">
+            <div class="slds-pill_container"-->
+
+            <!--/div>
+        </div-->
+    </div>
+    <!--div id="listbox-selections-unique-id" role="listbox" aria-orientation="horizontal">
+        <ul class="slds-listbox slds-listbox_inline slds-p-top_xxx-small" role="group" aria-label="Selected Options:">
+            <li *ngFor="let pill of pills" role="presentation" class="slds-listbox__item">
+              <span class="slds-pill" role="option" tabindex="0" aria-selected="true">
+                <span class="slds-avatar slds-avatar_x-small slds-pill__icon_container">
+                    <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+                </span>
+                <span class="slds-pill__label">{{pill.summary_text}}</span>
+                <span class="slds-icon_container slds-pill__remove" title="Remove">
+                  <system-button-icon [icon]="'close'"></system-button-icon>
+                </span>
+              </span>
+            </li>
+        </ul>
+    </div-->
+    <!-- the module select box container -->
+    <div *ngIf="lookupmoduleSelectOpen" class="slds-dropdown slds-dropdown--left">
+        <ul class="slds-dropdown__list" role="menu">
+            <li *ngFor="let lookupmodule of lookupmodules" class="slds-dropdown__item" role="presentation">
+                <button class="slds-button slds-lookup__item-action slds-lookup__item-action--label"
+                        (click)="setLookupType(lookupmodule)">
+                    <system-icon [module]="lookupmodule" [size]="'small'"></system-icon>
+                    {{language.getModuleName(lookupmodule)}}
+                </button>
+            </li>
+        </ul>
+    </div>
+    <!-- conatiner for recent or search -->
+    <div *ngIf="lookupSearchOpen" class="slds-lookup__menu" [ngStyle]="parentSearchStyle()">
+        <field-lookup-recent *ngIf="lookupSearchTerm === ''" [module]="lookupType" (selectedObject)="addItem($event)"></field-lookup-recent>
+        <field-lookup-search *ngIf="lookupSearchTerm !== ''" [module]="lookupType" [fieldid]="fieldid" (selectedObject)="addItem($event)" [(searchterm)]="lookupSearchTerm"></field-lookup-search>
+    </div>
+    <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_inline slds-p-top_xx-small" role="group">
+        <li role="presentation" class="slds-listbox__item">
+          <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
+            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+              <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+            </span>
+            <span class="slds-pill__label">{{pill.summary_text}}</span>
+            <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(pill)">
+              <system-button-icon [icon]="'close'"></system-button-icon>
+            </button>
+          </span>
+        </li>
+    </ul>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

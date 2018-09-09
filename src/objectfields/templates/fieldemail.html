@@ -1,0 +1,11 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-truncate">{{email}}</div>
+        <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="email" [icon]="'email'" [sprite]="'action'" [size]="'x-small'" (click)="sendEmail()"></system-icon>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+     [ngClass]="getFieldClass()">
+    <input class="slds-input" type="text" [(ngModel)]="value"/>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

@@ -1,0 +1,63 @@
+<div [ngClass]="fielddisplayclass+' format-'+fieldconfig.format" style="position:relative" >
+
+    <ng-container [ngSwitch]="fieldconfig.format">
+
+        <ng-container *ngSwitchCase="'button'">
+
+            <button #buttonToPicker *ngIf="fieldIsEmpty" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled withThumb" [disabled]="!isEditMode()" (click)="getImage()">
+                <system-button-icon [icon]="'image'"></system-button-icon>
+            </button>
+
+            <button #buttonToEnlargement *ngIf="!fieldIsEmpty" class="slds-button slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-container withThumb" (click)="openEnlarged()" style="padding:0;">
+                <img *ngIf="imageUrl" [src]="imageUrl" class="{{class}} imgInButton"><span style="display:inline-block" class="slds-text-align_center">
+                    <system-button-icon [icon]="'threedots'" style="display: block; width: calc(2rem - 2px); height: calc(2rem - 4px)"></system-button-icon>
+                </span>
+            </button>
+
+            <div *ngIf="enlarged" class="field-media-file-image-popover">
+                <img *ngIf="imageUrlEnlarged" [src]="imageUrlEnlarged" class="slds-image" width="160" height="160">
+                <button #closebutton class="slds-button slds-button_icon close" (click)="closeEnlarged()" title="Close">
+                    <system-button-icon [icon]="'close'" [size]="'small'"></system-button-icon>
+                </button>
+                <button *ngIf="isEditMode()" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled delete" title="Delete" (click)="clearField4button()">
+                    <system-button-icon [icon]="'delete'"></system-button-icon>
+                </button>
+                <!--button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled toLightbox" title="Expand to lightbox" (click)="openLightbox()">
+                    <system-button-icon [icon]="'preview'"></system-button-icon>
+                </button-->
+                {{closebutton.focus()}}
+            </div>
+
+        </ng-container>
+
+        <ng-container *ngSwitchDefault><!-- fieldconfig.displayFormat == 'image' -->
+            <div class="slds-box--border slds-align_absolute-center" [ngStyle]="imageStyle">
+                <img *ngIf="imageUrl" [src]="imageUrl" class="{{class}}">
+                <button #buttonToPicker *ngIf="fieldIsEmpty" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled slds-align--absolute-center withThumb" [disabled]="!isEditMode()" (click)="getImage()">
+                    <system-button-icon [icon]="'image'"></system-button-icon>
+                </button>
+                <button *ngIf="isEditMode() && !fieldIsEmpty" class="delete slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" title="Delete" (click)="clearField4image()">
+                    <system-button-icon [icon]="'delete'"></system-button-icon>
+                </button>
+            </div>
+        </ng-container>
+
+    </ng-container>
+
+</div>
+
+<!--ng-container *ngIf="lightboxOpen">
+    <div role="dialog" class="slds-modal slds-fade-in-open slds-modal_large">
+        <div class="slds-modal__container">
+            <div *ngIf="!isLoading" class="slds-modal__header slds-theme--default">
+                <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_MEDIAFILE_SELECTION')}}</h2>
+            </div>
+            <div class="slds-modal__content slds-p-around--medium slds-theme--default" style="height:100%">
+                abc
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button--neutral" (click)="closeLightbox()">{{language.getLabel('LBL_CLOSE')}}</button>
+            </div>
+        </div>
+    </div>
+</ng-container-->

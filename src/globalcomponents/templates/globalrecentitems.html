@@ -1,0 +1,43 @@
+<div class="slds-page-header" role="banner">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <div class="slds-media__body">
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{language.getLabel('LBL_RECENT_ITEMS')}}</h1>
+                    <p class="slds-text-title--caps slds-line-height--reset">{{recent.items.length}} {{language.getLabel('LBL_ITEMS')}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th class="slds-cell-shrink" scope="col">
+            </th>
+            <th class="slds-is-sortable slds-is-resizable" scope="col">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                    <span class="slds-truncate">{{language.getLabel('LBL_NAME')}}</span>
+                </a>
+            </th>
+            <th class="slds-is-sortable slds-is-resizable" scope="col">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                    <span class="slds-truncate">{{language.getLabel('LBL_MODULE')}}</span>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let recentItem of recent.items" class="slds-hint-parent" (click)="goRecent(recentItem.module_name, recentItem.item_id)">
+            <td role="gridcell" class="slds-cell-shrink">
+                <system-icon [module]="recentItem.module_name" size="small"></system-icon>
+            </td>
+            <td scope="row">
+                <div class="slds-truncate">{{recentItem.item_summary}}</div>
+            </td>
+            <td scope="row">
+                <div class="slds-truncate">{{language.getModuleName(recentItem.module_name, true)}}</div>
+            </td>
+        </tr>
+    </tbody>
+</table>

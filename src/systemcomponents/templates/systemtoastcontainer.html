@@ -1,0 +1,14 @@
+<div class="slds-notify_container">
+    <div *ngFor="let activeToast of toast.activeToasts" class="slds-notify" [ngClass]="getToastClass(activeToast.type, activeToast.theme)" role="alert">
+        <button class="slds-button slds-notify__close slds-button--icon-inverse" (click)="toast.clearToast(activeToast.id)">
+            <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+        </button>
+        <div class="slds-notify__content slds-grid">
+            <system-utility-icon [icon]="getToastIcon(activeToast.type)" [size]="'small'" [addclasses]="'slds-m-right--small slds-col slds-no-flex'" [colorclass]="'slds-icon'"></system-utility-icon>
+            <div class="slds-col slds-align-middle">
+                <h2 class="slds-text-heading--small">{{activeToast.text}}</h2>
+                <p *ngIf="activeToast.description">{{activeToast.description}}</p>
+            </div>
+        </div>
+    </div>
+</div>

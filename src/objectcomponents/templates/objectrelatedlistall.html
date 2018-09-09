@@ -1,0 +1,23 @@
+<div class="slds-page-header">
+    <nav role="navigation" aria-label="Breadcrumbs">
+        <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+            <li class="slds-breadcrumb__item slds-text-title_caps">
+                <a href="javascript:void(0);" (click)="goModule()">{{language.getModuleName( module )}}</a>
+            </li>
+            <li class="slds-breadcrumb__item slds-text-title_caps">
+                <a href="javascript:void(0);" (click)="goModel()">{{model.data.summary_text}}</a>
+            </li>
+        </ol>
+    </nav>
+    <div class="slds-media">
+        <div class="slds-media__body">
+            <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-p-vertical--xx-small">{{language.getModuleName( related )}}</h1>
+        </div>
+    </div>
+    <div class="slds-col slds-align-bottom">
+        <p class="slds-text-body--small">{{relatedmodels.items.length}} {{language.getLabel('LBL_OF')}} {{relatedmodels.count}} {{language.getLabel('LBL_ITEMS')}} • {{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(related, relatedmodels.sortfield)}}   • {{language.getLabel('LBL_LASTUPDATE')}} {{relatedmodels.getLastLoadTime()}}</p>
+    </div>
+</div>
+<div>
+    <object-relatedlist-table [listfields]="listfields" [module]="related"></object-relatedlist-table>
+</div>

@@ -1,0 +1,12 @@
+<script src="../components/objectlistheader.ts"></script>
+<div>
+    <object-list-header [listfields]="listFields" [actionset]="actionset"></object-list-header>
+    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()" (scroll)="onScroll($event)">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+            <tbody>
+                <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listFields]="listFields" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="rowselect" class="slds-hint-parent"></tr>
+            </tbody>
+            <tbody system-table-stencils [columns]="listFields?.length" [select]="rowselect" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
+        </table>
+    </div>
+</div>

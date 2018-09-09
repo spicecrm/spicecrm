@@ -1,0 +1,42 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <a href="javascript:void(0);" modelPopOver [module]="relateType" [id]="model.data[relateIdField]">{{value}}</a>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
+    <div class="slds-combobox_container">
+        <div class="slds-form-element slds-lookup">
+            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click " [ngClass]="{'slds-is-open': relateSearchOpen}" role="combobox">
+                <div *ngIf="model.data[relateIdField]" class="slds-form-element__control">
+                    <div class="slds-pill_container">
+                          <span class="slds-pill slds-size--1-of-1">
+                            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                              <system-icon [module]="relateType" [size]="'small'"></system-icon>
+                            </span>
+                            <span class="slds-pill__label">{{model.data[relateNameField]}}</span>
+                            <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearField()">
+                              <system-button-icon [icon]="'close'"></system-button-icon>
+                            </button>
+                          </span>
+                    </div>
+                </div>
+                <div *ngIf="!model.data[relateIdField]"
+                     class="slds-form-element__control slds-grid slds-box--border"
+                     [ngClass]="getFieldClass()">
+                    <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"
+                                             (click)="openSearchModal()"></system-utility-icon>
+                        <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm"
+                               (focus)="onFocus()" [placeholder]="'Search ' + language.getModuleName(relateType)"
+                               role="combobox"/>
+                    </div>
+                </div>
+                <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                    <field-lookup-recent *ngIf="relateSearchTerm === ''" [module]="relateType"
+                                         (selectedObject)="setRelated($event)"></field-lookup-recent>
+                    <field-lookup-search *ngIf="relateSearchTerm !== ''" [module]="relateType" (selectedObject)="setRelated($event)"
+                                         [(searchterm)]="relateSearchTerm"></field-lookup-search>
+                </div>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

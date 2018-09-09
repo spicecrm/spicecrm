@@ -1,0 +1,26 @@
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <h2 class="slds-text-heading--medium ">editor</h2>
+    <button class="slds-button slds-button--neutral" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+</div>
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th scope="col">
+            name
+        </th>
+        <th scope="col">
+            value
+        </th>
+    </tr>
+    </thead>
+        <tbody>
+            <tr style="vertical-align: middle" class="slds-align-top"  *ngFor="let item of items">
+                <td>{{item.name}}</td>
+                <td>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+</table>

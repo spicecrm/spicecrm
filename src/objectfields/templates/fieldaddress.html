@@ -1,0 +1,78 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+     {{getValue()}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <fieldset>
+        <legend class="slds-form-element__label slds-text-title--caps slds-p-bottom--x-small">{{getAddressLabel()}}</legend>
+        <div class="slds-form-element__group">
+                <div #searchref class="slds-form-element slds-size--1-of-1 slds-lookup">
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
+                        <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH_ADDRESS')" [(ngModel)]="searchterm" (focus)="onSearchFocus()"/>
+                    </div>
+                    <div *ngIf="displayAutocompleteResults"class="slds-lookup__menu" style="display:block">
+                        <ul class="slds-lookup__list" role="listbox">
+                            <li *ngFor="let autocompleteResult of autocompleteResults" role="presentation" (click)="getAddressDetail(autocompleteResult.place_id)">
+                                <div class="slds-lookup__result-text slds-p-around--x-small"><a href="javascript:void(0)">{{autocompleteResult.description}}</a></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_ATTN')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="attn"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_STREET')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="street"/>
+                    </div>
+                </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_POSTALCODE')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="postalcode"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_CITY')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="city"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_STATE')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="state"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_COUNTRY')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="country"/>
+                    </div>
+                </div>
+            </div>
+            <!--div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label">Latitude</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="latitude"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label">Longitude</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="longitude"/>
+                    </div>
+                </div>
+            </div-->
+        </div>
+    </fieldset>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

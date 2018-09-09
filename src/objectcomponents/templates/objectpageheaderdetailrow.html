@@ -1,0 +1,21 @@
+<div class="slds-grid slds-grid--vertical-align-start slds-p-top--x-small">
+    <div>
+        <ul *ngIf="!collapsed" class="slds-grid" [ngStyle]="{opacity: opacity}">
+            <li object-page-header-detail-row-field class="slds-m-right--medium" *ngFor="let field of getFields()" [field]="field"></li>
+        </ul>
+        <ul *ngIf="collapsed" class="slds-list--horizontal slds-has-dividers--left">
+            <ng-container *ngFor="let field of getFields()">
+                <li *ngIf="model.data[field.field]" class="slds-item slds-grid slds-grid--vertical-align-center">
+                    <field-label *ngIf="!field.fieldconfig.hidelabel" [fieldname]="field.field" [fieldconfig]="field.fieldconfig" [addclasses]="'slds-truncate'"></field-label>
+                    <span *ngIf="!field.fieldconfig.hidelabel" class="slds-p-right--xx-small">:</span>
+                    <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+    <div class="slds-col--bump-left">
+        <button class="slds-button slds-button--icon" (click)="toggleCollapsed()">
+            <system-button-icon [icon]="toggleIcon"></system-button-icon>
+        </button>
+    </div>
+</div>

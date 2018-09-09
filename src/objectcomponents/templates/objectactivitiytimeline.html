@@ -1,0 +1,30 @@
+<object-activitiytimeline-add-container *ngIf="displayAddContainer"></object-activitiytimeline-add-container>
+<div class="slds-grid slds-grid--align-spread slds-p-top--small slds-grid--vertical-align-center">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <h2 class="slds-p-vertical--xx-small slds-text-heading--small">{{language.getLabel('LBL_ACTIVITIES')}}</h2>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <object-activitiy-timeline-filter class="slds-p-horizontal--xxx-small"></object-activitiy-timeline-filter>
+        <!--button class="slds-button slds-button--icon-border" type="button" (click)="reload()"><system-button-icon [icon]="'refresh'"></system-button-icon></button-->
+        <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="'refresh'" (click)="reload()"></system-button-icon>
+    </div>
+</div>
+<div class="slds-p-top--x-small">
+    <div>
+        <div class="slds-is-relative spiceActivitiyTimelineHeader">
+            <h2 class="slds-p-vertical--xx-small slds-text-heading--x-small">{{language.getLabel('LBL_NEXT_STEPS')}}</h2>
+            <button *ngIf="activitiyTimeLineService.canLoadMore('Activities')" class="slds-button slds-button--neutral showMoreButton" type="button" (click)="loadMore('Activities')"><span>{{language.getLabel('LBL_MORE')}}</span></button>
+        </div>
+        <object-activitiytimeline-container  [module]="'Activities'"></object-activitiytimeline-container>
+    </div>
+    <div>
+        <div class="slds-is-relative spiceActivitiyTimelineHeader">
+            <h2 class="slds-p-vertical--xx-small slds-text-heading--x-small">{{language.getLabel('LBL_PAST_ACTIVITIES')}}</h2>
+            <object-activitiytimeline-summary-button></object-activitiytimeline-summary-button>
+        </div>
+        <object-activitiytimeline-container [module]="'History'"></object-activitiytimeline-container>
+        <div class="slds-grid slds-grid_align-end">
+            <button *ngIf="activitiyTimeLineService.canLoadMore('History')" class="slds-button slds-button--neutral showMoreButton" type="button" (click)="loadMore('History')"><span>{{language.getLabel('LBL_MORE')}}</span></button>
+        </div>
+    </div>
+</div>

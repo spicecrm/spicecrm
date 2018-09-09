@@ -1,0 +1,9 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <span style="white-space: normal;">{{value}}</span>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()" style="position:relative;">
+
+    <textarea #textField class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small"
+        [(ngModel)]="value" [ngStyle]="getTextAreaStyle()"></textarea>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

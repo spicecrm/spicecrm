@@ -1,0 +1,4 @@
+<div class="slds-p-around--x-small">
+    <field-label *ngIf="showLabel(fieldsetitem.fieldconfig) && fieldsetitem.field !== 'blank'" [fieldname]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig"></field-label>
+    <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" [fielddisplayclass]="'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight'"></field-container>
+</div>

@@ -1,0 +1,57 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        {{language.getLabel('LBL_SETFIELDS')}}
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-grid slds-grid--align-center">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label" aria-label="select-1">Available Fields</span>
+                    <div class="slds-picklist">
+                        <ul class="slds-picklist__options slds-picklist__options--multi">
+                            <li *ngFor="let field of availableFields" draggable="false"  class="slds-picklist__item" [attr.aria-selected]="isSelected('available', field.field)" role="option" (click)="selectField('available', field.field)">
+                                <span class="slds-truncate">{{field.displayName}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid--vertical">
+                    <button class="slds-button slds-button--icon-container" [disabled]="selectedListFields.length === 0" (click)="moveFields('list')">
+                        <system-button-icon [icon]="'left'"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon-container" [disabled]="selectedAvailableFields.length === 0" (click)="moveFields('available')">
+                        <system-button-icon [icon]="'right'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--align-center">
+                <div class="slds-form-element">
+                    <span class="slds-form-element__label" aria-label="select-1">Display Fields</span>
+                    <div class="slds-picklist">
+                        <ul class="slds-picklist__options slds-picklist__options--multi">
+                            <li *ngFor="let field of listFields" draggable="false" class="slds-picklist__item" [attr.aria-selected]="isSelected('list', field.field)" role="option" (click)="selectField('list', field.field)">
+                                <span class="slds-truncate">{{field.displayName}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid--vertical">
+                    <button class="slds-button slds-button--icon-container" [disabled]="selectedListFields.length === 0" (click)="moveUp()">
+                        <system-button-icon [icon]="'up'"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon-container" [disabled]="selectedListFields.length === 0" (click)="moveDown()">
+                        <system-button-icon [icon]="'down'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closePopup()">
+            {{language.getLabel('LBL_CANCEL')}}
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="save()">
+            {{language.getLabel('LBL_SAVE')}}
+        </button>
+    </system-modal-footer>
+</system-modal>

@@ -1,0 +1,34 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">
+        {{modalHeader}}
+    </system-modal-header>
+    <system-modal-content margin="none" #modalContent>
+        <object-edit-modal-dialog-container [module]="model.module" [componentSet]="componentSet" *ngIf="!showDuplicates"></object-edit-modal-dialog-container>
+        <object-edit-modal-dialog-duplicates class="slds-theme--shade" *ngIf="showDuplicates" [duplicates]="duplicates"></object-edit-modal-dialog-duplicates>
+    </system-modal-content>
+    <system-modal-footer>
+        <ng-container *ngIf="actionSetItems.length > 0">
+            <ng-container *ngFor="let item of actionSetItems" [ngSwitch]="item.action">
+
+                <button *ngSwitchCase="'CANCEL'" class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+
+                <button *ngSwitchCase="'SAVE'" class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+
+                <button *ngSwitchCase="'SAVEANDGOTORECORD'" class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+
+                <button *ngSwitchCase="'SAVEGORELATED'" class="slds-button slds-button--brand" (click)="saveAndGoToRelated(item.actionconfig.related_module, model.data[item.actionconfig.related_fieldname])" [disabled]="!model.data[item.actionconfig.related_fieldname]">{{language.getLabel('LBL_SAVE_AND_GO_TO')}} {{item.actionconfig.related_module}}</button>
+
+                <ng-container *ngSwitchCase="'SAVETORELATED'">
+                    <button *ngIf="model.isNew" class="slds-button slds-button--brand" (click)="saveToRelated(item.actionconfig.related_module)">Save and create {{item.actionconfig.related_module}}</button>
+                    <button *ngIf="!model.isNew" class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+                </ng-container>
+
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="actionSetItems.length == 0">
+            <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+        </ng-container>
+    </system-modal-footer>
+</system-modal>

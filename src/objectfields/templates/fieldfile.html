@@ -1,0 +1,49 @@
+<script src="../components/fieldduration.ts"></script>
+<div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
+    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div class="slds-truncate"><a href="javascript:void(0);" (click)="downloadAttachment()">{{value}}</a>
+            </div>
+            <button *ngIf="isEditable()" style="float: right"
+                    class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
+                <system-button-icon [icon]="'edit'"></system-button-icon>
+            </button>
+        </div>
+    </ng-template>
+</div>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+     [ngClass]="getFieldClass()">
+    <div *ngIf="value" class="slds-pill slds-m-around--xxx-small slds-pill_link slds-size--1-of-1">
+        <a href="javascript:void(0);" class="slds-pill__action" title="Full pill label verbiage mirrored here">
+            <span class="slds-pill__label">{{value}}</span>
+        </a>
+        <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove" (click)="removeFile()">
+            <system-button-icon [icon]="'close'"></system-button-icon>
+        </button>
+    </div>
+    <div *ngIf="!value" class="slds-file-selector slds-file-selector_files">
+        <div class="slds-file-selector__dropzone" (dragover)="preventdefault($event)" (dragleave)="preventdefault($event)" (drop)="onDrop($event)">
+            <input #fileupload type="file" class="slds-file-selector__input slds-assistive-text" [id]="fieldid"
+                   (change)="uploadFile()">
+            <label class="slds-file-selector__body" [attr.for]="fieldid">
+            <span class="slds-file-selector__button slds-button slds-button_neutral">
+            <system-button-icon [icon]="'upload'"></system-button-icon>Upload Files</span>
+                <span class="slds-file-selector__text slds-medium-show">or Drop Files</span>
+            </label>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
+<div *ngIf="showUploadModal" role="dialog" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-modal__header--empty"></div>
+        <div class="slds-modal__content slds-p-around--medium">
+            uploading {{theFile}} ...
+            <div class="uploadbar">
+                <div class="uploadprogress" [ngStyle]="getBarStyle()"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="showUploadModal" class="slds-backdrop slds-backdrop--open"></div>

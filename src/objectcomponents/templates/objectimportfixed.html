@@ -1,0 +1,73 @@
+<div class="slds-grid slds-wrap spice-h-full">
+    <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right spice-h-full">
+        <div class="slds-text-body--regular slds-box slds-m-vertical--small slds-text-color--weak" style="padding: .25rem">
+            {{ objectimport.stepLongText }}
+        </div>
+        <div *ngIf="modelFields && this.objectimport.importAction == 'new'">
+            <legend class="slds-form-element__legend slds-form-element__label">
+                {{language.getLabel('MSG_REQUIRED_MAPPED_FIXED')}}
+            </legend>
+            <div class="slds-tile__detail slds-text-body--small slds-p-horizontal--small">
+                <div class="slds-grid" *ngFor="let field of this.requiredModelFields">
+                    <span class="slds-truncate">
+                        {{ field.displayname }}
+                    </span>
+                    <span class="slds-col--bump-left slds-truncate">
+                        <system-button-icon
+                                [ngClass]="{'slds-text-color_success' : checkRequired(field.name), 'slds-text-color--error': !checkRequired(field.name)}"
+                                [icon]="checkRequired(field.name) ? 'success' : 'record' "></system-button-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-size--3-of-4 spice-h-full">
+        <table *ngIf="objectimport.fileHeader.length > 0"
+               class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col" width="50%">
+                    <div class="slds-truncate slds-p-vertical--xx-small" style="font-weight: 600">{{language.getLabel('LBL_FIELD')}}</div>
+                </th>
+                <th scope="col" width="50%">
+                    <div class="slds-truncate slds-p-vertical--xx-small" style="font-weight: 600">{{language.getLabel('LBL_VALUE')}}</div>
+                </th>
+                <th scope="col">
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of objectimport.fixedFields; let rowIndex = index;">
+                <td>
+                    <div class="slds-truncate">
+                        <div class="slds-form-element__control">
+                            <div>
+                                <select class="slds-select" [disabled]="getFixed(row)" [value]="getFixed(row)" (change)="setFixedField(rowIndex, $event.srcElement.value)">
+                                    <option value=""></option>
+                                    <option *ngFor="let field of filteredModuleFileds" [disabled]="isChosen(field.name)" [value]="field.name">{{field.displayname}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-truncate">
+                        <div *ngIf="row.field" class="slds-form-element__control">
+                            <field-container [field]="row.field"></field-container>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <button class="slds-button slds-button--icon" (click)="removeFixed(rowIndex)">
+                        <system-button-icon [icon]="'clear'" [size]="'large'"></system-button-icon>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="slds-grid slds-grid--align-center slds-p-vertical--xx-small">
+            <button type="button" class="slds-button slds-button--brand" (click)="objectimport.addFixed()">{{language.getLabel('LBL_ADD_FIXED_FIELDS', '', 'short')}}</button>
+        </div>
+    </div>
+</div>

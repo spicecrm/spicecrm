@@ -1,0 +1,10 @@
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="false">
+    <div class="slds-grid slds-grid--align-spread">
+        <div>
+            {{getCurrencySymbol()}}
+        </div>
+        <div cass="slds-text-align--right">
+            <span>{{getValue()}}</span>
+        </div>
+    </div>
+</field-generic-display>

@@ -1,0 +1,33 @@
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--x-small" [ngClass]="{'slds-is-open': showMenu}">
+    <button class="slds-button slds-button--icon-more" (click)="toggleMenu()" style="height: 1.875rem;">
+        <system-button-icon icon="settings"></system-button-icon>
+        <system-button-icon [icon]="'down'" [size]="'x-small'"></system-button-icon>
+    </button>
+    <div class="slds-dropdown slds-dropdown--right slds-dropdown--medium" (click)="toggleMenu()">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__header" role="separator">
+                <span class="slds-text-title--caps">{{language.getLabel('LBL_LISTVIEWSETTINGS')}}</span>
+            </li>
+            <li class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="add()">
+                    <span class="slds-truncate">{{language.getLabel('LBL_NEW')}}</span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" [attr.aria-disabled]="deleteDisabled()" (click)="edit()">
+                    <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" [attr.aria-disabled]="deleteDisabled()" (click)="setfields()">
+                    <span class="slds-truncate">{{language.getLabel('LBL_SETFIELDS')}}</span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item" role="presentation"  >
+                <a href="javascript:void(0);" role="menuitem" [attr.aria-disabled]="deleteDisabled()" (click)="delete()">
+                    <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="slds-wrap spice-h-full">
+    <div class="spice-h-full">
+        <table *ngIf="objectimport.result && objectimport.result.list && objectimport.result.list.length > 0"
+               class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <div style="font-weight: 600" class="slds-truncate">{{language.getLabel('LBL_STATUS')}}</div>
+                </th>
+                <th colspan="4" scope="col">
+                    <div style="font-weight: 600" class="slds-truncate">{{language.getLabel('LBL_DATA')}}</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr  [ngStyle]="{'cursor': row.recordId ? 'pointer': 'initial'}" *ngFor="let row of objectimport.result.list; let row = row" (click)="row.recordId ? goToRecord(row.recordId): false">
+                <td scope="row">
+                    <div class="slds-truncate">{{row.status}}</div>
+                </td>
+                <td *ngFor="let recordData of row.data">
+                    <div class="slds-truncate">{{recordData}}</div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

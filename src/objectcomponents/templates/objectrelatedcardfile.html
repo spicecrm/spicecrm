@@ -1,0 +1,21 @@
+<object-icon *ngIf="!file.thumbnail" [icon]="determineFileIcon()" [sprite]="'doctype'" [size]="'small'"></object-icon>
+<div *ngIf="file.thumbnail" class="slds-media__figure">
+    <img [src]="'data:image/jpg;base64,' + file.thumbnail"/>
+</div>
+<div class="slds-media__body">
+    <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
+        <h3 class="slds-truncate slds-text-heading--x-small" (click)="navgiateDetail()">
+            <a href="javascript:void(0);">{{file.filename}}</a>
+        </h3>
+        <div class="slds-shrink-none">
+            <object-file-action-menu [buttonsize]="'x-small'" [fileid]="file.id"></object-file-action-menu>
+        </div>
+    </div>
+    <div class="slds-tile__detail slds-text-body--small">
+        <ul class="slds-list--horizontal slds-has-dividers--left">
+            <li class="slds-item">{{file.date}}</li>
+            <li class="slds-item">{{humanFileSize()}}</li>
+            <li class="slds-item">{{determineFileIcon()}}</li>
+        </ul>
+    </div>
+</div>

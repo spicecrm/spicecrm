@@ -1,0 +1,11 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div cass="slds-text-align--right">
+        <span>{{getTextValue()}}</span>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <div class="slds-form-element">
+        <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

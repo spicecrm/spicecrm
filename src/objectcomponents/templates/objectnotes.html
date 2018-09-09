@@ -1,0 +1,32 @@
+<div class="slds-feed__item-comments">
+    <div class="slds-media slds-comment slds-hint-parent">
+        <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
+                <system-utility-icon [icon]="'user'" [size]="'x-small'" [addclasses]="'slds-icon'" [colorclass]="''"></system-utility-icon>
+            </span>
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-publisher slds-publisher--comment">
+                <textarea class="slds-publisher__input slds-input--bare slds-text-longform"
+                          [placeholder]="language.getLabel('LBL_CREATENOTE')" [(ngModel)]="newNote"></textarea>
+            </div>
+            <div *ngIf="newNote !== ''"
+                 class="slds-m-top--x-small slds-m-bottom--medium slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+                <button class="slds-button slds-button--icon-border" (click)="togglePrivate()">
+                    <system-utility-icon [icon]="getPrivateIcon()" [size]="'xx-small'"></system-utility-icon>
+                </button>
+                <div>
+                    <button class="slds-button slds-button--neutral" (click)="clearNote()">
+                        {{language.getLabel('LBL_CANCEL')}}
+                    </button>
+                    <button class="slds-button slds-button--brand" (click)="addNote()">
+                        {{language.getLabel('LBL_ADDNOTE')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-feed slds-p-top--small">
+    <object-note *ngFor="let note of objectnote.notes" [note]="note"></object-note>
+</div>

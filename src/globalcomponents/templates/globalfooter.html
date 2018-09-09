@@ -1,0 +1,12 @@
+<footer>
+    <!--global-modal-dialog *ngIf="session.authData.sessionId && session.authData.loaded === true"></global-modal-dialog-->
+    <div class="slds-docked_container" *ngIf="session.authData.sessionId && session.authData.loaded === true">
+        <global-docked-composer-container></global-docked-composer-container>
+    </div>
+    <div #footercontainer></div>
+    <div data-info="ModalContainer" style="position:fixed;z-index:10000">
+        <div #backdrop class="slds-backdrop" [class.slds-backdrop_open]="modalservice.backdropVisible" [style.zIndex]="modalservice.backdropZindex"></div>
+        <span #modalcontainer></span>
+    </div>
+    <system-toast-container style="position:fixed;z-index:100000"></system-toast-container>
+</footer>

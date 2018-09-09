@@ -1,0 +1,17 @@
+<div class="slds-button-group" role="group">
+    <button class="slds-button slds-button_neutral" [disabled]="exportdisabled" (click)="export()">{{language.getLabel('LBL_EXPORT')}}</button>
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" [ngClass]="{'slds-is-open' :exportfilterOpen}">
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="exportdisabled"  (click)="toggleFilterOpen($event)">
+            <system-button-icon icon="down" size="small"></system-button-icon>
+        </button>
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+            <ul class="slds-dropdown__list" role="menu">
+                <li class="slds-dropdown__item" role="presentation" (click)="exportTargetList()">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                        <span class="slds-truncate" title="Overflow Item One">{{language.getLabel('LBL_EXPORT_PROSPECTLIST')}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">Operator</label>
+    <div class="slds-form-element__control">
+        <div class="slds-select_container">
+            <select class="slds-select" [(ngModel)]="filter.operator" [disabled]="operatorDisabled()">
+                <option *ngFor="let operator of operators" [value]="operator.operator">{{language.getLabel(operator.name)}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="slds-form-element">
+    <label class="slds-form-element__label">Value</label>
+    <div class="slds-form-element__control">
+        <input class="slds-input" type="text" [(ngModel)]="filter.filtervalue" [disabled]="valueDisabled()"/>
+    </div>
+</div>

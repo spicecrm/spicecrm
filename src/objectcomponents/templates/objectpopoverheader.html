@@ -1,0 +1,20 @@
+<div class="slds-media slds-m-bottom--small slds-media--center">
+    <div class="slds-media__figure">
+        <system-icon [module]="model.module"></system-icon>
+    </div>
+    <div class="slds-media__body">
+        <p class="slds-text-heading--medium slds-hyphenate"><a href="javascript:void(0);" (click)="model.goDetail()">{{model.data.summary_text}}</a></p>
+    </div>
+</div>
+<div class="slds-grid slds-wrap slds-grid--pull-padded">
+    <div class="slds-p-horizontal--small slds-size--1-of-2 slds-p-bottom--x-small" *ngFor="let field of fields">
+        <dl>
+            <dt>
+                <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+            </dt>
+            <dd>
+                <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+            </dd>
+        </dl>
+    </div>
+</div>

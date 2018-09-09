@@ -1,0 +1,27 @@
+<div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
+    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div *ngIf="!displayLink()" class="slds-truncate"><system-utility-icon [icon]="ratingIcon" [size]="'x-small'"></system-utility-icon><span *ngIf="value">&nbsp;({{value}})</span></div>
+            <div *ngIf="displayLink()" class="slds-truncate"><a href="javascript:void(0);" (click)="goRecord()"><system-utility-icon [icon]="ratingIcon" [size]="'x-small'"></system-utility-icon><span *ngIf="value">&nbsp;({{value}})</span></a></div>
+            <button *ngIf="isEditable()" style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
+                <system-button-icon [icon]="'edit'"></system-button-icon>
+            </button>
+        </div>
+    </ng-template>
+</div>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small"[ngClass]="css_classes">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <system-utility-icon [icon]="'sentiment_negative'" [size]="'xx-small'" class="slds-p-right--x-small"></system-utility-icon>
+        <div class="slds-form-element__control" *ngFor="let option of options">
+            <div class="slds-radio" (click)="setRatingValue(option)">
+                <input type="radio" id="fieldid + option" [checked]="option == value"/>
+                <label class="slds-radio__label" [attr.for]="fieldid + option">
+                    <span class="slds-radio_faux"></span>
+                </label>
+            </div>
+        </div>
+        <system-utility-icon [icon]="'smiley_and_people'" [size]="'xx-small'"></system-utility-icon>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

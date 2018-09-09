@@ -1,0 +1,15 @@
+<td *ngIf="selectable" class="slds-cell-shrink" [attr.data-label]="language.getLabel('LBL_SELECT_ROW')">
+    <!--span class="slds-checkbox">
+      <input type="checkbox" id="selection-checkbox-{{id}}" [attr.aria-labelledby]="'selection-check-button-label-'+id+' check-group-header'" (click)="toggleSelection()" [checked]="selected" />
+      <label class="slds-checkbox__label" for="selection-checkbox-{{id}}" id="selection-check-button-label-{{id}}">
+        <span class="slds-checkbox_faux"></span>
+        <span class="slds-form-element__label slds-assistive-text">{{language.getLabel('LBL_SELECT_ITEM')}}</span>
+      </label>
+    </span-->
+    <system-checkbox (click)="toggleSelection()" [checked]="selected" [label]="'LBL_SELECT_ROW'"></system-checkbox>
+</td>
+<td *ngFor="let field of fields" [attr.data-label]="language.getFieldDisplayName(model.module, field.field, field.fieldconfig)">
+    <div class="slds-truncate">
+        <field-container [fieldname]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+    </div>
+</td>

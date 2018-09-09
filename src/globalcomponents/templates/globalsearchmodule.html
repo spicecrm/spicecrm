@@ -1,0 +1,36 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <h1 class="slds-page-header__title slds-truncate">{{language.getModuleName(module)}}</h1>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-col slds-align-bottom">
+            <!--p class="slds-text-body--small">{{getCount()}} items</p-->
+            <ul class="slds-list--horizontal slds-has-dividers--left">
+                <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
+                <li *ngIf="canViewMore()" class="slds-item slds-text-link--reset" (click)="setSearchScope()">{{language.getLabel('LBL_VIEWALL')}}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div>
+    <table style="margin-bottom: 0px;" class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let item of listfields" scope="col">
+                <div class="slds-truncate slds-p-around--x-small">{{language.getFieldDisplayName(module, item.field)}}</div>
+            </th>
+        </tr>
+        </thead>
+    </table>
+    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()" (scroll)="onScroll($event)">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+            <tbody>
+            <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+            </tbody>
+            <!--tbody *ngIf="fts.runningmodulesearch" system-table-stencils [columns]="listfields.length" [rows]="3"></tbody-->
+        </table>
+        <system-spinner *ngIf="fts.runningmodulesearch"></system-spinner>
+    </div>
+</div>

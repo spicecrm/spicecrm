@@ -1,0 +1,65 @@
+import {Component, ElementRef, Input, OnInit, Renderer} from '@angular/core';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {language} from '../../services/language.service';
+import {metadata} from '../../services/metadata.service';
+import {Router} from '@angular/router';
+import {fieldRelate} from "./fieldrelate";
+import {modal} from "../../services/modal.service";
+
+@Component({
+    selector: 'field-generic',
+    templateUrl: './app/objectfields/templates/fieldmodifiedby.html'
+})
+export class fieldModifiedBy extends fieldRelate
+{
+
+
+    dateFormat: string = 'DD.MM.YYYY';
+    timeFormat: string = 'HH:mm';
+
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public renderer: Renderer, public modal: modal) {
+        super(model, view, language, metadata, router, elementRef, renderer, modal);
+    }
+
+    get datefield(){
+        return this.fieldconfig.field_date ?  this.fieldconfig.field_date : 'date_modified';
+    }
+
+
+    get displayDate() {
+        try {
+            if (this.model.data[this.fieldname]) {
+                let date = this.model.getFieldValue(this.datefield);
+                if (date.isValid()) {
+
+                    return date.format(this.dateFormat);
+                }
+                else
+                    return '';
+            }
+            else
+                return '';
+        } catch (e) {
+            return '';
+        }
+    }
+
+    get displayTime() {
+        try {
+            if (this.model.data[this.fieldname]) {
+                let date = this.model.getFieldValue(this.datefield);
+                if (date.isValid()) {
+                    return date.format(this.timeFormat);
+                }
+                else
+                    return '';
+            }
+            else
+                return '';
+        } catch (e) {
+            return '';
+        }
+    }
+
+}

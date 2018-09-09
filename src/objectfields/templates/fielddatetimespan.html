@@ -1,0 +1,77 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    {{editStartDate}}&nbsp;{{editStartTime}}&nbsp;-&nbsp;{{editEndDate}}&nbsp;{{editEndTime}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()">
+    <fieldset class="slds-form--compound">
+        <div class="slds-form-element__group">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label slds-m-left--x-small">{{language.getLabel('LBL_DATE_START')}}</label>
+                    <div class="slds-col slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-m-right--x-small slds-m-vertical--xx-small"
+                         [ngClass]="getFieldClass()">
+                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="toggleDatePicker('start')">
+                            <system-button-icon icon="event"></system-button-icon>
+                        </button>
+                        <input class="slds-input" type="text" [(ngModel)]="editStartDate"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-m-top--none">
+                    <label class="slds-form-element__label slds-m-left--x-small">{{language.getLabel('LBL_TIME_START')}}</label>
+                    <div class="slds-col slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-m-left--x-small slds-m-vertical--xx-small"
+                         [ngClass]="getFieldClass()">
+                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="toggleTimePicker('Start')">
+                            <system-button-icon icon="clock"></system-button-icon>
+                        </button>
+                        <input class="slds-input" type="text" [(ngModel)]="editStartTime"/>
+                        <div *ngIf="showStartTimePicker" class="slds-dropdown slds-dropdown--left">
+                            <ul class="slds-dropdown__list slds-dropdown--length-7" role="menu">
+                                <li *ngFor="let dropdownTime of dropdownTimes" class="slds-dropdown__item"
+                                    role="presentation" (click)="setTime('Start', dropdownTime)">
+                                    <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                                        <span class="slds-truncate">{{dropdownTime}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element__group">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label slds-m-left--x-small">{{language.getLabel('LBL_DATE_END')}}</label>
+                    <div class="slds-col slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-m-right--x-small slds-m-vertical--xx-small"
+                         [ngClass]="getFieldClass()">
+                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="toggleDatePicker('end')">
+                            <system-button-icon icon="event"></system-button-icon>
+                        </button>
+                        <input class="slds-input" type="text" [(ngModel)]="editEndDate">
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-m-top--none">
+                    <label class="slds-form-element__label slds-m-left--x-small">{{language.getLabel('LBL_TIME_END')}}</label>
+                    <div class="slds-col slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-m-left--x-small slds-m-vertical--xx-small"
+                         [ngClass]="getFieldClass()">
+                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="toggleTimePicker('End')">
+                            <system-button-icon icon="clock"></system-button-icon>
+                        </button>
+                        <input class="slds-input" type="text" [(ngModel)]="editEndTime"/>
+                        <div *ngIf="showEndTimePicker" class="slds-dropdown slds-dropdown--left">
+                            <ul class="slds-dropdown__list slds-dropdown--length-7" role="menu">
+                                <li *ngFor="let dropdownTime of dropdownTimes" class="slds-dropdown__item"
+                                    role="presentation" (click)="setTime('End', dropdownTime)">
+                                    <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                                        <span class="slds-truncate">{{dropdownTime}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div *ngIf="errorMessage !== ''" class="slds-form-element__help">{{errorMessage}}</div>
+</div>
+<field-date-picker *ngIf="showDatePicker" [(setdate)]="pickerDate"></field-date-picker>

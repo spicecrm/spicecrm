@@ -1,0 +1,32 @@
+import {Component, Input, ViewChild, ViewContainerRef, AfterViewInit} from '@angular/core';
+import {ActivatedRoute, Router}   from '@angular/router';
+
+import {metadata} from '../../services/metadata.service';
+
+@Component({
+    selector: 'system-dynamicroute-container',
+    templateUrl: './app/systemcomponents/templates/systemdynamicroutecontainer.html'
+})
+export class SystemDynamicRouteContainer implements AfterViewInit{
+
+    @ViewChild('componentcontainer', {read: ViewContainerRef}) componentcontainer: ViewContainerRef;
+
+    routercomponent: any = null;
+
+    constructor(
+        private metadata: metadata,
+        //private router: Router
+        private route: ActivatedRoute,
+    ) {
+
+    }
+
+    ngAfterViewInit(){
+        if(!this.routercomponent) {
+            let component = this.metadata.getRouteComponent(this.route.snapshot.routeConfig.path);
+            this.metadata.addComponent(component, this.componentcontainer).subscribe(component => {
+                this.routercomponent = component;
+            });
+        }
+    }
+}

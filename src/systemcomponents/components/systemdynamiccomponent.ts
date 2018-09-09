@@ -1,0 +1,22 @@
+import {Component, OnInit,ViewChild, ViewContainerRef, EventEmitter, AfterViewInit, Input, Output} from '@angular/core';
+import {metadata} from '../../services/metadata.service';
+
+@Component({
+    selector: 'system-dynamic-component',
+    templateUrl: './app/systemcomponents/templates/systemdynamiccomponent.html'
+})
+export class SystemDynamicComponent implements AfterViewInit{
+
+    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+    @Input() component: string = '';
+    @Output() componentref: EventEmitter<any> = new EventEmitter<any>();
+
+    constructor(private metadata: metadata) {}
+
+    ngAfterViewInit(){
+        this.metadata.addComponent(this.component, this.container).subscribe(componentref => {
+            this.componentref.emit(componentref);
+        })
+    }
+
+}

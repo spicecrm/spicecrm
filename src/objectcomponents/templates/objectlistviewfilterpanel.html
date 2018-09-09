@@ -1,0 +1,29 @@
+<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters" [ngStyle]="getPanelStyle()">
+    <div class="slds-form--stacked slds-grow slds-scrollable--y slds-grid slds-grid--vertical">
+        <div class="slds-filters">
+            <div *ngIf="!isChanged()" class="slds-filters__header slds-grid slds-has-divider--bottom-space">
+                <h4 class="slds-align-middle slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h4>
+                <object-listview-filter-panel-export-button class="slds-col--bump-left"></object-listview-filter-panel-export-button>
+            </div>
+            <div *ngIf="isChanged()"
+                 class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
+                <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+                <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}
+                </button>
+            </div>
+            <div class="slds-filters__body">
+                <object-listview-filter-panel-filter-myitems></object-listview-filter-panel-filter-myitems>
+                <ng-container *ngIf="listfilters.filters.length > 0">
+                <p class="slds-text-body--small slds-m-vertical--x-small">Matching all these filters</p>
+                <ol class="slds-list--vertical slds-list--vertical-space">
+                    <li class="slds-item slds-hint-parent" object-listview-filter-panel-filter-item *ngFor="let filter of listfilters.filters" [filter]="filter"></li>
+                </ol>
+                </ng-container>
+            </div>
+            <div class="slds-filters__footer slds-grid slds-shrink-none">
+                <a href="javascript:void(0);" (click)="addFilter()">{{language.getLabel('LBL_ADDFILTER')}}</a>
+                <a href="javascript:void(0);" class="slds-col--bump-left" (click)="removeAllFilters()">{{language.getLabel('LBL_REMOVEALL')}}</a>
+            </div>
+        </div>
+    </div>
+</div>

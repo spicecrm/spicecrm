@@ -1,0 +1,11 @@
+<div class="slds-form-element slds-p-vertical--xx-small">
+    <div class="slds-form-element__control">
+    <span class="slds-checkbox">
+      <input type="checkbox" name="options" [id]="checkid" [ngModel]="checked" (change)="checkItem($event)" [disabled]="disabled"/>
+      <label class="slds-checkbox__label" [attr.for]="checkid">
+        <span class="slds-checkbox_faux"></span>
+        <span class="slds-form-element__label">{{checkitem.name}}</span>
+      </label>
+    </span>
+    </div>
+</div>

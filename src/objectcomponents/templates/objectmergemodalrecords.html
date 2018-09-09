@@ -1,0 +1,14 @@
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th scope="col" style="width:3.25rem;" class="slds-text-align--right">
+        </th>
+        <th scope="col" *ngFor="let listField of listFields">
+            <div class="slds-truncate">{{language.getFieldDisplayName(model.module, listField.field)}}</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listFields]="listFields" [rowselect]="true" [rowselectdisabled]="disableSelect(listItem)" [listItem]="listItem" [showActionMenu]="false" class="slds-hint-parent"></tr>
+    </tbody>
+</table>

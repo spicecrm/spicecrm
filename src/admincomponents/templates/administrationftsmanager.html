@@ -1,0 +1,43 @@
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="module">
+                    <option *ngFor="let module of modules" [value]="module">{{module}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element slds-col--bump-left">
+        <div class="slds-button-group" role="group" *ngIf="!ftsconfiguration.indexing; else indexing">
+            <button type="button" class="slds-button slds-button--neutral" (click)="initialize()">Initialize</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="putIndex()">Put Mapping</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="resetModule()">Reset</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModule()">Index</button>
+            <button type="button" class="slds-button slds-button--brand" [disabled]="!module" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        </div>
+        <ng-template #indexing>
+            <system-spinner></system-spinner>
+        </ng-template>
+    </div>
+</div>
+<div class="slds-tabs--default slds-p-top--xx-small">
+    <div *ngIf="module; else selectmodule">
+        <ul class="slds-tabs--default__nav" role="tablist">
+            <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab === 'fields'}"
+                role="presentation" (click)="setActiveTab('fields')">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Fields</a>
+            </li>
+            <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab === 'details'}"
+                role="presentation" (click)="setActiveTab('details')">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Details</a>
+            </li>
+        </ul>
+        <administration-ftsmanager-fields *ngIf="activeTab==='fields'"></administration-ftsmanager-fields>
+        <administration-ftsmanager-details *ngIf="activeTab==='details'"></administration-ftsmanager-details>
+    </div>
+    <ng-template #selectmodule>
+        <div class="slds-p-around--small slds-text-align--center">select a module</div>
+    </ng-template>
+</div>

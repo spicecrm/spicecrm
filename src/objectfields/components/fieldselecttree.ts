@@ -1,0 +1,152 @@
+import {Component, ElementRef, Input, Renderer, ViewChild} from '@angular/core';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {language} from '../../services/language.service';
+import {metadata} from "../../services/metadata.service";
+import {Router} from "@angular/router";
+import {fieldGeneric} from "./fieldgeneric";
+import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
+
+/**
+ * documentation: https://spicecrm.gitbooks.io/spicecrm-ui/content/component-directory/fields/service-categories.html
+ * created by Sebastian Franz
+ */
+@Component({
+    selector: 'select-tree',
+    templateUrl: './app/objectfields/templates/fieldselecttree.html'
+})
+export class fieldSelectTree extends fieldGeneric
+{
+    fields = [];
+
+    show_tree:boolean = false;
+    show_search:boolean = false;
+    search:string;
+    sel_fields = [];
+
+    clickListener: any;
+
+
+    constructor(
+        public model:model,
+        public view:view,
+        public language:language,
+        public metadata:metadata,
+        public router:Router,
+        private backend:backend,
+        private config:configurationService,
+        private elementRef: ElementRef,
+        public renderer: Renderer
+    )
+    {
+        super(model, view, language, metadata, router);
+
+
+    }
+
+    ngOnInit(){
+
+        if(this.fields.length < 1){
+            this.fields.push(this.fieldconfig.value1);
+            this.fields.push(this.fieldconfig.value2);
+            this.fields.push(this.fieldconfig.value3);
+            this.fields.push(this.fieldconfig.value4);
+        }
+
+        if( !this.config.getData('select_tree') ) {
+            this.config.setData('select_tree', []);
+            // load all select_fields which are needed to display the choosen select_fields...
+            this.backend.getRequest('spiceui/core/selecttree/list/'+ this.fieldconfig.key).subscribe(
+                (res: any) => {
+                    this.sel_fields = res;
+                    this.config.setData('select_tree', res);
+                }
+            );
+        }
+        else {
+            this.sel_fields = this.config.getData('select_tree');
+        }
+    }
+
+
+    get display_value()
+    {
+
+        let txt = '';
+        for(let field_name of this.fields) {
+
+            if (this.model.data[field_name]) {
+
+                txt += this.language.getLabel(this.model.data[field_name]) + ' \\ ';
+            } else {
+                break;
+            }
+        }
+        // remove the last slash...
+        txt = txt.substring(0,txt.length -2);
+
+        return txt;
+    }
+
+    get maxlevels(){
+        return this.fieldconfig.maxlevels ? this.fieldconfig.maxlevels : 4;
+    }
+
+    checkUserAction(e)
+    {
+
+        if( !this.search )
+        {
+            this.show_tree = true;
+            this.show_search = false;
+        }
+        else {
+            this.show_tree = false;
+            this.show_search = true;
+        }
+    }
+
+    /**
+     * chooses select_fields and stores it in model.data with the corresponding field
+     * it also looks for the last category with a corresponding queue to set this too
+     * @param select_fields = array of category objects, all lvls from top to lowest
+     */
+    chooseSelField(sel_fields)
+    {
+
+        this.show_search = false;
+        this.show_tree = false;
+        // setting model.data values
+        for(let i = 0; i < this.fields.length; i++)
+        {
+            if( sel_fields[i] )
+                this.model.setFieldValue(this.fields[i], sel_fields[i].name);
+            else
+                this.model.setFieldValue(this.fields[i], '');
+        }
+        this.search = null;
+
+    }
+
+    unchooseSelField()
+    {
+
+        for(let i = 0; i < this.fields.length; i++)
+        {
+            this.model.data[this.fields[i]] = '';
+        }
+    }
+
+    public onClick(event: MouseEvent): void {
+        const clickedInside = this.elementRef.nativeElement.contains(event.target);
+        if (!clickedInside) {
+            this.show_tree = false;
+        }
+    }
+    onFocus() {
+        this.show_tree = true;
+        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+    }
+
+}

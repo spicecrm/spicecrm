@@ -1,0 +1,94 @@
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {language} from '../../services/language.service';
+import {metadata} from "../../services/metadata.service";
+import {Router} from "@angular/router";
+import {fieldGeneric} from "./fieldgeneric";
+import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
+import {fieldSelectTree} from "./fieldselecttree";
+
+@Component({
+    selector: 'select-tree-search',
+    templateUrl: './app/objectfields/templates/fieldselecttreesearch.html'
+})
+export class fieldSelectTreeSearch
+{
+    @Input() search:string;
+    @Input() treekey;
+    sel_fields = [];
+    selected_categorys = [];
+    @Output('choose') choose_emitter = new EventEmitter();
+
+    constructor(
+        private model:model,
+        private backend:backend,
+        private config:configurationService,
+        private language:language,
+    )
+    {
+
+    }
+
+    ngOnInit(){
+        if( !this.config.getData('select_tree_tree') )
+        {
+            this.backend.getRequest('spiceui/core/selecttree/tree/'+ this.treekey).subscribe(
+                (res:any) => {
+                    this.config.setData('select_tree_tree', res);
+                    this.flatteningOutCategoryTree(res);
+                }
+            );
+        }
+        else {
+            this.flatteningOutCategoryTree(this.config.getData('select_tree_tree'));
+        }
+    }
+
+
+    get results()
+    {
+        return this.sel_fields.filter((e) => {return e.display_name.includes(this.search)});
+    }
+
+    flatteningOutCategoryTree(tree)
+    {
+        for(let cat of tree)
+        {
+            cat.parents = [];
+            this.loopThroughTree(cat);
+        }
+    }
+
+    private loopThroughTree(cat)
+    {
+        cat.display_name = '';
+        if( cat.parents.length > 0 ) {
+            for (let p of cat.parents) {
+                cat.display_name += this.language.getLabel(p.name) + '\\';
+            }
+        }
+        cat.display_name += this.language.getLabel(cat.name);
+
+        this.sel_fields.push(cat);
+
+        if(cat.childs)
+        {
+            for(let c of cat.childs)
+            {
+                c.parents = [...cat.parents];
+                c.parents.push(cat);
+
+                this.loopThroughTree(c);
+            }
+        }
+    }
+
+    choose(cat)
+    {
+        let cats = [...cat.parents];
+        cats.push(cat);
+        this.choose_emitter.emit(cats);
+    }
+}

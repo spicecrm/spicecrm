@@ -1,0 +1,83 @@
+<section *ngIf="!recovering" role="dialog" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="close()">
+                <system-button-icon [icon]="'close'" [size]="'large'" [inverse]="true"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading_medium slds-hyphenate">Recover {{record.recordmodule}}
+                {{record.recordname}}</h2>
+        </header>
+        <div class="slds-modal__content" style="height: 50%;">
+            <div>
+                <table *ngIf="relatedRecords.length > 0; else norelatedrecords"
+                       class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col" colspan="2">
+                            <div class="slds-truncate" title="Opportunity Name">Object</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Account Name">Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Account Name">link</div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let relatedRecord of relatedRecords">
+                        <td role="gridcell" class="slds-cell-shrink">
+                            <system-icon [module]="getModule(relatedRecord.linkmodule)" size="small"></system-icon>
+                        </td>
+                        <td scope="row">
+                            <div class="slds-truncate">{{relatedRecord.linkmodule}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{relatedRecord.recordname}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{relatedRecord.linkname}}</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <ng-template #norelatedrecords>
+                    <div style="height: 100%;" class="slds-p-around--medium slds-align--absolute-center">
+                        <h2 class="slds-text-heading--small">no related records found</h2>
+                    </div>
+                </ng-template>
+            </div>
+            <ng-template #loadspinner>
+                <div style="height: 100%;" class="slds-p-around--medium slds-align--absolute-center">
+                    <system-spinner></system-spinner>
+                </div>
+            </ng-template>
+        </div>
+        <footer class="slds-modal__footer">
+            <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+                <div>
+                    <div [ngClass]="{'slds-hide': recorverDisabled}" class="slds-form-element__control">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" [(ngModel)]="recoverrelated" id="recoverrelated"/>
+                          <label class="slds-checkbox__label" for="recoverrelated">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">recover Related</span>
+                          </label>
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <button class="slds-button slds-button--neutral" (click)="close()">Cancel</button>
+                    <button class="slds-button slds-button--brand" [disabled]="loading" (click)="doRecover()">Recover
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open slds-align--absolute-center">
+    <div class="slds-box slds-theme--default slds-p-around--medium">
+        <div>recovering record</div>
+        <system-spinner></system-spinner>
+    </div>
+</div>

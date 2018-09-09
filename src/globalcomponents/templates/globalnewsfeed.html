@@ -1,0 +1,4 @@
+<div style="height: 100%;" class="slds-p-around--medium" [ngClass]="getContainerClass()">
+    <system-spinner *ngIf="isLoading"></system-spinner>
+    <global-newsfeed-item *ngFor="let newsitem of news" [item]="newsitem"></global-newsfeed-item>
+</div>

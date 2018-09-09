@@ -1,0 +1,91 @@
+<div role="dialog" tabindex="-1" class="slds-modal slds-modal--large slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="hideGDPRLog()">
+                <system-button-icon [icon]="'close'" [size]="'large'" [inverse]="true"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_GDPR')}}</h2>
+        </div>
+        <div class="slds-modal__content slds-theme--default" style="height: 75vh;">
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                <tr class="slds-text-title--caps">
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_MODULE')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_DATA')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_MARKETING')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_CREATED_BY')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_DATE_ENTERED')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_MODIFIED_BY')}}</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_DATE_MODIFIED')}}</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let gdprEntry of gdprLog">
+                    <td scope="row">
+                        <div class="slds-grid slds-grid--vertical-align-center">
+                            <system-icon [module]="gdprEntry.module" size="xx-small"></system-icon>
+                            <div class="slds-truncate">{{gdprEntry.module}}</div>
+                        </div>
+                    </td>
+                    <td scope="row">
+                        <div class="slds-truncate">{{gdprEntry.summary_text}}</div>
+                    </td>
+                    <td scope="row">
+                        <!--div class="slds-truncate">{{gdprEntry.gdpr_data_agreement}}</div-->
+                        <span class="slds-checkbox">
+                          <input type="checkbox" disabled [id]="'data'+gdprEntry.id" [checked]="gdprEntry.gdpr_data_agreement == 1"/>
+                          <label class="slds-checkbox__label" [attr.for]="'data'+gdprEntry.id">
+                            <span class="slds-checkbox_faux"></span>
+                          </label>
+                        </span>
+                    </td>
+                    <td scope="row">
+                        <!--div class="slds-truncate">{{gdprEntry.gdpr_marketing_agreement}}</div-->
+                        <span class="slds-checkbox">
+                          <input type="checkbox" disabled [id]="'marketing'+gdprEntry.id" [checked]="gdprEntry.gdpr_marketing_agreement == 1"/>
+                          <label class="slds-checkbox__label" [attr.for]="'marketing'+gdprEntry.id">
+                            <span class="slds-checkbox_faux"></span>
+                          </label>
+                        </span>
+                    </td>
+                    <td scope="row">
+                        <div class="slds-truncate">{{gdprEntry.date_entered}}</div>
+                    </td>
+                    <td scope="row">
+                        <div class="slds-truncate">{{gdprEntry.created_by_name}}</div>
+                    </td>
+                    <td scope="row">
+                        <div class="slds-truncate">{{gdprEntry.modified_by_name}}</div>
+                    </td>
+                    <td scope="row">
+                        <div class="slds-truncate">{{gdprEntry.date_modified}}</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div *ngIf="gdprLog.length === 0" class="slds-text-heading--small slds-p-around--medium">
+                {{language.getLabel('MSG_NO_GDPRRECORDS_FOUND')}}
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="hideGDPRLog()">{{language.getLabel('LBL_CLOSE')}}</button>
+        </div>
+    </div>
+</div>

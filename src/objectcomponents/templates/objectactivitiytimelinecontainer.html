@@ -1,0 +1,12 @@
+<system-spinner *ngIf="loading && module=='Activities'" class="slds-p-vertical--small"></system-spinner>
+<ul *ngIf="hasActivities; else nocontent" class="slds-timeline slds-p-vertical--medium">
+    <li *ngFor="let activity of activities">
+        <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
+    </li>
+</ul>
+<ng-template #nocontent>
+    <div *ngIf="!loading" class="slds-p-around--medium slds-align_absolute-center">
+        {{language.getLabel('LBL_NO_ENTRIES')}}
+    </div>
+</ng-template>
+<system-spinner *ngIf="loading && module=='History'" class="slds-p-vertical--small"></system-spinner>

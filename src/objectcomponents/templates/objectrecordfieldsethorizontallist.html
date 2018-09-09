@@ -1,0 +1,5 @@
+<ul class="slds-list_horizontal slds-has-dividers_left">
+    <li *ngFor="let fieldsetitem of fieldsetitems" class="slds-item">
+        <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-align_absolute-center"></field-container>
+    </li>
+</ul>

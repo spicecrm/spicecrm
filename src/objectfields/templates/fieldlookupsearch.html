@@ -1,0 +1,19 @@
+<ul class="slds-lookup__list" role="listbox">
+    <li role="presentation">
+        <div class="slds-lookup__item-action slds-media" role="option" (mousedown)="openModal()">
+              <system-icon [icon]="'search'" [sprite]="'utility'" [size]="'x-small'" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
+              <div class="slds-media__body">
+                <div class="slds-lookup__result-text">"{{searchTerm}}" in {{language.getModuleName(module)}}</div>
+              </div>
+        </div>
+    </li>
+    <li *ngFor="let searchItem of getSearchResults()" role="presentation" (mousedown)="setParent(searchItem._id, searchItem._source.summary_text, searchItem._source)">
+        <span class="slds-lookup__item-action slds-media" role="option">
+              <system-icon [module]="module" [size]="'small'"></system-icon>
+              <div class="slds-media__body">
+                <div class="slds-lookup__result-text">{{searchItem._source.summary_text}}</div>
+              </div>
+        </span>
+    </li>
+    <li *ngIf="canAdd" field-lookup-search-add role="presentation" [module]="module" [fieldid]="fieldid"></li>
+</ul>

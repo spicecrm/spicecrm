@@ -1,0 +1,41 @@
+<div *ngIf="canShowFavorites" class="slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open">
+    <div class="slds-button-group">
+        <button class="slds-button slds-button--neutral slds-p-horizontal--xx-small slds-p-vertical--xx-small-small"
+                [ngClass]="getFavoriteActive()" [disabled]="isDisabled()" (click)="toggleFavorite()">
+            <system-utility-icon [icon]="'favorite'" [size]="'x-small'"></system-utility-icon>
+        </button>
+        <button class="slds-button slds-button--neutral slds-p-horizontal--xx-small slds-p-vertical--xx-small" [disabled]="nofavorites" (click)="toggleFavorites()">
+            <system-button-icon [icon]="'down'" [size]="'xx-small'"></system-button-icon>
+        </button>
+    </div>
+    <div *ngIf="showFavorites" class="slds-dropdown slds-dropdown--right slds-dropdown--medium">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__header" role="separator">
+                <span class="slds-text-title--caps">{{language.getLabel('LBL_FAVORITES')}}</span>
+            </li>
+            <li global-header-search-recent-item class="slds-dropdown__item" role="presentation"
+                *ngFor="let item of favorite.favorites" [item]="item"></li>
+        </ul>
+    </div>
+</div>
+
+<!--
+<button class="slds-button slds-button_icon slds-button_icon slds-button_icon-container slds-button_icon-small slds-global-header__button_icon-favorites"
+        [ngClass]="{'slds-is-selected':isfavorite}">
+    <system-button-icon icon="favorite" size="small"></system-button-icon>
+</button>
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-opem':showFavorites}" (click)="toggleFavorites()">
+    <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-container slds-button_icon-small slds-global-header__button_icon slds-m-left_none">
+        <system-button-icon icon="chevrondown" size="xx-small"></system-button-icon>
+    </button>
+    <div class="slds-dropdown slds-dropdown--right slds-dropdown--medium">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__header" role="separator">
+                <span class="slds-text-title--caps">{{language.getLabel('LBL_FAVORITES')}}</span>
+            </li>
+            <li global-header-search-recent-item class="slds-dropdown__item" role="presentation"
+                *ngFor="let item of favorite.favorites" [item]="item"></li>
+        </ul>
+    </div>
+</div>
+-->

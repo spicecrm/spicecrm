@@ -1,0 +1,47 @@
+<!--div class="slds-card__footer">
+    <div class="slds-grid slds-grid--align-spread">
+        <div>
+            <button *ngIf="canViewAll()" class="slds-button" (click)="showAll()">{{language.getLabel('LBL_VIEWALL')}}
+            </button>
+        </div>
+        <div>
+            <fieldset *ngIf="canSetCount()" class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-radio--button-group">
+                        <span class="slds-button slds-radio--button">
+                            <input type="radio" name="radio" [checked]="displayitems==5"/>
+                            <label class="slds-radio--button__label" (click)="setDisplayItems(5)">
+                              <span class="slds-radio--faux">5</span>
+                            </label>
+                        </span>
+                        <span class="slds-button slds-radio--button">
+                            <input type="radio" name="radio" [checked]="displayitems==10"/>
+                            <label class="slds-radio--button__label" (click)="setDisplayItems(10)">
+                              <span class="slds-radio--faux">10</span>
+                            </label>
+                        </span>
+                        <span class="slds-button slds-radio--button">
+                            <input type="radio" name="radio" [checked]="displayitems==25"/>
+                            <label class="slds-radio--button__label" (click)="setDisplayItems(25)">
+                              <span class="slds-radio--faux">25</span>
+                            </label>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div-->
+<footer class="slds-card__footer">
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <div class="slds-size--1-of-5"></div>
+        <div class="slds-size--3-of-5 slds-text-align_center">
+            <a href="javascript:void(0);" (click)="showAll()">{{language.getLabel('LBL_VIEWALL')}}</a>
+        </div>
+        <div class="slds-size--1-of-5 slds-text-align--right">
+            <button class="slds-button slds-button_icon" (click)="reload()">
+                <system-button-icon icon="refresh"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</footer>

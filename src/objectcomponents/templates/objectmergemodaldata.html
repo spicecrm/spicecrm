@@ -1,0 +1,58 @@
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th scope="col"></th>
+            <th scope="col" *ngFor="let item of getSelected()">
+                <div class="slds-truncate">{{item.summary_text}}</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td class="slds-truncate" *ngFor="let item of getSelected()">
+                <a href="javascript:void(0)" (click)="selectAllFields(item.id)">{{language.getLabel('LBL_SELECT_ALL_FIELDS')}}</a>
+
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="slds-truncate" *ngFor="let item of getSelected()">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-radio">
+                            <input type="radio" [id]="'master'+item.id" name="master" [value]="item.id"
+                                   [(ngModel)]="objectmerge.masterId"/>
+                            <label class="slds-radio__label" [attr.for]="'master'+item.id">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label">{{language.getLabel('LBL_USE_AS_MASTER')}}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr *ngFor="let mergeField of objectmerge.mergeFields">
+            <ng-container *ngIf="showField(mergeField)">
+                <td class="slds-truncate">
+                    {{language.getFieldDisplayName(modellist.module, mergeField.name)}}
+                </td>
+                <td class="slds-truncate" *ngFor="let item of getSelected()">
+                    <div class="slds-grid">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-radio">
+                                    <input type="radio" [id]="'master'+mergeField.name+item.id" [name]="mergeField.name" [value]="item.id" [(ngModel)]="objectmerge.mergeSource[mergeField.name]"/>
+                                    <label class="slds-radio__label" [attr.for]="'master'+mergeField.name+item.id">
+                                        <span class="slds-radio--faux"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <object-merge-modal-data-field [fieldname]="mergeField.name" [fielddata]="item"></object-merge-modal-data-field>
+                    </div>
+                </td>
+            </ng-container>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,52 @@
+<div role="dialog" class="slds-modal slds-modal--large slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" (click)="hideSummary()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_PAST_ACTIVITIES')}} {{language.getLabel('LBL_SUMMARY')}}</h2>
+        </div>
+        <div style="height: 70vh" class="slds-modal__content">
+            <div class="slds-grid" style="height: 100%">
+                <div #listContainer class="slds-size--1-of-3 slds-border--right slds-p-around--x-small slds-scrollable" style="height: 100%" (scroll)="onScroll($event)">
+                    <div class="slds-border--bottom slds-p-vertical--small slds-grid">
+                        <object-activitiy-timeline-filter class="slds-col--bump-left slds-p-horizontal--xxx-small"></object-activitiy-timeline-filter>
+                    </div>
+                    <ul class="slds-timeline">
+                        <li *ngFor="let activity of activities" (click)="setActivitiy(activity)" [ngClass]="{'slds-border--top slds-border--bottom' : activity.id == model.id}">
+                            <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
+                        </li>
+                    </ul>
+                    <system-spinner class="slds-p-around--small" *ngIf="activitiyTimeLineService.activities.History.loading"></system-spinner>
+                </div>
+                <div class="slds-size--2-of-3" style="height: 100%; overflow: auto">
+                    <div *ngIf="model.module" class="slds-page-header">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-media slds-no-space slds-grow">
+                                    <object-icon [module]="model.module"></object-icon>
+                                    <div class="slds-media__body">
+                                        <p class="slds-text-title--caps slds-line-height--reset">
+                                            {{language.getModuleName(model.module)}}</p>
+                                        <div>
+                                            <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                                                {{model.data.name}}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around--medium">
+                        <div #detailContainer></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="hideSummary()">
+                {{language.getLabel('LBL_CLOSE')}}
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <span *ngIf="fieldconfig.displayfromnow">{{displaySpan}}</span>
+    <span *ngIf="!fieldconfig.displayfromnow">{{displayDate}}</span>
+    <span *ngIf="!fieldconfig.displayfromnow" class="slds-p-left--x-small" style="font-style: italic">{{displayTime}}</span>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()">
+    <div class="slds-grid">
+        <div class="slds-col slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-right--x-small" [ngClass]="getFieldClass()">
+            <input class="slds-input" type="text" [(ngModel)]="editDate"/>
+            <div class="slds-input__icon-group slds-input__icon-group_right">
+                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="toggleDatePicker()">
+                    <system-button-icon icon="event"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-col slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-right--x-small" #timefield [ngClass]="getFieldClass()">
+            <input class="slds-input" type="text"  [(ngModel)]="editTime"/>
+            <div class="slds-input__icon-group slds-input__icon-group_right">
+                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="toggleTimePicker()">
+                    <system-button-icon icon="clock"></system-button-icon>
+                </button>
+            </div>
+            <div *ngIf="showTimePicker" class="slds-dropdown slds-dropdown--left slds-is-fixed" [ngStyle]="timefieldStyle">
+                <ul class="slds-dropdown__list slds-dropdown--length-7" role="menu">
+                    <li *ngFor="let dropdownTime of dropdownTimes" class="slds-dropdown__item" role="presentation" (click)="setTime(dropdownTime)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <span class="slds-truncate">{{dropdownTime}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="errorMessage !== ''" class="slds-form-element__help">{{errorMessage}}</div>
+</div>
+<field-date-picker *ngIf="showDatePicker" [(setdate)]="pickerDate"></field-date-picker>

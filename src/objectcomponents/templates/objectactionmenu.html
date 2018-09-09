@@ -1,0 +1,53 @@
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open': isOpen}">
+    <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions()" (click)="toggleOpen()">
+        <system-button-icon [icon]="'down'"></system-button-icon>
+    </button>
+    <div *ngIf="isOpen" class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
+        <ul class="slds-dropdown__list" role="menu">
+            <ng-container *ngIf="!isEditMode()">
+                <ng-container *ngIf="standardactions">
+                    <li *ngIf="canEdit()" class="slds-dropdown__item" role="presentation" (click)="editModel()">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
+                        </a>
+                    </li>
+                    <li *ngIf="canDelete()" class="slds-dropdown__item" role="presentation" (click)="confirmDelete()">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                            <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
+                        </a>
+                    </li>
+                </ng-container>
+                <ng-container *ngIf="addactions.length > 0">
+                    <!--li class="slds-has-divider--top-space" role="separator"></li-->
+                    <li *ngFor="let addaction of addactions" class="slds-dropdown__item" role="presentation" (click)="doCustomAction(addaction.action)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                            <span class="slds-truncate">{{addaction.name}}</span>
+                        </a>
+                    </li>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="isEditMode()">
+                <ng-container *ngIf="standardeditactions">
+                    <li *ngIf="canEdit()" class="slds-dropdown__item" role="presentation" (click)="cancelEdit()">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <span class="slds-truncate">{{language.getLabel('LBL_CANCEL')}}</span>
+                        </a>
+                    </li>
+                    <li *ngIf="canEdit()" class="slds-dropdown__item" role="presentation" (click)="saveModel()">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                            <span class="slds-truncate">{{language.getLabel('LBL_SAVE')}}</span>
+                        </a>
+                    </li>
+                </ng-container>
+                <ng-container *ngIf="addeditactions.length > 0">
+                    <!--li class="slds-has-divider--top-space" role="separator"></li-->
+                    <li *ngFor="let addaction of addeditactions" class="slds-dropdown__item" role="presentation" (click)="doCustomAction(addaction.action)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                            <span class="slds-truncate">{{addaction.name}}</span>
+                        </a>
+                    </li>
+                </ng-container>
+            </ng-container>
+        </ul>
+    </div>
+</div>
