@@ -38,6 +38,7 @@ import /*embed*/ { DashboardWeatherDashlet } from "./components/dashboardweather
 import /*embed*/ { DashboardGenericDashlet } from "./components/dashboardgenericdashlet";
 import /*embed*/ { DashboardGenericDashletRow } from "./components/dashboardgenericdashletrow";
 import /*embed*/ { DashboardRemindersDashlet } from "./components/dashboardremindersdashlet";
+import /*embed*/ { DashboardMailboxesDashlet } from "./components/dashboardmailboxesdashlet"
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import /*embed*/ { DashboardRemindersDashlet } from "./components/dashboardremin
         DashboardWeatherDashlet,
         DashboardGenericDashlet,
         DashboardGenericDashletRow,
-        DashboardRemindersDashlet
+        DashboardRemindersDashlet,
+        DashboardMailboxesDashlet
     ],
     entryComponents: [
         DashboardWeatherDashlet
