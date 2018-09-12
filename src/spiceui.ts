@@ -1,5 +1,5 @@
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {BrowserModule} from '@angular/platform-browser';
+import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import {BrowserModule, Title} from "@angular/platform-browser";
 import {
     NgModule,
     Component,
@@ -8,54 +8,52 @@ import {
     NgModuleFactory,
     NgModuleFactoryLoader,
     Compiler
-} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
+} from "@angular/core";
+import {FormsModule} from "@angular/forms";
+import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 
-//import { AfterViewInit, ComponentFactoryResolver, Component , ViewChild, ViewContainerRef } from '@angular/core';
 
 // spicecrm generic modules
-import {SystemComponents}      from './systemcomponents/systemcomponents';
-import {GlobalUtilityComponents} from './globalutilitycomponents/globalutilitycomponents';
-import {GlobalComponents}      from './globalcomponents/globalcomponents';
-import {ModuleComponents} from './modulecomponents/modulecomponents';
-import {ObjectComponents} from './objectcomponents/objectcomponents';
+import {SystemComponents}      from "./systemcomponents/systemcomponents";
+import {GlobalUtilityComponents} from "./globalutilitycomponents/globalutilitycomponents";
+import {GlobalComponents}      from "./globalcomponents/globalcomponents";
+import {ModuleComponents} from "./modulecomponents/modulecomponents";
+import {ObjectComponents} from "./objectcomponents/objectcomponents";
 
 
-//import {AdminComponentsModule} from './admincomponents/admincomponents.module';
 
 // support browser location strategy
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
+import {LocationStrategy, HashLocationStrategy} from "@angular/common";
 import {AdminComponentsModule, AdministrationMain} from "./admincomponents/admincomponents.module";
 
 // various services we need on global app level
-import {configurationService} from './services/configuration.service';
-import {loginService, loginCheck} from './services/login.service';
-import {session} from './services/session.service';
-import {metadata, aclCheck} from './services/metadata.service';
-import {AppDataService} from './services/appdata.service';
-import {MathExpressionCompilerService} from './services/mathexpressioncompiler';
-import {language} from './services/language.service';
-import {recent} from './services/recent.service';
-import {userpreferences} from './services/userpreferences.service';
-import {fts} from './services/fts.service';
-import {loader} from './services/loader.service';
-import {broadcast} from './services/broadcast.service';
-import {dockedComposer} from './services/dockedcomposer.service';
-import {backend} from './services/backend.service';
-import {navigation} from './services/navigation.service';
-import {modelutilities} from './services/modelutilities.service';
-import {toast} from './services/toast.service';
-import {favorite} from './services/favorite.service';
-import {reminder} from './services/reminder.service';
-import {territories} from './services/territories.service';
-import {currency} from './services/currency.service';
-import {footer} from './services/footer.service';
-import {cookie} from './services/cookie.service';
-import {assistant} from './services/assistant.service';
-import {VersionManagerService} from './services/versionmanager.service';
-import {modal} from './services/modal.service';
+import {configurationService} from "./services/configuration.service";
+import {loginService, loginCheck} from "./services/login.service";
+import {session} from "./services/session.service";
+import {metadata, aclCheck} from "./services/metadata.service";
+import {AppDataService} from "./services/appdata.service";
+import {MathExpressionCompilerService} from "./services/mathexpressioncompiler";
+import {language} from "./services/language.service";
+import {recent} from "./services/recent.service";
+import {userpreferences} from "./services/userpreferences.service";
+import {fts} from "./services/fts.service";
+import {loader} from "./services/loader.service";
+import {broadcast} from "./services/broadcast.service";
+import {dockedComposer} from "./services/dockedcomposer.service";
+import {backend} from "./services/backend.service";
+import {navigation} from "./services/navigation.service";
+import {modelutilities} from "./services/modelutilities.service";
+import {toast} from "./services/toast.service";
+import {favorite} from "./services/favorite.service";
+import {reminder} from "./services/reminder.service";
+import {territories} from "./services/territories.service";
+import {currency} from "./services/currency.service";
+import {footer} from "./services/footer.service";
+import {cookie} from "./services/cookie.service";
+import {assistant} from "./services/assistant.service";
+import {VersionManagerService} from "./services/versionmanager.service";
+import {modal} from "./services/modal.service";
 
 // declarations for TS
 declare var System: any;
@@ -66,11 +64,11 @@ declare global {
     }
 };
 
-moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss';
+moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
 @Component({
-    selector: 'spicecrm',
-    template: '<global-header></global-header><div class="spiceContent"><router-outlet></router-outlet></div><global-footer></global-footer>'
+    selector: "spicecrm",
+    template: "<global-header></global-header><div class=\"spiceContent\"><router-outlet></router-outlet></div><global-footer></global-footer>"
 })
 export class SpiceUI {
 
@@ -86,10 +84,9 @@ export class SpiceUI {
         GlobalComponents,
         ModuleComponents,
         ObjectComponents,
-        //AdminComponentsModule,
         RouterModule.forRoot(
             [
-                {path: '', redirectTo: '/module/Home', pathMatch: 'full'},
+                {path: "", redirectTo: "/module/Home", pathMatch: "full"},
             ]
         )
     ],
@@ -126,13 +123,13 @@ export class SpiceUI {
         MathExpressionCompilerService,
         assistant,
         VersionManagerService,
-        modal
+        modal,
+        Title
     ]
 })
-export class SpiceUIModule
-{
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+export class SpiceUIModule {
+    public version = "1.0";
+    public build_date = "/*build_date*/";
 
     constructor(
         public metadata: metadata,
@@ -145,7 +142,7 @@ export class SpiceUIModule
 
 // set prod mode
 /*
- import {enableProdMode} from '@angular/core';
+ import {enableProdMode} from "@angular/core";
  enableProdMode();
  */
 
