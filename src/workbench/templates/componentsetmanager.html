@@ -36,7 +36,7 @@
             <system-utility-icon [icon]="showDetailIcon" [size]="'x-small'" (click)="toggleDetail()"></system-utility-icon>
         </div-->
         <div class="slds-button-group slds-col--bump-left">
-            <button type="button" class="slds-button slds-button_icon slds-button_icon-border-filled"
+            <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled"
                     (click)="addComponentset()">
                 <system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon>
             </button>

@@ -43,7 +43,7 @@
                     <system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>
 
                     <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
-                        <button class="slds-button slds-button--icon" title="add item" (click)="addConf()">
+                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addConf()">
                             <system-utility-icon [icon]="'new'" [size]="'xx-small'"
                                                  [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
                         </button>
@@ -58,11 +58,11 @@
             <div *ngIf="selectedComponent.component" class="slds-p-vertical_small slds-text-heading_small">
                 {{selectedComponent.component}} / {{selectedComponent.role_name}}
             </div>
-            <button type="button"
+            <button [disabled]="!getAllowCopyButton" type="button"
                     class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="copyConf()">
                 {{language.getLabel('LBL_COPY')}}
             </button>
-            <button type="button"
+            <button [disabled]="!view.isEditMode()" type="button"
                     class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
                 {{language.getLabel('LBL_SAVE')}}
             </button>
