@@ -33,7 +33,10 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
     getCurrencySymbol(): string {
         let currencySymbol: string;
         let currencyid = -99;
-        if ( this.currencyidfield && !this.model.data[this.currencyidfield] ) return '';
+        if ( this.currencyidfield ) {
+            if( !this.model.data[this.currencyidfield] ) return '';
+            else currencyid = this.model.data[this.currencyidfield];
+        }
         this.currencies.some(currency => {
             if(currency.id == currencyid){
                 currencySymbol = currency.symbol;
