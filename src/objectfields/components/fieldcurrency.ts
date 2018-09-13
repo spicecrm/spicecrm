@@ -30,15 +30,10 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         });
     }
 
-    getCurrencySymbol(){
-        let currencySymbol = '';
-
-        if(!this.model.data[this.fieldname]) return currencySymbol;
-
+    getCurrencySymbol(): string {
+        let currencySymbol: string;
         let currencyid = -99;
-        if(this.currencyidfield){
-            this.model.data[this.currencyidfield];
-        }
+        if ( this.currencyidfield && !this.model.data[this.currencyidfield] ) return '';
         this.currencies.some(currency => {
             if(currency.id == currencyid){
                 currencySymbol = currency.symbol;
@@ -46,7 +41,6 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
             }
         });
         return currencySymbol;
-
     }
 
     getTextValue() {
