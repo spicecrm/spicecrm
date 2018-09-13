@@ -22,7 +22,9 @@
 
         crActive: boolean = false;
         change_request_required: boolean = false;
-        globalEdit: boolean = true;
+        edit_mode: string = '';
+        allowCopyButton: boolean = true;
+        allowGlobalModal: boolean = false;
 
         sysModules: Array<any> = [];
         sysRoles: any = {};
@@ -49,7 +51,8 @@
             private toast: toast,
             private modalservice: modal,
             private configurationService: configurationService,
-            private view: view
+            private view: view,
+            private modal: modal
         ) {
             // get roles
             this.backend.getRequest('configurator/entries/sysuiroles').subscribe(roles => {
@@ -66,23 +69,72 @@
                 this.metadata.loadComponents(new Subject<any>());
             });
 
-            // this.globalEdit = this.configurationService.getCapabilityConfig('core').allow_global_edit ? true : false;
-            // this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
-            // if (this.change_request_required == true) {
-            //     //check if changeRequest is active
-            //     this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
-            //         if (crresponse.id != "") {
-            //             this.crActive = true;
-            //         } else {
-            //             this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
-            //         }
-            //     })
-            // } else {
-            //     this.crActive = true;
-            // }
-            view.setEditMode(); //quickfix
-
+            // view.setEditMode(); //quickfix
+            this.checkMode();
         }
+
+        get getAllowCopyButton() {
+            if(Object.keys(this.selectedComponent).length === 0 && this.selectedComponent.constructor === Object){
+                return false;
+            }else
+                return this.allowCopyButton;
+        }
+
+        checkMode(){
+            this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
+            this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
+
+            if(!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')){
+                this.edit_mode = 'custom';
+            }
+
+            if(this.change_request_required){
+                this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+                    if (crresponse.id == "") {
+                        this.setNoneMode();
+                        // this.crNoneActive = true;
+                        this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
+                    }else{
+                        // this.crNoneActive = false;
+                        if(this.edit_mode == "all"){
+                            this.setAllMode();
+                        }else if(this.edit_mode == "custom"){
+                            this.setCustomMode();
+                        }else{
+                            this.setNoneMode();
+                        }
+                    }
+                })
+            }else{
+                // this.crNoneActive = false;
+                if(this.edit_mode == "all"){
+                    this.setAllMode();
+                }else if(this.edit_mode == "custom"){
+                    this.setCustomMode();
+                }else{
+                    this.setNoneMode();
+                }
+            }
+        }
+
+        setNoneMode(){
+            this.view.setViewMode();
+            this.allowCopyButton = false;
+        }
+        setCustomMode(){
+
+            if(this.currentTableActive == "custom" || this.currentTableActive == "default_custom"){
+                this.view.setEditMode();
+            }else{
+                this.view.setViewMode();
+            }
+        }
+        setAllMode(){
+            this.allowGlobalModal = true;
+            this.view.setEditMode();
+        }
+
+
 
         selectedModule() {
             this.currentComponent = '';
@@ -106,45 +158,61 @@
         }
 
         loadGlobal() {
-            this.selectedComponent = {};
-            if(this.currentModule != "*") {
 
+            this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+                this.selectedComponent = {};
                 this.currentTableActive = "global";
-                    this.backend.getRequest('configurator/entries/sysuicomponentmoduleconf').subscribe(data => {
-                        this.buildTreeList(data);
-                    });
-            }else{
-                this.loadDefault();
-            }
+                this.checkMode();
+                if(this.currentModule != "*") {
+                        this.backend.getRequest('configurator/entries/sysuicomponentmoduleconf').subscribe(data => {
+                            this.buildTreeList(data);
+                            loadingModalRef.instance.self.destroy();
+                        });
+                }else{
+                    this.loadDefault();
+                    loadingModalRef.instance.self.destroy();
+                }
+            });
         }
 
         loadCustom() {
-            this.selectedComponent = {};
-            if(this.currentModule != "*") {
 
+            this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+                this.selectedComponent = {};
                 this.currentTableActive = "custom";
-                    this.backend.getRequest('configurator/entries/sysuicustomcomponentmoduleconf').subscribe(data => {
-                        this.buildTreeList(data);
-                    });
-            }else{
-                this.loadDefaultCustom()
-            }
+                this.checkMode();
+                if(this.currentModule != "*") {
+
+
+                        this.backend.getRequest('configurator/entries/sysuicustomcomponentmoduleconf').subscribe(data => {
+                            this.buildTreeList(data);
+                            loadingModalRef.instance.self.destroy();
+                        });
+                }else{
+                    this.loadDefaultCustom()
+                    loadingModalRef.instance.self.destroy();
+                }
+            });
         }
 
         loadDefault() {
-
-            this.currentTableActive = "default";
+            this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+                this.currentTableActive = "default";
                 this.backend.getRequest('configurator/entries/sysuicomponentdefaultconf').subscribe(data => {
                     this.buildTreeList(data);
+                    loadingModalRef.instance.self.destroy();
                 });
+            });
         }
 
         loadDefaultCustom() {
-
-            this.currentTableActive = "default_custom";
+            this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+                this.currentTableActive = "default_custom";
                 this.backend.getRequest('configurator/entries/sysuicustomcomponentdefaultconf').subscribe(data => {
                     this.buildTreeList(data);
+                    loadingModalRef.instance.self.destroy();
                 });
+            });
         }
 
         // buildTreeList(data) {
@@ -292,46 +360,51 @@
 
 
         saveChanges(){
+            this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+                if (this.selectedComponent.componentconfig) {
+                    this.selectedComponent.componentconfig = JSON.stringify(this.selectedComponent.componentconfig);
+                    delete this.selectedComponent.role_name;
 
-            if (this.selectedComponent.componentconfig) {
-                this.selectedComponent.componentconfig = JSON.stringify(this.selectedComponent.componentconfig);
-                delete this.selectedComponent.role_name;
-
-                switch (this.currentTableActive) {
-                    case "default":
-                        this.backend.postRequest('configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
-                            if(status.status == "success"){
-                                this.toast.sendToast('changes saved');
-                            }
-                        });
-                        break;
-                    case "default_custom":
-                        this.backend.postRequest('configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
-                            if(status.status == "success"){
-                                this.toast.sendToast('changes saved');
-                            }
-                        });
-                        break;
-                    case "global":
-                        this.backend.postRequest('configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
-                            if(status.status == "success"){
-                                this.toast.sendToast('changes saved');
-                            }
-                        });
-                        break;
-                    case "custom":
-                        this.backend.postRequest('configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
-                            if(status.status == "success"){
-                                this.toast.sendToast('changes saved');
-                            }
-                        });
-                        break;
-                    default:
-                        break;
+                    switch (this.currentTableActive) {
+                        case "default":
+                            this.backend.postRequest('configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                                if (status.status == "success") {
+                                    loadingModalRef.instance.self.destroy();
+                                    this.toast.sendToast('changes saved');
+                                }
+                            });
+                            break;
+                        case "default_custom":
+                            this.backend.postRequest('configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                                if (status.status == "success") {
+                                    loadingModalRef.instance.self.destroy();
+                                    this.toast.sendToast('changes saved');
+                                }
+                            });
+                            break;
+                        case "global":
+                            this.backend.postRequest('configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                                if (status.status == "success") {
+                                    loadingModalRef.instance.self.destroy();
+                                    this.toast.sendToast('changes saved');
+                                }
+                            });
+                            break;
+                        case "custom":
+                            this.backend.postRequest('configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                                if (status.status == "success") {
+                                    loadingModalRef.instance.self.destroy();
+                                    this.toast.sendToast('changes saved');
+                                }
+                            });
+                            break;
+                        default:
+                            loadingModalRef.instance.self.destroy();
+                            break;
+                    }
+                    this.selectedComponent.componentconfig = JSON.parse(this.selectedComponent.componentconfig);
                 }
-                this.selectedComponent.componentconfig = JSON.parse(this.selectedComponent.componentconfig);
-
-            }
+            });
         }
 
         addConf(){
@@ -339,13 +412,17 @@
             this.modalservice.openModal('ModuleConfigAddDialog').subscribe( modal => {
 
                 modal.instance.mode = "add";
-
                 if(this.currentTableActive == "default_custom" || this.currentTableActive == "custom"){
                     modal.instance.currentType = "custom";
                 }else{
-                    modal.instance.currentType =  "global";
+                    if(this.edit_mode == 'all'){
+                        modal.instance.currentType =  "global";
+                    }else {
+                        modal.instance.currentType =  "custom";
+                    }
                 }
                 modal.instance.currentModule = this.currentModule;
+                modal.instance.allowGlobal = this.allowGlobalModal;
 
                 modal.instance.response$.subscribe(comp => {
                     this.response(comp);
@@ -359,12 +436,11 @@
             this.modalservice.openModal('ModuleConfigAddDialog').subscribe( modal => {
 
                 modal.instance.mode = "copy";
-
-
                 modal.instance.currentComponent = this.selectedComponent;
                 modal.instance.currentRole = this.selectedComponent.role_id;
-
                 modal.instance.currentModule = this.currentModule;
+                modal.instance.allowGlobal = this.allowGlobalModal;
+
 
                 modal.instance.response$.subscribe(comp => {
                     this.response(comp);

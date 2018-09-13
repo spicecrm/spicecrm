@@ -23,7 +23,6 @@ export class FieldsetManager {
     allowBarButtons: boolean = true;
     crNoneActive: boolean = false;
 
-    globalEdit: boolean = true;
     change_request_required: boolean = false;
     crActive: boolean = false;
     showSaveButton: boolean = false;
@@ -59,11 +58,8 @@ export class FieldsetManager {
             this.metadata.loadFieldDefs(new Subject<any>(), true);
             this.metadata.loadComponents(new Subject<any>(), true);
         });
-
         this.checkMode();
     }
-
-
 
 
     get currentFieldSetName() {
@@ -118,6 +114,11 @@ export class FieldsetManager {
     checkMode(){
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
+
+        if(!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')){
+            this.edit_mode = 'custom';
+        }
+
         if(this.change_request_required){
             this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
@@ -412,7 +413,6 @@ export class FieldsetManager {
 
 
     copy(currentFieldset = this.currentFieldSet, customizeItem = null) {
-
         this.modalservice.openModal('FieldsetManagerCopyDialog').subscribe(modal => {
 
             modal.instance.fieldset = currentFieldset;
@@ -573,4 +573,13 @@ export class FieldsetManager {
         })
         });
     }
+
+    get getAllowCopyButton() {
+        if(!this.currentFieldSet){
+            return false;
+        }else
+            return this.allowBarButtons;
+    }
+
+
 }
