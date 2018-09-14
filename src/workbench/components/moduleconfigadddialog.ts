@@ -28,6 +28,8 @@ export class ModuleConfigAddDialog implements OnInit{
     @Input() currentRole: string = "";
     @Input() currentType: string = "";
     @Input() currentModule: string = "";
+    @Input() allowGlobal: boolean = false;
+
 
     @Output('response') response$: EventEmitter<any> = new EventEmitter<any>()
 
@@ -62,6 +64,10 @@ export class ModuleConfigAddDialog implements OnInit{
 
 
     ngOnInit(){
+        if(!this.allowGlobal){
+            this.types.pop();
+            this.currentType = 'custom';
+        }
 
         // get all modules
         this.backend.getRequest('configurator/entries/sysmodules').subscribe(data => {

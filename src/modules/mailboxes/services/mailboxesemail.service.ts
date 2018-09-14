@@ -10,6 +10,8 @@ declare var moment: any;
 @Injectable()
 export class mailboxesEmails {
 
+    @Output('mailboxesLoaded') mailboxesLoaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     private limit = 30;
 
     public mailboxes: any[] = [];
@@ -41,15 +43,20 @@ export class mailboxesEmails {
 
     private getMailboxes() {
 
-        this.backend.getRequest("mailboxes/getmailboxes", {scope: 'inbound'}).subscribe((results: any) => {
-            for (let mailbox of results) {
-                this.mailboxes.push({
-                    actionset: mailbox.actionset,
-                    id: mailbox.value,
-                    name: mailbox.display,
-                });
+        this.backend.getRequest("mailboxes/getmailboxes", {scope: 'inbound'}).subscribe(
+            (results: any) => {
+                for (let mailbox of results) {
+                    this.mailboxes.push({
+                        actionset: mailbox.actionset,
+                        id: mailbox.value,
+                        name: mailbox.display,
+                    });
+                }
+                // send an event here and catch it in mailboxmanagerheader
+                this.mailboxesLoaded$.emit(true);
             }
-        });
+        );
+
     }
 
     public fetchEmails() {

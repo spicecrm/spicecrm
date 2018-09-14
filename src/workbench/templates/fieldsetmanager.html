@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="slds-form-element slds-col--bump-left">
-            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
+            <button [disabled]="!getAllowCopyButton" class="slds-button slds-button--brand" (click)="copy()" >
                 <span>{{language.getAppLanglabel('LBL_COPY')}}</span>
             </button>
                 <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addFieldset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>

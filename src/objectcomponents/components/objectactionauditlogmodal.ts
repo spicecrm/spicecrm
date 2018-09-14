@@ -1,36 +1,31 @@
-import { Component, Input, OnInit, Optional} from '@angular/core';
-import { Router } from '@angular/router';
-import { metadata } from '../../services/metadata.service';
-import { model } from '../../services/model.service';
-import { language } from '../../services/language.service';
+import { Component, Input, OnInit, Optional} from "@angular/core";
+import { metadata } from "../../services/metadata.service";
+import { model } from "../../services/model.service";
+import { language } from "../../services/language.service";
 
 @Component({
-    selector: 'object-action-auditlog-modal',
-    templateUrl: './src/objectcomponents/templates/objectactionauditlogmodal.html'
+    selector: "object-action-auditlog-modal",
+    templateUrl: "./src/objectcomponents/templates/objectactionauditlogmodal.html"
 })
-export class ObjectActionAuditlogModal implements OnInit{
+export class ObjectActionAuditlogModal implements OnInit {
 
-    auditLog: Array<any> = [];
-    loading: boolean = true;
+    public self: any = null;
 
-    self: any = null
+    private auditLog: Array<any> = [];
+    private loading: boolean = true;
 
     constructor( private language: language, private metadata: metadata, @Optional() private model: model ) {}
 
-    ngOnInit(){
+    public ngOnInit() {
         if(this.model) {
             this.model.getAuditLog().subscribe(log => {
                 this.auditLog = log;
                 this.loading = false;
-            })
+            });
         }
     }
 
-    displayAuditLog(){
-
-    }
-
-    hideAuditLog(){
+    private hideAuditLog() {
         this.self.destroy();
     }
 }
