@@ -9,22 +9,22 @@
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_LISTVIEWSETTINGS')}}</span>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" (click)="add()">
+                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('create')" (click)="add()">
                     <span class="slds-truncate">{{language.getLabel('LBL_NEW')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" [attr.aria-disabled]="deleteDisabled()" (click)="edit()">
+                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="edit()">
                     <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" [attr.aria-disabled]="deleteDisabled()" (click)="setfields()">
+                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="setfields()">
                     <span class="slds-truncate">{{language.getLabel('LBL_SETFIELDS')}}</span>
                 </a>
             </li>
-            <li class="slds-dropdown__item" role="presentation"  >
-                <a href="javascript:void(0);" role="menuitem" [attr.aria-disabled]="deleteDisabled()" (click)="delete()">
+            <li class="slds-dropdown__item" role="presentation">
+                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
                     <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
                 </a>
             </li>
