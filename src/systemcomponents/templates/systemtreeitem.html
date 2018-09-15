@@ -1,27 +1,18 @@
-<li *ngFor="let item of items" role="treeitem" [ngStyle]="{'padding-left': item.level + 'rem'}">
+<li *ngFor="let item of items" role="treeitem" [ngStyle]="{'padding-left': item.level- 1 + 'rem'}" [ngClass]="{'slds-is-selected':item.id == selectedId}">
     <div class="slds-tree__item slds-is-open">
-        <button *ngIf="item.children.length > 0 && item.expanded"
-                class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded aria-hidden="true" tabindex="-1"
-                (click)="expand(item)">
-            <system-utility-icon [icon]="'chevronright'" [size]="'xx-small'"
-                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+        <button *ngIf="item.children.length > 0 && item.expanded" class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded aria-hidden="true" (click)="expand(item)">
+            <system-utility-icon icon="chevronright" size="xx-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
         </button>
-        <button *ngIf="item.children.length > 0 && !item.expanded"
-                class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded aria-hidden="true" tabindex="-1"
-                (click)="expand(item)">
-            <system-utility-icon [icon]="'chevronleft'" [size]="'xx-small'"
-                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+        <button *ngIf="item.children.length > 0 && !item.expanded" class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded aria-hidden="true" (click)="expand(item)">
+            <system-utility-icon icon="chevronleft" size="xx-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
         </button>
         <span class="slds-size_1-of-1">
-            <span *ngIf="item.clickable" (click)="choose(item)" class="slds-tree__item-label slds-truncate"
-                  title="{{item.name}}">{{item.name}}</span>
-            <span *ngIf="!item.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;"
-                  class="slds-tree__item-label slds-truncate" title="{{item.name}}">{{item.name}}</span>
+            <span *ngIf="item.clickable" (click)="choose(item)" class="slds-tree__item-label slds-truncate" title="{{item.name}}">{{item.name}}</span>
+            <span *ngIf="!item.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;" class="slds-tree__item-label slds-truncate" title="{{item.name}}">{{item.name}}</span>
         </span>
     </div>
-    <ul *ngIf="item.children.length > 0 && item.expanded == true" class="slds-tree" role="tree"
-        aria-labelledby="treeheading">
-        <system-tree-item [items]="item.children" (selectedItem)="choose($event)"></system-tree-item>
+    <ul *ngIf="item.children.length > 0 && item.expanded == true" class="slds-tree" role="tree">
+        <system-tree-item [items]="item.children" [selectedId]="selectedId" (selectedItem)="choose($event)"></system-tree-item>
     </ul>
 </li>
 
