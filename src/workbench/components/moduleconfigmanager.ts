@@ -1,6 +1,6 @@
 
     import {
-    Component, EventEmitter, Input, Output,
+    Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef,
 } from '@angular/core';
     import {backend} from '../../services/backend.service';
     import {toast} from '../../services/toast.service';
@@ -43,6 +43,10 @@
 
         treelist: Array<any> = [];
 
+        private initialized: boolean = false;
+
+        @ViewChild("treecontainer", {read: ViewContainerRef}) private treecontainer: ViewContainerRef;
+        @ViewChild("addconfigcontainer", {read: ViewContainerRef}) private addconfigcontainer: ViewContainerRef;
 
         constructor(
             private backend: backend,
@@ -57,8 +61,9 @@
             // get roles
             this.backend.getRequest('configurator/entries/sysuiroles').subscribe(roles => {
                 this.sysRoles['*'] = '*';
-                for (let role of roles)
+                for (let role of roles) {
                     this.sysRoles[role.id] = role.name;
+                }
             });
 
             this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
@@ -66,7 +71,16 @@
 
                 // iniutialize the metadata service
                 this.metadata.loadFieldSets(new Subject<any>());
-                this.metadata.loadComponents(new Subject<any>());
+                let moduleLoader = new Subject<any>();
+                this.metadata.loadComponents(moduleLoader);
+                moduleLoader.subscribe(done => {
+                    // set initialized to true
+                    this.initialized = true;
+
+                    /// load for the general conf
+                    this.currentModule = "*";
+                    this.selectedModule();
+                });
             });
 
             // view.setEditMode(); //quickfix
@@ -94,24 +108,24 @@
                         this.setNoneMode();
                         // this.crNoneActive = true;
                         this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
-                    }else{
+                    } else {
                         // this.crNoneActive = false;
-                        if(this.edit_mode == "all"){
+                        if(this.edit_mode == "all") {
                             this.setAllMode();
-                        }else if(this.edit_mode == "custom"){
+                        } else if(this.edit_mode == "custom") {
                             this.setCustomMode();
-                        }else{
+                        } else {
                             this.setNoneMode();
                         }
                     }
-                })
-            }else{
+                });
+            } else {
                 // this.crNoneActive = false;
-                if(this.edit_mode == "all"){
+                if(this.edit_mode == "all") {
                     this.setAllMode();
-                }else if(this.edit_mode == "custom"){
+                } else if(this.edit_mode == "custom") {
                     this.setCustomMode();
-                }else{
+                } else {
                     this.setNoneMode();
                 }
             }
@@ -125,7 +139,7 @@
 
             if(this.currentTableActive == "custom" || this.currentTableActive == "default_custom"){
                 this.view.setEditMode();
-            }else{
+            } else {
                 this.view.setViewMode();
             }
         }
@@ -145,13 +159,13 @@
             if(this.currentModule == "*"){
                 if(this.currentTableActive == "default_custom") {
                     this.loadDefaultCustom();
-                }else{
+                } else {
                     this.loadDefault();
                 }
-            }else{
-                if(this.currentTableActive == "custom"){
+            } else {
+                if(this.currentTableActive == "custom") {
                     this.loadCustom();
-                }else{
+                } else {
                     this.loadGlobal();
                 }
             }
@@ -168,7 +182,7 @@
                             this.buildTreeList(data);
                             loadingModalRef.instance.self.destroy();
                         });
-                }else{
+                } else {
                     this.loadDefault();
                     loadingModalRef.instance.self.destroy();
                 }
@@ -188,7 +202,7 @@
                             this.buildTreeList(data);
                             loadingModalRef.instance.self.destroy();
                         });
-                }else{
+                } else {
                     this.loadDefaultCustom()
                     loadingModalRef.instance.self.destroy();
                 }
@@ -279,7 +293,7 @@
         // }
 
 
-        buildTreeList(data) {
+        private buildTreeList(data) {
 
             let components = [];
 
@@ -287,8 +301,8 @@
                 if (entry.module == this.currentModule || this.currentModule == "*") {
                     this.componentModuleList.push(entry);
 
-                    //Check if role name is available
-                    var role_name = this.checkRoleName(entry.role_id);
+                    // Check if role name is available
+                    let role_name = this.checkRoleName(entry.role_id);
 
 
                     let comp: any = {};
@@ -300,11 +314,11 @@
                         name: role_name
                     }
 
-                    //new component is added
+                    // new component is added
                     if(this.newComponent){
-                        if(this.newComponent.id == entry.id){
+                        if(this.newComponent.id == entry.id) {
                             comp.selected = true;
-                            this.selectedOutputItem(comp); //open new component
+                            this.selectedOutputItem(comp); // open new component
                         }
                     }
                     components.push(comp)
@@ -323,24 +337,28 @@
                             parent_id: null,
                             clickable: false,
                             name: entry.component
-                        })
+                        });
                     }
                 }
             }
             this.newComponent = {};
+            // sort by name
+            components.sort((a, b) => {
+                return a.name > b.name ? 1 : -1;
+            });
             this.treelist = components;
             return components;
         }
 
 
         checkRoleName(role_id){
-            var role_name = "";
+            let role_name = "";
             if(this.sysRoles[role_id]){
                 role_name = this.sysRoles[role_id];
             }else{
                 role_name = role_id;
             }
-            return role_name; //return name if available ... otherwise role id
+            return role_name; // return name if available ... otherwise role id
         }
 
         selectedOutputItem(item){
@@ -349,8 +367,8 @@
                     if(typeof component.componentconfig == "string"){
                         component.componentconfig = JSON.parse(component.componentconfig);
                     }
-                    //Check if role name is available
-                    var role_name = this.checkRoleName(component.role_id);
+                    // Check if role name is available
+                    let role_name = this.checkRoleName(component.role_id);
 
                     component.role_name = role_name;
                     this.selectedComponent = component;
@@ -471,6 +489,10 @@
             this.selectedModule();
         }
 
-
+        private get treecontainerstyle(){
+            return {
+                height: "calc(100vh - " + this.treecontainer.element.nativeElement.offsetTop + "px - "+ this.addconfigcontainer.element.nativeElement.getBoundingClientRect().height + "px)"
+            };
+        }
     }
 
