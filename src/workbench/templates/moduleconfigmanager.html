@@ -47,16 +47,18 @@
         </div>
     </div>
     <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
-        <div class="slds-grid slds-form--inline slds-p-around--small">
-            <div *ngIf="selectedComponent.component" class="slds-p-vertical_small slds-text-heading_small">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="selectedComponent.component" class="slds-text-heading_small">
                 {{selectedComponent.component}} / {{selectedComponent.role_name}}
             </div>
-            <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="copyConf()">
-                {{language.getLabel('LBL_COPY')}}
-            </button>
-            <button [disabled]="!view.isEditMode()" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
-                {{language.getLabel('LBL_SAVE')}}
-            </button>
+            <div class="slds-col--bump-left">
+                <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
+                    {{language.getLabel('LBL_COPY')}}
+                </button>
+                <button [disabled]="!view.isEditMode()" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
+                    {{language.getLabel('LBL_SAVE')}}
+                </button>
+            </div>
         </div>
         <workbench-config *ngIf="selectedComponent.id" [inputObj]="selectedComponent"></workbench-config>
     </div>
