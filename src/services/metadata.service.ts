@@ -1014,7 +1014,8 @@ export class metadata {
 
             retActionSets.push({
                 id: actionset,
-                name: this.actionSets[actionset].name
+                name: this.actionSets[actionset].name,
+                module: this.actionSets[actionset].module,
             });
         }
 
@@ -1023,6 +1024,10 @@ export class metadata {
         });
 
         return retActionSets;
+    }
+
+    public getActionSet(actionsSetId) {
+        return this.actionSets[actionsSetId];
     }
 
     public getActionSetItems(actionset) {
