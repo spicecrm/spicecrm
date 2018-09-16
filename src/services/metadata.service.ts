@@ -506,6 +506,10 @@ export class metadata {
                     this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                         let cmp_factory = componentfactory.componentFactories.find((e) => e.componentType.name === "SystemComponentContainer");
                         let componentRef = viewChild.createComponent(cmp_factory, undefined, injector);
+
+                        // add the info ybout the component being added
+                        componentRef.instance.containerComponent = component;
+
                         // add the component itself...
                         componentRef.instance.containerRef.subscribe(subref => {
                             // load by module...
