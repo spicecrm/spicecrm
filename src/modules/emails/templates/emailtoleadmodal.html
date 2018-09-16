@@ -1,0 +1,26 @@
+<div role="dialog" tabindex="-1" class="slds-modal slds-modal_large slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close"
+                    (click)="closeModal()">
+                <system-button-icon [icon]="'close'"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading--medium">{{language.getModuleLabel('Leads', 'LBL_NEW_FORM_TITLE')}}</h2>
+        </div>
+        <div class="slds-modal__content" >
+            <div class="slds-grid" style="height: 80vh;">
+                <div class="slds-size--1-of-2 slds-p-around--small" style="height: 100%;">
+                    <email-to-lead-emailtext [emailmodule]="model.module" [emailtext]="email.data.body" [emailhtml]="email.data.body" [emailfields]="leadFields" (setfield)="setField($event)"></email-to-lead-emailtext>
+                </div>
+                <div class="slds-size--1-of-2 slds-scrollable" style="height: 100%;">
+                    <div #detailcontainer></div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="saveLead()">{{language.getLabel('LBL_SAVE')}}</button>
+        </div>
+    </div>
+</div>
+<div class="slds-backdrop slds-backdrop--open"></div>
