@@ -1287,7 +1287,7 @@ export class metadata {
         return sub.asObservable();
     }
 
-    private isLibLoaded(name): boolean {
+    public isLibLoaded(name): boolean {
         if( this.scripts[name]) {
             for(let lib of this.scripts[name])
             {
