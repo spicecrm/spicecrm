@@ -7,6 +7,7 @@ import {backend} from "./backend.service";
  * source: https://stackoverflow.com/questions/42593604/using-external-javascript-libraries-in-angular-2-lazy-loaded-module-not-index-h
  * created and adapted by Sebastian Franz
  */
+
 @Injectable()
 export class LibLoaderService {
     private scripts = [];
