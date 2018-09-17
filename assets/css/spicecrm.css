@@ -796,6 +796,10 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     border-color: #CA1B1F;
 }
 
+.slds-tree .slds-is-selected {
+    box-shadow: #CA1B1F 4px 0 0 inset;
+}
+
 
 .slds-button span{
     text-transform: capitalize;

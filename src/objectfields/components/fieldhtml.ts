@@ -14,13 +14,15 @@ declare var _;
     selector: 'field-html',
     templateUrl: './src/objectfields/templates/fieldhtml.html',
 })
-export class fieldHtml extends fieldGeneric {
-
+export class fieldHtml extends fieldGeneric
+{
     stylesheetField: string = '';
     useStylesheets: boolean;
     useStylesheetSwitcher: boolean;
     stylesheets: Array<any>;
     stylesheetToUse: string = '';
+    private _cached_html_value; // the cached sanitized html object to prevent "filckering" of the iframe
+    private _cached_value; // for change detection reasons...
 
     @ViewChild('printframe', {read: ViewContainerRef}) printframe: ViewContainerRef;
 
@@ -41,11 +43,22 @@ export class fieldHtml extends fieldGeneric {
         this.useStylesheetSwitcher = this.useStylesheets && _.isEmpty( this.stylesheetToUse );
     }
 
-    get htmlValue(){
-        return this.value ?
-            this.sanitized.bypassSecurityTrustHtml(
+    /**
+     * get the html representation of the corresponding value
+     * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should be rebuild on change
+     * @returns {any}
+     */
+    get htmlValue()
+    {
+        // if value changed, generate html value
+        if(this.value != this._cached_value)
+        {
+            this._cached_html_value = this.sanitized.bypassSecurityTrustHtml(
                 '<html><head>'+( this.useStylesheets && !_.isEmpty( this.model.data[this.stylesheetField] ) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.model.data[this.stylesheetField]) + '</style>':'')+'</head><body class="spice">'+this.value+'</body></html>'
-            ) : '';
+            );
+            this._cached_value = this.value;
+        }
+        return this._cached_html_value;
     }
 
     get stylesheetId(): string {

@@ -2,7 +2,7 @@
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread" style="min-height: 20px;">
-            <div class="slds-truncate" (click)="goRecord()" [ngClass]="{'slds-text-link_faux': link}">
+            <div class="slds-truncate" style="width:100%" (click)="goRecord()" [ngClass]="{'slds-text-link_faux': link}">
                 <ng-content></ng-content>
             </div>
             <button *ngIf="editable" style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
