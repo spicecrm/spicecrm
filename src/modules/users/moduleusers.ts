@@ -1,6 +1,8 @@
 import {CommonModule} from "@angular/common";
-import {NgModule, Renderer2, Output, Component, Injectable, EventEmitter, OnInit, AfterViewInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, Input} from "@angular/core";
+import {NgModule, Renderer2, AfterViewChecked, ChangeDetectorRef, Output, Component, Injectable, EventEmitter, OnInit, AfterViewInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, Input} from "@angular/core";
 import {FormsModule} from "@angular/forms";
+
+import {Observable, Subject} from "rxjs";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
@@ -12,6 +14,11 @@ import {backend} from "../../services/backend.service";
 import {model} from "../../services/model.service";
 import {toast} from "../../services/toast.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
+import {modal} from "../../services/modal.service";
+import {session} from "../../services/session.service";
+import {broadcast} from "../../services/broadcast.service";
+import {userpreferences} from "../../services/userpreferences.service";
+import {modelutilities} from "../../services/modelutilities.service";
 
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";

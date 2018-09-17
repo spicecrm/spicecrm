@@ -2,6 +2,8 @@ import {CommonModule} from "@angular/common";
 import {NgModule, Renderer2, Output, Component, Injectable, EventEmitter, OnInit, AfterViewInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, Input} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 
+import {Subject, Observable} from "rxjs";
+
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
 
