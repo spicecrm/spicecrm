@@ -8,10 +8,10 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'dashboard-mailboxes-dashlet',
-    templateUrl: './src/modules/dashboard/templates/dashboardmailboxesdashlet.html',
+    templateUrl: './src/modules/mailboxes/templates/mailboxesdashlet.html',
     providers: [model, view]
 })
-export class DashboardMailboxesDashlet implements OnInit {
+export class MailboxesDashlet implements OnInit {
     isLoading: boolean = true;
     mailboxes: Array<any> = [];
     canLoadMore: boolean = true;
