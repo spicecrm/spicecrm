@@ -1,78 +1,69 @@
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-form-element">
-        <label class="slds-form-element__label">Module</label>
+        <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container" style="min-width:250px;">
-                <select class="slds-select" [(ngModel)]="currentModule" (change)="selectedModule()">
+                <select class="slds-select" [(ngModel)]="currentModule" [disabled]="!initialized" (change)="selectedModule()">
                     <option value="*">*</option>
                     <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}</option>
                 </select>
             </div>
         </div>
     </div>
-
-    <div class="slds-form-element slds-col--bump-left">
-        <!--<button type="button" class="slds-button slds-button&#45;&#45;neutral" (click)="addConf()">{{language.getLabel('LBL_ADD')}}</button>-->
-        <!--<button type="button" class="slds-button slds-button&#45;&#45;brand" (click)="saveChanges()">{{language.getLabel('LBL_SAVE')}}</button>-->
-        <!--<button class="slds-button slds-button&#45;&#45;icon" title="add item">-->
-            <!--<system-utility-icon [icon]="'new'" [size]="'small'"-->
-                                 <!--[addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>-->
-        <!--</button>-->
-    </div>
 </div>
-
-
-<div class="slds-grid">
-    <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+<!-- show a spinner unlöess we are initialized-->
+<div *ngIf="!initialized" class="slds-align_absolute-center slds-p-around--large">
+    <system-spinner></system-spinner>
+</div>
+<div class="slds-grid" [ngClass]="{'slds-hidden':!initialized}">
+    <div class="slds-size--2-of-5 slds-border--right">
         <div class="slds-tree_container" role="application" style="max-width: none;">
-
-
-
             <div class="slds-tabs_default" style="background-color: transparent">
                 <ul class="slds-tabs_default__nav" role="tablist">
                     <li class="slds-tabs_default__item slds-is-active" [ngClass]="{'slds-is-active': currentTableActive == 'global' || currentTableActive == 'default'}" title="Item One" role="presentation">
-                        <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" (click)="loadGlobal()" id="tab-default-1__item">Global</a>
+                        <div class="slds-grid slds-grid--vertical-align-center">
+                            <system-custom-icon icon="global" size="x-small"></system-custom-icon>
+                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="loadGlobal()" id="tab-default-1__item">{{language.getLabel('LBL_GLOBAL')}}</a>
+                        </div>
                     </li>
                     <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': currentTableActive == 'custom' || currentTableActive == 'default_custom'}" title="Item Two" role="presentation">
-                        <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" (click)="loadCustom()" id="tab-default-2__item">Custom</a>
+                        <div class="slds-grid slds-grid--vertical-align-center">
+                            <system-custom-icon icon="custom" size="x-small"></system-custom-icon>
+                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" (click)="loadCustom()" id="tab-default-2__item">{{language.getLabel('LBL_CUSTOM')}}</a>
+                        </div>
                     </li>
                 </ul>
-                <div id="tab-default-1" class="slds-tabs_default__content slds-show" role="tabpanel" aria-labelledby="tab-default-1__item">
-                    <!--<button *ngIf="currentModule" type="button" class="slds-m-bottom_small slds-size_2-of-2 slds-button slds-button&#45;&#45;neutral" (click)="addConf()">{{language.getLabel('LBL_ADD')}}</button>-->
-
-                    <system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>
-
-                    <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
-                        <button class="slds-button slds-button--icon" title="add item" (click)="addConf()">
-                            <system-utility-icon [icon]="'new'" [size]="'xx-small'"
-                                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                <div #treecontainer class="slds-tabs_default__content slds-p-vertical_none" role="tabpanel">
+                    <div class="slds-scrollable_y slds-border_bottom" [ngStyle]="treecontainerstyle">
+                        <system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>
+                    </div>
+                    <div #addconfigcontainer class="slds-p-around--small slds-align--absolute-center">
+                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addConf()">
+                            <system-utility-icon [icon]="'new'" [size]="'xx-small'"  [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
                         </button>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
-        <div class="slds-grid slds-form--inline slds-p-around--small">
-            <div *ngIf="selectedComponent.component" class="slds-p-vertical_small slds-text-heading_small">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="selectedComponent.component" class="slds-text-heading_small">
                 {{selectedComponent.component}} / {{selectedComponent.role_name}}
             </div>
-            <button type="button"
-                    class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="copyConf()">
-                {{language.getLabel('LBL_COPY')}}
-            </button>
-            <button type="button"
-                    class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
-                {{language.getLabel('LBL_SAVE')}}
-            </button>
+            <div class="slds-col--bump-left">
+                <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
+                    {{language.getLabel('LBL_COPY')}}
+                </button>
+                <button [disabled]="!view.isEditMode()" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
+                    {{language.getLabel('LBL_SAVE')}}
+                </button>
+            </div>
         </div>
         <workbench-config *ngIf="selectedComponent.id" [inputObj]="selectedComponent"></workbench-config>
     </div>
+</div>
 
-</div>
-<div *ngIf="!currentModule" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
-    {{language.getLabel('LBL_SELECT_MODULE_INFO')}}
-</div>
+
 
 

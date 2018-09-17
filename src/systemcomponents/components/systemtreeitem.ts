@@ -1,17 +1,17 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnChanges} from "@angular/core";
 
 
 @Component({
-    selector: 'system-tree-item',
-    templateUrl: './src/systemcomponents/templates/systemtreeitem.html'
+    selector: "system-tree-item",
+    templateUrl: "./src/systemcomponents/templates/systemtreeitem.html"
 })
 export class SystemTreeItem {
+    @Input() public items: any = [];
+    @Input() public selectedId: string = "";
+    @Output() public selectedItem = new EventEmitter<any>();
 
 
-    @Input() items: any = [];
-    @Output() selectedItem = new EventEmitter<any>();
-
-    expand(item) {
+    private expand(item) {
         if (item.expanded) {
             item.expanded = false;
         } else {
@@ -19,7 +19,8 @@ export class SystemTreeItem {
         }
     }
 
-    choose(item) {
+    private choose(item) {
         this.selectedItem.emit(item);
     }
+
 }

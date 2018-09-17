@@ -96,6 +96,7 @@ export class model {
      */
     isFieldRequired(field:string): boolean {
         switch (field) {
+            // wtf???
             case 'date_entered':
             case 'date_modified':
                 return true;
