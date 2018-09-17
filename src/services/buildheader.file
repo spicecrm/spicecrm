@@ -7,6 +7,7 @@ import {Subject, Observable, of} from 'rxjs';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/throw';
 declare var System: any;
+declare var SystemJS: any;
 declare var _: any ;
 
 //import { Http, Request, RequestOptionsArgs, Response, XHRBackend, RequestOptions, ConnectionBackend, Headers, ResponseContentType, RequestMethod} from '@angular/http';

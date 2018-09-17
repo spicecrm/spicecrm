@@ -1,0 +1,29 @@
+<article class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <object-icon [icon]="'hierarchy'" [size]="'small'"></object-icon>
+            <div class="slds-media__body slds-truncate">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small">{{language.getLabel('LBL_SUBSIDIARIES')}}</span>
+                    </a>
+                </h2>
+            </div>
+        </header>
+    </div>
+    <div class="slds-card__body">
+        <table class="slds-table slds-table--bordered slds-tree slds-table--tree" role="treegrid">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let field of fieldsetFields" class="slds-cell-buffer--left" scope="col">
+                        <div class="slds-truncate">{{language.getFieldDisplayName('Accounts', field.field)}}</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr account-hierarchy-node class="slds-hint-parent" role="row" aria-expanded="true" *ngFor="let node of accountHierarchy.membersList" [nodedata]="node" [fields]="fieldsetFields">
+            </tbody>
+            <tbody system-table-stencils *ngIf="loading" [columns]="fieldsetFields.length" [rows]="5"></tbody>
+        </table>
+    </div>
+</article>

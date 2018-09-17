@@ -25,6 +25,7 @@ import {field} from "../../objectfields/components/field";
 export class ComponentsetManagerEditDialog implements OnInit{
     @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();
     @Input() componentset: string = '';
+    @Input() edit_mode: string = '';
 
     adding: boolean = false;
 
