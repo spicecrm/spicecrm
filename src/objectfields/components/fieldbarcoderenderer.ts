@@ -1,21 +1,21 @@
-import {Component, Input, OnChanges, AfterViewInit} from '@angular/core';
+import {Component, Input, OnChanges, AfterViewInit} from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 
 declare let JsBarcode: any;
 
 @Component({
-    selector: 'field-barcode-renderer',
-    templateUrl: './src/objectfields/templates/fieldbarcoderenderer.html'
+    selector: "field-barcode-renderer",
+    templateUrl: "./src/objectfields/templates/fieldbarcoderenderer.html"
 })
-export class fieldBarcodeRenderer implements OnChanges, AfterViewInit {
+export class fieldBarcodeRenderer implements OnChanges {
 
-    @Input() code: any = '';
-    @Input() fieldId: any = '';
+    @Input() private code: any = "";
+    @Input() private fieldId: any = "";
 
     constructor(
-        private metadata:metadata
+        private metadata: metadata
     ) {
-        this.metadata.loadLibs('js-barcode').subscribe(
+        this.metadata.loadLibs("js-barcode").subscribe(
             (next) => {
                 JsBarcode("#" + this.fieldId, this.code, {
                     width: 1,
@@ -26,10 +26,10 @@ export class fieldBarcodeRenderer implements OnChanges, AfterViewInit {
         );
     }
 
-    ngOnChanges()
-    {
-        if( !this.metadata.isLibLoaded('js-barcode') )
+    public ngOnChanges() {
+        if( !this.metadata.isLibLoaded("js-barcode") ) {
             return false;
+        }
 
         if (document.getElementById(this.fieldId)) {
             JsBarcode("#" + this.fieldId, this.code, {
@@ -38,9 +38,5 @@ export class fieldBarcodeRenderer implements OnChanges, AfterViewInit {
                     displayValue: false
                 });
         }
-    }
-
-    ngAfterViewInit() {
-
     }
 }
