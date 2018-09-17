@@ -1,8 +1,4 @@
-
-import {AfterViewInit, ComponentFactoryResolver,HostListener, ElementRef, Component, Renderer2} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router, ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
+import {ElementRef, Component, Renderer2} from '@angular/core';
 import { modellist } from '../../services/modellist.service';
 import { modal } from '../../services/modal.service';
 import { language } from '../../services/language.service';
@@ -22,7 +18,13 @@ export class ObjectListViewSettings{
     modalMode: string = 'add';
     clickListener: any;
 
-    constructor(private language: language, private elementRef: ElementRef, private modal: modal, private modellist: modellist, private renderer: Renderer2){
+    constructor(
+        private language: language,
+        private elementRef: ElementRef,
+        private modal: modal,
+        private modellist: modellist,
+        private renderer: Renderer2
+    ){
 
     }
 
@@ -50,24 +52,32 @@ export class ObjectListViewSettings{
         })
     }
 
-    edit(){
+    edit()
+    {
+        if(!this.modellist.checkAccess('edit'))
+            return false;
+
         this.modal.openModal('ObjectListViewSettingsAddlistModal').subscribe(modalref => {
             modalref.instance.modellist = this.modellist;
             modalref.instance.modalmode = 'edit';
         })
     }
 
-    setfields(){
+    setfields()
+    {
+        if(!this.modellist.checkAccess('edit'))
+            return false;
+
         this.modal.openModal('ObjectListViewSettingsSetfieldsModal').subscribe(modalref => {
             modalref.instance.modellist = this.modellist;
         })
     }
 
-    deleteDisabled(){
-        return !this.modellist.canDelete();
-    }
+    delete()
+    {
+        if(!this.modellist.checkAccess('delete'))
+            return false;
 
-    delete(){
         this.modal.openModal('ObjectListViewSettingsDeletelistModal').subscribe(modalref => {
             modalref.instance.modellist = this.modellist;
         })

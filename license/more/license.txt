@@ -1,0 +1,7 @@
+SpiceUI 1.1.0
+
+This file is part of SpiceCRM in its "More" Editions and thus is licensed and copyrighted software. Your installation or use of this SpiceCRM file is subject to the license agreement you entered regaridng the use of SpiceCRM with aac services k.s or any of its affiliates and partners.
+
+If you are unsure about your licese agreement please contat aac services k.s. at office@all-about-crm.com
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
