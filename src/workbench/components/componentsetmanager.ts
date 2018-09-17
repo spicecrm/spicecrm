@@ -20,12 +20,19 @@ import { ComponentsetManagerEditDialog } from './componentsetmanagereditdialog';
 import { modal } from '../../services/modal.service';
 import { ComponentsetManagerAddDialog } from './componentsetmanageradddialog';
 import { view } from '../../services/view.service';
+import {configurationService} from '../../services/configuration.service';
 
 @Component({
     templateUrl: './src/workbench/templates/componentsetmanager.html',
     providers: [view]
 })
 export class ComponentsetManager {
+
+    edit_mode: string = "custom";
+    allowBarButtons: boolean = true;
+    // crNoneActive: boolean = false;
+
+    change_request_required: boolean = false;
 
     sysModules: Array<any> = [];
     currentModule: string = '*';
@@ -44,7 +51,8 @@ export class ComponentsetManager {
                 private broadcast: broadcast,
                 private toast: toast,
                 private modalservice: modal,
-                private view: view) {
+                private view: view,
+                private configurationService: configurationService,) {
 
         this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
@@ -53,56 +61,61 @@ export class ComponentsetManager {
             this.metadata.loadFieldSets(new Subject<any>());
             this.metadata.loadComponents(new Subject<any>());
         });
-        this.view.setEditMode();
+        this.checkMode();
     }
 
 
-    // checkMode(){
-    //     this.edit_mode = this.configurationService.getCapabilityConfig('core_2').edit_mode;
-    //     this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
-    //     if(this.change_request_required){
-    //         this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
-    //             if (crresponse.id == "") {
-    //                 this.setNoneMode();
-    //                 this.crNoneActive = true;
-    //                 this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
-    //             }else{
-    //                 this.crNoneActive = false;
-    //                 if(this.edit_mode == "all"){
-    //                     this.setAllMode();
-    //                 }else if(this.edit_mode == "custom"){
-    //                     this.setCustomMode();
-    //                 }else{
-    //                     this.setNoneMode();
-    //                 }
-    //             }
-    //         })
-    //     }else{
-    //         this.crNoneActive = false;
-    //         if(this.edit_mode == "all"){
-    //             this.setAllMode();
-    //         }else if(this.edit_mode == "custom"){
-    //             this.setCustomMode();
-    //         }else{
-    //             this.setNoneMode();
-    //         }
-    //     }
-    // }
-    //
-    // setNoneMode(){
-    //     this.view.setViewMode();
-    //     this.allowBarButtons = false;
-    // }
-    // setCustomMode(){
-    //     if(this.fieldSetType == "custom"){
-    //         this.view.setEditMode();
-    //     }else{
-    //         this.view.setViewMode();
-    //     }
-    // }
-    // setAllMode(){
-    //     this.view.setEditMode();
-    // }
+    checkMode(){
+        this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
+        this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
+
+        if(!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')){
+            this.edit_mode = 'custom';
+        }
+
+        if(this.change_request_required){
+            this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+                if (crresponse.id == "") {
+                    this.setNoneMode();
+                    // this.crNoneActive = true;
+                    this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
+                }else{
+                    // this.crNoneActive = false;
+                    if(this.edit_mode == "all"){
+                        this.setAllMode();
+                    }else if(this.edit_mode == "custom"){
+                        this.setCustomMode();
+                    }else{
+                        this.setNoneMode();
+                    }
+                }
+            })
+        }else{
+            // this.crNoneActive = false;
+            if(this.edit_mode == "all"){
+                this.setAllMode();
+            }else if(this.edit_mode == "custom"){
+                this.setCustomMode();
+            }else{
+                this.setNoneMode();
+            }
+        }
+    }
+
+    setNoneMode(){
+        this.view.setViewMode();
+        this.allowBarButtons = false;
+    }
+    setCustomMode(){
+        if(this.componentSetType == "custom"){
+            this.view.setEditMode();
+        }else{
+            this.view.setViewMode();
+        }
+    }
+    setAllMode(){
+        this.view.setEditMode();
+    }
 
 
 
@@ -189,8 +202,7 @@ export class ComponentsetManager {
     }
 
     selectComponentSet() {
-        this.view.isEditable = true;
-        // this.view.setViewMode();
+        this.checkMode();
         this.selectedId = '';
         this.selectedComponent = {};
     }
@@ -211,6 +223,7 @@ export class ComponentsetManager {
     editComponentset() {
         this.modalservice.openModal( 'ComponentsetManagerEditDialog' ).subscribe( modal => {
             modal.instance.componentset = this.currentComponentSet;
+            modal.instance.edit_mode = this.edit_mode;
             modal.instance.closedialog.subscribe( componentset => {
                 if (componentset !== false) {
                     if (this.currentComponentSet === '') {

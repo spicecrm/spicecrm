@@ -36,9 +36,12 @@ export class FieldsetManagerEditDialog implements OnInit{
     adding: boolean = false;
     globalEdit: boolean = false;
 
+    modalTitle: string = "";
+
     self;
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private configurationService: configurationService) {
+        this.modalTitle = this.language.getAppLanglabel('LBL_EDIT');
     }
 
     ngOnInit(){
@@ -47,6 +50,7 @@ export class FieldsetManagerEditDialog implements OnInit{
             this.fieldsettype = this.metadata.getFieldset(this.fieldset).type;
             this.adding = false;
         } else {
+            this.modalTitle = this.language.getAppLanglabel('LBL_ADD');
             this.fieldsettype = 'custom';
             this.adding = true;
         }
