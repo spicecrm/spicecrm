@@ -1,14 +1,8 @@
 import {
     Component,
-    Input,
     AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy,
     ChangeDetectorRef, Pipe
 } from '@angular/core';
-import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -22,8 +16,8 @@ import {view} from '../../services/view.service';
 export class ComponentsetManagerModulePipe {
     transform(values, module) {
         let retValues = [];
-        for(let value of values){
-            if(value.module == module){
+        for (let value of values) {
+            if (value.module == module) {
                 retValues.push(value);
             }
         }
@@ -36,9 +30,9 @@ export class ComponentsetManagerModulePipe {
     selector: 'workbench-config-option-fieldset',
     templateUrl: './src/workbench/templates/workbenchconfigoptionfieldset.html'
 })
-export class WorkbenchConfigOptionFieldset implements OnInit, AfterViewInit{
+export class WorkbenchConfigOptionFieldset implements AfterViewInit {
 
-    component: any = {};
+    configValues: any = [];
     option: any = {};
     objtype: string = "";
 
@@ -57,25 +51,21 @@ export class WorkbenchConfigOptionFieldset implements OnInit, AfterViewInit{
 
     }
 
-    ngOnInit(){
-        if('field' in this.component) this.objtype = "field"
-        if('component' in this.component) this.objtype = "component"
-    }
 
-    ngAfterViewInit(){
+    ngAfterViewInit() {
         this.fieldsets = this.metadata.getFieldSets();
         this.modules = this.metadata.getModules();
         this.modules.sort();
 
         // set the module if a fieldset is set
-        if(this.component.componentconfig[this.option.option]){
-            this.module = this.metadata.getFieldset(this.component.componentconfig[this.option.option]).module;
+        if (this.configValues[this.option.option]) {
+            this.module = this.metadata.getFieldset(this.configValues.componentconfig[this.option.option]).module;
         }
 
         this.cdRef.detectChanges();
     }
 
-    getFieldSets(){
+    getFieldSets() {
         return this.metadata.getFieldSets();
     }
 }
