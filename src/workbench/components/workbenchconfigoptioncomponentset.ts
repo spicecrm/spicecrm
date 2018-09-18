@@ -1,14 +1,8 @@
 import {
     Component,
-    Input,
     AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy,
     ChangeDetectorRef
 } from '@angular/core';
-import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -17,14 +11,13 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {view} from '../../services/view.service';
 
-import {Subject} from 'rxjs';
 @Component({
     selector: 'workbench-config-option-componentset',
     templateUrl: './src/workbench/templates/workbenchconfigoptioncomponentset.html'
 })
-export class WorkbenchConfigOptionComponentset implements OnInit, AfterViewInit{
+export class WorkbenchConfigOptionComponentset implements AfterViewInit {
 
-    component: any = {};
+    configValues: any = [];
     option: any = {};
     objtype: string = "";
 
@@ -39,30 +32,25 @@ export class WorkbenchConfigOptionComponentset implements OnInit, AfterViewInit{
                 private broadcast: broadcast,
                 private toast: toast,
                 private cdRef: ChangeDetectorRef,
-                private view: view ) {
+                private view: view) {
 
     }
 
-    ngOnInit(){
-        if('field' in this.component) this.objtype = "field"
-        if('component' in this.component) this.objtype = "component"
-    }
-
-    ngAfterViewInit(){
+    ngAfterViewInit() {
         this.componentsets = this.metadata.getComponentSets();
 
         this.modules = this.metadata.getModules();
         this.modules.sort();
 
         // set the module if a fieldset is set
-        if(this.component.componentconfig[this.option.option]){
-            this.module = this.metadata.getComponentSet(this.component.componentconfig[this.option.option]).module;
+        if (this.configValues[this.option.option]) {
+            this.module = this.metadata.getComponentSet(this.configValues[this.option.option]).module;
         }
 
         this.cdRef.detectChanges();
     }
 
-    getComponentSets(){
+    getComponentSets() {
         return this.metadata.getComponentSets();
     }
 }

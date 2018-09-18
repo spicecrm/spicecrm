@@ -1,14 +1,11 @@
 import {
     Component,
     Input,
-    ViewChild,
-    ViewContainerRef,
-    OnChanges, SimpleChanges
+    OnChanges,
+    SimpleChanges
 } from '@angular/core';
-import {backend} from '../../services/backend.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
 import {view} from "../../services/view.service";
+import {language} from "../../services/language.service";
 
 @Component({
     selector: 'componentsetmanager-componentset-details',
@@ -18,17 +15,13 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
 
 
     @Input() component: any = {};
-    configOptions: Array<any> = [];
 
-    optionsElements: Array<any> = [];
+    configcomponent: string = "";
+    configValues: any = {};
+
     selectedComponent: any = {};
-    constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private view: view
-    ) {
 
+    constructor(private view: view, private language: language,) {
     }
 
     selectComponent(component) {
@@ -39,15 +32,12 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log("this.metadata2", this.metadata);
         if (this.component.component) {
             this.selectComponent(this.component);
-        }
-    }
 
-    getComponentsetConfig() {
-        if (this.component.componentconfig)
-            return JSON.stringify(this.component.componentconfig);
+            this.configcomponent = this.component.component;
+            this.configValues = this.component.componentconfig;
+        }
     }
 
 }
