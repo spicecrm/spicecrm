@@ -98,7 +98,7 @@ export class modelutilities
         switch(this.metadata.getFieldType(module, field)) {
             case 'date':
                 if(value._isAMomentObject){
-                    if ( !value.isValid() ) return '';
+                    if ( !value.isValid() ) return ''; // quick and dirty workaround, still something todo!
                     return value.format('YYYY-MM-DD');
                 } else {
                     let pDate = new moment.utc(value);
@@ -106,6 +106,8 @@ export class modelutilities
                 }
             case 'datetime':
             case 'datetimecombo':
+                if ( typeof value === 'string' && value.trim() === '' ) return ''; // quick and dirty workaround, still something todo!
+                if ( !value.isValid() ) return ''; // quick and dirty workaround, still something todo!
                 let pDateTime = new moment(value).tz(moment.tz.guess());
                 pDateTime.subtract(pDateTime.utcOffset(), 'm');
                 return pDateTime.format('YYYY-MM-DD HH:mm:ss');
