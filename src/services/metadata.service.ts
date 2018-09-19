@@ -1373,10 +1373,12 @@ export class metadata {
 
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router) {
+    constructor(private metadata: metadata, private router: Router, private session: session ) {
     }
 
     public canActivate(route, state) {
+        if ( route.params.module === 'Users' && !this.session.authData.admin ) return false; // prevents non-admins from listing the user list
+        // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
         if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, "list")) {
             this.router.navigate(["/modules/Home"]);
             return false;
