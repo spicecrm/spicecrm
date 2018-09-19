@@ -98,6 +98,7 @@ export class modelutilities
         switch(this.metadata.getFieldType(module, field)) {
             case 'date':
                 if(value._isAMomentObject){
+                    if ( !value.isValid() ) return '';
                     return value.format('YYYY-MM-DD');
                 } else {
                     let pDate = new moment.utc(value);
