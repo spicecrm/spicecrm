@@ -15,15 +15,14 @@
             <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="takeFoto()">{{language.getLabel('LBL_PHOTO')}}</button>
         </div>
         <input #fileupload style="display:none" type="file" accept="image/*" (change)="uploadFile()"/>
-
     </div>
     <div class="slds-card__body">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file"
-                 class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent"></div>
+            <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent"></div>
         </div>
     </div>
 </article>
+<!-- upload modal-->
 <div *ngIf="showUploadModal" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
     <div class="slds-modal__container">
         <div class="slds-modal__header slds-modal__header--empty"></div>
@@ -33,10 +32,6 @@
                 <div class="uploadprogress" [ngStyle]="getBarStyle()"></div>
             </div>
         </div>
-        <!--div class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral">Cancel</button>
-            <button class="slds-button slds-button--brand">Save</button>
-        </div-->
     </div>
 </div>
 <div *ngIf="showUploadModal" class="slds-backdrop slds-backdrop--open"></div>
