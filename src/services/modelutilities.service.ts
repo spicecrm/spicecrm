@@ -107,7 +107,7 @@ export class modelutilities
             case 'datetime':
             case 'datetimecombo':
                 if ( typeof value === 'string' && value.trim() === '' ) return ''; // quick and dirty workaround, still something todo!
-                if ( !value.isValid() ) return ''; // quick and dirty workaround, still something todo!
+                if ( value._isAMomentObject && !value.isValid() ) return ''; // quick and dirty workaround, still something todo!
                 let pDateTime = new moment(value).tz(moment.tz.guess());
                 pDateTime.subtract(pDateTime.utcOffset(), 'm');
                 return pDateTime.format('YYYY-MM-DD HH:mm:ss');
