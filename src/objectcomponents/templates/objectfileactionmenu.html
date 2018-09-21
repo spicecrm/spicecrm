@@ -4,14 +4,19 @@
     </button>
     <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
         <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__item" role="presentation" (click)="openFile()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                    <span class="slds-truncate">{{language.getLabel('LBL_OPEN')}}</span>
+                </a>
+            </li>
             <li class="slds-dropdown__item" role="presentation" (click)="downloadFile()">
                 <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                    <span class="slds-truncate">Download</span>
+                    <span class="slds-truncate">{{language.getLabel('LBL_DOWNLOAD')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation" (click)="deleteFile()">
                 <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                    <span class="slds-truncate">Delete</span>
+                    <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
                 </a>
             </li>
         </ul>

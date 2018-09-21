@@ -12,7 +12,7 @@ declare var _;
 
 @Component({
     selector: 'field-html',
-    templateUrl: './app/objectfields/templates/fieldhtml.html',
+    templateUrl: './src/objectfields/templates/fieldhtml.html',
 })
 export class fieldHtml extends fieldGeneric
 {

@@ -1,33 +1,29 @@
 import {
     Component,
     Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy,
     OnChanges,
     SimpleChanges
 } from '@angular/core';
-import {model} from '../../services/model.service';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {view} from '../../services/view.service';
 
-import {Subject} from 'rxjs';
 
 @Component({
     selector: 'fieldsetmanager-field-details',
     templateUrl: './src/workbench/templates/fieldsetmanagerfielddetails.html',
     providers: [view]
 })
-export class FieldsetManagerFieldDetails implements OnChanges{
+export class FieldsetManagerFieldDetails implements OnChanges {
 
     @Input() field: any = {};
     currentField: any = {};
-    currentFieldConfig: any = {};
     fieldtypes: Array<string> = [];
+
+    component: string = "";
+    configValues: any = {};
+
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private view: view) {
         this.fieldtypes = this.metadata.getFieldTypes();
@@ -35,50 +31,49 @@ export class FieldsetManagerFieldDetails implements OnChanges{
         this.fieldtypes.unshift('');
     }
 
-    ngOnChanges(changes: SimpleChanges){
+    ngOnChanges(changes: SimpleChanges) {
 
-        if(this.field.isViewMode) {
+        if (this.field.isViewMode) {
             this.view.setViewMode();
-        }else{
+        } else {
             this.view.setEditMode();
         }
 
         try {
             let currentFieldsetItem;
             this.metadata.getFieldSetFields(this.field.fieldset).some(field => {
-                if(field.id == this.field.id){
+                if (field.id == this.field.id) {
                     this.currentField = field;
-                    this.currentFieldConfig = field.fieldconfig;
+                    this.component = this.metadata.getFieldTypeComponent(field.fieldconfig.fieldtype);
+                    this.configValues = field.fieldconfig;
+
                     return true;
                 }
             })
 
-        } catch(e){
+        } catch (e) {
             this.currentField = {};
         }
     }
 
-    getFieldConfig(){
-        if(this.currentFieldConfig.fieldtype) {
-            // console.log("this.currentFieldConfig.fieldtype", this.currentFieldConfig.fieldtype);
-            let fieldComponent = this.metadata.getFieldTypeComponent(this.currentFieldConfig.fieldtype);
-            // console.log("fieldComponent", fieldComponent);
+
+    getFieldConfig() {
+        if (this.configValues.fieldtype) {
+            let fieldComponent = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
             let configOptions = this.metadata.getComponentConfigOptions(fieldComponent);
-            // console.log("configOptions", configOptions);
 
             let optionsArray = [];
-            for(let option in configOptions) {
+            for (let option in configOptions) {
                 optionsArray.push(option);
             }
-            // console.log("optionsArray", optionsArray);
             return optionsArray;
         } else
             return [];
     }
 
-
-    selectFieldType(){
-        this.currentField = Object.assign({}, this.currentField);
+    selectFieldType() {
+        this.component = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
+        this.configValues = Object.assign({}, this.configValues);
     }
 
 }

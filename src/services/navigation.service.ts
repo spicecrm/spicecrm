@@ -8,7 +8,7 @@ export class navigation {
 
     public activeModule$: EventEmitter<string>;
 
-    private activeModule: string = "Home";
+    public activeModule: string = "Home";
     private activeId: string = "";
 
     constructor(private title: Title, private broadcast: broadcast, private configurationService: configurationService) {
@@ -41,10 +41,4 @@ export class navigation {
                 break;
         }
     }
-
-
 }
-
-
-
-

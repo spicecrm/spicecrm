@@ -503,6 +503,10 @@ export class metadata {
                     this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                         let cmp_factory = componentfactory.componentFactories.find((e) => e.componentType.name === "SystemComponentContainer");
                         let componentRef = viewChild.createComponent(cmp_factory, undefined, injector);
+
+                        // add the info ybout the component being added
+                        componentRef.instance.containerComponent = component;
+
                         // add the component itself...
                         componentRef.instance.containerRef.subscribe(subref => {
                             // load by module...
@@ -1011,7 +1015,8 @@ export class metadata {
 
             retActionSets.push({
                 id: actionset,
-                name: this.actionSets[actionset].name
+                name: this.actionSets[actionset].name,
+                module: this.actionSets[actionset].module,
             });
         }
 
@@ -1020,6 +1025,10 @@ export class metadata {
         });
 
         return retActionSets;
+    }
+
+    public getActionSet(actionsSetId) {
+        return this.actionSets[actionsSetId];
     }
 
     public getActionSetItems(actionset) {
@@ -1275,7 +1284,7 @@ export class metadata {
         return sub.asObservable();
     }
 
-    private isLibLoaded(name): boolean {
+    public isLibLoaded(name): boolean {
         if( this.scripts[name]) {
             for(let lib of this.scripts[name])
             {
@@ -1361,10 +1370,12 @@ export class metadata {
 
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router) {
+    constructor(private metadata: metadata, private router: Router, private session: session ) {
     }
 
     public canActivate(route, state) {
+        if ( route.params.module === 'Users' && !this.session.authData.admin ) return false; // prevents non-admins from listing the user list
+        // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
         if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, "list")) {
             this.router.navigate(["/modules/Home"]);
             return false;

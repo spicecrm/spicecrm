@@ -1,15 +1,22 @@
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label">{{option.option}}</label>
-    <div class="slds-form-element__control">
-        <div class="slds-select_container">
-            <select *ngIf="objtype == 'component'" [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="component.componentconfig[option.option]">
-                <option></option>
-                <option *ngFor="let actionset of getActionSets()" [value]="actionset.id">{{actionset.name}}</option>
-            </select>
-            <select *ngIf="objtype == 'field'" [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="component.fieldconfig[option.option]">
-                <option></option>
-                <option *ngFor="let actionset of getActionSets()" [value]="actionset.id">{{actionset.name}}</option>
-            </select>
+    <div class="slds-grid">
+        <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
+            <div class="slds-select_container">
+                <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="module">
+                    <option value="*">*</option>
+                    <option *ngFor="let module of modules" [value]="module">{{module}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
+            <div class="slds-select_container">
+                <select [disabled]="!module || !view.isEditMode()" class="slds-select" [(ngModel)]="configValues[option.option]">
+                    <option></option>
+                    <option *ngFor="let actionset of actionsets|componentsetmanagermodulepipe:module" [value]="actionset.id">{{actionset.name}}</option>
+                </select>
+            </div>
         </div>
     </div>
 </div>
+
