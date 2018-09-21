@@ -1,20 +1,19 @@
-import {Component, OnInit,ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} from '@angular/core';
-import {toast} from '../../services/toast.service';
+import {Component, OnInit,ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} from "@angular/core";
+import {toast} from "../../services/toast.service";
 
 @Component({
-    selector: 'system-component-container',
-    templateUrl: './src/systemcomponents/templates/systemcomponentcontainer.html'
+    selector: "system-component-container",
+    templateUrl: "./src/systemcomponents/templates/systemcomponentcontainer.html"
 })
 export class SystemComponentContainer implements AfterViewInit{
 
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
-    containerRef: EventEmitter<any> = new EventEmitter<any>()
+    @ViewChild("container", {read: ViewContainerRef}) private container: ViewContainerRef;
+    private containerRef: EventEmitter<any> = new EventEmitter<any>()
 
-    loaded: false;
+    private loaded: false;
+    public containerComponent: string = "";
 
-    constructor() {}
-
-    ngAfterViewInit(){
+    public ngAfterViewInit() {
         this.containerRef.emit(this.container);
         this.containerRef.complete();
     }

@@ -1,0 +1,70 @@
+<article class="slds-card slds-m-bottom--medium">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <object-icon [module]="'Accounts'" [size]="'small'"></object-icon>
+            <div class="slds-media__body slds-truncate">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small">Hierarchy</span>
+                    </a>
+                </h2>
+            </div>
+        </header>
+    </div>
+    <div class="slds-card__body">
+        <div class="slds-tree_container" role="application">
+            <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
+                <li  role="treeitem" aria-level="1">
+                    <div class="slds-tree__item">
+                        <button class="slds-button slds-button--icon slds-m-right--x-small slds-is-disabled"
+                                disabled="">
+                            <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                        </button>
+                        <a href="javascript:void(0);" role="presentation" class="slds-truncate">Tree Item</a></div>
+                </li>
+                <li role="treeitem" aria-level="1" aria-expanded="true">
+                    <div class="slds-tree__item">
+                        <button class="slds-button slds-button--icon slds-m-right--x-small">
+                            <system-button-icon [icon]="'chevrondown'"></system-button-icon>
+                        </button>
+                        <a id="tree0-node1__label" href="javascript:void(0);" role="presentation"
+                           class="slds-truncate" >Tree Branch</a></div>
+                    <ul class="slds-is-expanded" role="group" >
+                        <li role="treeitem" aria-level="2">
+                            <div class="slds-tree__item">
+                                <button class="slds-button slds-button--icon slds-m-right--x-small slds-is-disabled"
+                                        disabled="" title="Toggle">
+                                    <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                                    <span class="slds-assistive-text">Toggle</span>
+                                </button>
+                                <a href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate"
+                                   title="Tree Item">Tree Item</a></div>
+                        </li>
+                    </ul>
+                </li>
+                <li id="tree0-node2" role="treeitem" aria-level="1">
+                    <div class="slds-tree__item">
+                        <button class="slds-button slds-button--icon slds-m-right--x-small">
+                            <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                            <span class="slds-assistive-text">Toggle</span>
+                        </button>
+                        <a id="tree0-node2__label" href="javascript:void(0);" tabindex="-1" role="presentation"
+                           class="slds-truncate" title="Tree Branch">Tree Branch</a></div>
+                    <ul class="slds-is-collapsed" role="group" >
+                        <li id="tree0-node2-0" role="treeitem" aria-level="2">
+                            <div class="slds-tree__item">
+                                <button class="slds-button slds-button--icon slds-m-right--x-small slds-is-disabled"
+                                        disabled="" title="Toggle">
+                                    <
+                                    <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                                    <span class="slds-assistive-text">Toggle</span>
+                                </button>
+                                <a href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate"
+                                   title="Tree Item">Tree Item</a></div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</article>

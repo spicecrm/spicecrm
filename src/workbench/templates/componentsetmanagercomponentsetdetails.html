@@ -5,6 +5,5 @@
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="component.package"/>
     </div>
 </div>
-<!--<div #optionscontainer></div>-->
 
-<workbench-config [inputObj]="selectedComponent"></workbench-config>
+<workbench-config [component]="configcomponent" [configValues]="configValues"></workbench-config>

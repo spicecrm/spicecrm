@@ -1,0 +1,67 @@
+<system-modal>
+    <system-modal-header (close)="closeModal()">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <h2 class="slds-text-heading--medium">{{lang.getLabel('LBL_PORTAL_INFORMATION')}}</h2>
+            <div class="slds-m-top--xx-small slds-text-color--inverse">
+                <span class="slds-p-horizontal--x-small slds-theme--info" style="opacity:0.66">{{model.data.name}}</span><ng-container *ngIf="isNewUser"> &nbsp; <span class="slds-p-horizontal--x-small slds-theme--info" style="opacity:0.66">NEUER BENUTZER</span></ng-container>
+            </div>
+        </div>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-form slds-form_horizontal">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">Status</label>
+                <div class="slds-form-element__control">
+                    <label class="slds-checkbox_toggle slds-grid">
+                        <input type="checkbox" name="active" [(ngModel)]="useractive">
+                        <span class="slds-checkbox_faux_container" aria-live="assertive">
+                                <span class="slds-checkbox_faux"></span>
+                              </span>
+                    </label>
+                </div>
+            </div>
+            <div class="slds-form-element" [ngClass]="{'slds-has-error':usernameAlreadyExists}">
+                <label class="slds-form-element__label">{{lang.getLabel('LBL_USER_NAME')}}</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="username" (change)="testUsername()" [disabled]="usernameTesting">
+                    <div *ngIf="usernameAlreadyExists" class="slds-form-element__help">{{lang.getLabel('MSG_USERNAME_ALREADY_EXISTS')}}</div>
+                </div>
+            </div>
+            <div class="slds-form-element" [ngClass]="{'slds-has-error':pwdError}">
+                <label class="slds-form-element__label">{{lang.getLabel('LBL_PASSWORD')}}</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="userpassword" [ngClass]="{'slds-has-error':pwdError}">
+                    <div *ngIf="pwdError" class="slds-form-element__help">{{pwdError}}</div>
+                    <div *ngIf="pwdGuideline" class="slds-m-top--xx-small slds-form-element__help" style="color:inherit">
+                        {{lang.getLabel('LBL_PWD_GUIDELINE')}}:<br>
+                        {{pwdGuideline}}
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{lang.getLabel('LBL_ACL_ROLE')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="useraclrole">
+                            <option *ngFor="let aclrole of aclroles" [value]="aclrole.id">{{aclrole.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{lang.getLabel('LBL_PORTAL_ROLE')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="userportalrole">
+                            <option *ngFor="let portalrole of portalroles" [value]="portalrole.id">{{portalrole.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{lang.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{lang.getLabel('LBL_SAVE')}}</button>
+    </system-modal-footer>
+</system-modal>
