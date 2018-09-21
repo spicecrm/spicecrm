@@ -1,14 +1,11 @@
-
 import {Subject, Observable, of} from "rxjs";
 import {
     Injectable,
     ComponentFactoryResolver,
     NgModuleFactoryLoader,
-    SystemJsNgModuleLoader,
-    Compiler, EventEmitter, Injector, ViewChild, ViewContainerRef
+    Compiler, EventEmitter, Injector
 } from "@angular/core";
-
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
@@ -1216,7 +1213,7 @@ export class metadata {
             // load script(s)
             for(let script of this.scripts[name])
             {
-                if(script.loaded) { continue;};
+                if(script.loaded) { continue;}
 
                 this.loadScript(script).subscribe(
                     (res) => {

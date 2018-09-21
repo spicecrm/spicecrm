@@ -1,10 +1,6 @@
-
 import {Subject, Observable, of} from 'rxjs';
 import {Injectable} from '@angular/core';
-
 import {backend} from "./backend.service";
-
-
 
 /**
  * a service class to dynamically load external libraries/scripts
@@ -17,9 +13,7 @@ export class LibLoaderService
     private scripts = [];
     private is_ready = false;
 
-    constructor(
-        private backend:backend,
-    )
+    constructor()
     {
         // load available libraries into this.scripts...
     }

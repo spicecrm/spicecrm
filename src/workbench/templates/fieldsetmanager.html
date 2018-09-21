@@ -31,10 +31,10 @@
             </div>
         </div>
         <div class="slds-form-element slds-col--bump-left">
-            <button [disabled]="!getAllowCopyButton" class="slds-button slds-button--brand" (click)="copy()" >
+            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
                 <span>{{language.getAppLanglabel('LBL_COPY')}}</span>
             </button>
-                <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addFieldset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+            <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addFieldset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
         </div>
     </div>
 </div>
@@ -68,35 +68,34 @@
         </div>
     </div>
     <div class="slds-grid">
-        <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
             <div class="slds-tree_container" role="application" style="max-width: none;">
                 <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
                     <li *ngFor="let currentFieldSetItem of currentFieldSetItems" role="treeitem" [attr.aria-level]="currentFieldSetItem.level" (click)="selectItem(currentFieldSetItem, getDisplayType(currentFieldSetItem))" [ngClass]="{'slds-theme--shade' : isSelected(currentFieldSetItem.id)}">
                         <div class="slds-tree__item slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
-                            <div style="white-space:nowrap;"><a href="javascript:void(0);" role="presentation" class="slds-truncate">{{getDisplayName(currentFieldSetItem)}}
-
-                                <span *ngIf="getDisplayType(currentFieldSetItem) == 'global'" class="slds-text-body_small slds-text-color_error" >{{getDisplayType(currentFieldSetItem)}}</span>
-                                <span *ngIf="getDisplayType(currentFieldSetItem) == 'custom'" class="slds-text-body_small slds-text-color_success" >{{getDisplayType(currentFieldSetItem)}}</span>
-
-                            </a></div>
                             <div>
-                                    <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field' || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="add item"  (click)="addItem(currentFieldSetItem.item.fieldset)">
-                                        <system-button-icon [icon]="'new'"></system-button-icon>
-                                    </button>
-                                    <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="copy(currentFieldSetItem.item.fieldset, currentFieldSetItem)">
-                                        <system-button-icon [icon]="'copy'"></system-button-icon>
-                                    </button>
-                                    <button [disabled]="!view.isEditMode() || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="unlinkItem(currentFieldSetItem)">
-                                        <system-button-icon [icon]="'remove_link'"></system-button-icon>
-                                    </button>
-
-                                    <button [disabled]="!view.isEditMode() || currentFieldSetItem.index + 1 == currentFieldSetItem.count || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="move down" (click)="moveDown(currentFieldSetItem)">
-                                        <system-button-icon [icon]="'down'"></system-button-icon>
-                                    </button>
-
-                                    <button [disabled]="!view.isEditMode() || currentFieldSetItem.index == 0 || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="move up" (click)="moveUp(currentFieldSetItem)">
-                                        <system-button-icon [icon]="'up'"></system-button-icon>
-                                    </button>
+                                <a href="javascript:void(0);" role="presentation" class="slds-truncate">
+                                    <span class="slds-truncate">{{getDisplayName(currentFieldSetItem)}}</span>
+                                    <span *ngIf="getDisplayType(currentFieldSetItem) == 'global'" class="slds-text-body_small slds-text-color_error" >{{getDisplayType(currentFieldSetItem)}}</span>
+                                    <span *ngIf="getDisplayType(currentFieldSetItem) == 'custom'" class="slds-text-body_small slds-text-color_success" >{{getDisplayType(currentFieldSetItem)}}</span>
+                                </a>
+                            </div>
+                            <div>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field' || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="add item"  (click)="addItem(currentFieldSetItem.item.fieldset)">
+                                    <system-button-icon [icon]="'new'"></system-button-icon>
+                                </button>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="copy(currentFieldSetItem.item.fieldset, currentFieldSetItem)">
+                                    <system-button-icon [icon]="'copy'"></system-button-icon>
+                                </button>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="unlinkItem(currentFieldSetItem)">
+                                    <system-button-icon [icon]="'remove_link'"></system-button-icon>
+                                </button>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.index + 1 == currentFieldSetItem.count || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="move down" (click)="moveDown(currentFieldSetItem)">
+                                    <system-button-icon [icon]="'down'"></system-button-icon>
+                                </button>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.index == 0 || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="move up" (click)="moveUp(currentFieldSetItem)">
+                                    <system-button-icon [icon]="'up'"></system-button-icon>
+                                </button>
                             </div>
                         </div>
                     </li>
@@ -108,7 +107,7 @@
                 </button>
             </div>
         </div>
-        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
+        <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
             <fieldsetmanager-fieldset-details *ngIf="selectedItem.type == 'fieldset'" [fieldset]="selectedItem"></fieldsetmanager-fieldset-details>
             <fieldsetmanager-field-details *ngIf="selectedItem.type == 'field'" [field]="selectedItem"></fieldsetmanager-field-details>
         </div>
