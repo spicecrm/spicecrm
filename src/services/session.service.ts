@@ -22,6 +22,7 @@ interface authDataIf {
     email: string;
     password: string;
     admin: boolean;
+    portalOnly: boolean;
 }
 
 @Injectable()
@@ -37,7 +38,8 @@ export class session {
         email: '',
         password: '',
         admin: false,
-        renewPass: false
+        renewPass: false,
+        portalOnly: false
     };
 
     footercontainer: any = null;
