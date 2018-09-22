@@ -13,9 +13,8 @@ export class LibLoaderService {
     private scripts = [];
     private is_ready = false;
 
-    constructor(
-       //  private backend: backend,
-    ) {
+    constructor()
+    {
         // load available libraries into this.scripts...
     }
 

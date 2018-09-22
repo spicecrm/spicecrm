@@ -78,8 +78,8 @@ export class modelutilities {
             // todo: type mutlienum!
             case "link":
                 if(_.isObject(value) && value.beans && fieldDefs.module) {
-                    for(let beanId in value) {
-                        value[beanId] = this.backendModel2spice(fieldDefs.module, value[beanId]);
+                    for(let beanId in value.beans) {
+                        value.beans[beanId] = this.backendModel2spice(fieldDefs.module, value.beans[beanId]);
                     }
                 }
                 return value;
@@ -130,8 +130,8 @@ export class modelutilities {
             // todo: type mutlienum!
             case "link":
                 if(_.isObject(value) && value.beans && fieldDefs.module) {
-                    for(let beanId in value) {
-                        value[beanId] = this.spiceModel2backend(fieldDefs.module, value[beanId]);
+                    for(let beanId in value.beans) {
+                        value.beans[beanId] = this.spiceModel2backend(fieldDefs.module, value.beans[beanId]);
                     }
                 }
                 return value;
@@ -230,7 +230,7 @@ export class modelutilities {
      * @param {number}  now     the timestamp which is used as a base for the calculation of relative dates.
      * @returns     {number}    a number of seconds (timestamp)
      */
-    public letstatic strtotime(text: string, now?: number) {
+    public static strtotime(text: string, now?: number) {
         let parsed;
         let match;
         let today;
