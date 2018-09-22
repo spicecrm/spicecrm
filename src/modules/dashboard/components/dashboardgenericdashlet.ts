@@ -1,35 +1,35 @@
-import {Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, ElementRef} from '@angular/core';
-import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
-import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
+import {Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, ElementRef} from "@angular/core";
+import {model} from "../../../services/model.service";
+import {view} from "../../../services/view.service";
+import {metadata} from "../../../services/metadata.service";
+import {language} from "../../../services/language.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
-    selector: 'dashboard-generic-dashlet',
-    templateUrl: './src/modules/dashboard/templates/dashboardgenericdashlet.html',
+    selector: "dashboard-generic-dashlet",
+    templateUrl: "./src/modules/dashboard/templates/dashboardgenericdashlet.html",
     providers: [model, view]
 })
 export class DashboardGenericDashlet implements OnInit {
-    loading: boolean = true;
-    records: Array<any> = [];
-    recordcount: number = 0;
-    dashletconfig: any = null;
-    dashletModule: string = undefined;
-    dashletLabel: string = undefined;
-    dashletFields: Array<any> = [];
-    dashletFieldSet: any = undefined;
-    canLoadMore: boolean = true;
-    loadLimit: number = 20;
+    private loading: boolean = true;
+    private records: Array<any> = [];
+    private recordcount: number = 0;
+    private dashletconfig: any = null;
+    private dashletModule: string = undefined;
+    private dashletLabel: string = undefined;
+    private dashletFields: Array<any> = [];
+    private dashletFieldSet: any = undefined;
+    private canLoadMore: boolean = true;
+    private loadLimit: number = 20;
 
-    @ViewChild('tablecontainer', {read: ViewContainerRef}) tablecontainer: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef}) headercontainer: ViewContainerRef;
+    @ViewChild("tablecontainer", {read: ViewContainerRef}) private tablecontainer: ViewContainerRef;
+    @ViewChild("headercontainer", {read: ViewContainerRef}) private headercontainer: ViewContainerRef;
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         // set the module on the model
         this.model.module = this.dashletModule;
 
@@ -41,10 +41,10 @@ export class DashboardGenericDashlet implements OnInit {
         return this.language.getLabel(this.dashletLabel);
     }
 
-    loadRecords(){
+    private loadRecords() {
         let params = this.params;
         if (this.dashletModule){
-            this.backend.getRequest('module/' + this.dashletModule, params).subscribe((records: any) => {
+            this.backend.getRequest("module/" + this.dashletModule, params).subscribe((records: any) => {
                 this.records = records.list;
                 this.recordcount = +records.list.length;
                 this.loading = false;
@@ -55,22 +55,24 @@ export class DashboardGenericDashlet implements OnInit {
     }
 
     get params(){
-        let fieldArray: Array<string> = [],
-            params = {fields: fieldArray};
+        let fieldArray: Array<string> = [];
+        let params: any = {fields: fieldArray};
 
         if (this.dashletconfig) {
             if (this.dashletconfig.fieldset) {
                 this.dashletFields = this.metadata.getFieldSetFields(this.dashletconfig.fieldset);
-                for (let field of this.dashletFields)
+                for (let field of this.dashletFields) {
                     fieldArray.push(field.field);
+                }
                 this.dashletFieldSet = this.dashletconfig.fieldset;
             }
             if (this.dashletconfig.filters) {
-                for (let filter in this.dashletconfig.filters)
+                for (let filter in this.dashletconfig.filters) {
                     params[filter] = this.dashletconfig.filters[filter];
+                }
             }
         }
-        params['limit'] = this.loadLimit;
+        params.limit = this.loadLimit;
 
         return params;
     }
@@ -80,22 +82,24 @@ export class DashboardGenericDashlet implements OnInit {
 
     }
 
-    onScroll() {
+    private onScroll() {
         let element = this.tablecontainer.element.nativeElement;
-        if (element.scrollTop + element.clientHeight >= element.scrollHeight)
+        if (element.scrollTop + element.clientHeight >= element.scrollHeight) {
             this.loadMore();
+        }
     }
 
-    loadMore(){
+    private loadMore(){
         if (this.canLoadMore){
             this.loading = true;
-            let params = this.params;
-            params['offset'] = this.records.length;
-            this.backend.getRequest('module/' + this.dashletModule, params).subscribe((records: any) => {
+            let params: any = this.params;
+            params.offset = this.records.length;
+            this.backend.getRequest("module/" + this.dashletModule, params).subscribe((records: any) => {
                 this.records = this.records.concat(records.list);
                 this.recordcount += +records.list.length;
-                if (records.list.length < this.loadLimit)
+                if (records.list.length < this.loadLimit) {
                     this.canLoadMore = false;
+                }
                 this.loading = false;
             });
         }
