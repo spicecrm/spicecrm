@@ -10,8 +10,8 @@ export class toast {
 
     }
 
-    public sendToast(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true ): void {
-        if ( autoClose === true ) {
+    public sendToast(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): void {
+        if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;
         }
@@ -30,8 +30,8 @@ export class toast {
         }
     }
 
-    public sendAlert(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true ): void {
-        if ( autoClose === true ) {
+    public sendAlert(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): void {
+        if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;
         }
@@ -50,7 +50,7 @@ export class toast {
         }
     }
 
-    public clearToast(messageid) {
+    private clearToast(messageid) {
         this.activeToasts.some((item, index) => {
             if (item.id === messageid) {
                 this.activeToasts.splice(index, 1);
@@ -59,7 +59,7 @@ export class toast {
         });
     }
 
-    private clearAll() {
+    public clearAll() {
         this.activeToasts = [];
     }
 
