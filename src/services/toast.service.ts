@@ -50,7 +50,7 @@ export class toast {
         }
     }
 
-    private clearToast(messageid) {
+    public clearToast(messageid) {
         this.activeToasts.some((item, index) => {
             if (item.id === messageid) {
                 this.activeToasts.splice(index, 1);
