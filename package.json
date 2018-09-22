@@ -17,6 +17,7 @@
     "@types/gapi.auth2": "0.0.47",
     "@types/underscore": "^1.8.8",
     "core-js": "^2.4.1",
+    "delete-empty": "^2.0.0",
     "google-auth-library": "^1.6.1",
     "gulp-systemjs-builder": "^0.15.0",
     "rxjs": "~6.2.2",
