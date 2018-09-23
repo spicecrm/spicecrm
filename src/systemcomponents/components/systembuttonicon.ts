@@ -7,7 +7,7 @@ import {metadata} from "../../services/metadata.service";
 })
 export class SystemButtonIcon {
     @Input() private icon: string = "";
-    @Input() private sprite: string = "standard";
+    @Input() private sprite: string = "utility";
     @Input() private size: string = "";
     @Input() private module: string = "";
     @Input() private position: string = "";
