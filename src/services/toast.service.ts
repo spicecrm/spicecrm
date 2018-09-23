@@ -1,57 +1,65 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {modelutilities} from './modelutilities.service';
+import {Injectable, EventEmitter} from "@angular/core";
+import {modelutilities} from "./modelutilities.service";
 
 @Injectable()
 export class toast {
 
-    activeToasts: Array<any> = [];
+    private activeToasts: Array<any> = [];
 
     constructor(private modelutilities: modelutilities) {
 
     }
 
-    public sendToast(text: string, type: string = 'default', description: string = '', autoClose: boolean | number = true ): void {
-        if ( autoClose === true ) autoClose = 5; // 5 seconds is standard
+    public sendToast(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): void {
+        if (autoClose === true) {
+            // 5 seconds is standard
+            autoClose = 5;
+        }
         let messageid = this.modelutilities.generateGuid();
         this.activeToasts.push({
             id: messageid,
             type: type,
-            theme: 'toast',
+            theme: "toast",
             text: text,
             description: description
         });
 
         // set a timeout to automatically clear the toast
-        if (autoClose)
-            window.setTimeout(() => this.clearToast(messageid), autoClose*1000 );
+        if (autoClose) {
+            window.setTimeout(() => this.clearToast(messageid), autoClose * 1000);
+        }
     }
 
-    public sendAlert(text: string, type: string = 'default', description: string = '', autoClose: boolean | number = true ): void {
-        if ( autoClose === true ) autoClose = 5; // 5 seconds is standard
+    public sendAlert(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): void {
+        if (autoClose === true) {
+            // 5 seconds is standard
+            autoClose = 5;
+        }
         let messageid = this.modelutilities.generateGuid();
         this.activeToasts.push({
             id: messageid,
             type: type,
-            theme: 'alert',
+            theme: "alert",
             text: text,
             description: description
         });
 
         // set a timeout to automatically clear the toast
-        if (autoClose)
-            window.setTimeout(() => this.clearToast(messageid), autoClose*1000 );
+        if (autoClose) {
+            window.setTimeout(() => this.clearToast(messageid), autoClose * 1000);
+        }
     }
 
-    clearToast(messageid) {
+    private clearToast(messageid) {
         this.activeToasts.some((item, index) => {
             if (item.id === messageid) {
                 this.activeToasts.splice(index, 1);
                 return true;
             }
-        })
+        });
     }
 
-    clearAll(){
+    public clearAll() {
         this.activeToasts = [];
     }
 

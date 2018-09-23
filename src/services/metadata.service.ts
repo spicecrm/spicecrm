@@ -423,26 +423,34 @@ export class metadata {
             if (this.componentDirectory[component].module) {
                 let module = this.componentDirectory[component].module;
 
-                System.import(this.moduleDirectory[module].path)
-                    .then((fileContents: any) => {
-                        return fileContents[this.moduleDirectory[module].module];
-                    })
-                    .then((type: any) => {
-                        this.moduleDirectory[module].factories = {};
-                        this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                            let foundComp = componentfactory.componentFactories.some(factory => {
-                                if (factory.componentType.name === component) {
-                                    let componentRef = viewChild.createComponent(factory, undefined, injector);
-                                    componentRef.instance.self = componentRef;
-                                    retSubject.next(componentRef);
+                try {
+                    System.import(this.moduleDirectory[module].path)
+                        .then((fileContents: any) => {
+                            return fileContents[this.moduleDirectory[module].module];
+                        })
+                        .then((type: any) => {
+                            this.moduleDirectory[module].factories = {};
+                            this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
+                                let foundComp = componentfactory.componentFactories.some(factory => {
+                                    if (factory.componentType.name === component) {
+                                        let componentRef = viewChild.createComponent(factory, undefined, injector);
+                                        componentRef.instance.self = componentRef;
+                                        retSubject.next(componentRef);
+                                        retSubject.complete();
+                                        return true;
+                                    }
+                                });
+                                if (!foundComp) {
+                                    // console.error("Cannot find a factory for component " + component);
+                                    retSubject.error("Cannot find a factory for component " + component);
                                     retSubject.complete();
-                                    return true;
                                 }
                             });
-                            if ( !foundComp ) { console.error("Cannot find a factory for component " + component);};
                         });
-                    });
-
+                } catch(e) {
+                    retSubject.error(e);
+                    retSubject.complete();
+                }
             } else {
                 System.import(this.componentDirectory[component].path)
                     .then((fileContents: any) => {
