@@ -23,7 +23,7 @@ import {ObjectComponents} from "./objectcomponents/objectcomponents";
 
 // support browser location strategy
 import {LocationStrategy, HashLocationStrategy} from "@angular/common";
-import {AdminComponentsModule, AdministrationMain} from "./admincomponents/admincomponents.module";
+// import {AdminComponentsModule, AdministrationMain} from "./admincomponents/admincomponents.module";
 
 // various services we need on global app level
 import {configurationService} from "./services/configuration.service";
