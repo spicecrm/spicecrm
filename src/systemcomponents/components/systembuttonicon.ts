@@ -14,7 +14,8 @@ export class SystemButtonIcon {
     @Input() private inverse: boolean = false;
     @Input() private title: string = undefined;
 
-    constructor(private metadata: metadata) {}
+    constructor(private metadata: metadata) {
+    }
 
     private getSvgHRef() {
         return "./sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
@@ -61,3 +62,4 @@ export class SystemButtonIcon {
         return classList;
     }
 }
+

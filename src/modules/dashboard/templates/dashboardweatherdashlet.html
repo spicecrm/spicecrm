@@ -34,17 +34,17 @@
             </div>
         </div>
         <div class="slds-grid slds-m-horizontal--xx-small">
-            <div *ngFor="let day of sortedDays"
+            <div *ngFor="let day of sortedDays; let first = first"
                  class="slds-size--1-of-5 slds-p-vertical--xx-small"
                  style="cursor: pointer; max-width: 4.3rem"
-                 [ngStyle]="(getDayName(day[0].dt) == getDayName(dayHourToShow.dt)) ? {'background-color': '#faf7f7', 'border': '1px solid #e0dfdf'}: {}"
+                 [ngStyle]="(getDayName(first ? day[0].dt : day[4].dt) == getDayName(dayHourToShow.dt)) ? {'background-color': '#faf7f7', 'border': '1px solid #e0dfdf'}: {}"
                  (click)="setDayToShow(day)">
                 <div class="slds-text-body--regular slds-text-align--center">{{getDayName(day[0].dt, true)}}</div>
                 <div class="slds-text-align--center">
-                    <img [src]="getWeatherIconUrl(day[0].weather[0].icon)">
+                    <img [src]="getWeatherIconUrl(first ? day[0].weather[0].icon : day[4].weather[0].icon)">
                 </div>
                 <div class="slds-text-body--regular slds-text-align--center">
-                    <span>{{getTemperature(day[0].main.temp_max)}}°</span>
+                    <span>{{getTemperature(first ? day[0].main.temp_max : day[4].main.temp_max)}}°</span>
                     <span c></span>
                 </div>
             </div>
