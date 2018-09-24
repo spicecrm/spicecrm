@@ -59,7 +59,7 @@ import /*embed*/ { DashboardRemindersDashlet } from "./components/dashboardremin
         DashboardWeatherDashlet,
         DashboardGenericDashlet,
         DashboardGenericDashletRow,
-        DashboardRemindersDashlet
+        DashboardRemindersDashlet,
     ],
     entryComponents: [
         DashboardWeatherDashlet
