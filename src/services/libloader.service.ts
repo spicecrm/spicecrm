@@ -1,35 +1,32 @@
-
-import {Subject, Observable, of} from 'rxjs';
-import {Injectable} from '@angular/core';
-
+import {Subject, Observable, of} from "rxjs";
+import {Injectable} from "@angular/core";
 import {backend} from "./backend.service";
-
-
 
 /**
  * a service class to dynamically load external libraries/scripts
  * source: https://stackoverflow.com/questions/42593604/using-external-javascript-libraries-in-angular-2-lazy-loaded-module-not-index-h
  * created and adapted by Sebastian Franz
  */
+
 @Injectable()
-export class LibLoaderService
-{
+export class LibLoaderService {
     private scripts = [];
     private is_ready = false;
 
     constructor(
-        private backend:backend,
-    )
-    {
+       //  private backend: backend,
+    ) {
         // load available libraries into this.scripts...
     }
 
-    load(...scripts:string[]):Observable<object>
-    {
-        if( !this.is_ready )
+    public load(...scripts: string[]): Observable<object> {
+        if( !this.is_ready ) {
             this.load();
-        let observables:Observable<object>[] = [];
-        scripts.forEach((script) => {observables.push(this.loadScript(script))});
+        }
+        let observables: Observable<object>[] = [];
+        scripts.forEach((script) => {
+            observables.push(this.loadScript(script));
+        });
 
         let sub = new Subject();
         let cnt = 0;
@@ -40,16 +37,14 @@ export class LibLoaderService
                     cnt++;
                     console.log(cnt, res);
                 },
-                (err) =>
-                {
+                (err) => {
                     cnt++;
                     console.error(err);
                     sub.error(err);
                 },
                 () => {
-                    //console.log('completed...', cnt == observables.length);
-                    if( cnt == observables.length )
-                    {
+                    // console.log("completed...", cnt == observables.length);
+                    if( cnt == observables.length ) {
                         sub.next();
                         sub.complete();
                     }
@@ -57,78 +52,63 @@ export class LibLoaderService
             );
         }
         // is needed in case of scripts are already loaded and completed before the subject can be subscribed...
-        if( cnt == observables.length )
-        {
+        if( cnt == observables.length ) {
             return of(sub);
-        }
-        else {
+        } else {
             return sub.asObservable();
         }
     }
 
-    private loadScript(name:string):Observable<object>
-    {
+    private loadScript(name: string): Observable<object> {
         let sub = new Subject<object>();
 
         // error if not found... (but how?)
-        if(!this.scripts[name])
-        {
-            //sub.error({script: name, loaded: false, status: 'Unknown'});
-            //sub.complete();
-            return of({script: name, loaded: false, status: 'Unknown'});
-        }
-        //resolve if already loaded
-        else if (this.isLibLoaded(name))
-        {
-            //sub.next({script: name, loaded: true, status: 'Already Loaded'});
-            //sub.complete();
-            return of({script: name, loaded: true, status: 'Already Loaded'});
-        }
-        else {
-            //load script(s)
-            let script:any = document.createElement('script');
+        if(!this.scripts[name]) {
+            return of({script: name, loaded: false, status: "Unknown"});
+        } else if (this.isLibLoaded(name)) {
+            return of({script: name, loaded: true, status: "Already Loaded"});
+        } else {
+            // load script(s)
+            let script: any = document.createElement("script");
             for(let lib of this.scripts[name]) {
-                script.type = 'text/javascript';
+                script.type = "text/javascript";
                 script.src = lib.src;
-                if (script.readyState) {  //IE
+                if (script.readyState) {  // IE
                     script.onreadystatechange = () => {
                         if (script.readyState === "loaded" || script.readyState === "complete") {
                             script.onreadystatechange = null;
                             lib.loaded = true;
-                            sub.next({script: lib.src, loaded: true, status: 'Loaded'});
+                            sub.next({script: lib.src, loaded: true, status: "Loaded"});
                             sub.complete();
                         }
                     };
-                } else {  //Others
+                } else {  // Others
                     script.onload = () => {
                         lib.loaded = true;
-                        sub.next({script: lib.src, loaded: true, status: 'Loaded'});
+                        sub.next({script: lib.src, loaded: true, status: "Loaded"});
                         sub.complete();
                     };
                 }
                 script.onerror = (error: any) => {
-                    sub.error({script: lib.src, loaded: false, status: 'Failed'});
+                    sub.error({script: lib.src, loaded: false, status: "Failed"});
                 };
-                document.getElementsByTagName('head')[0].appendChild(script);
+                document.getElementsByTagName("head")[0].appendChild(script);
             }
         }
 
         return sub.asObservable();
     }
 
-    isLibLoaded(name):boolean
-    {
-        if( this.scripts[name] )
-        {
+    public isLibLoaded(name): boolean {
+        if( this.scripts[name] ) {
             for(let lib of this.scripts[name])
             {
-                if(!lib.loaded)
+                if(!lib.loaded) {
                     return false;
+                }
             }
             return true;
         }
-
         return false;
     }
-
 }

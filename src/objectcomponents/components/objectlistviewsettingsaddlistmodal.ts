@@ -2,9 +2,8 @@
  * Created by christian on 08.11.2016.
  */
 import {Component, Input, OnInit} from '@angular/core';
-import {modellist} from '../../services/modellist.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
+import {session} from "../../services/session.service";
 
 @Component({
     selector: 'object-listview-settings-addlist-modal',
@@ -18,7 +17,10 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
     self: any = {};
     modellist: any = {};
 
-    constructor( private language: language) {
+    constructor(
+        private language: language,
+        private session: session,
+    ) {
 
     }
 
@@ -43,12 +45,12 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
                 case 'add':
                     this.modellist.addListType(this.listname, this.globallist).subscribe(res => {
                         this.close();
-                    })
+                    });
                     break;
                 case 'edit':
                     this.modellist.updateListType({name: this.listname, global: this.globallist}).subscribe(res => {
                         this.close();
-                    })
+                    });
                     break;
             }
         }

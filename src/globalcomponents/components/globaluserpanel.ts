@@ -1,24 +1,23 @@
 
-import {Router} from '@angular/router';
-import {Component, ViewChild, ViewContainerRef, Renderer} from '@angular/core';
-import {loginService} from '../../services/login.service';
-import {session} from '../../services/session.service';
-import {popup} from '../../services/popup.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
-import {footer} from '../../services/footer.service';
+import {Router} from "@angular/router";
+import {Component, ViewChild, ViewContainerRef, Renderer} from "@angular/core";
+import {loginService} from "../../services/login.service";
+import {session} from "../../services/session.service";
+import {popup} from "../../services/popup.service";
+import {language} from "../../services/language.service";
+import {metadata} from "../../services/metadata.service";
+import {footer} from "../../services/footer.service";
 import {configurationService} from "../../services/configuration.service";
-import {UserChangePasswordModal} from "../../modulecomponents/components/userchangepasswordmodal";
-import { modal } from '../../services/modal.service';
-import {cookie} from '../../services/cookie.service';
+import { modal } from "../../services/modal.service";
+import {cookie} from "../../services/cookie.service";
 
 @Component({
-    selector: 'global-user-panel',
-    templateUrl: './src/globalcomponents/templates/globaluserpanel.html',
+    selector: "global-user-panel",
+    templateUrl: "./src/globalcomponents/templates/globaluserpanel.html",
 })
 export class GlobaUserPanel {
 
-    @ViewChild('imgupload', {read: ViewContainerRef}) imgupload: ViewContainerRef;
+    @ViewChild("imgupload", {read: ViewContainerRef}) public imgupload: ViewContainerRef;
 
     constructor(
         private rendered: Renderer,
@@ -36,25 +35,16 @@ export class GlobaUserPanel {
 
     }
 
-    logoff() {
+    private logoff() {
         this.loginService.logout()
     }
 
-    goAdmin(){
-        this.popup.close();
-        this.router.navigate(['/admin']);
+    private changeImage() {
+        let event = new MouseEvent("click", {bubbles: true});
+        this.rendered.invokeElementMethod(this.imgupload.element.nativeElement, "dispatchEvent", [event]);
     }
 
-    changeImage(){
-        let event = new MouseEvent('click', {bubbles: true});
-        this.rendered.invokeElementMethod(this.imgupload.element.nativeElement, 'dispatchEvent', [event]);
-    }
-
-    uploadImage($event){
-        //console.log('upload');
-    }
-
-    getAvialableLanguages(){
+    private getAvialableLanguages(){
         return this.language.getAvialableLanguages(true);
     }
 
@@ -66,7 +56,6 @@ export class GlobaUserPanel {
         return this.session.authData.userName;
     }
 
-
     get currentlanguage(){
         return this.language.currentlanguage;
     }
@@ -77,12 +66,12 @@ export class GlobaUserPanel {
         this.language.loadLanguage();
     }
 
-    goDetails(){
+    private goDetails() {
         this.popup.close();
-        this.router.navigate(['/module/Users/' + this.session.authData.userId]);
+        this.router.navigate(["/module/Users/" + this.session.authData.userId]);
     }
 
-    changePassword(){
-        this.modalservice.openModal('UserChangePasswordModal');
+    private changePassword() {
+        this.modalservice.openModal("UserChangePasswordModal");
     }
 }
