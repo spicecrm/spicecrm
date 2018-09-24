@@ -14,9 +14,17 @@ export class projectwbsHierarchy {
     }
 
     public  loadHierarchy(project_id = this.project_id, expanded = false) {
-        let addfields = []
+        let addfields = [];
+
         for (let field of this.requestedFields) {
             addfields.push(field.field);
+        }
+
+        let membersExpanded: Array<any> = [];
+        for(let member of this.members){
+            if(member.expanded){
+                membersExpanded.push(member.id);
+            }
         }
 
         // reset members
@@ -29,7 +37,7 @@ export class projectwbsHierarchy {
                     parent_id: member.parent_id,
                     id: member.id,
                     member_count: member.member_count,
-                    expanded: expanded,
+                    expanded: membersExpanded.indexOf(member.id) >= 0 ? true : false,
                     summary_text: member.summary_text,
                     data: this.modelutilities.backendModel2spice("ProjectWBSs", member.data)
                 });
@@ -37,16 +45,19 @@ export class projectwbsHierarchy {
 
             this.members.sort((a, b) => {
                 // no dates set
-                if (a.data.start_date == "" && b.data.start_date == "")
+                if (a.data.start_date == "" && b.data.start_date == "") {
                     return a.data.name > b.data.name ? -1 : 1;
+                }
 
                 // second object does not have a date
-                if (b.data.start_date == "")
+                if (b.data.start_date == "") {
                     return -1;
+                }
 
                 // first objects does not have a date
-                if (a.data.start_date == "")
+                if (a.data.start_date == "") {
                     return 1;
+                }
 
                 // all have a date
                 return a.data.start_date.isBefore(b.data.start_date) ? 1 : -1;
@@ -70,6 +81,7 @@ export class projectwbsHierarchy {
         this.members.some(thisMember => {
             if (thisMember.id === id) {
                 thisMember.expanded = false;
+
                 return true;
             }
         });
@@ -84,6 +96,7 @@ export class projectwbsHierarchy {
                     level: 1,
                     id: member.id,
                     parent_id: "",
+                    member_count: parseInt(member.member_count, 10),
                     summary_text: member.summary_text,
                     data: member.data,
                     expanded: member.expanded
