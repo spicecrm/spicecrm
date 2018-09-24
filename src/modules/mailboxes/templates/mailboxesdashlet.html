@@ -1,0 +1,43 @@
+<div #headercontainer class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+    <system-icon [module]="'Mailboxes'" [size]="'small'"></system-icon>
+    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">Mailboxes</h2>
+</div>
+<div class="slds-table--header-fixed_container" style="width: 100%" [ngStyle]="tablestyle">
+    <div #tablecontainer class="slds-scrollable--y" style="width: 100%;height:100%" (scroll)="onScroll()">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_header-fixed" style="border-top: 0">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center  slds-p-horizontal--x-small" style="padding-left: 0">
+                            {{language.getLabel('LBL_NAME')}}
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small">
+                            {{language.getLabel('LBL_UNREAD')}}
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small">
+                            {{language.getLabel('LBL_READ')}}
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody *ngIf="!isLoading && mailboxes.length > 0">
+                <tr *ngFor="let mailbox of mailboxes" style="cursor: pointer" (click)="goToRecord(mailbox.id)">
+                    <td class="slds-truncate" style="min-width: 120px">
+                       {{mailbox.name}}
+                    </td>
+                    <td class="slds-truncate" [ngClass]="mailbox.emailsunread > 0 ? 'slds-text-color--error':''" style="min-width: 100px">
+                        {{mailbox.emailsunread}}
+                    </td>
+                    <td class="slds-truncate" style="min-width: 100px">
+                       {{mailbox.emailsread}}
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="isLoading" system-table-stencils [columns]="3"></tbody>
+        </table>
+    </div>
+</div>
