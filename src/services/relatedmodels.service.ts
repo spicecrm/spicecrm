@@ -1,37 +1,37 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject} from 'rxjs';
-import {CanActivate}    from '@angular/router';
+import {Subject} from "rxjs";
+import {CanActivate}    from "@angular/router";
 
-import {configurationService} from './configuration.service';
-import {session} from './session.service';
-import {broadcast} from './broadcast.service';
-import {backend} from './backend.service';
-import {metadata} from './metadata.service';
-import {modelutilities} from './modelutilities.service';
-import {Router}   from '@angular/router';
+import {configurationService} from "./configuration.service";
+import {session} from "./session.service";
+import {broadcast} from "./broadcast.service";
+import {backend} from "./backend.service";
+import {metadata} from "./metadata.service";
+import {modelutilities} from "./modelutilities.service";
+import {Router}   from "@angular/router";
 
 declare var moment: any;
 
 @Injectable()
 export class relatedmodels {
-    module: string = '';
-    relatedModule: string = '';
-    linkName: string = '';
-    id: string = '';
-    items: any = [];
-    items$ = new EventEmitter();
-    count: number = 0;
-    loaditems: number = 5;
-    relationshipFields: Array<string> = [];
-    isloading: boolean = true;
-    sort: any = {
-        sortfield: '',
-        sortdirection: 'ASC'
+    public module: string = "";
+    public relatedModule: string = "";
+    public linkName: string = "";
+    public id: string = "";
+    public items: any = [];
+    public items$ = new EventEmitter();
+    public count: number = 0;
+    public loaditems: number = 5;
+    private relationshipFields: Array<string> = [];
+    public isloading: boolean = true;
+    public sort: any = {
+        sortfield: "",
+        sortdirection: "ASC"
     };
-    lastLoad: any = new moment();
+    private lastLoad: any = new moment();
 
-    serviceSubscriptions: Array<any> = [];
+    private serviceSubscriptions: Array<any> = [];
 
     constructor(
         private metadata: metadata,
@@ -47,7 +47,7 @@ export class relatedmodels {
         );
     }
 
-    stopSubscriptions() {
+    public stopSubscriptions() {
         for (let subscription of this.serviceSubscriptions) {
             subscription.unsubscribe();
         }
@@ -59,26 +59,27 @@ export class relatedmodels {
 
     set sortfield(field) {
         if (this.sort.sortfield == field) {
-            this.sort.sortdirection = this.sort.sortdirection == 'ASC' ? 'DESC' : 'ASC';
+            this.sort.sortdirection = this.sort.sortdirection == "ASC" ? "DESC" : "ASC";
         } else {
             this.sort.sortfield = field;
-            this.sort.sortdirection = 'ASC';
+            this.sort.sortdirection = "ASC";
         }
 
         this.getData();
     }
 
     get _linkName() {
-        return this.linkName != '' ? this.linkName : this.relatedModule.toLowerCase();
+        return this.linkName != "" ? this.linkName : this.relatedModule.toLowerCase();
     }
 
-    handleMessage(message: any) {
+    private handleMessage(message: any) {
         // only handle if the module is the list module
-        if (message.messagetype.indexOf('model') === -1 || message.messagedata.module !== this.relatedModule)
+        if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== this.relatedModule) {
             return;
+        }
 
         switch (message.messagetype) {
-            case 'model.delete':
+            case "model.delete":
                 for (let itemIndex in this.items) {
                     if (this.items[itemIndex].id === message.messagedata.id) {
                         this.items.splice(itemIndex, 1);
@@ -89,7 +90,7 @@ export class relatedmodels {
                     }
                 }
                 break;
-            case 'model.save':
+            case "model.save":
                 this.getData();
                 let eventHandled = false;
                 for (let item of this.items) {
@@ -104,24 +105,26 @@ export class relatedmodels {
                 }
 
 
-                if (!eventHandled)
+                if (!eventHandled) {
                     this.getData();
-                else
+                } else {
                     this.sortItems();
+                }
 
 
                 break;
         }
     }
 
-    getLastLoadTime(): string {
-        return this.lastLoad.format('HH:mm');
+    public getLastLoadTime(): string {
+        return this.lastLoad.format("HH:mm");
     }
 
-    getData() {
+    public getData() {
         // check if we can list per acl
-        if (this.metadata.checkModuleAcl(this.relatedModule, 'list') === false)
+        if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
             return false;
+        }
 
         // set that we are loading
         this.resetData();
@@ -132,18 +135,17 @@ export class relatedmodels {
             offset: 0,
             limit: this.loaditems,
             relationshipFields: JSON.stringify(this.relationshipFields),
-            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ''
+            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
         };
 
-        //this.http.get(this.configurationService.getBackendUrl() + '/module/' + this.module + '/' + this.id + '/related/' + this.relatedModule.toLowerCase() + '?' + params.join('&'))
-        this.backend.getRequest('module/' + this.module + '/' + this.id + '/related/' + this._linkName, params).subscribe(
+        this.backend.getRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(
             (response: any) => {
 
                 // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
                 this.items = [];
 
                 // get the count
-                this.count = parseInt(response.count);
+                this.count = parseInt(response.count, 10);
 
                 // count .. this is not an array but an object
                 for (let key in response.list) {
@@ -158,7 +160,6 @@ export class relatedmodels {
 
                 // set loaded
                 this.isloading = false;
-                //console.log(`${this.relatedModule} loading finished...`);
 
                 // sort
                 this.sortItems();
@@ -172,32 +173,33 @@ export class relatedmodels {
         );
     }
 
-    sortItems() {
+    private sortItems() {
         if (this.sort.sortfield) {
             this.items.sort((a, b) => {
                 let sortval = 0;
                 // check if we can sort as integer
-                if (!isNaN(parseInt(a[this.sort.sortfield])) && !isNaN(parseInt(b[this.sort.sortfield])))
-                    sortval = parseInt(a[this.sort.sortfield]) > parseInt(b[this.sort.sortfield]) ? 1 : -1;
-                else
+                if (!isNaN(parseInt(a[this.sort.sortfield], 10)) && !isNaN(parseInt(b[this.sort.sortfield], 10))) {
+                    sortval = parseInt(a[this.sort.sortfield], 10) > parseInt(b[this.sort.sortfield], 10) ? 1 : -1;
+                } else {
                     sortval = a[this.sort.sortfield] > b[this.sort.sortfield] ? 1 : -1;
+                }
 
-                return this.sort.sortdirection == 'ASC' ? sortval : (sortval * -1);
-            })
+                return this.sort.sortdirection == "ASC" ? sortval : (sortval * -1);
+            });
         }
     }
 
-    resetData() {
+    private resetData() {
         this.items = [];
     }
 
-    addItems(items) {
+    public addItems(items) {
         let relatedIds: Array<any> = [];
         for (let item of items) {
             relatedIds.push(item.id);
         }
 
-        this.backend.postRequest('module/' + this.module + '/' + this.id + '/related/' + this._linkName, [], relatedIds).subscribe(res => {
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(res => {
 
             for (let item of items) {
                 // check if we shoudl add this item or it is already in the related models list
@@ -222,19 +224,19 @@ export class relatedmodels {
         });
     }
 
-    setItem(item) {
-        this.backend.putRequest('module/' + this.module + '/' + this.id + '/related/' + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
+    public setItem(item) {
+        this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
 
         });
     }
 
-    deleteItem(id) {
+    public deleteItem(id) {
         let relatedids = [];
         relatedids.push(id);
         let params = {
             relatedids: relatedids
         };
-        this.backend.deleteRequest('module/' + this.module + '/' + this.id + '/related/' + this._linkName, params).subscribe(res => {
+        this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(res => {
             this.items.some((item, index) => {
                 if (item.id == id) {
                     this.items.splice(index, 1);
@@ -246,7 +248,7 @@ export class relatedmodels {
                     // return
                     return true;
                 }
-            })
+            });
         });
     }
 }
