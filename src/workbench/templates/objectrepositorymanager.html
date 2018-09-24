@@ -2,25 +2,15 @@
     <div class="slds-form-element">
         <label class="slds-form-element__label">Module</label>
         <div style="width:400px"  class="slds-form-element__control">
-            <!--<div class="slds-select_container" style="min-width:250px;">-->
-            <!--<select class="slds-select" [(ngModel)]="currentModule" (change)="selectedModule()">-->
-            <!--<option value="*">*</option>-->
-            <!--<option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}</option>-->
-            <!--</select>-->
+
 
             <system-select style="width:100%"  [selectList]="objectRepos" [selectedItem]="objectReposSelectedItem" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
 
-            <!--</div>-->
         </div>
     </div>
 
     <div class="slds-form-element slds-col--bump-left">
-        <!--<button type="button" class="slds-button slds-button&#45;&#45;neutral" (click)="addConf()">{{language.getLabel('LBL_ADD')}}</button>-->
-        <!--<button type="button" class="slds-button slds-button&#45;&#45;brand" (click)="saveChanges()">{{language.getLabel('LBL_SAVE')}}</button>-->
-        <!--<button class="slds-button slds-button&#45;&#45;icon" title="add item">-->
-        <!--<system-utility-icon [icon]="'new'" [size]="'small'"-->
-        <!--[addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>-->
-        <!--</button>-->
+
     </div>
 </div>
 
@@ -32,18 +22,24 @@
 
 
             <div class="slds-tabs_default" style="background-color: transparent">
-                <ul class="slds-tabs_default__nav" role="tablist">
-                    <li class="slds-tabs_default__item slds-is-active" [ngClass]="{'slds-is-active': currentTableActive == 'global' || currentTableActive == 'default'}" title="Item One" role="presentation">
-                        <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" (click)="loadGlobal()" id="tab-default-1__item">Global</a>
-                    </li>
-                    <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': currentTableActive == 'custom' || currentTableActive == 'default_custom'}" title="Item Two" role="presentation">
-                        <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" (click)="loadCustom()" id="tab-default-2__item">Custom</a>
-                    </li>
-                </ul>
+
                 <div id="tab-default-1" class="slds-tabs_default__content slds-show" role="tabpanel" aria-labelledby="tab-default-1__item">
                     <!--<button *ngIf="currentModule" type="button" class="slds-m-bottom_small slds-size_2-of-2 slds-button slds-button&#45;&#45;neutral" (click)="addConf()">{{language.getLabel('LBL_ADD')}}</button>-->
 
-                    <system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>
+                    <!--<system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>-->
+
+
+                    <div class="slds-tree_container" >
+                    <ul class="slds-tree" aria-labelledby="treeheading">
+                        <li *ngFor="let objrepoItem of objrepoList" [ngClass]="{'slds-is-selected': checkCurrentObjRepo(objrepoItem.id)}" aria-level="0" tabindex="0" (click)="clickObjRepo(objrepoItem)">
+                            <div class="slds-tree__item">
+                                <span class="slds-size_1-of-1">
+                                  <span class="slds-tree__item-label slds-truncate" title="Tree Item">{{objrepoItem.object}}</span>
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                    </div>
 
                     <div *ngIf="currentModule && crActive" class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
                         <button class="slds-button slds-button--icon" title="add item" (click)="addConf()">
@@ -58,24 +54,89 @@
     </div>
     <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
         <div class="slds-grid slds-form--inline slds-p-around--small">
-            <div *ngIf="selectedComponent.component" class="slds-p-vertical_small slds-text-heading_small">
-                {{selectedComponent.component}} / {{selectedComponent.role_name}}
-            </div>
-            <button *ngIf="selectedComponent.component && crActive" type="button"
-                    class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="copyConf()">
-                {{language.getLabel('LBL_COPY')}}
-            </button>
             <button *ngIf="selectedComponent.component && crActive" type="button"
                     class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
                 {{language.getLabel('LBL_SAVE')}}
             </button>
         </div>
+
+
+        <!--configList-->
+
+        <div class="slds-table_edit_container slds-is-relative">
+            <table class="slds-table slds-table_bordered slds-table_resizable-cols slds-table_fixed-layout slds-no-cell-focus slds-table_edit" role="grid" style="width: 66.75rem;">
+        <tbody>
+        <tr class="slds-hint-parent">
+            <td class="slds-cell-error slds-cell-edit" role="gridcell">
+                <button id="error-01" class="slds-button slds-button_icon slds-button_icon-error slds-m-horizontal_xxx-small slds-hidden" aria-hidden="true" tabindex="-1" title="Item 1 has errors">
+                    <svg class="slds-button__icon" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error" />
+                    </svg>
+                    <span class="slds-assistive-text">Item 1 has errors</span>
+                </button>
+                <span class="slds-row-number slds-text-body_small slds-text-color_weak"></span>
+            </td>
+            <td class="slds-cell-edit" role="gridcell">
+          <span class="slds-checkbox">
+            <input type="checkbox" name="options" id="checkbox-01" value="checkbox-01" tabindex="-1" aria-labelledby="check-button-label-01 check-group-header" />
+            <label class="slds-checkbox__label" for="checkbox-01" id="check-button-label-01">
+              <span class="slds-checkbox_faux"></span>
+              <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
+            </label>
+          </span>
+            </td>
+            <th class="slds-cell-edit" scope="row" tabindex="0">
+          <span class="slds-grid slds-grid_align-spread"><a href="javascript:void(0);" class="slds-truncate" id="link-01" tabindex="-1" title="Acme - 1,200 Widgets">Acme - 1,200 Widgets</a>
+            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Name: Item 1">
+              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
+              </svg>
+              <span class="slds-assistive-text">Edit Name: Item 1</span>
+            </button>
+          </span>
+            </th>
+            <td class="slds-cell-edit" role="gridcell">
+          <span class="slds-grid slds-grid_align-spread">
+            <span class="slds-truncate" title="Acme">Acme</span>
+            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Account Name: Item 1">
+              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
+              </svg>
+              <span class="slds-assistive-text">Edit Account Name: Item 1</span>
+            </button>
+          </span>
+            </td>
+            <td class="slds-cell-edit" role="gridcell">
+          <span class="slds-grid slds-grid_align-spread">
+            <span class="slds-truncate" title="4/10/15">4/10/15</span>
+            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Close Date: Item 1">
+              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
+              </svg>
+              <span class="slds-assistive-text">Edit Close Date: Item 1</span>
+            </button>
+          </span>
+            </td>
+            <td class="slds-cell-edit" role="gridcell">
+          <span class="slds-grid slds-grid_align-spread">
+            <span class="slds-truncate" title="Value Proposition">Value Proposition</span>
+            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Stage: Item 1">
+              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
+              </svg>
+              <span class="slds-assistive-text">Edit Stage: Item 1</span>
+            </button>
+          </span>
+            </td>
+        </tbody>
+            </table>
+        </div>
+
+
+
         <!--<workbench-component-config *ngIf="selectedComponent.id" [component]="selectedComponent"></workbench-component-config>-->
     </div>
+</div>
 
-</div>
-<div *ngIf="!currentModule" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
-    {{language.getLabel('LBL_SELECT_MODULE_INFO')}}
-</div>
 
 
