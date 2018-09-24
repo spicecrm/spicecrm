@@ -19,6 +19,7 @@ import {session} from "../../services/session.service";
 import {broadcast} from "../../services/broadcast.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {modelutilities} from "../../services/modelutilities.service";
+import {currency} from '../../services/currency.service';
 
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";

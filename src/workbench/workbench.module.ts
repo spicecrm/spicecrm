@@ -1,33 +1,34 @@
-import {CommonModule, JsonPipe} from '@angular/common';
-import {AfterViewInit,  Component, ElementRef, NgModule, Renderer,  ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Pipe, PipeTransform, ChangeDetectorRef} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
+import {CommonModule, JsonPipe} from "@angular/common";
+import {AfterViewInit,  Component, ElementRef, NgModule, Renderer,  ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Pipe, PipeTransform, ChangeDetectorRef} from "@angular/core";
+import {FormsModule}   from "@angular/forms";
+import {Router, ActivatedRoute} from "@angular/router";
 
-import {Subject} from 'rxjs';
-import {Observable} from 'rxjs';
+import {Subject} from "rxjs";
+import {Observable} from "rxjs";
 // SERVICEs
-import {metadata} from '../services/metadata.service';
-import {model} from '../services/model.service';
-import {modal} from '../services/modal.service';
-import {language} from '../services/language.service';
-import {broadcast} from '../services/broadcast.service';
-import {backend} from '../services/backend.service';
-import {view} from '../services/view.service';
-import {popup} from '../services/popup.service';
-import {navigation} from '../services/navigation.service';
-import {modelutilities} from '../services/modelutilities.service';
-import {toast} from '../services/toast.service';
-import {AppDataService} from '../services/appdata.service';
-import {VersionManagerService} from '../services/versionmanager.service';
-import {configurationService} from '../services/configuration.service';
-import {footer} from '../services/footer.service';
+import {metadata} from "../services/metadata.service";
+import {model} from "../services/model.service";
+import {modal} from "../services/modal.service";
+import {language} from "../services/language.service";
+import {broadcast} from "../services/broadcast.service";
+import {backend} from "../services/backend.service";
+import {view} from "../services/view.service";
+import {popup} from "../services/popup.service";
+import {navigation} from "../services/navigation.service";
+import {modelutilities} from "../services/modelutilities.service";
+import {toast} from "../services/toast.service";
+import {AppDataService} from "../services/appdata.service";
+import {VersionManagerService} from "../services/versionmanager.service";
+import {configurationService} from "../services/configuration.service";
+import {footer} from "../services/footer.service";
+
 // MODULEs
-import {SystemComponents}      from '../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../globalutilitycomponents/globalutilitycomponents';
+import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {GlobalUtilityComponents}      from "../globalutilitycomponents/globalutilitycomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 
-//COMPONENTs
+// COMPONENTs
 
 import /*embed*/ {BasicReferenceForm} from "./components/basicreferenceform";
 
@@ -58,6 +59,7 @@ import /*embed*/ {ValidationRulesActions} from "./components/validationrulesacti
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
+import /*embed*/ {MailboxesManagerTestEmailModal} from "./components/mailboxesmanagertestemailmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/maixlboxmanageradddialog";
@@ -136,6 +138,7 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         MailboxesManager,
         LanguageLabelModal,
         MailboxManagerAddDialog,
+        MailboxesManagerTestEmailModal,
         MailboxesImapSmtpTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
@@ -172,13 +175,12 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         SortPipe,
     ]
 })
-export class WorkbenchModule
-{
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+export class WorkbenchModule {
+    private readonly version = "1.0";
+    private readonly build_date = "/*build_date*/";
 
     constructor(
-        private vms:VersionManagerService,
+        private vms: VersionManagerService,
     ) {
         vms.registerModule(this);
     }

@@ -80,6 +80,7 @@ export class loginService {
                     this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
                     this.session.authData.admin = response.admin == 1 ? true : false;
+                    this.session.authData.portalOnly = response.portal_only === '1' ? true : false;
                     this.session.authData.renewPass = response.renewPass === '1' ? true : false;
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
                     sessionStorage[btoa(this.session.authData.sessionId+':backendurl')] = btoa(this.configurationService.getBackendUrl());
