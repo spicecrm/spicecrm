@@ -457,10 +457,15 @@ export class FieldsetManager {
                                 let save_items: any = [];
 
                                 for (let item of fieldset.items) {
-                                    item.id = this.modelutilities.generateGuid(); //item generate id
-                                    item.fieldset_id = newid;
-                                    save_items.push(item);
+                                    let copied_item = {...item};
+                                    copied_item.fieldconfig = {...item.fieldconfig}
+
+                                    copied_item.id = this.modelutilities.generateGuid(); //item generate id
+                                    copied_item.fieldset_id = newid;
+                                    save_items.push(copied_item);
                                 }
+
+
 
                                 delete fieldset.items;
                                 delete fieldset.type;
@@ -501,6 +506,9 @@ export class FieldsetManager {
                                                             this.currentModule = fieldset.module;
                                                             this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
                                                             this.currentFieldSet = fieldset.id;
+
+                                                            this.currentFieldSetItems = save_items;
+                                                            this.selectedItem = {};
                                                             this.currentFieldSetName = fieldset.name;
                                                             this.loadCurrentFieldset();
                                                         }
@@ -532,11 +540,10 @@ export class FieldsetManager {
 
 
     saveChanges() {
-
-
+        
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-
         this.backend.getRequest('spiceui/core/fieldsets').subscribe((res: any) => {
+
 
             let rawFieldsets = this.metadata.getRawFieldSets();
             let addedFieldsets: any = {};

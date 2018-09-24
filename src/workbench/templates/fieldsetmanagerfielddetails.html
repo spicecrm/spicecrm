@@ -20,79 +20,61 @@
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_LABEL')}}</label>
     <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldConfig.label"/>
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.label"/>
     </div>
 </div>
 <fieldset class="slds-form-element slds-m-vertical--xxx-small">
     <legend class="slds-form-element__legend slds-form-element__label">{{language.getAppLanglabel('LBL_OPTIONS')}}</legend>
     <div class="slds-form-element__control">
         <label class="slds-checkbox" for="link">
-            <input [disabled]="!view.isEditMode()" type="checkbox" id="link" [(ngModel)]="currentFieldConfig.link"/>
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="link" [(ngModel)]="configValues.link"/>
             <span class="slds-checkbox--faux"></span>
             <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_LINK')}}</span>
         </label>
         <label class="slds-checkbox" for="default">
-            <input [disabled]="!view.isEditMode()" type="checkbox" id="default" [(ngModel)]="currentFieldConfig.default"/>
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="default" [(ngModel)]="configValues.default"/>
             <span class="slds-checkbox--faux"></span>
             <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_DEFAULT')}}</span>
         </label>
         <label class="slds-checkbox" for="hidelabel">
-            <input [disabled]="!view.isEditMode()" type="checkbox" id="hidelabel" [(ngModel)]="currentFieldConfig.hidelabel"/>
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="hidelabel" [(ngModel)]="configValues.hidelabel"/>
             <span class="slds-checkbox--faux"></span>
             <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_HIDE_LABEL')}}</span>
         </label>
         <label class="slds-checkbox" for="readonly">
-            <input [disabled]="!view.isEditMode()" type="checkbox" id="readonly" [(ngModel)]="currentFieldConfig.readonly"/>
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="readonly" [(ngModel)]="configValues.readonly"/>
             <span class="slds-checkbox--faux"></span>
             <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_READONLY')}}</span>
         </label>
         <label class="slds-checkbox" for="sortable">
-            <input [disabled]="!view.isEditMode()" type="checkbox" id="sortable" [(ngModel)]="currentFieldConfig.sortable"/>
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="sortable" [(ngModel)]="configValues.sortable"/>
             <span class="slds-checkbox--faux"></span>
             <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_SORTABLE')}}</span>
         </label>
     </div>
 </fieldset>
-<div *ngIf="currentFieldConfig.sortable" class="slds-form-element slds-m-vertical--xxx-small">
+<div *ngIf="configValues.sortable" class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_SORTFIELD')}}</label>
     <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldConfig.sortfield"/>
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.sortfield"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_WIDTH')}} (number of parts, leave blank for 1)</label>
     <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldConfig.width"/>
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.width"/>
     </div>
 </div>
-<!--<div class="slds-form-element slds-m-vertical&#45;&#45;xxx-small">-->
-    <!--<label class="slds-form-element__label">{{language.getAppLanglabel('LBL_FIELDTYPE')}}</label>-->
-    <!--<div class="slds-form-element__control">-->
-        <!--<div class="slds-select_container">-->
-            <!--<select class="slds-select" [(ngModel)]="currentFieldConfig.fieldtype">-->
-                <!--<option *ngFor="let fieldtype of fieldtypes">{{fieldtype}}</option>-->
-            <!--</select>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
-
-<!--<div *ngFor="let option of getFieldConfig()" class="slds-form-element slds-m-vertical&#45;&#45;xxx-small">-->
-    <!--<label class="slds-form-element__label">{{option}}</label>-->
-    <!--<div class="slds-form-element__control">-->
-        <!--<input type="text" class="slds-input" [(ngModel)]="currentFieldConfig[option]"/>-->
-    <!--</div>-->
-<!--</div>-->
-
 
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_FIELDTYPE')}}</label>
     <div class="slds-form-element__control">
         <div class="slds-select_container">
-            <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="currentFieldConfig.fieldtype" (change)="selectFieldType()">
+            <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.fieldtype" (change)="selectFieldType()">
                 <option *ngFor="let fieldtype of fieldtypes">{{fieldtype}}</option>
             </select>
         </div>
     </div>
 </div>
 
-<workbench-config [inputObj]="currentField"></workbench-config>
+<workbench-config [component]="component" [configValues]="configValues"></workbench-config>

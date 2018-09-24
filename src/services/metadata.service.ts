@@ -1,14 +1,11 @@
-
 import {Subject, Observable, of} from "rxjs";
 import {
     Injectable,
     ComponentFactoryResolver,
     NgModuleFactoryLoader,
-    SystemJsNgModuleLoader,
-    Compiler, EventEmitter, Injector, ViewChild, ViewContainerRef
+    Compiler, EventEmitter, Injector
 } from "@angular/core";
-
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
@@ -426,26 +423,34 @@ export class metadata {
             if (this.componentDirectory[component].module) {
                 let module = this.componentDirectory[component].module;
 
-                System.import(this.moduleDirectory[module].path)
-                    .then((fileContents: any) => {
-                        return fileContents[this.moduleDirectory[module].module];
-                    })
-                    .then((type: any) => {
-                        this.moduleDirectory[module].factories = {};
-                        this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                            let foundComp = componentfactory.componentFactories.some(factory => {
-                                if (factory.componentType.name === component) {
-                                    let componentRef = viewChild.createComponent(factory, undefined, injector);
-                                    componentRef.instance.self = componentRef;
-                                    retSubject.next(componentRef);
+                try {
+                    System.import(this.moduleDirectory[module].path)
+                        .then((fileContents: any) => {
+                            return fileContents[this.moduleDirectory[module].module];
+                        })
+                        .then((type: any) => {
+                            this.moduleDirectory[module].factories = {};
+                            this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
+                                let foundComp = componentfactory.componentFactories.some(factory => {
+                                    if (factory.componentType.name === component) {
+                                        let componentRef = viewChild.createComponent(factory, undefined, injector);
+                                        componentRef.instance.self = componentRef;
+                                        retSubject.next(componentRef);
+                                        retSubject.complete();
+                                        return true;
+                                    }
+                                });
+                                if (!foundComp) {
+                                    // console.error("Cannot find a factory for component " + component);
+                                    retSubject.error("Cannot find a factory for component " + component);
                                     retSubject.complete();
-                                    return true;
                                 }
                             });
-                            if ( !foundComp ) { console.error("Cannot find a factory for component " + component);};
                         });
-                    });
-
+                } catch(e) {
+                    retSubject.error(e);
+                    retSubject.complete();
+                }
             } else {
                 System.import(this.componentDirectory[component].path)
                     .then((fileContents: any) => {
@@ -1225,7 +1230,7 @@ export class metadata {
             // load script(s)
             for(let script of this.scripts[name])
             {
-                if(script.loaded) { continue;};
+                if(script.loaded) { continue;}
 
                 this.loadScript(script).subscribe(
                     (res) => {
@@ -1373,10 +1378,12 @@ export class metadata {
 
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router) {
+    constructor(private metadata: metadata, private router: Router, private session: session ) {
     }
 
     public canActivate(route, state) {
+        if ( route.params.module === 'Users' && !this.session.authData.admin ) return false; // prevents non-admins from listing the user list
+        // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
         if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, "list")) {
             this.router.navigate(["/modules/Home"]);
             return false;

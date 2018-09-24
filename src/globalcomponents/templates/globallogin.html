@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <div class="slds-button slds-button--brand" style="width:100%;" (click)="login()" tabindex="0">Login</div>
-                        <google-signin (googletoken)="doLogin()"></google-signin>
+                        <global-login-google (googletoken)="doLogin()"></global-login-google>
                     </div>
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
                          *ngIf="configuration.getData('allowForgotPass')">
