@@ -18,9 +18,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {SystemComponents}      from "./systemcomponents/systemcomponents";
 import {GlobalUtilityComponents} from "./globalutilitycomponents/globalutilitycomponents";
 import {GlobalComponents}      from "./globalcomponents/globalcomponents";
-import {ModuleComponents} from "./modulecomponents/modulecomponents";
 import {ObjectComponents} from "./objectcomponents/objectcomponents";
-
 
 
 // support browser location strategy
@@ -82,7 +80,6 @@ export class SpiceUI {
         SystemComponents,
         GlobalUtilityComponents,
         GlobalComponents,
-        ModuleComponents,
         ObjectComponents,
         RouterModule.forRoot(
             [
