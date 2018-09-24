@@ -12,6 +12,7 @@
     "class-name": false,
     "forin": false,
     "member-ordering" : false,
+    "interface-name": false,
     "triple-equals": false,
     "switch-default": false,
     "object-literal-sort-keys": false,
