@@ -85,7 +85,7 @@ import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipe} 
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
-import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionModule";
+import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
 
 
