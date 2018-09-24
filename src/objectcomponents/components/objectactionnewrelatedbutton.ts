@@ -1,55 +1,57 @@
-import { Component, Input, Optional, OnInit } from '@angular/core';
-import { metadata } from '../../services/metadata.service';
-import { model } from '../../services/model.service';
-import { relatedmodels } from '../../services/relatedmodels.service';
-import { language } from '../../services/language.service';
+import { Component, Input, Optional, OnInit } from "@angular/core";
+import { metadata } from "../../services/metadata.service";
+import { model } from "../../services/model.service";
+import { relatedmodels } from "../../services/relatedmodels.service";
+import { language } from "../../services/language.service";
 
 @Component({
-    selector: 'object-action-newrelated-button',
-    templateUrl: './src/objectcomponents/templates/objectactionnewbutton.html',
+    selector: "object-action-newrelated-button",
+    templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
     host: {
-        'class': 'slds-button slds-button--neutral',
-        '[style.display]': 'getDisplay()',
-        '(click)' : 'this.addModel()'
+        "class": "slds-button slds-button--neutral",
+        "[style.display]": "getDisplay()",
+        "(click)" : "this.addModel()"
     },
     styles: [
-        ':host {cursor:pointer;}'
+        ":host {cursor:pointer;}"
     ],
     providers: [model]
 })
 export class ObjectActionNewrelatedButton implements OnInit{
 
-    parent: any = {};
+    public parent: any = {};
 
     constructor( private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }
 
-    addModel(){
+    private addModel() {
 
-        if(!this.parent.data.id)
+        if(!this.parent.data.id) {
             this.parent.data.id = this.parent.id;
+        }
 
         // make sure we have no idea so a new on gets issues
-        this.model.id = '';
+        this.model.id = "";
 
         // add the model
-        this.model.addModel('', this.parent).subscribe(response => {
+        this.model.addModel("", this.parent).subscribe(response => {
             if(response != false){
                 this.relatedmodels.addItems([response]);
             }
         });
     }
 
-    ngOnInit(){
+    public ngOnInit(){
         this.model.module = this.relatedmodels.relatedModule;
     }
 
-    getDisplay() {
-        if(!this.model.module || !this.metadata.checkModuleAcl(this.model.module, 'create'))
-            return 'none';
+    private getDisplay() {
+        if(!this.model.module || !this.metadata.checkModuleAcl(this.model.module, "create")) {
+            return "none";
+        }
 
-        return 'inherit';
+        return "inherit";
     }
 
 }

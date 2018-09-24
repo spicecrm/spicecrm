@@ -69,7 +69,7 @@ export class fts {
         this.resetData();
 
         this.runningsearch = this.backend.getRequest(
-            '/fts/searchterm/' + encodeURIComponent(searchterm),
+            'fts/searchterm/' + encodeURIComponent(searchterm),
             {size: size},
         ).subscribe((response) => {
                 this.hits = response['hits'].hits;
@@ -85,6 +85,7 @@ export class fts {
 
         if( searchterm.indexOf('%') != -1 )
             searchterm = searchterm.replace(/%/g, '*');
+        searchterm = searchterm.trim();
         // set the searchterm
         this.searchTerm = searchterm;
         this.searchAggregates = aggregates;
@@ -99,7 +100,7 @@ export class fts {
 
         // this.resetModuleData();
         //this.runningmodulesearch = this.http.post(this.configurationService.getBackendUrl() + '/fts/globalsearch' + (modules.length > 0 ? '/' + modules.join(',') : '') + (searchterm ? '/' + searchterm : '') + '?session_id=' + this.session.authData.sessionId + '&records=' + size, {aggregates: this.searchAggregates, sort: this.searchSort})
-        this.runningmodulesearch = this.backend.postRequest('fts/globalsearch' + (modules.length > 0 ? '/' + modules.join(',') : '') + (searchterm ? '/' + searchterm : ''), {records: size, owner: owner}, {
+        this.runningmodulesearch = this.backend.postRequest('fts/globalsearch' + (modules.length > 0 ? '/' + modules.join(',') : '') + (searchterm ? '/' + encodeURIComponent(searchterm) : ''), {records: size, owner: owner}, {
             aggregates: this.searchAggregates,
             sort: this.searchSort
         }).subscribe(response => {
@@ -151,7 +152,7 @@ export class fts {
 
         // this.runningmodulesearch = this.http.post(this.configurationService.getBackendUrl() + '/fts/globalsearch/' + this.lastSearchParams.modules.join(',') + (this.lastSearchParams.searchterm ? '/' + this.lastSearchParams.searchterm : '') + '?session_id=' + this.session.authData.sessionId + '&records=' + this.lastSearchParams.size + '&start=' + this.moduleSearchresults[0].data.hits.length, {aggregates: this.searchAggregates, sort: this.searchSort})
         //     .subscribe(res => {
-        this.runningmodulesearch = this.backend.postRequest('fts/globalsearch/' + this.lastSearchParams.modules.join(',') + (this.lastSearchParams.searchterm ? '/' + this.lastSearchParams.searchterm : ''), {
+        this.runningmodulesearch = this.backend.postRequest('fts/globalsearch/' + this.lastSearchParams.modules.join(',') + (this.lastSearchParams.searchterm ? '/' + encodeURIComponent(this.lastSearchParams.searchterm) : ''), {
             records: this.lastSearchParams.size,
             start: this.moduleSearchresults[0].data.hits.length
         }, {aggregates: this.searchAggregates, sort: this.searchSort})

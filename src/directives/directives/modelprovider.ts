@@ -1,4 +1,4 @@
-import {Directive, Input, OnInit} from '@angular/core';
+import {Directive, Input} from '@angular/core';
 import {model} from "../../services/model.service";
 
 
@@ -47,15 +47,19 @@ export class ModelProviderDirective
             this.model.data = provided_model.data;
             this.model.isLoading = false;
             this.model.data$.emit();
+
+            if(provided_model.data.acl)
+            {
+                // has to be called again after the data is set because of the missing acl before...
+                this.model.initializeFieldsStati();
+            }
         }
         else if( this.model.id )
         {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
             this.model.getData();
         }
-        // has to be called again after the data is set because of the missing acl before...
-        this.model.initializeFieldsStati();
-    }
 
+    }
 
 }
