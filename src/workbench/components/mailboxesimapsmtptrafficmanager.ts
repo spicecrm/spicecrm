@@ -11,14 +11,12 @@ import {model} from "../../services/model.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
-import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
-import {MailboxesManagerTestEmailModal} from "./mailboxesmanagertestemailmodal";
 
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
     templateUrl: "./src/workbench/templates/mailboxesimapsmtptrafficmanager.html",
 })
-export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
+export class MailboxesImapSmtpTrafficManager implements OnInit {
     private mailboxes: any[] = [];
     private validConnection: boolean = false;
     private modelsubscription: any = undefined;
@@ -34,11 +32,7 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
         private view: view,
         private ViewContainerRef: ViewContainerRef
     ) {
-        this.modelsubscription = this.model.data$.subscribe(
-            (data) => {
-            // this.handleModelChange(data);
-            },
-        );
+
     }
 
     public ngOnInit() {
@@ -63,10 +57,6 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
                 smtp_verify_peer_name: "",
             };
         }
-    }
-
-    public ngOnDestroy() {
-        this.modelsubscription.unsubscribe();
     }
 
     private handleModelChange(data) {
@@ -110,7 +100,11 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
 
     public testConnection() {
 
-        this.modal.openModal("MailboxesManagerTestEmailModal", true, this.ViewContainerRef.injector);
+        this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.ViewContainerRef.injector).subscribe(testmodal => {
+            testmodal.instance.isvalid.subsribe( validconnection => {
+                this.validConnection = validconnection;
+            });
+        });
 
         /*this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
 
@@ -121,7 +115,7 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
             this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id}).subscribe(
                 (response: any) => {
                     if (response.imap.result === true) {
-                        this.validConnection = true;
+                        this.core = true;
                     } else {
                         this.validConnection = false;
                     }

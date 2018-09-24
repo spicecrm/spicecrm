@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef,EventEmitter} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
@@ -9,12 +9,13 @@ import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: "./src/workbench/templates/mailboxesmanagertestemailmodal.html",
+    templateUrl: "./src/workbench/templates/mailboxesmanagertestimapmodal.html",
 })
-export class MailboxesManagerTestEmailModal {
+export class MailboxesmanagerTestIMAPModal {
 
     public self: any = {};
     private validConnection: boolean = false;
+    public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
     private testemailaddress: string = "";
 
     constructor(
@@ -48,6 +49,7 @@ export class MailboxesManagerTestEmailModal {
     }
 
     private close() {
+        this.isvalid.emit(this.validConnection);
         this.self.destroy();
     }
 }
