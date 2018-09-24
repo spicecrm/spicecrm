@@ -49,7 +49,7 @@ export class MailboxManagerHeader implements OnInit {
     }
 
     private selectEmailOpenness() {
-        this.mailboxesEmails.emailopenness = this.emailopenness;
+        this.mailboxesEmails.emailopenness = this.emailopenness == "all" ? "" : this.emailopenness;
         this.mailboxesEmails.loadMails();
     }
 
