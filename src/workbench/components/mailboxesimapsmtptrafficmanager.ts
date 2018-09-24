@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
+import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef} from "@angular/core";
 import {Input} from "@angular/core";
 import {SimpleChange} from "@angular/core";
 import {Subject, Observable} from "rxjs";
@@ -12,6 +12,7 @@ import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
+import {MailboxesManagerTestEmailModal} from "./mailboxesmanagertestemailmodal";
 
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
@@ -31,6 +32,7 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
         private modal: modal,
         private toast: toast,
         private view: view,
+        private ViewContainerRef: ViewContainerRef
     ) {
         this.modelsubscription = this.model.data$.subscribe(
             (data) => {
@@ -63,23 +65,7 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
         }
     }
 
-    public ngOnChanges() {
-        /*if (this.connectionValidated.firstChange !== true &&
-            this.connectionValidated.currentValue === true) {
-            if (this.mailboxes.length === 0) {
-                this.getMailboxes().subscribe(
-                    (response: any) => {
-                        this.displayFoldersModal();
-                    },
-                );
-            } else {
-                this.displayFoldersModal();
-            }
-        }*/
-
-    }
-
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.modelsubscription.unsubscribe();
     }
 
@@ -123,7 +109,10 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
     }
 
     public testConnection() {
-        this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
+
+        this.modal.openModal("MailboxesManagerTestEmailModal", true, this.ViewContainerRef.injector);
+
+        /*this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
 
             modalRef.instance.messagelabel = "LBL_TESTING_CONNECTION";
 
@@ -150,5 +139,6 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
                     modalRef.instance.self.destroy();
                 });
         });
+        */
     }
 }

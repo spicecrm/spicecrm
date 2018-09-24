@@ -4,11 +4,11 @@
 </div>
 <div class="slds-media__body">
     <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
-        <h3 class="slds-truncate slds-text-heading--x-small" (click)="navgiateDetail()">
+        <h3 class="slds-truncate slds-text-heading--x-small" (click)="downloadFile()">
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
         <div class="slds-shrink-none">
-            <object-file-action-menu [buttonsize]="'x-small'" [fileid]="file.id"></object-file-action-menu>
+            <object-file-action-menu [buttonsize]="'x-small'" [fileid]="file.id" [filename]="file.filename" ></object-file-action-menu>
         </div>
     </div>
     <div class="slds-tile__detail slds-text-body--small">
