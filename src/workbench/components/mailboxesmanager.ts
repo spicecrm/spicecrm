@@ -77,7 +77,7 @@ export class MailboxesManager {
     private addMailbox() {
         this.metadata.addComponent("MailboxManagerAddDialog", this.footer.footercontainer).subscribe(
             (comp) => {
-                comp.instance['closedialog'].subscribe(
+                comp.instance.closedialog.subscribe(
                     (data) => {
                         if (data) {
                             this.mailboxes.push(data);
@@ -137,6 +137,7 @@ export class MailboxesManager {
             .subscribe(
                 (res) => {
                     this.toast.sendToast(res);
+                    this.model.setField("is_default", true);
                 },
                 (err) => {
                     console.log(err);
