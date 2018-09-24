@@ -1,11 +1,9 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from "@angular/core";
 
 @Injectable()
 export class ACManagerService {
-    contactccdetails: {} = {};
-    contactCCDetails$: EventEmitter<any> = new EventEmitter<any>();
-
-    constructor() {}
+    public contactccdetails: {} = {};
+    public contactCCDetails$: EventEmitter<any> = new EventEmitter<any>();
 
     get contactCCDetails() {
         return this.contactccdetails;

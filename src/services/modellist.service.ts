@@ -1,18 +1,12 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
-
-import {configurationService} from './configuration.service';
-import {model} from './model.service';
 import {backend} from './backend.service';
 import {fts} from './fts.service';
 import {userpreferences} from './userpreferences.service';
 import {language} from './language.service';
-import {Router}   from '@angular/router';
 import {metadata} from "./metadata.service";
 import {broadcast} from "./broadcast.service";
-import {CompileNgModuleMetadata} from "@angular/compiler";
+import {session} from "./session.service";
 
 declare var moment: any;
 
@@ -83,7 +77,15 @@ export class modellist {
     listTypes: Array<any> = [];
     currentList: any = {};
 
-    constructor(private broadcast: broadcast, private backend: backend, private fts: fts, private metadata: metadata, private language: language, private userpreferences: userpreferences) {
+    constructor(
+        private broadcast: broadcast,
+        private backend: backend,
+        private fts: fts,
+        private metadata: metadata,
+        private language: language,
+        private userpreferences: userpreferences,
+        private session: session,
+    ) {
         // create the event Emitter
         this.listtype$ = new EventEmitter<String>();
 
@@ -128,7 +130,7 @@ export class modellist {
         // get the custom listtypes
         this.listTypes = [];
         for (let listtype of this.metadata.getModuleListTypes(this.module)) {
-            this.addCustomListtype(listtype.id, listtype.name, listtype.basefilter, listtype.fielddefs, listtype.filterdefs);
+            this.addCustomListtype(listtype.id, listtype.name, listtype.basefilter, listtype.fielddefs, listtype.filterdefs, listtype.global);
         }
 
         // check if we have preferences set for the user
@@ -150,11 +152,12 @@ export class modellist {
         this.reLoadList();
     }
 
-    addCustomListtype(id, name, basefilter, fielddefs, filterdefs): void {
+    addCustomListtype(id, name, basefilter, fielddefs, filterdefs, global): void {
         this.listTypes.push({
             id: id,
             type: 'custom',
             name: name,
+            global: global,
             basefilter: basefilter,
             fielddefs: fielddefs,
             filterdefs: filterdefs,
@@ -260,10 +263,10 @@ export class modellist {
         let listParams = {
             list: name,
             global: global
-        }
+        };
         this.backend.addListType(this.module, listParams).subscribe((listdata: any) => {
 
-            this.addCustomListtype(listdata.id, listdata.name, 'all', null, null);
+            this.addCustomListtype(listdata.id, listdata.name, 'all', null, null, listdata.global);
 
             // ad it to the metadata colection as well
             this.metadata.addModuleListType(this.module, {
@@ -283,7 +286,7 @@ export class modellist {
             this.setListType(listdata.id);
             retSub.next(true);
             retSub.complete();
-        })
+        });
         return retSub.asObservable();
     }
 
@@ -303,7 +306,7 @@ export class modellist {
                     this.currentList = item;
                     return true;
                 }
-            })
+            });
 
             // emit since changes might impact others
             this.listtype$.emit(this.currentList);
@@ -311,7 +314,7 @@ export class modellist {
             // return message to Observable and complete it
             retSub.next(true);
             retSub.complete();
-        })
+        });
         return retSub.asObservable();
     }
 
@@ -333,7 +336,7 @@ export class modellist {
             // return the Observable and complete the subject
             retSub.next(true);
             retSub.complete();
-        })
+        });
         return retSub.asObservable();
     }
 
@@ -538,6 +541,7 @@ export class modellist {
                 listTypes.push({
                     id: list.id,
                     type: list.type,
+                    global: 1,
                     name: list.name.replace('<module>', this.language.getModuleName(this.module)).replace('<LBL_MY>', this.language.getLabel('LBL_MY')).replace('<LBL_ALL>', this.language.getLabel('LBL_ALL')),
                     basefilter: list.basefilter,
                     config: list.config
@@ -611,5 +615,34 @@ export class modellist {
                 items.push(listItem);
         }
         return items;
+    }
+
+    /**
+     * checks the access by action for the current list
+     * @param {string} action
+     * @returns {boolean}
+     */
+    public checkAccess(action:string)
+    {
+        if(this.currentList.global)
+        {
+            switch(action)
+            {
+                case 'delete':
+                    return this.canDelete() && this.session.authData.admin;
+                case 'edit':
+                    return this.session.authData.admin;
+                default:
+                    return false;
+            }
+        }
+        else {
+            switch(action)
+            {
+                default:
+                    return true;
+            }
+        }
+
     }
 }
