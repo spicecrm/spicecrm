@@ -4,6 +4,7 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
+import {currency} from '../../../services/currency.service';
 import {Subject} from "rxjs";
 
 declare var _: any;
@@ -55,10 +56,7 @@ export class UserPreferences {
         {name: "11.00 pm", value: "h.i a"},
         {name: "11.00 PM", value: "h.i A"},
     ];
-    private currencyList = [
-        {name: "US Dollars : $", value: "-99"},
-        {name: "Euros : €", value: "-98"}
-    ];
+    private currencyList: any[] = [];
     private formattingsOfNumbers = [
         {
             show: "1.000.000,00",
@@ -81,6 +79,7 @@ export class UserPreferences {
         private backend: backend,
         private view: view,
         private toast: toast,
+        private currency: currency,
         private language: language,
         private prefservice: userpreferences ) {
 
@@ -92,6 +91,7 @@ export class UserPreferences {
                 this.timezones = response;
                 this.timezoneKeys = Object.keys(this.timezones);
             });
+            this.currencyList = this.currency.getCurrencies();
             this.view.isEditable = true;
 
     }

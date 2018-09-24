@@ -37,7 +37,11 @@ export class ProjectWBSHierarchyNode implements OnInit {
         this.model.data.acl = this.nodedata.data.acl;
     }
 
-    private eexpandNode() {
+    get expandable(){
+        return this.nodedata.member_count > 0;
+    }
+
+    private expandNode() {
         if (this.nodedata.expanded) {
             this.projectwbsHierarchy.collapse(this.nodedata.id);
         } else {
