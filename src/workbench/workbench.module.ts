@@ -59,7 +59,7 @@ import /*embed*/ {ValidationRulesActions} from "./components/validationrulesacti
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
-import /*embed*/ {MailboxesManagerTestEmailModal} from "./components/mailboxesmanagertestemailmodal";
+import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/maixlboxmanageradddialog";
@@ -138,7 +138,7 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         MailboxesManager,
         LanguageLabelModal,
         MailboxManagerAddDialog,
-        MailboxesManagerTestEmailModal,
+        MailboxesmanagerTestIMAPModal,
         MailboxesImapSmtpTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
