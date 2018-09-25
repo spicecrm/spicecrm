@@ -6,3 +6,5 @@ src/**/*.js
 config.json
 /config/sites
 dist
+*.json
+*.map
