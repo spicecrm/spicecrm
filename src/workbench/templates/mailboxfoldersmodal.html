@@ -41,15 +41,9 @@
                 </div>
             </div>
         </div>
-
         <div class="slds-modal__footer">
-            <button class="slds-button slds-button--brand" (click)="save()">
-                {{language.getLabel('LBL_SAVE')}}
-            </button>
-            <button class="slds-button slds-button--neutral" (click)="cancel()">
-                {{language.getLabel('LBL_CANCEL')}}
-            </button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
-
     </div>
 </div>
