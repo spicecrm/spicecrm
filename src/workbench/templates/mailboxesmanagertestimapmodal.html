@@ -5,8 +5,19 @@
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_TEST_EMAIL')}}</label>
             <input type="text" [(ngModel)]="testemailaddress" class="slds-input"/>
         </div>
+        <div class="slds-p-vertical--x-small">
+            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+                <div>{{language.getLabel('LBL_IMAP')}}</div>
+                <system-utility-icon size="xx-small" [icon]="imapIcon"></system-utility-icon>
+            </div>
+            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+                <div>{{language.getLabel('LBL_SMTP')}}</div>
+                <system-utility-icon size="xx-small" [icon]="smtpIcon"></system-utility-icon>
+            </div>
+        </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" (click)="testConnection()">{{language.getAppLanglabel('LBL_TEST')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="testConnection()">{{language.getAppLanglabel('LBL_TEST')}}</button>
+        <button class="slds-button slds-button--brand" (click)="close()">{{language.getAppLanglabel('LBL_OK')}}</button>
     </system-modal-footer>
 </system-modal>
