@@ -17,6 +17,9 @@ export class MailboxesmanagerTestIMAPModal {
     private validConnection: boolean = false;
     public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
     private testemailaddress: string = "";
+    private imapStatus: boolean = false;
+    private smtpStatus: boolean = false;
+    private tested: boolean = false;
 
     constructor(
         private backend: backend,
@@ -35,21 +38,34 @@ export class MailboxesmanagerTestIMAPModal {
                 }
 
                 if (response.imap.errors && response.imap.errors.length > 0) {
-                    // this.toast.sendToast(response.imap.errors);
-                } else if (response.smtp.errors && response.smtp.errors.length > 0) {
-                    // this.toast.sendToast(response.smtp.errors);
+                    this.imapStatus = false;
+                } else {
+                    this.imapStatus = true;
                 }
 
-                this.close();
+                if (response.smtp.errors && response.smtp.errors.length > 0) {
+                    this.smtpStatus = false;
+                } else {
+                    this.smtpStatus = true;
+                }
+
+                this.tested = true;
             },
             (err: any) => {
-                // this.toast.sendToast("Connection Error #3864");
-                this.close();
+
             });
     }
 
     private close() {
         this.isvalid.emit(this.validConnection);
         this.self.destroy();
+    }
+
+    get imapIcon(){
+        return this.imapStatus ? "check" : "close";
+    }
+
+    get smtpIcon(){
+        return this.smtpStatus ? "check" : "close";
     }
 }
