@@ -44,6 +44,11 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
         return this.html ? this.html : this.text;
     }
 
+    get striped_content()
+    {
+        return this.html.replace(/<[^>]+>/g,"") || this.text;
+    }
+
     public ngOnInit() {
         if(!this.target_module_fields || this.target_module_fields.length === 0) {
             let available_types: Array<string> = ["varchar", "text"];
