@@ -10,6 +10,7 @@ import {language} from '../../services/language.service';
 import {Subject} from 'rxjs';
 import {modal} from "../../services/modal.service";
 import {ModuleConfigAddDialog} from "./moduleconfigadddialog";
+import {ObjectRepositoryManagerAddRepo} from "./objectrepositorymanageraddrepo";
 
 
 @Component({
@@ -23,6 +24,19 @@ export class ObjectRepositoryManager {
 
     objrepoList: Array<any> = [];
     configList: any = {};
+    currentConfigArray: Array<any> = [];
+
+    fieldTypeList: Array<any> = ["string", "boolean", "fieldset"];
+
+    newRepo: any = {
+        component: "",
+        componentconfig: "",
+        description: "",
+        id: "",
+        module: "",
+        object: "",
+        package: ""
+    };
 
     currentModule: string = '';
     currentObjRepo: any = '';
@@ -40,7 +54,8 @@ export class ObjectRepositoryManager {
     constructor(
         private backend: backend,
         private metadata: metadata,
-        private language: language
+        private language: language,
+        private modalservice: modal,
     ) {
 
 
@@ -51,10 +66,26 @@ export class ObjectRepositoryManager {
                 var moduleObj = {};
                 moduleObj = {
                     'id': module.id,
-                    'name': module.module
+                    'name': module.module,
+                    'group': "global"
                 }
                 this.objectRepos.push(moduleObj);
             }
+            this.objectRepos = Object.assign([], this.objectRepos);
+        });
+
+        this.backend.getRequest('configurator/entries/sysuicustommodulerepository').subscribe(modules => {
+            for (let module of modules) {
+
+                var moduleObj = {};
+                moduleObj = {
+                    'id': module.id,
+                    'name': module.module,
+                    'group': "custom"
+                }
+                this.objectRepos.push(moduleObj);
+            }
+            this.objectRepos = Object.assign([], this.objectRepos);
         });
 
     }
@@ -80,24 +111,24 @@ export class ObjectRepositoryManager {
 
     clickObjRepo(cor){
         this.currentObjRepo = cor;
-
+        this.currentConfigArray = [];
         try {
             this.configList = JSON.parse(this.currentObjRepo.componentconfig);
-        } catch (e) {
-            console.error("JSON is invalid!", e);
-        }
-        console.log(this.configList);
 
-        for (var k in this.configList){
-            if (this.configList.hasOwnProperty(k)) {
+            let counterId = 0;
 
+            for (var name in this.configList) {
+                if (this.configList.hasOwnProperty(name)) {
 
-                alert("Key is " + k + ", value is" + target[k]);
+                    let fieldConfig = {id: counterId, name: name, type: this.configList[name].type};
+                    this.currentConfigArray.push(fieldConfig);
+                    counterId++;
+                }
             }
+
+        } catch (e) {
+            console.warn("JSON is invalid or empty!");
         }
-
-
-        console.log(this.currentObjRepo);
 
 
     }
@@ -108,5 +139,40 @@ export class ObjectRepositoryManager {
         }
         return false;
     }
+
+    addConfig(){
+        this.currentConfigArray.push({id:  this.currentConfigArray.length + 1, name: "", type: ""});
+    }
+
+    saveChanges() {
+        let configObject = {};
+        let currentConfigArrayCopy = [...this.currentConfigArray];
+
+        for(let currentConfigItem of currentConfigArrayCopy){
+            let typeObject = {};
+            typeObject["type"] = currentConfigItem.type;
+            configObject[currentConfigItem.name] = typeObject;
+        }
+        let saveConfig = JSON.stringify( configObject);
+        this.currentObjRepo.componentconfig = saveConfig;
+
+
+        console.log("desc", this.currentObjRepo);
+
+    }
+
+    addObjRepo(){
+        this.modalservice.openModal('ObjectRepositoryManagerAddRepo').subscribe(modal => {
+             modal.instance.objRepo = this.newRepo;
+
+            modal.instance.closedialog.subscribe(added => {
+                if (added){
+                    console.log("this.newRepo", this.newRepo);
+                }
+            });
+        });
+    }
+
+
 
 }

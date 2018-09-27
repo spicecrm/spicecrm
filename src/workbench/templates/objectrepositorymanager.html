@@ -3,15 +3,15 @@
         <label class="slds-form-element__label">Module</label>
         <div style="width:400px"  class="slds-form-element__control">
 
-
             <system-select style="width:100%"  [selectList]="objectRepos" [selectedItem]="objectReposSelectedItem" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
 
         </div>
     </div>
 
     <div class="slds-form-element slds-col--bump-left">
-
+        <button type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addObjRepo()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
     </div>
+
 </div>
 
 
@@ -52,85 +52,83 @@
 
         </div>
     </div>
+
+
+
     <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
-        <div class="slds-grid slds-form--inline slds-p-around--small">
-            <button *ngIf="selectedComponent.component && crActive" type="button"
-                    class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
+
+        <!--configList-->
+
+        <div class="slds-text-align--right ">
+            <button  type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
                 {{language.getLabel('LBL_SAVE')}}
             </button>
         </div>
 
+        <div class="slds-form-element slds-m-vertical_medium">
+            <label class="slds-form-element__label" for="textarea-id-01">Description</label>
+            <div class="slds-form-element__control">
+                <textarea id="textarea-id-01" class="slds-textarea" placeholder="Description..." [(ngModel)]="currentObjRepo.description">{{currentObjRepo.description}}</textarea>
+            </div>
+        </div>
 
-        <!--configList-->
 
         <div class="slds-table_edit_container slds-is-relative">
-            <table class="slds-table slds-table_bordered slds-table_resizable-cols slds-table_fixed-layout slds-no-cell-focus slds-table_edit" role="grid" style="width: 66.75rem;">
+            <label class="slds-form-element__label" for="textarea-id-01">Configuration</label>
+            <table class="slds-table slds-table_bordered" role="grid" style="width: 100%;">
+
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th aria-sort="none" aria-label="Name" scope="col">
+                            <span class="slds-truncate" title="Name">Name</span>
+                    </th>
+                    <th aria-sort="none"  aria-label="Name" scope="col">
+                            <span class="slds-truncate" title="Name">Type</span>
+                    </th>
+                </tr>
+                </thead>
+
+
         <tbody>
-        <tr class="slds-hint-parent">
-            <td class="slds-cell-error slds-cell-edit" role="gridcell">
-                <button id="error-01" class="slds-button slds-button_icon slds-button_icon-error slds-m-horizontal_xxx-small slds-hidden" aria-hidden="true" tabindex="-1" title="Item 1 has errors">
-                    <svg class="slds-button__icon" aria-hidden="true">
-                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error" />
-                    </svg>
-                    <span class="slds-assistive-text">Item 1 has errors</span>
-                </button>
-                <span class="slds-row-number slds-text-body_small slds-text-color_weak"></span>
-            </td>
-            <td class="slds-cell-edit" role="gridcell">
-          <span class="slds-checkbox">
-            <input type="checkbox" name="options" id="checkbox-01" value="checkbox-01" tabindex="-1" aria-labelledby="check-button-label-01 check-group-header" />
-            <label class="slds-checkbox__label" for="checkbox-01" id="check-button-label-01">
-              <span class="slds-checkbox_faux"></span>
-              <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
-            </label>
-          </span>
-            </td>
-            <th class="slds-cell-edit" scope="row" tabindex="0">
-          <span class="slds-grid slds-grid_align-spread"><a href="javascript:void(0);" class="slds-truncate" id="link-01" tabindex="-1" title="Acme - 1,200 Widgets">Acme - 1,200 Widgets</a>
-            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Name: Item 1">
-              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
-              </svg>
-              <span class="slds-assistive-text">Edit Name: Item 1</span>
-            </button>
-          </span>
-            </th>
-            <td class="slds-cell-edit" role="gridcell">
-          <span class="slds-grid slds-grid_align-spread">
-            <span class="slds-truncate" title="Acme">Acme</span>
-            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Account Name: Item 1">
-              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
-              </svg>
-              <span class="slds-assistive-text">Edit Account Name: Item 1</span>
-            </button>
-          </span>
-            </td>
-            <td class="slds-cell-edit" role="gridcell">
-          <span class="slds-grid slds-grid_align-spread">
-            <span class="slds-truncate" title="4/10/15">4/10/15</span>
-            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Close Date: Item 1">
-              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
-              </svg>
-              <span class="slds-assistive-text">Edit Close Date: Item 1</span>
-            </button>
-          </span>
-            </td>
-            <td class="slds-cell-edit" role="gridcell">
-          <span class="slds-grid slds-grid_align-spread">
-            <span class="slds-truncate" title="Value Proposition">Value Proposition</span>
-            <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="-1" title="Edit Stage: Item 1">
-              <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_edit" aria-hidden="true">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit" />
-              </svg>
-              <span class="slds-assistive-text">Edit Stage: Item 1</span>
-            </button>
-          </span>
-            </td>
+        <ng-container *ngFor="let currentConfig of currentConfigArray; index as i">
+            <tr class="slds-hint-parent">
+                <td class="slds-cell-edit" role="gridcell">
+                    <span class="slds-grid slds-grid_align-spread">
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" [(ngModel)]="currentConfig.name" />
+                        </div>
+                    </span>
+                </td>
+                <td class="slds-cell-edit" role="gridcell">
+                    <span class="slds-grid slds-grid_align-spread">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="currentConfig.type">
+                                    <option *ngFor="let fieldType of fieldTypeList" [value]="fieldType">{{fieldType}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </span>
+                </td>
+            </tr>
+        </ng-container>
         </tbody>
             </table>
+            <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
+                <button class="slds-button slds-button--icon" title="add item" (click)="addConfig()">
+                    <system-button-icon [icon]="'new'"></system-button-icon>
+                </button>
+            </div>
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
