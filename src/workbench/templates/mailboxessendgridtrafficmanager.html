@@ -1,35 +1,29 @@
 <div class="slds-p-horizontal--medium slds-p-vertical--small">
-    <h1>Sendgrid</h1>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-3">
+    <h1>{{language.getLabel('LBL_SENDGRID')}}</h1>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-1">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_DISPLAY_NAME')}}</label>
             <input type="text"
                    [(ngModel)]="model.data.settings.imap_pop3_display_name"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
-        <div class="slds-form-element slds-size--1-of-3">
+
+    </div>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_USER_NAME')}}</label>
             <input type="text"
                    [(ngModel)]="model.data.settings.imap_pop3_username"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
-        <div class="slds-form-element slds-size--1-of-3">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_API_KEY')}}</label>
             <input type="text" [(ngModel)]="model.data.settings.api_key"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-3">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_TEST_EMAIL')}}</label>
-            <input type="text" [(ngModel)]="model.data.settings.test_email"
-                   class="slds-input ng-pristine ng-valid"/>
-        </div>
-    </div>
-    <div class="slds-grid">
-        <button type="button"
-                class="slds-col--bump-left slds-button slds-button--neutral"
-                (click)="testConnection()" [disabled]="valid_connection">
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="valid_connection">
             {{language.getLabel('LBL_TEST')}}
         </button>
     </div>
