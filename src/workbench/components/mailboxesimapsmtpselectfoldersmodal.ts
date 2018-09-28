@@ -6,9 +6,9 @@ import {view} from "../../services/view.service";
 @Component({
     providers: [model, view],
     selector: "mailbox-folders-modal",
-    templateUrl: "./src/workbench/templates/mailboxfoldersmodal.html",
+    templateUrl: "./src/workbench/templates/mailboxesimapsmtpselectfoldersmodal.html",
 })
-export class MailboxFoldersModalComponent implements OnInit
+export class MailboxesIMAPSMTPSelectFoldersModal implements OnInit
 {
     public modifiedData = [];
     public self; // needed for selfdestruction... will be set on creation...
