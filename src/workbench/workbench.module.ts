@@ -59,11 +59,12 @@ import /*embed*/ {ValidationRulesActions} from "./components/validationrulesacti
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
-import /*embed*/ {MailboxesManagerTestEmailModal} from "./components/mailboxesmanagertestemailmodal";
+import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
+import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/maixlboxmanageradddialog";
-import /*embed*/ {MailboxFoldersModalComponent} from "./components/mailboxfoldersmodalcomponent";
+import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import /*embed*/ {LabelSelectorComponent} from "./components/labelselector";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
@@ -140,11 +141,12 @@ import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepos
         MailboxesManager,
         LanguageLabelModal,
         MailboxManagerAddDialog,
-        MailboxesManagerTestEmailModal,
+        MailboxesmanagerTestModal,
+        MailboxesmanagerTestIMAPModal,
         MailboxesImapSmtpTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
-        MailboxFoldersModalComponent,
+        MailboxesIMAPSMTPSelectFoldersModal,
         SortPipe,
         LabelSelectorComponent,
         ServiceCategoryManagerComponent,
