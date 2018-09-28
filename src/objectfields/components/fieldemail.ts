@@ -30,7 +30,8 @@ export class fieldEmail extends fieldGeneric {
             if(emailaddress.primary_address == 1) {
                 emailaddress.email_address = newemail;
                 emailaddress.email_address_caps = newemail.toUpperCase();
-                emailaddress.email.id = '';
+                emailaddress.email_address_id = '';
+                emailaddress.id = '';
             }
         }
     }
