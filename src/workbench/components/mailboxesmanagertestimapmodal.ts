@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef,EventEmitter} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
@@ -9,13 +9,18 @@ import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: "./src/workbench/templates/mailboxesmanagertestemailmodal.html",
+    templateUrl: "./src/workbench/templates/mailboxesmanagertestimapmodal.html",
 })
-export class MailboxesManagerTestEmailModal {
+export class MailboxesmanagerTestIMAPModal {
 
     public self: any = {};
     private validConnection: boolean = false;
+    public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
     private testemailaddress: string = "";
+    private imapStatus: boolean = false;
+    private smtpStatus: boolean = false;
+    private testing: boolean = false;
+    private tested: boolean = false;
 
     constructor(
         private backend: backend,
@@ -25,6 +30,7 @@ export class MailboxesManagerTestEmailModal {
     }
 
     public testConnection() {
+        this.testing = true;
         this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id, test_email: this.testemailaddress}).subscribe(
             (response: any) => {
                 if (response.imap.result === true) {
@@ -34,20 +40,35 @@ export class MailboxesManagerTestEmailModal {
                 }
 
                 if (response.imap.errors && response.imap.errors.length > 0) {
-                    // this.toast.sendToast(response.imap.errors);
-                } else if (response.smtp.errors && response.smtp.errors.length > 0) {
-                    // this.toast.sendToast(response.smtp.errors);
+                    this.imapStatus = false;
+                } else {
+                    this.imapStatus = true;
                 }
 
-                this.close();
+                if (response.smtp.errors && response.smtp.errors.length > 0) {
+                    this.smtpStatus = false;
+                } else {
+                    this.smtpStatus = true;
+                }
+
+                this.tested = true;
+                this.testing = false;
             },
             (err: any) => {
-                // this.toast.sendToast("Connection Error #3864");
-                this.close();
+                this.testing = false;
             });
     }
 
     private close() {
+        this.isvalid.emit(this.validConnection);
         this.self.destroy();
+    }
+
+    get imapIcon(){
+        return this.imapStatus ? "check" : "close";
+    }
+
+    get smtpIcon(){
+        return this.smtpStatus ? "check" : "close";
     }
 }
