@@ -20,7 +20,22 @@ export class fieldEmail extends fieldGeneric {
         return this.value;  // <--- not needed anymore? :o
     }
 
-    sendEmail() {
+    get value(){
+        return this.model.getFieldValue(this.fieldname);
+    }
+
+    set value(newemail){
+        this.model.setField(this.fieldname, newemail);
+        for(let emailaddress of this.model.getFieldValue('emailaddresses')){
+            if(emailaddress.primary_address == 1) {
+                emailaddress.email_address = newemail;
+                emailaddress.email_address_caps = newemail.toUpperCase();
+                emailaddress.email.id = '';
+            }
+        }
+    }
+
+    private sendEmail() {
         if (this.model.data[this.fieldname] != '') {
             window.location.assign('mailto:' + this.model.data[this.fieldname]);
         }
