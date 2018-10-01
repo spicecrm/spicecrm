@@ -1,4 +1,4 @@
-import {Injectable, EventEmitter} from '@angular/core';
+import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from './backend.service';
 import {fts} from './fts.service';
@@ -11,7 +11,7 @@ import {session} from "./session.service";
 declare var moment: any;
 
 @Injectable()
-export class modellist {
+export class modellist implements OnDestroy {
     module: string = '';
     listtype: string = 'all';
     listtype$: EventEmitter<String>;
@@ -76,6 +76,7 @@ export class modellist {
     ];
     listTypes: Array<any> = [];
     currentList: any = {};
+    serviceSubscriptions: Array<any> = [];
 
     constructor(
         private broadcast: broadcast,
@@ -90,9 +91,11 @@ export class modellist {
         this.listtype$ = new EventEmitter<String>();
 
         // subscribe to the broadcast service
-        this.broadcast.message$.subscribe(message => {
-            this.handleMessage(message);
-        })
+        this.serviceSubscriptions.push(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
     }
 
     handleMessage(message: any) {
@@ -123,6 +126,13 @@ export class modellist {
         }
     }
 
+    ngOnDestroy() {
+        console.log('service destroyed');
+        // unsubscribe from broadcast
+        for ( let serviceSubscription of this.serviceSubscriptions ) {
+            serviceSubscription.unsubscribe();
+        }
+    }
 
     setModule(module: string) {
         this.module = module;
