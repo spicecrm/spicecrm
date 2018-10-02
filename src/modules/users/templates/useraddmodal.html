@@ -2,7 +2,7 @@
     <system-modal-header (close)="cancel()">
         {{model.module}}
     </system-modal-header>
-    <system-modal-content>
+    <system-modal-content #addcontainer>
         <div class="slds-section" [ngClass]="{'slds-is-open': expanded.profile, 'slds-is-closed': !expanded.profile}">
             <h3 class="slds-section__title">
                 <button aria-controls="expando-unique-id" aria-expanded="true"
