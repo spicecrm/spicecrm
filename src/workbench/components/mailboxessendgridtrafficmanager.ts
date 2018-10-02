@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewContainerRef} from "@angular/core";
 import {Subject} from "rxjs";
 import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
@@ -24,6 +24,7 @@ export class MailboxesSendgridTrafficManager implements OnInit {
         private modal: modal,
         private toast: toast,
         private view: view,
+        private ViewContainerRef: ViewContainerRef
     ) {
         this.model.module = "Mailboxes";
         this.view.isEditable = true;
@@ -42,28 +43,8 @@ export class MailboxesSendgridTrafficManager implements OnInit {
 
     public testConnection() {
 
-        this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
-
-            modalRef.instance.messagelabel = "LBL_TESTING_CONNECTION";
-
-            this.model.save();
-
-            this.backend.getRequest(
-                "mailboxes/test",
-                {mailbox_id: this.model.data.id},
-                ).subscribe((response: any) => {
-                    if (response.result === true) {
-                    } else if (response.errors && response.errors.length > 0) {
-                        this.toast.sendToast(response.errors);
-                    } else {
-                        this.toast.sendToast("Connection Error #3863");
-                    }
-                    modalRef.instance.self.destroy();
-                },
-                (err: any) => {
-                    this.toast.sendToast("Connection Error #3864");
-                    modalRef.instance.self.destroy();
-                });
+        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector ).subscribe(modalRef => {
+            console.log("test happened");
         });
 
     }
