@@ -29,6 +29,7 @@ export class MailboxesmanagerTestModal {
 
     public testConnection() {
         this.testing = true;
+        this.testemailaddress = this.testemailaddress.trim();
         this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id, test_email: this.testemailaddress}).subscribe(
             (response: any) => {
                 if (response.result === true) {
@@ -51,4 +52,9 @@ export class MailboxesmanagerTestModal {
         this.isvalid.emit(this.validConnection);
         this.self.destroy();
     }
+
+    public onModalEscX() {
+        this.close();
+    }
+
 }
