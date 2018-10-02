@@ -17,13 +17,14 @@ export class mailboxesEmails {
     public mailboxes: any[] = [];
     public emails: Array<any> = [];
 
-    public activeMailBox: any;
+    private _activeMailBox: any;
     private _activeEmail: any;
     public activeEmail$: EventEmitter<any> = new EventEmitter<any>();
     public unreadonly: boolean = true;
     public openonly: boolean = true;
     public isLoading: boolean = false;
     public emailopenness: string = "";
+    public allLoaded: boolean = false;
 
     constructor(
         private backend: backend,
@@ -39,6 +40,15 @@ export class mailboxesEmails {
     set activeEmail(email) {
         this._activeEmail = email;
         this.activeEmail$.emit(email);
+    }
+
+    get activeMailBox() {
+        return this._activeMailBox;
+    }
+
+    set activeMailBox(mailbox) {
+        this._activeMailBox = mailbox;
+        this.allLoaded = false;
     }
 
     private getMailboxes() {
@@ -168,9 +178,14 @@ export class mailboxesEmails {
 
 
         this.backend.getRequest("module/Emails", parameters).subscribe((res: any) => {
-            for (let mail of res.list) {
-                this.emails.push(mail);
+            if (res.list.length > 0) {
+                for (let mail of res.list) {
+                    this.emails.push(mail);
+                }
+            } else {
+                this.allLoaded = true;
             }
+
             this.isLoading = false;
         });
     }

@@ -22,10 +22,10 @@ export class relatedmodels {
     public items: any = [];
     public items$ = new EventEmitter();
     public count: number = 0;
-    private loaditems: number = 5;
+    public loaditems: number = 5;
     private relationshipFields: Array<string> = [];
-    private isloading: boolean = true;
-    private sort: any = {
+    public isloading: boolean = true;
+    public sort: any = {
         sortfield: "",
         sortdirection: "ASC"
     };
@@ -47,7 +47,7 @@ export class relatedmodels {
         );
     }
 
-    private stopSubscriptions() {
+    public stopSubscriptions() {
         for (let subscription of this.serviceSubscriptions) {
             subscription.unsubscribe();
         }
@@ -193,7 +193,7 @@ export class relatedmodels {
         this.items = [];
     }
 
-    private addItems(items) {
+    public addItems(items) {
         let relatedIds: Array<any> = [];
         for (let item of items) {
             relatedIds.push(item.id);
@@ -224,7 +224,7 @@ export class relatedmodels {
         });
     }
 
-    private setItem(item) {
+    public setItem(item) {
         this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
 
         });

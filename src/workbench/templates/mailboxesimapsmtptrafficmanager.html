@@ -1,7 +1,32 @@
 <div class="slds-p-horizontal--medium slds-p-vertical--small">
-    <h1>IMAP</h1>
+    <h1>{{language.getLabel('LBL_USER')}}</h1>
     <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-2">
+        <div class="slds-form-element slds-size--1-of-1">
+            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_DISPLAY_NAME')}}</label>
+            <input type="text"
+                   [(ngModel)]="model.data.settings.imap_pop3_display_name"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_USER_NAME')}}</label>
+            <input type="text"
+                   [(ngModel)]="model.data.settings.imap_pop3_username"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PASSWORD')}}</label>
+            <input type="password"
+                   [(ngModel)]="model.data.settings.imap_pop3_password"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+    </div>
+</div>
+<div class="slds-p-horizontal--medium slds-p-vertical--small">
+    <h1>{{language.getLabel('LBL_IMAP')}}</h1>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PROTOCOL_TYPE')}}</label>
             <select type="text"
                     [(ngModel)]="model.data.settings.imap_pop3_protocol_type"
@@ -10,19 +35,19 @@
                 <option value="pop3">{{language.getLabel('LBL_POP3')}}</option>
             </select>
         </div>
-        <div class="slds-form-element slds-size--1-of-2">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_HOST')}}</label>
             <input type="text" [(ngModel)]="model.data.settings.imap_pop3_host"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-2">
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PORT')}}</label>
             <input type="text" [(ngModel)]="model.data.settings.imap_pop3_port"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
-        <div class="slds-form-element slds-size--1-of-2">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_ENCRYPTION')}}</label>
             <select type="text"
                     [(ngModel)]="model.data.settings.imap_pop3_encryption"
@@ -33,48 +58,36 @@
             </select>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-4">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_DISPLAY_NAME')}}</label>
-            <input type="text"
-                   [(ngModel)]="model.data.settings.imap_pop3_display_name"
-                   class="slds-input ng-pristine ng-valid"/>
-        </div>
-        <div class="slds-form-element slds-size--1-of-4">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_USERNAME')}}</label>
-            <input type="text"
-                   [(ngModel)]="model.data.settings.imap_pop3_username"
-                   class="slds-input ng-pristine ng-valid"/>
-        </div>
-        <div class="slds-form-element slds-size--2-of-4">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PASSWORD')}}</label>
-            <input type="password"
-                   [(ngModel)]="model.data.settings.imap_pop3_password"
-                   class="slds-input ng-pristine ng-valid"/>
-        </div>
-    </div>
 </div>
 <div class="slds-p-horizontal--medium slds-p-vertical--small">
-    <h1>SMTP</h1>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-2">
+    <h1>{{language.getLabel('LBL_SMTP')}}</h1>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_HOST')}}</label>
             <input type="text" [(ngModel)]="model.data.settings.smtp_host"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
-        <div class="slds-form-element slds-size--1-of-2">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_AUTHENTICATION')}}</label>
-            <input type="checkbox" [(ngModel)]="model.data.settings.smtp_auth"
-                   class="ng-untouched ng-pristine ng-valid"/>
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+            <div class="slds-form-element">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_AUTHENTICATION')}}</label>
+            </div>
+            <div class="slds-form-element">
+                <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="smtp_auth" [(ngModel)]="model.data.settings.smtp_auth" />
+                    <label class="slds-checkbox__label" for="smtp_auth">
+                        <span class="slds-checkbox_faux"></span>
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-2">
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PORT')}}</label>
             <input type="text" [(ngModel)]="model.data.settings.smtp_port"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
-        <div class="slds-form-element slds-size--1-of-2">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_ENCRYPTION')}}</label>
             <select type="text"
                     [(ngModel)]="model.data.settings.smtp_encryption"
@@ -85,54 +98,55 @@
             </select>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-3">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_SMTP_VERIFY_PEER')}}</label>
-            <input type="checkbox"
-                   [(ngModel)]="model.data.settings.smtp_verify_peer"
-                   class="ng-untouched ng-pristine ng-valid"/>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-4">
+            <div class="slds-form-element">
+                <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="smtp_verify_peer" [(ngModel)]="model.data.settings.smtp_verify_peer" />
+                    <label class="slds-checkbox__label" for="smtp_verify_peer">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_SMTP_VERIFY_PEER')}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
-        <div class="slds-form-element slds-size--1-of-3">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_SMTP_VERIFY_PEER_NAME')}}</label>
-            <input type="checkbox"
-                   [(ngModel)]="model.data.settings.smtp_verify_peer_name"
-                   class="ng-untouched ng-pristine ng-valid"/>
+        <div class="slds-form-element slds-size--1-of-4">
+            <div class="slds-form-element">
+                <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="smtp_verify_peer_name" [(ngModel)]="model.data.smtp_verify_peer_name" />
+                    <label class="slds-checkbox__label" for="smtp_verify_peer_name">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_SMTP_VERIFY_PEER_NAME')}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
-        <div class="slds-form-element slds-size--1-of-3">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_SMTP_ALLOW_SELF_SIGNED')}}</label>
-            <input type="checkbox"
-                   [(ngModel)]="model.data.settings.smtp_allow_self_signed"
-                   class="ng-untouched ng-pristine ng-valid"/>
+        <div class="slds-form-element slds-size--1-of-4">
+            <div class="slds-form-element">
+                <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="allow_external_delete" [(ngModel)]="model.data.allow_external_delete" />
+                    <label class="slds-checkbox__label" for="allow_external_delete">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_IMAP_SMTP_ALLOW_EXTERNAL_DELETE')}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-1">
-            <label class="slds-truncate slds-form-element__label">
-                {{language.getLabel('LBL_IMAP_SMTP_ALLOW_EXTERNAL_DELETE')}}</label>
-            <input type="checkbox"
-                   [(ngModel)]="model.data.settings.allow_external_delete"
-                   class="ng-untouched ng-pristine ng-valid"/>
-        </div>
-    </div>
-    <div class="slds-grid">
-        <div class="slds-form-element slds-size--1-of-2">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_TEST_EMAIL')}}</label>
-            <input type="text" [(ngModel)]="model.data.settings.test_email"
-                   class="slds-input ng-pristine ng-valid"/>
+        <div class="slds-form-element slds-size--1-of-4">
+            <div class="slds-form-element">
+                <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="smtp_allow_self_signed" [(ngModel)]="model.data.smtp_allow_self_signed" />
+                    <label class="slds-checkbox__label" for="smtp_allow_self_signed">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_SMTP_ALLOW_SELF_SIGNED')}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-<div class="slds-grid">
-    <button type="button"
-            class="slds-col--bump-left slds-button slds-button--neutral"
-            (click)="testConnection()" [disabled]="valid_connection">
-        {{language.getLabel('LBL_TEST_CONNECTION')}}
-    </button>
-    <button [disabled]="!validConnection" type="button"
-            class="slds-col--bump-left slds-button slds-button--neutral"
-            (click)="displayFoldersModal()">
-        {{language.getLabel('LBL_SELECT_IMAP_FOLDERS')}}
-    </button>
+<div class="slds-grid slds-p-horizontal--medium slds-p-vertical--small">
+    <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="valid_connection">{{language.getLabel('LBL_TEST_CONNECTION')}}</button>
+    <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()">{{language.getLabel('LBL_IMAP_SELECT_FOLDERS')}}</button>
 </div>
 

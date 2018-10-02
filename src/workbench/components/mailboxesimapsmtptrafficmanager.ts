@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
+import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef} from "@angular/core";
 import {Input} from "@angular/core";
 import {SimpleChange} from "@angular/core";
 import {Subject, Observable} from "rxjs";
@@ -11,13 +11,13 @@ import {model} from "../../services/model.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
-import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
+import {MailboxesIMAPSMTPSelectFoldersModal} from "./mailboxesimapsmtpselectfoldersmodal";
 
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
     templateUrl: "./src/workbench/templates/mailboxesimapsmtptrafficmanager.html",
 })
-export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
+export class MailboxesImapSmtpTrafficManager implements OnInit {
     private mailboxes: any[] = [];
     private validConnection: boolean = false;
     private modelsubscription: any = undefined;
@@ -31,12 +31,9 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
         private modal: modal,
         private toast: toast,
         private view: view,
+        private ViewContainerRef: ViewContainerRef
     ) {
-        this.modelsubscription = this.model.data$.subscribe(
-            (data) => {
-            // this.handleModelChange(data);
-            },
-        );
+
     }
 
     public ngOnInit() {
@@ -63,26 +60,6 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
         }
     }
 
-    public ngOnChanges() {
-        /*if (this.connectionValidated.firstChange !== true &&
-            this.connectionValidated.currentValue === true) {
-            if (this.mailboxes.length === 0) {
-                this.getMailboxes().subscribe(
-                    (response: any) => {
-                        this.displayFoldersModal();
-                    },
-                );
-            } else {
-                this.displayFoldersModal();
-            }
-        }*/
-
-    }
-
-    ngOnDestroy() {
-        this.modelsubscription.unsubscribe();
-    }
-
     private handleModelChange(data) {
         this.validConnection = false;
         this.mailboxes = [];
@@ -106,24 +83,29 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
     private displayFoldersModal() {
         this.getMailboxes().subscribe(
             (response) => {
-                this.metadata.addComponent(
-                    "MailboxFoldersModalComponent",
-                    this.footer.footercontainer,
-                ).subscribe(
+
+                this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.ViewContainerRef.injector).subscribe(
                     (cmp) => {
                         cmp.instance.setModel(this.model);
                         cmp.instance.setMailboxes(this.mailboxes);
                     },
                     (error) => {
                         this.toast.sendToast(error);
-                    },
+                    }
                 );
-            },
+            }
         );
     }
 
     public testConnection() {
-        this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
+
+        this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.ViewContainerRef.injector).subscribe(testmodal => {
+            testmodal.instance.isvalid.subsribe(validconnection => {
+                this.validConnection = validconnection;
+            });
+        });
+
+        /*this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
 
             modalRef.instance.messagelabel = "LBL_TESTING_CONNECTION";
 
@@ -132,7 +114,7 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
             this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id}).subscribe(
                 (response: any) => {
                     if (response.imap.result === true) {
-                        this.validConnection = true;
+                        this.core = true;
                     } else {
                         this.validConnection = false;
                     }
@@ -150,5 +132,6 @@ export class MailboxesImapSmtpTrafficManager implements OnDestroy, OnInit {
                     modalRef.instance.self.destroy();
                 });
         });
+        */
     }
 }
