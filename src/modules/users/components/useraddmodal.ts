@@ -1,12 +1,11 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, OnInit} from "@angular/core";
+import {AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
-import {Observable} from "rxjs";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 
 declare var moment: any;
@@ -16,10 +15,9 @@ declare var moment: any;
     providers: [model, view]
 })
 export class UserAddModal implements OnInit, AfterViewChecked {
-
-    private componentconfig: any = {};
-
     public self: any;
+    @ViewChild("addcontainer", {read: ViewContainerRef}) private addcontainer: ViewContainerRef;
+    private componentconfig: any = {};
     private informationFieldset: any[] = [];
     private profileFieldset: any[] = [];
     private response: Observable<object> = null;
@@ -52,8 +50,26 @@ export class UserAddModal implements OnInit, AfterViewChecked {
         this.response = this.responseSubject.asObservable();
     }
 
+    get pwderror() {
+        return this.password && !this.pwdCheck.test(this.password) ? "Password does not match the Guideline." : false;
+    }
+
+    get pwdreperror() {
+        return this.password == this.repeatPassword ? false : "Inputs for the new Password does not match."; // does not match password
+    }
+
+    get saveData() {
+        let saveData: any = {};
+        for (let fieldName in this.model.data) {
+            saveData[fieldName] = this.modelutilities.spice2backend("Users", fieldName, this.model.data[fieldName]);
+        }
+        return saveData;
+    }
+
     public ngOnInit() {
-        this.model.id = this.model.generateGuid();
+        let guid = this.model.generateGuid();
+        this.model.id = guid;
+        this.model.data.id = guid;
         this.model.data.UserType = "RegularUser";
         this.model.data.status = "Active";
         this.getComponentConfig();
@@ -66,20 +82,12 @@ export class UserAddModal implements OnInit, AfterViewChecked {
 
     private getComponentConfig() {
         this.componentconfig = this.metadata.getComponentConfig("UserAddModal", "Users");
-        if(this.componentconfig.profile) {
+        if (this.componentconfig.profile) {
             this.profileFieldset = this.componentconfig.profile;
         }
-        if(this.componentconfig.information) {
+        if (this.componentconfig.information) {
             this.informationFieldset = this.componentconfig.information;
         }
-    }
-
-    get pwderror() {
-        return this.password && !this.pwdCheck.test(this.password) ? "Password does not match the Guideline." : false;
-    }
-
-    get pwdreperror() {
-        return this.password == this.repeatPassword ? false : "Inputs for the new Password does not match."; // does not match password
     }
 
     private getInfo() {
@@ -114,12 +122,11 @@ export class UserAddModal implements OnInit, AfterViewChecked {
     }
 
     private save(goDetail: boolean = false) {
-
         this.saveTriggered = true;
-
         this.setDefaultModelData();
-        if(!this.checkErrors()) { return false;}
-
+        if (!this.checkErrors()) {
+            return false;
+        }
         this.backend.postRequest("module/Users/" + this.model.id, {}, JSON.stringify(this.saveData))
             .subscribe(
                 response => {
@@ -132,50 +139,46 @@ export class UserAddModal implements OnInit, AfterViewChecked {
                 },
                 resErr => {
                     if (resErr.error.error.message) {
+                        this.addcontainer.element.nativeElement.scrollTop = 0;
                         this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
                     }
                 });
-
     }
 
-    get saveData(){
-        let saveData = {};
-        for (let fieldName in this.model.data) {
-            saveData[fieldName] = this.modelutilities.spice2backend("Users", fieldName, this.model.data[fieldName]);
-        }
-        return saveData;
-    }
-
-    private setDefaultModelData(){
+    private setDefaultModelData() {
         this.model.data.system_generated_password = (this.passwordAction == "auto");
         this.model.data.date_entered = new moment();
         this.model.data.date_modified = new moment();
         this.model.data.pwd_last_changed = new moment();
     }
 
-    private checkErrors(){
+    private checkErrors() {
 
         let isValid = true;
 
         if (this.infoLoaded) {
-            if (this.pwderror) { isValid = false;}
+            if (this.pwderror) {
+                isValid = false;
+            }
         }
         if (this.passwordAction == "select") {
-            if (!this.password || this.pwdreperror) { isValid = false;}
+            if (!this.password || this.pwdreperror) {
+                isValid = false;
+            }
         }
 
-        if(!this.model.validate()) {
+        if (!this.model.validate()) {
             isValid = false;
         }
 
-        if(this.model.data.user_name && !this.userNameCheck.test(this.model.data.user_name)) {
+        if (this.model.data.user_name && !this.userNameCheck.test(this.model.data.user_name)) {
             this.model.setFieldMessage("error", "Only characters A-Z, a-z, numbers 1-9, dot, and underscore.", "user_name", "validation");
             isValid = false;
         }
         return isValid;
     }
 
-    private savePassword(goDetail){
+    private savePassword(goDetail) {
         this.backend.postRequest("user/password/new", {}, {
             newpwd: this.password,
             userId: this.model.id,
