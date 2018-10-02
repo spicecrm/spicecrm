@@ -202,10 +202,12 @@ export class modelutilities {
      * @param {string} str
      * @returns {boolean}
      */
-    static strtobool(str:string):boolean
+    public static strtobool(str: string): boolean
     {
-        switch(str.toLowerCase().trim())
-        {
+        if(typeof str != "string") {
+            return false;
+        }
+        switch(str.toLowerCase().trim()) {
             case "false": case "no": case "0": case "": return false;
             default: return true;
         }
@@ -217,7 +219,7 @@ export class modelutilities {
      * @param   {number}    now     the timestamp which is used as a base for the calculation of relative dates.
      * @returns {moment}
      */
-    static strtomoment(text:string, now?:number)
+    public static strtomoment(text: string, now?: number)
     {
         return moment(modelutilities.strtotime(text,now),"X");
     }
