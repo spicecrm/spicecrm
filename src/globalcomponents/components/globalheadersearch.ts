@@ -29,6 +29,7 @@ export class GlobalHeaderSearch {
     showRecent: boolean = false;
     searchTimeOut: any = undefined;
     searchTerm: string = '';
+    searchTermUntrimmed: string = '';
     clickListener: any;
 
     constructor(private router: Router, private broadcast: broadcast, private fts: fts, private elementRef: ElementRef, private renderer: Renderer,  private popup: popup, private language: language) {
@@ -46,10 +47,12 @@ export class GlobalHeaderSearch {
         this.clickListener();
         this.showRecent = false;
         this.searchTerm = '';
+        this.searchTermUntrimmed = '';
     }
 
     doSearch() {
-        if (this.searchTerm !== '' && this.searchTerm !== this.fts.searchTerm) {
+        this.searchTerm = this.searchTermUntrimmed.trim();
+        if ( this.searchTerm.length && this.searchTerm !== this.fts.searchTerm ) {
             // start the search
             this.fts.search(this.searchTerm);
 
@@ -64,9 +67,8 @@ export class GlobalHeaderSearch {
 
         //clear the serachterm
         this.searchTerm = '';
+        this.searchTermUntrimmed = '';
         this.fts.searchTerm = '';
-
-
     }
 
     search(_e) {
@@ -79,7 +81,8 @@ export class GlobalHeaderSearch {
             case 'ArrowUp':
                 break;
             case 'Enter':
-                if(this.searchTerm.length > 0){
+                this.searchTerm = this.searchTermUntrimmed.trim();
+                if( this.searchTerm.length ){
                     if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
                     // set the searchterm .. the timeout might not have gotten it

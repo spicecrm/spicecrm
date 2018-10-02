@@ -1,64 +1,77 @@
-import {Component, Input, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
-import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
-import {model} from '../../../services/model.service';
-import {toast} from '../../../services/toast.service';
-import {broadcast} from '../../../services/broadcast.service';
-import {session} from '../../../services/session.service';
+import {Component, OnDestroy} from "@angular/core";
+import {Router} from "@angular/router";
+import {language} from "../../../services/language.service";
+import {backend} from "../../../services/backend.service";
+import {broadcast} from "../../../services/broadcast.service";
+import {session} from "../../../services/session.service";
 
 @Component({
-    templateUrl: './src/modules/deployment/templates/deploymentcractive.html',
+    templateUrl: "./src/modules/deployment/templates/deploymentcractive.html",
     host: {
-        '[style.display]': 'getDisplay()'
+        "[style.display]": "getDisplay()"
     },
 })
-export class DeploymentCRActive implements OnDestroy{
+export class DeploymentCRActive implements OnDestroy {
 
-    activeID = '';
-    activeName = '';
-    broadcastsubscription: any = null;
+    private activeID = "";
+    private activeName = "";
+    private broadcastsubscription: any = null;
 
-    constructor(private language: language, private backend: backend, private broadcast: broadcast, private session: session, private router: Router) {
-        this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+    constructor(private language: language,
+                private backend: backend,
+                private session: session,
+                private broadcast: broadcast,
+                private router: Router) {
+        this.backend.getRequest("systemdeploymentcrs/active").subscribe(crresponse => {
             this.activeID = crresponse.id;
             this.activeName = crresponse.name;
-        })
+        });
 
-        // listen to the briacaset
         this.broadcastsubscription = this.broadcast.message$.subscribe(message => {
-            if (message.messagedata.module !== 'SystemDeploymentCRs')
+            if (message.messagedata.module !== "SystemDeploymentCRs") {
                 return;
+            }
 
             switch (message.messagetype) {
-                case 'cr.setactive':
+                case "cr.setactive":
                     this.activeID = message.messagedata.id;
                     this.activeName = message.messagedata.name;
                     break;
-
+                case "model.save":
+                    if (message.messagedata.id === this.activeID) {
+                        this.activeID = message.messagedata.id;
+                        this.activeName = message.messagedata.data.name;
+                    }
+                    break;
+                case "model.delete":
+                    if (message.messagedata.id === this.activeID) {
+                        this.activeID = "";
+                        this.activeName = "";
+                    }
+                    break;
             }
-        })
+        });
     }
 
-    get crName(){
-        return this.activeName != '' ? this.activeName : '-none-';
+    get crName() {
+        return this.activeName != "" ? this.activeName : "-none-";
     }
 
-    get isAdmin(){
+    get isAdmin() {
         return this.session.isAdmin;
     }
 
-    ngOnDestroy(){
+    public ngOnDestroy() {
         this.broadcastsubscription.unsubscribe();
     }
 
 
-    getDisplay() {
+    private getDisplay() {
 
-        return this.isAdmin ? 'inherit' : 'none';
+        return this.isAdmin ? "inherit" : "none";
     }
 
-    goCR(){
-        this.router.navigate(['/module/SystemDeploymentCRs' + (this.activeID ? '/' + this.activeID : '')]);
+    private goCR() {
+        this.router.navigate(["/module/SystemDeploymentCRs" + (this.activeID ? "/" + this.activeID : "")]);
     }
 }

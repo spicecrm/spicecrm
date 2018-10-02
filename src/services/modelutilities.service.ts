@@ -147,7 +147,8 @@ export class modelutilities {
     /*
      * a method to normilzae and clean an account name
      */
-    private cleanAccountName(name) {
+    // todo this needs to be moved
+    public cleanAccountName(name) {
         let companyNames = ["ag", "gmbh", "gesmbh", "corp", "inc"];
         let newname = name.toLowerCase();
         newname = newname.replace(/[^\w\s]/gi, "");
