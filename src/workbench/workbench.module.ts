@@ -63,7 +63,7 @@ import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanager
 import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
-import /*embed*/ {MailboxManagerAddDialog} from "./components/maixlboxmanageradddialog";
+import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import /*embed*/ {LabelSelectorComponent} from "./components/labelselector";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";

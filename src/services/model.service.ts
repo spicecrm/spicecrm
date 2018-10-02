@@ -17,6 +17,7 @@ import {Router} from "@angular/router";
 
 declare var moment: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
+declare var _: any;
 
 interface fieldstati {
     editable: boolean;
@@ -526,9 +527,8 @@ export class model {
     }
 
     public setFieldValue(field, value) {
-        if (!field) {
-            return false;
-        }
+        if ( !field ) return false;
+        if ( _.isString( value )) value = value.trim();
         this.data[field] = value;
         this.data$.emit(this.data);
         this.evaluateValidationRules(field, "change");
