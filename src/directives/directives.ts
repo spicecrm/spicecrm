@@ -12,6 +12,7 @@ import /*embed*/ {SpiceUIToBottomDirective} from "./directives/spiceuitobottom";
 import /*embed*/ {ModelProviderDirective} from "./directives/modelprovider";
 import /*embed*/ {LocalVariableDirective} from "./directives/localvariable";
 import /*embed*/ {SpiceUIAutofocusDirective} from "./directives/spiceuiautofocus";
+import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
 
 @NgModule({
     imports: [
@@ -23,6 +24,7 @@ import /*embed*/ {SpiceUIAutofocusDirective} from "./directives/spiceuiautofocus
         ModelProviderDirective,
         LocalVariableDirective,
         SpiceUIAutofocusDirective,
+        FirstUpperCasePipe
     ],
     exports: [
         ModelPopOverDirective,
@@ -30,6 +32,7 @@ import /*embed*/ {SpiceUIAutofocusDirective} from "./directives/spiceuiautofocus
         ModelProviderDirective,
         LocalVariableDirective,
         SpiceUIAutofocusDirective,
+        FirstUpperCasePipe
     ]
 })
 export class DirectivesModule {
