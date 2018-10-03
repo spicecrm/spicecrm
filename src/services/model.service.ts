@@ -200,6 +200,10 @@ export class model {
                 this.isValid = false;
                 this.addMessage("error", this.language.getLabel("MSG_INPUT_REQUIRED") + "!", field);
             }
+            if( this.getFieldStati(field).invalid)
+            {
+                this.isValid = false;
+            }
         }
         if (!this.isValid) {
             console.warn("validation failed:", this.messages);
