@@ -5,6 +5,6 @@
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="getFieldClass()">
-    <input class="slds-input" type="text" [(ngModel)]="value"/>
+    <input class="slds-input" type="text" [(ngModel)]="value" (blur)="changed()"/>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
