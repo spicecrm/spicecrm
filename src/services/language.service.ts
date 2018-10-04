@@ -66,8 +66,8 @@ export class language {
             params.lang = this.currentlanguage;
         }
 
-            this.http.get(
-                this.configurationService.getBackendUrl() + '/module/language',
+            this.http.post(
+                this.configurationService.getBackendUrl() + '/module/language', {},
                 {headers: this.session.getSessionHeader(), observe: "response", params: params}
             ).subscribe(
                 (res: any) => {
