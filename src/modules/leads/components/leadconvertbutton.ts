@@ -34,6 +34,7 @@ export class LeadConvertButton {
                     this.model.setField('status', 'Converted');
                     this.model.setField('opportunity_id', opportunityData.id);
                     this.model.setField('opportunity_name', opportunityData.name);
+                    this.model.setField('opportunity_amount', opportunityData.amount);
                     this.model.save();
                 })
             });
