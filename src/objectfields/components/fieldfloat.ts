@@ -19,13 +19,14 @@ export class fieldFloat extends fieldGeneric implements OnInit {
         super(model, view, language, metadata, router);
     }
 
-    ngOnInit(){
+    ngOnInit() {
+        this.textvalue = this.getValAsText();
         this.model.data$.subscribe( () => {
-            this.textvalue = this.getTextValue();
+            this.textvalue = this.getValAsText();
         });
     }
 
-    getTextValue() {
+    getValAsText() {
         if ( this.value === undefined ) return '';
         let val = parseFloat( this.value );
         if ( isNaN( val )) return '';
@@ -41,7 +42,7 @@ export class fieldFloat extends fieldGeneric implements OnInit {
         } else {
             this.value = ( Math.floor( val * Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits )) / Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits ));
         }
-        this.textvalue = this.getTextValue();
+        this.textvalue = this.getValAsText();
     }
 
 }
