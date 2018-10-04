@@ -12,8 +12,15 @@ import {Router}   from '@angular/router';
 })
 export class fieldEmail extends fieldGeneric {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
-        super(model, view, language, metadata, router);
+    private invalid = false;
+    private mark: string;
+
+    // from https://emailregex.com
+    private validation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$' );
+
+    constructor(public model: model, public view: view, public l: language, public metadata: metadata, public router: Router) {
+        super(model, view, l, metadata, router);
+        this.mark = this.model.generateGuid();
     }
 
     get email() {
@@ -25,6 +32,12 @@ export class fieldEmail extends fieldGeneric {
     }
 
     set value(newemail){
+
+        if ( this.invalid && this.validation.test( newemail )) {
+            this.model.resetFieldMessages( this.fieldname, 'error', this.mark );
+            this.invalid = false;
+        }
+
         this.model.setField(this.fieldname, newemail);
         for(let emailaddress of this.model.getFieldValue('emailaddresses')){
             if(emailaddress.primary_address == 1) {
@@ -33,6 +46,16 @@ export class fieldEmail extends fieldGeneric {
                 emailaddress.email_address_id = '';
                 emailaddress.id = '';
             }
+        }
+    }
+
+    private changed() {
+        if ( this.value.length && this.validation.test( this.value )) {
+            this.model.resetFieldMessages( this.fieldname, 'error', this.mark );
+            this.invalid = false;
+        } else {
+            this.model.setFieldMessage( 'error', this.l.getLabel('LBL_INPUT_INVALID'), this.fieldname, this.mark );
+            this.invalid = true;
         }
     }
 
