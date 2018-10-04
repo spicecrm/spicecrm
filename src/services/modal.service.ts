@@ -134,12 +134,12 @@ export class modal {
         return this.prompt("info", text, headertext, theme);
     }
 
-    public await( text: string = null ): EventEmitter<boolean> {
+    public await( messagelabel: string = null ): EventEmitter<boolean> {
         let stopper = new EventEmitter<boolean>();
-        this.openModal("SystemAwaitModal").subscribe(component => {
-            component.instance.text = text;
+        this.openModal("SystemLoadingModal").subscribe(component => {
+            component.instance.messagelabel = messagelabel;
             stopper.subscribe( () => {
-                component.destroy();
+                component.instance.self.destroy();
             });
         });
         return stopper;
