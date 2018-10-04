@@ -134,13 +134,15 @@ export class modal {
         return this.prompt("info", text, headertext, theme);
     }
 
-    public await( stop: EventEmitter<boolean>, text: string = null ) {
+    public await( text: string = null ): EventEmitter<boolean> {
+        let stopper = new EventEmitter<boolean>();
         this.openModal("SystemAwaitModal").subscribe(component => {
             component.instance.text = text;
-            stop.subscribe( () => {
+            stopper.subscribe( () => {
                 component.destroy();
             });
         });
+        return stopper;
     }
 
 }
