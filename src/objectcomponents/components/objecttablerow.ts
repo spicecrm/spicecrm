@@ -1,10 +1,12 @@
 import {
-    Component, EventEmitter, HostBinding,
+    Attribute,
+    Component, EventEmitter,
     Input, Output,
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
+import {modelutilities} from "../../services/modelutilities.service";
 
 declare var _;
 
@@ -18,42 +20,39 @@ declare var _;
 })
 export class ObjectTableRow
 {
-    @Input() fields = [];
-    @Input() selected = false;
-    @Output('select') select$ = new EventEmitter();
-    @Output('unselect') unselect$ = new EventEmitter();
-    private _selectable:boolean = false;
+    @Input() public fields = [];
+    @Input() public selected = false;
+    @Output('select') public select$ = new EventEmitter();
+    @Output('unselect') public unselect$ = new EventEmitter();
+    private selectable: boolean = false;
+    @Input('selectable') public attr_selectable: string;
 
     constructor(
         private language: language,
         private model: model,
-        private view: view
+        private view: view,
     ) {
         this.view.isEditable = false;
     }
 
-    // only static via attribute allowed!
-    @Input()
-    get selectable():boolean { return this._selectable; }
-    set selectable(value) {
-        // if value is "" because only the tag is attached to, take it as true...
-        if(value == 'false' || value == '0')
-            value = false;
-        else
-            value = true;
-        this._selectable = value;
+    public ngOnInit()
+    {
+        // cause of attribute binding doesn't work when using attr.selectable I have to use it as @Input... and read it only one time here...
+        this.selectable = this.attr_selectable !== null;
     }
 
-    toggleSelection()
+    public toggleSelection()
     {
-        if(!this.selectable)
+        if(!this.selectable) {
             return false;
+        }
 
         this.selected = !this.selected;
-        if(this.selected)
+        if(this.selected) {
             this.select$.emit(this.model.data);
-        else
+        } else {
             this.unselect$.emit(this.model.data);
+        }
     }
 
 }
