@@ -1,24 +1,17 @@
 <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
     <thead>
-        <tr class="slds-text-title--caps">
-            <th *ngIf="selectable" class="slds-cell-shrink" scope="col">
-                <span class="slds-assistive-text" id="check-group-header">{{language.getLabel('LBL_CHOOSE_ROWS_TO_SELECT')}}</span>
-                <!--span class="slds-checkbox">
-                  <input type="checkbox" id="checkbox-checkall-{{id}}" aria-labelledby="check-button-label-all check-group-header" (click)="toggleAll()" [disabled]="objects.length > max_selections" />
-                  <label class="slds-checkbox__label" for="checkbox-checkall-{{id}}" id="check-button-label-all">
-                    <span class="slds-checkbox_faux"></span>
-                    <span class="slds-form-element__label slds-assistive-text">{{language.getLabel('LBL_SELECT_ALL')}}</span>
-                  </label>
-                </span-->
-                <system-checkbox (click)="toggleAll()" [disabled]="objects.length > max_selections" [label]="'LBL_SELECT_ALL'"></system-checkbox>
-            </th>
-            <th *ngFor="let field of fields" scope="col">
-                <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate">{{language.getFieldDisplayName(module, field.field, field.fieldconfig)}}</div>
-            </th>
-        </tr>
+    <tr class="slds-text-title--caps">
+        <th *ngIf="selectable" class="slds-cell-shrink" scope="col">
+            <span class="slds-assistive-text" id="check-group-header">{{language.getLabel('LBL_CHOOSE_ROWS_TO_SELECT')}}</span>
+            <system-checkbox [checked]="areAllObjectsSelected()" (click)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
+        </th>
+        <th *ngFor="let field of fields" scope="col">
+            <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate">{{language.getFieldDisplayName(module, field.field, field.fieldconfig)}}</div>
+        </th>
+    </tr>
     </thead>
     <tbody>
-        <tr object-table-row *ngFor="let object of objects" [fields]="fields" [modelProvider]="{module:module, data:object}" selectable="{{selectable}}" (select)="select($event)" (unselect)="unselect($event)" [selected]="isObjectSelected(object)">
-        </tr>
+    <tr object-table-row *ngFor="let object of objects" [fields]="fields" [modelProvider]="{module:module, data:object}" [selectable]="selectable ? true : null" (select)="select($event)" (unselect)="unselect($event)" [selected]="isObjectSelected(object)">
+    </tr>
     </tbody>
 </table>

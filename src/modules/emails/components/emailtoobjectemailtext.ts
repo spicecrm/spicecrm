@@ -30,6 +30,7 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
     private clickListener: any = null;
     private displayContextMenu: boolean = false;
     private displayContextCoordinates: any = {top: 0, left: 0};
+    private _striped_content: string;
 
     constructor(
         private elementRef: ElementRef,
@@ -40,15 +41,32 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
 
     }
 
-    get content() {
+    get content(): string {
         return this.html ? this.html : this.text;
+    }
+
+    get striped_content(): string
+    {
+        if(this._striped_content) {
+            return this._striped_content;
+        }
+
+        if(this.html) {
+            this._striped_content = this.html
+                .replace(/<!--.*?-->/gs, "")    // removes comments <!-- blabla -->
+                .replace(/<[^>]+>/g,"")        // removes all kinds of tags
+                .replace(/[ ]{2,}/g, " ").replace(/[\n\r]{3,}/g, "\n");
+        } else {
+            this._striped_content = this.text;
+        }
+        return this._striped_content;
     }
 
     public ngOnInit() {
         if(!this.target_module_fields || this.target_module_fields.length === 0) {
             let available_types: Array<string> = ["varchar", "text"];
             let field_defs = this.metadata.getModuleFields(this.target_module_name);
-            console.log(field_defs);
+            //console.log(field_defs);
             for(let field in field_defs) {
                 if(available_types.indexOf(field_defs[field].type) >= 0 && field_defs[field].vname && field_defs[field].name !== "id") {
                     this.target_module_fields.push(field);

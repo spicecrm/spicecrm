@@ -93,7 +93,7 @@ export class DashboardWeatherDashlet implements OnInit{
 
     set dayToShow(value){
         this.daytoshow = value;
-        this.dayHourToShow = value[4] ? value[4] : value[0];
+        this.dayHourToShow = value.length == 8 ? value[4] : value[0];
     }
 
     get dayToShow(){

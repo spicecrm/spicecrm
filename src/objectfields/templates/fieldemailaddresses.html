@@ -1,12 +1,20 @@
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div class="slds-grid slds-grid--vertical-align-center">
-        <div class="slds-truncate">{{email}}</div>
-        <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="email" [icon]="'email'" [sprite]="'action'" [size]="'x-small'" (click)="sendEmail()"></system-icon>
+<ng-container *ngFor="let emailaddress of model.data.emailaddresses">
+    <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="emailaddress.email_address" [icon]="'email'" [sprite]="'action'" [size]="'x-small'" (click)="sendEmail()"></system-icon>
+            <div class="slds-truncate" [ngStyle]="emailaddress.invalid_email == '1' ? {'text-decoration': 'line-through'} : {}">{{emailaddress.email_address}}</div>
+            <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="emailaddress.primary_address == '1'" title="Primary" [icon]="'favorite'" [sprite]="'utility'" [size]="'xx-small'"></system-icon>
+        </div>
+    </field-generic-display>
+    <div *ngIf="isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+         [ngClass]="getFieldClass()">
+        <div class="slds-size--1-of-1">
+            <field-email-emailaddress class="slds-size--1-of-1" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)"></field-email-emailaddress>
+        </div>
     </div>
-</field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
-     [ngClass]="getFieldClass()">
-    <div class="slds-size--1-of-1">
-        <field-email-emailaddress class="slds-size--1-of-1" *ngFor="let emailaddress of model.data.emailaddresses" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)"></field-email-emailaddress>
-    </div>
+</ng-container>
+<div *ngIf="isEditMode()" class="slds-grid slds-align-content-center slds-p-vertical--x-small slds-border--top">
+    <button style="border-radius: 50%;" class="slds-button slds-button--icon-small slds-button--neutral slds-p-around--xx-small" title="Add New Email" (click)="addEmailAddress()">
+        <system-button-icon [icon]="'add'"></system-button-icon>
+    </button>
 </div>

@@ -1,9 +1,11 @@
 import {
+    Attribute,
     Component, EventEmitter, HostBinding,
     Input, OnInit, Output,
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {modelutilities} from "../../services/modelutilities.service";
 
 declare var _;
 
@@ -11,6 +13,7 @@ declare var _;
  * a generic object table component, used to display an array of objects, providing features like selecting, editing (coming), sorting (coming), pagination (coming)
  * todo: adding editing, sorting, pagination features!
  * created by: sebastian franz at 2018-07-16
+ * update: changed selectable and multiselect to attributes
  */
 @Component({
     selector: 'object-table',
@@ -18,27 +21,29 @@ declare var _;
 })
 export class ObjectTable implements OnInit
 {
-    @Input() module:string;
-    @Input() fieldset_id:string;
-    @Input() fields = [];
-    @Input() objects = [];
-    @Input() selected_objects:any = [];
-
-    private _selectable = false;
-    private _multiselect = false;
-    @Input('max-selections') max_selections = 0;
-
-    @Output('selected_objectsChange') selected_objects$ = new EventEmitter();
-    @Output('select') select$ = new EventEmitter();
+    @Input() public fields = [];
+    @Input() public objects = [];
+    @Input() public selected_objects: any = [];
+    @Output('selected_objectsChange') public selected_objects$ = new EventEmitter();
+    @Input('max-selections') public max_selections = 0;
+    @Output('select') public select$ = new EventEmitter();
+    private selectable = false;
+    private multiselect = false;
 
     constructor(
         private language: language,
-        private metadata: metadata
+        private metadata: metadata,
+        @Attribute("fieldset_id") private fieldset_id: string,
+        @Attribute("module") private module: string,
+        @Attribute("selectable") selectable: string,
+        @Attribute("multiselect") multiselect: string,
     ) {
-
+        // only null is false... everything else is true!
+        this.selectable = selectable !== null;
+        this.multiselect = multiselect !== null;
     }
 
-    ngOnInit()
+    public ngOnInit()
     {
         if(!this.fields || this.fields.length == 0)
         {
@@ -61,24 +66,10 @@ export class ObjectTable implements OnInit
 
     }
 
-    // only static via attribute allowed!
-    @Input()
-    get selectable():boolean { return this._selectable; }
-    set selectable(value) {
-        this._selectable = true;
-    }
-
-    // only static via attribute allowed!
-    @Input()
-    get multiselect():boolean { return this._multiselect; }
-    set multiselect(value) {
-        this._multiselect = true;
-    }
-
-    toggleAll()
+    public toggleAll()
     {
         if(this.selected_objects.length < this.objects.length)
-            this.selected_objects = this.objects;
+            this.selected_objects = [...this.objects];
         else
             this.selected_objects = [];
 
@@ -86,7 +77,7 @@ export class ObjectTable implements OnInit
         this.select$.emit(this.selected_objects);
     }
 
-    select(object)
+    public select(object)
     {
         if(!this.findSelectedObject(object) && this.selected_objects.length < this.max_selections)
         {
@@ -96,7 +87,7 @@ export class ObjectTable implements OnInit
         }
     }
 
-    unselect(object)
+    public unselect(object)
     {
         let idx = this.selected_objects.findIndex(e => e.id == object.id);
         if(idx > -1)
@@ -107,14 +98,18 @@ export class ObjectTable implements OnInit
         }
     }
 
-    isObjectSelected(object)
+    private isObjectSelected(object)
     {
-        if(this.findSelectedObject(object))
-        {
+        if(this.findSelectedObject(object)) {
             return true;
-        }
-        else
+        } else {
             return false;
+        }
+    }
+
+    private areAllObjectsSelected()
+    {
+        return this.selected_objects.length == this.objects.length;
     }
 
     private findSelectedObject(object)
