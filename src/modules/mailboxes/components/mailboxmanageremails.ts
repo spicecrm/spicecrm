@@ -23,10 +23,13 @@ export class MailboxManagerEmails {
         };
     }
 
-    private onScroll(e) { // todo make this work
-        let element = this.elementref.nativeElement;
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight && !this.mailboxesEmails.isLoading) {
-            this.mailboxesEmails.loadMore();
+    private onScroll(e) {
+        if (this.mailboxesEmails.allLoaded === false) {
+            let element = this.elementref.nativeElement;
+            if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight
+                && !this.mailboxesEmails.isLoading) {
+                this.mailboxesEmails.loadMore();
+            }
         }
     }
 }

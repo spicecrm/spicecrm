@@ -25,8 +25,9 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
 
     ngOnInit(){
         this.currencyidfield = this.fieldconfig.field_currencyid;
+        this.textvalue = this.getValAsText();
         this.model.data$.subscribe( () => {
-            this.textvalue = this.getTextValue();
+            this.textvalue = this.getValAsText();
         });
     }
 
@@ -46,7 +47,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         return currencySymbol;
     }
 
-    getTextValue() {
+    getValAsText() {
         if ( this.value === undefined ) return '';
         let val = parseFloat( this.value );
         if ( isNaN( val )) return '';
@@ -62,7 +63,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         } else {
             this.value = Math.floor( val * Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits )) / Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits );
         }
-        this.textvalue = this.getTextValue();
+        this.textvalue = this.getValAsText();
     }
 
 }

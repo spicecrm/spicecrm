@@ -15,8 +15,8 @@ import {view} from "../../services/view.service";
 })
 export class MailboxesManager {
 
-    @ViewChild("relatecontainer", {read: ViewContainerRef}) relatecontainer: ViewContainerRef;
-    relatecontainerElement: any = undefined;
+    @ViewChild("relatecontainer", {read: ViewContainerRef}) private relatecontainer: ViewContainerRef;
+    private relatecontainerElement: any = undefined;
 
     public mailboxes: any[];
     private _selected_mailbox;
@@ -77,7 +77,7 @@ export class MailboxesManager {
     private addMailbox() {
         this.metadata.addComponent("MailboxManagerAddDialog", this.footer.footercontainer).subscribe(
             (comp) => {
-                comp.instance['closedialog'].subscribe(
+                comp.instance.closedialog.subscribe(
                     (data) => {
                         if (data) {
                             this.mailboxes.push(data);
@@ -137,6 +137,7 @@ export class MailboxesManager {
             .subscribe(
                 (res) => {
                     this.toast.sendToast(res);
+                    this.model.setField("is_default", true);
                 },
                 (err) => {
                     console.log(err);
