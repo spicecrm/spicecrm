@@ -142,7 +142,7 @@ constructor(private backend: backend, private toast: toast ) {
      * formatting functions
      * http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
      */
-    formatMoney( i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep ) {
+    formatMoney( i, n = this.toUse.currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep ) {
         var re = '\\d(?=(\\d{' + x + '})+' + ( n > 0 ? '\\D':'$' ) + ')',
             num = i.toFixed(Math.max(0, ~~n));
         return num.replace( '.', decSep ).replace( new RegExp( re, 'g' ), '$&' + grpSep );
