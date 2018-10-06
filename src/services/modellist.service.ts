@@ -127,7 +127,6 @@ export class modellist implements OnDestroy {
     }
 
     ngOnDestroy() {
-        console.log('service destroyed');
         // unsubscribe from broadcast
         for ( let serviceSubscription of this.serviceSubscriptions ) {
             serviceSubscription.unsubscribe();

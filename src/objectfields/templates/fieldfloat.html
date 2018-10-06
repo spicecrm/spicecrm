@@ -1,6 +1,6 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div class="slds-text-align_right">
-        <span>{{getTextValue()}}</span>
+        <span>{{getValAsText()}}</span>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
