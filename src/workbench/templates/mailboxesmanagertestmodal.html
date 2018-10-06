@@ -1,8 +1,8 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_EMAIL_TEST')}}</system-modal-header>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_TESTEMAIL_DELIVERY')}}</system-modal-header>
     <system-modal-content>
         <div class="slds-form-element slds-size--1-of-1">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_DESTINATION_EMAIL_ADDRESS')}}</label>
+            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_DESTINATION_ADDRESS')}}</label>
             <input type="text" [disabled]="testing" [(ngModel)]="testemailaddress" class="slds-input" />
         </div>
     </system-modal-content>
