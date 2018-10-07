@@ -9,6 +9,7 @@ import {broadcast} from '../../services/broadcast.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {view} from '../../services/view.service';
 
 @Component({
     selector: 'workbench-config-option-componentset',
@@ -16,11 +17,11 @@ import {language} from '../../services/language.service';
 })
 export class WorkbenchConfigOptionModule implements AfterViewInit {
 
-    configValues: any = [];
-    option: any = {};
-    objtype: string = "";
+    public configValues: any = [];
+    public option: any = {};
+    public objtype: string = "";
 
-    modules: Array<any> = [];
+    private modules: Array<any> = [];
 
     constructor(private backend: backend,
                 private metadata: metadata,
@@ -28,10 +29,11 @@ export class WorkbenchConfigOptionModule implements AfterViewInit {
                 private modelutilities: modelutilities,
                 private broadcast: broadcast,
                 private toast: toast,
+                private view: view,
                 private cdRef: ChangeDetectorRef) {
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.modules = this.metadata.getModules().sort();
         this.cdRef.detectChanges();
     }
