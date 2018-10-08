@@ -9,16 +9,14 @@ import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    templateUrl: "./src/workbench/templates/mailboxesmanagertestimapmodal.html",
+    templateUrl: "./src/workbench/templates/mailboxesmanagertestmodal.html",
 })
-export class MailboxesmanagerTestIMAPModal {
+export class MailboxesmanagerTestModal {
 
     public self: any = {};
     private validConnection: boolean = false;
     public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
     private testemailaddress: string = "";
-    private imapStatus: boolean = false;
-    private smtpStatus: boolean = false;
     private testing: boolean = false;
     private tested: boolean = false;
 
@@ -31,31 +29,22 @@ export class MailboxesmanagerTestIMAPModal {
 
     public testConnection() {
         this.testing = true;
+        this.testemailaddress = this.testemailaddress.trim();
         this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id, test_email: this.testemailaddress}).subscribe(
             (response: any) => {
-                if (response.imap.result === true) {
+                if (response.result === true) {
                     this.validConnection = true;
                 } else {
                     this.validConnection = false;
-                }
-
-                if (response.imap.errors && response.imap.errors.length > 0) {
-                    this.imapStatus = false;
-                } else {
-                    this.imapStatus = true;
-                }
-
-                if (response.smtp.errors && response.smtp.errors.length > 0) {
-                    this.smtpStatus = false;
-                } else {
-                    this.smtpStatus = true;
                 }
 
                 this.tested = true;
                 this.testing = false;
             },
             (err: any) => {
+                this.tested = false;
                 this.testing = false;
+                this.validConnection = false;
             });
     }
 
@@ -64,11 +53,8 @@ export class MailboxesmanagerTestIMAPModal {
         this.self.destroy();
     }
 
-    get imapIcon(){
-        return this.imapStatus ? "check" : "close";
+    public onModalEscX() {
+        this.close();
     }
 
-    get smtpIcon(){
-        return this.smtpStatus ? "check" : "close";
-    }
 }

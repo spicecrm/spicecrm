@@ -10,7 +10,7 @@ export class toast {
 
     }
 
-    public sendToast(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): void {
+    public sendToast(text: string, type: "default"|"warning"|"info"|"success"|"error" = "default", description: string = "", autoClose: boolean | number = true): void {
         if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;

@@ -18,6 +18,19 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
     <script>
+        window.name = 'SpiceCRM';
+        (function () {
+            if ( window.BroadcastChannel ) { // Does the browser know the Broadcast API?
+                let bc = new BroadcastChannel( 'spiceCRM_channel' );
+                bc.onmessage = function(e) {
+                    let myUrl = window.location.origin + window.location.pathname;
+                    if ( e.data.url && e.data.url.startsWith( myUrl )) {
+                        window.location = e.data.url;
+                        bc.postMessage({'urlReceived':true});
+                    }
+                }
+            }
+        })();
         System.import('app').catch(function (err) {
             console.error(err);
         });
