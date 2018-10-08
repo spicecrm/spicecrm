@@ -940,16 +940,37 @@ export class metadata {
     }
 
     /*
+     get modules from Repository
+     */
+    public getSystemModules() {
+        let modArray = [];
+
+        for (let module in this.moduleDirectory) {
+            modArray.push(this.moduleDirectory[module]);
+        }
+
+        modArray.sort((a, b) => {
+            return a.module > b.module ? 1 : -1;
+        });
+
+        return modArray;
+    }
+
+    /*
      get components from Repository
      */
-    public getSystemComponents() {
+    public getSystemComponents(module = undefined) {
         let compArray = [];
 
         for (let component in this.componentDirectory) {
-            compArray.push(component);
+            if(!module || module == this.componentDirectory[component].module) {
+                compArray.push(this.componentDirectory[component]);
+            }
         }
 
-        compArray.sort();
+        compArray.sort((a, b) => {
+            return a.component > b.component ? 1 : -1;
+        });
 
         return compArray;
     }

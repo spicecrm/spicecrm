@@ -11,6 +11,7 @@ import {model} from "../../services/model.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
+import {MailboxesIMAPSMTPSelectFoldersModal} from "./mailboxesimapsmtpselectfoldersmodal";
 
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
@@ -82,26 +83,24 @@ export class MailboxesImapSmtpTrafficManager implements OnInit {
     private displayFoldersModal() {
         this.getMailboxes().subscribe(
             (response) => {
-                this.metadata.addComponent(
-                    "MailboxFoldersModalComponent",
-                    this.footer.footercontainer,
-                ).subscribe(
+
+                this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.ViewContainerRef.injector).subscribe(
                     (cmp) => {
                         cmp.instance.setModel(this.model);
                         cmp.instance.setMailboxes(this.mailboxes);
                     },
                     (error) => {
                         this.toast.sendToast(error);
-                    },
+                    }
                 );
-            },
+            }
         );
     }
 
     public testConnection() {
 
         this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.ViewContainerRef.injector).subscribe(testmodal => {
-            testmodal.instance.isvalid.subsribe( validconnection => {
+            testmodal.instance.isvalid.subsribe(validconnection => {
                 this.validConnection = validconnection;
             });
         });
