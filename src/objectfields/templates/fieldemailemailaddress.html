@@ -2,36 +2,28 @@
     <div class="slds-truncate slds-size--1-of-2">
         <div class="slds-form-element">
             <div class="slds-form-element__control">
-                <input type="text" class="slds-input" [(ngModel)]="emailadr">
+                <span *ngIf="invalid_email" class="slds-p-left--small" style="text-decoration: line-through">{{emailadr}}</span>
+                <input #inputText *ngIf="!invalid_email" type="text" class="slds-input" [(ngModel)]="emailadr">
             </div>
         </div>
     </div>
-    <div class="slds-grid slds-grid--align-end slds-m-left--x-small slds-size--1-of-2">
+    <div class="slds-grid slds-grid--align-start slds-m-left--x-small slds-size--1-of-2">
         <div class="slds-form-element__control" (click)="primary = true">
             <span class="slds-radio">
-              <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="primary">
+              <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="primary" [disabled]="invalid_email || this.emailaddress.email_address == ''">
               <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
                 <span class="slds-radio--faux"></span>
-                <span class="slds-form-element__label">primary</span>
+                <span class="slds-form-element__label slds-p-left--xx-small">primary</span>
               </label>
             </span>
         </div>
 
         <div class="slds-form-element__control">
             <span class="slds-checkbox">
-              <input type="checkbox" [id]="emailaddress.id + 'optout'" [(ngModel)]="opt_out">
+              <input type="checkbox" [id]="emailaddress.id + 'optout'" [(ngModel)]="opt_out" [disabled]="invalid_email || this.emailaddress.email_address == ''">
               <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
                 <span class="slds-checkbox--faux"></span>
-                <span class="slds-form-element__label">opt out</span>
-              </label>
-            </span>
-        </div>
-        <div class="slds-form-element__control">
-            <span class="slds-checkbox">
-              <input type="checkbox" [id]="emailaddress.id + 'invalid'" [(ngModel)]="invalid_email">
-              <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
-                <span class="slds-checkbox--faux"></span>
-                <span class="slds-form-element__label">invalid</span>
+                <span class="slds-form-element__label slds-p-left--xx-small">opt out</span>
               </label>
             </span>
         </div>
