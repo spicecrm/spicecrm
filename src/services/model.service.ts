@@ -713,9 +713,9 @@ export class model {
         let copyrules = this.metadata.getCopyRules("*", this.module);
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
-                this.data[copyrule.tofield] = copyrule.fixedvalue;
+                this.setFieldValue( copyrule.tofield, copyrule.fixedvalue );
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
-                this.data[copyrule.tofield] = this.getCalculatdValue(copyrule.calculatedvalue);
+                this.setFieldValue( copyrule.tofield, this.getCalculatdValue( copyrule.calculatedvalue ));
             }
         }
 
@@ -729,9 +729,9 @@ export class model {
             copyrules = this.metadata.getCopyRules(parent.module, this.module);
             for (let copyrule of copyrules) {
                 if (copyrule.fromfield && copyrule.tofield) {
-                    this.data[copyrule.tofield] = parent.data[copyrule.fromfield];
+                    this.setFieldValue( copyrule.tofield, parent.getFieldValue( copyrule.fromfield ));
                 } else if (copyrule.tofield && copyrule.fixedvalue) {
-                    this.data[copyrule.tofield] = copyrule.fixedvalue;
+                    this.setFieldValue( copyrule.tofield, copyrule.fixedvalue );
                 }
             }
         }
