@@ -46,7 +46,6 @@ export class modal {
                     e => {
                         // remove the wrapper
                         this.removeModal(wrapperComponent);
-
                         // send a toast
                         this.sendError(componentName);
                         retSubjectXY.error(e);
@@ -62,7 +61,7 @@ export class modal {
     }
 
     private sendError(componentName) {
-        this.toast.sendToast(componentName + " not found", "error", "misconfiguration on the system as the component shoudl have been opened in a modal but is not avilable. Please contact your system administrator");
+        this.toast.sendToast('Component "' + componentName + '" not found.', "error", "Misconfiguration on the system as the component should have been opened in a modal but is not avilable. Please contact your system administrator.");
     }
 
     // Removes a modal from the modals array.
