@@ -7,13 +7,25 @@
             <h2 id="header43" class="slds-text-heading--medium">Add Component</h2>
         </div>
         <div class="slds-modal__content slds-p-around--medium">
-            <div class="slds-form-element">
-                <label class="slds-form-element__label" >Component</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select  class="slds-select" [(ngModel)]="component">
-                            <option *ngFor="let component of getComponents()">{{component}}</option>
-                        </select>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label" >{{language.getLabel('LBL_MODULE')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select  class="slds-select" [(ngModel)]="systemmodule">
+                                <option *ngFor="let module of systemmodules" [value]="module.id">{{module.module}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label" >{{language.getLabel('LBL_COMPONENT')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select  class="slds-select" [(ngModel)]="component">
+                                <option *ngFor="let component of components" [value]="component.component">{{component.component}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
