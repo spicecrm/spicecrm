@@ -1,7 +1,5 @@
-<!-- this is a component of class fieldDatePicker -->
-
 <div style="position: absolute;">
-    <div class="slds-datepicker slds-dropdown slds-dropdown--left slds-theme--default"  [ngStyle]="posStyle">
+    <div class="slds-datepicker slds-dropdown slds-dropdown--left slds-theme--default"  [ngStyle]="posStyle" #datepicker>
         <div class="slds-datepicker__filter slds-grid">
             <div class="slds-datepicker__filter--month slds-grid slds-grid--align-spread slds-grow">
                 <div class="slds-align-middle">
@@ -17,7 +15,7 @@
                 </div>
             </div>
             <div class="slds-shrink-none">
-                <label class="slds-assistive-text" for="select-01">Pick a Year</label>
+                <label class="slds-assistive-text" for="select-01">{{language.getLabel('LBL_PICK_A_YEAR')}}</label>
                 <div class="slds-select_container">
                     <select id="select-01" class="slds-select" [(ngModel)]="currentYear">
                         <option>2015</option>
@@ -46,9 +44,9 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" role="gridcell"><a href="javascript:void(0);"
-                                                   class="slds-show--inline-block slds-p-bottom--x-small"
-                                                   (click)="goToday()">Today</a></td>
+                <td colspan="7" role="gridcell">
+                    <a href="javascript:void(0);" class="slds-show--inline-block slds-p-bottom--x-small" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</a>
+                </td>
             </tr>
             </tbody>
         </table>
