@@ -54,6 +54,10 @@ export class fieldParent extends fieldGeneric implements OnInit {
         return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : 'parent_type';
     }
 
+    get parentName(){
+        return this.model.getField(this.fieldname);
+    }
+
     get parentType(){
         return this.model.getField(this.parentTypeField);
     }
@@ -136,21 +140,18 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.model.setField(this.parentIdField, '');
     }
 
-    private onFocus() {
-        // this.getRecent();
-        this.parentTypeSelectOpen = false;
-        this.parentSearchOpen = true;
-
+    private openParentTypes() {
+        this.parentTypeSelectOpen = true;
+        this.parentSearchOpen = false;
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
 
-    private parentSearchStyle() {
-        if (this.parentSearchOpen) {
-            return {
-                display: 'block'
-            };
-        }
+    private onFocusParent() {
+        this.parentTypeSelectOpen = false;
+        this.parentSearchOpen = true;
+        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
+
 
     private goParent() {
         this.router.navigate(['/module/' + this.model.getField(this.parentTypeField) + '/' + this.model.getField(this.parentIdField)]);
