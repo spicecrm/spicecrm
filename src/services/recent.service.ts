@@ -11,7 +11,7 @@ import {Observable, Subject, of} from 'rxjs';
 @Injectable()
 export class recent {
     private items: Array<any> = [];
-    private moduleItems: any = {};
+    public moduleItems: any = {};
 
     constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message))
