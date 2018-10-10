@@ -92,7 +92,7 @@ import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfi
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
 import /*embed*/ {ObjectRepositoryManager} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
-
+import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 
 @NgModule({
     imports: [
@@ -161,7 +161,8 @@ import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepos
         ConfigCleaner,
         GoogleCalendarManager,
         ObjectRepositoryManager,
-        ObjectRepositoryManagerAddRepo
+        ObjectRepositoryManagerAddRepo,
+        ObjectRepositoryManagerAddModule
     ],
     /* no further modules needed */
     entryComponents: [

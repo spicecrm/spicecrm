@@ -3,17 +3,16 @@
         <label class="slds-form-element__label">Module</label>
         <div style="width:400px"  class="slds-form-element__control">
 
-            <system-select style="width:100%"  [selectList]="objectRepos" [selectedItem]="objectReposSelectedItem" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
+            <system-select style="width:100%"  [selectList]="moduleReposSelect" [(selectedItem)]="moduleReposSelectedItem" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
 
         </div>
     </div>
 
     <div class="slds-form-element slds-col--bump-left">
-        <button type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addObjRepo()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+        <button [disabled]="!view.isEditMode()" *ngIf="(currentModule | json) != '{}'" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="editModalRepo()"><system-utility-icon [icon]="'edit'" [size]="'x-small'"></system-utility-icon></button>
+        <button [disabled]="edit_mode == 'none' " type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addModalRepo()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
     </div>
-
 </div>
-
 
 <div class="slds-grid">
     <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
@@ -21,9 +20,9 @@
 
 
 
-            <div class="slds-tabs_default" style="background-color: transparent">
+            <div class="slds-tabs_default" style="background-color: transparent; ">
 
-                <div id="tab-default-1" class="slds-tabs_default__content slds-show" role="tabpanel" aria-labelledby="tab-default-1__item">
+                <div id="tab-default-1" class="slds-tabs_default__content slds-show slds-scrollable_y" role="tabpanel" aria-labelledby="tab-default-1__item" style="max-height: 70%;">
                     <!--<button *ngIf="currentModule" type="button" class="slds-m-bottom_small slds-size_2-of-2 slds-button slds-button&#45;&#45;neutral" (click)="addConf()">{{language.getLabel('LBL_ADD')}}</button>-->
 
                     <!--<system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>-->
@@ -41,49 +40,77 @@
                     </ul>
                     </div>
 
-                    <div *ngIf="currentModule && crActive" class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
-                        <button class="slds-button slds-button--icon" title="add item" (click)="addConf()">
-                            <system-utility-icon [icon]="'new'" [size]="'xx-small'"
-                                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                        </button>
-                    </div>
+
+                </div>
+                <div *ngIf="(currentModule | json) != '{}'" class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
+                    <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addObjRepo()">
+                        <system-button-icon [icon]="'new'"></system-button-icon>
+                    </button>
                 </div>
             </div>
-
         </div>
     </div>
 
 
 
-    <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
+    <div *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
 
         <!--configList-->
 
         <div class="slds-text-align--right ">
-            <button  type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
+            <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
                 {{language.getLabel('LBL_SAVE')}}
             </button>
         </div>
 
         <div class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label" for="textarea-id-01">Description</label>
+            <label class="slds-form-element__label" for="input-id-02">{{language.getAppLanglabel('LBL_OBJECT')}}</label>
             <div class="slds-form-element__control">
-                <textarea id="textarea-id-01" class="slds-textarea" placeholder="Description..." [(ngModel)]="currentObjRepo.description">{{currentObjRepo.description}}</textarea>
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" id="input-id-02" [ngModel]="currentObjRepo.object"/>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-vertical_medium">
+            <label class="slds-form-element__label" for="input-id-03">{{language.getAppLanglabel('LBL_COMPONENT')}}</label>
+            <div class="slds-form-element__control">
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" id="input-id-03" [ngModel]="currentObjRepo.component"/>
             </div>
         </div>
 
 
+
+
+        <div *ngIf="view.isEditMode()" class="slds-form-element slds-m-vertical_medium">
+            <label class="slds-form-element__label" for="editor-id-01">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
+            <div class="slds-form-element__control">
+                <system-html-editor id="editor-id-01" [fieldid]="'123'" [(fieldvalue)]="currentObjRepo.description" [fieldconfig]="'{}'" [useStylesheets]="" [useStylesheetSwitcher]="" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></system-html-editor>
+            </div>
+        </div>
+
+        <div *ngIf="!view.isEditMode()" class="slds-form-element slds-m-vertical_medium">
+            <label class="slds-form-element__label" for="editor-id-01">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
+            <div class="slds-form-element__control slds-box slds-scrollable_y" style="background-color: #ecebea; background-color: #ecebea; max-height: 300px;">
+                <!--<div *ngIf="!asiframe" class="slds-size&#45;&#45;1-of-1 html-text" [innerHTML]="currentObjRepo.description"></div>-->
+                <iframe [(srcdoc)]="currentObjRepo.description" width="100%" height="100%" frameborder="0" seamless="true" sandbox></iframe>
+
+            </div>
+        </div>
+
+
+
         <div class="slds-table_edit_container slds-is-relative">
-            <label class="slds-form-element__label" for="textarea-id-01">Configuration</label>
+            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_CONFIGURATION')}}</label>
             <table class="slds-table slds-table_bordered" role="grid" style="width: 100%;">
 
                 <thead>
                 <tr class="slds-line-height_reset">
                     <th aria-sort="none" aria-label="Name" scope="col">
-                            <span class="slds-truncate" title="Name">Name</span>
+                            <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_NAME')}}</span>
                     </th>
                     <th aria-sort="none"  aria-label="Name" scope="col">
-                            <span class="slds-truncate" title="Name">Type</span>
+                            <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_TYPE')}}</span>
+                    </th>
+                    <th aria-sort="none"  aria-label="Name" scope="col">
+                        <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</span>
                     </th>
                 </tr>
                 </thead>
@@ -92,43 +119,48 @@
         <tbody>
         <ng-container *ngFor="let currentConfig of currentConfigArray; index as i">
             <tr class="slds-hint-parent">
-                <td class="slds-cell-edit" role="gridcell">
+                <td class="slds-cell-edit" role="gridcell" style="width: 30%;">
                     <span class="slds-grid slds-grid_align-spread">
-                        <div class="slds-form-element__control">
-                            <input type="text" class="slds-input" [(ngModel)]="currentConfig.name" />
+                        <div class="slds-form-element__control" style="width: 100%;">
+                            <input [disabled]="!view.isEditMode()" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="currentConfig.name" />
                         </div>
                     </span>
                 </td>
-                <td class="slds-cell-edit" role="gridcell">
+                <td class="slds-cell-edit" role="gridcell" style="width: 12%;">
                     <span class="slds-grid slds-grid_align-spread">
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
-                                <select class="slds-select" [(ngModel)]="currentConfig.type">
+                                <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="currentConfig.type">
                                     <option *ngFor="let fieldType of fieldTypeList" [value]="fieldType">{{fieldType}}</option>
                                 </select>
                             </div>
                         </div>
                     </span>
                 </td>
+                <td class="slds-cell-edit" role="gridcell" style="width: 100%;">
+                    <span class="slds-grid slds-grid_align-spread">
+                        <div class="slds-form-element__control" style="width: 100%;">
+                            <input [disabled]="!view.isEditMode()" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="currentConfig.description" />
+                        </div>
+                    </span>
+                </td>
+                <td class="slds-cell-edit" role="gridcell">
+                    <div class="slds-p-around--small slds-align--absolute-center slds-float_right">
+                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="delete item" (click)="deleteConfig(i)">
+                            <system-button-icon [icon]="'delete'"></system-button-icon>
+                        </button>
+                    </div>
+                </td>
             </tr>
         </ng-container>
         </tbody>
             </table>
             <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
-                <button class="slds-button slds-button--icon" title="add item" (click)="addConfig()">
+                <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addConfig()">
                     <system-button-icon [icon]="'new'"></system-button-icon>
                 </button>
             </div>
-
         </div>
-
-
-
-
-
-
-
-
 
 
 
