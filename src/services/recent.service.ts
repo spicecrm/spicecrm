@@ -6,18 +6,18 @@ import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Router}   from '@angular/router';
-import {Observable, Subject} from 'rxjs';
+import {Observable, Subject, of} from 'rxjs';
 
 @Injectable()
 export class recent {
-    items: Array<any> = [];
-    moduleItems: any = {};
+    private items: Array<any> = [];
+    private moduleItems: any = {};
 
     constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message))
     }
 
-    handleMessage(message: any) {
+    private handleMessage(message: any) {
         switch (message.messagetype) {
 
             case 'model.save':
@@ -59,7 +59,7 @@ export class recent {
         }
     }
 
-    trackItem(module: string, item_id: string, item_summary: string) {
+    public trackItem(module: string, item_id: string, item_summary: string) {
         // handle the general tracker
         this.items.some((item, index) => {
             if(item.module_name === module && item.item_id == item_id){
@@ -74,7 +74,7 @@ export class recent {
             item_summary: item_summary
         });
 
-        while(this.items.length > 50) this.items.pop();
+        while(this.items.length > 50) {this.items.pop();}
 
         // handle the module specific tracker
         if(this.moduleItems[module]){
@@ -91,11 +91,11 @@ export class recent {
                 item_summary: item_summary
             });
 
-            while(this.moduleItems[module].length > 5) this.moduleItems[module].pop();
+            while(this.moduleItems[module].length > 5) {this.moduleItems[module].pop();}
         }
     }
 
-    getRecent(loadhandler: Subject<string>) {
+    public getRecent(loadhandler: Subject<string>) {
         if (sessionStorage[window.btoa('recent'+this.session.authData.sessionId)] && sessionStorage[window.btoa('recent'+this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
             let response = this.session.getSessionData('recent');
             for (let item of response) {
@@ -113,11 +113,11 @@ export class recent {
         }
     }
 
-    getModuleRecent(module: string) {
+    public getModuleRecent(module: string) {
         if(this.moduleItems[module]) {
-            return this.moduleItems[module];
+            return of(this.moduleItems[module]);
         } else {
-            let responseSubject = new Subject<Array<any>>()
+            let responseSubject = new Subject<Array<any>>();
             if (!this.moduleItems[module]) {
                 this.backend.getRecent(module, 5) .subscribe(response => {
                     this.moduleItems[module] = [];
@@ -125,6 +125,7 @@ export class recent {
                         this.moduleItems[module].push(item);
                     }
                     responseSubject.next(this.moduleItems[module]);
+                    responseSubject.complete();
                 });
             }
             return responseSubject.asObservable();
