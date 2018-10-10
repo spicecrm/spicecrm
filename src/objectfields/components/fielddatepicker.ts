@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output, EventEmitter, ElementRef} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {model} from '../../services/model.service';
 import {popup} from '../../services/popup.service';
 import {view} from '../../services/view.service';
@@ -16,8 +16,8 @@ export class fieldDatePicker implements OnInit {
     @Input() setdate: any = new moment();
     @Output() setdateChange: EventEmitter<Date> = new EventEmitter<Date>();
     @Input() posclass: string = 'slds-dropdown--bottom';
-
-    curDate: any = new moment();
+    @ViewChild('datepicker') dp_elem_ref: ElementRef;
+    private curDate: any = new moment();
 
     get currentYear(): number {
         return this.curDate.year();
@@ -29,21 +29,32 @@ export class fieldDatePicker implements OnInit {
     };
 
     get currentMonth(): string {
-        return moment.months()[this.curDate.month()]
+        return moment.months()[this.curDate.month()];
     }
 
-    currentGrid: Array<any> = [];
+    private currentGrid: Array<any> = [];
 
     constructor(private model: model, private view: view, private language: language, private metadata: metadata, private popup: popup, private elementRef: ElementRef) {
     }
 
     get posStyle(){
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
-
-        return{
-            position: 'fixed',
-            top: rect.top - 40 + 'px',
-            left: rect.left + 16 + 'px'
+        let max_height = window.innerHeight;
+        let top = rect.top - 40;
+        if(top <= 0) top = 1;
+        let dp_height = this.dp_elem_ref.nativeElement.offsetHeight;
+        if( top + dp_height > max_height ) {
+            return {
+                position: 'fixed',
+                bottom: '1px',
+                left: rect.left + 'px'
+            };
+        } else {
+            return {
+                position: 'fixed',
+                top: top + 'px',
+                left: rect.left + 'px'
+            };
         }
     }
 
