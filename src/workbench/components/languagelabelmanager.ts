@@ -8,8 +8,6 @@ import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
 import {footer} from "../../services/footer.service";
 import { modal } from '../../services/modal.service';
-//import { LanguageLabelModal } from './languagelabelmodal';
-//import { LanguageLabelReferenceConfigModal } from './languagelabelreferenceconfigmodal';
 
 @Component({
     selector: 'language-label-manager',
@@ -17,36 +15,11 @@ import { modal } from '../../services/modal.service';
 })
 export class LanguageLabelManagerComponent
 {
-    search_term: string = '';
-    labels = [];
-    languages = [];
+    public search_term: string = '';
+    public labels = [];
+    public languages = [];
     private _selected_label = null;
-    is_searching = false;
-    page = 1;
-    translation_scope = 'global';
-    scopes = ['global','custom'];
-
-    constructor(
-        private backend: backend,
-        private metadata: metadata,
-        private language: language,
-        private utils: modelutilities,
-        private toast: toast,
-        private footer: footer,
-        private modalservice: modal
-    ){
-        this.languages = this.language.getAvialableLanguages();
-    }
-
-    showRefModal() {
-        this.modalservice.openModal('LanguageLabelReferenceConfigModal');
-    }
-
-    get selected_label()
-    {
-        return this._selected_label;
-    }
-
+    get selected_label() { return this._selected_label; }
     set selected_label(val)
     {
         this._selected_label = val;
@@ -70,13 +43,33 @@ export class LanguageLabelManagerComponent
             }
         }
     }
+    public is_searching = false;
+    public page = 1;
+    public translation_scope = 'global';
+    public readonly scopes = ['global','custom'];
+
+    constructor(
+        private backend: backend,
+        private metadata: metadata,
+        private language: language,
+        private utils: modelutilities,
+        private toast: toast,
+        private footer: footer,
+        private modalservice: modal
+    ){
+        this.languages = this.language.getAvialableLanguages();
+    }
+
+    public showRefModal() {
+        this.modalservice.openModal('LanguageLabelReferenceConfigModal');
+    }
 
     get translations()
     {
         return this.selected_label[`${this.translation_scope}_translations`];
     }
 
-    search(search_term = null)
+    public search(search_term = null)
     {
         this.page = 1;
         if(!search_term)
@@ -94,7 +87,7 @@ export class LanguageLabelManagerComponent
         );
     }
 
-    addTranslation(scope:string, language_name:string = null)
+    public addTranslation(scope: string, language_name: string = null)
     {
         if( !this.selected_label[scope+'_translations'] )
             this.selected_label[scope+'_translations'] = [];
@@ -112,7 +105,7 @@ export class LanguageLabelManagerComponent
         });
     }
 
-    getMissingLanguages(scope:string = null):any[]
+    public getMissingLanguages(scope: string = null): any[]
     {
         if(!scope)
             scope = this.translation_scope;
@@ -128,7 +121,7 @@ export class LanguageLabelManagerComponent
         return missing_langs;
     }
 
-    addLabel()
+    public addLabel()
     {
         let label = {
             id: this.utils.generateGuid(),
@@ -158,7 +151,7 @@ export class LanguageLabelManagerComponent
         });
     }
 
-    deleteLabel(label)
+    public deleteLabel(label)
     {
         this.modalservice.confirm( this.language.getLabel('LBL_DELETE_LABEL_TEXT'), this.language.getLabel('LBL_DELETE_LABEL_TITLE')).subscribe( ( decision ) => {
             if (decision) {
@@ -179,7 +172,7 @@ export class LanguageLabelManagerComponent
         });
     }
 
-    save()
+    public save()
     {
         //this.backend.postRequest('/syslanguages/labels', null, this.labels).subscribe(
         this.backend.postRequest('/syslanguages/labels', null, [this.selected_label]).subscribe(
@@ -192,7 +185,7 @@ export class LanguageLabelManagerComponent
         );
     }
 
-    closeModal(event)
+    public closeModal(event)
     {
         switch(event)
         {
@@ -212,7 +205,7 @@ export class LanguageLabelManagerComponent
 
     }
 
-    sortTranslations(a,b)
+    public sortTranslations(a,b)
     {
         if(a.syslanguage == this.language.languagedata.languages.default || a.syslanguage < b.syslanguage)
             return -1;
@@ -228,7 +221,7 @@ export class LanguageLabelManagerComponent
      * @param language
      * @returns {any}
      */
-    getLangText(language){
+    public getLangText(language){
         return this.language.getLangText(language);
     }
 
@@ -239,7 +232,7 @@ export class LanguageLabelManagerComponent
     name: 'sort'
 })
 export class SortPipe implements PipeTransform {
-    transform(ary: any, fn: Function = (a,b) => a > b ? 1 : -1): any {
+    public transform(ary: any, fn: Function = (a,b) => a > b ? 1 : -1): any {
         return ary.sort(fn)
     }
 }
