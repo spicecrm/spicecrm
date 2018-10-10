@@ -7,7 +7,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-grid slds-grid--align-start slds-m-left--x-small slds-size--1-of-2">
+    <div class="slds-grid slds-grid--align-start slds-m-left--x-small slds-size--2-of-2">
         <div class="slds-form-element__control" (click)="primary = true">
             <span class="slds-radio">
               <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="primary" [disabled]="invalid_email || this.emailaddress.email_address == ''">
@@ -23,6 +23,15 @@
               <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
                 <span class="slds-checkbox--faux"></span>
                 <span class="slds-form-element__label slds-p-left--xx-small">opt out</span>
+              </label>
+            </span>
+        </div>
+        <div class="slds-form-element__control">
+            <span class="slds-checkbox">
+              <input type="checkbox" [id]="emailaddress.id + 'invalid'" [ngModel]="invalid_email" disabled>
+              <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label slds-p-left--xx-small">invalid</span>
               </label>
             </span>
         </div>
