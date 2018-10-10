@@ -19,17 +19,13 @@ import {fieldGeneric} from './fieldgeneric';
     }
 })
 export class fieldParent extends fieldGeneric implements OnInit {
-    parentIdField: string = 'parent_id';
-    parentNameField: string = 'parent_name';
-    parentTypeField: string = 'parent_type';
+    private clickListener: any;
 
-    clickListener: any;
+    private parentTypeSelectOpen: boolean = false;
+    private parentSearchOpen: boolean = false;
+    private parentSearchTerm: string = '';
 
-    parentTypeSelectOpen: boolean = false;
-    parentSearchOpen: boolean = false;
-    parentSearchTerm: string = '';
-
-    recentItems: Array<any> = [];
+    private recentItems: Array<any> = [];
 
     constructor(
         public model: model,
@@ -51,9 +47,24 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    ngOnInit(){
+    get parentIdField(){
+        return this.fieldconfig.parentIdField ? this.fieldconfig.parentIdField : 'parent_id';
+    }
+    get parentTypeField(){
+        return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : 'parent_type';
+    }
+
+    get parentType(){
+        return this.model.getField(this.parentTypeField);
+    }
+
+    get parentId(){
+        return this.model.getField(this.parentIdField);
+    }
+
+    public ngOnInit(){
         // initialize the parenttype
-        if(!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == ''){
+        if(!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
             this.model.data[this.parentTypeField] = this.parentTypes[0];
         }
     }
@@ -78,7 +89,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
 
                         // set the model
                         this.model.data[this.parentIdField] = message.messagedata.data.id;
-                        this.model.data[this.parentNameField] = message.messagedata.data.summary_text;
+                        this.model.data[this.fieldname] = message.messagedata.data.summary_text;
                     }
                     break;
             }
@@ -93,8 +104,9 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     private closePopups() {
-        if (this.model.data[this.parentIdField])
+        if (this.model.data[this.parentIdField]) {
             this.parentSearchTerm = '';
+        }
 
         this.parentSearchOpen = false;
         this.parentTypeSelectOpen = false;
@@ -102,30 +114,29 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.clickListener();
     }
 
-    setParent(parent){
-        this.model.data[this.parentIdField] = parent.id;
-        this.model.data[this.parentNameField] = parent.text;
+    private setParent(parent){
+        this.model.setField(this.fieldname, parent.text);
+        this.model.setField(this.parentIdField, parent.id);
     }
 
-    toggleParentTypeSelect() {
+    private toggleParentTypeSelect() {
         this.parentTypeSelectOpen = !this.parentTypeSelectOpen;
         this.parentSearchOpen = false;
     }
 
-    setParentType(parentType) {
+    private setParentType(parentType) {
         this.parentSearchTerm = '';
 
-        //this.parentType = parentType;
-        this.model.data[this.parentTypeField] = parentType;
+        this.model.setField(this.parentTypeField, parentType);
         this.parentTypeSelectOpen = false;
     }
 
-    clearParent() {
-        this.model.data[this.parentIdField] = '';
-        this.model.data[this.parentNameField] = '';
+    private clearParent() {
+        this.model.setField(this.fieldname, '');
+        this.model.setField(this.parentIdField, '');
     }
 
-    onFocus() {
+    private onFocus() {
         // this.getRecent();
         this.parentTypeSelectOpen = false;
         this.parentSearchOpen = true;
@@ -133,15 +144,16 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
 
-    parentSearchStyle() {
-        if (this.parentSearchOpen)
+    private parentSearchStyle() {
+        if (this.parentSearchOpen) {
             return {
                 display: 'block'
-            }
+            };
+        }
     }
 
-    goParent(){
-        this.router.navigate(['/module/' + this.model.data[this.parentTypeField] + '/' + this.model.data[this.parentIdField]]);
+    private goParent() {
+        this.router.navigate(['/module/' + this.model.getField(this.parentTypeField) + '/' + this.model.getField(this.parentIdField)]);
     }
 
 }
