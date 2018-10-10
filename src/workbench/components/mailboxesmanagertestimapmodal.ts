@@ -29,26 +29,38 @@ export class MailboxesmanagerTestIMAPModal {
     ) {
     }
 
+    get isInbound() {
+        return this.model.getFieldValue('inbound_comm') ? true : false;
+    }
+
+    get isOutbound() {
+        return this.model.getFieldValue('outbound_comm') != 'no' ? true : false;
+    }
+
     public testConnection() {
         this.testing = true;
         this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id, test_email: this.testemailaddress}).subscribe(
             (response: any) => {
-                if (response.imap.result === true) {
-                    this.validConnection = true;
-                } else {
-                    this.validConnection = false;
+                this.validConnection = true;
+                if(this.isInbound) {
+                    if (response.imap.result !== true) {
+                        this.validConnection = false;
+                    }
+
+                    if (response.imap.errors && response.imap.errors.length > 0) {
+                        this.imapStatus = false;
+                    } else {
+                        this.imapStatus = true;
+                    }
                 }
 
-                if (response.imap.errors && response.imap.errors.length > 0) {
-                    this.imapStatus = false;
-                } else {
-                    this.imapStatus = true;
-                }
-
-                if (response.smtp.errors && response.smtp.errors.length > 0) {
-                    this.smtpStatus = false;
-                } else {
-                    this.smtpStatus = true;
+                if(this.isOutbound) {
+                    if (response.smtp.errors && response.smtp.errors.length > 0) {
+                        this.smtpStatus = false;
+                        this.validConnection = false;
+                    } else {
+                        this.smtpStatus = true;
+                    }
                 }
 
                 this.tested = true;
@@ -57,6 +69,10 @@ export class MailboxesmanagerTestIMAPModal {
             (err: any) => {
                 this.testing = false;
             });
+    }
+
+    private cancel() {
+        this.self.destroy();
     }
 
     private close() {
