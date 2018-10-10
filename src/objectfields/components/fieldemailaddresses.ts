@@ -33,9 +33,9 @@ export class fieldEmailAddresses extends fieldGeneric {
     private setprimary(id) {
         for (let emailaddress of this.model.data.emailaddresses) {
             if (emailaddress.id == id) {
-                emailaddress.primary_address = 1;
+                emailaddress.primary_address = "1";
             } else {
-                emailaddress.primary_address = 0;
+                emailaddress.primary_address = "0";
             }
         }
     }
