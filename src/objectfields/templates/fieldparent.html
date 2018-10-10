@@ -1,5 +1,5 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    <a href="javascript:void(0);"  modelPopOver [module]="this.model.data[this.parentTypeField]" [id]="this.model.data[parentIdField]">{{value}}</a>
+    <a href="javascript:void(0);"  modelPopOver [module]="parentType" [id]="parentId">{{value}}</a>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div class="slds-form-element slds-lookup">
@@ -19,21 +19,17 @@
         <div *ngIf="!model.data[parentIdField]" class="slds-form-element__control slds-grid slds-box--border slds-m-vertical--xxx-small">
             <div class="slds-grid slds-m-vertical--xx-small slds-p-left--xx-small">
                 <div class="slds-col">
-                    <system-icon [module]="model.data[parentTypeField]" [size]="'small'"
-                                 [divClass]="'slds-m-horizontal--xxx-small'"></system-icon>
+                    <system-icon [module]="model.data[parentTypeField]" size="small" divClass="slds-m-horizontal--xxx-small"></system-icon>
                 </div>
                 <div class="slds-col">
-                    <button class="slds-button slds-button--icon slds-button--icon-small" aria-haspopup="true"
-                            (click)="toggleParentTypeSelect()">
-                        <system-button-icon [icon]="'down'" [size]="'small'"></system-button-icon>
+                    <button class="slds-button slds-button--icon slds-button--icon-small"  (click)="toggleParentTypeSelect()">
+                        <system-button-icon icon="down" size="small"></system-button-icon>
                     </button>
                 </div>
             </div>
             <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
-                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="parentSearchTerm"
-                       (focus)="onFocus()"
-                       [placeholder]="'Search ' + language.getModuleName(model.data[parentTypeField])" role="combobox"/>
+                <system-utility-icon icon="search" addclasses="slds-input__icon"></system-utility-icon>
+                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="parentSearchTerm" (focus)="onFocus()" [placeholder]="'Search ' + language.getModuleName(model.data[parentTypeField])" role="combobox"/>
             </div>
         </div>
     </div>
@@ -42,7 +38,7 @@
             <li *ngFor="let parentType of parentTypes" class="slds-dropdown__item" role="presentation">
                 <button class="slds-button slds-lookup__item-action slds-lookup__item-action--label"
                         (click)="setParentType(parentType)">
-                    <system-icon [module]="parentType" [size]="'small'"></system-icon>
+                    <system-icon [module]="parentType" size="small"></system-icon>
                     {{language.getModuleName(parentType)}}
                 </button>
             </li>
