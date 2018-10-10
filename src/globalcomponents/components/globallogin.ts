@@ -18,17 +18,15 @@ declare var _: any;
     }
 })
 export class GlobalLogin {
-    promptUser: boolean = false;
+    private promptUser: boolean = false;
 
-    username: string = '';
-    password: string = '';
+    private username: string = '';
+    private password: string = '';
     private _selectedlanguage: string = '';
-    selectedsite: string = '';
-    lastSelectedLanguage: string = null;
-
-    showForgotPass: boolean = false;
-
-    externalSidebarUrl: SafeResourceUrl = null;
+    private selectedsite: string = '';
+    private lastSelectedLanguage: string = null;
+    private showForgotPass: boolean = false;
+    private externalSidebarUrl: SafeResourceUrl = null;
 
     constructor(private loginService: loginService,
                 private http: HttpClient,
@@ -42,19 +40,16 @@ export class GlobalLogin {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
 
-            // let backendurl = this.configuration.getBackendUrl();
-            //if(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':backendurl')])
-            //    backendurl = atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':backendurl')]);
 
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')])
+            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]){
                 this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
-
+            }
 
             this.http.get(this.configuration.getBackendUrl() + '/login', {
                 headers: headers
             }).subscribe(
                 (res: any) => {
-                    var repsonse = res;
+                    let repsonse = res;
                     this.session.authData.sessionId = repsonse.id;
                     this.session.authData.userId = repsonse.userid;
                     this.session.authData.userName = repsonse.user_name;
@@ -83,22 +78,24 @@ export class GlobalLogin {
             this.promptUser = true;
 
             this.selectedsite = this.cookie.getValue('spiceuibackend');
-            if (this.selectedsite)
+            if (this.selectedsite) {
                 this.configuration.setSiteID(this.selectedsite);
+            }
         }
 
+        // check the last selected language from the Cookie
         this.lastSelectedLanguage = this.cookie.getValue('spiceuilanguage');
 
     }
 
 
-    keypressed(event) {
+    private keypressed(event) {
         if (event.keyCode === 13 && !this.showForgotPass && !this.session.authData.renewPass) {
             this.login();
         }
     }
 
-    login() {
+    private login() {
         if (this.username.length > 0 && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
@@ -123,7 +120,7 @@ export class GlobalLogin {
         return this._selectedlanguage;
     }
 
-    getLanguages() {
+    private getLanguages() {
         let langArray = [];
 
         if (this.configuration.data.languages) {
@@ -138,7 +135,7 @@ export class GlobalLogin {
         return langArray;
     }
 
-    doLogin(){
+    private doLogin() {
         this.loginService.login();
     }
 
@@ -150,7 +147,7 @@ export class GlobalLogin {
         return this.configuration.sites;
     }
 
-    getBackendUrls() {
+    private getBackendUrls() {
         if (this.configuration.data.backendUrls) {
             return this.configuration.data.backendUrls;
         } else {
@@ -158,11 +155,11 @@ export class GlobalLogin {
         }
     }
 
-    setSite(event) {
+    private setSite(event) {
         this.configuration.setSiteID(event.srcElement.value);
     }
 
-    showForgotPassword() {
+    private showForgotPassword() {
         if (this.showForgotPass) {
             this.showForgotPass = false;
         } else {
@@ -173,19 +170,20 @@ export class GlobalLogin {
     get showExternalSidebar() {
         try {
             let ret = !_.isEmpty(this.configuration.data.loginSidebarUrl);
-            if (ret && this.externalSidebarUrl === null)
+            if (ret && this.externalSidebarUrl === null) {
                 this.externalSidebarUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.configuration.data.loginSidebarUrl);
+            }
             return ret;
-        } catch(e){
+        } catch(e) {
             return false;
         }
     }
 
     get showNewsfeed() {
         try {
-            if (!this.configuration.initialized) return false;
+            if (!this.configuration.initialized) {return false;}
             return _.isEmpty(this.configuration.data.loginSidebarUrl);
-        } catch(e){
+        } catch(e) {
             return false;
         }
     }
@@ -193,5 +191,4 @@ export class GlobalLogin {
     get showProgressBar() {
         return this.configuration.data.loginProgressBar;
     }
-
 }
