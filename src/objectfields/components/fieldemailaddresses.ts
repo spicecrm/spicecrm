@@ -24,9 +24,9 @@ export class fieldEmailAddresses extends fieldGeneric {
         return this.model.data[this.fieldname];
     }
 
-    private sendEmail() {
-        if (this.model.data[this.fieldname] != '') {
-            window.location.assign('mailto:' + this.model.data[this.fieldname]);
+    private sendEmail(emailaddress) {
+        if (emailaddress.invalid_email !== '1') {
+            window.location.assign('mailto:' + emailaddress.email_address);
         }
     }
 
