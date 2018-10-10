@@ -66,7 +66,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         return this.model.getField(this.parentIdField);
     }
 
-    public ngOnInit(){
+    public ngOnInit() {
         // initialize the parenttype
         if(!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
             this.model.data[this.parentTypeField] = this.parentTypes[0];
@@ -76,7 +76,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
     get parentTypes(): Array<string>{
         let parenttypes = ['Contacts', 'Accounts', 'Leads'];
 
-        if(this.fieldconfig.parenttypes){
+        if(this.fieldconfig.parenttypes) {
             parenttypes = this.fieldconfig.parenttypes.replace(/\s/g,'').split(',');
         }
 
