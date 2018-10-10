@@ -1,3 +1,6 @@
-<div style="position: absolute;" [ngStyle]="getVizStyle()" class="slds-p-vertical--small slds-p-horizontal--small">
-    <div style="width: 100%; height: 100%;" [id]="chart_element_id"></div>
+<div [ngStyle]="getVizStyle()" class="slds-is-absolute slds-box--border slds-p-vertical--small slds-p-horizontal--small">
+    <div *ngIf="!noData" style="width: 100%; height: 100%;" [id]="chart_element_id"></div>
+    <div *ngIf="noData" style="width: 100%; height: 100%;" class="slds-align_absolute-center">
+        {{language.getLabel('LBL_KREPORT')}} <i>{{reportName}}</i> {{language.getLabel('LBL_HAS')}} {{language.getLabel('LBL_NO_DATA')}}
+    </div>
 </div>
