@@ -5,6 +5,7 @@ import {broadcast} from "../../services/broadcast.service";
 import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
+import {view} from "../../services/view.service";
 
 @Component({
     selector: "workbench-config-option-actionset",
@@ -27,7 +28,8 @@ export class WorkbenchConfigOptionActionset {
         private metadata: metadata,
         private modelutilities: modelutilities,
         private toast: toast,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private view: view
     ) {
     }
 

@@ -37,32 +37,15 @@ export class SystemSelect implements OnChanges {
     //  -- INPUT LIST STRUCTURE --
     // id
     // name
-    // group (not available yet)
+    // group
 
     public ngOnChanges(changes: SimpleChanges) {
-
-
-
-        if(changes.selectList !== undefined){
-            console.log("now: ", this.selectList);
-            this.searchList = this.selectList;
-
-            let result = {} ;
-            for(let searchItem of this.searchList) {
-                if(searchItem.group) {
-                    if (!result[searchItem.group]) {
-                        result[searchItem.group] = [];
-                    }
-                }else{
-                    searchItem.group = "_undefined"
-                }
-                result[searchItem.group].push({ id: searchItem.id, name: searchItem.name });
-            }
-            console.log("result: ", result);
+        if(changes.selectList !== undefined) {
+            let result = this.listBuilder(this.selectList);
             this.searchList = result;
 
         }
-        if(changes.selectedItem !== undefined){
+        if(changes.selectedItem !== undefined) {
             if(this.selectedItem) {
                 this.inputValue = this.selectedItem.name;
                 this.selectedItemId = this.selectedItem.id;
@@ -75,30 +58,53 @@ export class SystemSelect implements OnChanges {
         this.searchList = [];
         let copiedList = this.copyList();
 
-        for(let item of copiedList){
+        for (let listGroup in copiedList) {
+            for (let item of copiedList[listGroup]) {
+                let name = item.name.toLowerCase();
+                let inputValue = value.target.value.toLowerCase();
 
-            let name = item.name.toLowerCase();
-            let inputValue = value.target.value.toLowerCase();
-
-            let pos = name.search(inputValue);
-            if(pos > -1) {
-                if(inputValue.length > 0) {
-                    let boldadd = [item.name.slice(0, pos), "<mark>", item.name.slice(pos, pos + value.target.value.length), "</mark>", item.name.slice(pos + value.target.value.length)].join("");
-                    item.name = boldadd;
+                let pos = name.search(inputValue);
+                if (pos > -1) {
+                    if (inputValue.length > 0) {
+                        let boldadd = [item.name.slice(0, pos), "<mark>", item.name.slice(pos, pos + value.target.value.length), "</mark>", item.name.slice(pos + value.target.value.length)].join("");
+                        item.name = boldadd;
+                    }
+                    if(this.searchList[listGroup]) {
+                        this.searchList[listGroup].push(item);
+                    }else {
+                        this.searchList[listGroup] = [];
+                        this.searchList[listGroup].push(item);
+                    }
                 }
-                this.searchList.push(item);
             }
         }
     }
 
+    private listBuilder(buildList) {
+        let result = [] ;
+        for(let searchItem of buildList) {
+            if(searchItem.group) {
+                if (!result[searchItem.group]) {
+                    result[searchItem.group] = [];
+                }
+            }else {
+                searchItem.group = "_undefined";
+            }
+            result[searchItem.group].push({ id: searchItem.id, name: searchItem.name });
+        }
+        return result;
+    }
+
     private copyList() {
-
         let copiedList = [];
-
-        for (let i = 0, len = this.selectList.length; i < len; i++) {
-            copiedList[i] = {};
-            for (let prop in this.selectList[i]) {
-                copiedList[i][prop] = this.selectList[i][prop];
+        let result = this.listBuilder(this.selectList);
+        for(let listGroup in result) {
+            copiedList[listGroup] = [];
+            for (let i = 0, len = result[listGroup].length; i < len; i++) {
+                copiedList[listGroup][i] = [];
+                for (let prop in result[listGroup][i]) {
+                    copiedList[listGroup][i][prop] = result[listGroup][i][prop];
+                }
             }
         }
         return copiedList;

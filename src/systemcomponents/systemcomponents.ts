@@ -57,6 +57,7 @@ import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
+import /*embed*/ {SystemHtmlEditor} from "./components/systemhtmleditor";
 
 @NgModule({
     imports: [
@@ -106,7 +107,8 @@ import /*embed*/ {SystemSection} from "./components/systemsection";
         SystemTree,
         SystemTreeItem,
         SystemSelect,
-        SystemSection
+        SystemSection,
+        SystemHtmlEditor
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -147,7 +149,8 @@ import /*embed*/ {SystemSection} from "./components/systemsection";
         SystemTree,
         SystemTreeItem,
         SystemSelect,
-        SystemSection
+        SystemSection,
+        SystemHtmlEditor
     ]
 })
 export class SystemComponents {

@@ -1,6 +1,6 @@
-<div class="slds-form-element">
+<div class="slds-form-element slds-size_2-of-2">
     <label class="slds-form-element__label" for="combobox-id-14">{{language.getAppLanglabel(label)}}</label>
-    <div class="slds-form-element__control">
+    <div class="slds-form-element__control slds-size_2-of-2">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
                  aria-expanded="true" aria-haspopup="listbox" role="combobox">
@@ -21,9 +21,17 @@
                 <div *ngIf="show_list" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
                     <ul class="slds-listbox slds-listbox_vertical" role="presentation">
 
-                        <!--<ng-container *ngFor="let selectItem of searchList">-->
+                        <ng-container *ngFor="let selectItem of searchList | keyvalue">
 
-                        <li *ngFor="let selectItem of searchList" role="presentation" class="slds-listbox__item"
+                            <li *ngIf="selectItem.key != '_undefined'" role="presentation" class="">
+                                <div class="slds-border_bottom slds-border_top slds-p-left_small" style="background-color: #ecebea;">
+                                  <span class="slds-truncate size-xx-small" style="font-weight: bold; font-size: 12px;">
+                                        {{selectItem.key}}
+                                  </span>
+                                </div>
+                            </li>
+
+                        <li *ngFor="let selectItem of selectItem.value" role="presentation" class="slds-listbox__item"
                             (click)="itemClicked(selectItem)">
 
 
@@ -40,7 +48,7 @@
                             </div>
                         </li>
 
-                        <!--</ng-container>-->
+                        </ng-container>
 
 
                     </ul>
