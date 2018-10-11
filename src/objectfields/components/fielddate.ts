@@ -45,7 +45,7 @@ export class fieldDate extends fieldGeneric {
                 this.showDatePicker = false;
                 this.clickListener();
                 this.popupSubscription.unsubscribe();
-            })
+            });
         } else {
             this.popupSubscription.unsubscribe();
         }

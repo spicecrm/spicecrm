@@ -8,47 +8,44 @@ import {recent} from '../../services/recent.service';
     selector: 'field-lookup-recent',
     templateUrl: './src/objectfields/templates/fieldlookuprecent.html'
 })
-export class fieldLookupRecent implements OnInit{
+export class fieldLookupRecent implements OnInit {
 
-    @Input() module: string = '';
-    @Input() idfield: string = '';
-    @Input() namefield: string = '';
-    @Output() selectedObject: EventEmitter<any> = new EventEmitter<any>();
-    recentItems: Array<any> = [];
+    @Input() private module: string = '';
+    @Input() private idfield: string = '';
+    @Input() private namefield: string = '';
+    @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    private recentItems: Array<any> = [];
 
     constructor(public model: model, public popup: popup, public recent: recent, public language: language) {
 
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.getRecent();
     }
 
-    setParent(id, text, data?) {
-        // set the data to the model
-        // this.model.data[this.idfield] = id;
+    private setParent(event, id, text, data?) {
+        // stop the event
+        event.preventDefault();
+
+        // set the parent
         this.model.data[this.namefield] = text;
         this.model.setField(this.idfield, id);
 
         // fake data object... hope it will be the whole record in future!
-        if( !data )
+        if (!data) {
             data = {'id': id, 'summary_text': text};
+        }
 
         this.selectedObject.emit({'id': id, 'text': text, 'data': data});
 
         this.popup.close();
     }
 
-    getRecent() {
+    private getRecent() {
         this.recentItems = [];
-        // get recent .. if it is an observable .. wait ..
-        let recent = this.recent.getModuleRecent(this.module);
-        if (recent instanceof Array)
-            this.recentItems = recent;
-        else
-            recent.subscribe(recentItems => {
-                this.recentItems = recentItems;
-            });
+        let recent = this.recent.getModuleRecent(this.module).subscribe(recentItems => {
+            this.recentItems = recentItems;
+        });
     }
-
 }
