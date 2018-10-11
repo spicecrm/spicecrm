@@ -29,7 +29,7 @@ export class ObjectRelatedlistAll implements OnInit {
     }
 
     public ngOnInit() {
-        this.module = this.activatedRoute.params.['value']['module'];
+        this.module = this.activatedRoute.params['value']['module'];
         this.link = this.activatedRoute.params['value']['link'];
         this.related = this.activatedRoute.params['value']['related'];
         this.fieldset = this.activatedRoute.params['value']['fieldset'];
