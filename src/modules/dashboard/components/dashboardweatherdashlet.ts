@@ -8,34 +8,36 @@ declare var moment: any;
 @Component({
     templateUrl: './src/modules/dashboard/templates/dashboardweatherdashlet.html',
 })
-export class DashboardWeatherDashlet implements OnInit{
+export class DashboardWeatherDashlet implements OnInit {
 
-    sortedDays: any[] = undefined;
-    cityName: string = undefined;
-    daytoshow: any[] = undefined;
-    dayHourToShow: any = undefined;
-    todayOnly: boolean = false; // can be assigned in the componentconfig
-    forecastCity: string = 'Vienna'; // can be assigned in the componentconfig
-    apiId: string = 'ba76af382fdb47888b5a080d6c7122b5'; // can be assigned in the componentconfig
-    isLoading: boolean = false;
+    private sortedDays: any[] = undefined;
+    private cityName: string = undefined;
+    private daytoshow: any[] = undefined;
+    private dayHourToShow: any = undefined;
+    private todayOnly: boolean = false; // can be assigned in the componentconfig
+    private forecastCity: string = 'Vienna'; // can be assigned in the componentconfig
+    private apiId: string = 'ba76af382fdb47888b5a080d6c7122b5'; // can be assigned in the componentconfig
+    private isLoading: boolean = false;
 
     constructor(
         private http: HttpClient,
         private language: language,
         private metadata: metadata,
-    ) {}
+    ) {
+    }
 
-    ngOnInit(){
+    public ngOnInit() {
 
         let componentConfig = this.metadata.getComponentConfig('DashboardWeatherDashlet', 'Dashboards');
 
-        if (componentConfig.hasOwnProperty('apiid'))
+        if (componentConfig.hasOwnProperty('apiid')) {
             this.apiId = componentConfig.apiid;
+        }
 
         if (componentConfig.hasOwnProperty('city') && componentConfig.city != '') {
             this.getForecastData('q=' + componentConfig.city);
         } else {
-            if(navigator.geolocation) {
+            if (navigator.geolocation) {
                 this.isLoading = true;
                 navigator.geolocation.getCurrentPosition(
                     position => {
@@ -49,33 +51,34 @@ export class DashboardWeatherDashlet implements OnInit{
             }
         }
 
-        this.todayOnly =  componentConfig.hasOwnProperty('todayonly') ? componentConfig.todayonly : false;
+        this.todayOnly = componentConfig.hasOwnProperty('todayonly') ? componentConfig.todayonly : false;
     }
 
-    getForecastData(reqParams){
+    private getForecastData(reqParams) {
 
         this.isLoading = true;
-        this.http.get(
-            `http://api.openweathermap.org/data/2.5/forecast?${reqParams}&APPID=${this.apiId}`
-        ).subscribe(
-            (res: any) => {
-                if (res.city)
-                    this.cityName = res.city.name;
-                if (res.list)
-                    this.resortDays(res.list);
-            }
-        );
+        this.http.get('proxy/?useurl=' + btoa(`http://api.openweathermap.org/data/2.5/forecast?${reqParams}&APPID=${this.apiId}`))
+            .subscribe(
+                (res: any) => {
+                    if (res.city) {
+                        this.cityName = res.city.name;
+                    }
+                    if (res.list) {
+                        this.resortDays(res.list);
+                    }
+                }
+            );
         this.isLoading = false;
     }
 
-    resortDays(list){
+    private resortDays(list) {
         if (list) {
-            let daysArray = [],
-                dayTimesArray = [],
-                daysList = list.sort((a, b) => a.dt - b.dt),
-                dayIndex = new Date(daysList[0].dt * 1000).getDay();
+            let daysArray = [];
+            let dayTimesArray = [];
+            let daysList = list.sort((a, b) => a.dt - b.dt);
+            let dayIndex = new Date(daysList[0].dt * 1000).getDay();
 
-            for (let item of daysList){
+            for (let item of daysList) {
                 let itemDayIndex = new Date(item.dt * 1000).getDay();
                 if (dayIndex == itemDayIndex) {
                     dayTimesArray.push(item);
@@ -91,55 +94,56 @@ export class DashboardWeatherDashlet implements OnInit{
         }
     }
 
-    set dayToShow(value){
+    set dayToShow(value) {
         this.daytoshow = value;
         this.dayHourToShow = value.length == 8 ? value[4] : value[0];
     }
 
-    get dayToShow(){
+    get dayToShow() {
         return this.daytoshow;
     }
 
     get description() {
-        if (this.dayHourToShow){
-            let lowerDesc = this.dayHourToShow.weather[0].description.split(' '),
-                capsDesc = [];
-            for (let word of lowerDesc){
+        if (this.dayHourToShow) {
+            let lowerDesc = this.dayHourToShow.weather[0].description.split(' ');
+            let capsDesc = [];
+            for (let word of lowerDesc) {
                 capsDesc.push(word.replace(/\S/, (m) => m.toUpperCase()));
             }
             return capsDesc.join(' ');
         }
     }
 
-    setDayToShow(day){
+    private setDayToShow(day) {
         this.dayToShow = day;
     }
 
-    setDayHourToShow(dayHour){
+    private setDayHourToShow(dayHour) {
         this.dayHourToShow = dayHour;
     }
 
-    getHour(dt){
+    private getHour(dt) {
         return moment.unix(dt).format('H') + ':00';
     }
 
-    getDayName(dt, short = false){
+    private getDayName(dt, short = false) {
         let dayIndex = new Date(dt * 1000).getDay();
-        if (short) return moment.weekdaysShort(dayIndex);
+        if (short) { return moment.weekdaysShort(dayIndex); }
         return moment.weekdays(dayIndex);
     }
 
-    getTemperature(temp){
-        return Math.round(parseInt(temp) - 273.15);
+    private getTemperature(temp) {
+        return Math.round(parseInt(temp, 10) - 273.15);
     }
 
-    getWind(wind){
+    private getWind(wind) {
         return Math.round(wind.speed * 3.6);
 
     }
 
-    getWeatherIconUrl(icon){
-        return `http://openweathermap.org/img/w/${icon}.png`;
+    private getWeatherIconUrl(icon) {
+        // private return `http://openweathermap.org/img/w/${icon}.png`;
+        return 'proxy/?useurl=' + btoa(`http://openweathermap.org/img/w/${icon}.png`)
     }
 
 }

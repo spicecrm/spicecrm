@@ -12,18 +12,18 @@ import {model} from "../../services/model.service";
 })
 export class ModelPopOverDirective implements OnInit, OnDestroy
 {
-    @Input() module:string;
-    @Input() id:string;
-    popoverCmp = null;
-    self: any = null;
-    showPopover:boolean = false;
-    showPopoverTimeout:any = {};
+    @Input() private module: string;
+    @Input() private id: string;
+    private popoverCmp = null;
+    private self: any = null;
+    private showPopover: boolean = false;
+    private showPopoverTimeout: any = {};
 
     constructor(
-        private metadata:metadata,
-        private footer:footer,
-        private model:model,
-        private elementRef:ElementRef,
+        private metadata: metadata,
+        private footer: footer,
+        private model: model,
+        private elementRef: ElementRef,
         private router: Router
     ) {
 
@@ -37,7 +37,7 @@ export class ModelPopOverDirective implements OnInit, OnDestroy
     @HostListener('mouseleave')
     onMouseOut() {
         if (this.showPopoverTimeout) window.clearTimeout(this.showPopoverTimeout);
-        this.destroyPopover()
+        this.destroyPopover();
     }
 
     @HostListener('click')
