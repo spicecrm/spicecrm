@@ -59,7 +59,7 @@ export class WorkbenchConfigOptionFieldset implements AfterViewInit {
 
         // set the module if a fieldset is set
         if (this.configValues[this.option.option]) {
-            this.module = this.metadata.getFieldset(this.configValues.componentconfig[this.option.option]).module;
+            this.module = this.metadata.getFieldset(this.configValues[this.option.option]).module;
         }
 
         this.cdRef.detectChanges();

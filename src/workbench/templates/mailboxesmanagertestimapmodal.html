@@ -6,11 +6,11 @@
             <input type="text" [(ngModel)]="testemailaddress" class="slds-input"/>
         </div>
         <div class="slds-p-vertical--x-small">
-            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+            <div *ngIf="isInbound" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
                 <div>{{language.getLabel('LBL_IMAP')}}</div>
                 <system-utility-icon size="xx-small" [icon]="imapIcon"></system-utility-icon>
             </div>
-            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+            <div *ngIf="isOutbound" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
                 <div>{{language.getLabel('LBL_SMTP')}}</div>
                 <system-utility-icon size="xx-small" [icon]="smtpIcon"></system-utility-icon>
             </div>
@@ -27,6 +27,7 @@
                 <span class="slds-p-horizontal--xx-small">{{language.getLabel('LBL_OK')}}</span>
             </div>
             <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()">{{language.getAppLanglabel('LBL_TEST')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getAppLanglabel('LBL_CANCEL')}}</button>
             <button [disabled]="!validConnection" class="slds-button slds-button--brand" (click)="close()">{{language.getAppLanglabel('LBL_OK')}}</button>
         </div>
     </system-modal-footer>
