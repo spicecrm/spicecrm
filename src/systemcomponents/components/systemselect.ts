@@ -83,12 +83,16 @@ export class SystemSelect implements OnChanges {
     private listBuilder(buildList) {
         let result = [] ;
         for(let searchItem of buildList) {
-            if(searchItem.group) {
+            if(searchItem.hasOwnProperty('group')) {
                 if (!result[searchItem.group]) {
                     result[searchItem.group] = [];
                 }
             }else {
-                searchItem.group = "_undefined";
+                let un = '_undefined';
+                searchItem.group = un;
+                if (!result[un]) {
+                    result[un] = [];
+                }
             }
             result[searchItem.group].push({ id: searchItem.id, name: searchItem.name });
         }

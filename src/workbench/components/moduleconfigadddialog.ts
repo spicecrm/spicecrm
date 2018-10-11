@@ -20,42 +20,42 @@ import {toast} from "../../services/toast.service";
     selector: 'moduleconfig-add-dialog',
     templateUrl: './src/workbench/templates/moduleconfigadddialog.html'
 })
-export class ModuleConfigAddDialog implements OnInit{
+export class ModuleConfigAddDialog implements OnInit {
 
 
-    @Input() mode: string = "";
-    @Input() currentComponent: any;
-    @Input() currentRole: string = "";
-    @Input() currentType: string = "";
-    @Input() currentModule: string = "";
-    @Input() allowGlobal: boolean = false;
+    @Input() public mode: string = "";
+    @Input() public currentComponent: any;
+    @Input() public currentRole: string = "";
+    @Input() public currentType: string = "";
+    @Input() public currentModule: string = "";
+    @Input() public allowGlobal: boolean = false;
 
 
-    @Output('response') response$: EventEmitter<any> = new EventEmitter<any>()
+    @Output('response') public response$: EventEmitter<any> = new EventEmitter<any>();
 
 
-    sysModules: Array<any> = [];
-    components: Array<any> = [];
-    addType: string = 'fieldset';
-    addName: string = '';
-    fieldsettype: string = 'custom';
-    self;
+    private sysModules: Array<any> = [];
+    private components: Array<any> = [];
+    private addType: string = 'fieldset';
+    private addName: string = '';
+    private fieldsettype: string = 'custom';
+    private self;
 
-    types = [
+    private types = [
         { value: "custom", text: 'LBL_CUSTOM' },
         { value: "global", text: 'LBL_GLOBAL' },
     ];
 
 
-    compSelectList: Array<any> = [];
-    compSelectedItem: any;
-    compDisabled = false;
+    private compSelectList: Array<any> = [];
+    private compSelectedItem: any;
+    private compDisabled = false;
 
-    moduleSelectList: Array<any> = [];
-    moduleSelectedItem: any;
+    private moduleSelectList: Array<any> = [];
+    private moduleSelectedItem: any;
 
-    roleSelectList: Array<any> = [];
-    roleSelectedItem: any;
+    private roleSelectList: Array<any> = [];
+    private roleSelectedItem: any;
 
 
 
@@ -63,8 +63,8 @@ export class ModuleConfigAddDialog implements OnInit{
     }
 
 
-    ngOnInit(){
-        if(!this.allowGlobal){
+    public ngOnInit() {
+        if(!this.allowGlobal) {
             this.types.pop();
             this.currentType = 'custom';
         }
@@ -72,17 +72,18 @@ export class ModuleConfigAddDialog implements OnInit{
         // get all modules
         this.backend.getRequest('configurator/entries/sysmodules').subscribe(data => {
             this.moduleSelectList.push({"id": "*", "name": "*"});
-            if(this.mode == "add" && "*" == this.currentModule){
+            if(this.mode == "add" && "*" == this.currentModule) {
                 this.moduleSelectedItem = {"id": "*", "name": "*"};
             }
             for(let module of data){
                 this.moduleSelectList.push({"id": module.id, "name": module.module});
 
-                if(this.mode == "add" && module.module == this.currentModule){
+                if(this.mode == "add" && module.module == this.currentModule) {
                     this.moduleSelectedItem = {"id": module.id, "name": module.module};
                 }
             }
             this.sortArray(this.moduleSelectList);
+            this.moduleSelectList = Object.assign([], this.moduleSelectList);
         });
 
         // get all roles
@@ -92,14 +93,15 @@ export class ModuleConfigAddDialog implements OnInit{
             for(let role of data){
                 this.roleSelectList.push({"id": role.id, "name": role.name});
 
-                if(this.mode == "copy" && role.id == this.currentRole){
+                if(this.mode == "copy" && role.id == this.currentRole) {
                     this.roleSelectedItem = {"id": role.id, "name": role.name};
                 }
-                if(this.currentRole == "*"){
+                if(this.currentRole == "*") {
                     this.roleSelectedItem = {"id": "*", "name": "*"};
                 }
             }
             this.sortArray(this.roleSelectList);
+            this.roleSelectList = Object.assign([], this.roleSelectList);
         });
 
         // get all objectrepositories
@@ -108,25 +110,26 @@ export class ModuleConfigAddDialog implements OnInit{
             for(let comp of data){
                 this.compSelectList.push({"id": comp.id, "name": comp.object});
 
-                if(this.mode == "copy"){
+                if(this.mode == "copy") {
                     this.compDisabled = true;
                     this.compSelectedItem = {"id": this.currentComponent.id, "name": this.currentComponent.component};
                 }
             }
             this.sortArray(this.compSelectList);
+            this.compSelectList = Object.assign([], this.compSelectList);
         });
 
     }
 
 
-    validate(){
+    private validate() {
         // validation show button
-        if(this.currentModule == "*"){
-            if(this.compSelectedItem && this.roleSelectedItem && this.currentType){
+        if(this.currentModule == "*") {
+            if(this.compSelectedItem && this.roleSelectedItem && this.currentType) {
                 return false;
             }
-        }else{
-            if(this.compSelectedItem && this.moduleSelectedItem && this.roleSelectedItem && this.currentType){
+        }else {
+            if(this.compSelectedItem && this.moduleSelectedItem && this.roleSelectedItem && this.currentType) {
                 return false;
             }
         }
@@ -134,10 +137,10 @@ export class ModuleConfigAddDialog implements OnInit{
     }
 
     // sort the list
-    sortArray(list){
+    private sortArray(list) {
         list.sort(function(a, b){
-            var x = a.name.toLowerCase();
-            var y = b.name.toLowerCase();
+            let x = a.name.toLowerCase();
+            let y = b.name.toLowerCase();
             if (x < y) {return -1;}
             if (x > y) {return 1;}
             return 0;
@@ -146,29 +149,29 @@ export class ModuleConfigAddDialog implements OnInit{
     }
 
 
-    closeDialog() {
+    private closeDialog() {
         this.self.destroy();
     }
 
 
-    save() {
+    private save() {
 
-        var type = this.currentType;
-        var table = "";
-        var saveComp: any = {};
+        let type = this.currentType;
+        let table = "";
+        let saveComp: any = {};
 
-        let newid = this.modelutilities.generateGuid(); //generate id
+        let newid = this.modelutilities.generateGuid(); // generate id
 
-        if(this.currentComponent){
-            //copy
+        if(this.currentComponent) {
+            // copy
             let configString = JSON.stringify(this.currentComponent.componentconfig);
             saveComp = {
                 component:  this.currentComponent.component,
                 componentconfig: configString
             };
 
-        }else{
-            //add
+        }else {
+            // add
             saveComp = {
                 component: this.compSelectedItem.name,
                 componentconfig: "{}"
@@ -178,40 +181,40 @@ export class ModuleConfigAddDialog implements OnInit{
         saveComp.id = newid;
         saveComp.role_id = this.roleSelectedItem.id;
 
-        //set module if != default table
-        if(saveComp.module != "*"){
+        // set module if != default table
+        if(saveComp.module != "*") {
             saveComp.module = this.moduleSelectedItem.name;
         }
 
-        //find table
-        if(type == "custom" && saveComp.module == "*"){table="sysuicustomcomponentdefaultconf"}
-        if(type == "custom" && saveComp.module != "*"){table="sysuicustomcomponentmoduleconf"}
-        if(type == "global" && saveComp.module == "*"){table="sysuicomponentdefaultconf"}
-        if(type == "global" && saveComp.module != "*"){table="sysuicomponentmoduleconf"}
+        // find table
+        if(type == "custom" && saveComp.module == "*") {table="sysuicustomcomponentdefaultconf";}
+        if(type == "custom" && saveComp.module != "*") {table="sysuicustomcomponentmoduleconf";}
+        if(type == "global" && saveComp.module == "*") {table="sysuicomponentdefaultconf";}
+        if(type == "global" && saveComp.module != "*") {table="sysuicomponentmoduleconf";}
 
 
         this.saveComponent(saveComp, table);
     }
 
 
-    saveComponent(saveComp, table){
+    private saveComponent(saveComp, table) {
 
         saveComp.type = this.currentType;
 
         let path = "";
-        if(saveComp.module == "*"){
+        if(saveComp.module == "*") {
             path = "componentdefaultalreadyexists";
             delete saveComp.module;
-        }else{
+        }else {
             path = "componentmodulealreadyexists";
         }
 
-        //check if component exists
+        // check if component exists
         this.backend.getRequest('spiceui/core/'+ path, saveComp).subscribe(
             data=> {
                 delete saveComp.type;
 
-                if(data == false){
+                if(data == false) {
                     this.backend.postRequest('configurator/'+ table +'/'+ saveComp.id, null, saveComp).subscribe(
                         (success) => {
 
@@ -225,7 +228,7 @@ export class ModuleConfigAddDialog implements OnInit{
                             console.error(error);
                         }
                     );
-                }else{
+                }else {
                     this.toast.sendAlert('Configuration already exists!');
                 }
             },
@@ -233,19 +236,18 @@ export class ModuleConfigAddDialog implements OnInit{
                 this.toast.sendAlert('Saving configuration failed!');
                 console.error(error);
             }
-        )
+        );
     }
 
-    selectedOutputItemComp(event){
+    private selectedOutputItemComp(event) {
         this.compSelectedItem = event;
     }
 
-    selectedOutputItemModule(event){
+    private selectedOutputItemModule(event) {
         this.moduleSelectedItem = event;
     }
 
-    selectedOutputItemRole(event){
+    private selectedOutputItemRole(event) {
         this.roleSelectedItem = event;
     }
-
 }
