@@ -15,7 +15,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     templateUrl: './src/workbench/templates/fieldsetmanager.html',
-    providers: [metadata, view]
+    providers: [view]
 })
 export class FieldsetManager {
 

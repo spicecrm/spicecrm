@@ -20,6 +20,7 @@ export class WorkbenchConfigOptionActionset {
     private module: string = "";
 
     private actionsets: Array<any> = [];
+    private showInfo: boolean = false;
 
     constructor(
         private backend: backend,
@@ -47,5 +48,4 @@ export class WorkbenchConfigOptionActionset {
 
         this.cdRef.detectChanges();
     }
-
 }

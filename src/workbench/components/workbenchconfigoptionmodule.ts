@@ -17,11 +17,12 @@ import {view} from "../../services/view.service";
 })
 export class WorkbenchConfigOptionModule implements AfterViewInit {
 
-    configValues: any = [];
-    option: any = {};
-    objtype: string = "";
+    public configValues: any = [];
+    public option: any = {};
+    public objtype: string = "";
 
-    modules: Array<any> = [];
+    private modules: Array<any> = [];
+    private showInfo: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,
@@ -33,9 +34,8 @@ export class WorkbenchConfigOptionModule implements AfterViewInit {
                 private view: view) {
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.modules = this.metadata.getModules().sort();
-        console.log("this.modules", this.metadata);
         this.cdRef.detectChanges();
     }
 }

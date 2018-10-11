@@ -45,7 +45,6 @@ export class WorkbenchConfig implements OnChanges {
 
 
         let options = this.metadata.getComponentConfigOptions(this.component);
-        console.log(options);
         for (let option in options) {
             this.configOptions.push({
                 option: option,
