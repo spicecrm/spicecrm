@@ -9,7 +9,7 @@ import {broadcast} from '../../services/broadcast.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {view} from '../../services/view.service';
+import {view} from "../../services/view.service";
 
 @Component({
     selector: 'workbench-config-option-componentset',
@@ -22,6 +22,7 @@ export class WorkbenchConfigOptionModule implements AfterViewInit {
     public objtype: string = "";
 
     private modules: Array<any> = [];
+    private showInfo: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,
@@ -29,8 +30,8 @@ export class WorkbenchConfigOptionModule implements AfterViewInit {
                 private modelutilities: modelutilities,
                 private broadcast: broadcast,
                 private toast: toast,
-                private view: view,
-                private cdRef: ChangeDetectorRef) {
+                private cdRef: ChangeDetectorRef,
+                private view: view) {
     }
 
     public ngAfterViewInit() {
