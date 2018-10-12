@@ -1,0 +1,55 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 *ngIf="mode == 'add'" id="header43" class="slds-text-heading--medium">{{language.getAppLanglabel('LBL_ADD_Module')}}</h2>
+            <h2 *ngIf="mode == 'edit'" id="header44" class="slds-text-heading--medium">{{language.getAppLanglabel('LBL_EDIT_Module')}}</h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+
+            <div *ngIf="mode == 'add'" class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label">Scope</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="moduleRepo.scope">
+                            <option *ngFor="let scope of scopes" [ngValue]="scope">{{scope}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_NAME')}}</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" placeholder="" [(ngModel)]="moduleRepo.module" />
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_PATH')}}</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" placeholder="" [(ngModel)]="moduleRepo.path" />
+                </div>
+            </div>
+            <!--<div class="slds-form-element slds-m-top&#45;&#45;small">-->
+                <!--<label class="slds-form-element__label">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>-->
+                <!--<div class="slds-form-element__control">-->
+                    <!--<input type="text" class="slds-input" placeholder="" [(ngModel)]="moduleRepo.description" />-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label" for="editor-id-02">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
+                <div class="slds-form-element__control">
+                    <system-html-editor id="editor-id-02" [fieldid]="'234'" [(fieldvalue)]="moduleRepo.description" [fieldconfig]="'{}'" [useStylesheets]="" [useStylesheetSwitcher]="" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></system-html-editor>
+                </div>
+            </div>
+
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()">{{language.getAppLanglabel('LBL_CANCEL')}}</button>
+            <button *ngIf="mode == 'add'" class="slds-button slds-button--brand" (click)="add()">{{language.getAppLanglabel('LBL_ADD')}}</button>
+            <button *ngIf="mode == 'edit'" class="slds-button slds-button--brand" (click)="add()">{{language.getAppLanglabel('LBL_SAVE')}}</button>
+        </div>
+    </div>
+</div>

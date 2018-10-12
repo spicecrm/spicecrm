@@ -90,7 +90,9 @@ import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconf
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
 import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
-
+import /*embed*/ {ObjectRepositoryManager} from "./components/objectrepositorymanager";
+import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
+import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 
 @NgModule({
     imports: [
@@ -158,6 +160,9 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         WorkbenchConfig,
         ConfigCleaner,
         GoogleCalendarManager,
+        ObjectRepositoryManager,
+        ObjectRepositoryManagerAddRepo,
+        ObjectRepositoryManagerAddModule
     ],
     /* no further modules needed */
     entryComponents: [
@@ -171,7 +176,8 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         WorkbenchConfigOptionActionset,
         ComponentConfigManager,
         ModuleConfigManager,
-        WorkbenchConfig
+        WorkbenchConfig,
+        ObjectRepositoryManager
     ],
     exports: [
         SortPipe,
