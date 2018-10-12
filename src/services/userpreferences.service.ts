@@ -1,9 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import {Subject} from 'rxjs';
 import {Observable} from 'rxjs';
-
 import {backend} from './backend.service';
 import {toast} from './toast.service';
+import {language} from './language.service';
 
 declare var moment: any;
 declare var _:any;
@@ -34,10 +34,13 @@ export class userpreferences {
         num_grp_sep: '.',
         timef: 'H:i',
         timezone: 'Europe/Vienna',
-        currency_significant_digits: 2
+        currency_significant_digits: 2,
+        default_locale_name_format: 'l, f'
     };
 
-constructor(private backend: backend, private toast: toast ) {
+    formats = { nameFormats: [], loaded: false };
+
+    constructor( private backend: backend, private toast: toast, private l: language ) {
         this.toUse = this.preferences.global;
     }
 
@@ -56,11 +59,10 @@ constructor(private backend: backend, private toast: toast ) {
                 this.unchangedPreferences.global = _.clone( prefs );
                 this.completePreferencesWithDefaults();
             }
-            retSubject.next(prefs);
+            retSubject.next( prefs );
         });
 
         return retSubject.asObservable();
-
     }
 
     // Completes the global preferences with default values.
@@ -138,11 +140,44 @@ constructor(private backend: backend, private toast: toast ) {
         }
     }
 
+    needFormats() {
+        if ( !this.formats.loaded ) this.loadFormats();
+    }
+
+    loadFormats(): Observable<any> {
+        let retSubject: Subject<boolean> = new Subject<boolean>();
+
+        this.formats.nameFormats.length = 0;
+        this.formats.loaded = false;
+        this.backend.getRequest('user/preferencesformats').subscribe(formats => {
+            for ( let item of formats.nameFormats )
+                this.formats.nameFormats.push( { name: item, example: this.translateNameFormat( item ) } );
+            this.formats.loaded = true;
+            retSubject.next( true );
+        });
+
+        return retSubject.asObservable();
+    }
+
+    translateNameFormat( format: string ): string {
+        let translation = '';
+        for ( let i = 0; i < format.length; i++ ) {
+            switch ( format.charAt(i) ) {
+                case 't': translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_TITLE' ); break;
+                case 'f': translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_FIRST' ); break;
+                case 'l': translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_LAST' ); break;
+                case 's': translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_SALUTATION' ); break;
+                default: translation += format.charAt(i);
+            }
+        }
+        return translation;
+    }
+
     /*
      * formatting functions
      * http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
      */
-    formatMoney( i, n = this.toUse.currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep ) {
+    formatMoney( i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep ) {
         var re = '\\d(?=(\\d{' + x + '})+' + ( n > 0 ? '\\D':'$' ) + ')',
             num = i.toFixed(Math.max(0, ~~n));
         return num.replace( '.', decSep ).replace( new RegExp( re, 'g' ), '$&' + grpSep );
