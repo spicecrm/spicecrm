@@ -15,17 +15,12 @@ import { language } from './language.service';
 declare var moment: any;
 
 @Injectable()
-export class backend
-{
-    module: string = '';
-    id: string = '';
-    data: any = {};
+export class backend {
+    private autoLogout: any = {};
 
-    autoLogout: any = {};
-
-    httpErrorsToReport = [];
-    httpErrorReporting = false;
-    httpErrorReportingRetryTime = 10000; // 10 seconds
+    private httpErrorsToReport = [];
+    private httpErrorReporting = false;
+    private httpErrorReportingRetryTime = 10000; // 10 seconds
 
     constructor(
         private toast: toast,
@@ -52,13 +47,15 @@ export class backend
             Object.keys(params).forEach((key: string) => {
                 let value = params[key];
                 if (typeof value !== 'undefined' && value !== null) {
-                    if (typeof value === 'object')
+                    if (typeof value === 'object') {
                         output = output.append(key, JSON.stringify(value));
-                    else if (typeof value === 'boolean')
+                    } else if (typeof value === 'boolean') {
                         output = output.append(key, value === true ? '1' : '0');
-                    else if (typeof value === 'number')
+                     }else if (typeof value === 'number') {
                         output = output.append(key, value + '');
-                    else output = output.append(key, value.toString());
+                    } else {
+                        output = output.append(key, value.toString());
+                    }
                 }
             });
         }
@@ -68,7 +65,7 @@ export class backend
     /*
      * generic request functions
      */
-    public getRequest(route: string = "", params: any = {} ):Observable<any> {
+    public getRequest(route: string = "", params: any = {} ): Observable<any> {
         let responseSubject = new Subject<any>();
         this.resetTimeOut();
         this.http.get(
@@ -108,7 +105,7 @@ export class backend
         );
     }
 
-    public postRequest(route: string = "", params: any = {}, body: any = {},  httpErrorReport = true ):Observable<any> {
+    public postRequest(route: string = "", params: any = {}, body: any = {},  httpErrorReport = true ): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -159,7 +156,7 @@ export class backend
 
     // please use more meaningful function names, or at least use a description.
     // todo test it
-    public getDownloadPostRequestFile(route: string = "", params: any= {}, body: any = {}):Observable<any> {
+    public getDownloadPostRequestFile(route: string = "", params: any= {}, body: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -175,9 +172,9 @@ export class backend
             (response: any) => {
                 // let blob = new Blob([response], {type: "octet/stream"});
                 // let objectUrl = URL.createObjectURL(new Blob([blob], {type: "octet/stream"}));
-                //let objectUrl = URL.createObjectURL(response.blob());
+                // let objectUrl = URL.createObjectURL(response.blob());
                 let objectUrl = window.URL.createObjectURL(response.body);
-                //responseSubject.next(this.sanitizer.bypassSecurityTrustUrl(objectUrl));
+                // responseSubject.next(this.sanitizer.bypassSecurityTrustUrl(objectUrl));
                 responseSubject.next(objectUrl);
                 responseSubject.complete();
             },
@@ -192,7 +189,7 @@ export class backend
 
     // todo test it
     private getLinkToDownload(
-        route:string,
+        route: string,
         method: string = 'GET',
         params = null,
         body = null,
@@ -215,14 +212,12 @@ export class backend
                 responseType: "blob",
             }).subscribe(
             (response: any) => {
-                if(response.status == 200)
-                {
+                if(response.status == 200) {
                     // let objectUrl = URL.createObjectURL(response.blob());
                     let objectUrl = window.URL.createObjectURL(response.body);
                     sub.next(objectUrl);
                     sub.complete();
-                }
-                else {
+                } else {
                     sub.error(response.statusText);
                 }
             },
@@ -237,8 +232,8 @@ export class backend
 
     // todo test it
     public downloadFile(
-        request_params:{route:string, method?:string, params?:any, body?:any, headers?:any},
-        file_name:string = null
+        request_params: {route: string, method?: string, params?: any, body?: any, headers?: any},
+        file_name: string = null
     ): Observable<any> {
         let sub = new Subject<any>();
 
@@ -251,7 +246,7 @@ export class backend
         ).subscribe(
             (res) => {
                 let downloadUrl = res;
-                //window.open(downloadUrl);
+                // window.open(downloadUrl);
                 let a = document.createElement("a");
                 a.href = downloadUrl;
                 a.download = file_name;
@@ -325,11 +320,13 @@ export class backend
                 this.router.navigate(["/login"]);
                 break;
             case 0:
-                if ( httpErrorReport ) this.reportError( err, route, method, data );
+                if ( httpErrorReport ) {
+                    this.reportError( err, route, method, data );
+                }
         }
     }
 
-    reportError( err, route, method, data ) {
+    private reportError( err, route, method, data ) {
         this.httpErrorsToReport.push({
             clientTime: (new Date()).toISOString(),
             clientInfo: { sessionId: this.session.authData.sessionId, userId: this.session.authData.userId, userName: this.session.authData.userName },
@@ -345,8 +342,8 @@ export class backend
         }
     }
 
-    errorsToBackend() {
-        if ( this.httpErrorsToReport.length )
+    private errorsToBackend() {
+        if ( this.httpErrorsToReport.length ) {
             this.postRequest('httperrors', null, { 'errors' : this.httpErrorsToReport }, false ).subscribe(
                 () => {
                     this.httpErrorsToReport.length = 0;
@@ -357,6 +354,7 @@ export class backend
                     window.setTimeout( () => this.errorsToBackend(), this.httpErrorReportingRetryTime );
                 }
             );
+        }
     }
 
     private resetTimeOut() {
@@ -364,14 +362,16 @@ export class backend
             window.clearTimeout(this.autoLogout);
             this.autoLogout = window.setTimeout(
                 () => this.logout(),
-                parseInt(this.configurationService.data.autoLogout) * 60000
+                parseInt(this.configurationService.data.autoLogout, 10) * 60000
             );
         }
     }
 
     private logout() {
-        this.toast.sendAlert("you have been logged out", "error", "", false);
-        this.session.endSession();
+        if(this.session.authData.sessionId) {
+            this.toast.sendAlert("you have been logged out", "error", "", false);
+            this.session.endSession();
+        }
         this.router.navigate(["/login"]);
     }
 
@@ -382,7 +382,9 @@ export class backend
         let responseSubject = new Subject<Array<any>>();
 
         let params: any = {};
-        if (trackAction) params.trackaction = trackAction;
+        if (trackAction) {
+            params.trackaction = trackAction;
+        }
         this.getRequest("module/" + module + "/" + id, params)
             .subscribe(
                 (response: any) => {
@@ -412,27 +414,30 @@ export class backend
      *      listid {string} 'owner' returns only owned records...
      *      searchfields {json} like this
      *      {
-                join: 'AND',
-                conditions: [
-                    {
-                        field: string '',
-                        operator: '<>',
-                        value: string
-                    },
-                    {
-                        ...
-                    },
-                ]
-            }
+     *          join: 'AND',
+     *           conditions: [
+     *               {
+     *                   field: string '',
+     *                   operator: '<>',
+     *                   value: string
+     *               },
+     *               {
+     *                   ...
+     *               },
+     *           ]
+     *       }
      * @returns {Observable<Array<any>>}
      */
-    public all(module:string, params:any = {}): Observable<Array<any>> {
+    public all(module: string, params: any = {}): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
         // defaults...
-        if( !params.limit )
+        if( !params.limit ) {
             params.limit = -99;
-        if( !params.fields )
+        }
+
+        if( !params.fields ) {
             params.fields = "*";
+        }
 
         this.getRequest("module/" + module, params).subscribe(
             (response: any) => {
@@ -515,17 +520,18 @@ export class backend
         reqparams.searchfields = params.searchfields;
         reqparams.offset = params.start ? params.start : 0;
         reqparams.limit = params.limit ? params.limit : 25;
-        if (params.listid)
+        if (params.listid) {
             reqparams.listid = params.listid;
+        }
 
         if (sortfield && sortdirection) {
             reqparams.sortfield = sortfield;
             reqparams.sortdirection = sortdirection;
         }
 
-        if (fields && fields.length > 0)
+        if (fields && fields.length > 0) {
             reqparams.fields = JSON.stringify(fields);
-
+        }
 
         // todo: break out Options String
         this.getRequest("module/" + module, reqparams).subscribe(
@@ -541,7 +547,8 @@ export class backend
                         }
                     }
                 } catch (e) {
-
+                    responseSubject.next([]);
+                    responseSubject.complete();
                 }
                 responseSubject.next(response);
                 responseSubject.complete();
@@ -584,12 +591,13 @@ export class backend
         let responseSubject = new Subject<Array<any>>();
 
         let params: any = {};
-        if (module)
+        if (module) {
             params.module = module;
+        }
 
-        if (limit > 0)
+        if (limit > 0) {
             params.limit = limit;
-
+        }
 
         this.getRequest("spiceui/core/recent", params)
             .subscribe((response) => {
