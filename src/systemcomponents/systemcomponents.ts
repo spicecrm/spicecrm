@@ -19,6 +19,9 @@ import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import { configurationService } from "../services/configuration.service";
 import { modal } from "../services/modal.service";
+
+import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
+
 // COMPONENTs...
 import /*embed*/ {SystemIcon} from "./components/systemicon";
 import /*embed*/ {SystemComponentContainer} from "./components/systemcomponentcontainer";
@@ -57,6 +60,8 @@ import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
+import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextToolbar} from "./components/systemrichtexttoolbar";
 
 @NgModule({
     imports: [
@@ -106,7 +111,9 @@ import /*embed*/ {SystemSection} from "./components/systemsection";
         SystemTree,
         SystemTreeItem,
         SystemSelect,
-        SystemSection
+        SystemSection,
+        SystemRichTextEditor,
+        SystemRichTextToolbar
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -147,7 +154,8 @@ import /*embed*/ {SystemSection} from "./components/systemsection";
         SystemTree,
         SystemTreeItem,
         SystemSelect,
-        SystemSection
+        SystemSection,
+        SystemRichTextEditor
     ]
 })
 export class SystemComponents {
