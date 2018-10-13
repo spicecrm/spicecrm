@@ -1,0 +1,7 @@
+<div (click)="onEditorClick()" class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap" >
+    <system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar>
+    <div class="slds-rich-text-editor__textarea slds-grid" #editorWrapper>
+        <div #editor id="editor" class="slds-rich-text-area__content slds-text-color_weak slds-grow" [attr.contenteditable]="isActive" (input)="onContentChange($event.target.innerHTML)" (focus)="onTextAreaFocus()" (blur)="onTextAreaBlur()" (click)="exec()" (keyup)="exec()">
+        </div>
+    </div>
+</div>
