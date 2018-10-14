@@ -67,18 +67,19 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
      * @param command string from triggerCommand
      */
     private executeCommand(command: string) {
-        if (this.isActive) {
-            switch (command) {
-                case 'openSourceEditor':
-                    this.openSourceEditor();
-                    break;
-                default:
-                    if (command != '') {
-                        this.editorService.executeCommand(command);
-                    }
-                    this.exec();
-                    break;
-            }
+        switch (command) {
+            case 'openSourceEditor':
+                this.openSourceEditor();
+                break;
+            case 'openEditorModal':
+                this.openEditorModal();
+                break;
+            default:
+                if (this.isActive && command != '') {
+                    this.editorService.executeCommand(command);
+                }
+                this.exec();
+                break;
         }
         return;
     }
@@ -144,22 +145,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
-        if (value === null || value === undefined || value === '' || value === '<br>') {
-            value = null;
-        }
-
-        this.refreshView(value);
-    }
-
-    /**
-     * refresh view/HTML of the editor
-     *
-     * @param value html string from the editor
-     */
-    private refreshView(value: string): void {
-        this._html = value === null ? '' : value;
+        this._html = value ? value : '';
         this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
-        return;
     }
 
     /**
@@ -184,7 +171,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         this.triggerBlocks(els);
     }
 
-    private fullScreen() {
+    private openEditorModal() {
         this.modal.openModal('SystemTinyMCEModal').subscribe(componentRef => {
             /*
             componentRef.instance.content = this.ngModel;
@@ -219,7 +206,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
      */
     private commandIsActive(commandState) {
         // check the state
-        return this._document.queryCommandState(commandState);
+        return this.isActive && this._document.queryCommandState(commandState);
     }
 
     /**
