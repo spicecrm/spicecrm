@@ -60,6 +60,7 @@ import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
+import /*embed*/ {SystemHtmlEditor} from "./components/systemhtmleditor";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 
@@ -112,6 +113,7 @@ import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextso
         SystemTreeItem,
         SystemSelect,
         SystemSection,
+        SystemHtmlEditor,
         SystemRichTextEditor,
         SystemRichTextSourceModal
     ],
