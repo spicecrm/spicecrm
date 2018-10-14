@@ -1,0 +1,18 @@
+<system-modal size="large" >
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_HTMLSOURCE')}}</system-modal-header>
+    <system-modal-content [grow]="true">
+        <div class="slds-grid">
+            <div class="slds-size--1-of-2 slds-p-right--x-small">
+                <div class="slds-box slds-theme--shade" #sourceeditor contenteditable (input)="onContentChange($event.target.innerText)" style="white-space: pre-line;"></div>
+            </div>
+            <div class="slds-size--1-of-2 slds-p-left--xx-small" >
+                <div class="slds-box" [innerHtml]="sanitizedHtml"></div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            {{language.getLabel('LBL_OK')}}
+        </button>
+    </system-modal-footer>
+</system-modal>
