@@ -61,7 +61,7 @@ import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
-import /*embed*/ {SystemRichTextToolbar} from "./components/systemrichtexttoolbar";
+import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 
 @NgModule({
     imports: [
@@ -113,7 +113,7 @@ import /*embed*/ {SystemRichTextToolbar} from "./components/systemrichtexttoolba
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
-        SystemRichTextToolbar
+        SystemRichTextSourceModal
     ],
     entryComponents: [
         SystemDynamicRouteContainer

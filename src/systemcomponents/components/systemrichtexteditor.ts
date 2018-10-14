@@ -17,7 +17,9 @@ import {metadata} from "../../services/metadata.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {DOCUMENT} from "@angular/common";
 
+import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
+import {SystemRichTextSourceModal} from "./systemrichtextsourcemodal";
 
 @Component({
     selector: "system-richtext-editor",
@@ -30,37 +32,30 @@ import {systemrichtextservice} from "../services/systemrichtext.service";
         }, systemrichtextservice
     ]
 })
-export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAccessor {
+export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
+    @ViewChild('htmleditor') private htmlEditor: any;
+
+    // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
+    private _html: string = '';
 
-    private editable: boolean = true;
-
-    private modeVisual = true;
-
-    private id: string = '';
     private isActive: boolean = false;
     private clickListener: any;
 
-    @ViewChild('editor') private textArea: any;
-    @ViewChild('editorWrapper') private editorWrapper: any;
-    @ViewChild('editorToolbar') private editorToolbar: any;
+    private block = 'default';
+    private fontName = 'Tilium Web';
+    private fontSize = '5';
 
-    @Output() private viewMode = new EventEmitter<boolean>();
+    private tagMap = {
+        BLOCKQUOTE: "indent",
+        A: "link"
+    };
 
-    /** emits `blur` event when focused out from the textarea */
-    @Output() private blur: EventEmitter<string> = new EventEmitter<string>();
+    private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
-    /** emits `focus` event when focused in to the textarea */
-    @Output() private focus: EventEmitter<string> = new EventEmitter<string>();
-
-    constructor(private modelutilities: modelutilities, private renderer: Renderer2, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any, private elementRef: ElementRef, ) {
-        this.id = this.modelutilities.generateGuid();
-    }
-
-    public ngOnInit() {
-        this.editorToolbar.id = this.id;
+    constructor(private modelutilities: modelutilities, private modal: modal, private renderer: Renderer2, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any, private elementRef: ElementRef,) {
     }
 
     public ngOnDestroy() {
@@ -72,36 +67,19 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @param command string from triggerCommand
      */
     private executeCommand(command: string) {
-        if (command === 'toggleEditorMode') {
-            this.toggleEditorMode(this.modeVisual);
-        } else if (command !== '') {
-            this.editorService.executeCommand(command);
-            this.exec();
+        if (this.isActive) {
+            switch (command) {
+                case 'openSourceEditor':
+                    this.openSourceEditor();
+                    break;
+                default:
+                    if (command != '') {
+                        this.editorService.executeCommand(command);
+                    }
+                    this.exec();
+                    break;
+            }
         }
-        return;
-    }
-
-    /**
-     * focus event
-     */
-    private onTextAreaFocus(): void {
-        this.focus.emit('focus');
-        return;
-    }
-
-    /**
-     * blur event
-     */
-    private onTextAreaBlur() {
-        /**
-         * save selection if focussed out
-         */
-        this.editorService.saveSelection();
-
-        if (typeof this.onTouched === 'function') {
-            this.onTouched();
-        }
-        this.blur.emit('blur');
         return;
     }
 
@@ -110,16 +88,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     private onEditorClick() {
         // check if we are active already
-        if(!this.isActive) {
-            this.textArea.nativeElement.focus();
+        if (!this.isActive) {
+            this.htmlEditor.nativeElement.focus();
             this.isActive = true;
 
             // listen to the click event if it is ousoide of the current elements scope
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
         }
     }
 
-    public onClick(event: MouseEvent) {
+    private onDocumentClick(event: MouseEvent) {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.isActive = false;
             this.clickListener();
@@ -135,6 +113,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         if (typeof this.onChange === 'function') {
             this.onChange(html);
         }
+
+        this._html = html;
         return;
     }
 
@@ -164,8 +144,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
-
-
         if (value === null || value === undefined || value === '' || value === '<br>') {
             value = null;
         }
@@ -179,66 +157,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @param value html string from the editor
      */
     private refreshView(value: string): void {
-        const normalizedValue = value === null ? '' : value;
-        this.renderer.setProperty(this.textArea.nativeElement, 'innerHTML', normalizedValue);
+        this._html = value === null ? '' : value;
+        this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
         return;
-    }
-
-    /**
-     * Implements disabled state for this element
-     *
-     * @param isDisabled
-     */
-    public setDisabledState(isDisabled: boolean): void {
-        const div = this.textArea.nativeElement;
-        // const action = isDisabled ? 'addClass' : 'removeClass';
-        // this._renderer[action](div, 'disabled');
-    }
-
-    /**
-     * toggles editor mode based on bToSource bool
-     *
-     * @param bToSource A boolean value from the editor
-     */
-    private toggleEditorMode(bToSource: boolean) {
-        let oContent: any;
-        const editableElement = this.textArea.nativeElement;
-
-        if (bToSource) {
-            oContent = this._document.createTextNode(editableElement.innerHTML);
-            editableElement.innerHTML = '';
-
-            const oPre = this._document.createElement('pre');
-            oPre.setAttribute("style", "margin: 0; outline: none;");
-            const oCode = this._document.createElement('code');
-            editableElement.contentEditable = false;
-            oCode.id = "sourceText";
-            oCode.setAttribute("style", "white-space: pre-wrap; word-break: keep-all; margin: 0; outline: none; background-color: #fff5b9;");
-            oCode.contentEditable = 'true';
-            oCode.appendChild(oContent);
-            oPre.appendChild(oCode);
-            editableElement.appendChild(oPre);
-
-            this._document.execCommand("defaultParagraphSeparator", false, "div");
-
-            this.modeVisual = false;
-            this.viewMode.emit(false);
-            oCode.focus();
-        } else {
-            if (this._document.all) {
-                editableElement.innerHTML = editableElement.innerText;
-            } else {
-                oContent = this._document.createRange();
-                oContent.selectNodeContents(editableElement.firstChild);
-                editableElement.innerHTML = oContent.toString();
-            }
-            editableElement.contentEditable = true;
-            this.modeVisual = true;
-            this.viewMode.emit(true);
-            this.onContentChange(editableElement.innerHTML);
-            editableElement.focus();
-        }
-        this.editorToolbar.setEditorMode(!this.modeVisual);
     }
 
     /**
@@ -247,7 +168,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * Send a node array from the contentEditable of the editor
      */
     private exec() {
-
         let userSelection;
         if (window.getSelection) {
             userSelection = window.getSelection();
@@ -259,6 +179,146 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             els.unshift(a);
             a = a.parentNode;
         }
-        this.editorToolbar.triggerBlocks(els);
+
+        // this.editorToolbar.triggerBlocks(els);
+        this.triggerBlocks(els);
+    }
+
+    private fullScreen() {
+        this.modal.openModal('SystemTinyMCEModal').subscribe(componentRef => {
+            /*
+            componentRef.instance.content = this.ngModel;
+            componentRef.instance.updateContent.subscribe(update => {
+                this.fieldvalue = update;
+                this.editor.setContent(update);
+            })
+            */
+        });
+    }
+
+    private openSourceEditor() {
+        this.modal.openModal('SystemRichTextSourceModal').subscribe(componentRef => {
+            componentRef.instance._html = this._html;
+            componentRef.instance.html.subscribe(newHtml => {
+                // update our internal value
+                this._html = newHtml;
+
+                // set the model value
+                if (typeof this.onChange === 'function') {
+                    this.onChange(newHtml);
+                }
+
+                // set the value to the editor
+                this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
+            });
+        });
+    }
+
+    /*
+     * for the toolbar
+     */
+    private commandIsActive(commandState) {
+        // check the state
+        return this._document.queryCommandState(commandState);
+    }
+
+    /**
+     * trigger highlight editor buttons when cursor moved or positioning in block
+     */
+    private triggerBlocks(nodes: Node[]) {
+        if (!this.isActive) {
+            return;
+        }
+
+        let found = false;
+        this.select.forEach(y => {
+            const node = nodes.find(x => x.nodeName === y);
+            if (node !== undefined && y === node.nodeName) {
+                if (found === false) {
+                    this.block = node.nodeName.toLowerCase();
+                    found = true;
+                }
+            } else if (found === false) {
+                this.block = 'default';
+            }
+        });
+
+        found = false;
+        /*
+        if (this.customClasses) {
+            this.customClasses.forEach((y, index) => {
+                const node = nodes.find(x => {
+                    if (x instanceof Element) {
+                        return x.className === y.class;
+                    }
+                });
+                if (node !== undefined) {
+                    if (found === false) {
+                        this.customClassId = index;
+                        found = true;
+                    }
+                } else if (found === false) {
+                    this.customClassId = -1;
+                }
+            });
+        }
+        */
+
+        /*
+        Object.keys(this.tagMap).map(e => {
+            const elementById = this._document.getElementById(this.tagMap[e] + '-' + this.id);
+            const node = nodes.find(x => x.nodeName === e);
+            if (node !== undefined && e === node.nodeName) {
+                this._renderer.addClass(elementById, "active");
+            } else {
+                this._renderer.removeClass(elementById, "active");
+            }
+        });
+        */
+    }
+
+    /**
+     * insert URL link
+     */
+    private insertUrl() {
+        const url = prompt("Insert URL link", 'http:\/\/');
+        if (url && url !== '' && url !== 'http://') {
+            this.editorService.createLink(url);
+        }
+    }
+
+    /** insert color */
+    private insertColor(color: string, where: string) {
+        this.editorService.insertColor(color, where);
+        // this.execute.emit("");
+    }
+
+    /**
+     * set font Name/family
+     * @param fontName string
+     */
+    private setFontName(fontName: string): void {
+        this.editorService.setFontName(fontName);
+        // this.execute.emit("");
+    }
+
+    /**
+     * set font Size
+     * @param fontSize string
+     *  */
+    private setFontSize(fontSize: string): void {
+        this.editorService.setFontSize(fontSize);
+        // this.execute.emit("");
+    }
+
+    /**
+     * Upload image when file is selected
+     */
+    private onFileChanged(event) {
+        // to be implemented
+    }
+
+    private setCustomClass(classId: number) {
+        // this.editorService.createCustomClass(this.customClasses[classId]);
     }
 }
