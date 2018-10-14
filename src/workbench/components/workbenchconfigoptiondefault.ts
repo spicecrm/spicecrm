@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {view} from '../../services/view.service';
 
 @Component({
@@ -7,8 +7,9 @@ import {view} from '../../services/view.service';
 })
 export class WorkbenchConfigOptionDefault {
 
-    configValues: any = [];
-    option: any = {};
+    public configValues: any = [];
+    public option: any = {};
+    private showInfo: boolean = false;
 
     constructor(private view: view) {
     }

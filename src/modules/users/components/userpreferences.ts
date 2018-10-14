@@ -13,7 +13,7 @@ declare var _: any;
     selector: "user-preferences",
     templateUrl: "./src/modules/users/templates/userpreferences.html",
     styles: [
-        `.slds-button--icon {color: #eeeeee}
+            `.slds-button--icon {color: #eeeeee}
         .slds-button--icon:hover {color: #5B5B5B}`
     ],
     providers: [view]
@@ -22,7 +22,7 @@ export class UserPreferences {
 
     private preferences: any = {};
 
-    private names = ["export_delimiter", "default_export_charset", "currency", "default_currency_significant_digits", "datef", "timef", "timezone", "num_grp_sep", "dec_sep"];
+    private names = ["export_delimiter", "default_export_charset", "currency", "default_currency_significant_digits", "datef", "timef", "timezone", "num_grp_sep", "dec_sep", 'default_locale_name_format'];
 
     private expanded = { loc: true, exp: true };
     private exportDelimiterList = [",",";"];
@@ -83,16 +83,19 @@ export class UserPreferences {
         private language: language,
         private prefservice: userpreferences ) {
 
-            this.prefsLoaded.subscribe( () => {
-                this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
-            });
-            this.prefservice.getPreferences( this.prefsLoaded );
-            this.backend.getRequest("/timezones").subscribe( response => {
-                this.timezones = response;
-                this.timezoneKeys = Object.keys(this.timezones);
-            });
-            this.currencyList = this.currency.getCurrencies();
-            this.view.isEditable = true;
+        this.prefsLoaded.subscribe( () => {
+            this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+        });
+        this.prefservice.getPreferences( this.prefsLoaded );
+
+        this.prefservice.needFormats();
+
+        this.backend.getRequest("/timezones").subscribe( response => {
+            this.timezones = response;
+            this.timezoneKeys = Object.keys(this.timezones);
+        });
+        this.currencyList = this.currency.getCurrencies();
+        this.view.isEditable = true;
 
     }
 
@@ -137,4 +140,18 @@ export class UserPreferences {
             };
         }
     }
+
+    getExampleText( name: string ): string {
+        let exampleText = '';
+        if ( this.prefservice.formats.nameFormats ) {
+            this.prefservice.formats.nameFormats.some( ( row, index ) => {
+                if ( name === row.name ) {
+                    exampleText = row.example;
+                    return true;
+                }
+            });
+        }
+        return exampleText;
+    }
+
 }

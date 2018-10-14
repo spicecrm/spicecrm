@@ -17,13 +17,13 @@ import {backend} from "../../services/backend.service";
 
 export class WorkbenchConfig implements OnChanges {
 
-    @ViewChild('optionscontainer', {read: ViewContainerRef}) optionscontainer: ViewContainerRef;
+    @ViewChild('optionscontainer', {read: ViewContainerRef}) public optionscontainer: ViewContainerRef;
 
-    @Input() component: string = "";
-    @Input() configValues: any = {};
+    @Input() public component: string = "";
+    @Input() public configValues: any = {};
 
-    configOptions: Array<any> = [];
-    optionsElements: Array<any> = [];
+    public configOptions: Array<any> = [];
+    public optionsElements: Array<any> = [];
 
     constructor(
         private backend: backend,
@@ -32,7 +32,7 @@ export class WorkbenchConfig implements OnChanges {
     ) {
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    public ngOnChanges(changes: SimpleChanges) {
 
         // remove any options elements in case some exist
         for (let option of this.optionsElements) {
@@ -48,7 +48,8 @@ export class WorkbenchConfig implements OnChanges {
         for (let option in options) {
             this.configOptions.push({
                 option: option,
-                type: options[option].type ? options[option].type : 'string'
+                type: options[option].type ? options[option].type : 'string',
+                description: options[option].description ? options[option].description : ''
             });
         }
 
@@ -58,7 +59,7 @@ export class WorkbenchConfig implements OnChanges {
             let type = option.type.charAt(0).toUpperCase() + option.type.slice(1);
             component = 'WorkbenchConfigOption' + type;
 
-            //check availability
+            // check availability
             if (!this.metadata.checkComponent(component)) {
                 component = 'WorkbenchConfigOptionDefault';
             }
@@ -83,11 +84,10 @@ export class WorkbenchConfig implements OnChanges {
                             item => {
                                 this.configValues[option.option] = item.name;
                             }
-                        )
+                        );
                     }
                 }
             );
         }
     }
-
 }

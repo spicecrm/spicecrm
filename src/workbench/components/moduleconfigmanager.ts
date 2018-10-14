@@ -199,8 +199,6 @@ export class ModuleConfigManager {
             this.currentTableActive = "custom";
             this.checkMode();
             if (this.currentModule != "*") {
-
-
                 this.backend.getRequest('configurator/entries/sysuicustomcomponentmoduleconf').subscribe(data => {
                     this.buildTreeList(data);
                     loadingModalRef.instance.self.destroy();
