@@ -6,13 +6,10 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/systemcomponents/templates/systemmodalheader.html'
 })
 export class SystemModalHeader {
-
-    @Input() module: string = '';
-
-    @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() private module: string = '';
+    @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private metadata: metadata) {
 
     }
-
 }

@@ -5,30 +5,29 @@ import {metadata} from '../../services/metadata.service';
     selector: 'system-modal-content',
     templateUrl: './src/systemcomponents/templates/systemmodalcontent.html',
     host: {
-        '[class]' : 'this.marginclass'
+        '[class]': 'this.marginclass'
     }
 })
 export class SystemModalContent {
 
-    @Input() margin = 'medium';
-    @Input() grow: boolean = false;
-
+    @Input() private margin = 'medium';
+    @Input() private grow: boolean = false;
 
     constructor(private metadata: metadata) {
 
     }
 
-    get marginclass(){
-
+    get marginclass() {
         let dynamicclass = 'slds-modal__content';
 
-        if(this.margin != '')
-            dynamicclass += ' slds-p-around--'+this.margin;
+        if (this.margin != '') {
+            dynamicclass += ' slds-p-around--' + this.margin;
+        }
 
-        if(this.grow)
+        if (this.grow) {
             dynamicclass += ' slds-grow'
+        }
 
         return dynamicclass;
     }
-
 }
