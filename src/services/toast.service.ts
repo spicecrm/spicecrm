@@ -10,14 +10,14 @@ export class toast {
 
     }
 
-    public sendToast(text: string, type: "default"|"warning"|"info"|"success"|"error" = "default", description: string = "", autoClose: boolean | number = true): void {
+    public sendToast( text: string, type: "default"|"warning"|"info"|"success"|"error" = "default", description: string = "", autoClose: boolean | number = true): string {
         if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;
         }
-        let messageid = this.modelutilities.generateGuid();
+        let messageId = this.modelutilities.generateGuid();
         this.activeToasts.push({
-            id: messageid,
+            id: messageId,
             type: type,
             theme: "toast",
             text: text,
@@ -26,18 +26,20 @@ export class toast {
 
         // set a timeout to automatically clear the toast
         if (autoClose) {
-            window.setTimeout(() => this.clearToast(messageid), autoClose * 1000);
+            window.setTimeout(() => this.clearToast(messageId), autoClose * 1000);
         }
+
+        return messageId;
     }
 
-    public sendAlert(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): void {
+    public sendAlert(text: string, type: string = "default", description: string = "", autoClose: boolean | number = true): string {
         if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;
         }
-        let messageid = this.modelutilities.generateGuid();
+        let messageId = this.modelutilities.generateGuid();
         this.activeToasts.push({
-            id: messageid,
+            id: messageId,
             type: type,
             theme: "alert",
             text: text,
@@ -46,13 +48,16 @@ export class toast {
 
         // set a timeout to automatically clear the toast
         if (autoClose) {
-            window.setTimeout(() => this.clearToast(messageid), autoClose * 1000);
+            window.setTimeout(() => this.clearToast(messageId), autoClose * 1000);
         }
+
+        return messageId;
     }
 
-    private clearToast(messageid) {
+    public clearToast( messageId ) {
+        if ( !messageId ) return;
         this.activeToasts.some((item, index) => {
-            if (item.id === messageid) {
+            if ( item.id === messageId ) {
                 this.activeToasts.splice(index, 1);
                 return true;
             }
