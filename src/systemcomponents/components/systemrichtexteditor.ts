@@ -14,12 +14,12 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {metadata} from "../../services/metadata.service";
-import {modelutilities} from "../../services/modelutilities.service";
 import {DOCUMENT} from "@angular/common";
 
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
 import {SystemRichTextSourceModal} from "./systemrichtextsourcemodal";
+import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
 
 @Component({
     selector: "system-richtext-editor",
@@ -43,6 +43,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private isActive: boolean = false;
     private clickListener: any;
+    private modalOpen = false;
 
     private block = 'default';
     private fontName = 'Tilium Web';
@@ -55,7 +56,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
-    constructor(private modelutilities: modelutilities, private modal: modal, private renderer: Renderer2, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any, private elementRef: ElementRef,) {
+    constructor(private modal: modal, private renderer: Renderer2, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any, private elementRef: ElementRef,) {
     }
 
     public ngOnDestroy() {
@@ -73,6 +74,9 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                 break;
             case 'openEditorModal':
                 this.openEditorModal();
+                break;
+            case 'openMediaFilePicker':
+                this.openMediaFilePicker();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -99,7 +103,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     }
 
     private onDocumentClick(event: MouseEvent) {
-        if (!this.elementRef.nativeElement.contains(event.target)) {
+        if (!this.modalOpen && !this.elementRef.nativeElement.contains(event.target)) {
             this.isActive = false;
             this.clickListener();
         }
@@ -180,6 +184,29 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                 this.editor.setContent(update);
             })
             */
+        });
+    }
+
+    private openMediaFilePicker() {
+        this.modalOpen = true;
+        this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
+            componentRef.instance.answer.subscribe(image => {
+                if(image && image.upload) {
+                    this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
+                        uploadComponentRef.instance.answer.subscribe(uploadimage => {
+                            if (uploadimage) {
+                                this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage);
+                            }
+                            this.modalOpen = false;
+                        });
+                    });
+                } else {
+                    if (image && image.id) {
+                        this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
+                    }
+                    this.modalOpen = false;
+                }
+            });
         });
     }
 

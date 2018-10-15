@@ -1,7 +1,0 @@
-<div class="slds-m-vertical--xx-small">
-    <textarea style="height:250px" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [id]="fieldid"></textarea>
-    <select *ngIf="useStylesheetSwitcher" class="slds-select slds-m-top--x-small" [(ngModel)]="stylesheetId" (change)="changeStylesheet()">
-        <option value=""></option>
-        <option *ngFor="let sheet of stylesheets" value="{{sheet.id}}">{{sheet.name}}</option>
-    </select>
-</div>
