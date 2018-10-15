@@ -39,9 +39,10 @@
             <!--</div>-->
 
             <div class="slds-form-element slds-m-top--small">
-                <label class="slds-form-element__label" for="editor-id-02">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
+                <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
                 <div class="slds-form-element__control">
-                    <system-html-editor id="editor-id-02" [fieldid]="'234'" [(fieldvalue)]="moduleRepo.description" [fieldconfig]="'{}'" [useStylesheets]="" [useStylesheetSwitcher]="" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></system-html-editor>
+                    <system-richtext-editor [(ngModel])="moduleRepo.description"></system-richtext-editor>
+                    <!--system-html-editor id="editor-id-02" [fieldid]="'234'" [(fieldvalue)]="moduleRepo.description" [fieldconfig]="'{}'" [useStylesheets]="" [useStylesheetSwitcher]="" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></system-html-editor-->
                 </div>
             </div>
 
