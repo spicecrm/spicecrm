@@ -1,10 +1,12 @@
 import {
     AfterViewInit, ComponentFactoryResolver, Component, Input, Output, NgModule, ViewChild, ViewContainerRef,
-    OnInit, OnDestroy, EventEmitter, ElementRef, ChangeDetectorRef, ApplicationRef, Pipe, forwardRef, Directive, Renderer2, SimpleChanges, OnChanges, Host
+    OnInit, OnDestroy, EventEmitter, ElementRef, ChangeDetectorRef, ApplicationRef, Pipe, forwardRef, Directive, Renderer2, SimpleChanges, OnChanges, Host, Injectable, Inject
 } from "@angular/core";
 import {Subject} from "rxjs";
 import {Observable} from "rxjs";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {DOCUMENT} from "@angular/common";
+import {DomSanitizer} from '@angular/platform-browser';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
@@ -19,6 +21,7 @@ import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import { configurationService } from "../services/configuration.service";
 import { modal } from "../services/modal.service";
+
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
@@ -60,7 +63,6 @@ import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
-import /*embed*/ {SystemHtmlEditor} from "./components/systemhtmleditor";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 
@@ -113,7 +115,6 @@ import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextso
         SystemTreeItem,
         SystemSelect,
         SystemSection,
-        SystemHtmlEditor,
         SystemRichTextEditor,
         SystemRichTextSourceModal
     ],

@@ -40,7 +40,7 @@ export class systemrichtextservice {
     public selectedText: string;
     public uploadUrl: string;
 
-    constructor(private http: HttpClient, @Inject(DOCUMENT) private _document: any) {
+    constructor(@Inject(DOCUMENT) private _document: any) {
     }
 
     /**
@@ -167,22 +167,6 @@ export class systemrichtextservice {
         }
 
         return true;
-    }
-
-    /**
-     * Upload file to uploadUrl
-     * @param file
-     */
-    public uploadImage(file: File): Observable<HttpEvent<UploadResponse>> {
-
-        const uploadData: FormData = new FormData();
-
-        uploadData.append('file', file, file.name);
-
-        return this.http.post<UploadResponse>(this.uploadUrl, uploadData, {
-            reportProgress: true,
-            observe: 'events',
-        });
     }
 
     /**
