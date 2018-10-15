@@ -530,6 +530,7 @@ a, a:focus, a:hover {
     box-shadow: 0 0 3px #01464C;
 }
 
+
 .slds-button--icon-border.slds-is-selected:focus,
 .slds-button--icon-border.slds-is-selected:active,
 .slds-button--icon-border.slds-is-selected,
@@ -591,6 +592,10 @@ field-generic-display .slds-button--icon{
 .slds-button,
 .slds-navigation-list--vertical .slds-is-active {
     color: #5B5B5B;
+}
+
+.slds-button.slds-active {
+    color: #CA1B21;
 }
 
 .slds-button.slds-button--brand,
@@ -803,6 +808,14 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 
 .slds-button span{
     text-transform: capitalize;
+}
+
+/* rich text editor */
+.slds-rich-text-area__content{
+    max-height: none;
+    resize: vertical;
+    overflow: auto;
+    height: 300px;
 }
 
 /* Style Definition for HTML fields */
