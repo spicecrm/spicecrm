@@ -14,8 +14,8 @@ declare var moment: any;
 })
 export class ProductBrowser {
 
-    @ViewChild('productbrowsercontent', {read: ViewContainerRef}) productbrowsercontent: ViewContainerRef;
-    @Output() selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('productbrowsercontent', {read: ViewContainerRef}) private productbrowsercontent: ViewContainerRef;
+    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private language: language, private model: model, private navigation: navigation, private productfinder: productfinder) {
         // set theenavigation paradigm
@@ -23,17 +23,17 @@ export class ProductBrowser {
 
     }
 
-    getContentStyle(){
+    private getContentStyle(){
         return{
             height: 'calc(100vh - ' + this.productbrowsercontent.element.nativeElement.offsetTop  + 'px)'
-        }
+        };
     }
 
     get canAddVariant(){
         return this.productfinder.searchfocus.type == 'Product' ? true : false;
     }
 
-    addVariant(){
+    private addVariant() {
 
         let parent = {
             module: 'Products',
@@ -45,7 +45,7 @@ export class ProductBrowser {
     }
 
 
-    selectionChanged(data){
+    private selectionChanged(data){
         this.selectionchanged.emit(data);
     }
 }
