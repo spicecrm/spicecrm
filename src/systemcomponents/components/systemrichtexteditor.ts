@@ -60,7 +60,9 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     }
 
     public ngOnDestroy() {
-        this.clickListener();
+        if(this.clickListener) {
+            this.clickListener();
+        }
     }
 
     /**
