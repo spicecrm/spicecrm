@@ -115,8 +115,9 @@ import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
 import /*embed*/ {fieldTerritorySecondary, fieldTerritorySecondaryPipe} from "./components/fieldterritorysecondary";
 import /*embed*/ {fieldColorEnum} from "./components/fieldcolorenum";
 import /*embed*/ {fieldBase64} from "./components/fieldbase64";
-import /*embed*/ {fieldNotAuthorized} from './components/fieldnotauthorized';
-import /*embed*/ {fieldModuleIcon} from './components/fieldmoduleicon';
+import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
+import /*embed*/ {fieldModuleIcon} from "./components/fieldmoduleicon";
+import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
 
 @NgModule({
     imports: [
@@ -209,7 +210,8 @@ import /*embed*/ {fieldModuleIcon} from './components/fieldmoduleicon';
         fieldSelectTreeTree,
         fieldColorEnum,
         fieldBase64,
-        fieldModuleIcon
+        fieldModuleIcon,
+        fieldRichText
     ],
     entryComponents: [
         fieldLabel,
