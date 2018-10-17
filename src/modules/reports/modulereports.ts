@@ -11,7 +11,6 @@ import {navigation} from '../../services/navigation.service';
 
 import {ObjectFields}      from '../../objectfields/objectfields';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 import {userpreferences} from '../../services/userpreferences.service';
 import {currency} from '../../services/currency.service';
@@ -65,7 +64,6 @@ declare var moment: any;
         CommonModule,
         FormsModule,
         ObjectFields,
-        GlobalUtilityComponents,
         SystemComponents
     ],
     declarations: [

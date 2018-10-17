@@ -29,7 +29,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ {DeploymentCRDBEntries} from './components/deploymentcrdbentries';
 import /*embed*/ {DeploymentCRSetActiveButton} from './components/deploymentcrsetactivebutton';
@@ -45,7 +44,6 @@ import /*embed*/ {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
     ],
     declarations: [
         DeploymentCRDBEntries,

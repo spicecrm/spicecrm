@@ -34,7 +34,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
@@ -53,7 +52,6 @@ import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from '
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents
     ],
     declarations: [
         SalesDocsItemsContainer,

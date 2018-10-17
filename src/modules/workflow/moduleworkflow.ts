@@ -21,7 +21,6 @@ import {AppDataService} from '../../services/appdata.service';
 import {VersionManagerService} from '../../services/versionmanager.service';
 
 import { SystemComponents}      from '../../systemcomponents/systemcomponents';
-import { GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 import { ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import { ObjectFields}      from '../../objectfields/objectfields';
 
@@ -61,7 +60,6 @@ import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet"
     imports: [
         CommonModule,
         FormsModule,
-        GlobalUtilityComponents,
         SystemComponents,
         ObjectComponents,
         ObjectFields

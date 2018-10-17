@@ -25,7 +25,6 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents} from "../../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ {UserChangePasswordButton} from "./components/userchangepasswordbutton";
 import /*embed*/ {UserChangePasswordModal} from "./components/userchangepasswordmodal";
@@ -43,7 +42,6 @@ import /*embed*/ {UserAddModal} from "./components/useraddmodal";
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
     ],
     declarations: [

@@ -11,21 +11,19 @@ import {modal} from '../../services/modal.service';
     templateUrl: './src/objectfields/templates/fieldlookupsearch.html'
 })
 export class fieldLookupSearch {
-    searchTerm: string = '';
-    searchTimeout: any = {};
-    @Input() module: string = '';
-    @Input() fieldid: string = '';
+    private searchTerm: string = '';
+    private searchTimeout: any = {};
+    @Input() private module: string = '';
+    @Input() private fieldid: string = '';
 
-    @Output() selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private searchtermChange = new EventEmitter<string>();
 
     @Input() set searchterm(value) {
         this.searchTerm = value;
-        if (this.searchTimeout) window.clearTimeout(this.searchTimeout);
+        if (this.searchTimeout) {window.clearTimeout(this.searchTimeout);}
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
     };
-
-    @Output() searchtermChange = new EventEmitter<string>();
-    recentItems: Array<any> = [];
 
     constructor(private metadata: metadata, public model: model, public popup: popup, public fts: fts, public language: language, private modal: modal) {
     }
@@ -34,15 +32,13 @@ export class fieldLookupSearch {
         return this.metadata.checkModuleAcl(this.module, 'edit');
     }
 
-    doSearch() {
+    private doSearch() {
         if (this.searchTerm !== '' && this.searchTerm !== this.fts.searchTerm) {
-            // start the search
             this.fts.searchByModules(this.searchTerm, [this.module]);
-
         }
     }
 
-    setParent(id, text, data) {
+    private setParent(id, text, data) {
         this.searchTerm = '';
         this.searchtermChange.emit(this.searchTerm);
 
@@ -51,7 +47,7 @@ export class fieldLookupSearch {
         this.popup.close();
     }
 
-    getSearchResults() {
+    private getSearchResults() {
         let resultsArray: Array<any> = [];
         this.fts.moduleSearchresults.some(results => {
             if (results.module === this.module) {
@@ -62,16 +58,11 @@ export class fieldLookupSearch {
         return resultsArray;
     }
 
-    addParent() {
-
-    }
-
-    openModal(){
+    private openModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.module;
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
-               //  this.addSelectedItems(items);
                 this.selectedObject.emit({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
             });
             selectModal.instance.searchTerm = this.searchTerm;

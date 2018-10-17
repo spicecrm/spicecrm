@@ -16,19 +16,11 @@ import {model} from '../../../services/model.service';
         ':host {width:100%; height: 300px;}'
     ]
 })
-export class ReporterVisualizationContainer implements OnInit, AfterViewInit {
+export class ReporterVisualizationContainer {
 
-    componentconfig: any = {};
+    public componentconfig: any = {};
 
     constructor(private model: model) {
     }
 
-    ngOnInit() {
-        this.componentconfig.parentBeanId = this.model.id;
-        this.componentconfig.parentBeanModule = this.model.module;
-    }
-
-    ngAfterViewInit() {
-
-    }
 }

@@ -7,23 +7,23 @@ import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Router}   from '@angular/router';
 import {Observable, Subject} from 'rxjs';
-//import {isUndefined} from "util";
+
 
 @Injectable()
 export class favorite {
 
-    isFavorite: boolean = false;
-    isEnabled: boolean = false;
-    favorites: Array<any> = [];
+    public isFavorite: boolean = false;
+    public isEnabled: boolean = false;
+    public favorites: Array<any> = [];
 
-    currentModule: string = '';
-    currentId: string = '';
+    private currentModule: string = '';
+    private currentId: string = '';
 
     constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message))
     }
 
-    handleMessage(message: any) {
+    private handleMessage(message: any) {
         switch (message.messagetype) {
 
             case 'model.save':

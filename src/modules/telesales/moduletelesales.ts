@@ -54,7 +54,6 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents} from '../../globalutilitycomponents/globalutilitycomponents';
 import /*embed*/ {telecockpitservice} from "./services/telecockpit.service";
 
 import /*embed*/ {TeleSalesCockpit} from './components/telesalescockpit';
@@ -77,7 +76,6 @@ import /*embed*/ {TeleSalesCockpitAddMeetingButton} from './components/telesales
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents
     ],
     declarations: [
         TeleSalesCockpit,

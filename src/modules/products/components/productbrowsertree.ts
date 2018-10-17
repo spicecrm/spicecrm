@@ -25,34 +25,37 @@ declare var moment: any;
 })
 export class ProductBrowserTree {
 
-    @ViewChild('treeheader', {read: ViewContainerRef}) treeheader: ViewContainerRef;
-    @Output() selectionchanged: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('treeheader', {read: ViewContainerRef}) private treeheader: ViewContainerRef;
+    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
-    productgroups: Array<any> = [];
-    productgrouptree: Array<any> = [];
-    productgrouptreeresultsonly: boolean = false;
-    selectedid: string = '';
+    private productgroups: Array<any> = [];
+    private productgrouptree: Array<any> = [];
+    private productgrouptreeresultsonly: boolean = false;
+    private selectedid: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
         this.getProductGroups().subscribe(
             done => {
-                if (this.productgrouptree.length > 0)
+                if (this.productgrouptree.length > 0) {
                     this.selectGroup(this.productgrouptree[0]);
+                }
             },
             complete => {
-                if (this.productgrouptree.length > 0)
+                if (this.productgrouptree.length > 0) {
                     this.selectGroup(this.productgrouptree[0]);
-            })
+                }
+            });
+
     }
 
     get treestyle(){
         let rect = this.treeheader.element.nativeElement.getBoundingClientRect();
         return {
             height: 'calc(100% - ' + rect.height + 'px)'
-        }
+        };
     }
 
-    getProductGroups(parentId = '') {
+    private getProductGroups(parentId = '') {
         let retSubject: Subject<any> = new Subject<any>();
         let searchfields = {
             field: 'parent_productgroup_id',
@@ -68,16 +71,16 @@ export class ProductBrowserTree {
             limit: 250
         }).subscribe(items => {
 
-            items['list'].sort((a, b) => {
-                return parseInt(a.sortseq) > parseInt(b.sortseq) ? 1 : -1;
+            items.list.sort((a, b) => {
+                return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
             });
 
-            for (let item of items['list']) {
+            for (let item of items.list) {
                 item.expanded = false;
                 item.loaded = false;
                 item.type = 'group';
-                item.member_count = parseInt(item.member_count);
-                item.product_count = parseInt(item.product_count);
+                item.member_count = parseInt(item.member_count, 10);
+                item.product_count = parseInt(item.product_count, 10);
                 this.productgroups.push(item);
             }
             this.buildTree();
@@ -87,7 +90,7 @@ export class ProductBrowserTree {
         return retSubject.asObservable();
     }
 
-    getProducts(parentId = '') {
+    private getProducts(parentId = '') {
         let searchfields = {
             field: 'productgroup_id',
             operator: '=',
@@ -102,7 +105,7 @@ export class ProductBrowserTree {
             limit: 250,
             sortfield: 'name'
         }).subscribe(items => {
-            for (let item of items['list']) {
+            for (let item of items.list) {
                 item.expanded = false;
                 item.loaded = false;
                 item.type = 'product';
@@ -113,24 +116,24 @@ export class ProductBrowserTree {
         })
     }
 
-    canexpand(item) {
+    private canexpand(item) {
         return item.member_count > 0 || item.product_count > 0;
     }
 
-    toggle(productgroup) {
+    private toggle(productgroup) {
         this.productgroups.some(item => {
                 if (item.id == productgroup.id) {
                     item.expanded = !item.expanded;
                     if (item.expanded) {
                         if (item.loaded) {
                             this.buildTree();
-                        }
-                        else {
+                        } else {
                             item.loaded = true;
-                            if (item.member_count > 0)
+                            if (item.member_count > 0) {
                                 this.getProductGroups(productgroup.id);
-                            else
+                            } else {
                                 this.getProducts(productgroup.id);
+                            }
                         }
                     } else {
                         this.buildTree();
@@ -138,15 +141,15 @@ export class ProductBrowserTree {
                     return true;
                 }
             }
-        )
+        );
     }
 
-    buildTree() {
+    private buildTree() {
         this.productgrouptree = [];
         this.addTreeNode();
     }
 
-    addTreeNode(parentId = '', level = 1) {
+    private addTreeNode(parentId = '', level = 1) {
         for (let productgroup of this.productgroups) {
             if (productgroup.parent_productgroup_id == parentId) {
                 productgroup.level = level;
@@ -159,7 +162,7 @@ export class ProductBrowserTree {
         }
     }
 
-    selectGroup(group) {
+    private selectGroup(group) {
         this.productfinder.searchfocus = {
             type: 'ProductGroup',
             object: group
@@ -175,7 +178,7 @@ export class ProductBrowserTree {
         this.selectionchanged.emit(this.productfinder.searchfocus);
     }
 
-    selectProduct(product) {
+    private selectProduct(product) {
         this.productfinder.searchfocus = {
             type: 'Product',
             object: product
@@ -190,16 +193,16 @@ export class ProductBrowserTree {
         this.selectionchanged.emit(this.productfinder.searchfocus);
     }
 
-    isSelected(id) {
+    private isSelected(id) {
         return this.selectedid == id;
     }
 
-    getAggregateCount(item) {
+    private getAggregateCount(item) {
         let aggregate = this.productfinder.getAggegateCount(item.type === 'product' ? 'productid' : 'productgroups', item.id);
         return aggregate ? aggregate : '-';
     }
 
-    displayTreeNode(node){
+    private displayTreeNode(node){
         if(this.productgrouptreeresultsonly){
             return this.getAggregateCount(node) !== '-' ? true : false;
         } else {

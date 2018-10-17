@@ -30,7 +30,6 @@ import { modal } from "../services/modal.service";
 
 import {ObjectFields}      from "../objectfields/objectfields";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents}      from "../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ {MenuService} from "./services/menu.service";
 
@@ -88,7 +87,6 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         FormsModule,
         ObjectFields,
         SystemComponents,
-        GlobalUtilityComponents,
         RouterModule.forRoot([
             {path: "login", component: GlobalLogin},
             {path: "setup", component: GlobalSetup},

@@ -1,6 +1,8 @@
-<div class="slds-lookup__item--label slds-text-body--small">Recent {{language.getModuleName(module)}}</div>
+<div class="slds-lookup__item--label slds-text-body--small">
+    {{language.getLabel('LBL_RECENTLYVIEWED')}} {{language.getModuleName(module)}}
+</div>
 <ul class="slds-lookup__list" role="listbox">
-    <li *ngFor="let recentItem of recentItems" role="presentation" (mousedown)="setParent(recentItem.item_id, recentItem.item_summary)">
+    <li *ngFor="let recentItem of recentItems" role="presentation" (click)="setParent($event, recentItem.item_id, recentItem.item_summary)">
         <span class="slds-lookup__item-action slds-media" role="option">
               <system-icon [module]="module" [size]="'small'"></system-icon>
               <div class="slds-media__body">

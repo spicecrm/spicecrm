@@ -32,7 +32,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ {CampaignTaskActivateButton} from "./components/campaigntaskactivatebutton";
 
@@ -47,7 +46,6 @@ import /*embed*/ {CampaignSendTestMailButton} from './components/campaignsendtes
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
     ],
     declarations: [
         CampaignTaskActivateButton,
