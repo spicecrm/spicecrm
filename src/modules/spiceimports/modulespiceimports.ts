@@ -52,7 +52,6 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents} from '../../globalutilitycomponents/globalutilitycomponents';
 import /*embed*/ {spiceimportsservice} from "./services/spiceimports.service";
 
 import /*embed*/ {SpiceImports} from './components/spiceimports';
@@ -68,7 +67,6 @@ import /*embed*/ {Spiceimportslogs} from './components/spiceimportslogs';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents
     ],
     declarations: [
         SpiceImports,

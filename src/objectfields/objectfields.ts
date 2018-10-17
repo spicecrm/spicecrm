@@ -33,7 +33,6 @@ import {userpreferences} from '../services/userpreferences.service';
 import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
 
 import {SystemComponents} from '../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents} from '../globalutilitycomponents/globalutilitycomponents';
 import {DirectivesModule} from "../directives/directives";
 
 import /*embed*/ {fieldGeneric} from './components/fieldgeneric';
@@ -123,7 +122,6 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
     imports: [
         CommonModule,
         FormsModule,
-        GlobalUtilityComponents,
         SystemComponents,
         DirectivesModule,
     ],

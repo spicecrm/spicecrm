@@ -1,21 +1,6 @@
-<div style="position:relative">
-    <div style="position:absolute;right:0px;top:-21px;">
-        <button class="slds-button slds-button--icon" (click)="print()">
-            <system-custom-icon size="x-small" icon="print"></system-custom-icon>
-        </button>
-        <iframe #printframe [srcdoc]="htmlValue" style="width:0;height:0;border:0"></iframe>
-        <button *ngIf="isEditable() && !isEditMode()" class="slds-button slds-button--icon" (click)="setEditMode()">
-            <system-button-icon [icon]="'edit'"></system-button-icon>
-        </button>
-        <button *ngIf="isEditMode()" class="slds-button slds-button--icon" (click)="expand()">
-            <system-button-icon [icon]="'expand_alt'"></system-button-icon>
-        </button>
-    </div>
-</div>
-<div *ngIf="!isEditMode()" class="slds-scrollable--y" style="max-height: 300px;" [ngClass]="fielddisplayclass">
-    <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue"></div>
-    <iframe *ngIf="asiframe" [srcdoc]="htmlValue" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
-</div>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <div class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue" style="white-space: normal; height: 300px; resize: vertical; overflow-y: auto;"></div>
+</field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <system-richtext-editor [(ngModel)]="value"></system-richtext-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
