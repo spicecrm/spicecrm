@@ -1,5 +1,19 @@
 import {CommonModule} from "@angular/common";
-import {NgModule, Renderer2, Output, Component, ElementRef, Injectable, EventEmitter, OnInit, AfterViewInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, Input} from "@angular/core";
+import {
+    NgModule,
+    Renderer2,
+    Output,
+    Component,
+    Injectable,
+    EventEmitter,
+    OnInit,
+    AfterViewInit,
+    OnDestroy,
+    OnChanges,
+    ViewChild,
+    ViewContainerRef,
+    Input
+} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
@@ -10,18 +24,16 @@ import {view} from "../../services/view.service";
 import {metadata} from "../../services/metadata.service";
 import {backend} from "../../services/backend.service";
 import {model} from "../../services/model.service";
-import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
+import {modal} from "../../services/modal.service";
 
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {EmailToObjectEmailText} from "./components/emailtoobjectemailtext";
-import /*embed*/ {EmailToObjectModal} from "./components/emailtoobjectmodal";
-import /*embed*/ {EmailToObjectButton} from "./components/emailtoobjectbutton";
+import /*embed*/ {PiplContainer} from "./components/piplcontainer";
 
 @NgModule({
     imports: [
@@ -34,12 +46,11 @@ import /*embed*/ {EmailToObjectButton} from "./components/emailtoobjectbutton";
         DirectivesModule,
     ],
     declarations: [
-        EmailToObjectButton,
-        EmailToObjectEmailText,
-        EmailToObjectModal
+        PiplContainer
+
     ]
 })
-export class ModuleEmails {
+export class ModulePipl {
     public readonly version = "1.0";
     public readonly build_date = "/*build_date*/";
 

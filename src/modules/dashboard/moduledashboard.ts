@@ -24,7 +24,6 @@ import {VersionManagerService} from "../../services/versionmanager.service";
 
 import {ObjectFields}      from "../../objectfields/objectfields";
 import {SystemComponents}      from "../../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents}      from "../../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ {dashboardlayout} from "./services/dashboardlayout.service";
 import /*embed*/ { DashboardView } from "./components/dashboardview";
@@ -46,7 +45,6 @@ import /*embed*/ { DashboardRemindersDashlet } from "./components/dashboardremin
         FormsModule,
         ObjectFields,
         SystemComponents,
-        GlobalUtilityComponents
         ],
     declarations: [
         DashboardView,

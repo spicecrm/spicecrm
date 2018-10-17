@@ -18,7 +18,6 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents} from "../../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ {ContactNewslettersButton} from "./components/contactnewslettersbutton";
 import /*embed*/ {ContactNewsletters} from "./components/contactnewsletters";
@@ -33,7 +32,6 @@ import /*embed*/ {ContactPortalDetails} from "./components/contactportaldetails"
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
     ],
     declarations: [

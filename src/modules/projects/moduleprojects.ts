@@ -19,7 +19,6 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents} from "../../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
 
@@ -35,7 +34,6 @@ import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydash
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
     ],
     declarations: [

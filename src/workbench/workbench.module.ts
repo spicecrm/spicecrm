@@ -24,7 +24,6 @@ import {footer} from "../services/footer.service";
 
 // MODULEs
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents}      from "../globalutilitycomponents/globalutilitycomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 
@@ -98,7 +97,6 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
     imports: [
         CommonModule,
         FormsModule,
-        GlobalUtilityComponents,
         SystemComponents,
         DirectivesModule,
         ObjectFields

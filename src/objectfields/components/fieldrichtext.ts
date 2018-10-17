@@ -56,14 +56,7 @@ export class fieldRichText extends fieldGeneric {
      * @returns {any}
      */
     get htmlValue() {
-        // if value changed, generate html value
-        if (this.value != this._cached_value) {
-            this._cached_html_value = this.sanitized.bypassSecurityTrustHtml(
-                '<html><head>' + (this.useStylesheets && !_.isEmpty(this.model.data[this.stylesheetField]) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.model.data[this.stylesheetField]) + '</style>' : '') + '</head><body class="spice">' + this.value + '</body></html>'
-            );
-            this._cached_value = this.value;
-        }
-        return this._cached_html_value;
+        return this.sanitized.bypassSecurityTrustHtml(this.value);
     }
 
     get stylesheetId(): string {
@@ -79,39 +72,10 @@ export class fieldRichText extends fieldGeneric {
         }
     }
 
-    get asiframe() {
-        return this.fieldconfig.asiframe || !_.isEmpty(this.fieldconfig.stylesheetId) || !_.isEmpty(this.stylesheetField) ? true : false;
-    }
-
-    private updateField(newVal) {
-        // set the model
-        this.value = newVal;
-
-        // make sure we propagate the change
-        this.zone.run(() => {
-        });
-    }
-
     private updateStylesheet(stylesheetId) {
         if (!_.isEmpty(this.stylesheetField) && _.isString(stylesheetId)) {
             this.model.setField(this.stylesheetField, stylesheetId);
         }
-    }
-
-    private expand() {
-        this.modal.openModal('SystemTinyMCEModal', false).subscribe(componentRef => {
-            componentRef.instance.title = this.getLabel();
-            componentRef.instance.content = this.value;
-            componentRef.instance.stylesheetId = this.stylesheetId;
-            componentRef.instance.updateContent.subscribe(update => {
-                this.value = update;
-            });
-        });
-    }
-
-    private eventHandler(event) {
-        this.value = event.srcElement.innerHTML;
-        // console.log(event);
     }
 
     // Code from fieldlabel.ts
@@ -127,9 +91,4 @@ export class fieldRichText extends fieldGeneric {
             return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels)
         }
     }
-
-    private print() {
-        this.printframe.element.nativeElement.contentWindow.print();
-    }
-
 }

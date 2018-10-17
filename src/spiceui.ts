@@ -16,7 +16,6 @@ import {HttpClientModule} from "@angular/common/http";
 
 // spicecrm generic modules
 import {SystemComponents}      from "./systemcomponents/systemcomponents";
-import {GlobalUtilityComponents} from "./globalutilitycomponents/globalutilitycomponents";
 import {GlobalComponents}      from "./globalcomponents/globalcomponents";
 import {ObjectComponents} from "./objectcomponents/objectcomponents";
 
@@ -78,7 +77,6 @@ export class SpiceUI {
         HttpClientModule,
         FormsModule,
         SystemComponents,
-        GlobalUtilityComponents,
         GlobalComponents,
         ObjectComponents,
         RouterModule.forRoot(
