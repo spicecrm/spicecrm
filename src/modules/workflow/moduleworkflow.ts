@@ -41,7 +41,7 @@ import /*embed*/ {WorkflowManagerDetailTaskEmailpanel} from "./components/workfl
 import /*embed*/ {WorkflowManagerDetailTaskSystemactionspanel} from "./components/workflowmanagerdetailtasksystemactionspanel";
 import /*embed*/ {WorkflowManagerDetailTaskSystemactions} from "./components/workflowmanagerdetailtasksystemactions";
 import /*embed*/ {WorkflowManagerDetailTaskSystemactionsLine} from "./components/workflowmanagerdetailtasksystemactionsline";
-import /*embed*/ {WorkflowManagerDetailConditions} from "./components/WorkflowManagerDetailConditions";
+import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowmanagerdetailconditions";
 import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
 import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
 
