@@ -1,12 +1,8 @@
 <div tabindex="-1" class="slds-modal slds-fade-in-open">
     <div class="slds-modal__container">
-        <header class="slds-modal__header slds-theme_shade">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
-                <system-button-icon [icon]="'close'"></system-button-icon>
-                <span class="slds-assistive-text">Close</span>
-            </button>
-            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_NEW_IMAGE')}}</h2>
-        </header>
+        <system-modal-header (close)="cancel()">
+            {{language.getLabel('LBL_NEW_IMAGE')}}
+        </system-modal-header>
         <input #fileupload style="display:none" type="file" (change)="fileSelected()" />
         <div class="slds-modal__content slds-p-around--medium slds-wrap">
 
@@ -61,9 +57,11 @@
 
         </div>
 
-        <div *ngIf="!noMetaData" class="slds-modal__footer">
+        <div class="slds-modal__footer">
+            <ng-container *ngIf="!noMetaData">
+                <button *ngIf="fileIsSelected" class="slds-button slds-button--brand" (click)="finishDataInput()">{{language.getLabel('LBL_SAVE')}}</button>
+            </ng-container>
             <button *ngIf="!fileIsSelected" class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{language.getLabel('LBL_SELECT_FILE')}} …</button>
-            <button *ngIf="fileIsSelected" class="slds-button slds-button--brand" (click)="finishDataInput()">{{language.getLabel('LBL_SAVE')}}</button>
             <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
         </div>
 
