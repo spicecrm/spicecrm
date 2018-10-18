@@ -557,12 +557,12 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, data: any): Observable<Array<any>> {
+    public save(module: string, id: string, cdata: any): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
 
         let saveData = {};
-        for (let fieldName in data) {
-            saveData[fieldName] = this.spice2backend(module, fieldName, data[fieldName]);
+        for (let fieldName in cdata) {
+            saveData[fieldName] = this.spice2backend(module, fieldName, cdata[fieldName]);
         }
 
         this.postRequest("module/" + module + "/" + id, {}, JSON.stringify(saveData))

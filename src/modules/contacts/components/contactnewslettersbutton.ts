@@ -11,7 +11,12 @@ import {modal} from "../../../services/modal.service";
     templateUrl: "./src/modules/contacts/templates/contactnewslettersbutton.html",
     host: {
         "class": "slds-button slds-button--neutral",
-    }
+        "[style.display]": "getDisplay()",
+        "(click)" : "showPortalDetails()"
+    },
+    styles: [
+        ":host >>> {cursor:pointer;}"
+    ]
 })
 export class ContactNewslettersButton {
 
@@ -24,4 +29,7 @@ export class ContactNewslettersButton {
         this.modal.openModal("ContactNewsletters", true, this.ViewContainerRef.injector);
     }
 
+    private getDisplay() {
+        return !this.model.data.email1 || this.model.isEditing || (this.model.data.acl && !this.model.data.acl.edit) ? "none" : "inherit";
+    }
 }
