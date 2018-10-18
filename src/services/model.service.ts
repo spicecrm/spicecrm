@@ -200,8 +200,7 @@ export class model {
                 this.isValid = false;
                 this.addMessage("error", this.language.getLabel("MSG_INPUT_REQUIRED") + "!", field);
             }
-            if( this.getFieldStati(field).invalid)
-            {
+            if (this.getFieldStati(field).invalid) {
                 this.isValid = false;
             }
         }
@@ -456,7 +455,7 @@ export class model {
                             this._model_stati_tmp.push(state);
                         }
                     }
-                } else if (!this.checkModelState(params)){
+                } else if (!this.checkModelState(params)) {
                     this._model_stati_tmp.push(params);
                 }
                 return true;
@@ -492,7 +491,7 @@ export class model {
                 let result = modelutilities.strtomoment(params);
                 params = result ? result : params;
             } else if (/\d+\s*[\+\-\*\/\^]\s*\d+/.test(params)) {
-            // compile math expressions...
+                // compile math expressions...
                 let result = this.utils.compileMathExpression(params);
                 params = result ? result : params;
             }
@@ -508,11 +507,6 @@ export class model {
         // shift to backend format .. no objects like date embedded
         this.backupData = {...this.data};
         this.isEditing = true;
-
-        /*for (let fieldName in this.data) {
-            this.backupData[fieldName] = this.utils.spice2backend(this.module, fieldName, this.data[fieldName]);
-
-        }*/
     }
 
 
@@ -531,8 +525,8 @@ export class model {
     }
 
     public setFieldValue(field, value) {
-        if ( !field ) return false;
-        if ( _.isString( value )) value = value.trim();
+        if (!field) return false;
+        if (_.isString(value)) value = value.trim();
         this.data[field] = value;
         this.data$.emit(this.data);
         this.evaluateValidationRules(field, "change");
@@ -558,10 +552,29 @@ export class model {
         this.isEditing = false;
     }
 
+    private getDirtyFields() {
+        let d = {};
+        for (let property in this.data) {
+            if (property && ( _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+                d[property] = this.data[property];
+            }
+        }
+        return d;
+    }
 
     public save(notify: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
-        this.backend.save(this.module, this.id, this.data)
+
+        // determine changed fields
+        let changedData = {};
+        if (this.isEditing) {
+            changedData = this.getDirtyFields();
+        } else {
+            changedData = this.data;
+        }
+
+
+        this.backend.save(this.module, this.id, changedData)
             .subscribe(res => {
                 this.data = res;
                 this.isNew = false;
@@ -713,9 +726,9 @@ export class model {
         let copyrules = this.metadata.getCopyRules("*", this.module);
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
-                this.setFieldValue( copyrule.tofield, copyrule.fixedvalue );
+                this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
-                this.setFieldValue( copyrule.tofield, this.getCalculatdValue( copyrule.calculatedvalue ));
+                this.setFieldValue(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
             }
         }
 
@@ -729,9 +742,9 @@ export class model {
             copyrules = this.metadata.getCopyRules(parent.module, this.module);
             for (let copyrule of copyrules) {
                 if (copyrule.fromfield && copyrule.tofield) {
-                    this.setFieldValue( copyrule.tofield, parent.getFieldValue( copyrule.fromfield ));
+                    this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
                 } else if (copyrule.tofield && copyrule.fixedvalue) {
-                    this.setFieldValue( copyrule.tofield, copyrule.fixedvalue );
+                    this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
                 }
             }
         }
@@ -763,9 +776,7 @@ export class model {
             return false;
         }
 
-        // start Edit
-        this.startEdit();
-
+        // open the edit Modal
         this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
             if (editModalRef) {
                 if (componentSet && componentSet != "") {
@@ -773,7 +784,13 @@ export class model {
                 }
 
                 if (reload) {
-                    editModalRef.instance.model.getData(false, "editview", false);
+                    editModalRef.instance.model.getData(false, "editview", false).subscribe(loaded => {
+                        // start editing after it has been loaded
+                        this.startEdit();
+                    });
+                } else {
+                    // start Editing
+                    this.startEdit();
                 }
             }
         });
@@ -900,9 +917,13 @@ export class model {
     */
 
     private isFieldARelationLink(field_name) {
-        if (this.fields[field_name].type == "link") {
-            return true;
-        } else {
+        try {
+            if (this.fields[field_name].type == "link") {
+                return true;
+            } else {
+                return false;
+            }
+        } catch(e){
             return false;
         }
     }
