@@ -137,7 +137,8 @@ export class mailboxesEmails {
         let parameters = {};
         if (this.unreadonly) {
             parameters = {
-                fields: JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness"]),
+                fields: JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness",
+                "sentiment", "magnitude"]),
                 limit: this.limit,
                 offset: this.emails.length,
                 searchfields: JSON.stringify({
