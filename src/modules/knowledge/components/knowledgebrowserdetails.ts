@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ViewContainerRef, OnChanges} from "@angular/core";
+import {Component, Input, OnChanges, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {favorite} from "../../../services/favorite.service";
@@ -13,13 +13,30 @@ export class KnowledgeBrowserDetails implements OnChanges {
     @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
 
     @Input("selectedId") private docId: string = "";
-    private _breadcrumbs: any[] = [];
 
     constructor(private language: language,
                 private favorite: favorite,
                 private knowledgeService: KnowledgeService,
                 private model: model) {
         this.model.module = "KnowledgeDocuments";
+    }
+
+    private _breadcrumbs: any[] = [];
+
+    get breadcrumbs() {
+        return this._breadcrumbs;
+    }
+
+    set breadcrumbs(value) {
+        this._breadcrumbs = value;
+    }
+
+    get detailsContainerStyle() {
+        if (this.detailsContainer) {
+            let rect = this.detailsContainer.element.nativeElement;
+            return {height: `calc(100vh - ${rect.offsetTop}px)`};
+        }
+        return {};
     }
 
     public ngOnChanges() {
@@ -34,21 +51,5 @@ export class KnowledgeBrowserDetails implements OnChanges {
                     }
                 });
         }
-    }
-
-    set breadcrumbs(value) {
-        this._breadcrumbs = value;
-    }
-
-    get breadcrumbs() {
-        return this._breadcrumbs;
-    }
-
-    get detailsContainerStyle() {
-        if (this.detailsContainer) {
-            let rect = this.detailsContainer.element.nativeElement;
-            return {height: `calc(100vh - ${rect.offsetTop}px)`};
-        }
-        return {};
     }
 }

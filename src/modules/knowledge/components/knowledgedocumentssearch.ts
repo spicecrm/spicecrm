@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
@@ -36,9 +36,9 @@ import {navigation} from "../../../services/navigation.service";
 })
 export class KnowledgeDocumentsSearch {
 
+    public isLoading: boolean = false;
+    public interval: any = undefined;
     @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
-
-    public searchTerm: string = "";
 
     constructor(public language: language,
                 public model: model,
@@ -48,18 +48,17 @@ export class KnowledgeDocumentsSearch {
                 public backend: backend) {
     }
 
-    get isLoading() {
-        return this.knowledgeService.isLoading;
+    get resultsList() {
+        return this.knowledgeService.resultsList;
     }
 
-    get searchResults() {
-        let resultsArray: any[] = [];
-        for (let doc of this.knowledgeService.documents) {
-            if (this.searchTerm != "" && doc.name.toLowerCase().includes(this.searchTerm.toLowerCase())) {
-                resultsArray.push(doc);
-            }
-        }
-        return resultsArray;
+    get searchTerm() {
+        return this.knowledgeService.searchterm;
+    }
+
+    set searchTerm(value) {
+        clearTimeout(this.interval);
+        this.interval = setTimeout(() => this.knowledgeService.searchTerm = value, 500);
     }
 
     get resultsMenuStyle() {
@@ -69,7 +68,14 @@ export class KnowledgeDocumentsSearch {
         }
     }
 
-    private selectDocument(id) {
-        this.knowledgeService.selectedId = id;
+    public clearSearch() {
+        this.knowledgeService.searchTerm = "";
+        this.knowledgeService.resultsList = [];
+    }
+
+    private selectDocument(doc) {
+        this.knowledgeService.selectedId = doc.id;
+        this.knowledgeService.selectedBook = {id: doc.knowledgebook_id, name: doc.knowledgebook_name};
+        this.knowledgeService.getDocuments(doc.knowledgebook_id);
     }
 }

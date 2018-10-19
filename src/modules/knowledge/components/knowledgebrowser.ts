@@ -1,9 +1,8 @@
-import {Component, ViewChild, ViewContainerRef, OnDestroy} from "@angular/core";
+import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {navigation} from "../../../services/navigation.service";
-import {favorite} from "../../../services/favorite.service";
 import {IConfig} from "../../../systemcomponents/components/systemtree";
 import {KnowledgeService} from "../services/knowledge.service";
 import {ActivatedRoute, Router} from '@angular/router';
@@ -13,7 +12,7 @@ import {Location} from '@angular/common';
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
     providers: [KnowledgeService, model]
 })
-export class KnowledgeBrowser implements OnDestroy {
+export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public config: IConfig = {clickable: true};
     public activeTab: string = "tree";
@@ -39,17 +38,13 @@ export class KnowledgeBrowser implements OnDestroy {
             this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
             this.knowledgeService.selectedId = params.id;
             this.model.getData(true, 'detailview').subscribe(data => {
-                this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
+                this.navigation.setActiveModule("KnowledgeBooks", data.knowledgebook_id, data.knowledgebook_name);
                 if (!this.knowledgeService.selectedBook) {
                     this.knowledgeService.selectedBook = {id: data.knowledgebook_id, name: data.knowledgebook_name};
                     this.knowledgeService.getDocuments(data.knowledgebook_id);
                 }
             });
         });
-    }
-
-    public ngOnDestroy() {
-        this.routeSubscribe.unsubscribe();
     }
 
     get selectedBook() {
@@ -75,6 +70,14 @@ export class KnowledgeBrowser implements OnDestroy {
 
     get isLoading() {
         return this.knowledgeService.isLoading;
+    }
+
+    public ngAfterViewInit() {
+        this.navigation.setActiveModule("KnowledgeBooks");
+    }
+
+    public ngOnDestroy() {
+        this.routeSubscribe.unsubscribe();
     }
 
     private handleSelectedItemEvent(id) {

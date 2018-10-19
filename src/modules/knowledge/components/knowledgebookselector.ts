@@ -36,10 +36,9 @@ import {navigation} from "../../../services/navigation.service";
 })
 export class KnowledgeBookSelector {
 
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
-
     public searchTerm: string = "";
     public searchOpen: boolean = false;
+    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
 
     constructor(public language: language,
                 public model: model,

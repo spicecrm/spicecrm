@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef, OnInit, OnDestroy} from "@angular/core";
+import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -8,9 +8,9 @@ import {model} from "../../../services/model.service";
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowserdetailscontainerright.html"
 })
 export class KnowledgeBrowserDetailsContainerRight implements OnInit, OnDestroy {
+    public componentconfig: any = {};
     @ViewChild("itemscontainer", {read: ViewContainerRef}) private itemsContainer: ViewContainerRef;
     private renderedComponents: any[] = [];
-    public componentconfig: any = {};
 
     constructor(private language: language,
                 private model: model,

@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
@@ -35,6 +35,10 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
         });
     }
 
+    get panelTitle() {
+        return this.componentconfig.title ? this.language.getLabel(this.componentconfig.title) : "Related Documents";
+    }
+
     public ngOnInit() {
         if (this.componentconfig.items) {
             this.relatedmodels.loaditems = this.componentconfig.items;
@@ -47,10 +51,6 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
 
     public ngOnDestroy() {
         this.relatedmodels.stopSubscriptions();
-    }
-
-    get panelTitle() {
-        return this.componentconfig.title ? this.language.getLabel(this.componentconfig.title) : "Related Documents";
     }
 
     private navigateTo(id) {

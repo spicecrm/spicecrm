@@ -12,7 +12,7 @@ import {KnowledgeService} from "../services/knowledge.service";
 })
 export class KnowledgeManager implements AfterViewInit {
 
-    public config: IConfig = {clickable: true, canadd: true};
+    public config: IConfig = {clickable: true, canadd: true, draggable: true};
     public activeTab: string = "tree";
 
     @ViewChild("maincontainer", {read: ViewContainerRef}) private maincontainer: ViewContainerRef;
@@ -57,7 +57,7 @@ export class KnowledgeManager implements AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.navigation.setActiveModule(this.model.module);
+        this.navigation.setActiveModule("KnowledgeBooks");
     }
 
     public handleAddEvent(parent) {

@@ -2,41 +2,44 @@
     <div #inputcontainer class="slds-form-element">
         <div class="slds-form-element__control slds-grid slds-p-around--x-small">
             <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
+                <system-utility-icon *ngIf="searchTerm.length == 0" icon="search" [addclasses]="'slds-input__icon'"></system-utility-icon>
+                <button *ngIf="searchTerm.length > 0" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon" (click)="clearSearch()">
+                    <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
                 <input type="search" class="slds-input" [(ngModel)]="searchTerm" placeholder="Search Documents" role="combobox">
             </div>
         </div>
     </div>
     <div class="slds-p-vertical--none" [ngStyle]="resultsMenuStyle">
         <div *ngIf="searchTerm != ''" class="slds-theme--shade slds-p-vertical--xx-small slds-p-horizontal--small slds-text-body--small slds-border--bottom">
-            {{searchResults.length == 1 ?  searchResults.length + ' Document found' : searchResults.length + ' Documents found'}}
+            {{resultsList.length == 1 ?  resultsList.length + ' Document found' : resultsList.length + ' Documents found'}}
         </div>
         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
             <thead>
             <tr class="slds-line-height_reset">
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Account Name">Name</div>
+                    <div class="slds-truncate" title="Account Name">{{ language.getLabel('LBL_NAME') }}</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Account Name">Status</div>
+                    <div class="slds-truncate" title="Account Name">{{ language.getLabel('LBL_STATUS') }}</div>
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let document of searchResults" class="slds-hint-parent">
+            <tr *ngFor="let document of resultsList" class="slds-hint-parent">
                 <td scope="row">
                     <div class="slds-truncate" [title]="document.name">
-                        <a style="cursor: pointer" (click)="selectDocument(document.id)" tabindex="-1">{{document.name}}</a>
+                        <a style="cursor: pointer" (click)="selectDocument(document)" tabindex="-1">{{document.name}}</a>
                     </div>
                 </td>
                 <td scope="row">
                     <div class="slds-truncate" [title]="document.status">
-                        <a style="cursor: pointer" (click)="selectDocument(document.id)" tabindex="-1">{{document.status}}</a>
+                        <a style="cursor: pointer" (click)="selectDocument(document)" tabindex="-1">{{document.status}}</a>
                     </div>
                 </td>
             </tr>
             </tbody>
-            <tbody system-table-stencils [columns]="3" [tools]="true" [rows]="5" *ngIf="isloading"></tbody>
         </table>
+        <system-spinner *ngIf="isLoading"></system-spinner>
     </div>
 </div>

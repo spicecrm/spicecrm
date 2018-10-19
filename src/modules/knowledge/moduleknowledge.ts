@@ -56,7 +56,6 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {AddComponentsModule} from "../../addcomponents/addcomponents.module";
-import {GlobalUtilityComponents} from "../../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
 import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
@@ -77,7 +76,6 @@ import /*embed*/ {KnowledgeDocumentFavorites} from "./components/knowledgedocume
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         AddComponentsModule
     ],
     declarations: [

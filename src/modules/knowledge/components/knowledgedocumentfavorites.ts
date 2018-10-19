@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {favorite} from "../../../services/favorite.service";
 import {language} from "../../../services/language.service";
 import {KnowledgeService} from "../services/knowledge.service";
@@ -16,7 +16,8 @@ export class KnowledgeDocumentFavorites {
         private favorite: favorite,
         private location: Location,
         private knowledgeService: KnowledgeService,
-    ) {}
+    ) {
+    }
 
     get favorites() {
         return this.favorite.getFavorites("KnowledgeDocuments");
