@@ -9,7 +9,6 @@ export interface IConfig {
     icon?: string;
     expandall?: boolean;
     collapsible?: boolean;
-    lasyload?: boolean;
 }
 /*
 * -- @INPUT PARAMS --
@@ -22,7 +21,6 @@ export interface IConfig {
 *       clickable: false,
 *       expandall: false,
 *       collapsible: true
-*       lasyload: false
 *   };
 *
 * -- @OUTPUT PARAMS --
@@ -34,6 +32,7 @@ export interface IConfig {
 *       parent_id: string = parent item id,
 *       parent_name: string = parent item name,
 *   };
+* TODO:Lazy Load functionality
 */
 
 @Component({
@@ -48,15 +47,19 @@ export class SystemTree {
     @Input() public treelist: any[] = [];
     @Input() public selectedItem: string = "";
     public tree: Array<any> = [];
-    private treeConfig: any = {};
-    private isLoading: boolean = false;
+    private treeConfig: any = {
+        draggable: false,
+        canadd: false,
+        clickable: false,
+        expandall: false,
+        collapsible: true,
+    };
     @Input() set config(obj) {
         this.treeConfig.draggable = obj.draggable || false;
         this.treeConfig.canadd = obj.canadd || false;
         this.treeConfig.clickable = obj.clickable || false;
         this.treeConfig.expandall = obj.expandall || false;
         this.treeConfig.collapsible = obj.collapsible || true;
-        this.treeConfig.lasyload = obj.lasyload || true;
     }
 
     get config() {
