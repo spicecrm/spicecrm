@@ -1,0 +1,11 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_OPTIMISTICLOCKING_CONFLICT')}}</system-modal-header>
+    <system-modal-content>
+        here goes the locking content
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+    </system-modal-footer>
+</system-modal>
