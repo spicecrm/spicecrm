@@ -21,7 +21,7 @@ export class userpreferences {
 
     // unchangedPreferences stores the preferences as they are delivered by the KREST api. Don´t use this, when you need any value (use "toUse" instead).
     // Use this object when the user edits the preferences (record detail view of module "users").
-    private unchangedPreferences: any = {
+    public unchangedPreferences: any = {
         global: {}
     };
 
@@ -38,7 +38,7 @@ export class userpreferences {
         default_locale_name_format: 'l, f'
     };
 
-    private formats = {nameFormats: [], loaded: false};
+    public formats = {nameFormats: [], loaded: false};
 
     constructor(private backend: backend, private toast: toast, private l: language) {
         this.toUse = this.preferences.global;
@@ -134,13 +134,30 @@ export class userpreferences {
     public getDateFormat() {
         if (this.toUse.datef) {
             let dateFormat: string = this.toUse.datef;
-            return dateFormat.replace('Y', 'YYYY').replace('m', 'MM').replace('d', 'DD');
+            return this.jsDateFormat2momentDateFormat(dateFormat);
         } else {
             return 'YYYY-MM-DD';
         }
     }
 
-    private needFormats() {
+    public jsDateFormat2momentDateFormat(format) {
+        return format.replace('Y', 'YYYY').replace('m', 'MM').replace('d', 'DD');
+    }
+
+    public getTimeFormat() {
+        if (this.toUse.timef) {
+            let timeFormat: string = this.toUse.timef;
+            return this.jsTimeFormat2momentTimeFormat(timeFormat);
+        } else {
+            return 'YYYY-MM-DD';
+        }
+    }
+
+    public jsTimeFormat2momentTimeFormat(format) {
+        return format.replace('H', 'HH').replace('h', 'hh').replace('i', 'mm');
+    }
+
+    public needFormats() {
         if (!this.formats.loaded) {
             this.loadFormats();
         }
@@ -152,8 +169,9 @@ export class userpreferences {
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
         this.backend.getRequest('user/preferencesformats').subscribe(formats => {
-            for (let item of formats.nameFormats)
+            for (let item of formats.nameFormats) {
                 this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});
+            }
             this.formats.loaded = true;
             retSubject.next(true);
         });
