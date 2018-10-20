@@ -82,6 +82,7 @@ import /*embed*/ {ObjectEditModal} from './components/objecteditmodal';
 import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalwreference';
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
+import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
 
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
@@ -277,6 +278,7 @@ import /*embed*/ {ObjectTable} from "./components/objecttable";
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
+        ObjectOptimisticLockingModal,
         ObjectRecordViewContainer,
         ObjectRecordView,
         ObjectRecordViewDetail1,
