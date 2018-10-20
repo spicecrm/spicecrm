@@ -101,8 +101,8 @@ export class fieldDateTime extends fieldGeneric {
 
     get displayValue() {
         try {
-            if (this.model.data[this.fieldname]) {
-                let date = this.model.data[this.fieldname];
+            if (this.model.getField(this.fieldname)) {
+                let date = this.model.getField(this.fieldname);
                 if (date.isValid()) {
                     if (this.fieldconfig.displayfromnow) {
                         return date.fromNow();
@@ -123,8 +123,8 @@ export class fieldDateTime extends fieldGeneric {
 
     get displaySpan() {
         try {
-            if (this.model.data[this.fieldname]) {
-                let date = this.model.data[this.fieldname];
+            if (this.model.getField(this.fieldname)) {
+                let date = this.model.getField(this.fieldname);
                 if (date.isValid()) {
                     return date.fromNow();
                 } else {
@@ -140,8 +140,8 @@ export class fieldDateTime extends fieldGeneric {
 
     get displayDate() {
         try {
-            if (this.model.data[this.fieldname]) {
-                let date = this.model.data[this.fieldname];
+            if (this.model.getField(this.fieldname)) {
+                let date = this.model.getField(this.fieldname);
                 if (date.isValid()) {
 
                     return date.format(this.userpreferences.getDateFormat());
@@ -158,8 +158,8 @@ export class fieldDateTime extends fieldGeneric {
 
     get displayTime() {
         try {
-            if (this.model.data[this.fieldname]) {
-                let date = this.model.data[this.fieldname];
+            if (this.model.getField(this.fieldname)) {
+                let date = this.model.getField(this.fieldname);
                 if (date.isValid()) {
 
                     return date.format(this.userpreferences.getTimeFormat());
@@ -180,9 +180,9 @@ export class fieldDateTime extends fieldGeneric {
         if (setDate.isValid()) {
 
             // set the time
-            if (this.model.data[this.fieldname] && !isNaN(this.model.data[this.fieldname].hour())) {
-                setDate.hour(this.model.data[this.fieldname].hour());
-                setDate.minute(this.model.data[this.fieldname].minute());
+            if (this.model.getField(this.fieldname) && !isNaN(this.model.getField(this.fieldname).hour())) {
+                setDate.hour(this.model.getField(this.fieldname).hour());
+                setDate.minute(this.model.getField(this.fieldname).minute());
                 setDate.second(0);
             }
 
@@ -202,8 +202,8 @@ export class fieldDateTime extends fieldGeneric {
 
     get editDate() {
         try {
-            if (this.model.data[this.fieldname]) {
-                let date = this.model.data[this.fieldname];
+            if (this.model.getField(this.fieldname)) {
+                let date = this.model.getField(this.fieldname);
                 if (date.isValid()) {
                     return date.format(this.userpreferences.getDateFormat());
                 } else {
@@ -220,8 +220,8 @@ export class fieldDateTime extends fieldGeneric {
     get editTime() {
 
         try {
-            if (this.model.data[this.fieldname]) {
-                let time = new moment(this.model.data[this.fieldname]);
+            if (this.model.getField(this.fieldname)) {
+                let time = new moment(this.model.getField(this.fieldname));
                 if (time.isValid()) {
                     return time.format('HH:mm');
                 } else {
@@ -240,10 +240,10 @@ export class fieldDateTime extends fieldGeneric {
         setTime.second(0);
         if (setTime.isValid()) {
             // set the date
-            if (this.model.data[this.fieldname] && !isNaN(this.model.data[this.fieldname].year())) {
-                setTime.year(this.model.data[this.fieldname].year());
-                setTime.month(this.model.data[this.fieldname].month());
-                setTime.date(this.model.data[this.fieldname].date());
+            if (this.model.getField(this.fieldname) && !isNaN(this.model.getField(this.fieldname).year())) {
+                setTime.year(this.model.getField(this.fieldname).year());
+                setTime.month(this.model.getField(this.fieldname).month());
+                setTime.date(this.model.getField(this.fieldname).date());
             }
 
 
@@ -270,15 +270,15 @@ export class fieldDateTime extends fieldGeneric {
     }
 
     get pickerDate() {
-        let pickerDate = new moment(this.model.data[this.fieldname]);
+        let pickerDate = new moment(this.model.getField(this.fieldname));
         if (pickerDate.isValid()) {
-            return new moment(this.model.data[this.fieldname]);
+            return new moment(this.model.getField(this.fieldname));
         } else {
             return new moment();
         }
     }
 
     get highlightdate() {
-        return (this.fieldconfig.highlightpast == 1 || this.fieldconfig.highlightpast === true) && this.editDate && new moment() > new moment(this.model.data[this.fieldname]) ? true : false;
+        return (this.fieldconfig.highlightpast == 1 || this.fieldconfig.highlightpast === true) && this.editDate && new moment() > new moment(this.model.getField(this.fieldname)) ? true : false;
     }
 }
