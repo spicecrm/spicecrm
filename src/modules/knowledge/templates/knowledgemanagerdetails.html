@@ -1,0 +1,7 @@
+<div *ngIf="!docId || docId == ''" class="slds-align--absolute-center slds-p-vertical--medium spice-h-full slds-text-heading--medium">
+    <span>{{ language.getLabel('LBL_MAKE_SELECTION') }}</span>
+</div>
+<system-spinner *ngIf="model.isloading"></system-spinner>
+<div [hidden]="!docId || docId == ''" style="background-color: #fff">
+    <div #detailscontent></div>
+</div>
