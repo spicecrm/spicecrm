@@ -482,18 +482,18 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getAudit(module: string, id: string): Observable<any> {
+    public getAudit(module: string, id: string, filters: any = {}): Observable<any> {
         let responseSubject = new Subject<Array<any>>();
-        this.getRequest("module/" + module + "/" + id + "/auditlog")
+        this.getRequest("module/" + module + "/" + id + "/auditlog", filters)
             .subscribe(response => {
                     responseSubject.next(response);
                     responseSubject.complete();
                 },
                 response => {
                     if (response.error.error && response.error.error.errorCode && response.error.error.errorCode === 'moduleNotAudited') {
-                        responseSubject.next([]);
+                        responseSubject.error(response.error.error.errorCode);
                         responseSubject.complete();
-                        console.warn(`Audit not enabled for module "${module}".`);
+                        // console.warn(`Audit not enabled for module "${module}".`);
                     }
                 });
         return responseSubject.asObservable();
