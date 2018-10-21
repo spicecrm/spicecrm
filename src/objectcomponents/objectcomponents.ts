@@ -83,6 +83,8 @@ import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalw
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
 import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
+import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
+import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
 
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
@@ -212,6 +214,7 @@ import /*embed*/ {ObjectTableRow} from "./components/objecttablerow";
 import /*embed*/ {ObjectTable} from "./components/objecttable";
 
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -279,6 +282,8 @@ import /*embed*/ {ObjectTable} from "./components/objecttable";
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
         ObjectOptimisticLockingModal,
+        ObjectOptimisticLockingModalDataField,
+        ObjectOptimisticLockingModalChange,
         ObjectRecordViewContainer,
         ObjectRecordView,
         ObjectRecordViewDetail1,

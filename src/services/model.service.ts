@@ -572,6 +572,9 @@ export class model {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
+
+            // hack to provoke the changes for Testing
+            // changedData.date_modified.subtract( 1, 'days');
         } else {
             changedData = this.data;
         }
@@ -602,7 +605,7 @@ export class model {
                     switch (error.status) {
                         case 409:
                             this.modal.openModal("ObjectOptimisticLockingModal", true, this.injector).subscribe(lockingModalRef => {
-                                lockingModalRef.instance.conflicts = error.error.conflicts;
+                                lockingModalRef.instance.conflicts = error.error.error.conflicts;
                             });
                             break;
                         default:
@@ -651,13 +654,18 @@ export class model {
         return clone;
     }
 
-    public getAuditLog(): Observable<any> {
+    public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
-        this.backend.getAudit(this.module, this.id)
-            .subscribe(res => {
-                responseSubject.next(res);
-                responseSubject.complete();
-            });
+        this.backend.getAudit(this.module, this.id, filters)
+            .subscribe(
+                res => {
+                    responseSubject.next(res);
+                    responseSubject.complete();
+                },
+                error => {
+                    responseSubject.next(error);
+                    responseSubject.complete();
+                });
         return responseSubject.asObservable();
     }
 

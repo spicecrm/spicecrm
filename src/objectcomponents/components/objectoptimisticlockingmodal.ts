@@ -20,8 +20,9 @@ declare var moment: any;
 export class ObjectOptimisticLockingModal implements OnInit {
 
     private self: any = {};
-    private componentconfig: any = {};
     public conflicts: any = {};
+    private _conflicts: Array<any> = [];
+    private originaldata: any = {};
 
     constructor(
         private language: language,
@@ -35,14 +36,36 @@ export class ObjectOptimisticLockingModal implements OnInit {
     }
 
     public ngOnInit() {
-        this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.model.module);
+        for (let fieldname in this.conflicts) {
+            this._conflicts.push({
+                field: fieldname,
+                value: this.conflicts[fieldname].value,
+                changes: this.conflicts[fieldname].changes
+            });
+
+            // create an object for the field for the original values
+            this.originaldata[fieldname] = this.conflicts[fieldname].value;
+        }
     }
 
-    private close() {
+    private cancel() {
+        // cancel the edit process and roll back
+        this.model.cancelEdit();
+
+        // retrieve the model
+        this.model.getData();
+
         // destroy the component
         this.self.destroy();
     }
 
+    private edit() {
+        // got back to editing
+        this.model.edit();
+
+        // destroy the component
+        this.self.destroy();
+    }
 
     private save(goDetail: boolean = false) {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
@@ -65,6 +88,22 @@ export class ObjectOptimisticLockingModal implements OnInit {
                 modalRef.instance.self.destroy();
             });
         });
+    }
+
+    private copyField(fieldname) {
+        this.model.setField(fieldname, this.conflicts[fieldname].value);
+    }
+
+    private toggleChangeDetails(fieldname) {
+        this.conflicts[fieldname].open = !this.conflicts[fieldname].open;
+    }
+
+    private changeDetailsIcon(fieldname) {
+        return this.conflicts[fieldname].open ? 'chevronup' : 'chevrondown';
+    }
+
+    private channgeOpen(fieldname) {
+        return this.conflicts[fieldname].open ? true : false;
     }
 
 }
