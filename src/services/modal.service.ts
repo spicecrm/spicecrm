@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, Injector } from "@angular/core";
+import {EventEmitter, Injectable, Injector} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {Observable, Subject, of} from "rxjs";
 import {footer} from "./footer.service";
@@ -133,11 +133,11 @@ export class modal {
         return this.prompt("info", text, headertext, theme);
     }
 
-    public await( messagelabel: string = null ): EventEmitter<boolean> {
+    public await(messagelabel: string = null): EventEmitter<boolean> {
         let stopper = new EventEmitter<boolean>();
         this.openModal("SystemLoadingModal").subscribe(component => {
             component.instance.messagelabel = messagelabel;
-            stopper.subscribe( () => {
+            stopper.subscribe(() => {
                 component.instance.self.destroy();
             });
         });
