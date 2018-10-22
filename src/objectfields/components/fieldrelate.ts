@@ -13,7 +13,7 @@ import {fieldGeneric} from './fieldgeneric';
     templateUrl: './src/objectfields/templates/fieldrelate.html',
     providers: [popup]
 })
-export class fieldRelate extends fieldGeneric implements OnInit{
+export class fieldRelate extends fieldGeneric implements OnInit {
     private relateIdField: string = '';
     private relateNameField: string = '';
     private relateType: string = '';
@@ -40,7 +40,7 @@ export class fieldRelate extends fieldGeneric implements OnInit{
         this.relateType = fieldDefs.module;
     }
 
-    closePopups() {
+    private closePopups() {
         if (this.model.data[this.relateIdField]) {
             this.relateSearchTerm = '';
         }
@@ -56,7 +56,7 @@ export class fieldRelate extends fieldGeneric implements OnInit{
         this.relateSearchOpen = true;
     }
 
-    private setRelated(related){
+    private setRelated(related) {
         this.model.data[this.relateIdField] = related.id;
         this.model.data[this.relateNameField] = related.text;
         this.closePopups();
@@ -68,7 +68,7 @@ export class fieldRelate extends fieldGeneric implements OnInit{
     }
 
 
-    private openSearchModal(){
+    private openSearchModal() {
         // close the relate search
         this.relateSearchOpen = false;
 
