@@ -23,7 +23,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { loginCheck } from '../services/login.service';
 import {DirectivesModule} from "../directives/directives";
 import { SystemComponents } from '../systemcomponents/systemcomponents';
-import { GlobalUtilityComponents } from '../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service'
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service'
@@ -66,7 +65,6 @@ export class AdministrationMain {
         CommonModule,
         FormsModule,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
         RouterModule.forChild([
             { path: '', component: AdministrationMain}

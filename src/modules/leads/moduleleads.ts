@@ -52,7 +52,6 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents} from '../../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ {LeadConvertButton} from './components/leadconvertbutton';
 import /*embed*/ {LeadConvertModal} from './components/leadconvertmodal';
@@ -73,7 +72,6 @@ import /*embed*/ {LeadConvertOpportunityModal} from './components/leadconvertopp
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents
     ],
     declarations: [
 

@@ -65,6 +65,14 @@ export class MailboxesImapSmtpTrafficManager implements OnInit {
         this.mailboxes = [];
     }
 
+    get isInbound() {
+        return this.model.getFieldValue('inbound_comm') ? true : false;
+    }
+
+    get isOutbound() {
+        return this.model.getFieldValue('outbound_comm') != 'no' ? true : false;
+    }
+
     private getMailboxes(): Observable<any> {
         let responseSubject = new Subject<Array<any>>();
 

@@ -199,8 +199,6 @@ export class ModuleConfigManager {
             this.currentTableActive = "custom";
             this.checkMode();
             if (this.currentModule != "*") {
-
-
                 this.backend.getRequest('configurator/entries/sysuicustomcomponentmoduleconf').subscribe(data => {
                     this.buildTreeList(data);
                     loadingModalRef.instance.self.destroy();
@@ -321,7 +319,7 @@ export class ModuleConfigManager {
                 if (this.newComponent) {
                     if (this.newComponent.id == entry.id) {
                         comp.selected = true;
-                        this.selectedOutputItem(comp); // open new component
+                        this.selectedOutputItem(comp.id); // open new component
                     }
                 }
                 components.push(comp)
@@ -364,9 +362,9 @@ export class ModuleConfigManager {
         return role_name; // return name if available ... otherwise role id
     }
 
-    selectedOutputItem(item) {
+    selectedOutputItem(id) {
         for (let component of this.componentModuleList) {
-            if (component.id == item.id) {
+            if (component.id == id) {
                 if (typeof component.componentconfig == "string") {
                     component.componentconfig = JSON.parse(component.componentconfig);
                 }

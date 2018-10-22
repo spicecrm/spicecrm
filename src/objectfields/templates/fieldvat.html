@@ -6,11 +6,11 @@
         </div>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small"
      [ngClass]="getFieldClass()">
     <div class="slds-grid slds-size--1-of-1">
         <ng-container *ngIf="!isvalidating; else validating">
-            <input class="slds-input slds-size--1-of-1" type="text" [(ngModel)]="value"/>
+            <input class="slds-input" type="text" [(ngModel)]="value"/>
             <div class="slds-col_bump-left slds-grid slds-grid--vertical-align-center">
                 <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
                 <button class="slds-button slds-button--neutral slds-m-left--x-small" [disabled]="!cancheck" (click)="validate()">check</button>
