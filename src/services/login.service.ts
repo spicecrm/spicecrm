@@ -45,7 +45,13 @@ export class loginService {
 
         let krestUrl: string = "";
         let options: object = {};
+        let loginBy: string;
         if (this.authData.userName.length >0 && this.authData.password.length > 0) {
+            let asUsernamePos: number;
+            if (( asUsernamePos = this.authData.userName.indexOf('#as#')) > -1 ) {
+                loginBy = this.authData.userName.slice( 0, asUsernamePos );
+                this.authData.userName = this.authData.userName.slice( asUsernamePos+4 );
+            }
             let headers = new HttpHeaders();
             headers = headers.set(
                 'Authorization',
@@ -53,6 +59,7 @@ export class loginService {
             );
 
             krestUrl = this.configurationService.getBackendUrl() + '/login';
+            if ( loginBy ) krestUrl += '?byDev=' + encodeURIComponent( loginBy );
             options  = {headers: headers};
         } else if (this.oauthToken.length > 0) {
             let params = {oauthToken: this.oauthToken, accessToken: this.accessToken};

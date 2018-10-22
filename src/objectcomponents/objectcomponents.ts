@@ -12,7 +12,6 @@ import {DirectivesModule} from "../directives/directives";
 import {ObjectFields}      from '../objectfields/objectfields';
 import {GlobalComponents}      from '../globalcomponents/globalcomponents';
 import {SystemComponents}      from '../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../globalutilitycomponents/globalutilitycomponents';
 
 import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
 import {modal} from '../services/modal.service';
@@ -219,7 +218,6 @@ import /*embed*/ {ObjectTable} from "./components/objecttable";
         ObjectFields,
         GlobalComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
         RouterModule.forRoot([
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},

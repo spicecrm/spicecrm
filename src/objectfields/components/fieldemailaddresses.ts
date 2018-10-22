@@ -24,18 +24,18 @@ export class fieldEmailAddresses extends fieldGeneric {
         return this.model.data[this.fieldname];
     }
 
-    private sendEmail() {
-        if (this.model.data[this.fieldname] != '') {
-            window.location.assign('mailto:' + this.model.data[this.fieldname]);
+    private sendEmail(emailaddress) {
+        if (emailaddress.invalid_email !== '1') {
+            window.location.assign('mailto:' + emailaddress.email_address);
         }
     }
 
     private setprimary(id) {
         for (let emailaddress of this.model.data.emailaddresses) {
             if (emailaddress.id == id) {
-                emailaddress.primary_address = 1;
+                emailaddress.primary_address = "1";
             } else {
-                emailaddress.primary_address = 0;
+                emailaddress.primary_address = "0";
             }
         }
     }

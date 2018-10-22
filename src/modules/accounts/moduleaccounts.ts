@@ -19,7 +19,6 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents} from "../../globalutilitycomponents/globalutilitycomponents";
 
 import /*embed*/ {ACManagerService} from "./services/acmanager.service";
 import /*embed*/ { accountHierarchy } from "./services/accounthierarchy.service";
@@ -43,7 +42,6 @@ import /*embed*/ {AccountHierarchyNode} from "./components/accounthierarchynode"
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
     ],
     declarations: [

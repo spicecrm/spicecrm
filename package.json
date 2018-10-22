@@ -20,6 +20,7 @@
     "delete-empty": "^2.0.0",
     "google-auth-library": "^1.6.1",
     "gulp-systemjs-builder": "^0.15.0",
+    "npm": "^6.4.1",
     "rxjs": "~6.2.2",
     "rxjs-compat": "^6.0.0-rc.0",
     "systemjs": "0.21.4",
