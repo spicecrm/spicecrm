@@ -18,8 +18,12 @@ export class SystemTreeItem {
     }
 
     public expand(e, item) {
+        if (!item) {
+            return;
+        }
         item.expanded = !item.expanded;
         e.stopPropagation();
+
     }
 
     public addItem(e, parentId, parentName) {
