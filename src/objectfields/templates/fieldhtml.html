@@ -7,7 +7,7 @@
         <button *ngIf="isEditable() && !isEditMode()" class="slds-button slds-button--icon" (click)="setEditMode()">
             <system-button-icon [icon]="'edit'"></system-button-icon>
         </button>
-        <button *ngIf="isEditMode()" class="slds-button slds-button--icon slds-p-around--x-small" (click)="expand()" style="z-index: 1">
+        <button *ngIf="isEditMode()" class="slds-button slds-button--icon" (click)="expand()" style="z-index: 1">
             <system-button-icon [icon]="'expand'"></system-button-icon>
         </button>
     </div>
