@@ -1,6 +1,4 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
@@ -14,17 +12,17 @@ declare var moment: any;
 })
 export class Calendar {
 
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) calendarcontent: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
 
-    showTypeSelector: boolean = false;
-    calendarDate: any = {};
-    sheetType: string = 'Week';
+    private showTypeSelector: boolean = false;
+    private calendarDate: any = {};
+    private sheetType: string = 'Week';
 
-    duration: any = {
-        Day : 'd',
-        Week : 'w',
-        Month : 'M',
-    }
+    private duration: any = {
+        Day: 'd',
+        Week: 'w',
+        Month: 'M',
+    };
 
     constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
         // set theenavigation paradigm
@@ -33,46 +31,17 @@ export class Calendar {
         this.calendarDate = new moment();
     }
 
-    getOffset(){
-        return moment().utcOffset()
+    get contentStyle() {
+        if (this.calendarcontent) {
+            return {
+                height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop + 'px)'
+            };
+        }
     }
 
-    setDateChanged(event){
-        this.calendarDate = new moment(event);
-    }
-
-    toggleTypeSelector(){
-        this.showTypeSelector = !this.showTypeSelector;
-    }
-
-    setType(sheetType){
-        this.sheetType = sheetType;
-        this.showTypeSelector = false;
-    }
-
-    goToday(){
-        this.calendarDate = new moment();
-    }
-
-    gotToDayView(date){
-        this.calendarDate = date;
-        this.sheetType = 'Day';
-    }
-
-    goToWeekView(){
-        this.sheetType = 'Week';
-    }
-
-    shiftPlus(){
-        this.calendarDate = new moment(this.calendarDate.add(moment.duration(1, this.duration[this.sheetType])));
-    }
-    shiftMinus(){
-        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(1, this.duration[this.sheetType])));
-    }
-
-    getCalendarHeader(){
+    private getCalendarHeader() {
         let focDate = new moment(this.calendarDate);
-        switch(this.sheetType){
+        switch (this.sheetType) {
             case 'Week':
                 return 'Week ' + this.getCalendarWeek() + ': ' + this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
             case 'Month':
@@ -82,40 +51,71 @@ export class Calendar {
         }
     }
 
-    getCalendarWeek(){
+    private getCalendarWeek() {
         let focDate = new moment(this.calendarDate);
         focDate.day(1);
         return focDate.isoWeek();
     }
 
-    getFirstDayOfWeek(){
+    private getFirstDayOfWeek() {
         let focDate = new moment(this.calendarDate);
         focDate.day(0);
-        return focDate.format('MMMM D, YYYY')
+        return focDate.format('MMMM D, YYYY');
     }
 
-    getLastDayOfWeek(){
+    private getLastDayOfWeek() {
         let focDate = new moment(this.calendarDate);
         focDate.day(7);
-        return focDate.format('MMMM D, YYYY')
+        return focDate.format('MMMM D, YYYY');
     }
 
-    getContentStyle(){
-        return{
-            height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop  + 'px)'
-        }
+    private getOffset() {
+        return moment().utcOffset();
     }
 
-    zoomin(){
+    private setDateChanged(event) {
+        this.calendarDate = new moment(event);
+    }
+
+    private toggleTypeSelector() {
+        this.showTypeSelector = !this.showTypeSelector;
+    }
+
+    private setType(sheetType) {
+        this.sheetType = sheetType;
+        this.showTypeSelector = false;
+    }
+
+    private goToday() {
+        this.calendarDate = new moment();
+    }
+
+    private gotToDayView(date) {
+        this.calendarDate = date;
+        this.sheetType = 'Day';
+    }
+
+    private goToWeekView() {
+        this.sheetType = 'Week';
+    }
+
+    private shiftPlus() {
+        this.calendarDate = new moment(this.calendarDate.add(moment.duration(1, this.duration[this.sheetType])));
+    }
+
+    private shiftMinus() {
+        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(1, this.duration[this.sheetType])));
+    }
+
+    private zoomin() {
         this.calendar.sheetHourHeight += 10;
     }
 
-    zoomout(){
+    private zoomout() {
         this.calendar.sheetHourHeight -= 10;
     }
 
-    resetzoom(){
+    private resetzoom() {
         this.calendar.sheetHourHeight = 80;
     }
-
 }

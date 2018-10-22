@@ -1,14 +1,9 @@
-import {
-    AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input,
-    OnInit, Renderer2, Output, EventEmitter
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
-import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 
 declare var moment: any;
@@ -16,33 +11,32 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-week-event',
     templateUrl: './src/modules/calendar/templates/calendarsheetweekevent.html',
-    providers:[model, view],
-    host:{
-        'class' : 'slds-is-absolute',
-        '(dragstart)' : 'this.dragStart($event)',
-        '(dragend)' : 'this.dragEnd($event)'
+    providers: [model, view],
+    host: {
+        'class': 'slds-is-absolute',
+        '(dragstart)': 'this.dragStart($event)',
+        '(dragend)': 'this.dragEnd($event)'
     }
 })
-export class CalendarSheetWeekEvent implements OnInit{
-    @Input() event: any = {};
-    @Output() rearrange: EventEmitter<any> = new EventEmitter<any>();
+export class CalendarSheetWeekEvent implements OnInit {
+    @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
+    @Input() private event: any = {};
+    private componentconfig: any = {};
+    private fields: Array<any> = [];
 
-    componentconfig: any = {};
-    fields: Array<any> = [];
+    private mouseMoveListener: any = undefined;
+    private mouseUpListener: any = undefined;
+    private mouseStart: any = undefined;
+    private mouseLast: any = undefined;
 
-    mouseMoveListener: any = undefined;
-    mouseUpListener: any = undefined;
-    mouseStart: any = undefined;
-    mouseLast: any = undefined;
-
-    sheetHourHeight: number = 60;
-    lastMoveTimeSpan: number = 0;
+    private sheetHourHeight: number = 60;
+    private lastMoveTimeSpan: number = 0;
 
     constructor(private language: language, private metadata: metadata, private broadcast: broadcast, private calendar: calendar, private elementRef: ElementRef, private model: model, private renderer: Renderer2) {
         // this.calendar.sheetHourHeight = this.calendar.sheetHourHeight;
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.model.module = this.event.module;
         this.model.id = this.event.id;
         this.model.data = this.event.data;
@@ -53,27 +47,27 @@ export class CalendarSheetWeekEvent implements OnInit{
             this.fields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
     }
 
-    getEventStyle(){
+    private getEventStyle() {
         try {
             return {
                 'background-color': this.componentconfig.colors.default ? this.componentconfig.colors.default : '#d5e4f0'
-            }
-        } catch(e){
+            };
+        } catch (e) {
             return {
                 'background-color': '#d5e4f0'
-            }
+            };
         }
     }
 
-    dragStart(event){
+    private dragStart(event) {
         this.event.dragging = true;
     }
 
-    dragEnd(event){
+    private dragEnd(event) {
         this.event.dragging = false;
     }
 
-    onMouseDown(e) {
+    private onMouseDown(e) {
 
         this.mouseStart = e;
         this.mouseLast = e;
@@ -84,27 +78,27 @@ export class CalendarSheetWeekEvent implements OnInit{
         event.preventDefault();
     }
 
-    onMouseMove(e) {
+    private onMouseMove(e) {
         this.mouseLast = e;
 
-        let moved = (this.mouseLast.pageY - this.mouseStart.pageY)
+        let moved = (this.mouseLast.pageY - this.mouseStart.pageY);
 
         let span = Math.floor(moved / 15);
-        if(this.lastMoveTimeSpan !== span){
+        if (this.lastMoveTimeSpan !== span) {
             this.lastMoveTimeSpan = span;
-            this.event.end = new moment(this.event.start).add(this.event.data.duration_hours * 60 + this.event.data.duration_minutes + this.lastMoveTimeSpan * 15, 'm' );
+            this.event.end = new moment(this.event.start).add(this.event.data.duration_hours * 60 + this.event.data.duration_minutes + this.lastMoveTimeSpan * 15, 'm');
         }
 
     }
 
-    onMouseUp() {
+    private onMouseUp() {
         this.mouseUpListener();
         this.mouseMoveListener();
 
         this.mouseStart = undefined;
         this.mouseLast = undefined;
 
-        let durationMinutes = parseInt(this.event.data.duration_hours) * 60 + parseInt(this.event.data.duration_minutes) + this.lastMoveTimeSpan * 15;
+        let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
         this.event.data.duration_hours = Math.floor(durationMinutes / 60);
         this.event.data.duration_minutes = durationMinutes - this.event.data.duration_hours * 60;
 
