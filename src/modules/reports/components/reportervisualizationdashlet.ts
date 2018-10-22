@@ -16,30 +16,27 @@ import {model} from '../../../services/model.service';
 })
 export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
 
-    @Input() id: string = '';
-    @Input() config: any = undefined;
-    componentconfig: any = {};
-    hasVisualization: boolean = false;
-    vizData: any = {};
+    @Input() private id: string = '';
+    @Input() private config: any = undefined;
+    @Input() private parentModule: string = '';
+    @Input() private parentId: string = '';
+    private componentconfig: any = {};
+    private hasVisualization: boolean = false;
+    private vizData: any = {};
 
     constructor(private model: model) {
     }
 
-    ngOnInit() {
-        //if config was passed in as inut use it
-        if(this.config)
+    public ngOnInit() {
+        if(this.config) {
             this.componentconfig = this.config;
+        }
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         if (this.componentconfig.reportid !== '') {
             this.model.module = 'KReports';
             this.model.id = this.componentconfig.reportid;
-
-            if(this.componentconfig.parentBeanId && this.componentconfig.parentBeanModule) {
-                this.model['parentBeanId'] = this.componentconfig.parentBeanId;
-                this.model['parentBeanModule'] = this.componentconfig.parentBeanModule;
-            }
 
             this.model.getData().subscribe(data => {
                 if (data.visualization_params != '') {

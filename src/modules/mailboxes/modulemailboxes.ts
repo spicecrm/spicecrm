@@ -49,7 +49,6 @@ import {VersionManagerService} from "../../services/versionmanager.service";
 
 import {DirectivesModule} from "../../directives/directives";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
-import {GlobalUtilityComponents} from "../../globalutilitycomponents/globalutilitycomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {ObjectFields} from "../../objectfields/objectfields";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
@@ -85,7 +84,6 @@ import /*embed*/ { MailboxesDashlet } from "./components/mailboxesdashlet"
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         DirectivesModule,
     ],
 })

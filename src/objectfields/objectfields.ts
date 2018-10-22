@@ -33,7 +33,6 @@ import {userpreferences} from '../services/userpreferences.service';
 import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
 
 import {SystemComponents} from '../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents} from '../globalutilitycomponents/globalutilitycomponents';
 import {DirectivesModule} from "../directives/directives";
 
 import /*embed*/ {fieldGeneric} from './components/fieldgeneric';
@@ -115,14 +114,14 @@ import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
 import /*embed*/ {fieldTerritorySecondary, fieldTerritorySecondaryPipe} from "./components/fieldterritorysecondary";
 import /*embed*/ {fieldColorEnum} from "./components/fieldcolorenum";
 import /*embed*/ {fieldBase64} from "./components/fieldbase64";
-import /*embed*/ {fieldNotAuthorized} from './components/fieldnotauthorized';
-import /*embed*/ {fieldModuleIcon} from './components/fieldmoduleicon';
+import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
+import /*embed*/ {fieldModuleIcon} from "./components/fieldmoduleicon";
+import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        GlobalUtilityComponents,
         SystemComponents,
         DirectivesModule,
     ],
@@ -209,7 +208,8 @@ import /*embed*/ {fieldModuleIcon} from './components/fieldmoduleicon';
         fieldSelectTreeTree,
         fieldColorEnum,
         fieldBase64,
-        fieldModuleIcon
+        fieldModuleIcon,
+        fieldRichText
     ],
     entryComponents: [
         fieldLabel,

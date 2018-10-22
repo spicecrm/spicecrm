@@ -68,7 +68,7 @@
     </div>
     <!-- last 5 entries here... -->
     <div *ngIf="recent_project_activities.length > 0" class="slds-m-top--small slds-grid_vertical-align-start">
-        <global-model-table [fieldset]="'cd58c77c-899e-8ed9-dd64-539c9b8dfbad'" [models]="recent_project_activities" [module]="model.module"></global-model-table>
+        <object-table [fieldset_id]="'cd58c77c-899e-8ed9-dd64-539c9b8dfbad'" [objects]="recent_project_activities" [module]="model.module"></object-table>
         <footer>
             <div class="slds-text-align_center">
                 <a href="javascript:void(0);" (click)="model.goToListView()">View All</a>

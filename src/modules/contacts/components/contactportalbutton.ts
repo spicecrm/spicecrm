@@ -23,7 +23,7 @@ export class ContactPortalButton {
     constructor(private language: language, private model: model,  private metadata: metadata, private modal: modal, private ViewContainerRef: ViewContainerRef) {
     }
 
-    private getDisplay(){
+    private getDisplay() {
         return (!this.model.data.email1 && !this.model.data.email_address_private) || this.model.isEditing || (this.model.data.acl && !this.model.data.acl.edit) ? "none" : "inherit"
     }
 

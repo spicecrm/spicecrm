@@ -35,7 +35,7 @@
                 </ul>
                 <div #treecontainer class="slds-tabs_default__content slds-p-vertical_none" role="tabpanel">
                     <div class="slds-scrollable_y slds-border_bottom" [ngStyle]="treecontainerstyle">
-                        <system-tree [treelist]="treelist" (selectedOutputItem)="selectedOutputItem($event)"></system-tree>
+                        <system-tree [treelist]="treelist" [selectedItem]="selectedComponent.id" (selectedItem$)="selectedOutputItem($event)"></system-tree>
                     </div>
                     <div #addconfigcontainer class="slds-p-around--small slds-align--absolute-center">
                         <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addConf()">

@@ -14,7 +14,7 @@ import {view} from '../../services/view.service';
 
 @Pipe({name: 'componentsetmanagermodulepipe'})
 export class ComponentsetManagerModulePipe {
-    transform(values, module) {
+    public transform(values, module) {
         let retValues = [];
         for (let value of values) {
             if (value.module == module) {
@@ -32,13 +32,14 @@ export class ComponentsetManagerModulePipe {
 })
 export class WorkbenchConfigOptionFieldset implements AfterViewInit {
 
-    configValues: any = [];
-    option: any = {};
-    objtype: string = "";
+    public configValues: any = [];
+    public option: any = {};
+    public objtype: string = "";
 
-    fieldsets: Array<any> = [];
-    modules: Array<any> = [];
-    module: string = '';
+    private fieldsets: Array<any> = [];
+    private modules: Array<any> = [];
+    private module: string = '';
+    private showInfo: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,
@@ -52,20 +53,20 @@ export class WorkbenchConfigOptionFieldset implements AfterViewInit {
     }
 
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.fieldsets = this.metadata.getFieldSets();
         this.modules = this.metadata.getModules();
         this.modules.sort();
 
         // set the module if a fieldset is set
         if (this.configValues[this.option.option]) {
-            this.module = this.metadata.getFieldset(this.configValues.componentconfig[this.option.option]).module;
+            this.module = this.metadata.getFieldset(this.configValues[this.option.option]).module;
         }
 
         this.cdRef.detectChanges();
     }
 
-    getFieldSets() {
+    private getFieldSets() {
         return this.metadata.getFieldSets();
     }
 }

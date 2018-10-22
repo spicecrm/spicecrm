@@ -51,8 +51,7 @@ export class fieldHtml extends fieldGeneric
     get htmlValue()
     {
         // if value changed, generate html value
-        if(this.value != this._cached_value)
-        {
+        if(this.value != this._cached_value) {
             this._cached_html_value = this.sanitized.bypassSecurityTrustHtml(
                 '<html><head>'+( this.useStylesheets && !_.isEmpty( this.model.data[this.stylesheetField] ) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.model.data[this.stylesheetField]) + '</style>':'')+'</head><body class="spice">'+this.value+'</body></html>'
             );

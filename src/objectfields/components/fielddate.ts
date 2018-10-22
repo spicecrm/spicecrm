@@ -4,8 +4,9 @@ import {popup} from '../../services/popup.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {userpreferences} from '../../services/userpreferences.service';
 import {fieldGeneric} from './fieldgeneric';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 
 declare var moment: any;
 
@@ -15,28 +16,20 @@ declare var moment: any;
     providers: [popup]
 })
 export class fieldDate extends fieldGeneric {
-    showDatePicker: boolean = false;
+    private showDatePicker: boolean = false;
     private isValid: boolean = true;
-    errorMessage: String = '';
-    popupSubscription: any = undefined;
-    clickListener: any = undefined;
+    private errorMessage: String = '';
+    private popupSubscription: any = undefined;
+    private clickListener: any = undefined;
 
-    dateFormat: string = 'DD.MM.YYYY';
-    timeFormat: string = 'HH:mm';
-
-    /*
-     constructor(private el: ElementRef, private model: model, private view: view, private language: language, private metadata: metadata) {
-     }
-     */
-
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private popup: popup, private renderer: Renderer, private elementRef: ElementRef) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private popup: popup, private renderer: Renderer, private elementRef: ElementRef, private userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
     /*
      * toggle the datepicker and subscribe to the close event
      */
-    toggleDatePicker() {
+    private toggleDatePicker() {
 
         this.showDatePicker = !this.showDatePicker;
         if (this.showDatePicker) {
@@ -45,7 +38,7 @@ export class fieldDate extends fieldGeneric {
                 this.showDatePicker = false;
                 this.clickListener();
                 this.popupSubscription.unsubscribe();
-            })
+            });
         } else {
             this.popupSubscription.unsubscribe();
         }
@@ -61,42 +54,35 @@ export class fieldDate extends fieldGeneric {
 
     set editDate(e: string) {
 
-        if ( e.trim() === '' ) {
-            this.model.data[this.fieldname] = null;
+        if (e.trim() === '') {
+            this.model.setField(this.fieldname,  null);
             return;
         }
 
-        let setDate = new moment(e, this.dateFormat, true);
+        let setDate = new moment(e, this.userpreferences.getDateFormat(), true);
         if (setDate.isValid()) {
 
             // set the time
-            if (this.model.data[this.fieldname] && !isNaN(this.model.data[this.fieldname].hour())) {
-                setDate.hour(this.model.data[this.fieldname].hour());
-                setDate.minute(this.model.data[this.fieldname].minute());
+            if (this.model.getField(this.fieldname) && !isNaN(this.model.getField(this.fieldname).hour())) {
+                setDate.hour(this.model.getField(this.fieldname).hour());
+                setDate.minute(this.model.getField(this.fieldname).minute());
             }
 
             // move the start Date
             this.value = setDate;
-
-            //this.clearFieldError();
-        } else {
-            // if (e.length !== 10) {
-            //this.setFieldError(e + ' is not a valid date');
         }
     }
 
     get editDate() {
         try {
-            if (this.model.data[this.fieldname]) {
-                let date = new moment(this.model.data[this.fieldname]);
+            if (this.model.getField(this.fieldname)) {
+                let date = new moment(this.model.getField(this.fieldname));
                 if (date.isValid()) {
-                    return date.format(this.dateFormat);
-                }
-                else {
+                    return date.format(this.userpreferences.getDateFormat());
+                } else {
                     return '';
                 }
-            }
-            else {
+            } else {
                 return '';
             }
         } catch (e) {
@@ -105,18 +91,19 @@ export class fieldDate extends fieldGeneric {
     }
 
     set pickerDate(date: any) {
-        this.editDate = date.format(this.dateFormat);
+        this.editDate = date.format(this.userpreferences.getDateFormat());
     }
 
     get pickerDate() {
-        let pickerDate = new moment(this.model.data[this.fieldname]);
-        if (pickerDate.isValid())
+        let pickerDate = new moment(this.model.getField(this.fieldname));
+        if (pickerDate.isValid()) {
             return pickerDate;
-        else
+        } else {
             return new moment();
+        }
     }
 
-    get highlightdate(){
-        return this.fieldconfig.highlightpast && this.editDate && new moment() > new moment(this.model.data[this.fieldname])? true : false;
+    get highlightdate() {
+        return this.fieldconfig.highlightpast && this.editDate && new moment() > new moment(this.model.getField(this.fieldname)) ? true : false;
     }
 }

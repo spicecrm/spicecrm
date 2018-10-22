@@ -1,10 +1,12 @@
 import {
     AfterViewInit, ComponentFactoryResolver, Component, Input, Output, NgModule, ViewChild, ViewContainerRef,
-    OnInit, OnDestroy, EventEmitter, ElementRef, ChangeDetectorRef, ApplicationRef, Pipe, forwardRef, Directive, Renderer2, SimpleChanges, OnChanges, Host
+    OnInit, OnDestroy, EventEmitter, ElementRef, ChangeDetectorRef, ApplicationRef, Pipe, forwardRef, Directive, Renderer2, SimpleChanges, OnChanges, Host, Injectable, Inject
 } from "@angular/core";
 import {Subject} from "rxjs";
 import {Observable} from "rxjs";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {DOCUMENT} from "@angular/common";
+import {DomSanitizer} from '@angular/platform-browser';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
@@ -19,6 +21,10 @@ import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import { configurationService } from "../services/configuration.service";
 import { modal } from "../services/modal.service";
+
+
+import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
+
 // COMPONENTs...
 import /*embed*/ {SystemIcon} from "./components/systemicon";
 import /*embed*/ {SystemComponentContainer} from "./components/systemcomponentcontainer";
@@ -57,6 +63,8 @@ import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
+import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 
 @NgModule({
     imports: [
@@ -106,7 +114,9 @@ import /*embed*/ {SystemSection} from "./components/systemsection";
         SystemTree,
         SystemTreeItem,
         SystemSelect,
-        SystemSection
+        SystemSection,
+        SystemRichTextEditor,
+        SystemRichTextSourceModal
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -147,7 +157,8 @@ import /*embed*/ {SystemSection} from "./components/systemsection";
         SystemTree,
         SystemTreeItem,
         SystemSelect,
-        SystemSection
+        SystemSection,
+        SystemRichTextEditor
     ]
 })
 export class SystemComponents {

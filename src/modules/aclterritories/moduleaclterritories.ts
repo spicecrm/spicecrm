@@ -35,7 +35,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ {ACLTerritorriesManager} from "./components/aclterritorriesmanager";
 import /*embed*/ {ACLTerritorriesManagerHeader} from './components/aclterritorriesmanagerheader';
@@ -68,7 +67,6 @@ import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/ac
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
     ],
     declarations: [
         ACLTerritorriesManager,
