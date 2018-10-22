@@ -1,9 +1,14 @@
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input, Output, EventEmitter,
-    OnInit, OnChanges
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
@@ -17,16 +22,48 @@ declare var moment: any;
 })
 export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
-    @ViewChild('calendarsheet', {read: ViewContainerRef}) calendarsheet: ViewContainerRef;
-    @Input() setdate: any = {};
-    @Output() navigateday: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
+    @Input() private setdate: any = {};
+    private sheetTimeWidth: number = 80;
+    private sheetDays: Array<any> = [];
+    private sheetHours: Array<any> = [];
+    private sheetTopMargin: number = 0;
+    private sheetHourHeight: number = 60;
+    private calendarevents: Array<any> = [];
 
-    sheetTimeWidth: number = 80;
+    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
+        // set theenavigation paradigm
+        this.navigation.setActiveModule('Calendar');
 
-    sheetDays: Array<any> = [];
+        // some initialization
+        this.buildHours();
 
-    //get sheetDays(): Array<any> {
-    buildSheetDays(){
+        this.sheetDays = this.buildSheetDays();
+
+        // this.calendar.sheetHourHeight = this.calendar.sheetHourHeight;
+    }
+
+    public ngAfterViewInit() {
+        this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
+    }
+
+    public ngOnChanges() {
+
+        this.sheetDays = this.buildSheetDays();
+
+        this.calendarevents = [];
+        let startDate = new moment(this.setdate).day(0).hour(0).minute(0).second(0);
+        let endDate = new moment(startDate).add(moment.duration(7, 'd'));
+        this.calendar.loadEvents(startDate, endDate).subscribe(events => {
+            if (events.length > 0) {
+                this.calendarevents = this.calendar.arrangeEvents(events);
+            }
+        });
+    }
+
+    // get sheetDays(): Array<any> {
+    private buildSheetDays() {
         let sheetDays = [];
 
         // build the days
@@ -45,30 +82,11 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         return sheetDays;
     };
 
-    sheetHours: Array<any> = [];
-
-    sheetTopMargin: number = 0;
-    sheetHourHeight: number = 60;
-
-    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
-        // set theenavigation paradigm
-        this.navigation.setActiveModule('Calendar');
-
-        // some initialization
-        this.buildHours();
-
-        this.sheetDays = this.buildSheetDays();
-
-        // this.calendar.sheetHourHeight = this.calendar.sheetHourHeight;
+    private getOffset() {
+        return moment().utcOffset();
     }
 
-    calendarevents: Array<any> = [];
-
-    getOffset(){
-        return moment().utcOffset()
-    }
-
-    getEventStyle(event) {
+    private getEventStyle(event) {
         // get the day of the week
         let startday = event.start.day();
         let startminutes = event.start.hour() * 60 + event.start.minute();
@@ -77,43 +95,26 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         let itemWidth = ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth) / 7) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
 
         return {
-            left: this.sheetTimeWidth + ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth) / 7 * startday) + (itemWidth *  event.displayIndex) + 'px',
-            width: event.dragging ? itemWidth / 2 :  itemWidth + 'px',
+            left: this.sheetTimeWidth + ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth) / 7 * startday) + (itemWidth * event.displayIndex) + 'px',
+            width: event.dragging ? itemWidth / 2 : itemWidth + 'px',
             top: this.calendar.sheetHourHeight / 60 * startminutes + 'px',
-            height: this.calendar.sheetHourHeight / 60 * ( endminutes - startminutes ) + 'px'
-        }
+            height: this.calendar.sheetHourHeight / 60 * (endminutes - startminutes) + 'px'
+        };
     }
 
-    ngAfterViewInit(){
-        this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
-    }
-
-    ngOnChanges() {
-
-        this.sheetDays = this.buildSheetDays();
-
-        this.calendarevents = [];
-        let startDate = new moment(this.setdate).day(0).hour(0).minute(0).second(0);
-        let endDate = new moment(startDate).add(moment.duration(7, 'd'));
-        this.calendar.loadEvents(startDate, endDate).subscribe(events => {
-            if(events.length > 0)
-                this.calendarevents = this.calendar.arrangeEvents(events);
-        });
-    }
-
-    getTimeColStyle() {
+    private getTimeColStyle() {
         return {
             width: this.sheetTimeWidth + 'px'
-        }
+        };
     }
 
-    getDayColStyle() {
+    private getDayColStyle() {
         return {
             width: 'calc((100% - ' + this.sheetTimeWidth + 'px) / 7)'
-        }
+        };
     }
 
-    buildHours() {
+    private buildHours() {
         this.sheetHours = [];
         let i = 0;
         while (i <= 24) {
@@ -122,61 +123,61 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         }
     }
 
-    getSheetStyle() {
+    private getSheetStyle() {
         return {
             height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
-        }
+        };
     }
 
-    getHourDividerStyle(hour) {
+    private getHourDividerStyle(hour) {
         return {
             top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px'
-        }
+        };
     }
 
-    getHalfHourDividerStyle(hour) {
+    private getHalfHourDividerStyle(hour) {
         return {
             top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2 + 'px',
             left: this.sheetTimeWidth + 'px',
             width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'
-        }
+        };
     }
 
-    notLastHour(hour) {
+    private notLastHour(hour) {
         return hour + 1 < this.sheetHours.length;
     }
 
-    getHourLabelStyle(hour) {
+    private getHourLabelStyle(hour) {
         return {
             top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
             width: this.sheetTimeWidth + 'px'
-        }
+        };
     }
 
-    getDayDividerStyle(day) {
+    private getDayDividerStyle(day) {
         return {
             left: this.sheetTimeWidth + ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth) / 7 * day) + 'px',
             top: '0px',
-            height: this.calendar.sheetHourHeight * (this.sheetHours.length - 1 ) + 'px'
-        }
+            height: this.calendar.sheetHourHeight * (this.sheetHours.length - 1) + 'px'
+        };
     }
 
-    gotoDay(dow){
+    private gotoDay(dow) {
         let navigateDate = moment(this.setdate);
         navigateDate.day(dow);
         this.navigateday.emit(navigateDate);
     }
 
-    getDropTargetStyle(hour, day){
-        return{
+    private getDropTargetStyle(hour, day) {
+        return {
             left: this.sheetTimeWidth + ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth) / 7 * day) + 'px',
             width: ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth) / 7) + 'px',
             top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
             height: this.calendar.sheetHourHeight + 'px',
-        }
+        };
     }
 
-    rearrangeEvents(){
+    private rearrangeEvents() {
         this.calendarevents = this.calendar.arrangeEvents(this.calendarevents);
     }
 
