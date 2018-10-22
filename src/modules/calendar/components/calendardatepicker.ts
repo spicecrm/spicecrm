@@ -1,7 +1,4 @@
-import {Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
-import {model} from '../../../services/model.service';
-import {popup} from '../../../services/popup.service';
-import {view} from '../../../services/view.service';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 
@@ -13,10 +10,14 @@ declare var moment: any;
 })
 export class CalendarDatePicker implements OnInit, OnChanges {
 
-    @Input() setdate: any = new moment();
-    @Output() setdateChange: EventEmitter<any> = new EventEmitter<any>();
+    @Input() private setdate: any = new moment();
+    @Output() private setdateChange: EventEmitter<any> = new EventEmitter<any>();
 
-    curDate: any = new moment();
+    private curDate: any = new moment();
+    private currentGrid: Array<any> = [];
+
+    constructor(private language: language, private metadata: metadata) {
+    }
 
     get currentYear(): number {
         return this.curDate.year();
@@ -28,77 +29,76 @@ export class CalendarDatePicker implements OnInit, OnChanges {
     };
 
     get currentMonth(): string {
-        return moment.months()[this.curDate.month()]
+        return moment.months()[this.curDate.month()];
     }
 
-    currentGrid: Array<any> = [];
-
-    constructor(private language: language, private metadata: metadata) {
-    }
-
-    weekdays(){
+    private weekdays() {
         return moment.weekdaysShort();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.curDate = new moment(this.setdate);
         this.buildGrid();
     }
 
-    ngOnChanges(changes: SimpleChanges){
+    public ngOnChanges(changes: SimpleChanges) {
         this.curDate = new moment(this.setdate);
         this.buildGrid();
     }
 
-    notCurrentMonth(month) {
+    private notCurrentMonth(month) {
         return month !== this.curDate.month();
     }
 
-    isToday(day, month){
+    private isToday(day, month) {
         let today = new moment();
-        if(today.year() === this.curDate.year() && today.month() === month && today.date() == day)
+        if (today.year() === this.curDate.year() && today.month() === month && today.date() == day) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    isCurrent(day, month){
-        if(this.setdate && this.curDate.year() === this.setdate.year() && this.setdate.month() === month && this.setdate.date() == day)
+    private isCurrent(day, month) {
+        if (this.setdate && this.curDate.year() === this.setdate.year() && this.setdate.month() === month && this.setdate.date() == day) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    isCurrentWeek(week){
+    private isCurrentWeek(week) {
         let firstDay = new moment();
         firstDay.date(week[0].day);
         firstDay.month(week[0].month);
 
-        if(this.setdate.year() === this.curDate.year() && this.setdate.week() === firstDay.week())
+        if (this.setdate.year() === this.curDate.year() && this.setdate.week() === firstDay.week()) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    prevMonth() {
+    private prevMonth() {
         this.curDate.subtract(1, 'months');
         this.buildGrid();
     }
 
-    nextMonth() {
+    private nextMonth() {
         this.curDate.add(1, 'months');
         this.buildGrid();
     }
 
-    goToday() {
+    private goToday() {
         this.curDate = new moment();
         this.buildGrid();
     }
 
-    pickDate(day, month){
+    private pickDate(day, month) {
         // if no date ws passed in and a date is picked create a new object
-        if(!this.setdate)
+        if (!this.setdate) {
             this.setdate = new moment();
+        }
 
         // update the set date and emit it
         this.setdate.year(this.curDate.year());
@@ -109,7 +109,7 @@ export class CalendarDatePicker implements OnInit, OnChanges {
 
     }
 
-    buildGrid(){
+    private buildGrid() {
         this.currentGrid = [];
         // let fdom = new moment(this.curDate.year() + '-' + (this.curDate.month() + 1) + '-' + '01');
         let fdom = new moment(this.curDate);
