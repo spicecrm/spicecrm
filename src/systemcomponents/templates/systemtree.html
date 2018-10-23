@@ -1,9 +1,19 @@
 <div role="listbox">
-    <ul class="slds-tree" role="tree">
-        <system-tree-item [items]="tree" [selectedId]="selectedId" (selectedItem)="selectedItem($event)"></system-tree-item>
+    <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
+        <system-tree-item
+                [items]="tree"
+                [config]="config"
+                [selectedItem]="selectedItem"
+                (addItem$)="handleAddEvent($event)"
+                (treelistChange$)="handleDragDropEvent($event)"
+                (selectedItem$)="handleSelectItemEvent($event)"></system-tree-item>
     </ul>
 </div>
-
+<div *ngIf="config.canadd" class="slds-grid slds-align-content-center slds-border--top slds-m-top--x-small slds-p-top--x-small">
+    <button class="slds-button slds-button--neutral slds-p-around--xx-small" (click)="handleAddEvent(null)" style="border-radius: 50%;">
+        <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
+    </button>
+</div>
 
 
 
