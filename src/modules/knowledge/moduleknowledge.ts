@@ -18,14 +18,14 @@ import {
     OnInit,
     OnDestroy,
     OnChanges,
-    ChangeDetectorRef
+    ChangeDetectorRef,
 } from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";
+import {Location} from "@angular/common";
 
 import {Subject, Observable} from "rxjs";
-
 
 import {loginService, loginCheck} from "../../services/login.service";
 import {metadata, aclCheck} from "../../services/metadata.service";
@@ -46,16 +46,17 @@ import {view} from "../../services/view.service";
 import {popup} from "../../services/popup.service";
 import {toast} from "../../services/toast.service";
 import {fts} from "../../services/fts.service";
+import {favorite} from "../../services/favorite.service";
 import {configurationService} from "../../services/configuration.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
-import /*embed*/ {KnowledgeService} from "./services/knowledge.service";
-
 
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {AddComponentsModule} from "../../addcomponents/addcomponents.module";
+
+import /*embed*/ {KnowledgeService} from "./services/knowledge.service";
 
 import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
 import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
