@@ -106,11 +106,11 @@ export class UserPreferences {
     }
 
     get datef() {
-        return moment().format(this.prefservice.jsDateFormat2momentDateFormat(this.preferences.datef));
+        return this.preferences.datef ? moment().format( this.prefservice.jsDateFormat2momentDateFormat( this.preferences.datef )) : '';
     }
 
     get timef() {
-        return moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef));
+        return this.preferences.timef ? moment().format( this.prefservice.jsTimeFormat2momentTimeFormat( this.preferences.timef )) : '';
     }
 
     private setFormattingOfNumbers(val: number | string) {
