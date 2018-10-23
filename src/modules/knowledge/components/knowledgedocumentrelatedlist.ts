@@ -1,0 +1,60 @@
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {relatedmodels} from "../../../services/relatedmodels.service";
+import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
+import {language} from "../../../services/language.service";
+import {KnowledgeService} from "../services/knowledge.service";
+import {Router} from '@angular/router';
+import {Location} from "@angular/common";
+
+@Component({
+    selector: "Knowledge-document-related-list",
+    templateUrl: "./src/modules/knowledge/templates/Knowledgedocumentrelatedlist.html",
+    providers: [relatedmodels]
+})
+export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
+    public componentconfig: any = {};
+
+    constructor(
+        private language: language,
+        private metadata: metadata,
+        private relatedmodels: relatedmodels,
+        private knowledgeService: KnowledgeService,
+        private location: Location,
+        private router: Router,
+        private model: model,
+    ) {
+        this.relatedmodels.module = "KnowledgeDocuments";
+        this.relatedmodels.relatedModule = "KnowledgeDocuments";
+        this.model.data$.subscribe(data => {
+            if (!data.id || data.id == "") {
+                return;
+            }
+            this.relatedmodels.id = data.id;
+            this.relatedmodels.sortfield = "name";
+        });
+    }
+
+    get panelTitle() {
+        return this.componentconfig.title ? this.language.getLabel(this.componentconfig.title) : "Related Documents";
+    }
+
+    public ngOnInit() {
+        if (this.componentconfig.items) {
+            this.relatedmodels.loaditems = this.componentconfig.items;
+        }
+
+        if (this.componentconfig.link) {
+            this.relatedmodels.linkName = this.componentconfig.link;
+        }
+    }
+
+    public ngOnDestroy() {
+        this.relatedmodels.stopSubscriptions();
+    }
+
+    private navigateTo(id) {
+        this.knowledgeService.selectedId = id;
+        this.location.replaceState("/module/KnowledgeDocuments/" + id);
+    }
+}
