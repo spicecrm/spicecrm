@@ -140,8 +140,8 @@ export class userpreferences {
         }
     }
 
-    public jsDateFormat2momentDateFormat(format) {
-        return format.replace('Y', 'YYYY').replace('m', 'MM').replace('d', 'DD');
+    public jsDateFormat2momentDateFormat( format: string ): string {
+        return format ? format.replace('Y', 'YYYY').replace('m', 'MM').replace('d', 'DD') : '';
     }
 
     public getTimeFormat() {
@@ -153,8 +153,8 @@ export class userpreferences {
         }
     }
 
-    public jsTimeFormat2momentTimeFormat(format) {
-        return format.replace('H', 'HH').replace('h', 'hh').replace('i', 'mm');
+    public jsTimeFormat2momentTimeFormat( format: string ): string {
+        return format ? format.replace('H', 'HH').replace('h', 'hh').replace('i', 'mm') : '';
     }
 
     public needFormats() {
