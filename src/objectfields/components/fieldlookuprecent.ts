@@ -28,10 +28,6 @@ export class fieldLookupRecent implements OnInit {
         // stop the event
         event.preventDefault();
 
-        // set the parent
-        this.model.data[this.namefield] = text;
-        this.model.setField(this.idfield, id);
-
         // fake data object... hope it will be the whole record in future!
         if (!data) {
             data = {'id': id, 'summary_text': text};

@@ -31,7 +31,7 @@
                 <div class="slds-form-element slds-size--2-of-8 slds-p-around--x-small">
                     <label class="slds-form-element__label">{{ language.getLabel('LBL_DATE_FORMAT') }}</label>
                     <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                        <span class="slds-form-element__static">{{preferences.datef}}</span>
+                        <span class="slds-form-element__static">{{datef}}</span>
                         <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
                             <system-button-icon [icon]="'edit'"></system-button-icon>
                         </button>
@@ -50,7 +50,7 @@
                 <div class="slds-form-element slds-size--2-of-8 slds-p-around--x-small">
                     <label class="slds-form-element__label">{{ language.getLabel('LBL_TIME_FORMAT') }}</label>
                     <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                        <span class="slds-form-element__static"> {{preferences.timef}}</span>
+                        <span class="slds-form-element__static"> {{timef}}</span>
                         <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
                             <system-button-icon [icon]="'edit'"></system-button-icon>
                         </button>
