@@ -3,7 +3,6 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {navigation} from "../../../services/navigation.service";
-import {IConfig} from "../../../systemcomponents/components/systemtree";
 import {KnowledgeService} from "../services/knowledge.service";
 
 @Component({
@@ -12,7 +11,7 @@ import {KnowledgeService} from "../services/knowledge.service";
 })
 export class KnowledgeManager implements AfterViewInit {
 
-    public config: IConfig = {clickable: true, canadd: true, draggable: true};
+    public config: any = {clickable: true, canadd: true, draggable: true};
     public activeTab: string = "tree";
 
     @ViewChild("maincontainer", {read: ViewContainerRef}) private maincontainer: ViewContainerRef;

@@ -3,7 +3,6 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {navigation} from "../../../services/navigation.service";
-import {IConfig} from "../../../systemcomponents/components/systemtree";
 import {KnowledgeService} from "../services/knowledge.service";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
@@ -14,7 +13,7 @@ import {Location} from '@angular/common';
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
-    public config: IConfig = {clickable: true};
+    public config: any = {clickable: true};
     public activeTab: string = "tree";
     private routeSubscribe: any = {};
 
