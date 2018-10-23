@@ -143,3 +143,4 @@ export class SpiceUIModule {
 
 const platform = platformBrowserDynamic();
 platform.bootstrapModule(SpiceUIModule);
+
