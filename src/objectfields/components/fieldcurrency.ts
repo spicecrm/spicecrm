@@ -61,7 +61,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         if ( isNaN( val = parseFloat( val ))) {
             this.value = '';
         } else {
-            this.value = Math.floor( val * Math.pow( 10, this.userpreferences.toUse.currency_significant_digits )) / Math.pow( 10, this.userpreferences.toUse.currency_significant_digits );
+            this.value = Math.floor( val * Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits )) / Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits );
         }
         this.textvalue = this.getValAsText();
     }
