@@ -19,6 +19,8 @@ export class LabelSelectorComponent
     show_modal = false;
     readonly max_results = 100;
 
+    showInfo = false;
+
     constructor(
         private language: language,
         private backend: backend,
@@ -42,8 +44,9 @@ export class LabelSelectorComponent
         return this._selected_item;
     }
 
-    search(search_term:string = null)
+    search(search_term: string = null)
     {
+        console.log("res1", search_term);
         if(!search_term)
             return false;
 
@@ -51,6 +54,7 @@ export class LabelSelectorComponent
         this.is_searching = true;
         this.backend.getRequest('syslanguages/labels/search/'+search_term).subscribe(
             (res) => {
+                console.log("res2", res);
                 this.items = res.slice(0,this.max_results);
                 this.is_searching = false;
             }

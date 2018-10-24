@@ -61,7 +61,12 @@ export class WorkbenchConfig implements OnChanges {
 
             // check availability
             if (!this.metadata.checkComponent(component)) {
-                component = 'WorkbenchConfigOptionDefault';
+
+                if(option.type == "label") {
+                    component = 'LabelSelectorComponent';
+                }else {
+                    component = 'WorkbenchConfigOptionDefault';
+                }
             }
 
             this.metadata.addComponent(component, this.optionscontainer).subscribe(
