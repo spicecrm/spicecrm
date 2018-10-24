@@ -9,7 +9,7 @@
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" (change)="setRole($event.srcElement.value)">
-                            <option value="">&mdash; {{language.getLabel('LBL_SELECT_ROLE')}} &mdash;</option>
+                            <option value="">&mdash; select role &mdash;</option>
                             <option *ngFor="let role of noneUserRoles" [value]="role.id">
                                 {{ ( (role.label) ? language.getAppLanglabel(role.label, 'short') : role.name.substring(0, 2) | uppercase ) +' '+ role.name }}
                             </option>
