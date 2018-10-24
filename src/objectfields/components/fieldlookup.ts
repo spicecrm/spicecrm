@@ -1,5 +1,5 @@
 import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -13,17 +13,13 @@ import {fieldGeneric} from './fieldgeneric';
     templateUrl: './src/objectfields/templates/fieldlookup.html',
     providers: [popup]
 })
-export class fieldLookup extends fieldGeneric implements OnInit{
-    @ViewChild('popover', {read: ViewContainerRef}) popover: ViewContainerRef;
+export class fieldLookup extends fieldGeneric implements OnInit {
 
-    clickListener: any;
-
-    lookupType: string = '';
-    lookupmoduleSelectOpen: boolean = false;
-    lookupSearchOpen: boolean = false;
-    lookupSearchTerm: string = '';
-
-    recentItems: Array<any> = [];
+    private clickListener: any;
+    private lookupType: string = '';
+    private lookupmoduleSelectOpen: boolean = false;
+    private lookupSearchOpen: boolean = false;
+    private lookupSearchTerm: string = '';
 
     constructor(public model: model,
                 public view: view,
@@ -43,41 +39,42 @@ export class fieldLookup extends fieldGeneric implements OnInit{
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.lookupType = this.lookupmodules[0];
     }
 
-    get displayAssignedUser(){
+    get displayAssignedUser() {
         return this.fieldconfig.displayassigneduser;
     }
 
-    get lookupmodules(): Array<string>{
+    get lookupmodules(): Array<string> {
         let lookupmodules = ['Contacts', 'Users'];
 
-        if(this.fieldconfig.lookupmodules){
-            lookupmodules = this.fieldconfig.lookupmodules.replace(/\s/g,'').split(',');
+        if (this.fieldconfig.lookupmodules) {
+            lookupmodules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
         }
 
         return lookupmodules;
     }
 
-    get pills(){
+    get pills() {
         let pills = [];
-        for(let lookupModule of this.lookupmodules){
-            if(this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans){
-                for(let beanid in this.model.data[lookupModule.toLowerCase()].beans){
+        for (let lookupModule of this.lookupmodules) {
+            if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
+                for (let beanid in this.model.data[lookupModule.toLowerCase()].beans) {
                     let bean = this.model.data[lookupModule.toLowerCase()].beans[beanid];
 
                     // special handling for assigned user
-                    if(lookupModule == 'Users' && !this.displayAssignedUser && beanid == this.model.data.assigned_user_id)
+                    if (lookupModule == 'Users' && !this.displayAssignedUser && beanid == this.model.data.assigned_user_id) {
                         continue;
+                    }
 
                     // pus to the pills
                     pills.push({
                         module: lookupModule,
                         id: bean.id,
                         summary_text: bean.summary_text
-                    })
+                    });
                 }
             }
         }
@@ -85,14 +82,13 @@ export class fieldLookup extends fieldGeneric implements OnInit{
     }
 
 
-    addItem(item){
-        if(!this.model.data[this.lookupType.toLowerCase()]) this.model.data[this.lookupType.toLowerCase()] = {beans:{}};
+    private addItem(item) {
+        if (!this.model.data[this.lookupType.toLowerCase()]) {this.model.data[this.lookupType.toLowerCase()] = {beans: {}};}
 
         this.model.data[this.lookupType.toLowerCase()].beans[item.id] = {
             id: item.id,
             summary_text: item.text
-        }
-
+        };
     }
 
     private handleMessage(message: any) {
@@ -104,9 +100,7 @@ export class fieldLookup extends fieldGeneric implements OnInit{
                         this.lookupSearchTerm = '';
 
                         // set the model
-                        //this.model.data[this.parentIdField] = message.messagedata.data.id;
-                        //this.model.data[this.parentNameField] = message.messagedata.data.summary_text;
-                        this.addItem({id:message.messagedata.data.id, text: message.messagedata.data.summary_text});
+                        this.addItem({id: message.messagedata.data.id, text: message.messagedata.data.summary_text});
                     }
                     break;
             }
@@ -132,23 +126,23 @@ export class fieldLookup extends fieldGeneric implements OnInit{
         this.clickListener();
     }
 
-    toggleParentTypeSelect() {
+    private toggleLookupTypeSelect() {
         this.lookupmoduleSelectOpen = !this.lookupmoduleSelectOpen;
         this.lookupSearchOpen = false;
     }
 
-    setLookupType(lookupType) {
+    private setLookupType(lookupType) {
         this.lookupSearchTerm = '';
         this.lookupType = lookupType;
         this.lookupmoduleSelectOpen = false;
     }
 
-    removeItem(item) {
+    private removeItem(item) {
         this.model.data[item.module.toLowerCase()].beans_relations_to_delete[item.id] = item;
         delete(this.model.data[item.module.toLowerCase()].beans[item.id]);
     }
 
-    onFocus() {
+    private onFocus() {
         // this.getRecent();
         this.lookupmoduleSelectOpen = false;
         this.lookupSearchOpen = true;
@@ -156,12 +150,11 @@ export class fieldLookup extends fieldGeneric implements OnInit{
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    parentSearchStyle() {
-        if (this.lookupSearchOpen)
+    private parentSearchStyle() {
+        if (this.lookupSearchOpen) {
             return {
                 display: 'block'
-            }
+            };
+        }
     }
-
-
 }

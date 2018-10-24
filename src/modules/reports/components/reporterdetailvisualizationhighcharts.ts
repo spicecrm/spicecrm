@@ -5,6 +5,7 @@ import {
 import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
@@ -15,18 +16,19 @@ declare var Highcharts: any;
 @Component({
     selector: 'reporter-detail-visualization-highcharts',
     templateUrl: './src/modules/reports/templates/reporterdetailvisualizationhighcharts.html',
-    providers: [model]
 })
-export class ReporterDetailVisualizationHighcharts implements AfterViewInit, OnInit, OnDestroy {
+export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
 
-    vizdata: any = {};
-    chart: any = {};
-    chart_element_id:string;
+    private vizdata: any = {};
+    private chart: any = {};
+    private chart_element_id: string;
+    private noData = false;
 
     constructor(
         private metadata: metadata,
         private broadcast: broadcast,
         private model: model,
+        private language: language,
         private backend: backend,
         private activatedRoute: ActivatedRoute,
         private navigation: navigation,
@@ -37,34 +39,37 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit, OnI
         this.chart_element_id = 'high-charts-'+this.utils.generateGuid();
     }
 
-    handleMessage(message: any) {
+    public ngAfterViewInit() {
 
-    }
-
-    ngOnInit() {
-
-    }
-
-    ngAfterViewInit() {
-
-        if (!this.vizdata.data.chart.height)
+        if (!this.vizdata.data.chart.height) {
             this.vizdata.data.chart.height = this.elementRef.nativeElement.height;
+        }
 
-        //this.chart = new Highcharts.Chart(this.vizdata.data);
         this.metadata.loadLibs('highcharts').subscribe(
             (next) => {
                 if (Highcharts.chart) {
-                    this.chart = Highcharts.chart(this.chart_element_id, this.vizdata.data);
+
+                    let hasData = false;
+                    for(let series of this.vizdata.data.series){
+                        if(series.data) {
+                            hasData = true;
+                        }
+                    }
+                    if(hasData) {
+                        this.chart = Highcharts.chart(this.chart_element_id, this.vizdata.data);
+                    } else {
+                        this.noData = true;
+                    }
                 }
             });
     }
 
-    ngOnDestroy() {
-
+    get reportName(){
+        return this.model.getFieldValue('name');
     }
 
-    getVizStyle() {
-        return this.vizdata['layout'];
+    private getVizStyle() {
+        return this.vizdata.layout;
     }
 
 }

@@ -11,18 +11,14 @@ import {fieldGeneric} from './fieldgeneric';
 @Component({
     selector: 'field-relate',
     templateUrl: './src/objectfields/templates/fieldrelate.html',
-    providers: [popup],
-    host: {
-        // '(document:click)' : 'this.onClick($event)'
-    }
+    providers: [popup]
 })
-export class fieldRelate extends fieldGeneric implements OnInit
-{
-    relateIdField: string = '';
-    relateNameField: string = '';
-    relateType: string = '';
-    relateSearchOpen: boolean = false;
-    relateSearchTerm: string = '';
+export class fieldRelate extends fieldGeneric implements OnInit {
+    private relateIdField: string = '';
+    private relateNameField: string = '';
+    private relateType: string = '';
+    private relateSearchOpen: boolean = false;
+    private relateSearchTerm: string = '';
 
     constructor(
         public model: model,
@@ -37,45 +33,42 @@ export class fieldRelate extends fieldGeneric implements OnInit
         super(model, view, language, metadata, router);
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
     }
 
-    closePopups()
-    {
-        if (this.model.data[this.relateIdField])
+    private closePopups() {
+        if (this.model.data[this.relateIdField]) {
             this.relateSearchTerm = '';
-
+        }
         this.relateSearchOpen = false;
-
     }
 
-    clearField() {
-        //this.model.data[this.relateIdField] = '';
+    private clearField() {
         this.model.data[this.relateNameField] = '';
         this.model.setField(this.relateIdField, '');
     }
 
-    onFocus() {
+    public onFocus() {
         this.relateSearchOpen = true;
     }
 
-    setRelated(related){
+    private setRelated(related) {
         this.model.data[this.relateIdField] = related.id;
         this.model.data[this.relateNameField] = related.text;
         this.closePopups();
     }
 
-    goRelated() {
+    private goRelated() {
         // go to the record
-        this.router.navigate(['/module/' + this.relateType + '/' + this.model.data[this.relateIdField]]);
+        this.router.navigate(['/module/' + this.relateType + '/' + this.model.getField(this.relateIdField)]);
     }
 
 
-    openSearchModal(){
+    private openSearchModal() {
         // close the relate search
         this.relateSearchOpen = false;
 
@@ -90,5 +83,4 @@ export class fieldRelate extends fieldGeneric implements OnInit
             });
         });
     }
-
 }

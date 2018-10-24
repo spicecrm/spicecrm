@@ -24,7 +24,6 @@ import {footer} from "../services/footer.service";
 
 // MODULEs
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
-import {GlobalUtilityComponents}      from "../globalutilitycomponents/globalutilitycomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 
@@ -90,13 +89,14 @@ import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconf
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
 import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
-
+import /*embed*/ {ObjectRepositoryManager} from "./components/objectrepositorymanager";
+import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
+import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        GlobalUtilityComponents,
         SystemComponents,
         DirectivesModule,
         ObjectFields
@@ -158,6 +158,9 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         WorkbenchConfig,
         ConfigCleaner,
         GoogleCalendarManager,
+        ObjectRepositoryManager,
+        ObjectRepositoryManagerAddRepo,
+        ObjectRepositoryManagerAddModule
     ],
     /* no further modules needed */
     entryComponents: [
@@ -171,7 +174,8 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
         WorkbenchConfigOptionActionset,
         ComponentConfigManager,
         ModuleConfigManager,
-        WorkbenchConfig
+        WorkbenchConfig,
+        ObjectRepositoryManager
     ],
     exports: [
         SortPipe,
