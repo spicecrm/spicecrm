@@ -117,17 +117,11 @@ export class UserPreferences {
     }
 
     get datef() {
-        if (!this.preferences.datef) {
-            return;
-        }
-        return moment().format(this.prefservice.jsDateFormat2momentDateFormat(this.preferences.datef));
+        return this.preferences.datef ? moment().format(this.prefservice.jsDateFormat2momentDateFormat(this.preferences.datef)): "";
     }
 
     get timef() {
-        if (!this.preferences.timef) {
-            return;
-        }
-        return moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef));
+        return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
     }
 
     get formattingOfNumbers(): string {
