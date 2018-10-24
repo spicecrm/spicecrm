@@ -10,36 +10,34 @@ import {session} from "../../services/session.service";
     templateUrl: './src/objectcomponents/templates/objectlistviewsettingsaddlistmodal.html'
 })
 export class ObjectListViewSettingsAddlistModal implements OnInit {
-    @Input() modalmode: string = '';
-    listname: string = '';
-    globallist: boolean = false;
+    @Input() private modalmode: string = '';
+    private listname: string = '';
+    private globallist: boolean = false;
 
-    self: any = {};
-    modellist: any = {};
+    private self: any = {};
+    private modellist: any = {};
 
     constructor(
         private language: language,
         private session: session,
-    ) {
+    ) {}
 
-    }
-
-    ngOnInit() {
+    public ngOnInit() {
         if (this.modalmode === 'edit') {
             this.listname = this.modellist.getListTypeName();
             this.globallist = this.modellist.getGlobal();
         }
     }
 
-    close() {
-        this.self.destroy()
+    private close() {
+        this.self.destroy();
     }
 
-    canSave() {
+    private canSave() {
         return !(this.listname.length > 0);
     }
 
-    save() {
+    private save() {
         if (this.listname.length > 0) {
             switch (this.modalmode) {
                 case 'add':
