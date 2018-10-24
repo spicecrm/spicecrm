@@ -74,7 +74,7 @@ export class ModuleConfigManager {
             // iniutialize the metadata service
             this.metadata.loadFieldSets(new Subject<any>());
             let moduleLoader = new Subject<any>();
-            this.metadata.loadComponents(moduleLoader);
+            this.metadata.loadComponents(moduleLoader, true);
             moduleLoader.subscribe(done => {
                 // set initialized to true
                 this.initialized = true;
