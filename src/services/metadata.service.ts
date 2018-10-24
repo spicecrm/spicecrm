@@ -894,6 +894,19 @@ export class metadata {
         this.moduleDefs[module].listtypes.push(listTypeData);
     }
 
+    public updateModuleListType(module: string, listTypeData: any) {
+        this.moduleDefs[module].listtypes.some(listtype => {
+            if (listtype.id == listTypeData.id) {
+                for (let key in listTypeData) {
+                    if (listTypeData.hasOwnProperty(key)) {
+                        listtype[key] = listTypeData[key];
+                    }
+                }
+                return true;
+            }
+        });
+    }
+
     public getFieldDefs(module: string, field: string) {
         try {
             return this.fieldDefs[module][field];
@@ -1403,7 +1416,9 @@ export class aclCheck implements CanActivate {
     }
 
     public canActivate(route, state) {
-        if ( route.params.module === 'Users' && !this.session.authData.admin ) return false; // prevents non-admins from listing the user list
+        if ( route.params.module === 'Users' && !this.session.authData.admin ) {
+            return false;
+        } // prevents non-admins from listing the user list
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
         if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, "list")) {
             this.router.navigate(["/modules/Home"]);

@@ -1,5 +1,5 @@
-import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
-import {Subject, Observable} from 'rxjs';
+import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 import {backend} from './backend.service';
 import {fts} from './fts.service';
 import {userpreferences} from './userpreferences.service';
@@ -12,31 +12,31 @@ declare var moment: any;
 
 @Injectable()
 export class modellist implements OnDestroy {
-    module: string = '';
-    listtype: string = 'all';
-    listtype$: EventEmitter<String>;
-    listData: any = {
+    public module: string = '';
+    public listtype: string = 'all';
+    public listtype$: EventEmitter<String>;
+    public listData: any = {
         list: [],
         totalcount: 0
     };
-    listSelected: any = {
+    public listSelected: any = {
         type: '',
         items: []
     };
-    lastFields: Array<any> = [];
-    sortfield: string = '';
-    sortdirection: string = 'ASC';
-    lastLoad: any = new moment();
+    public lastFields: Array<any> = [];
+    public sortfield: string = '';
+    public sortdirection: string = 'ASC';
+    public lastLoad: any = new moment();
 
-    loadlimit: number = 50;
-    isLoading: boolean = false;
+    public loadlimit: number = 50;
+    public isLoading: boolean = false;
 
-    searchConditions: any[] = [];
-    searchTerm: string = '';
-    searchAggregates: Array<any> = [];
-    selectedAggregates: Array<any> = [];
+    public searchConditions: any[] = [];
+    public searchTerm: string = '';
+    public searchAggregates: Array<any> = [];
+    public selectedAggregates: Array<any> = [];
 
-    standardLists: Array<any> = [
+    public standardLists: Array<any> = [
         {
             id: 'all',
             type: 'all',
@@ -74,9 +74,9 @@ export class modellist implements OnDestroy {
 
          }*/
     ];
-    listTypes: Array<any> = [];
-    currentList: any = {};
-    serviceSubscriptions: Array<any> = [];
+    public listTypes: Array<any> = [];
+    public currentList: any = {};
+    public serviceSubscriptions: Array<any> = [];
 
     constructor(
         private broadcast: broadcast,
@@ -98,10 +98,11 @@ export class modellist implements OnDestroy {
         );
     }
 
-    handleMessage(message: any) {
+    public handleMessage(message: any) {
         // only handle if the module is the list module
-        if (message.messagedata.module !== this.module)
+        if (message.messagedata.module !== this.module) {
             return;
+        }
 
         switch (message.messagetype) {
             case 'model.delete':
@@ -120,20 +121,21 @@ export class modellist implements OnDestroy {
                         eventHandled = true;
                     }
                 }
-                if (!eventHandled)
+                if (!eventHandled) {
                     this.reLoadList();
+                }
                 break;
         }
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         // unsubscribe from broadcast
-        for ( let serviceSubscription of this.serviceSubscriptions ) {
+        for (let serviceSubscription of this.serviceSubscriptions) {
             serviceSubscription.unsubscribe();
         }
     }
 
-    setModule(module: string) {
+    public setModule(module: string) {
         this.module = module;
 
         // get the custom listtypes
@@ -151,7 +153,7 @@ export class modellist implements OnDestroy {
         }
     }
 
-    setSortField(field: string) {
+    public setSortField(field: string) {
         if (this.sortfield == field) {
             this.sortdirection = this.sortdirection == 'ASC' ? 'DESC' : 'ASC';
         } else {
@@ -161,7 +163,7 @@ export class modellist implements OnDestroy {
         this.reLoadList();
     }
 
-    addCustomListtype(id, name, basefilter, fielddefs, filterdefs, global): void {
+    public addCustomListtype(id, name, basefilter, fielddefs, filterdefs, global): void {
         this.listTypes.push({
             id: id,
             type: 'custom',
@@ -178,7 +180,7 @@ export class modellist implements OnDestroy {
         });
     }
 
-    setListType(listType: string, setPreference = true): void {
+    public setListType(listType: string, setPreference = true): void {
         this.listtype = listType;
         for (let thisListType of this.getListTypes()) {
             if (thisListType.id === listType) {
@@ -200,11 +202,11 @@ export class modellist implements OnDestroy {
         this.listtype$.emit(listType);
     }
 
-    checkFilterChange(listType): boolean {
+    public checkFilterChange(listType): boolean {
         return (listType.basefilter !== this.currentList.basefilter || listType.filterdefs !== this.currentList.filterdefs);
     }
 
-    canDelete(): boolean {
+    public canDelete(): boolean {
         try {
             return this.currentList.config.enableDelete;
         } catch (e) {
@@ -212,7 +214,7 @@ export class modellist implements OnDestroy {
         }
     }
 
-    filterEnabled() {
+    public filterEnabled() {
         try {
             return this.currentList.config.enableFilter;
         } catch (e) {
@@ -220,7 +222,7 @@ export class modellist implements OnDestroy {
         }
     }
 
-    aggregatesEnabled() {
+    public aggregatesEnabled() {
         try {
             return this.currentList.config.enableAggregates;
         } catch (e) {
@@ -232,26 +234,28 @@ export class modellist implements OnDestroy {
      getter functions
      */
 
-    getListTypeName(listType: string = '') {
-        if (!listType)
+    public getListTypeName(listType: string = '') {
+        if (!listType) {
             listType = this.currentList.id;
+        }
         // return this.currentList.name;
 
         for (let thisListType of this.getListTypes()) {
-            if (thisListType.id === listType)
+            if (thisListType.id === listType) {
                 return thisListType.name;
+            }
         }
     }
 
-    getGlobal(): boolean {
+    public getGlobal(): boolean {
         return this.currentList.global;
     }
 
-    getBaseFilter(): string {
+    public getBaseFilter(): string {
         return this.currentList.basefilter;
     }
 
-    getFieldDefs(): Array<any> {
+    public getFieldDefs(): Array<any> {
         try {
             return JSON.parse(atob(this.currentList.fielddefs));
         } catch (e) {
@@ -259,7 +263,7 @@ export class modellist implements OnDestroy {
         }
     }
 
-    getFilterDefs(): Array<any> {
+    public getFilterDefs(): Array<any> {
         try {
             return JSON.parse(atob(this.currentList.filterdefs));
         } catch (e) {
@@ -267,7 +271,7 @@ export class modellist implements OnDestroy {
         }
     }
 
-    addListType(name, global): Observable<boolean> {
+    public addListType(name, global): Observable<boolean> {
         let retSub = new Subject<boolean>();
         let listParams = {
             list: name,
@@ -281,7 +285,7 @@ export class modellist implements OnDestroy {
             this.metadata.addModuleListType(this.module, {
                 id: listdata.id,
                 type: 'custom',
-                name: listdata.list,
+                name: listdata.name,
                 basefilter: 'all',
                 fielddefs: null,
                 filterdefs: null,
@@ -299,23 +303,24 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
-    updateListType(listParams): Observable<boolean> {
+    public updateListType(listParams): Observable<boolean> {
         let retSub = new Subject<boolean>();
         this.backend.setListType(this.currentList.id, this.module, listParams).subscribe((listdata: any) => {
 
-            this.listTypes.some((item, key) => {
-                if (item.id = this.currentList.id) {
+            this.listTypes.some(item => {
+                if (item.id == this.currentList.id) {
 
                     for (let key in listParams) {
                         if (listParams.hasOwnProperty(key)) {
                             item[key] = listParams[key];
                         }
                     }
-
                     this.currentList = item;
                     return true;
                 }
             });
+            listParams.id = this.currentList.id;
+            this.metadata.updateModuleListType(this.module, listParams);
 
             // emit since changes might impact others
             this.listtype$.emit(this.currentList);
@@ -327,9 +332,11 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
-    deleteListType(id: string = ''): Observable<boolean> {
+    public deleteListType(id: string = ''): Observable<boolean> {
         let retSub = new Subject<boolean>();
-        if (id === '') id = this.currentList.id;
+        if (id === '') {
+            id = this.currentList.id;
+        }
         this.backend.deleteListType(id).subscribe(res => {
             // set the new default listtype
             this.setListType('all');
@@ -349,34 +356,260 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
-    getLastLoadTime(): string {
+    public getLastLoadTime(): string {
         return this.lastLoad.format('HH:mm');
         // return this.lastLoad.toLocaleDateString() + ' ' + this.lastLoad.getHours() + ':' + this.lastLoad.getMinutes();
     }
 
-    getListData(fields: Array<any>): Observable<boolean> {
+    public getListData(fields: Array<any>): Observable<boolean> {
         this.resetListData();
 
         // check if we have fields defined or use the last fields
-        if (!fields)
+        if (!fields) {
             fields = this.lastFields;
-        else
+        } else {
             this.lastFields = fields;
+        }
 
         // check if we have a sortfield or shoudl set one
-        if (!this.sortfield)
+        if (!this.sortfield) {
             this.sortfield = fields.length > 0 ? fields[0] : 'id';
+        }
 
         return this.loadList(fields);
     }
 
-    showSearch(listType) {
-        if (!listType) listType = this.listtype;
+    public showSearch(listType) {
+        if (!listType) {
+            listType = this.listtype;
+        }
         for (let thisListType of this.getListTypes()) {
-            if (thisListType.id === listType)
+            if (thisListType.id === listType) {
                 return thisListType.config.showSearch;
+            }
         }
         return false;
+    }
+
+    public loadFilteredList(fields: any[]) {
+        this.isLoading = true;
+
+        let retSub = new Subject<boolean>();
+        this.resetListData();
+
+        this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
+            start: 0,
+            limit: this.loadlimit,
+            listid: this.currentList.id,
+            searchterm: this.searchTerm,
+            searchfields: {
+                join: 'AND',
+                conditions: this.searchConditions,
+            },
+        }).subscribe(
+            res => {
+                this.listData = res;
+                this.lastLoad = new moment();
+
+                this.isLoading = false;
+
+                retSub.next(true);
+                retSub.complete();
+            }
+        );
+        return retSub.asObservable();
+    }
+
+    public loadMoreList() {
+        if (this.isLoading || this.listData.list.length >= this.listData.totalcount) {
+            return false;
+        }
+
+        this.isLoading = true;
+
+        if (this.currentList.type == 'all') {
+            this.fts.loadMore().subscribe(res => {
+                let newItems = [];
+                for (let item of res[this.module].hits) {
+                    item._source.acl = item.acl;
+                    newItems.push(item._source);
+                }
+
+                this.listData.list = this.listData.list.concat(newItems);
+                this.lastLoad = new moment();
+
+                this.isLoading = false;
+
+            });
+        } else {
+            this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
+                start: this.listData.list.length,
+                limit: this.loadlimit,
+                listid: this.currentList.id
+            })
+                .subscribe((res: any) => {
+                    this.listData.list = this.listData.list.concat(res.list);
+                    this.lastLoad = new moment();
+
+                    this.isLoading = false;
+
+                });
+        }
+    }
+
+    public loadMoreFilteredList() {
+        if (this.isLoading || this.listData.list.length >= this.listData.totalcount) {
+            return false;
+        }
+
+        this.isLoading = true;
+        let retSub = new Subject<boolean>();
+        this.backend.all(this.module, {
+            // this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
+            offset: this.listData.list.length,
+            limit: this.loadlimit,
+            listid: this.currentList.id,
+            sortfield: this.sortfield,
+            sortdirection: this.sortdirection,
+            searchterm: this.searchTerm,
+            searchfields: {
+                join: 'AND',
+                conditions: this.searchConditions,
+            },
+        }).subscribe(
+            res => {
+                this.listData.list = this.listData.list.concat(res);
+                this.lastLoad = new moment();
+
+                this.isLoading = false;
+
+                retSub.next(true);
+                retSub.complete();
+            }
+        );
+
+        return retSub;
+    }
+
+    public reLoadList() {
+        return this.loadList(this.lastFields);
+    }
+
+    public resetListData() {
+        this.listData = {
+            list: [],
+            totalcount: 0
+        };
+    }
+
+    public getListTypes(base = true) {
+        let listTypes: Array<any> = [];
+
+        if (base) {
+            for (let list of this.standardLists) {
+                listTypes.push({
+                    id: list.id,
+                    type: list.type,
+                    global: 1,
+                    name: list.name.replace('<module>', this.language.getModuleName(this.module)).replace('<LBL_MY>', this.language.getLabel('LBL_MY')).replace('<LBL_ALL>', this.language.getLabel('LBL_ALL')),
+                    basefilter: list.basefilter,
+                    config: list.config
+                });
+            }
+        }
+
+        for (let list of this.listTypes) {
+            listTypes.push(list);
+        }
+
+        return listTypes;
+    }
+
+    public hasAggregates() {
+        return this.selectedAggregates.length > 0;
+    }
+
+    public setAggregate(aggregate, aggdata) {
+        this.selectedAggregates.push(aggregate + '::' + aggdata);
+        this.reLoadList();
+    }
+
+    public checkAggregate(aggregate, aggdata) {
+        return this.selectedAggregates.indexOf(aggregate + '::' + aggdata.trim()) > -1;
+    }
+
+    public removeAggregate(aggregate, aggdata) {
+        let index = this.selectedAggregates.indexOf(aggregate + '::' + aggdata);
+        if (index >= 0) {
+            this.selectedAggregates.splice(index, 1);
+            this.reLoadList();
+        }
+    }
+
+    public removeAllAggregates() {
+        this.selectedAggregates = [];
+        this.reLoadList();
+    }
+
+    /*
+     * select functions
+     */
+    public setAllSelected() {
+        this.listSelected.type = 'all';
+        for (let listItem of this.listData.list) {
+            listItem.selected = true;
+        }
+    }
+
+    public setAllUnselected() {
+        this.listSelected.type = 'none';
+        for (let listItem of this.listData.list) {
+            listItem.selected = false;
+        }
+    }
+
+    public getSelectedCount() {
+        let selCount = 0;
+        for (let listItem of this.listData.list) {
+            if (listItem.selected) {
+                selCount++;
+            }
+        }
+        return selCount;
+    }
+
+    public getSelectedItems() {
+        let items = [];
+        for (let listItem of this.listData.list) {
+            if (listItem.selected) {
+                items.push(listItem);
+            }
+        }
+        return items;
+    }
+
+    /**
+     * checks the access by action for the current list
+     * @param {string} action
+     * @returns {boolean}
+     */
+    public checkAccess(action: string) {
+        if (this.currentList.global) {
+            switch (action) {
+                case 'delete':
+                    return this.canDelete() && this.session.authData.admin;
+                case 'edit':
+                    return this.session.authData.admin;
+                default:
+                    return false;
+            }
+        } else {
+            switch (action) {
+                default:
+                    return true;
+            }
+        }
+
     }
 
     private loadList(fields: Array<any>): Observable<boolean> {
@@ -430,228 +663,5 @@ export class modellist implements OnDestroy {
             );
         }
         return retSub.asObservable();
-    }
-
-    loadFilteredList(fields:any[])
-    {
-        this.isLoading = true;
-
-        let retSub = new Subject<boolean>();
-        this.resetListData();
-
-        this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
-            start: 0,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            searchterm: this.searchTerm,
-            searchfields: {
-                join: 'AND',
-                conditions: this.searchConditions,
-            },
-        }).subscribe(
-            res => {
-                this.listData = res;
-                this.lastLoad = new moment();
-
-                this.isLoading = false;
-
-                retSub.next(true);
-                retSub.complete();
-            }
-        );
-        return retSub.asObservable();
-    }
-
-    loadMoreList() {
-        if (this.isLoading || this.listData.list.length >= this.listData.totalcount)
-            return false;
-
-        this.isLoading = true;
-
-        if (this.currentList.type == 'all') {
-            this.fts.loadMore().subscribe(res => {
-                let newItems = [];
-                for (let item of res[this.module].hits) {
-                    item._source.acl = item.acl;
-                    newItems.push(item._source);
-                }
-
-                this.listData.list = this.listData.list.concat(newItems);
-                this.lastLoad = new moment();
-
-                this.isLoading = false;
-
-            })
-        } else {
-            this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
-                start: this.listData.list.length,
-                limit: this.loadlimit,
-                listid: this.currentList.id
-            })
-                .subscribe((res: any) => {
-                    this.listData.list = this.listData.list.concat(res.list);
-                    this.lastLoad = new moment();
-
-                    this.isLoading = false;
-
-                });
-        }
-    }
-
-    loadMoreFilteredList() {
-        if (this.isLoading || this.listData.list.length >= this.listData.totalcount)
-            return false;
-
-        this.isLoading = true;
-        let retSub = new Subject<boolean>();
-        this.backend.all(this.module, {
-            //this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
-            offset: this.listData.list.length,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            sortfield: this.sortfield,
-            sortdirection: this.sortdirection,
-            searchterm: this.searchTerm,
-            searchfields: {
-                join: 'AND',
-                conditions: this.searchConditions,
-            },
-        }).subscribe(
-            res => {
-                this.listData.list = this.listData.list.concat(res);
-                this.lastLoad = new moment();
-
-                this.isLoading = false;
-
-                retSub.next(true);
-                retSub.complete();
-            }
-        );
-
-        return retSub;
-    }
-
-    reLoadList() {
-        return this.loadList(this.lastFields);
-    }
-
-    resetListData() {
-        this.listData = {
-            list: [],
-            totalcount: 0
-        };
-    }
-
-    getListTypes(base = true) {
-        let listTypes: Array<any> = [];
-
-        if(base) {
-            for (let list of this.standardLists) {
-                listTypes.push({
-                    id: list.id,
-                    type: list.type,
-                    global: 1,
-                    name: list.name.replace('<module>', this.language.getModuleName(this.module)).replace('<LBL_MY>', this.language.getLabel('LBL_MY')).replace('<LBL_ALL>', this.language.getLabel('LBL_ALL')),
-                    basefilter: list.basefilter,
-                    config: list.config
-                });
-            }
-        }
-
-        for (let list of this.listTypes) {
-            listTypes.push(list);
-        }
-
-        return listTypes;
-    }
-
-    hasAggregates() {
-        return this.selectedAggregates.length > 0;
-    }
-
-    setAggregate(aggregate, aggdata) {
-        this.selectedAggregates.push(aggregate + '::' + aggdata);
-        this.reLoadList();
-    }
-
-    checkAggregate(aggregate, aggdata) {
-        return this.selectedAggregates.indexOf(aggregate + '::' + aggdata.trim()) > -1;
-    }
-
-    removeAggregate(aggregate, aggdata) {
-        let index = this.selectedAggregates.indexOf(aggregate + '::' + aggdata);
-        if (index >= 0) {
-            this.selectedAggregates.splice(index, 1);
-            this.reLoadList();
-        }
-    }
-
-    removeAllAggregates() {
-        this.selectedAggregates = [];
-        this.reLoadList();
-    }
-
-    /*
-     * select functions
-     */
-    setAllSelected() {
-        this.listSelected.type = 'all';
-        for (let listItem of this.listData.list) {
-            listItem.selected = true;
-        }
-    }
-
-    setAllUnselected() {
-        this.listSelected.type = 'none';
-        for (let listItem of this.listData.list) {
-            listItem.selected = false;
-        }
-    }
-
-    getSelectedCount() {
-        let selCount = 0;
-        for (let listItem of this.listData.list) {
-            if (listItem.selected)
-                selCount++;
-        }
-        return selCount;
-    }
-
-    getSelectedItems() {
-        let items = [];
-        for (let listItem of this.listData.list) {
-            if (listItem.selected)
-                items.push(listItem);
-        }
-        return items;
-    }
-
-    /**
-     * checks the access by action for the current list
-     * @param {string} action
-     * @returns {boolean}
-     */
-    public checkAccess(action:string)
-    {
-        if(this.currentList.global)
-        {
-            switch(action)
-            {
-                case 'delete':
-                    return this.canDelete() && this.session.authData.admin;
-                case 'edit':
-                    return this.session.authData.admin;
-                default:
-                    return false;
-            }
-        }
-        else {
-            switch(action)
-            {
-                default:
-                    return true;
-            }
-        }
-
     }
 }
