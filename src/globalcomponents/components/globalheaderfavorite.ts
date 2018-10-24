@@ -3,7 +3,7 @@ import {favorite} from '../../services/favorite.service';
 import {language} from '../../services/language.service';
 import {popup} from '../../services/popup.service';
 import {metadata} from '../../services/metadata.service';
-import {Router}   from '@angular/router';
+import {NavigationStart, Router} from '@angular/router';
 
 @Component({
     selector: 'global-header-favorite',
@@ -27,9 +27,9 @@ export class GlobalHeaderFavorite {
         private renderer: Renderer2,
         private elementRef: ElementRef,
         private language: language
-    ){
-        this.router.events.subscribe((val : any) => {
-            if(val.constructor.name == 'NavigationStart'){
+    ) {
+        this.router.events.subscribe((event: any) => {
+            if(event instanceof NavigationStart) {
                 this.favorite.disable();
             }
         });
@@ -59,14 +59,14 @@ export class GlobalHeaderFavorite {
     }
 
     private getFavoriteActive() {
-        if(this.favorite.isFavorite){
+        if(this.favorite.isFavorite) {
             return 'spicecrm-favorite--active';
         } else {
             return 'spicecrm-favorite--inactive';
         }
     }
 
-    private toggleFavorite(){
+    private toggleFavorite() {
         if(this.favorite.isFavorite) {
             this.favorite.deleteFavorite();
         } else {
@@ -79,7 +79,7 @@ export class GlobalHeaderFavorite {
 
         if(this.showFavorites) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener){
+        } else if (this.clickListener) {
             this.clickListener();
         }
     }
