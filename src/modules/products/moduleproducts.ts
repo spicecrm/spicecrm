@@ -33,7 +33,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ { productfinder } from './services/productfinder.service';
 
@@ -65,7 +64,6 @@ import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/produ
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents
     ],
     declarations: [
         ProductManager,

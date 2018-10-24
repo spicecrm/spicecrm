@@ -33,7 +33,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 
 import /*embed*/ {Home} from './components/home';
@@ -51,7 +50,6 @@ import /*embed*/ {HomeDashboard} from './components/homedashboard';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
     ],
     declarations: [
         Home,

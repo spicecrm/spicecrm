@@ -35,7 +35,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 
 import /*embed*/ {ACLTypesManager} from "./components/acltypesmanager";
 import /*embed*/ {ACLManagerHeader} from "./components/aclmanagerheader";
@@ -66,7 +65,6 @@ import /*embed*/ {ACLProfilesManagerAddProfileModal} from "./components/aclprofi
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents
     ],
     declarations: [
         ACLTypesManager,

@@ -34,7 +34,6 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {GlobalUtilityComponents}      from '../../globalutilitycomponents/globalutilitycomponents';
 import {ModuleMediaFiles}      from '../mediafiles/modulemediafiles';
 
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
@@ -78,7 +77,6 @@ import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questio
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        GlobalUtilityComponents,
         ModuleMediaFiles
     ],
     declarations: [

@@ -16,8 +16,8 @@ import {Router}   from '@angular/router';
     ]
 })
 export class GlobalHeaderFavorite {
-    clickListener: any;
-    showFavorites: boolean = false;
+    private clickListener: any;
+    private showFavorites: boolean = false;
 
     constructor(
         private metadata: metadata,
@@ -36,11 +36,11 @@ export class GlobalHeaderFavorite {
 
         popup.closePopup$.subscribe(close => {
             this.showFavorites = false;
-            if(this.clickListener)
+            if(this.clickListener) {
                 this.clickListener();
-        })
+            }
+        });
     }
-
 
     get canShowFavorites(){
         return this.metadata.getActiveRole().showfavorites && this.metadata.getActiveRole().showfavorites != '0';
@@ -50,7 +50,7 @@ export class GlobalHeaderFavorite {
         return this.favorite.favorites.length == 0;
     }
 
-    isDisabled(){
+    private isDisabled() {
         return !this.favorite.isEnabled;
     }
 
@@ -58,31 +58,33 @@ export class GlobalHeaderFavorite {
         return this.favorite.isFavorite;
     }
 
-    getFavoriteActive(){
-        if(this.favorite.isFavorite)
+    private getFavoriteActive() {
+        if(this.favorite.isFavorite){
             return 'spicecrm-favorite--active';
-        else
-            return 'spicecrm-favorite--inactive'
+        } else {
+            return 'spicecrm-favorite--inactive';
+        }
     }
 
-    toggleFavorite(){
-        if(this.favorite.isFavorite)
+    private toggleFavorite(){
+        if(this.favorite.isFavorite) {
             this.favorite.deleteFavorite();
-        else
+        } else {
             this.favorite.setFavorite();
+        }
     }
 
-    toggleFavorites(){
+    private toggleFavorites() {
         this.showFavorites = !this.showFavorites;
 
         if(this.showFavorites) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if(this.clickListener)
+        } else if (this.clickListener){
             this.clickListener();
+        }
     }
 
     public onClick(event: MouseEvent): void {
-
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.showFavorites = false;

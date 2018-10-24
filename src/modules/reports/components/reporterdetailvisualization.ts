@@ -13,48 +13,40 @@ import {broadcast} from '../../../services/broadcast.service';
     selector: 'reporter-detail-visualization',
     templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html'
 })
-export class ReporterDetailVisualization implements AfterViewInit, OnInit, OnDestroy {
-    @ViewChild('vizcontainer', {read: ViewContainerRef}) vizcontainer: ViewContainerRef;
+export class ReporterDetailVisualization implements AfterViewInit {
+    @ViewChild('vizcontainer', {read: ViewContainerRef}) private vizcontainer: ViewContainerRef;
 
-    loading: boolean = true;
-    vizData: any = {};
+    @Input() private parentModule: string = '';
+    @Input() private parentId: string = '';
+
+    private loading: boolean = true;
+    private vizData: any = {};
+    private chartComponent: any;
 
     constructor(private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation) {
 
     }
 
-    handleMessage(message: any) {
-
+    public ngAfterViewInit() {
+        this.getVisualization();
     }
 
-    ngOnInit() {
-
-    }
-
-    ngAfterViewInit() {
-        this.getVisualization()
-    }
-
-    ngOnDestroy() {
-
-    }
-
-    getVisualization() {
+    private getVisualization() {
 
         let params: any = {};
-        if (this.model['parentBeanId'] && this.model['parentBeanModule']) {
-            params.parentbeanId = this.model['parentBeanId'];
-            params.parentbeanModule = this.model['parentBeanModule'];
+        if (this.parentModule && this.parentId) {
+            params.parentbeanId = this.parentId;
+            params.parentbeanModule = this.parentModule;
         }
 
         this.backend.getRequest('KReporter/' + this.model.id + '/visualization', params).subscribe(vizData => {
             this.vizData = vizData;
             this.loading = false;
             this.renderVisualization();
-        })
+        });
     }
 
-    renderVisualization() {
+    private renderVisualization() {
         for (let visualization of this.vizData) {
             let visComponent = '';
             switch (visualization.plugin) {
@@ -65,10 +57,12 @@ export class ReporterDetailVisualization implements AfterViewInit, OnInit, OnDes
                     visComponent = 'ReporterDetailVisualizationGooglecharts';
                     break;
             }
-            if (visComponent != '')
+            if (visComponent != '') {
                 this.metadata.addComponent(visComponent, this.vizcontainer).subscribe(componentRef => {
-                    componentRef.instance['vizdata'] = visualization;
-                })
+                    this.chartComponent = componentRef;
+                    componentRef.instance.vizdata = visualization;
+                });
+            }
         }
     }
 }
