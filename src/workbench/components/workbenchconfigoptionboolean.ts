@@ -8,9 +8,10 @@ import {view} from "../../services/view.service";
 })
 export class WorkbenchConfigOptionBoolean {
 
-    configValues: any = [];
-    option: any = {};
-    objtype: string = "";
+    public configValues: any = [];
+    public option: any = {};
+    public objtype: string = "";
+    private showInfo: boolean = false;
 
     constructor(private view: view) {
     }

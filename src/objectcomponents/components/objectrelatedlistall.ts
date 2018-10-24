@@ -15,20 +15,20 @@ declare var _;
 })
 export class ObjectRelatedlistAll implements OnInit {
 
-    module: string = '';
-    id: string = '';
-    link: string = '';
-    related: string = '';
-    fieldset: string = undefined;
+    private module: string = '';
+    private id: string = '';
+    private link: string = '';
+    private related: string = '';
+    private fieldset: string = undefined;
 
-    componentconfig: any = {};
-    listfields: Array<any> = [];
+    private componentconfig: any = {};
+    private listfields: Array<any> = [];
 
     constructor(private activatedRoute: ActivatedRoute, private navigation: navigation, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.module = this.activatedRoute.params['value']['module'];
         this.link = this.activatedRoute.params['value']['link'];
         this.related = this.activatedRoute.params['value']['related'];
@@ -41,40 +41,40 @@ export class ObjectRelatedlistAll implements OnInit {
         this.model.module = this.module;
         this.model.id = this.activatedRoute.params['value']['id'];
 
-
-
         this.model.getData(true, 'detailview').subscribe(data => {
             this.navigation.setActiveModule(this.module, this.model.id, data.summary_text);
-
         });
 
         // load the config and fieldset
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedlistAll', this.related);
         // if nothing is defined, try to take the default list config...
-        if(!this.componentconfig.fieldset)
+        if(!this.componentconfig.fieldset) {
             this.componentconfig = this.metadata.getModuleDefaultComponentConfigByUsage(this.related, 'list');
+        }
 
-        if(_.isEmpty(this.componentconfig))
+        if(_.isEmpty(this.componentconfig)) {
             console.warn(`no componentconfig found for ObjectRelatedlistAll nor ObjectList with module ${this.related}`);
-
+        }
 
         this.listfields = this.metadata.getFieldSetFields(this.fieldset ? this.fieldset : this.componentconfig.fieldset);
-        if(_.isEmpty(this.listfields))
+        if(_.isEmpty(this.listfields)) {
             console.warn('no fieldset to use!');
+        }
 
         // load the related data
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.relatedModule = this.activatedRoute.params['value']['related'];
+        this.relatedmodels.linkName = this.link;
         this.relatedmodels.loaditems = 50;
         this.relatedmodels.getData();
     }
 
-    goModule(){
+    private goModule() {
         this.model.goModule();
     }
 
-    goModel(){
+    private goModel(){
         this.model.goDetail();
     }
 

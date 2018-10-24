@@ -14,7 +14,7 @@ import {metadata} from '../../services/metadata.service';
 
 interface menuItem {
     module: string;
-    name: string
+    name: string;
 }
 
 
@@ -24,7 +24,6 @@ interface menuItem {
     host: {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()',
-        // '(document:click)': 'onClick($event)'
     },
     providers: [popup, model]
 })
