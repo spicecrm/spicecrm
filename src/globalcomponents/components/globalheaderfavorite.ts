@@ -19,12 +19,20 @@ export class GlobalHeaderFavorite {
     clickListener: any;
     showFavorites: boolean = false;
 
-    constructor(private metadata: metadata, private favorite: favorite, private router: Router, private popup: popup, private renderer: Renderer2, private elementRef: ElementRef, private language: language){
+    constructor(
+        private metadata: metadata,
+        private favorite: favorite,
+        private router: Router,
+        private popup: popup,
+        private renderer: Renderer2,
+        private elementRef: ElementRef,
+        private language: language
+    ){
         this.router.events.subscribe((val : any) => {
             if(val.constructor.name == 'NavigationStart'){
                 this.favorite.disable();
             }
-        })
+        });
 
         popup.closePopup$.subscribe(close => {
             this.showFavorites = false;
