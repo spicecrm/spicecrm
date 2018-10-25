@@ -19,17 +19,21 @@ export class ReferenceConfigForm extends BasicReferenceForm
         private language: language,
         protected backend: backend,
         private toast: toast
-    ){
+    ) {
         super(backend);
-        //this.package_names = ['core'];
     }
 
-    test()
+    public test()
     {
         console.log(this.package_names, this.version_names);
     }
 
-    submit()
+    get all_package_names()
+    {
+        return this.available_packages.map((item) => {return item.package});
+    }
+
+    public submit()
     {
         this.is_pulling = true;
         this.backend.getRequest(
