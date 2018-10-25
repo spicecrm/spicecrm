@@ -19,7 +19,7 @@ import {footer} from '../services/footer.service';
 import {toast} from '../services/toast.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, Router } from '@angular/router';
 import { loginCheck } from '../services/login.service';
 import {DirectivesModule} from "../directives/directives";
 import { SystemComponents } from '../systemcomponents/systemcomponents';
