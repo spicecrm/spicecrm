@@ -34,7 +34,7 @@ export class userpreferences {
         num_grp_sep: '.',
         timef: 'H:i',
         timezone: 'Europe/Vienna',
-        currency_significant_digits: 2,
+        default_currency_significant_digits: 2,
         default_locale_name_format: 'l, f'
     };
 
