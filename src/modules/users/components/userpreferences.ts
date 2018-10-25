@@ -28,9 +28,20 @@ export class UserPreferences {
 
     private preferences: any = {};
 
-    private names = ["export_delimiter", "default_export_charset", "currency", "default_currency_significant_digits", "datef", "timef", "timezone", "num_grp_sep", "dec_sep", 'default_locale_name_format'];
+    private names = [
+        "export_delimiter",
+        "default_export_charset",
+        "currency",
+        "default_currency_significant_digits",
+        "datef",
+        "timef",
+        "timezone",
+        "num_grp_sep",
+        "dec_sep",
+        "default_locale_name_format"
+    ];
 
-    private expanded = {loc: true, exp: true};
+    private expanded = {loc: true, exp: true, other: true};
     private exportDelimiterList = [",", ";"];
     private charsetlist = [
         "BIG-5", "CP1251", "CP1252", "EUC-CN", "EUC-JP", "EUC-KR", "EUC-TW", "ISO-2022-JP",
@@ -106,20 +117,11 @@ export class UserPreferences {
     }
 
     get datef() {
-        return moment().format(this.prefservice.jsDateFormat2momentDateFormat(this.preferences.datef));
+        return this.preferences.datef ? moment().format(this.prefservice.jsDateFormat2momentDateFormat(this.preferences.datef)): "";
     }
 
     get timef() {
-        return moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef));
-    }
-
-    private setFormattingOfNumbers(val: number | string) {
-        if (val === "") {
-            this.preferences.num_grp_sep = this.preferences.dec_sep = "";
-        } else {
-            this.preferences.num_grp_sep = this.formattingsOfNumbers[val].num_grp_sep;
-            this.preferences.dec_sep = this.formattingsOfNumbers[val].dec_sep;
-        }
+        return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
     }
 
     get formattingOfNumbers(): string {
@@ -130,6 +132,15 @@ export class UserPreferences {
             + this.preferences.num_grp_sep + "000"
             + this.preferences.num_grp_sep + "000"
             + this.preferences.dec_sep + ("0".repeat(this.preferences.default_currency_significant_digits ? this.preferences.default_currency_significant_digits : 2));
+    }
+
+    private setFormattingOfNumbers(val: number | string) {
+        if (val === "") {
+            this.preferences.num_grp_sep = this.preferences.dec_sep = "";
+        } else {
+            this.preferences.num_grp_sep = this.formattingsOfNumbers[val].num_grp_sep;
+            this.preferences.dec_sep = this.formattingsOfNumbers[val].dec_sep;
+        }
     }
 
     private cancel() {
