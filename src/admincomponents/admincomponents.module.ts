@@ -29,6 +29,7 @@ import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service'
 import /*embed*/ {dictionary} from './services/dictionary.service'
 
 import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
+import /*embed*/ { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
 import /*embed*/ { AdministrationConfigurator } from './components/administrationconfigurator';
 import /*embed*/ { AdministrationConfiguratorItem } from './components/administrationconfiguratoritem';
 import /*embed*/ { AdministrationConfiguratorItemRole } from './components/administrationconfiguratoritemrole';
@@ -56,9 +57,7 @@ import /*embed*/ {VersionControllerComponent} from "./components/versioncontroll
     selector: 'administration-main',
     template: '<div administration-menu></div>'
 })
-export class AdministrationMain {
-    constructor() {}
-}
+export class AdministrationMain {}
 
 @NgModule({
     imports: [
@@ -73,6 +72,7 @@ export class AdministrationMain {
     declarations: [
         AdministrationMain,
         AdministrationMenu,
+        AdministrationMenuRouteItem,
         AdministrationConfigurator,
         AdministrationConfiguratorItem,
         AdministrationConfiguratorItemRole,
