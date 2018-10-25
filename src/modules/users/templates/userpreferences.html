@@ -21,9 +21,7 @@
                         <div class="slds-select_container">
                             <select class="slds-select" name="timezone" (change)="preferences.timezone = $event.srcElement.value">
                                 <option value="">-- select one --</option>
-                                <ng-container *ngFor="let key of timezoneKeys">
-                                    <option value="{{key}}">{{timezones[key]}}</option>
-                                </ng-container>
+                                <option *ngFor="let timezoneKey of timezoneKeys" [value]="timezoneKey">{{timezoneKey}}</option>
                             </select>
                         </div>
                     </div>
@@ -210,9 +208,8 @@
                     <div class="slds-select_container">
                         <select class="slds-select" name="timezone" (change)="preferences.default_locale_name_format = $event.srcElement.value">
                             <option value="">-- select one --</option>
-                            <ng-container *ngFor="let item of prefservice.formats.nameFormats">
-                                <option value="{{item.name}}" [selected]="item.name == preferences.default_locale_name_format">{{item.example}}</option>
-                            </ng-container>
+                            <option *ngFor="let item of prefservice.formats.nameFormats" value="{{item.name}}"
+                                    [selected]="item.name == preferences.default_locale_name_format">{{item.example}}</option>
                         </select>
                     </div>
                 </div>
