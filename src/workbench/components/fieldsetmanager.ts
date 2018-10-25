@@ -210,6 +210,7 @@ export class FieldsetManager {
                         this.metadata.addFieldset(fieldsetid, this.currentModule, update.name, update.type);
                         this.currentFieldSet = fieldsetid;
                     }
+                    this.checkMode();
                 }
             });
         });

@@ -10,16 +10,20 @@
         <label>{{language.getLabel('LBL_PACKAGES')}}:</label>
         <div class="slds-form-element__control">
             <system-checkbox-group [(ngModel)]="package_names">
+                <system-checkbox-group-checkbox [value]="all_package_names">{{language.getLabel('LBL_SELECT_ALL')}}</system-checkbox-group-checkbox>
                 <system-checkbox-group-checkbox *ngFor="let pack of available_packages" value="{{pack.package}}">{{pack.package}}</system-checkbox-group-checkbox>
             </system-checkbox-group>
         </div>
     </div>
     <div class="slds-form-element">
-        <label>{{language.getLabel('LBL_VERSIONS')}}:</label>
+        <label>{{language.getLabel('LBL_VERSION')}}:</label>
         <div class="slds-form-element__control">
-            <system-checkbox-group [(ngModel)]="version_names">
+            <!--system-checkbox-group [(ngModel)]="version_names">
                 <system-checkbox-group-checkbox *ngFor="let vers of available_versions" value="{{vers.version}}">{{vers.version}}</system-checkbox-group-checkbox>
-            </system-checkbox-group>
+            </system-checkbox-group-->
+            <select class="slds-input slds-select" [(ngModel)]="version_names">
+                <option *ngFor="let vers of available_versions" value="{{vers.version}}">{{vers.version}}</option>
+            </select>
         </div>
     </div>
     <div *ngIf="pull_result" class="slds-form-element">
@@ -29,6 +33,6 @@
     <div class="slds-form-element slds-p-top--medium">
         <system-spinner *ngIf="is_pulling"></system-spinner>
         <button *ngIf="!is_pulling" class="slds-button slds-button--brand" (click)="submit()">{{language.getLabel('LBL_SUBMIT')}}</button>
-        <!--button (click)="test()">test me!</button-->
+        <button (click)="test()">test me!</button>
     </div>
 </div>
