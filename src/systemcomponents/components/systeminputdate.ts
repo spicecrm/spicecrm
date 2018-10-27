@@ -1,0 +1,194 @@
+// from https://github.com/kolkov/angular-editor
+import {
+    AfterContentInit,
+    Component, ElementRef,
+    EventEmitter,
+    forwardRef,
+    Inject,
+    Input,
+    OnInit,
+    OnDestroy,
+    Output,
+    Renderer2,
+    ViewChild
+} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+
+import {language} from "../../services/language.service";
+import {userpreferences} from "../../services/userpreferences.service";
+
+declare var moment: any;
+
+@Component({
+    selector: "system-input-date",
+    templateUrl: "./src/systemcomponents/templates/systeminputdate.html",
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputDate),
+            multi: true
+        }
+    ]
+})
+export class SystemInputDate implements OnDestroy, ControlValueAccessor {
+
+
+    // for the value accessor
+    private onChange: (value: string) => void;
+    private onTouched: () => void;
+    private _date: any = {
+        display: '',
+        moment: null,
+        valid: true
+    };
+
+    // for the dropdown
+    private isOpen: boolean = false;
+    private clickListener: any;
+
+    constructor(private elementref: ElementRef, private renderer: Renderer2, private userpreferences: userpreferences, private language: language) {
+    }
+
+    public ngOnDestroy() {
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+    get isValid() {
+        return this._date.valid;
+    }
+
+    get display() {
+        return this._date.display ? this._date.display : '';
+    }
+
+    set display(value) {
+        if (value) {
+            // try to parse the value
+            let newDate = moment(value, this.userpreferences.getDateFormat(), true);
+            if (newDate.isValid()) {
+                if (!this._date.moment) {
+                    this._date.moment = new moment();
+                }
+                this._date.moment.year(newDate.year()).month(newDate.month()).date(newDate.date());
+                this._date.valid = true;
+
+                // close the dropdown
+                this.toggleClosed();
+
+                // emit the value to the ngModel directive
+                if (typeof this.onChange === 'function') {
+                    this.onChange(this._date.moment);
+                }
+
+            } else {
+                this._date.display = value;
+                this._date.valid = false;
+            }
+        } else {
+            this.clear();
+        }
+    }
+
+    get canclear() {
+        return this._date.display ? true : false;
+    }
+
+    private clear(notify = true) {
+        this._date.moment = null;
+        this._date.display = '';
+        this._date.valid = true;
+
+        // emit the value to the ngModel directive
+        if (typeof this.onChange === 'function' && notify) {
+            this.onChange(this._date.moment);
+        }
+    }
+
+    /**
+     *  focus the text area when the editor is focussed
+     */
+    private toggleOpen() {
+
+        this.isOpen = !this.isOpen;
+        // check if we are active already
+        if (this.isOpen) {
+            // listen to the click event if it is ousoide of the current elements scope
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+        }
+    }
+
+    private toggleClosed() {
+        // close the dropdown
+        this.isOpen = false;
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+
+    private onDocumentClick(event: MouseEvent) {
+        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
+            this.isOpen = false;
+            this.clickListener();
+        }
+    }
+
+
+    /**
+     * Set the function to be called
+     * when the control receives a change event.
+     *
+     * @param fn a function
+     */
+    public registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a touch event.
+     *
+     * @param fn a function
+     */
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    /**
+     * Write a new value to the element.
+     *
+     * @param value value to be executed when there is a change in contenteditable
+     */
+    public writeValue(value: any): void {
+        // this._time = value ? value : '';
+        if (value) {
+            this._date.moment = new moment(value);
+            this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
+        } else {
+            this.clear(false);
+        }
+    }
+
+    private datePicked(value) {
+        if (value) {
+            if (!this._date.moment) {
+                this._date.moment = new moment();
+            }
+
+            this._date.moment = value
+            this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
+            this._date.valid = true;
+
+            // emit the value to the ngModel directive
+            if (typeof this.onChange === 'function') {
+                this.onChange(this._date.moment);
+            }
+
+            // close the dropdown
+            this.toggleClosed();
+        }
+    }
+
+}
