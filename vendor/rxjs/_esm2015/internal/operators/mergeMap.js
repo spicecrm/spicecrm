@@ -1,5 +1,6 @@
 import { subscribeToResult } from '../util/subscribeToResult';
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { map } from './map';
 import { from } from '../observable/from';
 export function mergeMap(project, resultSelector, concurrent = Number.POSITIVE_INFINITY) {
@@ -52,13 +53,17 @@ export class MergeMapSubscriber extends OuterSubscriber {
         this._innerSub(result, value, index);
     }
     _innerSub(ish, value, index) {
-        this.add(subscribeToResult(this, ish, value, index));
+        const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        const destination = this.destination;
+        destination.add(innerSubscriber);
+        subscribeToResult(this, ish, value, index, innerSubscriber);
     }
     _complete() {
         this.hasCompleted = true;
         if (this.active === 0 && this.buffer.length === 0) {
             this.destination.complete();
         }
+        this.unsubscribe();
     }
     notifyNext(outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         this.destination.next(innerValue);

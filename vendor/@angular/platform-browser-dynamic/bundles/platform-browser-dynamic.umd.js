@@ -1,5 +1,5 @@
 /**
- * @license Angular v6.1.2
+ * @license Angular v7.0.1
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -39,6 +39,13 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
 
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
+
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
         if (!m) return o;
@@ -73,7 +80,6 @@
     var builtinExternalReferences = createBuiltinExternalReferencesMap();
     var JitReflector = /** @class */ (function () {
         function JitReflector() {
-            this.builtinExternalReferences = new Map();
             this.reflectionCapabilities = new core.ɵReflectionCapabilities();
         }
         JitReflector.prototype.componentModuleUrl = function (type, cmpMetadata) {
@@ -117,6 +123,7 @@
         map.set(compiler.Identifiers.NgModuleRef, core.NgModuleRef);
         map.set(compiler.Identifiers.ViewContainerRef, core.ViewContainerRef);
         map.set(compiler.Identifiers.ChangeDetectorRef, core.ChangeDetectorRef);
+        map.set(compiler.Identifiers.Renderer2, core.Renderer2);
         map.set(compiler.Identifiers.QueryList, core.QueryList);
         map.set(compiler.Identifiers.TemplateRef, core.TemplateRef);
         map.set(compiler.Identifiers.CodegenComponentFactoryResolver, core.ɵCodegenComponentFactoryResolver);
@@ -289,7 +296,7 @@
         { provide: compiler.NgModuleResolver, deps: [compiler.CompileReflector] },
     ];
     /**
-     * @experimental
+     * @publicApi
      */
     var JitCompilerFactory = /** @class */ (function () {
         /* @internal */
@@ -361,7 +368,7 @@
     /**
      * A platform that included corePlatform and the compiler.
      *
-     * @experimental
+     * @publicApi
      */
     var platformCoreDynamic = core.createPlatformFactory(core.platformCore, 'coreDynamic', [
         { provide: core.COMPILER_OPTIONS, useValue: {}, multi: true },
@@ -407,9 +414,9 @@
             xhr.send();
             return promise;
         };
-        ResourceLoaderImpl.decorators = [
-            { type: core.Injectable }
-        ];
+        ResourceLoaderImpl = __decorate([
+            core.Injectable()
+        ], ResourceLoaderImpl);
         return ResourceLoaderImpl;
     }(compiler.ResourceLoader));
 
@@ -419,6 +426,9 @@
      *
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
+     */
+    /**
+     * @publicApi
      */
     var INTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS = [
         platformBrowser.ɵINTERNAL_BROWSER_PLATFORM_PROVIDERS,
@@ -443,6 +453,8 @@
      *
      * The template cache needs to be built and loaded into window.$templateCache
      * via a separate mechanism.
+     *
+     * @publicApi
      */
     var CachedResourceLoader = /** @class */ (function (_super) {
         __extends(CachedResourceLoader, _super);
@@ -480,7 +492,10 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var VERSION = new core.Version('6.1.2');
+    /**
+     * @publicApi
+     */
+    var VERSION = new core.Version('7.0.1');
 
     /**
      * @license
@@ -490,9 +505,12 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     * @experimental
+     * @publicApi
      */
     var RESOURCE_CACHE_PROVIDER = [{ provide: compiler.ResourceLoader, useClass: CachedResourceLoader, deps: [] }];
+    /**
+     * @publicApi
+     */
     var platformBrowserDynamic = core.createPlatformFactory(platformCoreDynamic, 'browserDynamic', INTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS);
 
     /**
