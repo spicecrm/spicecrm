@@ -23,6 +23,7 @@ class DelayWhenSubscriber extends OuterSubscriber {
         this.delayDurationSelector = delayDurationSelector;
         this.completed = false;
         this.delayNotifierSubscriptions = [];
+        this.index = 0;
     }
     notifyNext(outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         this.destination.next(outerValue);
@@ -40,8 +41,9 @@ class DelayWhenSubscriber extends OuterSubscriber {
         this.tryComplete();
     }
     _next(value) {
+        const index = this.index++;
         try {
-            const delayNotifier = this.delayDurationSelector(value);
+            const delayNotifier = this.delayDurationSelector(value, index);
             if (delayNotifier) {
                 this.tryDelay(delayNotifier, value);
             }
@@ -53,6 +55,7 @@ class DelayWhenSubscriber extends OuterSubscriber {
     _complete() {
         this.completed = true;
         this.tryComplete();
+        this.unsubscribe();
     }
     removeSubscription(subscription) {
         subscription.unsubscribe();
@@ -65,7 +68,8 @@ class DelayWhenSubscriber extends OuterSubscriber {
     tryDelay(delayNotifier, value) {
         const notifierSubscription = subscribeToResult(this, delayNotifier, value);
         if (notifierSubscription && !notifierSubscription.closed) {
-            this.add(notifierSubscription);
+            const destination = this.destination;
+            destination.add(notifierSubscription);
             this.delayNotifierSubscriptions.push(notifierSubscription);
         }
     }
@@ -100,6 +104,7 @@ class SubscriptionDelaySubscriber extends Subscriber {
         this.parent.error(err);
     }
     _complete() {
+        this.unsubscribe();
         this.subscribeToSource();
     }
     subscribeToSource() {
