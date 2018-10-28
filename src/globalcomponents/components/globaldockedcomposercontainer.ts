@@ -1,6 +1,3 @@
-/**
- * Created by christian on 08.11.2016.
- */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -18,6 +15,9 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 @Component({
     selector: 'global-docked-composer-container',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposercontainer.html',
+    host:{
+        '[class.slds-docked_container]': 'true'
+    }
 })
 export class GlobalDockedComposerContainer {
 
@@ -25,20 +25,20 @@ export class GlobalDockedComposerContainer {
 
     }
 
-    closeComposer() {
+    private closeComposer() {
         this.dockedComposer.showComposer = false;
     }
 
     // function to return the style if multiple composers are shown .. to stack them
-    getComposerStyle(composerindex) : any {
+    private getComposerStyle(composerindex): any {
         if(composerindex >= this.dockedComposer.maxComposers){
             return {
                 display: 'none'
-            }
+            };
         }
     }
 
-    get displayOverflow() : boolean {
+    get displayOverflow(): boolean {
         return this.dockedComposer.composers.length > this.dockedComposer.maxComposers ? true : false;
     }
 }
