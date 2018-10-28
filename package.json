@@ -2,17 +2,17 @@
   "name": "spicecrmui",
   "version": "1.0.0",
   "dependencies": {
-    "@angular/animations": "~6.1.2",
+    "@angular/animations": "~7.0.1",
     "@angular/cli": "^6.1.5",
-    "@angular/common": "^6.1.2",
-    "@angular/compiler": "~6.1.2",
-    "@angular/compiler-cli": "^6.1.2",
-    "@angular/core": "~6.1.2",
-    "@angular/forms": "~6.1.2",
-    "@angular/platform-browser": "~6.1.2",
-    "@angular/platform-browser-dynamic": "~6.1.2",
-    "@angular/platform-server": "^6.1.2",
-    "@angular/router": "~6.1.2",
+    "@angular/common": "^7.0.1",
+    "@angular/compiler": "~7.0.1",
+    "@angular/compiler-cli": "^7.0.1",
+    "@angular/core": "~7.0.1",
+    "@angular/forms": "~7.0.1",
+    "@angular/platform-browser": "~7.0.1",
+    "@angular/platform-browser-dynamic": "~7.0.1",
+    "@angular/platform-server": "^7.0.1",
+    "@angular/router": "~7.0.1",
     "@types/gapi": "0.0.35",
     "@types/gapi.auth2": "0.0.47",
     "@types/underscore": "^1.8.8",
@@ -21,9 +21,8 @@
     "google-auth-library": "^1.6.1",
     "gulp-systemjs-builder": "^0.15.0",
     "npm": "^6.4.1",
-    "rxjs": "~6.2.2",
-    "rxjs-compat": "^6.0.0-rc.0",
-    "systemjs": "0.21.4",
+    "rxjs": "~6.3.3",
+    "systemjs": "0.21.5",
     "tslib": "^1.9.3",
     "zone.js": "^0.8.4"
   },
@@ -54,6 +53,6 @@
     "pump": "^3.0.0",
     "rimraf": "^2.5.4",
     "tslint": "^3.15.1",
-    "typescript": "~2.9.2"
+    "typescript": "~3.1.3"
   }
 }
