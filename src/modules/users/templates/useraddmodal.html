@@ -58,7 +58,7 @@
                             <div class="slds-form-element slds-m-vertical--small" [ngClass]="{'slds-has-error': (passField.touched && passField.dirty && pwderror) || (passwordAction == 'select' && !password && saveTriggered)}">
                                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                     <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                    <input #passField="ngModel" type="password" [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" placeholder="enter new password"/>
+                                    <input #passField="ngModel" type="password" [(ngModel)]="password" class="slds-input" placeholder="enter new password"/>
                                 </div>
                                 <div *ngIf=" passField.touched && passField.dirty && pwderror" class="slds-form-element__help slds-text-color--error">{{pwderror}}</div>
                                 <div *ngIf="passwordAction == 'select' && !password && saveTriggered" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
@@ -70,7 +70,7 @@
                             <div class="slds-form-element  slds-m-vertical--small" [ngClass]="{'slds-has-error': (repPassField.touched && repPassField.dirty && pwdreperror) || (passwordAction == 'select' && !repeatPassword && saveTriggered)}">
                                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                     <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                    <input type="password" #repPassField="ngModel" [(ngModel)]="repeatPassword" class="slds-input slds-p-horizontal--large slds-p-vertical--small" placeholder="repeat new password"/>
+                                    <input type="password" #repPassField="ngModel" [(ngModel)]="repeatPassword" class="slds-input" placeholder="repeat new password"/>
                                 </div>
                                 <div *ngIf=" repPassField.touched && repPassField.dirty && pwdreperror" class="slds-form-element__help slds-text-color--error">{{pwdreperror}}</div>
                                 <div *ngIf="passwordAction == 'select' && !repeatPassword && saveTriggered" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">

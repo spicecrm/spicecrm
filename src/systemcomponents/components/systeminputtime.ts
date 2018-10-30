@@ -1,0 +1,219 @@
+// from https://github.com/kolkov/angular-editor
+import {
+    AfterContentInit,
+    Component, ElementRef,
+    EventEmitter,
+    forwardRef,
+    Inject,
+    Input,
+    OnInit,
+    OnDestroy,
+    Output,
+    Renderer2,
+    ViewChild
+} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+
+import {language} from "../../services/language.service";
+import {userpreferences} from "../../services/userpreferences.service";
+
+declare var moment: any;
+
+@Component({
+    selector: "system-input-time",
+    templateUrl: "./src/systemcomponents/templates/systeminputtime.html",
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputTime),
+            multi: true
+        }
+    ]
+})
+export class SystemInputTime implements OnDestroy, ControlValueAccessor {
+
+
+    // for the value accessor
+    private onChange: (value: string) => void;
+    private onTouched: () => void;
+    private _time: any = {
+        display: '',
+        moment: null,
+        offset: 0,
+        valid: true
+    };
+    private dropdownValues: Array<any> = [];
+
+    // for the dropdown
+    private isOpen: boolean = false;
+    private clickListener: any;
+
+    constructor(private elementref: ElementRef, private renderer: Renderer2, private userpreferences: userpreferences, private language: language) {
+        this.dropdownValues = this.getDropdownValues();
+    }
+
+    public ngOnDestroy() {
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+    get isValid() {
+        return this._time.valid;
+    }
+
+    private getDropdownValues() {
+        let addMinutes = 0;
+        let retArray = [];
+        while (addMinutes <= 1440) {
+            let start = new moment().hour(0).minute(0).second(0);
+            start.add(addMinutes, 'minutes');
+            retArray.push({
+                offset: addMinutes,
+                display: start.format(this.userpreferences.getTimeFormat()),
+                current: false
+                // current: start.isSame(this._time.moment, 'hour') && start.isSame(this._time.moment, 'minute')
+            });
+            addMinutes += 30;
+        }
+        return retArray;
+    }
+
+    get display() {
+        return this._time.display;
+    }
+
+    set display(value) {
+        if (value) {
+            // try to parse the value
+            let newDate = moment(value, this.userpreferences.getTimeFormat(), true);
+            if (newDate.isValid()) {
+                if (!this._time.moment) {
+                    this._time.moment = new moment();
+                }
+
+                this._time.moment.hour(newDate.hour()).minutes(newDate.minutes());
+                this._time.valid = true;
+                this._time.offset = this.calculateOffset(this._time.moment);
+
+                // close the dropdown
+                this.toggleClosed();
+
+                // emit the value to the ngModel directive
+                if (typeof this.onChange === 'function') {
+                    this.onChange(this._time.moment);
+                }
+
+            } else {
+                this._time.valid = false;
+            }
+        } else {
+            this.clear();
+        }
+    }
+
+    get canclear() {
+        return this._time.display ? true : false;
+    }
+
+    private clear(broadcast = true) {
+        if (!this._time.moment) {
+            this._time.moment = new moment();
+        }
+
+        this._time.moment = null;
+        this._time.display = '';
+        this._time.valid = true;
+
+        // emit the value to the ngModel directive
+        if (typeof this.onChange === 'function' && broadcast) {
+            this.onChange(this._time.moment);
+        }
+    }
+
+    private toggleOpen() {
+
+        this.isOpen = !this.isOpen;
+        // check if we are active already
+        if (this.isOpen) {
+            // listen to the click event if it is ousoide of the current elements scope
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+        }
+    }
+
+    private toggleClosed() {
+        // close the dropdown
+        this.isOpen = false;
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+
+    private onDocumentClick(event: MouseEvent) {
+        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
+            this.isOpen = false;
+            this.clickListener();
+        }
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a change event.
+     *
+     * @param fn a function
+     */
+    public registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a touch event.
+     *
+     * @param fn a function
+     */
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    /**
+     * Write a new value to the element.
+     *
+     * @param value value to be executed when there is a change in contenteditable
+     */
+    public writeValue(value: any): void {
+        // this._time = value ? value : '';
+        if (value) {
+            this._time.moment = new moment(value);
+            this._time.offset = this.calculateOffset(this._time.moment);
+            this._time.display = this._time.moment.format(this.userpreferences.getTimeFormat());
+        } else {
+            this.clear(false);
+        }
+    }
+
+    public selectValue(value) {
+
+        if (!this._time.moment) {
+            this._time.moment = new moment();
+        }
+
+        this._time.moment.hour(0).minute(0).second(0);
+        this._time.moment.add(value, 'minutes');
+        this._time.offset = value;
+        this._time.display = this._time.moment.format(this.userpreferences.getTimeFormat());
+
+        // emit the value to the ngModel directive
+        if (typeof this.onChange === 'function') {
+            this.onChange(this._time.moment);
+        }
+
+        // close the dropdown
+        this.toggleClosed();
+    }
+
+    private calculateOffset(date) {
+        return date.hour() * 60 + date.minute();
+    }
+}
