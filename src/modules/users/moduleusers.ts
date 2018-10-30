@@ -28,6 +28,8 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {UserChangePasswordButton} from "./components/userchangepasswordbutton";
 import /*embed*/ {UserChangePasswordModal} from "./components/userchangepasswordmodal";
+import /*embed*/ {UserResetPasswordModal} from "./components/userresetpasswordmodal";
+import /*embed*/ {UserResetPasswordButton} from "./components/userresetpasswordbutton";
 import /*embed*/ {UserPreferences} from "./components/userpreferences";
 import /*embed*/ {UserRoles} from "./components/userroles";
 import /*embed*/ {UserRolesAddModal} from "./components/userrolesaddmodal";
@@ -47,6 +49,8 @@ import /*embed*/ {UserAddModal} from "./components/useraddmodal";
     declarations: [
         UserChangePasswordButton,
         UserChangePasswordModal,
+        UserResetPasswordModal,
+        UserResetPasswordButton,
         UserPreferences,
         UserRoles,
         UserRolesAddModal,
