@@ -27,6 +27,10 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
         super(model, view, language, metadata, router);
     }
 
+    get firstAddress() {
+        return this.addrArray && this.addrArray.length > 0 ? this.addrArray[0].email_address : '';
+    }
+
     get addresstype() {
         return this.fieldconfig.addresstype ? this.fieldconfig.addresstype : 'from';
     }
@@ -35,7 +39,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
         let addressArray = [];
         if (this.model.data.recipient_addresses) {
             for (let recipient_addresse of this.model.data.recipient_addresses) {
-                if (recipient_addresse.address_type == this.addresstype && recipient_addresse.deleted != '1' ) {
+                if (recipient_addresse.address_type == this.addresstype && recipient_addresse.deleted != '1') {
                     addressArray.push(recipient_addresse);
                 }
             }
@@ -78,7 +82,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
 
                 // if the atring is an email address add it .. else do search
                 if (this.validateEmail(this.addAddress)) {
-                    if(!this.model.data.recipient_addresses){
+                    if (!this.model.data.recipient_addresses) {
                         this.model.data.recipient_addresses = [];
                     }
 
@@ -104,7 +108,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
         }
     }
 
-    closeSearchDialog(){
+    closeSearchDialog() {
         // close the cliklistener sine the component is gone
         this.clickListener();
         this.searchResults = [];
@@ -120,7 +124,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.handleClick(event));
 
             this.backend.postRequest('EmailAddresses/' + this.addAddress).subscribe(results => {
-                if(results.length > 0)
+                if (results.length > 0)
                     this.searchResults = results;
                 else
                     this.closeSearchDialog();
@@ -139,9 +143,9 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
         }
     }
 
-    private selectAddress(address){
+    private selectAddress(address) {
 
-        if(!this.model.data.recipient_addresses){
+        if (!this.model.data.recipient_addresses) {
             this.model.data.recipient_addresses = [];
         }
 

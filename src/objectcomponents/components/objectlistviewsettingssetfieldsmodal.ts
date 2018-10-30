@@ -3,7 +3,6 @@ import {modellist} from '../../services/modellist.service';
 import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
-import {multicast} from "rxjs/operator/multicast";
 
 @Component({
     selector: 'object-listview-settings-setfields-modal',
