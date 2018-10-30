@@ -71,7 +71,6 @@ import /*embed*/ {fieldDateTime} from './components/fielddatetime';
 import /*embed*/ {fieldDateTimeDuration} from './components/fielddatetimeduration';
 import /*embed*/ {fieldDuration} from './components/fieldduration';
 import /*embed*/ {fieldDateTimeSpan} from './components/fielddatetimespan';
-import /*embed*/ {fieldDatePicker} from './components/fielddatepicker';
 import /*embed*/ {fieldAddress} from './components/fieldaddress';
 import /*embed*/ {fieldFullName} from './components/fieldfullname';
 import /*embed*/ {fieldTitle} from './components/fieldtitle';
@@ -91,7 +90,6 @@ import /*embed*/ {fieldRating} from './components/fieldrating';
 import /*embed*/ {fieldLookupRecent} from './components/fieldlookuprecent';
 import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
-import /*embed*/ {fieldModelPopover} from './components/fieldmodelpopover';
 import /*embed*/ {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
 import /*embed*/ {fieldMediaFileImage} from './components/fieldmediafileimage';
 import /*embed*/ {FieldMessagesComponent} from "./components/fieldmessages";
@@ -161,7 +159,6 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
         fieldDateTimeDuration,
         fieldDuration,
         fieldDateTimeSpan,
-        fieldDatePicker,
         fieldParent,
         fieldRelate,
         fieldModifiedBy,
@@ -170,7 +167,6 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
         fieldLookupSearch,
         fieldLookupSearchAdd,
         fieldAddress,
-        fieldModelPopover,
         fieldModelFooterPopover,
         fieldFullName,
         fieldTitle,
@@ -253,7 +249,6 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
         fieldGeneric,
         fieldGenericDisplay,
         fieldHtml,
-        fieldDatePicker,
         fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
@@ -261,8 +256,8 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
     ]
 })
 export class ObjectFields {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+    private readonly  version = '1.0';
+    private readonly build_date = '/*build_date*/';
 
     constructor(
         public metadata: metadata,

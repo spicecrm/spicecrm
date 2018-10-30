@@ -199,7 +199,7 @@ export class UserAddModal implements OnInit, AfterViewChecked {
             } else {
                 this.toast.sendToast(res.message, "error");
             }
-        });
+        }, error => this.toast.sendToast("Email couldn't be send. Check Mailbox Settings.", "error"));
     }
 
 }
