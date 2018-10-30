@@ -135,8 +135,8 @@ export class UserPreferences {
     }
 
     private setFormattingOfNumbers(val: number | string) {
-        if (val === "") {
-            this.preferences.num_grp_sep = this.preferences.dec_sep = "";
+        if (val === '-') {
+            this.preferences.num_grp_sep = this.preferences.dec_sep = null;
         } else {
             this.preferences.num_grp_sep = this.formattingsOfNumbers[val].num_grp_sep;
             this.preferences.dec_sep = this.formattingsOfNumbers[val].dec_sep;
@@ -148,7 +148,7 @@ export class UserPreferences {
     }
 
     private save() {
-        this.prefservice.setPreferences(this.preferences, true).subscribe(() => {
+        this.prefservice.setPreferences( this.preferences ).subscribe(() => {
             this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
             this.preferences = _.pick(this.prefservice.unchangedPreferences.global, this.names);
         });
@@ -179,6 +179,10 @@ export class UserPreferences {
             });
         }
         return exampleText;
+    }
+
+    private change( event, pref ) {
+        this.preferences[pref] = ( event.srcElement.value === '-' ? null : event.srcElement.value );
     }
 
 }
