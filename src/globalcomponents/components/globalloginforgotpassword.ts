@@ -69,6 +69,8 @@ export class GlobalLoginForgotPassword {
                 (res) => {
                     if (!res) {
                         this.toast.sendToast('User with the given email does not exist', 'error');
+                    } else if(res.result == false) {
+                        this.toast.sendToast(res.message, 'error');
                     } else {
                         this.showForgotPasswordToken = true;
                         this.showForgotPasswordEmail = false;

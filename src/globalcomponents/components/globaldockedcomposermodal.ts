@@ -17,74 +17,68 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-docked-composer-modal',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposermodal.html',
-    // providers: [model, view]
+    templateUrl: './src/globalcomponents/templates/globaldockedcomposermodal.html'
 })
 export class GlobalDockedComposerModal implements OnInit {
 
-    @ViewChild('containercontent', {read: ViewContainerRef}) containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef}) private containercontent: ViewContainerRef;
 
-    self: any = {};
-
-    isClosed: boolean = false;
+    private self: any = {};
+    private isClosed: boolean = false;
 
     constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, public model: model, private view: view) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    setModel(model) {
-        this.model.id = model.id;
-        this.model.module = model.module;
-        this.model.data = model.data;
-    }
-
-    ngOnInit() {
+    public ngOnInit() {
         // get the config
         let componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
 
-        if (!componentconfig.fieldset && !componentconfig.componentset)
+        if (!componentconfig.fieldset && !componentconfig.componentset) {
             componentconfig = this.metadata.getComponentConfig('GlobalDockedComposer', this.model.module);
+        }
 
         if (componentconfig.componentset) {
             let components = this.metadata.getComponentSetObjects(componentconfig.componentset);
-            for(let component of components){
+            for (let component of components) {
                 this.metadata.addComponent(component.component, this.containercontent).subscribe(componentRef => {
-                    componentRef.instance['componentconfig'] = component.componentconfig;
-                })
+                    componentRef.instance.componentconfig = component.componentconfig;
+                });
             }
         } else if (componentconfig.fieldset) {
             this.metadata.addComponent('ObjectRecordFieldset', this.containercontent).subscribe(componentRef => {
                 componentRef.instance.direction = 'vertical';
                 componentRef.instance.fieldset = componentconfig.fieldset;
-            })
+            });
         }
     }
 
-    get displayLabel(){
-        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);;
+    get displayLabel() {
+        return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
     }
 
-    minimize() {
+    private minimize() {
         this.self.destroy();
     }
 
-    closeComposer() {
+    private closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
-            if (this.dockedComposer.composers[i]['id'] === this.model.id)
+            if (this.dockedComposer.composers[i].id === this.model.id) {
                 this.dockedComposer.composers.splice(i, 1);
+            }
         }
         this.self.destroy();
     }
 
-    saveComposer() {
+    private saveComposer() {
         this.model.save().subscribe(result => {
             for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
-                if (this.dockedComposer.composers[i]['id'] === this.model.id)
+                if (this.dockedComposer.composers[i].id === this.model.id) {
                     this.dockedComposer.composers.splice(i, 1);
+                }
             }
             this.self.destroy();
         });
-
     }
 }
