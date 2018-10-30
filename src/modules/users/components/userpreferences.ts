@@ -73,7 +73,7 @@ export class UserPreferences {
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i a")), value: "h.i a"},
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i A")), value: "h.i A"}
     ];
-    public currencyList: any[] = [];
+    private currencyList: any[] = [];
     private formattingsOfNumbers = [
         {
             show: "1.000.000,00",
@@ -90,7 +90,7 @@ export class UserPreferences {
     private prefsLoaded = new Subject<string>();
 
     private timezones: object;
-    public timezoneKeys: Array<any>;
+    private timezoneKeys: Array<any>;
 
     constructor(
         private backend: backend,
