@@ -230,6 +230,7 @@ export class ComponentsetManager {
                         let id = this.modelutilities.generateGuid();
                         this.metadata.addComponentSet(id, this.currentModule, componentset.name, componentset.type);
                         this.currentComponentSet = id;
+                        this.checkMode();
                     } else {
                         let componentset = this.metadata.getComponentSet(this.currentComponentSet);
                         componentset.name = componentset.name;
@@ -336,7 +337,7 @@ export class ComponentsetManager {
 
             this.backend.postRequest('spiceui/core/componentsets', {}, postData).subscribe((res: any) => {
                 this.broadcast.broadcastMessage('metadata.updatecomponentsets', postData);
-                this.toast.sendToast('changes saved')
+                this.toast.sendToast('changes saved');
             });
 
         })
