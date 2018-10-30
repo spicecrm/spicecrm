@@ -1,5 +1,5 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-        <span>{{addrArray[0].email_address}}</span>
+        <span>{{firstAddress}}</span>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()"
      class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small"

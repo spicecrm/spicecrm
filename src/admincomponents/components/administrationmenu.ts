@@ -10,20 +10,18 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 
 
-
 @Component({
     selector: '[administration-menu]',
     templateUrl: './src/admincomponents/templates/administrationmenu.html'
 })
-export class AdministrationMenu
-{
-    @ViewChild('admincontentcontainer', {read: ViewContainerRef}) admincontentcontainer: ViewContainerRef;
-    @ViewChild('adminitemscontainer', {read: ViewContainerRef}) adminitemscontainer: ViewContainerRef;
+export class AdministrationMenu {
+    @ViewChild('admincontentcontainer', {read: ViewContainerRef}) private admincontentcontainer: ViewContainerRef;
+    @ViewChild('adminitemscontainer', {read: ViewContainerRef}) private adminitemscontainer: ViewContainerRef;
 
-    admincontentObject: any = null;
-    adminNavigation: any = {};
-    itemfilter: string = '';
-    opened_item:any = {};
+    private admincontentObject: any = null;
+    private adminNavigation: any = {};
+    private itemfilter: string = '';
+    private opened_item: any = {};
 
     constructor(
         private metadata: metadata,
@@ -36,7 +34,7 @@ export class AdministrationMenu
             nav => {
                 this.adminNavigation = nav;
                 // default open version control...
-                this.openContent('Versioning','Version Control');
+                this.openContent('Versioning', 'Version Control');
             }
         );
 
@@ -44,57 +42,57 @@ export class AdministrationMenu
 
     }
 
-    getContainerStyle(){
+    private getContainerStyle() {
         return {
             height: 'calc(100vh - ' + this.elementref.nativeElement.offsetTop + 'px)'
-        }
+        };
     }
 
-    getItemsStyle(){
+    private getItemsStyle() {
         return {
             height: 'calc(100vh - ' + this.adminitemscontainer.element.nativeElement.offsetTop + 'px)'
-        }
+        };
     }
 
-    getNavigationBlocks() {
+    private getNavigationBlocks() {
         let blocks = [];
         for (let block in this.adminNavigation) {
 
             let isRelevant = this.itemfilter == '';
 
             // check if we find an item
-            if(!isRelevant){
+            if (!isRelevant) {
                 this.adminNavigation[block].some(item => {
                     let name = item.adminaction;
-                    if(item.admin_label)
+                    if (item.admin_label) {
                         name = this.language.getLabel(item.admin_label);
-                    if(name.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0){
+                    }
+                    if (name.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) {
                         isRelevant = true;
                         return true;
                     }
-                })
+                });
             }
 
-            if(isRelevant)
+            if (isRelevant) {
                 blocks.push(block);
+            }
 
         }
 
         return blocks.sort();
     }
 
-    getNavigationItems(block)
-    {
+    private getNavigationItems(block) {
         let items = [];
 
-        for (let item of this.adminNavigation[block])
-        {
+        for (let item of this.adminNavigation[block]) {
             item.name = item.adminaction;
-            if(item.admin_label)
+            if (item.admin_label) {
                 item.name = this.language.getLabel(item.admin_label);
+            }
 
-            if(this.itemfilter == '' || item.name.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
-            {
+            if (this.itemfilter == '' || item.name.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) {
                 items.push(item);
             }
 
@@ -102,20 +100,22 @@ export class AdministrationMenu
         return items;
     }
 
-    openContent(block: string, item)
-    {
+    private openContent(block: string, item) {
         // already loaded?
-        if( this.opened_item == item )
+        if (this.opened_item == item) {
             return true;
+        }
 
         this.opened_item = item;
-        if (this.admincontentObject)
+        if (this.admincontentObject) {
             this.admincontentObject.destroy();
+        }
 
         let adminItem: any = {};
 
-        if( !this.adminNavigation[block] )
+        if (!this.adminNavigation[block]) {
             return false;
+        }
 
         this.adminNavigation[block].some(blockAction => {
                 if (blockAction.id == item.id) {
@@ -125,19 +125,11 @@ export class AdministrationMenu
             }
         );
 
-        if (adminItem.component)
+        if (adminItem.component) {
             this.metadata.addComponent(adminItem.component, this.admincontentcontainer).subscribe(admObject => {
                 admObject.instance.componentconfig = adminItem.componentconfig;
                 this.admincontentObject = admObject;
-            })
-    }
-
-    openDictionaryManager(item: string) {
-        if (this.admincontentObject) this.admincontentObject.destroy();
-
-        this.metadata.addComponent("AdministrationDictionaryManager", this.admincontentcontainer).subscribe(admObject => {
-            admObject.instance['dictionaryitem'] = item;
-            this.admincontentObject = admObject;
-        })
+            });
+        }
     }
 }
