@@ -48,21 +48,34 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
         }
     }
 
-    private getMailboxes() {
+    private getMailboxes(refresh = false) {
             this.backend.getRequest('/modules/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
-                this.mailboxes = mailboxes;
+                if (!mailboxes || mailboxes.length == 0) {return;}
+                mailboxes.map(mailbox => mailbox.emailsread = mailbox.emailsread - mailbox.emailsclosed);
+
+                if (!refresh) {
+                    this.mailboxes = mailboxes;
+                } else {
+                    this.mailboxes.every(mailbox => {
+                        mailboxes.some(responseMailbox => {
+                            if (responseMailbox.id == mailbox.id) {
+                                mailbox.emailsread = responseMailbox.emailsread;
+                                mailbox.emailsunread = responseMailbox.emailsunread;
+                                return true;
+                            }
+                        });
+                        return true;
+                    });
+                }
                 if (mailboxes.length < this.loadLimit) {
                     this.canLoadMore = false;
                 }
                 this.isLoading = false;
             });
-            if (this.mailboxes.length > 0) {
-                this.mailboxes = this.mailboxes.map(mailbox => mailbox.emailsread = mailbox.emailsread - mailbox.emailsclosed);
-            }
     }
 
     private getMailboxesInterval() {
-         return setInterval(() => this.getMailboxes(), 60000);
+         return setInterval(() => this.getMailboxes(true), 60000);
     }
 
     private onScroll() {
