@@ -6,6 +6,8 @@ import {toast} from "../../../services/toast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {currency} from '../../../services/currency.service';
 import {Subject} from "rxjs";
+import { session } from '../../../services/session.service';
+import { model } from '../../../services/model.service';
 
 declare var _: any;
 declare var moment: any;
@@ -92,27 +94,37 @@ export class UserPreferences {
     private timezones: object;
     private timezoneKeys: Array<any>;
 
+    private canPrefs: boolean;
+
     constructor(
         private backend: backend,
         private view: view,
         private toast: toast,
         private currency: currency,
         private language: language,
-        private prefservice: userpreferences) {
+        private prefservice: userpreferences,
+        private session: session,
+        private model: model ) {
 
-        this.prefsLoaded.subscribe(() => {
-            this.preferences = _.pick(this.prefservice.unchangedPreferences.global, this.names);
-        });
-        this.prefservice.getPreferences(this.prefsLoaded);
-
-        this.prefservice.needFormats();
-
-        this.backend.getRequest("/timezones").subscribe(response => {
-            this.timezones = response;
-            this.timezoneKeys = Object.keys(this.timezones);
-        });
-        this.currencyList = this.currency.getCurrencies();
         this.view.isEditable = true;
+
+        this.canPrefs = this.session.authData.userId === this.model.data.id; // only the user himself can view/edit the preferences
+        if ( this.canPrefs ) {
+
+            this.prefsLoaded.subscribe( () => {
+                this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+            } );
+            this.prefservice.getPreferences( this.prefsLoaded );
+
+            this.prefservice.needFormats();
+
+            this.backend.getRequest( "/timezones" ).subscribe( response => {
+                this.timezones = response;
+                this.timezoneKeys = Object.keys( this.timezones );
+            } );
+            this.currencyList = this.currency.getCurrencies();
+
+        }
 
     }
 
