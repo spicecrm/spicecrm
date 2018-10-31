@@ -1,10 +1,16 @@
 <div class="slds-p-horizontal--medium slds-p-vertical--small">
     <h1>{{language.getLabel('LBL_SENDGRID')}}</h1>
     <div class="slds-grid slds-p-vertical--xx-small">
-        <div class="slds-form-element slds-size--1-of-1">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_DISPLAY_NAME')}}</label>
             <input type="text"
                    [(ngModel)]="model.data.settings.imap_pop3_display_name"
+                   class="slds-input ng-pristine ng-valid"/>
+        </div>
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_REPLY_TO')}}</label>
+            <input type="text"
+                   [(ngModel)]="model.data.settings.reply_to"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
 

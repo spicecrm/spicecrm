@@ -1,5 +1,5 @@
-import {Component, forwardRef, Host, Input, OnChanges} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {Component, EventEmitter, forwardRef, Host, Input, OnChanges} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 declare var _;
 
@@ -22,31 +22,32 @@ declare var _;
 })
 export class SystemCheckboxGroup implements ControlValueAccessor
 {
-    private _model: any;
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
-
+    public model$ = new EventEmitter();
+    private _model: any;
     get model() {
         return this._model;
     }
     set model(value: any) {
         this._model = value;
         this.onChange(this._model);
+        this.model$.emit(this._model);
     }
 
-    writeValue(value: any): void {
+    public writeValue(value: any): void {
         this._model = value;
     }
 
-    registerOnChange(fn: any): void {
+    public registerOnChange(fn: any): void {
         this.onChange = fn;
     }
 
-    registerOnTouched(fn: any): void {
+    public registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
 
-    toggleValue(value: any)
+    public toggleValue(value: any)
     {
         if (this.contains(value)) {
             this.remove(value);
@@ -55,9 +56,27 @@ export class SystemCheckboxGroup implements ControlValueAccessor
         }
     }
 
-    contains(value: any): boolean {
+    /**
+     *
+     * @param value any if value is an array, each element inside has to be set to be true
+     * @returns {boolean}
+     */
+    public contains(value: any): boolean
+    {
         if (this._model instanceof Array) {
-            return this._model.indexOf(value) > -1;
+            // if value is an array, check if each member is represented
+            if(value instanceof Array)
+            {
+                for(let subvalue of value)
+                {
+                    if(this._model.indexOf(subvalue) == -1){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return this._model.indexOf(value) > -1;
+            }
         } else if (!!this._model) {
             return this._model === value;
         }
@@ -65,26 +84,64 @@ export class SystemCheckboxGroup implements ControlValueAccessor
         return false;
     }
 
-    private add(value: any) {
-        //console.log('add ', value);
-        //if (!this.contains(value)) {
-            if (this._model instanceof Array) {
-                this._model.push(value);
-            } else {
-                this._model = [value];
-            }
-            this.onChange(this._model);
-        //}
-    }
-
-    private remove(value: any) {
-        //console.log('remove ', value);
-        const index = this._model.indexOf(value);
-        if (!this._model || index < 0) {
-            return;
+    /**
+     *
+     * @param value any if it is an array, each element inside will be added
+     */
+    public add(value: any)
+    {
+        if (!(this._model instanceof Array)) {
+            this._model = [];
         }
 
-        this._model.splice(index, 1);
+        if(value instanceof Array)
+        {
+            for(let subvalue of value)
+            {
+                if(!this.contains(subvalue))
+                {
+                    this._model.push(subvalue);
+                }
+            }
+        } else {
+            if(!this.contains(value)) {
+                this._model.push(value);
+            }
+        }
+/*
+        if (this._model instanceof Array) {
+            this._model.push(value);
+        } else {
+            this._model = [value];
+        }
+*/
+        this.model$.emit(this._model);
+        this.onChange(this._model);
+    }
+
+    /**
+     *
+     * @param value any if it is an array, each element inside will be removed
+     */
+    public remove(value: any)
+    {
+        if(value instanceof Array) {
+            for(let subvalue of value)
+            {
+                let idx = this._model.indexOf(subvalue);
+                if(idx >= 0)
+                {
+                    this._model.splice(idx, 1);
+                }
+            }
+        } else {
+            let idx = this._model.indexOf(value);
+            if (idx >= 0) {
+                this._model.splice(idx, 1);
+            }
+        }
+
+        this.model$.emit(this._model);
         this.onChange(this._model);
     }
 }
@@ -102,13 +159,13 @@ export class SystemCheckboxGroup implements ControlValueAccessor
 })
 export class SystemCheckboxGroupCheckbox implements OnChanges
 {
-    id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
-    @Input() value:any;
-    @Input() disabled = false;
+    public id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
+    @Input() public value: any;
+    @Input() public disabled = false;
     private _checked = false;
-    get checked():boolean{  return this._checked;    }
+    get checked(): boolean{  return this._checked;    }
     @Input()
-    set checked(val:boolean)
+    set checked(val: boolean)
     {
         this._checked = val;
     }
@@ -116,17 +173,26 @@ export class SystemCheckboxGroupCheckbox implements OnChanges
     constructor(
         @Host() private grp: SystemCheckboxGroup
     ) {
-
+        this.grp.model$.subscribe(
+            next => {
+                this.ngOnChanges();
+            }
+        );
     }
 
-    toggle()
+    private toggle()
     {
         this.checked = !this.checked;
-        this.grp.toggleValue(this.value);
+        if(this.checked){
+            this.grp.add(this.value);
+        } else {
+            this.grp.remove(this.value);
+        }
+        //this.grp.toggleValue(this.value);
         //console.log(this.checked, this.value);
     }
 
-    ngOnChanges()
+    public ngOnChanges()
     {
         this._checked = this.grp.contains(this.value);
     }
