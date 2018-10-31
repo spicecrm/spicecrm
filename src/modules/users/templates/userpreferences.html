@@ -19,11 +19,9 @@
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" name="timezone" (change)="preferences.timezone = $event.srcElement.value">
-                                <option value="">-- select one --</option>
-                                <ng-container *ngFor="let key of timezoneKeys">
-                                    <option value="{{key}}">{{timezones[key]}}</option>
-                                </ng-container>
+                            <select class="slds-select" name="timezone" (change)="change($event,'timezone')">
+                                <option value="-" [selected]="!preferences.timezone"></option>
+                                <option *ngFor="let key of timezoneKeys" value="{{key}}" [selected]="preferences.timezone === key">{{timezones[key]}}</option>
                             </select>
                         </div>
                     </div>
@@ -38,8 +36,8 @@
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.datef = $event.srcElement.value">
-                                <option value="">-- select one --</option>
+                            <select class="slds-select" (change)="change($event,'datef')">
+                                <option value="-" [selected]="!preferences.datef"></option>
                                 <option *ngFor="let item of dateFormatList" [value]="item.value" [selected]="preferences.datef == item.value">
                                     {{ item.name }}
                                 </option>
@@ -57,8 +55,8 @@
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.timef = $event.srcElement.value">
-                                <option value="">-- select one --</option>
+                            <select class="slds-select" (change)="change($event,'timef')">
+                                <option value="-" [selected]="!preferences.timef"></option>
                                 <option *ngFor="let item of timeFormatList" [value]="item.value" [selected]="preferences.timef == item.value">
                                     {{ item.name }}
                                 </option>
@@ -82,8 +80,8 @@
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.currency = $event.srcElement.value">
-                                <option value="">-- select one --</option>
+                            <select class="slds-select" (change)="change($event,'currency')">
+                                <option value="-" [selected]="!preferences.currency"></option>
                                 <option *ngFor="let item of currencyList" [value]="item.id" [selected]="preferences.currency == item.id">
                                     {{ item.name }}
                                 </option>
@@ -101,8 +99,8 @@
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.default_currency_significant_digits = $event.srcElement.value">
-                                <option value="">-- select one --</option>
+                            <select class="slds-select" (change)="change($event,'default_currency_significant_digits')">
+                                <option value="-" [selected]="!preferences.default_currency_significant_digits"></option>
                                 <option *ngFor="let item of currencySignificantDigitsList" [value]="item" [selected]="preferences.default_currency_significant_digits == item">
                                     {{ item }}
                                 </option>
@@ -123,7 +121,7 @@
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
                             <select class="slds-select" (change)="setFormattingOfNumbers( $event.srcElement.value )">
-                                <option value="">-- select one --</option>
+                                <option value="-"></option>
                                 <option *ngFor="let item of formattingsOfNumbers; let i=index" [value]="i" [selected]="preferences.num_grp_sep === item.num_grp_sep && preferences.dec_sep === item.dec_sep">
                                     {{ item.show }}
                                 </option>
@@ -156,8 +154,8 @@
                 </div>
                 <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" (change)="preferences.export_delimiter = $event.srcElement.value">
-                            <option value="">-- select one --</option>
+                        <select class="slds-select" (change)="change($event,'export_delimiter')">
+                            <option value="-" [selected]="!preferences.export_delimiter"></option>
                             <option *ngFor="let item of exportDelimiterList" [value]="item" [selected]="preferences.export_delimiter == item">
                                 {{ item }}
                             </option>
@@ -175,8 +173,8 @@
                 </div>
                 <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" (change)="preferences.default_export_charset = $event.srcElement.value">
-                            <option value="">-- select one --</option>
+                        <select class="slds-select" (change)="change($event,'default_export_charset')">
+                            <option value="-" [selected]="!preferences.default_export_charset"></option>
                             <option *ngFor="let item of charsetlist" [selected]="item == preferences.default_export_charset" [value]="item">
                                 {{ item}}
                             </option>
@@ -188,15 +186,15 @@
     </div>
 </div>
 
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded.exp}">
+<div class="slds-section" [ngClass]="{'slds-is-open': expanded.other}">
     <h3 class="slds-section__title">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('exp')">
+        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('other')">
             <system-utility-icon [icon]="'switch'" [size]="'x-small'"
                                  [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
             <span class="slds-truncate">{{ language.getLabel('LBL_OTHER_PREFERENCES') }}</span>
         </button>
     </h3>
-    <div [ngStyle]="getTabStyle('exp')">
+    <div [ngStyle]="getTabStyle('other')">
         <div class="slds-grid slds-grid--align-spread">
             <div class="slds-form-element slds-size--3-of-9 slds-p-around--x-small">
                 <label class="slds-form-element__label">{{ language.getLabel('LBL_NAME_FORMAT') }}</label>
@@ -208,11 +206,10 @@
                 </div>
                 <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" name="timezone" (change)="preferences.default_locale_name_format = $event.srcElement.value">
-                            <option value="">-- select one --</option>
-                            <ng-container *ngFor="let item of prefservice.formats.nameFormats">
-                                <option value="{{item.name}}" [selected]="item.name == preferences.default_locale_name_format">{{item.example}}</option>
-                            </ng-container>
+                        <select class="slds-select" name="timezone" (change)="change($event,'default_locale_name_format')">
+                            <option value="-" [selected]="!preferences.default_locale_name_format"></option>
+                            <option *ngFor="let item of prefservice.formats.nameFormats" value="{{item.name}}"
+                                    [selected]="item.name == preferences.default_locale_name_format">{{item.example}}</option>
                         </select>
                     </div>
                 </div>
