@@ -1,9 +1,10 @@
-/** PURE_IMPORTS_START tslib,_util_tryCatch,_util_errorObject,_util_subscribeToResult,_OuterSubscriber PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_util_tryCatch,_util_errorObject,_util_subscribeToResult,_OuterSubscriber,_InnerSubscriber PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { tryCatch } from '../util/tryCatch';
 import { errorObject } from '../util/errorObject';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 export function mergeScan(accumulator, seed, concurrent) {
     if (concurrent === void 0) {
         concurrent = Number.POSITIVE_INFINITY;
@@ -54,7 +55,10 @@ var MergeScanSubscriber = /*@__PURE__*/ (function (_super) {
         }
     };
     MergeScanSubscriber.prototype._innerSub = function (ish, value, index) {
-        this.add(subscribeToResult(this, ish, value, index));
+        var innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        var destination = this.destination;
+        destination.add(innerSubscriber);
+        subscribeToResult(this, ish, value, index, innerSubscriber);
     };
     MergeScanSubscriber.prototype._complete = function () {
         this.hasCompleted = true;
@@ -64,6 +68,7 @@ var MergeScanSubscriber = /*@__PURE__*/ (function (_super) {
             }
             this.destination.complete();
         }
+        this.unsubscribe();
     };
     MergeScanSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         var destination = this.destination;
@@ -73,7 +78,8 @@ var MergeScanSubscriber = /*@__PURE__*/ (function (_super) {
     };
     MergeScanSubscriber.prototype.notifyComplete = function (innerSub) {
         var buffer = this.buffer;
-        this.remove(innerSub);
+        var destination = this.destination;
+        destination.remove(innerSub);
         this.active--;
         if (buffer.length > 0) {
             this._next(buffer.shift());
