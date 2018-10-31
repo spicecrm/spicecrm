@@ -4,8 +4,6 @@ import {CanActivate}    from '@angular/router';
 declare var moment: any;
 import {Router, Route} from '@angular/router';
 import {Subject, Observable, of} from 'rxjs';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/throw';
 declare var System: any;
 declare var SystemJS: any;
 declare var _: any ;

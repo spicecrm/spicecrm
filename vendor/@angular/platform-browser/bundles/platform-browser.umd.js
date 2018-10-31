@@ -1,5 +1,5 @@
 /**
- * @license Angular v6.1.2
+ * @license Angular v7.0.1
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -49,6 +49,21 @@
         };
         return __assign.apply(this, arguments);
     };
+
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
+
+    function __param(paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); }
+    }
+
+    function __metadata(metadataKey, metadataValue) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+    }
 
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -601,6 +616,7 @@
      * Contexts are not the same (e.g. when running the application into a Web Worker).
      *
      * @deprecated import from `@angular/common` instead.
+     * @publicApi
      */
     var DOCUMENT = common.DOCUMENT;
 
@@ -682,13 +698,11 @@
         };
         BrowserPlatformLocation.prototype.forward = function () { this._history.forward(); };
         BrowserPlatformLocation.prototype.back = function () { this._history.back(); };
-        BrowserPlatformLocation.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        BrowserPlatformLocation.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] }
-        ]; };
+        BrowserPlatformLocation = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], BrowserPlatformLocation);
         return BrowserPlatformLocation;
     }(common.PlatformLocation));
 
@@ -863,11 +877,15 @@
      */
     /**
      * The injection token for the event-manager plug-in service.
+     *
+     * @publicApi
      */
     var EVENT_MANAGER_PLUGINS = new core.InjectionToken('EventManagerPlugins');
     /**
      * An injectable service that provides event management for Angular
      * through a browser plug-in.
+     *
+     * @publicApi
      */
     var EventManager = /** @class */ (function () {
         /**
@@ -926,14 +944,11 @@
             }
             throw new Error("No event manager plugin found for event " + eventName);
         };
-        EventManager.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        EventManager.ctorParameters = function () { return [
-            { type: Array, decorators: [{ type: core.Inject, args: [EVENT_MANAGER_PLUGINS,] }] },
-            { type: core.NgZone }
-        ]; };
+        EventManager = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(EVENT_MANAGER_PLUGINS)),
+            __metadata("design:paramtypes", [Array, core.NgZone])
+        ], EventManager);
         return EventManager;
     }());
     var EventManagerPlugin = /** @class */ (function () {
@@ -975,9 +990,9 @@
         };
         SharedStylesHost.prototype.onStylesAdded = function (additions) { };
         SharedStylesHost.prototype.getAllStyles = function () { return Array.from(this._stylesSet); };
-        SharedStylesHost.decorators = [
-            { type: core.Injectable }
-        ];
+        SharedStylesHost = __decorate([
+            core.Injectable()
+        ], SharedStylesHost);
         return SharedStylesHost;
     }());
     var DomSharedStylesHost = /** @class */ (function (_super) {
@@ -1008,13 +1023,11 @@
             this._hostNodes.forEach(function (hostNode) { return _this._addStylesToHost(additions, hostNode); });
         };
         DomSharedStylesHost.prototype.ngOnDestroy = function () { this._styleNodes.forEach(function (styleNode) { return getDOM().remove(styleNode); }); };
-        DomSharedStylesHost.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        DomSharedStylesHost.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] }
-        ]; };
+        DomSharedStylesHost = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], DomSharedStylesHost);
         return DomSharedStylesHost;
     }(SharedStylesHost));
 
@@ -1102,14 +1115,10 @@
         };
         DomRendererFactory2.prototype.begin = function () { };
         DomRendererFactory2.prototype.end = function () { };
-        DomRendererFactory2.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        DomRendererFactory2.ctorParameters = function () { return [
-            { type: EventManager },
-            { type: DomSharedStylesHost }
-        ]; };
+        DomRendererFactory2 = __decorate([
+            core.Injectable(),
+            __metadata("design:paramtypes", [EventManager, DomSharedStylesHost])
+        ], DomRendererFactory2);
         return DomRendererFactory2;
     }());
     var DefaultDomRenderer2 = /** @class */ (function () {
@@ -1137,13 +1146,15 @@
                 parent.removeChild(oldChild);
             }
         };
-        DefaultDomRenderer2.prototype.selectRootElement = function (selectorOrNode) {
+        DefaultDomRenderer2.prototype.selectRootElement = function (selectorOrNode, preserveContent) {
             var el = typeof selectorOrNode === 'string' ? document.querySelector(selectorOrNode) :
                 selectorOrNode;
             if (!el) {
                 throw new Error("The selector \"" + selectorOrNode + "\" did not match any elements");
             }
-            el.textContent = '';
+            if (!preserveContent) {
+                el.textContent = '';
+            }
             return el;
         };
         DefaultDomRenderer2.prototype.parentNode = function (node) { return node.parentNode; };
@@ -1468,15 +1479,12 @@
                 target[NATIVE_REMOVE_LISTENER].apply(target, [eventName, callback, false]);
             }
         };
-        DomEventsPlugin.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        DomEventsPlugin.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] },
-            { type: core.NgZone },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
+        DomEventsPlugin = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(DOCUMENT)),
+            __param(2, core.Optional()), __param(2, core.Inject(core.PLATFORM_ID)),
+            __metadata("design:paramtypes", [Object, core.NgZone, Object])
+        ], DomEventsPlugin);
         return DomEventsPlugin;
     }(EventManagerPlugin));
 
@@ -1531,15 +1539,19 @@
      * DI token for providing [HammerJS](http://hammerjs.github.io/) support to Angular.
      * @see `HammerGestureConfig`
      *
-     * @experimental
+     * @publicApi
      */
     var HAMMER_GESTURE_CONFIG = new core.InjectionToken('HammerGestureConfig');
-    /** Injection token used to provide a {@link HammerLoader} to Angular. */
+    /**
+     * Injection token used to provide a {@link HammerLoader} to Angular.
+     *
+     * @publicApi
+     */
     var HAMMER_LOADER = new core.InjectionToken('HammerLoader');
     /**
      * An injectable [HammerJS Manager](http://hammerjs.github.io/api/#hammer.manager)
      * for gesture recognition. Configures specific event recognition.
-     * @experimental
+     * @publicApi
      */
     var HammerGestureConfig = /** @class */ (function () {
         function HammerGestureConfig() {
@@ -1582,9 +1594,9 @@
             }
             return mc;
         };
-        HammerGestureConfig.decorators = [
-            { type: core.Injectable }
-        ];
+        HammerGestureConfig = __decorate([
+            core.Injectable()
+        ], HammerGestureConfig);
         return HammerGestureConfig;
     }());
     var HammerGesturesPlugin = /** @class */ (function (_super) {
@@ -1650,20 +1662,23 @@
                     zone.runGuarded(function () { handler(eventObj); });
                 };
                 mc.on(eventName, callback);
-                return function () { return mc.off(eventName, callback); };
+                return function () {
+                    mc.off(eventName, callback);
+                    // destroy mc to prevent memory leak
+                    if (typeof mc.destroy === 'function') {
+                        mc.destroy();
+                    }
+                };
             });
         };
         HammerGesturesPlugin.prototype.isCustomEvent = function (eventName) { return this._config.events.indexOf(eventName) > -1; };
-        HammerGesturesPlugin.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        HammerGesturesPlugin.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] },
-            { type: HammerGestureConfig, decorators: [{ type: core.Inject, args: [HAMMER_GESTURE_CONFIG,] }] },
-            { type: core.ɵConsole },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [HAMMER_LOADER,] }] }
-        ]; };
+        HammerGesturesPlugin = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(DOCUMENT)),
+            __param(1, core.Inject(HAMMER_GESTURE_CONFIG)),
+            __param(3, core.Optional()), __param(3, core.Inject(HAMMER_LOADER)),
+            __metadata("design:paramtypes", [Object, HammerGestureConfig, core.ɵConsole, Object])
+        ], HammerGesturesPlugin);
         return HammerGesturesPlugin;
     }(EventManagerPlugin));
 
@@ -1689,7 +1704,7 @@
         'shift': ɵ3
     };
     /**
-     * @experimental
+     * @publicApi
      * A browser plug-in that provides support for handling of key events in Angular.
      */
     var KeyEventsPlugin = /** @class */ (function (_super) {
@@ -1701,12 +1716,13 @@
         function KeyEventsPlugin(doc) {
             return _super.call(this, doc) || this;
         }
+        KeyEventsPlugin_1 = KeyEventsPlugin;
         /**
           * Reports whether a named key event is supported.
           * @param eventName The event name to query.
           * @return True if the named key event is supported.
          */
-        KeyEventsPlugin.prototype.supports = function (eventName) { return KeyEventsPlugin.parseEventName(eventName) != null; };
+        KeyEventsPlugin.prototype.supports = function (eventName) { return KeyEventsPlugin_1.parseEventName(eventName) != null; };
         /**
          * Registers a handler for a specific element and key event.
          * @param element The HTML element to receive event notifications.
@@ -1716,8 +1732,8 @@
          * @returns The key event that was registered.
         */
         KeyEventsPlugin.prototype.addEventListener = function (element, eventName, handler) {
-            var parsedEvent = KeyEventsPlugin.parseEventName(eventName);
-            var outsideHandler = KeyEventsPlugin.eventCallback(parsedEvent['fullKey'], handler, this.manager.getZone());
+            var parsedEvent = KeyEventsPlugin_1.parseEventName(eventName);
+            var outsideHandler = KeyEventsPlugin_1.eventCallback(parsedEvent['fullKey'], handler, this.manager.getZone());
             return this.manager.getZone().runOutsideAngular(function () {
                 return getDOM().onAndCancel(element, parsedEvent['domEventName'], outsideHandler);
             });
@@ -1728,7 +1744,7 @@
             if ((parts.length === 0) || !(domEventName === 'keydown' || domEventName === 'keyup')) {
                 return null;
             }
-            var key = KeyEventsPlugin._normalizeKey(parts.pop());
+            var key = KeyEventsPlugin_1._normalizeKey(parts.pop());
             var fullKey = '';
             MODIFIER_KEYS.forEach(function (modifierName) {
                 var index = parts.indexOf(modifierName);
@@ -1777,7 +1793,7 @@
          */
         KeyEventsPlugin.eventCallback = function (fullKey, handler, zone) {
             return function (event /** TODO #9100 */) {
-                if (KeyEventsPlugin.getEventFullKey(event) === fullKey) {
+                if (KeyEventsPlugin_1.getEventFullKey(event) === fullKey) {
                     zone.runGuarded(function () { return handler(event); });
                 }
             };
@@ -1792,13 +1808,12 @@
                     return keyName;
             }
         };
-        KeyEventsPlugin.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        KeyEventsPlugin.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] }
-        ]; };
+        var KeyEventsPlugin_1;
+        KeyEventsPlugin = KeyEventsPlugin_1 = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], KeyEventsPlugin);
         return KeyEventsPlugin;
     }(EventManagerPlugin));
 
@@ -1838,7 +1853,7 @@
      * into this call. Make sure any user data is appropriately escaped for this security context.
      * For more detail, see the [Security Guide](http://g.co/ng/security).
      *
-     *
+     * @publicApi
      */
     var DomSanitizer = /** @class */ (function () {
         function DomSanitizer() {
@@ -1903,13 +1918,11 @@
         DomSanitizerImpl.prototype.bypassSecurityTrustResourceUrl = function (value) {
             return new SafeResourceUrlImpl(value);
         };
-        DomSanitizerImpl.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        DomSanitizerImpl.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] }
-        ]; };
+        DomSanitizerImpl = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], DomSanitizerImpl);
         return DomSanitizerImpl;
     }(DomSanitizer));
     var SafeValueImpl = /** @class */ (function () {
@@ -1981,12 +1994,15 @@
      * @security Replacing built-in sanitization providers exposes the application to XSS risks.
      * Attacker-controlled data introduced by an unsanitized provider could expose your
      * application to XSS risks. For more detail, see the [Security Guide](http://g.co/ng/security).
-     * @experimental
+     * @publicApi
      */
     var BROWSER_SANITIZATION_PROVIDERS = [
         { provide: core.Sanitizer, useExisting: DomSanitizer },
         { provide: DomSanitizer, useClass: DomSanitizerImpl, deps: [DOCUMENT] },
     ];
+    /**
+     * @publicApi
+     */
     var platformBrowser = core.createPlatformFactory(core.platformCore, 'browser', INTERNAL_BROWSER_PLATFORM_PROVIDERS);
     function initDomAdapter() {
         BrowserDomAdapter.makeCurrent();
@@ -2029,9 +2045,13 @@
         ELEMENT_PROBE_PROVIDERS,
     ];
     /**
-     * The ng module for the browser.
+     * Exports required infrastructure for all Angular apps.
+     * Included by defaults in all Angular apps created with the CLI
+     * `new` command.
+     * Re-exports `CommonModule` and `ApplicationModule`, making their
+     * exports and providers available to all apps.
      *
-     *
+     * @publicApi
      */
     var BrowserModule = /** @class */ (function () {
         function BrowserModule(parentModule) {
@@ -2039,16 +2059,18 @@
                 throw new Error("BrowserModule has already been loaded. If you need access to common directives such as NgIf and NgFor from a lazy loaded module, import CommonModule instead.");
             }
         }
+        BrowserModule_1 = BrowserModule;
         /**
-         * Configures a browser-based application to transition from a server-rendered app, if
-         * one is present on the page. The specified parameters must include an application id,
-         * which must match between the client and server applications.
+         * Configures a browser-based app to transition from a server-rendered app, if
+         * one is present on the page.
          *
-         * @experimental
+         * @param params An object containing an identifier for the app to transition.
+         * The ID must match between the client and server versions of the app.
+         * @returns The reconfigured `BrowserModule` to import into the app's root `AppModule`.
          */
         BrowserModule.withServerTransition = function (params) {
             return {
-                ngModule: BrowserModule,
+                ngModule: BrowserModule_1,
                 providers: [
                     { provide: core.APP_ID, useValue: params.appId },
                     { provide: TRANSITION_ID, useExisting: core.APP_ID },
@@ -2056,23 +2078,15 @@
                 ],
             };
         };
-        BrowserModule.decorators = [
-            { type: core.NgModule, args: [{ providers: BROWSER_MODULE_PROVIDERS, exports: [common.CommonModule, core.ApplicationModule] },] }
-        ];
-        /** @nocollapse */
-        BrowserModule.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.SkipSelf }, { type: core.Inject, args: [BrowserModule,] }] }
-        ]; };
+        var BrowserModule_1;
+        BrowserModule = BrowserModule_1 = __decorate([
+            core.NgModule({ providers: BROWSER_MODULE_PROVIDERS, exports: [common.CommonModule, core.ApplicationModule] }),
+            __param(0, core.Optional()), __param(0, core.SkipSelf()), __param(0, core.Inject(BrowserModule_1)),
+            __metadata("design:paramtypes", [Object])
+        ], BrowserModule);
         return BrowserModule;
     }());
 
-    /**
-     * @license
-     * Copyright Google Inc. All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     /**
      * Factory to create Meta service.
      */
@@ -2082,7 +2096,7 @@
     /**
      * A service that can be used to get and add meta tags.
      *
-     * @experimental
+     * @publicApi
      */
     var Meta = /** @class */ (function () {
         function Meta(_doc) {
@@ -2164,24 +2178,15 @@
             var _this = this;
             return Object.keys(tag).every(function (key) { return _this._dom.getAttribute(elem, key) === tag[key]; });
         };
-        Meta.decorators = [
-            { type: core.Injectable, args: [{ providedIn: 'root', useFactory: createMeta, deps: [] },] }
-        ];
-        /** @nocollapse */
-        Meta.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] }
-        ]; };
         Meta.ngInjectableDef = core.defineInjectable({ factory: createMeta, token: Meta, providedIn: "root" });
+        Meta = __decorate([
+            core.Injectable({ providedIn: 'root', useFactory: createMeta, deps: [] }),
+            __param(0, core.Inject(DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], Meta);
         return Meta;
     }());
 
-    /**
-     * @license
-     * Copyright Google Inc. All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
     /**
      * Factory to create Title service.
      */
@@ -2196,7 +2201,7 @@
      * (representing the `<title>` tag). Instead, this service can be used to set and get the current
      * title value.
      *
-     * @experimental
+     * @publicApi
      */
     var Title = /** @class */ (function () {
         function Title(_doc) {
@@ -2211,14 +2216,12 @@
          * @param newTitle
          */
         Title.prototype.setTitle = function (newTitle) { getDOM().setTitle(this._doc, newTitle); };
-        Title.decorators = [
-            { type: core.Injectable, args: [{ providedIn: 'root', useFactory: createTitle, deps: [] },] }
-        ];
-        /** @nocollapse */
-        Title.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [DOCUMENT,] }] }
-        ]; };
         Title.ngInjectableDef = core.defineInjectable({ factory: createTitle, token: Title, providedIn: "root" });
+        Title = __decorate([
+            core.Injectable({ providedIn: 'root', useFactory: createTitle, deps: [] }),
+            __param(0, core.Inject(DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], Title);
         return Title;
     }());
 
@@ -2286,10 +2289,6 @@
             }
             var end = getDOM().performanceNow();
             if (record && isProfilerAvailable) {
-                // need to cast to <any> because type checker thinks there's no argument
-                // while in fact there is:
-                //
-                // https://developer.mozilla.org/en-US/docs/Web/API/Console/profileEnd
                 win.console.profileEnd(profileName);
             }
             var msPerTick = (end - start) / numTicks;
@@ -2319,7 +2318,7 @@
      * 1. Try the change detection profiler `ng.profiler.timeChangeDetection()`
      *    then hit Enter.
      *
-     * @experimental All debugging apis are currently experimental.
+     * @publicApi
      */
     function enableDebugTools(ref) {
         exportNgVar(PROFILER_GLOBAL_NAME, new AngularProfiler(ref));
@@ -2328,7 +2327,7 @@
     /**
      * Disables Angular tools.
      *
-     * @experimental All debugging apis are currently experimental.
+     * @publicApi
      */
     function disableDebugTools() {
         exportNgVar(PROFILER_GLOBAL_NAME, null);
@@ -2373,7 +2372,7 @@
      * transferState.set(COUNTER_KEY, value);
      * ```
      *
-     * @experimental
+     * @publicApi
      */
     function makeStateKey(key) {
         return key;
@@ -2389,16 +2388,17 @@
      * boolean, number, string, null and non-class objects will be serialized and deserialzied in a
      * non-lossy manner.
      *
-     * @experimental
+     * @publicApi
      */
     var TransferState = /** @class */ (function () {
         function TransferState() {
             this.store = {};
             this.onSerializeCallbacks = {};
         }
+        TransferState_1 = TransferState;
         /** @internal */
         TransferState.init = function (initState) {
-            var transferState = new TransferState();
+            var transferState = new TransferState_1();
             transferState.store = initState;
             return transferState;
         };
@@ -2443,9 +2443,10 @@
             }
             return JSON.stringify(this.store);
         };
-        TransferState.decorators = [
-            { type: core.Injectable }
-        ];
+        var TransferState_1;
+        TransferState = TransferState_1 = __decorate([
+            core.Injectable()
+        ], TransferState);
         return TransferState;
     }());
     function initTransferState(doc, appId) {
@@ -2467,16 +2468,16 @@
      * NgModule to install on the client side while using the `TransferState` to transfer state from
      * server to client.
      *
-     * @experimental
+     * @publicApi
      */
     var BrowserTransferStateModule = /** @class */ (function () {
         function BrowserTransferStateModule() {
         }
-        BrowserTransferStateModule.decorators = [
-            { type: core.NgModule, args: [{
-                        providers: [{ provide: TransferState, useFactory: initTransferState, deps: [DOCUMENT, core.APP_ID] }],
-                    },] }
-        ];
+        BrowserTransferStateModule = __decorate([
+            core.NgModule({
+                providers: [{ provide: TransferState, useFactory: initTransferState, deps: [DOCUMENT, core.APP_ID] }],
+            })
+        ], BrowserTransferStateModule);
         return BrowserTransferStateModule;
     }());
 
@@ -2490,7 +2491,7 @@
     /**
      * Predicates for use with {@link DebugElement}'s query functions.
      *
-     * @experimental All debugging apis are currently experimental.
+     * @publicApi
      */
     var By = /** @class */ (function () {
         function By() {
@@ -2498,7 +2499,8 @@
         /**
          * Match all elements.
          *
-         * ## Example
+         * @usageNotes
+         * ### Example
          *
          * {@example platform-browser/dom/debug/ts/by/by.ts region='by_all'}
          */
@@ -2506,7 +2508,8 @@
         /**
          * Match elements by the given CSS selector.
          *
-         * ## Example
+         * @usageNotes
+         * ### Example
          *
          * {@example platform-browser/dom/debug/ts/by/by.ts region='by_css'}
          */
@@ -2520,7 +2523,8 @@
         /**
          * Match elements that have the given directive present.
          *
-         * ## Example
+         * @usageNotes
+         * ### Example
          *
          * {@example platform-browser/dom/debug/ts/by/by.ts region='by_directive'}
          */
@@ -2545,7 +2549,10 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var VERSION = new core.Version('6.1.2');
+    /**
+     * @publicApi
+     */
+    var VERSION = new core.Version('7.0.1');
 
     /**
      * @license
