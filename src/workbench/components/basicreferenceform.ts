@@ -6,15 +6,15 @@ import {backend} from '../../services/backend.service';
 
 export class BasicReferenceForm
 {
-    package_names = [];
-    version_names = [];
-    is_pulling = false;
-    is_loading_availabilities = true;
-    pull_result:string;
-    @Output('load') load$ = new EventEmitter();
-    available_packages = [];
-    available_versions = [];
-    available_languages = [];
+    protected package_names = [];
+    protected version_names = [];
+    protected is_pulling = false;
+    protected is_loading_availabilities = true;
+    protected pull_result: string;
+    @Output('load') protected load$ = new EventEmitter();
+    protected available_packages = [];
+    protected available_versions = [];
+    protected available_languages = [];
 
     constructor(
         protected backend: backend,

@@ -19,7 +19,12 @@ export class favorite {
     private currentModule: string = '';
     private currentId: string = '';
 
-    constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
+    constructor(
+        private backend: backend,
+        private broadcast: broadcast,
+        private configurationService: configurationService,
+        private session: session
+    ) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message))
     }
 
@@ -38,7 +43,7 @@ export class favorite {
         }
     }
 
-    enable(module, id) {
+    public enable(module: string, id: string) {
         this.isEnabled = true;
 
         this.currentModule = module;
@@ -53,39 +58,39 @@ export class favorite {
 
     }
 
-    disable() {
+    public disable() {
         this.isEnabled = false;
         this.isFavorite = false;
     }
 
-    loadFavorites(loadhandler: Subject<string>) {
+    public loadFavorites(loadhandler: Subject<string>) {
         if (sessionStorage[window.btoa('favorites'+this.session.authData.sessionId)] && sessionStorage[window.btoa('favorites'+this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
             this.favorites = this.session.getSessionData('favorites');
-            loadhandler.next('loadFavorites')
-        }else {
+            loadhandler.next('loadFavorites');
+        } else {
             this.backend.getRequest('spiceui/core/favorites').subscribe(fav => {
                 this.session.setSessionData('favorites',fav);
                 this.favorites = fav;
                 loadhandler.next('loadFavorites');
             });
-        };
+        }
     }
 
 
-    getFavorites(module) {
+    public getFavorites(module) {
         let retArr = [];
         for (let favorite of this.favorites) {
             if (favorite.module_name === module)
                 retArr.push({
                     item_id: favorite.item_id,
                     item_summary: favorite.item_summary
-                })
+                });
         }
 
         return retArr;
     }
 
-    setFavorite() {
+    public setFavorite() {
         this.backend.postRequest('spiceui/core/favorites/' + this.currentModule + '/' + this.currentId).subscribe((fav : any) => {
             this.favorites.splice(0, 0, {
                 item_id: fav.id,
@@ -97,7 +102,7 @@ export class favorite {
         });
     }
 
-    deleteFavorite() {
+    public deleteFavorite() {
         this.backend.deleteRequest('spiceui/core/favorites/' + this.currentModule + '/' + this.currentId).subscribe(fav => {
             this.favorites.some((fav, favindex) => {
                 if (fav.module_name === this.currentModule && fav.item_id === this.currentId) {

@@ -34,7 +34,7 @@ export class userpreferences {
         num_grp_sep: '.',
         timef: 'H:i',
         timezone: 'Europe/Vienna',
-        currency_significant_digits: 2,
+        default_currency_significant_digits: 2,
         default_locale_name_format: 'l, f'
     };
 
@@ -56,7 +56,7 @@ export class userpreferences {
         this.backend.getRequest('user/preferences/' + category).subscribe(prefs => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
-                this.unchangedPreferences.global = _.clone(prefs);
+                this.unchangedPreferences[category] = _.clone(prefs);
                 this.completePreferencesWithDefaults();
             }
             retSubject.next(prefs);
@@ -109,26 +109,23 @@ export class userpreferences {
         }
     }
 
-    public setPreferences(prefs, save = true, category = 'global') {
-        if (save) {
-            let saved = new Subject();
-            this.backend.postRequest('user/preferences/global', {}, prefs).subscribe(
-                savedprefs => {
-                    _.extendOwn(this.preferences[category], savedprefs);
-                    _.extendOwn(this.unchangedPreferences.global, savedprefs);
-                    this.completePreferencesWithDefaults();
-                    saved.next(true);
-                },
-                error => {
-                    saved.error(error);
+    public setPreferences( prefs, category = 'global' ) {
+        let saved = new Subject();
+        this.backend.postRequest('user/preferences/global', {}, prefs).subscribe(
+            savedprefs => {
+                for ( let prop of this.preferences[category] ) {
+                    if ( savedprefs.hasOwnProperty(prop)) this.preferences[category] = savedprefs[prop];
+                    else delete this.preferences[category][prop];
                 }
-            );
-            return saved;
-        } else {
-            _.extendOwn(this.preferences[category], prefs);
-            _.extendOwn(this.unchangedPreferences.global, prefs);
-            this.completePreferencesWithDefaults();
-        }
+                this.unchangedPreferences[category] = savedprefs;
+                this.completePreferencesWithDefaults();
+                saved.next(true);
+            },
+            error => {
+                saved.error(error);
+            }
+        );
+        return saved;
     }
 
     public getDateFormat() {
@@ -149,7 +146,7 @@ export class userpreferences {
             let timeFormat: string = this.toUse.timef;
             return this.jsTimeFormat2momentTimeFormat(timeFormat);
         } else {
-            return 'YYYY-MM-DD';
+            return 'hh:mm';
         }
     }
 

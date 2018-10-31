@@ -21,6 +21,7 @@ import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import { configurationService } from "../services/configuration.service";
 import { modal } from "../services/modal.service";
+import { userpreferences } from "../services/userpreferences.service";
 
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
@@ -65,6 +66,11 @@ import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./comp
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
+import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
+import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
+import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
+
 
 @NgModule({
     imports: [
@@ -116,7 +122,11 @@ import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextso
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
-        SystemRichTextSourceModal
+        SystemRichTextSourceModal,
+        SystemInputTime,
+        SystemInputDate,
+        SystemInputDatePicker,
+        SystemGoogleplacesSearch
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -158,7 +168,11 @@ import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextso
         SystemTreeItem,
         SystemSelect,
         SystemSection,
-        SystemRichTextEditor
+        SystemRichTextEditor,
+        SystemInputTime,
+        SystemInputDate,
+        SystemInputDatePicker,
+        SystemGoogleplacesSearch
     ]
 })
 export class SystemComponents {

@@ -18,29 +18,30 @@ import {language} from '../../services/language.service';
     selector: 'global-docked-composer-overflow',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposeroverflow.html'
 })
-export class GlobalDockedComposerOverflow implements OnDestroy{
-    showHiddenComposers: boolean = false;
-    clickListener: any;
+export class GlobalDockedComposerOverflow implements OnDestroy {
+    private showHiddenComposers: boolean = false;
+    private clickListener: any;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef,private dockedComposer: dockedComposer, private language: language) {
+    constructor(private renderer: Renderer2, private elementRef: ElementRef, private dockedComposer: dockedComposer, private language: language) {
 
     }
 
-    ngOnDestroy(){
+    public ngOnDestroy() {
         this.clickListener();
     }
 
-    get hiddenCount(){
+    get hiddenCount() {
         return this.dockedComposer.composers.length - this.dockedComposer.maxComposers;
     }
 
-    toggleHiddenComoposers(){
+    private toggleHiddenComoposers() {
         this.showHiddenComposers = !this.showHiddenComposers;
 
         if (this.showHiddenComposers) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener)
+        } else if (this.clickListener) {
             this.clickListener();
+        }
     }
 
     public onClick(event: MouseEvent): void {
@@ -53,17 +54,17 @@ export class GlobalDockedComposerOverflow implements OnDestroy{
     }
 
 
-    get overflowComposers(){
+    get overflowComposers() {
         return this.dockedComposer.composers.slice(this.dockedComposer.maxComposers);
     }
 
-    displayLabel(composer){
-        return composer.model.data.name ? composer.model.data.name : this.language.getModuleLabel(composer.module, 'LBL_NEW_FORM_TITLE');
+    private displayLabel(composer) {
+        // return composer.model.data.name ? composer.model.data.name : this.language.getModuleLabel(composer.module, 'LBL_NEW_FORM_TITLE');
+        return composer.model.data.name ? composer.model.data.name : this.language.getModuleName(composer.model.module, true);
     }
 
-    focusComposer(composerid){
+    private focusComposer(composerid) {
         this.dockedComposer.focusComposer(composerid);
         this.showHiddenComposers = false;
     }
-
 }

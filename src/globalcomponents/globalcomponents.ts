@@ -2,7 +2,7 @@ import {CommonModule} from "@angular/common";
 import {FormsModule}   from "@angular/forms";
 import {AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef, Injectable, Renderer, Renderer2, Input, ElementRef, OnDestroy, OnInit, OnChanges, EventEmitter, Output} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {RouterModule, Routes, Router, ActivationStart} from "@angular/router";
+import {RouterModule, Routes, Router, ActivationStart, NavigationStart} from "@angular/router";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 declare var _: any;
