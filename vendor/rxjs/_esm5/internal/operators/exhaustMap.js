@@ -1,6 +1,7 @@
-/** PURE_IMPORTS_START tslib,_OuterSubscriber,_util_subscribeToResult,_map,_observable_from PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_OuterSubscriber,_InnerSubscriber,_util_subscribeToResult,_map,_observable_from PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { map } from './map';
 import { from } from '../observable/from';
@@ -37,22 +38,30 @@ var ExhaustMapSubscriber = /*@__PURE__*/ (function (_super) {
         }
     };
     ExhaustMapSubscriber.prototype.tryNext = function (value) {
+        var result;
         var index = this.index++;
-        var destination = this.destination;
         try {
-            var result = this.project(value, index);
-            this.hasSubscription = true;
-            this.add(subscribeToResult(this, result, value, index));
+            result = this.project(value, index);
         }
         catch (err) {
-            destination.error(err);
+            this.destination.error(err);
+            return;
         }
+        this.hasSubscription = true;
+        this._innerSub(result, value, index);
+    };
+    ExhaustMapSubscriber.prototype._innerSub = function (result, value, index) {
+        var innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        var destination = this.destination;
+        destination.add(innerSubscriber);
+        subscribeToResult(this, result, value, index, innerSubscriber);
     };
     ExhaustMapSubscriber.prototype._complete = function () {
         this.hasCompleted = true;
         if (!this.hasSubscription) {
             this.destination.complete();
         }
+        this.unsubscribe();
     };
     ExhaustMapSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         this.destination.next(innerValue);
@@ -61,7 +70,8 @@ var ExhaustMapSubscriber = /*@__PURE__*/ (function (_super) {
         this.destination.error(err);
     };
     ExhaustMapSubscriber.prototype.notifyComplete = function (innerSub) {
-        this.remove(innerSub);
+        var destination = this.destination;
+        destination.remove(innerSub);
         this.hasSubscription = false;
         if (this.hasCompleted) {
             this.destination.complete();
