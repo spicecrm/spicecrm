@@ -1,5 +1,11 @@
 import {Component, ElementRef, Renderer, OnInit} from '@angular/core';
+import {userpreferences} from "../../services/userpreferences.service";
 import {fieldGeneric} from './fieldgeneric';
+import {view} from "../../services/view.service";
+import {model} from "../../services/model.service";
+import {metadata} from "../../services/metadata.service";
+import {language} from "../../services/language.service";
+import {Router} from "@angular/router";
 
 declare var moment: any;
 
@@ -10,6 +16,10 @@ declare var moment: any;
 export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
     private isValid: boolean = true;
     private errorMessage: String = '';
+
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
+        super(model, view, language, metadata, router);
+    }
 
     get fieldstart() {
         return this.fieldconfig.field_start ? this.fieldconfig.field_start : 'date_start';
@@ -36,6 +46,14 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         let minutes = this.model.getFieldValue(this.fieldminutes);
 
         return parseInt(hours, 10) * 60 + parseInt(minutes, 10) * 60;
+    }
+
+    get formattedStartDate() {
+        return this.startDate ? this.startDate.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) : '';
+    }
+
+    get formattedEndDate() {
+        return this.endDate ? this.endDate.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) : '';
     }
 
     get startDate() {
@@ -79,14 +97,14 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
     private calculateDuration() {
         // set the seconds to 0
-        this.model.data[this.fieldend].seconds(0);
-        this.model.data[this.fieldstart].seconds(0);
+        this.model.getFieldValue(this.fieldend).seconds(0);
+        this.model.getFieldValue(this.fieldstart).seconds(0);
 
-        let duration = moment.duration(this.model.data[this.fieldend].diff(this.model.data[this.fieldstart]));
+        let duration = moment.duration(this.model.getFieldValue(this.fieldend).diff(this.model.getFieldValue(this.fieldstart)));
         let hours = Math.floor(duration.asHours());
         let minutes = duration.asMinutes() - 60 * hours;
 
-        this.model.data[this.fieldhours] = hours;
-        this.model.data[this.fieldminutes] = minutes;
+        this.model.setFieldValue(this.fieldhours, hours);
+        this.model.setFieldValue(this.fieldminutes, minutes);
     }
 }
