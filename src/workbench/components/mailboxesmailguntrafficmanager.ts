@@ -4,10 +4,10 @@ import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
-import {model} from "../../services/model.service";
 import {modal} from "../../services/modal.service";
-import {toast} from "../../services/toast.service";
+import {model} from "../../services/model.service";
 import {modelutilities} from "../../services/modelutilities.service";
+import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 
 @Component({
@@ -38,15 +38,18 @@ export class MailboxesMailgunTrafficManager implements OnInit {
                 domain: "",
                 imap_pop3_display_name: "",
                 imap_pop3_username: "",
+                reply_to: "",
             };
         }
     }
 
     public testConnection() {
 
-        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector ).subscribe(modalRef => {
-            console.log("test happened");
-        });
+        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector )
+            .subscribe((modalRef) => {
+                console.log("test happened");
+            }
+        );
 
     }
 }
