@@ -1,3 +1,4 @@
+import { canReportError } from './util/canReportError';
 import { toSubscriber } from './util/toSubscriber';
 import { observable as Symbol_observable } from '../internal/symbol/observable';
 import { pipeFromArray } from './util/pipe';
@@ -45,7 +46,12 @@ export class Observable {
                 sink.syncErrorThrown = true;
                 sink.syncErrorValue = err;
             }
-            sink.error(err);
+            if (canReportError(sink)) {
+                sink.error(err);
+            }
+            else {
+                console.warn(err);
+            }
         }
     }
     forEach(next, promiseCtor) {

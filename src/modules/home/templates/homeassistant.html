@@ -1,16 +1,14 @@
-<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-p-vertical--medium">
-    <div class="slds-p-horizontal--small slds-p-vertical--small">
+<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-border--left">
+    <div class="slds-p-around--small slds-border--bottom">
         <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate slds-grid--vertical-align-center">
             <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{language.getLabel('LBL_ASSISTANT')}}</h1>
             <div class="slds-shrink-none">
                 <home-assistant-filter></home-assistant-filter>
                 <system-utility-icon [icon]="'refresh'" [size]="'x-small'" (click)="reload()"  [title]="language.getLabel('LBL_REFRESH')"></system-utility-icon>
-
-                <!--button class="slds-button slds-button--icon" (click)="reload()">
-                    <system-button-icon [icon]="'refresh'" [title]="language.getLabel('LBL_REFRESH')"></system-button-icon>
-                </button-->
             </div>
         </div>
+    </div>
+    <div #itemcontainer class="slds-scrollable_y" [ngStyle]="containerstyle">
         <home-assistant-tile *ngFor="let item of assistant.assitantItems" [item]="item"></home-assistant-tile>
     </div>
     <div *ngIf="loading" class="slds-p-around--medium">

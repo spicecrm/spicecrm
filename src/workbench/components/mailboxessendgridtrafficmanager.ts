@@ -37,15 +37,16 @@ export class MailboxesSendgridTrafficManager implements OnInit {
                 api_key: "",
                 imap_pop3_display_name: "",
                 imap_pop3_username: "",
+                reply_to: "",
             };
         }
     }
 
     public testConnection() {
-
-        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector ).subscribe(modalRef => {
-            console.log("test happened");
-        });
-
+        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector )
+            .subscribe((modalRef) => {
+                console.log("test happened");
+            }
+        );
     }
 }
