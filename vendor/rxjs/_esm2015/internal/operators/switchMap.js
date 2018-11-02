@@ -1,4 +1,5 @@
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { map } from './map';
 import { from } from '../observable/from';
@@ -39,19 +40,24 @@ class SwitchMapSubscriber extends OuterSubscriber {
         if (innerSubscription) {
             innerSubscription.unsubscribe();
         }
-        this.add(this.innerSubscription = subscribeToResult(this, result, value, index));
+        const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        const destination = this.destination;
+        destination.add(innerSubscriber);
+        this.innerSubscription = subscribeToResult(this, result, value, index, innerSubscriber);
     }
     _complete() {
         const { innerSubscription } = this;
         if (!innerSubscription || innerSubscription.closed) {
             super._complete();
         }
+        this.unsubscribe();
     }
     _unsubscribe() {
         this.innerSubscription = null;
     }
     notifyComplete(innerSub) {
-        this.remove(innerSub);
+        const destination = this.destination;
+        destination.remove(innerSub);
         this.innerSubscription = null;
         if (this.isStopped) {
             super._complete();

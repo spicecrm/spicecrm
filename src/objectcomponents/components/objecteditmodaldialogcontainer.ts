@@ -19,32 +19,32 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/objectcomponents/templates/objecteditmodaldialogcontainer.html'
 })
 export class ObjectEditModalDialogContainer implements AfterViewInit {
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
-    componentRefs: Array<any> = [];
-    @Input() componentSet: String = '';
-    @Input() module: String = '';
+    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    private componentRefs: Array<any> = [];
+    @Input() private componentSet: String = '';
+    @Input() private module: String = '';
 
     constructor(private model: model, private metadata: metadata) {
 
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.renderComponentSet();
     }
 
-    renderComponentSet() {
+    private renderComponentSet() {
 
         for (let component of this.componentRefs) {
             component.destroy();
         }
 
-        if(this.componentSet == '') {
+        if(!this.componentSet || this.componentSet == '') {
             let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
             this.componentSet = componentconfig.componentset;
         }
         for (let thisComponent of this.metadata.getComponentSetObjects(this.componentSet)) {
             this.metadata.addComponent(thisComponent.component, this.container).subscribe(componentRef => {
-                componentRef.instance['componentconfig'] = thisComponent.componentconfig;
+                componentRef.instance.componentconfig = thisComponent.componentconfig;
                 this.componentRefs.push(componentRef);
             });
         }

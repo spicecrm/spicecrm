@@ -56,6 +56,7 @@ export class MailboxesImapSmtpTrafficManager implements OnInit {
                 smtp_port: "",
                 smtp_verify_peer: "",
                 smtp_verify_peer_name: "",
+                reply_to: "",
             };
         }
     }
