@@ -38,8 +38,10 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
-        // this.destroyPopover();
-        this.popoverCmp.closePopover();
+
+        if (this.popoverCmp) {
+            this.popoverCmp.closePopover();
+        }
     }
 
     @HostListener('click')
