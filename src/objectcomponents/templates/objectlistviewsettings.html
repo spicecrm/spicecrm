@@ -9,22 +9,22 @@
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_LISTVIEWSETTINGS')}}</span>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('create')" (click)="add()">
+                <a style="cursor: pointer" class="slds-button" role="menuitem" (click)="add()">
                     <span class="slds-truncate">{{language.getLabel('LBL_NEW')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="edit()">
+                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="edit()">
                     <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="setfields()">
+                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="setfields()">
                     <span class="slds-truncate">{{language.getLabel('LBL_SETFIELDS')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a href="#" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
+                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
                     <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
                 </a>
             </li>

@@ -15,8 +15,7 @@ import {SelectTreeAddDialog} from "./selecttreeadddialog";
 @Component({
     templateUrl: './src/workbench/templates/selecttree.html',
 })
-export class SelectTreeComponent
-{
+export class SelectTreeComponent {
     currentSelectTree: string = '';
 
     category_tree = [];
@@ -42,15 +41,13 @@ export class SelectTreeComponent
     }
 
 
-    addTree(){
-
+    private addTree() {
         this.modalservice.openModal('SelectTreeAddDialog').subscribe( modal => {
             modal.instance.tree$.subscribe( event => { this.updateTree(event); });
         });
-
     }
 
-    updateTree(e){
+    private updateTree(e) {
         this.loadTrees();
         this.currentSelectTree = e.id;
         this.loadSelectTree(this.currentSelectTree);
@@ -58,17 +55,20 @@ export class SelectTreeComponent
 
 
 
-    loadTrees(selectloadfirst = false){
-        if( !this.config.getData('select_trees') )
-        {
+    private loadTrees(selectloadfirst = false) {
+        if( !this.config.getData('select_trees')) {
             this.backend.getRequest('spiceui/core/selecttree/trees').subscribe(
-                (res:any) => {
+                (res: any) => {
                     // this.config.setData('select_trees', res);
                     this.trees = res;
 
-                    if(selectloadfirst){
-                        this.currentSelectTree = this.trees[0].id;
-                        this.loadSelectTree(this.currentSelectTree);
+                    if(selectloadfirst) {
+                        if(this.trees.length > 0) {
+                            this.currentSelectTree = this.trees[0].id;
+                            this.loadSelectTree(this.currentSelectTree);
+                        }else {
+                            this.loading = false;
+                        }
                     }
                 }
             );
@@ -82,12 +82,12 @@ export class SelectTreeComponent
 
 
 
-    loadSelectTree(currentSelectTree){
+    private loadSelectTree(currentSelectTree) {
 
         this.edit_category = null;
 
         this.backend.getRequest('spiceui/core/selecttree/tree/'+ currentSelectTree).subscribe(
-            (res:any) => {
+            (res: any) => {
                 this.config.setData('select_tree', res);
                 this.initializeTree(res);
             }
@@ -96,9 +96,8 @@ export class SelectTreeComponent
 
 
 
-    initializeTree(tree)
-    {
-        //console.log(tree);
+    private initializeTree(tree) {
+        // console.log(tree);
         this.category_tree = tree;
 
 
@@ -107,8 +106,7 @@ export class SelectTreeComponent
 
         // getting max levels...
 
-        for(let i = 0; i < this.max_levels; i++)
-        {
+        for(let i = 0; i < this.max_levels; i++) {
             this.levels[i] = [];
         }
         this.levels[0] = this.category_tree;
@@ -116,10 +114,8 @@ export class SelectTreeComponent
     }
 
 
-    resetLevels(start_lvl = 0)
-    {
-        for(let lvl = start_lvl; lvl < this.max_levels; lvl++)
-        {
+    private resetLevels(start_lvl = 0) {
+        for(let lvl = start_lvl; lvl < this.max_levels; lvl++) {
             this.levels[lvl] = [];
         }
         this.selected_categorys.splice(start_lvl,this.max_levels - start_lvl);
@@ -128,20 +124,17 @@ export class SelectTreeComponent
     /**
      * triggered on mouseenter, selects a category to go deeper
      */
-    select(cat)
-    {
+    private select(cat) {
         this.selected_categorys[cat.level] = cat;
         if(cat.childs) {
             this.levels[cat.level + 1] = cat.childs;
             this.resetLevels(cat.level + 2);
-        }
-        else{
+        }else {
             this.resetLevels(cat.level+1);
         }
     }
 
-    addCategory(parent = null)
-    {
+    private addCategory(parent = null) {
         let cat = {
             id: this.utils.generateGuid(),
             name: 'new Field...',
@@ -153,21 +146,18 @@ export class SelectTreeComponent
             level: 0,
         };
 
-        if( parent )
-        {
-            if( !parent.childs )
-            {
+        if( parent ) {
+            if( !parent.childs ) {
                 parent.childs = [];
             }
             cat.parent_id = parent.id;
             cat.level = parent.level + 1;
-            if( cat.level > this.max_levels )
+            if( cat.level > this.max_levels ) {
                 this.max_levels = cat.level;
-
+            }
             parent.childs.push(cat);
             this.levels[parent.level + 1] = parent.childs;
-        }
-        else {
+        }else {
             this.category_tree.push(cat);
             this.levels[0] = this.category_tree;
         }
@@ -176,17 +166,15 @@ export class SelectTreeComponent
         this.edit(cat);
     }
 
-    removeCategory(cat)
-    {
-        if( cat.childs )
-        {
+    private removeCategory(cat) {
+        if( cat.childs ) {
             let r = confirm('Are you sure you want to delete this Category? There are '+cat.childs.length+' Subcategories which will be get deleted too!');
-            if( !r )
+            if( !r ) {
                 return false;
+            }
         }
 
-        if(cat == this.edit_category )
-        {
+        if(cat == this.edit_category ) {
             this.edit_category = null;
         }
 
@@ -194,8 +182,7 @@ export class SelectTreeComponent
         for(let c of this.category_tree)
         {
 
-            if( c == cat )
-            {
+            if( c == cat ) {
                 this.category_tree.splice(i,1);
                 return true;
             }
@@ -204,33 +191,25 @@ export class SelectTreeComponent
             i++;
         }
 
-        function searchThroughTree(current, searched)
-        {
-            if(current.childs)
-            {
-                for(let i = 0; i < current.childs.length; i++)
-                {
-                    if(current.childs[i] == searched){
+        function searchThroughTree(current, searched) {
+            if(current.childs) {
+                for(let i = 0; i < current.childs.length; i++) {
+                    if(current.childs[i] == searched) {
                         current.childs.splice(i,1);
                         return true;
                     }
-
                     searchThroughTree(current.childs[i], searched);
                 }
             }
             return false;
         }
     }
-
-    edit(cat)
-    {
+    private edit(cat) {
         this.selected_categorys[cat.level] = cat;
         this.edit_category = cat;
     }
 
-    save()
-    {
-
+    private save() {
         this.backend.postRequest('spiceui/core/selecttree/tree', null, this.category_tree).subscribe(
             (success) => {
 
@@ -243,14 +222,13 @@ export class SelectTreeComponent
         );
     }
 
-    isCategorySelected(cat):boolean
-    {
+    private isCategorySelected(cat): boolean {
         for(let c of this.selected_categorys)
         {
-            if( c.id == cat.id )
+            if( c.id == cat.id ) {
                 return true;
+            }
         }
         return false;
     }
-
 }

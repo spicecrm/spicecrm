@@ -805,6 +805,10 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     box-shadow: #CA1B1F 4px 0 0 inset;
 }
 
+.slds-listbox__icon-selected{
+    fill: #CA1B1F;
+}
+
 
 .slds-button span{
     text-transform: capitalize;

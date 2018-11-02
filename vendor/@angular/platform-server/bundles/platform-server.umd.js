@@ -1,5 +1,5 @@
 /**
- * @license Angular v6.1.2
+ * @license Angular v7.0.1
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -7,7 +7,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/platform-browser'), require('@angular/core'), require('@angular/http'), require('@angular/common/http'), require('rxjs'), require('url'), require('@angular/compiler'), require('@angular/animations/browser'), require('@angular/common'), require('@angular/platform-browser-dynamic'), require('@angular/platform-browser/animations'), require('rxjs/operators')) :
     typeof define === 'function' && define.amd ? define('@angular/platform-server', ['exports', '@angular/platform-browser', '@angular/core', '@angular/http', '@angular/common/http', 'rxjs', 'url', '@angular/compiler', '@angular/animations/browser', '@angular/common', '@angular/platform-browser-dynamic', '@angular/platform-browser/animations', 'rxjs/operators'], factory) :
-    (factory((global.ng = global.ng || {}, global.ng.platformServer = {}),global.ng.platformBrowser,global.ng.core,global.ng.http,global.ng.common.http,global.rxjs,null,global.ng.compiler,global.ng.animations.browser,global.ng.common,global.ng.platformBrowserDynamic,global.ng.platformBrowser.animations,global.rxjs.operators));
+    (factory((global.ng = global.ng || {}, global.ng.platformServer = {}),global.ng.platformBrowser,global.ng.core,global.ng.http,global.ng.common.http,global.rxjs,global.url,global.ng.compiler,global.ng.animations.browser,global.ng.common,global.ng.platformBrowserDynamic,global.ng.platformBrowser.animations,global.rxjs.operators));
 }(this, (function (exports,platformBrowser,core,http,http$1,rxjs,url,compiler,browser,common,platformBrowserDynamic,animations,operators) { 'use strict';
 
     /*! *****************************************************************************
@@ -37,6 +37,21 @@
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
+
+    function __param(paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); }
+    }
+
+    function __metadata(metadataKey, metadataValue) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
     }
 
     function __values(o) {
@@ -265,7 +280,7 @@
     /**
      * Representation of the current platform state.
      *
-     * @experimental
+     * @publicApi
      */
     var PlatformState = /** @class */ (function () {
         function PlatformState(_doc) {
@@ -279,13 +294,11 @@
          * Returns the current DOM state.
          */
         PlatformState.prototype.getDocument = function () { return this._doc; };
-        PlatformState.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        PlatformState.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [platformBrowser.DOCUMENT,] }] }
-        ]; };
+        PlatformState = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(platformBrowser.DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], PlatformState);
         return PlatformState;
     }());
 
@@ -307,18 +320,18 @@
         function ServerXhr() {
         }
         ServerXhr.prototype.build = function () { return new xhr2.XMLHttpRequest(); };
-        ServerXhr.decorators = [
-            { type: core.Injectable }
-        ];
+        ServerXhr = __decorate([
+            core.Injectable()
+        ], ServerXhr);
         return ServerXhr;
     }());
     var ServerXsrfStrategy = /** @class */ (function () {
         function ServerXsrfStrategy() {
         }
         ServerXsrfStrategy.prototype.configureRequest = function (req) { };
-        ServerXsrfStrategy.decorators = [
-            { type: core.Injectable }
-        ];
+        ServerXsrfStrategy = __decorate([
+            core.Injectable()
+        ], ServerXsrfStrategy);
         return ServerXsrfStrategy;
     }());
     var ZoneMacroTaskWrapper = /** @class */ (function () {
@@ -462,14 +475,14 @@
     /**
      * The DI token for setting the initial config for the platform.
      *
-     * @experimental
+     * @publicApi
      */
     var INITIAL_CONFIG = new core.InjectionToken('Server.INITIAL_CONFIG');
     /**
      * A function that will be executed when calling `renderModuleFactory` or `renderModule` just
      * before current platform state is rendered to string.
      *
-     * @experimental
+     * @publicApi
      */
     var BEFORE_APP_SERIALIZED = new core.InjectionToken('Server.RENDER_MODULE_HOOK');
 
@@ -542,14 +555,11 @@
         };
         ServerPlatformLocation.prototype.forward = function () { throw new Error('Not implemented'); };
         ServerPlatformLocation.prototype.back = function () { throw new Error('Not implemented'); };
-        ServerPlatformLocation.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ServerPlatformLocation.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [platformBrowser.DOCUMENT,] }] },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [INITIAL_CONFIG,] }] }
-        ]; };
+        ServerPlatformLocation = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(platformBrowser.DOCUMENT)), __param(1, core.Optional()), __param(1, core.Inject(INITIAL_CONFIG)),
+            __metadata("design:paramtypes", [Object, Object])
+        ], ServerPlatformLocation);
         return ServerPlatformLocation;
     }());
     function scheduleMicroTask(fn) {
@@ -579,13 +589,11 @@
             }
             return this.addEventListener(target, eventName, handler);
         };
-        ServerEventManagerPlugin.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ServerEventManagerPlugin.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [platformBrowser.DOCUMENT,] }] }
-        ]; };
+        ServerEventManagerPlugin = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(platformBrowser.DOCUMENT)),
+            __metadata("design:paramtypes", [Object])
+        ], ServerEventManagerPlugin);
         return ServerEventManagerPlugin;
     }());
 
@@ -636,16 +644,11 @@
         };
         ServerRendererFactory2.prototype.begin = function () { };
         ServerRendererFactory2.prototype.end = function () { };
-        ServerRendererFactory2.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ServerRendererFactory2.ctorParameters = function () { return [
-            { type: platformBrowser.EventManager },
-            { type: core.NgZone },
-            { type: undefined, decorators: [{ type: core.Inject, args: [platformBrowser.DOCUMENT,] }] },
-            { type: platformBrowser.ɵSharedStylesHost }
-        ]; };
+        ServerRendererFactory2 = __decorate([
+            core.Injectable(),
+            __param(2, core.Inject(platformBrowser.DOCUMENT)),
+            __metadata("design:paramtypes", [platformBrowser.EventManager, core.NgZone, Object, platformBrowser.ɵSharedStylesHost])
+        ], ServerRendererFactory2);
         return ServerRendererFactory2;
     }());
     var DefaultServerRenderer2 = /** @class */ (function () {
@@ -818,14 +821,12 @@
             var _this = this;
             additions.forEach(function (style) { return _this._addStyle(style); });
         };
-        ServerStylesHost.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ServerStylesHost.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [platformBrowser.DOCUMENT,] }] },
-            { type: String, decorators: [{ type: core.Optional }, { type: core.Inject, args: [platformBrowser.ɵTRANSITION_ID,] }] }
-        ]; };
+        ServerStylesHost = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(platformBrowser.DOCUMENT)),
+            __param(1, core.Optional()), __param(1, core.Inject(platformBrowser.ɵTRANSITION_ID)),
+            __metadata("design:paramtypes", [Object, String])
+        ], ServerStylesHost);
         return ServerStylesHost;
     }(platformBrowser.ɵSharedStylesHost));
 
@@ -868,23 +869,23 @@
     /**
      * The ng module for the server.
      *
-     * @experimental
+     * @publicApi
      */
     var ServerModule = /** @class */ (function () {
         function ServerModule() {
         }
-        ServerModule.decorators = [
-            { type: core.NgModule, args: [{
-                        exports: [platformBrowser.BrowserModule],
-                        imports: [http.HttpModule, http$1.HttpClientModule, animations.NoopAnimationsModule],
-                        providers: [
-                            SERVER_RENDER_PROVIDERS,
-                            SERVER_HTTP_PROVIDERS,
-                            { provide: core.Testability, useValue: null },
-                            { provide: common.ViewportScroller, useClass: common.ɵNullViewportScroller },
-                        ],
-                    },] }
-        ];
+        ServerModule = __decorate([
+            core.NgModule({
+                exports: [platformBrowser.BrowserModule],
+                imports: [http.HttpModule, http$1.HttpClientModule, animations.NoopAnimationsModule],
+                providers: [
+                    SERVER_RENDER_PROVIDERS,
+                    SERVER_HTTP_PROVIDERS,
+                    { provide: core.Testability, useValue: null },
+                    { provide: common.ViewportScroller, useClass: common.ɵNullViewportScroller },
+                ],
+            })
+        ], ServerModule);
         return ServerModule;
     }());
     function _document(injector) {
@@ -897,13 +898,13 @@
         }
     }
     /**
-     * @experimental
+     * @publicApi
      */
     var platformServer = core.createPlatformFactory(core.platformCore, 'server', INTERNAL_SERVER_PLATFORM_PROVIDERS);
     /**
      * The server platform that supports the runtime compiler.
      *
-     * @experimental
+     * @publicApi
      */
     var platformDynamicServer = core.createPlatformFactory(platformBrowserDynamic.ɵplatformCoreDynamic, 'serverDynamic', INTERNAL_SERVER_PLATFORM_PROVIDERS);
 
@@ -927,23 +928,23 @@
      * NgModule to install on the server side while using the `TransferState` to transfer state from
      * server to client.
      *
-     * @experimental
+     * @publicApi
      */
     var ServerTransferStateModule = /** @class */ (function () {
         function ServerTransferStateModule() {
         }
-        ServerTransferStateModule.decorators = [
-            { type: core.NgModule, args: [{
-                        providers: [
-                            platformBrowser.TransferState, {
-                                provide: BEFORE_APP_SERIALIZED,
-                                useFactory: serializeTransferStateFactory,
-                                deps: [platformBrowser.DOCUMENT, core.APP_ID, platformBrowser.TransferState],
-                                multi: true,
-                            }
-                        ]
-                    },] }
-        ];
+        ServerTransferStateModule = __decorate([
+            core.NgModule({
+                providers: [
+                    platformBrowser.TransferState, {
+                        provide: BEFORE_APP_SERIALIZED,
+                        useFactory: serializeTransferStateFactory,
+                        deps: [platformBrowser.DOCUMENT, core.APP_ID, platformBrowser.TransferState],
+                        multi: true,
+                    }
+                ]
+            })
+        ], ServerTransferStateModule);
         return ServerTransferStateModule;
     }());
 
@@ -1012,7 +1013,7 @@
      * Do not use this in a production server environment. Use pre-compiled {@link NgModuleFactory} with
      * {@link renderModuleFactory} instead.
      *
-     * @experimental
+     * @publicApi
      */
     function renderModule(module, options) {
         var platform = _getPlatform(platformDynamicServer, options);
@@ -1025,7 +1026,7 @@
      * `url` is the URL for the current render request.
      * `extraProviders` are the platform level providers for the current render request.
      *
-     * @experimental
+     * @publicApi
      */
     function renderModuleFactory(moduleFactory, options) {
         var platform = _getPlatform(platformServer, options);
@@ -1047,7 +1048,10 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var VERSION = new core.Version('6.1.2');
+    /**
+     * @publicApi
+     */
+    var VERSION = new core.Version('7.0.1');
 
     /**
      * @license

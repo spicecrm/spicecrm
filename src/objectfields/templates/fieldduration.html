@@ -1,7 +1,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     {{getDisplay()}}
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <div *ngIf="!fieldconfig.freeentry" class="slds-grid">
         <div class="slds-form-element__control slds-size--1-of-2">
             <div class="slds-select_container">
@@ -32,7 +32,5 @@
             </div>
         </div>
     </div>
-    <!--div *ngIf="errorMessage !== ''" class="slds-form-element__help">{{errorMessage}}</div-->
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
-<field-date-picker *ngIf="showDatePicker" [(setdate)]="value"></field-date-picker>

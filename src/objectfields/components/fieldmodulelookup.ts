@@ -12,42 +12,41 @@ import {fieldGeneric} from './fieldgeneric';
     templateUrl: './src/objectfields/templates/fieldmodulelookup.html',
     providers: [popup],
 })
-export class FieldModuleLookupComponent extends fieldGeneric implements OnInit
-{
-    relateIdField: string = '';
-    relateNameField: string = '';
-    @Input() module:string = '';
+export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
+    private relateIdField: string = '';
+    private relateNameField: string = '';
+    @Input() private module: string = '';
 
-    private _selected_item:any = null;
+    private _selected_item: any = null;
 
-    private clickListener:any;
+    private clickListener: any;
 
-    show_search_results:boolean = false;
-    search_term:string = '';
+    private show_search_results: boolean = false;
+    private search_term: string = '';
 
-    @Output() select = new EventEmitter();
+    @Output() public select = new EventEmitter();
 
     constructor(
-        public model:model,
-        public view:view,
-        public popup:popup,
-        public language:language,
-        public metadata:metadata,
-        public router:Router,
-        private elementRef:ElementRef,
-        private renderer:Renderer,
+        public model: model,
+        public view: view,
+        public popup: popup,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        private elementRef: ElementRef,
+        private renderer: Renderer,
     ) {
         super(model, view, language, metadata, router);
         this.popup.closePopup$.subscribe(() => this.closePopups());
     }
 
-    ngOnInit()
-    {
+    public ngOnInit() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
-        if( !this.module )
+        if( !this.module ) {
             this.module = fieldDefs.module;
+        }
     }
 
     public onClick(event: MouseEvent): void {
@@ -60,14 +59,15 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit
     private closePopups() {
         this.clickListener();
 
-        if (this.model.data[this.relateIdField])
+        if (this.model.data[this.relateIdField]) {
             this.search_term = '';
+        }
 
         this.show_search_results = false;
 
     }
 
-    onFocus() {
+    private onFocus() {
         this.show_search_results = true;
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
@@ -76,19 +76,20 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit
     {
         if( item ) {
             this._selected_item = item.data;
-            if (this.relateNameField)
+            if (this.relateNameField) {
                 this.model.setField(this.relateNameField, item.text);
-            if (this.relateIdField)
+            }
+            if (this.relateIdField) {
                 this.model.setField(this.relateIdField, item.id);
-        }
-        else
-        {
+            }
+        } else {
             this._selected_item = null;
-            if(this.relateIdField)
+            if(this.relateIdField) {
                 this.model.setField(this.relateIdField, '');
-            if(this.relateNameField)
+            }
+            if(this.relateNameField) {
                 this.model.setField(this.relateNameField, '');
-
+            }
         }
 
         this.select.emit(this.selected_item);
@@ -99,46 +100,43 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit
         return this._selected_item;
     }
 
-    get id():string
-    {
-        //console.log(this.selected_item);
-        if(this.selected_item && this.selected_item.id)
+    get id(): string {
+        if (this.selected_item && this.selected_item.id) {
             return this.selected_item.id;
-        else if(this.relateIdField)
+        } else if (this.relateIdField) {
             return this.model.data[this.relateIdField];
-        else
+        } else {
             return '';
+        }
     }
 
-    get item_summary_text():string
-    {
-        if(this.selected_item && this.selected_item.summary_text)
+    get item_summary_text(): string {
+        if (this.selected_item && this.selected_item.summary_text) {
             return this.selected_item.summary_text;
-        else if(this.relateNameField)
+        } else if (this.relateNameField) {
             return this.model.data[this.relateNameField];
-        else
+        } else {
             return '';
+        }
     }
 
-    goToDetail() {
+    private goToDetail() {
         // go to the record
         this.router.navigate(['/module/' + this.module + '/' + this.selected_item.id]);
     }
 
-    getSearchStyle() {
+    private getSearchStyle() {
         if (this.show_search_results) {
             let rect = this.elementRef.nativeElement.getBoundingClientRect();
             return {
                 width: rect.width + 'px',
                 display: 'block'
-            }
+            };
         }
     }
 
-    clear()
-    {
+    private clear() {
         this.search_term = '';
         this.selected_item = null;
     }
-
 }
