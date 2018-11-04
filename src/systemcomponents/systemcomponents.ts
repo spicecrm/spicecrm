@@ -70,6 +70,7 @@ import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
+import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 
 
 @NgModule({
@@ -126,7 +127,8 @@ import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplace
         SystemInputTime,
         SystemInputDate,
         SystemInputDatePicker,
-        SystemGoogleplacesSearch
+        SystemGoogleplacesSearch,
+        SystemComponentSet
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -172,7 +174,9 @@ import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplace
         SystemInputTime,
         SystemInputDate,
         SystemInputDatePicker,
-        SystemGoogleplacesSearch
+        SystemGoogleplacesSearch,
+        SystemStencil,
+        SystemComponentSet
     ]
 })
 export class SystemComponents {
