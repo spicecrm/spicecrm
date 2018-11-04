@@ -1,0 +1,17 @@
+<dl class="slds-popover__body-list">
+    <dt class="slds-m-bottom_small">
+        <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+            <system-icon [module]="module" size="small"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <p class="slds-text-heading_small slds-hyphenate">{{panelTitle}}<ng-container *ngIf="!relatedmodels.isloading">&nbsp;({{relatedmodels.count}})</ng-container></p>
+            </div>
+        </div>
+    </dt>
+    <div *ngIf="relatedmodels.isloading" class="slds-align_absolute-center">
+        <system-spinner size="12"></system-spinner>
+    </div>
+    <object-model-popover-related-item *ngFor="let relateditem of relatedmodels.items" [module]="relatedmodels.relatedModule" [item]="relateditem" [fields]="listfields"></object-model-popover-related-item>
+    <dd *ngIf="canViewAll" class="slds-m-top_x-small slds-text-align_right"><a href="javascript:void(0);" (click)="showAll()">{{language.getLabel('LBL_VIEWALL')}}</a></dd>
+</dl>
