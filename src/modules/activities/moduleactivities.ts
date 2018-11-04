@@ -20,6 +20,7 @@ import {
 } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule} from '@angular/forms';
+import {DomSanitizer} from '@angular/platform-browser';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 
 import {Subject, Observable} from 'rxjs';
