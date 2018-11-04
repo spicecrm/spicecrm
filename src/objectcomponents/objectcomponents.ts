@@ -138,16 +138,8 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {
-    ObjectTabContainerItem,
-    ObjectTabContainer,
-    ObjectTabContainerItemHeader
-} from './components/objecttabcontainer';
-import /*embed*/ {
-    ObjectVerticalTabContainerItem,
-    ObjectVerticalTabContainer,
-    ObjectVerticalTabContainerItemHeader
-} from './components/objectverticaltabcontainer';
+import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
+import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedlistHeader} from './components/objectrelatedlistheader';
 import /*embed*/ {ObjectRelatedlistFooter} from './components/objectrelatedlistfooter';
