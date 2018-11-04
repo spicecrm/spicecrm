@@ -24,30 +24,8 @@
                     {{objrepoItem.object}}
             </li>
         </ul>
-        <!--div class="slds-tree_container" role="application" style="max-width: none;">
-            <div class="slds-tabs_default" style="background-color: transparent; ">
-                <div id="tab-default-1" class="slds-tabs_default__content slds-show slds-scrollable_y" role="tabpanel" aria-labelledby="tab-default-1__item" style="max-height: 70%;">
-                    <div class="slds-tree_container" >
-                        <ul class="slds-tree" aria-labelledby="treeheading">
-                            <li *ngFor="let objrepoItem of objrepoList" [ngClass]="{'slds-is-selected': checkCurrentObjRepo(objrepoItem.id)}" aria-level="0" tabindex="0" (click)="clickObjRepo(objrepoItem)">
-                                <div class="slds-tree__item">
-                                    <span class="slds-size_1-of-1">
-                                      <span class="slds-tree__item-label slds-truncate" title="Tree Item">{{objrepoItem.object}}</span>
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div *ngIf="(currentModule | json) != '{}'" class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
-                    <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addObjRepo()">
-                        <system-button-icon [icon]="'new'"></system-button-icon>
-                    </button>
-                </div>
-            </div>
-        </div-->
     </div>
-    <div *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
+    <div *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small">
         <!--configList-->
 
         <div class="slds-form-element slds-m-vertical_medium">
