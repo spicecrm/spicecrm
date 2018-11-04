@@ -1,7 +1,25 @@
 import {CommonModule} from '@angular/common';
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from '@angular/core';
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    NgModule,
+    Renderer,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef,
+    Injectable,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    OnInit,
+    OnDestroy,
+    OnChanges
+} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {FormsModule}   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 
 import {Subject, Observable} from 'rxjs';
@@ -30,10 +48,10 @@ import {mediafiles} from '../../services/mediafiles.service';
 import {VersionManagerService} from '../../services/versionmanager.service';
 
 
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
 import /*embed*/ {TasksManager} from './components/tasksmanager';
 import /*embed*/ {TasksManagerView} from './components/tasksmanagerview';
@@ -42,6 +60,8 @@ import /*embed*/ {TasksManagerTasks} from './components/tasksmanagertasks';
 import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
 import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
 import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttileclose';
+
+import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
 
 
 @NgModule({
@@ -60,7 +80,8 @@ import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttilecl
         TasksManagerTasks,
         TasksManagerTask,
         TasksManagerTaskDetails,
-        TasksAssitantTileClose
+        TasksAssitantTileClose,
+        EmailsPopoverBody
     ]
 })
 export class ModuleActivities {
