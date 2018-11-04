@@ -1,4 +1,4 @@
-import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit} from '@angular/core';
+import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {metadata} from "../../services/metadata.service";
@@ -21,7 +21,7 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
     constructor(
         private metadata: metadata,
         private footer: footer,
-        private model: model,
+        @Optional() private model: model,
         private elementRef: ElementRef,
         private router: Router
     ) {
@@ -54,7 +54,7 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
     }
 
     private renderPopover() {
-        this.metadata.addComponent('fieldModelFooterPopover', this.footer.footercontainer).subscribe(
+        this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
             popover => {
                 popover.instance.popovermodule = this.module;
                 popover.instance.popoverid = this.id;
@@ -66,10 +66,10 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        if (!this.module) {
+        if (!this.module && this.model) {
             this.module = this.model.module;
         }
-        if (!this.id) {
+        if (!this.id && this.model) {
             this.id = this.model.id;
         }
     }
