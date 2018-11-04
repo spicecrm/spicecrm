@@ -1,6 +1,6 @@
 import {
     AfterViewInit,
-    Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
+    Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Pipe,
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
@@ -15,8 +15,27 @@ import {ObjectRepositoryManagerAddRepo} from "./objectrepositorymanageraddrepo";
 import {modelutilities} from "../../services/modelutilities.service";
 import {configurationService} from "../../services/configuration.service";
 import {view} from "../../services/view.service";
+import {spiceprocess} from "../../addcomponents/services/spiceprocess";
 
-declare var tinymce: any;
+/*
+* add a pipe to filter by the object
+ */
+@Pipe({name: 'objectrepositorymanagerfilter'})
+export class ObjectRepositoryManagerFilter {
+    private transform(values, filter) {
+        if (!filter) {
+            return values;
+        }
+
+        let retValues = [];
+        for (let value of values) {
+            if (value.object.toLowerCase().indexOf(filter.toLowerCase()) >= 0) {
+                retValues.push(value);
+            }
+        }
+        return retValues;
+    }
+}
 
 @Component({
     templateUrl: './src/workbench/templates/objectrepositorymanager.html',
@@ -30,6 +49,8 @@ export class ObjectRepositoryManager {
     private objrepoList: Array<any> = [];
     private configList: any = {};
     private currentConfigArray: Array<any> = [];
+
+    private objectFilter: string = '';
 
     private fieldTypeList: Array<any> = ["string", "boolean", "fieldset", "actionset", "componentset", "module"];
 
