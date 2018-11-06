@@ -66,7 +66,7 @@ export class GlobalLoginForgotPassword {
         if (this.email.length > 0) {
             this.emailEmpty = false;
             this.http.get(this.configuration.getBackendUrl() + '/forgotPassword/' + this.email).subscribe(
-                (res) => {
+                (res:any) => {
                     if (!res) {
                         this.toast.sendToast('User with the given email does not exist', 'error');
                     } else if(res.result == false) {

@@ -1,5 +1,5 @@
 /**
- * @license Angular v6.1.2
+ * @license Angular v7.0.1
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -21,13 +21,35 @@
      * Controller to be injected into tests, that allows for mocking and flushing
      * of requests.
      *
-     *
+     * @publicApi
      */
     var HttpTestingController = /** @class */ (function () {
         function HttpTestingController() {
         }
         return HttpTestingController;
     }());
+
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation. All rights reserved.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0
+
+    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+    MERCHANTABLITY OR NON-INFRINGEMENT.
+
+    See the Apache Version 2.0 License for specific language governing permissions
+    and limitations under the License.
+    ***************************************************************************** */
+
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
 
     /**
      * @license
@@ -42,7 +64,7 @@
      * This interface allows access to the underlying `HttpRequest`, and allows
      * responding with `HttpEvent`s or `HttpErrorResponse`s.
      *
-     *
+     * @publicApi
      */
     var TestRequest = /** @class */ (function () {
         function TestRequest(request, observer) {
@@ -340,9 +362,9 @@
                 return "Match by function: " + matcher.name;
             }
         };
-        HttpClientTestingBackend.decorators = [
-            { type: core.Injectable }
-        ];
+        HttpClientTestingBackend = __decorate([
+            core.Injectable()
+        ], HttpClientTestingBackend);
         return HttpClientTestingBackend;
     }());
 
@@ -358,23 +380,23 @@
      *
      * Inject `HttpTestingController` to expect and flush requests in your tests.
      *
-     *
+     * @publicApi
      */
     var HttpClientTestingModule = /** @class */ (function () {
         function HttpClientTestingModule() {
         }
-        HttpClientTestingModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            http.HttpClientModule,
-                        ],
-                        providers: [
-                            HttpClientTestingBackend,
-                            { provide: http.HttpBackend, useExisting: HttpClientTestingBackend },
-                            { provide: HttpTestingController, useExisting: HttpClientTestingBackend },
-                        ],
-                    },] }
-        ];
+        HttpClientTestingModule = __decorate([
+            core.NgModule({
+                imports: [
+                    http.HttpClientModule,
+                ],
+                providers: [
+                    HttpClientTestingBackend,
+                    { provide: http.HttpBackend, useExisting: HttpClientTestingBackend },
+                    { provide: HttpTestingController, useExisting: HttpClientTestingBackend },
+                ],
+            })
+        ], HttpClientTestingModule);
         return HttpClientTestingModule;
     }());
 
