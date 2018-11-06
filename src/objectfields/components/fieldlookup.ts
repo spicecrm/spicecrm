@@ -7,6 +7,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {fieldGeneric} from './fieldgeneric';
+import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-lookup',
@@ -29,7 +30,8 @@ export class fieldLookup extends fieldGeneric implements OnInit {
                 public metadata: metadata,
                 public router: Router,
                 private elementRef: ElementRef,
-                private renderer: Renderer2) {
+                private renderer: Renderer2,
+                private modal: modal ) {
         super(model, view, language, metadata, router);
 
         // subscribe to the popup handler
@@ -138,15 +140,23 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     private removeItem(item) {
+        if ( !this.model.data[item.module.toLowerCase()].beans_relations_to_delete ) this.model.data[item.module.toLowerCase()].beans_relations_to_delete = {};
         this.model.data[item.module.toLowerCase()].beans_relations_to_delete[item.id] = item;
         delete(this.model.data[item.module.toLowerCase()].beans[item.id]);
     }
 
     private onFocus() {
+        this.openSearchDropDown();
+    }
+
+    private onFieldClick() {
+        this.openSearchDropDown();
+    }
+
+    private openSearchDropDown() {
         // this.getRecent();
         this.lookupmoduleSelectOpen = false;
         this.lookupSearchOpen = true;
-
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
@@ -157,4 +167,19 @@ export class fieldLookup extends fieldGeneric implements OnInit {
             };
         }
     }
+
+    private searchWithModal() {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = this.lookupType;
+            selectModal.instance.multiselect = false;
+            selectModal.instance.selectedItems.subscribe(items => {
+                this.addItem({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
+            });
+            selectModal.instance.usedSearchTerm.subscribe( term => {
+                this.lookupSearchTerm = term;
+            });
+            selectModal.instance.searchTerm = this.lookupSearchTerm;
+        });
+    }
+
 }

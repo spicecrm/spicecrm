@@ -1,6 +1,6 @@
 <ul class="slds-lookup__list" role="listbox">
     <li role="presentation">
-        <div class="slds-lookup__item-action slds-media" role="option" (mousedown)="openModal()">
+        <div class="slds-lookup__item-action slds-media" role="option" (mousedown)="searchWithModal.emit(true)">
               <system-icon [icon]="'search'" [sprite]="'utility'" [size]="'x-small'" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
               <div class="slds-media__body">
                 <div class="slds-lookup__result-text">"{{searchTerm}}" in {{language.getModuleName(module)}}</div>
