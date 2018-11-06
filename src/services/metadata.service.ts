@@ -1031,7 +1031,7 @@ export class metadata {
         }
     }
 
-    public getModuleDefaultComponentConfigByUsage(module: string, usage: "list"|"details") {
+    public getModuleDefaultComponentConfigByUsage(module: string, usage: string) {
         let component = "";
         switch(usage) {
             case "list":

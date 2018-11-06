@@ -1,9 +1,7 @@
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
+    AfterViewInit, Component, ViewChild, ViewContainerRef,
     OnDestroy
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {session} from '../../../services/session.service';
 import {broadcast} from '../../../services/broadcast.service';
@@ -15,11 +13,11 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class HomeDashboard implements AfterViewInit, OnDestroy {
 
-    @ViewChild('dashboardcontainer', {read: ViewContainerRef}) dashboardcontainer: ViewContainerRef;
+    @ViewChild('dashboardcontainer', {read: ViewContainerRef}) private dashboardcontainer: ViewContainerRef;
 
-    componentSubscriptions: Array<any> = [];
-    dashboardid: string = '';
-    dashboardcontainercomponent: any = undefined;
+    public componentSubscriptions: Array<any> = [];
+    public dashboardid: string = '';
+    public dashboardcontainercomponent: any = undefined;
 
     constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata, private session: session) {
         this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
@@ -27,7 +25,6 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
         }));
 
         this.loadDashboardConfig();
-
     }
 
     private handleMessage(message) {
@@ -39,29 +36,28 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
         }
     }
 
-    private  loadDashboardConfig() {
+    private loadDashboardConfig() {
         let componentconfig = this.metadata.getComponentConfig('HomeDashboard', 'Home');
-        if (componentconfig['dashboardid']) {
-            this.dashboardid = componentconfig['dashboardid'];
+        if (componentconfig.dashboardid) {
+            this.dashboardid = componentconfig.dashboardid;
 
             // set it to the component
-            if(this.dashboardcontainercomponent){
-                this.dashboardcontainercomponent.instance['dashboardid'] = this.dashboardid;
+            if (this.dashboardcontainercomponent) {
+                this.dashboardcontainercomponent.instance.dashboardid = this.dashboardid;
             }
         }
-
     }
 
-    ngAfterViewInit(){
+    public ngAfterViewInit() {
         this.metadata.addComponent('DashboardContainer', this.dashboardcontainer).subscribe(component => {
-            component.instance['dashboardid'] = this.dashboardid;
-            component.instance['context'] = 'Home';
+            component.instance.dashboardid = this.dashboardid;
+            component.instance.context = 'Home';
 
             this.dashboardcontainercomponent = component;
-        })
+        });
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         for (let subscription of this.componentSubscriptions) {
             subscription.unsubscribe();
         }

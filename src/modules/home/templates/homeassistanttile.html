@@ -1,17 +1,16 @@
-<div class="slds-tile slds-media slds-m-vertical--medium slds-border--bottom slds-p-bottom--small">
-    <div class="slds-media__figure">
-        <system-icon [module]="item.module" [size]="'small'"></system-icon>
-    </div>
+<article class="slds-tile slds-media slds-p-around--x-small slds-border--bottom">
+    <system-icon [module]="item.module" [size]="'small'"></system-icon>
     <div class="slds-media__body">
-        <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
-            <h3 class="slds-truncate slds-text-heading--small slds-p-bottom--xx-small"><a href="javascript:void(0);" (click)="goDetail()">{{item.data.summary_text}}</a>
+        <div class="slds-grid slds-grid_align-spread slds-has-flexi-truncate slds-p-bottom--xx-small">
+            <h3 class="slds-tile__title slds-truncate" modelPopOver>
+                <a href="javascript:void(0);" (click)="goDetail()">{{item.data.summary_text}}</a>
             </h3>
             <div class="slds-shrink-none">
                 <object-actionset-menu [buttonsize]="'x-small'" [actionset]="actionset"></object-actionset-menu>
             </div>
         </div>
-        <div class="slds-text-body--small">
-            <dl class="slds-list--horizontal slds-wrap">
+        <div class="slds-tile__detail">
+            <dl class="slds-list_horizontal slds-wrap">
                 <ng-container *ngFor="let tileField of tileFields">
                     <dt class="slds-item--label slds-text-color--weak slds-truncate">
                         {{language.getFieldDisplayName(model.module, tileField.field)}}
@@ -23,4 +22,4 @@
             </dl>
         </div>
     </div>
-</div>
+</article>
