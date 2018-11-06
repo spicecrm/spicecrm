@@ -12,11 +12,7 @@
                            value="{{inputValue}}"
                            (keyup)="onKeydown($event)"
                     />
-                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
-            <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
-              <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
-            </svg>
-          </span>
+                    <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
                 </div>
                 <div *ngIf="show_list" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
                     <ul class="slds-listbox slds-listbox_vertical" role="presentation">
