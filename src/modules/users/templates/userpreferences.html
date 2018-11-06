@@ -1,131 +1,186 @@
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded.loc}">
-    <h3 class="slds-section__title">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('loc')">
-            <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-            <span class="slds-truncate">{{ language.getLabel('LBL_LOCALE_PREFERENCES') }}</span>
-        </button>
-    </h3>
-    <div>
-        <div [ngStyle]="getTabStyle('loc')">
-            <div class="slds-grid slds-grid--align-spread">
-                <div class="slds-form-element slds-size--4-of-8 slds-p-around--x-small">
-                    <label class="slds-form-element__label">{{ language.getLabel('LBL_TIMEZONE') }}</label>
-                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                        <span class="slds-form-element__static">{{preferences.timezone}}</span>
-                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                            <system-button-icon [icon]="'edit'"></system-button-icon>
-                        </button>
+<div *ngIf="!canPrefs; else prefs" class="slds-text-align--center slds-m-top--x-large">The preferences of the user are only viewable/editable by himself.</div>
+
+<ng-template #prefs>
+
+    <div class="slds-section" [ngClass]="{'slds-is-open': expanded.loc}">
+        <h3 class="slds-section__title">
+            <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('loc')">
+                <system-utility-icon [icon]="'switch'" [size]="'x-small'"
+                                     [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                <span class="slds-truncate">{{ language.getLabel('LBL_LOCALE_PREFERENCES') }}</span>
+            </button>
+        </h3>
+        <div>
+            <div [ngStyle]="getTabStyle('loc')">
+                <div class="slds-grid slds-grid--align-spread">
+                    <div class="slds-form-element slds-size--4-of-8 slds-p-around--x-small">
+                        <label class="slds-form-element__label">{{ language.getLabel('LBL_TIMEZONE') }}</label>
+                        <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                            <span class="slds-form-element__static">{{preferences.timezone}}</span>
+                            <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                                <system-button-icon [icon]="'edit'"></system-button-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" name="timezone" (change)="change($event,'timezone')">
+                                    <option value="-" [selected]="!preferences.timezone"></option>
+                                    <option *ngFor="let key of timezoneKeys" value="{{key}}" [selected]="preferences.timezone === key">{{timezones[key]}}</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" name="timezone" (change)="preferences.timezone = $event.srcElement.value">
-                                <option value="">-- select one --</option>
-                                <ng-container *ngFor="let key of timezoneKeys">
-                                    <option value="{{key}}">{{timezones[key]}}</option>
+                    <div class="slds-form-element slds-size--2-of-8 slds-p-around--x-small">
+                        <label class="slds-form-element__label">{{ language.getLabel('LBL_DATE_FORMAT') }}</label>
+                        <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                            <span class="slds-form-element__static">{{datef}}</span>
+                            <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                                <system-button-icon [icon]="'edit'"></system-button-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" (change)="change($event,'datef')">
+                                    <option value="-" [selected]="!preferences.datef"></option>
+                                    <option *ngFor="let item of dateFormatList" [value]="item.value" [selected]="preferences.datef == item.value">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-size--2-of-8 slds-p-around--x-small">
+                        <label class="slds-form-element__label">{{ language.getLabel('LBL_TIME_FORMAT') }}</label>
+                        <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                            <span class="slds-form-element__static"> {{timef}}</span>
+                            <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                                <system-button-icon [icon]="'edit'"></system-button-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" (change)="change($event,'timef')">
+                                    <option value="-" [selected]="!preferences.timef"></option>
+                                    <option *ngFor="let item of timeFormatList" [value]="item.value" [selected]="preferences.timef == item.value">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid--align-spread">
+                    <div class="slds-form-element slds-size--2-of-5 slds-p-around--x-small">
+                        <label class="slds-form-element__label">{{ language.getLabel('LBL_CURRENCY') }}</label>
+                        <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                             <span class="slds-form-element__static">
+                                <ng-container *ngFor="let item of currencyList">
+                                    {{  item.id == preferences.currency ? item.name : '' }}
                                 </ng-container>
-                            </select>
+                            </span>
+                            <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                                <system-button-icon [icon]="'edit'"></system-button-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" (change)="change($event,'currency')">
+                                    <option value="-" [selected]="!preferences.currency"></option>
+                                    <option *ngFor="let item of currencyList" [value]="item.id" [selected]="preferences.currency == item.id">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="slds-form-element slds-size--2-of-8 slds-p-around--x-small">
-                    <label class="slds-form-element__label">{{ language.getLabel('LBL_DATE_FORMAT') }}</label>
-                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                        <span class="slds-form-element__static">{{datef}}</span>
-                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                            <system-button-icon [icon]="'edit'"></system-button-icon>
-                        </button>
-                    </div>
-                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.datef = $event.srcElement.value">
-                                <option value="">-- select one --</option>
-                                <option *ngFor="let item of dateFormatList" [value]="item.value" [selected]="preferences.datef == item.value">
-                                    {{ item.name }}
-                                </option>
-                            </select>
+                    <div class="slds-form-element slds-size--1-of-5 slds-p-around--x-small">
+                        <label class="slds-form-element__label">{{ language.getLabel('LBL_DECIMAL_DIGITS') }}</label>
+                        <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                            <span class="slds-form-element__static">{{preferences.default_currency_significant_digits}}</span>
+                            <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                                <system-button-icon [icon]="'edit'"></system-button-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" (change)="change($event,'default_currency_significant_digits')">
+                                    <option value="-" [selected]="!preferences.default_currency_significant_digits"></option>
+                                    <option *ngFor="let item of currencySignificantDigitsList" [value]="item" [selected]="preferences.default_currency_significant_digits == item">
+                                        {{ item }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="slds-form-element slds-size--2-of-8 slds-p-around--x-small">
-                    <label class="slds-form-element__label">{{ language.getLabel('LBL_TIME_FORMAT') }}</label>
-                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                        <span class="slds-form-element__static"> {{timef}}</span>
-                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                            <system-button-icon [icon]="'edit'"></system-button-icon>
-                        </button>
-                    </div>
-                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.timef = $event.srcElement.value">
-                                <option value="">-- select one --</option>
-                                <option *ngFor="let item of timeFormatList" [value]="item.value" [selected]="preferences.timef == item.value">
-                                    {{ item.name }}
-                                </option>
-                            </select>
+                    <div class="slds-form-element slds-size--2-of-5 slds-p-around--x-small">
+                        <label class="slds-form-element__label">{{ language.getLabel('LBL_FORMATTING') }}</label>
+                        <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                                <span class="slds-form-element__static">
+                                    {{formattingOfNumbers}}
+                                </span>
+                            <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                                <system-button-icon [icon]="'edit'"></system-button-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" (change)="setFormattingOfNumbers( $event.srcElement.value )">
+                                    <option value="-"></option>
+                                    <option *ngFor="let item of formattingsOfNumbers; let i=index" [value]="i" [selected]="preferences.num_grp_sep === item.num_grp_sep && preferences.dec_sep === item.dec_sep">
+                                        {{ item.show }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="slds-section" [ngClass]="{'slds-is-open': expanded.exp}">
+        <h3 class="slds-section__title">
+            <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('exp')">
+                <system-utility-icon [icon]="'switch'" [size]="'x-small'"
+                                     [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                <span class="slds-truncate">{{ language.getLabel('LBL_EXPORT_PREFERENCES') }}</span>
+            </button>
+        </h3>
+        <div [ngStyle]="getTabStyle('exp')">
             <div class="slds-grid slds-grid--align-spread">
-                <div class="slds-form-element slds-size--2-of-5 slds-p-around--x-small">
-                    <label class="slds-form-element__label">{{ language.getLabel('LBL_CURRENCY') }}</label>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_EXPORT_DELIMITER') }}</label>
                     <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                         <span class="slds-form-element__static">
-                            <ng-container *ngFor="let item of currencyList">
-                                {{  item.id == preferences.currency ? item.name : '' }}
-                            </ng-container>
-                        </span>
+                        <span class="slds-form-element__static">{{ preferences.export_delimiter }}</span>
                         <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
                             <system-button-icon [icon]="'edit'"></system-button-icon>
                         </button>
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.currency = $event.srcElement.value">
-                                <option value="">-- select one --</option>
-                                <option *ngFor="let item of currencyList" [value]="item.id" [selected]="preferences.currency == item.id">
-                                    {{ item.name }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="slds-form-element slds-size--1-of-5 slds-p-around--x-small">
-                    <label class="slds-form-element__label">{{ language.getLabel('LBL_DECIMAL_DIGITS') }}</label>
-                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                        <span class="slds-form-element__static">{{preferences.default_currency_significant_digits}}</span>
-                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                            <system-button-icon [icon]="'edit'"></system-button-icon>
-                        </button>
-                    </div>
-                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" (change)="preferences.default_currency_significant_digits = $event.srcElement.value">
-                                <option value="">-- select one --</option>
-                                <option *ngFor="let item of currencySignificantDigitsList" [value]="item" [selected]="preferences.default_currency_significant_digits == item">
+                            <select class="slds-select" (change)="change($event,'export_delimiter')">
+                                <option value="-" [selected]="!preferences.export_delimiter"></option>
+                                <option *ngFor="let item of exportDelimiterList" [value]="item" [selected]="preferences.export_delimiter == item">
                                     {{ item }}
                                 </option>
                             </select>
                         </div>
                     </div>
                 </div>
-                <div class="slds-form-element slds-size--2-of-5 slds-p-around--x-small">
-                    <label class="slds-form-element__label">{{ language.getLabel('LBL_FORMATTING') }}</label>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_EXPORT_CHARSET') }}</label>
                     <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                            <span class="slds-form-element__static">
-                                {{formattingOfNumbers}}
-                            </span>
+                        <span class="slds-form-element__static">{{preferences.default_export_charset}}</span>
                         <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
                             <system-button-icon [icon]="'edit'"></system-button-icon>
                         </button>
                     </div>
                     <div *ngIf="view.isEditMode()" class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="setFormattingOfNumbers( $event.srcElement.value )">
-                                <option value="">-- select one --</option>
-                                <option *ngFor="let item of formattingsOfNumbers; let i=index" [value]="i" [selected]="preferences.num_grp_sep === item.num_grp_sep && preferences.dec_sep === item.dec_sep">
-                                    {{ item.show }}
+                            <select class="slds-select" (change)="change($event,'default_export_charset')">
+                                <option value="-" [selected]="!preferences.default_export_charset"></option>
+                                <option *ngFor="let item of charsetlist" [selected]="item == preferences.default_export_charset" [value]="item">
+                                    {{ item}}
                                 </option>
                             </select>
                         </div>
@@ -134,98 +189,46 @@
             </div>
         </div>
     </div>
-</div>
 
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded.exp}">
-    <h3 class="slds-section__title">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('exp')">
-            <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-            <span class="slds-truncate">{{ language.getLabel('LBL_EXPORT_PREFERENCES') }}</span>
-        </button>
-    </h3>
-    <div [ngStyle]="getTabStyle('exp')">
-        <div class="slds-grid slds-grid--align-spread">
-            <div class="slds-form-element slds-size--1-of-2 slds-p-around--x-small">
-                <label class="slds-form-element__label">{{ language.getLabel('LBL_EXPORT_DELIMITER') }}</label>
-                <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                    <span class="slds-form-element__static">{{ preferences.export_delimiter }}</span>
-                    <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                        <system-button-icon [icon]="'edit'"></system-button-icon>
-                    </button>
-                </div>
-                <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" (change)="preferences.export_delimiter = $event.srcElement.value">
-                            <option value="">-- select one --</option>
-                            <option *ngFor="let item of exportDelimiterList" [value]="item" [selected]="preferences.export_delimiter == item">
-                                {{ item }}
-                            </option>
-                        </select>
+    <div class="slds-section" [ngClass]="{'slds-is-open': expanded.other}">
+        <h3 class="slds-section__title">
+            <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('other')">
+                <system-utility-icon [icon]="'switch'" [size]="'x-small'"
+                                     [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                <span class="slds-truncate">{{ language.getLabel('LBL_OTHER_PREFERENCES') }}</span>
+            </button>
+        </h3>
+        <div [ngStyle]="getTabStyle('other')">
+            <div class="slds-grid slds-grid--align-spread">
+                <div class="slds-form-element slds-size--3-of-9 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_NAME_FORMAT') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{getExampleText( preferences.default_locale_name_format )}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
                     </div>
-                </div>
-            </div>
-            <div class="slds-form-element slds-size--1-of-2 slds-p-around--x-small">
-                <label class="slds-form-element__label">{{ language.getLabel('LBL_EXPORT_CHARSET') }}</label>
-                <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                    <span class="slds-form-element__static">{{preferences.default_export_charset}}</span>
-                    <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                        <system-button-icon [icon]="'edit'"></system-button-icon>
-                    </button>
-                </div>
-                <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" (change)="preferences.default_export_charset = $event.srcElement.value">
-                            <option value="">-- select one --</option>
-                            <option *ngFor="let item of charsetlist" [selected]="item == preferences.default_export_charset" [value]="item">
-                                {{ item}}
-                            </option>
-                        </select>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" (change)="change($event,'default_locale_name_format')">
+                                <option value="-" [selected]="!preferences.default_locale_name_format"></option>
+                                <option *ngFor="let item of prefservice.formats.nameFormats" value="{{item.name}}"
+                                        [selected]="item.name == preferences.default_locale_name_format">{{item.example}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded.other}">
-    <h3 class="slds-section__title">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('other')">
-            <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-            <span class="slds-truncate">{{ language.getLabel('LBL_OTHER_PREFERENCES') }}</span>
+    <div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
+        <button class="slds-button slds-button--neutral" (click)="cancel()">
+            {{language.getLabel('LBL_CANCEL')}}
         </button>
-    </h3>
-    <div [ngStyle]="getTabStyle('other')">
-        <div class="slds-grid slds-grid--align-spread">
-            <div class="slds-form-element slds-size--3-of-9 slds-p-around--x-small">
-                <label class="slds-form-element__label">{{ language.getLabel('LBL_NAME_FORMAT') }}</label>
-                <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
-                    <span class="slds-form-element__static">{{getExampleText( preferences.default_locale_name_format )}}</span>
-                    <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
-                        <system-button-icon [icon]="'edit'"></system-button-icon>
-                    </button>
-                </div>
-                <div *ngIf="view.isEditMode()" class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" name="timezone" (change)="preferences.default_locale_name_format = $event.srcElement.value">
-                            <option value="">-- select one --</option>
-                            <ng-container *ngFor="let item of prefservice.formats.nameFormats">
-                                <option value="{{item.name}}" [selected]="item.name == preferences.default_locale_name_format">{{item.example}}</option>
-                            </ng-container>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">
+            {{language.getLabel('LBL_SAVE')}}
+        </button>
     </div>
-</div>
 
-<div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
-    <button class="slds-button slds-button--neutral" (click)="cancel()">
-        {{language.getLabel('LBL_CANCEL')}}
-    </button>
-    <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">
-        {{language.getLabel('LBL_SAVE')}}
-    </button>
-</div>
+</ng-template>

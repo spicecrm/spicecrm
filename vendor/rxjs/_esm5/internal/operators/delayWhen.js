@@ -29,6 +29,7 @@ var DelayWhenSubscriber = /*@__PURE__*/ (function (_super) {
         _this.delayDurationSelector = delayDurationSelector;
         _this.completed = false;
         _this.delayNotifierSubscriptions = [];
+        _this.index = 0;
         return _this;
     }
     DelayWhenSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
@@ -47,8 +48,9 @@ var DelayWhenSubscriber = /*@__PURE__*/ (function (_super) {
         this.tryComplete();
     };
     DelayWhenSubscriber.prototype._next = function (value) {
+        var index = this.index++;
         try {
-            var delayNotifier = this.delayDurationSelector(value);
+            var delayNotifier = this.delayDurationSelector(value, index);
             if (delayNotifier) {
                 this.tryDelay(delayNotifier, value);
             }
@@ -60,6 +62,7 @@ var DelayWhenSubscriber = /*@__PURE__*/ (function (_super) {
     DelayWhenSubscriber.prototype._complete = function () {
         this.completed = true;
         this.tryComplete();
+        this.unsubscribe();
     };
     DelayWhenSubscriber.prototype.removeSubscription = function (subscription) {
         subscription.unsubscribe();
@@ -72,7 +75,8 @@ var DelayWhenSubscriber = /*@__PURE__*/ (function (_super) {
     DelayWhenSubscriber.prototype.tryDelay = function (delayNotifier, value) {
         var notifierSubscription = subscribeToResult(this, delayNotifier, value);
         if (notifierSubscription && !notifierSubscription.closed) {
-            this.add(notifierSubscription);
+            var destination = this.destination;
+            destination.add(notifierSubscription);
             this.delayNotifierSubscriptions.push(notifierSubscription);
         }
     };
@@ -113,6 +117,7 @@ var SubscriptionDelaySubscriber = /*@__PURE__*/ (function (_super) {
         this.parent.error(err);
     };
     SubscriptionDelaySubscriber.prototype._complete = function () {
+        this.unsubscribe();
         this.subscribeToSource();
     };
     SubscriptionDelaySubscriber.prototype.subscribeToSource = function () {
