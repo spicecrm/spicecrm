@@ -11,47 +11,33 @@
     </div>
 </div>
 <div class="slds-grid">
-    <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
-        <div class="slds-tree_container" role="application" style="max-width: none;">
-            <div class="slds-tabs_default" style="background-color: transparent; ">
-                <div id="tab-default-1" class="slds-tabs_default__content slds-show slds-scrollable_y" role="tabpanel" aria-labelledby="tab-default-1__item" style="max-height: 70%;">
-                    <div class="slds-tree_container" >
-                        <ul class="slds-tree" aria-labelledby="treeheading">
-                            <li *ngFor="let objrepoItem of objrepoList" [ngClass]="{'slds-is-selected': checkCurrentObjRepo(objrepoItem.id)}" aria-level="0" tabindex="0" (click)="clickObjRepo(objrepoItem)">
-                                <div class="slds-tree__item">
-                                    <span class="slds-size_1-of-1">
-                                      <span class="slds-tree__item-label slds-truncate" title="Tree Item">{{objrepoItem.object}}</span>
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div *ngIf="(currentModule | json) != '{}'" class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
-                    <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addObjRepo()">
-                        <system-button-icon [icon]="'new'"></system-button-icon>
-                    </button>
-                </div>
+    <div class="slds-size--2-of-5 slds-p-horizontal--small slds-border--right">
+        <div *ngIf="(currentModule | json) != '{}'" class="slds-p-around--small slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-gutters">
+            <div class="slds-grow slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-p-right--xx-small">
+                <system-utility-icon icon="filterList" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                <input class="slds-input" type="text" [(ngModel)]="objectFilter"/>
             </div>
+            <button [disabled]="!view.isEditMode()" class="slds-button slds-button_neutral" (click)="addObjRepo()">{{language.getLabel('LBL_ADD')}}</button>
         </div>
+        <ul class="slds-has-dividers_around-space">
+            <li class="slds-item" *ngFor="let objrepoItem of objrepoList|objectrepositorymanagerfilter:objectFilter" (click)="clickObjRepo(objrepoItem)" [ngClass]="{'slds-theme--shade': checkCurrentObjRepo(objrepoItem.id)}">
+                    {{objrepoItem.object}}
+            </li>
+        </ul>
     </div>
-    <div *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
+    <div *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small">
         <!--configList-->
-        <div class="slds-text-align--right ">
-            <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
-                {{language.getLabel('LBL_SAVE')}}
-            </button>
-        </div>
+
         <div class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label" for="input-id-02">{{language.getAppLanglabel('LBL_OBJECT')}}</label>
+            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_OBJECT')}}</label>
             <div class="slds-form-element__control">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" id="input-id-02" [ngModel]="currentObjRepo.object"/>
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.object"/>
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label" for="input-id-03">{{language.getAppLanglabel('LBL_COMPONENT')}}</label>
+            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_COMPONENT')}}</label>
             <div class="slds-form-element__control">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" id="input-id-03" [ngModel]="currentObjRepo.component"/>
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.component"/>
             </div>
         </div>
         <div *ngIf="view.isEditMode()" class="slds-form-element slds-m-vertical_medium">
@@ -73,15 +59,16 @@
             <table class="slds-table slds-table_bordered" role="grid" style="width: 100%;">
                 <thead>
                     <tr class="slds-line-height_reset">
-                        <th aria-sort="none" aria-label="Name" scope="col">
+                        <th scope="col">
                                 <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_NAME')}}</span>
                         </th>
-                        <th aria-sort="none"  aria-label="Name" scope="col">
+                        <th scope="col">
                                 <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_TYPE')}}</span>
                         </th>
-                        <th aria-sort="none"  aria-label="Name" scope="col">
+                        <th scope="col">
                             <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</span>
                         </th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -123,11 +110,16 @@
                     </ng-container>
                 </tbody>
             </table>
-            <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
+            <div class="slds-p-around--small slds-align--absolute-center slds-border--bottom">
                 <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addConfig()">
                     <system-button-icon [icon]="'new'"></system-button-icon>
                 </button>
             </div>
+        </div>
+        <div class="slds-text-align--right slds-p-vertical--x-small">
+            <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
+                {{language.getLabel('LBL_SAVE')}}
+            </button>
         </div>
         <!--<workbench-component-config *ngIf="selectedComponent.id" [component]="selectedComponent"></workbench-component-config>-->
     </div>
