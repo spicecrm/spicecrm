@@ -13,23 +13,25 @@ import { model } from '../../services/model.service';
     templateUrl: './src/globalcomponents/templates/globalsearchmoduleitem.html',
     providers:[view, model]
 })
-export class GlobalSearchModuleItem implements OnInit{
-    @Input() module: string = '';
-    @Input() listfields: string = '';
-    @Input() listitem: any = {};
+export class GlobalSearchModuleItem implements OnInit {
+    @Input() private module: string = '';
+    @Input() private listfields: string = '';
+    @Input() private listitem: any = {};
 
     constructor(private elementref: ElementRef, private router: Router, private view: view, private model: model){
         this.view.isEditable = false;
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.module = this.listitem._type;
         this.model.id = this.listitem._id;
         this.model.data = this.listitem._source;
+
+        // add acl so the links work as well
+        this.model.data.acl = this.listitem.acl;
     }
 
-    navigateDetail() {
-        this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
+    private navigateDetail() {
+        this.model.goDetail();
     }
-
 }
