@@ -26,13 +26,13 @@ export class CalendarSheetMonth implements OnChanges {
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
     private currentGrid: Array<any> = [];
-    private sheetTopMargin: number = 0;
     private calendarevents: Array<any> = [];
 
-    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
-        // set theenavigation paradigm
-        this.navigation.setActiveModule('Calendar');
-
+    constructor(private language: language,
+                private broadcast: broadcast,
+                private navigation: navigation,
+                private elementRef: ElementRef,
+                private calendar: calendar) {
     }
 
     get sheetDays(): Array<any> {
@@ -60,7 +60,6 @@ export class CalendarSheetMonth implements OnChanges {
         let endDate = new moment(startDate).add(moment.duration(1, 'M'));
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
-                // sort the events
                 events.sort((a, b) => {
                     if (a.start < b.start) {
                         return -1;
@@ -94,7 +93,7 @@ export class CalendarSheetMonth implements OnChanges {
 
     private getSheetStyle() {
         return {
-            height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
+            height: 'calc(100vh - ' + (this.calendarsheet.element.nativeElement.offsetTop + 20) + 'px)',
         };
     }
 
@@ -162,7 +161,11 @@ export class CalendarSheetMonth implements OnChanges {
         let cellEvents: Array<any> = [];
         let cellDate = this.currentGrid[i][j];
         for (let event of this.calendarevents) {
-            if (event.start.date() === cellDate.day && event.start.month() === cellDate.month) {
+            if (event.start.month() === cellDate.month && event.end.month() === cellDate.month && event.start.date() <= cellDate.day && event.end.date() >= cellDate.day) {
+                cellEvents.push(event);
+            } else if (event.start.month() === cellDate.month && event.end.month() !== cellDate.month && event.start.date() <= cellDate.day) {
+                cellEvents.push(event);
+            } else if (event.end.month() === cellDate.month && event.start.month() !== cellDate.month && event.end.date() >= cellDate.day) {
                 cellEvents.push(event);
             }
         }

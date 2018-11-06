@@ -1,19 +1,18 @@
 <div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right:15px">
-        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getTimeColStyle()">
+    <div class="slds-grid">
+        <div class="slds-align--absolute-center slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
             <system-utility-icon [icon]="'clock'" [size]="'x-small'"></system-utility-icon>
         </div>
-        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getDayColStyle()">{{displayDate()}}&nbsp;/&nbsp;
-            <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoWeek()">Week {{displayWeek()}}</a>
+        <div class="slds-size--1-of-1 slds-border--left slds-p-top--xx-small" [ngStyle]="getDayColStyle()">
+            <div class="slds-text-body--regular slds-p-left--x-small">{{displayDate('ddd')}}</div>
+            <div style="font-size: 2.5rem;line-height: 2.5rem;" class="slds-p-left--x-small slds-p-bottom--xx-small">{{displayDate('D')}}</div>
+            <div #multievents class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small" [ngStyle]="getMultiEventsContainerStyle()">
+                <ng-container *ngFor="let event of calendarMultiEvents; let index = index">
+                    <calendar-sheet-day-event [ngStyle]="getMultiEventStyle(index)" [event]="event"
+                                              (rearrange)="rearrangeEvents()"></calendar-sheet-day-event>
+                </ng-container>
+            </div>
         </div>
-    </div>
-</div>
-<div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right:15px">
-        <div class="slds-text-align--center slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
-            <system-utility-icon [icon]="'chevronright'" [size]="'x-small'"></system-utility-icon>
-        </div>
-        <div class="slds-text-align--center slds-border--left" [ngStyle]="getDayColStyle()"></div>
     </div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
@@ -32,7 +31,7 @@
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle()"></div>
     </ng-container>
     <ng-container *ngFor="let event of calendarevents">
-        <calendar-sheet-day-event style="transform: 1s" [ngStyle]="getEventStyle(event)" [event]="event"
+        <calendar-sheet-day-event [ngStyle]="getEventStyle(event)" [event]="event"
                                   (rearrange)="rearrangeEvents()"></calendar-sheet-day-event>
     </ng-container>
 </div>

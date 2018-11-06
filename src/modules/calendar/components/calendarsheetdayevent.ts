@@ -22,13 +22,12 @@ export class CalendarSheetDayEvent implements OnInit {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     @Input() private event: any = {};
     private componentconfig: any = {};
-    private fields: Array<any> = [];
+    public fields: Array<any> = [];
     private mouseMoveListener: any = undefined;
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
     private mouseLast: any = undefined;
 
-    private sheetHourHeight: number = 60;
     private lastMoveTimeSpan: number = 0;
 
     constructor(private language: language, private metadata: metadata, private broadcast: broadcast, private calendar: calendar, private elementRef: ElementRef, private model: model, private renderer: Renderer2) {
@@ -49,11 +48,11 @@ export class CalendarSheetDayEvent implements OnInit {
     private getEventStyle() {
         try {
             return {
-                'background-color': this.componentconfig.colors.default ? this.componentconfig.colors.default : '#d5e4f0'
+                'background-color': this.componentconfig.colors.default ? this.componentconfig.colors.default : 'rgb(3, 155, 229)'
             };
         } catch (e) {
             return {
-                'background-color': '#d5e4f0'
+                'background-color': 'rgb(3, 155, 229)'
             };
         }
     }
