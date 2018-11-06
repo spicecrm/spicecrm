@@ -14,6 +14,8 @@ export class calendar {
     public currentStart: any = null;
     public currentEnd: any = null;
     public sheetHourHeight: number = 80;
+    public displayHoursFrom: number = 0;
+    public displayHoursTo: number = 24;
 
     constructor(private backend: backend, private session: session, private modelutilities: modelutilities) {
     }
@@ -40,24 +42,25 @@ export class calendar {
                             event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                             break;
                     }
+                    if (+event.end.diff(event.start, 'days') > 0) {
+                        event.isMulti = true;
+                    }
                     this.calendars[calendar].push(event);
                 }
-
-                responseSubject.next(this.calendars[calendar]);
+                responseSubject.next(this.arrangeEvents(this.calendars[calendar]));
                 responseSubject.complete();
             });
 
             return responseSubject.asObservable();
         } else {
             // filter the current eventset based on the start and end date
-            // todo: not proper filtering yet for multi day events
             let filteredEntries: Array<any> = [];
             for (let event of this.calendars[calendar]) {
                 if (event.start >= start && event.end <= end) {
                     filteredEntries.push(event);
                 }
             }
-            return of(filteredEntries);
+            return of(this.arrangeEvents(filteredEntries));
         }
     }
 

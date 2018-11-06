@@ -22,7 +22,6 @@ export class CalendarSheetDropTarget {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     @Input() private hour: any = '';
     @Input() private day: any = undefined;
-    private isActive: boolean = false;
     private isDropTarget: boolean = false;
 
     constructor(private calendar: calendar, private model: model) {
@@ -65,10 +64,13 @@ export class CalendarSheetDropTarget {
 
     private drop(event) {
         // TODO: check functionality (item, event)
+        console.log(event);
         let dragEvent: any = null;
-        this.calendar.getEvents().some(item => {
+        this.calendar.getEvents().some(event => {
+            console.log(event);
             if (event.dragging) {
-                dragEvent = item;
+                dragEvent = event;
+                console.log(event);
                 return true;
             }
         });

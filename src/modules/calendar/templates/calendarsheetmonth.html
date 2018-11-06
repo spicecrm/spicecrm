@@ -1,16 +1,13 @@
 <div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right:15px">
-        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getDayColStyle()" *ngFor="let sheetDay of sheetDays">{{sheetDay.text}}</div>
-    </div>
-</div>
-<div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right:15px">
-        <div class="slds-text-align--center slds-border--left " [ngStyle]="getDayColStyle()" *ngFor="let sheetDay of sheetDays"></div>
+    <div class="slds-grid">
+        <div class="slds-text-align--center slds-p-vertical--small slds-border--left" [ngStyle]="getDayColStyle()"
+             *ngFor="let sheetDay of sheetDays">{{sheetDay.text}}</div>
     </div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
     <ng-container *ngFor="let sheetWeek of currentGrid; let i = index;">
-        <calendar-sheet-month-day *ngFor="let sheetDay of sheetWeek; let j = index" [ngStyle]="getBoxStyle(i, j, sheetDay.month)" [sheetday]="sheetDay" [events]="getCellEvents(i, j)" (navigateday)="gotoDay($event)"></calendar-sheet-month-day>
+        <calendar-sheet-month-day *ngFor="let sheetDay of sheetWeek; let j = index" [ngStyle]="getBoxStyle(i, j, sheetDay.month)"
+                                  [sheetday]="sheetDay" [events]="getCellEvents(i, j)" (navigateday)="gotoDay($event)"></calendar-sheet-month-day>
         <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>
     </ng-container>
     <ng-container *ngFor="let sheetDay of sheetDays">

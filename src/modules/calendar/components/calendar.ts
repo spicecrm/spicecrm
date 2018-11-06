@@ -16,7 +16,7 @@ export class Calendar {
 
     private showTypeSelector: boolean = false;
     private calendarDate: any = {};
-    private sheetType: string = 'Week';
+    private sheetType: string = 'Day';
 
     private duration: any = {
         Day: 'd',
@@ -25,18 +25,14 @@ export class Calendar {
     };
 
     constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
-        // set theenavigation paradigm
         this.navigation.setActiveModule('Calendar');
-
         this.calendarDate = new moment();
     }
 
-    get contentStyle() {
-        if (this.calendarcontent) {
-            return {
-                height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop + 'px)'
-            };
-        }
+    private getContentStyle() {
+        return {
+            height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop + 'px)'
+        };
     }
 
     private getCalendarHeader() {
@@ -67,10 +63,6 @@ export class Calendar {
         let focDate = new moment(this.calendarDate);
         focDate.day(7);
         return focDate.format('MMMM D, YYYY');
-    }
-
-    private getOffset() {
-        return moment().utcOffset();
     }
 
     private setDateChanged(event) {
