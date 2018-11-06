@@ -19,7 +19,7 @@ import {footer} from '../services/footer.service';
 import {toast} from '../services/toast.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, Router } from '@angular/router';
 import { loginCheck } from '../services/login.service';
 import {DirectivesModule} from "../directives/directives";
 import { SystemComponents } from '../systemcomponents/systemcomponents';
@@ -29,6 +29,7 @@ import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service'
 import /*embed*/ {dictionary} from './services/dictionary.service'
 
 import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
+import /*embed*/ { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
 import /*embed*/ { AdministrationConfigurator } from './components/administrationconfigurator';
 import /*embed*/ { AdministrationConfiguratorItem } from './components/administrationconfiguratoritem';
 import /*embed*/ { AdministrationConfiguratorItemRole } from './components/administrationconfiguratoritemrole';
@@ -56,9 +57,7 @@ import /*embed*/ {VersionControllerComponent} from "./components/versioncontroll
     selector: 'administration-main',
     template: '<div administration-menu></div>'
 })
-export class AdministrationMain {
-    constructor() {}
-}
+export class AdministrationMain {}
 
 @NgModule({
     imports: [
@@ -73,6 +72,7 @@ export class AdministrationMain {
     declarations: [
         AdministrationMain,
         AdministrationMenu,
+        AdministrationMenuRouteItem,
         AdministrationConfigurator,
         AdministrationConfiguratorItem,
         AdministrationConfiguratorItemRole,

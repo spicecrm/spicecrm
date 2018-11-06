@@ -1,17 +1,42 @@
 import {CommonModule} from '@angular/common';
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, HostListener, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges, ChangeDetectorRef, HostBinding, Pipe, PipeTransform, Optional, Attribute} from '@angular/core';
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    NgModule,
+    HostListener,
+    Renderer,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef,
+    Injectable,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    OnInit,
+    OnDestroy,
+    OnChanges,
+    ChangeDetectorRef,
+    HostBinding,
+    Pipe,
+    PipeTransform,
+    Optional,
+    Attribute
+} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Title, DomSanitizer} from '@angular/platform-browser';
 
 import {Subject, Observable} from 'rxjs';
 
 
-import {FormsModule}   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
-import {ObjectFields}      from '../objectfields/objectfields';
-import {GlobalComponents}      from '../globalcomponents/globalcomponents';
-import {SystemComponents}      from '../systemcomponents/systemcomponents';
+import {ObjectFields} from '../objectfields/objectfields';
+import {GlobalComponents} from '../globalcomponents/globalcomponents';
+import {SystemComponents} from '../systemcomponents/systemcomponents';
 
 import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
 import {modal} from '../services/modal.service';
@@ -210,6 +235,10 @@ import /*embed*/ {ObjectKeyValuesPipe} from "./components/objectkeyvalue.pipe";
 import /*embed*/ {ObjectTableRow} from "./components/objecttablerow";
 import /*embed*/ {ObjectTable} from "./components/objecttable";
 
+import /*embed*/ {ObjectModelPopover} from "./components/objectmodelpopover";
+import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopoverfield";
+import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
+import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
 @NgModule({
     imports: [
@@ -225,7 +254,11 @@ import /*embed*/ {ObjectTable} from "./components/objecttable";
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
             {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/:id/:related/:link/:fieldset',
+                component: ObjectRelatedlistAll,
+                canActivate: [loginCheck]
+            },
             {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
@@ -377,6 +410,10 @@ import /*embed*/ {ObjectTable} from "./components/objecttable";
         ObjectKeyValuesPipe,
         ObjectTableRow,
         ObjectTable,
+        ObjectModelPopover,
+        ObjectModelPopoverField,
+        ObjectModelPopoverRelated,
+        ObjectModelPopoverRelatedItem
     ],
     entryComponents: [
         ObjectIcon,

@@ -1,28 +1,27 @@
-import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit} from '@angular/core';
-import {Router}   from '@angular/router';
+import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional} from '@angular/core';
+import {Router} from '@angular/router';
 
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {model} from "../../services/model.service";
 
 
-
 @Directive({
     selector: '[modelPopOver]',
 })
-export class ModelPopOverDirective implements OnInit, OnDestroy
-{
+export class ModelPopOverDirective implements OnInit, OnDestroy {
     @Input() private module: string;
     @Input() private id: string;
     private popoverCmp = null;
     private self: any = null;
     private showPopover: boolean = false;
     private showPopoverTimeout: any = {};
+    private hidePopoverTimeout: any = {};
 
     constructor(
         private metadata: metadata,
         private footer: footer,
-        private model: model,
+        @Optional() private model: model,
         private elementRef: ElementRef,
         private router: Router
     ) {
@@ -30,55 +29,54 @@ export class ModelPopOverDirective implements OnInit, OnDestroy
     }
 
     @HostListener('mouseenter')
-    onMouseOver() {
+    private onMouseOver() {
         this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
     }
 
     @HostListener('mouseleave')
-    onMouseOut() {
-        if (this.showPopoverTimeout) window.clearTimeout(this.showPopoverTimeout);
-        this.destroyPopover();
+    private onMouseOut() {
+        if (this.showPopoverTimeout) {
+            window.clearTimeout(this.showPopoverTimeout);
+        }
+
+        if (this.popoverCmp) {
+            this.popoverCmp.closePopover();
+        }
     }
 
     @HostListener('click')
-    goRelated() {
-        if (this.showPopoverTimeout) window.clearTimeout(this.showPopoverTimeout);
+    private goRelated() {
+        if (this.showPopoverTimeout) {
+            window.clearTimeout(this.showPopoverTimeout);
+        }
         // go to the record
         this.router.navigate(['/module/' + this.module + '/' + this.id]);
     }
 
-    renderPopover(){
-        this.metadata.addComponent('fieldModelFooterPopover', this.footer.footercontainer).subscribe(
+    private renderPopover() {
+        this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
             popover => {
-                popover.instance['popovermodule'] = this.module;
-                popover.instance['popoverid'] = this.id;
-                popover.instance['parentElementRef'] = this.elementRef;
-                // popover.instance['self'] = popover;
+                popover.instance.popovermodule = this.module;
+                popover.instance.popoverid = this.id;
+                popover.instance.parentElementRef = this.elementRef;
 
-                this.popoverCmp = popover.instance.self;
+                this.popoverCmp = popover.instance;
             }
         );
     }
 
-    destroyPopover(){
-        if(this.popoverCmp)
-            this.popoverCmp.destroy();
-    }
-
-    ngOnInit()
-    {
-        if(!this.module)
-        {
+    public ngOnInit() {
+        if (!this.module && this.model) {
             this.module = this.model.module;
         }
-        if(!this.id)
-        {
+        if (!this.id && this.model) {
             this.id = this.model.id;
         }
     }
 
-    ngOnDestroy()
-    {
-        this.destroyPopover();
+    public ngOnDestroy() {
+        if (this.popoverCmp) {
+            this.popoverCmp.closePopover(true);
+        }
     }
 }

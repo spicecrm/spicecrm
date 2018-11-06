@@ -5,7 +5,7 @@
                 <object-icon [icon]="'log_a_call'" [size]="'small'"></object-icon>
             </div>
             <div class="slds-media__body">
-                <h3 class="slds-truncate" (click)="goDetail()">
+                <h3 class="slds-truncate" modelPopOver (click)="goDetail()">
                     <a *ngIf="enableDetail" href="javascript:void(0);">{{model.data.name}}</a>
                     <span *ngIf="!enableDetail">{{model.data.name}}</span>
                 </h3>
