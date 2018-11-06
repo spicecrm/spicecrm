@@ -1,5 +1,5 @@
 /**
- * @license Angular v6.1.2
+ * @license Angular v7.0.1
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -9,6 +9,28 @@
     typeof define === 'function' && define.amd ? define('@angular/platform-server/testing', ['exports', '@angular/core', '@angular/platform-browser-dynamic/testing', '@angular/platform-browser/animations', '@angular/platform-server'], factory) :
     (factory((global.ng = global.ng || {}, global.ng.platformServer = global.ng.platformServer || {}, global.ng.platformServer.testing = {}),global.ng.core,global.ng.platformBrowserDynamic.testing,global.ng.platformBrowser.animations,global.ng.platformServer));
 }(this, (function (exports,core,testing,animations,platformServer) { 'use strict';
+
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation. All rights reserved.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0
+
+    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+    MERCHANTABLITY OR NON-INFRINGEMENT.
+
+    See the Apache Version 2.0 License for specific language governing permissions
+    and limitations under the License.
+    ***************************************************************************** */
+
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
 
     /**
      * @license
@@ -20,24 +42,24 @@
     /**
      * Platform for testing
      *
-     * @experimental API related to bootstrapping are still under review.
+     * @publicApi
      */
     var platformServerTesting = core.createPlatformFactory(testing.ɵplatformCoreDynamicTesting, 'serverTesting', platformServer.ɵINTERNAL_SERVER_PLATFORM_PROVIDERS);
     /**
      * NgModule for testing.
      *
-     * @experimental API related to bootstrapping are still under review.
+     * @publicApi
      */
     var ServerTestingModule = /** @class */ (function () {
         function ServerTestingModule() {
         }
-        ServerTestingModule.decorators = [
-            { type: core.NgModule, args: [{
-                        exports: [testing.BrowserDynamicTestingModule],
-                        imports: [animations.NoopAnimationsModule],
-                        providers: platformServer.ɵSERVER_RENDER_PROVIDERS
-                    },] }
-        ];
+        ServerTestingModule = __decorate([
+            core.NgModule({
+                exports: [testing.BrowserDynamicTestingModule],
+                imports: [animations.NoopAnimationsModule],
+                providers: platformServer.ɵSERVER_RENDER_PROVIDERS
+            })
+        ], ServerTestingModule);
         return ServerTestingModule;
     }());
 
