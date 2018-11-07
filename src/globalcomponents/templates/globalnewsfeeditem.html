@@ -1,16 +1,14 @@
 <article class="slds-card slds-m-bottom--medium">
-    <div class="slds-card__header slds-grid">
-        <header class="spicecrm-newsfeed-item-header slds-media slds-media--center slds-has-flexi-truncate">
-            <div class="slds-media__body slds-truncate">
-                <h2>
-                    <a target="_blank" [attr.href]="item.link">{{item.title.rendered}}</a>
-                </h2>
-            </div>
-        </header>
+    <div class="slds-card__header">
+        <div class="slds-grid slds-grid_vertical-align-center">
+            <system-custom-icon icon="wordpress" size="small"></system-custom-icon>
+            <h2 class="slds-text-heading--medium slds-truncate">
+                <a target="_blank" [attr.href]="item.link" [innerHTML]="item.title.rendered"></a>
+            </h2>
+        </div>
     </div>
-    <div class="slds-card__body">
-        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded"
-             [innerHTML]="getExcerpt()"></div>
+    <div class="slds-card__body slds-p-vertical--xx-small slds-p-horizontal--small">
+        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded" style="text-align: justify" [innerHTML]="getExcerpt()"></div>
     </div>
     <div class="slds-card__footer">{{getDate()}}</div>
 </article>
