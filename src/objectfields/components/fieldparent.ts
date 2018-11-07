@@ -8,6 +8,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {fieldGeneric} from './fieldgeneric';
+import { modal } from '../../services/modal.service';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         public router: Router,
         private elementRef: ElementRef,
         private renderer: Renderer,
+        private modal: modal
     ) {
         super(model, view, language, metadata, router);
 
@@ -155,6 +157,20 @@ export class fieldParent extends fieldGeneric implements OnInit {
 
     private goParent() {
         this.router.navigate(['/module/' + this.model.getField(this.parentTypeField) + '/' + this.model.getField(this.parentIdField)]);
+    }
+
+    private searchWithModal() {
+        this.parentSearchOpen = false;
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = this.parentType;
+            selectModal.instance.multiselect = false;
+            selectModal.instance.selectedItems.subscribe(items => {
+                if ( items.length ) {
+                    this.setParent({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
+                }
+            });
+            selectModal.instance.searchTerm = this.parentSearchTerm;
+        });
     }
 
 }

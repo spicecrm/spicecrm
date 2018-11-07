@@ -14,7 +14,7 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
 @Component({
     selector: 'object-tab-container-item-header',
-    templateUrl: '../templates/objecttabcontaineritemheader.html'
+    templateUrl: './src/objectcomponents/templates/objecttabcontaineritemheader.html'
 })
 export class ObjectTabContainerItemHeader implements AfterViewInit {
     @ViewChild('headercontainer', {read: ViewContainerRef}) headercontainer: ViewContainerRef;
