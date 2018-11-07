@@ -39,7 +39,11 @@ export class fieldEmail extends fieldGeneric {
         }
 
         this.model.setField(this.fieldname, newemail);
-        for(let emailaddress of this.model.getFieldValue('emailaddresses')){
+        if (!this.model.getFieldValue('emailaddresses')) {
+            return;
+        }
+
+        for (let emailaddress of this.model.getFieldValue('emailaddresses')){
             if(emailaddress.primary_address == 1) {
                 emailaddress.email_address = newemail;
                 emailaddress.email_address_caps = newemail.toUpperCase();
@@ -50,7 +54,7 @@ export class fieldEmail extends fieldGeneric {
     }
 
     private changed() {
-        if ( this.value.length && this.validation.test( this.value )) {
+        if ( this.value && this.value.length && this.validation.test( this.value )) {
             this.model.resetFieldMessages( this.fieldname, 'error', this.mark );
             this.invalid = false;
         } else {

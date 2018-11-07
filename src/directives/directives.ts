@@ -1,5 +1,5 @@
 import {CommonModule} from "@angular/common";
-import {NgModule,Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, TemplateRef, ViewContainerRef, Pipe, PipeTransform} from "@angular/core";
+import {NgModule,Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, TemplateRef, ViewContainerRef, Pipe, PipeTransform, Optional} from "@angular/core";
 import {Router}   from '@angular/router';
 
 import {metadata} from '../services/metadata.service';

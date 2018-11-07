@@ -12,14 +12,18 @@ export class SystemTreeItem {
     @Output() public addItem$: EventEmitter<any> = new EventEmitter<any>();
     @Input() public selectedItem: string = "";
     @Input() public items: any = [];
-    @Input() public config: any = {};
+    @Input() private config: any = {};
 
     constructor(private renderer: Renderer2) {
     }
 
     public expand(e, item) {
+        if (!item) {
+            return;
+        }
         item.expanded = !item.expanded;
         e.stopPropagation();
+
     }
 
     public addItem(e, parentId, parentName) {

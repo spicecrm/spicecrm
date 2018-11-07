@@ -26,7 +26,7 @@
             <div *ngIf="!id" class="slds-form-element__control slds-grid slds-box--border" [ngClass]="getFieldClass()">
                 <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
-                    <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="search_term" (focus)="onFocus()" [placeholder]="'Search ' + language.getModuleName(module)" role="combobox"/>
+                    <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="search_term" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="'Search ' + language.getModuleName(module)" role="combobox"/>
                 </div>
             </div>
         </div>

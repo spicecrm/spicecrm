@@ -2,6 +2,7 @@ import { tryCatch } from '../util/tryCatch';
 import { errorObject } from '../util/errorObject';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 export function mergeScan(accumulator, seed, concurrent = Number.POSITIVE_INFINITY) {
     return (source) => source.lift(new MergeScanOperator(accumulator, seed, concurrent));
 }
@@ -45,7 +46,10 @@ export class MergeScanSubscriber extends OuterSubscriber {
         }
     }
     _innerSub(ish, value, index) {
-        this.add(subscribeToResult(this, ish, value, index));
+        const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        const destination = this.destination;
+        destination.add(innerSubscriber);
+        subscribeToResult(this, ish, value, index, innerSubscriber);
     }
     _complete() {
         this.hasCompleted = true;
@@ -55,6 +59,7 @@ export class MergeScanSubscriber extends OuterSubscriber {
             }
             this.destination.complete();
         }
+        this.unsubscribe();
     }
     notifyNext(outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         const { destination } = this;
@@ -64,7 +69,8 @@ export class MergeScanSubscriber extends OuterSubscriber {
     }
     notifyComplete(innerSub) {
         const buffer = this.buffer;
-        this.remove(innerSub);
+        const destination = this.destination;
+        destination.remove(innerSub);
         this.active--;
         if (buffer.length > 0) {
             this._next(buffer.shift());

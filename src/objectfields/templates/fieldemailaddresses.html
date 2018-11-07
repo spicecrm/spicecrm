@@ -1,4 +1,4 @@
-<div *ngIf="!isEditMode()">
+<div *ngIf="!isEditMode()" class="slds-scrollable--x">
     <field-generic-display *ngFor="let emailaddress of model.data.emailaddresses" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
         <div class="slds-grid slds-p-vertical--xxx-small">
             <div class="slds-size--1-of-2">
@@ -9,7 +9,7 @@
                     <div class="slds-truncate" [ngStyle]="emailaddress.invalid_email == '1' ? {'text-decoration': 'line-through'} : {}">{{emailaddress.email_address}}</div>
                 </div>
             </div>
-            <div class="slds-m-left--x-small slds-size--2-of-2">
+            <div class="slds-p-left--x-small slds-size--1-of-2">
                 <div class="slds-grid slds-grid--align-start">
                     <div class="slds-form-element__control">
                     <span class="slds-radio">
@@ -43,7 +43,7 @@
         </div>
     </field-generic-display>
 </div>
-<div *ngIf="isEditMode()" >
+<div *ngIf="isEditMode()" class="slds-scrollable--x">
     <div *ngFor="let emailaddress of model.data.emailaddresses" class="slds-form-element__control slds-grid slds-grid--align-spread" [ngClass]="getFieldClass()">
         <div class="slds-size--1-of-1">
             <field-email-emailaddress class="slds-size--1-of-1" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)"></field-email-emailaddress>
