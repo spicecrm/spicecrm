@@ -83,8 +83,8 @@
                     <system-icon icon="search" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
-                    <field-lookup-recent *ngIf="1 || lookupSearchOpen && lookupSearchTerm === ''" [module]="lookupType" (selectedObject)="addItem($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="1 || lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookupType" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [fieldid]="fieldid" [searchterm]="lookupSearchTerm"></field-lookup-search>
+                    <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" [module]="lookupType" (selectedObject)="addItem($event)"></field-lookup-recent>
+                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookupType" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [fieldid]="fieldid" [searchterm]="lookupSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>
