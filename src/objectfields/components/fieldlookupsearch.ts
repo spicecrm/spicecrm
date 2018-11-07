@@ -56,7 +56,7 @@ export class fieldLookupSearch {
                 resultsArray = results.data.hits;
                 return true;
             }
-        })
+        });
         return resultsArray;
     }
 
