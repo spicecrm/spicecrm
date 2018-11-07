@@ -1,11 +1,4 @@
-/**
- * Created by christian on 08.11.2016.
- */
-import {
-    AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef,
-    OnInit
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, Input, OnInit} from '@angular/core';
 
 declare var moment: any;
 
@@ -16,17 +9,13 @@ declare var moment: any;
 })
 export class GlobalNewsFeedItem {
 
-    @Input() item: any = {}
+    @Input() private item: any = {}
 
-    constructor(private http: HttpClient) {
-
-    }
-
-    getDate() {
+    private getDate() {
         return moment(this.item.date).fromNow()
     }
 
-    getExcerpt() {
+    private getExcerpt() {
         return this.item.excerpt.rendered.replace('<a', '<a target="_blank"');
     }
 

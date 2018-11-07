@@ -7,9 +7,6 @@
     </div>
     <div *ngIf="true" class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
-            <button type="button" class="slds-button slds-button--neutral" (click)="showRefModal()" title="pull languages from reference db">
-                {{language.getLabel('LBL_REFERENCE_CONFIG')}}
-            </button>
             <button type="button" class="slds-button slds-button--neutral" (click)="addLabel()">
                 {{language.getLabel('LBL_ADD')}}
             </button>

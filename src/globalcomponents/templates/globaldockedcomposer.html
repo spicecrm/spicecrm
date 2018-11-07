@@ -1,4 +1,4 @@
-<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small" [ngClass]="{'slds-is-closed': isUserClosed, 'slds-is-open' : !isUserClosed}" role="dialog">
+<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small" [ngClass]="{'slds-is-closed': isClosed, 'slds-is-open': !isClosed}" role="dialog">
     <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
         <div class="slds-media slds-media_center slds-no-space">
             <div class="slds-media__figure slds-m-right_x-small">
@@ -23,16 +23,11 @@
         </div>
     </header>
     <div class="slds-docked-composer__body slds-theme--default slds-scrollable" style="height: 380px;">
-        <!--div class="slds-align_absolute-center">Docked Composer Panel Body
-            <br/> This area consumes the feature
-        </div-->
         <div #containercontent></div>
     </div>
     <footer class="slds-docked-composer__footer slds-shrink-none">
         <div class="slds-col_bump-left slds-text-align_right">
-            <button class="slds-button slds-button--neutral" (click)="closeComposer()">
-                {{language.getLabel('LBL_CANCEL')}}
-            </button>
+            <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
             <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
     </footer>
