@@ -154,7 +154,6 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
 
-
     private goParent() {
         this.router.navigate(['/module/' + this.model.getField(this.parentTypeField) + '/' + this.model.getField(this.parentIdField)]);
     }
