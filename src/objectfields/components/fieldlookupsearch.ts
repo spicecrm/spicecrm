@@ -17,7 +17,7 @@ export class fieldLookupSearch {
     @Input() private fieldid: string = '';
 
     @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
-    @Output() private searchWithModal: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() private searchWithModal = new EventEmitter();
 
     @Output() private searchtermChange = new EventEmitter<string>();
 
