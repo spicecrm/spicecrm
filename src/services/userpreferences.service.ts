@@ -35,7 +35,8 @@ export class userpreferences {
         timef: 'H:i',
         timezone: 'Europe/Vienna',
         default_currency_significant_digits: 2,
-        default_locale_name_format: 'l, f'
+        default_locale_name_format: 'l, f',
+        week_day_start: 0
     };
 
     public formats = {nameFormats: [], loaded: false};

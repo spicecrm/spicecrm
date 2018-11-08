@@ -30,8 +30,8 @@
     <table class="slds-datepicker__month" role="grid">
         <thead>
         <tr>
-            <th *ngFor="let weekday of weekdays()" scope="col">
-                <abbr title="Sunday">{{weekday}}</abbr>
+            <th *ngFor="let weekday of weekdays(); let index = index" scope="col">
+                <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
             </th>
         </tr>
         </thead>

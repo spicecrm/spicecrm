@@ -1,16 +1,16 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
-import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
+import {view} from '../../../services/view.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {calendar} from '../services/calendar.service';
 
 declare var moment: any;
 
 @Component({
-    selector: 'calendar-sheet-week-event',
-    templateUrl: './src/modules/calendar/templates/calendarsheetweekevent.html',
+    selector: 'calendar-sheet-event',
+    templateUrl: './src/modules/calendar/templates/calendarsheetevent.html',
     providers: [model, view],
     host: {
         'class': 'slds-is-absolute',
@@ -18,22 +18,26 @@ declare var moment: any;
         '(dragend)': 'this.dragEnd($event)'
     }
 })
-export class CalendarSheetWeekEvent implements OnInit {
+export class CalendarSheetEvent implements OnInit {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     @Input() private event: any = {};
+    @Input() private isMonthSheet: boolean = false;
     private componentconfig: any = {};
-    private fields: Array<any> = [];
-
+    public fields: Array<any> = [];
     private mouseMoveListener: any = undefined;
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
     private mouseLast: any = undefined;
 
-    private sheetHourHeight: number = 60;
     private lastMoveTimeSpan: number = 0;
 
-    constructor(private language: language, private metadata: metadata, private broadcast: broadcast, private calendar: calendar, private elementRef: ElementRef, private model: model, private renderer: Renderer2) {
-        // this.calendar.sheetHourHeight = this.calendar.sheetHourHeight;
+    constructor(private language: language,
+                private metadata: metadata,
+                private broadcast: broadcast,
+                private calendar: calendar,
+                private elementRef: ElementRef,
+                private model: model,
+                private renderer: Renderer2) {
     }
 
     public ngOnInit() {
@@ -42,21 +46,14 @@ export class CalendarSheetWeekEvent implements OnInit {
         this.model.data = this.event.data;
 
         // load the config and the fieldset
-        this.componentconfig = this.metadata.getComponentConfig('CalendarSheetDayEvent', this.event.module);
-        if (this.componentconfig.fieldset)
-            this.fields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
+        this.componentconfig = this.metadata.getComponentConfig('CalendarSheetEvent', this.event.module);
+        this.fields = this.componentconfig.fieldset ? this.metadata.getFieldSetFields({fieldset: this.componentconfig.fieldset}): [];
     }
 
     private getEventStyle() {
-        try {
-            return {
-                'background-color': this.componentconfig.colors.default ? this.componentconfig.colors.default : 'rgb(3, 155, 229)'
-            };
-        } catch (e) {
-            return {
-                'background-color': 'rgb(3, 155, 229)'
-            };
-        }
+        return {
+            'background-color': this.componentconfig.colors && this.componentconfig.colors.default ? this.componentconfig.colors.default : 'rgb(3, 155, 229)'
+        };
     }
 
     private dragStart(event) {
@@ -74,13 +71,10 @@ export class CalendarSheetWeekEvent implements OnInit {
 
         this.mouseUpListener = this.renderer.listen('document', 'mouseup', (event) => this.onMouseUp());
         this.mouseMoveListener = this.renderer.listen('document', 'mousemove', (event) => this.onMouseMove(event));
-
-        event.preventDefault();
     }
 
     private onMouseMove(e) {
         this.mouseLast = e;
-
         let moved = (this.mouseLast.pageY - this.mouseStart.pageY);
 
         let span = Math.floor(moved / 15);
@@ -97,7 +91,6 @@ export class CalendarSheetWeekEvent implements OnInit {
 
         this.mouseStart = undefined;
         this.mouseLast = undefined;
-
         let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
         this.event.data.duration_hours = Math.floor(durationMinutes / 60);
         this.event.data.duration_minutes = durationMinutes - this.event.data.duration_hours * 60;
