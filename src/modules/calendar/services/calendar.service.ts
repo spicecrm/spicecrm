@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
+import {userpreferences} from "../../../services/userpreferences.service";
 
 
 declare var moment: any;
@@ -10,14 +11,36 @@ declare var moment: any;
 @Injectable()
 export class calendar {
 
+    public calendarDate: any = {};
     public calendars: any = {};
     public currentStart: any = null;
     public currentEnd: any = null;
     public sheetHourHeight: number = 80;
-    public displayHoursFrom: number = 0;
-    public displayHoursTo: number = 24;
+    public multiEventHeight: number = 30;
+    public weekstartday: number = 0;
+    public weekDaysCount: number = 7;
+    public startHour: number = 0;
+    public endHour: number = 23;
+    public todayColor: string = '#eb7092';
 
-    constructor(private backend: backend, private session: session, private modelutilities: modelutilities) {
+    constructor(private backend: backend, private session: session, private modelutilities: modelutilities, private userPreferences: userpreferences) {
+        this.loadPreferences();
+    }
+
+    set weekStartDay(value) {
+        this.weekstartday = value;
+    }
+
+    get weekStartDay() {
+        return this.weekstartday;
+    }
+
+    private loadPreferences() {
+        this.weekStartDay = this.userPreferences.unchangedPreferences.global['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
+        this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
+        this.startHour = +this.userPreferences.unchangedPreferences.global['calendar_day_start_hour'] || this.startHour;
+        this.endHour = +this.userPreferences.unchangedPreferences.global['calendar_day_end_hour'] || this.endHour;
+        this.calendarDate = new moment();
     }
 
     public loadEvents(start, end, calendar = this.session.authData.userId) {

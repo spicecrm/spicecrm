@@ -76,7 +76,6 @@ export class CalendarSheetDayEvent implements OnInit {
 
     private onMouseMove(e) {
         this.mouseLast = e;
-
         let moved = (this.mouseLast.pageY - this.mouseStart.pageY);
 
         let span = Math.floor(moved / 15);
