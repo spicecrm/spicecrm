@@ -90,17 +90,17 @@
         </div>
     </div>
     <!-- end new -->
-    <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_inline slds-p-top_xx-small" role="group">
-        <li role="presentation" class="slds-listbox__item">
-          <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
-            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
-              <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+    <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_horizontal" role="group">
+        <li *ngFor="let pill of pills" role="presentation" class="slds-listbox__item slds-p-top_xxx-small">
+            <span class="slds-pill">
+                <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                  <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+                </span>
+                <span class="slds-pill__label">{{pill.summary_text}}</span>
+                <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(pill)">
+                  <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
             </span>
-            <span class="slds-pill__label">{{pill.summary_text}}</span>
-            <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(pill)">
-              <system-button-icon [icon]="'close'"></system-button-icon>
-            </button>
-          </span>
         </li>
     </ul>
     <field-messages [fieldname]="fieldname"></field-messages>
