@@ -31,7 +31,8 @@
         "timeEnd",
         "trace"
       ]
-    }
+    },
+    "curly": [true, "ignore-same-line"]
   },
   "jsRules": {
     "max-line-length": {
