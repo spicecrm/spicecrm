@@ -49,8 +49,8 @@
     </div-->
 
     <!-- new -->
-    <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-around--xx-small">
-        <div class="slds-combobox_object-switcher slds-combobox-addon_start">
+    <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-vertical--xx-small">
+        <div *ngIf="lookupmodules.length > 1" class="slds-combobox_object-switcher slds-combobox-addon_start">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
@@ -79,12 +79,12 @@
         <div class="slds-combobox_container slds-combobox-addon_end">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookupSearchOpen}"  role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" class="slds-input slds-combobox__input" aria-autocomplete="list" (focus)="onFocus()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(lookupType)"/>
+                    <input type="text" class="slds-input" [ngClass]="{'slds-combobox__input':lookupmodules.length > 1}" aria-autocomplete="list" (focus)="onFocus()" (click)="onFieldClick()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(lookupType)"/>
                     <system-icon icon="search" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                     <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" [module]="lookupType" (selectedObject)="addItem($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookupType" (selectedObject)="addItem($event)" [fieldid]="fieldid" [(searchterm)]="lookupSearchTerm"></field-lookup-search>
+                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookupType" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [fieldid]="fieldid" [searchterm]="lookupSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>
