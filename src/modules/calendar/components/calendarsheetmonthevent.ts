@@ -38,11 +38,11 @@ export class CalendarSheetMonthEvent implements OnInit {
     private getEventStyle() {
         try {
             return {
-                'background-color': this.componentconfig.colors.default ? this.componentconfig.colors.default : '#d5e4f0'
+                'background-color': this.componentconfig.colors.default ? this.componentconfig.colors.default : 'rgb(3, 155, 229)'
             };
         } catch (e) {
             return {
-                'background-color': '#d5e4f0'
+                'background-color': 'rgb(3, 155, 229)'
             };
         }
     }

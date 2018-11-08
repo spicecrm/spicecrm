@@ -1,10 +1,11 @@
 import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
+import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 
 declare var moment: any;
+declare var _: any;
 
 @Component({
     templateUrl: './src/modules/calendar/templates/calendar.html',
@@ -15,8 +16,7 @@ export class Calendar {
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
 
     private showTypeSelector: boolean = false;
-    private calendarDate: any = {};
-    private sheetType: string = 'Day';
+    private sheetType: string = 'Week';
 
     private duration: any = {
         Day: 'd',
@@ -29,6 +29,22 @@ export class Calendar {
         this.calendarDate = new moment();
     }
 
+    get weekStartDay() {
+        return this.calendar.weekStartDay;
+    }
+
+    get weekDaysCount() {
+        return this.calendar.weekDaysCount;
+    }
+
+    set calendarDate(value) {
+        this.calendar.calendarDate = value;
+    }
+
+    get calendarDate() {
+        return this.calendar.calendarDate;
+    }
+
     private getContentStyle() {
         return {
             height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop + 'px)'
@@ -36,7 +52,7 @@ export class Calendar {
     }
 
     private getCalendarHeader() {
-        let focDate = new moment(this.calendarDate);
+        const focDate = new moment(this.calendarDate);
         switch (this.sheetType) {
             case 'Week':
                 return 'Week ' + this.getCalendarWeek() + ': ' + this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
@@ -55,13 +71,13 @@ export class Calendar {
 
     private getFirstDayOfWeek() {
         let focDate = new moment(this.calendarDate);
-        focDate.day(0);
+        focDate.day(this.weekStartDay);
         return focDate.format('MMMM D, YYYY');
     }
 
     private getLastDayOfWeek() {
         let focDate = new moment(this.calendarDate);
-        focDate.day(7);
+        focDate.day(this.weekDaysCount);
         return focDate.format('MMMM D, YYYY');
     }
 
@@ -75,6 +91,7 @@ export class Calendar {
 
     private setType(sheetType) {
         this.sheetType = sheetType;
+        this.refresh();
         this.showTypeSelector = false;
     }
 
@@ -109,5 +126,11 @@ export class Calendar {
 
     private resetzoom() {
         this.calendar.sheetHourHeight = 80;
+    }
+
+    private refresh() {
+        this.calendar.currentStart = undefined;
+        this.calendar.currentEnd = undefined;
+        this.calendarDate = new moment();
     }
 }

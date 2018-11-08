@@ -36,12 +36,14 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
+import /*embed*/ {userpreferences} from "../../services/userpreferences.service";
 
 import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
+import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
 import /*embed*/ {CalendarSheetWeekEvent} from "./components/calendarsheetweekevent";
 import /*embed*/ {CalendarSheetDayEvent} from "./components/calendarsheetdayevent";
 import /*embed*/ {CalendarSheetMonthDay} from "./components/calendarsheetmonthday";
@@ -65,6 +67,7 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
         CalendarSheetDay,
         CalendarSheetWeek,
         CalendarSheetMonth,
+        CalendarSheetEvent,
         CalendarSheetWeekEvent,
         CalendarSheetDayEvent,
         CalendarSheetMonthDay,
@@ -72,7 +75,8 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
         CalendarEventSummary,
         CalendarEventPopover,
         CalendarSheetDropTarget
-    ]
+    ],
+    providers: [userpreferences]
 })
 export class ModuleCalendar {
     public version = "1.0";

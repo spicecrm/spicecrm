@@ -40,10 +40,17 @@ export class UserPreferences {
         "timezone",
         "num_grp_sep",
         "dec_sep",
-        "default_locale_name_format"
+        "default_locale_name_format",
+        "week_day_start",
+        "week_days_count",
+        "calendar_day_start_hour",
+        "calendar_day_end_hour",
     ];
+    private weekDayStartList = ["Sunday", "Monday"];
+    private weekDaysCountList = [5,6,7];
+    private dayHoursList = [];
 
-    private expanded = {loc: true, exp: true, other: true};
+    private expanded = {loc: true, exp: true, other: true, calendar: true};
     private exportDelimiterList = [",", ";"];
     private charsetlist = [
         "BIG-5", "CP1251", "CP1252", "EUC-CN", "EUC-JP", "EUC-KR", "EUC-TW", "ISO-2022-JP",
@@ -124,6 +131,10 @@ export class UserPreferences {
             } );
             this.currencyList = this.currency.getCurrencies();
 
+        }
+
+        for (let i = 0; i < 24; i++) {
+            this.dayHoursList.push(i);
         }
 
     }
