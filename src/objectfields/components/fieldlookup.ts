@@ -85,7 +85,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
 
     private addItem(item) {
-        if (!this.model.data[this.lookupType.toLowerCase()]) {this.model.data[this.lookupType.toLowerCase()] = {beans: {}};}
+        if (!this.model.data[this.lookupType.toLowerCase()]) this.model.data[this.lookupType.toLowerCase()] = { beans: {} };
 
         this.model.data[this.lookupType.toLowerCase()].beans[item.id] = {
             id: item.id,
