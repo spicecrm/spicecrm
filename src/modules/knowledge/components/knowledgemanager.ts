@@ -2,8 +2,10 @@ import {AfterViewInit, Component, ViewChild, ViewContainerRef} from "@angular/co
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
+import {backend} from "../../../services/backend.service";
 import {navigation} from "../../../services/navigation.service";
 import {KnowledgeService} from "../services/knowledge.service";
+import {Observable, Subject} from "rxjs";
 
 @Component({
     templateUrl: "./src/modules/knowledge/templates/knowledgemanager.html",
@@ -19,6 +21,7 @@ export class KnowledgeManager implements AfterViewInit {
 
     constructor(private language: language,
                 private model: model,
+                private backend: backend,
                 private metadata: metadata,
                 private navigation: navigation,
                 private knowledgeService: KnowledgeService) {
@@ -72,6 +75,7 @@ export class KnowledgeManager implements AfterViewInit {
             .subscribe(item => {
                 if (typeof item === "object") {
                     this.knowledgeService.documents.push(item);
+                    this.knowledgeService.sortDocuments();
                     this.knowledgeService.documents = this.knowledgeService.documents.slice();
                     this.knowledgeService.selectedId = item.id;
                 }
@@ -79,12 +83,8 @@ export class KnowledgeManager implements AfterViewInit {
     }
 
     private saveListEdit(toEdit: any) {
-        this.model.reset();
-        this.model.module = "KnowledgeDocuments";
-        this.model.id = toEdit.id;
-        this.model.data.parent_id = toEdit.parent_id;
-        this.model.data.parent_name = toEdit.parent_name;
-        this.model.save();
+        let data = {parent_id: toEdit.parent_id, parent_name: toEdit.parent_name}
+        this.backend.save("KnowledgeDocuments", toEdit.id, data);
         for (let doc of this.knowledgeService.documents) {
             if (doc.id === toEdit.id) {
                 doc.parent_id = toEdit.parent_id;
@@ -92,6 +92,7 @@ export class KnowledgeManager implements AfterViewInit {
             }
         }
         this.knowledgeService.documents = this.knowledgeService.documents.slice();
+        this.knowledgeService.selectedId = toEdit.id;
     }
 
     private handleSelectedItemEvent(id) {
