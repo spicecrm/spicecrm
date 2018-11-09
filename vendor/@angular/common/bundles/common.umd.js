@@ -1,5 +1,5 @@
 /**
- * @license Angular v6.1.2
+ * @license Angular v7.0.1
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -37,7 +37,7 @@
      * {@link Location} / {@link LocationStrategy} and DOM apis flow through the `PlatformLocation`
      * class they are all platform independent.
      *
-     *
+     * @publicApi
      */
     var PlatformLocation = /** @class */ (function () {
         function PlatformLocation() {
@@ -45,8 +45,10 @@
         return PlatformLocation;
     }());
     /**
-     * @description Indicates when a location is initialized.
-     * @experimental
+     * @description
+     * Indicates when a location is initialized.
+     *
+     * @publicApi
      */
     var LOCATION_INITIALIZED = new core.InjectionToken('Location Initialized');
 
@@ -73,7 +75,7 @@
      *
      * See these two classes for more.
      *
-     *
+     * @publicApi
      */
     var LocationStrategy = /** @class */ (function () {
         function LocationStrategy() {
@@ -102,7 +104,7 @@
      * class AppModule {}
      * ```
      *
-     *
+     * @publicApi
      */
     var APP_BASE_HREF = new core.InjectionToken('appBaseHref');
 
@@ -145,6 +147,21 @@
         };
         return __assign.apply(this, arguments);
     };
+
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
+
+    function __param(paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); }
+    }
+
+    function __metadata(metadataKey, metadataValue) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+    }
 
     function __values(o) {
         var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
@@ -206,6 +223,7 @@
      *
      * {@example common/location/ts/path_location_component.ts region='LocationComponent'}
      *
+     * @publicApi
      */
     var Location = /** @class */ (function () {
         function Location(platformStrategy) {
@@ -214,7 +232,7 @@
             this._subject = new core.EventEmitter();
             this._platformStrategy = platformStrategy;
             var browserBaseHref = this._platformStrategy.getBaseHref();
-            this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
+            this._baseHref = Location_1.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
             this._platformStrategy.onPopState(function (ev) {
                 _this._subject.emit({
                     'url': _this.path(true),
@@ -224,6 +242,7 @@
                 });
             });
         }
+        Location_1 = Location;
         /**
          * Returns the normalized URL path.
          */
@@ -238,14 +257,14 @@
          */
         Location.prototype.isCurrentPathEqualTo = function (path, query) {
             if (query === void 0) { query = ''; }
-            return this.path() == this.normalize(path + Location.normalizeQueryParams(query));
+            return this.path() == this.normalize(path + Location_1.normalizeQueryParams(query));
         };
         /**
          * Given a string representing a URL, returns the normalized URL path without leading or
          * trailing slashes.
          */
         Location.prototype.normalize = function (url) {
-            return Location.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
+            return Location_1.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
         };
         /**
          * Given a string representing a URL, returns the platform-specific external URL path.
@@ -335,13 +354,11 @@
             var droppedSlashIdx = pathEndIdx - (url[pathEndIdx - 1] === '/' ? 1 : 0);
             return url.slice(0, droppedSlashIdx) + url.slice(pathEndIdx);
         };
-        Location.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        Location.ctorParameters = function () { return [
-            { type: LocationStrategy }
-        ]; };
+        var Location_1;
+        Location = Location_1 = __decorate([
+            core.Injectable(),
+            __metadata("design:paramtypes", [LocationStrategy])
+        ], Location);
         return Location;
     }());
     function _stripBaseHref(baseHref, url) {
@@ -374,7 +391,7 @@
      *
      * {@example common/location/ts/hash_location_component.ts region='LocationComponent'}
      *
-     *
+     * @publicApi
      */
     var HashLocationStrategy = /** @class */ (function (_super) {
         __extends(HashLocationStrategy, _super);
@@ -421,14 +438,11 @@
         };
         HashLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
         HashLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
-        HashLocationStrategy.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        HashLocationStrategy.ctorParameters = function () { return [
-            { type: PlatformLocation },
-            { type: String, decorators: [{ type: core.Optional }, { type: core.Inject, args: [APP_BASE_HREF,] }] }
-        ]; };
+        HashLocationStrategy = __decorate([
+            core.Injectable(),
+            __param(1, core.Optional()), __param(1, core.Inject(APP_BASE_HREF)),
+            __metadata("design:paramtypes", [PlatformLocation, String])
+        ], HashLocationStrategy);
         return HashLocationStrategy;
     }(LocationStrategy));
 
@@ -464,7 +478,7 @@
      *
      * {@example common/location/ts/path_location_component.ts region='LocationComponent'}
      *
-     *
+     * @publicApi
      */
     var PathLocationStrategy = /** @class */ (function (_super) {
         __extends(PathLocationStrategy, _super);
@@ -505,14 +519,11 @@
         };
         PathLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
         PathLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
-        PathLocationStrategy.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        PathLocationStrategy.ctorParameters = function () { return [
-            { type: PlatformLocation },
-            { type: String, decorators: [{ type: core.Optional }, { type: core.Inject, args: [APP_BASE_HREF,] }] }
-        ]; };
+        PathLocationStrategy = __decorate([
+            core.Injectable(),
+            __param(1, core.Optional()), __param(1, core.Inject(APP_BASE_HREF)),
+            __metadata("design:paramtypes", [PlatformLocation, String])
+        ], PathLocationStrategy);
         return PathLocationStrategy;
     }(LocationStrategy));
 
@@ -571,14 +582,14 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     var LOCALE_DATA = {};
     /**
      * Register global data to be used internally by Angular. See the
      * ["I18n guide"](guide/i18n#i18n-pipes) to know how to import additional locale data.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     // The signature registerLocaleData(data: any, extraData?: any) is deprecated since v5.1
     function registerLocaleData(data, localeId, extraData) {
@@ -805,7 +816,7 @@
     /**
      * The locale id for the chosen locale (e.g `en-GB`).
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleId(locale) {
         return findLocaleData(locale)[0 /* LocaleId */];
@@ -813,7 +824,7 @@
     /**
      * Periods of the day (e.g. `[AM, PM]` for en-US).
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleDayPeriods(locale, formStyle, width) {
         var data = findLocaleData(locale);
@@ -824,7 +835,7 @@
     /**
      * Days of the week for the Gregorian calendar (e.g. `[Sunday, Monday, ... Saturday]` for en-US).
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleDayNames(locale, formStyle, width) {
         var data = findLocaleData(locale);
@@ -835,7 +846,7 @@
     /**
      * Months of the year for the Gregorian calendar (e.g. `[January, February, ...]` for en-US).
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleMonthNames(locale, formStyle, width) {
         var data = findLocaleData(locale);
@@ -846,7 +857,7 @@
     /**
      * Eras for the Gregorian calendar (e.g. AD/BC).
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleEraNames(locale, width) {
         var data = findLocaleData(locale);
@@ -857,7 +868,7 @@
      * First day of the week for this locale, based on english days (Sunday = 0, Monday = 1, ...).
      * For example in french the value would be 1 because the first day of the week is Monday.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleFirstDayOfWeek(locale) {
         var data = findLocaleData(locale);
@@ -868,7 +879,7 @@
      * (Sunday = 0, Monday = 1, ...).
      * For example in english the value would be [6,0] for Saturday to Sunday.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleWeekEndRange(locale) {
         var data = findLocaleData(locale);
@@ -897,7 +908,7 @@
      *
      *  For example, `M/d/yy`, corresponding to a date like "9/14/99".
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleDateFormat(locale, width) {
         var data = findLocaleData(locale);
@@ -921,7 +932,7 @@
      * through 23 (midnight plus 1 minute is 0:01), or using k to mean a 24-hour clock cycle running
      * 1 through 24 (midnight plus 1 minute is 24:01).
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleTimeFormat(locale, width) {
         var data = findLocaleData(locale);
@@ -950,7 +961,7 @@
      * time. English uses `{1} 'at' {0}` for full and long styles, and `{1}, {0}` for medium and short
      * styles.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleDateTimeFormat(locale, width) {
         var data = findLocaleData(locale);
@@ -961,7 +972,7 @@
      * Number symbol that can be used to replace placeholders in number formats.
      * See {@link NumberSymbol} for more information.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleNumberSymbol(locale, symbol) {
         var data = findLocaleData(locale);
@@ -1005,7 +1016,7 @@
      * You can find more information
      * [on the CLDR website](http://cldr.unicode.org/translation/number-patterns)
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleNumberFormat(locale, type) {
         var data = findLocaleData(locale);
@@ -1016,7 +1027,7 @@
      * the locale en-US).
      * The symbol will be `null` if the main country cannot be determined.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleCurrencySymbol(locale) {
         var data = findLocaleData(locale);
@@ -1027,7 +1038,7 @@
      * en-US).
      * The name will be `null` if the main country cannot be determined.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleCurrencyName(locale) {
         var data = findLocaleData(locale);
@@ -1044,7 +1055,7 @@
      * The locale plural function used by ICU expressions to determine the plural case to use.
      * See {@link NgPlural} for more information.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocalePluralCase(locale) {
         var data = findLocaleData(locale);
@@ -1068,7 +1079,7 @@
      * See the ["I18n guide"](guide/i18n#i18n-pipes) to know how to import additional locale
      * data.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleExtraDayPeriodRules(locale) {
         var data = findLocaleData(locale);
@@ -1092,7 +1103,7 @@
      * See the ["I18n guide"](guide/i18n#i18n-pipes) to know how to import additional locale
      * data.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLocaleExtraDayPeriods(locale, formStyle, width) {
         var data = findLocaleData(locale);
@@ -1111,7 +1122,7 @@
      * add the first one to the locale data arrays, the other ones are only defined when different.
      * We use this function to retrieve the first defined value.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getLastDefinedValue(data, index) {
         for (var i = index; i > -1; i--) {
@@ -1131,7 +1142,7 @@
     /**
      * Finds the locale data for a locale id
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function findLocaleData(locale) {
         var normalizedLocale = locale.toLowerCase().replace(/_/g, '-');
@@ -1155,7 +1166,7 @@
      * (e.g.: format narrow = $, format wide = US$, code = USD)
      * If no locale is provided, it uses the locale "en" by default
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getCurrencySymbol(code, format, locale) {
         if (locale === void 0) { locale = 'en'; }
@@ -1172,7 +1183,7 @@
      * Returns the number of decimal digits for the given currency.
      * Its value depends upon the presence of cents in that particular currency.
      *
-     * @experimental i18n support is experimental.
+     * @publicApi
      */
     function getNumberOfCurrencyDigits(code) {
         var digits;
@@ -1236,6 +1247,8 @@
      *   If not specified, host system settings are used.
      *
      * See {@link DatePipe} for more details.
+     *
+     * @publicApi
      */
     function formatDate(value, format, locale, timezone) {
         var date = toDate(value);
@@ -1959,7 +1972,7 @@
      *    as `USD` for the US dollar and `EUR` for the euro.
      * - `digitInfo` See {@link DecimalPipe} for more details.
      *
-     *
+     * @publicApi
      */
     function formatCurrency(value, locale, currency, currencyCode, digitsInfo) {
         var format = getLocaleNumberFormat(locale, exports.NumberFormatStyle.Currency);
@@ -1983,7 +1996,7 @@
      * - `locale` is a `string` defining the locale to use.
      * - `digitInfo` See {@link DecimalPipe} for more details.
      *
-     *
+     * @publicApi
      */
     function formatPercent(value, locale, digitsInfo) {
         var format = getLocaleNumberFormat(locale, exports.NumberFormatStyle.Percent);
@@ -2003,7 +2016,7 @@
      * - `locale` is a `string` defining the locale to use.
      * - `digitInfo` See {@link DecimalPipe} for more details.
      *
-     *
+     * @publicApi
      */
     function formatNumber(value, locale, digitsInfo) {
         var format = getLocaleNumberFormat(locale, exports.NumberFormatStyle.Decimal);
@@ -2225,7 +2238,7 @@
      */
     var DEPRECATED_PLURAL_FN = new core.InjectionToken('UseV4Plurals');
     /**
-     * @experimental
+     * @publicApi
      */
     var NgLocalization = /** @class */ (function () {
         function NgLocalization() {
@@ -2254,7 +2267,7 @@
     /**
      * Returns the plural case based on the locale
      *
-     * @experimental
+     * @publicApi
      */
     var NgLocaleLocalization = /** @class */ (function (_super) {
         __extends(NgLocaleLocalization, _super);
@@ -2284,21 +2297,19 @@
                     return 'other';
             }
         };
-        NgLocaleLocalization.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        NgLocaleLocalization.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [DEPRECATED_PLURAL_FN,] }] }
-        ]; };
+        NgLocaleLocalization = __decorate([
+            core.Injectable(),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __param(1, core.Optional()), __param(1, core.Inject(DEPRECATED_PLURAL_FN)),
+            __metadata("design:paramtypes", [String, Object])
+        ], NgLocaleLocalization);
         return NgLocaleLocalization;
     }(NgLocalization));
     /**
      * Returns the plural case based on the locale
      *
      * @deprecated from v5 the plural case function is in locale data files common/locales/*.ts
-     * @experimental
+     * @publicApi
      */
     function getPluralCase(locale, nLike) {
         // TODO(vicb): lazy compute
@@ -2731,7 +2742,7 @@
      * - `Object` - keys are CSS classes that get added when the expression given in the value
      *              evaluates to a truthy value, otherwise they are removed.
      *
-     *
+     * @publicApi
      */
     var NgClass = /** @class */ (function () {
         function NgClass(_iterableDiffers, _keyValueDiffers, _ngEl, _renderer) {
@@ -2854,20 +2865,21 @@
                 });
             }
         };
-        NgClass.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngClass]' },] }
-        ];
-        /** @nocollapse */
-        NgClass.ctorParameters = function () { return [
-            { type: core.IterableDiffers },
-            { type: core.KeyValueDiffers },
-            { type: core.ElementRef },
-            { type: core.Renderer2 }
-        ]; };
-        NgClass.propDecorators = {
-            klass: [{ type: core.Input, args: ['class',] }],
-            ngClass: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input('class'),
+            __metadata("design:type", String),
+            __metadata("design:paramtypes", [String])
+        ], NgClass.prototype, "klass", null);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgClass.prototype, "ngClass", null);
+        NgClass = __decorate([
+            core.Directive({ selector: '[ngClass]' }),
+            __metadata("design:paramtypes", [core.IterableDiffers, core.KeyValueDiffers,
+                core.ElementRef, core.Renderer2])
+        ], NgClass);
         return NgClass;
     }());
 
@@ -2934,7 +2946,8 @@
      *
      * {@example common/ngComponentOutlet/ts/module.ts region='NgModuleFactoryExample'}
      *
-     * @experimental
+     * @publicApi
+     * @ngModule CommonModule
      */
     var NgComponentOutlet = /** @class */ (function () {
         function NgComponentOutlet(_viewContainerRef) {
@@ -2968,19 +2981,26 @@
             if (this._moduleRef)
                 this._moduleRef.destroy();
         };
-        NgComponentOutlet.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngComponentOutlet]' },] }
-        ];
-        /** @nocollapse */
-        NgComponentOutlet.ctorParameters = function () { return [
-            { type: core.ViewContainerRef }
-        ]; };
-        NgComponentOutlet.propDecorators = {
-            ngComponentOutlet: [{ type: core.Input }],
-            ngComponentOutletInjector: [{ type: core.Input }],
-            ngComponentOutletContent: [{ type: core.Input }],
-            ngComponentOutletNgModuleFactory: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", core.Type)
+        ], NgComponentOutlet.prototype, "ngComponentOutlet", void 0);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", core.Injector)
+        ], NgComponentOutlet.prototype, "ngComponentOutletInjector", void 0);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Array)
+        ], NgComponentOutlet.prototype, "ngComponentOutletContent", void 0);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", core.NgModuleFactory)
+        ], NgComponentOutlet.prototype, "ngComponentOutletNgModuleFactory", void 0);
+        NgComponentOutlet = __decorate([
+            core.Directive({ selector: '[ngComponentOutlet]' }),
+            __metadata("design:paramtypes", [core.ViewContainerRef])
+        ], NgComponentOutlet);
         return NgComponentOutlet;
     }());
 
@@ -2990,6 +3010,9 @@
      *
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
+     */
+    /**
+     * @publicApi
      */
     var NgForOfContext = /** @class */ (function () {
         function NgForOfContext($implicit, ngForOf, index, count) {
@@ -3090,7 +3113,8 @@
      * See a [live demo](http://plnkr.co/edit/KVuXxDp0qinGDyo307QW?p=preview) for a more detailed
      * example.
      *
-     *
+     * @ngModule CommonModule
+     * @publicApi
      */
     var NgForOf = /** @class */ (function () {
         function NgForOf(_viewContainer, _template, _differs) {
@@ -3191,20 +3215,35 @@
         NgForOf.prototype._perViewChange = function (view, record) {
             view.context.$implicit = record.item;
         };
-        NgForOf.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngFor][ngForOf]' },] }
-        ];
-        /** @nocollapse */
-        NgForOf.ctorParameters = function () { return [
-            { type: core.ViewContainerRef },
-            { type: core.TemplateRef },
-            { type: core.IterableDiffers }
-        ]; };
-        NgForOf.propDecorators = {
-            ngForOf: [{ type: core.Input }],
-            ngForTrackBy: [{ type: core.Input }],
-            ngForTemplate: [{ type: core.Input }]
+        /**
+         * Assert the correct type of the context for the template that `NgForOf` will render.
+         *
+         * The presence of this method is a signal to the Ivy template type check compiler that the
+         * `NgForOf` structural directive renders its template with a specific context type.
+         */
+        NgForOf.ngTemplateContextGuard = function (dir, ctx) {
+            return true;
         };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgForOf.prototype, "ngForOf", null);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Function),
+            __metadata("design:paramtypes", [Function])
+        ], NgForOf.prototype, "ngForTrackBy", null);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", core.TemplateRef),
+            __metadata("design:paramtypes", [core.TemplateRef])
+        ], NgForOf.prototype, "ngForTemplate", null);
+        NgForOf = __decorate([
+            core.Directive({ selector: '[ngFor][ngForOf]' }),
+            __metadata("design:paramtypes", [core.ViewContainerRef, core.TemplateRef,
+                core.IterableDiffers])
+        ], NgForOf);
         return NgForOf;
     }());
     var RecordViewTuple = /** @class */ (function () {
@@ -3315,7 +3354,8 @@
      * <ng-template #elseBlock>...</ng-template>
      * ```
      *
-     *
+     * @ngModule CommonModule
+     * @publicApi
      */
     var NgIf = /** @class */ (function () {
         function NgIf(_viewContainer, templateRef) {
@@ -3377,21 +3417,39 @@
                 }
             }
         };
-        NgIf.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngIf]' },] }
-        ];
-        /** @nocollapse */
-        NgIf.ctorParameters = function () { return [
-            { type: core.ViewContainerRef },
-            { type: core.TemplateRef }
-        ]; };
-        NgIf.propDecorators = {
-            ngIf: [{ type: core.Input }],
-            ngIfThen: [{ type: core.Input }],
-            ngIfElse: [{ type: core.Input }]
-        };
+        /**
+         * Assert the correct type of the expression bound to the `ngIf` input within the template.
+         *
+         * The presence of this method is a signal to the Ivy template type check compiler that when the
+         * `NgIf` structural directive renders its template, the type of the expression bound to `ngIf`
+         * should be narrowed in some way. For `NgIf`, it is narrowed to be non-null, which allows the
+         * strictNullChecks feature of TypeScript to work with `NgIf`.
+         */
+        NgIf.ngTemplateGuard_ngIf = function (dir, expr) { return true; };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgIf.prototype, "ngIf", null);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgIf.prototype, "ngIfThen", null);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgIf.prototype, "ngIfElse", null);
+        NgIf = __decorate([
+            core.Directive({ selector: '[ngIf]' }),
+            __metadata("design:paramtypes", [core.ViewContainerRef, core.TemplateRef])
+        ], NgIf);
         return NgIf;
     }());
+    /**
+     * @publicApi
+     */
     var NgIfContext = /** @class */ (function () {
         function NgIfContext() {
             this.$implicit = null;
@@ -3475,7 +3533,7 @@
      * When no matching expression is found on a `ngSwitchCase` view, the `ngSwitchDefault` view is
      * stamped out.
      *
-     *
+     * @publicApi
      */
     var NgSwitch = /** @class */ (function () {
         function NgSwitch() {
@@ -3524,12 +3582,14 @@
                 }
             }
         };
-        NgSwitch.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngSwitch]' },] }
-        ];
-        NgSwitch.propDecorators = {
-            ngSwitch: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgSwitch.prototype, "ngSwitch", null);
+        NgSwitch = __decorate([
+            core.Directive({ selector: '[ngSwitch]' })
+        ], NgSwitch);
         return NgSwitch;
     }());
     /**
@@ -3554,7 +3614,7 @@
      *
      * See {@link NgSwitch} for more details and example.
      *
-     *
+     * @publicApi
      */
     var NgSwitchCase = /** @class */ (function () {
         function NgSwitchCase(viewContainer, templateRef, ngSwitch) {
@@ -3563,18 +3623,16 @@
             this._view = new SwitchView(viewContainer, templateRef);
         }
         NgSwitchCase.prototype.ngDoCheck = function () { this._view.enforceState(this.ngSwitch._matchCase(this.ngSwitchCase)); };
-        NgSwitchCase.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngSwitchCase]' },] }
-        ];
-        /** @nocollapse */
-        NgSwitchCase.ctorParameters = function () { return [
-            { type: core.ViewContainerRef },
-            { type: core.TemplateRef },
-            { type: NgSwitch, decorators: [{ type: core.Host }] }
-        ]; };
-        NgSwitchCase.propDecorators = {
-            ngSwitchCase: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object)
+        ], NgSwitchCase.prototype, "ngSwitchCase", void 0);
+        NgSwitchCase = __decorate([
+            core.Directive({ selector: '[ngSwitchCase]' }),
+            __param(2, core.Host()),
+            __metadata("design:paramtypes", [core.ViewContainerRef, core.TemplateRef,
+                NgSwitch])
+        ], NgSwitchCase);
         return NgSwitchCase;
     }());
     /**
@@ -3597,21 +3655,18 @@
      *
      * See {@link NgSwitch} for more details and example.
      *
-     *
+     * @publicApi
      */
     var NgSwitchDefault = /** @class */ (function () {
         function NgSwitchDefault(viewContainer, templateRef, ngSwitch) {
             ngSwitch._addDefault(new SwitchView(viewContainer, templateRef));
         }
-        NgSwitchDefault.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngSwitchDefault]' },] }
-        ];
-        /** @nocollapse */
-        NgSwitchDefault.ctorParameters = function () { return [
-            { type: core.ViewContainerRef },
-            { type: core.TemplateRef },
-            { type: NgSwitch, decorators: [{ type: core.Host }] }
-        ]; };
+        NgSwitchDefault = __decorate([
+            core.Directive({ selector: '[ngSwitchDefault]' }),
+            __param(2, core.Host()),
+            __metadata("design:paramtypes", [core.ViewContainerRef, core.TemplateRef,
+                NgSwitch])
+        ], NgSwitchDefault);
         return NgSwitchDefault;
     }());
 
@@ -3651,7 +3706,7 @@
      *
      * See http://cldr.unicode.org/index/cldr-spec/plural-rules
      *
-     * @experimental
+     * @publicApi
      */
     var NgPlural = /** @class */ (function () {
         function NgPlural(_localization) {
@@ -3683,16 +3738,15 @@
                 this._activeView.create();
             }
         };
-        NgPlural.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngPlural]' },] }
-        ];
-        /** @nocollapse */
-        NgPlural.ctorParameters = function () { return [
-            { type: NgLocalization }
-        ]; };
-        NgPlural.propDecorators = {
-            ngPlural: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Number),
+            __metadata("design:paramtypes", [Number])
+        ], NgPlural.prototype, "ngPlural", null);
+        NgPlural = __decorate([
+            core.Directive({ selector: '[ngPlural]' }),
+            __metadata("design:paramtypes", [NgLocalization])
+        ], NgPlural);
         return NgPlural;
     }());
     /**
@@ -3713,7 +3767,7 @@
      *
      * See {@link NgPlural} for more details and example.
      *
-     * @experimental
+     * @publicApi
      */
     var NgPluralCase = /** @class */ (function () {
         function NgPluralCase(value, template, viewContainer, ngPlural) {
@@ -3721,16 +3775,13 @@
             var isANumber = !isNaN(Number(value));
             ngPlural.addCase(isANumber ? "=" + value : value, new SwitchView(viewContainer, template));
         }
-        NgPluralCase.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngPluralCase]' },] }
-        ];
-        /** @nocollapse */
-        NgPluralCase.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Attribute, args: ['ngPluralCase',] }] },
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: NgPlural, decorators: [{ type: core.Host }] }
-        ]; };
+        NgPluralCase = __decorate([
+            core.Directive({ selector: '[ngPluralCase]' }),
+            __param(0, core.Attribute('ngPluralCase')),
+            __param(3, core.Host()),
+            __metadata("design:paramtypes", [String, core.TemplateRef,
+                core.ViewContainerRef, NgPlural])
+        ], NgPluralCase);
         return NgPluralCase;
     }());
 
@@ -3761,7 +3812,7 @@
      * - keys are style names with an optional `.<unit>` suffix (ie 'top.px', 'font-style.em'),
      * - values are the values assigned to those properties (expressed in the given unit).
      *
-     *
+     * @publicApi
      */
     var NgStyle = /** @class */ (function () {
         function NgStyle(_differs, _ngEl, _renderer) {
@@ -3803,18 +3854,15 @@
                 this._renderer.removeStyle(this._ngEl.nativeElement, name);
             }
         };
-        NgStyle.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngStyle]' },] }
-        ];
-        /** @nocollapse */
-        NgStyle.ctorParameters = function () { return [
-            { type: core.KeyValueDiffers },
-            { type: core.ElementRef },
-            { type: core.Renderer2 }
-        ]; };
-        NgStyle.propDecorators = {
-            ngStyle: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object),
+            __metadata("design:paramtypes", [Object])
+        ], NgStyle.prototype, "ngStyle", null);
+        NgStyle = __decorate([
+            core.Directive({ selector: '[ngStyle]' }),
+            __metadata("design:paramtypes", [core.KeyValueDiffers, core.ElementRef, core.Renderer2])
+        ], NgStyle);
         return NgStyle;
     }());
 
@@ -3847,6 +3895,7 @@
      *
      * {@example common/ngTemplateOutlet/ts/module.ts region='NgTemplateOutlet'}
      *
+     * @publicApi
      */
     var NgTemplateOutlet = /** @class */ (function () {
         function NgTemplateOutlet(_viewContainerRef) {
@@ -3924,17 +3973,18 @@
                 finally { if (e_2) throw e_2.error; }
             }
         };
-        NgTemplateOutlet.decorators = [
-            { type: core.Directive, args: [{ selector: '[ngTemplateOutlet]' },] }
-        ];
-        /** @nocollapse */
-        NgTemplateOutlet.ctorParameters = function () { return [
-            { type: core.ViewContainerRef }
-        ]; };
-        NgTemplateOutlet.propDecorators = {
-            ngTemplateOutletContext: [{ type: core.Input }],
-            ngTemplateOutlet: [{ type: core.Input }]
-        };
+        __decorate([
+            core.Input(),
+            __metadata("design:type", Object)
+        ], NgTemplateOutlet.prototype, "ngTemplateOutletContext", void 0);
+        __decorate([
+            core.Input(),
+            __metadata("design:type", core.TemplateRef)
+        ], NgTemplateOutlet.prototype, "ngTemplateOutlet", void 0);
+        NgTemplateOutlet = __decorate([
+            core.Directive({ selector: '[ngTemplateOutlet]' }),
+            __metadata("design:paramtypes", [core.ViewContainerRef])
+        ], NgTemplateOutlet);
         return NgTemplateOutlet;
     }());
 
@@ -4222,12 +4272,13 @@
      *
      * {@example common/pipes/ts/date_pipe.ts region='DeprecatedDatePipe'}
      *
-     *
+     * @publicApi
      */
     var DeprecatedDatePipe = /** @class */ (function () {
         function DeprecatedDatePipe(_locale) {
             this._locale = _locale;
         }
+        DeprecatedDatePipe_1 = DeprecatedDatePipe;
         DeprecatedDatePipe.prototype.transform = function (value, pattern) {
             if (pattern === void 0) { pattern = 'mediumDate'; }
             if (value == null || value === '' || value !== value)
@@ -4265,11 +4316,12 @@
                     date = isoStringToDate(match);
                 }
                 else {
-                    throw invalidPipeArgumentError(DeprecatedDatePipe, value);
+                    throw invalidPipeArgumentError(DeprecatedDatePipe_1, value);
                 }
             }
-            return DateFormatter.format(date, this._locale, DeprecatedDatePipe._ALIASES[pattern] || pattern);
+            return DateFormatter.format(date, this._locale, DeprecatedDatePipe_1._ALIASES[pattern] || pattern);
         };
+        var DeprecatedDatePipe_1;
         /** @internal */
         DeprecatedDatePipe._ALIASES = {
             'medium': 'yMMMdjms',
@@ -4281,13 +4333,11 @@
             'mediumTime': 'jms',
             'shortTime': 'jm'
         };
-        DeprecatedDatePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'date', pure: true },] }
-        ];
-        /** @nocollapse */
-        DeprecatedDatePipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        DeprecatedDatePipe = DeprecatedDatePipe_1 = __decorate([
+            core.Pipe({ name: 'date', pure: true }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], DeprecatedDatePipe);
         return DeprecatedDatePipe;
     }());
     function isDate$1(value) {
@@ -4344,8 +4394,6 @@
         });
     }
     /**
-     * @ngModule CommonModule
-     *
      * Formats a number as text. Group sizing and separator and other locale-specific
      * configurations are based on the active locale.
      *
@@ -4368,21 +4416,23 @@
      *
      * {@example common/pipes/ts/number_pipe.ts region='DeprecatedNumberPipe'}
      *
+     * @ngModule CommonModule
+     * @publicApi
      */
     var DeprecatedDecimalPipe = /** @class */ (function () {
         function DeprecatedDecimalPipe(_locale) {
             this._locale = _locale;
         }
+        DeprecatedDecimalPipe_1 = DeprecatedDecimalPipe;
         DeprecatedDecimalPipe.prototype.transform = function (value, digits) {
-            return formatNumber$1(DeprecatedDecimalPipe, this._locale, value, exports.NumberFormatStyle.Decimal, digits);
+            return formatNumber$1(DeprecatedDecimalPipe_1, this._locale, value, exports.NumberFormatStyle.Decimal, digits);
         };
-        DeprecatedDecimalPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'number' },] }
-        ];
-        /** @nocollapse */
-        DeprecatedDecimalPipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var DeprecatedDecimalPipe_1;
+        DeprecatedDecimalPipe = DeprecatedDecimalPipe_1 = __decorate([
+            core.Pipe({ name: 'number' }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], DeprecatedDecimalPipe);
         return DeprecatedDecimalPipe;
     }());
     /**
@@ -4403,22 +4453,22 @@
      *
      * {@example common/pipes/ts/percent_pipe.ts region='DeprecatedPercentPipe'}
      *
-     *
+     * @publicApi
      */
     var DeprecatedPercentPipe = /** @class */ (function () {
         function DeprecatedPercentPipe(_locale) {
             this._locale = _locale;
         }
+        DeprecatedPercentPipe_1 = DeprecatedPercentPipe;
         DeprecatedPercentPipe.prototype.transform = function (value, digits) {
-            return formatNumber$1(DeprecatedPercentPipe, this._locale, value, exports.NumberFormatStyle.Percent, digits);
+            return formatNumber$1(DeprecatedPercentPipe_1, this._locale, value, exports.NumberFormatStyle.Percent, digits);
         };
-        DeprecatedPercentPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'percent' },] }
-        ];
-        /** @nocollapse */
-        DeprecatedPercentPipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var DeprecatedPercentPipe_1;
+        DeprecatedPercentPipe = DeprecatedPercentPipe_1 = __decorate([
+            core.Pipe({ name: 'percent' }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], DeprecatedPercentPipe);
         return DeprecatedPercentPipe;
     }());
     /**
@@ -4445,24 +4495,24 @@
      *
      * {@example common/pipes/ts/currency_pipe.ts region='DeprecatedCurrencyPipe'}
      *
-     *
+     * @publicApi
      */
     var DeprecatedCurrencyPipe = /** @class */ (function () {
         function DeprecatedCurrencyPipe(_locale) {
             this._locale = _locale;
         }
+        DeprecatedCurrencyPipe_1 = DeprecatedCurrencyPipe;
         DeprecatedCurrencyPipe.prototype.transform = function (value, currencyCode, symbolDisplay, digits) {
             if (currencyCode === void 0) { currencyCode = 'USD'; }
             if (symbolDisplay === void 0) { symbolDisplay = false; }
-            return formatNumber$1(DeprecatedCurrencyPipe, this._locale, value, exports.NumberFormatStyle.Currency, digits, currencyCode, symbolDisplay);
+            return formatNumber$1(DeprecatedCurrencyPipe_1, this._locale, value, exports.NumberFormatStyle.Currency, digits, currencyCode, symbolDisplay);
         };
-        DeprecatedCurrencyPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'currency' },] }
-        ];
-        /** @nocollapse */
-        DeprecatedCurrencyPipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var DeprecatedCurrencyPipe_1;
+        DeprecatedCurrencyPipe = DeprecatedCurrencyPipe_1 = __decorate([
+            core.Pipe({ name: 'currency' }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], DeprecatedCurrencyPipe);
         return DeprecatedCurrencyPipe;
     }());
 
@@ -4534,6 +4584,7 @@
      *
      * {@example common/pipes/ts/async_pipe.ts region='AsyncPipeObservable'}
      *
+     * @publicApi
      */
     var AsyncPipe = /** @class */ (function () {
         function AsyncPipe(_ref) {
@@ -4544,6 +4595,7 @@
             this._obj = null;
             this._strategy = null;
         }
+        AsyncPipe_1 = AsyncPipe;
         AsyncPipe.prototype.ngOnDestroy = function () {
             if (this._subscription) {
                 this._dispose();
@@ -4580,7 +4632,7 @@
             if (core.ɵisObservable(obj)) {
                 return _observableStrategy;
             }
-            throw invalidPipeArgumentError(AsyncPipe, obj);
+            throw invalidPipeArgumentError(AsyncPipe_1, obj);
         };
         AsyncPipe.prototype._dispose = function () {
             this._strategy.dispose(this._subscription);
@@ -4595,13 +4647,11 @@
                 this._ref.markForCheck();
             }
         };
-        AsyncPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'async', pure: false },] }
-        ];
-        /** @nocollapse */
-        AsyncPipe.ctorParameters = function () { return [
-            { type: core.ChangeDetectorRef }
-        ]; };
+        var AsyncPipe_1;
+        AsyncPipe = AsyncPipe_1 = __decorate([
+            core.Pipe({ name: 'async', pure: false }),
+            __metadata("design:paramtypes", [core.ChangeDetectorRef])
+        ], AsyncPipe);
         return AsyncPipe;
     }());
 
@@ -4624,11 +4674,13 @@
      *
      * <code-example path="common/pipes/ts/lowerupper_pipe.ts" region='LowerUpperPipe'></code-example>
      *
-     *
+     * @ngModule CommonModule
+     * @publicApi
      */
     var LowerCasePipe = /** @class */ (function () {
         function LowerCasePipe() {
         }
+        LowerCasePipe_1 = LowerCasePipe;
         /**
          * @param value The string to transform to lower case.
          */
@@ -4636,13 +4688,14 @@
             if (!value)
                 return value;
             if (typeof value !== 'string') {
-                throw invalidPipeArgumentError(LowerCasePipe, value);
+                throw invalidPipeArgumentError(LowerCasePipe_1, value);
             }
             return value.toLowerCase();
         };
-        LowerCasePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'lowercase' },] }
-        ];
+        var LowerCasePipe_1;
+        LowerCasePipe = LowerCasePipe_1 = __decorate([
+            core.Pipe({ name: 'lowercase' })
+        ], LowerCasePipe);
         return LowerCasePipe;
     }());
     //
@@ -4668,11 +4721,13 @@
      *
      * <code-example path="common/pipes/ts/titlecase_pipe.ts" region='TitleCasePipe'></code-example>
      *
-     *
+     * @ngModule CommonModule
+     * @publicApi
      */
     var TitleCasePipe = /** @class */ (function () {
         function TitleCasePipe() {
         }
+        TitleCasePipe_1 = TitleCasePipe;
         /**
          * @param value The string to transform to title case.
          */
@@ -4680,23 +4735,28 @@
             if (!value)
                 return value;
             if (typeof value !== 'string') {
-                throw invalidPipeArgumentError(TitleCasePipe, value);
+                throw invalidPipeArgumentError(TitleCasePipe_1, value);
             }
             return value.replace(unicodeWordMatch, (function (txt) { return txt[0].toUpperCase() + txt.substr(1).toLowerCase(); }));
         };
-        TitleCasePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'titlecase' },] }
-        ];
+        var TitleCasePipe_1;
+        TitleCasePipe = TitleCasePipe_1 = __decorate([
+            core.Pipe({ name: 'titlecase' })
+        ], TitleCasePipe);
         return TitleCasePipe;
     }());
     /**
      * Transforms text to all upper case.
      * @see `LowerCasePipe`
      * @see `TitleCasePipe`
+     *
+     * @ngModule CommonModule
+     * @publicApi
      */
     var UpperCasePipe = /** @class */ (function () {
         function UpperCasePipe() {
         }
+        UpperCasePipe_1 = UpperCasePipe;
         /**
          * @param value The string to transform to upper case.
          */
@@ -4704,13 +4764,14 @@
             if (!value)
                 return value;
             if (typeof value !== 'string') {
-                throw invalidPipeArgumentError(UpperCasePipe, value);
+                throw invalidPipeArgumentError(UpperCasePipe_1, value);
             }
             return value.toUpperCase();
         };
-        UpperCasePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'uppercase' },] }
-        ];
+        var UpperCasePipe_1;
+        UpperCasePipe = UpperCasePipe_1 = __decorate([
+            core.Pipe({ name: 'uppercase' })
+        ], UpperCasePipe);
         return UpperCasePipe;
     }());
 
@@ -4858,12 +4919,14 @@
      * }
      * ```
      *
+     * @publicApi
      */
     // clang-format on
     var DatePipe = /** @class */ (function () {
         function DatePipe(locale) {
             this.locale = locale;
         }
+        DatePipe_1 = DatePipe;
         /**
          * @param value The date expression: a `Date` object,  a number
          * (milliseconds since UTC epoch), or an ISO string (https://www.w3.org/TR/NOTE-datetime).
@@ -4885,16 +4948,15 @@
                 return formatDate(value, format, locale || this.locale, timezone);
             }
             catch (error) {
-                throw invalidPipeArgumentError(DatePipe, error.message);
+                throw invalidPipeArgumentError(DatePipe_1, error.message);
             }
         };
-        DatePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'date', pure: true },] }
-        ];
-        /** @nocollapse */
-        DatePipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var DatePipe_1;
+        DatePipe = DatePipe_1 = __decorate([
+            core.Pipe({ name: 'date', pure: true }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], DatePipe);
         return DatePipe;
     }());
 
@@ -4918,12 +4980,13 @@
      *
      * {@example common/pipes/ts/i18n_pipe.ts region='I18nPluralPipeComponent'}
      *
-     * @experimental
+     * @publicApi
      */
     var I18nPluralPipe = /** @class */ (function () {
         function I18nPluralPipe(_localization) {
             this._localization = _localization;
         }
+        I18nPluralPipe_1 = I18nPluralPipe;
         /**
          * @param value the number to be formatted
          * @param pluralMap an object that mimics the ICU format, see
@@ -4935,18 +4998,16 @@
             if (value == null)
                 return '';
             if (typeof pluralMap !== 'object' || pluralMap === null) {
-                throw invalidPipeArgumentError(I18nPluralPipe, pluralMap);
+                throw invalidPipeArgumentError(I18nPluralPipe_1, pluralMap);
             }
             var key = getPluralCategory(value, Object.keys(pluralMap), this._localization, locale);
             return pluralMap[key].replace(_INTERPOLATION_REGEXP, value.toString());
         };
-        I18nPluralPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'i18nPlural', pure: true },] }
-        ];
-        /** @nocollapse */
-        I18nPluralPipe.ctorParameters = function () { return [
-            { type: NgLocalization }
-        ]; };
+        var I18nPluralPipe_1;
+        I18nPluralPipe = I18nPluralPipe_1 = __decorate([
+            core.Pipe({ name: 'i18nPlural', pure: true }),
+            __metadata("design:paramtypes", [NgLocalization])
+        ], I18nPluralPipe);
         return I18nPluralPipe;
     }());
 
@@ -4972,11 +5033,12 @@
      *
      * {@example common/pipes/ts/i18n_pipe.ts region='I18nSelectPipeComponent'}
      *
-     * @experimental
+     * @publicApi
      */
     var I18nSelectPipe = /** @class */ (function () {
         function I18nSelectPipe() {
         }
+        I18nSelectPipe_1 = I18nSelectPipe;
         /**
          * @param value a string to be internationalized.
          * @param mapping an object that indicates the text that should be displayed
@@ -4986,7 +5048,7 @@
             if (value == null)
                 return '';
             if (typeof mapping !== 'object' || typeof value !== 'string') {
-                throw invalidPipeArgumentError(I18nSelectPipe, mapping);
+                throw invalidPipeArgumentError(I18nSelectPipe_1, mapping);
             }
             if (mapping.hasOwnProperty(value)) {
                 return mapping[value];
@@ -4996,9 +5058,10 @@
             }
             return '';
         };
-        I18nSelectPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'i18nSelect', pure: true },] }
-        ];
+        var I18nSelectPipe_1;
+        I18nSelectPipe = I18nSelectPipe_1 = __decorate([
+            core.Pipe({ name: 'i18nSelect', pure: true })
+        ], I18nSelectPipe);
         return I18nSelectPipe;
     }());
 
@@ -5022,6 +5085,7 @@
      *
      * {@example common/pipes/ts/json_pipe.ts region='JsonPipe'}
      *
+     * @publicApi
      */
     var JsonPipe = /** @class */ (function () {
         function JsonPipe() {
@@ -5030,9 +5094,9 @@
          * @param value A value of any type to convert into a JSON-format string.
          */
         JsonPipe.prototype.transform = function (value) { return JSON.stringify(value, null, 2); };
-        JsonPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'json', pure: false },] }
-        ];
+        JsonPipe = __decorate([
+            core.Pipe({ name: 'json', pure: false })
+        ], JsonPipe);
         return JsonPipe;
     }());
 
@@ -5056,12 +5120,15 @@
      * By default the comparator will be by Unicode point value.
      * You can optionally pass a compareFn if your keys are complex types.
      *
-     * ## Examples
+     * @usageNotes
+     * ### Examples
      *
      * This examples show how an Object or a Map and be iterated by ngFor with the use of this keyvalue
      * pipe.
      *
      * {@example common/pipes/ts/keyvalue_pipe.ts region='KeyValuePipe'}
+     *
+     * @publicApi
      */
     var KeyValuePipe = /** @class */ (function () {
         function KeyValuePipe(differs) {
@@ -5087,13 +5154,10 @@
             }
             return this.keyValues;
         };
-        KeyValuePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'keyvalue', pure: false },] }
-        ];
-        /** @nocollapse */
-        KeyValuePipe.ctorParameters = function () { return [
-            { type: core.KeyValueDiffers }
-        ]; };
+        KeyValuePipe = __decorate([
+            core.Pipe({ name: 'keyvalue', pure: false }),
+            __metadata("design:paramtypes", [core.KeyValueDiffers])
+        ], KeyValuePipe);
         return KeyValuePipe;
     }());
     function defaultComparator(keyValueA, keyValueB) {
@@ -5167,11 +5231,13 @@
      *
      * <code-example path="common/pipes/ts/number_pipe.ts" region='NumberPipe'></code-example>
      *
+     * @publicApi
      */
     var DecimalPipe = /** @class */ (function () {
         function DecimalPipe(_locale) {
             this._locale = _locale;
         }
+        DecimalPipe_1 = DecimalPipe;
         /**
          * @param value The number to be formatted.
          * @param digitsInfo Decimal representation options, specified by a string
@@ -5196,16 +5262,15 @@
                 return formatNumber(num, locale, digitsInfo);
             }
             catch (error) {
-                throw invalidPipeArgumentError(DecimalPipe, error.message);
+                throw invalidPipeArgumentError(DecimalPipe_1, error.message);
             }
         };
-        DecimalPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'number' },] }
-        ];
-        /** @nocollapse */
-        DecimalPipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var DecimalPipe_1;
+        DecimalPipe = DecimalPipe_1 = __decorate([
+            core.Pipe({ name: 'number' }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], DecimalPipe);
         return DecimalPipe;
     }());
     /**
@@ -5226,12 +5291,13 @@
      *
      * <code-example path="common/pipes/ts/percent_pipe.ts" region='PercentPipe'></code-example>
      *
-     *
+     * @publicApi
      */
     var PercentPipe = /** @class */ (function () {
         function PercentPipe(_locale) {
             this._locale = _locale;
         }
+        PercentPipe_1 = PercentPipe;
         /**
          *
          * @param value The number to be formatted as a percentage.
@@ -5257,16 +5323,15 @@
                 return formatPercent(num, locale, digitsInfo);
             }
             catch (error) {
-                throw invalidPipeArgumentError(PercentPipe, error.message);
+                throw invalidPipeArgumentError(PercentPipe_1, error.message);
             }
         };
-        PercentPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'percent' },] }
-        ];
-        /** @nocollapse */
-        PercentPipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var PercentPipe_1;
+        PercentPipe = PercentPipe_1 = __decorate([
+            core.Pipe({ name: 'percent' }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], PercentPipe);
         return PercentPipe;
     }());
     /**
@@ -5287,12 +5352,13 @@
      *
      * <code-example path="common/pipes/ts/currency_pipe.ts" region='CurrencyPipe'></code-example>
      *
-     *
+     * @publicApi
      */
     var CurrencyPipe = /** @class */ (function () {
         function CurrencyPipe(_locale) {
             this._locale = _locale;
         }
+        CurrencyPipe_1 = CurrencyPipe;
         /**
          *
          * @param value The number to be formatted as currency.
@@ -5306,6 +5372,7 @@
          * For example, the Canadian dollar CAD has the symbol `CA$` and the symbol-narrow `$`. If the
          * locale has no narrow symbol, uses the standard symbol for the locale.
          *   - String: Use the given string value instead of a code or a symbol.
+         * For example, an empty string will suppress the currency & symbol.
          *   - Boolean (marked deprecated in v5): `true` for symbol and false for `code`.
          *
          * @param digitsInfo Decimal representation options, specified by a string
@@ -5349,16 +5416,15 @@
                 return formatCurrency(num, locale, currency, currencyCode, digitsInfo);
             }
             catch (error) {
-                throw invalidPipeArgumentError(CurrencyPipe, error.message);
+                throw invalidPipeArgumentError(CurrencyPipe_1, error.message);
             }
         };
-        CurrencyPipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'currency' },] }
-        ];
-        /** @nocollapse */
-        CurrencyPipe.ctorParameters = function () { return [
-            { type: String, decorators: [{ type: core.Inject, args: [core.LOCALE_ID,] }] }
-        ]; };
+        var CurrencyPipe_1;
+        CurrencyPipe = CurrencyPipe_1 = __decorate([
+            core.Pipe({ name: 'currency' }),
+            __param(0, core.Inject(core.LOCALE_ID)),
+            __metadata("design:paramtypes", [String])
+        ], CurrencyPipe);
         return CurrencyPipe;
     }());
     function isEmpty(value) {
@@ -5418,10 +5484,12 @@
      *
      * {@example common/pipes/ts/slice_pipe.ts region='SlicePipe_string'}
      *
+     * @publicApi
      */
     var SlicePipe = /** @class */ (function () {
         function SlicePipe() {
         }
+        SlicePipe_1 = SlicePipe;
         /**
          * @param value a list or a string to be sliced.
          * @param start the starting index of the subset to return:
@@ -5441,14 +5509,15 @@
             if (value == null)
                 return value;
             if (!this.supports(value)) {
-                throw invalidPipeArgumentError(SlicePipe, value);
+                throw invalidPipeArgumentError(SlicePipe_1, value);
             }
             return value.slice(start, end);
         };
         SlicePipe.prototype.supports = function (obj) { return typeof obj === 'string' || Array.isArray(obj); };
-        SlicePipe.decorators = [
-            { type: core.Pipe, args: [{ name: 'slice', pure: false },] }
-        ];
+        var SlicePipe_1;
+        SlicePipe = SlicePipe_1 = __decorate([
+            core.Pipe({ name: 'slice', pure: false })
+        ], SlicePipe);
         return SlicePipe;
     }());
 
@@ -5488,22 +5557,30 @@
     // Note: This does not contain the location providers,
     // as they need some platform specific implementations to work.
     /**
-     * The module that includes all the basic Angular directives like {@link NgIf}, {@link NgForOf}, ...
+     * Exports all the basic Angular directives and pipes,
+     * such as `NgIf`, `NgForOf`, `DecimalPipe`, and so on.
+     * Re-exported by `BrowserModule`, which is included automatically in the root
+     * `AppModule` when you create a new app with the CLI `new` command.
      *
+     * * The `providers` options configure the NgModule's injector to provide
+     * localization dependencies to members.
+     * * The `exports` options make the declared directives and pipes available for import
+     * by other NgModules.
      *
+     * @publicApi
      */
     var CommonModule = /** @class */ (function () {
         function CommonModule() {
         }
-        CommonModule.decorators = [
-            { type: core.NgModule, args: [{
-                        declarations: [COMMON_DIRECTIVES, COMMON_PIPES],
-                        exports: [COMMON_DIRECTIVES, COMMON_PIPES],
-                        providers: [
-                            { provide: NgLocalization, useClass: NgLocaleLocalization },
-                        ],
-                    },] }
-        ];
+        CommonModule = __decorate([
+            core.NgModule({
+                declarations: [COMMON_DIRECTIVES, COMMON_PIPES],
+                exports: [COMMON_DIRECTIVES, COMMON_PIPES],
+                providers: [
+                    { provide: NgLocalization, useClass: NgLocaleLocalization },
+                ],
+            })
+        ], CommonModule);
         return CommonModule;
     }());
     var ɵ0 = getPluralCase;
@@ -5511,17 +5588,18 @@
      * A module that contains the deprecated i18n pipes.
      *
      * @deprecated from v5
+     * @publicApi
      */
     var DeprecatedI18NPipesModule = /** @class */ (function () {
         function DeprecatedI18NPipesModule() {
         }
-        DeprecatedI18NPipesModule.decorators = [
-            { type: core.NgModule, args: [{
-                        declarations: [COMMON_DEPRECATED_I18N_PIPES],
-                        exports: [COMMON_DEPRECATED_I18N_PIPES],
-                        providers: [{ provide: DEPRECATED_PLURAL_FN, useValue: ɵ0 }],
-                    },] }
-        ];
+        DeprecatedI18NPipesModule = __decorate([
+            core.NgModule({
+                declarations: [COMMON_DEPRECATED_I18N_PIPES],
+                exports: [COMMON_DEPRECATED_I18N_PIPES],
+                providers: [{ provide: DEPRECATED_PLURAL_FN, useValue: ɵ0 }],
+            })
+        ], DeprecatedI18NPipesModule);
         return DeprecatedI18NPipesModule;
     }());
 
@@ -5538,7 +5616,7 @@
      * Note: Document might not be available in the Application Context when Application and Rendering
      * Contexts are not the same (e.g. when running the application into a Web Worker).
      *
-     *
+     * @publicApi
      */
     var DOCUMENT = new core.InjectionToken('DocumentToken');
 
@@ -5555,28 +5633,28 @@
     var PLATFORM_WORKER_UI_ID = 'browserWorkerUi';
     /**
      * Returns whether a platform id represents a browser platform.
-     * @experimental
+     * @publicApi
      */
     function isPlatformBrowser(platformId) {
         return platformId === PLATFORM_BROWSER_ID;
     }
     /**
      * Returns whether a platform id represents a server platform.
-     * @experimental
+     * @publicApi
      */
     function isPlatformServer(platformId) {
         return platformId === PLATFORM_SERVER_ID;
     }
     /**
      * Returns whether a platform id represents a web worker app platform.
-     * @experimental
+     * @publicApi
      */
     function isPlatformWorkerApp(platformId) {
         return platformId === PLATFORM_WORKER_APP_ID;
     }
     /**
      * Returns whether a platform id represents a web worker UI platform.
-     * @experimental
+     * @publicApi
      */
     function isPlatformWorkerUi(platformId) {
         return platformId === PLATFORM_WORKER_UI_ID;
@@ -5589,7 +5667,10 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var VERSION = new core.Version('6.1.2');
+    /**
+     * @publicApi
+     */
+    var VERSION = new core.Version('7.0.1');
 
     /**
      * @license
@@ -5599,7 +5680,9 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     * @whatItDoes Manages the scroll position.
+     * Manages the scroll position.
+     *
+     * @publicApi
      */
     var ViewportScroller = /** @class */ (function () {
         function ViewportScroller() {
@@ -5611,7 +5694,7 @@
         return ViewportScroller;
     }());
     /**
-     * @whatItDoes Manages the scroll position.
+     * Manages the scroll position.
      */
     var BrowserViewportScroller = /** @class */ (function () {
         function BrowserViewportScroller(document, window) {
@@ -5620,7 +5703,7 @@
             this.offset = function () { return [0, 0]; };
         }
         /**
-         * @whatItDoes Configures the top offset used when scrolling to an anchor.
+         * Configures the top offset used when scrolling to an anchor.
          *
          * * When given a number, the service will always use the number.
          * * When given a function, the service will invoke the function every time it restores scroll
@@ -5635,7 +5718,7 @@
             }
         };
         /**
-         * @whatItDoes Returns the current scroll position.
+         * Returns the current scroll position.
          */
         BrowserViewportScroller.prototype.getScrollPosition = function () {
             if (this.supportScrollRestoration()) {
@@ -5646,7 +5729,7 @@
             }
         };
         /**
-         * @whatItDoes Sets the scroll position.
+         * Sets the scroll position.
          */
         BrowserViewportScroller.prototype.scrollToPosition = function (position) {
             if (this.supportScrollRestoration()) {
@@ -5654,7 +5737,7 @@
             }
         };
         /**
-         * @whatItDoes Scrolls to the provided anchor.
+         * Scrolls to the provided anchor.
          */
         BrowserViewportScroller.prototype.scrollToAnchor = function (anchor) {
             if (this.supportScrollRestoration()) {
@@ -5671,7 +5754,7 @@
             }
         };
         /**
-         * @whatItDoes Disables automatic scroll restoration provided by the browser.
+         * Disables automatic scroll restoration provided by the browser.
          */
         BrowserViewportScroller.prototype.setHistoryScrollRestoration = function (scrollRestoration) {
             if (this.supportScrollRestoration()) {
@@ -5707,30 +5790,30 @@
         return BrowserViewportScroller;
     }());
     /**
-     * @whatItDoes Provides an empty implementation of the viewport scroller. This will
+     * Provides an empty implementation of the viewport scroller. This will
      * live in @angular/common as it will be used by both platform-server and platform-webworker.
      */
     var NullViewportScroller = /** @class */ (function () {
         function NullViewportScroller() {
         }
         /**
-         * @whatItDoes empty implementation
+         * Empty implementation
          */
         NullViewportScroller.prototype.setOffset = function (offset) { };
         /**
-         * @whatItDoes empty implementation
+         * Empty implementation
          */
         NullViewportScroller.prototype.getScrollPosition = function () { return [0, 0]; };
         /**
-         * @whatItDoes empty implementation
+         * Empty implementation
          */
         NullViewportScroller.prototype.scrollToPosition = function (position) { };
         /**
-         * @whatItDoes empty implementation
+         * Empty implementation
          */
         NullViewportScroller.prototype.scrollToAnchor = function (anchor) { };
         /**
-         * @whatItDoes empty implementation
+         * Empty implementation
          */
         NullViewportScroller.prototype.setHistoryScrollRestoration = function (scrollRestoration) { };
         return NullViewportScroller;

@@ -1,4 +1,5 @@
-/** PURE_IMPORTS_START _util_toSubscriber,_internal_symbol_observable,_util_pipe,_config PURE_IMPORTS_END */
+/** PURE_IMPORTS_START _util_canReportError,_util_toSubscriber,_internal_symbol_observable,_util_pipe,_config PURE_IMPORTS_END */
+import { canReportError } from './util/canReportError';
 import { toSubscriber } from './util/toSubscriber';
 import { observable as Symbol_observable } from '../internal/symbol/observable';
 import { pipeFromArray } from './util/pipe';
@@ -46,7 +47,12 @@ var Observable = /*@__PURE__*/ (function () {
                 sink.syncErrorThrown = true;
                 sink.syncErrorValue = err;
             }
-            sink.error(err);
+            if (canReportError(sink)) {
+                sink.error(err);
+            }
+            else {
+                console.warn(err);
+            }
         }
     };
     Observable.prototype.forEach = function (next, promiseCtor) {

@@ -9,12 +9,11 @@ import {Router} from '@angular/router';
     selector: 'field-generic-display',
     templateUrl: './src/objectfields/templates/fieldgenericdisplay.html'
 })
-export class fieldGenericDisplay
-{
-    @Input() value: string = '';
-    @Input() editable: boolean = false;
-    @Input() fieldconfig: any = {};
-    @Input() fielddisplayclass: string = '';
+export class fieldGenericDisplay {
+    @Input() public value: string = '';
+    @Input() public editable: boolean = false;
+    @Input() public fieldconfig: any = {};
+    @Input() public fielddisplayclass: string = '';
 
     constructor(
         public model: model,
@@ -25,11 +24,12 @@ export class fieldGenericDisplay
     ) {
     }
 
-    isEditMode() {
-        if (this.view.mode === 'edit' && this.editable)
+    public isEditMode() {
+        if (this.view.mode === 'edit' && this.editable) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     get link() {
@@ -40,13 +40,13 @@ export class fieldGenericDisplay
         }
     }
 
-    setEditMode() {
+    public setEditMode() {
         this.model.startEdit();
         this.view.setEditMode();
     }
 
-    goRecord() {
-        if(this.link) {
+    public goRecord() {
+        if (this.link) {
             this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
         }
     }

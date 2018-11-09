@@ -1,32 +1,32 @@
 {
-  "_from": "rxjs@~6.2.2",
-  "_id": "rxjs@6.2.2",
+  "_from": "rxjs@~6.3.3",
+  "_id": "rxjs@6.3.3",
   "_inBundle": false,
-  "_integrity": "sha512-0MI8+mkKAXZUF9vMrEoPnaoHkfzBPP4IGwUYRJhIRJF6/w3uByO1e91bEHn8zd43RdkTMKiooYKmwz7RH6zfOQ==",
+  "_integrity": "sha512-JTWmoY9tWCs7zvIk/CvRjhjGaOd+OVBM987mxFo+OW66cGpdKjZcpmc74ES1sB//7Kl/PAe8+wEakuhG4pcgOw==",
   "_location": "/rxjs",
   "_phantomChildren": {},
   "_requested": {
     "type": "range",
     "registry": true,
-    "raw": "rxjs@~6.2.2",
+    "raw": "rxjs@~6.3.3",
     "name": "rxjs",
     "escapedName": "rxjs",
-    "rawSpec": "~6.2.2",
+    "rawSpec": "~6.3.3",
     "saveSpec": null,
-    "fetchSpec": "~6.2.2"
+    "fetchSpec": "~6.3.3"
   },
   "_requiredBy": [
     "/",
-    "/@angular-devkit/architect",
-    "/@angular-devkit/core",
-    "/@angular-devkit/schematics",
     "/@angular/cli",
-    "/@schematics/update"
+    "/@angular/cli/@angular-devkit/architect",
+    "/@angular/cli/@angular-devkit/core",
+    "/@angular/cli/@angular-devkit/schematics",
+    "/@angular/cli/@schematics/update"
   ],
-  "_resolved": "https://registry.npmjs.org/rxjs/-/rxjs-6.2.2.tgz",
-  "_shasum": "eb75fa3c186ff5289907d06483a77884586e1cf9",
-  "_spec": "rxjs@~6.2.2",
-  "_where": "C:\\WebServer\\apache24\\htdocs\\angularupgrade\\ui",
+  "_resolved": "https://registry.npmjs.org/rxjs/-/rxjs-6.3.3.tgz",
+  "_shasum": "3c6a7fa420e844a81390fb1158a9ec614f4bad55",
+  "_spec": "rxjs@~6.3.3",
+  "_where": "C:\\htdocs\\spicecrm_fe_factory",
   "author": {
     "name": "Ben Lesh",
     "email": "ben@benlesh.com"
@@ -120,6 +120,7 @@
     "promise": "8.0.1",
     "protractor": "3.1.1",
     "rollup": "0.36.3",
+    "rollup-plugin-alias": "1.4.0",
     "rollup-plugin-inject": "2.0.0",
     "rollup-plugin-node-resolve": "2.0.0",
     "rx": "latest",
@@ -134,7 +135,7 @@
     "tsconfig-paths": "3.2.0",
     "tslint": "5.9.1",
     "tslint-no-unused-expression-chai": "0.0.3",
-    "typescript": "~2.8.1",
+    "typescript": "^3.0.1",
     "validate-commit-msg": "2.14.0",
     "webpack": "1.13.1",
     "xmlhttprequest": "1.8.0"
@@ -198,14 +199,5 @@
   },
   "sideEffects": false,
   "typings": "./index.d.ts",
-  "version": "6.2.2",
-  "warnings": [
-    {
-      "code": "ENOTSUP",
-      "required": {
-        "npm": ">=2.0.0"
-      },
-      "pkgid": "rxjs@6.2.2"
-    }
-  ]
+  "version": "6.3.3"
 }
