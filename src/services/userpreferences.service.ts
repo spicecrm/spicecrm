@@ -98,7 +98,7 @@ export class userpreferences {
         if (save) {
             let prefs = {};
             prefs[name] = value;
-            this.backend.postRequest('user/preferences/global', {}, prefs).subscribe(prefstatus => {
+            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(prefstatus => {
                 this.preferences[category][name] = value;
                 this.unchangedPreferences[category][name] = value;
                 this.completePreferencesWithDefaults();
