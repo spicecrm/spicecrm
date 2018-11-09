@@ -17,10 +17,11 @@ import {modal} from '../../services/modal.service';
 export class fieldLookup extends fieldGeneric implements OnInit {
 
     private clickListener: any;
-    private lookupType: string = '';
-    private lookupmoduleSelectOpen: boolean = false;
+    private lookupType = 0;
+    private lookuplinkSelectOpen: boolean = false;
     private lookupSearchOpen: boolean = false;
     private lookupSearchTerm: string = '';
+    private lookuplinks = [];
 
     constructor(public model: model,
                 public view: view,
@@ -42,40 +43,54 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
-        this.lookupType = this.lookupmodules[0];
+        this.lookuplinks = this.getLookuplinks();
     }
 
     get displayAssignedUser() {
         return this.fieldconfig.displayassigneduser;
     }
 
-    get lookupmodules(): Array<string> {
-        let lookupmodules = ['Contacts', 'Users'];
+    // getLookupmodules() is only needed when no definition by this.fieldconfig.lookuplinks
+    private getLookupmodules(): Array<string> {
+        let modules: Array<string>;
+        if ( this.fieldconfig.lookupmodules ) modules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
+        if ( !modules ) modules = ['Contacts','Users'];  // default, when no modules (and no links) are defined in this.fieldconfig.lookuplinks
+        return modules;
+    }
 
-        if (this.fieldconfig.lookupmodules) {
-            lookupmodules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
+    private getLookuplinks(): Array<any> {
+        let linknames: Array<string>;
+        if ( this.fieldconfig.lookuplinks ) linknames = this.fieldconfig.lookuplinks.replace(/\s/g, '').split(',');
+        if ( !linknames ) {  // fallback
+            linknames = [];
+            for ( let module of this.getLookupmodules() ) linknames.push( module.toLowerCase() );
         }
-
-        return lookupmodules;
+        let links = [];
+        for ( let linkname of linknames ) {
+            links.push({ name: linkname, module: this.metadata.getFieldDefs( this.model.module, linkname ).module });
+        }
+        return links;
     }
 
     get pills() {
         let pills = [];
-        for (let lookupModule of this.lookupmodules) {
-            if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
-                for (let beanid in this.model.data[lookupModule.toLowerCase()].beans) {
-                    let bean = this.model.data[lookupModule.toLowerCase()].beans[beanid];
+        for (let lookuplink of this.lookuplinks ) {
+            if (this.model.data[lookuplink.name] && this.model.data[lookuplink.name].beans) {
+          //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
+                for (let beanid in this.model.data[lookuplink.name].beans) {
+                    let bean = this.model.data[lookuplink.name].beans[beanid];
 
                     // special handling for assigned user
-                    if (lookupModule == 'Users' && !this.displayAssignedUser && beanid == this.model.data.assigned_user_id) {
+                    if (lookuplink.module == 'Users' && !this.displayAssignedUser && beanid == this.model.data.assigned_user_id) {
                         continue;
                     }
 
                     // pus to the pills
                     pills.push({
-                        module: lookupModule,
+                        module: lookuplink.module,
                         id: bean.id,
-                        summary_text: bean.summary_text
+                        summary_text: bean.summary_text,
+                        link: lookuplink.name
                     });
                 }
             }
@@ -85,9 +100,9 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
 
     private addItem(item) {
-        if (!this.model.data[this.lookupType.toLowerCase()]) this.model.data[this.lookupType.toLowerCase()] = { beans: {} };
+        if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = { beans: {} };
 
-        this.model.data[this.lookupType.toLowerCase()].beans[item.id] = {
+        this.model.data[this.lookuplinks[this.lookupType].name].beans[item.id] = {
             id: item.id,
             summary_text: item.text
         };
@@ -123,26 +138,26 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         */
 
         this.lookupSearchOpen = false;
-        this.lookupmoduleSelectOpen = false;
+        this.lookuplinkSelectOpen = false;
 
         this.clickListener();
     }
 
     private toggleLookupTypeSelect() {
-        this.lookupmoduleSelectOpen = !this.lookupmoduleSelectOpen;
+        this.lookuplinkSelectOpen = !this.lookuplinkSelectOpen;
         this.lookupSearchOpen = false;
     }
 
     private setLookupType(lookupType) {
         this.lookupSearchTerm = '';
         this.lookupType = lookupType;
-        this.lookupmoduleSelectOpen = false;
+        this.lookuplinkSelectOpen = false;
     }
 
     private removeItem(item) {
-        if ( !this.model.data[item.module.toLowerCase()].beans_relations_to_delete ) this.model.data[item.module.toLowerCase()].beans_relations_to_delete = {};
-        this.model.data[item.module.toLowerCase()].beans_relations_to_delete[item.id] = item;
-        delete(this.model.data[item.module.toLowerCase()].beans[item.id]);
+        if ( !this.model.data[item.link].beans_relations_to_delete ) this.model.data[item.link].beans_relations_to_delete = {};
+        this.model.data[item.link].beans_relations_to_delete[item.id] = item;
+        delete(this.model.data[item.link].beans[item.id]);
     }
 
     private onFocus() {
@@ -155,7 +170,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
     private openSearchDropDown() {
         // this.getRecent();
-        this.lookupmoduleSelectOpen = false;
+        this.lookuplinkSelectOpen = false;
         this.lookupSearchOpen = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
