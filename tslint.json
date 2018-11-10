@@ -29,6 +29,7 @@
     },
     "no-shadowed-variable": false,
     "no-unused-variable": false,
+    "prefer-const": false,
     "quotemark": false,
     "trailing-comma": false,
     "triple-equals": false,
