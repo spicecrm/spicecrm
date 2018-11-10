@@ -13,28 +13,29 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 })
 export class GlobalHeaderActionItem implements OnInit {
 
-    actionconfig: any = {};
-    closemenu: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public actionconfig: any = {};
+    private closemenu: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private session: session, private metadata: metadata, private model: model, private language: language, private dockedComposer: dockedComposer) {
 
     }
 
-    ngOnInit() {
-        if (this.actionconfig.module)
-            this.model.module = this.actionconfig.module
+    public ngOnInit() {
+        if (this.actionconfig.module) {
+            this.model.module = this.actionconfig.module;
+        }
     }
 
-    click() {
+    private click() {
         this.dockedComposer.addComposer(this.model.module);
         this.closemenu.emit(true);
     }
 
     get label() {
-        if (this.actionconfig.label)
+        if (this.actionconfig.label) {
             return this.language.getLabel(this.actionconfig.label);
-        else
+        } else {
             return this.language.getModuleLabel(this.model.module, 'LBL_NEW_FORM_TITLE');
+        }
     }
-
 }
