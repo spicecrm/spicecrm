@@ -14,7 +14,7 @@ declare var _: any;
 
 @Injectable()
 export class language {
-    private languagedata: any = {};
+    public languagedata: any = {};
     private _currentlanguage: string = '';
     public currentlanguage$: EventEmitter<any> = new EventEmitter<any>();
 
