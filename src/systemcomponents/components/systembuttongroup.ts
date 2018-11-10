@@ -6,15 +6,15 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/systemcomponents/templates/systembuttongroup.html'
 })
 export class SystemButtonGroup{
-    @Input() items: Array<any> = [];
-    @Output() action: EventEmitter<string> = new EventEmitter<string>();
+    @Input() private items: any[] = [];
+    @Output() private action: EventEmitter<string> = new EventEmitter<string>();
 
-    isOpen = false;
+    private isopen = false;
 
     constructor(private metadata: metadata) {}
 
     toggleOpen(){
-        this.isOpen = !this.isOpen;
+        this.isopen = !this.isopen;
     }
 
 }
