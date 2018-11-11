@@ -90,7 +90,6 @@ import /*embed*/ {fieldRating} from './components/fieldrating';
 import /*embed*/ {fieldLookupRecent} from './components/fieldlookuprecent';
 import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
-import /*embed*/ {fieldModelPopover} from './components/fieldmodelpopover';
 import /*embed*/ {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
 import /*embed*/ {fieldMediaFileImage} from './components/fieldmediafileimage';
 import /*embed*/ {FieldMessagesComponent} from "./components/fieldmessages";
@@ -168,7 +167,6 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
         fieldLookupSearch,
         fieldLookupSearchAdd,
         fieldAddress,
-        fieldModelPopover,
         fieldModelFooterPopover,
         fieldFullName,
         fieldTitle,

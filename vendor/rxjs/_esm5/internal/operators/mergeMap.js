@@ -1,7 +1,8 @@
-/** PURE_IMPORTS_START tslib,_util_subscribeToResult,_OuterSubscriber,_map,_observable_from PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_util_subscribeToResult,_OuterSubscriber,_InnerSubscriber,_map,_observable_from PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { subscribeToResult } from '../util/subscribeToResult';
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { map } from './map';
 import { from } from '../observable/from';
 export function mergeMap(project, resultSelector, concurrent) {
@@ -67,13 +68,17 @@ var MergeMapSubscriber = /*@__PURE__*/ (function (_super) {
         this._innerSub(result, value, index);
     };
     MergeMapSubscriber.prototype._innerSub = function (ish, value, index) {
-        this.add(subscribeToResult(this, ish, value, index));
+        var innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        var destination = this.destination;
+        destination.add(innerSubscriber);
+        subscribeToResult(this, ish, value, index, innerSubscriber);
     };
     MergeMapSubscriber.prototype._complete = function () {
         this.hasCompleted = true;
         if (this.active === 0 && this.buffer.length === 0) {
             this.destination.complete();
         }
+        this.unsubscribe();
     };
     MergeMapSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         this.destination.next(innerValue);

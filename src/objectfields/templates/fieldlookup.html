@@ -49,23 +49,23 @@
     </div-->
 
     <!-- new -->
-    <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-around--xx-small">
-        <div class="slds-combobox_object-switcher slds-combobox-addon_start">
+    <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-vertical--xx-small">
+        <div *ngIf="lookuplinks.length > 1" class="slds-combobox_object-switcher slds-combobox-addon_start">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
-                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookupmoduleSelectOpen}" role="combobox">
+                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookuplinkSelectOpen}" role="combobox">
                             <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon--right" (click)="toggleLookupTypeSelect()">
                                 <input type="text" readonly class="slds-input slds-combobox__input slds-combobox__input-value" autoComplete="off" role="textbox" [value]="language.getModuleName(lookupType)" />
                                 <system-icon icon="down" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
                             </div>
                             <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_x-small slds-dropdown_left" role="listbox">
                                 <ul class="slds-listbox slds-listbox_vertical" role="group" aria-label="Suggested for you">
-                                    <li *ngFor="let lookupmodule of lookupmodules" role="presentation" class="slds-listbox__item" (click)="setLookupType(lookupmodule)">
+                                    <li *ngFor="let lookuplink of lookuplinks; index as i" role="presentation" class="slds-listbox__item" (click)="setLookupType(i)">
                                         <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                             <div class="slds-grid slds-grid--vertical-align-center">
-                                                <system-icon [module]="lookupmodule" size="x-small"></system-icon>
-                                                <div class="slds-truncate">{{language.getModuleName(lookupmodule)}}</div>
+                                                <system-icon [module]="lookuplink.module" size="x-small"></system-icon>
+                                                <div class="slds-truncate">{{language.getModuleName(lookuplink.module)}}</div>
                                             </div>
                                         </div>
                                     </li>
@@ -79,28 +79,28 @@
         <div class="slds-combobox_container slds-combobox-addon_end">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookupSearchOpen}"  role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" class="slds-input slds-combobox__input" aria-autocomplete="list" (focus)="onFocus()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(lookupType)"/>
+                    <input type="text" class="slds-input" [ngClass]="{'slds-combobox__input':lookuplinks.length > 1}" aria-autocomplete="list" (focus)="onFocus()" (click)="onFieldClick()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(lookuplinks[lookupType].module)"/>
                     <system-icon icon="search" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
-                    <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" [module]="lookupType" (selectedObject)="addItem($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookupType" (selectedObject)="addItem($event)" [fieldid]="fieldid" [(searchterm)]="lookupSearchTerm"></field-lookup-search>
+                    <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" [module]="lookuplinks[lookupType].module" (selectedObject)="addItem($event)"></field-lookup-recent>
+                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookuplinks[lookupType].module" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [fieldid]="fieldid" [searchterm]="lookupSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>
     </div>
     <!-- end new -->
-    <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_inline slds-p-top_xx-small" role="group">
-        <li role="presentation" class="slds-listbox__item">
-          <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
-            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
-              <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+    <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_horizontal" role="group">
+        <li *ngFor="let pill of pills" role="presentation" class="slds-listbox__item slds-p-top_xxx-small">
+            <span class="slds-pill">
+                <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                  <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+                </span>
+                <span class="slds-pill__label">{{pill.summary_text}}</span>
+                <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(pill)">
+                  <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
             </span>
-            <span class="slds-pill__label">{{pill.summary_text}}</span>
-            <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(pill)">
-              <system-button-icon [icon]="'close'"></system-button-icon>
-            </button>
-          </span>
         </li>
     </ul>
     <field-messages [fieldname]="fieldname"></field-messages>
