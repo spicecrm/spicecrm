@@ -11,6 +11,7 @@ export class Subscriber extends Subscription {
         this.syncErrorThrown = false;
         this.syncErrorThrowable = false;
         this.isStopped = false;
+        this._parentSubscription = null;
         switch (arguments.length) {
             case 0:
                 this.destination = emptyObserver;
@@ -21,11 +22,10 @@ export class Subscriber extends Subscription {
                     break;
                 }
                 if (typeof destinationOrNext === 'object') {
-                    if (isTrustedSubscriber(destinationOrNext)) {
-                        const trustedSubscriber = destinationOrNext[rxSubscriberSymbol]();
-                        this.syncErrorThrowable = trustedSubscriber.syncErrorThrowable;
-                        this.destination = trustedSubscriber;
-                        trustedSubscriber.add(this);
+                    if (destinationOrNext instanceof Subscriber) {
+                        this.syncErrorThrowable = destinationOrNext.syncErrorThrowable;
+                        this.destination = destinationOrNext;
+                        destinationOrNext.add(this);
                     }
                     else {
                         this.syncErrorThrowable = true;
@@ -89,10 +89,11 @@ export class Subscriber extends Subscription {
         this.isStopped = false;
         this._parent = _parent;
         this._parents = _parents;
+        this._parentSubscription = null;
         return this;
     }
 }
-class SafeSubscriber extends Subscriber {
+export class SafeSubscriber extends Subscriber {
     constructor(_parentSubscriber, observerOrNext, error, complete) {
         super();
         this._parentSubscriber = _parentSubscriber;
@@ -221,8 +222,5 @@ class SafeSubscriber extends Subscriber {
         this._parentSubscriber = null;
         _parentSubscriber.unsubscribe();
     }
-}
-function isTrustedSubscriber(obj) {
-    return obj instanceof Subscriber || ('syncErrorThrowable' in obj && obj[rxSubscriberSymbol]);
 }
 //# sourceMappingURL=Subscriber.js.map

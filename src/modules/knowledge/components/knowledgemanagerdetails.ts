@@ -32,6 +32,10 @@ export class KnowledgeManagerDetails {
         }
     }
 
+    get selectedBook() {
+        return this.knowledgeService.selectedBook;
+    }
+
     private resetView() {
         for (let renderedComponent of this.renderedComponents) {
             renderedComponent.destroy();

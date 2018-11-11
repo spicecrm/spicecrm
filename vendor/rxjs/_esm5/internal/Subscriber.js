@@ -14,6 +14,7 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         _this.syncErrorThrown = false;
         _this.syncErrorThrowable = false;
         _this.isStopped = false;
+        _this._parentSubscription = null;
         switch (arguments.length) {
             case 0:
                 _this.destination = emptyObserver;
@@ -24,11 +25,10 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
                     break;
                 }
                 if (typeof destinationOrNext === 'object') {
-                    if (isTrustedSubscriber(destinationOrNext)) {
-                        var trustedSubscriber = destinationOrNext[rxSubscriberSymbol]();
-                        _this.syncErrorThrowable = trustedSubscriber.syncErrorThrowable;
-                        _this.destination = trustedSubscriber;
-                        trustedSubscriber.add(_this);
+                    if (destinationOrNext instanceof Subscriber) {
+                        _this.syncErrorThrowable = destinationOrNext.syncErrorThrowable;
+                        _this.destination = destinationOrNext;
+                        destinationOrNext.add(_this);
                     }
                     else {
                         _this.syncErrorThrowable = true;
@@ -93,6 +93,7 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         this.isStopped = false;
         this._parent = _parent;
         this._parents = _parents;
+        this._parentSubscription = null;
         return this;
     };
     return Subscriber;
@@ -232,7 +233,5 @@ var SafeSubscriber = /*@__PURE__*/ (function (_super) {
     };
     return SafeSubscriber;
 }(Subscriber));
-function isTrustedSubscriber(obj) {
-    return obj instanceof Subscriber || ('syncErrorThrowable' in obj && obj[rxSubscriberSymbol]);
-}
+export { SafeSubscriber };
 //# sourceMappingURL=Subscriber.js.map

@@ -23,6 +23,10 @@ export class KnowledgeBrowserDetails implements OnChanges {
 
     private _breadcrumbs: any[] = [];
 
+    get selectedBook() {
+        return this.knowledgeService.selectedBook;
+    }
+
     get breadcrumbs() {
         return this._breadcrumbs;
     }

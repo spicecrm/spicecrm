@@ -6,25 +6,24 @@ import {session} from './session.service';
 import {modelutilities} from './modelutilities.service';
 import {backend} from './backend.service';
 import {metadata} from './metadata.service';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
-//import {isUndefined} from "util";
 
 @Injectable()
 export class fts {
 
-    hits: Array<any> = [];
-    found: number = 0;
-    runningsearch: any = undefined;
-    runningmodulesearch: any = undefined;
-    searchTerm: string = '';
-    searchSort: any = {};
-    searchAggregates: any = {};
-    searchModules: Array<any> = [];
-    moduleSearchresults: Array<any> = [];
-    lastSearchParams: any = {};
+    public hits: Array<any> = [];
+    public found: number = 0;
+    public runningsearch: any = undefined;
+    public runningmodulesearch: any = undefined;
+    public searchTerm: string = '';
+    public searchSort: any = {};
+    public searchAggregates: any = {};
+    public searchModules: Array<any> = [];
+    public moduleSearchresults: Array<any> = [];
+    private lastSearchParams: any = {};
 
-    gloablSearchResults: any = {};
+    public gloablSearchResults: any = {};
 
     constructor(
         private backend: backend,
@@ -57,14 +56,15 @@ export class fts {
         return hit;
     }
 
-    search(searchterm, size: number = 5) {
+    public search(searchterm, size: number = 5) {
 
         // set the searchterm
         this.searchTerm = searchterm;
 
         // if we have a running search cancel it ...
-        if (this.runningsearch)
+        if (this.runningsearch){
             this.runningsearch.unsubscribe();
+        }
 
         this.resetData();
 
@@ -72,19 +72,22 @@ export class fts {
             'fts/searchterm/' + encodeURIComponent(searchterm),
             {size: size},
         ).subscribe((response) => {
-                this.hits = response['hits'].hits;
-                this.found = response['hits'].total;
-                this.runningsearch = undefined;
-            });
+            this.hits = response.hits.hits;
+            this.found = response.hits.total;
+            this.runningsearch = undefined;
+        });
     }
 
-    searchByModules(searchterm:string, modules: Array<string> = [], size: number = 5, aggregates = {}, sortparams: any = {}, owner = false) {
+    public searchByModules(searchterm: string, modules: Array<string> = [], size: number = 5, aggregates = {}, sortparams: any = {}, owner = false) {
         let retSubject = new Subject<any>();
         // if no module is passed .. search all modules
-        if (modules.length === 0) modules = this.searchModules;
+        if (modules.length === 0) {
+            modules = this.searchModules;
+        }
 
-        if( searchterm.indexOf('%') != -1 )
+        if (searchterm.indexOf('%') != -1) {
             searchterm = searchterm.replace(/%/g, '*');
+        }
         searchterm = searchterm.trim();
         // set the searchterm
         this.searchTerm = searchterm;
@@ -95,12 +98,15 @@ export class fts {
         // todo: check if same search is done .. and then do nothing .. avoid too many calls
 
         // if we have a running search cancel it ...
-        if (this.runningmodulesearch)
+        if (this.runningmodulesearch) {
             this.runningmodulesearch.unsubscribe();
+        }
 
-        // this.resetModuleData();
-        //this.runningmodulesearch = this.http.post(this.configurationService.getBackendUrl() + '/fts/globalsearch' + (modules.length > 0 ? '/' + modules.join(',') : '') + (searchterm ? '/' + searchterm : '') + '?session_id=' + this.session.authData.sessionId + '&records=' + size, {aggregates: this.searchAggregates, sort: this.searchSort})
-        this.runningmodulesearch = this.backend.postRequest('fts/globalsearch' + (modules.length > 0 ? '/' + modules.join(',') : '') + (searchterm ? '/' + encodeURIComponent(searchterm) : ''), {records: size, owner: owner}, {
+        this.runningmodulesearch = this.backend.postRequest('search', {}, {
+            modules: modules.length > 0 ? modules.join(',') : '',
+            searchterm: searchterm,
+            records: size,
+            owner: owner,
             aggregates: this.searchAggregates,
             sort: this.searchSort
         }).subscribe(response => {
@@ -141,37 +147,40 @@ export class fts {
         return retSubject.asObservable();
     }
 
-    loadMore() {
+    public loadMore() {
         let retSubject = new Subject<any>();
         // if we are in a serch ... do nothing
-        if (this.runningmodulesearch)
+        if (this.runningmodulesearch){
             return;
+        }
 
-        if (this.moduleSearchresults[0].data.hits.length >= this.moduleSearchresults[0].data.total)
+        if (this.moduleSearchresults[0].data.hits.length >= this.moduleSearchresults[0].data.total){
             return;
+        }
 
-        // this.runningmodulesearch = this.http.post(this.configurationService.getBackendUrl() + '/fts/globalsearch/' + this.lastSearchParams.modules.join(',') + (this.lastSearchParams.searchterm ? '/' + this.lastSearchParams.searchterm : '') + '?session_id=' + this.session.authData.sessionId + '&records=' + this.lastSearchParams.size + '&start=' + this.moduleSearchresults[0].data.hits.length, {aggregates: this.searchAggregates, sort: this.searchSort})
-        //     .subscribe(res => {
-        this.runningmodulesearch = this.backend.postRequest('fts/globalsearch/' + this.lastSearchParams.modules.join(',') + (this.lastSearchParams.searchterm ? '/' + encodeURIComponent(this.lastSearchParams.searchterm) : ''), {
+        this.runningmodulesearch = this.backend.postRequest('search', {}, {
+            modules: this.lastSearchParams.modules.length > 0 ? this.lastSearchParams.modules.join(',') : '',
+            searchterm: this.lastSearchParams.searchterm,
+            aggregates: this.searchAggregates,
+            sort: this.searchSort,
             records: this.lastSearchParams.size,
             start: this.moduleSearchresults[0].data.hits.length
-        }, {aggregates: this.searchAggregates, sort: this.searchSort})
-            .subscribe(response => {
-                // var response = res.json();
-                for (let module of this.lastSearchParams.modules) {
-                    for (let hit of response[module].hits)
-                        this.moduleSearchresults[0].data.hits.push(this.tranformHit(hit));
+        }).subscribe(response => {
+            // var response = res.json();
+            for (let module of this.lastSearchParams.modules) {
+                for (let hit of response[module].hits) {
+                    this.moduleSearchresults[0].data.hits.push(this.tranformHit(hit));
                 }
-                this.runningmodulesearch = undefined;
+            }
+            this.runningmodulesearch = undefined;
 
-                retSubject.next(response);
-                retSubject.complete();
-            });
+            retSubject.next(response);
+            retSubject.complete();
+        });
         return retSubject.asObservable();
     }
 
-    getSearchModules() {
-        //this.http.get(this.configurationService.getBackendUrl() + '/fts/searchmodules?session_id=' + this.session.authData.sessionId)
+    public getSearchModules() {
         this.backend.getRequest('fts/searchmodules')
             .subscribe((response: any) => {
                 for (let module of response.modules) {
@@ -181,7 +190,7 @@ export class fts {
             });
     }
 
-    resetData() {
+    public resetData() {
         this.found = 0;
         this.hits = [];
     }
