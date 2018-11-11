@@ -12,8 +12,8 @@
     <div class="slds-tile__detail slds-text-body--small">
         <dl class="slds-dl--horizontal">
             <ng-container *ngFor="let field of getFields()">
-                <dt class="slds-dl--horizontal__label">
-                    <span class="slds-truncate">{{language.getFieldDisplayName(module, field.field)}}</span>
+                <dt class="slds-dl--horizontal__label slds-truncate">
+                    {{language.getFieldDisplayName(module, field.field)}}
                 </dt>
                 <dd class="slds-dl--horizontal__detail slds-tile__meta">
                     <!--span class="slds-truncate">{{data[field.field]}}</span-->
