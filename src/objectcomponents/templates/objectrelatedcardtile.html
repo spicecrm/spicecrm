@@ -1,4 +1,3 @@
-<!--div class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-hint-parent"-->
 <object-icon [module]="module" [size]="'small'"></object-icon>
 <div class="slds-media__body">
     <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
@@ -16,11 +15,9 @@
                     {{language.getFieldDisplayName(module, field.field)}}
                 </dt>
                 <dd class="slds-dl--horizontal__detail slds-tile__meta">
-                    <!--span class="slds-truncate">{{data[field.field]}}</span-->
                     <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
                 </dd>
             </ng-container>
         </dl>
     </div>
 </div>
-<!--/div-->
