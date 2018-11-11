@@ -32,14 +32,14 @@ export class fieldLookup extends fieldGeneric implements OnInit {
                 public router: Router,
                 private elementRef: ElementRef,
                 private renderer: Renderer2,
-                private modal: modal ) {
+                private modal: modal) {
         super(model, view, language, metadata, router);
 
         // subscribe to the popup handler
         this.popup.closePopup$.subscribe(() => this.closePopups());
 
         // subscriber to the broadcast when new model is added from the model
-        this.broadcast.message$.subscribe(message => this.handleMessage(message));
+        this.broadcast.message$.subscribe((message) => this.handleMessage(message));
     }
 
     public ngOnInit() {
@@ -50,33 +50,37 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         return this.fieldconfig.displayassigneduser;
     }
 
+    get lookupTypeName() {
+        return this.language.getModuleName(this.lookuplinks[this.lookupType].module);
+    }
+
     // getLookupmodules() is only needed when no definition by this.fieldconfig.lookuplinks
-    private getLookupmodules(): Array<string> {
-        let modules: Array<string>;
-        if ( this.fieldconfig.lookupmodules ) modules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
-        if ( !modules ) modules = ['Contacts','Users'];  // default, when no modules (and no links) are defined in this.fieldconfig.lookuplinks
+    private getLookupmodules(): string[] {
+        let modules: string[];
+        if (this.fieldconfig.lookupmodules) modules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
+        if (!modules) modules = ['Contacts', 'Users'];  // default, when no modules (and no links) are defined in this.fieldconfig.lookuplinks
         return modules;
     }
 
-    private getLookuplinks(): Array<any> {
-        let linknames: Array<string>;
-        if ( this.fieldconfig.lookuplinks ) linknames = this.fieldconfig.lookuplinks.replace(/\s/g, '').split(',');
-        if ( !linknames ) {  // fallback
+    private getLookuplinks(): any[] {
+        let linknames: string[];
+        if (this.fieldconfig.lookuplinks) linknames = this.fieldconfig.lookuplinks.replace(/\s/g, '').split(',');
+        if (!linknames) {  // fallback
             linknames = [];
-            for ( let module of this.getLookupmodules() ) linknames.push( module.toLowerCase() );
+            for (let module of this.getLookupmodules()) linknames.push(module.toLowerCase());
         }
         let links = [];
-        for ( let linkname of linknames ) {
-            links.push({ name: linkname, module: this.metadata.getFieldDefs( this.model.module, linkname ).module });
+        for (let linkname of linknames) {
+            links.push({name: linkname, module: this.metadata.getFieldDefs(this.model.module, linkname).module});
         }
         return links;
     }
 
     get pills() {
         let pills = [];
-        for (let lookuplink of this.lookuplinks ) {
+        for (let lookuplink of this.lookuplinks) {
             if (this.model.data[lookuplink.name] && this.model.data[lookuplink.name].beans) {
-          //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
+                //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
                 for (let beanid in this.model.data[lookuplink.name].beans) {
                     let bean = this.model.data[lookuplink.name].beans[beanid];
 
@@ -100,7 +104,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
 
     private addItem(item) {
-        if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = { beans: {} };
+        if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = {beans: {}};
 
         this.model.data[this.lookuplinks[this.lookupType].name].beans[item.id] = {
             id: item.id,
@@ -132,11 +136,6 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     private closePopups() {
-        /*
-        if (this.model.data[this.parentIdField])
-            this.lookupSearchTerm = '';
-        */
-
         this.lookupSearchOpen = false;
         this.lookuplinkSelectOpen = false;
 
@@ -155,7 +154,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     private removeItem(item) {
-        if ( !this.model.data[item.link].beans_relations_to_delete ) this.model.data[item.link].beans_relations_to_delete = {};
+        if (!this.model.data[item.link].beans_relations_to_delete) this.model.data[item.link].beans_relations_to_delete = {};
         this.model.data[item.link].beans_relations_to_delete[item.id] = item;
         delete(this.model.data[item.link].beans[item.id]);
     }
@@ -184,13 +183,13 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     private searchWithModal() {
-        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = this.lookupType;
             selectModal.instance.multiselect = false;
-            selectModal.instance.selectedItems.subscribe(items => {
-                this.addItem({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
+            selectModal.instance.selectedItems.subscribe((items) => {
+                this.addItem({id: items[0].id, text: items[0].summary_text, data: items[0]});
             });
-            selectModal.instance.usedSearchTerm.subscribe( term => {
+            selectModal.instance.usedSearchTerm.subscribe(term => {
                 this.lookupSearchTerm = term;
             });
             selectModal.instance.searchTerm = this.lookupSearchTerm;
