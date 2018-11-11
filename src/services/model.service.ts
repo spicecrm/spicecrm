@@ -82,6 +82,14 @@ export class model {
         this.initializeFieldsStati();
     }
 
+    /*
+    * a getter function to return a displayname
+    * todo: make customizable so this can be defined in sysmodules
+     */
+    get displayname() {
+        return this.getFieldValue('summary_text');
+    }
+
     get fields(): any[] {
         if (this.module && (!this._fields || this._fields.length == 0)) {
             this._fields = this.metadata.getModuleFields(this.module);
@@ -555,7 +563,7 @@ export class model {
     private getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && ( _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (_.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -923,7 +931,7 @@ export class model {
             } else {
                 return false;
             }
-        } catch(e){
+        } catch (e) {
             return false;
         }
     }

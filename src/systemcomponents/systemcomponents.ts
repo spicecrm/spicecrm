@@ -69,6 +69,8 @@ import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextso
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
+import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
+import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 
 
 @NgModule({
@@ -124,7 +126,9 @@ import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicke
         SystemRichTextSourceModal,
         SystemInputTime,
         SystemInputDate,
-        SystemInputDatePicker
+        SystemInputDatePicker,
+        SystemGoogleplacesSearch,
+        SystemComponentSet
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -169,7 +173,10 @@ import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicke
         SystemRichTextEditor,
         SystemInputTime,
         SystemInputDate,
-        SystemInputDatePicker
+        SystemInputDatePicker,
+        SystemGoogleplacesSearch,
+        SystemStencil,
+        SystemComponentSet
     ]
 })
 export class SystemComponents {

@@ -1,6 +1,7 @@
-/** PURE_IMPORTS_START tslib,_OuterSubscriber,_util_subscribeToResult,_map,_observable_from PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_OuterSubscriber,_InnerSubscriber,_util_subscribeToResult,_map,_observable_from PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { map } from './map';
 import { from } from '../observable/from';
@@ -44,19 +45,24 @@ var SwitchMapSubscriber = /*@__PURE__*/ (function (_super) {
         if (innerSubscription) {
             innerSubscription.unsubscribe();
         }
-        this.add(this.innerSubscription = subscribeToResult(this, result, value, index));
+        var innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        var destination = this.destination;
+        destination.add(innerSubscriber);
+        this.innerSubscription = subscribeToResult(this, result, value, index, innerSubscriber);
     };
     SwitchMapSubscriber.prototype._complete = function () {
         var innerSubscription = this.innerSubscription;
         if (!innerSubscription || innerSubscription.closed) {
             _super.prototype._complete.call(this);
         }
+        this.unsubscribe();
     };
     SwitchMapSubscriber.prototype._unsubscribe = function () {
         this.innerSubscription = null;
     };
     SwitchMapSubscriber.prototype.notifyComplete = function (innerSub) {
-        this.remove(innerSub);
+        var destination = this.destination;
+        destination.remove(innerSub);
         this.innerSubscription = null;
         if (this.isStopped) {
             _super.prototype._complete.call(this);

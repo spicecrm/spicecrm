@@ -30,54 +30,68 @@
             <div [ngStyle]="getTabStyle('password')">
                 <div class="slds-size--1-of-2">
                     <div class="slds-p-around--x-small">
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <span class="slds-radio">
-                                  <input type="radio" id="passwordActionAuto" value="auto" name="passwordAction"
-                                         [(ngModel)]="passwordAction"/>
-                                  <label class="slds-radio__label" for="passwordActionAuto">
-                                    <span class="slds-radio--faux"></span>
-                                    <span class="slds-form-element__label">{{language.getLabel('LBL_AUTO_GENERATE')}}</span>
-                                  </label>
-                                </span>
-                                            <span class="slds-radio">
-                                  <input type="radio" id="passwordActionselect" value="select" name="passwordAction"
-                                         [(ngModel)]="passwordAction"/>
-                                  <label class="slds-radio__label" for="passwordActionselect">
-                                    <span class="slds-radio--faux"></span>
-                                    <span class="slds-form-element__label">{{language.getLabel('LBL_SELECT')}}</span>
-                                  </label>
-                                </span>
-                            </div>
-                        </div>
-                        <div *ngIf="passwordAction == 'select'" class="slds-form--stacked slds-text-align--left">
+                        <div class="slds-form--stacked slds-text-align--left">
                             <div *ngIf="pwdGuideline" class="slds-m-vertical--medium">
                                 {{language.getLabel('LBL_PWD_GUIDELINE')}}<br>
                                 {{pwdGuideline}}
                             </div>
-                            <div class="slds-form-element slds-m-vertical--small" [ngClass]="{'slds-has-error': (passField.touched && passField.dirty && pwderror) || (passwordAction == 'select' && !password && saveTriggered)}">
-                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                    <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                    <input #passField="ngModel" type="password" [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" placeholder="enter new password"/>
+                            <div class="slds-grid">
+                                <div class="slds-size--10-of-12">
+                                    <div class="slds-form-element slds-m-vertical--small"
+                                         [ngClass]="getPasswordStyle(passField)">
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                                            <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
+                                            <input #passField="ngModel" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
+                                                   class="slds-input" placeholder="enter new password" [disabled]="autoGenerate"/>
+                                        </div>
+                                        <div *ngIf=" passField.touched && passField.dirty && pwderror && !autoGenerate" class="slds-form-element__help slds-text-color--error">{{pwderror}}</div>
+                                        <div *ngIf="!password && saveTriggered && !autoGenerate" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
+                                            <div class="slds-media__figure">
+                                                <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
+                                            <div class="slds-media__body">Input Required!</div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element  slds-m-vertical--small"
+                                         [ngClass]="getPasswordStyle(repPassField, true)">
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                                            <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
+                                            <input [type]="showPassword ? 'text' : 'password'" #repPassField="ngModel"[(ngModel)]="repeatPassword"
+                                                   class="slds-input" placeholder="repeat new password" [disabled]="autoGenerate"/>
+                                        </div>
+                                        <div *ngIf=" repPassField.touched && repPassField.dirty && pwdreperror && !autoGenerate" class="slds-form-element__help slds-text-color--error">{{pwdreperror}}</div>
+                                        <div *ngIf="!repeatPassword && saveTriggered && !autoGenerate" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
+                                            <div class="slds-media__figure">
+                                                <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
+                                            <div class="slds-media__body">Input Required!</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div *ngIf=" passField.touched && passField.dirty && pwderror" class="slds-form-element__help slds-text-color--error">{{pwderror}}</div>
-                                <div *ngIf="passwordAction == 'select' && !password && saveTriggered" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
-                                    <div class="slds-media__figure">
-                                        <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
-                                    <div class="slds-media__body">Input Required!</div>
+                                <div class="slds-size--2-of-12 slds-p-horizontal--xx-small slds-p-vertical--small">
+                                    <button class="slds-button slds-button--neutral slds-p-around--x-small" (click)="toggleShowPassword()">
+                                        <system-button-icon [icon]="!showPassword ? 'preview': 'hide'" size="medium"></system-button-icon>
+                                    </button>
+                                    <button *ngIf="autoGenerate" class="slds-button slds-button--neutral slds-p-around--x-small" (click)="copyPassword()">
+                                        <system-button-icon icon="copy" size="medium"></system-button-icon>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="slds-form-element  slds-m-vertical--small" [ngClass]="{'slds-has-error': (repPassField.touched && repPassField.dirty && pwdreperror) || (passwordAction == 'select' && !repeatPassword && saveTriggered)}">
-                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                    <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                    <input type="password" #repPassField="ngModel" [(ngModel)]="repeatPassword" class="slds-input slds-p-horizontal--large slds-p-vertical--small" placeholder="repeat new password"/>
-                                </div>
-                                <div *ngIf=" repPassField.touched && repPassField.dirty && pwdreperror" class="slds-form-element__help slds-text-color--error">{{pwdreperror}}</div>
-                                <div *ngIf="passwordAction == 'select' && !repeatPassword && saveTriggered" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
-                                    <div class="slds-media__figure">
-                                        <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
-                                    <div class="slds-media__body">Input Required!</div>
-                                </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control slds-grid">
+                                <span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--small ">
+                                    <input type="checkbox" name="auto" id="autoGenerate" [(ngModel)]="autoGenerate"/>
+                                    <label class="slds-checkbox__label" for="autoGenerate">
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Auto Generate</span>
+                                    </label>
+                                </span>
+                                <span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--small ">
+                                    <input type="checkbox" name="auto" id="sendByEmail" [(ngModel)]="sendByEmail"/>
+                                    <label class="slds-checkbox__label" for="sendByEmail">
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Send By Email</span>
+                                    </label>
+                                </span>
                             </div>
                         </div>
                     </div>
