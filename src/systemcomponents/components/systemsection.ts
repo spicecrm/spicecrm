@@ -7,7 +7,7 @@ import {language} from "../../services/language.service";
 })
 export class SystemSection {
 
-    @Input() private title: string = "";
+    @Input() private titlelabel: string = "";
     @Input() private expanded: boolean = true;
 
     constructor(private language: language) {
