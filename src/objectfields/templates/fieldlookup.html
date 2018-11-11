@@ -14,41 +14,6 @@
     </ng-template>
 </div>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <!--div class="slds-form-element slds-lookup">
-        <div class="slds-form-element__control slds-grid slds-box--border">
-            <div class="slds-grid slds-m-vertical--xx-small slds-p-left--xx-small">
-                <div class="slds-col">
-                    <system-icon [module]="lookupType" [size]="'small'" [divClass]="'slds-m-horizontal--xxx-small'"></system-icon>
-                </div>
-                <div class="slds-col">
-                    <button class="slds-button slds-button--icon slds-button--icon-small" aria-haspopup="true"   (click)="toggleParentTypeSelect()">
-                        <system-button-icon [icon]="'down'" [size]="'small'"></system-button-icon>
-                    </button>
-                </div>
-            </div>
-            <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
-                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="lookupSearchTerm" (focus)="onFocus()" [placeholder]="'Search ' + language.getModuleName(lookupType)" role="combobox"/>
-            </div>
-        </div>
-    </div>
-    <div *ngIf="lookupmoduleSelectOpen" class="slds-dropdown slds-dropdown--left">
-        <ul class="slds-dropdown__list" role="menu">
-            <li *ngFor="let lookupmodule of lookupmodules" class="slds-dropdown__item" role="presentation">
-                <button class="slds-button slds-lookup__item-action slds-lookup__item-action--label"
-                        (click)="setLookupType(lookupmodule)">
-                    <system-icon [module]="lookupmodule" [size]="'small'"></system-icon>
-                    {{language.getModuleName(lookupmodule)}}
-                </button>
-            </li>
-        </ul>
-    </div>
-    <div *ngIf="lookupSearchOpen" class="slds-lookup__menu" [ngStyle]="parentSearchStyle()">
-        <field-lookup-recent *ngIf="lookupSearchTerm === ''" [module]="lookupType" (selectedObject)="addItem($event)"></field-lookup-recent>
-        <field-lookup-search *ngIf="lookupSearchTerm !== ''" [module]="lookupType" [fieldid]="fieldid" (selectedObject)="addItem($event)" [(searchterm)]="lookupSearchTerm"></field-lookup-search>
-    </div-->
-
-    <!-- new -->
     <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-vertical--xx-small">
         <div *ngIf="lookuplinks.length > 1" class="slds-combobox_object-switcher slds-combobox-addon_start">
             <div class="slds-form-element">
@@ -56,7 +21,7 @@
                     <div class="slds-combobox_container">
                         <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookuplinkSelectOpen}" role="combobox">
                             <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon--right" (click)="toggleLookupTypeSelect()">
-                                <input type="text" readonly class="slds-input slds-combobox__input slds-combobox__input-value" autoComplete="off" role="textbox" [value]="language.getModuleName(lookupType)" />
+                                <input type="text" readonly class="slds-input slds-combobox__input slds-combobox__input-value" autoComplete="off" role="textbox" [value]="lookupTypeName" />
                                 <system-icon icon="down" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
                             </div>
                             <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_x-small slds-dropdown_left" role="listbox">
@@ -89,7 +54,6 @@
             </div>
         </div>
     </div>
-    <!-- end new -->
     <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_horizontal" role="group">
         <li *ngFor="let pill of pills" role="presentation" class="slds-listbox__item slds-p-top_xxx-small">
             <span class="slds-pill">
