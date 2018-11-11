@@ -65,6 +65,7 @@ import /*embed*/ {GlobalDockedComposerOverflow} from "./components/globaldockedc
 import /*embed*/ {GlobalComposeButton} from "./components/globalcomposebutton";
 import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
+import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
@@ -127,6 +128,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobaUserPanel,
         GlobalAppLauncher,
         GlobalAppLauncherDialog,
+        GlobalAppLauncherDialogRoleTile,
         GlobalDockedComposerContainer,
         GlobalDockedComposer,
         GlobalDockedComposerModal,
