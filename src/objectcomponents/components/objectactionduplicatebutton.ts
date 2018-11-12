@@ -1,4 +1,4 @@
-import {Component, Input, Optional, OnInit} from '@angular/core';
+import {Component, Input, Optional, OnInit, EventEmitter} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {session} from '../../services/session.service';
@@ -8,24 +8,22 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'object-action-duplicate-button',
     templateUrl: './src/objectcomponents/templates/objectactionduplicatebutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-        '(click)': 'this.duplicateModel()'
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ], 
     providers: [model]
 })
-export class ObjectActionDuplicateButton {
-    
-    parent: any = {};
+export class ObjectActionDuplicateButton implements OnInit {
+
+    public parent: any = {};
+    public disabled: boolean = true;
 
     constructor(private language: language, private metadata: metadata, private model: model, private session: session) {
 
     }
 
-    duplicateModel() {
+    public ngOnInit() {
+        this.disabled = this.metadata.checkModuleAcl(this.model.module, 'create') ? true : false;
+    }
+
+    public execute() {
         let newId = this.model.utils.generateGuid();
         this.model.module = this.parent.module;
         this.model.id = newId;
@@ -39,9 +37,8 @@ export class ObjectActionDuplicateButton {
         this.model.data.date_entered = new Date();
         this.model.data.date_modified = new Date();
 
-        //let fields = this.metadata.getModuleFields(this.module);
-        for(let field in this.parent.fields){
-            if(this.parent.fields[field].type == 'link' && this.model.data[field] && this.model.data[field].beans){
+        for (let field in this.parent.fields) {
+            if (this.parent.fields[field].type == 'link' && this.model.data[field] && this.model.data[field].beans) {
                 for (let bean in this.model.data[field].beans) {
                     for (let relField in this.model.data[field].beans[bean]) {
                         if (this.model.data[field].beans[bean][relField] == this.parent.id) {
@@ -50,19 +47,19 @@ export class ObjectActionDuplicateButton {
                         }
 
                         // max 1 level
-                        if(this.model.data[field].beans[bean][relField].beans)
+                        if (this.model.data[field].beans[bean][relField].beans) {
                             this.model.data[field].beans[bean][relField].beans = {};
+                        }
                     }
 
-                    if(this.model.data[field].beans[bean].id != bean){
+                    if (this.model.data[field].beans[bean].id != bean) {
                         this.model.data[field].beans[this.model.data[field].beans[bean].id] = this.model.data[field].beans[bean];
                         delete(this.model.data[field].beans[bean]);
                     }
                 }
             }
         }
-        
+
         this.model.edit();
     }
-
 }
