@@ -7,7 +7,7 @@
                 <div class="slds-pill_container">
                     <span class="slds-pill slds-size--1-of-1">
                         <span class="slds-pill__label">{{selected_item.name}}</span><span *ngIf="selected_item.scope == 'custom'" class="slds-text-color_weak">custom</span>
-                        <button class="slds-button slds-button--icon slds-pill__remove" style="margin-right: 5px;" (click)="selected_item = null">
+                        <button [disabled]="disabled" class="slds-button slds-button--icon slds-pill__remove" style="margin-right: 5px;" (click)="selected_item = null">
                           <system-button-icon [icon]="'close'"></system-button-icon>
                         </button>
                     </span>
@@ -17,7 +17,7 @@
             <div *ngIf="!selected_item" class="slds-combobox_container">
                 <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-haspopup="listbox" role="combobox">
                     <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-                        <input type="text" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id-68dg4" aria-autocomplete="list" autocomplete="off" role="textbox" placeholder="{{language.getLabel('LBL_SEARCHE_HERE')}}" #search_term (focus)="show_results = true" (focusout)="show_results = false" (keyup)="search(search_term.value)" (keyup.escape)="show_results = false" />
+                        <input [disabled]="disabled" type="text" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id-68dg4" aria-autocomplete="list" autocomplete="off" role="textbox" placeholder="{{language.getLabel('LBL_SEARCHE_HERE')}}" #search_term (focus)="show_results = true" (focusout)="show_results = false" (keyup)="search(search_term.value)" (keyup.escape)="show_results = false" />
                         <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right" style="margin-right: 5px;">
                             <system-utility-icon [icon]="'search'" [size]="'xx-small'"></system-utility-icon>
                         </span>

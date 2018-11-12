@@ -55,7 +55,31 @@ export class FieldsetManagerFieldDetails implements OnChanges {
             this.currentField = {};
         }
     }
+    get configValuesLabel() {
+        // let ret: any = {};
+        // ret = this.configValues;
+        console.log("configValues", this.configValues);
+        let ret = {name: ""};
+        if("label" in this.configValues) {
+            ret = {name: this.configValues.label};
+        }
 
+        // this.configValues.name = this.configValues.label
+        console.log("configValues", ret);
+        return ret;
+    }
+    set configValuesLabel(val) {
+        this.configValues[this.InputConfig.option] = val.name;
+    }
+
+
+
+    get InputConfig() {
+        let ret = {option: "", type: "label", description: ""};
+        ret.option = 'name';
+        // ret.option = this.language.getAppLanglabel('LBL_LABEL');
+        return ret;
+    }
 
     getFieldConfig() {
         if (this.configValues.fieldtype) {
@@ -75,5 +99,4 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         this.component = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
         this.configValues = Object.assign({}, this.configValues);
     }
-
 }
