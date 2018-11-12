@@ -11,17 +11,17 @@ import {userpreferences} from '../../services/userpreferences.service';
 @Component({
     selector: 'object-action-mail-modal',
     templateUrl: './src/objectcomponents/templates/objectactionmailmodal.html',
-    providers: [model, view]
+    providers: [view]
 })
 export class ObjectActionMailModal implements OnInit {
 
-    tplList: Array<any> = [];
-    fromList: Array<any> = [];
-    loading: boolean = true;
-    sending: boolean = false;
+    private tplList: any[] = [];
+    private fromList: any[] = [];
+    private loading: boolean = true;
+    private sending: boolean = false;
 
-    parent: any = null;
-    self: any = null
+    public parent: any = null;
+    public self: any = null
 
     constructor(private language: language, private metadata: metadata, private model: model, private view: view, private backend: backend, private prefs: userpreferences, private modal: modal) {
         // initialize model
@@ -32,7 +32,7 @@ export class ObjectActionMailModal implements OnInit {
         this.view.setEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.initializeModel(this.parent);
 
         // set the parent data
@@ -41,23 +41,20 @@ export class ObjectActionMailModal implements OnInit {
         this.model.data.parent_name = this.parent.data.summary_text;
     }
 
-    close() {
+    private close() {
         this.self.destroy();
     }
 
     get senddisabled() {
 
         // check mailbox
-        if (!this.model.getFieldValue('mailbox_id'))
-            return true;
+        if (!this.model.getFieldValue('mailbox_id')) return true;
 
         // check subjekt and body
-        if (!this.model.getFieldValue('name') || !this.model.getFieldValue('body'))
-            return true;
+        if (!this.model.getFieldValue('name') || !this.model.getFieldValue('body')) return true;
 
         // check fpor receipients
-        if (!this.model.getFieldValue('recipient_addresses'))
-            return true;
+        if (!this.model.getFieldValue('recipient_addresses')) return true;
 
         let recipientok = false;
         this.model.data.recipient_addresses.some(recipient => {
@@ -73,7 +70,7 @@ export class ObjectActionMailModal implements OnInit {
 
     }
 
-    sendemail() {
+    private sendemail() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
@@ -92,7 +89,6 @@ export class ObjectActionMailModal implements OnInit {
                     this.sending = false;
                 }
             );
-        })
-
+        });
     }
 }
