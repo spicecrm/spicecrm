@@ -46,7 +46,7 @@ export class userpreferences {
     }
 
     public getPreferences(loadhandler: Subject<string>) {
-        this.loadPreferences().subscribe(ret => {
+        this.loadPreferences().subscribe((ret) => {
             loadhandler.next('getPreferences');
         });
     }
@@ -54,7 +54,7 @@ export class userpreferences {
     public loadPreferences(category = 'global'): Observable<any> {
         let retSubject: Subject<any> = new Subject<any>();
 
-        this.backend.getRequest('user/preferences/' + category).subscribe(prefs => {
+        this.backend.getRequest('user/preferences/' + category).subscribe((prefs) => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
                 this.unchangedPreferences[category] = _.clone(prefs);
@@ -99,7 +99,10 @@ export class userpreferences {
         if (save) {
             let prefs = {};
             prefs[name] = value;
-            this.backend.postRequest('user/preferences/global', {}, prefs).subscribe(prefstatus => {
+            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe((prefstatus) => {
+
+                if (!this.preferences[category]) this.preferences[category] = {};
+
                 this.preferences[category][name] = value;
                 this.unchangedPreferences[category][name] = value;
                 this.completePreferencesWithDefaults();
@@ -110,19 +113,19 @@ export class userpreferences {
         }
     }
 
-    public setPreferences( prefs, category = 'global' ) {
-        let saved = new Subject();
-        this.backend.postRequest('user/preferences/global', {}, prefs).subscribe(
-            savedprefs => {
-                for ( let prop of this.preferences[category] ) {
-                    if ( savedprefs.hasOwnProperty(prop)) this.preferences[category] = savedprefs[prop];
+    public setPreferences(prefs, category = 'global') {
+        const saved = new Subject();
+        this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(
+            (savedprefs) => {
+                for (let prop of this.preferences[category]) {
+                    if (savedprefs.hasOwnProperty(prop)) this.preferences[category] = savedprefs[prop];
                     else delete this.preferences[category][prop];
                 }
                 this.unchangedPreferences[category] = savedprefs;
                 this.completePreferencesWithDefaults();
                 saved.next(true);
             },
-            error => {
+            (error) => {
                 saved.error(error);
             }
         );
@@ -166,7 +169,7 @@ export class userpreferences {
 
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
-        this.backend.getRequest('user/preferencesformats').subscribe(formats => {
+        this.backend.getRequest('user/preferencesformats').subscribe((formats) => {
             for (let item of formats.nameFormats) {
                 this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});
             }
@@ -208,7 +211,7 @@ export class userpreferences {
         let re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')';
         let num = i.toFixed(Math.max(0, ~~n));
         return num.replace('.', decSep).replace(new RegExp(re, 'g'), '$&' + grpSep);
-    };
+    }
 
     public formatDate(d) {
         return moment(d).format(this.getDateFormat());
