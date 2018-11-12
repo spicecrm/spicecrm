@@ -5,6 +5,7 @@ import {
     Component,
     ElementRef,
     NgModule,
+    NgZone,
     HostListener,
     Renderer,
     Renderer2,
@@ -89,6 +90,7 @@ import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objecta
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
 import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
+import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
@@ -295,6 +297,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionContainer,
+        ObjectActionContainerItem,
         ObjectActionEditButton,
         ObjectActionSaveButton,
         ObjectActionDeleteButton,
