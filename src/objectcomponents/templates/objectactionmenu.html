@@ -3,7 +3,7 @@
     <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions()" (click)="toggleOpen()">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
-    <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
+    <div *ngIf="isOpen" class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
         <ul class="slds-dropdown__list" role="menu">
             <ng-container *ngIf="!isEditMode()">
                 <ng-container *ngIf="standardactions">
