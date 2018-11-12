@@ -13,6 +13,9 @@ export class LabelSelectorComponent
 {
     @Output('select') select$ = new EventEmitter();
     @Input('selected_item') private _selected_item = null;
+    @Input('disabled') private _disabled = false;
+    @Input('option') private option: any = {};
+
     is_searching = false;
     items = [];
     show_results = false;
@@ -32,8 +35,7 @@ export class LabelSelectorComponent
     set selected_item(val)
     {
         this._selected_item = val;
-        if(val)
-        {
+        if(val) {
             this.select$.emit(val);
             this.show_results = false;
         }
@@ -41,12 +43,25 @@ export class LabelSelectorComponent
 
     get selected_item()
     {
+        if(this._selected_item && this._selected_item.name == '') {this._selected_item = null;};
         return this._selected_item;
     }
 
-    search(search_term: string = null)
+    get disabled()
     {
-        console.log("res1", search_term);
+        return this._disabled;
+    }
+
+    // get label()
+    // {
+    //     if(option.option.length > 0) {
+    //         return option.option;
+    //     }else {
+    //         return this._label;
+    //     }
+    // }
+
+    search(search_term: string = null) {
         if(!search_term)
             return false;
 
@@ -54,7 +69,6 @@ export class LabelSelectorComponent
         this.is_searching = true;
         this.backend.getRequest('syslanguages/labels/search/'+search_term).subscribe(
             (res) => {
-                console.log("res2", res);
                 this.items = res.slice(0,this.max_results);
                 this.is_searching = false;
             }
@@ -74,7 +88,7 @@ export class LabelSelectorComponent
             {
                 id: this.utils.generateGuid(),
                 syslanguagelabel_id: label.id,
-                //syslanguage: this.language.currentlanguage,
+                // syslanguage: this.language.currentlanguage,
                 syslanguage: this.language.languagedata.languages.default,
             }
         );
@@ -104,6 +118,5 @@ export class LabelSelectorComponent
                 break;
         }
     }
-
 
 }
