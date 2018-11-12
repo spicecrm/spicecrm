@@ -24,15 +24,7 @@ export class KnowledgeService {
                 private broadcast: broadcast,
                 public userPreferences: userpreferences,
                 private fts: fts) {
-        this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeDocuments") {
-                this.getDocuments(this.selectedBook.id);
-            }
-            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
-                this.getBooks();
-            }
-        });
-
+        this.saveSubscriber();
     }
 
     get searchTerm() {
@@ -51,6 +43,26 @@ export class KnowledgeService {
                 this.resultsList = res[module].hits.map(doc => doc = doc._source);
                 this.isLoading = false;
             });
+    }
+
+    private saveSubscriber() {
+        this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeDocuments") {
+                this.documents.some(doc => {
+                    if (doc.id == msg.messagedata.id) {
+                        for (let prop in msg.messagedata.data) {
+                            if (msg.messagedata.data.hasOwnProperty(prop) && doc.hasOwnProperty(prop)) { doc[prop] = msg.messagedata.data[prop]}
+                        }
+                        this.sortDocuments();
+                        this.documents = this.documents.slice();
+                        return true;
+                    }
+                });
+            }
+            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
+                this.getBooks();
+            }
+        });
     }
 
     public setLastViewedBook(none = false) {
@@ -74,7 +86,10 @@ export class KnowledgeService {
                 this.books = books.list;
                 this.isLoading = false;
                 this.userPreferences.loadPreferences("KnowledgeBooks")
-                    .subscribe(pref => this.selectedBook = this.books.find(book => book.id == pref.lastViewedBook));
+                    .subscribe(pref => {
+                        this.selectedBook = this.books.find(book => book.id == pref.lastViewedBook);
+                        this.getDocuments(this.selectedBook.id);
+                    });
             });
     }
 
@@ -88,14 +103,7 @@ export class KnowledgeService {
     }
 
     public sortDocuments() {
-         this.documents.sort((a,b) => {
-            if (+a.parent_sequence == +b.parent_sequence) {
-                return a.name - b.name;
-            } else {
-                return a.parent_sequence - b.parent_sequence;
-            }
-        });
-        return this.documents.sort(function(a, b) {
+        this.documents.sort(function(a, b) {
             if (+a.parent_sequence == +b.parent_sequence) {
                 var nameA = a.name.toUpperCase();
                 var nameB = b.name.toUpperCase();
