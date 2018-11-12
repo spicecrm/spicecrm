@@ -1,23 +1,17 @@
 {
   "extends": "tslint:recommended",
   "rules": {
-    "max-line-length": {
-      "options": [120]
-    },
-    "new-parens": true,
-    "trailing-comma": false,
-    "no-unused-variable": false,
-    "variable-name": false,
-    "whitespace" : false,
     "class-name": false,
+    "curly": [true, "ignore-same-line"],
     "forin": false,
-    "member-ordering" : false,
-    "interface-name": false,
-    "triple-equals": false,
-    "switch-default": false,
     "object-literal-sort-keys": false,
-    "quotemark": false,
+    "ordered-imports": false,
+    "interface-name": false,
+    "import-spacing": false,
     "jsdoc-format" : false,
+    "max-line-length": false,
+    "member-ordering" : false,
+    "new-parens": true,
     "no-arg": true,
     "no-bitwise": true,
     "no-conditional-assignment": true,
@@ -32,7 +26,16 @@
         "timeEnd",
         "trace"
       ]
-    }
+    },
+    "no-shadowed-variable": false,
+    "no-unused-variable": false,
+    "prefer-const": false,
+    "quotemark": false,
+    "trailing-comma": false,
+    "triple-equals": false,
+    "switch-default": false,
+    "variable-name": false,
+    "whitespace" : false
   },
   "jsRules": {
     "max-line-length": {
