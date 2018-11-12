@@ -24,7 +24,9 @@ import {
     Pipe,
     PipeTransform,
     Optional,
-    Attribute
+    Attribute,
+    ViewChildren,
+    QueryList
 } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Title, DomSanitizer} from '@angular/platform-browser';
@@ -89,8 +91,8 @@ import /*embed*/ {ObjectActionsetMenuContainerEdit} from './components/objectact
 import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objectactionsetmenucontainerdelete';
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
-import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
+import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
