@@ -41,6 +41,17 @@ export class GoogleCalendarManager {
         );
     }
 
+    public startSync() {
+        this.backend.getRequest('google/calendar/notifications/startSync').
+            subscribe((res: any) => {
+                if (res.result == true) {
+                    this.toast.sendToast('Google Calendar synchronization started.', 'success');
+                } else {
+                    this.toast.sendToast(res.error, 'error');
+                }
+        });
+    }
+
     public addMapping() {
         if (!this.beanMappings) {
             this.beanMappings = [];

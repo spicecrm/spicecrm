@@ -2,6 +2,9 @@
     <div class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral"
+                    (click)="startSync()">{{language.getLabel('LBL_START_SYNC')}}
+            </button>
+            <button type="button" class="slds-button slds-button--neutral"
                     (click)="addMapping()">{{language.getLabel('LBL_ADD')}}
             </button>
             <button type="button" class="slds-button slds-button--brand"
