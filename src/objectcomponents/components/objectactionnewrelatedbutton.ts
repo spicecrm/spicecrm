@@ -1,37 +1,38 @@
-import {Component, Input, Optional, OnInit} from "@angular/core";
+import {Component, Input, Optional, OnInit, EventEmitter} from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {language} from "../../services/language.service";
+import {session} from "../../services/session.service";
 
 @Component({
     selector: "object-action-newrelated-button",
     templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
-    host: {
-        "class": "slds-button slds-button--neutral",
-        "[style.display]": "getDisplay()",
-        "(click)": "this.addModel()"
-    },
-    styles: [
-        ":host {cursor:pointer;}"
-    ],
     providers: [model]
 })
 export class ObjectActionNewrelatedButton implements OnInit {
 
     public parent: any = {};
+    public disabled: boolean = true;
 
     constructor(private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }
 
-    private addModel() {
+    public ngOnInit() {
+        this.model.module = this.relatedmodels.relatedModule;
+        if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
+            this.disabled = false;
+        }
+    }
+
+    public execute() {
 
         if (!this.parent.data.id) {
             this.parent.data.id = this.parent.id;
         }
 
-        // make sure we have no idea so a new on gets issues
+        // make sure we have no id so a new on gets issues
         this.model.id = "";
 
         // add the model
@@ -42,15 +43,4 @@ export class ObjectActionNewrelatedButton implements OnInit {
         });
     }
 
-    public ngOnInit() {
-        this.model.module = this.relatedmodels.relatedModule;
-    }
-
-    private getDisplay() {
-        if (!this.model.module || !this.metadata.checkModuleAcl(this.model.module, "create")) {
-            return "none";
-        }
-
-        return "inherit";
-    }
 }
