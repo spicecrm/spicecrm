@@ -1,4 +1,4 @@
-import {Component, Input, HostBinding, ViewContainerRef} from "@angular/core";
+import {Component, Input, HostBinding, ViewContainerRef, EventEmitter, OnInit, AfterViewInit} from "@angular/core";
 import {Router} from "@angular/router";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -8,28 +8,32 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "contact-newsletters-button",
-    templateUrl: "./src/modules/contacts/templates/contactnewslettersbutton.html",
-    host: {
-        "class": "slds-button slds-button--neutral",
-        "[style.display]": "getDisplay()",
-        "(click)" : "showPortalDetails()"
-    },
-    styles: [
-        ":host >>> {cursor:pointer;}"
-    ]
+    templateUrl: "./src/modules/contacts/templates/contactnewslettersbutton.html"
 })
-export class ContactNewslettersButton {
+export class ContactNewslettersButton implements OnInit {
 
-    private showNeslettersModal: boolean = false;
+    public disabled: boolean = true;
 
     constructor(private language: language, private model: model, private modal: modal, private ViewContainerRef: ViewContainerRef) {
     }
 
-    private showNewsletters() {
+    public ngOnInit() {
+        this.handleDisabled();
+
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled();
+        });
+
+        this.model.data$.subscribe(data => {
+            this.handleDisabled();
+        });
+    }
+
+    public execute() {
         this.modal.openModal("ContactNewsletters", true, this.ViewContainerRef.injector);
     }
 
-    private getDisplay() {
-        return !this.model.data.email1 || this.model.isEditing || (this.model.data.acl && !this.model.data.acl.edit) ? "none" : "inherit";
+    private handleDisabled() {
+        this.disabled = !this.model.data.email1 || this.model.isEditing || (this.model.data.acl && !this.model.data.acl.edit) ? true : false;
     }
 }
