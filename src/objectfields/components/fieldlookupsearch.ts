@@ -17,6 +17,8 @@ export class fieldLookupSearch {
     @Input() private fieldid: string = '';
 
     @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private searchWithModal = new EventEmitter();
+
     @Output() private searchtermChange = new EventEmitter<string>();
 
     @Input() set searchterm(value) {
@@ -54,18 +56,8 @@ export class fieldLookupSearch {
                 resultsArray = results.data.hits;
                 return true;
             }
-        })
+        });
         return resultsArray;
     }
 
-    private openModal() {
-        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-            selectModal.instance.module = this.module;
-            selectModal.instance.multiselect = false;
-            selectModal.instance.selectedItems.subscribe(items => {
-                this.selectedObject.emit({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
-            });
-            selectModal.instance.searchTerm = this.searchTerm;
-        });
-    }
 }

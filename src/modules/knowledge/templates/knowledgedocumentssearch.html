@@ -6,13 +6,13 @@
                 <button *ngIf="searchTerm.length > 0" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon" (click)="clearSearch()">
                     <system-button-icon [icon]="'close'"></system-button-icon>
                 </button>
-                <input type="search" class="slds-input" [(ngModel)]="searchTerm" placeholder="Search Documents" role="combobox">
+                <input type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('MSG_SEARCH_DOCUMENTS')" role="combobox">
             </div>
         </div>
     </div>
     <div class="slds-p-vertical--none" [ngStyle]="resultsMenuStyle">
         <div *ngIf="searchTerm != ''" class="slds-theme--shade slds-p-vertical--xx-small slds-p-horizontal--small slds-text-body--small slds-border--bottom">
-            {{resultsList.length == 1 ?  resultsList.length + ' Document found' : resultsList.length + ' Documents found'}}
+            {{resultsList.length}} {{language.getLabel('MSG_DOCUMENTS_FOUND')}}
         </div>
         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
             <thead>

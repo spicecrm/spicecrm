@@ -34,7 +34,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
-        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
@@ -52,7 +52,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.model.setField(this.relateIdField, '');
     }
 
-    public onFocus() {
+    private onFocus() {
         this.relateSearchOpen = true;
     }
 
@@ -67,20 +67,18 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.router.navigate(['/module/' + this.relateType + '/' + this.model.getField(this.relateIdField)]);
     }
 
-
-    private openSearchModal() {
-        // close the relate search
+    private searchWithModal() {
         this.relateSearchOpen = false;
-
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.relateType;
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
-                if(items.length > 0) {
-                    this.model.data[this.relateIdField] = items[0].id;
-                    this.model.data[this.relateNameField] = items[0].summary_text;
+                if ( items.length ) {
+                    this.setRelated({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
                 }
             });
+            selectModal.instance.searchTerm = this.relateSearchTerm;
         });
     }
+
 }
