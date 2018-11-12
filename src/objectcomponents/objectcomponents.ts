@@ -5,6 +5,7 @@ import {
     Component,
     ElementRef,
     NgModule,
+    NgZone,
     HostListener,
     Renderer,
     Renderer2,
