@@ -6,14 +6,7 @@ import {UserChangePasswordModal} from "./userchangepasswordmodal";
 
 @Component({
     selector: "user-change-password-button",
-    templateUrl: "./src/modules/users/templates/userchangepasswordbutton.html",
-    host: {
-        "class": "slds-button slds-button--neutral",
-        "(click)": "changePassword()"
-    },
-    styles: [
-        ":host {cursor:pointer;}"
-    ]
+    templateUrl: "./src/modules/users/templates/userchangepasswordbutton.html"
 })
 export class UserChangePasswordButton {
 
@@ -21,7 +14,7 @@ export class UserChangePasswordButton {
 
     }
 
-    private changePassword() {
+    private execute() {
         this.modal.openModal("UserChangePasswordModal");
     }
 

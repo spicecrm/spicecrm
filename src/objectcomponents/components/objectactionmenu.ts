@@ -2,7 +2,7 @@ import {Component, ElementRef, Renderer, Input, Output, OnDestroy, EventEmitter}
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
-import {popup} from '../../services/popup.service';
+
 import {view} from '../../services/view.service';
 import {broadcast} from '../../services/broadcast.service';
 import { helper } from '../../services/helper.service';
@@ -10,10 +10,7 @@ import { helper } from '../../services/helper.service';
 @Component({
     selector: 'object-action-menu',
     templateUrl: './src/objectcomponents/templates/objectactionmenu.html',
-    providers: [popup, helper],
-    host: {
-        //    '(document:click)': 'onClick($event)'
-    }
+    providers: [helper]
 })
 export class ObjectActionMenu implements OnDestroy {
 
@@ -23,26 +20,23 @@ export class ObjectActionMenu implements OnDestroy {
     @Input() standardactions: boolean = true;
     @Input() standardeditactions: boolean = true;
     @Output() action: EventEmitter<string> = new EventEmitter<string>();
-    isOpen: boolean = false;
-    popupSubscription: any;
-    clickListener: any;
+    private isOpen: boolean = false;
+    private clickListener: any;
 
-    constructor(private language: language, private broadcast: broadcast, private model: model, private view: view, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer, private popup: popup, private helper: helper ) {
-        this.popupSubscription = this.popup.closePopup$.subscribe(close => {
-            this.isOpen = false;
-        })
+    constructor(private language: language, private broadcast: broadcast, private model: model, private view: view, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer, private helper: helper ) {
+
     }
 
-    ngOnDestroy() {
-        this.popupSubscription.unsubscribe();
+    public ngOnDestroy(){
+        if(this.clickListener) this.clickListener();
     }
 
-    isEditMode() {
+
+    private isEditMode() {
         return this.view.isEditMode();
     }
 
-    hasNoActions()
-    {
+    private hasNoActions()    {
         // because of custom actions can't be checked if they are enabled... return false
         if(this.addactions.length > 0)
             return false;

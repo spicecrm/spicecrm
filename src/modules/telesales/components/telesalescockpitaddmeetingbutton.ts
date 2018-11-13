@@ -12,20 +12,11 @@ declare var moment: any;
 @Component({
     selector: 'tele_sales_cockpit_add_meeting_button',
     templateUrl: './src/modules/telesales/templates/telesalescockpitaddmeetingbutton.html',
-    host: {
-
-        'class': 'slds-button slds-button--neutral',
-
-        '(click)': 'openAddMeetingModal()'
-    },
-    styles: [
-        ':host >>> {cursor:pointer;}'
-    ],
     providers: [model]
 })
 export class TeleSalesCockpitAddMeetingButton {
 
-    parent: any = undefined;
+    public parent: any = undefined;
 
     constructor(public telecockpitservice: telecockpitservice,
                 private language: language,
@@ -39,7 +30,7 @@ export class TeleSalesCockpitAddMeetingButton {
 
     }
 
-    openAddMeetingModal() {
+    public execute () {
         this.model.id = undefined;
 
         this.model.addModel(
