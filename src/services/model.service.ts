@@ -41,6 +41,7 @@ export class model {
     };
     private backupData: any = {};
     public data$ = new EventEmitter();
+    public mode$ = new EventEmitter();
     public isValid: boolean = false;
     public isLoading: boolean = false;
     public isEditing: boolean = false;
@@ -515,6 +516,7 @@ export class model {
         // shift to backend format .. no objects like date embedded
         this.backupData = {...this.data};
         this.isEditing = true;
+        this.mode$.emit('edit');
     }
 
 
@@ -546,6 +548,7 @@ export class model {
 
     public cancelEdit() {
         this.isEditing = false;
+        this.mode$.emit('display');
         if (this.backupData) {
             this.data = {...this.backupData};
             this.data$.emit(this.data);
@@ -558,6 +561,7 @@ export class model {
     public endEdit() {
         this.backupData = null;
         this.isEditing = false;
+        this.mode$.emit('display');
     }
 
     private getDirtyFields() {
@@ -626,6 +630,7 @@ export class model {
 
         this.isLoading = false;
         this.isEditing = false;
+        this.mode$.emit('display');
         this.resetMessages();
         this.resetData();
     }
