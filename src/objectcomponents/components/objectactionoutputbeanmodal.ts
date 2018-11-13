@@ -10,16 +10,15 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 @Component({
     selector: 'object-action-output-bean-modal',
     templateUrl: './src/objectcomponents/templates/objectactionoutputbeanmodal.html',
-    providers: [model, view],
+    providers: [view],
 })
 export class ObjectActionOutputBeanModal {
 
-    self: any = undefined;
-    templates = [];
+    public self: any = undefined;
+    private templates = [];
     private _selected_template = null;
-    compiled_selected_template: string = '';
-
-    loading_output: boolean = false;
+    private compiled_selected_template: string = '';
+    private loading_output: boolean = false;
 
     constructor(
         private language: language,
@@ -32,7 +31,7 @@ export class ObjectActionOutputBeanModal {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         let params = {
             searchfields:
                 {
@@ -73,11 +72,11 @@ export class ObjectActionOutputBeanModal {
         return this.sanitizer.bypassSecurityTrustHtml(this.compiled_selected_template)
     }
 
-    close() {
+    private close() {
         this.self.destroy();
     }
 
-    download() {
+    private download() {
         let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
         this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
             loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
@@ -93,7 +92,6 @@ export class ObjectActionOutputBeanModal {
                     loadingCompRef.instance.self.destroy();
                 }
             );
-
-        })
+        });
     }
 }
