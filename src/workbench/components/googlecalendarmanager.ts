@@ -12,9 +12,9 @@ import {view} from "../../services/view.service";
     templateUrl: "./src/workbench/templates/googlecalendarmanager.html",
 })
 export class GoogleCalendarManager {
-    public beans: any[];
-    public calendars: any[];
-    public beanMappings: any[];
+    public beans: any[] = [];
+    public calendars: any[] = [];
+    public beanMappings: any[] = [];
 
     constructor(
         private backend: backend,
@@ -36,9 +36,20 @@ export class GoogleCalendarManager {
 
         this.backend.postRequest('google/calendar/savebeanmappings', {}, postData)
             .subscribe((res: any) => {
-                this.toast.sendToast('Bean Mappings saved')
+                this.toast.sendToast('Bean Mappings saved');
             }
         );
+    }
+
+    public startSync() {
+        this.backend.getRequest('google/calendar/notifications/startSync').
+            subscribe((res: any) => {
+                if (res.result == true) {
+                    this.toast.sendToast('Google Calendar synchronization started.', 'success');
+                } else {
+                    this.toast.sendToast(res.error, 'error');
+                }
+        });
     }
 
     public addMapping() {
@@ -49,7 +60,10 @@ export class GoogleCalendarManager {
         this.beanMappings.push({
             'id':       this.model.generateGuid(),
             'deleted':  false,
-            'bean':     '',
+            'bean':     {
+                'module': '',
+                'class':  '',
+            },
             'calendar': {
                 'id':   '',
                 'name': '',
