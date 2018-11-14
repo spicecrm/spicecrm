@@ -67,7 +67,6 @@ export class DeploymentCRActive implements OnDestroy {
 
 
     private getDisplay() {
-
         return this.isAdmin ? "inherit" : "none";
     }
 

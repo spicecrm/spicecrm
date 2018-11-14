@@ -20,13 +20,20 @@ import {language} from '../../../services/language.service';
 })
 export class SalesDocsPrintButton {
 
-    showConvertModal: boolean = false;
+    public disabled: boolean = true;
 
     constructor(private language: language, private metadata: metadata, private model: model, private configurationService: configurationService, private session: session) {
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled();
+        });
+
+        this.model.data$.subscribe(data => {
+            this.handleDisabled();
+        });
     }
 
-    print() {
-        let params: Array<string> = [];
+    public execute() {
+        let params: string[] = [];
         params.push('sessionid=' + this.session.authData.sessionId);
         window.open(
             this.configurationService.getBackendUrl() + '/module/SalesDocs/' + this.model.id + '/printout?' + params.join('&'),
@@ -34,7 +41,8 @@ export class SalesDocsPrintButton {
         );
     }
 
-    getDisplay() {
-        return this.model.isEditing ? 'none' : 'inherit';
+    private handleDisabled() {
+        this.disabled
+        this.model.isEditing ? true : false;
     }
 }

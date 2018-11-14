@@ -7,18 +7,19 @@ import {metadata} from '../../services/metadata.service';
 })
 export class SystemModal {
 
-    @Input() size: string = '';
+    @Input() private size: string = '';
+    @Input() private class: string = '';
 
     constructor(private metadata: metadata) {
 
     }
 
-    get sizeClass(){
-        if(this.size){
-            return 'slds-modal_' + this.size;
+    get sizeClass() {
+        if (this.size) {
+            return this.class + ' slds-modal_' + this.size;
         }
 
-        return '';
+        return this.class;
     }
 
 }

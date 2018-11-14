@@ -9,14 +9,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_complete_button',
-    templateUrl: './src/modules/telesales/templates/telesalescockpitccompletebutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-        '(click)': 'complete()'
-    },
-    styles: [
-        ':host >>> {cursor:pointer;}'
-    ]
+    templateUrl: './src/modules/telesales/templates/telesalescockpitccompletebutton.html'
 })
 export class TeleSalesCockpitCompleteButton {
 
@@ -24,18 +17,19 @@ export class TeleSalesCockpitCompleteButton {
                 private model: model, private telecockpitservice: telecockpitservice, private footer: footer) {
 
         this.telecockpitservice.selectedItem$.subscribe(item => {
-            this.telecockpitservice.selectedLogId = item.id
+            this.telecockpitservice.selectedLogId = item.id;
         });
     }
 
-    removeCompletedItem(){
+    private removeCompletedItem() {
         for (let i: number = 0; i < this.telecockpitservice.items.length; i++) {
-            if (this.telecockpitservice.items[i]['id'] === this.telecockpitservice.selectedLogId)
+            if (this.telecockpitservice.items[i].id === this.telecockpitservice.selectedLogId) {
                 this.telecockpitservice.items.splice(i, 1);
+            }
         }
     }
 
-    complete() {
+    public execute() {
         // execute on backend
         this.backend.postRequest('/module/CampaignLog/' + this.telecockpitservice.selectedLogId + '/completed').subscribe(status => {
 
@@ -46,10 +40,9 @@ export class TeleSalesCockpitCompleteButton {
 
                 this.removeCompletedItem();
                 this.telecockpitservice.logId = this.telecockpitservice.items[0].id;
-            }
-            else
+            } else {
                 this.toast.sendToast('Error');
-
+            }
         });
 
     }
