@@ -6,17 +6,12 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-app-launcher-dialog',
-    templateUrl: './src/globalcomponents/templates/globalapplauncherdialog.html',
-    host: {
-        'class': 'slds-context-bar__primary slds-context-bar__item--divider-right'
-    }
+    templateUrl: './src/globalcomponents/templates/globalapplauncherdialog.html'
 })
 export class GlobalAppLauncherDialog {
 
-    searchTerm: string = '';
-    self: any = undefined;
-    toggleShowRoles: boolean = true;
-    toggleShowModules: boolean = true;
+    private searchTerm: string = '';
+    public self: any = undefined;
 
     constructor(
         private metadata: metadata,
@@ -24,78 +19,42 @@ export class GlobalAppLauncherDialog {
         private router: Router,
         private broadcast: broadcast
     ) {
-
     }
 
     get showRoles() {
         return this.metadata.getRoles().length > 1;
     }
 
-    toggleShow(section) {
-        switch (section){
-            case 'roles':
-                this.toggleShowRoles = !this.toggleShowRoles;
-                break;
-            case 'modules':
-                this.toggleShowModules = !this.toggleShowModules;
-                break;
-        }
-    }
-
-    hideAppLauncher() {
+    private close() {
         this.self.destroy();
     }
 
-    getRoleName() {
+    private getRoleName() {
         return this.metadata.getActiveRole().name;
     }
 
-    getRoleLabel(roleid, label) {
-        let roles = this.getRoles();
-        let role = undefined;
-        roles.some(thisrole => {
-            if (thisrole.id == roleid) {
-                role = thisrole;
-                return true;
-            }
-        });
-
-        if (role.label && role.label != '') {
-            switch (label) {
-                case 'identifier':
-                    return this.language.getAppLanglabel(role.label, 'short');
-                case 'name':
-                    return this.language.getAppLanglabel(role.label);
-                case 'description':
-                    return this.language.getAppLanglabel(role.label, 'long');
-            }
-        } else {
-            return role[label];
-        }
-    }
-
-    getRoles() {
+    private getRoles() {
         return this.metadata.getRoles();
     }
 
-    setRole(roleid) {
+    private setRole(roleid) {
         this.metadata.setActiveRole(roleid);
 
         // navigate home and broadcast the message
-        // this.router.navigate(['/module/Home']);
         this.broadcast.broadcastMessage('applauncher.setrole', roleid);
 
         // close the launcher dialog
-        this.hideAppLauncher();
+        this.close();
     }
 
-    getModules() {
+    private getModules() {
         let menuItems = [];
 
         for (let module of this.metadata.getModules()) {
             let moduleData = this.metadata.getModuleDefs(module);
-            if (moduleData.visible && this.metadata.checkModuleAcl(module, 'list') && (this.searchTerm === '' || (this.searchTerm !== '' && this.language.getModuleName(module) && this.language.getModuleName(module).toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0)))
+            if (moduleData.visible && this.metadata.checkModuleAcl(module, 'list') && (this.searchTerm === '' || (this.searchTerm !== '' && this.language.getModuleName(module) && this.language.getModuleName(module).toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0))) {
                 menuItems.push(module);
+            }
         }
 
         menuItems.sort((a, b) => {
@@ -105,8 +64,8 @@ export class GlobalAppLauncherDialog {
         return menuItems;
     }
 
-    gotoModule(module) {
-        this.hideAppLauncher();
+    private gotoModule(module) {
         this.router.navigate(['/module/' + module]);
+        this.close();
     }
 }

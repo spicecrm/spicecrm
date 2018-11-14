@@ -19,7 +19,7 @@
     </div>
 </div>
 <ng-container *ngIf="selected_mailbox">
-    <system-section title="LBL_MAIN_DATA">
+    <system-section titlelabel="LBL_MAIN_DATA">
         <div class="slds-p-horizontal--medium slds-p-vertical--small">
             <div class="slds-form--compound slds-p-vertical--x-small">
                 <field-label [fieldname]="'name'"></field-label>
@@ -56,7 +56,7 @@
             </div>
         </div>
     </system-section>
-    <system-section *ngIf="model.data.transport" title="LBL_TRANSPORT">
+    <system-section *ngIf="model.data.transport" titlelabel="LBL_TRANSPORT">
         <div class="slds-p-vertical--x-small">
             <mailboxes-imap-smtp-traffic-manager
                     *ngIf="model.data.transport == 'imap'"></mailboxes-imap-smtp-traffic-manager>
@@ -66,7 +66,7 @@
                     *ngIf="model.data.transport == 'sendgrid'"></mailboxes-sendgrid-traffic-manager>
         </div>
     </system-section>
-    <system-section title="LBL_EMAIL" [expanded]="false">
+    <system-section titlelabel="LBL_EMAIL" [expanded]="false">
         <div class="slds-grid slds-p-horizontal--medium slds-p-vertical--small">
             <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
                 <field-label [fieldname]="'mailbox_header'"></field-label>
@@ -93,7 +93,7 @@
             </div>
         </div>
     </system-section>
-    <system-section title="LBL_PROCESSING" [expanded]="true">
+    <system-section titlelabel="LBL_PROCESSING" [expanded]="true">
         <div class="slds-p-horizontal--medium slds-p-vertical--small">
             <div class="slds-form-element slds-m-vertical--xxx-small">
                 <label class="slds-form-element__label">Actionset</label>

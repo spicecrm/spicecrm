@@ -30,7 +30,7 @@ export class MailboxEmailToLeadButton {
     public createLead() {
         this.modal.openModal("MailboxEmailToLeadModal").
         subscribe(popup => {
-            popup.instance["email"] = this.model;
+            popup.instance.email = this.model;
 
         });
     }
