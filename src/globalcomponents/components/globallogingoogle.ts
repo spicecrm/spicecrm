@@ -1,7 +1,9 @@
+import {HttpClient} from "@angular/common/http";
 import {AfterViewInit, Component, ElementRef, EventEmitter, Output} from "@angular/core";
-import {session} from "../../services/session.service";
-import {loginService} from "../../services/login.service";
+import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
+import {loginService} from "../../services/login.service";
+import {session} from "../../services/session.service";
 
 declare var gapi: any;
 
@@ -27,10 +29,14 @@ export class GlobalLoginGoogle {
 
     public auth2: any;
 
-    constructor(private loginService: loginService,
-                private configuration: configurationService,
-                private session: session) {
-        this.configuration.loaded$.subscribe(loaded => {
+    constructor(
+        private backend: backend,
+        private configuration: configurationService,
+        private http: HttpClient,
+        private loginService: loginService,
+        private session: session
+    ) {
+        this.configuration.loaded$.subscribe((loaded) => {
             this.googleInit();
         });
     }
@@ -64,11 +70,28 @@ export class GlobalLoginGoogle {
                 this.loginService.oauthToken = user_token;
                 this.loginService.accessToken = access_token;
                 // this.session.authData.sessionId = user_token;
-                this.loginService.login();
+                this.loginService.login().subscribe(
+                    (res) => {
+                        this.synchronize();
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                );
             })
             .catch((error: { error: string }) => {
                 console.log(JSON.stringify(error, undefined, 2));
             });
     }
 
+    public synchronize() {
+        this.backend.getRequest('/google/calendar/sync').subscribe(
+            (res) => {
+                console.log('Successfully Synchronized');
+            },
+            (err) => {
+                console.log('Synchronization Error');
+            },
+        );
+    }
 }
