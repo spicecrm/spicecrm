@@ -20,13 +20,13 @@
                 </div>
                 <div *ngIf="!model.data[relateIdField]" class="slds-form-element__control slds-grid slds-box--border" [ngClass]="getFieldClass()">
                     <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'" (click)="openSearchModal()"></system-utility-icon>
+                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
                         <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(relateType)" role="combobox"/>
                     </div>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                     <field-lookup-recent *ngIf="relateSearchTerm === ''" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="relateSearchTerm !== ''" [module]="relateType" (selectedObject)="setRelated($event)" [(searchterm)]="relateSearchTerm"></field-lookup-search>
+                    <field-lookup-search *ngIf="relateSearchTerm !== ''" [module]="relateType" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>
