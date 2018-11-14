@@ -17,23 +17,25 @@ declare var moment: any;
 export class fieldTime extends fieldGeneric {
     @ViewChild('timefield', {read: ViewContainerRef}) timefield: ViewContainerRef;
 
-    showDatePicker: boolean = false;
-    showTimePicker: boolean = false;
+    public showDatePicker: boolean = false;
+    public showTimePicker: boolean = false;
     private isValid: boolean = true;
-    errorMessage: String = '';
-    popupSubscription: any = undefined;
-    clickListener: any = undefined;
-    dropdownTimes: Array<any> = [];
+    private clickListener: any = undefined;
+    public dropdownTimes: Array<any> = [];
 
-    dateFormat: string = 'DD.MM.YYYY';
-    timeFormat: string = 'HH:mm';
+    public dateFormat: string = 'DD.MM.YYYY';
+    public timeFormat: string = 'HH:mm';
 
-    /*
-     constructor(private el: ElementRef, private model: model, private view: view, private language: language, private metadata: metadata) {
-     }
-     */
-
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private popup: popup, private renderer: Renderer, private elementRef: ElementRef) {
+    constructor(
+        public model: model,
+        public view: view,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        private popup: popup,
+        private renderer: Renderer,
+        private elementRef: ElementRef
+    ) {
         super(model, view, language, metadata, router);
         let i = 0;
         while (i < 24) {
@@ -90,6 +92,26 @@ export class fieldTime extends fieldGeneric {
         }
     }
 
+    public getNearestDropdownTime()
+    {
+        for(let dt of this.dropdownTimes)
+        {
+            if(dt >= this.editTime)
+                return dt;
+        }
+    }
+
+    public getNextDropdownTime()
+    {
+        let dt = this.getNearestDropdownTime();
+        return this.dropdownTimes[this.dropdownTimes.findIndex(e => e == dt)+1];
+    }
+
+    public getBeforeDropdownTime()
+    {
+        let dt = this.getNearestDropdownTime();
+        return this.dropdownTimes[this.dropdownTimes.findIndex(e => e == dt)-1];
+    }
 
     get displayTime() {
         try {
@@ -112,12 +134,14 @@ export class fieldTime extends fieldGeneric {
     get editTime() {
 
         try {
-            if (this.model.data[this.fieldname]) {
-                let time = new moment(this.model.data[this.fieldname]);
+            if (this.value) {
+                let time = new moment(this.value);
                 if (time.isValid())
                     return time.format('HH:mm');
-                else
-                    return '';
+                else{
+                    time = '';
+                    return time;
+                }
             }
             else return '';
         } catch (e) {
@@ -136,17 +160,24 @@ export class fieldTime extends fieldGeneric {
                 setTime.date(this.model.data[this.fieldname].date());
             }
 
-
             this.value = setTime;
 
             // set the data so rules and emitter get triggered
             this.model.setFieldValue(this.fieldname, setTime);
 
-            this.isValid = true;
-            this.errorMessage = '';
+            //this.isValid = true;
+            this.clearFieldError();
         } else {
-            this.isValid = false;
-            this.errorMessage = value + ' is not a valid time';
+            if(typeof value == 'string' && value.length <= 2 && value.length > 0){
+                if(parseInt(value) < 10)
+                    value = `0${value}:00`;
+                else
+                    value = `${value}:00`;
+                this.editTime = value;
+                return;
+            }
+            //this.isValid = false;
+            this.setFieldError(`${value} is not a valid time`);
         }
     }
 
