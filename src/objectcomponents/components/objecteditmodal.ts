@@ -4,7 +4,6 @@ import {
     ViewContainerRef,
 } from '@angular/core';
 import {Router} from '@angular/router';
-
 import {Subject, Observable} from 'rxjs';
 
 import {model} from '../../services/model.service';
@@ -19,21 +18,18 @@ import {metadata} from '../../services/metadata.service';
     providers: [view]
 })
 export class ObjectEditModal implements OnInit {
-    @ViewChild('modalContent', {read: ViewContainerRef}) modalContent: ViewContainerRef;
-    componentRefs: Array<any> = [];
-    componentSet: String = '';
-    componentconfig: any = {};
-    actionSetItems: any = [];
-    reference: string = '';
-    showDuplicates: boolean = false;
+    @ViewChild('modalContent', {read: ViewContainerRef}) private modalContent: ViewContainerRef;
+    private componentconfig: any = {};
+    private actionSetItems: any = [];
+    private showDuplicates: boolean = false;
 
     private actionSubject: Subject<any> = new Subject<any>();
-    action$: Observable<any> = new Observable<any>();
+    private action$: Observable<any> = new Observable<any>();
 
-    doDuplicateCheck: boolean = true;
-    duplicates: Array<any> = [];
+    private doDuplicateCheck: boolean = true;
+    private duplicates: Array<any> = [];
 
-    self: any = {};
+    private self: any = {};
 
     constructor(
         private router: Router,
@@ -47,16 +43,14 @@ export class ObjectEditModal implements OnInit {
         this.view.setEditMode();
 
         this.action$ = this.actionSubject.asObservable();
-
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.model.module);
         this.actionSetItems = this.metadata.getActionSetItems(this.componentconfig.actionset);
-        //console.log(this.actionSetItems);
     }
 
-    closeModal() {
+    private closeModal() {
         // cancel Edit
         this.model.cancelEdit();
 
@@ -69,13 +63,14 @@ export class ObjectEditModal implements OnInit {
     }
 
     get modalHeader() {
-        if (this.showDuplicates)
+        if (this.showDuplicates) {
             return this.language.getLabel('LBL_DUPLICATES_FOUND');
-        else
+        } else {
             return this.model.module != '' ? this.language.getModuleName(this.model.module, true) : '';
+        }
     }
 
-    save(goDetail: boolean = false) {
+    private save(goDetail: boolean = false) {
 
         if (this.model.validate()) {
             if (this.model.isNew && this.doDuplicateCheck && !this.showDuplicates && this.metadata.getModuleDuplicatecheck(this.model.module)) {
@@ -87,12 +82,11 @@ export class ObjectEditModal implements OnInit {
                     } else {
                         this.saveModel(goDetail);
                     }
-                })
+                });
             } else {
                 this.saveModel(goDetail);
             }
-        }
-        else {
+        } else {
             console.warn(this.model.messages);
         }
 
@@ -108,20 +102,22 @@ export class ObjectEditModal implements OnInit {
                     this.actionSubject.complete();
 
                     /// if go Deail go to record)
-                    if (goDetail)
+                    if (goDetail) {
                         this.model.goDetail();
+                    }
 
                     // destroy the component
                     this.self.destroy();
                 }
                 modalRef.instance.self.destroy();
             });
-        })
+        });
     }
 
-    saveToRelated(related_module: string) {
-        if (!this.model.validate())
+    private saveToRelated(related_module: string) {
+        if (!this.model.validate()) {
             return false;
+        }
 
         this.model.save().subscribe(
             status => {
@@ -139,9 +135,10 @@ export class ObjectEditModal implements OnInit {
         );
     }
 
-    saveAndGoToRelated(related_module: string, related_id) {
-        if (!this.model.validate())
+    private saveAndGoToRelated(related_module: string, related_id) {
+        if (!this.model.validate()) {
             return false;
+        }
 
         this.model.save().subscribe(status => {
             this.closeModal();
@@ -149,9 +146,8 @@ export class ObjectEditModal implements OnInit {
         });
     }
 
-    setModule(module) {
+    private setModule(module) {
         this.model.module = module;
-        // this.model.initializeModel();
     }
 
     /*
@@ -164,13 +160,13 @@ export class ObjectEditModal implements OnInit {
                 height: rect[0].height + 'px',
                 width: rect[0].width + 'px',
                 top: '0px'
-            }
+            };
         } else {
             return {
                 height: '0px',
                 width: '0px',
                 top: '0px'
-            }
+            };
         }
     }
 
@@ -181,7 +177,7 @@ export class ObjectEditModal implements OnInit {
         if (this.showDuplicates) {
             return {
                 'overflow-y': 'hidden'
-            }
+            };
         }
     }
 }

@@ -1,0 +1,16 @@
+<div class="slds-p-vertical--xx-small">
+    <div class="slds-box--border">
+        <div class="slds-p-around--x-small">
+            <div class="slds-grid slds-grid_align-spread slds-text-body_small">
+                <div>{{changeDate}}</div>
+                <!--div class="slds-p-horizontal--xxx-small">{{language.getLabel('LBL_BY')}}</div-->
+                <div>{{change.user_name}}</div>
+            </div>
+            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+                <object-optimisitclocking-modal-data-field class="slds-size--3-of-7" [fieldmodule]="model.module" [fieldname]="change.field_name" [fieldvalue]="change.before_value_string"></object-optimisitclocking-modal-data-field>
+                <system-utility-icon icon="forward" size="xx-small" class="slds-size--1-of-7 slds-text-align--center" ></system-utility-icon>
+                <object-optimisitclocking-modal-data-field class="slds-size--3-of-7 slds-text-align--right" [fieldmodule]="model.module" [fieldname]="change.field_name" [fieldvalue]="change.after_value_string"></object-optimisitclocking-modal-data-field>
+            </div>
+        </div>
+    </div>
+</div>
