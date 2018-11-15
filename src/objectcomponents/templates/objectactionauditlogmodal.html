@@ -2,9 +2,8 @@
     <system-modal-header (close)="hideAuditLog()">
         {{language.getLabel('LBL_LOGGED_CHANGES')}}
     </system-modal-header>
-    <system-modal-content>
-        <system-spinner *ngIf="loading" class="slds-p-around--medium"></system-spinner>
-        <table *ngIf="!loading" class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <system-modal-content margin="none" [grow]="true">
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer">
             <thead>
                 <tr class="slds-text-title--caps">
                     <th scope="col">
@@ -25,6 +24,29 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <td scope="row">
+                    </td>
+                    <td scope="row">
+                        <div class="slds-form-element__control">
+                            <input class="slds-input" type="text" [(ngModel)]="userfilter" [ngModelOptions]="{updateOn: 'blur'}"/>
+                        </div>
+                    </td>
+                    <td scope="row">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="fieldfilter">
+                                    <option value="">No Filter</option>
+                                    <option *ngFor="let moduleField of moduleFields" [value]="moduleField.name">{{moduleField.display}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td scope="row">
+                    </td>
+                    <td scope="row">
+                    </td>
+                </tr>
                 <tr *ngFor="let auditEntry of auditLog">
                     <td scope="row">
                         <div class="slds-truncate">{{auditEntry.date_created}}</div>
@@ -46,7 +68,8 @@
                 </tr>
             </tbody>
         </table>
-        <div *ngIf="!loading && auditLog.length === 0" class="slds-text-heading--small slds-p-around--medium">
+        <system-spinner *ngIf="loading" class="slds-p-around--medium"></system-spinner>
+        <div *ngIf="!loading && auditLog.length === 0" class="slds-text-heading--small slds-p-around--medium slds-align_absolute-center">
             {{language.getLabel('MSG_NOAUDITRECORDS_FOUND')}}.
         </div>
     </system-modal-content>

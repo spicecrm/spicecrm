@@ -14,6 +14,7 @@ import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
+import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
 
 declare var moment: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
@@ -578,34 +579,55 @@ export class model {
         let responseSubject = new Subject<boolean>();
 
         // determine changed fields
-        let changedData = {};
+        let changedData: any = {};
         if (this.isEditing) {
             changedData = this.getDirtyFields();
+            // in any case send back date_modified
+            changedData.date_modified = this.data.date_modified;
+
+            // hack to provoke the changes for Testing
+            // changedData.date_modified.subtract( 1, 'days');
         } else {
             changedData = this.data;
         }
 
-
         this.backend.save(this.module, this.id, changedData)
-            .subscribe(res => {
-                this.data = res;
-                this.isNew = false;
-                this.data$.emit(res);
-                this.broadcast.broadcastMessage("model.save", {
-                    id: this.id,
-                    reference: this.reference,
-                    module: this.module,
-                    data: this.data
+            .subscribe(
+                res => {
+                    this.data = res;
+                    this.isNew = false;
+                    this.data$.emit(res);
+                    this.broadcast.broadcastMessage("model.save", {
+                        id: this.id,
+                        reference: this.reference,
+                        module: this.module,
+                        data: this.data
+                    });
+                    responseSubject.next(true);
+                    responseSubject.complete();
+
+                    if (notify) {
+                        this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
+                    }
+
+                    this.endEdit();
+                },
+                error => {
+                    console.log(error);
+                    switch (error.status) {
+                        case 409:
+                            this.modal.openModal("ObjectOptimisticLockingModal", true, this.injector).subscribe(lockingModalRef => {
+                                lockingModalRef.instance.conflicts = error.error.error.conflicts;
+                            });
+                            break;
+                        default:
+                            if (notify) {
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.message);
+                            }
+                            ;
+                            break;
+                    }
                 });
-                responseSubject.next(true);
-                responseSubject.complete();
-
-                if (notify) {
-                    this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                }
-
-                this.endEdit();
-            });
         return responseSubject.asObservable();
     }
 
@@ -645,13 +667,18 @@ export class model {
         return clone;
     }
 
-    public getAuditLog(): Observable<any> {
+    public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
-        this.backend.getAudit(this.module, this.id)
-            .subscribe(res => {
-                responseSubject.next(res);
-                responseSubject.complete();
-            });
+        this.backend.getAudit(this.module, this.id, filters)
+            .subscribe(
+                res => {
+                    responseSubject.next(res);
+                    responseSubject.complete();
+                },
+                error => {
+                    responseSubject.next(error);
+                    responseSubject.complete();
+                });
         return responseSubject.asObservable();
     }
 
