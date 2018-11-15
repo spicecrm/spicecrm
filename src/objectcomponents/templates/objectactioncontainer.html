@@ -1,6 +1,6 @@
 <div class="slds-button-group" role="group">
     <button class="slds-button slds-button_neutral" *ngFor="let actionitem of mainactionitems" [disabled]="isDisabled(actionitem.id)" (click)="propagateclick(actionitem.id)">
-        <object-action-container-item [actionitem]="actionitem"></object-action-container-item>
+        <object-action-container-item [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
     </button>
     <div *ngIf="hasAddItems" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" dropdowntrigger>
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" [disabled]="opendisabled" [title]="language.getLabel('LBL_MORE')" >
@@ -11,7 +11,7 @@
             <ul class="slds-dropdown__list" role="menu">
                 <li class="slds-dropdown__item" role="presentation" *ngFor="let actionitem of addactionitems" (click)="propagateclick(actionitem.id)">
                     <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                        <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem"></object-action-container-item>
+                        <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
                     </a>
                 </li>
             </ul>
