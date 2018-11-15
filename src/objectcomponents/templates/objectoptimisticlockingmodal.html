@@ -1,0 +1,61 @@
+<system-modal>
+    <system-modal-header (close)="cancel()">{{language.getLabel('LBL_OPTIMISTICLOCKING_CONFLICT')}}</system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-p-around--small">
+            <div class="slds-text-heading--label">{{language.getLabel('MSG_OPTIMISTIC_LOCKING')}}</div>
+            <div class="slds-p-vertical--xx-small">{{language.getLabel('MSG_OPTIMISTIC_LOCKING','', 'long')}}</div>
+        </div>
+        <table class="slds-p-vertical--small slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="slds-text-title_caps" scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+                    </th>
+                    <th class="slds-text-title_caps" scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_CURRENT_VALUE')}}</div>
+                    </th>
+                    <th class="slds-text-title_caps" scope="col" style="width: 3.25rem;">
+                    </th>
+                    <th class="slds-text-title_caps" scope="col">
+                        <div class="slds-truncate">{{language.getLabel('LBL_NEW_VALUE')}}</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let _conflict of _conflicts">
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+                                <field-label [fieldname]="_conflict.field"></field-label>
+                                <button class="slds-button slds-button_icon" (click)="toggleChangeDetails(_conflict.field)">
+                                    <system-button-icon [icon]="changeDetailsIcon(_conflict.field)"></system-button-icon>
+                                </button>
+                            </div>
+                        </td>
+                        <td >
+                            <object-optimisitclocking-modal-data-field [fieldmodule]="model.module" [fieldname]="_conflict.field" [fieldvalue]="_conflict.value"></object-optimisitclocking-modal-data-field>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button_icon" (click)="copyField(_conflict.field)">
+                                <system-button-icon icon="forward"></system-button-icon>
+                            </button>
+                        </td>
+                        <td >
+                            <field-container [fieldname]="_conflict.field"></field-container>
+                        </td>
+                    </tr>
+                    <tr *ngIf="channgeOpen(_conflict.field)">
+                        <td colspan="4">
+                            <object-optimisitclocking-modal-change *ngFor="let change of _conflict.changes" [change]="change"></object-optimisitclocking-modal-change>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="edit()">{{language.getLabel('LBL_EDIT')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+    </system-modal-footer>
+</system-modal>
