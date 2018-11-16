@@ -287,6 +287,7 @@ export class metadata {
                     this.moduleDefs = response.modules;
                     this.roles = response.roles;
                     // todo: integrate validation rules
+                    this.role = '';
                     // set the default role
                     this.roles.some(role => {
                         if (role.defaultrole == 1) {

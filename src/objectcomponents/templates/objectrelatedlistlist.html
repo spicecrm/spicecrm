@@ -1,4 +1,4 @@
-<article *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
+<article *ngIf="!hidden" class="slds-card slds-card_boundary slds-scrollable--y slds-m-bottom--medium">
     <object-relatedlist-header [module]="module" [title]="panelTitle" [actionset]="componentconfig.actionset"></object-relatedlist-header>
     <ng-container *ngIf="relatedmodels.count > 0 || isloading">
         <div class="slds-card__body">

@@ -25,7 +25,7 @@ export class ObjectActionContainer implements OnInit {
     @Input() private actionset: string = "";
     @Input() private mainactionitems: any[] = [];
     @Input() private addactionitems: any[] = [];
-    @Output() private actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     private isOpen: boolean = false;
 
@@ -116,5 +116,9 @@ export class ObjectActionContainer implements OnInit {
                 return true;
             }
         });
+    }
+
+    private emitaction(event) {
+        this.actionemitter.emit(event);
     }
 }
