@@ -826,6 +826,15 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     height: 300px;
 }
 
+.slds-timeline__item_expandable .slds-media__figure{
+    z-index: auto;
+}
+
+.slds-timeline__item_expandable:before{
+    height: calc(100% - 30px);
+    top: 30px;
+}
+
 /* Style Definition for HTML fields */
 
 .html-text h1, .html-text h2, .html-text h3, .html-text h4, .html-text h5, .html-text h6 {
