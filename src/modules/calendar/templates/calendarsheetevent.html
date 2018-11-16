@@ -1,4 +1,5 @@
-<div class="slds-m-around--xxx-small slds-p-around--xx-small" [draggable]="!event.isMulti" style="height:100%; border-radius: 2px;" [ngStyle]="getEventStyle()">
+<div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [ngClass]="event.saving ? 'slds-p-vertical--xx-small': null"
+     style="height:100%; border-radius: 2px;" [ngStyle]="getEventStyle()" [draggable]="canEdit && !event.isMulti">
     <ng-container *ngIf="!event.saving; else saving">
         <div class="slds-grid slds-grid--align-spread">
             <div class="slds-truncate" style="height: 100%;">
@@ -6,10 +7,9 @@
                 <field-container *ngFor="let field of fields" [field]="field.field" [fieldconfig]="field.fieldconfig"
                                  [fielddisplayclass]="'slds-truncate'"></field-container>
             </div>
-            <object-action-menu style="height: 1px;" [standardactions]="true"
-                                [buttonsize]="'xx-small'"></object-action-menu>
+            <object-action-menu *ngIf="canEdit" class="slds-m-top--xxx-small" [buttonsize]="'xx-small'"></object-action-menu>
         </div>
-        <div *ngIf="!event.isMulti && !isMonthSheet" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;"
+        <div *ngIf="!event.isMulti && !isMonthSheet && canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;"
              (mousedown)="onMouseDown($event)">
             <system-utility-icon colorclass="slds-icon-text-white" icon="threedots" size="x-small"></system-utility-icon>
         </div>

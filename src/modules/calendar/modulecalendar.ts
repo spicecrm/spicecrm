@@ -34,6 +34,7 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
 import /*embed*/ {userpreferences} from "../../services/userpreferences.service";
@@ -52,6 +53,7 @@ import /*embed*/ {CalendarEventSummary} from "./components/calendareventsummary"
 import /*embed*/ {CalendarEventPopover} from "./components/calendareventpopover";
 import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -60,6 +62,7 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         Calendar,

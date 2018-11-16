@@ -63,13 +63,70 @@
         </div>
     </div>
     <div #calendarcontent class="slds-grid" [ngStyle]="getContentStyle()">
-        <div style="width:300px" class="slds-border--right slds-p-top--xx-small">
+        <div style="width:300px" class="slds-border--right slds-p-top--xx-small slds-scrollable--y">
             <calendar-date-picker [setdate]="calendarDate" (setdateChange)="setDateChanged($event)"></calendar-date-picker>
+            <div class="slds-border--bottom">
+                <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small">Other Calendars</label>
+                <div class="slds-p-vertical--xx-small">
+                    <div *ngFor="let calendar of otherCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+                         (mouseover)="hovered = calendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == calendar.id ? 'slds-theme--shade' : null">
+                        <div class="slds-grid" (click)="toggleVisible(calendar.id)" style="cursor: pointer">
+                            <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="calendar.visible ? calendar.color : '#dddbda'">
+                                <system-button-icon icon="user" size="small"></system-button-icon>
+                            </div>
+                            <a class="slds-text-body--regular slds-truncate" [style.color]="calendar.visible ? calendar.color : '#dddbda'">{{calendar.name}}</a>
+                        </div>
+                        <button class="slds-button slds-button--icon" (click)="removeCalendar(calendar.id)">
+                            <system-button-icon icon="clear" size="small"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element__control slds-p-around--x-small slds-border--bottom slds-theme--default" style="height: 52px">
+                <div #inputcontainer class="slds-form-element slds-lookup">
+                    <div class="slds-form-element__control slds-grid slds-box--border slds-m-vertical--xxx-small">
+                        <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                            <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
+                            <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="searchTerm"
+                                   (focus)="searchOpen = true"
+                                   (blur)="searchOpen = false"
+                                   [placeholder]="language.getLabel('LBL_ADD') + ' ' + language.getLabel('LBL_USER') + ' ' + language.getLabel('LBL_CALENDAR')" role="combobox">
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="searchOpen" class="slds-lookup__menu slds-size--1-of-4 slds-p-vertical--none" [ngStyle]="lookupMenuStyle">
+                    <div *ngIf="searchTerm.length > 0" class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-text-title--caps slds-border--bottom">
+                        {{resultsList.length}} {{language.getLabel('LBL_USERS')}} {{language.getLabel('LBL_FOUND')}}
+                    </div>
+                    <div *ngIf="searchTerm.length == 0" class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-text-title--caps slds-border--bottom">
+                        {{language.getLabel('LBL_RECENTLYVIEWED')}}
+                    </div>
+                    <ul class="slds-lookup__list" style="height: 175px" role="listbox">
+                        <ng-container *ngIf="searchTerm.length > 0">
+                            <li *ngFor="let user of resultsList" role="presentation" (mousedown)="addCalendar(user.id, user.summary_text)">
+                                <div class="slds-lookup__item-action slds-media" role="option">
+                                    <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
+                                    <span class="slds-lookup__result-text">{{user.summary_text}}</span>
+                                </div>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="searchTerm.length == 0">
+                            <li *ngFor="let user of recentUsers" role="presentation" (mousedown)="addCalendar(user.item_id, user.item_summary)">
+                                <div class="slds-lookup__item-action slds-media" role="option">
+                                    <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
+                                    <span class="slds-lookup__result-text">{{user.item_summary}}</span>
+                                </div>
+                            </li>
+                        </ng-container>
+                    </ul>
+                    <system-spinner [size]="16" *ngIf="isLoading && resultsList.length == 0"></system-spinner>
+                </div>
+            </div>
         </div>
         <div style="width:calc(100% - 300px); height: 100%">
-            <calendar-sheet-day *ngIf="sheetType === 'Day'" [setdate]="calendarDate" (navigateweek)="goToWeekView()"></calendar-sheet-day>
-            <calendar-sheet-week *ngIf="sheetType === 'Week'" [setdate]="calendarDate" (navigateday)="gotToDayView($event)"></calendar-sheet-week>
-            <calendar-sheet-month *ngIf="sheetType === 'Month'" [setdate]="calendarDate" (navigateday)="gotToDayView($event)"></calendar-sheet-month>
+            <calendar-sheet-day *ngIf="sheetType === 'Day'" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateweek)="goToWeekView()"></calendar-sheet-day>
+            <calendar-sheet-week *ngIf="sheetType === 'Week'" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)"></calendar-sheet-week>
+            <calendar-sheet-month *ngIf="sheetType === 'Month'" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)"></calendar-sheet-month>
         </div>
     </div>
 </div>

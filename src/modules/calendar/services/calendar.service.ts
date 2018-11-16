@@ -1,5 +1,5 @@
+import {EventEmitter, Injectable} from '@angular/core';
 import {of, Subject} from 'rxjs';
-import {Injectable} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
@@ -11,6 +11,8 @@ declare var moment: any;
 @Injectable()
 export class calendar {
 
+    public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
+    public othercalendars: any[] = [];
     public calendarDate: any = {};
     public calendars: any = {};
     public currentStart: any = null;
@@ -23,8 +25,16 @@ export class calendar {
     public endHour: number = 23;
     public todayColor: string = '#eb7092';
 
-    constructor(private backend: backend, private session: session, private modelutilities: modelutilities, private userPreferences: userpreferences) {
+    constructor(private backend: backend,
+                private session: session,
+                private modelutilities: modelutilities,
+                private userPreferences: userpreferences) {
         this.loadPreferences();
+        this.getCalendars();
+    }
+
+    get owner() {
+        return this.session.authData.userId;
     }
 
     set weekStartDay(value) {
@@ -35,6 +45,15 @@ export class calendar {
         return this.weekstartday;
     }
 
+    set otherCalendars(value) {
+        this.othercalendars = value;
+        this.otherCalendars$.emit(this.otherCalendars);
+    }
+
+    get otherCalendars() {
+        return this.othercalendars;
+    }
+
     private loadPreferences() {
         this.weekStartDay = this.userPreferences.unchangedPreferences.global['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
         this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
@@ -43,10 +62,37 @@ export class calendar {
         this.calendarDate = new moment();
     }
 
-    public loadEvents(start, end, calendar = this.session.authData.userId) {
+    private getCalendars() {
+        this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
+            this.otherCalendars = calendars["Users"] || [];
+        });
+    }
+
+    public addCalendar(id, name) {
+        this.otherCalendars.push({
+            id: id,
+            name: name,
+            visible: true,
+            color: '#'+(Math.random()*0xFFF<<0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random()*0xFFF<<0).toString(16)
+        });
+        this.otherCalendars$.emit(this.otherCalendars.slice());
+        this.setCalendars();
+    }
+
+    public removeCalendar(id) {
+        delete this.calendars[id];
+        this.otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
+        this.setCalendars();
+    }
+
+    public setCalendars() {
+        this.userPreferences.setPreference("Users", this.otherCalendars, true, "Calendar");
+    }
+
+    public loadEvents(start, end, calendar = this.owner) {
         // check if we need to reload
-        if (!this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end) {
-            // set current serach paramaters
+        if (!this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end || !this.calendars[calendar]) {
+            // set current search parameters
             this.currentEnd = end;
             this.currentStart = start;
 
@@ -70,10 +116,9 @@ export class calendar {
                     }
                     this.calendars[calendar].push(event);
                 }
-                responseSubject.next(this.arrangeEvents(this.calendars[calendar]));
+                responseSubject.next(this.calendars[calendar]);
                 responseSubject.complete();
             });
-
             return responseSubject.asObservable();
         } else {
             // filter the current eventset based on the start and end date
@@ -83,11 +128,11 @@ export class calendar {
                     filteredEntries.push(event);
                 }
             }
-            return of(this.arrangeEvents(filteredEntries));
+            return of(filteredEntries);
         }
     }
 
-    public getEvents(calendar = this.session.authData.userId) {
+    public getEvents(calendar = this.owner) {
         return this.calendars[calendar] ? this.calendars[calendar] : [];
     }
 
