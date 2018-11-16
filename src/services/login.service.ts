@@ -1,14 +1,13 @@
-import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject} from 'rxjs';
-import {CanActivate}    from '@angular/router';
+import {Injectable} from '@angular/core';
+import {CanActivate, Router} from '@angular/router';
+import {Observable, Subject} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {loader} from './loader.service';
 import {session} from './session.service';
 import {toast} from './toast.service';
-import {Router}   from '@angular/router';
-import { userpreferences } from './userpreferences.service';
+import {userpreferences} from './userpreferences.service';
 
 
 interface loginAuthDataIf {
@@ -19,15 +18,16 @@ interface loginAuthDataIf {
 @Injectable()
 export class loginService {
 
-    redirectUrl: string = '';
+    public redirectUrl: string = '';
 
-    authData: loginAuthDataIf = {
+    public authData: loginAuthDataIf = {
         userName: '',
         password: ''
     };
 
     public oauthToken: string = '';
     public accessToken: string = '';
+    public loginSuccessful: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private configurationService: configurationService,
@@ -39,7 +39,7 @@ export class loginService {
         private userprefs: userpreferences
     ) {}
 
-    login() {
+    public login(): Observable<boolean> {
         // make sure we invalidate a session id cookie that might still be around
         // document.cookie = 'PHPSESSID=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
@@ -69,11 +69,9 @@ export class loginService {
             throw new Error('Cannot Log In');
         }
 
-
-        //this.http.get(this.configurationService.getBackendUrl() + '/login?user_name=' + this.authData.userName + '&password=' + md5(this.authData.password), {headers: headers})
         this.http.get(krestUrl, options)
             .subscribe(
-                (res : any) => {
+                (res: any) => {
                     if (res.result == false) {
                         this.toast.sendToast('error authenticating', 'error', res.error);
                     }
@@ -90,11 +88,16 @@ export class loginService {
                     this.session.authData.portalOnly = response.portal_only === '1' ? true : false;
                     this.session.authData.renewPass = response.renewPass === '1' ? true : false;
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
-                    sessionStorage[btoa(this.session.authData.sessionId+':backendurl')] = btoa(this.configurationService.getBackendUrl());
-                    sessionStorage[btoa(this.session.authData.sessionId+':siteid')] = btoa(this.configurationService.getSiteId());
-                    if(!this.session.authData.renewPass){
+                    sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
+                        btoa(this.configurationService.getBackendUrl());
+                    sessionStorage[btoa(this.session.authData.sessionId + ':siteid')] =
+                        btoa(this.configurationService.getSiteId());
+                    if (!this.session.authData.renewPass) {
                         this.load();
                     }
+
+                    this.loginSuccessful.next(true);
+                    this.loginSuccessful.complete();
                 },
                 (err: any) => {
                     switch (err.status) {
@@ -102,14 +105,18 @@ export class loginService {
                             this.toast.sendToast('error authenticating', 'error', 'Wrong username and/or password');
                             break;
                     }
+                    this.loginSuccessful.next(false);
+                    this.loginSuccessful.error('Not logged in');
                 });
+
+        return this.loginSuccessful.asObservable();
     }
 
-    load() {
-        this.loader.load().subscribe(val => this.redirect(val));
+    public load() {
+        this.loader.load().subscribe((val) => this.redirect(val));
     }
 
-    redirect(val) {
+    public redirect(val) {
         if (val === true) {
             this.session.authData.loaded = true;
 
@@ -120,12 +127,13 @@ export class loginService {
             if (this.redirectUrl) {
                 this.router.navigate([this.redirectUrl]);
                 this.redirectUrl = '';
-            } else
+            } else {
                 this.router.navigate(['/module/Home']);
+            }
         }
     }
 
-    logout() {
+    public logout() {
         this.http.delete(
             this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
         );

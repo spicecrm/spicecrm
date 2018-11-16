@@ -2,7 +2,7 @@ import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/co
 import {Subject} from 'rxjs';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
+import {metadata} from '../../../services/metadata.service';
 import {mailboxesEmails} from '../services/mailboxesemail.service';
 import {ActivatedRoute} from '@angular/router';
 
@@ -19,7 +19,14 @@ export class MailboxManagerHeader implements OnInit {
         private activatedRoute: ActivatedRoute,
         private language: language,
         private mailboxesEmails: mailboxesEmails,
-    ) {}
+        private metadata: metadata
+    ) {
+
+        // load default settings for the openness selection and the unread only flag
+        let componentconfig = this.metadata.getComponentConfig('MailboxManagerHeader');
+        this.emailopenness = componentconfig.selectionstatus ? componentconfig.selectionstatus : '';
+        this.mailboxesEmails.unreadonly = componentconfig.unreadonly ? componentconfig.unreadonly : false;
+    }
 
     public ngOnInit() {
         let routeSubscribe = this.activatedRoute.params.subscribe(
