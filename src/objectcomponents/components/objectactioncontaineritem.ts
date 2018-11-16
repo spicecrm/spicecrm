@@ -22,8 +22,8 @@ import {model} from "../../services/model.service";
 export class ObjectActionContainerItem implements AfterViewInit {
     @ViewChild("actioncontainer", {read: ViewContainerRef}) private actioncontainer: ViewContainerRef;
 
-    @Input() private actionitem: any;
-    @Output() private actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public actionitem: any;
+    @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     private componentref: any;
     private standardActions = {
