@@ -1,7 +1,7 @@
 <div class="slds-border--bottom">
     <div class="slds-grid">
         <div class="slds-text-align--center slds-p-vertical--small slds-border--left"
-             *ngFor="let sheetDay of sheetDays" [ngStyle]="getDayColStyle(sheetDay.text)">{{sheetDay.text}}</div>
+             *ngFor="let sheetDay of getSheetDays()" [ngStyle]="getDayColStyle(sheetDay.text)">{{sheetDay.text}}</div>
     </div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
@@ -13,7 +13,7 @@
         </div>
         <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>
     </ng-container>
-    <ng-container *ngFor="let sheetDay of sheetDays">
+    <ng-container *ngFor="let sheetDay of getSheetDays()">
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
     </ng-container>
     <ng-container *ngFor="let week of calendarevents; let weekIndex = index">
