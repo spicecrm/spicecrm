@@ -7,35 +7,30 @@ import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import { model } from '../../services/model.service';
 import { view } from '../../services/view.service';
-import {Router}   from '@angular/router';
+import { userpreferences } from '../../services/userpreferences.service';
 
 @Component({
     selector: 'object-activitiytimeline-event',
     templateUrl: './src/objectcomponents/templates/objectactivitiytimelineevent.html',
-    providers:[model, view],
-    host:{
-        'class' : 'slds-timeline__item'
-    }
+    providers:[model, view]
 })
 export class ObjectActivitiyTimelineEvent implements OnInit{
-    @Input() activity: any = {};
-    @Input() showtoolset: boolean = true;
+    @Input() private activity: any = {};
+    @Input() private showtoolset: boolean = true;
 
-    formFields: Array<any> = [];
-    formFieldSet: string = '';
+    private formFieldSet: string = '';
+    private isopen: boolean = false;
 
-    constructor(private model: model, private router: Router, private metadata: metadata, private view: view) {
+    constructor(private model: model, private userpreferences: userpreferences, private metadata: metadata, private view: view) {
 
         this.view.isEditable = false;
 
-        this.model.module = 'Calls';
+        this.model.module = 'Meetings';
         let componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineEvent', this.model.module);
         this.formFieldSet = componentconfig.fieldset;
-        this.formFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
     }
 
-    ngOnInit(){
-        this.model.module = 'Meetings';
+    public ngOnInit(){
         this.model.id = this.activity.id;
         this.model.data = this.activity.data;
     }
@@ -44,7 +39,26 @@ export class ObjectActivitiyTimelineEvent implements OnInit{
         return this.model.checkAccess('detail');
     }
 
-    goDetail(){
+    private goDetail(){
         this.model.goDetail();
+    }
+
+    get subject() {
+        return this.model.getField('name');
+    }
+
+    get starttime() {
+        let startdate = this.model.getField('date_start');
+        return startdate ? startdate.format(this.userpreferences.getTimeFormat()) : '';
+    }
+
+    get startdate() {
+        let startdate = this.model.getField('date_start');
+        return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
+    }
+
+
+    private toggleexpand() {
+        this.isopen = !this.isopen;
     }
 }
