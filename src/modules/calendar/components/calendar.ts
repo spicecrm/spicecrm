@@ -2,31 +2,90 @@ import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core'
 import {broadcast} from '../../../services/broadcast.service';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
+import {fts} from '../../../services/fts.service';
 import {calendar} from '../services/calendar.service';
+import {recent} from '../../../services/recent.service';
+import {session} from '../../../services/session.service';
 
 declare var moment: any;
 declare var _: any;
 
 @Component({
     templateUrl: './src/modules/calendar/templates/calendar.html',
-    providers: [calendar]
+    providers: [calendar],
+    styles: [`
+        /* Scrollbar */
+        /* width */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+        }
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    `]
 })
 export class Calendar {
 
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-
+    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    public otherCalendars: any[] = [];
+    public searchterm: string = "";
+    public searchopen: boolean = false;
+    public isLoading: boolean = false;
+    public resultsList: any[] = [];
+    public timeout: any = undefined;
+    public recentUsers: any[] = [];
     private showTypeSelector: boolean = false;
-    private sheetType: string = 'Week';
-
+    private sheetType: string = 'Day';
     private duration: any = {
         Day: 'd',
         Week: 'w',
         Month: 'M',
     };
 
-    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
+    constructor(private language: language,
+                private broadcast: broadcast,
+                private navigation: navigation,
+                private fts: fts,
+                private session: session,
+                private recent: recent,
+                private elementRef: ElementRef,
+                private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
+        this.getRecent();
+        this.calendar.otherCalendars$.subscribe(calendars => this.otherCalendars = calendars);
+    }
+
+    set searchOpen(value) {
+        this.searchopen = value;
+        if (value) {
+            this.getRecent();
+        }
+    }
+
+    get owner() {
+        return this.calendar.owner;
+    }
+
+    get searchOpen() {
+        return this.searchopen;
+    }
+
+    get lookupMenuStyle() {
+        return {
+            display: this.searchOpen ? "block" : "none",
+            width: this.inputContainer.element.nativeElement.getBoundingClientRect().width + "px",
+        };
     }
 
     get weekStartDay() {
@@ -43,6 +102,50 @@ export class Calendar {
 
     get calendarDate() {
         return this.calendar.calendarDate;
+    }
+
+    get searchTerm() {
+        return this.searchterm;
+    }
+
+    set searchTerm(value) {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.searchterm = value, 500);
+        if (value == "") {
+            return;
+        }
+        this.isLoading = true;
+        this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
+            .subscribe(res => {
+                this.resultsList = res["Users"].hits.map(user => user = user._source)
+                    .filter(user => user.id != this.owner && _.findWhere(this.calendar.otherCalendars, {id: user.id}) == undefined);
+                this.isLoading = false;
+            });
+    }
+
+    private getRecent() {
+        this.recent.getModuleRecent("Users")
+            .subscribe(recent => this.recentUsers = recent
+                .filter(user => user.item_id != this.owner && _.findWhere(this.calendar.otherCalendars, {id: user.item_id}) == undefined));
+    }
+
+    private addCalendar(id, name) {
+        this.calendar.addCalendar(id, name);
+    }
+
+    private removeCalendar(id) {
+        this.calendar.removeCalendar(id);
+    }
+
+    private toggleVisible(id) {
+        this.calendar.otherCalendars.some(calendar => {
+            if (calendar.id == id) {
+                calendar.visible = !calendar.visible;
+                this.calendar.setCalendars();
+                this.calendar.otherCalendars = this.calendar.otherCalendars.slice();
+                return true;
+            }
+        });
     }
 
     private getContentStyle() {
@@ -109,10 +212,18 @@ export class Calendar {
     }
 
     private shiftPlus() {
+        let weekDaysCountOffset = 7 - this.weekDaysCount;
+        if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay + (this.weekDaysCount - 1)) {
+            this.calendarDate = new moment(this.calendarDate.add(moment.duration(weekDaysCountOffset, "d")));
+        }
         this.calendarDate = new moment(this.calendarDate.add(moment.duration(1, this.duration[this.sheetType])));
     }
 
     private shiftMinus() {
+        let weekDaysCountOffset = 7 - this.weekDaysCount;
+        if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay) {
+            this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(weekDaysCountOffset, "d")));
+        }
         this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(1, this.duration[this.sheetType])));
     }
 

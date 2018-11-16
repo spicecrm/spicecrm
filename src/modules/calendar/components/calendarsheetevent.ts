@@ -13,17 +13,17 @@ declare var moment: any;
     templateUrl: './src/modules/calendar/templates/calendarsheetevent.html',
     providers: [model, view],
     host: {
-        'class': 'slds-is-absolute',
+        'class': 'slds-is-absolute slds-p-bottom--xxx-small',
         '(dragstart)': 'this.dragStart($event)',
-        '(dragend)': 'this.dragEnd($event)'
+        '(dragend)': 'this.dragEnd($event)',
     }
 })
 export class CalendarSheetEvent implements OnInit {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
-    @Input() private event: any = {};
+    public fields: Array<any> = [];
+    @Input() public event: any = {};
     @Input() private isMonthSheet: boolean = false;
     private componentconfig: any = {};
-    public fields: Array<any> = [];
     private mouseMoveListener: any = undefined;
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
@@ -47,16 +47,25 @@ export class CalendarSheetEvent implements OnInit {
 
         // load the config and the fieldset
         this.componentconfig = this.metadata.getComponentConfig('CalendarSheetEvent', this.event.module);
-        this.fields = this.componentconfig.fieldset ? this.metadata.getFieldSetFields({fieldset: this.componentconfig.fieldset}): [];
+        this.fields = this.componentconfig.fieldset ? this.metadata.getFieldSetFields({fieldset: this.componentconfig.fieldset}) : [];
+    }
+
+    get owner() {
+       return this.calendar.owner;
+    }
+
+    get canEdit() {
+       return this.owner == this.event.data.assigned_user_id;
     }
 
     private getEventStyle() {
         return {
-            'background-color': this.componentconfig.colors && this.componentconfig.colors.default ? this.componentconfig.colors.default : 'rgb(3, 155, 229)'
+            'background-color': this.event.color ? this.event.color : 'rgb(3, 155, 229)'
         };
     }
 
     private dragStart(event) {
+        if (!this.canEdit) {return}
         this.event.dragging = true;
     }
 
@@ -68,43 +77,64 @@ export class CalendarSheetEvent implements OnInit {
 
         this.mouseStart = e;
         this.mouseLast = e;
+        this.event.resizing = true;
 
         this.mouseUpListener = this.renderer.listen('document', 'mouseup', (event) => this.onMouseUp());
         this.mouseMoveListener = this.renderer.listen('document', 'mousemove', (event) => this.onMouseMove(event));
+
+        // prevent triggering other events
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.cancelBubble = true;
+        e.returnValue = false;
     }
 
     private onMouseMove(e) {
+        if (!this.canEdit) {return}
         this.mouseLast = e;
         let moved = (this.mouseLast.pageY - this.mouseStart.pageY);
-
         let span = Math.floor(moved / 15);
         if (this.lastMoveTimeSpan !== span) {
             this.lastMoveTimeSpan = span;
-            this.event.end = new moment(this.event.start).add(this.event.data.duration_hours * 60 + this.event.data.duration_minutes + this.lastMoveTimeSpan * 15, 'm');
+            let eventEnd = new moment(this.event.start).add((this.event.data.duration_hours * 60) + this.event.data.duration_minutes + (this.lastMoveTimeSpan * 15), 'm');
+            if (this.event.start.hours() === eventEnd.hours() && this.event.start.minutes() === eventEnd.minutes() || eventEnd.hours() < this.event.start.hours()) {
+                this.event.end = new moment(this.event.start).add(15, 'm');
+                this.lastMoveTimeSpan = this.lastMoveTimeSpan - (((this.event.data.duration_hours * 60) + this.event.data.duration_minutes + (this.lastMoveTimeSpan * 15)) / 15) + 1;
+            } else {
+                this.event.end = eventEnd;
+            }
         }
 
     }
 
     private onMouseUp() {
+        if (!this.canEdit) {return}
         this.mouseUpListener();
         this.mouseMoveListener();
 
+        if (this.mouseLast.pageY != this.mouseStart.pageY) {
+            let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
+            this.event.data.duration_hours = Math.floor(durationMinutes / 60);
+            this.event.data.duration_minutes = durationMinutes - this.event.data.duration_hours * 60;
+            this.model.data.duration_minutes = this.event.data.duration_minutes;
+            this.model.data.duration_hours = this.event.data.duration_hours;
+
+            // save the event
+            this.event.saving = true;
+            this.model.save().subscribe(data => {
+                this.event.saving = false;
+            });
+
+            // emit to rearrange on the sheet
+            this.rearrange.emit();
+        }
         this.mouseStart = undefined;
         this.mouseLast = undefined;
-        let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
-        this.event.data.duration_hours = Math.floor(durationMinutes / 60);
-        this.event.data.duration_minutes = durationMinutes - this.event.data.duration_hours * 60;
-
-        // save the event
-        this.event.saving = true;
-        this.model.save().subscribe(data => {
-            this.event.saving = false;
-        });
-
-        // emit to rearrange on the sheet
-        this.rearrange.emit();
-
+        this.event.resizing = false;
         this.lastMoveTimeSpan = 0;
-
     }
 }

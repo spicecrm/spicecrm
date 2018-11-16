@@ -7,7 +7,6 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-drop-target',
     template: '',
-    // templateUrl: './src/modules/calendar/templates/calendarsheetdroptarget.html',
     providers: [model],
     host: {
         '(dragover)': 'this.dragOver($event)',
@@ -44,18 +43,7 @@ export class CalendarSheetDropTarget {
     }
 
     private dragEnter(event) {
-
         this.isDropTarget = true;
-        /*
-         let dragEvent = {};
-         this.calendar.getEvents().some(event => {
-         if(event.dragging){
-         dragEvent = event;
-         return true;
-         }
-         });
-         */
-
     }
 
     private dragLeave(event) {
@@ -63,14 +51,10 @@ export class CalendarSheetDropTarget {
     }
 
     private drop(event) {
-        // TODO: check functionality (item, event)
-        console.log(event);
         let dragEvent: any = null;
-        this.calendar.getEvents().some(event => {
-            console.log(event);
-            if (event.dragging) {
-                dragEvent = event;
-                console.log(event);
+        this.calendar.getEvents().some(calendarEvent => {
+            if (calendarEvent.dragging) {
+                dragEvent = calendarEvent;
                 return true;
             }
         });
