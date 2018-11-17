@@ -8,15 +8,18 @@
     <ng-container *ngIf="isExpanded">
         <object-record-fieldset [fieldset]="bodyFieldSet" [direction]="'vertical'"></object-record-fieldset>
         <div class="slds-p-around--x-small slds-grid">
-            <div class="slds-grid">
-                <button class="slds-button slds-button--neutral" (click)="cancel()">
-                    {{language.getLabel('LBL_CANCEL')}}
+            <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button--neutral" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
+                    <system-button-icon icon="close"></system-button-icon>
+                    <span class="slds-assistive-text">{{language.getLabel('LBL_CANCEL')}}</span>
                 </button>
-                <button class="slds-button slds-button--neutral" (click)="expand()">
-                    {{language.getLabel('LBL_EXPAND')}}
+                <button class="slds-button slds-button--neutral" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+                    <system-button-icon icon="expand"></system-button-icon>
+                    <span class="slds-assistive-text">{{language.getLabel('LBL_EXPAND')}}</span>
                 </button>
-                <button class="slds-button slds-button--neutral" (click)="dock()">
-                    {{language.getLabel('LBL_DOCK')}}
+                <button class="slds-button slds-button--neutral" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+                    <system-button-icon icon="dock_panel"></system-button-icon>
+                    <span class="slds-assistive-text">{{language.getLabel('LBL_DOCK')}}</span>
                 </button>
             </div>
             <div class="slds-col--bump-left">
