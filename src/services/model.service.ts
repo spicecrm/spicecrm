@@ -616,7 +616,7 @@ export class model {
                     console.log(error);
                     switch (error.status) {
                         case 409:
-                            this.modal.openModal("ObjectOptimisticLockingModal", true, this.injector).subscribe(lockingModalRef => {
+                            this.modal.openModal("ObjectOptimisticLockingModal", false, this.injector).subscribe(lockingModalRef => {
                                 lockingModalRef.instance.conflicts = error.error.error.conflicts;
                             });
                             break;
