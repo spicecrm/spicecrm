@@ -1,23 +1,22 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import { model } from '../../services/model.service';
-import { view } from '../../services/view.service';
-import { broadcast } from '../../services/broadcast.service';
-import {Router}   from '@angular/router';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'object-activitiytimeline-task',
     templateUrl: './src/objectcomponents/templates/objectactivitiytimelinetask.html',
-    providers:[model, view]
+    providers: [model, view]
 })
-export class ObjectActivitiyTimelineTask implements OnInit{
-    @Input() activity: any = {};
-    @Input() showtoolset: boolean = true;
+export class ObjectActivitiyTimelineTask implements OnInit {
+    @Input() private activity: any = {};
+    @Input() private showtoolset: boolean = true;
 
-    formFields: Array<any> = [];
-    formFieldSet: string = '';
+    private formFieldSet: string = '';
+    private isopen: boolean = false;
 
-    constructor(private metadata: metadata, private model: model, private view: view, private router: Router) {
+    constructor(private metadata: metadata, private model: model, private view: view, private userpreferences: userpreferences) {
 
         this.view.isEditable = false;
 
@@ -26,31 +25,45 @@ export class ObjectActivitiyTimelineTask implements OnInit{
 
         let componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineTask', this.model.module);
         this.formFieldSet = componentconfig.fieldset;
-        this.formFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.model.id = this.activity.id;
         this.model.data = this.activity.data;
     }
 
 
-    canComplete(){
-        if((this.model.data.status === 'Completed' || this.model.data.status === 'Deferred') && this.model.checkAccess('edit'))
+    get canComplete() {
+        if ((this.model.data.status === 'Completed' || this.model.data.status === 'Deferred') && this.model.checkAccess('edit')) {
             return false;
-        else
+        } else {
             return true;
+        }
     }
 
-    get enableDetail(){
+    get subject() {
+        return this.model.getField('name');
+    }
+
+    get time() {
+        let startdate = this.model.getField('date_start');
+        return startdate ? startdate.format(this.userpreferences.getTimeFormat()) : '';
+    }
+
+    get date() {
+        let startdate = this.model.getField('date_start');
+        return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
+    }
+
+    get enableDetail() {
         return this.model.checkAccess('detail');
     }
 
-    goDetail(){
+    private goDetail() {
         this.model.goDetail();
     }
 
-    completeTask(){
+    private completeTask() {
         this.model.data.status = 'Completed';
         this.model.save();
     }
