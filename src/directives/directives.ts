@@ -14,6 +14,7 @@ import /*embed*/ {LocalVariableDirective} from "./directives/localvariable";
 import /*embed*/ {SpiceUIAutofocusDirective} from "./directives/spiceuiautofocus";
 import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
 import /*embed*/ {DropdownTriggerDirective} from "./directives/dropdowntrigger";
+import /*embed*/ {ToBottomDirective} from "./directives/tobottom";
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import /*embed*/ {DropdownTriggerDirective} from "./directives/dropdowntrigger";
         LocalVariableDirective,
         SpiceUIAutofocusDirective,
         FirstUpperCasePipe,
-        DropdownTriggerDirective
+        DropdownTriggerDirective,
+        ToBottomDirective
     ],
     exports: [
         ModelPopOverDirective,
@@ -35,7 +37,8 @@ import /*embed*/ {DropdownTriggerDirective} from "./directives/dropdowntrigger";
         LocalVariableDirective,
         SpiceUIAutofocusDirective,
         FirstUpperCasePipe,
-        DropdownTriggerDirective
+        DropdownTriggerDirective,
+        ToBottomDirective
     ]
 })
 export class DirectivesModule {
