@@ -11,6 +11,7 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {session} from "../services/session.service";
+import {backend} from "../services/backend.service";
 import {language} from "../services/language.service";
 import {configurationService} from "../services/configuration.service";
 import {popup} from "../services/popup.service";
