@@ -15,14 +15,19 @@ declare var moment: any;
 
 @Component({
     templateUrl: './src/objectcomponents/templates/objectoptimisticlockingmodal.html',
-    providers: [view]
+    providers: [view],
+    styles: [
+        'table { border-bottom: none; }',
+        'table tr:last-child td { border-bottom: none; }'
+    ]
 })
 export class ObjectOptimisticLockingModal implements OnInit {
 
     private self: any = {};
     public conflicts: any = {};
-    private _conflicts: Array<any> = [];
+    private _conflicts = [];
     private originaldata: any = {};
+    private fieldsToCopy = {};
 
     constructor(
         private language: language,
@@ -31,8 +36,8 @@ export class ObjectOptimisticLockingModal implements OnInit {
         private metadata: metadata,
         private modal: modal
     ) {
-        this.view.isEditable = true;
-        this.view.setEditMode();
+        // this.view.isEditable = true;
+        // this.view.setEditMode();
     }
 
     public ngOnInit() {
@@ -68,6 +73,7 @@ export class ObjectOptimisticLockingModal implements OnInit {
     }
 
     private save(goDetail: boolean = false) {
+        this.copyFields();
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
 
@@ -90,12 +96,22 @@ export class ObjectOptimisticLockingModal implements OnInit {
         });
     }
 
-    private copyField(fieldname) {
-        this.model.setField(fieldname, this.conflicts[fieldname].value);
+    private copyFields() {
+        for ( let fieldname in this.conflicts ) {
+            if ( !this.fieldsToCopy[fieldname] ) this.model.setField( fieldname, this.conflicts[fieldname].value );
+        }
     }
 
     private toggleChangeDetails(fieldname) {
         this.conflicts[fieldname].open = !this.conflicts[fieldname].open;
+    }
+
+    private select(fieldname) {
+        this.fieldsToCopy[fieldname] = true;
+    }
+
+    private unselect(fieldname) {
+        delete this.fieldsToCopy[fieldname];
     }
 
     private changeDetailsIcon(fieldname) {

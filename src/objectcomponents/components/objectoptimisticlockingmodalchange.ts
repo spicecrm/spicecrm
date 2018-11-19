@@ -25,7 +25,7 @@ export class ObjectOptimisticLockingModalChange {
 
     @Input() private change: any = {};
 
-    get changeDate(){
+    get changeDate() {
         // return timestamp.fromNow();
         let timestamp = moment(this.change.date_created).tz(moment.tz.guess());
         timestamp.add(timestamp.utcOffset(), "m");
