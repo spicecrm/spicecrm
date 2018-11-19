@@ -488,6 +488,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectTabContainerItemHeader,
         ObjectTableRow,
         ObjectTable,
+        ObjectActivitiyTimelineItemContainer
     ]
 })
 export class ObjectComponents {
