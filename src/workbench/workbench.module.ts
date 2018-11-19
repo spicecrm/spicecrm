@@ -26,6 +26,7 @@ import {footer} from "../services/footer.service";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
+import {GlobalComponents} from "../globalcomponents/globalcomponents";
 
 // COMPONENTs
 
@@ -93,13 +94,21 @@ import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 
+import /*embed*/ {PackageLoader} from "./components/packageloader";
+import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
+import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackages";
+import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
+import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
+import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
+
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        ObjectFields
+        ObjectFields,
+        GlobalComponents
     ],
     declarations: [
         DomainManager,
@@ -161,7 +170,13 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
-        ObjectRepositoryManagerAddModule
+        ObjectRepositoryManagerAddModule,
+        PackageLoader,
+        PackageLoaderPipe,
+        PackageLoaderPackages,
+        PackageLoaderPackage,
+        PackageLoaderLanguages,
+        PackageLoaderLanguage
     ],
     /* no further modules needed */
     entryComponents: [

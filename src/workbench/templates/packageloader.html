@@ -1,0 +1,43 @@
+<div class="slds-p-around--medium slds-theme--shade">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon icon="custom19" sprite="custom"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_PACKAGE_LOADER')}}</span>
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="slds-page-header__name-meta slds-grid">
+                        <div *ngIf="opencrs" class="slds-grid slds-grid_vertical-align-center slds-p-right--small">
+                            <system-icon addclasses="slds-icon slds-icon-text-warning" divClass="" icon="warning" sprite="utility" size="xx-small"></system-icon>
+                            <span class="slds-p-left--xx-small">open change Requests</span>
+                        </div>
+                        <div *ngIf="errorpackages.length > 0" class="slds-grid slds-grid_vertical-align-center">
+                            <system-icon addclasses="slds-icon slds-icon-text-warning" divClass="" icon="warning" sprite="utility" size="xx-small"></system-icon>
+                            <span class="slds-p-left--xx-small">erroneous packages: {{errorpackagesdisplay}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!loading" class="slds-theme--default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'packages'}" [title]="language.getLabel('LBL_PACKAGES')" role="presentation">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="scope='packages'">{{language.getLabel('LBL_PACKAGES')}}</a>
+        </li>
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'languages'}" title="language.getLabel('LBL_LANGUAGES')" role="presentation">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="scope='languages'">{{language.getLabel('LBL_LANGUAGES')}}</a>
+        </li>
+    </ul>
+    <package-loader-packages [ngClass]="{'slds-show': scope == 'packages', 'slds-hide': scope != 'packages'}" [packages]="packages"></package-loader-packages>
+    <package-loader-languages [ngClass]="{'slds-show': scope == 'languages', 'slds-hide': scope != 'languages'}" [languages]="languages"></package-loader-languages>
+</div>
+<div class="slds-p-around--large slds-align_absolute-center" *ngIf="loading">
+    <system-spinner></system-spinner>
+</div>

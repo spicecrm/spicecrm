@@ -1,4 +1,3 @@
-
 import {
     AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
     ElementRef
@@ -17,13 +16,13 @@ import {navigation} from '../../services/navigation.service';
     }
 })
 export class GlobalNavigationMenu implements AfterViewInit {
-    @ViewChild('menucontainer', {read: ViewContainerRef}) menucontainer: ViewContainerRef;
-    @ViewChild('morecontainer', {read: ViewContainerRef}) morecontainer: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef}) private menucontainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef}) private morecontainer: ViewContainerRef;
     private moreComponentRef: any = undefined;
-    private menuItems: Array<any> = [];
+    private menuItems: any[] = [];
 
-    private renderedItems: Array<any> = [];
-    private moreItems: Array<any> = [];
+    private renderedItems: any[] = [];
+    private moreItems: any[] = [];
 
     private movingActive: boolean = false;
     private rendering: boolean = false;
@@ -42,7 +41,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
         this.navigation.activeModule$.subscribe(activeModule => this.checkActiveModule());
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         // build the internal menu items
         this.buildMenuItems();
 
@@ -122,14 +121,14 @@ export class GlobalNavigationMenu implements AfterViewInit {
 
     private addMenuItem(module, name) {
         this.metadata.addComponentDirect('GlobalNavigationMenuItem', this.menucontainer).subscribe(componentRef => {
-            componentRef.instance['item'] = {
-                module: module,
-                name: name
+            componentRef.instance.item = {
+                module,
+                name
             };
 
             this.renderedItems.push({
-                module: module,
-                componentRef: componentRef
+                module,
+                componentRef
             })
         });
     }
@@ -146,11 +145,11 @@ export class GlobalNavigationMenu implements AfterViewInit {
                 this.moreItems.push(this.menuItems[j])
                 j++;
             }
-            componentRef.instance['moreMenuItems'] = this.moreItems;
+            componentRef.instancemoreMenuItems = this.moreItems;
 
             // set the more component ref
             this.moreComponentRef = {
-                componentRef: componentRef
+                componentRef
             };
 
         });
@@ -165,8 +164,9 @@ export class GlobalNavigationMenu implements AfterViewInit {
 
     private getRenderedWidth() {
         let renderedWidth = 0;
-        for (let item of this.renderedItems)
+        for (let item of this.renderedItems) {
             renderedWidth += item.width;
+        }
 
         return renderedWidth;
     }
@@ -174,13 +174,15 @@ export class GlobalNavigationMenu implements AfterViewInit {
     private handleMessage(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
+            case 'loader.reloaded':
                 this.buildMenuItems();
                 this.renderMenu();
                 break;
             case 'navigation.itemadded':
                 for (let item of this.renderedItems) {
-                    if (item.module === message.messagedata.module)
+                    if (item.module === message.messagedata.module) {
                         item.width = message.messagedata.width;
+                    }
                 }
                 let renderedWidth = this.getRenderedWidth();
 
@@ -215,8 +217,9 @@ export class GlobalNavigationMenu implements AfterViewInit {
                     let lastItem = this.renderedItems.pop();
                     lastItem.componentRef.destroy();
 
-                    if (this.checkActiveModule())
+                    if (this.checkActiveModule()) {
                         this.addMoreItem();
+                    }
 
                 }
                 break;
