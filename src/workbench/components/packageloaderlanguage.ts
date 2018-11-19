@@ -49,9 +49,16 @@ export class PackageLoaderLanguage {
         this.loading = true;
         this.backend.getRequest('/packages/language/' + languagecode).subscribe(response => {
             this.loading = false;
-            if(response.success){
+            if (response.success) {
                 this.package.installed = true;
                 this.language.addAvailableLanguage(response.languages[languagecode]);
+                if (this.language.currentlanguage == languagecode) {
+                    this.language.loadLanguage().subscribe((loaded) => {
+                        this.package.installed = true;
+                    });
+                } else {
+                    this.package.installed = true;
+                }
             }
         });
     }
@@ -61,7 +68,7 @@ export class PackageLoaderLanguage {
         this.loading = true;
         this.backend.deleteRequest('/packages/language/' + languagecode).subscribe(response => {
             this.loading = false;
-            if(response) {
+            if (response) {
                 this.package.installed = false;
                 this.language.removeAvailableLanguage(languagecode);
             }
