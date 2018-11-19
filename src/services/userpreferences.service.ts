@@ -57,8 +57,10 @@ export class userpreferences {
         this.backend.getRequest('user/preferences/' + category).subscribe((prefs) => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
-                this.unchangedPreferences[category] = _.clone(prefs);
+                this.unchangedPreferences.global = _.clone(prefs);
                 this.completePreferencesWithDefaults();
+            } else {
+                this.unchangedPreferences[category] = _.clone(prefs);
             }
             retSubject.next(prefs);
         });
