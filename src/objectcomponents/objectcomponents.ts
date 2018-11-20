@@ -111,6 +111,9 @@ import /*embed*/ {ObjectEditModal} from './components/objecteditmodal';
 import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalwreference';
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
+import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
+import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
+import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
 
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
@@ -244,6 +247,7 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -315,6 +319,9 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
+        ObjectOptimisticLockingModal,
+        ObjectOptimisticLockingModalDataField,
+        ObjectOptimisticLockingModalChange,
         ObjectRecordViewContainer,
         ObjectRecordView,
         ObjectRecordViewDetail1,
