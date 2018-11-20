@@ -78,8 +78,6 @@ export class WorkbenchConfig implements OnChanges {
                     cmpref.instance.configValues = this.configValues;
 
                     if (component == 'LabelSelectorComponent') {
-                        console.log("1", fieldconfig);
-                        console.log("1", this.configValues);
                         let val = "";
                         val = this.configValues[fieldconfig.option];
 
@@ -89,7 +87,11 @@ export class WorkbenchConfig implements OnChanges {
                         }
                         cmpref.instance.select$.subscribe(
                             item => {
-                                this.configValues[fieldconfig.option] = item.name;
+                                if(item) {
+                                    this.configValues[fieldconfig.option] = item.name;
+                                }else {
+                                    this.configValues[fieldconfig.option] = null;
+                                }
                             }
                         );
                     }
