@@ -1,5 +1,6 @@
 import {Component, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 declare var moment: any;
 
@@ -10,9 +11,10 @@ declare var moment: any;
 })
 export class CalendarEventSummary {
     @Input("ismulti") private isMulti: boolean = false;
-    constructor(private model: model) {}
+    constructor(private model: model, private userpreferences: userpreferences) {}
 
     get startHour() {
-        return this.model.data.date_start ? moment(this.model.data.date_start).tz(moment.tz.guess()).add(moment().utcOffset(), 'm').format("HH:mm") : "00:00";
+        return this.model.data.date_start ? moment(this.model.data.date_start).tz(moment.tz.guess())
+            .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : "00:00";
     }
 }

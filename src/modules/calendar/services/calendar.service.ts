@@ -11,8 +11,8 @@ declare var moment: any;
 @Injectable()
 export class calendar {
 
-    public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
-    public othercalendars: any[] = [];
+    public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
+    public usersCalendars: any[] = [];
     public calendarDate: any = {};
     public calendars: any = {};
     public currentStart: any = null;
@@ -30,7 +30,9 @@ export class calendar {
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
-        this.getCalendars();
+        this.getOtherCalendars();
+        // console.log(this.session.getSessionData("google_oauth", true));
+        let loggedInWithGoogle = this.session.getSessionData("google_oauth", true);
     }
 
     get owner() {
@@ -45,15 +47,6 @@ export class calendar {
         return this.weekstartday;
     }
 
-    set otherCalendars(value) {
-        this.othercalendars = value;
-        this.otherCalendars$.emit(this.otherCalendars);
-    }
-
-    get otherCalendars() {
-        return this.othercalendars;
-    }
-
     private loadPreferences() {
         this.weekStartDay = this.userPreferences.unchangedPreferences.global['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
         this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
@@ -62,31 +55,34 @@ export class calendar {
         this.calendarDate = new moment();
     }
 
-    private getCalendars() {
+    private getOtherCalendars() {
         this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
-            this.otherCalendars = calendars["Users"] || [];
+            this.setUserCalendars(calendars["Users"]);
         });
     }
 
-    public addCalendar(id, name) {
-        this.otherCalendars.push({
+    public addUserCalendar(id, name) {
+        let usersCalendars = this.usersCalendars;
+        usersCalendars.push({
             id: id,
             name: name,
             visible: true,
             color: '#'+(Math.random()*0xFFF<<0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random()*0xFFF<<0).toString(16)
         });
-        this.otherCalendars$.emit(this.otherCalendars.slice());
-        this.setCalendars();
+        this.setUserCalendars(usersCalendars.slice());
     }
 
-    public removeCalendar(id) {
+    public removeUserCalendar(id) {
         delete this.calendars[id];
-        this.otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
-        this.setCalendars();
+        let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
+        this.setUserCalendars(usersCalendars);
     }
 
-    public setCalendars() {
-        this.userPreferences.setPreference("Users", this.otherCalendars, true, "Calendar");
+    public setUserCalendars(value) {
+        if (!value) {return}
+        this.usersCalendars = value;
+        this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
+        this.usersCalendars$.emit(this.usersCalendars);
     }
 
     public loadEvents(start, end, calendar = this.owner) {
@@ -124,7 +120,7 @@ export class calendar {
             // filter the current eventset based on the start and end date
             let filteredEntries: Array<any> = [];
             for (let event of this.calendars[calendar]) {
-                if (event.start >= start && event.end <= end) {
+                if (event.start < end && event.end > start) {
                     filteredEntries.push(event);
                 }
             }

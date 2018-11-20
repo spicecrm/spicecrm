@@ -68,15 +68,23 @@
             <div class="slds-border--bottom">
                 <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small">Other Calendars</label>
                 <div class="slds-p-vertical--xx-small">
-                    <div *ngFor="let calendar of otherCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
-                         (mouseover)="hovered = calendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == calendar.id ? 'slds-theme--shade' : null">
-                        <div class="slds-grid" (click)="toggleVisible(calendar.id)" style="cursor: pointer">
-                            <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="calendar.visible ? calendar.color : '#dddbda'">
+                    <div *ngIf="googleCalendar != {}" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+                         (mouseover)="hovered = 'google'" (mouseout)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
+                        <div class="slds-grid" (click)="toggleVisibleGoogle()" style="cursor: pointer">
+                            <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 15px;width:15px;margin-right: 2px;"
+                                 [ngStyle]="!googleCalendarVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
+                            <a class="slds-text-body--regular slds-truncate" [style.color]="!googleCalendarVisible ? '#dddbda' : 'initial'">My Google Calendar</a>
+                        </div>
+                    </div>
+                    <div *ngFor="let usersCalendar of usersCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+                         (mouseover)="hovered = usersCalendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == usersCalendar.id ? 'slds-theme--shade' : ''">
+                        <div class="slds-grid" (click)="toggleVisibleUsers(usersCalendar.id)" style="cursor: pointer">
+                            <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">
                                 <system-button-icon icon="user" size="small"></system-button-icon>
                             </div>
-                            <a class="slds-text-body--regular slds-truncate" [style.color]="calendar.visible ? calendar.color : '#dddbda'">{{calendar.name}}</a>
+                            <a class="slds-text-body--regular slds-truncate" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">{{usersCalendar.name}}</a>
                         </div>
-                        <button class="slds-button slds-button--icon" (click)="removeCalendar(calendar.id)">
+                        <button  class="slds-button slds-button--icon" (click)="removeUserCalendar(usersCalendar.id)">
                             <system-button-icon icon="clear" size="small"></system-button-icon>
                         </button>
                     </div>
@@ -103,7 +111,7 @@
                     </div>
                     <ul class="slds-lookup__list" style="height: 175px" role="listbox">
                         <ng-container *ngIf="searchTerm.length > 0">
-                            <li *ngFor="let user of resultsList" role="presentation" (mousedown)="addCalendar(user.id, user.summary_text)">
+                            <li *ngFor="let user of resultsList" role="presentation" (mousedown)="addUserCalendar(user.id, user.summary_text)">
                                 <div class="slds-lookup__item-action slds-media" role="option">
                                     <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
                                     <span class="slds-lookup__result-text">{{user.summary_text}}</span>
@@ -111,7 +119,7 @@
                             </li>
                         </ng-container>
                         <ng-container *ngIf="searchTerm.length == 0">
-                            <li *ngFor="let user of recentUsers" role="presentation" (mousedown)="addCalendar(user.item_id, user.item_summary)">
+                            <li *ngFor="let user of recentUsers" role="presentation" (mousedown)="addUserCalendar(user.item_id, user.item_summary)">
                                 <div class="slds-lookup__item-action slds-media" role="option">
                                     <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
                                     <span class="slds-lookup__result-text">{{user.item_summary}}</span>
@@ -124,9 +132,24 @@
             </div>
         </div>
         <div style="width:calc(100% - 300px); height: 100%">
-            <calendar-sheet-day *ngIf="sheetType === 'Day'" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateweek)="goToWeekView()"></calendar-sheet-day>
-            <calendar-sheet-week *ngIf="sheetType === 'Week'" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)"></calendar-sheet-week>
-            <calendar-sheet-month *ngIf="sheetType === 'Month'" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)"></calendar-sheet-month>
+            <calendar-sheet-day *ngIf="sheetType === 'Day'"
+                                [googlecalendarvisible]="googleCalendarVisible"
+                                [userscalendars]="usersCalendars"
+                                [setdate]="calendarDate"
+                                (navigateweek)="goToWeekView()">
+            </calendar-sheet-day>
+            <calendar-sheet-week *ngIf="sheetType === 'Week'"
+                                 [googlecalendarvisible]="googleCalendarVisible"
+                                 [userscalendars]="usersCalendars"
+                                 [setdate]="calendarDate"
+                                 (navigateday)="gotToDayView($event)">
+            </calendar-sheet-week>
+            <calendar-sheet-month *ngIf="sheetType === 'Month'"
+                                  [googlecalendarvisible]="googleCalendarVisible"
+                                  [userscalendars]="usersCalendars"
+                                  [setdate]="calendarDate"
+                                  (navigateday)="gotToDayView($event)">
+            </calendar-sheet-month>
         </div>
     </div>
 </div>
