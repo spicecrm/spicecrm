@@ -23,7 +23,7 @@
         <!--<input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.label"/>-->
     <!--</div>-->
 <!--</div>-->
-<label-selector [selected_item]="configValuesLabel" [disabled]="!view.isEditMode()" [option]="InputConfig" (select)="configValuesLabel"></label-selector>
+<label-selector [selected_item]="configValuesLabel" [disabled]="!view.isEditMode()" [option]="InputConfig" (select)="configValuesLabelEmit($event)"></label-selector>
 
 <fieldset class="slds-form-element slds-m-vertical--xxx-small">
     <legend class="slds-form-element__legend slds-form-element__label">{{language.getAppLanglabel('LBL_OPTIONS')}}</legend>

@@ -7,7 +7,7 @@
                 <div class="slds-pill_container">
                     <span class="slds-pill slds-size--1-of-1">
                         <span class="slds-pill__label">{{selected_item.name}}</span><span *ngIf="selected_item.scope == 'custom'" class="slds-text-color_weak">custom</span>
-                        <button [disabled]="disabled" class="slds-button slds-button--icon slds-pill__remove" style="margin-right: 5px;" (click)="selected_item = null">
+                        <button [disabled]="disabled" class="slds-button slds-button--icon slds-pill__remove" style="margin-right: 5px;" (click)="removeSelection()">
                           <system-button-icon [icon]="'close'"></system-button-icon>
                         </button>
                     </span>
@@ -29,7 +29,8 @@
                         <li *ngFor="let item of items" class="slds-listbox__item" role="presentation">
                             <div class="slds-listbox__option slds-listbox__option_entity" style="clear: both;" role="option" (mousedown)="selected_item = item">
                                 <system-custom-icon [icon]="item.scope" size="x-small" addclasses="slds-listbox__option-text slds-input__icon slds-input__icon_left slds-float_left"></system-custom-icon>
-                                <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity slds-float_left" style="margin-right: 5px;">{{item.name}}</span>
+                                <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity slds-float_left" style="margin-right: 5px;">{{item.currentTranslation}}</span>
+                                <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity slds-float_left" style="margin-right: 5px; font-size: 10px;">[{{item.name}}]</span>
 
                                 <div class="slds-float_left" style="position: relative; margin-top: 3px;">
                                     <div class="slds-form-element">
