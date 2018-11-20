@@ -68,7 +68,7 @@
             <div class="slds-border--bottom">
                 <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small">Other Calendars</label>
                 <div class="slds-p-vertical--xx-small">
-                    <div *ngIf="googleCalendar != {}" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+                    <div *ngIf="loggedByGoogle" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
                          (mouseover)="hovered = 'google'" (mouseout)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
                         <div class="slds-grid" (click)="toggleVisibleGoogle()" style="cursor: pointer">
                             <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 15px;width:15px;margin-right: 2px;"

@@ -76,6 +76,10 @@ export class Calendar {
         return this.searchopen;
     }
 
+    get loggedByGoogle() {
+        return this.calendar.loggedByGoogle;
+    }
+
     set searchOpen(value) {
         this.searchopen = value;
         if (value) {

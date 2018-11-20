@@ -51,26 +51,6 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         this.sheetDays = this.buildSheetDays();
     }
 
-
-    public ngAfterViewInit() {
-        this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
-    }
-
-    public ngOnChanges(changes: SimpleChanges) {
-        if (changes.setdate) {
-            this.sheetDays = this.buildSheetDays();
-            this.getEvents();
-            this.getUsersEvents();
-            this.getGoogleEvents();
-        }
-        if (changes.usersCalendars) {
-            this.getUsersEvents();
-        }
-        if (changes.googleCalendarVisible) {
-            this.getGoogleEvents();
-        }
-    }
-
     get offset() {
         return moment().utcOffset();
     }
@@ -81,6 +61,25 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
     get allMultiEvents() {
         return this.ownerMultiEvents.concat(this.otherMultiEvents, this.googleMultiEvents);
+    }
+
+    public ngAfterViewInit() {
+        this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.setdate) {
+            this.sheetDays = this.buildSheetDays();
+            this.getEvents();
+            this.getUsersEvents();
+            this.getGoogleEvents(true);
+        }
+        if (changes.usersCalendars) {
+            this.getUsersEvents();
+        }
+        if (changes.googleCalendarVisible) {
+            this.getGoogleEvents();
+        }
     }
 
     private getEvents() {
@@ -97,7 +96,10 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         });
     }
 
-    private getGoogleEvents() {
+    private getGoogleEvents(reload = false) {
+        if (!this.calendar.loggedByGoogle) {
+            return;
+        }
         let startDate = new moment(this.setdate).day(0).hour(this.calendar.startHour).minute(0).second(0);
         let endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd')).hour(this.calendar.endHour);
         let params = {
@@ -107,26 +109,38 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         this.googleEvents = [];
         this.googleMultiEvents = [];
 
-        this.backend.getRequest("google/calendar/getgoogleevents",params).subscribe(res => {
-            if (res.events && res.events.length > 0) {
-                let events = res.events.map(event => {
-                    event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                    event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                    if (+event.end.diff(event.start, 'days') > 0) {
-                        event.isMulti = true;
-                    }
-                    event.data = {};
-                    event.data.summary_text = event.summary;
-                    event.data.assigned_user_id = null;
-                    event.color = "#db4437";
+        if (reload) {
+            this.backend.getRequest("google/calendar/getgoogleevents", params).subscribe(res => {
+                if (res.events && res.events.length > 0) {
+                    let events = res.events.map(event => {
+                        event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                        event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                        if (+event.end.diff(event.start, 'days') > 0) {
+                            event.isMulti = true;
+                        }
+                        event.data = {};
+                        event.data.summary_text = event.summary;
+                        event.data.assigned_user_id = null;
+                        event.color = "#db4437";
+                        event.visible = this.googleCalendarVisible;
+                        return event;
+                    });
+                    this.calendar.calendars["google"] = events;
+                    this.googleEvents = events.filter(event => !event.isMulti && event.visible);
+                    this.googleMultiEvents = events.filter(event => event.isMulti && event.visible);
+                }
+            });
+        } else {
+            let events = this.calendar.calendars["google"];
+            if (events) {
+                events = events.map(event => {
                     event.visible = this.googleCalendarVisible;
                     return event;
                 });
-                this.calendar.calendars["google"] = events;
-                this.googleEvents = events.filter(event => !event.isMulti && event.visible);
-                this.googleMultiEvents = events.filter(event => event.isMulti && event.visible);
+                this.googleEvents = events.filter(event => !event.isMulti && event.visible && event.start < endDate && event.end > startDate);
+                this.googleMultiEvents = events.filter(event => event.isMulti && event.visible && event.start < endDate && event.end > startDate);
             }
-        });
+        }
     }
 
     private getUsersEvents() {
@@ -174,7 +188,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         let today = new moment();
         return {
             color: today.year() === date.year() && today.month() === date.month() && today.date() == date.date() ? this.calendar.todayColor : 'inherit'
-        }
+        };
     }
 
     private getEventStyle(event) {
@@ -196,12 +210,14 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
     }
 
     private getMultiEventStyle(event, eventIndex): any {
-        if (!this.multiEvents) {return;}
+        if (!this.multiEvents) {
+            return;
+        }
         let multiEvents = this.multiEvents.element.nativeElement.getBoundingClientRect();
         let startDate = new moment(this.setdate).day(0).hour(0).minute(0).second(0);
         let endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd'));
-        let startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days'): 0);
-        let endDateDifference =  (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
+        let startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
+        let endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
         let left = multiEvents.left + (startDateDifference * multiEvents.width);
         let width = (this.calendar.weekDaysCount - (startDateDifference + endDateDifference)) * multiEvents.width;
         return {
