@@ -14,6 +14,7 @@ import {
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
+import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
 
 declare var moment: any;
@@ -25,22 +26,26 @@ declare var _: any;
 })
 export class CalendarSheetMonth implements OnChanges, AfterViewInit {
 
-    public calendarevents: Array<any> = [];
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @ViewChild('daycontainer', {read: ViewContainerRef}) private dayContainer: ViewContainerRef;
     @ViewChild('boxcontainer', {read: ViewContainerRef}) private boxContainer: ViewContainerRef;
-    @Input('othercalendars') private otherCalendars: any[] = [];
+    @Input('userscalendars') private usersCalendars: any[] = [];
+    @Input('googlecalendarvisible') private googleCalendarVisible: boolean = true;
     @Input() private setdate: any = {};
     private currentGrid: Array<any> = [];
     private eventHeight: number = 25;
     private maxEventsPerBox: number = 1;
     private resizseHandler: any = {};
+    private ownerEvents: Array<any> = [];
+    private otherEvents: Array<any> = [];
+    private googleEvents: Array<any> = [];
 
     constructor(private language: language,
                 private broadcast: broadcast,
                 private navigation: navigation,
                 private elementRef: ElementRef,
+                private backend: backend,
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.resizseHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
@@ -48,17 +53,25 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
 
     public ngAfterViewInit() {
         this.setMaxEvents();
-        console.log(this.calendarevents);
     }
 
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.setdate) {
             this.buildGrid();
             this.getEvents();
+            this.getUsersEvents();
+            this.getGoogleEvents();
         }
-        if (changes.otherCalendars) {
-            this.getOtherEvents(changes.otherCalendars.currentValue);
+        if (changes.usersCalendars) {
+            this.getUsersEvents();
         }
+        if (changes.googleCalendarVisible) {
+            this.getGoogleEvents();
+        }
+    }
+
+    get allEvents() {
+        return this.calendar.arrangeEvents(this.ownerEvents.concat(this.otherEvents, this.googleEvents));
     }
 
     private setMaxEvents() {
@@ -85,58 +98,80 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         return sheetDays;
     };
 
-    private getOtherEvents(otherCalendars) {
-        for (let week of this.calendarevents) {
-            week = week.filter(event => event.data.assigned_user_id == this.calendar.owner);
-
-        }
-        if (otherCalendars.length > 0) {
-            let startDate = new moment(this.setdate).date(1).hour(this.calendar.startHour).minute(0).second(0);
-            let endDate = new moment(startDate).add(moment.duration(1, 'M')).hour(this.calendar.endHour);
-            for (let calendar of otherCalendars) {
-                this.calendar.loadEvents(startDate, endDate, calendar.id).subscribe(events => {
-                    if (events.length > 0) {
-                        events = events.map(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            return event;
-                        });
-                        events = events.filter(event => event.visible);
-                        this.groupEventsByWeek(events);
-                    }
-                });
-            }
-        }
-
-    }
-
     private getEvents() {
-        for (let week of this.calendarevents) {
-            week = week.filter(event => event.data.assigned_user_id != this.calendar.owner);
-
-        }
         let startDate = new moment(this.setdate).date(1).hour(this.calendar.startHour).minute(0).second(0);
         let endDate = new moment(startDate).add(moment.duration(1, 'M')).hour(this.calendar.endHour);
+        this.ownerEvents = [];
+
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
-                this.groupEventsByWeek(events);
+                this.ownerEvents = events;
             }
         });
     }
 
-    private groupEventsByWeek(events) {
-        for (let event of events) {
-            for (let w = 0; w < this.currentGrid.length; w++) {
-                for (let d = 0; d < this.currentGrid[w].length; d++) {
-                    if (this.startEndThisMonth(event) || this.endThisMonth(event) || this.startThisMonth(event)) {
-                        if (!this.calendarevents[w]) { this.calendarevents[w] = []}
-                        if (this.calendarevents[w].indexOf(event) == -1){this.calendarevents[w].push(event)}
-                        this.setEventIndices(event, this.calendarevents[w][d], d);
+    private getGoogleEvents() {
+        let startDate = new moment(this.setdate).date(1).hour(this.calendar.startHour).minute(0).second(0);
+        let endDate = new moment(startDate).add(moment.duration(1, 'M')).hour(this.calendar.endHour);
+        let params = {
+            startdate: startDate.format('YYYY-MM-DD HH:mm:ss'),
+            enddate: endDate.format('YYYY-MM-DD HH:mm:ss')
+        };
+        this.googleEvents = [];
+
+        this.backend.getRequest("google/calendar/getgoogleevents",params).subscribe(res => {
+            if (res.events && res.events.length > 0) {
+                let events = res.events.map(event => {
+                    event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                    event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                    if (+event.end.diff(event.start, 'days') > 0) {
+                        event.isMulti = true;
                     }
-                }
+                    event.data = {};
+                    event.data.summary_text = event.summary;
+                    event.data.assigned_user_id = null;
+                    event.color = "#db4437";
+                    event.visible = this.googleCalendarVisible;
+                    return event;
+                });
+                this.calendar.calendars["google"] = events;
+                this.googleEvents = events;
             }
-        }
+        });
     }
+
+    private getUsersEvents() {
+        let startDate = new moment(this.setdate).date(1).hour(this.calendar.startHour).minute(0).second(0);
+        let endDate = new moment(startDate).add(moment.duration(1, 'M')).hour(this.calendar.endHour);
+        this.otherEvents = [];
+        for (let calendar of this.calendar.usersCalendars) {
+            this.calendar.loadEvents(startDate, endDate, calendar.id).subscribe(events => {
+                if (events.length > 0) {
+                    events = events.map(event => {
+                        event.color = calendar.color;
+                        event.visible = calendar.visible;
+                        return event;
+                    });
+                    this.otherEvents = events;
+                }
+            });
+        }
+
+    }
+
+    // private groupEventsByWeek(events) {
+    //     for (let event of events) {
+    //         for (let w = 0; w < this.currentGrid.length; w++) {
+    //             for (let d = 0; d < this.currentGrid[w].length; d++) {
+    //                 if (this.startEndThisMonth(event) || this.endThisMonth(event) || this.startThisMonth(event)) {
+    //                     if (!this.calendarevents[w]) { this.calendarevents[w] = []}
+    //                     if (this.calendarevents[w].indexOf(event) == -1){this.calendarevents[w].push(event)}
+    //                     this.setEventIndices(event, this.calendarevents[w][d], d);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     private gotoDay(sheetday) {
         let navigateDate = moment(this.setdate);
