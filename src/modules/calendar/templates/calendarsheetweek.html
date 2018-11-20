@@ -11,9 +11,8 @@
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.index)" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('D',sheetDay.date)}}</a>
             </div>
             <div #multievents *ngIf="first" class="slds-text-align--center slds-text-body--small slds-p-around--xxx-small" [ngStyle]="getMultiEventsContainerStyle()">
-                <ng-container *ngFor="let event of calendarMultiEvents; let eventIndex = index">
-                    <calendar-sheet-event [ngStyle]="getMultiEventStyle(event, eventIndex)" [event]="event"
-                                              (rearrange)="rearrangeEvents()"></calendar-sheet-event>
+                <ng-container *ngFor="let event of allMultiEvents; let eventIndex = index">
+                    <calendar-sheet-event [ngStyle]="getMultiEventStyle(event, eventIndex)" [event]="event"></calendar-sheet-event>
                 </ng-container>
             </div>
         </div>
@@ -26,14 +25,15 @@
             <div class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(index)"></div>
             <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(index)">{{sheetHour}}:00</div>
             <calendar-sheet-drop-target [hour]="sheetHour" [day]="sheetDay" class="slds-is-absolute"
-                                        *ngFor="let sheetDay of sheetDays" [ngStyle]="getDropTargetStyle(index, sheetDay.index)"
-                                        (rearrange)="rearrangeEvents()">{{sheetHour + ',' + sheetDay.index}}</calendar-sheet-drop-target>
+                                        *ngFor="let sheetDay of sheetDays" [ngStyle]="getDropTargetStyle(index, sheetDay.index)">
+                {{sheetHour + ',' + sheetDay.index}}
+            </calendar-sheet-drop-target>
         </ng-container>
     </ng-container>
     <ng-container *ngFor="let sheetDay of sheetDays">
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
     </ng-container>
-    <ng-container *ngFor="let event of calendarevents">
-        <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event" (rearrange)="rearrangeEvents()"></calendar-sheet-event>
+    <ng-container *ngFor="let event of allEvents">
+        <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event"></calendar-sheet-event>
     </ng-container>
 </div>

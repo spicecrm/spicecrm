@@ -16,7 +16,7 @@
     <ng-container *ngFor="let sheetDay of getSheetDays()">
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
     </ng-container>
-    <ng-container *ngFor="let week of calendarevents; let weekIndex = index">
+    <ng-container *ngFor="let week of allEvents; let weekIndex = index">
         <calendar-sheet-event *ngFor="let event of week" [event]="event" [isMonthSheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, weekIndex)">
         </calendar-sheet-event>
     </ng-container>

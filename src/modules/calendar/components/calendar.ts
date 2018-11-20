@@ -5,7 +5,6 @@ import {navigation} from '../../../services/navigation.service';
 import {fts} from '../../../services/fts.service';
 import {calendar} from '../services/calendar.service';
 import {recent} from '../../../services/recent.service';
-import {session} from '../../../services/session.service';
 
 declare var moment: any;
 declare var _: any;
@@ -19,14 +18,17 @@ declare var _: any;
         ::-webkit-scrollbar {
             width: 5px;
         }
+
         /* Track */
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
+
         /* Handle */
         ::-webkit-scrollbar-thumb {
             background: #aaa;
         }
+
         /* Handle on hover */
         ::-webkit-scrollbar-thumb:hover {
             background: #888;
@@ -35,17 +37,18 @@ declare var _: any;
 })
 export class Calendar {
 
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
-    public otherCalendars: any[] = [];
+    public usersCalendars: any[] = [];
+    public googleCalendarVisible: boolean = true;
     public searchterm: string = "";
     public searchopen: boolean = false;
     public isLoading: boolean = false;
     public resultsList: any[] = [];
     public timeout: any = undefined;
     public recentUsers: any[] = [];
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
     private showTypeSelector: boolean = false;
-    private sheetType: string = 'Day';
+    private sheetType: string = 'Week';
     private duration: any = {
         Day: 'd',
         Week: 'w',
@@ -56,21 +59,13 @@ export class Calendar {
                 private broadcast: broadcast,
                 private navigation: navigation,
                 private fts: fts,
-                private session: session,
                 private recent: recent,
                 private elementRef: ElementRef,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
         this.getRecent();
-        this.calendar.otherCalendars$.subscribe(calendars => this.otherCalendars = calendars);
-    }
-
-    set searchOpen(value) {
-        this.searchopen = value;
-        if (value) {
-            this.getRecent();
-        }
+        this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
     }
 
     get owner() {
@@ -79,6 +74,13 @@ export class Calendar {
 
     get searchOpen() {
         return this.searchopen;
+    }
+
+    set searchOpen(value) {
+        this.searchopen = value;
+        if (value) {
+            this.getRecent();
+        }
     }
 
     get lookupMenuStyle() {
@@ -96,12 +98,12 @@ export class Calendar {
         return this.calendar.weekDaysCount;
     }
 
-    set calendarDate(value) {
-        this.calendar.calendarDate = value;
-    }
-
     get calendarDate() {
         return this.calendar.calendarDate;
+    }
+
+    set calendarDate(value) {
+        this.calendar.calendarDate = value;
     }
 
     get searchTerm() {
@@ -118,7 +120,7 @@ export class Calendar {
         this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
             .subscribe(res => {
                 this.resultsList = res["Users"].hits.map(user => user = user._source)
-                    .filter(user => user.id != this.owner && _.findWhere(this.calendar.otherCalendars, {id: user.id}) == undefined);
+                    .filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
                 this.isLoading = false;
             });
     }
@@ -126,23 +128,26 @@ export class Calendar {
     private getRecent() {
         this.recent.getModuleRecent("Users")
             .subscribe(recent => this.recentUsers = recent
-                .filter(user => user.item_id != this.owner && _.findWhere(this.calendar.otherCalendars, {id: user.item_id}) == undefined));
+                .filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined));
     }
 
-    private addCalendar(id, name) {
-        this.calendar.addCalendar(id, name);
+    private addUserCalendar(id, name) {
+        this.calendar.addUserCalendar(id, name);
     }
 
-    private removeCalendar(id) {
-        this.calendar.removeCalendar(id);
+    private removeUserCalendar(id) {
+        this.calendar.removeUserCalendar(id);
     }
 
-    private toggleVisible(id) {
-        this.calendar.otherCalendars.some(calendar => {
+    private toggleVisibleGoogle() {
+        this.googleCalendarVisible = !this.googleCalendarVisible;
+    }
+
+    private toggleVisibleUsers(id) {
+        this.calendar.usersCalendars.some(calendar => {
             if (calendar.id == id) {
                 calendar.visible = !calendar.visible;
-                this.calendar.setCalendars();
-                this.calendar.otherCalendars = this.calendar.otherCalendars.slice();
+                this.calendar.setUserCalendars(this.calendar.usersCalendars.slice());
                 return true;
             }
         });
