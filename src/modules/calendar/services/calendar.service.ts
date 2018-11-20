@@ -24,6 +24,7 @@ export class calendar {
     public startHour: number = 0;
     public endHour: number = 23;
     public todayColor: string = '#eb7092';
+    public loggedByGoogle: boolean = false;
 
     constructor(private backend: backend,
                 private session: session,
@@ -31,8 +32,6 @@ export class calendar {
                 private userPreferences: userpreferences) {
         this.loadPreferences();
         this.getOtherCalendars();
-        // console.log(this.session.getSessionData("google_oauth", true));
-        let loggedInWithGoogle = this.session.getSessionData("google_oauth", true);
     }
 
     get owner() {
@@ -59,6 +58,9 @@ export class calendar {
         this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
             this.setUserCalendars(calendars["Users"]);
         });
+        if (this.session.authData.googleToken) {
+            this.loggedByGoogle = true;
+        }
     }
 
     public addUserCalendar(id, name) {

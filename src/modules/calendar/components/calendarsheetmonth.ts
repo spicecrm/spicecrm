@@ -60,18 +60,25 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
             this.buildGrid();
             this.getEvents();
             this.getUsersEvents();
-            this.getGoogleEvents();
+            this.getGoogleEvents(true);
         }
         if (changes.usersCalendars) {
             this.getUsersEvents();
         }
         if (changes.googleCalendarVisible) {
-            this.getGoogleEvents();
+            this.showHideGoogleEvents();
         }
     }
 
     get allEvents() {
         return this.calendar.arrangeEvents(this.ownerEvents.concat(this.otherEvents, this.googleEvents));
+    }
+
+    private showHideGoogleEvents() {
+        this.googleEvents = this.googleEvents.map(event => {
+            event.visible = this.googleCalendarVisible;
+            return event;
+        });
     }
 
     private setMaxEvents() {
@@ -110,7 +117,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         });
     }
 
-    private getGoogleEvents() {
+    private getGoogleEvents(reload = false) {
+        if (!this.calendar.loggedByGoogle) {
+            return;
+        }
         let startDate = new moment(this.setdate).date(1).hour(this.calendar.startHour).minute(0).second(0);
         let endDate = new moment(startDate).add(moment.duration(1, 'M')).hour(this.calendar.endHour);
         let params = {
@@ -119,25 +129,36 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         };
         this.googleEvents = [];
 
-        this.backend.getRequest("google/calendar/getgoogleevents",params).subscribe(res => {
-            if (res.events && res.events.length > 0) {
-                let events = res.events.map(event => {
-                    event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                    event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                    if (+event.end.diff(event.start, 'days') > 0) {
-                        event.isMulti = true;
-                    }
-                    event.data = {};
-                    event.data.summary_text = event.summary;
-                    event.data.assigned_user_id = null;
-                    event.color = "#db4437";
+        if (reload) {
+            this.backend.getRequest("google/calendar/getgoogleevents", params).subscribe(res => {
+                if (res.events && res.events.length > 0) {
+                    let events = res.events.map(event => {
+                        event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                        event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                        if (+event.end.diff(event.start, 'days') > 0) {
+                            event.isMulti = true;
+                        }
+                        event.data = {};
+                        event.data.summary_text = event.summary;
+                        event.data.assigned_user_id = null;
+                        event.color = "#db4437";
+                        event.visible = this.googleCalendarVisible;
+                        return event;
+                    });
+                    this.calendar.calendars["google"] = events;
+                    this.googleEvents = events.filter(event => !event.isMulti && event.visible);
+                }
+            });
+        } else {
+            let events = this.calendar.calendars["google"];
+            if (events) {
+                events = events.map(event => {
                     event.visible = this.googleCalendarVisible;
                     return event;
                 });
-                this.calendar.calendars["google"] = events;
-                this.googleEvents = events;
+                this.googleEvents = events.filter(event => event.visible && event.start < endDate && event.end > startDate);
             }
-        });
+        }
     }
 
     private getUsersEvents() {
