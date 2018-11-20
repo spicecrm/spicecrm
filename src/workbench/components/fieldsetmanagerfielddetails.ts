@@ -17,12 +17,12 @@ import {view} from '../../services/view.service';
 })
 export class FieldsetManagerFieldDetails implements OnChanges {
 
-    @Input() field: any = {};
-    currentField: any = {};
-    fieldtypes: Array<string> = [];
+    @Input() public field: any = {};
+    private currentField: any = {};
+    private fieldtypes: Array<string> = [];
 
-    component: string = "";
-    configValues: any = {};
+    private component: string = "";
+    public configValues: any = {};
 
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private view: view) {
@@ -31,7 +31,7 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         this.fieldtypes.unshift('');
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    public ngOnChanges(changes: SimpleChanges) {
 
         if (this.field.isViewMode) {
             this.view.setViewMode();
@@ -49,7 +49,7 @@ export class FieldsetManagerFieldDetails implements OnChanges {
 
                     return true;
                 }
-            })
+            });
 
         } catch (e) {
             this.currentField = {};
@@ -58,30 +58,35 @@ export class FieldsetManagerFieldDetails implements OnChanges {
     get configValuesLabel() {
         // let ret: any = {};
         // ret = this.configValues;
-        console.log("configValues", this.configValues);
-        let ret = {name: ""};
+        let ret = null;
         if("label" in this.configValues) {
-            ret = {name: this.configValues.label};
+            if(this.configValues.label != null) {
+                ret = {name: this.configValues.label};
+            }
         }
 
         // this.configValues.name = this.configValues.label
-        console.log("configValues", ret);
         return ret;
     }
     set configValuesLabel(val) {
-        this.configValues[this.InputConfig.option] = val.name;
-    }
+        if(val != null) {
+            this.configValues.label = val.name;
+        }else {
+            this.configValues.label = null;
+        }
 
+    }
+    public configValuesLabelEmit(val) {
+        this.configValuesLabel = val;
+    }
 
 
     get InputConfig() {
-        let ret = {option: "", type: "label", description: ""};
-        ret.option = 'name';
+        let ret = {option: "name", type: "label", description: ""};
         // ret.option = this.language.getAppLanglabel('LBL_LABEL');
         return ret;
     }
-
-    getFieldConfig() {
+    private getFieldConfig() {
         if (this.configValues.fieldtype) {
             let fieldComponent = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
             let configOptions = this.metadata.getComponentConfigOptions(fieldComponent);
@@ -91,11 +96,12 @@ export class FieldsetManagerFieldDetails implements OnChanges {
                 optionsArray.push(option);
             }
             return optionsArray;
-        } else
+        } else {
             return [];
+        }
     }
 
-    selectFieldType() {
+    private selectFieldType() {
         this.component = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
         this.configValues = Object.assign({}, this.configValues);
     }
