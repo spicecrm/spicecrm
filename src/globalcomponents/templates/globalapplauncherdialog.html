@@ -1,73 +1,43 @@
-<div role="dialog" class="slds-modal slds-fade-in-open slds-modal--large slds-app-launcher">
+<section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large slds-app-launcher__content" aria-modal="true">
     <div class="slds-modal__container">
-        <div class="slds-modal__header slds-app-launcher__header slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
-            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close"
-                    (click)="hideAppLauncher()">
+        <header class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" (click)="close()">
                 <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+                <span class="slds-assistive-text">{{language.getLabel('LBL_CLOSE')}}</span>
             </button>
-            <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_APP_LAUNCHER')}}</h2>
-            <div class="slds-app-launcher__header-search">
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
-                        <input type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('LBL_FIND_CONFMODULE')" autofocus>
+            <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+                <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_APP_LAUNCHER')}}</h2>
+                <div class="slds-app-launcher__header-search">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                            <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
+                            <input type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('LBL_FIND_CONFMODULE')" autofocus>
+                        </div>
                     </div>
                 </div>
+                <button class="slds-button slds-button--neutral" disabled>App Store</button>
             </div>
-            <button class="slds-button slds-button--neutral" disabled>App Store</button>
-        </div>
-        <div class="slds-modal__content slds-app-launcher__content slds-p-around--medium">
-            <ng-container *ngIf="showRoles">
-                <div class="slds-section slds-is-open">
-                    <div class="slds-section__title">
-                        <button (click)="toggleShow('roles')" class="slds-button slds-button--icon slds-m-right--small">
-                            <system-button-icon [icon]="'switch'"></system-button-icon>
-                        </button>
-                        <h3>{{language.getLabel('LBL_ROLES')}}</h3>
-                    </div>
-                    <div *ngIf="toggleShowRoles" class="slds-section__content">
-                        <ul class="slds-grid slds-grid--pull-padded slds-wrap">
-                            <li *ngFor="let role of getRoles()" class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3" (click)="setRole(role.id)">
-                                <a href="javascript:void(0);" style="height: 110px;"  class="slds-app-launcher__tile slds-text-link--reset slds-is-draggable">
-                                    <div class="slds-app-launcher__tile-figure">
-                                        <span class="slds-avatar slds-avatar--large slds-align--absolute-center {{role.icon}}">{{getRoleLabel(role.id, 'identifier')}}</span>
-                                    </div>
-                                    <div class="slds-app-launcher__tile-body slds-scrollable--y">
-                                        <span class="slds-text-link">{{getRoleLabel(role.id, 'name')}}</span>
-                                        <p>{{getRoleLabel(role.id, 'description')}}</p>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <hr>
-            </ng-container>
-            <div class="slds-section slds-is-open">
-                <div class="slds-section__title">
-                    <button (click)="toggleShow('modules')" class="slds-button slds-button--icon slds-m-right--small">
-                        <system-button-icon [icon]="'switch'"></system-button-icon>
-                    </button>
-                    <h3>{{language.getLabel('LBL_MODULES')}}</h3>
-                </div>
-                <div *ngIf="toggleShowModules" class="slds-section__content">
-                    <ul class="slds-grid slds-grid--pull-padded slds-wrap">
-                        <li *ngFor="let module of getModules()" class="slds-p-horizontal--small slds-size--xx-small"
-                            (click)="gotoModule(module)">
-                            <a href="javascript:void(0);"
-                               class="slds-app-launcher__tile slds-text-link--reset slds-app-launcher__tile--small">
-                                <div class="slds-app-launcher__tile-figure slds-app-launcher__tile-figure--small">
-                                    <system-icon [module]="module" [size]="'large'"></system-icon>
-                                </div>
-                                <div class="slds-app-launcher__tile-body slds-app-launcher__tile-body--small">
-                                    <p class="slds-truncate slds-text-link" [title]="language.getModuleName(module)">
-                                        {{language.getModuleName(module)}}</p>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        </header>
+        <system-modal-content margin="small" [grow]="true">
+            <system-section titlelabel="LBL_ROLES" *ngIf="showRoles">
+                <ul class="slds-grid slds-grid--pull-padded slds-wrap">
+                    <li *ngFor="let role of getRoles()" class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3" (click)="setRole(role.id)">
+                        <global-app-launcher-dialog-role-tile [role]="role"></global-app-launcher-dialog-role-tile>
+                    </li>
+                </ul>
+            </system-section>
+            <system-section titlelabel="LBL_MODULES">
+                <ul class="slds-grid slds-grid--pull-padded slds-wrap">
+                    <li *ngFor="let module of getModules()" class="slds-p-around--small slds-size--xx-small" (click)="gotoModule(module)">
+                        <div class="slds-app-launcher__tile-figure slds-app-launcher__tile-figure--small">
+                            <system-icon [module]="module" [size]="'large'"></system-icon>
+                        </div>
+                        <div class="slds-align_absolute-center slds-p-top--xx-small">
+                            <p class="slds-truncate slds-text-link" [title]="language.getModuleName(module)">{{language.getModuleName(module)}}</p>
+                        </div>
+                    </li>
+                </ul>
+            </system-section>
+        </system-modal-content>
     </div>
-</div>
+</section>

@@ -5,6 +5,7 @@ import {
     Component,
     ElementRef,
     NgModule,
+    NgZone,
     HostListener,
     Renderer,
     Renderer2,
@@ -23,7 +24,9 @@ import {
     Pipe,
     PipeTransform,
     Optional,
-    Attribute
+    Attribute,
+    ViewChildren,
+    QueryList
 } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Title, DomSanitizer} from '@angular/platform-browser';
@@ -88,6 +91,7 @@ import /*embed*/ {ObjectActionsetMenuContainerEdit} from './components/objectact
 import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objectactionsetmenucontainerdelete';
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
+import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
 import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
@@ -107,6 +111,9 @@ import /*embed*/ {ObjectEditModal} from './components/objecteditmodal';
 import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalwreference';
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
+import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
+import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
+import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
 
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
@@ -240,6 +247,7 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -295,6 +303,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionContainer,
+        ObjectActionContainerItem,
         ObjectActionEditButton,
         ObjectActionSaveButton,
         ObjectActionDeleteButton,
@@ -310,6 +319,9 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
+        ObjectOptimisticLockingModal,
+        ObjectOptimisticLockingModalDataField,
+        ObjectOptimisticLockingModalChange,
         ObjectRecordViewContainer,
         ObjectRecordView,
         ObjectRecordViewDetail1,
@@ -476,6 +488,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectTabContainerItemHeader,
         ObjectTableRow,
         ObjectTable,
+        ObjectActivitiyTimelineItemContainer
     ]
 })
 export class ObjectComponents {

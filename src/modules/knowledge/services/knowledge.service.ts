@@ -2,6 +2,8 @@ import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
+import {broadcast} from "../../../services/broadcast.service";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 
 @Injectable()
@@ -19,7 +21,18 @@ export class KnowledgeService {
 
     constructor(private backend: backend,
                 private favorite: favorite,
+                private broadcast: broadcast,
+                public userPreferences: userpreferences,
                 private fts: fts) {
+        this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeDocuments") {
+                this.getDocuments(this.selectedBook.id);
+            }
+            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
+                this.getBooks();
+            }
+        });
+
     }
 
     get searchTerm() {
@@ -40,6 +53,11 @@ export class KnowledgeService {
             });
     }
 
+    public setLastViewedBook(none = false) {
+        let value = none ? null : this.selectedBook.id;
+        this.userPreferences.setPreference("lastViewedBook", value, true, "KnowledgeBooks");
+    }
+
     public favoriteEnable(module, id) {
         this.favoriteDisable();
         this.favorite.enable(module, id);
@@ -51,10 +69,12 @@ export class KnowledgeService {
 
     public getBooks() {
         this.isLoading = true;
-        this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id"], {limit: -1})
+        this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id", "html"], {limit: -1})
             .subscribe((books: any) => {
                 this.books = books.list;
                 this.isLoading = false;
+                this.userPreferences.loadPreferences("KnowledgeBooks")
+                    .subscribe(pref => this.selectedBook = this.books.find(book => book.id == pref.lastViewedBook));
             });
     }
 
@@ -62,7 +82,29 @@ export class KnowledgeService {
         this.isLoading = true;
         this.backend.getRequest(`module/KnowledgeDocuments/${bookId}/items`).subscribe((docs: any) => {
             this.documents = docs;
+            this.sortDocuments();
             this.isLoading = false;
+        });
+    }
+
+    public sortDocuments() {
+         this.documents.sort((a,b) => {
+            if (+a.parent_sequence == +b.parent_sequence) {
+                return a.name - b.name;
+            } else {
+                return a.parent_sequence - b.parent_sequence;
+            }
+        });
+        return this.documents.sort(function(a, b) {
+            if (+a.parent_sequence == +b.parent_sequence) {
+                var nameA = a.name.toUpperCase();
+                var nameB = b.name.toUpperCase();
+                if (nameA < nameB) {return -1}
+                if (nameA > nameB) {return 1}
+            } else {
+                if (+a.parent_sequence < +b.parent_sequence) {return -1}
+                if (+a.parent_sequence > +b.parent_sequence) {return 1}
+            }
         });
     }
 }
