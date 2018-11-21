@@ -11,6 +11,7 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {session} from "../services/session.service";
+import {backend} from "../services/backend.service";
 import {language} from "../services/language.service";
 import {configurationService} from "../services/configuration.service";
 import {popup} from "../services/popup.service";
@@ -65,6 +66,7 @@ import /*embed*/ {GlobalDockedComposerOverflow} from "./components/globaldockedc
 import /*embed*/ {GlobalComposeButton} from "./components/globalcomposebutton";
 import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
+import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
@@ -127,6 +129,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobaUserPanel,
         GlobalAppLauncher,
         GlobalAppLauncherDialog,
+        GlobalAppLauncherDialogRoleTile,
         GlobalDockedComposerContainer,
         GlobalDockedComposer,
         GlobalDockedComposerModal,

@@ -179,7 +179,6 @@
     <div class="slds-rich-text-editor__textarea slds-grid" #editorWrapper>
         <div class="slds-rich-text-area__content slds-text-color_weak slds-grow">
             <div #htmleditor [attr.contenteditable]="isActive" (input)="onContentChange($event.target.innerHTML)" (click)="exec()" (keyup)="exec()"></div>
-            <div *ngIf="!modeVisual" #sourceeditor contenteditable (input)="onContentChange($event.target.innerText)" style="white-space: pre-line;"></div>
         </div>
     </div>
 </div>

@@ -9,20 +9,20 @@ import { activitiyTimeLineService } from '../../services/activitiytimeline.servi
 })
 export class ObjectActivitiyTimelineItemContainer implements OnInit {
 
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
 
-    @Input() activity: any = {};
+    @Input() private activity: any = {};
 
     constructor(private metadata: metadata) {}
 
-    ngOnInit() {
+    public ngOnInit() {
         let componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineItemContainer', this.activity.module);
         if(componentconfig.componentset) {
             let components = this.metadata.getComponentSetObjects(componentconfig.componentset);
             for(let component of components) {
                 this.metadata.addComponent(component.component, this.container).subscribe(containerElementRef => {
                     containerElementRef.instance.activity = this.activity;
-                })
+                });
             }
         }
     }

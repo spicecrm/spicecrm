@@ -2,6 +2,9 @@
     <div class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral"
+                    (click)="startSync()">{{language.getLabel('LBL_START_SYNC')}}
+            </button>
+            <button type="button" class="slds-button slds-button--neutral"
                     (click)="addMapping()">{{language.getLabel('LBL_ADD')}}
             </button>
             <button type="button" class="slds-button slds-button--brand"
@@ -29,7 +32,7 @@
             <td scope="row" data-label="Class">
                 <select [disabled]="beans.length == 0" [(ngModel)]="beanMapping.bean"
                         type="text" class="slds-select ng-pristine ng-valid">
-                    <option *ngFor="let bean of beans" value="{{ bean }}">{{ bean }}</option>
+                    <option *ngFor="let bean of beans" value="{{ bean.class }}">{{ bean.class }}</option>
                 </select>
             </td>
             <td scope="row" data-label="Method">

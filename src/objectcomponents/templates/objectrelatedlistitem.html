@@ -1,4 +1,4 @@
-<td *ngFor="let item of listfields" scope="row">
+<td *ngFor="let item of listfields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
 </td>
 <td role="gridcell" class="slds-cell-shrink" data-label="Actions">

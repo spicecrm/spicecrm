@@ -740,6 +740,10 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     background-color: transparent;
 }
 
+.slds-dropdown--actions a, .slds-dropdown_actions a {
+    color: #002D31;
+}
+
 .slds-popover--tooltip, .slds-popover_tooltip {
     background: #002D31;
 }
@@ -820,6 +824,15 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     resize: vertical;
     overflow: auto;
     height: 300px;
+}
+
+.slds-timeline__item_expandable .slds-media__figure{
+    z-index: auto;
+}
+
+.slds-timeline__item_expandable:before{
+    height: calc(100% - 30px);
+    top: 30px;
 }
 
 /* Style Definition for HTML fields */

@@ -1,5 +1,5 @@
 <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-border--left">
-    <div class="slds-p-around--small slds-border--bottom">
+    <div class="slds-p-around--small">
         <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate slds-grid--vertical-align-center">
             <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{language.getLabel('LBL_ASSISTANT')}}</h1>
             <div class="slds-shrink-none">
@@ -9,7 +9,12 @@
         </div>
     </div>
     <div #itemcontainer class="slds-scrollable_y" [ngStyle]="containerstyle">
-        <home-assistant-tile *ngFor="let item of assistant.assitantItems" [item]="item"></home-assistant-tile>
+        <!--home-assistant-tile *ngFor="let item of assistant.assitantItems" [item]="item"></home-assistant-tile-->
+        <ul #itemcontainer class="slds-timeline">
+            <li *ngFor="let item of assistant.assitantItems" class="slds-p-around--xx-small">
+                <object-activitiytimeline-item-container [activity]="item"></object-activitiytimeline-item-container>
+            </li>
+        </ul>
     </div>
     <div *ngIf="loading" class="slds-p-around--medium">
         <system-spinner></system-spinner>
