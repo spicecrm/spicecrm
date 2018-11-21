@@ -1,5 +1,5 @@
 import {CommonModule} from "@angular/common";
-import {NgModule,Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, TemplateRef, ViewContainerRef, Pipe, PipeTransform, Optional} from "@angular/core";
+import {NgModule,Directive, Renderer2, Input, HostListener, HostBinding, OnDestroy, ElementRef, OnInit, TemplateRef, ViewContainerRef, Pipe, PipeTransform, Optional} from "@angular/core";
 import {Router}   from '@angular/router';
 
 import {metadata} from '../services/metadata.service';
@@ -13,6 +13,8 @@ import /*embed*/ {ModelProviderDirective} from "./directives/modelprovider";
 import /*embed*/ {LocalVariableDirective} from "./directives/localvariable";
 import /*embed*/ {SpiceUIAutofocusDirective} from "./directives/spiceuiautofocus";
 import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
+import /*embed*/ {DropdownTriggerDirective} from "./directives/dropdowntrigger";
+import /*embed*/ {ToBottomDirective} from "./directives/tobottom";
 
 @NgModule({
     imports: [
@@ -24,7 +26,9 @@ import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
         ModelProviderDirective,
         LocalVariableDirective,
         SpiceUIAutofocusDirective,
-        FirstUpperCasePipe
+        FirstUpperCasePipe,
+        DropdownTriggerDirective,
+        ToBottomDirective
     ],
     exports: [
         ModelPopOverDirective,
@@ -32,7 +36,9 @@ import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
         ModelProviderDirective,
         LocalVariableDirective,
         SpiceUIAutofocusDirective,
-        FirstUpperCasePipe
+        FirstUpperCasePipe,
+        DropdownTriggerDirective,
+        ToBottomDirective
     ]
 })
 export class DirectivesModule {
