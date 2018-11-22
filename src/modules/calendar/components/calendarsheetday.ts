@@ -75,19 +75,8 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
             this.getUsersEvents();
         }
         if (changes.googleCalendarVisible) {
-            this.showHideGoogleEvents();
+            this.getGoogleEvents();
         }
-    }
-
-    private showHideGoogleEvents() {
-        this.googleEvents = this.googleEvents.map(event => {
-            event.visible = this.googleCalendarVisible;
-            return event;
-        });
-        this.googleMultiEvents = this.googleMultiEvents.map(event => {
-            event.visible = this.googleCalendarVisible;
-            return event;
-        });
     }
 
     private getEvents() {
@@ -98,6 +87,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
+                events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
                 this.ownerEvents = events.filter(event => !event.isMulti);
                 this.ownerMultiEvents = events.filter(event => event.isMulti);
             }
@@ -133,6 +123,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
                         event.visible = this.googleCalendarVisible;
                         return event;
                     });
+                    events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
                     this.calendar.calendars["google"] = events;
                     this.googleEvents = events.filter(event => !event.isMulti && event.visible);
                     this.googleMultiEvents = events.filter(event => event.isMulti && event.visible);
@@ -159,13 +150,18 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         for (let calendar of this.calendar.usersCalendars) {
             this.calendar.loadEvents(startDate, endDate, calendar.id).subscribe(events => {
                 if (events.length > 0) {
-                    events = events.map(event => {
+                    events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
+                    events.forEach(event => {
                         event.color = calendar.color;
                         event.visible = calendar.visible;
-                        return event;
+                        if (!event.isMulti) {
+                            this.otherEvents.push(event);
+                        } else {
+                            this.otherMultiEvents.push(event);
+                        }
                     });
-                    this.otherEvents = events.filter(event => !event.isMulti && event.visible);
-                    this.otherMultiEvents = events.filter(event => event.isMulti && event.visible);
+                    this.otherEvents = this.otherEvents.filter(event => event.visible);
+                    this.otherMultiEvents = this.otherMultiEvents.filter(event => event.visible);
                 }
             });
         }
@@ -199,13 +195,13 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
             width: multiEvents.width + "px",
             top: multiEvents.top + (this.calendar.multiEventHeight * index) + "px",
             left: multiEvents.left + "px",
-            padding: "2px"
+            padding: "1px"
         };
 
     }
 
     private getMultiEventsContainerStyle() {
-        return {height: this.calendar.multiEventHeight * (this.ownerMultiEvents.length > 1 ? this.ownerMultiEvents.length : 1)};
+        return {height: this.calendar.multiEventHeight * (this.allMultiEvents.length > 1 ? this.allMultiEvents.length : 1)};
     }
 
     private getTimeColStyle() {
