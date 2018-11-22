@@ -1,5 +1,6 @@
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -30,9 +31,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @ViewChild('daycontainer', {read: ViewContainerRef}) private dayContainer: ViewContainerRef;
     @ViewChild('boxcontainer', {read: ViewContainerRef}) private boxContainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef}) private moreContainer: ViewContainerRef;
+
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googlecalendarvisible') private googleCalendarVisible: boolean = true;
     @Input() private setdate: any = {};
+
     private currentGrid: Array<any> = [];
     private eventHeight: number = 25;
     private maxEventsPerBox: number = 1;
@@ -46,9 +50,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                 private navigation: navigation,
                 private elementRef: ElementRef,
                 private backend: backend,
+                private cdRef: ChangeDetectorRef,
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.resizseHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
+    }
+
+    get allEvents() {
+        return this.ownerEvents.concat(this.otherEvents, this.googleEvents);
     }
 
     public ngAfterViewInit() {
@@ -70,10 +79,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         }
     }
 
-    get allEvents() {
-        return this.calendar.arrangeEvents(this.ownerEvents.concat(this.otherEvents, this.googleEvents));
-    }
-
     private showHideGoogleEvents() {
         this.googleEvents = this.googleEvents.map(event => {
             event.visible = this.googleCalendarVisible;
@@ -82,9 +87,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
     }
 
     private setMaxEvents() {
-        let boxContainerHeight =  this.boxContainer.element.nativeElement.clientHeight;
+        let boxContainerHeight = this.boxContainer.element.nativeElement.clientHeight;
         let dayContainerHeight = this.dayContainer.element.nativeElement.clientHeight;
         this.maxEventsPerBox = Math.floor((boxContainerHeight - dayContainerHeight) / this.eventHeight);
+        this.cdRef.detectChanges();
     }
 
     private getSheetDays(): Array<any> {
@@ -100,7 +106,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
             });
             i++;
             dayIndex++;
-            if (dayIndex > 6) {dayIndex = 0}
+            if (dayIndex > 6) {
+                dayIndex = 0;
+            }
         }
         return sheetDays;
     };
@@ -113,6 +121,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
                 this.ownerEvents = events;
+                this.reArrangeEvents(this.ownerEvents);
             }
         });
     }
@@ -146,7 +155,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                         return event;
                     });
                     this.calendar.calendars["google"] = events;
-                    this.googleEvents = events.filter(event => !event.isMulti && event.visible);
+                    this.googleEvents = events.filter(event => event.visible);
+                    this.reArrangeEvents(this.googleEvents);
                 }
             });
         } else {
@@ -157,6 +167,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                     return event;
                 });
                 this.googleEvents = events.filter(event => event.visible && event.start < endDate && event.end > startDate);
+                this.reArrangeEvents(this.googleEvents);
             }
         }
     }
@@ -173,26 +184,50 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                         event.visible = calendar.visible;
                         return event;
                     });
-                    this.otherEvents = events;
+                    this.otherEvents = events.filter(event => event.visible);
+                    this.reArrangeEvents(this.otherEvents);
                 }
             });
         }
 
     }
 
-    // private groupEventsByWeek(events) {
-    //     for (let event of events) {
-    //         for (let w = 0; w < this.currentGrid.length; w++) {
-    //             for (let d = 0; d < this.currentGrid[w].length; d++) {
-    //                 if (this.startEndThisMonth(event) || this.endThisMonth(event) || this.startThisMonth(event)) {
-    //                     if (!this.calendarevents[w]) { this.calendarevents[w] = []}
-    //                     if (this.calendarevents[w].indexOf(event) == -1){this.calendarevents[w].push(event)}
-    //                     this.setEventIndices(event, this.calendarevents[w][d], d);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    private reArrangeEvents(events) {
+        for (let w = 0; w < this.currentGrid.length; w++) {
+            for (let event of events) {
+                if (!event.hasOwnProperty("weeksI")) {
+                    event.weeksI = [];
+                }
+                for (let d = 0; d < this.currentGrid[w].length; d++) {
+                    let day = this.currentGrid[w][d];
+                    for (let eventDay = moment(event.start); eventDay.isBefore(event.end); eventDay.add(1, 'days')) {
+                        if (eventDay.date() == day.day && day.month == eventDay.month()) {
+                            if (!event.hasOwnProperty("startI")) {
+                                event.startI = d;
+                            }
+                            if (day.items.find(itemsEvent => itemsEvent.id == event.id) == undefined) {
+                                day.items.push(event);
+                            }
+                            if (event.weeksI.indexOf(w) == -1) {
+                                event.weeksI.push(w);
+                            }
+                            event.endI = d;
+                        }
+                    }
+                    day.items.sort((a, b) => {
+                        if (a.start < b.start || a.data.duration_hours > b.data.duration_hours) {
+                            return -1;
+                        }
+                        if (a.data.duration_hours <= 24) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    day.items = day.items.filter(event => event.visible);
+                }
+            }
+        }
+    }
 
     private gotoDay(sheetday) {
         let navigateDate = moment(this.setdate);
@@ -241,7 +276,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                 while (i < this.calendar.weekDaysCount) {
                     week.push({day: fdom.date(), month: fdom.month(), items: []});
                     let weekDaysOffset = 7 - this.calendar.weekDaysCount;
-                    if (i == (this.calendar.weekDaysCount - 1) && this.calendar.weekDaysCount < 7) {fdom.add(weekDaysOffset, 'd')}
+                    if (i == (this.calendar.weekDaysCount - 1) && this.calendar.weekDaysCount < 7) {
+                        fdom.add(weekDaysOffset, 'd');
+                    }
                     fdom.add(1, 'd');
                     i++;
                 }
@@ -276,41 +313,34 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         };
     }
 
-    private startEndThisMonth(event) {
-        let thisMonth = new moment(this.setdate).month();
-        return (event.start.month() === thisMonth && event.end.month() === thisMonth);
-    }
-
-    private endThisMonth(event) {
-        let thisMonth = new moment(this.setdate).month();
-        return (event.start.month() < thisMonth && event.end.month() === thisMonth);
-    }
-
-    private startThisMonth(event) {
-        let thisMonth = new moment(this.setdate).month();
-        return (event.end.month() > thisMonth && event.start.month() === thisMonth);
-    }
-
-    private setEventIndices(event, day, DIndex) {
-        if (day.items.indexOf(event.id) == -1) {day.items.push(event.id)}
-        if (event.dayStartIndex == undefined) {event.dayStartIndex = DIndex}
-        event.dayEndIndex = DIndex;
-        event.eventIndex = event.eventIndex > day.items.indexOf(event.id) ? event.eventIndex : day.items.indexOf(event.id);
-        if (event.id == "8e8c20c9-3fce-0a62-c28e-9b5627418862") {
-            console.log(event.dayEndIndex)
-        }
-    }
-
-    private getEventStyle(event, weekIndex) {
+    private getEventStyle(event, weekI) {
+        let endI = 0;
+        let startI = null;
+        let eventI = 0;
+        let visible = "block";
+        this.currentGrid[weekI].some((day, dIndex) => {
+            if (day.items.indexOf(event) > -1) {
+                if (startI == null) {
+                    startI = dIndex;
+                }
+                endI = dIndex;
+                eventI = eventI > day.items.indexOf(event) ? eventI : day.items.indexOf(event);
+                if (eventI >= this.maxEventsPerBox) {
+                    visible = "none";
+                }
+            }
+        });
+        let duration = endI - startI;
         let sheetContainer = this.calendarsheet.element.nativeElement;
         let dayContainerHeight = this.dayContainer != undefined ? this.dayContainer.element.nativeElement.clientHeight : 0;
 
         return {
-            left: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * event.dayStartIndex,
-            width: (sheetContainer.clientWidth / this.calendar.weekDaysCount) + ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * (event.dayEndIndex - event.dayStartIndex)),
-            top: dayContainerHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekIndex) + (event.eventIndex * this.eventHeight),
-            height: this.eventHeight
-        }
+            left: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI,
+            width: (sheetContainer.clientWidth / this.calendar.weekDaysCount) + ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * duration),
+            top: dayContainerHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI),
+            height: this.eventHeight,
+            display: visible
+        };
     }
 
     private isTodayStyle(day, month) {
@@ -326,6 +356,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
             width: '1rem',
             height: '1rem',
             display: 'block',
-        }
+        };
     }
 }

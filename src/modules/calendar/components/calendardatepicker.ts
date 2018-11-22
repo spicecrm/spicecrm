@@ -56,10 +56,8 @@ export class CalendarDatePicker implements OnInit, OnChanges {
             case 1:
                 let sun = weekDays.shift();
                 weekDays.push(sun);
-                weekDays.length = this.weekDaysCount;
                 return weekDays;
             default:
-                weekDays.length = this.weekDaysCount;
                 return weekDays;
         }
     }
@@ -135,10 +133,8 @@ export class CalendarDatePicker implements OnInit, OnChanges {
         while (j < 6) {
             let i = 0;
             let week = [];
-            while (i < this.weekDaysCount) {
+            while (i < 7) {
                 week.push({day: fdom.date(), month: fdom.month()});
-                let weekDaysOffset = 7 - this.weekDaysCount;
-                if (i == (this.weekDaysCount - 1) && this.weekDaysCount < 7) {fdom.add(weekDaysOffset, 'd')}
                 fdom.add(1, 'd');
                 i++;
             }

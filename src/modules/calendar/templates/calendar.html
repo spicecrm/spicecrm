@@ -132,23 +132,14 @@
             </div>
         </div>
         <div style="width:calc(100% - 300px); height: 100%">
-            <calendar-sheet-day *ngIf="sheetType === 'Day'"
-                                [googlecalendarvisible]="googleCalendarVisible"
-                                [userscalendars]="usersCalendars"
-                                [setdate]="calendarDate"
-                                (navigateweek)="goToWeekView()">
+            <calendar-sheet-day *ngIf="sheetType === 'Day'" [googlecalendarvisible]="googleCalendarVisible"
+                                [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateweek)="goToWeekView()">
             </calendar-sheet-day>
-            <calendar-sheet-week *ngIf="sheetType === 'Week'"
-                                 [googlecalendarvisible]="googleCalendarVisible"
-                                 [userscalendars]="usersCalendars"
-                                 [setdate]="calendarDate"
-                                 (navigateday)="gotToDayView($event)">
+            <calendar-sheet-week *ngIf="sheetType === 'Week'" [googlecalendarvisible]="googleCalendarVisible"
+                                 [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
             </calendar-sheet-week>
-            <calendar-sheet-month *ngIf="sheetType === 'Month'"
-                                  [googlecalendarvisible]="googleCalendarVisible"
-                                  [userscalendars]="usersCalendars"
-                                  [setdate]="calendarDate"
-                                  (navigateday)="gotToDayView($event)">
+            <calendar-sheet-month *ngIf="sheetType === 'Month'" [googlecalendarvisible]="googleCalendarVisible"
+                                  [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
             </calendar-sheet-month>
         </div>
     </div>
