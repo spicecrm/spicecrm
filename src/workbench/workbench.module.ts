@@ -92,6 +92,7 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 
 @NgModule({
     imports: [
@@ -161,7 +162,8 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
-        ObjectRepositoryManagerAddModule
+        ObjectRepositoryManagerAddModule,
+        CRMLogViewer
     ],
     /* no further modules needed */
     entryComponents: [
