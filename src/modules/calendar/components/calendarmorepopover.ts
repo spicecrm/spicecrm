@@ -1,0 +1,86 @@
+import {Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
+import {Router} from "@angular/router";
+import {calendar} from "../services/calendar.service";
+
+declare var moment: any;
+
+@Component({
+    templateUrl: './src/modules/calendar/templates/calendarmorepopover.html',
+    providers: [calendar]
+})
+export class CalendarMorePopover implements OnInit {
+    public events: any[] = [];
+    public popoverside: string = 'right';
+    public popoverpos: string = 'top';
+    public styles = null;
+
+    private hidePopoverTimeout: any = {};
+
+    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
+
+    public parentElementRef: any = null;
+    public self: any = null;
+
+    private heightcorrection = 30;
+    private widthcorrection = 30;
+
+    constructor(private metadata: metadata, private calendar: calendar, private router: Router) {}
+
+    public ngOnInit() {
+        // don't know why... but this call fixes ExpressionChangedAfterItHasBeenCheckedError ... maybe because it sets the nubbin class earlier so it won't change after changedetection anymore?
+        this.styles = this.popoverStyle;
+    }
+
+    private goDetails(id, module) {
+        this.closePopover(true);
+        this.router.navigate([`/module/${module}/${id}`]);
+    }
+
+    private onMouseOver() {
+        if (this.hidePopoverTimeout) {
+            window.clearTimeout(this.hidePopoverTimeout);
+        }
+    }
+
+    private onMouseOut() {
+        this.closePopover(true);
+    }
+
+    get popoverStyle() {
+        let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
+        let poprect = this.popover.element.nativeElement.getBoundingClientRect();
+
+        if (rect.left < poprect.width) {
+            this.popoverside = 'right';
+        } else {
+            this.popoverside = 'left';
+        }
+
+        if (rect.top - 30 + poprect.height > window.innerHeight && rect.top - poprect.height + this.heightcorrection > 0) {
+            this.popoverpos = 'bottom';
+            return {
+                top: (rect.top - poprect.height + this.heightcorrection) + 'px',
+                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - this.widthcorrection) + 'px'
+            };
+        } else {
+            this.popoverpos = 'top';
+            return {
+                top: (rect.top - this.heightcorrection) + 'px',
+                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - this.widthcorrection) + 'px'
+            };
+        }
+    }
+
+    private getNubbinClass() {
+        return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
+    }
+
+    public closePopover(force = false) {
+        if (force) {
+            this.self.destroy();
+        } else {
+            this.hidePopoverTimeout = window.setTimeout(() => this.self.destroy(), 500);
+        }
+    }
+}

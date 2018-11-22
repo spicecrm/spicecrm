@@ -4,9 +4,11 @@ import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {userpreferences} from "../../../services/userpreferences.service";
+import {broadcast} from "../../../services/broadcast.service";
 
 
 declare var moment: any;
+declare var _: any;
 
 @Injectable()
 export class calendar {
@@ -28,10 +30,12 @@ export class calendar {
 
     constructor(private backend: backend,
                 private session: session,
+                private broadcast: broadcast,
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
         this.getOtherCalendars();
+        this.modelChangesSubscriber();
     }
 
     get owner() {
@@ -44,6 +48,21 @@ export class calendar {
 
     get weekStartDay() {
         return this.weekstartday;
+    }
+
+    private modelChangesSubscriber() {
+        this.broadcast.message$.subscribe(message => {
+            if (message.messagetype == "model.save" && message.messagedata.module == "Meetings") {
+                this.calendars[message.messagedata.data.assigned_user_id].some(event => {
+                    if (event.id == message.messagedata.id) {
+                        event.data = message.messagedata.data;
+                        event.start = message.messagedata.data.date_start;
+                        event.end = message.messagedata.data.date_end;
+                        return true;
+                    }
+                });
+            }
+        });
     }
 
     private loadPreferences() {

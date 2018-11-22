@@ -44,10 +44,6 @@ export class CalendarSheetEvent implements OnInit {
         this.model.module = this.event.module;
         this.model.id = this.event.id;
         this.model.data = this.event.data;
-
-        // load the config and the fieldset
-        this.componentconfig = this.metadata.getComponentConfig('CalendarSheetEvent', this.event.module);
-        this.fields = this.componentconfig.fieldset ? this.metadata.getFieldSetFields({fieldset: this.componentconfig.fieldset}) : [];
     }
 
     get owner() {
