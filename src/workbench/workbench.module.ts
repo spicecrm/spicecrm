@@ -21,9 +21,10 @@ import {AppDataService} from "../services/appdata.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import {configurationService} from "../services/configuration.service";
 import {footer} from "../services/footer.service";
+import {userpreferences} from '../services/userpreferences.service';
 
 // MODULEs
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 
@@ -178,7 +179,8 @@ import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
         ComponentConfigManager,
         ModuleConfigManager,
         WorkbenchConfig,
-        ObjectRepositoryManager
+        ObjectRepositoryManager,
+        CRMLogViewer
     ],
     exports: [
         SortPipe,
