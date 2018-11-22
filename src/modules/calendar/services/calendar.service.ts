@@ -20,7 +20,7 @@ export class calendar {
     public currentStart: any = null;
     public currentEnd: any = null;
     public sheetHourHeight: number = 80;
-    public multiEventHeight: number = 30;
+    public multiEventHeight: number = 25;
     public weekstartday: number = 0;
     public weekDaysCount: number = 7;
     public startHour: number = 0;
@@ -53,6 +53,7 @@ export class calendar {
     private modelChangesSubscriber() {
         this.broadcast.message$.subscribe(message => {
             if (message.messagetype == "model.save" && message.messagedata.module == "Meetings") {
+                if (!this.calendars[message.messagedata.data.assigned_user_id]) {return}
                 this.calendars[message.messagedata.data.assigned_user_id].some(event => {
                     if (event.id == message.messagedata.id) {
                         event.data = message.messagedata.data;
@@ -94,7 +95,6 @@ export class calendar {
     }
 
     public removeUserCalendar(id) {
-        delete this.calendars[id];
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
         this.setUserCalendars(usersCalendars);
     }

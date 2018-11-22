@@ -90,6 +90,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
+                events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
                 this.ownerEvents = events.filter(event => !event.isMulti);
                 this.ownerMultiEvents = events.filter(event => event.isMulti);
             }
@@ -125,6 +126,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
                         event.visible = this.googleCalendarVisible;
                         return event;
                     });
+                    events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
                     this.calendar.calendars["google"] = events;
                     this.googleEvents = events.filter(event => !event.isMulti && event.visible);
                     this.googleMultiEvents = events.filter(event => event.isMulti && event.visible);
@@ -151,13 +153,18 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         for (let calendar of this.calendar.usersCalendars) {
             this.calendar.loadEvents(startDate, endDate, calendar.id).subscribe(events => {
                 if (events.length > 0) {
-                    events = events.map(event => {
+                    events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
+                    events.forEach(event => {
                         event.color = calendar.color;
                         event.visible = calendar.visible;
-                        return event;
+                        if (!event.isMulti) {
+                            this.otherEvents.push(event);
+                        } else {
+                            this.otherMultiEvents.push(event);
+                        }
                     });
-                    this.otherEvents = events.filter(event => !event.isMulti && event.visible);
-                    this.otherMultiEvents = events.filter(event => event.isMulti && event.visible);
+                    this.otherEvents = this.otherEvents.filter(event => event.visible);
+                    this.otherMultiEvents = this.otherMultiEvents.filter(event => event.visible);
                 }
             });
         }
@@ -211,7 +218,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
     private getMultiEventStyle(event, eventIndex): any {
         if (!this.multiEvents) {
-            return;
+            return {};
         }
         let multiEvents = this.multiEvents.element.nativeElement.getBoundingClientRect();
         let startDate = new moment(this.setdate).day(0).hour(0).minute(0).second(0);
@@ -227,7 +234,6 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             top: multiEvents.top + (this.calendar.multiEventHeight * eventIndex) + "px",
             padding: "2px"
         };
-
     }
 
     private getMultiEventsContainerStyle() {

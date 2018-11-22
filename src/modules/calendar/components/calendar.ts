@@ -123,20 +123,28 @@ export class Calendar {
         this.isLoading = true;
         this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
             .subscribe(res => {
-                this.resultsList = res["Users"].hits.map(user => user = user._source)
-                    .filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
+                this.filterResultsList(res["Users"].hits.map(user => user = user._source));
                 this.isLoading = false;
-            });
+            }, err => this.isLoading = false);
     }
 
     private getRecent() {
         this.recent.getModuleRecent("Users")
-            .subscribe(recent => this.recentUsers = recent
-                .filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined));
+            .subscribe(recent => this.filterRecent(recent));
+    }
+
+    private filterRecent(recent) {
+        this.recentUsers =  recent.filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
+    }
+
+    private filterResultsList(resultsList) {
+        this.resultsList = resultsList.filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
     }
 
     private addUserCalendar(id, name) {
         this.calendar.addUserCalendar(id, name);
+        this.filterRecent(this.recentUsers);
+        this.filterResultsList(this.resultsList);
     }
 
     private removeUserCalendar(id) {
@@ -212,6 +220,7 @@ export class Calendar {
     }
 
     private gotToDayView(date) {
+        this.refresh();
         this.calendarDate = date;
         this.sheetType = 'Day';
     }
