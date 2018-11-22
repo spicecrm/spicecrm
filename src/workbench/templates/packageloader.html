@@ -38,6 +38,9 @@
     <package-loader-packages [ngClass]="{'slds-show': scope == 'packages', 'slds-hide': scope != 'packages'}" [packages]="packages"></package-loader-packages>
     <package-loader-languages [ngClass]="{'slds-show': scope == 'languages', 'slds-hide': scope != 'languages'}" [languages]="languages"></package-loader-languages>
 </div>
-<div class="slds-p-around--large slds-align_absolute-center" *ngIf="loading">
-    <system-spinner></system-spinner>
+<div tobottom class="slds-align_absolute-center" *ngIf="loading">
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <system-spinner size="16"></system-spinner>
+        <div class="slds-p-horizontal--small">{{language.getLabel('LBL_RETRIEVING_PACKAGES')}}</div>
+    </div>
 </div>
