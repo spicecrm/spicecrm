@@ -40,7 +40,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
     private currentGrid: Array<any> = [];
     private eventHeight: number = 25;
     private maxEventsPerBox: number = 1;
-    private resizseHandler: any = {};
+    private resizeHandler: any = {};
     private ownerEvents: Array<any> = [];
     private otherEvents: Array<any> = [];
     private googleEvents: Array<any> = [];
@@ -53,7 +53,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                 private cdRef: ChangeDetectorRef,
                 private renderer: Renderer2,
                 private calendar: calendar) {
-        this.resizseHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
+        this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
     }
 
     get allEvents() {
@@ -75,15 +75,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
             this.getUsersEvents();
         }
         if (changes.googleCalendarVisible) {
-            this.showHideGoogleEvents();
+            this.getGoogleEvents();
         }
-    }
-
-    private showHideGoogleEvents() {
-        this.googleEvents = this.googleEvents.map(event => {
-            event.visible = this.googleCalendarVisible;
-            return event;
-        });
     }
 
     private setMaxEvents() {
@@ -121,7 +114,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
                 this.ownerEvents = events;
-                this.reArrangeEvents(this.ownerEvents);
+                this.reArrangeEvents(this.ownerEvents, "owner");
             }
         });
     }
@@ -155,8 +148,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                         return event;
                     });
                     this.calendar.calendars["google"] = events;
+                    this.googleEvents = events;
+                    this.reArrangeEvents(this.googleEvents, "google");
                     this.googleEvents = events.filter(event => event.visible);
-                    this.reArrangeEvents(this.googleEvents);
+
                 }
             });
         } else {
@@ -166,8 +161,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                     event.visible = this.googleCalendarVisible;
                     return event;
                 });
-                this.googleEvents = events.filter(event => event.visible && event.start < endDate && event.end > startDate);
-                this.reArrangeEvents(this.googleEvents);
+                this.googleEvents = events.filter(event => event.start < endDate && event.end > startDate);
+                this.reArrangeEvents(this.googleEvents, "google");
+                this.googleEvents = events.filter(event => event.visible);
             }
         }
     }
@@ -175,24 +171,24 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
     private getUsersEvents() {
         let startDate = new moment(this.setdate).date(1).hour(this.calendar.startHour).minute(0).second(0);
         let endDate = new moment(startDate).add(moment.duration(1, 'M')).hour(this.calendar.endHour);
+        this.currentGrid.forEach(week => week.forEach(day => day.items = day.items.filter(item => item.category != "users")));
         this.otherEvents = [];
         for (let calendar of this.calendar.usersCalendars) {
             this.calendar.loadEvents(startDate, endDate, calendar.id).subscribe(events => {
                 if (events.length > 0) {
-                    events = events.map(event => {
+                    events.forEach(event => {
                         event.color = calendar.color;
                         event.visible = calendar.visible;
-                        return event;
+                        this.otherEvents.push(event);
                     });
-                    this.otherEvents = events.filter(event => event.visible);
-                    this.reArrangeEvents(this.otherEvents);
+                    this.reArrangeEvents(this.otherEvents, "users");
+                    this.otherEvents = this.otherEvents.filter(event => event.visible);
                 }
             });
         }
-
     }
 
-    private reArrangeEvents(events) {
+    private reArrangeEvents(events, category) {
         for (let w = 0; w < this.currentGrid.length; w++) {
             for (let event of events) {
                 if (!event.hasOwnProperty("weeksI")) {
@@ -205,7 +201,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                             if (!event.hasOwnProperty("startI")) {
                                 event.startI = d;
                             }
-                            if (day.items.find(itemsEvent => itemsEvent.id == event.id) == undefined) {
+                            if (!day.items.some(itemsEvent => itemsEvent.id == event.id)) {
+                                event.category = category;
                                 day.items.push(event);
                             }
                             if (event.weeksI.indexOf(w) == -1) {
@@ -223,7 +220,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                         }
                         return 0;
                     });
-                    day.items = day.items.filter(event => event.visible);
+                    day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
                 }
             }
         }
