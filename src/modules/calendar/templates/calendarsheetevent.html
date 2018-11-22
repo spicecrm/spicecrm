@@ -1,11 +1,9 @@
 <div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [ngClass]="event.saving ? 'slds-p-vertical--xx-small': null"
-     style="height:100%; border-radius: 2px;" [ngStyle]="getEventStyle()" [draggable]="canEdit && !event.isMulti">
+     style="height:100%; border-radius: 2px;" [ngStyle]="getEventStyle()" [draggable]="canEdit && !event.isMulti && !isMonthSheet">
     <ng-container *ngIf="!event.saving; else saving">
         <div class="slds-grid slds-grid--align-spread">
             <div class="slds-truncate" style="height: 100%;">
                 <calendar-event-summary [ismulti]="event.isMulti"></calendar-event-summary>
-                <field-container *ngFor="let field of fields" [field]="field.field" [fieldconfig]="field.fieldconfig"
-                                 [fielddisplayclass]="'slds-truncate'"></field-container>
             </div>
             <object-action-menu *ngIf="canEdit" class="slds-m-top--xxx-small" [buttonsize]="'xx-small'"></object-action-menu>
         </div>
