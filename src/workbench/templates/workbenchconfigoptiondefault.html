@@ -1,6 +1,7 @@
-<div class="slds-form-element slds-m-vertical--xxx-small">
+<div class="slds-form-element slds-m-vertical--xxx-small" style="clear: both">
 
-    <div *ngIf="option.description.length > 0" class="slds-float_left" style="position: relative; margin-right: 5px; margin-top: 3px;">
+    <label class="slds-form-element__label slds-float_left" style="margin-right: 3px;">{{option.option}}</label>
+    <div *ngIf="option.description.length > 0" class="slds-float_left" style="position: relative; margin-top: 3px;">
         <div class="slds-form-element">
             <div class="slds-form-element__icon slds-align-middle">
                 <button class="slds-button slds-button_icon slds-button slds-button_icon" aria-describedby="help" title="Description" (mouseenter)="showInfo = true" (mouseleave)="showInfo = false">
@@ -13,7 +14,7 @@
             <div class="slds-popover__body slds-scrollable_y">{{option.description}}</div>
         </div>
     </div>
-    <label class="slds-form-element__label slds-float_left">{{option.option}}</label>
+
 
     <div class="slds-form-element__control">
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues[option.option]"/>
