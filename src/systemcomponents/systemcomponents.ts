@@ -39,6 +39,7 @@ import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicr
 import /*embed*/ {SystemTooltip} from "./components/systemtooltip";
 import /*embed*/ {SystemToastContainer} from "./components/systemtoastcontainer";
 import /*embed*/ {SystemButtonIcon} from "./components/systembuttonicon";
+import /*embed*/ {SystemButtonCustomIcon} from "./components/systembuttoncustomicon";
 import /*embed*/ {SystemButtonGroup} from "./components/systembuttongroup";
 import /*embed*/ {SystemActionIcon} from "./components/systemactionicon";
 import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
@@ -92,6 +93,7 @@ import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
         SystemTooltip,
         SystemToastContainer,
         SystemButtonIcon,
+        SystemButtonCustomIcon,
         SystemButtonGroup,
         SystemActionIcon,
         SystemConfirmDialog,
@@ -144,6 +146,7 @@ import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
         SystemTooltip,
         SystemToastContainer,
         SystemButtonIcon,
+        SystemButtonCustomIcon,
         SystemButtonGroup,
         SystemActionIcon,
         SystemTinyMCE,
