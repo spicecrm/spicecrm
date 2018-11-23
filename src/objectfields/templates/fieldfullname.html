@@ -1,5 +1,5 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    {{value}}
+    {{model.data['full_name']}}
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()">
     <div class="slds-grid slds-grid_vertical-align-center">

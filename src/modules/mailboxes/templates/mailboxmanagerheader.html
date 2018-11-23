@@ -19,8 +19,7 @@
             </span>
         </div>
         <div class="slds-form-element__control">
-            <select class="slds-select" [(ngModel)]="emailopenness"
-                    (change)="selectEmailOpenness()" id="email_openness">
+            <select class="slds-select" [(ngModel)]="emailopenness">
                 <option value="all"
                         selected>{{language.getLabel('LBL_EMAILS_ALL',
                     'EmailTemplates')}}</option>
