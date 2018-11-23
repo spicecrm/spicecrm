@@ -1,0 +1,18 @@
+<div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [ngClass]="event.saving ? 'slds-p-vertical--xx-small': null"
+     style="height:100%; border-radius: 2px;" [ngStyle]="getEventStyle()" [draggable]="canEdit && !event.isMulti && !isMonthSheet">
+    <ng-container *ngIf="!event.saving; else saving">
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-truncate" style="height: 100%;">
+                <calendar-event-summary [ismulti]="event.isMulti" [isabsence]="event.type == 'absence'"></calendar-event-summary>
+            </div>
+            <object-action-menu *ngIf="canEdit" class="slds-m-top--xxx-small" [buttonsize]="'xx-small'"></object-action-menu>
+        </div>
+        <div *ngIf="!event.isMulti && !isMonthSheet && canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;"
+             (mousedown)="onMouseDown($event)">
+            <system-utility-icon colorclass="slds-icon-text-white" icon="threedots" size="x-small"></system-utility-icon>
+        </div>
+    </ng-container>
+    <ng-template #saving>
+        <system-spinner inverse="true" style="opacity: 0.5;"></system-spinner>
+    </ng-template>
+</div>
