@@ -28,8 +28,8 @@
         "trace"
       ]
     },
-    "no-unused-expression": [true, "allow-fast-null-checks"],
     "no-shadowed-variable": false,
+    "no-unused-expression": false,
     "no-unused-variable": false,
     "prefer-const": false,
     "quotemark": false,

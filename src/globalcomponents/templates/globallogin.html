@@ -58,14 +58,9 @@
             </div>
             <global-login-reset-password *ngIf="loginService.session.authData.renewPass" [oldpassword]="password"></global-login-reset-password>
             <ng-container *ngIf="loginService.session.authData.sessionId && !loginService.session.authData.renewPass">
-                <div class="slds-align--absolute-center">
-                    <div class="slds-size--2-of-3">
-                        <div class="slds-progress-bar slds-progress-bar_circular slds-progress-bar_medium">
-                            <span class="slds-progress-bar__value" [style.width]="loginService.loader.progress+'%'" style="background-color:#aaa"></span>
-                        </div>
-                        <div class="slds-text-align--center slds-p-vertical--small">... loading {{loginService.loader.activeLoader}} ...</div>
-                    </div>
-                </div>
+
+                    <global-loader-progress></global-loader-progress>
+
             </ng-container>
         </div>
         <div class="slds-is-absolute" style="bottom: 10px;">

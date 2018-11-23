@@ -835,6 +835,19 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     top: 30px;
 }
 
+.slds-text-align--justify{
+    text-align: justify;
+}
+
+.slds-height_full{
+    height: 100%;
+}
+
+.slds-is-absolute__top{
+    position: absolute;
+    top: 0px;
+}
+
 /* Style Definition for HTML fields */
 
 .html-text h1, .html-text h2, .html-text h3, .html-text h4, .html-text h5, .html-text h6 {
