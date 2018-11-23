@@ -29,6 +29,7 @@ import {toast} from "../services/toast.service";
 import {footer} from "../services/footer.service";
 import {cookie} from "../services/cookie.service";
 import { modal } from "../services/modal.service";
+import { loader } from "../services/loader.service";
 
 import {ObjectFields}      from "../objectfields/objectfields";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
