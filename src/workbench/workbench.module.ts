@@ -21,9 +21,10 @@ import {AppDataService} from "../services/appdata.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import {configurationService} from "../services/configuration.service";
 import {footer} from "../services/footer.service";
+import {userpreferences} from '../services/userpreferences.service';
 
 // MODULEs
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 
@@ -92,6 +93,7 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 
 @NgModule({
     imports: [
@@ -161,7 +163,8 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
-        ObjectRepositoryManagerAddModule
+        ObjectRepositoryManagerAddModule,
+        CRMLogViewer
     ],
     /* no further modules needed */
     entryComponents: [
@@ -176,7 +179,8 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         ComponentConfigManager,
         ModuleConfigManager,
         WorkbenchConfig,
-        ObjectRepositoryManager
+        ObjectRepositoryManager,
+        CRMLogViewer
     ],
     exports: [
         SortPipe,
