@@ -1,0 +1,102 @@
+<h2 class="slds-m-around--medium slds-text-heading--medium">CRM Log Viewer (BETA)</h2>
+
+<div class="slds-grid slds-grid--vertical-align-end slds-m-around--medium">
+    <div class="slds-form-element slds-m-right--medium">
+        <label class="slds-form-element__label" for="processId">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <input id="processId" class="slds-input" type="text" [(ngModel)]="filter.processId" />
+            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.processId=''">
+                <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                    <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-right--medium ">
+        <label class="slds-form-element__label" for="username">{{lang.getLabel('LBL_USER')}}</label>
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <input id="username" class="slds-input" type="text" [(ngModel)]="filter.username" />
+            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.username=''">
+                <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                    <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-right--medium">
+        <label class="slds-form-element__label" for="level">Level</label>
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <input id="level" class="slds-input" type="text" [(ngModel)]="filter.level" />
+            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.level=''">
+                <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                    <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-right--medium">
+        <label class="slds-form-element__label" for="level">Zeilenlimit</label>
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <input id="limit" class="slds-input" type="text" [(ngModel)]="limit" />
+            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
+                <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                    <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="slds-col_bump-right">
+        <button class="slds-button slds-button--neutral" (click)="buttonLoad()">{{lang.getLabel('LBL_LOAD')}}</button>
+    </div>
+    <div class="slds-form-element slds-m-right--medium">
+        <label class="slds-form-element__label" for="level">Textfilter (clientseitig)</label>
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <input id="textfilter" class="slds-input" type="text" [(ngModel)]="filter.text" disabled />
+            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.text=''">
+                <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                    <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="slds-m-top--xx-large"><system-spinner *ngIf="isLoading"></system-spinner></div>
+
+<div *ngIf="loaded">
+    <div class="slds-text-align--right slds-m-right--medium">
+        <pagination-controls [(page)]="page" [limit]="20" [total_records]="lines.length"></pagination-controls>
+    </div>
+    <!-- <div class="slds-table--header-fixed_container" style="height:450px">
+        <div class="slds-scrollable_y" style="height:100%"> -->
+            <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer x-slds-table--header-fixed">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Process ID</th>
+                        <th>User</th>
+                        <th>Level</th>
+                        <th><div class="slds-truncate">Text</div></th>
+                        <!--th></th-->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let line of lines | paginate: {page: page, limit: 20}"><!--textfilter:filter.text-->
+                        <td class="slds-text-align--right">{{line.date}}</td>
+                        <td class="slds-text-align--right">{{line.time}}</td>
+                        <td class="slds-text-align--right">{{line.processId}}</td>
+                        <td>{{line.username}}</td>
+                        <td>{{line.level}}</td>
+                        <td style="x-width:50%"><div class="slds-grid"><div class="slds-truncate">{{line.text}}</div></div></td>
+                        <!--td>
+                            <button class="slds-button slds-button--icon-border" (click)="expandLine()">
+                                <system-button-icon [icon]="'chevronup'" [size]="'x-small'"></system-button-icon>
+                            </button>
+                        </td-->
+                    </tr>
+                </tbody>
+            </table>
+<!--        </div>
+    </div>-->
+</div>
