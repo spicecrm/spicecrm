@@ -1,5 +1,5 @@
 import {CommonModule} from "@angular/common";
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from "@angular/core";
+import {AfterViewInit, ChangeDetectorRef, HostListener, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";
@@ -25,6 +25,7 @@ import {view} from "../../services/view.service";
 import {popup} from "../../services/popup.service";
 import {toast} from "../../services/toast.service";
 import {fts} from "../../services/fts.service";
+import {recent} from "../../services/recent.service";
 import {configurationService} from "../../services/configuration.service";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
