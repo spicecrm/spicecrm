@@ -2,15 +2,15 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse, HttpParams} from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
-import {Router}    from '@angular/router';
+import {Router} from '@angular/router';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {metadata} from './metadata.service';
 import {toast} from './toast.service';
 import {modelutilities} from './modelutilities.service';
-import { modal } from './modal.service';
-import { language } from './language.service';
+import {modal} from './modal.service';
+import {language} from './language.service';
 
 declare var moment: any;
 
@@ -33,17 +33,18 @@ export class backend {
         private modelutilities: modelutilities,
         private modalservice: modal,
         private language: language,
-    ) {}
+    ) {
+    }
 
     private getHeaders(): HttpHeaders {
         let headers = this.session.getSessionHeader();
-        headers = headers.set('Accept','application/json');
+        headers = headers.set('Accept', 'application/json');
         return headers;
     }
 
-    private prepareParams( params: object ): HttpParams {
+    private prepareParams(params: object): HttpParams {
         let output = new HttpParams();
-        if(params) {
+        if (params) {
             Object.keys(params).forEach((key: string) => {
                 let value = params[key];
                 if (typeof value !== 'undefined' && value !== null) {
@@ -51,7 +52,7 @@ export class backend {
                         output = output.append(key, JSON.stringify(value));
                     } else if (typeof value === 'boolean') {
                         output = output.append(key, value === true ? '1' : '0');
-                     }else if (typeof value === 'number') {
+                    } else if (typeof value === 'number') {
                         output = output.append(key, value + '');
                     } else {
                         output = output.append(key, value.toString());
@@ -65,34 +66,34 @@ export class backend {
     /*
      * generic request functions
      */
-    public getRequest(route: string = "", params: any = {} ): Observable<any> {
+    public getRequest(route: string = "", params: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
         this.resetTimeOut();
         this.http.get(
             this.configurationService.getBackendUrl() + "/" + encodeURI(route),
 
-            {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params) }
+            {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
         ).subscribe(
             (res) => {
                 responseSubject.next(res.body);
                 responseSubject.complete();
             },
             err => {
-                this.handleError( err, route, 'GET', { getParams: params } );
-                responseSubject.error( err );
+                this.handleError(err, route, 'GET', {getParams: params});
+                responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
     // todo test it
-    public getRawRequest(route: string = "", params: any = {}, responseType: string = "Json", headers: any = {} ) {
+    public getRawRequest(route: string = "", params: any = {}, responseType: string = "Json", headers: any = {}) {
 
         this.resetTimeOut();
 
         let headers2 = this.session.getSessionHeader();
-        for ( let prop in headers ) {
-            headers2 = headers2.set( prop, headers[prop] );
+        for (let prop in headers) {
+            headers2 = headers2.set(prop, headers[prop]);
         }
 
         return this.http.get(
@@ -105,7 +106,7 @@ export class backend {
         );
     }
 
-    public postRequest(route: string = "", params: any = {}, body: any = {},  httpErrorReport = true ): Observable<any> {
+    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -127,21 +128,21 @@ export class backend {
                 responseSubject.complete();
             },
             err => {
-                this.handleError( err, route, 'POST', { getParams: params, body: body }, httpErrorReport );
-                responseSubject.error( err );
+                this.handleError(err, route, 'POST', {getParams: params, body: body}, httpErrorReport);
+                responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
     // todo test it
-    public postRawRequest(route: string = "", params: any = {}, responseType: string = "Json", headers: any = {} ) {
+    public postRawRequest(route: string = "", params: any = {}, responseType: string = "Json", headers: any = {}) {
 
         this.resetTimeOut();
 
         let headers2 = this.session.getSessionHeader();
-        for ( let prop in headers ) {
-            headers2 = headers2.set( prop, headers[prop] );
+        for (let prop in headers) {
+            headers2 = headers2.set(prop, headers[prop]);
         }
 
         return this.http.post(
@@ -156,18 +157,18 @@ export class backend {
 
     // please use more meaningful function names, or at least use a description.
     // todo test it
-    public getDownloadPostRequestFile(route: string = "", params: any= {}, body: any = {}): Observable<any> {
+    public getDownloadPostRequestFile(route: string = "", params: any = {}, body: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
 
         let headers = this.getHeaders();
-        headers = headers.set("Accept","*/*");
+        headers = headers.set("Accept", "*/*");
 
         this.http.post(
             this.configurationService.getBackendUrl() + "/" + route,
             body,
-            { headers: headers, observe: "response", params: this.prepareParams(params), responseType: "blob" }
+            {headers: headers, observe: "response", params: this.prepareParams(params), responseType: "blob"}
         ).subscribe(
             (response: any) => {
                 // let blob = new Blob([response], {type: "octet/stream"});
@@ -179,7 +180,7 @@ export class backend {
                 responseSubject.complete();
             },
             err => {
-                this.handleError( err, route, 'POST', { getParams: params, body: body } );
+                this.handleError(err, route, 'POST', {getParams: params, body: body});
                 responseSubject.error(err);
             }
         );
@@ -198,7 +199,7 @@ export class backend {
         let sub = new Subject<any>();
 
         let _headers = this.getHeaders();
-        _headers = _headers.set("Accept","*/*");
+        _headers = _headers.set("Accept", "*/*");
         // todo: add given headers here...
 
         this.http.request(
@@ -212,7 +213,7 @@ export class backend {
                 responseType: "blob",
             }).subscribe(
             (response: any) => {
-                if(response.status == 200) {
+                if (response.status == 200) {
                     // let objectUrl = URL.createObjectURL(response.blob());
                     let objectUrl = window.URL.createObjectURL(response.body);
                     sub.next(objectUrl);
@@ -222,7 +223,7 @@ export class backend {
                 }
             },
             (err) => {
-                this.handleError( err, route, method, { getParams: params, body: body } );
+                this.handleError(err, route, method, {getParams: params, body: body});
                 sub.error(err);
             }
         );
@@ -232,7 +233,7 @@ export class backend {
 
     // todo test it
     public downloadFile(
-        request_params: {route: string, method?: string, params?: any, body?: any, headers?: any},
+        request_params: { route: string, method?: string, params?: any, body?: any, headers?: any },
         file_name: string = null
     ): Observable<any> {
         let sub = new Subject<any>();
@@ -277,7 +278,7 @@ export class backend {
                 responseSubject.complete();
             },
             (err) => {
-                this.handleError( err, route, 'PUT', { getParams: params, body: body } );
+                this.handleError(err, route, 'PUT', {getParams: params, body: body});
                 responseSubject.error(err);
             }
         );
@@ -299,18 +300,18 @@ export class backend {
                 responseSubject.complete();
             },
             (err) => {
-                this.handleError( err, route, 'DELETE', { getParams: params } );
+                this.handleError(err, route, 'DELETE', {getParams: params});
                 responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
-    private handleError( err, route, method: string, data = null, httpErrorReport = true ) {
+    private handleError(err, route, method: string, data = null, httpErrorReport = true) {
         switch (err.status) {
             case 401:
                 this.toast.sendAlert(
-                    this.language.getLabel("ERR_LOGGED_OUT_SESSION_EXPIRED" ),
+                    this.language.getLabel("ERR_LOGGED_OUT_SESSION_EXPIRED"),
                     "error",
                     null,
                     false,
@@ -320,38 +321,42 @@ export class backend {
                 this.router.navigate(["/login"]);
                 break;
             case 0:
-                if ( httpErrorReport ) {
-                    this.reportError( err, route, method, data );
+                if (httpErrorReport) {
+                    this.reportError(err, route, method, data);
                 }
         }
     }
 
-    private reportError( err, route, method, data ) {
+    private reportError(err, route, method, data) {
         this.httpErrorsToReport.push({
             clientTime: (new Date()).toISOString(),
-            clientInfo: { sessionId: this.session.authData.sessionId, userId: this.session.authData.userId, userName: this.session.authData.userName },
+            clientInfo: {
+                sessionId: this.session.authData.sessionId,
+                userId: this.session.authData.userId,
+                userName: this.session.authData.userName
+            },
             route: route,
             method: method,
             getParams: data.getParams ? data.getParams : null,
             error: err,
             body: data.body ? data.body : null
         });
-        if ( !this.httpErrorReporting ) {
+        if (!this.httpErrorReporting) {
             this.httpErrorReporting = true;
-            window.setTimeout( () => this.errorsToBackend(), this.httpErrorReportingRetryTime );
+            window.setTimeout(() => this.errorsToBackend(), this.httpErrorReportingRetryTime);
         }
     }
 
     private errorsToBackend() {
-        if ( this.httpErrorsToReport.length ) {
-            this.postRequest('httperrors', null, { 'errors' : this.httpErrorsToReport }, false ).subscribe(
+        if (this.httpErrorsToReport.length) {
+            this.postRequest('httperrors', null, {'errors': this.httpErrorsToReport}, false).subscribe(
                 () => {
                     this.httpErrorsToReport.length = 0;
                     this.httpErrorReporting = false;
                 },
                 (e) => {
                     this.httpErrorReporting = true;
-                    window.setTimeout( () => this.errorsToBackend(), this.httpErrorReportingRetryTime );
+                    window.setTimeout(() => this.errorsToBackend(), this.httpErrorReportingRetryTime);
                 }
             );
         }
@@ -368,7 +373,7 @@ export class backend {
     }
 
     private logout() {
-        if(this.session.authData.sessionId) {
+        if (this.session.authData.sessionId) {
             this.toast.sendAlert("you have been logged out", "error", "", false);
             this.session.endSession();
         }
@@ -431,19 +436,18 @@ export class backend {
     public all(module: string, params: any = {}): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
         // defaults...
-        if( !params.limit ) {
+        if (!params.limit) {
             params.limit = -99;
         }
 
-        if( !params.fields ) {
+        if (!params.fields) {
             params.fields = "*";
         }
 
         this.getRequest("module/" + module, params).subscribe(
             (response: any) => {
                 let list = response.list;
-                for(let r of list)
-                {
+                for (let r of list) {
                     for (let fieldName in r) {
                         r[fieldName] = this.backend2spice(module, fieldName, r[fieldName]);
                     }
@@ -478,18 +482,18 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getAudit(module: string, id: string): Observable<any> {
+    public getAudit(module: string, id: string, filters: any = {}): Observable<any> {
         let responseSubject = new Subject<Array<any>>();
-        this.getRequest("module/" + module + "/" + id + "/auditlog")
+        this.getRequest("module/" + module + "/" + id + "/auditlog", filters)
             .subscribe(response => {
                     responseSubject.next(response);
                     responseSubject.complete();
                 },
                 response => {
-                    if ( response.error.error && response.error.error.errorCode && response.error.error.errorCode === 'moduleNotAudited' ) {
-                        responseSubject.next( [] );
+                    if (response.error.error && response.error.error.errorCode && response.error.error.errorCode === 'moduleNotAudited') {
+                        responseSubject.error(response.error.error.errorCode);
                         responseSubject.complete();
-                        console.warn(`Audit not enabled for module "${module}".`);
+                        // console.warn(`Audit not enabled for module "${module}".`);
                     }
                 });
         return responseSubject.asObservable();
@@ -566,13 +570,18 @@ export class backend {
         }
 
         this.postRequest("module/" + module + "/" + id, {}, JSON.stringify(saveData))
-            .subscribe((response: any) => {
-                for (let fieldName in response) {
-                    response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
-                }
-                responseSubject.next(response);
-                responseSubject.complete();
-            });
+            .subscribe(
+                (response: any) => {
+                    for (let fieldName in response) {
+                        response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
+                    }
+                    responseSubject.next(response);
+                    responseSubject.complete();
+                },
+                (error: any) => {
+                    responseSubject.error(error);
+                    responseSubject.complete();
+                });
         return responseSubject.asObservable();
     }
 
