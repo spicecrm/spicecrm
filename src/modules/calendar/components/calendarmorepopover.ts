@@ -2,6 +2,7 @@ import {Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {Router} from "@angular/router";
 import {calendar} from "../services/calendar.service";
+import {language} from "../../../services/language.service";
 
 declare var moment: any;
 
@@ -25,7 +26,7 @@ export class CalendarMorePopover implements OnInit {
     private heightcorrection = 30;
     private widthcorrection = 30;
 
-    constructor(private metadata: metadata, private calendar: calendar, private router: Router) {}
+    constructor(private metadata: metadata, private calendar: calendar, private router: Router, private language: language) {}
 
     public ngOnInit() {
         // don't know why... but this call fixes ExpressionChangedAfterItHasBeenCheckedError ... maybe because it sets the nubbin class earlier so it won't change after changedetection anymore?
