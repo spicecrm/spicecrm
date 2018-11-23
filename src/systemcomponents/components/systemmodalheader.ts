@@ -8,6 +8,7 @@ import {language} from '../../services/language.service';
 })
 export class SystemModalHeader {
     @Input() private module: string = '';
+    @Input() private hiddenCloseButton = false;
     @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private metadata: metadata, private language: language) {
