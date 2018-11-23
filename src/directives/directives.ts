@@ -15,6 +15,7 @@ import /*embed*/ {SpiceUIAutofocusDirective} from "./directives/spiceuiautofocus
 import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
 import /*embed*/ {DropdownTriggerDirective} from "./directives/dropdowntrigger";
 import /*embed*/ {ToBottomDirective} from "./directives/tobottom";
+import /*embed*/ {TrimInputDirective} from './directives/triminput';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import /*embed*/ {ToBottomDirective} from "./directives/tobottom";
         SpiceUIAutofocusDirective,
         FirstUpperCasePipe,
         DropdownTriggerDirective,
-        ToBottomDirective
+        ToBottomDirective,
+        TrimInputDirective
     ],
     exports: [
         ModelPopOverDirective,
@@ -38,7 +40,8 @@ import /*embed*/ {ToBottomDirective} from "./directives/tobottom";
         SpiceUIAutofocusDirective,
         FirstUpperCasePipe,
         DropdownTriggerDirective,
-        ToBottomDirective
+        ToBottomDirective,
+        TrimInputDirective
     ]
 })
 export class DirectivesModule {
