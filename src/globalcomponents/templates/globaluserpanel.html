@@ -26,7 +26,7 @@
             <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_LANGUAGE')}}</label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="currentlanguage">
+                    <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage">
                         <option *ngFor="let language of getAvialableLanguages()" [value]="language.language">
                             {{language.text}}
                         </option>

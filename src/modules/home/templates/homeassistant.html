@@ -8,7 +8,8 @@
             </div>
         </div>
     </div>
-    <div #itemcontainer class="slds-scrollable_y" [ngStyle]="containerstyle">
+    <!--div #itemcontainer class="slds-scrollable_y" [ngStyle]="containerstyle"-->
+    <div tobottom>
         <!--home-assistant-tile *ngFor="let item of assistant.assitantItems" [item]="item"></home-assistant-tile-->
         <ul #itemcontainer class="slds-timeline">
             <li *ngFor="let item of assistant.assitantItems" class="slds-p-around--xx-small">
