@@ -71,7 +71,7 @@ export class language {
 
         this.http.post(
             this.configurationService.getBackendUrl() + '/module/language', {},
-            {headers: this.session.getSessionHeader(), observe: "response", params: params}
+            {headers: this.session.getSessionHeader(), observe: "response", params}
         ).subscribe(
             (res: any) => {
                 let response = res.body;
@@ -302,29 +302,71 @@ export class language {
      */
     public getAvialableLanguages(systemonly = false) {
         let languages = [];
-        /*
-        for (let key in this.languagedata.languages.available) {
-            if (this.languagedata.languages.available.hasOwnProperty(key)) {
-                languages.push({
-                    language: key,
-                    text: this.languagedata.languages.available[key]
-                })
-            }
-        }
-        */
         for (let language of this.languagedata.languages.available) {
 
-            if (systemonly && !language.system_language)
-                continue;
+            if (systemonly && (!language.system_language || language.system_language == 0)) continue;
 
             languages.push({
                 language: language.language_code,
                 text: language.language_name,
                 system_language: language.system_language,
-                communication_language: language.communication_language
+                communication_language: language.communication_language,
+                default_language: language.language_code == this.languagedata.languages.default
             });
         }
         return languages;
+    }
+
+    /*
+    * adds or set a specific language .. input shoudl be int eh frmat of syslangs as returned from the backend
+     */
+    public addAvailableLanguage(languagedata) {
+
+        let langfound = false;
+        this.languagedata.languages.available.some(language => {
+            if (language.language_code == languagedata.language_code) {
+                // set the relevant data
+                language.system_language = languagedata.system_language;
+                language.default_language = languagedata.default_language;
+
+                if (languagedata.default_language) {
+                    this.setDefaultLanguage(languagedata.language_code);
+                }
+
+                langfound = true;
+                return true;
+            }
+        });
+
+        if (!langfound) this.languagedata.languages.available.push(languagedata);
+    }
+
+    public removeAvailableLanguage(language_code) {
+        this.languagedata.languages.available.some(language => {
+            if (language.language_code == language_code) {
+                // set the relevant data
+                language.system_language = false;
+                return true;
+            }
+        });
+    }
+
+    public getDefaultLanguage() {
+        return this.languagedata.languages.default;
+    }
+
+    public setDefaultLanguage(languagecode) {
+        this.http.post(
+            this.configurationService.getBackendUrl() + '/syslanguages/setdefault/'+languagecode, {},
+            {headers: this.session.getSessionHeader(), observe: "response"}
+        ).subscribe(
+            (res: any) => {
+                let response = res.body;
+                if(response.success){
+                    this.languagedata.languages.default = languagecode;
+                }
+            }
+        );
     }
 
 
