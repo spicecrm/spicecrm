@@ -39,6 +39,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
 
     private currentGrid: Array<any> = [];
     private eventHeight: number = 25;
+    private moreHeight: number = 20;
     private maxEventsPerBox: number = 1;
     private resizeHandler: any = {};
     private ownerEvents: Array<any> = [];
@@ -82,7 +83,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
     private setMaxEvents() {
         let boxContainerHeight = this.boxContainer.element.nativeElement.clientHeight;
         let dayContainerHeight = this.dayContainer.element.nativeElement.clientHeight;
-        this.maxEventsPerBox = Math.floor((boxContainerHeight - dayContainerHeight) / this.eventHeight);
+        this.maxEventsPerBox = Math.floor((boxContainerHeight - dayContainerHeight - this.moreHeight) / this.eventHeight);
         this.cdRef.detectChanges();
     }
 

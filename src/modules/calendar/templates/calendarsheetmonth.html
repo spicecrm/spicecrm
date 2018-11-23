@@ -10,7 +10,7 @@
             <div #daycontainer class="slds-p-around--xx-small">
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
             </div>
-            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%">
+            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="moreHeight">
                 <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [moreevents]="sheetDay.items"></calendar-more-button>
             </div>
         </div>

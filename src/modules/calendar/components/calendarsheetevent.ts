@@ -23,7 +23,6 @@ export class CalendarSheetEvent implements OnInit {
     public fields: Array<any> = [];
     @Input() public event: any = {};
     @Input() private isMonthSheet: boolean = false;
-    private componentconfig: any = {};
     private mouseMoveListener: any = undefined;
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
