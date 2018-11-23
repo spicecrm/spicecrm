@@ -26,7 +26,15 @@
         <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
             <div class="slds-select_container">
                 <select  [disabled]="!module || !view.isEditMode()" class="slds-select" [(ngModel)]="configValues[option.option]">
-                    <option *ngFor="let fieldset of fieldsets|componentsetmanagermodulepipe:module" [value]="fieldset.id">{{fieldset.name}}</option>
+                    <option></option>
+                    <optgroup label="custom {{language.getAppLanglabel('LBL_FIELDSET')}}" *ngIf="fieldsets|componentsetmanagermodulepipecustom:module.length > 0">
+                        <option *ngFor="let sysFieldset of fieldsets|componentsetmanagermodulepipecustom:module" [value]="sysFieldset.id">{{sysFieldset.name}}
+                        </option>
+                    </optgroup>
+                    <optgroup label="global {{language.getAppLanglabel('LBL_FIELDSET')}}"  *ngIf="fieldsets|componentsetmanagermodulepipeglobal:module.length > 0">
+                        <option *ngFor="let sysFieldset of fieldsets|componentsetmanagermodulepipeglobal:module" [value]="sysFieldset.id">{{sysFieldset.name}}
+                        </option>
+                    </optgroup>
                 </select>
             </div>
         </div>
