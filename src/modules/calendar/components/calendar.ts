@@ -260,6 +260,6 @@ export class Calendar {
     private refresh() {
         this.calendar.currentStart = undefined;
         this.calendar.currentEnd = undefined;
-        this.calendarDate = new moment();
+        this.calendarDate = new moment(this.calendar.calendarDate);
     }
 }
