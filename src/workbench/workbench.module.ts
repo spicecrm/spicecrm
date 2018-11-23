@@ -21,9 +21,10 @@ import {AppDataService} from "../services/appdata.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 import {configurationService} from "../services/configuration.service";
 import {footer} from "../services/footer.service";
+import {userpreferences} from '../services/userpreferences.service';
 
 // MODULEs
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
@@ -93,6 +94,8 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
+import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -176,7 +179,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         PackageLoaderPackages,
         PackageLoaderPackage,
         PackageLoaderLanguages,
-        PackageLoaderLanguage
+        PackageLoaderLanguage,
+        CRMLogViewer,
+        CRMLogViewerModal
     ],
     /* no further modules needed */
     entryComponents: [
@@ -191,7 +196,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         ComponentConfigManager,
         ModuleConfigManager,
         WorkbenchConfig,
-        ObjectRepositoryManager
+        ObjectRepositoryManager,
+        CRMLogViewer,
+        CRMLogViewerModal
     ],
     exports: [
         SortPipe,

@@ -1,28 +1,21 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
-import {broadcast} from '../../../services/broadcast.service';
-import {navigation} from '../../../services/navigation.service';
-import {calendar} from '../services/calendar.service';
+import {Component, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {model} from "../../../services/model.service";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 declare var moment: any;
 
 @Component({
-    selector: 'calendar-event-summary',
-    templateUrl: './src/modules/calendar/templates/calendareventsummary.html'
+    selector: "calendar-event-summary",
+    templateUrl: "./src/modules/calendar/templates/calendareventsummary.html"
 
 })
 export class CalendarEventSummary {
+    @Input("ismulti") private isMulti: boolean = false;
+    @Input("isabsence") private isAbsence: boolean = false;
+    constructor(private model: model, private userpreferences: userpreferences) {}
 
-    showPopover: boolean = false;
-
-    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private model: model) {
-        // set theenavigation paradigm
+    get startHour() {
+        return this.model.data.date_start ? moment(this.model.data.date_start).tz(moment.tz.guess())
+            .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : undefined;
     }
-
-    togglePopover(){
-        this.showPopover = !this.showPopover;
-    }
-
 }
