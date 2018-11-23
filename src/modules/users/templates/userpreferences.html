@@ -222,6 +222,92 @@
         </div>
     </div>
 
+    <div class="slds-section" [ngClass]="{'slds-is-open': expanded.calendar}">
+        <h3 class="slds-section__title">
+            <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('calendar')">
+                <system-utility-icon [icon]="'switch'" [size]="'x-small'"
+                                     [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                <span class="slds-truncate">{{ language.getLabel('LBL_CALENDAR_PREFERENCES') }}</span>
+            </button>
+        </h3>
+        <div [ngStyle]="getTabStyle('calendar')">
+            <div class="slds-grid slds-grid--align-spread">
+                <div class="slds-form-element slds-size--2-of-6 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_WEEK_START_DAY') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{preferences.week_day_start}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" (change)="change($event,'week_day_start')">
+                                <option value="-" [selected]="!preferences.week_day_start"></option>
+                                <option *ngFor="let day of weekDayStartList" value="{{day}}"
+                                        [selected]="day == preferences.week_day_start">{{day}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--2-of-6 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_WEEK_DAYS_COUNT') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{preferences.week_days_count}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" (change)="change($event,'week_days_count')">
+                                <option value="-" [selected]="!preferences.week_days_count"></option>
+                                <option *ngFor="let count of weekDaysCountList" value="{{count}}"
+                                        [selected]="count == preferences.week_days_count">{{count}} Days</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-6 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_DAY_START_HOUR') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{preferences.calendar_day_start_hour}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" (change)="change($event,'calendar_day_start_hour')">
+                                <option value="-" [selected]="!preferences.calendar_day_start_hour"></option>
+                                <option *ngFor="let hour of dayHoursList" value="{{hour}}" [disabled]="preferences.calendar_day_end_hour <= hour"
+                                        [selected]="hour == preferences.calendar_day_start_hour">{{hour}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-6 slds-p-around--x-small">
+                    <label class="slds-form-element__label">{{ language.getLabel('LBL_DAY_END_HOUR') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{preferences.calendar_day_end_hour}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" (change)="change($event,'calendar_day_end_hour')">
+                                <option value="-" [selected]="!preferences.calendar_day_end_hour"></option>
+                                <option *ngFor="let hour of dayHoursList" value="{{hour}}" [disabled]="preferences.calendar_day_start_hour >= hour"
+                                        [selected]="hour == preferences.calendar_day_end_hour">{{hour}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
         <button class="slds-button slds-button--neutral" (click)="cancel()">
             {{language.getLabel('LBL_CANCEL')}}
