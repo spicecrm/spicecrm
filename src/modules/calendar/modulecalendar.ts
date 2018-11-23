@@ -34,21 +34,23 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
+import /*embed*/ {userpreferences} from "../../services/userpreferences.service";
 
 import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
-import /*embed*/ {CalendarSheetWeekEvent} from "./components/calendarsheetweekevent";
-import /*embed*/ {CalendarSheetDayEvent} from "./components/calendarsheetdayevent";
-import /*embed*/ {CalendarSheetMonthDay} from "./components/calendarsheetmonthday";
-import /*embed*/ {CalendarSheetMonthEvent} from "./components/calendarsheetmonthevent";
+import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
 import /*embed*/ {CalendarEventSummary} from "./components/calendareventsummary";
-import /*embed*/ {CalendarEventPopover} from "./components/calendareventpopover";
 import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
+import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
+import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
+import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
+
 
 @NgModule({
     imports: [
@@ -58,6 +60,7 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         Calendar,
@@ -65,14 +68,14 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
         CalendarSheetDay,
         CalendarSheetWeek,
         CalendarSheetMonth,
-        CalendarSheetWeekEvent,
-        CalendarSheetDayEvent,
-        CalendarSheetMonthDay,
-        CalendarSheetMonthEvent,
+        CalendarSheetEvent,
         CalendarEventSummary,
-        CalendarEventPopover,
-        CalendarSheetDropTarget
-    ]
+        CalendarSheetDropTarget,
+        CalendarMorePopover,
+        CalendarMorePopoverEvent,
+        CalendarMoreButton,
+    ],
+    providers: [userpreferences]
 })
 export class ModuleCalendar {
     public version = "1.0";
