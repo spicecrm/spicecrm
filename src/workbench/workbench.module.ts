@@ -94,6 +94,7 @@ import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
+import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 
 @NgModule({
     imports: [
@@ -164,7 +165,8 @@ import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
         ObjectRepositoryManagerAddModule,
-        CRMLogViewer
+        CRMLogViewer,
+        CRMLogViewerModal
     ],
     /* no further modules needed */
     entryComponents: [
@@ -180,7 +182,8 @@ import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
         ModuleConfigManager,
         WorkbenchConfig,
         ObjectRepositoryManager,
-        CRMLogViewer
+        CRMLogViewer,
+        CRMLogViewerModal
     ],
     exports: [
         SortPipe,
