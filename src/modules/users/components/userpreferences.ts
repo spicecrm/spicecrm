@@ -57,8 +57,8 @@ export class UserPreferences {
         "ISO-2022-KR", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3", "ISO-8859-4", "ISO-8859-5",
         "ISO-8859-6", "ISO-8859-7", "ISO-8859-8", "ISO-8859-9", "ISO-8859-10", "ISO-8859-13",
         "ISO-8859-14", "ISO-8859-15", "KOI8-R", "KOI8-U", "SJIS", "UTF-8"];
-    private currencySignificantDigitsList: Array<string> = ["1", "2", "3", "4", "5", "6"];
-    private thousandDelimiterList: Array<any> = [",", "."];
+    private currencySignificantDigitsList: string[] = ["1", "2", "3", "4", "5", "6"];
+    private thousandDelimiterList: string[] = [",", "."];
     private dateFormatList = [
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y-m-d")), value: "Y-m-d"},
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m-d-Y")), value: "m-d-Y"},
@@ -99,7 +99,7 @@ export class UserPreferences {
     private prefsLoaded = new Subject<string>();
 
     private timezones: object;
-    private timezoneKeys: Array<any>;
+    private timezoneKeys: string[];
 
     private canPrefs: boolean;
 
