@@ -87,9 +87,15 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
-                events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour);
+                events = events.filter(event => event.start.hour() >= this.calendar.startHour && event.end.hour() <= this.calendar.endHour || event.type == "absence");
                 this.ownerEvents = events.filter(event => !event.isMulti);
                 this.ownerMultiEvents = events.filter(event => event.isMulti);
+                this.ownerMultiEvents.sort((a, b) => {
+                    if (a.type == "absence") {
+                        return -1;
+                    }
+                    return 0;
+                });
             }
         });
     }

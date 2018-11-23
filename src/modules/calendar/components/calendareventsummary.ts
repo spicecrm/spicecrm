@@ -11,10 +11,11 @@ declare var moment: any;
 })
 export class CalendarEventSummary {
     @Input("ismulti") private isMulti: boolean = false;
+    @Input("isabsence") private isAbsence: boolean = false;
     constructor(private model: model, private userpreferences: userpreferences) {}
 
     get startHour() {
         return this.model.data.date_start ? moment(this.model.data.date_start).tz(moment.tz.guess())
-            .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : "00:00";
+            .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : undefined;
     }
 }

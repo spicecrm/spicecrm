@@ -4,7 +4,7 @@
     </button>
     <div #popover>
         <div class="slds-popover__header" style="padding: .5rem">
-            <header class="slds-text-heading--small slds-m-bottom--x-small">{{events.length}} Events</header>
+            <header class="slds-text-heading--small slds-m-bottom--x-small">{{events.length}} {{language.getLabel('LBL_EVENTS')}}</header>
             <div class="slds-scrollable--y" style="height: 120px">
                 <calendar-more-popover-event *ngFor="let event of events"  [event]="event" (action$)="closePopover(true)"></calendar-more-popover-event>
             </div>

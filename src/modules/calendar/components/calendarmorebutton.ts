@@ -1,6 +1,7 @@
 import {Component, ElementRef, HostListener, Input, OnDestroy} from '@angular/core';
 import {footer} from "../../../services/footer.service";
 import {metadata} from "../../../services/metadata.service";
+import {language} from "../../../services/language.service";
 
 declare var moment: any;
 
@@ -17,6 +18,7 @@ export class CalendarMoreButton implements OnDestroy{
     private showPopoverTimeout: any = {};
 
     constructor(private elementRef: ElementRef,
+                private language: language,
                 private footer: footer,
                 private metadata: metadata) {
     }

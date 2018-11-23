@@ -1,9 +1,0 @@
-<div>
-    <div class="slds-p-around--xx-small">
-        <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay()" [ngStyle]="isTodayStyle()">{{sheetday.day}}</a>
-    </div>
-    <div #eventscontainer>
-        <calendar-sheet-event *ngFor="let event of events; let index = index" [event]="event" [isMonthSheet]="true" [ngStyle]="getEventStyle(index)">
-        </calendar-sheet-event>
-    </div>
-</div>

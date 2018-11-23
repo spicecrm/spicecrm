@@ -66,14 +66,14 @@
         <div style="width:300px" class="slds-border--right slds-p-top--xx-small slds-scrollable--y">
             <calendar-date-picker [setdate]="calendarDate" (setdateChange)="setDateChanged($event)"></calendar-date-picker>
             <div class="slds-border--bottom">
-                <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small">Other Calendars</label>
+                <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small">{{language.getLabel('LBL_OTHER_CALENDARS')}}</label>
                 <div class="slds-p-vertical--xx-small">
                     <div *ngIf="loggedByGoogle" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
                          (mouseover)="hovered = 'google'" (mouseout)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
                         <div class="slds-grid" (click)="toggleVisibleGoogle()" style="cursor: pointer">
-                            <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 15px;width:15px;margin-right: 2px;"
+                            <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px"
                                  [ngStyle]="!googleCalendarVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
-                            <a class="slds-text-body--regular slds-truncate" [style.color]="!googleCalendarVisible ? '#dddbda' : 'initial'">My Google Calendar</a>
+                            <a class="slds-text-body--regular slds-truncate" [style.color]="!googleCalendarVisible ? '#dddbda' : 'initial'">{{language.getLabel('MY_GOOGLE_CALENDAR')}}</a>
                         </div>
                     </div>
                     <div *ngFor="let usersCalendar of usersCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
