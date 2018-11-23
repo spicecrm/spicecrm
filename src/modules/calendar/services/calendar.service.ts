@@ -43,45 +43,12 @@ export class calendar {
         return this.session.authData.userId;
     }
 
-    set weekStartDay(value) {
-        this.weekstartday = value;
-    }
-
     get weekStartDay() {
         return this.weekstartday;
     }
 
-    private modelChangesSubscriber() {
-        this.broadcast.message$.subscribe(message => {
-            if (message.messagetype == "model.save" && message.messagedata.module == "Meetings") {
-                if (!this.calendars[message.messagedata.data.assigned_user_id]) {return}
-                this.calendars[message.messagedata.data.assigned_user_id].some(event => {
-                    if (event.id == message.messagedata.id) {
-                        event.data = message.messagedata.data;
-                        event.start = message.messagedata.data.date_start;
-                        event.end = message.messagedata.data.date_end;
-                        return true;
-                    }
-                });
-            }
-        });
-    }
-
-    private loadPreferences() {
-        this.weekStartDay = this.userPreferences.unchangedPreferences.global['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
-        this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
-        this.startHour = +this.userPreferences.unchangedPreferences.global['calendar_day_start_hour'] || this.startHour;
-        this.endHour = +this.userPreferences.unchangedPreferences.global['calendar_day_end_hour'] || this.endHour;
-        this.calendarDate = new moment();
-    }
-
-    private getOtherCalendars() {
-        this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
-            this.setUserCalendars(calendars["Users"]);
-        });
-        if (this.session.authData.googleToken) {
-            this.loggedByGoogle = true;
-        }
+    set weekStartDay(value) {
+        this.weekstartday = value;
     }
 
     public addUserCalendar(id, name) {
@@ -90,7 +57,7 @@ export class calendar {
             id: id,
             name: name,
             visible: true,
-            color: '#'+(Math.random()*0xFFF<<0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random()*0xFFF<<0).toString(16)
+            color: '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random() * 0xFFF << 0).toString(16)
         });
         this.setUserCalendars(usersCalendars.slice());
     }
@@ -101,7 +68,9 @@ export class calendar {
     }
 
     public setUserCalendars(value) {
-        if (!value) {return}
+        if (!value) {
+            return;
+        }
         this.usersCalendars = value;
         this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         this.usersCalendars$.emit(this.usersCalendars);
@@ -122,7 +91,7 @@ export class calendar {
             this.backend.getRequest('calendar/' + calendar, params).subscribe(events => {
                 this.calendars[calendar] = [];
                 for (let event of events) {
-                    event.data = this.modelutilities.backendModel2spice('Meetings', event.data);
+                    event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                     switch (event.type) {
                         case 'event':
                         case 'absence':
@@ -259,6 +228,45 @@ export class calendar {
         }
         return events;
 
+    }
+
+    private modelChangesSubscriber() {
+        this.broadcast.message$.subscribe(message => {
+            if ((message.messagedata.module == "Meetings" || message.messagedata.module == "Calls")) {
+
+                switch (message.messagetype) {
+                    case "model.save":
+                        let uid = message.messagedata.data.assigned_user_id;
+                        if (!this.calendars[uid]) {return}
+                        this.calendars[uid].some(event => {
+                            if (event.id == message.messagedata.id) {
+                                event.data = message.messagedata.data;
+                                event.start = message.messagedata.data.date_start;
+                                event.end = message.messagedata.data.date_end;
+                                return true;
+                            }
+                        });
+                        break;
+                }
+            }
+        });
+    }
+
+    private loadPreferences() {
+        this.weekStartDay = this.userPreferences.unchangedPreferences.global['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
+        this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
+        this.startHour = +this.userPreferences.unchangedPreferences.global['calendar_day_start_hour'] || this.startHour;
+        this.endHour = +this.userPreferences.unchangedPreferences.global['calendar_day_end_hour'] || this.endHour;
+        this.calendarDate = new moment();
+    }
+
+    private getOtherCalendars() {
+        this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
+            this.setUserCalendars(calendars["Users"]);
+        });
+        if (this.session.authData.googleToken) {
+            this.loggedByGoogle = true;
+        }
     }
 
 }
