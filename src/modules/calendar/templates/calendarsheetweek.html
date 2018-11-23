@@ -1,37 +1,39 @@
 <div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right:15px">
-        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getTimeColStyle()">
-            <system-utility-icon [icon]="'clock'" [size]="'x-small'"></system-utility-icon>
-            {{getOffset()}}
+    <div class="slds-grid" style="margin-right: 17px">
+        <div class="slds-align--absolute-center slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
+            <system-utility-icon [icon]="'clock'" [size]="'x-small'" class="slds-m-right--xxx-small"></system-utility-icon>
+            {{offset}}
         </div>
-        <div class="slds-text-align--center slds-p-vertical--small" [ngStyle]="getDayColStyle()"
-             *ngFor="let sheetDay of sheetDays">
-            <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.index)">{{sheetDay.text}}</a>
+        <div class="slds-size--1-of-1 slds-border--left slds-p-top--xx-small" [ngStyle]="getDayColStyle()"
+             *ngFor="let sheetDay of sheetDays; let last = last; let first = first" [ngClass]="last ? 'slds-border--right' : ''">
+            <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('ddd', sheetDay.date)}}</div>
+            <div style="font-size: 2.5rem;line-height: 2.5rem;" class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom">
+                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.index)" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('D',sheetDay.date)}}</a>
+            </div>
+            <div #multievents *ngIf="first" class="slds-text-align--center slds-text-body--small slds-p-around--xxx-small" [ngStyle]="getMultiEventsContainerStyle()">
+                <ng-container *ngFor="let event of allMultiEvents; let eventIndex = index">
+                    <calendar-sheet-event [ngStyle]="getMultiEventStyle(event, eventIndex)" [event]="event"></calendar-sheet-event>
+                </ng-container>
+            </div>
         </div>
     </div>
 </div>
-<div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right:15px">
-        <div class="slds-text-align--center slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
-            <system-utility-icon [icon]="'chevronright'" [size]="'x-small'"></system-utility-icon>
-        </div>
-        <div class="slds-text-align--center slds-border--left " [ngStyle]="getDayColStyle()"
-             *ngFor="let sheetDay of sheetDays"></div>
-    </div>
-</div>
-<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
-    <ng-container *ngFor="let sheetHour of sheetHours">
-        <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(sheetHour)"></div>
-        <ng-container *ngIf="notLastHour(sheetHour)">
-            <div class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(sheetHour)"></div>
-            <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(sheetHour)">{{sheetHour}}:00</div>
-            <calendar-sheet-drop-target [hour]="sheetHour" [day]="sheetDay" class="slds-is-absolute" *ngFor="let sheetDay of sheetDays" [ngStyle]="getDropTargetStyle(sheetHour, sheetDay.index)" (rearrange)="rearrangeEvents()">{{sheetHour + ',' + sheetDay.index}}</calendar-sheet-drop-target>
+<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-is-relative">
+    <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
+        <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index)"></div>
+        <ng-container *ngIf="notLastHour(index)">
+            <div class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(index)"></div>
+            <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(index)">{{sheetHour}}:00</div>
+            <calendar-sheet-drop-target [hour]="sheetHour" [day]="sheetDay" class="slds-is-absolute"
+                                        *ngFor="let sheetDay of sheetDays" [ngStyle]="getDropTargetStyle(index, sheetDay.index)">
+                {{sheetHour + ',' + sheetDay.index}}
+            </calendar-sheet-drop-target>
         </ng-container>
     </ng-container>
     <ng-container *ngFor="let sheetDay of sheetDays">
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
     </ng-container>
-    <ng-container *ngFor="let event of calendarevents">
-        <calendar-sheet-week-event [ngStyle]="getEventStyle(event)" [event]="event" (rearrange)="rearrangeEvents()"></calendar-sheet-week-event>
+    <ng-container *ngFor="let event of allEvents">
+        <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event"></calendar-sheet-event>
     </ng-container>
 </div>

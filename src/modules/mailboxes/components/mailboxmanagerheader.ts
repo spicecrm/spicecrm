@@ -13,7 +13,19 @@ import {ActivatedRoute} from '@angular/router';
 export class MailboxManagerHeader implements OnInit {
 
     private mailboxselection: string;
-    private emailopenness: string = '';
+    //private emailopenness: string = '';
+    get emailopenness()
+    {
+        return this.mailboxesEmails.emailopenness == "" ? 'all' : this.mailboxesEmails.emailopenness;
+    }
+    set emailopenness(val) {
+        this.mailboxesEmails.emailopenness = val == 'all' ? "" : val;
+        this.mailboxesEmails.loadMails();
+    }
+
+    get buttonenabled() {
+        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading ? true : false;
+    }
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -53,15 +65,6 @@ export class MailboxManagerHeader implements OnInit {
             }
         }
         this.mailboxesEmails.loadMails();
-    }
-
-    private selectEmailOpenness() {
-        this.mailboxesEmails.emailopenness = this.emailopenness == "all" ? "" : this.emailopenness;
-        this.mailboxesEmails.loadMails();
-    }
-
-    get buttonenabled() {
-        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading ? true : false;
     }
 
     private reloadList() {
