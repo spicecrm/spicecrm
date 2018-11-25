@@ -41,7 +41,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
 
     private save() {
         this.cleangroup(this.primaryGroup);
-        this.filter.filterdefs = JSON.stringify(this.primaryGroup);
+        this.filter.filterdefs = this.primaryGroup;
         this.backend.postRequest('sysmodulefilters/' + this.filter.module + '/' + this.filter.id, {}, this.filter);
     }
 
