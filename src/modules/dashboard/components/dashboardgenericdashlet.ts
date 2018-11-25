@@ -37,13 +37,13 @@ export class DashboardGenericDashlet implements OnInit {
         this.loadRecords();
     }
 
-    get dashletTitle(){
+    get dashletTitle() {
         return this.language.getLabel(this.dashletLabel);
     }
 
     private loadRecords() {
         let params = this.params;
-        if (this.dashletModule){
+        if (this.dashletModule) {
             this.backend.getRequest("module/" + this.dashletModule, params).subscribe((records: any) => {
                 this.records = records.list;
                 this.recordcount = +records.list.length;
@@ -54,8 +54,8 @@ export class DashboardGenericDashlet implements OnInit {
         }
     }
 
-    get params(){
-        let fieldArray: Array<string> = [];
+    get params() {
+        let fieldArray: string[] = [];
         let params: any = {fields: fieldArray};
 
         if (this.dashletconfig) {
@@ -71,14 +71,18 @@ export class DashboardGenericDashlet implements OnInit {
                     params[filter] = this.dashletconfig.filters[filter];
                 }
             }
+            if (this.dashletconfig.modulefilter) {
+                    params.modulefilter = this.dashletconfig.modulefilter;
+            }
         }
         params.limit = this.loadLimit;
 
         return params;
     }
-    get tablestyle(){
+
+    get tablestyle() {
         let element = this.headercontainer.element.nativeElement;
-        return {height: `calc(98% - ${element.clientHeight}px` }
+        return {height: `calc(98% - ${element.clientHeight}px`}
 
     }
 
@@ -89,8 +93,8 @@ export class DashboardGenericDashlet implements OnInit {
         }
     }
 
-    private loadMore(){
-        if (this.canLoadMore){
+    private loadMore() {
+        if (this.canLoadMore) {
             this.loading = true;
             let params: any = this.params;
             params.offset = this.records.length;
