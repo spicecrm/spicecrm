@@ -1,0 +1,33 @@
+<div class="slds-border--right">
+    <div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-border--bottom">
+        <span>{{language.getLabel('LBL_MODULE')}}</span>
+        <div class="slds-form-element slds-p-horizontal--x-small slds-col">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="module">
+                        <option value="">{{language.getLabel('LBL_SELECT')}}</option>
+                        <option *ngFor="let thismodule of modules" [value]="thismodule">{{thismodule}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element__control">
+            <button [disabled]="!module" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="add()">
+                <system-button-icon icon="add"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div tobottom class="slds-p-around--x-small">
+        <div *ngIf="loading" class="slds-align--absolute-center slds-height_full">
+            <system-spinner></system-spinner>
+        </div>
+        <div *ngIf="!loading && modulefilters.length == 0" class="slds-align--absolute-center slds-height_full">
+            {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
+        </div>
+        <ul class="slds-has-dividers_around-space">
+            <li *ngFor="let modulefilter of modulefilters" class="slds-item">
+                <a href="javascript:void(0);" class="slds-text-link_reset" (click)="goDetail(modulefilter)">{{modulefilter.name}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
