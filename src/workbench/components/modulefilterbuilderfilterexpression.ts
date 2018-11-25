@@ -63,20 +63,12 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_THIS_MONTH'
             },
             {
-                operator: 'thisquarter',
-                name: 'LBL_THIS_QUARTER'
-            },
-            {
                 operator: 'thisyear',
                 name: 'LBL_THIS_YEAR'
             },
             {
                 operator: 'nextmonth',
                 name: 'LBL_NEXT_MONTH'
-            },
-            {
-                operator: 'nextquarter',
-                name: 'LBL_NEXT_QUARTER'
             },
             {
                 operator: 'nextyear',
