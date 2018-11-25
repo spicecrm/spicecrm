@@ -18,6 +18,7 @@ export class relatedmodels {
     public module: string = "";
     public relatedModule: string = "";
     public linkName: string = "";
+    public modulefilter: string = "";
     public id: string = "";
     public items: any = [];
     public items$ = new EventEmitter();
@@ -134,6 +135,7 @@ export class relatedmodels {
             getcount: true,
             offset: 0,
             limit: this.loaditems,
+            modulefilter: this.modulefilter,
             relationshipFields: JSON.stringify(this.relationshipFields),
             sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
         };
