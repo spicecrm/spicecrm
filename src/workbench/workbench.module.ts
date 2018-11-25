@@ -80,9 +80,9 @@ import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
 
-
 import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
+import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
 import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
@@ -104,6 +104,12 @@ import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackage
 import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
+
+import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
+import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
+import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
+import /*embed*/ {ModuleFilterBuilderFilterExpressionGroup} from "./components/modulefilterbuilderfilterexpressiongroup";
+import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/modulefilterbuilderfilterexpression";
 
 @NgModule({
     imports: [
@@ -129,6 +135,7 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         FieldsetManagerCopyDialog,
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
+        WorkbenchHeader,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
         ComponentsetManagerModulePipe,
@@ -182,7 +189,12 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         PackageLoaderLanguages,
         PackageLoaderLanguage,
         CRMLogViewer,
-        CRMLogViewerModal
+        CRMLogViewerModal,
+        ModuleFilterBuilder,
+        ModuleFilterBuilderFilters,
+        ModuleFilterBuilderFilterDetails,
+        ModuleFilterBuilderFilterExpressionGroup,
+        ModuleFilterBuilderFilterExpression
     ],
     /* no further modules needed */
     entryComponents: [

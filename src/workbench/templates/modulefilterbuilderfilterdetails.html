@@ -1,0 +1,21 @@
+<div *ngIf="filter">
+    <div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-border--bottom">
+        <label class="slds-form-element__label" >{{language.getLabel('LBL_NAME')}}</label>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <input  class="slds-input" type="text" [(ngModel)]="filter.name"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <div class="slds-expression">
+            <h2 class="slds-expression__title">{{language.getLabel('LBL_CONDITIONS')}}</h2>
+            <ul>
+                <module-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="filter.module"></module-filter-builder-expression-group>
+            </ul>
+            <div class="slds-expression__buttons">
+                <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
