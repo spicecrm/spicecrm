@@ -46,12 +46,14 @@ export class CRMLogViewer {
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
         // Load all CRM users to have their user names. Needed to map the user ids given by the log lines:
+        /* TEMPORARY DISABLED. See Ticket SPICEUI-159.
         this.backend.getRequest( 'module/Users' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
             });
         });
+        */
     }
 
     // Get the name for a specific user.
@@ -86,7 +88,7 @@ export class CRMLogViewer {
         }
 
         // Build the query parameters for the request:
-        let queryParams = <any>{
+        let queryParams = {
             limit: this.limit.length ? this.limit : undefined,
             level: this.filter.level.length ? this.filter.level : undefined,
             processId: this.filter.processId.length ? this.filter.processId : undefined,
