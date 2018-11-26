@@ -1,10 +1,10 @@
-<div class="slds-form-element slds-m-vertical--xxx-small">
+<div class="slds-form-element slds-m-vertical--xxx-small" style="clear: both">
     <div class="slds-form-element__control">
         <span class="slds-checkbox">
-          <input [disabled]="!view.isEditMode()" type="checkbox" name="options" [id]="option.option" [(ngModel)]="configValues[option.option]">
-          <label class="slds-checkbox__label" [attr.for]="option.option">
-            <span class="slds-checkbox_faux"></span>
-            <span class="slds-form-element__label">{{option.option}}</span>
+          <input [disabled]="!view.isEditMode()" class="slds-float_left" type="checkbox" name="options" [id]="option.option" [(ngModel)]="configValues[option.option]">
+          <label class="slds-checkbox__label" class="slds-float_left" [attr.for]="option.option">
+            <span class="slds-checkbox_faux" style="margin-right: 5px;"></span>
+            <span class="slds-form-element__label" style="margin-right: 3px;">{{option.option}}</span>
           </label>
           <div *ngIf="option.description.length > 0" class="slds-float_left" style="position: relative; margin-right: 5px; margin-top: 3px;">
             <div class="slds-form-element">

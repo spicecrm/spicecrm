@@ -12,15 +12,30 @@ import {language} from '../../services/language.service';
 import {view} from '../../services/view.service';
 
 
-@Pipe({name: 'componentsetmanagermodulepipe'})
-export class ComponentsetManagerModulePipe {
+@Pipe({name: 'componentsetmanagermodulepipeglobal'})
+export class ComponentsetManagerModulePipeGlobal {
     public transform(values, module) {
         let retValues = [];
         for (let value of values) {
-            if (value.module == module) {
+            if (value.module == module && value.type == "global") {
                 retValues.push(value);
             }
         }
+        console.log(retValues);
+        return retValues;
+    }
+}
+
+@Pipe({name: 'componentsetmanagermodulepipecustom'})
+export class ComponentsetManagerModulePipeCustom {
+    public transform(values, module) {
+        let retValues = [];
+        for (let value of values) {
+            if (value.module == module && value.type == "custom") {
+                retValues.push(value);
+            }
+        }
+        console.log(retValues);
         return retValues;
     }
 }
@@ -66,7 +81,25 @@ export class WorkbenchConfigOptionFieldset implements AfterViewInit {
         this.cdRef.detectChanges();
     }
 
-    private getFieldSets() {
+    private getFieldSets(type = undefined) {
         return this.metadata.getFieldSets();
+
+
+
+
+        // if (!type) {
+        //     return this.metadata.getFieldSets(this.currentModule);
+        // } else {
+        //     let retArray = [];
+        //     let fieldsets = this.metadata.getFieldSets(this.currentModule);
+        //
+        //     for (let fieldset of fieldsets) {
+        //         if (fieldset.type == type) {
+        //             retArray.push(fieldset);
+        //         }
+        //     }
+        //
+        //     return retArray;
+        // }
     }
 }
