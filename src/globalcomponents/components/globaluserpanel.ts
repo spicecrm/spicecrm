@@ -1,4 +1,3 @@
-
 import {Router} from "@angular/router";
 import {Component, ViewChild, ViewContainerRef, Renderer} from "@angular/core";
 import {loginService} from "../../services/login.service";
@@ -8,7 +7,7 @@ import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {configurationService} from "../../services/configuration.service";
-import { modal } from "../../services/modal.service";
+import {modal} from "../../services/modal.service";
 import {cookie} from "../../services/cookie.service";
 
 @Component({
@@ -44,23 +43,23 @@ export class GlobaUserPanel {
         this.rendered.invokeElementMethod(this.imgupload.element.nativeElement, "dispatchEvent", [event]);
     }
 
-    private getAvialableLanguages(){
+    private getAvialableLanguages() {
         return this.language.getAvialableLanguages(true);
     }
 
-    get displayName(){
+    get displayName() {
         return this.session.authData.display_name ? this.session.authData.display_name : this.session.authData.userName;
     }
 
-    get userName(){
+    get userName() {
         return this.session.authData.userName;
     }
 
-    get currentlanguage(){
+    get currentlanguage() {
         return this.language.currentlanguage;
     }
 
-    set currentlanguage(value){
+    set currentlanguage(value) {
         this.popup.close();
         this.language.currentlanguage = value;
         this.language.loadLanguage();

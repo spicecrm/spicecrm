@@ -37,7 +37,8 @@ export class loginService {
         private toast: toast,
         private session: session,
         private userprefs: userpreferences
-    ) {}
+    ) {
+    }
 
     public login(): Observable<boolean> {
         // make sure we invalidate a session id cookie that might still be around
@@ -46,25 +47,25 @@ export class loginService {
         let krestUrl: string = "";
         let options: object = {};
         let loginBy: string;
-        if (this.authData.userName.length >0 && this.authData.password.length > 0) {
-            let asUsernamePos: number;
-            if (( asUsernamePos = this.authData.userName.indexOf('#as#')) > -1 ) {
-                loginBy = this.authData.userName.slice( 0, asUsernamePos );
-                this.authData.userName = this.authData.userName.slice( asUsernamePos+4 );
+        if (this.authData.userName.length > 0 && this.authData.password.length > 0) {
+            let asUsernamePos: number = this.authData.userName.indexOf('#as#');
+            if (asUsernamePos > -1) {
+                loginBy = this.authData.userName.slice(0, asUsernamePos);
+                this.authData.userName = this.authData.userName.slice(asUsernamePos + 4);
             }
-            let headers = new HttpHeaders();
-            headers = headers.set(
+            let loginheaders = new HttpHeaders();
+            loginheaders = loginheaders.set(
                 'Authorization',
-                'Basic ' + btoa(this.authData.userName+':'+ this.authData.password)
+                'Basic ' + btoa(this.authData.userName + ':' + this.authData.password)
             );
 
             krestUrl = this.configurationService.getBackendUrl() + '/login';
-            if ( loginBy ) krestUrl += '?byDev=' + encodeURIComponent( loginBy );
-            options  = {headers: headers};
+            if (loginBy) krestUrl += '?byDev=' + encodeURIComponent(loginBy);
+            options = {headers: loginheaders};
         } else if (this.oauthToken.length > 0) {
-            let params = {oauthToken: this.oauthToken, accessToken: this.accessToken};
+            let optionparams = {oauthToken: this.oauthToken, accessToken: this.accessToken};
             krestUrl = this.configurationService.getBackendUrl() + '/google_oauth/token';
-            options  = {params: params};
+            options = {params: optionparams};
         } else {
             throw new Error('Cannot Log In');
         }
@@ -161,12 +162,13 @@ export class loginCheck implements CanActivate {
     constructor(private login: loginService, private session: session, private router: Router, private loader: loader) {
     }
 
-    canActivate(route, state) {
+    public canActivate(route, state) {
         if (!this.session || !this.session.authData.sessionId) {
             this.login.redirectUrl = state.url;
             this.router.navigate(['/login']);
             return false;
-        } else
+        } else {
             return true;
+        }
     }
 }
