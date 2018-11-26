@@ -13,30 +13,29 @@ import {Router}   from '@angular/router';
 export class fieldColorEnum extends fieldGeneric
 {
 
+    longOptions: Array<any> = [];
     options: Array<any> = [];
+    colors: Array<any> = [];
+
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
 
     getValue(): String {
-
-        var values = this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, this.value);
-        if(values) {
-            var parsedvalues = JSON.parse(values);
-            return (parsedvalues.name);
+        for(let opt of this.options) {
+            if(opt.value == this.value){
+                return opt.display;
+            }
         }
-        // return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, this.value);
     }
 
     getColor(): String {
-
-        var values = this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, this.value);
-        if(values) {
-            var parsedvalues = JSON.parse(values);
-            return (parsedvalues.color);
+        if(this.colors[this.value]) {
+            return this.colors[this.value];
+        }else {
+            return 'transparent';
         }
-        // return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, this.value);
     }
 
     ngOnInit(){
@@ -45,27 +44,28 @@ export class fieldColorEnum extends fieldGeneric
 
     getOptions()
     {
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        this.longOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        let options = {...this.longOptions};
 
-        if(options) {
-            for (let optionVal in options) {
-                var parsedoptionVal = JSON.parse(options[optionVal]);
-                retArray.push({
-                    value: optionVal,
-                    color: parsedoptionVal.color,
-                    display: parsedoptionVal.name
-                })
-            }
-            this.options = retArray;
+        if(!options || this.fieldconfig.useShort){
+            options = this.language.getDisplayOptions(this.fieldconfig.shortEnum);
         }
 
-        /*
-        // set the first value if no value is set and we are in edit mode
-        if(this.isEditMode() && this.options.length > 0 && !this.value)
-            this.value = this.options[0].value;
-        */
+        this.colors = this.language.getDisplayOptions(this.fieldconfig.colorEnum);
 
+        let retArray = [];
+
+        for (let optionVal in options) {
+
+            retArray.push({
+                value: optionVal,
+                color: this.colors[optionVal],
+                display: options[optionVal],
+                long: this.longOptions[optionVal]
+            })
+        }
+        this.options = retArray;
+        
     }
 
 }

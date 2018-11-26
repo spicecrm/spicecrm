@@ -9,6 +9,7 @@ export class SystemCustomIcon {
     @Input() icon: string = '';
     @Input() file: string = './assets/icons/spicecrm.svg';
     @Input() size: string = '';
+    @Input() color: string = '';
     @Input() addclasses: string = ''
     @Input() divClass = 'slds-media__figure';
 
@@ -29,5 +30,13 @@ export class SystemCustomIcon {
 
     getIconClass() {
         return 'slds-icon' + (this.size ? ' slds-icon--' + this.size : '') + ' slds-icon-text-default' + ' ' + this.addclasses;
+    }
+
+    getIconColor() {
+        if(this.color) {
+            return 'color: ' + this.color + ';';
+        }else {
+            return '';
+        }
     }
 }
