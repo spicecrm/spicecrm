@@ -11,12 +11,12 @@
                 </div>
             </div>
         </div>
-        <div #adminitemscontainer class="slds-scrollable--y" [ngStyle]="getItemsStyle()">
+        <div tobottom>
             <ng-container  *ngFor="let adminNavigationBlock of getNavigationBlocks()" >
                 <h2 class="slds-text-title--caps slds-p-around--medium">{{adminNavigationBlock}}</h2>
                 <ul>
                     <li *ngFor="let item of getNavigationItems(adminNavigationBlock)">
-                        <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="openContent(adminNavigationBlock, item)" [ngClass]="{'slds-theme_inverse': item == opened_item}">
+                        <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="openContent(adminNavigationBlock, item)" [ngClass]="{'slds-theme_inverse': item.id == opened_itemid}">
                             {{item.name}}
                         </a>
                     </li>

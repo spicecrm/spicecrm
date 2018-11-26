@@ -1,5 +1,5 @@
 import {CommonModule} from "@angular/common";
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from "@angular/core";
+import {AfterViewInit, ChangeDetectorRef, HostListener, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";
@@ -13,6 +13,7 @@ import {model} from "../../services/model.service";
 import {modellist} from "../../services/modellist.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {modelutilities} from "../../services/modelutilities.service";
+import {userpreferences} from "../../services/userpreferences.service";
 import {helper} from "../../services/helper.service";
 import {language} from "../../services/language.service";
 import {broadcast} from "../../services/broadcast.service";
@@ -25,10 +26,10 @@ import {view} from "../../services/view.service";
 import {popup} from "../../services/popup.service";
 import {toast} from "../../services/toast.service";
 import {fts} from "../../services/fts.service";
+import {recent} from "../../services/recent.service";
 import {configurationService} from "../../services/configuration.service";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
-
 
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
@@ -37,7 +38,6 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
-import /*embed*/ {userpreferences} from "../../services/userpreferences.service";
 
 import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
