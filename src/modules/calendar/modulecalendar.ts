@@ -13,6 +13,7 @@ import {model} from "../../services/model.service";
 import {modellist} from "../../services/modellist.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {modelutilities} from "../../services/modelutilities.service";
+import {userpreferences} from "../../services/userpreferences.service";
 import {helper} from "../../services/helper.service";
 import {language} from "../../services/language.service";
 import {broadcast} from "../../services/broadcast.service";
@@ -30,7 +31,6 @@ import {configurationService} from "../../services/configuration.service";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
 
-
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
@@ -38,7 +38,6 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
-import /*embed*/ {userpreferences} from "../../services/userpreferences.service";
 
 import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
