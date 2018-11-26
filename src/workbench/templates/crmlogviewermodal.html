@@ -1,9 +1,10 @@
 <system-modal size="large">
-    <system-modal-header>{{date}} • {{time}} • {{processId}} • {{username}} • {{level}}</system-modal-header>
-    <system-modal-content margin="none" style="height:100%">
-        <div class="slds-p-around--small slds-text-font_monospace">{{text}}</div>
+    <system-modal-header (close)="closeModal()">{{line.date}} • {{line.time}} • {{line.pid}} • {{username}} • {{line.lev}}</system-modal-header>
+    <system-modal-content style="height:100%">
+        <system-spinner *ngIf="isLoading" class="slds-m-top--medium" style="display:block"></system-spinner>
+        <div *ngIf="isLoaded" class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace">{{line.fullText}}</div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CLOSE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
     </system-modal-footer>
 </system-modal>
