@@ -574,6 +574,16 @@ export class metadata {
         return this.componentSets[componentSetId];
     }
 
+    public getAllComponentsets() {
+        try {
+            return this.componentSets;
+        } catch (e) {
+            return "";
+        }
+    }
+
+
+
     public addComponentSet(id, module, name, type = "custom") {
         this.componentSets[id] = {
             name: name,

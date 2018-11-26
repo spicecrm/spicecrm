@@ -54,7 +54,6 @@ export class SelectTreeComponent {
     }
 
 
-
     private loadTrees(selectloadfirst = false) {
         if( !this.config.getData('select_trees')) {
             this.backend.getRequest('spiceui/core/selecttree/trees').subscribe(
@@ -75,13 +74,6 @@ export class SelectTreeComponent {
         }
     }
 
-    // getTrees(){
-    //     let trees = this.config.getData('select_trees');
-    //     return trees;
-    // }
-
-
-
     private loadSelectTree(currentSelectTree) {
 
         this.edit_category = null;
@@ -97,7 +89,6 @@ export class SelectTreeComponent {
 
 
     private initializeTree(tree) {
-        // console.log(tree);
         this.category_tree = tree;
 
 
