@@ -238,7 +238,6 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             left: left + "px",
             height: this.calendar.multiEventHeight + "px",
             top: multiEvents.top + (this.calendar.multiEventHeight * eventIndex) + "px",
-            padding: "2px"
         };
     }
 
