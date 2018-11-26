@@ -10,4 +10,4 @@
         </button>
     </li>
 </ul>
-<global-user-panel [hidden]="hideUserDetails"></global-user-panel>
+<global-user-panel *ngIf="!hideUserDetails"></global-user-panel>

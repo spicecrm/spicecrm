@@ -22,11 +22,13 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import {configurationService} from "../services/configuration.service";
 import {footer} from "../services/footer.service";
 import {userpreferences} from '../services/userpreferences.service';
+import {loader} from '../services/loader.service';
 
 // MODULEs
 import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
+import {GlobalComponents} from "../globalcomponents/globalcomponents";
 
 // COMPONENTs
 
@@ -94,6 +96,14 @@ import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
+import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
+
+import /*embed*/ {PackageLoader} from "./components/packageloader";
+import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
+import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackages";
+import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
+import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
+import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 
 @NgModule({
     imports: [
@@ -101,7 +111,8 @@ import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        ObjectFields
+        ObjectFields,
+        GlobalComponents
     ],
     declarations: [
         DomainManager,
@@ -165,7 +176,14 @@ import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
         ObjectRepositoryManagerAddModule,
-        CRMLogViewer
+        PackageLoader,
+        PackageLoaderPipe,
+        PackageLoaderPackages,
+        PackageLoaderPackage,
+        PackageLoaderLanguages,
+        PackageLoaderLanguage,
+        CRMLogViewer,
+        CRMLogViewerModal
     ],
     /* no further modules needed */
     entryComponents: [
@@ -181,7 +199,8 @@ import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
         ModuleConfigManager,
         WorkbenchConfig,
         ObjectRepositoryManager,
-        CRMLogViewer
+        CRMLogViewer,
+        CRMLogViewerModal
     ],
     exports: [
         SortPipe,
