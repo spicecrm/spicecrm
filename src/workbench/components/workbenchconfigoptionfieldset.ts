@@ -21,7 +21,6 @@ export class ComponentsetManagerModulePipeGlobal {
                 retValues.push(value);
             }
         }
-        console.log(retValues);
         return retValues;
     }
 }
@@ -35,7 +34,6 @@ export class ComponentsetManagerModulePipeCustom {
                 retValues.push(value);
             }
         }
-        console.log(retValues);
         return retValues;
     }
 }
