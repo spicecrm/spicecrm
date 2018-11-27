@@ -78,7 +78,8 @@ export class calendar {
 
     public loadEvents(start, end, calendar = this.owner) {
         // check if we need to reload
-        if (!this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end || !this.calendars[calendar]) {
+        if (!this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end ||
+            !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0)) {
             // set current search parameters
             this.currentEnd = end;
             this.currentStart = start;
@@ -238,11 +239,33 @@ export class calendar {
                     case "model.save":
                         let uid = message.messagedata.data.assigned_user_id;
                         if (!this.calendars[uid]) {return}
-                        this.calendars[uid].some(event => {
+                        let exists = this.calendars[uid].some(event => {
                             if (event.id == message.messagedata.id) {
                                 event.data = message.messagedata.data;
                                 event.start = message.messagedata.data.date_start;
                                 event.end = message.messagedata.data.date_end;
+                                return true;
+                            }
+                        });
+
+                        if (!exists) {
+                            this.calendars[uid].push({
+                                id: message.messagedata.id,
+                                module: message.messagedata.module,
+                                type: "event",
+                                start: message.messagedata.data.date_start,
+                                end: message.messagedata.data.date_end,
+                                data: message.messagedata.data
+                            });
+                            this.calendarDate = new moment(this.calendarDate);
+                        }
+                        break;
+                    case "model.delete":
+                        if (!this.calendars[this.owner]) {return}
+                        this.calendars[this.owner].some(event => {
+                            if (event.id == message.messagedata.id) {
+                                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
+                                this.calendarDate = new moment(this.calendarDate);
                                 return true;
                             }
                         });
