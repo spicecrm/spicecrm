@@ -24,17 +24,19 @@ export class fieldColorEnum extends fieldGeneric
 
     getValue(): String {
         for(let opt of this.options) {
-            if(opt.value == this.value){
+            if(opt.value == this.value) {
                 return opt.display;
             }
         }
     }
 
     getColor(): String {
-        if(this.colors[this.value]) {
-            return this.colors[this.value];
-        }else {
-            return 'transparent';
+        if(this.colors) {
+            if (this.colors[this.value]) {
+                return this.colors[this.value];
+            } else {
+                return 'transparent';
+            }
         }
     }
 
