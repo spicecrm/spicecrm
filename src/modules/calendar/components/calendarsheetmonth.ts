@@ -111,6 +111,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
 
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
+                events.forEach(event => {
+                    if (event.type == "absence") {
+                        event.end = event.end.add(1, 'h');
+                    }
+                });
                 this.ownerEvents = events;
                 this.reArrangeEvents(this.ownerEvents, "owner");
             }
