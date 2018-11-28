@@ -18,6 +18,10 @@
                 </div>
             </div>
 
+            <div class="slds-m-right--x-small">
+                <button class="slds-button slds-button_outline-brand" (click)="period.year=yearNow">{{yearNow}}</button>
+            </div>
+
             <div class="slds-form-element slds-m-right--x-small">
                 <label class="slds-form-element__label" for="month">{{lang.getLabel('LBL_MONTH')}}</label>
                 <div class="slds-form-element__control">
@@ -129,7 +133,7 @@
     <div class="slds-form-element">
         <label class="slds-form-element__label" for="level">{{lang.getLabel('LBL_TEXT_FILTER')}} (by client)</label>
         <div class="slds-form-element__control slds-grid">
-            <input id="filtertext" class="slds-input" type="text" [(ngModel)]="filtertext" (keyup.enter)="doTextFilter()"/>
+            <input id="filtertext" class="slds-input" type="text" trim="blur" [(ngModel)]="filtertext" (keyup.enter)="doTextFilter()"/>
             <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="doTextFilter()" [attr.disabled]="filtertext===''?true:null">
                 <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
             </button>
