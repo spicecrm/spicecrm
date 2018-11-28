@@ -36,6 +36,7 @@ export class CRMLogViewer {
     private filter = { level: 'fatal', processId: '', userId: '' };
     private period = { year: '', month: '', day: '', hour: '' };
     private filtertext = '';
+    private yearNow: string;
 
     // Stati:
     private isLoading = false;
@@ -54,6 +55,7 @@ export class CRMLogViewer {
             });
         });
         */
+        this.yearNow = (new Date()).getFullYear().toString();
     }
 
     // Get the name for a specific user.
