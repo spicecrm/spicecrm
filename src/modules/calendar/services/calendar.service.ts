@@ -95,19 +95,20 @@ export class calendar {
                     event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                     switch (event.type) {
                         case 'event':
-                        case 'absence':
                             event.start = moment(event.start).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                             event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                             break;
-                    }
-                    if (event.type != "absence") {
-                        if (+event.end.diff(event.start, 'days') > 0) {
+                        case 'absence':
+                            event.start = moment(event.start);
+                            event.end = moment(event.end);
                             event.isMulti = true;
-                        }
-                    } else {
+                            event.color = this.absenceColor;
+                            event.data.summary_text = event.data.type;
+                            break;
+                    }
+
+                    if (+event.end.diff(event.start, 'days') > 0) {
                         event.isMulti = true;
-                        event.color = this.absenceColor;
-                        event.data.summary_text = event.data.type;
                     }
 
                     this.calendars[calendar].push(event);
