@@ -1,6 +1,5 @@
 import {
     AfterViewInit,
-    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -51,7 +50,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                 private navigation: navigation,
                 private elementRef: ElementRef,
                 private backend: backend,
-                private cdRef: ChangeDetectorRef,
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
@@ -84,7 +82,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         let boxContainerHeight = this.boxContainer.element.nativeElement.clientHeight;
         let dayContainerHeight = this.dayContainer.element.nativeElement.clientHeight;
         this.maxEventsPerBox = Math.floor((boxContainerHeight - dayContainerHeight - this.moreHeight) / this.eventHeight);
-        this.cdRef.detectChanges();
     }
 
     private getSheetDays(): Array<any> {
@@ -114,6 +111,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
 
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
+                events.forEach(event => {
+                    if (event.type == "absence") {
+                        event.end = event.end.add(1, 'h');
+                    }
+                });
                 this.ownerEvents = events;
                 this.reArrangeEvents(this.ownerEvents, "owner");
             }
