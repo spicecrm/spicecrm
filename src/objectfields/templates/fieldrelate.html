@@ -20,8 +20,8 @@
                 </div>
                 <div *ngIf="!model.data[relateIdField]" class="slds-form-element__control slds-grid slds-box--border" [ngClass]="getFieldClass()">
                     <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
                         <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(relateType)" role="combobox"/>
+                        <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
