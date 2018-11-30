@@ -33,6 +33,10 @@ export class ObjectActivitiyTimelineTask implements OnInit {
     }
 
 
+    get completed() {
+        return this.model.getField('status') == 'Completed';
+    }
+
     get canComplete() {
         if ((this.model.data.status === 'Completed' || this.model.data.status === 'Deferred') && this.model.checkAccess('edit')) {
             return false;
