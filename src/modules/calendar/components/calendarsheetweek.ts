@@ -107,8 +107,8 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         if (!this.calendar.loggedByGoogle) {
             return;
         }
-        let startDate = new moment(this.setdate).day(0).hour(this.calendar.startHour).minute(0).second(0);
-        let endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd')).hour(this.calendar.endHour);
+        let startDate = new moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).minute(0).second(0);
+        let endDate = new moment(startDate).add(moment.duration((this.calendar.weekDaysCount - 1), 'd')).hour(this.calendar.endHour);
         let params = {
             startdate: startDate.format('YYYY-MM-DD HH:mm:ss'),
             enddate: endDate.format('YYYY-MM-DD HH:mm:ss')
@@ -152,8 +152,8 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
     }
 
     private getUsersEvents() {
-        let startDate = new moment(this.setdate).day(0).hour(this.calendar.startHour).minute(0).second(0);
-        let endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd')).hour(this.calendar.endHour);
+        let startDate = new moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).minute(0).second(0);
+        let endDate = new moment(startDate).add(moment.duration((this.calendar.weekDaysCount - 1), 'd')).hour(this.calendar.endHour);
         this.otherEvents = [];
         this.otherMultiEvents = [];
         for (let calendar of this.calendar.usersCalendars) {
@@ -189,7 +189,8 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             focDate.day(dayIndex);
             sheetDays.push({
                 index: i,
-                date: focDate
+                date: moment(focDate),
+                day: dayIndex
             });
             i++;
             dayIndex++;
@@ -206,7 +207,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
     private getEventStyle(event) {
         // get the day of the week
-        let startday = event.start.day() - this.calendar.weekStartDay;
+        let startday = this.calendar.weekStartDay == 1 && event.start.day() == 0 ? 6 : event.start.day() - this.calendar.weekStartDay;
         let startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
         let endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
 
@@ -227,7 +228,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             return {};
         }
         let multiEvents = this.multiEvents.element.nativeElement.getBoundingClientRect();
-        let startDate = new moment(this.setdate).day(0).hour(0).minute(0).second(0);
+        let startDate = new moment(this.setdate).day(this.calendar.weekStartDay).hour(0).minute(0).second(0);
         let endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd'));
         let startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
         let endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));

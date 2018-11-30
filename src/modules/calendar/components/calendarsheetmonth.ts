@@ -112,6 +112,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
         this.calendar.loadEvents(startDate, endDate).subscribe(events => {
             if (events.length > 0) {
                 events.forEach(event => {
+                    event.start = moment(event.start).hour(0).minute(0).second(0);
+                    event.end = moment(event.end).hour(0).minute(0).second(0);
                     if (event.type == "absence") {
                         event.end = event.end.add(1, 'h');
                     }
@@ -138,8 +140,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
             this.backend.getRequest("google/calendar/getgoogleevents", params).subscribe(res => {
                 if (res.events && res.events.length > 0) {
                     let events = res.events.map(event => {
-                        event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                        event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                        event.start = moment(event.start.dateTime).hour(0).minute(0).second(0);
+                        event.end = moment(event.end.dateTime).hour(0).minute(0).second(0);
                         if (+event.end.diff(event.start, 'days') > 0) {
                             event.isMulti = true;
                         }
@@ -182,6 +184,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                     events.forEach(event => {
                         event.color = calendar.color;
                         event.visible = calendar.visible;
+                        event.start = moment(event.start).hour(0).minute(0).second(0);
+                        event.end = moment(event.end).hour(0).minute(0).second(0);
                         this.otherEvents.push(event);
                     });
                     this.reArrangeEvents(this.otherEvents, "users");
@@ -199,11 +203,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                 }
                 for (let d = 0; d < this.currentGrid[w].length; d++) {
                     let day = this.currentGrid[w][d];
-                    for (let eventDay = moment(event.start); eventDay.isBefore(event.end); eventDay.add(1, 'days')) {
+
+                    for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
                         if (eventDay.date() == day.day && day.month == eventDay.month()) {
-                            if (!event.hasOwnProperty("startI")) {
-                                event.startI = d;
-                            }
+
                             if (!day.items.some(itemsEvent => itemsEvent.id == event.id)) {
                                 event.category = category;
                                 day.items.push(event);
@@ -211,15 +214,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                             if (event.weeksI.indexOf(w) == -1) {
                                 event.weeksI.push(w);
                             }
-                            event.endI = d;
                         }
                     }
                     day.items.sort((a, b) => {
-                        if (a.start < b.start || a.data.duration_hours > b.data.duration_hours) {
+                        if ((a.start < b.start && a.end > b.end) || a.data.duration_hours > b.data.duration_hours) {
                             return -1;
-                        }
-                        if (a.data.duration_hours <= 24) {
-                            return 1;
                         }
                         return 0;
                     });
@@ -314,29 +313,33 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
     }
 
     private getEventStyle(event, weekI) {
-        let endI = 0;
         let startI = null;
-        let eventI = 0;
+        let eventI = null;
+        let endI = 0;
+        let eDays = 0;
         let visible = "block";
         this.currentGrid[weekI].some((day, dIndex) => {
             if (day.items.indexOf(event) > -1) {
+                eDays++;
                 if (startI == null) {
                     startI = dIndex;
                 }
+                eventI = day.items.indexOf(event);
+
                 endI = dIndex;
-                eventI = eventI > day.items.indexOf(event) ? eventI : day.items.indexOf(event);
                 if (eventI >= this.maxEventsPerBox) {
                     visible = "none";
                 }
             }
         });
-        let duration = endI - startI;
+
+
         let sheetContainer = this.calendarsheet.element.nativeElement;
         let dayContainerHeight = this.dayContainer != undefined ? this.dayContainer.element.nativeElement.clientHeight : 0;
 
         return {
             left: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI,
-            width: (sheetContainer.clientWidth / this.calendar.weekDaysCount) + ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * duration),
+            width: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * eDays,
             top: dayContainerHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI),
             height: this.eventHeight,
             display: visible

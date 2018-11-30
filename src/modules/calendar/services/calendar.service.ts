@@ -99,8 +99,8 @@ export class calendar {
                             event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                             break;
                         case 'absence':
-                            event.start = moment(event.start);
-                            event.end = moment(event.end);
+                            event.start = moment(event.start).second(1);
+                            event.end = moment(event.end).second(1);
                             event.isMulti = true;
                             event.color = this.absenceColor;
                             event.data.summary_text = event.data.type;
@@ -135,7 +135,11 @@ export class calendar {
 
     // internal function to manage the display .. adding diaplyindex and overly count to each event
     public arrangeEvents(events) {
-
+        events = events.map(event => {
+            event.start = moment(event.start).second(0);
+            event.end = moment(event.end).second(0);
+            return event;
+        });
         // sort the events
         events.sort((a, b) => {
             if (a.start < b.start) {
@@ -193,11 +197,9 @@ export class calendar {
 
         // determine the display index for all elements
         let handledEvents = [];
-        // angular.forEach(_calendarService.calendarEvents, function (_event) {
         for (let _event of events) {
             let _displayIndex = 0;
             let _usedIndexes = [];
-            // angular.forEach(_calendarService.calendarEvents, function (_ovEvent) {
             for (let _ovEvent of events) {
                 if (handledEvents.indexOf(_ovEvent.id) !== -1 && _ovEvent.start < _event.end && _ovEvent.end > _event.start) {
                     if (_usedIndexes.indexOf(calendarOverlay[_ovEvent.id].displayIndex) === -1) {
@@ -214,7 +216,6 @@ export class calendar {
 
 
         // finally prpgate to see if any of the nested overlaid elements has a higher max Overly v alue
-        // angular.forEach(_calendarService.calendarEventsOverlay, function (_overlayData, _overlayId) {
         for (let _overlayid in calendarOverlay) {
             // angular.forEach(_overlayData.elementsOverlaid, function (_ovOverlayData) {
             for (let _ooverlay of calendarOverlay[_overlayid].elementsOverlaid) {
@@ -245,6 +246,7 @@ export class calendar {
                                 event.data = message.messagedata.data;
                                 event.start = message.messagedata.data.date_start;
                                 event.end = message.messagedata.data.date_end;
+                                this.calendarDate = moment(this.calendarDate);
                                 return true;
                             }
                         });
@@ -258,7 +260,7 @@ export class calendar {
                                 end: message.messagedata.data.date_end,
                                 data: message.messagedata.data
                             });
-                            this.calendarDate = new moment(this.calendarDate);
+                            this.calendarDate = moment(this.calendarDate);
                         }
                         break;
                     case "model.delete":
@@ -266,7 +268,7 @@ export class calendar {
                         this.calendars[this.owner].some(event => {
                             if (event.id == message.messagedata.id) {
                                 this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
-                                this.calendarDate = new moment(this.calendarDate);
+                                this.calendarDate = moment(this.calendarDate);
                                 return true;
                             }
                         });
@@ -281,7 +283,7 @@ export class calendar {
         this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
         this.startHour = +this.userPreferences.unchangedPreferences.global['calendar_day_start_hour'] || this.startHour;
         this.endHour = +this.userPreferences.unchangedPreferences.global['calendar_day_end_hour'] || this.endHour;
-        this.calendarDate = new moment();
+        this.calendarDate = moment();
     }
 
     private getOtherCalendars() {
