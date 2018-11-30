@@ -1,8 +1,3 @@
-<a href="javascript:void(0);" class="slds-text-link--reset" (click)="togglePopover()">{{model.data.summary_text}}</a>
-<div *ngIf="showPopover" class="slds-popover slds-popover--panel slds-nubbin--left-top slds-is-absolute" role="dialog">
-    <div object-popover-header></div>
-    {{model.parent_type}}
-    <div class="slds-popover__body">
-        <dl *ngIf="model.data.parent_id" object-popover-body-item class="slds-popover__body-list" [module]="model.data.parent_type" [id]="model.data.parent_id"></dl>
-    </div>
-</div>
+<span *ngIf="model.module" modelPopOver class="slds-text-link--reset slds-text-color--inverse">{{model.data.summary_text}}</span>
+<span *ngIf="!model.module" [title]="model.data.summary_text" class="slds-text-link--reset slds-text-color--inverse">{{model.data.summary_text}}</span>
+<span *ngIf="isMulti && startHour && !isAbsence" class="slds-text-color--inverse">, {{startHour}}</span>

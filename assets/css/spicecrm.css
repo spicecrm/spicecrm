@@ -813,6 +813,9 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     fill: #CA1B1F;
 }
 
+.slds-listbox__option.slds-is-selected .slds-listbox__option-icon{
+    color: #CA1B1F;
+}
 
 .slds-button span{
     text-transform: capitalize;
@@ -833,6 +836,19 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .slds-timeline__item_expandable:before{
     height: calc(100% - 30px);
     top: 30px;
+}
+
+.slds-text-align--justify{
+    text-align: justify;
+}
+
+.slds-height_full{
+    height: 100%;
+}
+
+.slds-is-absolute__top{
+    position: absolute;
+    top: 0px;
 }
 
 /* Style Definition for HTML fields */

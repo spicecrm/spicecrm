@@ -52,7 +52,7 @@ export class ComponentsetManager {
                 private toast: toast,
                 private modalservice: modal,
                 private view: view,
-                private configurationService: configurationService,) {
+                private configurationService: configurationService) {
 
         this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
@@ -342,4 +342,8 @@ export class ComponentsetManager {
 
         })
     }
+
+
+
+
 }
