@@ -54,14 +54,19 @@ export class WorkbenchConfig implements OnChanges {
         }
 
         // add the elements dynamically
-        for (let option of this.configOptions) {
+        for (let fieldconfig of this.configOptions) {
             let component = '';
-            let type = option.type.charAt(0).toUpperCase() + option.type.slice(1);
+            let type = fieldconfig.type.charAt(0).toUpperCase() + fieldconfig.type.slice(1);
             component = 'WorkbenchConfigOption' + type;
 
             // check availability
             if (!this.metadata.checkComponent(component)) {
-                component = 'WorkbenchConfigOptionDefault';
+
+                if(fieldconfig.type == "label") {
+                    component = 'LabelSelectorComponent';
+                }else {
+                    component = 'WorkbenchConfigOptionDefault';
+                }
             }
 
             this.metadata.addComponent(component, this.optionscontainer).subscribe(
@@ -69,12 +74,12 @@ export class WorkbenchConfig implements OnChanges {
 
                     this.optionsElements.push(cmpref);
 
-                    cmpref.instance.option = option;
+                    cmpref.instance.option = fieldconfig;
                     cmpref.instance.configValues = this.configValues;
 
                     if (component == 'LabelSelectorComponent') {
                         let val = "";
-                        val = this.configValues[option.option];
+                        val = this.configValues[fieldconfig.option];
 
                         if (val && this.language.languagedata.applang[val]) {
                             // fake a label object...
@@ -82,7 +87,11 @@ export class WorkbenchConfig implements OnChanges {
                         }
                         cmpref.instance.select$.subscribe(
                             item => {
-                                this.configValues[option.option] = item.name;
+                                if(item) {
+                                    this.configValues[fieldconfig.option] = item.name;
+                                }else {
+                                    this.configValues[fieldconfig.option] = null;
+                                }
                             }
                         );
                     }

@@ -3,7 +3,7 @@ import {
     HostBinding,
     ElementRef,
     Renderer2,
-    DoCheck
+    DoCheck, AfterViewInit
 } from '@angular/core';
 @Directive({
     selector: '[tobottom]',
@@ -13,7 +13,7 @@ export class ToBottomDirective implements DoCheck {
     constructor(private element: ElementRef, private renderer: Renderer2) {
     }
 
-    @HostBinding('class') private elementClass = 'slds-scrollable--y';
+    @HostBinding('class.slds-scrollable--y') private elementClass = true;
 
     public ngDoCheck() {
         let rect = this.element.nativeElement.getBoundingClientRect();

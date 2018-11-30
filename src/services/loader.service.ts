@@ -1,43 +1,41 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
+import {CanActivate} from '@angular/router';
 
 import {configurationService} from './configuration.service';
 import {loginService} from './login.service';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {language} from './language.service';
 import {territories} from './territories.service';
 import {recent} from './recent.service';
 import {favorite} from './favorite.service';
 import {reminder} from './reminder.service';
-import { metadata } from './metadata.service';
-import { currency } from './currency.service';
-import { userpreferences } from './userpreferences.service';
-
+import {metadata} from './metadata.service';
+import {currency} from './currency.service';
+import {userpreferences} from './userpreferences.service';
 
 
 @Injectable()
-export class loader
-{
-    module: string = '';
-    id: string = '';
-    data: any = {};
-    loaderHandler: Subject<string> = new Subject<string>();
-    loadComplete: Subject<boolean> = new Subject<boolean>();
-    start: any = '';
-    counterCompleted = 0;
-    progress = 0;
-    activeLoader: string = '';
-    loadPhase: string = 'primary';
+export class loader {
+    private module: string = '';
+    private id: string = '';
+    private data: any = {};
+    private loaderHandler: Subject<string> = new Subject<string>();
+    private loadComplete: Subject<boolean>;
+    private start: any = '';
+    private counterCompleted = 0;
+    private progress = 0;
+    private activeLoader: string = '';
+    private loadPhase: string = 'primary';
 
-    loadElements: any = {
+    private loadElements: any = {
         primary: [
             {
                 name: 'loadComponents',
                 display: 'Components',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.metadata.loadComponents(loader.loaderHandler);
                 }
 
@@ -46,7 +44,7 @@ export class loader
                 name: 'loadFieldSets',
                 display: 'Fieldsets',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.metadata.loadFieldSets(loader.loaderHandler);
                 }
             },
@@ -54,7 +52,7 @@ export class loader
                 name: 'loadValidationRules',
                 display: 'Validations',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.metadata.loadValidationRules(loader.loaderHandler);
                 }
             },
@@ -62,7 +60,7 @@ export class loader
                 name: 'loadModuleDefinitions',
                 display: 'Module Definitions',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.metadata.loadModuleDefinitions(loader.loaderHandler);
                 }
             },
@@ -70,7 +68,7 @@ export class loader
                 name: 'loadFieldDefs',
                 display: 'Field Definitions',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.metadata.loadFieldDefs(loader.loaderHandler);
                 }
             },
@@ -78,7 +76,7 @@ export class loader
                 name: 'getLanguage',
                 display: 'Language',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.language.getLanguage(loader.loaderHandler);
                 }
             },
@@ -86,7 +84,7 @@ export class loader
                 name: 'getPreferences',
                 display: 'Preferences',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.userpreferences.getPreferences(loader.loaderHandler);
                 }
             },
@@ -94,7 +92,7 @@ export class loader
                 name: 'loadCurrencies',
                 display: 'Currencies',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.currency.loadCurrencies(loader.loaderHandler);
                 }
             }
@@ -104,7 +102,7 @@ export class loader
                 name: 'getTerritories',
                 display: 'Territories',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.territories.getTerritories(loader.loaderHandler);
                 }
             },
@@ -112,7 +110,7 @@ export class loader
                 name: 'getRecent',
                 display: 'Recently viewed',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.recent.getRecent(loader.loaderHandler);
                 }
             },
@@ -120,7 +118,7 @@ export class loader
                 name: 'loadFavorites',
                 display: 'Favorites',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.favorite.loadFavorites(loader.loaderHandler);
                 }
             },
@@ -128,7 +126,7 @@ export class loader
                 name: 'loadReminders',
                 display: 'Reminders',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.reminder.loadReminders(loader.loaderHandler);
                 }
             },
@@ -136,7 +134,7 @@ export class loader
                 name: 'loadHtmlStyling',
                 display: 'HTML Styling',
                 status: 'initial',
-                action: function (loader) {
+                action: (loader) => {
                     loader.metadata.loadHtmlStyling(loader.loaderHandler);
                 }
             }
@@ -158,60 +156,89 @@ export class loader
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
     }
 
-    load(): Observable<boolean>
-    {
+    public load(): Observable<boolean> {
+        this.loadComplete = new Subject<boolean>();
         this.resetLoader();
         this.start = performance.now();
         this.handleLoaderHandler();
         return this.loadComplete.asObservable();
     }
 
-    resetLoader(){
+    public reloadPrimary() {
+        this.loadComplete = new Subject<boolean>();
+
+        // set the laodphase to primary
         this.loadPhase = 'primary';
 
-        for(let loaditem of this.loadElements.primary){
+        // reset the progress
+        this.progress = 0;
+        this.counterCompleted = 0;
+
+        // reset the primary load elements
+        for (let loaditem of this.loadElements.primary) {
             loaditem.status = 'initial';
         }
 
-        for(let loaditem of this.loadElements.secondary){
+        // start the handler
+        this.start = performance.now();
+        this.handleLoaderHandler();
+
+        // return the observable
+        return this.loadComplete.asObservable();
+    }
+
+    private resetLoader() {
+        // reset the progress
+        this.counterCompleted = 0;
+        this.progress = 0;
+
+        this.loadPhase = 'primary';
+
+        for (let loaditem of this.loadElements.primary) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.secondary) {
             loaditem.status = 'initial';
         }
     }
 
-    reset(){
+    public reset() {
         this.counterCompleted = 0;
         this.progress = 0;
-        for(let loadElement of this.loadElements){
+
+        for (let loadElement of this.loadElements) {
             loadElement.status = 'initial';
         }
     }
 
 
-    setComplete(){
+    private setComplete() {
         let t1 = performance.now();
-        if(t1 - this.start > 500){
+        if (t1 - this.start > 500) {
             this.complete();
-        }else{
-            setTimeout(() => this.complete(),500);
+        } else {
+            setTimeout(() => this.complete(), 500);
         }
     }
 
-    complete(){
+    private complete() {
         // emit true
         this.loadComplete.next(true);
+        this.loadComplete.complete();
     }
 
-    handleLoaderHandler(){
+    private handleLoaderHandler() {
         let loadActive = false;
 
-        for(let loadElement of this.loadElements[this.loadPhase]){
-            if(loadElement.status === 'active'){
+        for (let loadElement of this.loadElements[this.loadPhase]) {
+            if (loadElement.status === 'active') {
                 loadElement.status = 'completed';
                 this.progress = ++this.counterCompleted / this.loadElements.primary.length * 100;
-                if(this.progress > 100) this.progress == 100;
-            }
-
-            else if(loadElement.status === 'initial'){
+                if (this.progress > 100) {
+                    this.progress == 100;
+                }
+            } else if (loadElement.status === 'initial') {
                 loadElement.status = 'active';
                 loadElement.action(this);
                 loadActive = true;
@@ -220,7 +247,7 @@ export class loader
             }
         }
 
-        if(loadActive === false && this.loadPhase == 'primary') {
+        if (loadActive === false && this.loadPhase == 'primary') {
             // set complete
             this.setComplete();
             // switch to secondary phase
@@ -230,5 +257,4 @@ export class loader
         }
 
     }
-
 }

@@ -34,6 +34,7 @@ export class UserAddModal implements OnInit, AfterViewChecked {
     private sendByEmail: boolean = false;
     private showPassword: boolean = false;
     private saveTriggered: boolean = false;
+    private canSendByEmail: boolean = true;
 
     constructor(
         private language: language,
@@ -63,7 +64,10 @@ export class UserAddModal implements OnInit, AfterViewChecked {
     get saveData() {
         let saveData: any = {};
         for (let fieldName in this.model.data) {
-            saveData[fieldName] = this.modelutilities.spice2backend("Users", fieldName, this.model.data[fieldName]);
+            if (this.model.data.hasOwnProperty(fieldName)) {
+                saveData[fieldName] = this.modelutilities.spice2backend("Users", fieldName, this.model.data[fieldName]);
+
+            }
         }
         return saveData;
     }
@@ -169,7 +173,9 @@ export class UserAddModal implements OnInit, AfterViewChecked {
             .subscribe(
                 response => {
                     for (let fieldName in response) {
-                        response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
+                        if (response.hasOwnProperty(fieldName)) {
+                            response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
+                        }
                     }
                     this.model.data = response;
                     this.model.endEdit();
@@ -185,7 +191,6 @@ export class UserAddModal implements OnInit, AfterViewChecked {
 
     private setDefaultModelData() {
         this.model.data.system_generated_password = this.autoGenerate;
-        this.model.data.send_by_email = this.sendByEmail;
         this.model.data.date_entered = new moment();
         this.model.data.date_modified = new moment();
         this.model.data.pwd_last_changed = new moment();
@@ -213,12 +218,13 @@ export class UserAddModal implements OnInit, AfterViewChecked {
     }
 
     private savePassword(goDetail) {
-        this.backend.postRequest("user/password/new", {}, {
+        let body = {
             newpwd: this.password,
             userId: this.model.id,
             SystemGeneratedPassword: this.autoGenerate,
             sendByEmail: this.sendByEmail
-        }).subscribe(res => {
+        }
+        this.backend.postRequest("user/password/new", {}, body).subscribe(res => {
             if (res.status) {
                 if (this.sendByEmail) {
                     this.toast.sendToast("An Email with the new password was successfully sent, check your inbox", "success", "", 10);
@@ -229,12 +235,16 @@ export class UserAddModal implements OnInit, AfterViewChecked {
                 if (goDetail) {
                     this.model.goToDetail();
                 }
-
                 this.self.destroy();
             } else {
+                this.sendByEmail = false;
+                this.canSendByEmail = false;
                 this.toast.sendToast(res.message, "error");
             }
-        }, error => this.toast.sendToast("Email couldn't be send. Check Mailbox Settings.", "error"));
+        }, error => {
+            this.sendByEmail = false;
+            this.canSendByEmail = false;
+            this.toast.sendToast("Email couldn't be send. Check Mailbox Settings.", "error");
+        });
     }
-
 }
