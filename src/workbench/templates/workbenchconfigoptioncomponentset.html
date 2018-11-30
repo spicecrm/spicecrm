@@ -1,4 +1,5 @@
-<div class="slds-form-element slds-m-vertical--xxx-small">
+<div class="slds-form-element slds-m-vertical--xxx-small" style="clear: both">
+    <label class="slds-form-element__label slds-float_left" style="margin-right: 3px;">{{option.option}}</label>
     <div *ngIf="option.description.length > 0" class="slds-float_left" style="position: relative; margin-right: 5px; margin-top: 3px;">
         <div class="slds-form-element">
             <div class="slds-form-element__icon slds-align-middle">
@@ -12,7 +13,6 @@
             <div class="slds-popover__body slds-scrollable_y">{{option.description}}</div>
         </div>
     </div>
-    <label class="slds-form-element__label slds-float_left">{{option.option}}</label>
 
     <div class="slds-grid" style="clear: both;">
         <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
@@ -25,8 +25,16 @@
         </div>
         <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
             <div class="slds-select_container">
-                <select [disabled]="!module || !view.isEditMode()" class="slds-select" [(ngModel)]="configValues[option.option]">
-                    <option *ngFor="let componentset of componentsets|componentsetmanagermodulepipe:module" [value]="componentset.id">{{componentset.name}}</option>
+                <select  [disabled]="!module || !view.isEditMode()" class="slds-select" [(ngModel)]="configValues[option.option]">
+                    <option></option>
+                    <optgroup label="custom" *ngIf="componentsets|componentsetmanagermodulepipecustom:module.length > 0">
+                        <option *ngFor="let componentset of componentsets|componentsetmanagermodulepipecustom:module" [value]="componentset.id">{{componentset.name}}
+                        </option>
+                    </optgroup>
+                    <optgroup label="global"  *ngIf="componentsets|componentsetmanagermodulepipeglobal:module.length > 0">
+                        <option *ngFor="let componentset of componentsets|componentsetmanagermodulepipeglobal:module" [value]="componentset.id">{{componentset.name}}
+                        </option>
+                    </optgroup>
                 </select>
             </div>
         </div>

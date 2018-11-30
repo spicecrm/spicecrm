@@ -15,7 +15,8 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
     selector: 'global-docked-composer-container',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposercontainer.html',
     host: {
-        '[class.slds-docked_container]': 'isVisible'
+        '[class.slds-docked_container]': 'isVisible',
+        'style': 'z-index: 9999'
     }
 })
 export class GlobalDockedComposerContainer {

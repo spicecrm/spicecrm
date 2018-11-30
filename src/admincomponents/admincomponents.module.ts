@@ -17,6 +17,7 @@ import {configurationService} from '../services/configuration.service';
 import {userpreferences} from '../services/userpreferences.service';
 import {footer} from '../services/footer.service';
 import {toast} from '../services/toast.service';
+import {broadcast} from '../services/broadcast.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
 import { RouterModule, Routes, Router } from '@angular/router';
