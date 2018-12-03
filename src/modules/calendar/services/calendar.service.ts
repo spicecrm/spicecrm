@@ -27,6 +27,8 @@ export class calendar {
     public endHour: number = 23;
     public todayColor: string = '#eb7092';
     public absenceColor: string = '#727272';
+    public eventColor: string = '#039be5';
+    public googleColor: string = '#db4437';
     public loggedByGoogle: boolean = false;
 
     constructor(private backend: backend,
@@ -76,10 +78,14 @@ export class calendar {
         this.usersCalendars$.emit(this.usersCalendars);
     }
 
+    public doReload(start, end, calendar = this.owner) {
+        return !this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end ||
+            !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0);
+    }
+
     public loadEvents(start, end, calendar = this.owner) {
         // check if we need to reload
-        if (!this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end ||
-            !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0)) {
+        if (this.doReload(start, end, calendar)) {
             // set current search parameters
             this.currentEnd = end;
             this.currentStart = start;
@@ -97,6 +103,7 @@ export class calendar {
                         case 'event':
                             event.start = moment(event.start).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                             event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                            event.color = this.eventColor;
                             break;
                         case 'absence':
                             event.start = moment(event.start).second(1);
