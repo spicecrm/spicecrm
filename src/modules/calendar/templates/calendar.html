@@ -45,17 +45,22 @@
                                     <span class="slds-truncate">{{language.getLabel('LBL_MONTH')}}</span>
                                 </a>
                             </li>
+                            <li class="slds-dropdown__item" role="presentation" (click)="setType('Schedule')">
+                                <a href="javascript:void(0);" role="menuitem">
+                                    <span class="slds-truncate">{{language.getLabel('LBL_SCHEDULE')}}</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
                 <div class="slds-button-group slds-m-left--x-small" role="group">
-                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month'">
+                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'zoomout'"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month'">
+                    <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'undo'"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month'">
+                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'zoomin'"></system-button-icon>
                     </button>
                 </div>
@@ -141,6 +146,9 @@
             <calendar-sheet-month *ngIf="sheetType === 'Month'" [googlecalendarvisible]="googleCalendarVisible"
                                   [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
             </calendar-sheet-month>
+            <calendar-sheet-schedule *ngIf="sheetType === 'Schedule'" [googlecalendarvisible]="googleCalendarVisible"
+                                  [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)" (untildate$)="scheduleUntilDate = $event">
+            </calendar-sheet-schedule>
         </div>
     </div>
 </div>

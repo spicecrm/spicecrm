@@ -148,7 +148,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit {
                         event.data = {};
                         event.data.summary_text = event.summary;
                         event.data.assigned_user_id = null;
-                        event.color = "#db4437";
+                        event.color = this.calendar.googleColor;
                         event.visible = this.googleCalendarVisible;
                         return event;
                     });
