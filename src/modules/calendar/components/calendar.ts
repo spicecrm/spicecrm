@@ -45,10 +45,11 @@ export class Calendar {
     public resultsList: any[] = [];
     public timeout: any = undefined;
     public recentUsers: any[] = [];
+    public scheduleUntilDate: any = {};
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
     @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
     private showTypeSelector: boolean = false;
-    private sheetType: string = 'Week';
+    private sheetType: string = 'Schedule';
     private duration: any = {
         Day: 'd',
         Week: 'w',
@@ -64,6 +65,7 @@ export class Calendar {
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
+        this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
         this.getRecent();
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
     }
@@ -180,6 +182,8 @@ export class Calendar {
                 return focDate.format('MMMM YYYY');
             case 'Day':
                 return focDate.format('MMMM D, YYYY');
+            case 'Schedule':
+                return focDate.format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
         }
     }
 
