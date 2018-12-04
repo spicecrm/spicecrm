@@ -86,7 +86,7 @@
                                     </label>
                                 </span>
                                 <span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--small ">
-                                    <input type="checkbox" name="auto" id="sendByEmail" [(ngModel)]="sendByEmail"/>
+                                    <input type="checkbox" name="auto" id="sendByEmail" [disabled]="!canSendByEmail" [(ngModel)]="sendByEmail"/>
                                     <label class="slds-checkbox__label" for="sendByEmail">
                                         <span class="slds-checkbox--faux"></span>
                                         <span class="slds-form-element__label">Send By Email</span>

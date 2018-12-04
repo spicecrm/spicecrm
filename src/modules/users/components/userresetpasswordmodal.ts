@@ -23,6 +23,7 @@ export class UserResetPasswordModal {
     private showPassword: boolean = false;
     private passwordErrorMsg: string = "";
     private repeatPasswordErrorMsg: string = "";
+    private canSendByEmail: boolean = true;
 
     constructor(
         private language: language,
@@ -119,9 +120,15 @@ export class UserResetPasswordModal {
 
                 this.self.destroy();
             } else {
+                this.sendByEmail = false;
+                this.canSendByEmail = false;
                 this.toast.sendToast(res.message, "error");
             }
-        }, error => this.toast.sendToast("Email couldn't be send. Check Mailbox Settings.", "error"));
+        }, error => {
+            this.sendByEmail = false;
+            this.canSendByEmail = false;
+            this.toast.sendToast("Email couldn't be send. Check Mailbox Settings.", "error")
+        });
     }
 
     private checkErrors() {

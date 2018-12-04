@@ -21,7 +21,7 @@
     </ng-container>
     <ng-container *ngFor="let event of allEvents">
         <ng-container *ngFor="let week of event.weeksI">
-            <calendar-sheet-event [event]="event" [isMonthSheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
+            <calendar-sheet-event [event]="event" [ismonthsheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
         </ng-container>
     </ng-container>
 </div>
