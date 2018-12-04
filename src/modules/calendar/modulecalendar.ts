@@ -44,6 +44,7 @@ import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
+import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
 import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
 import /*embed*/ {CalendarEventSummary} from "./components/calendareventsummary";
 import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
@@ -68,6 +69,7 @@ import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
         CalendarSheetDay,
         CalendarSheetWeek,
         CalendarSheetMonth,
+        CalendarSheetSchedule,
         CalendarSheetEvent,
         CalendarEventSummary,
         CalendarSheetDropTarget,
