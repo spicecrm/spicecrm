@@ -58,6 +58,7 @@ export class ChatContainer implements OnDestroy {
     }
 
     private addMessage(message) {
-        this.messages.push(message);
+        let messageString = message.callId + ' ' + message.event + ' ' + message.relatedData;
+        this.messages.push(messageString);
     }
 }
