@@ -22,7 +22,8 @@ export class CalendarSheetEvent implements OnInit {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     public fields: Array<any> = [];
     @Input() public event: any = {};
-    @Input() private isMonthSheet: boolean = false;
+    @Input("ismonthsheet") private isMonthSheet: boolean = false;
+    @Input("isschedulesheet") private isScheduleSheet: boolean = false;
     private mouseMoveListener: any = undefined;
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
@@ -45,18 +46,12 @@ export class CalendarSheetEvent implements OnInit {
         this.model.data = this.event.data;
     }
 
+    get canEdit() {
+        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet;
+    }
+
     get owner() {
        return this.calendar.owner;
-    }
-
-    get canEdit() {
-       return this.owner == this.event.data.assigned_user_id;
-    }
-
-    private getEventStyle() {
-        return {
-            'background-color': this.event.color ? this.event.color : 'rgb(3, 155, 229)'
-        };
     }
 
     private dragStart(event) {
