@@ -116,6 +116,7 @@ import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
 import /*embed*/ {fieldModuleIcon} from "./components/fieldmoduleicon";
 import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
 import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
+import /*embed*/ {fieldPhone} from "./components/fieldphone";
 
 @NgModule({
     imports: [
@@ -207,7 +208,8 @@ import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
         fieldBase64,
         fieldModuleIcon,
         fieldRichText,
-        fieldEnumMulti
+        fieldEnumMulti,
+        fieldPhone
     ],
     entryComponents: [
         fieldLabel,
