@@ -1,4 +1,5 @@
-<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small slds-is-open" role="dialog">
+<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small slds-is-open"
+         role="dialog">
     <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
         <div class="slds-media slds-media_center slds-no-space">
             <div class="slds-media__figure slds-m-right_x-small">
@@ -7,7 +8,7 @@
           </span>
             </div>
             <div class="slds-media__body">
-                <h2 class="slds-truncate">Incoing Call</h2>
+                <h2 class="slds-truncate">Incoming Call {{calldata.callevent}}</h2>
             </div>
         </div>
         <div class="slds-col_bump-left slds-shrink-none">
@@ -24,19 +25,24 @@
     </header>
     <div class="slds-align_absolute-center slds-size_1-of-1">
         <div class="slds-text-align_center slds-align-middle">
-          <span class="slds-avatar slds-avatar_large">
-            <img alt="" src="sldassets/images/avatar2.jpg" title="Lei Chan avatar" />
-          </span>
-            <h3 class="slds-text-heading_large">Lei Chan</h3>
-            <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
-                <li class="slds-item">VP of Sales</li>
-                <li class="slds-item ">Acme Corporation</li>
-            </ul>
-            <p class="slds-text-heading_medium slds-m-top_medium">{{calldata.callnumber}} {{calldata.callevent}}</p>
+            <ng-container *ngIf="!searching">
+                <span class="slds-avatar slds-avatar_large">
+                    <img [src]="contact.salutation == 'Mr.' ? 'sldassets/images/avatar1.jpg' : 'sldassets/images/avatar2.jpg'"/>
+                </span>
+                <h3 class="slds-text-heading_large">{{contact.summary_text}}</h3>
+                <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
+                    <li class="slds-item">{{contact.account_name}}</li>
+                </ul>
+            </ng-container>
+            <div *ngIf="searching" class="slds-p-around--small slds-align--absolute-center">
+                <system-spinner></system-spinner>
+            </div>
+            <p class="slds-text-heading_medium slds-m-top_medium">{{calldata.callnumber}}</p>
             <p>{{callid}}</p>
         </div>
     </div>
     <footer class="slds-docked-composer__footer slds-shrink-none">
-        <button class="slds-button slds-button--brand slds-col_bump-left" (click)="closeComposer()">{{language.getLabel('LBL_CLOSE')}}</button>
+        <button class="slds-button slds-button--brand slds-col_bump-left"
+                (click)="closeComposer()">{{language.getLabel('LBL_CLOSE')}}</button>
     </footer>
 </section>
