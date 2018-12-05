@@ -29,6 +29,7 @@ export class CalendarSheetSchedule implements OnChanges {
     @Output() public untildate$: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @Input('userscalendars') private usersCalendars: any[] = [];
+    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googlecalendarvisible') private googleCalendarVisible: boolean = true;
     @Input() private setdate: any = {};
     private allevents: Array<any> = [];
@@ -53,6 +54,22 @@ export class CalendarSheetSchedule implements OnChanges {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
     }
 
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.setdate) {
+            this.isLoading = true;
+            this.getEvents();
+            this.getUsersEvents();
+            this.getGoogleEvents(true);
+        }
+        if (changes.usersCalendars) {
+            this.isLoading = true;
+            this.getUsersEvents(true);
+        }
+        if (changes.googleCalendarVisible) {
+            this.getGoogleEvents();
+        }
+    }
+
     set allEvents(value) {
         let events = this.groupByDay(this.ownerEvents.concat(this.otherEvents, this.googleEvents));
         events.sort((a, b) => a.date - b.date);
@@ -63,32 +80,19 @@ export class CalendarSheetSchedule implements OnChanges {
         return this.allevents;
     }
 
-    private setLoaded(category, value) {
-        this.loaded[category] = value;
-        if (this.loaded.owner && this.loaded.google && this.loaded.other) {
+    private setLoaded(category) {
+        if (category != '*') {
+            this.loaded[category] = true;
+        }
+        if (this.loaded.owner && this.loaded.google && this.loaded.other || category == '*') {
             this.isLoading = false;
             this.allEvents = this.allEvents.slice();
+            this.loaded = {owner: false, google: false, other: false};
         }
     }
 
     private getUntilDate() {
         return this.untilDate.format('MMM D, Y');
-    }
-
-    public ngOnChanges(changes: SimpleChanges) {
-        if (changes.setdate) {
-            this.isLoading = true;
-            this.getEvents();
-            this.getUsersEvents();
-            this.getGoogleEvents(true);
-        }
-        if (changes.usersCalendars) {
-            this.isLoading = true;
-            this.getUsersEvents();
-        }
-        if (changes.googleCalendarVisible) {
-            this.getGoogleEvents();
-        }
     }
 
     private groupByDay(events) {
@@ -129,13 +133,13 @@ export class CalendarSheetSchedule implements OnChanges {
             if (events.length > 0) {
                 this.ownerEvents = events;
             }
-            this.setLoaded('owner', true);
+            this.setLoaded('owner');
         });
     }
 
     private getGoogleEvents(reload = false) {
         if (!this.calendar.loggedByGoogle) {
-            this.setLoaded('google', true);
+            this.setLoaded('google');
             return;
         }
         let startDate = new moment(this.setdate).hour(0).minute(0).second(0);
@@ -143,12 +147,12 @@ export class CalendarSheetSchedule implements OnChanges {
             startdate: startDate.format('YYYY-MM-DD HH:mm:ss'),
             enddate: this.untilDate.format('YYYY-MM-DD HH:mm:ss')
         };
+        this.googleEvents = [];
 
         if (reload) {
-            this.googleEvents = [];
             this.backend.getRequest("google/calendar/getgoogleevents", params).subscribe(res => {
-                if (res && res.length > 0) {
-                    let events = res.map(event => {
+                if (res.events && res.events.length > 0) {
+                    let events = res.events.map(event => {
                         event.start = moment(event.start.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                         event.end = moment(event.end.dateTime).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                         if (+event.end.diff(event.start, 'days') > 0) {
@@ -164,7 +168,7 @@ export class CalendarSheetSchedule implements OnChanges {
                     this.calendar.calendars["google"] = events;
                     this.googleEvents = events.filter(event => event.visible);
                 }
-                this.setLoaded('google', true);
+                this.setLoaded('google');
             });
         } else {
             let events = this.calendar.calendars["google"];
@@ -173,13 +177,13 @@ export class CalendarSheetSchedule implements OnChanges {
                     event.visible = this.googleCalendarVisible;
                     return event;
                 });
-                this.googleEvents = this.googleEvents.concat(events.filter(event => event.visible && event.start < this.untilDate && event.end > startDate));
+                this.googleEvents = events.filter(event => event.visible && event.start < this.untilDate && event.end > startDate);
             }
-            this.setLoaded('google', true);
+            this.setLoaded('*');
         }
     }
 
-    private getUsersEvents() {
+    private getUsersEvents(changed = false) {
         let startDate = new moment(this.setdate).hour(0).minute(0).second(0);
         this.otherEvents = [];
         for (let i = 0; i < this.calendar.usersCalendars.length; i++) {
@@ -195,9 +199,20 @@ export class CalendarSheetSchedule implements OnChanges {
                     });
                 }
                 if ((i + 1) == this.calendar.usersCalendars.length) {
-                    this.setLoaded('other', true);
+                    if (changed) {
+                        this.setLoaded('*');
+                    } else {
+                        this.setLoaded('other');
+                    }
                 }
             });
+        }
+        if (this.calendar.usersCalendars.length == 0) {
+            if (changed) {
+                this.setLoaded('*');
+            } else {
+                this.setLoaded('other');
+            }
         }
     }
 
