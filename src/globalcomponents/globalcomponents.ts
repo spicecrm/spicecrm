@@ -63,6 +63,7 @@ import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigat
 import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
 import /*embed*/ {GlobalDockedComposerContainer} from "./components/globaldockedcomposercontainer";
 import /*embed*/ {GlobalDockedComposer} from "./components/globaldockedcomposer";
+import /*embed*/ {GlobalDockedComposerCall} from "./components/globaldockedcomposercall";
 import /*embed*/ {GlobalDockedComposerModal} from "./components/globaldockedcomposermodal";
 import /*embed*/ {GlobalDockedComposerOverflow} from "./components/globaldockedcomposeroverflow";
 import /*embed*/ {GlobalComposeButton} from "./components/globalcomposebutton";
@@ -135,6 +136,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalAppLauncherDialogRoleTile,
         GlobalDockedComposerContainer,
         GlobalDockedComposer,
+        GlobalDockedComposerCall,
         GlobalDockedComposerModal,
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
