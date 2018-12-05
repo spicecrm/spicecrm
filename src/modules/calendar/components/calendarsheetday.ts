@@ -125,7 +125,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
                         event.data = {};
                         event.data.summary_text = event.summary;
                         event.data.assigned_user_id = null;
-                        event.color = "#db4437";
+                        event.color = this.calendar.googleColor;
                         event.visible = this.googleCalendarVisible;
                         return event;
                     });
@@ -233,7 +233,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     private isTodayStyle() {
         let today = new moment();
         return {
-            color: today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date() ? '#eb7092' : 'inherit'
+            color: today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date() ? this.calendar.todayColor : 'inherit'
         };
     }
 
