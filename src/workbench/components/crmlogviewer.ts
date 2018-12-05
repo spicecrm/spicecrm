@@ -12,6 +12,7 @@ declare var moment: any;
     templateUrl: './src/workbench/templates/crmlogviewer.html',
     styles: [
         'td.expanded { white-space: normal; }',
+        'td.expanded div { overflow-wrap: break-word; }',
         'td.collapsed > div { position: absolute; top:0; bottom:0; right:0; left:0; padding: calc(0.25rem + 4px) calc(0.5rem + 0px); }'
     ]
 })
@@ -98,7 +99,7 @@ export class CRMLogViewer {
         };
         this.backend.getRequest( route, queryParams ).subscribe(
         response => {
-                this.lines = response.lines.reverse(); // We want to display the list reversed: Last/newest log line on top.
+                this.lines = response.lines;
                 this.lines.forEach( ( line, i ) => {
                     line.date = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getDateFormat() );
                     line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
@@ -215,7 +216,9 @@ export class CRMLogViewer {
 
     // Mark expand property for every line. But only neccessary for the page shown at last.
     private collapseLinesOfPage( pageNr ) {
-        for ( let i=(pageNr-1)*this.linesPerPage; i < pageNr*this.linesPerPage; i++ ) this.lines[i].expand = false;
+        for ( let i=(pageNr-1)*this.linesPerPage; i < pageNr*this.linesPerPage; i++ ) {
+            if( this.lines[i] ) this.lines[i].expand = false;
+        }
     }
 
 }
