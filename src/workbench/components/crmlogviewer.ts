@@ -98,7 +98,7 @@ export class CRMLogViewer {
         };
         this.backend.getRequest( route, queryParams ).subscribe(
         response => {
-                this.lines = response.lines.reverse(); // We want to display the list reversed: Last/newest log line on top.
+                this.lines = response.lines;
                 this.lines.forEach( ( line, i ) => {
                     line.date = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getDateFormat() );
                     line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
