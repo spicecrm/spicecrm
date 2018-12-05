@@ -22,7 +22,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
     private message: string = '';
     private messages: string[] = [];
 
-    private activeCall: any =  {
+    private activeCall: any = {
         callnumber: '',
         callevent: '',
         callid: ''
@@ -66,9 +66,12 @@ export class AsteriskToolbarIndicator implements OnDestroy {
 
         }
 
+        return color;
+        /*
         return {
-            background: color
+            fill: color + '!important'
         };
+        */
     }
 
     private toggleconnect() {
