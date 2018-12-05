@@ -13,7 +13,10 @@ export class dockedComposer {
     composers: Array<any> = [];
     hiddenComposers: Array<number> = []
 
+    public calls: any[] = [];
+
     constructor(private modelutilities: modelutilities) {
+        this.calls = [];
     }
 
     addComposer(module, model = undefined) {
