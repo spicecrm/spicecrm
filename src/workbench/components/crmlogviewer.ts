@@ -110,7 +110,7 @@ export class CRMLogViewer {
                 this.isLoading = false;
             },
             error => {
-                this.toast.sendToast('Error loading log data!', 'error', null, false );
+                this.toast.sendToast('Error loading log data!', 'error' );
                 this.isLoading = false;
             }
         );
