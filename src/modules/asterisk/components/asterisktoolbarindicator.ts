@@ -87,7 +87,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
 
         this.activeCall.callevent = message.event;
         this.activeCall.callid = message.callId;
-        this.activeCall.callnumber = message.callerNo;
+        this.activeCall.callnumber = message.outsideNo;
 
         switch (message.event) {
             case 'RING':
