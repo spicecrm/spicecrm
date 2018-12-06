@@ -26,7 +26,7 @@ export class GlobalDockedComposerContainer {
     }
 
     get isVisible() {
-        return this.dockedComposer.composers.length > 0;
+        return this.dockedComposer.composers.length > 0 || this.dockedComposer.calls.length > 0;
     }
 
     private closeComposer() {

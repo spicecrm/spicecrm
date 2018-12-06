@@ -24,8 +24,6 @@ export class GlobalDockedComposerCall implements OnInit {
 
     private searching: boolean = true;
     private contact: any = {};
-
-
     private isClosed: boolean = false;
 
     constructor(private backend: backend, private dockedComposer: dockedComposer, private language: language, private ViewContainerRef: ViewContainerRef) {

@@ -1,4 +1,4 @@
-<div class="slds-grid slds-grid--vertical-align-center" (click)="toggleconnect()" [title]="status">
+<div class="slds-grid slds-grid--vertical-align-center" (click)="toggleconnect()" (dblclick)="simulatecall()" [title]="status">
     <!--div style="height:16px;width: 16px; border-radius: 16px;" [ngStyle]="color" (click)="toggleconnect()" [title]="status"></div-->
     <system-custom-icon icon="asterisk" size="x-small" [color]="color"></system-custom-icon>
 </div>

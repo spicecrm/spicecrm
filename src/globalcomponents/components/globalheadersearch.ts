@@ -21,38 +21,38 @@ import {broadcast} from '../../services/broadcast.service';
     selector: 'global-header-search',
     templateUrl: './src/globalcomponents/templates/globalheadersearch.html',
     providers: [popup],
-    host:{
-       //  '(document:click)': 'this.onClick($event)'
+    host: {
+        //  '(document:click)': 'this.onClick($event)'
     }
 })
 export class GlobalHeaderSearch {
-    showRecent: boolean = false;
-    searchTimeOut: any = undefined;
-    searchTerm: string = '';
-    searchTermUntrimmed: string = '';
-    clickListener: any;
+    private showRecent: boolean = false;
+    private searchTimeOut: any = undefined;
+    private searchTerm: string = '';
+    private searchTermUntrimmed: string = '';
+    private clickListener: any;
 
-    constructor(private router: Router, private broadcast: broadcast, private fts: fts, private elementRef: ElementRef, private renderer: Renderer,  private popup: popup, private language: language) {
+    constructor(private router: Router, private broadcast: broadcast, private fts: fts, private elementRef: ElementRef, private renderer: Renderer, private popup: popup, private language: language) {
         popup.closePopup$.subscribe(close => {
             this.closePopup();
-        })
+        });
     }
 
-    onFocus() {
+    private onFocus() {
         this.showRecent = true;
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
 
-    closePopup() {
+    private closePopup() {
         this.clickListener();
         this.showRecent = false;
         this.searchTerm = '';
         this.searchTermUntrimmed = '';
     }
 
-    doSearch() {
+    private doSearch() {
         this.searchTerm = this.searchTermUntrimmed.trim();
-        if ( this.searchTerm.length && this.searchTerm !== this.fts.searchTerm ) {
+        if (this.searchTerm.length && this.searchTerm !== this.fts.searchTerm) {
             // start the search
             this.fts.search(this.searchTerm);
 
@@ -61,17 +61,17 @@ export class GlobalHeaderSearch {
         }
     }
 
-    clearSearchTerm(){
+    private clearSearchTerm() {
         // cancel any ongoing search
         if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
-        //clear the serachterm
+        // clear the serachterm
         this.searchTerm = '';
         this.searchTermUntrimmed = '';
         this.fts.searchTerm = '';
     }
 
-    search(_e) {
+    private search(_e) {
         // make sur ethe popup is open
         this.showRecent = true;
 
@@ -82,7 +82,7 @@ export class GlobalHeaderSearch {
                 break;
             case 'Enter':
                 this.searchTerm = this.searchTermUntrimmed.trim();
-                if( this.searchTerm.length ){
+                if (this.searchTerm.length) {
                     if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
                     // set the searchterm .. the timeout might not have gotten it
