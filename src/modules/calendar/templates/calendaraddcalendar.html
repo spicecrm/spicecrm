@@ -1,0 +1,26 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">
+        {{language.getLabel('LBL_ADD_CALENDAR')}}
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element">
+            <div class="slds-grid slds-wrap">
+                <div *ngFor="let calendar of calendars" class="slds-size--1-of-3 slds-p-around--xx-small ">
+                    <a href="javascript:void(0);" (click)="save(calendar)" class="slds-box slds-box_link slds-box_x-small slds-media">
+                        <system-icon [icon]="getIcon(calendar.icon)" [sprite]="getSprite(calendar.icon)" size="large" class="slds-align_absolute-center"></system-icon>
+                        <div class="slds-media__body slds-p-around_small">
+                            <h2 class="slds-truncate slds-text-heading_small slds-truncate">
+                                {{language.getLabel(calendar.name)}}
+                            </h2>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            {{language.getLabel('LBL_CANCEL')}}
+        </button>
+    </system-modal-footer>
+</system-modal>

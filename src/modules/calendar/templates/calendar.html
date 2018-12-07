@@ -22,6 +22,9 @@
                 <button class="slds-button slds-button--icon-border" (click)="refresh()">
                     <system-button-icon [icon]="'refresh'"></system-button-icon>
                 </button>
+                <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
+                    <system-button-icon [icon]="'add'"></system-button-icon>
+                </button>
                 <button class="slds-button slds-button--neutral" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
                 <div class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--x-small" [ngClass]="{'slds-is-open': showTypeSelector}">
                     <button class="slds-button slds-button--neutral" (click)="toggleTypeSelector()">
@@ -75,15 +78,27 @@
                 <div class="slds-p-vertical--xx-small">
                     <div *ngIf="loggedByGoogle" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
                          (mouseover)="hovered = 'google'" (mouseout)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
-                        <div class="slds-grid" (click)="toggleVisibleGoogle()" style="cursor: pointer">
+                        <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">
                             <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px"
                                  [ngStyle]="!googleCalendarVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
                             <a class="slds-text-body--regular slds-truncate" [style.color]="!googleCalendarVisible ? '#dddbda' : 'initial'">{{language.getLabel('MY_GOOGLE_CALENDAR')}}</a>
                         </div>
                     </div>
+                    <div *ngFor="let otherCalendar of otherCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+                         (mouseover)="hovered = otherCalendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == otherCalendar.id ? 'slds-theme--shade' : ''">
+                        <div class="slds-grid" (click)="toggleVisible(otherCalendar.id, 'Other')" style="cursor: pointer">
+                            <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="otherCalendar.visible ? otherCalendar.color : '#dddbda'">
+                                <system-button-icon icon="choice" size="small"></system-button-icon>
+                            </div>
+                            <a class="slds-text-body--regular slds-truncate" [style.color]="otherCalendar.visible ? otherCalendar.color : '#dddbda'">{{language.getLabel(otherCalendar.name)}}</a>
+                        </div>
+                        <button  class="slds-button slds-button--icon" (click)="removeOtherCalendar(otherCalendar.id)">
+                            <system-button-icon icon="clear" size="small"></system-button-icon>
+                        </button>
+                    </div>
                     <div *ngFor="let usersCalendar of usersCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
                          (mouseover)="hovered = usersCalendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == usersCalendar.id ? 'slds-theme--shade' : ''">
-                        <div class="slds-grid" (click)="toggleVisibleUsers(usersCalendar.id)" style="cursor: pointer">
+                        <div class="slds-grid" (click)="toggleVisible(usersCalendar.id, 'Users')" style="cursor: pointer">
                             <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">
                                 <system-button-icon icon="user" size="small"></system-button-icon>
                             </div>
@@ -138,16 +153,16 @@
         </div>
         <div style="width:calc(100% - 300px); height: 100%">
             <calendar-sheet-day *ngIf="sheetType === 'Day'" [googlecalendarvisible]="googleCalendarVisible"
-                                [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateweek)="goToWeekView()">
+                                [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateweek)="goToWeekView()">
             </calendar-sheet-day>
             <calendar-sheet-week *ngIf="sheetType === 'Week'" [googlecalendarvisible]="googleCalendarVisible"
-                                 [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
+                                 [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
             </calendar-sheet-week>
             <calendar-sheet-month *ngIf="sheetType === 'Month'" [googlecalendarvisible]="googleCalendarVisible"
-                                  [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
+                                  [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
             </calendar-sheet-month>
             <calendar-sheet-schedule *ngIf="sheetType === 'Schedule'" [googlecalendarvisible]="googleCalendarVisible"
-                                  [userscalendars]="usersCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)" (untildate$)="scheduleUntilDate = $event">
+                                  [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)" (untildate$)="scheduleUntilDate = $event">
             </calendar-sheet-schedule>
         </div>
     </div>
