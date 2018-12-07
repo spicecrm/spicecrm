@@ -18,7 +18,7 @@
         </div>
     </div>
 </div>
-<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-is-relative">
+<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-is-relative"  style="padding-right: 17px">
     <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
         <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index)"></div>
         <ng-container *ngIf="notLastHour(index)">
