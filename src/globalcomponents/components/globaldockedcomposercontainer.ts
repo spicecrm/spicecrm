@@ -35,7 +35,7 @@ export class GlobalDockedComposerContainer {
 
     // function to return the style if multiple composers are shown .. to stack them
     private getComposerStyle(composerindex): any {
-        if (composerindex >= this.dockedComposer.maxComposers) {
+        if (composerindex >= this.dockedComposer.maxComposers - this.dockedComposer.calls.length) {
             return {
                 display: 'none'
             };
@@ -43,6 +43,6 @@ export class GlobalDockedComposerContainer {
     }
 
     get displayOverflow(): boolean {
-        return this.dockedComposer.composers.length > this.dockedComposer.maxComposers ? true : false;
+        return this.dockedComposer.composers.length + this.dockedComposer.calls.length > this.dockedComposer.maxComposers ? true : false;
     }
 }

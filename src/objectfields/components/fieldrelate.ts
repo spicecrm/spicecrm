@@ -59,6 +59,10 @@ export class fieldRelate extends fieldGeneric implements OnInit {
     private setRelated(related) {
         this.model.data[this.relateIdField] = related.id;
         this.model.data[this.relateNameField] = related.text;
+
+
+
+
         this.closePopups();
     }
 

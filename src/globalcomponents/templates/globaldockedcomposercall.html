@@ -3,11 +3,11 @@
         <div class="slds-media slds-media_center slds-no-space">
             <div class="slds-media__figure slds-m-right_x-small">
           <span class="slds-icon_container">
-            <system-icon icon="call" sprite="utility" [size]="'small'"></system-icon>
+            <system-icon [icon]="callicon" sprite="utility" size="x-small"></system-icon>
           </span>
             </div>
             <div class="slds-media__body">
-                <h2 class="slds-truncate">Incoming Call {{calldata.callevent}}</h2>
+                <h2 class="slds-truncate">{{calldata.direction}} Call {{calldata.callevent}}</h2>
             </div>
         </div>
         <div class="slds-col_bump-left slds-shrink-none">
