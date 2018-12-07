@@ -51,6 +51,7 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
 import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
+import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 
 
 @NgModule({
@@ -76,6 +77,7 @@ import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
         CalendarMorePopover,
         CalendarMorePopoverEvent,
         CalendarMoreButton,
+        CalendarAddCalendar,
     ],
     providers: [userpreferences]
 })
