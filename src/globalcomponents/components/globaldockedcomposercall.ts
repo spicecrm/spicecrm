@@ -30,6 +30,21 @@ export class GlobalDockedComposerCall implements OnInit {
 
     }
 
+    get callicon() {
+        if (this.calldata.callevent == 'END') {
+            return 'end_call';
+        }
+
+        switch (this.calldata.direction) {
+            case 'INBOUND':
+                return 'incoming_call';
+            case 'OUTBOUND':
+                return 'outbound_call';
+        }
+
+        return 'call';
+    }
+
     public ngOnInit() {
         this.backend.postRequest('search', {}, {
             modules: 'Contacts',
