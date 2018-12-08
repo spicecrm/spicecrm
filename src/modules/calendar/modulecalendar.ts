@@ -10,6 +10,7 @@ import {Subject, Observable, of} from "rxjs";
 import {loginService, loginCheck} from "../../services/login.service";
 import {metadata, aclCheck} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
+import {modal} from "../../services/modal.service";
 import {modellist} from "../../services/modellist.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {modelutilities} from "../../services/modelutilities.service";

@@ -1,17 +1,13 @@
-/**
- * Created by christian on 08.11.2016.
- */
-import {ElementRef, Component, Input, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {ElementRef, Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
-import {broadcast} from '../../services/broadcast.service';
 
 declare var _;
 
 @Component({
-    selector: '[global-search-module]',
+    selector: 'global-search-module',
     templateUrl: './src/globalcomponents/templates/globalsearchmodule.html',
     host: {
         '[style.display]': 'getDisplay()'
@@ -19,9 +15,10 @@ declare var _;
 })
 export class GlobalSearchModule implements OnInit {
     @Input() private module: string = '';
+    @Output() private scope: EventEmitter<string> = new EventEmitter<string>();
     private listfields: any[] = [];
 
-    constructor(private broadcast: broadcast, private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
+    constructor( private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
 
     }
 
@@ -74,6 +71,6 @@ export class GlobalSearchModule implements OnInit {
     }
 
     private setSearchScope(): void {
-        this.broadcast.broadcastMessage('fts.setscope', this.module);
+        this.scope.emit(this.module);
     }
 }

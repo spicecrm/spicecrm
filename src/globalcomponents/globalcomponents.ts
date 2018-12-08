@@ -3,7 +3,7 @@ import {FormsModule}   from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 import {AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef, Injectable, Renderer, Renderer2, Input, ElementRef, OnDestroy, OnInit, OnChanges, EventEmitter, Output} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {RouterModule, Routes, Router, ActivationStart, NavigationStart} from "@angular/router";
+import {RouterModule, Routes, Router, ActivationStart, NavigationStart, ActivatedRoute} from "@angular/router";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 declare var _: any;
@@ -100,6 +100,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
             {path: "setup", component: GlobalSetup},
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
+            {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
         ])
     ],
     declarations: [
