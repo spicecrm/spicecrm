@@ -48,7 +48,7 @@ export class fieldEmail extends fieldGeneric {
         }
 
         if (!this.model.getFieldValue('emailaddresses')) {
-            let newEmail ={
+            let newEmail = {
                 id: '',
                 primary_address: '1',
                 email_address: newemail,

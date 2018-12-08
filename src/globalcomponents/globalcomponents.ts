@@ -77,6 +77,7 @@ import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
 import /*embed*/ {GlobalRecentItems} from "./components/globalrecentitems";
 import /*embed*/ {GlobalSearch} from "./components/globalsearch";
 import /*embed*/ {GlobalSearchModule} from "./components/globalsearchmodule";
+import /*embed*/ {GlobalSearchModuleOnly} from "./components/globalsearchmoduleonly";
 import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmoduleitem";
 
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
@@ -141,6 +142,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalRecentItems,
         GlobalSearch,
         GlobalSearchModule,
+        GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
         GlobalLoginGoogle
     ],

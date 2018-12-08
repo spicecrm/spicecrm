@@ -1,19 +1,50 @@
-<div class="spicecrm-globalsearch-container" [ngStyle]="getContainerStyle()">
-    <div class="spicecrm-globalsearch-menu slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse">
-        <h2 class="slds-text-title--caps slds-p-around--medium" id="entity-header">{{language.getLabel('LBL_SEARCHRESULTS')}}</h2>
+<div class="slds-grid">
+    <div tobottom class="slds-size--1-of-5 slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse">
+        <h2 class="slds-text-title--caps slds-p-around--medium">{{language.getLabel('LBL_SEARCHRESULTS')}}</h2>
         <ul>
             <li [ngClass]="getScopeClass('*')">
-                <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="setSearchScope('*')">{{language.getLabel('LBL_TOPRESULTS')}}</a>
+                <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset"
+                   (click)="setSearchScope('*')">{{language.getLabel('LBL_TOPRESULTS')}}</a>
             </li>
             <li *ngFor="let module of fts.searchModules" [ngClass]="getScopeClass(module)">
-                <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="setSearchScope(module)">{{language.getModuleName(module)}}</a>
+                <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset"
+                   (click)="setSearchScope(module)">{{language.getModuleName(module)}}</a>
             </li>
         </ul>
     </div>
-    <div class="spicecrm-globalsearch-results" [ngStyle]="getContainerStyle()">
-        <div *ngIf="fts.runningmodulesearch" class="slds-p-around--medium">
-            <system-spinner></system-spinner>
+    <div class="slds-size--4-of-5 slds-border--left">
+        <div class="slds-p-around--medium slds-theme--shade">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <system-icon icon="search"></system-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h1 class="slds-grid slds-grid--vertical-align-center">
+                                <div class="slds-form-element slds-size--1-of-1">
+                                    <div class="slds-form-element__control">
+                                        <input class="slds-input" type="text" [(ngModel)]="searchTerm" (keyup)="search($event)" spellcheck="false"/>
+                                    </div>
+                                </div>
+                            </h1>
+                            <p class="slds-page-header__name-meta slds-p-left--xxx-small">found {{totalcount}} records in {{totalmodules}} Modules</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div global-search-module class="slds-m-bottom--medium" *ngFor="let result of fts.moduleSearchresults" [module]="result.module" [infinitescroll]="infiniteScroll()"></div>
+        <div *ngIf="searchScope == '*'" tobottom>
+            <!--div *ngIf="fts.runningmodulesearch" class="slds-height_full slds-size--1-of-1 slds-align--absolute-center">
+                <system-spinner></system-spinner>
+            </div-->
+            <table *ngIf="fts.runningmodulesearch" class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+                <tbody system-table-stencils [columns]="7" [select]="false" [tools]="false" [rows]="15"></tbody>
+            </table>
+            <div global-search-module class="slds-m-bottom--medium" *ngFor="let result of fts.moduleSearchresults" [module]="result.module"></div>
+        </div>
+        <div *ngIf="searchScope != '*'">
+            <global-search-module-only [module]="searchScope"></global-search-module-only>
+        </div>
     </div>
 </div>
