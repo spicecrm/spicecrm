@@ -115,7 +115,7 @@ export class LabelSelectorComponent {
     private addItem() {
         let label = {
             id: this.utils.generateGuid(),
-            name: '',
+            name: 'LBL_',
             scope: 'custom',
             custom_translations: [],
             global_translations: [],
@@ -128,7 +128,6 @@ export class LabelSelectorComponent {
                 syslanguage: this.language.languagedata.languages.default,
             }
         );
-
         this._selected_item = label;
         this.items.push(label);
         this.show_modal = true;

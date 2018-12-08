@@ -38,6 +38,7 @@ declare var _: any;
 export class Calendar {
 
     public usersCalendars: any[] = [];
+    public otherCalendars: any[] = [];
     public googleCalendarVisible: boolean = true;
     public searchterm: string = "";
     public searchopen: boolean = false;
@@ -45,6 +46,7 @@ export class Calendar {
     public resultsList: any[] = [];
     public timeout: any = undefined;
     public recentUsers: any[] = [];
+    public scheduleUntilDate: any = {};
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
     @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
     private showTypeSelector: boolean = false;
@@ -64,8 +66,10 @@ export class Calendar {
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
+        this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
         this.getRecent();
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
+        this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
     }
 
     get owner() {
@@ -151,18 +155,37 @@ export class Calendar {
         this.calendar.removeUserCalendar(id);
     }
 
-    private toggleVisibleGoogle() {
-        this.googleCalendarVisible = !this.googleCalendarVisible;
+    private addOtherCalendar() {
+        this.calendar.addOtherCalendar();
     }
 
-    private toggleVisibleUsers(id) {
-        this.calendar.usersCalendars.some(calendar => {
-            if (calendar.id == id) {
-                calendar.visible = !calendar.visible;
-                this.calendar.setUserCalendars(this.calendar.usersCalendars.slice());
-                return true;
-            }
-        });
+    private removeOtherCalendar(id) {
+        this.calendar.removeOtherCalendar(id);
+    }
+
+    private toggleVisible(id, type) {
+        switch (type) {
+            case "Users":
+                this.calendar.usersCalendars.some(calendar => {
+                    if (calendar.id == id) {
+                        calendar.visible = !calendar.visible;
+                        this.calendar.setUserCalendars(this.calendar.usersCalendars.slice());
+                        return true;
+                    }
+                });
+                break;
+            case "Other":
+                this.calendar.otherCalendars.some(calendar => {
+                    if (calendar.id == id) {
+                        calendar.visible = !calendar.visible;
+                        this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
+                        return true;
+                    }
+                });
+                break;
+            case "Google":
+                this.googleCalendarVisible = !this.googleCalendarVisible;
+        }
     }
 
     private getContentStyle() {
@@ -180,6 +203,8 @@ export class Calendar {
                 return focDate.format('MMMM YYYY');
             case 'Day':
                 return focDate.format('MMMM D, YYYY');
+            case 'Schedule':
+                return focDate.format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
         }
     }
 
