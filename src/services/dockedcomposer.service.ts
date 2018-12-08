@@ -48,7 +48,7 @@ export class dockedComposer {
                 this.composers.unshift(movedComposer.shift());
                 return true;
             }
-        })
+        });
     }
 
     get maxComposers() {

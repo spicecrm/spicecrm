@@ -4,10 +4,9 @@ import {
     Output,
     EventEmitter
 } from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
-import {fts} from '../../services/fts.service';
+import {Router} from '@angular/router';
 import {language} from '../../services/language.service';
-import {broadcast} from '../../services/broadcast.service';
+import {fts} from '../../services/fts.service';
 
 @Component({
     selector: 'global-header-search-results-items',
@@ -19,7 +18,7 @@ export class GlobalHeaderSearchResultsItems {
     @Input() private searchResults: any[] = [];
     @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private broadcast: broadcast, private fts: fts, private router: Router, private language: language) {
+    constructor(private router: Router, private language: language, private fts: fts) {
 
     }
 
@@ -28,12 +27,10 @@ export class GlobalHeaderSearchResultsItems {
     }
 
     private goSearch() {
-        // set the searchterm .. the timeout might not have gotten it
-        this.fts.searchTerm = this.searchTerm;
-
-        this.broadcast.broadcastMessage('fts.search', this.searchTerm);
-
         // navigate tot he search view
-        this.router.navigate(['/search']);
+        if (this.searchTerm.length > 0) {
+            this.selected.emit(true);
+            this.router.navigate(['/search/' + btoa(this.searchTerm)]);
+        }
     }
 }

@@ -108,19 +108,16 @@ export class GlobalHeaderSearch {
             case 'Enter':
                 this.searchTerm = this.searchTermUntrimmed.trim();
                 if (this.searchTerm.length) {
+                    // if we wait for completion kill the timeout
                     if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-
-                    // set the searchterm .. the timeout might not have gotten it
-                    this.fts.searchTerm = this.searchTerm;
-
-                    // broadcast the searchterm
-                    this.broadcast.broadcastMessage('fts.search', this.searchTerm);
 
                     // close the dropdown
                     this.showRecent = false;
 
                     // navigate tot he search view
-                    this.router.navigate(['/search']);
+                    if (this.searchTerm.length > 0) {
+                        this.router.navigate(['/search/' + btoa(this.searchTerm)]);
+                    }
                 }
                 break;
             default:

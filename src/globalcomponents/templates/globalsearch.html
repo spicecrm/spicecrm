@@ -28,20 +28,16 @@
                                     </div>
                                 </div>
                             </h1>
-                            <p class="slds-page-header__name-meta slds-p-left--xxx-small">found {{totalcount}} records in {{totalmodules}} Modules</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div *ngIf="searchScope == '*'" tobottom>
-            <!--div *ngIf="fts.runningmodulesearch" class="slds-height_full slds-size--1-of-1 slds-align--absolute-center">
-                <system-spinner></system-spinner>
-            </div-->
             <table *ngIf="fts.runningmodulesearch" class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
                 <tbody system-table-stencils [columns]="7" [select]="false" [tools]="false" [rows]="15"></tbody>
             </table>
-            <div global-search-module class="slds-m-bottom--medium" *ngFor="let result of fts.moduleSearchresults" [module]="result.module"></div>
+            <global-search-module class="slds-m-bottom--medium" *ngFor="let result of fts.moduleSearchresults" [module]="result.module" (scope)="setSearchScope($event)"></global-search-module>
         </div>
         <div *ngIf="searchScope != '*'">
             <global-search-module-only [module]="searchScope"></global-search-module-only>

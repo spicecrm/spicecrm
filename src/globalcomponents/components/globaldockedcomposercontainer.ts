@@ -30,7 +30,7 @@ export class GlobalDockedComposerContainer {
     }
 
     private closeComposer() {
-        this.dockedComposer.showComposer = false;
+
     }
 
     // function to return the style if multiple composers are shown .. to stack them
