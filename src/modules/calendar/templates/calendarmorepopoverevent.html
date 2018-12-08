@@ -1,5 +1,5 @@
 <div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" style="height: 20px; border-radius: 2px;"
-     [style.background-color]="event.color ? event.color : 'rgb(3, 155, 229)'">
+     [style.background-color]="event.color">
     <div class="slds-grid slds-grid--align-spread">
         <div class="slds-truncate" style="height: 100%;" (click)="goDetails(event.id, event.module)">
             <span [title]="event.data.summary_text" class="slds-text-link--reset slds-text-color--inverse">{{event.data.summary_text}}</span>
