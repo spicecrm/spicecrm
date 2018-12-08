@@ -29,11 +29,11 @@ export class CalendarMorePopoverEvent implements OnInit {
         this.model.data = this.event.data;
     }
 
-    canEdit(id) {
+    private canEdit(id) {
         return this.session.authData.userId == id;
     }
 
-    getStartHour(event) {
+    private getStartHour(event) {
         return event.data.date_start ? moment(event.data.date_start).tz(moment.tz.guess())
             .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : "00:00";
     }

@@ -1,4 +1,4 @@
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [title]="email">
     <div class="slds-grid slds-grid--vertical-align-center">
         <div class="slds-truncate">{{email}}</div>
         <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="email" [icon]="'email'" [sprite]="'action'" [size]="'x-small'" (click)="sendEmail()"></system-icon>

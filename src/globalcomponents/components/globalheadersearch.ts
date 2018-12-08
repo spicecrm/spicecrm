@@ -20,10 +20,7 @@ import {broadcast} from '../../services/broadcast.service';
 @Component({
     selector: 'global-header-search',
     templateUrl: './src/globalcomponents/templates/globalheadersearch.html',
-    providers: [popup],
-    host: {
-        //  '(document:click)': 'this.onClick($event)'
-    }
+    providers: [fts]
 })
 export class GlobalHeaderSearch {
     private showRecent: boolean = false;
@@ -31,11 +28,22 @@ export class GlobalHeaderSearch {
     private searchTerm: string = '';
     private searchTermUntrimmed: string = '';
     private clickListener: any;
+    private _searchmodule: string = 'all';
+    private searchresults: any[] = [];
 
-    constructor(private router: Router, private broadcast: broadcast, private fts: fts, private elementRef: ElementRef, private renderer: Renderer, private popup: popup, private language: language) {
-        popup.closePopup$.subscribe(close => {
-            this.closePopup();
-        });
+
+    get searchmodule() {
+        return this.language.getModuleName(this._searchmodule);
+    }
+
+    set searchmodule(module) {
+        this._searchmodule = module;
+        if (this.searchTerm && this.showRecent) {
+            this.executeSearch();
+        }
+    }
+
+    constructor(private router: Router, private broadcast: broadcast, private fts: fts, private elementRef: ElementRef, private renderer: Renderer, private language: language) {
     }
 
     private onFocus() {
@@ -54,11 +62,28 @@ export class GlobalHeaderSearch {
         this.searchTerm = this.searchTermUntrimmed.trim();
         if (this.searchTerm.length && this.searchTerm !== this.fts.searchTerm) {
             // start the search
-            this.fts.search(this.searchTerm);
-
-            // broadcast so if searc is open also the serach is updated
-            this.broadcast.broadcastMessage('fts.search', this.searchTerm);
+            this.executeSearch();
         }
+    }
+
+    private executeSearch() {
+        let searchmodules = [];
+        if (this._searchmodule != 'all') searchmodules.push(this._searchmodule);
+
+        this.searchresults = [];
+        this.fts.searchByModules(this.searchTerm, searchmodules, 10).subscribe(rsults => {
+            let hits = [];
+            for (let moduleSearchresult of this.fts.moduleSearchresults) {
+                hits = hits.concat(moduleSearchresult.data.hits);
+            }
+            hits.sort((a, b) => {
+                return a._score > b._score ? -1 : 1;
+            });
+            this.searchresults = hits.splice(0, 10);
+        });
+
+        // broadcast so if searc is open also the serach is updated
+        // this.broadcast.broadcastMessage('fts.search', this.searchTerm);
     }
 
     private clearSearchTerm() {
@@ -91,9 +116,11 @@ export class GlobalHeaderSearch {
                     // broadcast the searchterm
                     this.broadcast.broadcastMessage('fts.search', this.searchTerm);
 
+                    // close the dropdown
+                    this.showRecent = false;
+
                     // navigate tot he search view
                     this.router.navigate(['/search']);
-                    this.popup.close();
                 }
                 break;
             default:
@@ -106,7 +133,12 @@ export class GlobalHeaderSearch {
     public onClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
-            this.closePopup()
+            this.closePopup();
         }
+    }
+
+    private selected(event) {
+        this.showRecent = false;
+        this.clearSearchTerm();
     }
 }

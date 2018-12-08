@@ -5,6 +5,7 @@ import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {modal} from "../../../services/modal.service";
 
 
 declare var moment: any;
@@ -14,7 +15,10 @@ declare var _: any;
 export class calendar {
 
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
+    public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public usersCalendars: any[] = [];
+    public otherCalendars: any[] = [];
+    public sysUICalendars: any[] = [];
     public calendarDate: any = {};
     public calendars: any = {};
     public currentStart: any = null;
@@ -27,11 +31,16 @@ export class calendar {
     public endHour: number = 23;
     public todayColor: string = '#eb7092';
     public absenceColor: string = '#727272';
+    public eventColor: string = '#039be5';
+    public googleColor: string = '#db4437';
     public loggedByGoogle: boolean = false;
+    public asPicker: boolean = false;
+    public isAllToken: boolean = false;
 
     constructor(private backend: backend,
                 private session: session,
                 private broadcast: broadcast,
+                private modal: modal,
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
@@ -51,6 +60,47 @@ export class calendar {
         this.weekstartday = value;
     }
 
+    public addEvent(obj) {
+        console.log(obj);
+    }
+
+    public addOtherCalendar() {
+        if (this.isAllToken) {return}
+        let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
+
+        this.modal.openModal('CalendarAddCalendar').subscribe(modalRef => {
+            modalRef.instance.calendars = calendars;
+            modalRef.instance.addCalendar.subscribe(calendar => {
+                if (calendar !== false) {
+                    let otherCalendars = this.otherCalendars;
+                    otherCalendars.push({
+                        id: calendar.id,
+                        name: calendar.name,
+                        visible: true,
+                        color: '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random() * 0xFFF << 0).toString(16)
+                    });
+                    this.setOtherCalendars(otherCalendars.slice());
+                }
+            })
+        });
+    }
+
+    public setOtherCalendars(calendars, save = true) {
+        if (!calendars) {return}
+
+        this.otherCalendars = calendars;
+        if (save) {
+            this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
+        }
+        this.otherCalendars$.emit(this.otherCalendars);
+        this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
+    }
+
+    public removeOtherCalendar(id) {
+        let otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
+        this.setOtherCalendars(otherCalendars);
+    }
+
     public addUserCalendar(id, name) {
         let usersCalendars = this.usersCalendars;
         usersCalendars.push({
@@ -67,19 +117,24 @@ export class calendar {
         this.setUserCalendars(usersCalendars);
     }
 
-    public setUserCalendars(value) {
-        if (!value) {
-            return;
+    public setUserCalendars(calendars, save = true) {
+        if (!calendars) {return}
+
+        this.usersCalendars = calendars;
+        if (save) {
+            this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
-        this.usersCalendars = value;
-        this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         this.usersCalendars$.emit(this.usersCalendars);
     }
 
-    public loadEvents(start, end, calendar = this.owner) {
+    public doReload(start, end, calendar = this.owner) {
+        return !this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end ||
+            !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0);
+    }
+
+    public loadEvents(start, end, calendar = this.owner, isOther = false) {
         // check if we need to reload
-        if (!this.currentStart || !this.currentEnd || this.currentStart > start || this.currentEnd < end ||
-            !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0)) {
+        if (this.doReload(start, end, calendar)) {
             // set current search parameters
             this.currentEnd = end;
             this.currentStart = start;
@@ -89,7 +144,9 @@ export class calendar {
                 start: start.format('YYYY-MM-DD HH:mm:ss'),
                 end: end.format('YYYY-MM-DD HH:mm:ss')
             };
-            this.backend.getRequest('calendar/' + calendar, params).subscribe(events => {
+            let endPoint = !isOther ? 'calendar/' : 'calendar/other/';
+
+            this.backend.getRequest(endPoint + calendar, params).subscribe(events => {
                 this.calendars[calendar] = [];
                 for (let event of events) {
                     event.data = this.modelutilities.backendModel2spice(event.module, event.data);
@@ -97,13 +154,19 @@ export class calendar {
                         case 'event':
                             event.start = moment(event.start).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
                             event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                            event.color = this.eventColor;
                             break;
                         case 'absence':
-                            event.start = moment(event.start);
-                            event.end = moment(event.end);
+                            event.start = moment(event.start).second(1);
+                            event.end = moment(event.end).second(1);
                             event.isMulti = true;
                             event.color = this.absenceColor;
                             event.data.summary_text = event.data.type;
+                            break;
+                        case 'other':
+                            event.start = moment(event.start).year(start.year()).second(1);
+                            event.end = moment(event.end).year(start.year()).second(1);
+                            event.isMulti = true;
                             break;
                     }
 
@@ -135,7 +198,11 @@ export class calendar {
 
     // internal function to manage the display .. adding diaplyindex and overly count to each event
     public arrangeEvents(events) {
-
+        events = events.map(event => {
+            event.start = moment(event.start).second(0);
+            event.end = moment(event.end).second(0);
+            return event;
+        });
         // sort the events
         events.sort((a, b) => {
             if (a.start < b.start) {
@@ -193,11 +260,9 @@ export class calendar {
 
         // determine the display index for all elements
         let handledEvents = [];
-        // angular.forEach(_calendarService.calendarEvents, function (_event) {
         for (let _event of events) {
             let _displayIndex = 0;
             let _usedIndexes = [];
-            // angular.forEach(_calendarService.calendarEvents, function (_ovEvent) {
             for (let _ovEvent of events) {
                 if (handledEvents.indexOf(_ovEvent.id) !== -1 && _ovEvent.start < _event.end && _ovEvent.end > _event.start) {
                     if (_usedIndexes.indexOf(calendarOverlay[_ovEvent.id].displayIndex) === -1) {
@@ -214,7 +279,6 @@ export class calendar {
 
 
         // finally prpgate to see if any of the nested overlaid elements has a higher max Overly v alue
-        // angular.forEach(_calendarService.calendarEventsOverlay, function (_overlayData, _overlayId) {
         for (let _overlayid in calendarOverlay) {
             // angular.forEach(_overlayData.elementsOverlaid, function (_ovOverlayData) {
             for (let _ooverlay of calendarOverlay[_overlayid].elementsOverlaid) {
@@ -245,6 +309,7 @@ export class calendar {
                                 event.data = message.messagedata.data;
                                 event.start = message.messagedata.data.date_start;
                                 event.end = message.messagedata.data.date_end;
+                                this.calendarDate = moment(this.calendarDate);
                                 return true;
                             }
                         });
@@ -258,7 +323,7 @@ export class calendar {
                                 end: message.messagedata.data.date_end,
                                 data: message.messagedata.data
                             });
-                            this.calendarDate = new moment(this.calendarDate);
+                            this.calendarDate = moment(this.calendarDate);
                         }
                         break;
                     case "model.delete":
@@ -266,7 +331,7 @@ export class calendar {
                         this.calendars[this.owner].some(event => {
                             if (event.id == message.messagedata.id) {
                                 this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
-                                this.calendarDate = new moment(this.calendarDate);
+                                this.calendarDate = moment(this.calendarDate);
                                 return true;
                             }
                         });
@@ -281,16 +346,24 @@ export class calendar {
         this.weekDaysCount = +this.userPreferences.unchangedPreferences.global['week_days_count'] || this.weekDaysCount;
         this.startHour = +this.userPreferences.unchangedPreferences.global['calendar_day_start_hour'] || this.startHour;
         this.endHour = +this.userPreferences.unchangedPreferences.global['calendar_day_end_hour'] || this.endHour;
-        this.calendarDate = new moment();
+        this.calendarDate = moment();
     }
 
     private getOtherCalendars() {
         this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
-            this.setUserCalendars(calendars["Users"]);
+            this.setUserCalendars(calendars["Users"], false);
+            this.setOtherCalendars(calendars["Other"], false);
+            this.getSysUICalendars();
         });
         if (this.session.authData.googleToken) {
             this.loggedByGoogle = true;
         }
     }
 
+    private getSysUICalendars(){
+        this.backend.getRequest('calendar/calendars').subscribe(calendars => {
+            this.sysUICalendars = calendars;
+            this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
+        });
+    }
 }
