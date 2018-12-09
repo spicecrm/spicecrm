@@ -10,7 +10,6 @@ import {Subject, Observable, of} from "rxjs";
 import {loginService, loginCheck} from "../../services/login.service";
 import {metadata, aclCheck} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
-import {modal} from "../../services/modal.service";
 import {modellist} from "../../services/modellist.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {modelutilities} from "../../services/modelutilities.service";
@@ -38,21 +37,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ { calendar } from "./services/calendar.service";
-
-import /*embed*/ {Calendar} from "./components/calendar";
-import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
-import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
-import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
-import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
-import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
-import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
-import /*embed*/ {CalendarEventSummary} from "./components/calendareventsummary";
-import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
-import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
-import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
-import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
-import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
+import /*embed*/ {AsteriskToolbarIndicator} from "./components/asterisktoolbarindicator";
 
 
 @NgModule({
@@ -66,23 +51,11 @@ import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
         DirectivesModule
     ],
     declarations: [
-        Calendar,
-        CalendarDatePicker,
-        CalendarSheetDay,
-        CalendarSheetWeek,
-        CalendarSheetMonth,
-        CalendarSheetSchedule,
-        CalendarSheetEvent,
-        CalendarEventSummary,
-        CalendarSheetDropTarget,
-        CalendarMorePopover,
-        CalendarMorePopoverEvent,
-        CalendarMoreButton,
-        CalendarAddCalendar,
+        AsteriskToolbarIndicator
     ],
     providers: [userpreferences]
 })
-export class ModuleCalendar {
+export class ModuleAsterisk {
     public version = "1.0";
     public build_date = "/*build_date*/";
 

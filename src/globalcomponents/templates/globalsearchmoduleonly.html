@@ -6,10 +6,8 @@
     </div>
     <div class="slds-grid">
         <div class="slds-col slds-align-bottom">
-            <!--p class="slds-text-body--small">{{getCount()}} items</p-->
             <ul class="slds-list--horizontal slds-has-dividers--left">
                 <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
-                <li *ngIf="canViewMore()" class="slds-item slds-text-link--reset" (click)="setSearchScope()">{{language.getLabel('LBL_VIEWALL')}}</li>
             </ul>
         </div>
     </div>
@@ -24,13 +22,12 @@
         </tr>
         </thead>
     </table>
-    <div #tablecontent class="slds-scrollable--y" (scroll)="onScroll($event)">
-        <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+    <div tobottom (scroll)="onScroll($event)">
+        <table #tablecontent class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
             <tbody>
-            <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+                <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
             </tbody>
-            <!--tbody *ngIf="fts.runningmodulesearch" system-table-stencils [columns]="listfields.length" [rows]="3"></tbody-->
+            <tbody system-table-stencils [columns]="listfields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="fts.runningmodulesearch"></tbody>
         </table>
-        <system-spinner *ngIf="fts.runningmodulesearch"></system-spinner>
     </div>
 </div>

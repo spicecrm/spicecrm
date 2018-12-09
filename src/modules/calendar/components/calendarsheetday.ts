@@ -29,6 +29,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @ViewChild('multievents', {read: ViewContainerRef}) private multiEvents: ViewContainerRef;
     @Input('userscalendars') private usersCalendars: any[] = [];
+    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googlecalendarvisible') private googleCalendarVisible: boolean = true;
     @Input() private setdate: any = {};
     private sheetTimeWidth: number = 80;

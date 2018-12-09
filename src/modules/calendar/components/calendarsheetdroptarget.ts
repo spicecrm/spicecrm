@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {calendar} from '../services/calendar.service';
 
@@ -6,7 +6,8 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-drop-target',
-    template: '',
+    template: `<div *ngIf="this.showPlus" style="cursor: pointer" (click)="this.addEvent()" 
+                    class="slds-align--absolute-center spice-h-full slds-theme_shade slds-text-heading_medium slds-text-color--inverse-weak">+</div>`,
     providers: [model],
     host: {
         '(dragover)': 'this.dragOver($event)',
@@ -22,9 +23,9 @@ export class CalendarSheetDropTarget {
     @Input() private hour: any = '';
     @Input() private day: any = undefined;
     private isDropTarget: boolean = false;
+    private showPlus: boolean = false;
 
-    constructor(private calendar: calendar, private model: model) {
-    }
+    constructor(private calendar: calendar, private model: model) {}
 
     get content() {
         return this.hour + ' ' + this.day;
@@ -35,6 +36,30 @@ export class CalendarSheetDropTarget {
             return 'slds-is-absolute slds-theme--shade';
         } else {
             return 'slds-is-absolute';
+        }
+    }
+
+    @HostListener('mouseover')
+    private mouseOver() {
+        if (this.calendar.asPicker) {
+            this.showPlus = true;
+        }
+    }
+
+    @HostListener('mouseleave')
+    private mouseLeave() {
+        this.showPlus = false;
+    }
+
+    private addEvent() {
+        if (this.day) {
+            let obj = {
+                hour: this.hour,
+                day: this.day.date.date(),
+                month: this.day.date.month(),
+                year: this.day.date.year()
+            };
+            this.calendar.addEvent(obj);
         }
     }
 
