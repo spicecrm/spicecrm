@@ -35,7 +35,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let week of currentGrid">
-            <td *ngFor="let day of week" role="gridcell" (click)="pickDate(day.day, day.month)" [ngClass]="{'slds-disabled-text': notCurrentMonth(day.month), 'slds-is-today': isToday(day.day, day.month), 'slds-is-selected': isCurrent(day.day, day.month)}">
+            <td *ngFor="let day of week" role="gridcell" (click)="pickDate(day.day, day.month)" [ngClass]="{'slds-disabled-text': disabled(day.month, day.day), 'slds-is-today': isToday(day.day, day.month), 'slds-is-selected': isCurrent(day.day, day.month)}">
                 <span class="slds-day">{{day.day}}</span>
             </td>
         </tr>

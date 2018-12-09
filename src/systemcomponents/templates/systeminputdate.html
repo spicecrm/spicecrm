@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown_left" role="dialog">
-                    <system-input-date-picker [setDate]="_date.moment" (datePicked)="datePicked($event)"></system-input-date-picker>
+                    <system-input-date-picker *ngIf="isOpen" [setDate]="_date.moment" (datePicked)="datePicked($event)"></system-input-date-picker>
                 </div>
             </div>
         </div>
