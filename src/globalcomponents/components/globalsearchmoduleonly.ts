@@ -1,32 +1,34 @@
-import {ElementRef, Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
+/**
+ * Created by christian on 08.11.2016.
+ */
+import {ElementRef, Component, Input, ViewChild, ViewContainerRef, OnInit, OnChanges} from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {broadcast} from '../../services/broadcast.service';
 
 declare var _;
 
 @Component({
-    selector: 'global-search-module',
-    templateUrl: './src/globalcomponents/templates/globalsearchmodule.html',
-    host: {
-        '[style.display]': 'getDisplay()'
-    }
+    selector: 'global-search-module-only',
+    templateUrl: './src/globalcomponents/templates/globalsearchmoduleonly.html'
 })
-export class GlobalSearchModule implements OnInit {
+export class GlobalSearchModuleOnly implements OnChanges {
+    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
     @Input() private module: string = '';
-    @Output() private scope: EventEmitter<string> = new EventEmitter<string>();
     private listfields: any[] = [];
 
-    constructor( private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
+    constructor(private broadcast: broadcast, private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
 
     }
 
-    public ngOnInit() {
+    public ngOnChanges() {
         this.listfields = [];
 
         // load all fields
         let componentconfig = this.metadata.getComponentConfig('GlobalSearchModule', this.module);
+
         // if nothing is defined, try to take the default list config...
         if (_.isEmpty(componentconfig)) componentconfig = this.metadata.getModuleDefaultComponentConfigByUsage(this.module, 'list');
 
@@ -49,16 +51,6 @@ export class GlobalSearchModule implements OnInit {
         return resultCount;
     }
 
-
-    private getDisplay() {
-        return !this.fts.runningmodulesearch && this.getCount().total > 0 ? 'inherit' : 'none';
-    }
-
-
-    private canViewMore(): boolean {
-        return this.getCount().total > 5;
-    }
-
     private getItems(): any[] {
         let items: any[] = [];
         this.fts.moduleSearchresults.some(item => {
@@ -70,7 +62,11 @@ export class GlobalSearchModule implements OnInit {
         return items;
     }
 
-    private setSearchScope(): void {
-        this.scope.emit(this.module);
+
+    private onScroll(e): void {
+        let element = this.tablecontent.element.nativeElement;
+        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
+            this.fts.loadMore();
+        }
     }
 }

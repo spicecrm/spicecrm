@@ -100,7 +100,9 @@ export class LanguageLabelModal
                 //console.log(res);
                 this.label$.emit(this.label);
                 this.close$.emit('save');
-                this.self.destroy();
+                if(this.self){
+                    this.self.destroy();
+                }
                 // todo: relaod language labels?
             }
         );

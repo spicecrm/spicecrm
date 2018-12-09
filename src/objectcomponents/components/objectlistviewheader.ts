@@ -1,31 +1,31 @@
-/**
- * Created by christian on 08.11.2016.
- */
-import { Component, Input, Output,EventEmitter} from '@angular/core';
-import { Router, ActivatedRoute }   from '@angular/router';
-import { modellist } from '../../services/modellist.service';
-import { language } from '../../services/language.service';
-import { metadata } from '../../services/metadata.service';
-import { model } from '../../services/model.service';
+import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {modellist} from '../../services/modellist.service';
+import {language} from '../../services/language.service';
+import {metadata} from '../../services/metadata.service';
+import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-listview-header',
     templateUrl: './src/objectcomponents/templates/objectlistviewheader.html'
 })
-export class ObjectListViewHeader {
-    @Input() parentconfig: any = [];
-    @Output() headerevent = new EventEmitter<any>();
-    actionSet: any = {};
+export class ObjectListViewHeader implements OnDestroy {
+    @Input() private parentconfig: any = [];
+    @Output() private headerevent = new EventEmitter<any>();
+    private actionSet: any = {};
+    private searchTimeOut: any;
+    private panelButtonState: string = '';
+    private listTypeSubscription: any;
+    private moduleName: string = '';
 
-    panelButtonState: string = '';
-    constructor(private metadata: metadata, private activatedRoute: ActivatedRoute,  private router: Router, private modellist: modellist, private language: language, private model: model) {
+    constructor(private metadata: metadata, private activatedRoute: ActivatedRoute, private router: Router, private modellist: modellist, private language: language, private model: model) {
         /*
         this.activatedRoute.params.subscribe(params => {
             this.moduleName = params['module'];
         });
         */
 
-        this.modellist.listtype$.subscribe(list => {
+        this.listTypeSubscription = this.modellist.listtype$.subscribe(list => {
             this.configChange();
         })
 
@@ -33,71 +33,71 @@ export class ObjectListViewHeader {
         this.actionSet = componentconfig.actionset;
     }
 
-    moduleName: string = '';
+    public ngOnDestroy(): void {
+        this.listTypeSubscription.unsubscribe();
+    }
 
-    private configChange(){
+    private configChange() {
         // in case filtering is not allowed .. hide the filterpanel
-        if(this.panelButtonState === 'filter' && this.filterDisabled())
-            this.panelButtonState = '';
+        if (this.panelButtonState === 'filter' && this.filterDisabled()) this.panelButtonState = '';
 
-        if(this.panelButtonState === 'aggregates' && this.aggregatesDisabled())
-            this.panelButtonState = '';
+        if (this.panelButtonState === 'aggregates' && this.aggregatesDisabled()) this.panelButtonState = '';
     }
 
-    goImport(){
-        this.router.navigate(['/module/' + this.model.module + '/import']);
-    }
 
-    setPanelButton(state){
-        if(this.panelButtonState === state)
+    private setPanelButton(state) {
+        if (this.panelButtonState === state) {
             this.panelButtonState = '';
-        else
+        } else {
             this.panelButtonState = state;
+        }
 
     }
 
 
-    changeList(event){
-        this.headerevent.emit({event: 'changelist', list:event});
+    private changeList(event) {
+        this.headerevent.emit({event: 'changelist', list: event});
     }
 
-    getPanelButtonClass(state){
-        if(state === this.panelButtonState)
+    private getPanelButtonClass(state) {
+        if (state === this.panelButtonState) {
             return 'slds-is-selected';
-        else
+        } else {
             return '';
+        }
     }
 
-    getFilterPanelStyle(){
+    private getFilterPanelStyle() {
         return {
             right: (this.panelButtonState === 'filter' ? '0px' : '-320px')
-        }
+        };
     }
 
-    getAggregatesPanelStyle(){
+    private getAggregatesPanelStyle() {
         return {
             right: (this.panelButtonState === 'aggregates' ? '0px' : '-320px')
-        }
+        };
     }
 
-    filterDisabled(){
+    private filterDisabled() {
         return !(this.modellist.filterEnabled());
     }
 
-    aggregatesDisabled(){
+    private aggregatesDisabled() {
         return !(this.modellist.aggregatesEnabled());
     }
 
-    onKeyUp(_e) {
+    private onKeyUp(_e) {
         // handle the key pressed
-        switch (_e.keyCode)
-        {
-            case 27: // esc
-                this.modellist.searchTerm = '';
-            case 13: // enter
+        switch (_e.key) {
+            case 'Enter':
+                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
                 this.modellist.reLoadList();
                 break;
-
+            default:
+                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+                this.searchTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 1000);
+                break;
         }
     }
 }

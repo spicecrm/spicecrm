@@ -5,6 +5,7 @@ import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {modal} from "../../../services/modal.service";
 
 
 declare var moment: any;
@@ -14,7 +15,10 @@ declare var _: any;
 export class calendar {
 
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
+    public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public usersCalendars: any[] = [];
+    public otherCalendars: any[] = [];
+    public sysUICalendars: any[] = [];
     public calendarDate: any = {};
     public calendars: any = {};
     public currentStart: any = null;
@@ -30,10 +34,13 @@ export class calendar {
     public eventColor: string = '#039be5';
     public googleColor: string = '#db4437';
     public loggedByGoogle: boolean = false;
+    public asPicker: boolean = false;
+    public isAllToken: boolean = false;
 
     constructor(private backend: backend,
                 private session: session,
                 private broadcast: broadcast,
+                private modal: modal,
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
@@ -53,6 +60,47 @@ export class calendar {
         this.weekstartday = value;
     }
 
+    public addEvent(obj) {
+        console.log(obj);
+    }
+
+    public addOtherCalendar() {
+        if (this.isAllToken) {return}
+        let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
+
+        this.modal.openModal('CalendarAddCalendar').subscribe(modalRef => {
+            modalRef.instance.calendars = calendars;
+            modalRef.instance.addCalendar.subscribe(calendar => {
+                if (calendar !== false) {
+                    let otherCalendars = this.otherCalendars;
+                    otherCalendars.push({
+                        id: calendar.id,
+                        name: calendar.name,
+                        visible: true,
+                        color: '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random() * 0xFFF << 0).toString(16)
+                    });
+                    this.setOtherCalendars(otherCalendars.slice());
+                }
+            })
+        });
+    }
+
+    public setOtherCalendars(calendars, save = true) {
+        if (!calendars) {return}
+
+        this.otherCalendars = calendars;
+        if (save) {
+            this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
+        }
+        this.otherCalendars$.emit(this.otherCalendars);
+        this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
+    }
+
+    public removeOtherCalendar(id) {
+        let otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
+        this.setOtherCalendars(otherCalendars);
+    }
+
     public addUserCalendar(id, name) {
         let usersCalendars = this.usersCalendars;
         usersCalendars.push({
@@ -69,12 +117,13 @@ export class calendar {
         this.setUserCalendars(usersCalendars);
     }
 
-    public setUserCalendars(value) {
-        if (!value) {
-            return;
+    public setUserCalendars(calendars, save = true) {
+        if (!calendars) {return}
+
+        this.usersCalendars = calendars;
+        if (save) {
+            this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
-        this.usersCalendars = value;
-        this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         this.usersCalendars$.emit(this.usersCalendars);
     }
 
@@ -83,7 +132,7 @@ export class calendar {
             !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0);
     }
 
-    public loadEvents(start, end, calendar = this.owner) {
+    public loadEvents(start, end, calendar = this.owner, isOther = false) {
         // check if we need to reload
         if (this.doReload(start, end, calendar)) {
             // set current search parameters
@@ -95,7 +144,9 @@ export class calendar {
                 start: start.format('YYYY-MM-DD HH:mm:ss'),
                 end: end.format('YYYY-MM-DD HH:mm:ss')
             };
-            this.backend.getRequest('calendar/' + calendar, params).subscribe(events => {
+            let endPoint = !isOther ? 'calendar/' : 'calendar/other/';
+
+            this.backend.getRequest(endPoint + calendar, params).subscribe(events => {
                 this.calendars[calendar] = [];
                 for (let event of events) {
                     event.data = this.modelutilities.backendModel2spice(event.module, event.data);
@@ -111,6 +162,11 @@ export class calendar {
                             event.isMulti = true;
                             event.color = this.absenceColor;
                             event.data.summary_text = event.data.type;
+                            break;
+                        case 'other':
+                            event.start = moment(event.start).year(start.year()).second(1);
+                            event.end = moment(event.end).year(start.year()).second(1);
+                            event.isMulti = true;
                             break;
                     }
 
@@ -295,11 +351,19 @@ export class calendar {
 
     private getOtherCalendars() {
         this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
-            this.setUserCalendars(calendars["Users"]);
+            this.setUserCalendars(calendars["Users"], false);
+            this.setOtherCalendars(calendars["Other"], false);
+            this.getSysUICalendars();
         });
         if (this.session.authData.googleToken) {
             this.loggedByGoogle = true;
         }
     }
 
+    private getSysUICalendars(){
+        this.backend.getRequest('calendar/calendars').subscribe(calendars => {
+            this.sysUICalendars = calendars;
+            this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
+        });
+    }
 }
