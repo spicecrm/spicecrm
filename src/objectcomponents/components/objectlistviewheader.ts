@@ -92,8 +92,7 @@ export class ObjectListViewHeader implements OnDestroy {
         switch (_e.key) {
             case 'Enter':
                 if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-
-                this.modellist.reLoadList()
+                this.modellist.reLoadList();
                 break;
             default:
                 if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
