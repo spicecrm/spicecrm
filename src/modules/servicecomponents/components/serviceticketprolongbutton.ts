@@ -17,6 +17,8 @@ export class ServiceTicketProlongButton implements OnInit {
         private language: language,
         private metadata: metadata,
         private model: model,
+        private modal: modal,
+        private viewContainerRef: ViewContainerRef
     ) {
 
     }
@@ -33,7 +35,7 @@ export class ServiceTicketProlongButton implements OnInit {
     }
 
     public execute() {
-        this.model.edit();
+        this.modal.openModal('ServiceTicketProlongModal', true, this.viewContainerRef.injector);
     }
 
     private handleDisabled(mode) {

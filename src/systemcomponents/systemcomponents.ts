@@ -72,7 +72,7 @@ import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
-
+import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 
 @NgModule({
     imports: [
@@ -130,7 +130,8 @@ import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
         SystemInputDate,
         SystemInputDatePicker,
         SystemGoogleplacesSearch,
-        SystemComponentSet
+        SystemComponentSet,
+        SystemProgressRing
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -179,7 +180,8 @@ import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
         SystemInputDatePicker,
         SystemGoogleplacesSearch,
         SystemStencil,
-        SystemComponentSet
+        SystemComponentSet,
+        SystemProgressRing
     ]
 })
 export class SystemComponents {
