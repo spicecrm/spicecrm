@@ -10,6 +10,7 @@ import {Subject, Observable, of} from "rxjs";
 import {loginService, loginCheck} from "../../services/login.service";
 import {metadata, aclCheck} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
+import {modal} from "../../services/modal.service";
 import {modellist} from "../../services/modellist.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {modelutilities} from "../../services/modelutilities.service";
@@ -51,6 +52,7 @@ import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdropt
 import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
+import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 
 
 @NgModule({
@@ -76,6 +78,7 @@ import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
         CalendarMorePopover,
         CalendarMorePopoverEvent,
         CalendarMoreButton,
+        CalendarAddCalendar,
     ],
     providers: [userpreferences]
 })

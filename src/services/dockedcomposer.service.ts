@@ -7,24 +7,24 @@ import {modelutilities} from './modelutilities.service';
 
 @Injectable()
 export class dockedComposer {
-    showComposer: boolean = false;
-    module: string = '';
+    public composers: any[] = [];
+    public calls: any[] = [];
+    public hiddenComposers: number[] = []
 
-    composers: Array<any> = [];
-    hiddenComposers: Array<number> = []
 
     constructor(private modelutilities: modelutilities) {
+        this.calls = [];
     }
 
-    addComposer(module, model = undefined) {
+    public addComposer(module, model?) {
 
         if (model) {
             this.composers.splice(0, 0, {
-                module: module,
+                module,
                 id: model.id,
                 name: model.summary_text,
                 model: {
-                    module: module,
+                    module,
                     id: model.id,
                     data: model.data
                 }
@@ -32,7 +32,7 @@ export class dockedComposer {
 
         } else {
             this.composers.splice(0, 0, {
-                module: module,
+                module,
                 id: this.modelutilities.generateGuid(),
                 name: '',
                 model: {}
@@ -41,14 +41,14 @@ export class dockedComposer {
 
     }
 
-    focusComposer(id) {
+    public focusComposer(id) {
         this.composers.some((composer, index) => {
             if (composer.id == id) {
                 let movedComposer = this.composers.splice(index, 1);
                 this.composers.unshift(movedComposer.shift());
                 return true;
             }
-        })
+        });
     }
 
     get maxComposers() {
