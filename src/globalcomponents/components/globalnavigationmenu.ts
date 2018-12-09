@@ -145,7 +145,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
                 this.moreItems.push(this.menuItems[j])
                 j++;
             }
-            componentRef.instancemoreMenuItems = this.moreItems;
+            componentRef.instance.moreMenuItems = this.moreItems;
 
             // set the more component ref
             this.moreComponentRef = {
