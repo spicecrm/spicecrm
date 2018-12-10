@@ -12,7 +12,7 @@ declare var moment: any;
 @Injectable()
 export class reminder {
 
-    private reminders: any[] = [];
+    public reminders: any[] = [];
     public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>()
 
     constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
