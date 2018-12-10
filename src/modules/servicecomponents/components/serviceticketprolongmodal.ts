@@ -15,6 +15,7 @@ export class ServiceTicketProlongModal {
     private minDate: any;
     private maxDate: any;
     private prolongReason: string = '';
+    private saving: boolean = false;
 
     constructor(
         private model: model,
@@ -31,8 +32,18 @@ export class ServiceTicketProlongModal {
     }
 
     private save() {
-        this.model.setField('prolonged_until', this.prolongDate);
-        this.self.destroy();
+        this.saving = true;
+        this.backend.postRequest('modules/ServiceTickets/' + this.model.id + '/prolong', {}, {
+            prolonged_until: this.prolongDate.format("YYYY-MM-DD"),
+            prolongation_reason: this.prolongReason
+        }).subscribe(
+            status => {
+                this.model.setField('prolonged_until', this.prolongDate);
+                this.self.destroy();
+            },
+            error => {
+                this.saving = false;
+            });
     }
 
     private setDate(date) {

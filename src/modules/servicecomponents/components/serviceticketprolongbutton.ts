@@ -44,6 +44,13 @@ export class ServiceTicketProlongButton implements OnInit {
             this.disabled = true;
             return;
         }
+
+        let resolveDate = this.model.getField('resolve_date');
+        if(resolveDate && resolveDate.isValid && resolveDate.isValid()){
+            this.disabled = true;
+            return;
+        }
+
         this.disabled = mode == 'edit' ? true : false;
     }
 }

@@ -114,7 +114,8 @@ export class ServiceTicketSLAIndicator {
         let totaltime = moment.duration(sladate.diff(dateentered));
         let timeleft = moment.duration(sladate.diff(curdate));
 
-        return Math.round(timeleft.as('minutes') / totaltime.as('minutes') * 100);
+        let percentage =  Math.round(timeleft.as('minutes') / totaltime.as('minutes') * 100);
+        return percentage > 99 ? 99 : percentage;
 
     }
 
