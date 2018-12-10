@@ -16,25 +16,35 @@ export class fieldServiceQueue extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modal: modal) {
         super(model, view, language, metadata, router);
     }
+    get canChange() {
+        if (this.model.data.acl && !this.model.data.acl.edit) return false;
 
-    private selectQueue() {
-        this.modal.openModal('ServiceSelectQueueModal').subscribe(
-            cmp => {
-                cmp.instance.parentqueue_id = this.model.getField(this.metadata.getFieldDefs(this.model.module, this.fieldname).id_name);
-                cmp.instance.displaynote = !this.view.isEditMode();
-                cmp.instance.selectedqueue.subscribe(response => {
-                    if (response != false) {
-                        this.model.setField(this.metadata.getFieldDefs(this.model.module, this.fieldname).id_name, response.servicequeue_id);
-                        this.model.setField(this.fieldname, response.servicequeue_name);
+        let resolveDate = this.model.getField('resolve_date');
+        if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
+            return false;
+        }
 
-                        if (!this.model.isEditing) {
-                            this.model.save();
-                        }
-                    }
-                    ;
-                })
-            }
-        );
+        return this.model.isEditing ? false : true;
     }
 
+    private selectQueue() {
+        if(this.canChange) {
+            this.modal.openModal('ServiceSelectQueueModal').subscribe(
+                cmp => {
+                    cmp.instance.parentqueue_id = this.model.getField(this.metadata.getFieldDefs(this.model.module, this.fieldname).id_name);
+                    cmp.instance.displaynote = !this.view.isEditMode();
+                    cmp.instance.selectedqueue.subscribe(response => {
+                        if (response != false) {
+                            this.model.setField(this.metadata.getFieldDefs(this.model.module, this.fieldname).id_name, response.servicequeue_id);
+                            this.model.setField(this.fieldname, response.servicequeue_name);
+
+                            if (!this.model.isEditing) {
+                                this.model.save();
+                            }
+                        }
+                    });
+                }
+            );
+        }
+    }
 }
