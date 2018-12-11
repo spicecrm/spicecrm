@@ -108,7 +108,6 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         if (this.maxDate && thedate.isAfter(this.maxDate)) {
             return true;
         }
-
         return false;
     }
 
