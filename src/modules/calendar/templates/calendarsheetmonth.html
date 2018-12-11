@@ -7,10 +7,10 @@
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
     <ng-container *ngFor="let sheetWeek of currentGrid; let i = index">
         <div #boxcontainer *ngFor="let sheetDay of sheetWeek; let j = index" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
-            <div #daycontainer class="slds-p-around--xx-small">
+            <div class="slds-p-around--xx-small" [style.height]="offsetHeight">
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
             </div>
-            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="moreHeight">
+            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight">
                 <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [moreevents]="sheetDay.items"></calendar-more-button>
             </div>
         </div>
@@ -19,7 +19,7 @@
     <ng-container *ngFor="let sheetDay of getSheetDays()">
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
     </ng-container>
-    <ng-container *ngFor="let event of allEvents">
+    <ng-container *ngFor="let event of getAllEvents()">
         <ng-container *ngFor="let week of event.weeksI">
             <calendar-sheet-event [event]="event" [ismonthsheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
         </ng-container>
