@@ -30,8 +30,7 @@ declare var moment: any;
         }
     ]
 })
-export class SystemInputTime implements OnDestroy, ControlValueAccessor
-{
+export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
@@ -84,23 +83,19 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor
         return retArray;
     }
 
-    public getDropDownValueByOffset(offset)
-    {
+    public getDropDownValueByOffset(offset) {
         return this.dropdownValues.find(e => e.offset == offset);
     }
 
-    public getNextDropDownValue()
-    {
+    public getNextDropDownValue() {
         return this.getDropDownValueByOffset(this._time.offset + this.minutes_interval);
     }
 
-    public setDisplayToNextDropDownValue()
-    {
+    public setDisplayToNextDropDownValue() {
         this.display = this.getNextDropDownValue().display;
     }
 
-    public setDisplayToPreviousDropDownValue()
-    {
+    public setDisplayToPreviousDropDownValue() {
         this.display = this.getDropDownValueByOffset(this._time.offset - this.minutes_interval).display;
     }
 
@@ -129,11 +124,12 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor
                 this.onChange(this._time.moment);
             } else {
                 // if only the hours are given... like "1", "22"...
-                if(typeof value == 'string' && value.length <= 2 && value.length > 0){
-                    if(parseInt(value) < 10)
+                if (typeof value == 'string' && value.length <= 2 && value.length > 0) {
+                    if (parseInt(value, 10) < 10) {
                         value = `0${value}:00`;
-                    else
+                    } else {
                         value = `${value}:00`;
+                    }
                     this.display = value;
                     return;
                 }
@@ -169,7 +165,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor
         // check if we are active already
         if (this.isOpen) {
             // listen to the click event if it is ousoide of the current elements scope
-            //this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+            // this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
         }
     }
 
@@ -181,14 +177,14 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor
         }*/
     }
 
-/*
-    private onDocumentClick(event: MouseEvent) {
-        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
-            this.isOpen = false;
-            this.clickListener();
+    /*
+        private onDocumentClick(event: MouseEvent) {
+            if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
+                this.isOpen = false;
+                this.clickListener();
+            }
         }
-    }
-*/
+    */
     /**
      * Set the function to be called
      * when the control receives a change event.
@@ -216,7 +212,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor
      */
     public writeValue(value: any): void {
         // this._time = value ? value : '';
-        if (value) {
+        if (value && value.isValid && value.isValid()) {
             this._time.moment = new moment(value);
             this._time.offset = this.calculateOffset(this._time.moment);
             this._time.display = this._time.moment.format(this.userpreferences.getTimeFormat());
@@ -257,6 +253,6 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor
      */
     private calculateOffset(date) {
         let mins = date.hour() * 60 + date.minute();
-        return Math.floor(mins / this.minutes_interval)*this.minutes_interval;
+        return Math.floor(mins / this.minutes_interval) * this.minutes_interval;
     }
 }

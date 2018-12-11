@@ -35,7 +35,7 @@ export class GlobalAppLauncherDialogRoleTile implements OnInit {
                 this.name = this.language.getAppLanglabel(role.label);
                 this.description = this.language.getAppLanglabel(role.label, 'long');
 
-                if (this.description.length > 75) {
+                if (this.description && this.description.length > 75) {
                     this.descriptionfull = this.description;
                     this.description = this.description.substr(0, 75) + '...';
                 }

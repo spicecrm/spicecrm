@@ -25,7 +25,7 @@ export class SystemCustomIcon {
     }
 
     getSvg() {
-        return this.file+'#'+this.icon;
+        return this.file + '#' + this.icon;
     }
 
     getIconClass() {
@@ -33,9 +33,9 @@ export class SystemCustomIcon {
     }
 
     getIconColor() {
-        if(this.color) {
-            return 'color: ' + this.color + ';';
-        }else {
+        if (this.color) {
+            return {fill: this.color};
+        } else {
             return '';
         }
     }
