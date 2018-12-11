@@ -1,74 +1,98 @@
-/**
- * Created by christian on 08.11.2016.
- */
-import {ElementRef, Component, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {Router} from '@angular/router';
+import {ElementRef, Component, NgModule, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
 import {fts} from '../../services/fts.service';
 import {language} from '../../services/language.service';
-import {broadcast} from '../../services/broadcast.service';
 import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-search',
-    templateUrl: './src/globalcomponents/templates/globalsearch.html'
+    templateUrl: './src/globalcomponents/templates/globalsearch.html',
+    providers: [fts]
 })
-export class GlobalSearch {
+export class GlobalSearch implements OnDestroy {
 
-    searchScope: string = '*';
+    private searchScope: string = '*';
+    private searchTimeOut: any = undefined;
+    private searchTerm: string = '';
+    private routeSubscription: any;
 
-    constructor(navigation: navigation, private broadcast: broadcast, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
-        // set the navigation
-        navigation.setActiveModule('search', 'search: ' + fts.searchTerm);
+    constructor(navigation: navigation, private elementref: ElementRef, router: Router, private activatedRoute: ActivatedRoute, private fts: fts, private language: language) {
+        this.routeSubscription = this.activatedRoute.params.subscribe(params => {
+            if (params.searchterm) {
+                // try to base 64 decode .. but can also be plain string
+                try {
+                    this.searchTerm = atob(params.searchterm);
+                } catch (e) {
+                    this.searchTerm = params.searchterm;
+                }
 
-        // start the general search
-        this.fts.searchByModules(fts.searchTerm);
-
-        // subscribe to the broadcast message
-        this.broadcast.message$.subscribe(message => this.handleMessage(message))
+                this.doSearch();
+                navigation.setActiveModule('search', 'search: ' + this.searchTerm);
+            }
+        });
     }
 
-    getContainerStyle(): any {
-        let rect = this.elementref.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px)'
+    public ngOnDestroy(): void {
+        this.routeSubscription.unsubscribe();
+    }
+
+    private search(_e) {
+        // handle the key pressed
+        switch (_e.key) {
+            case 'Enter':
+                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+                this.fts.searchTerm = this.searchTerm;
+                this.doSearch();
+                break;
+            default:
+                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+                this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
+                break;
         }
     }
 
-    private handleMessage(message):void {
-        switch (message.messagetype) {
-            case 'fts.search':
-                this.doSearch(message.messagedata);
-                break;
-            case 'fts.setscope':
-                this.setSearchScope(message.messagedata);
-                break;
+    get totalcount() {
+        let total = 0;
+        for (let modres of this.fts.moduleSearchresults) {
+            total += modres.data.total;
+        }
+        return total;
+    }
+
+    get totalmodules() {
+        let total = 0;
+        for (let modres of this.fts.moduleSearchresults) {
+            if (modres.data.total > 0) total++;
+        }
+        return total;
+    }
+
+    private doSearch(): void {
+        if (this.searchScope === '*') {
+            this.fts.searchByModules(this.searchTerm);
+        } else {
+            this.fts.searchByModules(this.searchTerm, [this.searchScope], 50);
         }
     }
 
-    doSearch(term):void {
-        if (this.searchScope === '*')
-            this.fts.searchByModules(term);
-        else
-            this.fts.searchByModules(term, [this.searchScope], 50);
-    }
-
-    getScopeClass(scope): string {
-        if (scope === this.searchScope)
+    private getScopeClass(scope): string {
+        if (scope === this.searchScope) {
             return 'slds-is-active';
+        }
     }
 
-    setSearchScope(scope): void {
-        if (scope === this.searchScope)
-            return;
+    private setSearchScope(scope): void {
+        if (scope === this.searchScope) return;
 
         this.searchScope = scope;
-        this.doSearch(this.fts.searchTerm);
+        this.doSearch();
     }
 
-    infiniteScroll(): boolean {
-        if (this.searchScope === '*')
+    private infiniteScroll(): boolean {
+        if (this.searchScope === '*') {
             return false;
-        else
+        } else {
             return true;
+        }
     }
 }

@@ -18,7 +18,7 @@ declare var moment: any;
 export class fieldDate extends fieldGeneric {
     private showDatePicker: boolean = false;
     private isValid: boolean = true;
-    private errorMessage: String = '';
+    private errorMessage: string = '';
     private popupSubscription: any = undefined;
     private clickListener: any = undefined;
 
@@ -26,58 +26,12 @@ export class fieldDate extends fieldGeneric {
         super(model, view, language, metadata, router);
     }
 
-    /*
-     * toggle the datepicker and subscribe to the close event
-     */
-    private toggleDatePicker() {
-
-        this.showDatePicker = !this.showDatePicker;
-        if (this.showDatePicker) {
-            this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
-            this.popupSubscription = this.popup.closePopup$.subscribe(event => {
-                this.showDatePicker = false;
-                this.clickListener();
-                this.popupSubscription.unsubscribe();
-            });
-        } else {
-            this.popupSubscription.unsubscribe();
-        }
-    }
-
-    public onClick(event: MouseEvent): void {
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.clickListener();
-            this.showDatePicker = false;
-        }
-    }
-
-    set editDate(e: string) {
-
-        if (e.trim() === '') {
-            this.model.setField(this.fieldname,  null);
-            return;
-        }
-
-        let setDate = new moment(e, this.userpreferences.getDateFormat(), true);
-        if (setDate.isValid()) {
-
-            // set the time
-            if (this.model.getField(this.fieldname) && !isNaN(this.model.getField(this.fieldname).hour())) {
-                setDate.hour(this.model.getField(this.fieldname).hour());
-                setDate.minute(this.model.getField(this.fieldname).minute());
-            }
-
-            // move the start Date
-            this.value = setDate;
-        }
-    }
-
-    get editDate() {
+    get displayDate() {
         try {
             if (this.model.getField(this.fieldname)) {
-                let date = new moment(this.model.getField(this.fieldname));
+                let date = this.model.getField(this.fieldname);
                 if (date.isValid()) {
+
                     return date.format(this.userpreferences.getDateFormat());
                 } else {
                     return '';
@@ -90,20 +44,7 @@ export class fieldDate extends fieldGeneric {
         }
     }
 
-    set pickerDate(date: any) {
-        this.editDate = date.format(this.userpreferences.getDateFormat());
-    }
-
-    get pickerDate() {
-        let pickerDate = new moment(this.model.getField(this.fieldname));
-        if (pickerDate.isValid()) {
-            return pickerDate;
-        } else {
-            return new moment();
-        }
-    }
-
     get highlightdate() {
-        return this.fieldconfig.highlightpast && this.editDate && new moment() > new moment(this.model.getField(this.fieldname)) ? true : false;
+        return this.fieldconfig.highlightpast && this.value && new moment() > new moment(this.model.getField(this.fieldname)) ? true : false;
     }
 }

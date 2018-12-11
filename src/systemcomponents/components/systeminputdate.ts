@@ -163,7 +163,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
      */
     public writeValue(value: any): void {
         // this._time = value ? value : '';
-        if (value) {
+        if (value && value.isValid && value.isValid()) {
             this._date.moment = new moment(value);
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
         } else {
