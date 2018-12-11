@@ -20,7 +20,7 @@ declare var moment: any;
 })
 export class CalendarSheetEvent implements OnInit {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
-    public fields: Array<any> = [];
+    public fields: any[] = [];
     @Input() public event: any = {};
     @Input("ismonthsheet") private isMonthSheet: boolean = false;
     @Input("isschedulesheet") private isScheduleSheet: boolean = false;

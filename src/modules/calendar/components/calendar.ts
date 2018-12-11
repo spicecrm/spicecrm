@@ -1,10 +1,7 @@
 import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {broadcast} from '../../../services/broadcast.service';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
-import {fts} from '../../../services/fts.service';
 import {calendar} from '../services/calendar.service';
-import {recent} from '../../../services/recent.service';
 
 declare var moment: any;
 declare var _: any;
@@ -36,66 +33,34 @@ declare var _: any;
     `]
 })
 export class Calendar {
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
 
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
-    public googleCalendarVisible: boolean = true;
-    public searchterm: string = "";
-    public searchopen: boolean = false;
-    public isLoading: boolean = false;
-    public resultsList: any[] = [];
-    public timeout: any = undefined;
-    public recentUsers: any[] = [];
+    public googleIsVisible: boolean = true;
     public scheduleUntilDate: any = {};
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
     private showTypeSelector: boolean = false;
     private sheetType: string = 'Week';
     private duration: any = {
         Day: 'd',
         Week: 'w',
         Month: 'M',
+        Schedule: 'M',
     };
 
     constructor(private language: language,
-                private broadcast: broadcast,
                 private navigation: navigation,
-                private fts: fts,
-                private recent: recent,
                 private elementRef: ElementRef,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
-        this.getRecent();
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
     }
 
     get owner() {
         return this.calendar.owner;
-    }
-
-    get searchOpen() {
-        return this.searchopen;
-    }
-
-    get loggedByGoogle() {
-        return this.calendar.loggedByGoogle;
-    }
-
-    set searchOpen(value) {
-        this.searchopen = value;
-        if (value) {
-            this.getRecent();
-        }
-    }
-
-    get lookupMenuStyle() {
-        return {
-            display: this.searchOpen ? "block" : "none",
-            width: this.inputContainer.element.nativeElement.getBoundingClientRect().width + "px",
-        };
     }
 
     get weekStartDay() {
@@ -114,78 +79,8 @@ export class Calendar {
         this.calendar.calendarDate = value;
     }
 
-    get searchTerm() {
-        return this.searchterm;
-    }
-
-    set searchTerm(value) {
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.searchterm = value, 500);
-        if (value == "") {
-            return;
-        }
-        this.isLoading = true;
-        this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
-            .subscribe(res => {
-                this.filterResultsList(res["Users"].hits.map(user => user = user._source));
-                this.isLoading = false;
-            }, err => this.isLoading = false);
-    }
-
-    private getRecent() {
-        this.recent.getModuleRecent("Users")
-            .subscribe(recent => this.filterRecent(recent));
-    }
-
-    private filterRecent(recent) {
-        this.recentUsers =  recent.filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
-    }
-
-    private filterResultsList(resultsList) {
-        this.resultsList = resultsList.filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
-    }
-
-    private addUserCalendar(id, name) {
-        this.calendar.addUserCalendar(id, name);
-        this.filterRecent(this.recentUsers);
-        this.filterResultsList(this.resultsList);
-    }
-
-    private removeUserCalendar(id) {
-        this.calendar.removeUserCalendar(id);
-    }
-
     private addOtherCalendar() {
         this.calendar.addOtherCalendar();
-    }
-
-    private removeOtherCalendar(id) {
-        this.calendar.removeOtherCalendar(id);
-    }
-
-    private toggleVisible(id, type) {
-        switch (type) {
-            case "Users":
-                this.calendar.usersCalendars.some(calendar => {
-                    if (calendar.id == id) {
-                        calendar.visible = !calendar.visible;
-                        this.calendar.setUserCalendars(this.calendar.usersCalendars.slice());
-                        return true;
-                    }
-                });
-                break;
-            case "Other":
-                this.calendar.otherCalendars.some(calendar => {
-                    if (calendar.id == id) {
-                        calendar.visible = !calendar.visible;
-                        this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
-                        return true;
-                    }
-                });
-                break;
-            case "Google":
-                this.googleCalendarVisible = !this.googleCalendarVisible;
-        }
     }
 
     private getContentStyle() {
@@ -228,6 +123,7 @@ export class Calendar {
 
     private setDateChanged(event) {
         this.calendarDate = new moment(event);
+        this.refresh();
     }
 
     private toggleTypeSelector() {
@@ -245,13 +141,9 @@ export class Calendar {
     }
 
     private gotToDayView(date) {
+        this.calendarDate = new moment(date);
         this.refresh();
-        this.calendarDate = date;
         this.sheetType = 'Day';
-    }
-
-    private goToWeekView() {
-        this.sheetType = 'Week';
     }
 
     private shiftPlus() {
@@ -283,8 +175,8 @@ export class Calendar {
     }
 
     private refresh() {
-        this.calendar.currentStart = undefined;
-        this.calendar.currentEnd = undefined;
+        this.calendar.currentStart = {};
+        this.calendar.currentEnd = {};
         this.calendarDate = new moment(this.calendar.calendarDate);
     }
 }
