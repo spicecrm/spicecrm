@@ -23,18 +23,23 @@ declare var moment: any;
 
 @Component({
     selector: 'system-input-date-picker',
-    templateUrl: './src/systemcomponents/templates/systeminputdatepicker.html'
+    templateUrl: './src/systemcomponents/templates/systeminputdatepicker.html',
+    host: {
+        class: 'slds-datepicker'
+    }
 })
 export class SystemInputDatePicker implements OnInit, OnChanges {
 
 
     @Input() private setDate: any;
+    @Input() private minDate: any;
+    @Input() private maxDate: any;
     @Input() private weekStartDay: number = 0;
     @Input() private showTodayButton: boolean = true;
     @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
 
     private curDate: any = new moment();
-    private currentGrid: Array<any> = [];
+    private currentGrid: any[] = [];
 
     constructor(private language: language, private userPreferences: userpreferences) {
         let preferences = this.userPreferences.unchangedPreferences.global;
@@ -61,12 +66,12 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
     get currentYear(): number {
         return this.curDate.year();
-    };
+    }
 
     set currentYear(value) {
         this.curDate.year(value);
         this.buildGrid();
-    };
+    }
 
     get currentMonth(): string {
         return moment.months()[this.curDate.month()];
@@ -90,6 +95,21 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
     private notCurrentMonth(month) {
         return month !== this.curDate.month();
+    }
+
+    private disabled(month, day) {
+        if (month !== this.curDate.month()) return true;
+
+        let thedate = new moment();
+        thedate.date(day).month(month).year(this.curDate.year())
+        if (this.minDate && thedate.isBefore(this.minDate)) {
+            return true;
+        }
+        if (this.maxDate && thedate.isAfter(this.maxDate)) {
+            return true;
+        }
+
+        return false;
     }
 
     private isToday(day, month) {
@@ -125,7 +145,16 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     private pickDate(date, month) {
-        this.datePicked.emit(new moment().year(this.currentYear).month(month).date(date))
+        let newDate = new moment().year(this.currentYear).month(month).date(date);
+
+        if (this.minDate && newDate.isBefore(this.minDate)) {
+            return false;
+        }
+        if (this.maxDate && newDate.isAfter(this.maxDate)) {
+            return false;
+        }
+
+        this.datePicked.emit(newDate);
     }
 
     private buildGrid() {
@@ -150,7 +179,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
             this.currentGrid.push(week);
             j++;
         }
-    };
+    }
 
 
 }

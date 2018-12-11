@@ -62,7 +62,7 @@ export class WorkbenchConfig implements OnChanges {
             // check availability
             if (!this.metadata.checkComponent(component)) {
 
-                if(fieldconfig.type == "label") {
+                if(fieldconfig.type == "labelx") {
                     component = 'LabelSelectorComponent';
                 }else {
                     component = 'WorkbenchConfigOptionDefault';
