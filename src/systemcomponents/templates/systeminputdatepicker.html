@@ -29,16 +29,17 @@
     <thead>
         <tr id="weekdays">
             <th *ngFor="let weekday of weekdays" scope="col">
-                <abbr>{{weekday}}</abbr>
+                <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let week of currentGrid">
-            <td *ngFor="let day of week" role="gridcell" (click)="pickDate(day.day, day.month)" [ngClass]="{'slds-disabled-text': notCurrentMonth(day.month), 'slds-is-today': isToday(day.day, day.month), 'slds-is-selected': isCurrent(day.day, day.month)}">
+            <td *ngFor="let day of week" role="gridcell" (click)="pickDate(day.day, day.month)"
+                [ngClass]="{'slds-disabled-text': notCurrentMonth(day.month), 'slds-is-today': isToday(day.day, day.month), 'slds-is-selected': isCurrent(day.day, day.month)}">
                 <span class="slds-day">{{day.day}}</span>
             </td>
         </tr>
     </tbody>
 </table>
-<button class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
+<button *ngIf="showTodayButton" class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
