@@ -91,13 +91,21 @@ export class calendar {
                             event.end = moment(event.end).second(1);
                             event.isMulti = true;
                             event.color = this.absenceColor;
-                            event.data.summary_text = event.data.type;
                             break;
                         case 'other':
                             event.start = moment(event.start).year(start.year()).second(1);
                             event.end = moment(event.end).year(start.year()).second(1);
                             event.isMulti = true;
                             break;
+                    }
+
+                    if (event.module == 'UserAbsences') {
+                        if (event.type == 'other') {
+                            event.data.summary_text = event.data.user_name;
+                        }
+                        if (this.absenceExists(event)) {
+                            continue
+                        }
                     }
                     this.calendars[calendar].push(event);
                 }
@@ -161,6 +169,17 @@ export class calendar {
 
     public getEvents(calendar = this.owner) {
         return this.calendars[calendar] ? this.calendars[calendar] : [];
+    }
+
+    private absenceExists(event) {
+        let found = false;
+        for (let prop in this.calendars) {
+            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id == event.id)) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
     public addEvent(obj) {
