@@ -328,7 +328,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 eDays++;
                 startI = startI == null ? dIndex : startI;
                 endI = dIndex;
-                eventI = day.items.indexOf(event);
+                eventI = eventI == null ? day.items.indexOf(event) : eventI;
                 visible = eventI >= this.maxEventsPerBox ? "none" : visible;
             }
         });
