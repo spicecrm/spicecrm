@@ -30,7 +30,7 @@ export class CRMLogViewerModal {
 
     // Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
     private loadFullData() {
-        this.backend.getRequest( this.routeBase+'/fullLine/' + this.line.fnr + '/' + this.line.lnr ).subscribe(
+        this.backend.getRequest( this.routeBase+'/fullLine/' + this.line.id ).subscribe(
             response => {
                 this.isLoaded = true;
                 this.isLoading = false;
