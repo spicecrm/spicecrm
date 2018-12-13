@@ -17,6 +17,7 @@ import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {SystemInputTime} from "./systeminputtime";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var moment: any;
 
@@ -33,12 +34,16 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     @Input() private setDate: any;
     @Input() private minDate: any;
     @Input() private maxDate: any;
+    @Input() private weekStartDay: number = 0;
+    @Input() private showTodayButton: boolean = true;
     @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
 
     private curDate: any = new moment();
     private currentGrid: any[] = [];
 
-    constructor(private language: language) {
+    constructor(private language: language, private userPreferences: userpreferences) {
+        let preferences = this.userPreferences.unchangedPreferences.global;
+        this.weekStartDay = preferences['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
     }
 
     public ngOnInit() {
@@ -72,9 +77,20 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         return moment.months()[this.curDate.month()];
     }
 
-
     get weekdays() {
-        return moment.weekdaysShort();
+        let weekDays = moment.weekdaysShort();
+        switch (this.weekStartDay) {
+            case 1:
+                let sun = weekDays.shift();
+                weekDays.push(sun);
+                return weekDays;
+            default:
+                return weekDays;
+        }
+    }
+
+    private weekdayLong(dayIndex) {
+        return moment.weekdays(dayIndex + this.weekStartDay);
     }
 
     private notCurrentMonth(month) {
@@ -92,7 +108,6 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         if (this.maxDate && thedate.isAfter(this.maxDate)) {
             return true;
         }
-
         return false;
     }
 
@@ -125,6 +140,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
     private goToday() {
         this.curDate = new moment();
+        this.buildGrid();
     }
 
     private pickDate(date, month) {
@@ -147,7 +163,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         // move to first day of month
         fdom.date(1);
         // move to Sunday
-        fdom.day();
+        fdom.day(this.weekStartDay);
 
         // build 6 weeks
         let j = 0;
@@ -156,7 +172,6 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
             let week = [];
             while (i < 7) {
                 week.push({day: fdom.date(), month: fdom.month()});
-
                 fdom.add(1, 'd');
                 i++;
             }
