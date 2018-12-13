@@ -29,7 +29,7 @@
     <thead>
         <tr id="weekdays">
             <th *ngFor="let weekday of weekdays" scope="col">
-                <abbr>{{weekday}}</abbr>
+                <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
             </th>
         </tr>
     </thead>
@@ -41,4 +41,4 @@
         </tr>
     </tbody>
 </table>
-<button class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
+<button *ngIf="showTodayButton" class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
