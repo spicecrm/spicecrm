@@ -53,13 +53,7 @@ export class CalendarSheetDropTarget {
 
     private addEvent() {
         if (this.day) {
-            let obj = {
-                hour: this.hour,
-                day: this.day.date.date(),
-                month: this.day.date.month(),
-                year: this.day.date.year()
-            };
-            this.calendar.addEvent(obj);
+            this.calendar.addingEvent$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
         }
     }
 
@@ -69,6 +63,7 @@ export class CalendarSheetDropTarget {
 
     private dragEnter(event) {
         this.isDropTarget = true;
+        event.preventDefault();
     }
 
     private dragLeave(event) {
