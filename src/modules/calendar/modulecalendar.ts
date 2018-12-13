@@ -41,7 +41,6 @@ import {DirectivesModule} from "../../directives/directives";
 import /*embed*/ { calendar } from "./services/calendar.service";
 
 import /*embed*/ {Calendar} from "./components/calendar";
-import /*embed*/ {CalendarDatePicker} from "./components/calendardatepicker";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
@@ -53,6 +52,7 @@ import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
+import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
 
 
 @NgModule({
@@ -65,9 +65,9 @@ import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
         SystemComponents,
         DirectivesModule
     ],
+
     declarations: [
         Calendar,
-        CalendarDatePicker,
         CalendarSheetDay,
         CalendarSheetWeek,
         CalendarSheetMonth,
@@ -79,6 +79,7 @@ import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
         CalendarMorePopoverEvent,
         CalendarMoreButton,
         CalendarAddCalendar,
+        CalendarOtherCalendarsMonitor,
     ],
     providers: [userpreferences]
 })
