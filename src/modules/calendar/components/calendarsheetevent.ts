@@ -40,6 +40,11 @@ export class CalendarSheetEvent implements OnInit {
                 private elementRef: ElementRef,
                 private model: model,
                 private renderer: Renderer2) {
+        this.calendar.color$.subscribe(calendar => {
+            if (this.calendar.calendars[calendar.id] && this.calendar.calendars[calendar.id].some(event => this.event.id == event.id)) {
+                this.event.color = calendar.color;
+            }
+        });
     }
 
     public ngOnInit() {

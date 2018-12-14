@@ -17,6 +17,7 @@ export class calendar {
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
+    public color$: EventEmitter<any> = new EventEmitter<any>();
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public sysUICalendars: any[] = [];
@@ -186,6 +187,15 @@ export class calendar {
         return found;
     }
 
+    private getRandomColor() {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
     public addOtherCalendar() {
         if (this.isAllToken) {return}
         let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
@@ -199,7 +209,7 @@ export class calendar {
                         id: calendar.id,
                         name: calendar.name,
                         visible: true,
-                        color: '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "ddd" : (Math.random() * 0xFFF << 0).toString(16)
+                        color: this.getRandomColor()
                     });
                     this.setOtherCalendars(otherCalendars.slice());
                 }
@@ -313,6 +323,30 @@ export class calendar {
             this.sysUICalendars = calendars;
             this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
         });
+    }
+
+    public setColor(id, color, type) {
+        switch (type) {
+            case "Users":
+                this.usersCalendars.some(calendar => {
+                    if (calendar.id == id) {
+                        calendar.color = color;
+                        this.setUserCalendars(this.usersCalendars);
+                        return true;
+                    }
+                });
+                break;
+            case "Other":
+                this.otherCalendars.some(calendar => {
+                    if (calendar.id == id) {
+                        calendar.color = color;
+                        this.setOtherCalendars(this.otherCalendars);
+                        return true;
+                    }
+                });
+                break;
+        }
+        this.color$.emit({id: id, color: color});
     }
 
     // internal function to manage the display .. adding diaplyindex and overly count to each event
