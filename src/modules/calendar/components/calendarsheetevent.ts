@@ -16,6 +16,7 @@ declare var moment: any;
         'class': 'slds-is-absolute slds-p-bottom--xxx-small',
         '(dragstart)': 'this.dragStart($event)',
         '(dragend)': 'this.dragEnd($event)',
+        '[class.slds-hidden]': 'this.hidden'
     }
 })
 export class CalendarSheetEvent implements OnInit {
@@ -28,6 +29,7 @@ export class CalendarSheetEvent implements OnInit {
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
     private mouseLast: any = undefined;
+    private hidden: boolean = false;
 
     private lastMoveTimeSpan: number = 0;
 
@@ -56,10 +58,12 @@ export class CalendarSheetEvent implements OnInit {
 
     private dragStart(event) {
         if (!this.canEdit) {return}
+        setTimeout(()=> this.hidden = true, 0);
         this.event.dragging = true;
     }
 
     private dragEnd(event) {
+        this.hidden = false;
         this.event.dragging = false;
     }
 

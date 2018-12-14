@@ -22,6 +22,29 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-day',
     templateUrl: './src/modules/calendar/templates/calendarsheetday.html',
+    styles: [`
+        /* Scrollbar */
+        /* width */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    `]
 })
 
 export class CalendarSheetDay implements OnChanges, AfterViewInit {
@@ -129,7 +152,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         this.googleMultiEvents = [];
         if (!this.googleIsVisible) {return}
 
-        this.calendar.loadGoogleEvents("Day", this.startDate, this.endDate).subscribe(events => {
+        this.calendar.loadGoogleEvents(this.startDate, this.endDate).subscribe(events => {
             if (events.length > 0) {
                 events = this.correctHours(events);
                 events = this.filterEvents(events);
@@ -288,5 +311,9 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
             top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
             height: this.calendar.sheetHourHeight + 'px'
         };
+    }
+
+    private notLastHour(hour) {
+        return hour < this.sheetHours.length;
     }
 }

@@ -16,6 +16,7 @@ export class calendar {
 
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
+    public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public sysUICalendars: any[] = [];
@@ -23,6 +24,7 @@ export class calendar {
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
+    public sidebarWidth: number = 300;
     public sheetHourHeight: number = 80;
     public multiEventHeight: number = 25;
     public weekstartday: number = 0;
@@ -124,18 +126,20 @@ export class calendar {
         }
     }
 
-    public loadGoogleEvents(type, startDate, endDate) {
+    public loadGoogleEvents(startDate, endDate) {
         if (!this.loggedByGoogle) {
             return of([]);
         }
-        let responseSubject = new Subject<any[]>();
-        let format = "YYYY-MM-DD HH:mm:ss";
-        let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
-        this.currentEnd["google"] = endDate;
-        this.currentStart["google"] = startDate;
         if (this.doReload(startDate, endDate, "google")) {
+            let responseSubject = new Subject<any[]>();
+            let format = "YYYY-MM-DD HH:mm:ss";
+            let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
+            this.calendars["google"] = [];
+            this.currentEnd["google"] = endDate;
+            this.currentStart["google"] = startDate;
+
             this.backend.getRequest("google/calendar/getgoogleevents", params).subscribe(res => {
-                this.calendars["google"] = [];
+
                 if (res.events && res.events.length > 0) {
                     for (let event of res.events) {
                         event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
@@ -174,16 +178,12 @@ export class calendar {
     private absenceExists(event) {
         let found = false;
         for (let prop in this.calendars) {
-            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id == event.id)) {
+            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id)) {
                 found = true;
                 break;
             }
         }
         return found;
-    }
-
-    public addEvent(obj) {
-        console.log(obj);
     }
 
     public addOtherCalendar() {

@@ -28,7 +28,7 @@
 <table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month" role="grid">
     <thead>
         <tr id="weekdays">
-            <th *ngFor="let weekday of weekdays" scope="col">
+            <th *ngFor="let weekday of weekdays; let index = index" scope="col">
                 <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
             </th>
         </tr>
