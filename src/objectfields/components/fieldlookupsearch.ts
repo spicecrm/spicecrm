@@ -25,12 +25,12 @@ export class fieldLookupSearch {
         this.searchTerm = value;
         if (this.searchTimeout) {window.clearTimeout(this.searchTimeout);}
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
-    };
-
-    constructor(private metadata: metadata, public model: model, public popup: popup, public fts: fts, public language: language, private modal: modal) {
     }
 
-    get canAdd(){
+    constructor( private metadata: metadata, public model: model, public popup: popup, public fts: fts, public language: language, private modal: modal ) {
+    }
+
+    get canAdd() {
         return this.metadata.checkModuleAcl(this.module, 'edit');
     }
 
@@ -44,13 +44,17 @@ export class fieldLookupSearch {
         this.searchTerm = '';
         this.searchtermChange.emit(this.searchTerm);
 
-        this.selectedObject.emit({'id':id, 'text': text, 'data': data});
+        this.selectedObject.emit({ id, text, data });
 
         this.popup.close();
     }
 
+    private recordAdded( record ) {
+        this.setParent( record.id, record.text, record.data );
+    }
+
     private getSearchResults() {
-        let resultsArray: Array<any> = [];
+        let resultsArray = [];
         this.fts.moduleSearchresults.some(results => {
             if (results.module === this.module) {
                 resultsArray = results.data.hits;
