@@ -82,7 +82,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
                 this.model.executeCopyRulesParent(relateModel);
                 awaitStopper.emit();
             },
-        ( error ) => {
+        () => {
                 this.toast.sendToast('ERR_LOADING_RECORD', 'error' );
                 awaitStopper.emit();
             });

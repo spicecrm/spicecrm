@@ -42,6 +42,7 @@ import /*embed*/ { calendar } from "./services/calendar.service";
 
 import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
+import /*embed*/ {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
 import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
@@ -69,6 +70,7 @@ import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothe
     declarations: [
         Calendar,
         CalendarSheetDay,
+        CalendarSheetThreeDays,
         CalendarSheetWeek,
         CalendarSheetMonth,
         CalendarSheetSchedule,
