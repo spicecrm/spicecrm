@@ -22,6 +22,29 @@ declare var _: any;
 @Component({
     selector: 'calendar-sheet-schedule',
     templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html',
+    styles: [`
+        /* Scrollbar */
+        /* width */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    `]
 })
 export class CalendarSheetSchedule implements OnChanges {
 
@@ -123,6 +146,9 @@ export class CalendarSheetSchedule implements OnChanges {
     }
 
     private getEvents() {
+        this.ownerEvents = [];
+        this.allEvents = this.allevents.slice();
+
         this.calendar.loadEvents(this.startDate, this.untilDate).subscribe(events => {
             if (events.length > 0) {
                 this.ownerEvents = events;
@@ -133,9 +159,12 @@ export class CalendarSheetSchedule implements OnChanges {
 
     private getGoogleEvents() {
         this.googleEvents = [];
-        if (!this.googleIsVisible) {return}
+        if (!this.googleIsVisible) {
+            this.allEvents = this.allevents.slice();
+            return;
+        }
 
-        this.calendar.loadGoogleEvents("Schedule", this.startDate, this.untilDate).subscribe(events => {
+        this.calendar.loadGoogleEvents(this.startDate, this.untilDate).subscribe(events => {
             this.googleEvents = events;
             this.allEvents = this.allevents.slice();
         });
@@ -143,6 +172,7 @@ export class CalendarSheetSchedule implements OnChanges {
 
     private getUsersEvents() {
         this.userEvents = [];
+        this.allEvents = this.allevents.slice();
 
         for (let i = 0; i < this.calendar.usersCalendars.length; i++) {
             let calendar = this.calendar.usersCalendars[i];
@@ -168,6 +198,7 @@ export class CalendarSheetSchedule implements OnChanges {
 
     private getOtherEvents() {
         this.otherEvents = [];
+        this.allEvents = this.allevents.slice();
 
         for (let i = 0; i < this.calendar.otherCalendars.length; i++) {
             let calendar = this.calendar.otherCalendars[i];
