@@ -1,95 +1,110 @@
-<div class="slds-theme--default">
-    <div class="slds-page-header">
-        <div class="slds-grid">
-            <div class="slds-col slds-has-flexi-truncate">
-                <div class="slds-media slds-no-space slds-grow">
-                    <object-icon [module]="'Calendar'"></object-icon>
-                    <div class="slds-media__body">
-                        <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('Calendar')}}</p>
-                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{getCalendarHeader()}}</h1>
+<div [ngClass]="!asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large'" [attr.role]="!asPicker ? 'none' : 'dialog'">
+    <div [class.slds-modal__container]="asPicker">
+        <div class="slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-no-space slds-grow">
+                        <object-icon [module]="'Calendar'"></object-icon>
+                        <div class="slds-media__body">
+                            <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('Calendar')}}</p>
+                            <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{getCalendarHeader()}}</h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="slds-col slds-no-flex slds-grid slds-align-top">
-                <div class="slds-button-group" role="group">
-                    <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
-                        <system-button-icon [icon]="'chevronleft'"></system-button-icon>
-                    </button>
-                    <button class="slds-button slds-button--icon-border" (click)="shiftPlus()">
-                        <system-button-icon [icon]="'chevronright'"></system-button-icon>
-                    </button>
-                </div>
-                <button class="slds-button slds-button--icon-border" (click)="refresh()">
-                    <system-button-icon [icon]="'refresh'"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
-                    <system-button-icon [icon]="'add'"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button--neutral" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
-                <div class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--x-small" [ngClass]="{'slds-is-open': showTypeSelector}">
-                    <button class="slds-button slds-button--neutral" (click)="toggleTypeSelector()">
-                        {{sheetType}}
-                        <system-button-icon [icon]="'down'"></system-button-icon>
-                    </button>
-                    <div class="slds-dropdown slds-dropdown--right slds-dropdown--x-small">
-                        <ul class="slds-dropdown__list" role="menu">
-                            <li class="slds-dropdown__item" role="presentation">
-                                <a href="javascript:void(0);" role="menuitem" (click)="setType('Day')">
-                                    <span class="slds-truncate">{{language.getLabel('LBL_DAY')}}</span>
-                                </a>
-                            </li>
-                            <li class="slds-dropdown__item" role="presentation" (click)="setType('Week')">
-                                <a href="javascript:void(0);" role="menuitem">
-                                    <span class="slds-truncate">{{language.getLabel('LBL_WEEK')}}</span>
-                                </a>
-                            </li>
-                            <li class="slds-dropdown__item" role="presentation" (click)="setType('Month')">
-                                <a href="javascript:void(0);" role="menuitem">
-                                    <span class="slds-truncate">{{language.getLabel('LBL_MONTH')}}</span>
-                                </a>
-                            </li>
-                            <li class="slds-dropdown__item" role="presentation" (click)="setType('Schedule')">
-                                <a href="javascript:void(0);" role="menuitem">
-                                    <span class="slds-truncate">{{language.getLabel('LBL_SCHEDULE')}}</span>
-                                </a>
-                            </li>
-                        </ul>
+                <div class="slds-col slds-no-flex slds-grid slds-align-top">
+                    <div class="slds-button-group" role="group">
+                        <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
+                            <system-button-icon [icon]="'chevronleft'"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon-border" (click)="shiftPlus()">
+                            <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                        </button>
                     </div>
-                </div>
-                <div class="slds-button-group slds-m-left--x-small" role="group">
-                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
-                        <system-button-icon [icon]="'zoomout'"></system-button-icon>
+                    <button class="slds-button slds-button--icon-border" (click)="refresh()">
+                        <system-button-icon [icon]="'refresh'"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
-                        <system-button-icon [icon]="'undo'"></system-button-icon>
-                    </button>
-                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
-                        <system-button-icon [icon]="'zoomin'"></system-button-icon>
-                    </button>
+                    <ng-container *ngIf="!asPicker">
+                        <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
+                            <system-button-icon [icon]="'add'"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--neutral" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
+                        <div class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--x-small" [ngClass]="{'slds-is-open': showTypeSelector}">
+                            <button class="slds-button slds-button--neutral" (click)="toggleTypeSelector()">
+                                {{language.getLabel('LBL_'+ sheetType | uppercase )}}
+                                <system-button-icon [icon]="'down'"></system-button-icon>
+                            </button>
+                            <div class="slds-dropdown slds-dropdown--right slds-dropdown--x-small">
+                                <ul class="slds-dropdown__list" role="menu">
+                                    <li class="slds-dropdown__item" role="presentation">
+                                        <a href="javascript:void(0);" role="menuitem" (click)="setType('Day')">
+                                            <span class="slds-truncate">{{language.getLabel('LBL_DAY')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" (click)="setType('Three_Days')">
+                                        <a href="javascript:void(0);" role="menuitem">
+                                            <span class="slds-truncate">{{language.getLabel('LBL_THREE_DAYS')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" (click)="setType('Week')">
+                                        <a href="javascript:void(0);" role="menuitem">
+                                            <span class="slds-truncate">{{language.getLabel('LBL_WEEK')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" (click)="setType('Month')">
+                                        <a href="javascript:void(0);" role="menuitem">
+                                            <span class="slds-truncate">{{language.getLabel('LBL_MONTH')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" (click)="setType('Schedule')">
+                                        <a href="javascript:void(0);" role="menuitem">
+                                            <span class="slds-truncate">{{language.getLabel('LBL_SCHEDULE')}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="slds-button-group slds-m-left--x-small" role="group">
+                            <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
+                                <system-button-icon [icon]="'zoomout'"></system-button-icon>
+                            </button>
+                            <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
+                                <system-button-icon [icon]="'undo'"></system-button-icon>
+                            </button>
+                            <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
+                                <system-button-icon [icon]="'zoomin'"></system-button-icon>
+                            </button>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </div>
-    </div>
-    <div #calendarcontent class="slds-grid" [ngStyle]="getContentStyle()">
-        <div style="width:300px" class="slds-border--right slds-p-top--xx-small slds-scrollable--y">
-            <div class="slds-datepicker">
+        <div #calendarcontent class="slds-grid slds-theme_default slds-border--right" [ngStyle]="getContentStyle()">
+            <div [style.width]="sidebarWidth + 'px'" class="slds-border--right slds-p-top--xx-small slds-scrollable--y slds-size--1-of-1">
                 <system-input-date-picker [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
+                <calendar_other_calendars_monitor (googleIsVisible$)="googleIsVisible = $event" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
             </div>
-            <calendar_other_calendars_monitor [googleisvisible]="googleIsVisible" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
+            <div [ngStyle]="getSheetStyle()">
+                <calendar-sheet-day *ngIf="sheetType === 'Day'" [googleisvisible]="googleIsVisible"
+                                    [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate">
+                </calendar-sheet-day>
+                <calendar-sheet-three-days *ngIf="sheetType === 'Three_Days'" [googleisvisible]="googleIsVisible" [calendarcontent]="calendarcontent" [footercontainer]="footercontainer"
+                                     [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
+                </calendar-sheet-three-days>
+                <calendar-sheet-week *ngIf="sheetType === 'Week'" [googleisvisible]="googleIsVisible" [calendarcontent]="calendarcontent"
+                                     [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
+                </calendar-sheet-week>
+                <calendar-sheet-month *ngIf="sheetType === 'Month'" [googleisvisible]="googleIsVisible"
+                                      [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
+                </calendar-sheet-month>
+                <calendar-sheet-schedule *ngIf="sheetType === 'Schedule'" [googleisvisible]="googleIsVisible"
+                                      [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)" (untildate$)="scheduleUntilDate = $event">
+                </calendar-sheet-schedule>
+            </div>
         </div>
-        <div style="width:calc(100% - 300px); height: 100%">
-            <calendar-sheet-day *ngIf="sheetType === 'Day'" [googleisvisible]="googleIsVisible"
-                                [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate">
-            </calendar-sheet-day>
-            <calendar-sheet-week *ngIf="sheetType === 'Week'" [googleisvisible]="googleIsVisible"
-                                 [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
-            </calendar-sheet-week>
-            <calendar-sheet-month *ngIf="sheetType === 'Month'" [googleisvisible]="googleIsVisible"
-                                  [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)">
-            </calendar-sheet-month>
-            <calendar-sheet-schedule *ngIf="sheetType === 'Schedule'" [googleisvisible]="googleIsVisible"
-                                  [userscalendars]="usersCalendars" [othercalendars]="otherCalendars" [setdate]="calendarDate" (navigateday)="gotToDayView($event)" (untildate$)="scheduleUntilDate = $event">
-            </calendar-sheet-schedule>
+        <div #footercontainer>
+            <footer *ngIf="asPicker" class="slds-modal__footer">
+                <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
+            </footer>
         </div>
     </div>
 </div>
