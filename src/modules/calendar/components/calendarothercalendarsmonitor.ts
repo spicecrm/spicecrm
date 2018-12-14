@@ -127,4 +127,8 @@ export class CalendarOtherCalendarsMonitor {
                 this.googleIsVisible$.emit(this.googleIsVisible);
         }
     }
+
+    private setColor(id, color, type) {
+        this.calendar.setColor(id, color, type);
+    }
 }
