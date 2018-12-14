@@ -54,6 +54,7 @@ import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopov
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
+import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
 
 
 @NgModule({
@@ -82,6 +83,7 @@ import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothe
         CalendarMoreButton,
         CalendarAddCalendar,
         CalendarOtherCalendarsMonitor,
+        CalendarColorPicker,
     ],
     providers: [userpreferences]
 })
