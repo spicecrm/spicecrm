@@ -9,7 +9,30 @@ declare var _: any;
 @Component({
     selector: 'calendar',
     templateUrl: './src/modules/calendar/templates/calendar.html',
-    providers: [calendar]
+    providers: [calendar],
+    styles: [`
+        /* Scrollbar */
+        /* width */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    `]
 })
 
 export class Calendar {
