@@ -57,7 +57,8 @@ export class CalendarSheetEvent implements OnInit {
     }
 
     get canEdit() {
-        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet && (this.event.type == 'event' || this.event.type == 'absence');
+        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
+            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker;
     }
 
     get owner() {
