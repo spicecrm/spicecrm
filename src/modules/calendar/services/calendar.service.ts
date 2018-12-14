@@ -258,46 +258,70 @@ export class calendar {
 
     private modelChangesSubscriber() {
         this.broadcast.message$.subscribe(message => {
-            switch (message.messagetype) {
-                case "model.save":
-                    let uid = message.messagedata.data.assigned_user_id;
-                    if (!this.calendars[uid]) {return}
-                    let exists = this.calendars[uid].some(event => {
-                        if (event.id == message.messagedata.id && message.messagedata.module == event.module) {
-                            event.data = message.messagedata.data;
-                            event.start = message.messagedata.data.date_start;
-                            event.end = message.messagedata.data.date_end;
-                            this.calendarDate = moment(this.calendarDate);
-                            return true;
-                        }
-                    });
+            let id = message.messagedata.id;
+            let module = message.messagedata.module;
+            let data = message.messagedata.data;
 
-                    if (!exists) {
-                        this.calendars[uid].push({
-                            id: message.messagedata.id,
-                            module: message.messagedata.module,
-                            type: "event",
-                            start: message.messagedata.data.date_start,
-                            end: message.messagedata.data.date_end,
-                            data: message.messagedata.data
-                        });
-                        this.calendarDate = moment(this.calendarDate);
-                    }
-                    break;
-                case "model.delete":
-                    if (!this.calendars[this.owner]) {return}
-                    this.calendars[this.owner].some(event => {
-                        if (event.id == message.messagedata.id && message.messagedata.module == event.module) {
-                            this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
-                            this.calendarDate = moment(this.calendarDate);
-                            return true;
+            if (module == 'Meetings' || module == 'Calls') {
+                switch (message.messagetype) {
+                    case "model.save":
+                        let uid = data.assigned_user_id;
+                        if (!this.calendars[uid]) {return}
+                        if (!this.modifyEvent(id, module, data, uid)) {
+                            if (this.isValid(data.date_end) && this.isValid(data.date_start)) {
+                                this.calendars[uid].push({
+                                    id: id,
+                                    module: module,
+                                    type: 'event',
+                                    start: data.date_start,
+                                    end: data.date_end,
+                                    data: data
+                                });
+                                this.calendarDate = moment(this.calendarDate);
+                            }
                         }
-                    });
-                    break;
+                        break;
+                    case "model.delete":
+                        if (!this.calendars[this.owner]) {return}
+                        this.deleteEvent(id, module);
+                        this.calendarDate = moment(this.calendarDate);
+                        break;
+                }
             }
         });
     }
 
+    private modifyEvent(id, module, data, uid) {
+        if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
+            return true;
+        }
+        if (data.date_start > this.currentEnd && data.date_end < this.currentStart) {
+            this.deleteEvent(id, module);
+            return true;
+        }
+        return this.calendars[uid].some(event => {
+            if (event.id == id && module == event.module) {
+                event.data = data;
+                event.start = data.date_start;
+                event.end = data.date_end;
+                this.calendarDate = moment(this.calendarDate);
+                return true;
+            }
+        });
+    }
+
+    private deleteEvent(id, module) {
+        this.calendars[this.owner].some(event => {
+            if (event.id == id && module == event.module) {
+                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
+                this.calendarDate = moment(this.calendarDate);
+                return true;
+            }
+        });
+    }
+    private isValid(field) {
+        return field && typeof field === 'object' && field.isValid();
+    }
     private loadPreferences() {
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;

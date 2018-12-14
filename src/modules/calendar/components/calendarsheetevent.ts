@@ -51,10 +51,13 @@ export class CalendarSheetEvent implements OnInit {
         this.model.module = this.event.module;
         this.model.id = this.event.id;
         this.model.data = this.event.data;
+        if (!this.event.hasOwnProperty('color')) {
+            this.event.color = this.calendar.eventColor;
+        }
     }
 
     get canEdit() {
-        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet;
+        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet && (this.event.type == 'event' || this.event.type == 'absence');
     }
 
     get owner() {
