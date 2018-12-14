@@ -15,5 +15,5 @@
               </div>
         </span>
     </li>
-    <li *ngIf="canAdd" field-lookup-search-add role="presentation" [module]="module" [fieldid]="fieldid"></li>
+    <li *ngIf="canAdd" field-lookup-search-add role="presentation" [module]="module" [fieldid]="fieldid" (added)="recordAdded($event)"></li>
 </ul>

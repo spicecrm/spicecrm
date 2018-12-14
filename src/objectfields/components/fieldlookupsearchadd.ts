@@ -9,17 +9,21 @@ import {popup} from '../../services/popup.service';
     providers: [model]
 })
 export class fieldLookupSearchAdd implements OnInit {
-    @Input() module: string = '';
-    @Input() fieldid: string = '';
+    @Input() private module: string = '';
+    @Input() private fieldid: string = '';
+    @Output('added') private added$ = new EventEmitter();
 
     constructor(public model: model, public language: language, public popup: popup) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.module = this.module;
     }
 
-    addParent() {
-        this.model.addModel(this.fieldid);
+    private addParent() {
+        this.model.addModel( this.fieldid ).subscribe( (ret) => {
+            this.added$.emit({ id: ret.id, text: ret.summary_text, data: ret });
+        });
     }
+
 }
