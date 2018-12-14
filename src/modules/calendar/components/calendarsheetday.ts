@@ -268,6 +268,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     private getSheetStyle() {
         return {
             height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
+            'margin-top': '-1px'
         };
     }
 
