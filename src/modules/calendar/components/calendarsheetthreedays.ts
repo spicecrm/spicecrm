@@ -367,9 +367,14 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
 
     private getSheetStyle() {
         if (this.footerContainer && this.calendar.asPicker) {
-            return {height: this.footerContainer.offsetTop - this.calendarsheet.element.nativeElement.offsetTop};
+            return {
+                height: this.footerContainer.offsetTop - this.calendarsheet.element.nativeElement.offsetTop,
+                'margin-top': '-1px'};
         }
-        return {height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)'};
+        return {
+            height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
+            'margin-top': '-1px'
+        };
     }
 
     private getHourDividerStyle(hour) {

@@ -372,6 +372,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
     private getSheetStyle() {
         return {
             height: this.calendarContent.getBoundingClientRect().height - this.headerContainer.element.nativeElement.getBoundingClientRect().height,
+            'margin-top': '-1px'
         };
     }
 
