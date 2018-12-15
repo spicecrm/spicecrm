@@ -718,7 +718,7 @@ export class model {
         this.evaluateValidationRules(null, "init");
     }
 
-    public addModel(addReference: string = "", parent: any = null, presets: any = {}) {
+    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false ) {
 
         // a response subject to return if the model has been saved
         let retSubject = new Subject<any>();
@@ -740,7 +740,7 @@ export class model {
                 if (editModalRef) {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
-
+                    editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
                         retSubject.next(response);
