@@ -1,4 +1,4 @@
-<div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [ngClass]="event.saving ? 'slds-p-vertical--xx-small': null"
+<div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [class.slds-p-vertical--xx-small]="event.saving"
      style="height:100%; border-radius: 2px;" [style.background-color]="!isScheduleSheet ? event.color : 'transparent'" [draggable]="canEdit && !event.isMulti && !isMonthSheet">
     <ng-container *ngIf="!event.saving; else saving">
         <div class="slds-grid slds-grid--align-spread">

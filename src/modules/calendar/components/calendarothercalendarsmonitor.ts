@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {recent} from "../../../services/recent.service";
@@ -13,10 +13,12 @@ declare var _: any;
 export class CalendarOtherCalendarsMonitor {
     @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
 
-    @Input('googleisvisible') private googleIsVisible: boolean = true;
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
 
+    @Output() public googleIsVisible$: EventEmitter<any> = new EventEmitter<any>();
+
+    private googleIsVisible: boolean = true;
     public searchterm: string = "";
     public searchopen: boolean = false;
     public resultsList: any[] = [];
@@ -122,6 +124,11 @@ export class CalendarOtherCalendarsMonitor {
                 break;
             case "Google":
                 this.googleIsVisible = !this.googleIsVisible;
+                this.googleIsVisible$.emit(this.googleIsVisible);
         }
+    }
+
+    private setColor(id, color, type) {
+        this.calendar.setColor(id, color, type);
     }
 }
