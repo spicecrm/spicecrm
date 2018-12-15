@@ -59,18 +59,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
     }
 
-    getAllEvents() {
-        return this.arrangeEvents(this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents));
-    }
-
-    get startDate() {
-        return new moment(this.setdate).date(1).hour(0).minute(0).second(0);
-    }
-
-    get endDate() {
-        return new moment(this.startDate).endOf('month');
-    }
-
     public ngAfterViewInit() {
         this.setMaxEvents();
         this.cdr.detectChanges();
@@ -90,6 +78,18 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
+    }
+
+    get allEvents() {
+        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+    }
+
+    private startDate() {
+        return new moment(this.setdate).date(1).hour(0).minute(0).second(0);
+    }
+
+    private endDate() {
+        return new moment(this.startDate()).endOf('month');
     }
 
     private setMaxEvents() {
@@ -115,21 +115,25 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     private getEvents() {
         this.ownerEvents = [];
-        this.calendar.loadEvents(this.startDate, this.endDate).subscribe(events => {
+        this.arrangeEvents();
+
+        this.calendar.loadEvents(this.startDate(), this.endDate()).subscribe(events => {
             if (events.length > 0) {
                 events.forEach(event => {
                     event.start = this.resetTime(event.start);
                     event.end = this.resetTime(event.end);
                 });
                 this.ownerEvents = events;
+                this.arrangeEvents();
             }
         });
     }
 
     private getGoogleEvents() {
         this.googleEvents = [];
+        this.arrangeEvents();
         if (!this.googleIsVisible) {return}
-            this.calendar.loadGoogleEvents("Month", this.startDate, this.endDate).subscribe(events => {
+            this.calendar.loadGoogleEvents(this.startDate(), this.endDate()).subscribe(events => {
             if (events.length > 0) {
                 events = events.map(event => {
                     event.start = this.resetTime(event.start);
@@ -137,15 +141,18 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     return event;
                 });
                 this.googleEvents = events;
+                this.arrangeEvents();
             }
         });
     }
 
     private getUsersEvents() {
         this.userEvents = [];
+        this.arrangeEvents();
+
         for (let calendar of this.calendar.usersCalendars) {
             if (!calendar.visible) {continue}
-            this.calendar.loadEvents(this.startDate, this.endDate, calendar.id).subscribe(events => {
+            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id).subscribe(events => {
                 if (events.length > 0) {
                     events.forEach(event => {
                         event.color = calendar.color;
@@ -153,6 +160,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                         event.start = this.resetTime(event.start);
                         event.end = this.resetTime(event.end);
                         this.userEvents.push(event);
+                        this.arrangeEvents();
                     });
                 }
             });
@@ -161,9 +169,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     private getOtherEvents() {
         this.otherEvents = [];
+        this.arrangeEvents();
+
         for (let calendar of this.calendar.otherCalendars) {
             if (!calendar.visible) {continue}
-            this.calendar.loadEvents(this.startDate, this.endDate, calendar.id, true).subscribe(events => {
+            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true).subscribe(events => {
                 if (events.length > 0) {
                     events.forEach(event => {
                         event.color = calendar.color;
@@ -171,6 +181,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                         event.start = this.resetTime(event.start);
                         event.end = this.resetTime(event.end);
                         this.otherEvents.push(event);
+                        this.arrangeEvents();
                     });
                 }
             });
@@ -182,10 +193,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         return moment(event);
     }
 
-    private arrangeEvents(events) {
+    private arrangeEvents() {
         for (let w = 0; w < this.currentGrid.length; w++) {
             this.currentGrid[w].forEach(day => day.items = []);
-            for (let event of events) {
+            for (let event of this.allEvents) {
                 if (!event.hasOwnProperty("weeksI")) {
                     event.weeksI = [];
                 }
@@ -213,7 +224,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     });
                 }
             }
-            events.forEach(event => {
+            this.allEvents.forEach(event => {
                 let itemIdx = null;
                 this.currentGrid[w].forEach(day => {
                     day.items.forEach((item, idx) => {
@@ -230,7 +241,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             });
         }
 
-        return events;
+        return this.allEvents;
     }
 
     private gotoDay(sheetday) {

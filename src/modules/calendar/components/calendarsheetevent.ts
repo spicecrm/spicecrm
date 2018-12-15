@@ -16,6 +16,7 @@ declare var moment: any;
         'class': 'slds-is-absolute slds-p-bottom--xxx-small',
         '(dragstart)': 'this.dragStart($event)',
         '(dragend)': 'this.dragEnd($event)',
+        '[class.slds-hidden]': 'this.hidden'
     }
 })
 export class CalendarSheetEvent implements OnInit {
@@ -28,6 +29,7 @@ export class CalendarSheetEvent implements OnInit {
     private mouseUpListener: any = undefined;
     private mouseStart: any = undefined;
     private mouseLast: any = undefined;
+    private hidden: boolean = false;
 
     private lastMoveTimeSpan: number = 0;
 
@@ -38,16 +40,25 @@ export class CalendarSheetEvent implements OnInit {
                 private elementRef: ElementRef,
                 private model: model,
                 private renderer: Renderer2) {
+        this.calendar.color$.subscribe(calendar => {
+            if (this.calendar.calendars[calendar.id] && this.calendar.calendars[calendar.id].some(event => this.event.id == event.id)) {
+                this.event.color = calendar.color;
+            }
+        });
     }
 
     public ngOnInit() {
         this.model.module = this.event.module;
         this.model.id = this.event.id;
         this.model.data = this.event.data;
+        if (!this.event.hasOwnProperty('color')) {
+            this.event.color = this.calendar.eventColor;
+        }
     }
 
     get canEdit() {
-        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet;
+        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
+            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker;
     }
 
     get owner() {
@@ -56,10 +67,12 @@ export class CalendarSheetEvent implements OnInit {
 
     private dragStart(event) {
         if (!this.canEdit) {return}
+        setTimeout(()=> this.hidden = true, 0);
         this.event.dragging = true;
     }
 
     private dragEnd(event) {
+        this.hidden = false;
         this.event.dragging = false;
     }
 

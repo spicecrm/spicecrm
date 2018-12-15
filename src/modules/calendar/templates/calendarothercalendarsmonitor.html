@@ -2,7 +2,7 @@
     <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small">{{language.getLabel('LBL_OTHER_CALENDARS')}}</label>
     <div class="slds-p-vertical--xx-small">
         <div *ngIf="loggedByGoogle" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
-             (mouseover)="hovered = 'google'" (mouseout)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
+             (mouseenter)="hovered = 'google'" (mouseleave)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
             <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">
                 <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px"
                      [ngStyle]="!googleIsVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
@@ -10,28 +10,34 @@
             </div>
         </div>
         <div *ngFor="let otherCalendar of otherCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
-             (mouseover)="hovered = otherCalendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == otherCalendar.id ? 'slds-theme--shade' : ''">
+             (mouseenter)="hovered = otherCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == otherCalendar.id">
             <div class="slds-grid" (click)="toggleVisible(otherCalendar.id, 'Other')" style="cursor: pointer">
                 <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="otherCalendar.visible ? otherCalendar.color : '#dddbda'">
                     <system-button-icon icon="choice" size="small"></system-button-icon>
                 </div>
                 <a class="slds-text-body--regular slds-truncate" [style.color]="otherCalendar.visible ? otherCalendar.color : '#dddbda'">{{language.getLabel(otherCalendar.name)}}</a>
             </div>
-            <button  class="slds-button slds-button--icon" (click)="removeOtherCalendar(otherCalendar.id)">
-                <system-button-icon icon="clear" size="small"></system-button-icon>
-            </button>
+           <div>
+               <calendar-color-picker *ngIf="hovered == otherCalendar.id"  (color$)="setColor(otherCalendar.id, $event, 'Other')"></calendar-color-picker>
+               <button  class="slds-button slds-button--icon" (click)="removeOtherCalendar(otherCalendar.id)">
+                   <system-button-icon icon="clear" size="small"></system-button-icon>
+               </button>
+           </div>
         </div>
         <div *ngFor="let usersCalendar of usersCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
-             (mouseover)="hovered = usersCalendar.id" (mouseout)="hovered = ''" [ngClass]="hovered == usersCalendar.id ? 'slds-theme--shade' : ''">
+             (mouseenter)="hovered = usersCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == usersCalendar.id">
             <div class="slds-grid" (click)="toggleVisible(usersCalendar.id, 'Users')" style="cursor: pointer">
                 <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">
                     <system-button-icon icon="user" size="small"></system-button-icon>
                 </div>
                 <a class="slds-text-body--regular slds-truncate" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">{{usersCalendar.name}}</a>
             </div>
-            <button  class="slds-button slds-button--icon" (click)="removeUserCalendar(usersCalendar.id)">
-                <system-button-icon icon="clear" size="small"></system-button-icon>
-            </button>
+            <div>
+                <calendar-color-picker *ngIf="hovered == usersCalendar.id" (color$)="setColor(usersCalendar.id, $event, 'Users')"></calendar-color-picker>
+                <button  class="slds-button slds-button--icon" (click)="removeUserCalendar(usersCalendar.id)">
+                    <system-button-icon icon="clear" size="small"></system-button-icon>
+                </button>
+            </div>
         </div>
     </div>
 </div>
