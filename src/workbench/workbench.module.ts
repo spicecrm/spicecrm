@@ -86,7 +86,7 @@ import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
 import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
-import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipe} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
@@ -138,7 +138,8 @@ import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/module
         WorkbenchHeader,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
-        ComponentsetManagerModulePipe,
+        ComponentsetManagerModulePipeCustom,
+        ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionModule,
         WorkbenchConfigOptionActionset,

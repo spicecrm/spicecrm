@@ -1,0 +1,134 @@
+import {Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {language} from "../../../services/language.service";
+import {fts} from "../../../services/fts.service";
+import {recent} from "../../../services/recent.service";
+import {calendar} from "../services/calendar.service";
+
+declare var _: any;
+
+@Component({
+    selector: 'calendar_other_calendars_monitor',
+    templateUrl: './src/modules/calendar/templates/calendarothercalendarsmonitor.html'
+})
+export class CalendarOtherCalendarsMonitor {
+    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+
+    @Input('userscalendars') private usersCalendars: any[] = [];
+    @Input('othercalendars') private otherCalendars: any[] = [];
+
+    @Output() public googleIsVisible$: EventEmitter<any> = new EventEmitter<any>();
+
+    private googleIsVisible: boolean = true;
+    public searchterm: string = "";
+    public searchopen: boolean = false;
+    public resultsList: any[] = [];
+    public recentUsers: any[] = [];
+    public timeout: any = undefined;
+    public isLoading: boolean = false;
+
+    constructor(private language: language,
+                private recent: recent,
+                private calendar: calendar,
+                private fts: fts) {
+        this.getRecent();
+    }
+
+    get loggedByGoogle() {
+        return this.calendar.loggedByGoogle;
+    }
+
+    get owner() {
+        return this.calendar.owner;
+    }
+
+    set searchOpen(value) {
+        this.searchopen = value;
+        if (value) {
+            this.getRecent();
+        }
+    }
+    get searchOpen() {
+        return this.searchopen;
+    }
+
+    get lookupMenuStyle() {
+        return {
+            display: this.searchOpen ? "block" : "none",
+            width: this.inputContainer.element.nativeElement.getBoundingClientRect().width + "px",
+        };
+    }
+
+    set searchTerm(value) {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.searchterm = value, 500);
+        if (value == "") {
+            return;
+        }
+        this.isLoading = true;
+        this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
+            .subscribe(res => {
+                this.filterResultsList(res["Users"].hits.map(user => user = user._source));
+                this.isLoading = false;
+            }, err => this.isLoading = false);
+    }
+
+    private getRecent() {
+        this.recent.getModuleRecent("Users").subscribe(recent => this.filterRecent(recent));
+    }
+
+    get searchTerm() {
+        return this.searchterm;
+    }
+
+    private filterRecent(recent) {
+        this.recentUsers =  recent.filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
+    }
+
+    private filterResultsList(resultsList) {
+        this.resultsList = resultsList.filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
+    }
+
+    private addUserCalendar(id, name) {
+        this.calendar.addUserCalendar(id, name);
+        this.filterRecent(this.recentUsers);
+        this.filterResultsList(this.resultsList);
+    }
+
+    private removeUserCalendar(id) {
+        this.calendar.removeUserCalendar(id);
+    }
+
+    private removeOtherCalendar(id) {
+        this.calendar.removeOtherCalendar(id);
+    }
+
+    private toggleVisible(id, type) {
+        switch (type) {
+            case "Users":
+                this.calendar.usersCalendars.some(calendar => {
+                    if (calendar.id == id) {
+                        calendar.visible = !calendar.visible;
+                        this.calendar.setUserCalendars(this.calendar.usersCalendars.slice());
+                        return true;
+                    }
+                });
+                break;
+            case "Other":
+                this.calendar.otherCalendars.some(calendar => {
+                    if (calendar.id == id) {
+                        calendar.visible = !calendar.visible;
+                        this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
+                        return true;
+                    }
+                });
+                break;
+            case "Google":
+                this.googleIsVisible = !this.googleIsVisible;
+                this.googleIsVisible$.emit(this.googleIsVisible);
+        }
+    }
+
+    private setColor(id, color, type) {
+        this.calendar.setColor(id, color, type);
+    }
+}

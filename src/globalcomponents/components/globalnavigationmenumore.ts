@@ -29,16 +29,16 @@ interface menuItem {
 export class GlobalNavigationMenuMore implements AfterViewInit{
     constructor(private language: language, private router: Router, private elementRef: ElementRef, private broadcast: broadcast) {}
 
-    moreMenuItems: Array<any> = [];
+    private moreMenuItems: any[] = [];
 
-    navigateTo(module) {
+    private navigateTo(module) {
         this.router.navigate(['/module/' + module]);
     }
 
-    ngAfterViewInit(){
+    public ngAfterViewInit(){
         this.broadcast.broadcastMessage('navigation.moreadded', {
             module: 'more',
             width: this.elementRef.nativeElement.offsetWidth
-        })
+        });
     }
 }

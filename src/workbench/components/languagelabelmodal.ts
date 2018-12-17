@@ -38,7 +38,7 @@ export class LanguageLabelModal
 
     get name()
     {
-        return this.label.name;
+        return this.label ? this.label.name : '';
     }
 
     set name(val)
@@ -49,7 +49,7 @@ export class LanguageLabelModal
 
     get scope()
     {
-        return this.label.scope;
+        return this.label ? this.label.scope : '';
     }
 
     set scope(val)
@@ -100,7 +100,9 @@ export class LanguageLabelModal
                 //console.log(res);
                 this.label$.emit(this.label);
                 this.close$.emit('save');
-                this.self.destroy();
+                if(this.self){
+                    this.self.destroy();
+                }
                 // todo: relaod language labels?
             }
         );

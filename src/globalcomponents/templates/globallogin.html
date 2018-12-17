@@ -7,17 +7,17 @@
             </div>
             <div class="slds-box--border" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
-                    <div *ngIf="!showForgotPass">
+                    <form *ngIf="!showForgotPass">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input type="text" [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1"/>
+                                <input type="text" name="username" [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1"/>
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input type="password" [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2"/>
+                                <input type="password" name="password" [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2"/>
                             </div>
                         </div>
                         <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
@@ -44,7 +44,7 @@
                         </div>
                         <div class="slds-button slds-button--brand" style="width:100%;" (click)="login()" tabindex="0">Login</div>
                         <global-login-google (googletoken)="doLogin()"></global-login-google>
-                    </div>
+                    </form>
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
                          *ngIf="configuration.getData('allowForgotPass')">
                         <div class="slds-truncate slds-text-body_small" title="Forgot password">Forgot password</div>

@@ -76,25 +76,54 @@ export class ModuleConfigAddDialog implements OnInit {
                 this.moduleSelectedItem = {"id": "*", "name": "*"};
             }
             for(let module of data){
-                this.moduleSelectList.push({"id": module.id, "name": module.module});
+                this.moduleSelectList.push({"id": module.id, "name": module.module, "group": "global"});
 
                 if(this.mode == "add" && module.module == this.currentModule) {
-                    this.moduleSelectedItem = {"id": module.id, "name": module.module};
+                    this.moduleSelectedItem = {"id": module.id, "name": module.module, "group": "global"};
+                }
+            }
+            this.sortArray(this.moduleSelectList);
+            this.moduleSelectList = Object.assign([], this.moduleSelectList);
+        });
+        this.backend.getRequest('configurator/entries/syscustommodules').subscribe(data => {
+
+            for(let module of data){
+                this.moduleSelectList.push({"id": module.id, "name": module.module, "group": "custom"});
+
+                if(this.mode == "add" && module.module == this.currentModule) {
+                    this.moduleSelectedItem = {"id": module.id, "name": module.module, "group": "custom"};
                 }
             }
             this.sortArray(this.moduleSelectList);
             this.moduleSelectList = Object.assign([], this.moduleSelectList);
         });
 
+
+
+
         // get all roles
         this.backend.getRequest('configurator/entries/sysuiroles').subscribe(data => {
 
             this.roleSelectList.push({"id": "*", "name": "*"});
             for(let role of data){
-                this.roleSelectList.push({"id": role.id, "name": role.name});
+                this.roleSelectList.push({"id": role.id, "name": role.name, "group": "global"});
 
                 if(this.mode == "copy" && role.id == this.currentRole) {
-                    this.roleSelectedItem = {"id": role.id, "name": role.name};
+                    this.roleSelectedItem = {"id": role.id, "name": role.name, "group": "global"};
+                }
+                if(this.currentRole == "*") {
+                    this.roleSelectedItem = {"id": "*", "name": "*"};
+                }
+            }
+            this.sortArray(this.roleSelectList);
+            this.roleSelectList = Object.assign([], this.roleSelectList);
+        });
+        this.backend.getRequest('configurator/entries/sysuicustomroles').subscribe(data => {
+            for(let role of data){
+                this.roleSelectList.push({"id": role.id, "name": role.name, "group": "custom"});
+
+                if(this.mode == "copy" && role.id == this.currentRole) {
+                    this.roleSelectedItem = {"id": role.id, "name": role.name, "group": "custom"};
                 }
                 if(this.currentRole == "*") {
                     this.roleSelectedItem = {"id": "*", "name": "*"};
@@ -104,11 +133,13 @@ export class ModuleConfigAddDialog implements OnInit {
             this.roleSelectList = Object.assign([], this.roleSelectList);
         });
 
+
+
         // get all objectrepositories
         this.backend.getRequest('configurator/entries/sysuiobjectrepository').subscribe(data => {
 
             for(let comp of data){
-                this.compSelectList.push({"id": comp.id, "name": comp.object});
+                this.compSelectList.push({"id": comp.id, "name": comp.object, "group": "global"});
 
                 if(this.mode == "copy") {
                     this.compDisabled = true;
@@ -118,6 +149,19 @@ export class ModuleConfigAddDialog implements OnInit {
             this.sortArray(this.compSelectList);
             this.compSelectList = Object.assign([], this.compSelectList);
         });
+        this.backend.getRequest('configurator/entries/sysuicustomobjectrepository').subscribe(data => {
+            for(let comp of data){
+                this.compSelectList.push({"id": comp.id, "name": comp.object, "group": "custom"});
+
+                if(this.mode == "copy") {
+                    this.compDisabled = true;
+                    this.compSelectedItem = {"id": this.currentComponent.id, "name": this.currentComponent.component};
+                }
+            }
+            this.sortArray(this.compSelectList);
+            this.compSelectList = Object.assign([], this.compSelectList);
+        });
+
 
     }
 

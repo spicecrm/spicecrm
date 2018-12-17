@@ -1,6 +1,3 @@
-/**
- * Created by christian on 08.11.2016.
- */
 import {
     AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
     OnDestroy

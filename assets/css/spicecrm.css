@@ -813,6 +813,9 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     fill: #CA1B1F;
 }
 
+.slds-listbox__option.slds-is-selected .slds-listbox__option-icon{
+    color: #CA1B1F;
+}
 
 .slds-button span{
     text-transform: capitalize;

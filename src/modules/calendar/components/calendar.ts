@@ -1,22 +1,30 @@
-import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {broadcast} from '../../../services/broadcast.service';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    Output,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
-import {fts} from '../../../services/fts.service';
 import {calendar} from '../services/calendar.service';
-import {recent} from '../../../services/recent.service';
 
 declare var moment: any;
 declare var _: any;
 
 @Component({
+    selector: 'calendar',
     templateUrl: './src/modules/calendar/templates/calendar.html',
     providers: [calendar],
     styles: [`
         /* Scrollbar */
         /* width */
         ::-webkit-scrollbar {
-            width: 5px;
+            width: 8px;
+            height: 8px;
         }
 
         /* Track */
@@ -35,63 +43,42 @@ declare var _: any;
         }
     `]
 })
+
 export class Calendar {
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
 
     public usersCalendars: any[] = [];
-    public googleCalendarVisible: boolean = true;
-    public searchterm: string = "";
-    public searchopen: boolean = false;
-    public isLoading: boolean = false;
-    public resultsList: any[] = [];
-    public timeout: any = undefined;
-    public recentUsers: any[] = [];
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    public otherCalendars: any[] = [];
+    public googleIsVisible: boolean = true;
+    public scheduleUntilDate: any = {};
     private showTypeSelector: boolean = false;
     private sheetType: string = 'Week';
+    private self: any = {};
     private duration: any = {
         Day: 'd',
+        Three_Days: 'd',
         Week: 'w',
         Month: 'M',
+        Schedule: 'M',
     };
 
     constructor(private language: language,
-                private broadcast: broadcast,
                 private navigation: navigation,
-                private fts: fts,
-                private recent: recent,
                 private elementRef: ElementRef,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
-        this.getRecent();
+        this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
+        this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
     }
 
     get owner() {
         return this.calendar.owner;
     }
 
-    get searchOpen() {
-        return this.searchopen;
-    }
-
-    get loggedByGoogle() {
-        return this.calendar.loggedByGoogle;
-    }
-
-    set searchOpen(value) {
-        this.searchopen = value;
-        if (value) {
-            this.getRecent();
-        }
-    }
-
-    get lookupMenuStyle() {
-        return {
-            display: this.searchOpen ? "block" : "none",
-            width: this.inputContainer.element.nativeElement.getBoundingClientRect().width + "px",
-        };
+    get sidebarWidth() {
+        return this.calendar.sidebarWidth;
     }
 
     get weekStartDay() {
@@ -102,72 +89,41 @@ export class Calendar {
         return this.calendar.weekDaysCount;
     }
 
-    get calendarDate() {
-        return this.calendar.calendarDate;
-    }
-
     set calendarDate(value) {
         this.calendar.calendarDate = value;
     }
 
-    get searchTerm() {
-        return this.searchterm;
+    get calendarDate() {
+        return this.calendar.calendarDate;
     }
 
-    set searchTerm(value) {
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.searchterm = value, 500);
-        if (value == "") {
-            return;
+    set asPicker(value) {
+        if (value) {
+            this.sheetType = 'Three_Days';
+            this.calendar.asPicker = value;
+        } else {
+            this.closeModal();
         }
-        this.isLoading = true;
-        this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
-            .subscribe(res => {
-                this.filterResultsList(res["Users"].hits.map(user => user = user._source));
-                this.isLoading = false;
-            }, err => this.isLoading = false);
     }
 
-    private getRecent() {
-        this.recent.getModuleRecent("Users")
-            .subscribe(recent => this.filterRecent(recent));
+    get asPicker() {
+        return this.calendar.asPicker;
     }
 
-    private filterRecent(recent) {
-        this.recentUsers =  recent.filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
-    }
-
-    private filterResultsList(resultsList) {
-        this.resultsList = resultsList.filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
-    }
-
-    private addUserCalendar(id, name) {
-        this.calendar.addUserCalendar(id, name);
-        this.filterRecent(this.recentUsers);
-        this.filterResultsList(this.resultsList);
-    }
-
-    private removeUserCalendar(id) {
-        this.calendar.removeUserCalendar(id);
-    }
-
-    private toggleVisibleGoogle() {
-        this.googleCalendarVisible = !this.googleCalendarVisible;
-    }
-
-    private toggleVisibleUsers(id) {
-        this.calendar.usersCalendars.some(calendar => {
-            if (calendar.id == id) {
-                calendar.visible = !calendar.visible;
-                this.calendar.setUserCalendars(this.calendar.usersCalendars.slice());
-                return true;
-            }
-        });
+    private addOtherCalendar() {
+        this.calendar.addOtherCalendar();
     }
 
     private getContentStyle() {
         return {
             height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop + 'px)'
+        };
+    }
+
+    private getSheetStyle() {
+        return {
+            width: `calc(100% - ${this.sidebarWidth}px)`,
+            height: '100%',
         };
     }
 
@@ -180,6 +136,10 @@ export class Calendar {
                 return focDate.format('MMMM YYYY');
             case 'Day':
                 return focDate.format('MMMM D, YYYY');
+            case 'Schedule':
+                return focDate.format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
+            case 'Three_Days':
+                return focDate.format("MMM D, YYYY") + ' - ' + moment(focDate.add(2, 'd')).format("MMM D, YYYY");
         }
     }
 
@@ -203,6 +163,7 @@ export class Calendar {
 
     private setDateChanged(event) {
         this.calendarDate = new moment(event);
+        this.refresh();
     }
 
     private toggleTypeSelector() {
@@ -220,13 +181,9 @@ export class Calendar {
     }
 
     private gotToDayView(date) {
+        this.calendarDate = new moment(date);
         this.refresh();
-        this.calendarDate = date;
         this.sheetType = 'Day';
-    }
-
-    private goToWeekView() {
-        this.sheetType = 'Week';
     }
 
     private shiftPlus() {
@@ -234,7 +191,7 @@ export class Calendar {
         if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay + (this.weekDaysCount - 1)) {
             this.calendarDate = new moment(this.calendarDate.add(moment.duration(weekDaysCountOffset, "d")));
         }
-        this.calendarDate = new moment(this.calendarDate.add(moment.duration(1, this.duration[this.sheetType])));
+        this.calendarDate = new moment(this.calendarDate.add(moment.duration(this.sheetType == 'Three_Days'? 3 : 1, this.duration[this.sheetType])));
     }
 
     private shiftMinus() {
@@ -242,7 +199,7 @@ export class Calendar {
         if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay) {
             this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(weekDaysCountOffset, "d")));
         }
-        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(1, this.duration[this.sheetType])));
+        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.sheetType == 'Three_Days'? 3 : 1, this.duration[this.sheetType])));
     }
 
     private zoomin() {
@@ -258,8 +215,12 @@ export class Calendar {
     }
 
     private refresh() {
-        this.calendar.currentStart = undefined;
-        this.calendar.currentEnd = undefined;
+        this.calendar.currentStart = {};
+        this.calendar.currentEnd = {};
         this.calendarDate = new moment(this.calendar.calendarDate);
+    }
+
+    private closeModal() {
+        this.self.destroy();
     }
 }

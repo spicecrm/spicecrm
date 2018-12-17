@@ -1,7 +1,7 @@
-import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {popup} from '../../services/popup.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { model } from '../../services/model.service';
+import { language } from '../../services/language.service';
+import { popup } from '../../services/popup.service';
 
 @Component({
     selector: '[field-lookup-search-add]',
@@ -9,17 +9,21 @@ import {popup} from '../../services/popup.service';
     providers: [model]
 })
 export class fieldLookupSearchAdd implements OnInit {
-    @Input() module: string = '';
-    @Input() fieldid: string = '';
 
-    constructor(public model: model, public language: language, public popup: popup) {
-    }
+    @Input() private module = '';
+    @Input() private fieldid = '';
+    @Output('added') private added$ = new EventEmitter();
 
-    ngOnInit() {
+    constructor( public model: model, public language: language, public popup: popup ) { }
+
+    public ngOnInit() {
         this.model.module = this.module;
     }
 
-    addParent() {
-        this.model.addModel(this.fieldid);
+    private addParent() {
+        this.model.addModel( this.fieldid, null, null, true ).subscribe( (ret) => {
+            this.added$.emit({ id: ret.id, text: ret.summary_text, data: ret });
+        });
     }
+
 }
