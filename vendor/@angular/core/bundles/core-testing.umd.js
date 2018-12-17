@@ -1,5 +1,5 @@
 /**
- * @license Angular v7.0.1
+ * @license Angular v7.1.3
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -1128,7 +1128,13 @@
             this._activeFixtures = [];
         };
         TestBedRender3.prototype.configureCompiler = function (config) {
-            throw new Error('the Render3 compiler is not configurable !');
+            var _a;
+            if (config.useJit != null) {
+                throw new Error('the Render3 compiler JiT mode is not configurable !');
+            }
+            if (config.providers) {
+                (_a = this._providerOverrides).push.apply(_a, __spread(config.providers));
+            }
         };
         TestBedRender3.prototype.configureTestingModule = function (moduleDef) {
             var _a, _b, _c, _d;
@@ -1200,6 +1206,7 @@
             throw new Error('No implemented in IVY');
         };
         TestBedRender3.prototype.createComponent = function (type) {
+            var _this = this;
             this._initIfNeeded();
             var testComponentRenderer = this.get(TestComponentRenderer);
             var rootElId = "root" + _nextRootElementId++;
@@ -1208,10 +1215,15 @@
             if (!componentDef) {
                 throw new Error("It looks like '" + core.ɵstringify(type) + "' has not been IVY compiled - it has no 'ngComponentDef' field");
             }
-            var componentFactory = new core.ɵRender3ComponentFactory(componentDef);
-            var componentRef = componentFactory.create(core.Injector.NULL, [], "#" + rootElId, this._moduleRef);
+            var noNgZone = this.get(ComponentFixtureNoNgZone, false);
             var autoDetect = this.get(ComponentFixtureAutoDetect, false);
-            var fixture = new ComponentFixture(componentRef, null, autoDetect);
+            var ngZone = noNgZone ? null : this.get(core.NgZone, null);
+            var componentFactory = new core.ɵRender3ComponentFactory(componentDef);
+            var initComponent = function () {
+                var componentRef = componentFactory.create(core.Injector.NULL, [], "#" + rootElId, _this._moduleRef);
+                return new ComponentFixture(componentRef, ngZone, autoDetect);
+            };
+            var fixture = ngZone ? ngZone.run(initComponent) : initComponent();
             this._activeFixtures.push(fixture);
             return fixture;
         };
@@ -1262,7 +1274,8 @@
                 ], RootScopeModule);
                 return RootScopeModule;
             }());
-            var providers = __spread(this._providers, this._providerOverrides);
+            var ngZone = new core.NgZone({ enableLongStackTrace: true });
+            var providers = __spread([{ provide: core.NgZone, useValue: ngZone }], this._providers, this._providerOverrides);
             var declarations = this._declarations;
             var imports = [RootScopeModule, this.ngModule, this._imports];
             var schemas = this._schemas;

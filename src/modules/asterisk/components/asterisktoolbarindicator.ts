@@ -32,15 +32,15 @@ export class AsteriskToolbarIndicator implements OnDestroy {
 
     constructor(private language: language, private backend: backend, private toast: toast, private dockedComposer: dockedComposer) {
         this.backend.getRequest('asterisk/userext').subscribe(resp => {
-            if(resp.extension){
+            if (resp.extension) {
                 this.extension = resp.extension;
                 this.connect();
             }
-        })
+        });
     }
 
-    private connect(){
-        this.socket = socketIo('http://asterisk.spicecrm.io:3000?room='+this.extension);
+    private connect() {
+        this.socket = socketIo('http://asterisk.spicecrm.io:3000?room=' + this.extension);
 
         this.socket.on('connect', (socket) => {
             this.status = 'connected';
@@ -109,7 +109,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         }
     }
 
-    private simulatecall(){
+    private simulatecall() {
         this.activeCall.callevent = 'RING';
         this.activeCall.callid = '66475757';
         this.activeCall.callnumber = '43676898238847';
