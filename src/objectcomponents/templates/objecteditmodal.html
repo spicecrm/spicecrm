@@ -28,7 +28,7 @@
         <ng-container *ngIf="actionSetItems.length == 0">
             <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
             <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
-            <button class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+            <button *ngIf="!preventGoingToRecord" class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
         </ng-container>
     </system-modal-footer>
 </system-modal>

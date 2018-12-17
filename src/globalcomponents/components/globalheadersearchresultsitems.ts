@@ -1,32 +1,36 @@
-/**
- * Created by christian on 08.11.2016.
- */
-import {AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { fts } from '../../services/fts.service';
-import { popup } from '../../services/popup.service';
-import { language } from '../../services/language.service';
-import { broadcast } from '../../services/broadcast.service';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter
+} from '@angular/core';
+import {Router} from '@angular/router';
+import {language} from '../../services/language.service';
+import {fts} from '../../services/fts.service';
 
 @Component({
     selector: 'global-header-search-results-items',
     templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitems.html'
 })
 export class GlobalHeaderSearchResultsItems {
-    @Input() searchTerm: string = '';
+    @Input() private searchTerm: string = '';
+    @Input() private searchModule: string = '';
+    @Input() private searchResults: any[] = [];
+    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private broadcast: broadcast, private fts: fts, private popup: popup, private router: Router, private language: language){
+    constructor(private router: Router, private language: language, private fts: fts) {
 
     }
 
-    goSearch(){
-        // set the searchterm .. the timeout might not have gotten it
-        this.fts.searchTerm = this.searchTerm;
+    get searchModuleName() {
+        return this.language.getLabel('LBL_INSPICECRM');
+    }
 
-        this.broadcast.broadcastMessage('fts.search', this.searchTerm);
-
+    private goSearch() {
         // navigate tot he search view
-        this.router.navigate(['/search']);
-        this.popup.close();
+        if (this.searchTerm.length > 0) {
+            this.selected.emit(true);
+            this.router.navigate(['/search/' + btoa(this.searchTerm)]);
+        }
     }
 }

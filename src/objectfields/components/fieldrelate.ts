@@ -1,4 +1,4 @@
-import {Component, ElementRef, Renderer, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -7,6 +7,8 @@ import {Router}   from '@angular/router';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
+import {backend} from '../../services/backend.service';
+import {toast} from '../../services/toast.service';
 
 @Component({
     selector: 'field-relate',
@@ -27,8 +29,9 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         public metadata: metadata,
         public router: Router,
         public elementRef: ElementRef,
-        public renderer: Renderer,
-        public modal: modal
+        public modal: modal,
+        public backend: backend,
+        public toast: toast
     ) {
         super(model, view, language, metadata, router);
     }
@@ -56,10 +59,33 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.relateSearchOpen = true;
     }
 
-    private setRelated(related) {
+    private setRelated( related ) {
         this.model.data[this.relateIdField] = related.id;
         this.model.data[this.relateNameField] = related.text;
+        if ( this.fieldconfig.executeCopyRules == 2 ) {
+            this.executeCopyRules( related.id );
+        } else if ( this.fieldconfig.executeCopyRules == 1 ) {
+            this.modal.confirm('Copy the data from related record?','Copy data?').subscribe( answer => answer && this.executeCopyRules( related.id ));
+        }
         this.closePopups();
+    }
+
+    private executeCopyRules( idRelated ) {
+        let awaitStopper = this.modal.await('LBL_LOADING');
+        this.backend.get( this.relateType, idRelated ).subscribe(
+        ( response: any ) => {
+                let relateModel = {
+                    module: this.relateType,
+                    id: response.id,
+                    data: response
+                };
+                this.model.executeCopyRulesParent(relateModel);
+                awaitStopper.emit();
+            },
+        () => {
+                this.toast.sendToast('ERR_LOADING_RECORD', 'error' );
+                awaitStopper.emit();
+            });
     }
 
     private goRelated() {
@@ -74,7 +100,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
                 if ( items.length ) {
-                    this.setRelated({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
+                    this.setRelated({ id: items[0].id, text: items[0].summary_text, data: items[0] });
                 }
             });
             selectModal.instance.searchTerm = this.relateSearchTerm;

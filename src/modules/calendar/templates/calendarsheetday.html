@@ -6,7 +6,7 @@
         <div class="slds-size--1-of-1 slds-border--left slds-p-top--xx-small" [ngStyle]="getDayColStyle()">
             <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle()">{{displayDate('ddd')}}</div>
             <div style="font-size: 2.5rem;line-height: 2.5rem;" class="slds-p-left--x-small slds-p-bottom--xx-small" [ngStyle]="isTodayStyle()">{{displayDate('D')}}</div>
-            <div #multievents class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small" [ngStyle]="getMultiEventsContainerStyle()">
+            <div #multieventscontainer class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small" [ngStyle]="getMultiEventsContainerStyle()">
                 <ng-container *ngFor="let event of allMultiEvents; let index = index">
                     <calendar-sheet-event [ngStyle]="getMultiEventStyle(index)" [event]="event"></calendar-sheet-event>
                 </ng-container>
@@ -14,9 +14,9 @@
         </div>
     </div>
 </div>
-<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
+<div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-is-relative">
     <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
-        <div class="slds-is-absolute slds-border--top slds-size--1-of-1"[ngStyle]="getHourDividerStyle(index)"></div>
+        <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index)"></div>
         <ng-container *ngIf="notLastHour(index)">
             <div  class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(index)"></div>
             <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(index)">{{sheetHour}}:00</div>
