@@ -47,17 +47,23 @@ export class fieldEmail extends fieldGeneric {
             this.invalid = false;
         }
 
-        this.model.setField(this.fieldname, newemail);
         if (!this.model.getFieldValue('emailaddresses')) {
-            return;
-        }
-
-        for (let emailaddress of this.model.getFieldValue('emailaddresses')) {
-            if (emailaddress.primary_address == 1) {
-                emailaddress.email_address = newemail;
-                emailaddress.email_address_caps = newemail.toUpperCase();
-                emailaddress.email_address_id = '';
-                emailaddress.id = '';
+            let newEmail = {
+                id: '',
+                primary_address: '1',
+                email_address: newemail,
+                email_address_caps: newemail.toUpperCase(),
+                email_address_id: ''
+            };
+            this.model.setField('emailaddresses', [newEmail]);
+        } else {
+            for (let emailaddress of this.model.getFieldValue('emailaddresses')) {
+                if (emailaddress.primary_address == 1) {
+                    emailaddress.email_address = newemail;
+                    emailaddress.email_address_caps = newemail.toUpperCase();
+                    emailaddress.email_address_id = '';
+                    emailaddress.id = '';
+                }
             }
         }
     }

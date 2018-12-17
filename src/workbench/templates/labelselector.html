@@ -1,46 +1,46 @@
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label">{{option.option}}</label>
     <div class="slds-form-element__control">
-        <div class="slds-select_container">
+        <div *ngIf="selected_item" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+            <div class="slds-pill_container">
+                <span class="slds-pill slds-size--1-of-1">
+                    <span class="slds-pill__label">{{selected_item.name}}</span><span *ngIf="selected_item.scope == 'custom'" class="slds-text-color_weak">custom</span>
+                    <button [disabled]="disabled" class="slds-button slds-button--icon slds-pill__remove" style="margin-right: 5px;" (click)="removeSelection()">
+                      <system-button-icon [icon]="'close'"></system-button-icon>
+                    </button>
+                </span>
+            </div>
+        </div>
 
-            <div *ngIf="selected_item" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-                <div class="slds-pill_container">
-                    <span class="slds-pill slds-size--1-of-1">
-                        <span class="slds-pill__label">{{selected_item.name}}</span><span *ngIf="selected_item.scope == 'custom'" class="slds-text-color_weak">custom</span>
-                        <button class="slds-button slds-button--icon slds-pill__remove" (click)="selected_item = null">
-                          <system-button-icon [icon]="'close'"></system-button-icon>
-                        </button>
+        <div *ngIf="!selected_item" class="slds-combobox_container">
+            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-haspopup="listbox" role="combobox">
+                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                    <input [disabled]="disabled" type="text" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id-68dg4" aria-autocomplete="list" autocomplete="off" role="textbox" placeholder="{{language.getLabel('LBL_SEARCHE_HERE')}}" #search_term (focus)="show_results = true" (focusout)="show_results = false" (keyup)="search(search_term.value)" (keyup.escape)="show_results = false" />
+                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right" style="margin-right: 5px;">
+                        <system-utility-icon [icon]="'search'" [size]="'xx-small'"></system-utility-icon>
                     </span>
                 </div>
             </div>
+            <div *ngIf="show_results" role="listbox">
+                <system-spinner *ngIf="is_searching"></system-spinner>
+                <ul *ngIf="!is_searching" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-dropdown--length-7" role="presentation">
+                    <li *ngFor="let item of items" class="slds-listbox__item" role="presentation">
+                        <div class="slds-listbox__option slds-listbox__option_entity" style="clear: both;" role="option" (mousedown)="selected_item = item">
+                            <system-custom-icon [icon]="item.scope" size="x-small" addclasses="slds-listbox__option-text slds-input__icon slds-input__icon_left slds-float_left"></system-custom-icon>
+                            <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity slds-float_left" style="margin-right: 5px;">{{item.currentTranslation}}</span>
+                            <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity slds-float_left" style="margin-right: 5px; font-size: 10px;">[{{item.name}}]</span>
 
-            <div *ngIf="!selected_item" class="slds-combobox_container">
-                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-haspopup="listbox" role="combobox">
-                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-                        <input type="text" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id-68dg4" aria-autocomplete="list" autocomplete="off" role="textbox" placeholder="{{language.getLabel('LBL_SEARCHE_HERE')}}" #search_term (focus)="show_results = true" (focusout)="show_results = false" (keyup.enter)="search(search_term.value)" (keyup.escape)="show_results = false" />
-                        <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
-                            <system-utility-icon [icon]="'search'" [size]="'xx-small'"></system-utility-icon>
-                        </span>
-                    </div>
-                </div>
-                <div *ngIf="show_results" role="listbox">
-                    <system-spinner *ngIf="is_searching"></system-spinner>
-                    <ul *ngIf="!is_searching" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid" role="presentation">
-                        <li *ngFor="let item of items" class="slds-listbox__item" role="presentation">
-                            <div class="slds-listbox__option slds-listbox__option_entity" role="option" (mousedown)="selected_item = item">
-                                <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity">{{item.name}}</span>
-                            </div>
-                        </li>
-                        <li *ngIf="items.length == max_results" class="slds-listbox__item" role="presentation">
-                            <div class="slds-listbox__option slds-listbox__option_entity" role="option">
-                                <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity">{{language.getLabel('LBL_TO_MANY_RESULTS')}}...</span>
-                            </div>
-                        </li>
-                        <li class="slds-listbox__item" role="presentation" (mousedown)="addItem()">
-                            <button class="slds-button slds-button--icon"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
-                        </li>
-                    </ul>
-                </div>
+                        </div>
+                    </li>
+                    <li *ngIf="items.length == max_results" class="slds-listbox__item" role="presentation">
+                        <div class="slds-listbox__option slds-listbox__option_entity" style="clear: both;"  role="option">
+                            <span class="slds-p-left--medium slds-listbox__option-text slds-listbox__option-text_entity">{{language.getLabel('LBL_TO_MANY_RESULTS')}}...</span>
+                        </div>
+                    </li>
+                    <li class="slds-listbox__item slds-border_top" role="presentation" style="clear: both;"  (mousedown)="addItem()">
+                        <button class="slds-button slds-button--icon slds-align_absolute-center"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

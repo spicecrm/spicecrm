@@ -1,22 +1,31 @@
-<div class="slds-border--bottom">
-    <div class="slds-grid" style="margin-right: 17px">
-        <div class="slds-align--absolute-center slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
-            <system-utility-icon [icon]="'clock'" [size]="'x-small'" class="slds-m-right--xxx-small"></system-utility-icon>
-            {{offset}}
-        </div>
-        <div class="slds-size--1-of-1 slds-border--left slds-p-top--xx-small" [ngStyle]="getDayColStyle()"
-             *ngFor="let sheetDay of sheetDays; let last = last; let first = first" [ngClass]="last ? 'slds-border--right' : ''">
-            <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('ddd', sheetDay.date)}}</div>
-            <div style="font-size: 2.5rem;line-height: 2.5rem;" class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom">
-                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.index)" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('D',sheetDay.date)}}</a>
+<div #headercontainer class="slds-grid slds-border--bottom">
+    <div class="slds-align--absolute-center slds-m-around--none slds-p-vertical--x-small" [ngStyle]="getTimeColStyle()">
+        <system-utility-icon [icon]="'clock'" [size]="'x-small'" class="slds-m-right--xxx-small"></system-utility-icon>
+        {{offset}}
+    </div>
+    <div class="slds-border--right" [ngStyle]="getDaysContainerStyle()">
+        <div class="slds-grid">
+            <div *ngFor="let sheetDay of sheetDays" class="slds-border--left" [ngStyle]="getDayColStyle()">
+                <div class="slds-p-top--xx-small">
+                    <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('ddd', sheetDay.date)}}</div>
+                    <div style="font-size: 2.5rem;line-height: 2.5rem;" class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom">
+                        <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.day)" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('D',sheetDay.date)}}</a>
+                    </div>
+                </div>
             </div>
-            <div #multievents *ngIf="first" class="slds-text-align--center slds-text-body--small slds-p-around--xxx-small" [ngStyle]="getMultiEventsContainerStyle()">
-                <ng-container *ngFor="let event of allMultiEvents; let eventIndex = index">
-                    <calendar-sheet-event [ngStyle]="getMultiEventStyle(event, eventIndex)" [event]="event"></calendar-sheet-event>
-                </ng-container>
+        </div>
+        <div class="slds-is-relative">
+            <ng-container *ngFor="let event of allMultiEvents">
+                <calendar-sheet-event [ngStyle]="getMultiEventStyle(event)" [event]="event"></calendar-sheet-event>
+            </ng-container>
+        </div>
+        <div class="slds-grid">
+            <div *ngFor="let sheetDay of sheetDays" [ngStyle]="getDayColStyle()" [style.min-height]="calendar.multiEventHeight" class="slds-border--left">
+                <div *ngFor="let item of sheetDay.items"  [style.height]="calendar.multiEventHeight"></div>
             </div>
         </div>
     </div>
+    <div #scrollcontainer aria-hidden="true" style="overflow: scroll; visibility: hidden; flex: none"></div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-is-relative">
     <ng-container *ngFor="let sheetHour of sheetHours; let index = index">

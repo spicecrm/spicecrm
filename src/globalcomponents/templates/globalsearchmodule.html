@@ -1,4 +1,4 @@
-<div class="slds-page-header">
+<div class="slds-p-around--medium slds-theme--default slds-border--top">
     <div class="slds-grid">
         <div class="slds-col slds-has-flexi-truncate">
             <h1 class="slds-page-header__title slds-truncate">{{language.getModuleName(module)}}</h1>
@@ -15,7 +15,7 @@
     </div>
 </div>
 <div>
-    <table style="margin-bottom: 0px;" class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+    <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
         <thead>
         <tr class="slds-text-title--caps">
             <th *ngFor="let item of listfields" scope="col">
@@ -24,7 +24,7 @@
         </tr>
         </thead>
     </table>
-    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()" (scroll)="onScroll($event)">
+    <div #tablecontent class="slds-scrollable--y" (scroll)="onScroll($event)">
         <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
             <tbody>
             <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>

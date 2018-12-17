@@ -1,5 +1,5 @@
-<div class="slds-p-horizontal--xxx-small">
-    <svg aria-hidden="true" [ngClass]="getIconClass()">
+<div class="slds-p-horizontal--xxx-small slds-current-color">
+    <svg aria-hidden="true" [ngClass]="getIconClass()" [ngStyle]="getIconColor()">
         <use [attr.xlink:href]="getSvg()"></use>
     </svg>
 </div>

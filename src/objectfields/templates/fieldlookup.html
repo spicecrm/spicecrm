@@ -45,7 +45,7 @@
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookupSearchOpen}"  role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                     <input type="text" class="slds-input" [ngClass]="{'slds-combobox__input':lookuplinks.length > 1}" aria-autocomplete="list" (focus)="onFocus()" (click)="onFieldClick()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(lookuplinks[lookupType].module)"/>
-                    <system-icon icon="search" sprite="utility" addclasses="slds-input__icon slds-input__icon_right"></system-icon>
+                    <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                     <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" [module]="lookuplinks[lookupType].module" (selectedObject)="addItem($event)"></field-lookup-recent>

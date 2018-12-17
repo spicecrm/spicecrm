@@ -1,18 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output, Pipe} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, Pipe} from '@angular/core';
 import {language} from "../../services/language.service";
 
 @Component({
     selector: 'pagination-controls',
     templateUrl: './src/systemcomponents/templates/pagination.html'
 })
-export class PaginationControlsComponent implements OnInit
+export class PaginationControlsComponent implements OnChanges
 {
     @Input('page') private _page = 1;
     @Input() limit = 1;
     @Input() total_records = 0;
     @Input() variation = 'default';
-    // angular takes by default the Input value with a 'Change' Suffix when using two way binding: [(page)]
-    @Output('pageChange') page$ = new EventEmitter<number>();
+    @Output('pageChange') page$ = new EventEmitter<number>(); // angular takes by default the Input value with a 'Change' Suffix when using two way binding: [(page)]
+    @Output('leftPage') oldPage$ = new EventEmitter<number>();
     offset = 0;
     max_page = 0;
 
@@ -29,11 +29,13 @@ export class PaginationControlsComponent implements OnInit
 
     set page(val:number)
     {
+        if ( this._page === val ) return;
+        this.oldPage$.emit(this._page);
         this._page = val;
         this.page$.emit(this._page);
     }
 
-    ngOnInit()
+    ngOnChanges()
     {
         // defaults...
         if(this.total_records > 0)
