@@ -60,6 +60,9 @@ export class ObjectActionDuplicateButton implements OnInit {
             }
         }
 
+        // set as duplicate
+        this.model.duplicate = true;
+
         this.model.edit();
     }
 }
