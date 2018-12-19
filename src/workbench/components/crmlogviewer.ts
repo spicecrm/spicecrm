@@ -34,7 +34,7 @@ export class CRMLogViewer {
 
     // Various:
     private currPage = 1;
-    private filter = { level: 'fatal', processId: '', userId: '' };
+    private filter = { level: 'fatal', processId: '', userId: '', text: '' };
     private period = { year: '', month: '', day: '', hour: '' };
     private filtertext = '';
     private yearNow: string;
@@ -96,6 +96,7 @@ export class CRMLogViewer {
             level: this.filter.level.length ? this.filter.level : undefined,
             processId: this.filter.processId.length ? this.filter.processId : undefined,
             userId: this.filter.userId.length ? this.filter.userId : undefined,
+            text: this.filter.text.length ? this.filter.text : undefined,
         };
         this.backend.getRequest( route, queryParams ).subscribe(
         response => {
