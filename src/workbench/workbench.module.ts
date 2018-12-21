@@ -87,6 +87,7 @@ import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
 import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
@@ -110,6 +111,10 @@ import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbui
 import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
 import /*embed*/ {ModuleFilterBuilderFilterExpressionGroup} from "./components/modulefilterbuilderfilterexpressiongroup";
 import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/modulefilterbuilderfilterexpression";
+
+import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
+import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
+import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 
 @NgModule({
     imports: [
@@ -138,6 +143,7 @@ import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/module
         WorkbenchHeader,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
+        WorkbenchConfigOptionModulefilter,
         ComponentsetManagerModulePipeCustom,
         ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
@@ -195,7 +201,10 @@ import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/module
         ModuleFilterBuilderFilters,
         ModuleFilterBuilderFilterDetails,
         ModuleFilterBuilderFilterExpressionGroup,
-        ModuleFilterBuilderFilterExpression
+        ModuleFilterBuilderFilterExpression,
+        DashletGenerator,
+        DashletGeneratorDashlets,
+        DashletGeneratorDashletDetails,
     ],
     /* no further modules needed */
     entryComponents: [
@@ -205,6 +214,7 @@ import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/module
         ComponentsetManager,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
+        WorkbenchConfigOptionModulefilter,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionActionset,
         ComponentConfigManager,
