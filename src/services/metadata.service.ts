@@ -1062,7 +1062,7 @@ export class metadata {
      * get the action set
      */
     public getActionSets(module = "") {
-        let retActionSets: Array<any> = [];
+        let retActionSets: any[] = [];
 
         for (let actionset in this.actionSets) {
             if (module !== "" && (this.actionSets[actionset].module !== module && this.actionSets[actionset].module !== "*")) {
@@ -1073,6 +1073,7 @@ export class metadata {
                 id: actionset,
                 name: this.actionSets[actionset].name,
                 module: this.actionSets[actionset].module,
+                type: this.actionSets[actionset].type
             });
         }
 
