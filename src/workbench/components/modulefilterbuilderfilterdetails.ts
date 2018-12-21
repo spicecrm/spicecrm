@@ -2,8 +2,11 @@ import {
     Component, Output, EventEmitter, Input, OnChanges
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {toast} from "../../services/toast.service";
+import {metadata} from "../../services/metadata.service";
+
+declare var _;
 
 @Component({
     selector: 'module-builder-filter-details',
@@ -22,6 +25,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
         private backend: backend,
         private language: language,
         private metadata: metadata,
+        private toast: toast,
     ) {
 
     }
@@ -29,7 +33,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
     public ngOnChanges(): void {
         if (this.filter) {
             if (this.filter.filterdefs) {
-                this.primaryGroup = JSON.parse(this.filter.filterdefs);
+                this.primaryGroup = typeof this.filter.filterdefs == 'string' ? JSON.parse(this.filter.filterdefs) : this.filter.filterdefs;
             } else {
                 this.primaryGroup = {
                     logicaloperator: 'and',
@@ -42,7 +46,9 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
     private save() {
         this.cleangroup(this.primaryGroup);
         this.filter.filterdefs = this.primaryGroup;
-        this.backend.postRequest('sysmodulefilters/' + this.filter.module + '/' + this.filter.id, {}, this.filter);
+        this.metadata.setModuleFilter(this.filter.id, this.filter.name, this.filter.module, this.filter.type);
+        this.backend.postRequest('sysmodulefilters/' + this.filter.module + '/' + this.filter.id, {}, this.filter)
+            .subscribe(res => this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success"));
     }
 
     private cleangroup(group) {
