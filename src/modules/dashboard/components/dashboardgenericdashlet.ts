@@ -32,6 +32,7 @@ export class DashboardGenericDashlet implements OnInit {
     public ngOnInit() {
         // set the module on the model
         this.model.module = this.dashletModule;
+        this.loadLimit = this.dashletconfig.limit || this.loadLimit;
 
         // load the dashlet records
         this.loadRecords();
