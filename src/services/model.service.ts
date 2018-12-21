@@ -55,6 +55,9 @@ export class model {
     private _fields: any = [];
     public messageChange$ = new EventEmitter<boolean>();
 
+    // mark the model as duplicate ... set to truie when duplicatimng to avoid storage of backup data
+    public duplicate: boolean = false;
+
     constructor(
         private backend: backend,
         private broadcast: broadcast,
@@ -268,7 +271,7 @@ export class model {
     private resetFieldStati(field: string) {
         this._fields_stati[field] = this.evaluateFieldStati(field);
         // tmp stati
-        this._fields_stati_tmp[field] = {... this._fields_stati[field]};
+        this._fields_stati_tmp[field] = {...this._fields_stati[field]};
         if (this.getFieldMessages(field, "error")) {
             this._fields_stati_tmp[field].invalid = true;
         }
@@ -513,7 +516,9 @@ export class model {
 
     public startEdit() {
         // shift to backend format .. no objects like date embedded
-        this.backupData = {...this.data};
+        if (!this.duplicate) {
+            this.backupData = {...this.data};
+        }
         this.isEditing = true;
         this.mode$.emit('edit');
     }
@@ -718,7 +723,7 @@ export class model {
         this.evaluateValidationRules(null, "init");
     }
 
-    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false ) {
+    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
 
         // a response subject to return if the model has been saved
         let retSubject = new Subject<any>();
@@ -757,9 +762,9 @@ export class model {
         return retSubject.asObservable();
     }
 
-    public executeCopyRules( parent: model = null ) {
+    public executeCopyRules(parent: model = null) {
         this.executeCopyRulesGeneric();
-        if ( parent && parent.data ) this.executeCopyRulesParent( parent );
+        if (parent && parent.data) this.executeCopyRulesParent(parent);
     }
 
     // get generic copy rules
@@ -775,14 +780,14 @@ export class model {
     }
 
     // apply parent specific copy rules
-    public executeCopyRulesParent( parent ) {
+    public executeCopyRulesParent(parent) {
         // todo: figure out why we loose the id in data
-        if ( !parent.data.id ) parent.data.id = parent.id;
+        if (!parent.data.id) parent.data.id = parent.id;
         let copyrules = this.metadata.getCopyRules(parent.module, this.module);
         for (let copyrule of copyrules) {
             if (copyrule.fromfield && copyrule.tofield) {
                 // this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
-                this.setFieldValue( copyrule.tofield, parent.data[copyrule.fromfield] );
+                this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
             } else if (copyrule.tofield && copyrule.fixedvalue) {
                 this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
             }
@@ -834,7 +839,6 @@ export class model {
             }
         });
     }
-
 
     public duplicateCheck(fromModelData = false) {
         let responseSubject = new Subject<any>();
