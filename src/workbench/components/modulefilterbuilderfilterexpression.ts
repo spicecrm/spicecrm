@@ -137,6 +137,7 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
 
     private determineoperatortype(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
+        if (!fieldtype) {return}
         switch (fieldtype.type) {
             case 'date':
             case 'datetime':
