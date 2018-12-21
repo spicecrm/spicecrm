@@ -1,5 +1,5 @@
 import {
-    Component
+    Component, ChangeDetectorRef, Renderer2
 } from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
@@ -7,14 +7,16 @@ import {session} from '../../services/session.service';
 import {cookie} from '../../services/cookie.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+
 declare var _: any;
 
 @Component({
     selector: 'global-login',
     templateUrl: './src/globalcomponents/templates/globallogin.html',
     host: {
-        '(window:keypress)': 'this.keypressed($event)'
+        '(window:keypress)': 'this.keypressed($event)',
+        '(window:resize)': 'handleResize()'
     }
 })
 export class GlobalLogin {
@@ -34,19 +36,20 @@ export class GlobalLogin {
                 private session: session,
                 private cookie: cookie,
                 private language: language,
-                private sanitizer: DomSanitizer
+                private sanitizer: DomSanitizer,
+                private changeDetectorRef: ChangeDetectorRef
     ) {
         if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
 
 
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]){
+            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
                 this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
             }
 
             this.http.get(this.configuration.getBackendUrl() + '/login', {
-                headers: headers
+                headers
             }).subscribe(
                 (res: any) => {
                     let repsonse = res;
@@ -88,6 +91,9 @@ export class GlobalLogin {
 
     }
 
+    private handleResize() {
+        this.changeDetectorRef.detectChanges();
+    }
 
     private keypressed(event) {
         if (event.keyCode === 13 && !this.showForgotPass && !this.session.authData.renewPass) {
@@ -104,16 +110,16 @@ export class GlobalLogin {
     }
 
 
-    set selectedlanguage(value){
+    set selectedlanguage(value) {
         this._selectedlanguage = value;
         this.language.currentlanguage = value;
     }
 
     get selectedlanguage() {
-        if ( ! this._selectedlanguage ) {
-            if ( this.lastSelectedLanguage ) {
+        if (!this._selectedlanguage) {
+            if (this.lastSelectedLanguage) {
                 this.selectedlanguage = this.lastSelectedLanguage;
-            } else if ( this.configuration.data.languages ) {
+            } else if (this.configuration.data.languages) {
                 this.selectedlanguage = this.configuration.data.languages.default;
             }
         }
@@ -167,6 +173,10 @@ export class GlobalLogin {
         }
     }
 
+    get showSidebar() {
+        return window.innerWidth >= 1024;
+    }
+
     get showExternalSidebar() {
         try {
             let ret = !_.isEmpty(this.configuration.data.loginSidebarUrl);
@@ -174,16 +184,18 @@ export class GlobalLogin {
                 this.externalSidebarUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.configuration.data.loginSidebarUrl);
             }
             return ret;
-        } catch(e) {
+        } catch (e) {
             return false;
         }
     }
 
     get showNewsfeed() {
         try {
-            if (!this.configuration.initialized) {return false;}
+            if (!this.configuration.initialized) {
+                return false;
+            }
             return _.isEmpty(this.configuration.data.loginSidebarUrl);
-        } catch(e) {
+        } catch (e) {
             return false;
         }
     }
