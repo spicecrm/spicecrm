@@ -15,8 +15,9 @@ export class ModuleFilterBuilderFilters {
 
     private loading: boolean = false;
     private _module: string = '';
-    private modules: string[];
-    private modulefilters: any[] = [];
+    public modules: string[];
+    public filters: any[] = [];
+    private activeTab: string = 'global';
 
     @Output() private filter: EventEmitter<any> = new EventEmitter<any>();
 
@@ -27,7 +28,8 @@ export class ModuleFilterBuilderFilters {
         private modelutilities: modelutilities,
         private session: session
     ) {
-        this.modules = this.metadata.getModules().sort();
+        this.modules = this.metadata.getModules();
+        this.modules.sort();
     }
 
     get module() {
@@ -42,32 +44,48 @@ export class ModuleFilterBuilderFilters {
         }
     }
 
+    get modulefilters() {
+        return this.filters.filter(filter => filter.type == 'global');
+    }
+
+    get customModulefilters() {
+        return this.filters.filter(filter => filter.type == 'custom');
+    }
+
     private goDetail(filter) {
         this.filter.emit(filter);
     }
 
     private loadLists() {
-        this.modulefilters = [];
+        this.filters = [];
         if (this.module) {
             this.loading = true;
             this.backend.getRequest('sysmodulefilters/' + this.module).subscribe(filters => {
-                this.modulefilters = filters;
+                this.filters = filters;
                 this.loading = false;
             });
         }
     }
 
-    private add() {
+    private add(type) {
         let filter = {
             id: this.modelutilities.generateGuid(),
             module: this.module,
             filterdefs: null,
             created_by_id: this.session.authData.userId,
             name: 'new filter',
+            type: type,
             package: '',
             version: ''
         };
-        this.modulefilters.push(filter);
+        this.filters.push(filter);
         this.filter.emit(filter);
+    }
+
+    private remove(filter) {
+        this.metadata.removeModuleFilter(filter.id);
+        this.backend.deleteRequest('sysmodulefilters/' + filter.module + '/' + filter.id);
+        this.filters = this.filters.filter(moduleFilter => moduleFilter.id != filter.id);
+        this.filter.emit(undefined);
     }
 }
