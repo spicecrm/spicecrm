@@ -13,7 +13,8 @@ declare var moment: any;
     styles: [
         'td.expanded { white-space: normal; }',
         'td.expanded div { overflow-wrap: break-word; }',
-        'td.collapsed > div { position: absolute; top:0; bottom:0; right:0; left:0; padding: calc(0.25rem + 4px) calc(0.5rem + 0px); }'
+        'td.collapsed > div { position: absolute; top:0; bottom:0; right:0; left:0; padding: calc(0.25rem + 4px) calc(0.5rem + 0px); }',
+        'input::placeholder { font-style: italic; color: #666 !important; }'
     ]
 })
 export class CRMLogViewer {
@@ -74,6 +75,7 @@ export class CRMLogViewer {
         this.isLoading = true;
         this.isLoaded = false;
         this.linesToShow = [];
+        this.filtertext = '';
 
         // Build the REST route:
         if ( this.period.year.length ) {
