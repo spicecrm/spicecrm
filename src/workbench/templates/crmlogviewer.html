@@ -28,7 +28,7 @@
             <label class="slds-form-element__label" for="month">{{lang.getLabel('LBL_MONTH')}}</label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select class="slds-select" id="month" [(ngModel)]="period.month" [disabled]="!checkYear()">
+                    <select class="slds-select" id="month" [(ngModel)]="period.month" [disabled]="!checkYear()" (change)="changedMonth()">
                         <option value=""></option>
                         <option value="01">{{lang.getLabel('LBL_JANUARY')}}</option>
                         <option value="02">{{lang.getLabel('LBL_FEBRUARY')}}</option>
@@ -51,7 +51,7 @@
             <label class="slds-form-element__label" for="day">{{lang.getLabel('LBL_DAY')}}</label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select class="slds-select" id="day" [(ngModel)]="period.day" [disabled]="!checkYear() || period.month===''">
+                    <select class="slds-select" id="day" [(ngModel)]="period.day" [disabled]="!checkYear() || period.month===''" (change)="changedDay()">
                         <option value=""></option>
                         <option *ngFor="let day of daylist">{{day}}</option>
                     </select>
@@ -63,7 +63,7 @@
             <label class="slds-form-element__label" for="hour">{{lang.getLabel('LBL_HOUR')}}</label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select class="slds-select" id="hour" [(ngModel)]="period.hour" [disabled]="!checkYear() || period.day===''">
+                    <select class="slds-select" id="hour" [(ngModel)]="period.hour" [disabled]="!checkYear() || period.month==='' || period.day===''">
                         <option value=""></option>
                         <option *ngFor="let hour of [ '00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23' ]">{{hour}}</option>
                     </select>
