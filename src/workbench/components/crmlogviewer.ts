@@ -66,6 +66,18 @@ export class CRMLogViewer {
         return this.userlist[this.userlistIndexes[userId]].user_name;
     }
 
+    private changedYear() {
+        if ( !this.period.year.length ) this.period.month = this.period.day = this.period.hour = '';
+    }
+
+    private changedMonth() {
+        if ( !this.period.month.length ) this.period.day = this.period.hour = '';
+    }
+
+    private changedDay() {
+        if ( !this.period.day.length ) this.period.hour = '';
+    }
+
     // Load the log lines from the backend.
     private loadData() {
 
