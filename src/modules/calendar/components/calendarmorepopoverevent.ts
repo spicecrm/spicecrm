@@ -3,6 +3,7 @@ import {model} from '../../../services/model.service';
 import {view} from "../../../services/view.service";
 import {session} from '../../../services/session.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {Router} from "@angular/router";
 
 declare var moment: any;
 
@@ -19,7 +20,7 @@ export class CalendarMorePopoverEvent implements OnInit {
     @Input() public event: any = {};
     @Output() public action$: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private session: session, private userpreferences: userpreferences) {
+    constructor(private model: model, private session: session, private userpreferences: userpreferences, private router: Router) {
         this.model.mode$.subscribe(mode => this.action$.emit(mode));
     }
 
@@ -27,6 +28,11 @@ export class CalendarMorePopoverEvent implements OnInit {
         this.model.module = this.event.module;
         this.model.id = this.event.id;
         this.model.data = this.event.data;
+    }
+
+    private goDetails(id, module) {
+        this.router.navigate([`/module/${module}/${id}`]);
+        this.action$.emit(true);
     }
 
     private canEdit(id) {
