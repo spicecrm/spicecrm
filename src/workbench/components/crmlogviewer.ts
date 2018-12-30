@@ -39,6 +39,7 @@ export class CRMLogViewer {
     private period = { year: '', month: '', day: '', hour: '' };
     private filtertext = '';
     private yearNow: string;
+    private toastId = '';
 
     // Stati:
     private isLoading = false;
@@ -112,6 +113,7 @@ export class CRMLogViewer {
             userId: this.filter.userId.length ? this.filter.userId : undefined,
             text: this.filter.text.length ? this.filter.text : undefined,
         };
+        this.toast.clearToast( this.toastId );
         this.backend.getRequest( route, queryParams ).subscribe(
         response => {
                 this.lines = response.lines;
@@ -123,6 +125,8 @@ export class CRMLogViewer {
                 this.doTextFilter();
                 this.isLoaded = true;
                 this.isLoading = false;
+                // The backend has to use "SpiceLogger" instead of "SugarLogger", because only SpiceLogger logs to the database. Warning in case of wrong configuration in config.php.
+                if ( !response.SpiceLogger ) this.toastId = this.toast.sendToast('SpiceLogger not used for logging!', 'warning', 'The CRM Log Viewer needs logging by „SpiceLogger“. Define it´s usage in config.php.', false );
             },
             error => {
                 this.toast.sendToast('Error loading log data!', 'error' );
