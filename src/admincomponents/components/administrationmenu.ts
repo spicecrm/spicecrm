@@ -9,13 +9,14 @@ import {navigation} from '../../services/navigation.service';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
-
+import {session} from '../../services/session.service';
 
 @Component({
     selector: '[administration-menu]',
     templateUrl: './src/admincomponents/templates/administrationmenu.html'
 })
 export class AdministrationMenu implements OnDestroy {
+
     @ViewChild('admincontentcontainer', {read: ViewContainerRef}) private admincontentcontainer: ViewContainerRef;
 
     private admincontentObject: any = null;
@@ -31,7 +32,8 @@ export class AdministrationMenu implements OnDestroy {
         private backend: backend,
         private broadcast: broadcast,
         private navigation: navigation,
-        private elementref: ElementRef
+        private elementref: ElementRef,
+        private session: session
     ) {
         this.loadNavigation();
 
@@ -103,6 +105,7 @@ export class AdministrationMenu implements OnDestroy {
         let items = [];
 
         for (let item of this.adminNavigation[block]) {
+            if ( item.componentconfig.onlyForDevs && !this.session.isDev ) continue;
             item.name = item.adminaction;
             if (item.admin_label) {
                 item.name = this.language.getLabel(item.admin_label);
@@ -148,4 +151,5 @@ export class AdministrationMenu implements OnDestroy {
             });
         }
     }
+
 }

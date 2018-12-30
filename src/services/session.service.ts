@@ -1,12 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
-
+import {CanActivate} from '@angular/router';
 import {configurationService} from './configuration.service';
 import {loader} from './loader.service';
-import {Router}   from '@angular/router';
-
+import {Router} from '@angular/router';
 
 // Taken from https://github.com/killmenot/webtoolkit.md5
 
@@ -22,13 +20,15 @@ interface authDataIf {
     email: string;
     password: string;
     admin: boolean;
+    dev: boolean;
     portalOnly: boolean;
     googleToken: string;
 }
 
 @Injectable()
 export class session {
-    authData: authDataIf = {
+
+    public authData: authDataIf = {
         sessionId: null,
         loaded: false,
         userId: null,
@@ -39,16 +39,17 @@ export class session {
         email: '',
         password: '',
         admin: false,
+        dev: false,
         renewPass: false,
         portalOnly: false,
         googleToken: '',
     };
 
-    footercontainer: any = null;
+    public footercontainer: any = null;
 
     // add an observable for the auth data
     private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
-    authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
+    private authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
 
     public getSessionHeader(): HttpHeaders {
         let headers = new HttpHeaders();
@@ -63,7 +64,7 @@ export class session {
         );
     }
 
-    getSessionData(key, returnEmptyObject = true) {
+    public getSessionData(key, returnEmptyObject = true) {
         try {
             return JSON.parse(
                 decodeURIComponent(
@@ -75,24 +76,23 @@ export class session {
                 )
             );
         } catch (e) {
-            if (returnEmptyObject)
-                return {};
-            else
-                return false
+            if (returnEmptyObject) return {};
+            else return false;
         }
     }
 
-    existsData(key: string) {
+    public existsData(key: string) {
         try {
             return (
-            sessionStorage[window.btoa(key + this.authData.sessionId)] &&
-            sessionStorage[window.btoa(key + this.authData.sessionId)].length > 0);
+                sessionStorage[window.btoa(key + this.authData.sessionId)] &&
+                sessionStorage[window.btoa(key + this.authData.sessionId)].length > 0
+            );
         } catch (e) {
             return false;
         }
     }
 
-    endSession() {
+    public endSession() {
         this.authData.sessionId = null;
         this.authData.userId = null;
         this.authData.loaded = false;
@@ -103,13 +103,22 @@ export class session {
         this.authData.email = '';
         this.authData.password = '';
         this.authData.admin = false;
+        this.authData.dev = false;
         sessionStorage.clear();
     }
 
     /*
-    * getter returs if the logged on user is an admin
+    * getter returns if the logged on user is an admin
      */
-    get isAdmin(){
+    get isAdmin() {
         return this.authData.admin;
     }
+
+    /*
+     * getter returns if the logged on user is a developer
+     */
+    get isDev() {
+        return this.authData.dev;
+    }
+
 }
