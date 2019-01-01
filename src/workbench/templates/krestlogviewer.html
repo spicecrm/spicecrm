@@ -1,0 +1,307 @@
+<h2 class="slds-m-horizontal--medium slds-m-top--medium slds-m-bottom--small slds-text-heading--medium">KREST Log Viewer (ALPHA)</h2>
+
+<div class="slds-section slds-is-open">
+
+    <h3 class="slds-section__title slds-theme_shade slds-m-horizontal--x-small">
+        <span class="slds-truncate slds-p-horizontal_x-small" title="Filter/Search">Filter/Search</span>
+    </h3>
+
+    <div>
+
+        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="year">{{lang.getLabel('LBL_YEAR')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="year" class="slds-input slds-text-align--right" size="4" type="text" maxlength="4" trim [(ngModel)]="period.year" (change)="period.year"/>
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="period.year=''" >
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-m-right--x-small">
+                <button class="slds-button slds-button_outline-brand" (click)="period.year=yearNow">{{yearNow}}</button>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="month">{{lang.getLabel('LBL_MONTH')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="month" [(ngModel)]="period.month" [disabled]="!checkYear()" (change)="changedMonth()">
+                            <option value=""></option>
+                            <option value="01">{{lang.getLabel('LBL_JANUARY')}}</option>
+                            <option value="02">{{lang.getLabel('LBL_FEBRUARY')}}</option>
+                            <option value="03">{{lang.getLabel('LBL_MARCH')}}</option>
+                            <option value="04">{{lang.getLabel('LBL_APRIL')}}</option>
+                            <option value="05">{{lang.getLabel('LBL_MAY')}}</option>
+                            <option value="06">{{lang.getLabel('LBL_JUNE')}}</option>
+                            <option value="07">{{lang.getLabel('LBL_JULY')}}</option>
+                            <option value="08">{{lang.getLabel('LBL_AUGUST')}}</option>
+                            <option value="09">{{lang.getLabel('LBL_SEPTEMBER')}}</option>
+                            <option value="10">{{lang.getLabel('LBL_OCTOBER')}}</option>
+                            <option value="11">{{lang.getLabel('LBL_NOVEMBER')}}</option>
+                            <option value="12">{{lang.getLabel('LBL_DECEMBER')}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="day">{{lang.getLabel('LBL_DAY')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="day" [(ngModel)]="period.day" [disabled]="!checkYear() || period.month===''" (change)="changedDay()">
+                            <option value=""></option>
+                            <option *ngFor="let day of daylist">{{day}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="hour">{{lang.getLabel('LBL_HOUR')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="hour" [(ngModel)]="period.hour" [disabled]="!checkYear() || period.month==='' || period.day===''">
+                            <option value=""></option>
+                            <option *ngFor="let hour of [ '00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23' ]">{{hour}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="user">{{lang.getLabel('LBL_USER')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="user" [(ngModel)]="filter.userId">
+                            <option value=""></option>
+                            <option *ngFor="let user of userlist" value="{{user.id}}">{{user.user_name}}</option>
+                            <option value="-none-">-none-</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="ipAddress">{{lang.getLabel('LBL_IP_ADDRESS')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="ipAddress" class="slds-input" type="text" trim [(ngModel)]="filter.ipAddress" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.ipAddress=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="sessionId">{{lang.getLabel('LBL_SESSION_ID')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="sessionId" class="slds-input" type="text" trim [(ngModel)]="filter.sessionId" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.sessionId=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="url">{{lang.getLabel('LBL_URL')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="url" class="slds-input" type="text" trim [(ngModel)]="filter.url" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.url=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="limit">Zeilenlimit</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="limit" class="slds-input slds-text-align--right" type="text" size="8" trim [(ngModel)]="limit" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="method">{{lang.getLabel('LBL_METHOD')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="method" [(ngModel)]="filter.method">
+                            <option value=""></option>
+                            <option *ngFor="let method of methods">{{method}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="route">{{lang.getLabel('LBL_ROUTE')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="route" [(ngModel)]="filter.route">
+                            <option value=""></option>
+                            <option *ngFor="let route of routes">{{route}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="routeArguments">Route Arguments</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="routeArguments" class="slds-input" type="text" trim [(ngModel)]="filter.routeArgs" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.routeArgs=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="urlParameters">URL Parameters</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="urlParameters" class="slds-input" type="text" trim [(ngModel)]="filter.urlParams" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.urlParams=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="postParameters">POST Parameters</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="postParameters" class="slds-input" type="text" trim [(ngModel)]="filter.postParams" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.postParams=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <button class="slds-button slds-button--brand" (click)="buttonLoad()" [attr.disabled]="!canLoad()?true:null">{{lang.getLabel('LBL_LOAD')}}</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div *ngIf="isLoading || isLoaded" class="slds-section slds-is-open">
+
+    <h3 class="slds-section__title slds-theme_shade slds-m-horizontal--x-small">
+        <span class="slds-truncate slds-p-horizontal_x-small" title="Filter">Log Entries</span>
+    </h3>
+
+    <div class="slds-section__content slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
+
+        <system-spinner *ngIf="isLoading" class="slds-m-top--x-large" style="display:block"></system-spinner>
+
+        <div *ngIf="isLoaded">
+
+            <div *ngIf="lines.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
+
+                <pagination-controls class="slds-col_bump-right slds-m-right--large" [(page)]="currPage" [limit]="linesPerPage" [total_records]="linesToShow.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
+
+                <!--
+
+                <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{lines.length-linesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
+
+                <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
+                    <div class="slds-form-element__control slds-grid">
+                        <input id="filtertext" class="slds-input" type="text" trim="blur" [(ngModel)]="filtertext" (keyup.enter)="doTextFilter()" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" />
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="doTextFilter()" [attr.disabled]="filtertext===''?true:null">
+                            <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon-border" (click)="clearTextFilter()" [attr.disabled]="filtertext===''?true:null">
+                            <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+
+                -->
+
+            </div>
+
+            <div *ngIf="lines.length">
+
+                <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer" style="max-height:400px" [ngStyle]="{'opacity':isBuildingTextfilter?0.25:1}"><!-- slds-table--header-fixed -->
+                    <thead>
+                        <tr>
+                            <th style="width:1%">{{lang.getLabel('LBL_DATE')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_TIME')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_ROUTE')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_METHOD')}}</th>
+                            <th style="width:100%">{{lang.getLabel('LBL_STATUS')}}</th>
+                            <th style="width:100%">{{lang.getLabel('LBL_ROUTE_ARGUMENTS')}}</th>
+                            <th style="width:100%">{{lang.getLabel('LBL_URL_PARAMETERS')}}</th>
+                            <th style="width:2rem;border-left:0"></th>
+                            <!--
+                            <th style="width:2rem;border-left:0"></th>
+                            -->
+                        </tr>
+                    </thead>
+                    <tbody #tbody>
+                        <tr *ngFor="let line of linesToShow | paginate: { page: currPage, limit: 20 }">
+                            <td class="slds-text-align--right">{{line.date}}</td>
+                            <td class="slds-text-align--right">{{line.time}}</td>
+                            <td>{{getUsername(line.uid)}}</td>
+                            <td>{{line.route}}</td>
+                            <td>{{line.method}}</td>
+                            <td>{{line.status}}</td>
+                            <td>{{line.routeArgs}}</td>
+                            <td>{{line.getParams}}</td>
+                            <!--
+                            <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div></td>
+                            <td class="slds-p-left--none" style="border-left:0">
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
+                                    <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
+                                </button>
+                            </td>
+                            -->
+                            <td>
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showLineInModal(line.i)">
+                                    <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="isFiltered && linesToShow.length === 0">
+                            <td colspan="8" class="slds-p-around--x-large">
+                                <div class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">Empty list (filter is active).</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div *ngIf="lines.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">No entries found.</div>
+
+        </div>
+
+    </div>
+
+</div>
