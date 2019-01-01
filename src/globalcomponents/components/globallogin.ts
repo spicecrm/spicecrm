@@ -61,6 +61,7 @@ export class GlobalLogin {
                     this.session.authData.display_name = repsonse.display_name;
                     this.session.authData.email = repsonse.email;
                     this.session.authData.admin = repsonse.admin == 1 ? true : false;
+                    this.session.authData.dev = repsonse.dev == 1 ? true : false;
                     this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
 
                     // set the backendurl

@@ -9,7 +9,7 @@ import { toast } from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/workbench/templates/crmlogviewer.html',
+    templateUrl: './src/workbench/templates/krestlogviewer.html',
     styles: [
         'td.expanded { white-space: normal; }',
         'td.expanded div { overflow-wrap: break-word; }',
@@ -17,11 +17,11 @@ declare var moment: any;
         'input::placeholder { font-style: italic; color: #666 !important; }'
     ]
 })
-export class CRMLogViewer {
+export class KRESTLogViewer {
 
     // Configuration:
-    private routeBase = 'crmlog';
-    private levels = [ 'debug', 'info', 'warn', 'deprecated', 'error', 'fatal', 'security' ];
+    private routeBase = 'krestlog';
+    private methods = [ 'DELETE', 'GET', 'POST', 'PUT' ];
     private limit = '5000';
     private linesPerPage = 20;
 
@@ -33,9 +33,13 @@ export class CRMLogViewer {
     private userlist: any[];
     private userlistIndexes = {};
 
+    // The hole list of routes:
+    private routes: any[];
+    private routesIndexes = {};
+
     // Various:
     private currPage = 1;
-    private filter = { level: 'fatal', processId: '', userId: '', text: '' };
+    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '' };
     private period = { year: '', month: '', day: '', hour: '' };
     private filtertext = '';
     private yearNow: string;
@@ -59,7 +63,13 @@ export class CRMLogViewer {
         });
         */
         this.yearNow = (new Date()).getFullYear().toString();
-    }
+        this.backend.getRequest( 'krestlog/routes' ).subscribe( response => {
+            this.routes = response.routes;
+            this.routes.forEach( ( val, i ) => {
+                this.routesIndexes[val.id] = i;
+            });
+        });
+   }
 
     // Get the name for a specific user.
     private getUsername( userId ) {
@@ -108,10 +118,14 @@ export class CRMLogViewer {
         // Build the query parameters for the request:
         let queryParams = {
             limit: this.limit.length ? this.limit : undefined,
-            level: this.filter.level.length ? this.filter.level : undefined,
-            processId: this.filter.processId.length ? this.filter.processId : undefined,
+            method: this.filter.method.length ? this.filter.method : undefined,
+            route: this.filter.route.length ? this.filter.route : undefined,
+            uuurl: this.filter.url.length ? this.filter.url : undefined,
             userId: this.filter.userId.length ? this.filter.userId : undefined,
-            text: this.filter.text.length ? this.filter.text : undefined,
+            routeArgs: this.filter.routeArgs.length ? this.filter.routeArgs : undefined,
+            postParams: this.filter.postParams.length ? this.filter.postParams : undefined,
+            urlParams: this.filter.urlParams.length ? this.filter.urlParams : undefined,
+            ipAddress: this.filter.ipAddress.length ? this.filter.ipAddress : undefined,
         };
         this.toast.clearToast( this.toastId );
         this.backend.getRequest( route, queryParams ).subscribe(
@@ -125,8 +139,6 @@ export class CRMLogViewer {
                 this.doTextFilter();
                 this.isLoaded = true;
                 this.isLoading = false;
-                // The backend has to use "SpiceLogger" instead of "SugarLogger", because only SpiceLogger logs to the database. Warning in case of wrong configuration in config.php.
-                if ( !response.SpiceLogger ) this.toastId = this.toast.sendToast('SpiceLogger not used for logging!', 'warning', 'The CRM Log Viewer needs logging by „SpiceLogger“. Define it´s usage in config.php.', false );
             },
             error => {
                 this.toast.sendToast('Error loading log data!', 'error' );
@@ -139,26 +151,8 @@ export class CRMLogViewer {
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
         if ( this.period.year.length && !this.period.year.match(/^\d{4}$/) ) return false;
-        if ( this.filter.processId.length && !this.filter.processId.match(/\d$/) ) return false;
         if ( this.limit.length && !this.limit.match(/\d$/) ) return false;
         return true;
-    }
-
-    // After the angular-rendering we check for every line / table row, if the log text is truncated by the browser (because it wouldn´t fit into column) or not.
-    // The trick to detect truncation: When scrollWidth > clientWidth.
-    private ngAfterViewChecked() {
-        let htmlTableRows;
-        if ( this.tbody && this.tbody.nativeElement ) {
-            htmlTableRows = this.tbody.nativeElement.childNodes;
-            if ( htmlTableRows ) {
-                // We iterate the tbody, but we skip non tr elements and any dom elements not containing log data (for example: angular comments).
-                htmlTableRows.forEach( ( row ) => {
-                    if( row.tagName !== 'TR' || row.childNodes.length < 2 ) return;
-                    let div = row.childNodes[5].childNodes[0];
-                    row.childNodes[6].childNodes[0].style.visibility = ( div.scrollWidth === div.clientWidth ? 'hidden':'auto' ); // Show the expand button only when the div is not (yet) truncated.
-                });
-            }
-        }
     }
 
     // Load button was pressed.
@@ -185,7 +179,7 @@ export class CRMLogViewer {
 
     // Open the modal window to display a log line with unusual long log text.
     private showLineInModal(i) {
-        this.modalservice.openModal('CRMLogViewerModal' ).subscribe( modal => {
+        this.modalservice.openModal('KRESTLogViewerModal' ).subscribe( modal => {
             modal.instance.line = this.linesToShow[i];
             modal.instance.username = this.getUsername( this.linesToShow[i].uid );
             modal.instance.routeBase = this.routeBase;
