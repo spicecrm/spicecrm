@@ -2,13 +2,10 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
-
 import {configurationService} from './configuration.service';
 import {loader} from './loader.service';
 import {session} from './session.service';
 import {toast} from './toast.service';
-import {userpreferences} from './userpreferences.service';
-
 
 interface loginAuthDataIf {
     userName: string;
@@ -35,10 +32,8 @@ export class loginService {
         private router: Router,
         private loader: loader,
         private toast: toast,
-        private session: session,
-        private userprefs: userpreferences
-    ) {
-    }
+        private session: session
+    ) { }
 
     public login(): Observable<boolean> {
         // make sure we invalidate a session id cookie that might still be around
@@ -86,6 +81,7 @@ export class loginService {
                     this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
                     this.session.authData.admin = response.admin == 1 ? true : false;
+                    this.session.authData.dev = response.dev == 1 ? true : false;
                     this.session.authData.portalOnly = response.portal_only === '1' ? true : false;
                     this.session.authData.renewPass = response.renewPass === '1' ? true : false;
                     this.session.authData.googleToken = response.access_token;

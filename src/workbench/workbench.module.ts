@@ -97,6 +97,8 @@ import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepos
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
+import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
+import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -183,7 +185,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         PackageLoaderLanguages,
         PackageLoaderLanguage,
         CRMLogViewer,
-        CRMLogViewerModal
+        CRMLogViewerModal,
+        KRESTLogViewer,
+        KRESTLogViewerModal
     ],
     /* no further modules needed */
     entryComponents: [
@@ -200,7 +204,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         WorkbenchConfig,
         ObjectRepositoryManager,
         CRMLogViewer,
-        CRMLogViewerModal
+        CRMLogViewerModal,
+        KRESTLogViewer,
+        KRESTLogViewerModal
     ],
     exports: [
         SortPipe,
