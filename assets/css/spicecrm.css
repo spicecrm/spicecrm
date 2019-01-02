@@ -851,6 +851,24 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     top: 0px;
 }
 
+/* for illustrations */
+.slds-illustration .slds-illustration__stroke-primary {
+    stroke: #aaa;
+}
+
+.slds-illustration .slds-illustration__fill-primary {
+    fill: #bbb;
+}
+
+.slds-illustration .slds-illustration__stroke-secondary {
+    stroke: #ccc;
+}
+
+.slds-illustration .slds-illustration__fill-secondary {
+    fill: #eee;
+}
+
+
 /* Style Definition for HTML fields */
 
 .html-text h1, .html-text h2, .html-text h3, .html-text h4, .html-text h5, .html-text h6 {
