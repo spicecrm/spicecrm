@@ -50,7 +50,6 @@ import /*embed*/ {GlobalHeaderFavorite} from "./components/globalheaderfavorite"
 import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbench";
 import /*embed*/ {GlobalFooter} from "./components/globalfooter";
 import /*embed*/ {GlobalLogin} from "./components/globallogin";
-import /*embed*/ {GlobalLoaderProgress} from "./components/globalloaderprogress";
 import /*embed*/ {GlobalSetup} from "./components/globalsetup";
 import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgotpassword";
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
@@ -127,7 +126,6 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalNavigationMenuItemIcon,
         GlobalNavigationMenuMore,
         GlobalLogin,
-        GlobalLoaderProgress,
         GlobalSetup,
         GlobalLoginForgotPassword,
         GlobalLoginResetPassword,
@@ -171,7 +169,6 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalDockedComposer,
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
-        GlobalLoaderProgress
     ]
 })
 export class GlobalComponents {
