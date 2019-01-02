@@ -12,7 +12,7 @@ declare var _;
 
 @Component({
     selector: 'package-loader-package',
-    templateUrl: './src/workbench/templates/packageloaderpackage.html',
+    templateUrl: './src/systemcomponents/templates/packageloaderpackage.html',
 })
 export class PackageLoaderPackage implements OnInit {
 
@@ -49,14 +49,22 @@ export class PackageLoaderPackage implements OnInit {
 
     private loadPackage(packagename) {
         this.loading = 'package';
-        this.backend.getRequest('/packages/package/' + packagename).subscribe(response => {
-            this.loading = 'configuration';
-            this.loader.reloadPrimary().subscribe(status => {
-                this.package.installed = true;
-                this.broadcast.broadcastMessage('loader.reloaded');
+        this.backend.getRequest('/packages/package/' + packagename).subscribe(
+            response => {
+                if (this.package.type == 'config') {
+                    this.loading = 'configuration';
+                    this.loader.reloadPrimary().subscribe(status => {
+                        this.package.installed = true;
+                        this.broadcast.broadcastMessage('loader.reloaded');
+                        this.loading = '';
+                    });
+                } else {
+                    this.loading = '';
+                }
+            },
+            error => {
                 this.loading = '';
             });
-        });
     }
 
     private deletePackage(packagename) {

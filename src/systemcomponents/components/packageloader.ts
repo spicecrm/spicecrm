@@ -3,7 +3,6 @@ import {
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
-import {BasicReferenceForm} from "./basicreferenceform";
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {spiceprocess} from "../../addcomponents/services/spiceprocess";
@@ -12,7 +11,7 @@ declare var _;
 
 @Component({
     selector: 'package-loader',
-    templateUrl: './src/workbench/templates/packageloader.html',
+    templateUrl: './src/systemcomponents/templates/packageloader.html',
 })
 export class PackageLoader {
 
@@ -20,7 +19,8 @@ export class PackageLoader {
     private loading: boolean = true;
     private packagefilterterm: string = '';
 
-    protected packages = [];
+    protected configpackages = [];
+    protected contentpackages = [];
     protected versions = [];
     protected languages = [];
     protected opencrs: boolean = false;
@@ -50,10 +50,14 @@ export class PackageLoader {
 
 
                     for (let confpackage of res.packages) {
-                        confpackage.installed = res.loaded.packages.indexOf(confpackage.package) >= 0 ? true : false;
-                        this.packages.push(confpackage);
+                        if(confpackage.type=='config') {
+                            confpackage.installed = res.loaded.packages.indexOf(confpackage.package) >= 0 ? true : false;
+                            this.configpackages.push(confpackage);
 
-                        res.loaded.packages.splice(res.loaded.packages.indexOf(confpackage.package), 1);
+                            res.loaded.packages.splice(res.loaded.packages.indexOf(confpackage.package), 1);
+                        } else {
+                            this.contentpackages.push(confpackage);
+                        }
                     }
                     this.versions = res.versions;
                     this.opencrs = res.opencrs;

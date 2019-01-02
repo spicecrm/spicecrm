@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'package-loader-packages',
-    templateUrl: './src/workbench/templates/packageloaderpackages.html',
+    templateUrl: './src/systemcomponents/templates/packageloaderpackages.html',
 })
 export class PackageLoaderPackages {
 
