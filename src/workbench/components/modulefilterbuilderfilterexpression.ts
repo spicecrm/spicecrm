@@ -157,6 +157,10 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
         }
     }
 
+    private showValueField() {
+        return this.operatortype == 'default' || (this.operatortype == 'enum' && this.filterexpression.operator != 'empty');
+    }
+
     public ngOnInit() {
         let fields = this.metadata.getModuleFields(this.module);
         for (let field in fields) {
