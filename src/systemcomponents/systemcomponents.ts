@@ -95,6 +95,8 @@ import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplace
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
+import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
+import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -167,7 +169,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         PackageLoaderPackages,
         PackageLoaderPackage,
         PackageLoaderLanguages,
-        PackageLoaderLanguage
+        PackageLoaderLanguage,
+        SystemIllustrationNoAccess,
+        SystemIllustrationNoTask
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -218,7 +222,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemStencil,
         SystemComponentSet,
         SystemProgressRing,
-        SystemLoaderProgress
+        SystemLoaderProgress,
+        SystemIllustrationNoAccess,
+        SystemIllustrationNoTask
     ]
 })
 export class SystemComponents {
