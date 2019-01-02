@@ -12,7 +12,7 @@ declare var _;
 
 @Component({
     selector: 'package-loader-language',
-    templateUrl: './src/workbench/templates/packageloaderlanguage.html',
+    templateUrl: './src/systemcomponents/templates/packageloaderlanguage.html',
 })
 export class PackageLoaderLanguage {
 

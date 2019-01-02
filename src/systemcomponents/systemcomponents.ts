@@ -1,6 +1,27 @@
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, Input, Output, NgModule, ViewChild, ViewContainerRef,
-    OnInit, OnDestroy, EventEmitter, ElementRef, ChangeDetectorRef, ApplicationRef, Pipe, forwardRef, Directive, Renderer2, SimpleChanges, OnChanges, Host, Injectable, Inject
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    Input,
+    Output,
+    NgModule,
+    ViewChild,
+    ViewContainerRef,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    ElementRef,
+    ChangeDetectorRef,
+    ApplicationRef,
+    Pipe,
+    forwardRef,
+    Directive,
+    Renderer2,
+    SimpleChanges,
+    OnChanges,
+    Host,
+    Injectable,
+    Inject
 } from "@angular/core";
 import {Subject} from "rxjs";
 import {Observable} from "rxjs";
@@ -10,18 +31,18 @@ import {DomSanitizer} from '@angular/platform-browser';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
-import {FormsModule}   from "@angular/forms";
+import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 // SERVICEs
-import {ActivatedRoute, Router}   from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {metadata} from "../services/metadata.service";
 import {toast} from "../services/toast.service";
 import {language} from "../services/language.service";
 import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
-import { configurationService } from "../services/configuration.service";
-import { modal } from "../services/modal.service";
-import { userpreferences } from "../services/userpreferences.service";
+import {configurationService} from "../services/configuration.service";
+import {modal} from "../services/modal.service";
+import {userpreferences} from "../services/userpreferences.service";
 
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
@@ -73,6 +94,14 @@ import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicke
 import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
+import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
+
+import /*embed*/ {PackageLoader} from "./components/packageloader";
+import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
+import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackages";
+import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
+import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
+import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 
 @NgModule({
     imports: [
@@ -131,7 +160,14 @@ import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
         SystemInputDatePicker,
         SystemGoogleplacesSearch,
         SystemComponentSet,
-        SystemProgressRing
+        SystemProgressRing,
+        SystemLoaderProgress,
+        PackageLoader,
+        PackageLoaderPipe,
+        PackageLoaderPackages,
+        PackageLoaderPackage,
+        PackageLoaderLanguages,
+        PackageLoaderLanguage
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -181,7 +217,8 @@ import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
         SystemGoogleplacesSearch,
         SystemStencil,
         SystemComponentSet,
-        SystemProgressRing
+        SystemProgressRing,
+        SystemLoaderProgress
     ]
 })
 export class SystemComponents {
