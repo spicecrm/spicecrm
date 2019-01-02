@@ -5,10 +5,10 @@ import {loader} from '../../services/loader.service';
 
 
 @Component({
-    selector: 'global-loader-progress',
-    templateUrl: './src/globalcomponents/templates/globalloaderprogress.html'
+    selector: 'system-loader-progress',
+    templateUrl: './src/systemcomponents/templates/systemloaderprogress.html'
 })
-export class GlobalLoaderProgress {
+export class SystemLoaderProgress {
         constructor(private loader: loader) { }
 
 
