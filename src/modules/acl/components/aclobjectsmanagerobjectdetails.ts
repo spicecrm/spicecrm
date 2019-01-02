@@ -25,9 +25,9 @@ import {backend} from '../../../services/backend.service';
 })
 export class ACLObjectsManagerObjectDetails implements OnInit {
 
-    fieldset: string = '';
+    private fieldset: string = '';
 
-    standardactions = [
+    private standardactions = [
         {id: 0, action: 'LBL_LIST'},
         {id: 1, action: 'LBL_DETAIL'},
         {id: 2, action: 'LBL_EDIT'},
@@ -38,7 +38,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         {id: 7, action: 'LBL_MASSUPDATE'}
     ];
 
-    objectactions = [];
+    private objectactions = [];
 
     constructor(private view: view, private metadata: metadata, private model: model, private language: language, private backend: backend) {
         this.view.isEditable = true;
@@ -49,36 +49,37 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         this.fieldset = componentconfig.fieldset;
     }
 
-    ngOnInit(){
-        this.backend.getRequest('spiceaclobjects/authtypes/'+this.model.getFieldValue('spiceacltype_id')+'/authtypeactions').subscribe(objectactions => {
+    public ngOnInit() {
+        this.backend.getRequest('spiceaclobjects/authtypes/' + this.model.getFieldValue('spiceacltype_id') + '/authtypeactions').subscribe(objectactions => {
             this.objectactions = objectactions;
-        })
+        });
     }
 
-    get showActions(){
+    get showActions() {
         return this.model.getFieldValue('spiceaclobjecttype') == '0' || this.model.getFieldValue('spiceaclobjecttype') == '3'
     }
 
-    getActionValue(actionid){
+    private getActionValue(actionid) {
         let objectactions = this.model.getFieldValue('objectactions');
 
-        for(let objectaction of objectactions){
-            if(objectaction.spiceaclaction_id == actionid)
+        for (let objectaction of objectactions) {
+            if (objectaction.spiceaclaction_id == actionid) {
                 return true;
+            }
         }
 
         return false;
     }
 
-    setActionValue(actionid, event){
+    private setActionValue(actionid, event) {
         // stop propagation
         event.preventDefault();
 
         // search for the value
         let objectactions = this.model.getFieldValue('objectactions');
         let i = 0;
-        for(let objectaction of objectactions){
-            if(objectaction.spiceaclaction_id == actionid){
+        for (let objectaction of objectactions) {
+            if (objectaction.spiceaclaction_id == actionid) {
                 objectactions.splice(i, 1);
                 this.model.setFieldValue('objectactions', objectactions);
                 return;
@@ -93,5 +94,4 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         });
 
     }
-
 }
