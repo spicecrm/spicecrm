@@ -58,7 +58,7 @@
             </div>
             <global-login-reset-password *ngIf="loginService.session.authData.renewPass" [oldpassword]="password"></global-login-reset-password>
             <ng-container *ngIf="loginService.session.authData.sessionId && !loginService.session.authData.renewPass">
-                <global-loader-progress></global-loader-progress>
+                <system-loader-progress></system-loader-progress>
             </ng-container>
         </div>
         <div class="slds-is-absolute" style="bottom: 10px;">
