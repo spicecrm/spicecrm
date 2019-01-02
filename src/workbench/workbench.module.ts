@@ -98,13 +98,10 @@ import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepos
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
+import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
+import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
-import /*embed*/ {PackageLoader} from "./components/packageloader";
-import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
-import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackages";
-import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
-import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
-import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
+
 
 import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -189,13 +186,10 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
         ObjectRepositoryManagerAddModule,
-        PackageLoader,
-        PackageLoaderPipe,
-        PackageLoaderPackages,
-        PackageLoaderPackage,
-        PackageLoaderLanguages,
-        PackageLoaderLanguage,
         CRMLogViewer,
+        CRMLogViewerModal,
+        KRESTLogViewer,
+        KRESTLogViewerModal,
         CRMLogViewerModal,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
@@ -222,7 +216,9 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfig,
         ObjectRepositoryManager,
         CRMLogViewer,
-        CRMLogViewerModal
+        CRMLogViewerModal,
+        KRESTLogViewer,
+        KRESTLogViewerModal
     ],
     exports: [
         SortPipe,
