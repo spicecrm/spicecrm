@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-col">
+    <div *ngIf="showValueField()" class="slds-col">
         <div class="slds-form-element">
             <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
             <div class="slds-form-element__control">
