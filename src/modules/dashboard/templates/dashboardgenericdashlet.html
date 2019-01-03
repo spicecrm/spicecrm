@@ -26,8 +26,8 @@
             <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
         </table>
         <!-- if no records are found dispaly a no record message-->
-        <div *ngIf="!loading && records.length == 0" class="slds-align_absolute-center slds-text-heading--label" style="height: calc(100% - 5px);">
-            {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
+        <div *ngIf="!loading && records.length == 0" class="slds-align_absolute-center" style="height: calc(100% - 5px);">
+            <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
         </div>
     </div>
 </div>
