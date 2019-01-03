@@ -50,11 +50,16 @@ export class PackageLoader {
 
 
                     for (let confpackage of res.packages) {
-                        if(confpackage.type=='config') {
-                            confpackage.installed = res.loaded.packages.indexOf(confpackage.package) >= 0 ? true : false;
-                            this.configpackages.push(confpackage);
+                        if (confpackage.type == 'config') {
+                            let instIndex = res.loaded.packages.indexOf(confpackage.package);
+                            if (instIndex >= 0) {
+                                confpackage.installed = true;
+                                res.loaded.packages.splice(instIndex, 1);
+                            } else {
+                                confpackage.installed = false;
+                            }
 
-                            res.loaded.packages.splice(res.loaded.packages.indexOf(confpackage.package), 1);
+                            this.configpackages.push(confpackage);
                         } else {
                             this.contentpackages.push(confpackage);
                         }
