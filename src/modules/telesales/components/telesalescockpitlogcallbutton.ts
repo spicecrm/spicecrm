@@ -10,13 +10,6 @@ import {telecockpitservice} from '../services/telecockpit.service';
 @Component({
     selector: 'tele_sales_cockpit_log_call_button',
     templateUrl: './src/modules/telesales/templates/telesalescockpitlogcallbutton.html',
-    host: {
-        'class': 'slds-button slds-button--brand',
-        '(click)': 'logCall()'
-    },
-    styles: [
-        ':host >>> {cursor:pointer;}'
-    ],
     providers: [model]
 })
 export class TeleSalesCockpitLogCallButton {
@@ -37,7 +30,7 @@ export class TeleSalesCockpitLogCallButton {
         });
     }
 
-    logCall() {
+    public execute() {
         this.model.id = undefined;
 
         this.model.addModel(

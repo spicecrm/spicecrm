@@ -1,10 +1,9 @@
-import {Component, Input, HostBinding, ViewContainerRef, ViewChild, OnInit, AfterViewInit} from '@angular/core';
+import {Component, ViewContainerRef, ViewChild, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-
 import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
@@ -15,15 +14,13 @@ import {telecockpitservice} from '../services/telecockpit.service';
         model
     ]
 })
-export class TeleSalesCockpit implements OnInit, AfterViewInit {
 
-    @ViewChild('telecockpitactionscontainer', {read: ViewContainerRef}) telecockpitactionscontainer: ViewContainerRef;
+export class TeleSalesCockpit implements OnInit {
+
     @ViewChild('telecockpitscrollcontainer', {read: ViewContainerRef}) telecockpitscrollcontainer: ViewContainerRef;
 
-    componentconfig: any = {};
     actionset: string = '';
     campaigntasks: Array<any> = [];
-    actionitems: any;
 
     constructor(private language: language,
                 private model: model,
@@ -41,6 +38,7 @@ export class TeleSalesCockpit implements OnInit, AfterViewInit {
 
         this.telecockpitservice.selectedItem$.subscribe(data => this.loadModel(data));
         this.telecockpitservice.campaignTaskId$.subscribe(id => this.setCampaignData(id));
+
 
     }
 
@@ -65,20 +63,4 @@ export class TeleSalesCockpit implements OnInit, AfterViewInit {
 
         this.actionset = componentconfig.actionset;
     }
-
-    ngAfterViewInit() {
-
-        this.actionitems = this.metadata.getActionSetItems(this.actionset);
-
-        if (this.actionitems)
-            for (let actionitem of this.actionitems) {
-
-                this.metadata.addComponent(actionitem.component, this.telecockpitactionscontainer).subscribe(componentref => {
-                    componentref.instance.parent = this.model;
-                    componentref.instance['actionconfig'] = actionitem.actionconfig;
-                });
-
-            }
-    }
-
 }
