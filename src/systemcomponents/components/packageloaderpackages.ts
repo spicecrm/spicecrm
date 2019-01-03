@@ -10,6 +10,7 @@ import {language} from '../../services/language.service';
 })
 export class PackageLoaderPackages {
 
+    @Input() private packagescope = '';
     private packagefilterterm: string = '';
 
     @Input() private packages = [];
