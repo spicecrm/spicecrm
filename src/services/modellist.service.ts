@@ -13,6 +13,7 @@ declare var moment: any;
 @Injectable()
 export class modellist implements OnDestroy {
     public module: string = '';
+    public modulefilter: string = '';
     public listtype: string = 'all';
     public listtype$: EventEmitter<String>;
     public listData: any = {
@@ -623,7 +624,8 @@ export class modellist implements OnDestroy {
             this.fts.searchByModules(this.searchTerm, [this.module], this.loadlimit, aggregates, {
                 sortfield: this.sortfield,
                 sortdirection: this.sortdirection.toLowerCase()
-            }, this.currentList.type == 'owner' ? true : false).subscribe(res => {
+            }, this.currentList.type == 'owner' ? true : false,
+                this.modulefilter).subscribe(res => {
                 // console.log(res);
                 let result = {list: [], totalcount: res[this.module].total};
                 for (let item of res[this.module].hits) {
