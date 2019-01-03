@@ -71,13 +71,11 @@ export class PackageLoaderPackage implements OnInit {
         this.loading = 'package';
         this.backend.deleteRequest('/packages/package/' + packagename).subscribe(response => {
             this.loading = 'configuration';
+            this.package.installed = false;
             this.loader.reloadPrimary().subscribe(status => {
-                this.package.installed = false;
                 this.broadcast.broadcastMessage('loader.reloaded');
                 this.loading = '';
             });
         });
     }
-
-
 }
