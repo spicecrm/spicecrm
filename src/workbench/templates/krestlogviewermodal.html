@@ -1,15 +1,32 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()">{{line.date}} • {{line.time}} • {{username}} • {{line.route}}</system-modal-header>
+    <system-modal-header (close)="closeModal()"><ng-container *ngIf="isLoaded">{{line.date}} • {{line.time}} • {{username}} • {{line.route}}</ng-container><ng-container *ngIf="!isLoaded">&nbsp;</ng-container></system-modal-header>
     <system-modal-content style="height:100%">
         <system-spinner *ngIf="isLoading" class="slds-m-top--medium" style="display:block"></system-spinner>
         <div *ngIf="isLoaded">
-            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{line.routeArgs}}</div>
-            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{line.urlParams}}</div>
-            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{line.postParams}}</div>
-            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{line.response}}</div>
+            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small">
+                Route Arguments:
+                <div class="slds-text-font_monospace" style="overflow-wrap:break-word">{{line.routeArgs}}</div>
+            </div>
+            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small" style="overflow-wrap:break-word">
+                URL Parameters:
+                <div class="slds-text-font_monospace" style="overflow-wrap:break-word">{{line.urlParams}}</div>
+            </div>
+            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small">
+                POST Parameters:
+                <div class="slds-text-font_monospace" style="overflow-wrap:break-word">{{line.postParams}}</div>
+            </div>
+            <div class="slds-m-bottom--x-small slds-m-horizontal--x-small">
+                Response:
+                <div class="slds-text-font_monospace" style="overflow-wrap:break-word">{{line.response}}</div>
+            </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
+        <div style="float:left">
+            <button class="slds-button--icon slds-button--icon-border-filled x-slds-m-right--small" [disabled]="!canLeft()" (click)="toLeft$.emit()"><system-button-icon [icon]="'left'"></system-button-icon></button>
+            &nbsp;{{lineNr+1}}/{{nrOfLines}}&nbsp;
+            <button class="slds-button--icon slds-button--icon-border-filled" [disabled]="!canRight()" (click)="toRight$.emit()"><system-button-icon [icon]="'right'"></system-button-icon></button>
+        </div>
         <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
     </system-modal-footer>
 </system-modal>
