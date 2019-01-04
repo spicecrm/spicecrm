@@ -652,6 +652,7 @@ export class modellist implements OnDestroy {
                 start: 0,
                 limit: this.loadlimit,
                 listid: this.currentList.id,
+                modulefilter: this.modulefilter
             }).subscribe(
                 res => {
                     this.listData = res;
