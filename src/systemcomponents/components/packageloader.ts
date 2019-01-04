@@ -15,16 +15,15 @@ declare var _;
 })
 export class PackageLoader {
 
-    private scope: string = 'packages';
+    private scope: string = 'essentials';
     private loading: boolean = true;
     private packagefilterterm: string = '';
 
-    protected configpackages = [];
-    protected contentpackages = [];
+    protected packages = [];
     protected versions = [];
     protected languages = [];
     protected opencrs: boolean = false;
-    protected errorpackages: string[] = [];
+    private errorpackages: string[] = [];
 
     constructor(
         private language: language,
@@ -48,21 +47,15 @@ export class PackageLoader {
                         this.languages.push(langpack);
                     }
 
-
                     for (let confpackage of res.packages) {
-                        if (confpackage.type == 'config') {
-                            let instIndex = res.loaded.packages.indexOf(confpackage.package);
-                            if (instIndex >= 0) {
-                                confpackage.installed = true;
-                                res.loaded.packages.splice(instIndex, 1);
-                            } else {
-                                confpackage.installed = false;
-                            }
-
-                            this.configpackages.push(confpackage);
+                        let instIndex = res.loaded.packages.indexOf(confpackage.package);
+                        if (instIndex >= 0) {
+                            confpackage.installed = true;
+                            res.loaded.packages.splice(instIndex, 1);
                         } else {
-                            this.contentpackages.push(confpackage);
+                            confpackage.installed = false;
                         }
+                        this.packages.push(confpackage);
                     }
                     this.versions = res.versions;
                     this.opencrs = res.opencrs;
