@@ -15,10 +15,9 @@ declare var _;
 export class DashletGeneratorDashletDetails implements OnChanges {
 
     @Input() public dashlet: any;
-    public sysComponents: any[] = [];
+    private sysModule: string;
+    public sysModules: any[] = [];
     public configValues: any = {};
-    private _generic: boolean = false;
-    private genericComponent: string = 'DashboardGenericDashlet';
 
     constructor(
         private backend: backend,
@@ -28,22 +27,17 @@ export class DashletGeneratorDashletDetails implements OnChanges {
         private view: view,
     ) {
         this.view.setEditMode();
-        this.sysComponents = this.metadata.getSystemComponents()
-            .filter(component => component.component.toLowerCase().includes('dashlet') && component.component != this.genericComponent);
+        this.sysModules = this.metadata.getSystemModules();
     }
 
-    set generic(bool) {
-        this._generic = bool;
-        this.dashlet.component = bool ? this.genericComponent : '';
-    }
-
-    get generic() {
-        return this._generic;
+    get components() {
+        return this.metadata.getSystemComponents(this.sysModule);
     }
 
     public ngOnChanges() {
         if (this.dashlet) {
-            this.generic = this.dashlet.component == this.genericComponent;
+            let sysComponent = this.metadata.getSystemComponents().find(component => component.component == this.dashlet.component);
+            this.sysModule = sysComponent ? sysComponent.module : undefined;
             this.configValues = this.dashlet.componentconfig ? JSON.parse(this.dashlet.componentconfig) : {};
         }
     }
