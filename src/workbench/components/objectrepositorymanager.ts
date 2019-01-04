@@ -52,7 +52,7 @@ export class ObjectRepositoryManager {
 
     private objectFilter: string = '';
 
-    private fieldTypeList: Array<any> = ["string", "boolean", "fieldset", "actionset", "componentset", "module"];
+    private fieldTypeList: Array<any> = ["string", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
 
     private newRepo: any = {};
     private emptyRepo: any = {
@@ -424,4 +424,9 @@ export class ObjectRepositoryManager {
         console.log("event", event);
         this.currentObjRepo.description = event;
     }
+
+    private exportRepoList() {
+        this.modalservice.openModal('ObjectRepositoryExport');
+    }
+
 }

@@ -80,13 +80,14 @@ import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
 
-
 import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
+import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
 import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
 import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
@@ -95,12 +96,23 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
 import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
 
+
+import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
+import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
+import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
+import /*embed*/ {ModuleFilterBuilderFilterExpressionGroup} from "./components/modulefilterbuilderfilterexpressiongroup";
+import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/modulefilterbuilderfilterexpression";
+
+import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
+import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
+import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 
 @NgModule({
     imports: [
@@ -126,8 +138,10 @@ import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
         FieldsetManagerCopyDialog,
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
+        WorkbenchHeader,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
+        WorkbenchConfigOptionModulefilter,
         ComponentsetManagerModulePipeCustom,
         ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
@@ -172,11 +186,21 @@ import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
+        ObjectRepositoryExport,
         ObjectRepositoryManagerAddModule,
         CRMLogViewer,
         CRMLogViewerModal,
         KRESTLogViewer,
-        KRESTLogViewerModal
+        KRESTLogViewerModal,
+        CRMLogViewerModal,
+        ModuleFilterBuilder,
+        ModuleFilterBuilderFilters,
+        ModuleFilterBuilderFilterDetails,
+        ModuleFilterBuilderFilterExpressionGroup,
+        ModuleFilterBuilderFilterExpression,
+        DashletGenerator,
+        DashletGeneratorDashlets,
+        DashletGeneratorDashletDetails,
     ],
     /* no further modules needed */
     entryComponents: [
@@ -186,6 +210,7 @@ import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
         ComponentsetManager,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
+        WorkbenchConfigOptionModulefilter,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionActionset,
         ComponentConfigManager,

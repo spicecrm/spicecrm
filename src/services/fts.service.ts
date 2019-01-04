@@ -84,7 +84,7 @@ export class fts {
         });
     }
 
-    public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false) {
+    public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
         let retSubject = new Subject<any>();
         // if no module is passed .. search all modules
         if (modules.length === 0) {
@@ -114,7 +114,8 @@ export class fts {
             records: size,
             owner,
             aggregates: this.searchAggregates,
-            sort: this.searchSort
+            sort: this.searchSort,
+            modulefilter
         }).subscribe(response => {
             // var response = res.json();
             this.moduleSearchresults = [];

@@ -8,6 +8,7 @@
     <div class="slds-form-element slds-col--bump-left">
         <button [disabled]="!view.isEditMode()" *ngIf="(currentModule | json) != '{}'" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="editModalRepo()"><system-utility-icon [icon]="'edit'" [size]="'x-small'"></system-utility-icon></button>
         <button [disabled]="edit_mode == 'none' " type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addModalRepo()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+        <button type="button" class="slds-button slds-button--neutral" (click)="exportRepoList()">EXP</button>
     </div>
 </div>
 <div class="slds-grid">
