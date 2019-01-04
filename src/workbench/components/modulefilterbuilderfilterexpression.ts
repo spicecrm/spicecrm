@@ -12,9 +12,9 @@ import {language} from '../../services/language.service';
 export class ModuleFilterBuilderFilterExpression implements OnInit {
 
     @Input() private module: string;
-    @Input() private filterexpression: any = {}
+    @Input() private filterexpression: any = {};
 
-    private fields: any[] = [];
+    public fields: any[] = [];
     private operatortype = 'default';
 
     private operators = {
@@ -116,7 +116,7 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
             this.filterexpression.field = field;
 
             // determine the operatorype and reset the operator
-            this.determineoperatortype(field);
+            this.determineOperatorType(field);
             this.operator = '';
 
             // reset the fieldvalue
@@ -135,7 +135,21 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
         }
     }
 
-    private determineoperatortype(field) {
+    private checkEnumOption(value, checked) {
+        let enumArray = this.filterexpression.filtervalue.length > 0 ? this.filterexpression.filtervalue.split(",") : [];
+        enumArray = enumArray.filter(item => item != value);
+        if (checked) {
+            enumArray.push(value);
+        }
+        this.filterexpression.filtervalue = enumArray.toString();
+        console.log(this.filterexpression.filtervalue);
+    }
+
+    private enumOptionValue(value) {
+        return !!this.filterexpression.filtervalue.includes(value);
+    }
+
+    private determineOperatorType(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
         if (!fieldtype) {return}
         switch (fieldtype.type) {
@@ -161,6 +175,22 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
         return this.operatortype == 'default' || (this.operatortype == 'enum' && this.filterexpression.operator != 'empty');
     }
 
+    private enumDisabled() {
+        return this.operatortype == 'enum' && this.filterexpression.operator != 'equals';
+    }
+
+    private getFieldDisplayOptions() {
+        let retArray = [];
+        let options = this.language.getFieldDisplayOptions(this.module, this.field);
+        for (let optionVal in options) {
+            retArray.push({
+                value: optionVal,
+                display: options[optionVal]
+            });
+        }
+        return retArray.filter(item => item.value.length > 0);
+    }
+
     public ngOnInit() {
         let fields = this.metadata.getModuleFields(this.module);
         for (let field in fields) {
@@ -168,7 +198,7 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
         }
 
         // set the initial operatortype
-        this.determineoperatortype(this.field);
+        this.determineOperatorType(this.field);
     }
 
     private delete() {
