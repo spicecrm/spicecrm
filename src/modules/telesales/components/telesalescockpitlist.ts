@@ -14,13 +14,12 @@ import {view} from "../../../services/view.service";
         view, model, modellist
     ]
 })
-export class TeleSalesCockpitList implements AfterViewChecked {
+export class TeleSalesCockpitList {
 
     @ViewChild('listcontainer', {read: ViewContainerRef}) listcontainer: ViewContainerRef;
     @ViewChild('itemscontainer', {read: ViewContainerRef}) itemscontainer: ViewContainerRef;
 
     items: Array<any>;
-    showButton: boolean = false;
 
     constructor(private backend: backend,
                 private modellist: modellist,
@@ -39,24 +38,6 @@ export class TeleSalesCockpitList implements AfterViewChecked {
         let rect = this.listcontainer.element.nativeElement.getBoundingClientRect();
         return {
             'height': 'calc(100vh - ' + rect.top + 'px)'
-        }
-    }
-
-    ngAfterViewChecked() {
-        let itemsContainerHeight = this.itemscontainer.element.nativeElement.getBoundingClientRect().height;
-        this.canShowMoreButton(itemsContainerHeight);
-    }
-
-    canShowMoreButton(itemsContainerHeight) {
-        if (itemsContainerHeight) {
-            let listContainerHeight = this.listcontainer.element.nativeElement.getBoundingClientRect().height;
-            if (itemsContainerHeight < listContainerHeight) {
-                this.showButton = true;
-            } else {
-                this.showButton = false;
-            }
-            this.cdr.detectChanges();
-
         }
     }
 

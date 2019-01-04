@@ -17,8 +17,10 @@ declare var _;
 export class PackageLoaderPackage implements OnInit {
 
     @Input() private package: any;
+    @Input() private packages: any[] = [];
     private extensions: any[] = [];
-    private disabled: boolean = true;
+    private requiredpackages: any[] = [];
+    // private disabled: boolean = true;
     private loading: string = '';
 
     constructor(
@@ -31,6 +33,20 @@ export class PackageLoaderPackage implements OnInit {
 
     }
 
+    get disabled() {
+        let disabled = false;
+
+        this.extensions.forEach(extension => {
+            if (!extension.status) disabled = true;
+        });
+
+        this.requiredpackages.forEach(pkg => {
+            if (!pkg.installed) disabled = true;
+        });
+
+        return disabled;
+    }
+
     public ngOnInit() {
         let disabled = false;
         if (this.package.extensions) {
@@ -40,11 +56,11 @@ export class PackageLoaderPackage implements OnInit {
                     name: extension,
                     status: extensionstatus
                 });
-
-                if (!extensionstatus) disabled = true;
             }
         }
-        this.disabled = disabled;
+        if (this.package.packages) {
+            this.requiredpackages = this.packages.filter(pkg => this.package.packages.split(',').indexOf(pkg.package) >= 0);
+        }
     }
 
     private loadPackage(packagename) {
