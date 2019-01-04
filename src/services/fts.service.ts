@@ -20,6 +20,7 @@ export class fts {
     public searchSort: any = {};
     public searchAggregates: any = {};
     public searchModules: any[] = [];
+    public modulefilter: string = '';
     public moduleSearchresults: any[] = [];
     private lastSearchParams: any = {};
 
@@ -99,6 +100,7 @@ export class fts {
         this.searchTerm = searchterm;
         this.searchAggregates = aggregates;
         this.searchSort = sortparams;
+        this.modulefilter = modulefilter;
 
 
         // todo: check if same search is done .. and then do nothing .. avoid too many calls
@@ -171,7 +173,8 @@ export class fts {
             aggregates: this.searchAggregates,
             sort: this.searchSort,
             records: this.lastSearchParams.size,
-            start: this.moduleSearchresults[0].data.hits.length
+            start: this.moduleSearchresults[0].data.hits.length,
+            modulefilter: this.modulefilter
         }).subscribe(response => {
             // var response = res.json();
             for (let module of this.lastSearchParams.modules) {

@@ -16,6 +16,7 @@ export class fieldLookupSearch {
     @Input() private module: string = '';
     @Input() private fieldid: string = '';
     @Input() private modulefilter: string = '';
+    @Input() private disableadd: boolean = false;
 
     @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
     @Output() private searchWithModal = new EventEmitter();
@@ -32,7 +33,7 @@ export class fieldLookupSearch {
     }
 
     get canAdd() {
-        return this.metadata.checkModuleAcl(this.module, 'edit');
+        return !this.disableadd && this.metadata.checkModuleAcl(this.module, 'edit');
     }
 
     private doSearch() {
