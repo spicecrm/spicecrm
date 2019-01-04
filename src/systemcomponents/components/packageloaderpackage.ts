@@ -34,12 +34,14 @@ export class PackageLoaderPackage implements OnInit {
     }
 
     get disabled() {
-        let disabled = false;
+        // if the package is installed we show it as enabled ... so it can at least be unlaoded
+        if (this.package.package.installed) return false;
 
+        // if package is not installed check for prerequsites
+        let disabled = false;
         this.extensions.forEach(extension => {
             if (!extension.status) disabled = true;
         });
-
         this.requiredpackages.forEach(pkg => {
             if (!pkg.installed) disabled = true;
         });
@@ -67,16 +69,12 @@ export class PackageLoaderPackage implements OnInit {
         this.loading = 'package';
         this.backend.getRequest('/packages/package/' + packagename).subscribe(
             response => {
-                if (this.package.type == 'config') {
-                    this.loading = 'configuration';
-                    this.loader.reloadPrimary().subscribe(status => {
-                        this.package.installed = true;
-                        this.broadcast.broadcastMessage('loader.reloaded');
-                        this.loading = '';
-                    });
-                } else {
+                this.loading = 'configuration';
+                this.loader.reloadPrimary().subscribe(status => {
+                    this.package.installed = true;
+                    this.broadcast.broadcastMessage('loader.reloaded');
                     this.loading = '';
-                }
+                });
             },
             error => {
                 this.loading = '';

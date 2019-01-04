@@ -1,21 +1,12 @@
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
     Output,
     EventEmitter,
-    Input,
-    OnChanges
+    Input
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 import {view} from "../../../services/view.service";
 
 @Component({
@@ -24,11 +15,11 @@ import {view} from "../../../services/view.service";
 })
 export class ACLProfilesManagerAddProfileModal {
 
-    self: any = {};
-    fieldset: string = '';
-    @Input() spiceacltype_id: string = '';
+    private self: any = {};
+    private fieldset: string = '';
+    @Input() private spiceacltype_id: string = '';
 
-    @Output() newObjectData: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private newObjectData: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language) {
         // initialize the model
@@ -46,19 +37,18 @@ export class ACLProfilesManagerAddProfileModal {
         this.fieldset = componentconfig.fieldset;
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.model.setFieldValue('spiceacltype_id', this.spiceacltype_id);
     }
 
-    close(){
+    private close() {
         this.self.destroy();
     }
 
-    save(){
+    private save() {
         this.model.save().subscribe(success => {
             this.newObjectData.emit(this.model.data);
             this.close();
-        })
-
+        });
     }
 }
