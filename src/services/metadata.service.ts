@@ -1138,7 +1138,6 @@ export class metadata {
              module: module,
              type: type
          };
-         console.log(this.moduleFilters);
     }
 
     /**
