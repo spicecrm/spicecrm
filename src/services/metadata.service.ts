@@ -15,7 +15,6 @@ import {Router, Route, CanActivate} from "@angular/router";
 // import {loginCheck} from "../services/login.service";
 
 
-
 declare var System: any;
 declare var SystemJS: any;
 declare var SystemDynamicRouteContainer: any;
@@ -74,7 +73,7 @@ export class metadata {
                     this.fieldSets[fieldset] = message.messagedata.update[fieldset];
                 }
                 for (let fieldset in message.messagedata.delete) {
-                    delete(this.fieldSets[fieldset]);
+                    delete (this.fieldSets[fieldset]);
                 }
                 break;
             case "metadata.updatecomponentsets":
@@ -85,7 +84,7 @@ export class metadata {
                     this.componentSets[componentset] = message.messagedata.update[componentset];
                 }
                 for (let componentset in message.messagedata.delete) {
-                    delete(this.componentSets[componentset]);
+                    delete (this.componentSets[componentset]);
                 }
                 break;
             default:
@@ -97,7 +96,7 @@ export class metadata {
      * LOADER functions
      */
 
-    public loadComponents(loadhandler: Subject<string>, forceLoading = false ) {
+    public loadComponents(loadhandler: Subject<string>, forceLoading = false) {
         if (sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)] &&
             sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)].length > 0 &&
             !forceLoading && !this.configurationService.data.developerMode
@@ -121,7 +120,7 @@ export class metadata {
             this.http.get(
                 this.configurationService.getBackendUrl() + "/spiceui/core/components",
                 {headers: this.session.getSessionHeader()}
-                ).subscribe(
+            ).subscribe(
                 (res: any) => {
                     let response = res;
                     this.moduleDirectory = response.modules;
@@ -199,7 +198,7 @@ export class metadata {
             });
     }
 
-    public loadFieldSets(loadhandler: Subject<string>, forceLoading = false ) {
+    public loadFieldSets(loadhandler: Subject<string>, forceLoading = false) {
         if (
             this.session.existsData("metadataFieldSets") &&
             !forceLoading && !this.configurationService.data.developerMode
@@ -210,21 +209,21 @@ export class metadata {
             this.http.get(
                 this.configurationService.getBackendUrl() + "/spiceui/core/fieldsets",
                 {headers: this.session.getSessionHeader()}
-                ).subscribe(res => {
-                    this.fieldSets = res;
-                    this.session.setSessionData("metadataFieldSets", this.fieldSets);
-                    loadhandler.next("loadFieldSets");
-                });
+            ).subscribe(res => {
+                this.fieldSets = res;
+                this.session.setSessionData("metadataFieldSets", this.fieldSets);
+                loadhandler.next("loadFieldSets");
+            });
         }
     }
 
-    public loadFieldDefs(loadhandler: Subject<string>, forceLoading = false ) {
+    public loadFieldDefs(loadhandler: Subject<string>, forceLoading = false) {
         let modules: Array<String> = [];
         for (let module in this.moduleDefs) {
             modules.push(module);
         }
 
-        if(
+        if (
             this.session.existsData("metadataFieldDefs") &&
             !forceLoading && !this.configurationService.data.developerMode
         ) {
@@ -260,8 +259,8 @@ export class metadata {
 
     }
 
-    public loadModuleDefinitions(loadhandler: Subject<string>, forceLoading = false ) {
-        if(
+    public loadModuleDefinitions(loadhandler: Subject<string>, forceLoading = false) {
+        if (
             this.session.existsData("metadataModuleDefinitions") &&
             !forceLoading && !this.configurationService.data.developerMode
         ) {
@@ -313,8 +312,8 @@ export class metadata {
         }
     }
 
-    public loadValidationRules(loadhandler: Subject<string>, forceLoading = false ): void {
-        if(
+    public loadValidationRules(loadhandler: Subject<string>, forceLoading = false): void {
+        if (
             this.session.existsData("metadataValidationRules") &&
             !forceLoading && !this.configurationService.data.developerMode
         ) {
@@ -332,8 +331,8 @@ export class metadata {
         }
     }
 
-    public loadHtmlStyling(loadhandler: Subject<string>, forceLoading = false ): void {
-        if(
+    public loadHtmlStyling(loadhandler: Subject<string>, forceLoading = false): void {
+        if (
             this.session.existsData("metadataHtmlStyleData") &&
             !forceLoading && !this.configurationService.data.developerMode
         ) {
@@ -386,7 +385,7 @@ export class metadata {
                 this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                     componentfactory.componentFactories.some(factory => {
                         if (factory.componentType.name === "SystemDynamicRouteContainer") {
-                            for(let route of this.routes) {
+                            for (let route of this.routes) {
                                 this.router.config.unshift({
                                     path: route.path,
                                     component: factory.componentType,
@@ -451,7 +450,7 @@ export class metadata {
                                 }
                             });
                         });
-                } catch(e) {
+                } catch (e) {
                     retSubject.error(e);
                     retSubject.complete();
                 }
@@ -584,7 +583,6 @@ export class metadata {
             return "";
         }
     }
-
 
 
     public addComponentSet(id, module, name, type = "custom") {
@@ -772,17 +770,17 @@ export class metadata {
         }
     }
 
-    public getFieldSetFields(_fieldDef) {
-        if (this.fieldSets[_fieldDef]) {
-            return this.fieldSets[_fieldDef].items;
+    public getFieldSetFields(fieldset) {
+        if (this.fieldSets[fieldset]) {
+            return this.fieldSets[fieldset].items;
         } else {
             return [];
         }
     }
 
-    public getFieldSetItems(_fieldDef) {
-        if (this.fieldSets[_fieldDef]) {
-            return this.fieldSets[_fieldDef].items;
+    public getFieldSetItems(fieldset) {
+        if (this.fieldSets[fieldset]) {
+            return this.fieldSets[fieldset].items;
         } else {
             return [];
         }
@@ -799,8 +797,8 @@ export class metadata {
     public getAppModules() {
         // convert object to array...
         let ret = [];
-        for(let id in this.moduleDirectory) {
-            if(this.moduleDirectory.hasOwnProperty(id)) {
+        for (let id in this.moduleDirectory) {
+            if (this.moduleDirectory.hasOwnProperty(id)) {
                 ret.push(this.moduleDirectory[id]);
             }
         }
@@ -847,8 +845,8 @@ export class metadata {
 
     public getModuleFromSingular(singular) {
         let module = "";
-        for(let thismodule in this.moduleDefs) {
-            if(this.moduleDefs[thismodule].singular == singular) {
+        for (let thismodule in this.moduleDefs) {
+            if (this.moduleDefs[thismodule].singular == singular) {
                 module = thismodule;
             }
         }
@@ -930,8 +928,8 @@ export class metadata {
     }
 
     public checkStatusManaged(module: string) {
-        for(let field in this.fieldDefs[module]) {
-            if(this.getFieldDefs(module, field).options && this.fieldStatusNetworks[this.getFieldDefs(module, field).options]) {
+        for (let field in this.fieldDefs[module]) {
+            if (this.getFieldDefs(module, field).options && this.fieldStatusNetworks[this.getFieldDefs(module, field).options]) {
                 return {
                     statusField: this.getFieldDefs(module, field).name,
                     statusNetwork: this.fieldStatusNetworks[this.getFieldDefs(module, field).options]
@@ -990,7 +988,7 @@ export class metadata {
         let compArray = [];
 
         for (let component in this.componentDirectory) {
-            if(!module || module == this.componentDirectory[component].module) {
+            if (!module || module == this.componentDirectory[component].module) {
                 compArray.push(this.componentDirectory[component]);
             }
         }
@@ -1030,7 +1028,10 @@ export class metadata {
      */
     public getComponentConfig(component: string = "", module: string = "", role = "") {
 
-        if (role === "") { role = this.role ? this.role : "*";};
+        if (role === "") {
+            role = this.role ? this.role : "*";
+        }
+        ;
 
         if (module != "" && this.componentModuleConfigs[module] && this.componentModuleConfigs[module][component] && this.componentModuleConfigs[module][component][role]) {
             return this.componentModuleConfigs[module][component][role];
@@ -1047,7 +1048,7 @@ export class metadata {
 
     public getModuleDefaultComponentConfigByUsage(module: string, usage: string) {
         let component = "";
-        switch(usage) {
+        switch (usage) {
             case "list":
                 component = "ObjectList";
                 break;
@@ -1131,20 +1132,21 @@ export class metadata {
      * @param module: object
      * @param type: object
      */
-    public setModuleFilter(filterId, name, module, type = 'custom') {
-         this.moduleFilters[filterId] = {
-             id: filterId,
-             name: name,
-             module: module,
-             type: type
-         };
+    public setModuleFilter(id, name, module, type = 'custom') {
+        if (!this.moduleFilters) this.moduleFilters = {};
+        this.moduleFilters[id] = {
+            id,
+            name,
+            module,
+            type
+        };
     }
 
     /**
      * @param filterId: string
      */
     public removeModuleFilter(filterId) {
-         delete this.moduleFilters[filterId];
+        delete this.moduleFilters[filterId];
     }
 
     /*
@@ -1222,23 +1224,23 @@ export class metadata {
     public getRouteComponent(route) {
         let component = "";
         this.routes.some(routeDetails => {
-            if(routeDetails.path == route) {
+            if (routeDetails.path == route) {
                 component = routeDetails.component;
                 return true;
-            } else if(route.split("/").length == routeDetails.path.split("/").length) {
+            } else if (route.split("/").length == routeDetails.path.split("/").length) {
                 let routeArray = route.split("/");
                 let matchArray = routeDetails.path.split("/");
                 let matched = true;
 
                 let i = 0;
-                while(i < routeArray.length && matched) {
-                    if(matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                while (i < routeArray.length && matched) {
+                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
                         matched = false;
                     }
                     i++;
                 }
 
-                if(matched) {
+                if (matched) {
                     component = routeDetails.component;
                     return true;
                 }
@@ -1254,7 +1256,7 @@ export class metadata {
     public checkTagging(module) {
         try {
             return this.moduleDefs[module].tagging ? true : false;
-        } catch(e) {
+        } catch (e) {
             return false;
         }
     }
@@ -1265,12 +1267,13 @@ export class metadata {
 
     public loadLibs(...scripts: string[]): Observable<object> {
         let observables: Observable<object>[] = [];
-        scripts.forEach((script) => {observables.push(this.loadLib(script));});
+        scripts.forEach((script) => {
+            observables.push(this.loadLib(script));
+        });
 
         let sub = new Subject();
         let cnt = 0;
-        for(let o of observables)
-        {
+        for (let o of observables) {
             o.subscribe(
                 (res) => {
                     cnt++;
@@ -1281,7 +1284,7 @@ export class metadata {
                     sub.error(err);
                 },
                 () => {
-                    if( cnt == observables.length ) {
+                    if (cnt == observables.length) {
                         sub.next();
                         sub.complete();
                     }
@@ -1289,7 +1292,7 @@ export class metadata {
             );
         }
         // is needed in case of scripts are already loaded and completed before the subject can be subscribed...
-        if( cnt == observables.length ) {
+        if (cnt == observables.length) {
             return of(sub);
         } else {
             return sub.asObservable();
@@ -1305,14 +1308,13 @@ export class metadata {
         let sub = new Subject<object>();
 
         // error if not found... (but how?)
-        if(!this.scripts[name]) {
+        if (!this.scripts[name]) {
             return of({script: name, loaded: false, status: "Unknown"});
         } else if (this.isLibLoaded(name)) {
             return of({script: name, loaded: true, status: "Already Loaded"});
         } else if (this.isLibLoading(name)) {
-            for(let lib of this.scripts[name])
-            {
-                if(lib.loading) {
+            for (let lib of this.scripts[name]) {
+                if (lib.loading) {
                     lib.loading$.subscribe(
                         (res) => {
                             return this.loadLib(name).subscribe(
@@ -1328,9 +1330,10 @@ export class metadata {
             }
         } else {
             // load script(s)
-            for(let script of this.scripts[name])
-            {
-                if(script.loaded) { continue;}
+            for (let script of this.scripts[name]) {
+                if (script.loaded) {
+                    continue;
+                }
 
                 this.loadScript(script).subscribe(
                     (res) => {
@@ -1393,10 +1396,9 @@ export class metadata {
     }
 
     public isLibLoaded(name): boolean {
-        if( this.scripts[name]) {
-            for(let lib of this.scripts[name])
-            {
-                if(!lib.loaded) {
+        if (this.scripts[name]) {
+            for (let lib of this.scripts[name]) {
+                if (!lib.loaded) {
                     return false;
                 }
             }
@@ -1407,10 +1409,9 @@ export class metadata {
     }
 
     private isLibLoading(name): boolean {
-        if( this.scripts[name] ) {
-            for(let lib of this.scripts[name])
-            {
-                if(lib.loading) {
+        if (this.scripts[name]) {
+            for (let lib of this.scripts[name]) {
+                if (lib.loading) {
                     return true;
                 }
             }
@@ -1420,33 +1421,33 @@ export class metadata {
         return false;
     }
 
-    public getHtmlStylesheetCode( stylesheetId: string ): String {
-        return _.isObject( this.htmlStyleData.stylesheets[stylesheetId] ) && _.isString( this.htmlStyleData.stylesheets[stylesheetId].csscode ) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
+    public getHtmlStylesheetCode(stylesheetId: string): String {
+        return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
     }
 
-    public getHtmlFormats( stylesheetId: string ): Array<any> {
-        if (!_.isObject( this.htmlStyleData.stylesheets[stylesheetId])) {
+    public getHtmlFormats(stylesheetId: string): Array<any> {
+        if (!_.isObject(this.htmlStyleData.stylesheets[stylesheetId])) {
             console.log("HTML Styling: Unknown style sheet with ID " + stylesheetId + ".");
             return [];
         }
-        if (!_.isArray( this.htmlStyleData.stylesheets[stylesheetId].formats)) {
+        if (!_.isArray(this.htmlStyleData.stylesheets[stylesheetId].formats)) {
             this.htmlStyleData.stylesheets[stylesheetId].formats = [];
         }
         // Styles are delivered by KREST as string, and must be converted to an array of objects (once). Now? Or has it already been done?
-        if ( !this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded ) {
-            this.htmlStylesToObjects( stylesheetId );
+        if (!this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded) {
+            this.htmlStylesToObjects(stylesheetId);
         }
         return this.htmlStyleData.stylesheets[stylesheetId].formats;
     }
 
-    private htmlStylesToObjects( stylesheetId ) {
-        for ( let format of this.htmlStyleData.stylesheets[stylesheetId].formats ) {
+    private htmlStylesToObjects(stylesheetId) {
+        for (let format of this.htmlStyleData.stylesheets[stylesheetId].formats) {
             let styles;
-            if ( !_.isEmpty( format.styles )) {
+            if (!_.isEmpty(format.styles)) {
                 try {
-                    styles = JSON.parse( format.styles );
-                } catch( e ) {
-                    console.log( "HTML Styling: Malformed style specification in table sysuihtmlformats (format id: " + format.id + ")." );
+                    styles = JSON.parse(format.styles);
+                } catch (e) {
+                    console.log("HTML Styling: Malformed style specification in table sysuihtmlformats (format id: " + format.id + ").");
                     styles = {};
                 }
                 format.styles = styles;
@@ -1459,14 +1460,17 @@ export class metadata {
 
     public getHtmlStylesheetNames(): Array<any> {
         let stylesheets = [];
-        for ( let sheetId in this.htmlStyleData.stylesheets ) {
-            stylesheets.push ({ id:this.htmlStyleData.stylesheets[sheetId].id, name:this.htmlStyleData.stylesheets[sheetId].name });
+        for (let sheetId in this.htmlStyleData.stylesheets) {
+            stylesheets.push({
+                id: this.htmlStyleData.stylesheets[sheetId].id,
+                name: this.htmlStyleData.stylesheets[sheetId].name
+            });
         }
-        return _.sortBy( stylesheets, "name");
+        return _.sortBy(stylesheets, "name");
     }
 
-    public getHtmlStylesheetToUse( module: string, fieldname: string ) {
-        if ( _.isObject( this.htmlStyleData.stylesheetsToUse[module] ) && this.htmlStyleData.stylesheetsToUse[module][fieldname] ) {
+    public getHtmlStylesheetToUse(module: string, fieldname: string) {
+        if (_.isObject(this.htmlStyleData.stylesheetsToUse[module]) && this.htmlStyleData.stylesheetsToUse[module][fieldname]) {
             return this.htmlStyleData.stylesheetsToUse[module][fieldname];
         } else {
             return "";
@@ -1478,11 +1482,11 @@ export class metadata {
 
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router, private session: session ) {
+    constructor(private metadata: metadata, private router: Router, private session: session) {
     }
 
     public canActivate(route, state) {
-        if ( route.params.module === 'Users' && !this.session.authData.admin ) {
+        if (route.params.module === 'Users' && !this.session.authData.admin) {
             return false;
         } // prevents non-admins from listing the user list
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list

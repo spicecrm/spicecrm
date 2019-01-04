@@ -5,13 +5,11 @@ import {
 @Pipe({name: 'packageloaderpipe'})
 export class PackageLoaderPipe {
     public transform(packagelist, term, scope?) {
-        let retValues = [];
-        for (let packageitem of packagelist) {
-            if (scope && packageitem.type != scope) continue;
-
-            if (!term || (term && packageitem.name.toLowerCase().indexOf(term.toLowerCase()) >= 0)) retValues.push(packageitem);
-        }
-        return retValues;
+        return packagelist.filter(packageitem => {
+            if (scope && packageitem.type != scope) return false;
+            if (!term || (term && packageitem.name.toLowerCase().indexOf(term.toLowerCase()) >= 0)) return true;
+            return false;
+        });
     }
 }
 
