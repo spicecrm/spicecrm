@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
@@ -11,30 +11,47 @@ export class KRESTLogViewerModal {
     @Input() private line: any;
     @Input() private username = '';
     @Input() private routeBase: string;
+    @Input() private canSwitchToLeft: boolean;
+    @Input() private canSwitchToRight: boolean;
+
+    @Output() public toLeft$ = new EventEmitter();
+    @Output() public toRight$ = new EventEmitter();
 
     // Stati:
     private isLoaded = false;
-    private isLoading = true;
+    private isLoading = false;
+    private isClosed = false;
+
+    private nrOfLines: number;
+    private lineNr: number;
 
     private self;
 
     constructor( private language: language, private backend: backend, private toast: toast ) { }
 
     private ngOnInit() {
+    }
+
+    public load() {
         // When the full text already has been retrieved from the backend
         // (because this modal for this log line has already been shown)
         // the data is still stored (property "fullText") and we don´t need to do the request again:
-        if ( this.line.fullText ) this.isLoading = !( this.isLoaded = true );
-        else this.loadFullData();
+        console.log('Line ZU geladen',this.line);
+        this.isLoaded = this.line.fullLoaded && true;
+        if ( !this.isLoaded ) this.loadFullData();
     }
 
     // Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
     private loadFullData() {
+        this.isLoading = true;
         this.backend.getRequest( this.routeBase+'/fullLine/' + this.line.id ).subscribe(
             response => {
                 this.isLoaded = true;
                 this.isLoading = false;
-                this.line.fullText = response.line.txt;
+                this.line.postParams = response.line.postParams;
+                this.line.response = response.line.response;
+                this.line.fullLoaded = true;
+                console.log('Line geladen',this.line);
             },
             error => {
                 this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.lnr+' of log file '+this.line.fnr+' couldn´t be fetched.', false );
@@ -43,8 +60,16 @@ export class KRESTLogViewerModal {
             });
     }
 
+    private canLeft() {
+        return !this.isLoading && this.lineNr > 0;
+    }
+    private canRight() {
+        return !this.isLoading && this.lineNr < this.nrOfLines-1;
+    }
+
     // Close the modal.
     private closeModal() {
+        this.isClosed = true;
         this.self.destroy();
     }
 
