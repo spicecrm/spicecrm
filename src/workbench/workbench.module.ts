@@ -96,6 +96,7 @@ import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconf
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
@@ -185,6 +186,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
+        ObjectRepositoryExport,
         ObjectRepositoryManagerAddModule,
         CRMLogViewer,
         CRMLogViewerModal,

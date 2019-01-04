@@ -851,11 +851,23 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     top: 0px;
 }
 
-/* for the module list builder
-li.slds-expression__group fieldset ul li.slds-expression__group{
-    margin-left: 3rem;
+/* for illustrations */
+.slds-illustration .slds-illustration__stroke-primary {
+    stroke: #aaa;
 }
-*/
+
+.slds-illustration .slds-illustration__fill-primary {
+    fill: #bbb;
+}
+
+.slds-illustration .slds-illustration__stroke-secondary {
+    stroke: #ccc;
+}
+
+.slds-illustration .slds-illustration__fill-secondary {
+    fill: #eee;
+}
+
 
 /* Style Definition for HTML fields */
 
