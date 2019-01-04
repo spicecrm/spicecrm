@@ -67,16 +67,12 @@ export class PackageLoaderPackage implements OnInit {
         this.loading = 'package';
         this.backend.getRequest('/packages/package/' + packagename).subscribe(
             response => {
-                if (this.package.type == 'config') {
-                    this.loading = 'configuration';
-                    this.loader.reloadPrimary().subscribe(status => {
-                        this.package.installed = true;
-                        this.broadcast.broadcastMessage('loader.reloaded');
-                        this.loading = '';
-                    });
-                } else {
+                this.loading = 'configuration';
+                this.loader.reloadPrimary().subscribe(status => {
+                    this.package.installed = true;
+                    this.broadcast.broadcastMessage('loader.reloaded');
                     this.loading = '';
-                }
+                });
             },
             error => {
                 this.loading = '';
