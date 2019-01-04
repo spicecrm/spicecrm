@@ -102,8 +102,6 @@ import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
 import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
-
-
 import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
 import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
