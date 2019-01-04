@@ -36,6 +36,11 @@ export class fts {
         this.getSearchModules();
     }
 
+
+    get loadedSearchModules() {
+        return this.searchModules.filter(module => this.metadata.checkModuleAcl(module, 'list'));
+    }
+
     private transformHits(hits) {
         let retArray = [];
         for (let hit of hits) {
@@ -71,7 +76,7 @@ export class fts {
         this.runningsearch = this.backend.postRequest('search', {}, {
             size,
             searchterm,
-            modules: this.searchModules.join(',')
+            modules: this.loadedSearchModules.join(',')
         }).subscribe((response) => {
             this.hits = response.hits.hits;
             this.found = response.hits.total;
@@ -83,7 +88,7 @@ export class fts {
         let retSubject = new Subject<any>();
         // if no module is passed .. search all modules
         if (modules.length === 0) {
-            modules = this.searchModules;
+            modules = this.loadedSearchModules;
         }
 
         if (searchterm.indexOf('%') != -1) {
