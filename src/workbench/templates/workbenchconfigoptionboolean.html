@@ -1,8 +1,8 @@
 <div class="slds-form-element slds-m-vertical--xxx-small" style="clear: both">
     <div class="slds-form-element__control">
-        <span class="slds-checkbox">
+        <div class="slds-checkbox">
           <input [disabled]="!view.isEditMode()" class="slds-float_left" type="checkbox" name="options" [id]="option.option" [(ngModel)]="configValues[option.option]">
-          <label class="slds-checkbox__label" class="slds-float_left" [attr.for]="option.option">
+          <label class="slds-checkbox__label slds-float_left" [attr.for]="option.option">
             <span class="slds-checkbox_faux" style="margin-right: 5px;"></span>
             <span class="slds-form-element__label" style="margin-right: 3px;">{{option.option}}</span>
           </label>
@@ -19,6 +19,6 @@
                 <div class="slds-popover__body slds-scrollable_y">{{option.description}}</div>
             </div>
           </div>
-        </span>
+        </div>
     </div>
 </div>

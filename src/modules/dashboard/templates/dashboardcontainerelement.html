@@ -2,7 +2,7 @@
     <div style="width: 100%; height: 100%" [ngStyle]="isEditing() ? {overflow: 'hidden'}: {}">
         <div *ngIf="isAuthorized" #containerelement></div>
         <div *ngIf="!isAuthorized" class="slds-align_absolute-center" style="height: 100%">
-            {{language.getLabel('LBL_NOT_AUTHORIZED')}}
+            <system-illustration-no-access></system-illustration-no-access>
         </div>
     </div>
     <ng-container *ngIf="isEditing()">

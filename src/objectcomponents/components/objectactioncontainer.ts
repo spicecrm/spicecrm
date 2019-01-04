@@ -6,7 +6,7 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    ChangeDetectorRef, AfterViewInit, AfterContentInit, PipeTransform, Pipe
+    ChangeDetectorRef, AfterViewInit, AfterContentInit, PipeTransform, Pipe, OnChanges
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -19,12 +19,12 @@ import {disableBindings} from "@angular/core/src/render3";
     selector: "object-action-container",
     templateUrl: "./src/objectcomponents/templates/objectactioncontainer.html"
 })
-export class ObjectActionContainer implements OnInit {
-    @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>
+export class ObjectActionContainer implements OnChanges {
+    @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>;
 
     @Input() private actionset: string = "";
-    @Input() private mainactionitems: any[] = [];
-    @Input() private addactionitems: any[] = [];
+    public mainactionitems: any[] = [];
+    private addactionitems: any[] = [];
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     private isOpen: boolean = false;
@@ -32,9 +32,12 @@ export class ObjectActionContainer implements OnInit {
     constructor(private language: language, private metadata: metadata, private model: model, private changeDetectorRef: ChangeDetectorRef) {
     }
 
-    public ngOnInit() {
+    public ngOnChanges() {
         let actionitems = this.metadata.getActionSetItems(this.actionset);
+        this.mainactionitems = [];
+        this.addactionitems = [];
         let initial = true;
+
         for (let actionitem of actionitems) {
             if (initial) {
                 this.mainactionitems.push({
@@ -70,7 +73,7 @@ export class ObjectActionContainer implements OnInit {
                 disabled = false;
                 return true;
             }
-        })
+        });
         return disabled;
     }
 
@@ -101,7 +104,7 @@ export class ObjectActionContainer implements OnInit {
         if (this.actionitemlist) {
             this.actionitemlist.some((actionitem: any) => {
                 if (actionitem.id == actionid) {
-                    disabled = actionitem.disabled ? true : false;
+                    disabled = actionitem.disabled;
                     return true;
                 }
             });
