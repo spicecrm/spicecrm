@@ -1,8 +1,7 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
 import { language } from '../../services/language.service';
-import { DOCUMENT } from "@angular/common";
 
 @Component({
     selector: 'objectrepositoryexport',
@@ -14,14 +13,13 @@ export class ObjectRepositoryExport {
     private isLoading = false;
     private repostring: string;
 
-    constructor( @Inject(DOCUMENT) private _document: any, private lang: language, private backend: backend, private toast: toast ) { }
+    constructor( private lang: language, private backend: backend, private toast: toast ) { }
 
-    private export() {
+    private ngOnInit() {
         this.isLoading = true;
         this.backend.getRequest( 'configurator/objectrepository' ).subscribe( response => {
             this.repostring = response.repostring;
             this.isLoading = false;
-            this.copyToClipboard();
         }, () => {
             this.isLoading = false;
             this.toast.sendToast('Error loading data!', 'error');
