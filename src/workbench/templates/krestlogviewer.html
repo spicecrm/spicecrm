@@ -127,18 +127,6 @@
             </div>
 
             <div class="slds-form-element slds-m-right--x-small">
-                <label class="slds-form-element__label" for="limit">Zeilenlimit</label>
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                    <input id="limit" class="slds-input slds-text-align--right" type="text" size="8" trim [(ngModel)]="limit" />
-                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="slds-form-element slds-m-right--x-small">
                 <label class="slds-form-element__label" for="method">{{lang.getLabel('LBL_METHOD')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
@@ -191,6 +179,18 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="postParameters" class="slds-input" type="text" trim [(ngModel)]="filter.postParams" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.postParams=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="limit">Zeilenlimit</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="limit" class="slds-input slds-text-align--right" type="text" size="8" trim [(ngModel)]="limit" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
                         <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
                             <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
                         </svg>

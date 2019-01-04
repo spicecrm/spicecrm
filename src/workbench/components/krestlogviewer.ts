@@ -44,6 +44,8 @@ export class KRESTLogViewer {
     private filtertext = '';
     private yearNow: string;
     private toastId = '';
+    private modal: any;
+    private lineNrInModal: number;
 
     // Stati:
     private isLoading = false;
@@ -178,12 +180,35 @@ export class KRESTLogViewer {
     }
 
     // Open the modal window to display a log line with unusual long log text.
-    private showLineInModal(i) {
-        this.modalservice.openModal('KRESTLogViewerModal' ).subscribe( modal => {
-            modal.instance.line = this.linesToShow[i];
-            modal.instance.username = this.getUsername( this.linesToShow[i].uid );
-            modal.instance.routeBase = this.routeBase;
-        });
+    private showLineInModal( lineNr ) {
+        if ( !this.modal || this.modal.instance.isClosed ) {
+            this.modalservice.openModal( 'KRESTLogViewerModal' ).subscribe( modal => {
+                this.modal = modal;
+                this.modal.instance.routeBase = this.routeBase;
+                this.modal.instance.nrOfLines = this.linesToShow.length;
+                this.handOverModalData( lineNr );
+                this.lineNrInModal = lineNr;
+                modal.instance.toLeft$.subscribe( () => {
+                    if ( this.lineNrInModal > 0 ) this.showLineInModal( --this.lineNrInModal );
+                    console.log('to left');
+                });
+                modal.instance.toRight$.subscribe( () => {
+                    console.log('to right');
+                    if ( this.lineNrInModal < this.linesToShow.length-1 ) this.showLineInModal( ++this.lineNrInModal );
+                });
+            } );
+        } else {
+            this.handOverModalData( lineNr );
+        }
+    }
+
+    private handOverModalData( lineNr ) {
+        console.log( 'handOverModalData '+lineNr );
+        this.currPage = Math.ceil( (lineNr+1) / 20 ); console.log('LineNr: ',lineNr,'currPage:',this.currPage);
+        this.modal.instance.lineNr = lineNr;
+        this.modal.instance.line = this.linesToShow[lineNr];
+        this.modal.instance.username = this.getUsername( this.linesToShow[lineNr].uid );
+        this.modal.instance.load();
     }
 
     // Apply filter text to the list. Or clear filtering when no filter text.

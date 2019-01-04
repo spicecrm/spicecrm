@@ -62,6 +62,7 @@ import /*embed*/ {fieldMultienumCheckBox} from './components/fieldmultienumcheck
 import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
 import /*embed*/ {fieldBool} from './components/fieldbool';
 import /*embed*/ {fieldParent} from './components/fieldparent';
+import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
 import /*embed*/ {fieldRelate} from './components/fieldrelate';
 import /*embed*/ {fieldModifiedBy} from './components/fieldmodifiedby';
 import /*embed*/ {fieldLookup} from './components/fieldlookup';
@@ -162,6 +163,7 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
         fieldDuration,
         fieldDateTimeSpan,
         fieldParent,
+        fieldModuleFilter,
         fieldRelate,
         fieldModifiedBy,
         fieldLookup,
@@ -233,6 +235,7 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
         fieldDuration,
         fieldDateTimeSpan,
         fieldParent,
+        fieldModuleFilter,
         fieldRelate,
         fieldLookup,
         fieldFloat,
