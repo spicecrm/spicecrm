@@ -769,17 +769,17 @@ export class metadata {
         }
     }
 
-    public getFieldSetFields(_fieldDef) {
-        if (this.fieldSets[_fieldDef]) {
-            return this.fieldSets[_fieldDef].items;
+    public getFieldSetFields(fieldset) {
+        if (this.fieldSets[fieldset]) {
+            return this.fieldSets[fieldset].items;
         } else {
             return [];
         }
     }
 
-    public getFieldSetItems(_fieldDef) {
-        if (this.fieldSets[_fieldDef]) {
-            return this.fieldSets[_fieldDef].items;
+    public getFieldSetItems(fieldset) {
+        if (this.fieldSets[fieldset]) {
+            return this.fieldSets[fieldset].items;
         } else {
             return [];
         }
