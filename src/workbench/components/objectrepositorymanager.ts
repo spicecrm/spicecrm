@@ -424,4 +424,9 @@ export class ObjectRepositoryManager {
         console.log("event", event);
         this.currentObjRepo.description = event;
     }
+
+    private exportRepoList() {
+        this.modalservice.openModal('ObjectRepositoryExport');
+    }
+
 }
