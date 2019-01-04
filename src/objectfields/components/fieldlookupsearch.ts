@@ -15,6 +15,7 @@ export class fieldLookupSearch {
     private searchTimeout: any = {};
     @Input() private module: string = '';
     @Input() private fieldid: string = '';
+    @Input() private modulefilter: string = '';
 
     @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
     @Output() private searchWithModal = new EventEmitter();
@@ -36,7 +37,7 @@ export class fieldLookupSearch {
 
     private doSearch() {
         if (this.searchTerm !== '' && this.searchTerm !== this.fts.searchTerm) {
-            this.fts.searchByModules(this.searchTerm, [this.module]);
+            this.fts.searchByModules(this.searchTerm, [this.module], 10, {}, {}, false, this.modulefilter);
         }
     }
 

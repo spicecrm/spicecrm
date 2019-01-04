@@ -25,6 +25,7 @@ declare var _;
 export class metadata {
     // modules: Array<any> = [];
     private moduleDefs: any = {};
+    private moduleFilters: any = {};
     private moduleDirectory: any = {};
     private validationRules: any = {};
     private htmlStyleData: any = {};
@@ -266,6 +267,7 @@ export class metadata {
         ) {
             let response = this.session.getSessionData("metadataModuleDefinitions");
             this.moduleDefs = response.modules;
+            this.moduleFilters = response.modulefilters;
             this.roles = response.roles;
             this.roles.some(role => {
                 if (role.defaultrole == 1) {
@@ -285,6 +287,7 @@ export class metadata {
                     let response = res;
                     this.session.setSessionData("metadataModuleDefinitions", response);
                     this.moduleDefs = response.modules;
+                    this.moduleFilters = response.modulefilters;
                     this.roles = response.roles;
                     // todo: integrate validation rules
                     this.role = '';
@@ -1091,6 +1094,57 @@ export class metadata {
         } catch (e) {
             return [];
         }
+    }
+
+    /*
+     * get all module filters
+     */
+    public getModuleFilters(module = "") {
+        let retModuleFilters = [];
+        for (let ModuleFilter in this.moduleFilters) {
+            if (this.moduleFilters.hasOwnProperty(ModuleFilter)) {
+                if (module !== "" && this.moduleFilters[ModuleFilter].module !== module) {
+                    continue;
+                }
+                retModuleFilters.push(this.moduleFilters[ModuleFilter]);
+            }
+        }
+        retModuleFilters.sort((a, b) => a.name - b.name);
+        return retModuleFilters;
+    }
+
+    /**
+     * @param filterId: string
+     * @returns {any}
+     */
+    public getModuleFilter(filterId) {
+        try {
+            return this.moduleFilters[filterId];
+        } catch (e) {
+            return "";
+        }
+    }
+
+    /**
+     * @param filterId: string
+     * @param name: object
+     * @param module: object
+     * @param type: object
+     */
+    public setModuleFilter(filterId, name, module, type = 'custom') {
+         this.moduleFilters[filterId] = {
+             id: filterId,
+             name: name,
+             module: module,
+             type: type
+         };
+    }
+
+    /**
+     * @param filterId: string
+     */
+    public removeModuleFilter(filterId) {
+         delete this.moduleFilters[filterId];
     }
 
     /*

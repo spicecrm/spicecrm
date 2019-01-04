@@ -97,6 +97,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.relateSearchOpen = false;
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.relateType;
+            selectModal.instance.modulefilter = this.fieldconfig.modulefilter;
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
                 if ( items.length ) {
