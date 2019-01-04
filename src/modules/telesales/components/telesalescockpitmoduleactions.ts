@@ -15,10 +15,7 @@ export class TeleSalesCockpitModuleActions {
 
     @ViewChild('moduleactionscontainer', {read: ViewContainerRef}) moduleactionscontainer: ViewContainerRef;
 
-    componentconfig: any = {};
-    actionsets: any = [];
-    actionitems: any = [];
-    renderedActionset: Array<any> = [];
+    actionset: any = [];
 
     constructor(
         private language: language,
@@ -26,35 +23,12 @@ export class TeleSalesCockpitModuleActions {
         private telecockpitservice: telecockpitservice,
         private metadata: metadata,
     ) {
-        this.telecockpitservice.selectedItem$.subscribe(data => this.renderView(data));
+        this.telecockpitservice.selectedItem$.subscribe(data => this.loadActionset(data));
 
     }
 
-       resetView(){
-        for (let renderedAction of this.renderedActionset){
-            renderedAction.destroy();
-        }
-        this.actionitems = [];
-
-    }
-
-    renderView(modeldata){
-
-        this.resetView();
-
+    loadActionset(modeldata){
         let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitModuleActions', modeldata.module);
-        if(componentconfig && componentconfig.actionset) {
-            this.actionitems = this.metadata.getActionSetItems(componentconfig.actionset);
-            for (let actionitem of this.actionitems) {
-                this.metadata.addComponent(actionitem.component, this.moduleactionscontainer).subscribe(componentref => {
-                    componentref.instance.parent = this.model;
-                    componentref.instance['actionconfig'] = actionitem.actionconfig;
-                    this.renderedActionset.push(componentref);
-                });
-            }
-        }
+        this.actionset = componentconfig.actionset;
     }
-
 }
-
-

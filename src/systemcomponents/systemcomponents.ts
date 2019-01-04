@@ -43,6 +43,7 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import {configurationService} from "../services/configuration.service";
 import {modal} from "../services/modal.service";
 import {userpreferences} from "../services/userpreferences.service";
+import {loader} from "../services/loader.service";
 
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
@@ -95,6 +96,10 @@ import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplace
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
+import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
+import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
+import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
+import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -167,7 +172,11 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         PackageLoaderPackages,
         PackageLoaderPackage,
         PackageLoaderLanguages,
-        PackageLoaderLanguage
+        PackageLoaderLanguage,
+        SystemIllustrationNoAccess,
+        SystemIllustrationNoTask,
+        SystemIllustrationNoData,
+        SystemIllustrationNoRecords
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -218,7 +227,11 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemStencil,
         SystemComponentSet,
         SystemProgressRing,
-        SystemLoaderProgress
+        SystemLoaderProgress,
+        SystemIllustrationNoAccess,
+        SystemIllustrationNoTask,
+        SystemIllustrationNoData,
+        SystemIllustrationNoRecords
     ]
 })
 export class SystemComponents {
