@@ -384,7 +384,7 @@ export class language {
     /*
     * search function for the label selector
     */
-    public searchLabel(searchTerms) {
+    public searchLabel(searchTerms, results = 10) {
         let searchresults = [];
 
         let searchTermArray = searchTerms.toLowerCase().split(' ');
@@ -405,7 +405,7 @@ export class language {
                 });
             }
 
-            if (searchresults.length >= 10) break;
+            if (searchresults.length >= results) break;
         }
 
         return searchresults;

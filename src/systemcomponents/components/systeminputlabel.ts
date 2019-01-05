@@ -70,7 +70,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
 
     private dosearch() {
         if (this._searchterm) {
-            this.foundlabels = this.language.searchLabel(this._searchterm);
+            this.foundlabels = this.language.searchLabel(this._searchterm, 50);
         } else {
             this.foundlabels = [];
         }

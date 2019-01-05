@@ -1,23 +1,11 @@
-<div class="slds-form-element slds-m-vertical--xxx-small">
-    <div class="slds-form-element__control">
+<div class="slds-form-element slds-p-vertical--x-small">
+    <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
         <div class="slds-checkbox">
           <input [disabled]="!view.isEditMode()" class="slds-float_left" type="checkbox" name="options" [id]="option.option" [(ngModel)]="configValues[option.option]">
           <label class="slds-checkbox__label" [attr.for]="option.option">
-            <span class="slds-checkbox_faux" style="margin-right: 5px;"></span>
-            <span class="slds-form-element__label" style="margin-right: 3px;">{{option.option}}</span>
+            <span class="slds-checkbox_faux"></span>
           </label>
-          <div *ngIf="option.description.length > 0" style="position: relative; margin-right: 5px; margin-top: 3px;">
-            <div class="slds-form-element">
-                <div class="slds-form-element__icon slds-align-middle">
-                    <button class="slds-button slds-button_icon slds-button slds-button_icon" aria-describedby="help" title="Description" (mouseenter)="showInfo = true" (mouseleave)="showInfo = false">
-                        <system-button-icon [size]="'small'" [icon]="'info'"></system-button-icon>
-                    </button>
-                </div>
-            </div>
-            <div *ngIf="showInfo" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right slds-rise-from-ground" role="tooltip" id="help" style="position: absolute; bottom: 25px; right: -17px; width: 320px; height: auto;">
-                <div class="slds-popover__body slds-scrollable_y">{{option.description}}</div>
-            </div>
-          </div>
         </div>
+        <workbench-config-label [option]="option.option" [description]="option.description"></workbench-config-label>
     </div>
 </div>

@@ -24,7 +24,6 @@ export class WorkbenchConfigOptionComponentset implements AfterViewInit {
     private componentsets: Array<any> = [];
     private modules: Array<any> = [];
     private module: string = '';
-    private showInfo: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,
