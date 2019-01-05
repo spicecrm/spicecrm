@@ -6,6 +6,18 @@
                 <input  class="slds-input" type="text" [(ngModel)]="filter.name"/>
             </div>
         </div>
+        <label class="slds-form-element__label" >{{language.getLabel('LBL_PACKAGE')}}</label>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <input  class="slds-input" type="text" [(ngModel)]="filter.package"/>
+            </div>
+        </div>
+        <label class="slds-form-element__label" >{{language.getLabel('LBL_VERSION')}}</label>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <input  class="slds-input" type="text" [(ngModel)]="filter.version"/>
+            </div>
+        </div>
     </div>
     <div class="slds-p-around--x-small">
         <div class="slds-expression">
