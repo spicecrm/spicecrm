@@ -29,7 +29,10 @@
                     <input class="slds-input" type="text" [(ngModel)]="dashlet.name">
                 </div>
             </div>
-            <system-input-label class="slds-size--1-of-2" [(ngModel)]="dashlet.label"></system-input-label>
+            <div class="slds-form-element slds-size--1-of-2">
+                <label class="slds-form-element__label">Label</label>
+                <system-input-label [(ngModel)]="dashlet.label"></system-input-label>
+            </div>
         </div>
         <div class="slds-grid slds-gutters_direct-xx-small">
             <div class="slds-form-element  slds-col slds-size--1-of-2">
