@@ -5,7 +5,7 @@
             <system-icon [module]="module" size="small"></system-icon>
             </div>
             <div class="slds-media__body">
-                <p class="slds-text-heading_small slds-hyphenate">{{panelTitle}}<ng-container *ngIf="!relatedmodels.isloading">&nbsp;({{relatedmodels.count}})</ng-container></p>
+                <p class="slds-text-heading_small slds-hyphenate">{{language.getLabel(panelTitle)}}<ng-container *ngIf="!relatedmodels.isloading">&nbsp;({{relatedmodels.count}})</ng-container></p>
             </div>
         </div>
     </dt>
