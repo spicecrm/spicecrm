@@ -23,6 +23,7 @@ import {configurationService} from "../services/configuration.service";
 import {footer} from "../services/footer.service";
 import {userpreferences} from '../services/userpreferences.service';
 import {loader} from '../services/loader.service';
+import {session} from '../services/session.service';
 
 // MODULEs
 import {SystemComponents} from "../systemcomponents/systemcomponents";
