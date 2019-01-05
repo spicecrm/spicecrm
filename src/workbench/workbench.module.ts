@@ -84,6 +84,7 @@ import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
 import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
 import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
+import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
 import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
@@ -93,6 +94,7 @@ import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconf
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
 import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
+import /*embed*/ {WorkbenchConfigOptionLabel} from "./components/workbenchconfigoptionlabel";
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
@@ -137,6 +139,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
         WorkbenchHeader,
+        WorkbenchConfigLabel,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
         WorkbenchConfigOptionModulefilter,
@@ -146,6 +149,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionModule,
         WorkbenchConfigOptionActionset,
         WorkbenchConfigOptionBoolean,
+        WorkbenchConfigOptionLabel,
         ComponentsetManagerAddDialog,
         ComponentsetManagerEditDialog,
         ComponentConfigManager,
@@ -206,6 +210,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManager,
         FieldsetManager,
         ComponentsetManager,
+        WorkbenchConfigLabel,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
         WorkbenchConfigOptionModulefilter,
