@@ -47,7 +47,7 @@ export class WorkbenchConfig implements OnChanges {
         let options = this.metadata.getComponentConfigOptions(this.component);
         for (let option in options) {
             this.configOptions.push({
-                option: option,
+                option,
                 type: options[option].type ? options[option].type : 'string',
                 description: options[option].description ? options[option].description : ''
             });
@@ -61,40 +61,14 @@ export class WorkbenchConfig implements OnChanges {
 
             // check availability
             if (!this.metadata.checkComponent(component)) {
-
-                if(fieldconfig.type == "labelx") {
-                    component = 'LabelSelectorComponent';
-                }else {
-                    component = 'WorkbenchConfigOptionDefault';
-                }
+                component = 'WorkbenchConfigOptionDefault';
             }
 
             this.metadata.addComponent(component, this.optionscontainer).subscribe(
                 cmpref => {
-
                     this.optionsElements.push(cmpref);
-
                     cmpref.instance.option = fieldconfig;
                     cmpref.instance.configValues = this.configValues;
-
-                    if (component == 'LabelSelectorComponent') {
-                        let val = "";
-                        val = this.configValues[fieldconfig.option];
-
-                        if (val && this.language.languagedata.applang[val]) {
-                            // fake a label object...
-                            cmpref.instance._selected_item = {name: val};
-                        }
-                        cmpref.instance.select$.subscribe(
-                            item => {
-                                if(item) {
-                                    this.configValues[fieldconfig.option] = item.name;
-                                }else {
-                                    this.configValues[fieldconfig.option] = null;
-                                }
-                            }
-                        );
-                    }
                 }
             );
         }

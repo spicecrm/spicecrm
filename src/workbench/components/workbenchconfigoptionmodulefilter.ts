@@ -20,8 +20,6 @@ export class WorkbenchConfigOptionModulefilter {
     public modulefilters: any[] = [];
     private module: string = "";
 
-    private showInfo: boolean = false;
-
     constructor(
         private backend: backend,
         private broadcast: broadcast,

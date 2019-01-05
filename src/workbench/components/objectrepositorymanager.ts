@@ -52,7 +52,7 @@ export class ObjectRepositoryManager {
 
     private objectFilter: string = '';
 
-    private fieldTypeList: Array<any> = ["string", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
+    private fieldTypeList: Array<any> = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
 
     private newRepo: any = {};
     private emptyRepo: any = {
