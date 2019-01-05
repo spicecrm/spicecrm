@@ -2,18 +2,18 @@
     <div class="slds-p-around--x-small slds-border--bottom">
         <div class="slds-form-element slds-size--1-of-3 slds-form-element slds-size--1-of-3 slds-grid slds-grid--vertical-align-center">
             <div class="slds-grid slds-grid--vertical-align-center">
-                <label for="moduleSelect"  class="slds-form-element__label">Module</label>
+                <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
                 <div class="slds-form-element__control slds-size--1-of-2">
                     <div class="slds-select_container">
-                        <select id="moduleSelect" class="slds-select" [(ngModel)]="sysModule" [disabled]="generic">
+                        <select class="slds-select" [(ngModel)]="sysModule" [disabled]="generic">
                             <option *ngFor="let sysModule of sysModules" [value]="sysModule.id">{{sysModule.module}}</option>
                         </select>
                     </div>
                 </div>
-                <label for="componentSelect"  class="slds-form-element__label slds-m-left--small">Component</label>
+                <label  class="slds-form-element__label slds-m-left--small">{{language.getLabel('LBL_COMPONENT')}}</label>
                 <div class="slds-form-element__control slds-size--1-of-2">
                     <div class="slds-select_container">
-                        <select id="componentSelect" class="slds-select" [(ngModel)]="dashlet.component" [disabled]="!sysModule">
+                        <select class="slds-select" [(ngModel)]="dashlet.component" [disabled]="!sysModule">
                             <option *ngFor="let component of components" [value]="component.component">{{component.component}}</option>
                         </select>
                     </div>
@@ -22,49 +22,41 @@
         </div>
     </div>
     <div class="slds-p-around--x-small">
-        <div class="slds-expression">
-            <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-3">
-                    <label for="dashletname" class="slds-form-element__label">Name</label>
-                    <div class="slds-form-element__control">
-                        <input id="dashletname" class="slds-input" type="text" [(ngModel)]="dashlet.name">
-                    </div>
-                </div>
-                <label-selector class="slds-p-left--medium slds-size--1-of-3" [selected_item]="dashlet.label" [option]="{option: 'Label'}" (select)="dashlet.label = $event"></label-selector>
-            </div>
-            <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-3">
-                    <label for="dashleticon" class="slds-form-element__label">Icon</label>
-                    <div class="slds-form-element__control">
-                        <input id="dashleticon" class="slds-input" type="text" [(ngModel)]="dashlet.icon">
-                    </div>
-                </div>
-                <div class="slds-form-element slds-p-left--medium slds-size--1-of-3">
-                    <label for="dashletacl" class="slds-form-element__label" >ACL Action</label>
-                    <div class="slds-form-element__control">
-                        <input id="dashletacl" class="slds-input" type="text" [(ngModel)]="dashlet.acl_action">
-                    </div>
+        <div class="slds-grid slds-gutters_direct-xx-small">
+            <div class="slds-form-element slds-col slds-size--1-of-2">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}</label>
+                <div class="slds-form-element__control">
+                    <input class="slds-input" type="text" [(ngModel)]="dashlet.name">
                 </div>
             </div>
-            <div class="slds-grid">
-                <div class="slds-form-element slds-size--2-of-3">
-                    <label for="description" class="slds-form-element__label">Description</label>
-                    <div class="slds-m-vertical--small slds-text-title_bold">
-                        <textarea id="description" class="slds-textarea" [(ngModel)]="dashlet.description" style="max-height: 400px; min-height: 30px"></textarea>
-                    </div>
+            <system-input-label class="slds-size--1-of-2" [(ngModel)]="dashlet.label"></system-input-label>
+        </div>
+        <div class="slds-grid slds-gutters_direct-xx-small">
+            <div class="slds-form-element  slds-col slds-size--1-of-2">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_ICON')}}</label>
+                <div class="slds-form-element__control">
+                    <input class="slds-input" type="text" [(ngModel)]="dashlet.icon">
                 </div>
             </div>
-            <div class="slds-border--top slds-border--bottom slds-form-element slds-m-top--medium slds-p-bottom--medium">
-                <div class="slds-size--2-of-3">
-                    <div class="slds-text-title_bold slds-m-vertical--small">Component Configurations</div>
-                    <workbench-config [component]="dashlet.component" [configValues]="configValues"></workbench-config>
+            <div class="slds-form-element  slds-col slds-size--1-of-2">
+                <label class="slds-form-element__label" >{{language.getLabel('LBL_ACL_ACTION')}}</label>
+                <div class="slds-form-element__control">
+                    <input class="slds-input" type="text" [(ngModel)]="dashlet.acl_action">
                 </div>
             </div>
-            <div class="slds-grid slds-p-top--medium">
-                <div class="slds-expression__buttons slds-align--absolute-center">
-                    <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
-                </div>
+        </div>
+        <div class="slds-form-element slds-size--1-of-1">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_DESCRIPTION')}}</label>
+            <div class="slds-m-vertical--small slds-text-title_bold">
+                <textarea class="slds-textarea" [(ngModel)]="dashlet.description" style="max-height: 400px; min-height: 30px"></textarea>
             </div>
+        </div>
+        <div class="slds-size--1-of-1 slds-border--top slds-border--bottom slds-form-element slds-m-top--medium slds-p-bottom--medium">
+            <div class="slds-text-title_bold slds-m-vertical--small">{{language.getLabel('LBL_CONFIGURATION')}}</div>
+            <workbench-config [component]="dashlet.component" [configValues]="configValues"></workbench-config>
+        </div>
+        <div class="slds-align--absolute-center slds-p-top--medium">
+            <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
     </div>
 </div>
