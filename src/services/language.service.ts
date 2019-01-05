@@ -101,7 +101,7 @@ export class language {
     public getLabel(label: string, module: string = '', length = 'default') {
         try {
             if (module != '') {
-                if (typeof(this.languagedata.mod) != "undefined" && this.languagedata.mod[module] != undefined && this.languagedata.mod[module][label]) {
+                if (typeof (this.languagedata.mod) != "undefined" && this.languagedata.mod[module] != undefined && this.languagedata.mod[module][label]) {
                     return this.languagedata.mod[module][label];
                 } else {
                     return this.getAppLanglabel(label, length);
@@ -116,7 +116,7 @@ export class language {
 
     public getAppLanglabel(label: string, length = 'default') {
         if (this.languagedata.applang[label]) {
-            if (typeof(this.languagedata.applang[label]) == 'object') {
+            if (typeof (this.languagedata.applang[label]) == 'object') {
                 return this.languagedata.applang[label][length] ? this.getNestedLabel(label, length) : this.getNestedLabel(label);
             } else {
                 return this.getNestedLabel(label);
@@ -357,12 +357,12 @@ export class language {
 
     public setDefaultLanguage(languagecode) {
         this.http.post(
-            this.configurationService.getBackendUrl() + '/syslanguages/setdefault/'+languagecode, {},
+            this.configurationService.getBackendUrl() + '/syslanguages/setdefault/' + languagecode, {},
             {headers: this.session.getSessionHeader(), observe: "response"}
         ).subscribe(
             (res: any) => {
                 let response = res.body;
-                if(response.success){
+                if (response.success) {
                     this.languagedata.languages.default = languagecode;
                 }
             }
@@ -379,5 +379,46 @@ export class language {
             }
         });
         return langText;
+    }
+
+    /*
+    * search function for the label selector
+    */
+    public searchLabel(searchTerms) {
+        let searchresults = [];
+
+        let searchTermArray = searchTerms.toLowerCase().split(' ');
+
+        for (let label in this.languagedata.applang) {
+            let found = true;
+            for (let searchTerm of searchTermArray) {
+                if (label.toLocaleLowerCase().indexOf(searchTerm) < 0) {
+                    found = false;
+                    break;
+                }
+            }
+
+            if (found) {
+                searchresults.push({
+                    label,
+                    translation: this.getAppLanglabel(label)
+                });
+            }
+
+            if (searchresults.length >= 10) break;
+        }
+
+        return searchresults;
+    }
+
+    /*
+   * search function for the label selector
+   */
+    public addLabel(label, tdefault = '', tshort = '', tlong = '') {
+        this.languagedata.applang[label] = {
+            default: tdefault,
+            long: tlong,
+            short: tshort
+        };
     }
 }
