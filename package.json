@@ -23,6 +23,7 @@
     "gulp-systemjs-builder": "^0.15.0",
     "gulp-util": "^3.0.8",
     "npm": "^6.5.0",
+    "request": "^2.88.0",
     "rxjs": "~6.3.3",
     "systemjs": "^0.21.5",
     "tslib": "^1.9.3",
