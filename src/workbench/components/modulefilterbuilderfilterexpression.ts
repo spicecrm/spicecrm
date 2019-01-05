@@ -151,10 +151,11 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
 
     private determineOperatorType(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
-        if (!fieldtype) {return}
+        if (!fieldtype) {return};
         switch (fieldtype.type) {
             case 'date':
             case 'datetime':
+            case 'datetimecombo':
                 this.operatortype = 'date';
                 break;
             case 'bool':
