@@ -67,7 +67,6 @@ import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesma
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
-import /*embed*/ {LabelSelectorComponent} from "./components/labelselector";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
 import /*embed*/ {LanguageLabelReferenceConfigForm} from "./components/languagelabelreferenceconfigform";
@@ -173,7 +172,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesSendgridTrafficManager,
         MailboxesIMAPSMTPSelectFoldersModal,
         SortPipe,
-        LabelSelectorComponent,
         ServiceCategoryManagerComponent,
         ReferenceConfigManager,
         ReferenceConfigForm,
