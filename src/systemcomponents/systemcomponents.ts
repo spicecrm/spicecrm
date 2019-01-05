@@ -100,6 +100,7 @@ import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrat
 import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
+import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -176,7 +177,8 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemIllustrationNoAccess,
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
-        SystemIllustrationNoRecords
+        SystemIllustrationNoRecords,
+        SystemInputLabel
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -231,7 +233,8 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemIllustrationNoAccess,
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
-        SystemIllustrationNoRecords
+        SystemIllustrationNoRecords,
+        SystemInputLabel
     ]
 })
 export class SystemComponents {
