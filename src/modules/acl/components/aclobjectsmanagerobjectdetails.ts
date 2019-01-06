@@ -1,15 +1,5 @@
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter,
-    Input,
-    OnChanges,
     OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -36,6 +26,8 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         {id: 5, action: 'LBL_EXPORT'},
         {id: 6, action: 'LBL_IMPORT'},
         {id: 7, action: 'LBL_MASSUPDATE'}
+        // {id: 8, action: 'LBL_REASSIGN'},
+        // {id: 9, action: 'LBL_CHANGE_TERRITORY'}
     ];
 
     private objectactions = [];
@@ -56,7 +48,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     }
 
     get showActions() {
-        return this.model.getFieldValue('spiceaclobjecttype') == '0' || this.model.getFieldValue('spiceaclobjecttype') == '3'
+        return this.model.getFieldValue('spiceaclobjecttype') == '0' || this.model.getFieldValue('spiceaclobjecttype') == '3';
     }
 
     private getActionValue(actionid) {
