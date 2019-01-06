@@ -579,7 +579,7 @@ field-generic-display .slds-button--icon{
 }
 
 .slds-button:focus {
-    box-shadow: 0 0 3px #01464C;
+    box-shadow: 0 0 3px #a7161a;
 }
 
 .slds-tabs--default__item.slds-active:after,
@@ -602,6 +602,17 @@ field-generic-display .slds-button--icon{
 .slds-button.slds-button--icon-inverse {
     color: #fff;
 }
+
+.slds-button_outline-brand{
+    border-color: #CA1B21;
+}
+
+.slds-button:hover{
+    color: #111;
+}
+
+.slds-but
+
 
 /* special rule for the action container since the first child is an empty div
 object-action-container .slds-button-group .slds-button:nth-child(2) {
