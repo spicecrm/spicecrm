@@ -16,11 +16,9 @@ import {modelutilities} from '../../../services/modelutilities.service';
 })
 export class ACLProfilesManagerProfiles {
 
-    @ViewChild('header', {read: ViewContainerRef}) private header: ViewContainerRef;
-
     private loading: boolean = false;
-
     private aclprofiles: any[] = [];
+    private activeProfile: any = {};
     private activeProfileId: string = '';
     private searchterm: string = '';
 
@@ -51,14 +49,7 @@ export class ACLProfilesManagerProfiles {
         this.backend.getRequest('module/SpiceACLProfiles', params).subscribe(aclprofiles => {
             this.aclprofiles = aclprofiles.list;
             this.loading = false;
-        })
-    }
-
-    get contentStyle() {
-        let rect = this.header.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        };
+        });
     }
 
     private addProfile() {
@@ -69,13 +60,14 @@ export class ACLProfilesManagerProfiles {
                     this.aclprofiles.push(modelData);
                     this.selectProfile(modelData);
                 }
-            })
-        })
+            });
+        });
     }
 
     private selectProfile(aclprofile) {
+        this.activeProfile = aclprofile;
         this.activeProfileId = aclprofile.id;
-        this.profileselected.emit(this.activeProfileId);
+        this.profileselected.emit(this.activeProfile);
     }
 
     private activateProfile(profileid) {
