@@ -82,7 +82,7 @@ import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
-import /*embed*/ {SystemCheckbox} from "./components/checkbox";
+import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
 import /*embed*/ {SystemCard, SystemCardBody, SystemCardFooter, SystemCardHeaderTitle} from "./components/card";
 import /*embed*/ {SystemTree} from "./components/systemtree";
 import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
