@@ -18,8 +18,8 @@ export class fieldTerritorySecondaryPipe {
         let retValues = [];
 
         for (let territory of territories)
-            if(territory.id != primary_territory_id)
-            retValues.push(territory);
+            if (territory.id != primary_territory_id)
+                retValues.push(territory);
 
         return retValues;
     }
@@ -32,33 +32,30 @@ export class fieldTerritorySecondaryPipe {
 })
 export class fieldTerritorySecondary extends fieldGeneric {
 
-    isAdding: boolean = false;
-    //territories: Array<any> = [];
-    territorySearchOpen: boolean = false;
-    territorySearchTerm: string = '';
-    clickListener: any;
-    currentHash = '';
-
-    @ViewChild('addAddressInput', {read: ViewContainerRef}) addAddressInput: ViewContainerRef;
+    private isAdding: boolean = false;
+    private territorySearchOpen: boolean = false;
+    private territorySearchTerm: string = '';
+    private clickListener: any;
+    private currentHash = '';
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private renderer: Renderer2, private elementRef: ElementRef, private territoriesService: territories) {
         super(model, view, language, metadata, router);
 
     }
 
-    get primary_territory_id(){
+    get primary_territory_id() {
         return this.model.getFieldValue('spiceacl_primary_territory');
     }
 
-    get territories(){
+    get territories() {
         try {
             return JSON.parse(this.model.data.spiceacl_secondary_territories)
-        } catch(e){
+        } catch (e) {
             return [];
         }
     }
 
-    set territories(value){
+    set territories(value) {
         this.model.data.spiceacl_secondary_territories = JSON.stringify(value ? value : []);
     }
 
@@ -67,8 +64,8 @@ export class fieldTerritorySecondary extends fieldGeneric {
     }
 
     private onBlur() {
-        if (this.territorySearchTerm == '')
-            this.isAdding = false;
+        if (this.territorySearchTerm == '') {
+            this.isAdding = false;}
     }
 
     private removeTerritory(e, territoryid) {
@@ -90,7 +87,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
     }
 
 
-    closeSearchDialog() {
+    private closeSearchDialog() {
         // close the cliklistener sine the component is gone
         this.clickListener();
         this.territorySearchOpen = false;
@@ -107,15 +104,10 @@ export class fieldTerritorySecondary extends fieldGeneric {
 
     private addTerritory(territory) {
         let territories = this.territories;
-        if(territories == '') territories = [];
+        if (territories == '') territories = [];
         territories.push(territory);
         this.territories = territories;
         this.territorySearchTerm = '';
         this.isAdding = false;
-
-    }
-
-    territoryName(territoryId) {
-        return this.territoriesService.getTerritoryName(this.model.module, territoryId);
     }
 }
