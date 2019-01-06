@@ -13,28 +13,28 @@ import {language} from '../../services/language.service';
 })
 export class ObjectRecordAdministrationTab implements OnInit {
 
-    componentconfig: any = {};
-    expanded: boolean = true;
-    territorymanaged: boolean = false;
+    private componentconfig: any = {};
+    private expanded: boolean = true;
+    private territorymanaged: boolean = false;
 
-    fields: any = {
-        'spiceacl_primary_territory': {
+    private fields: any = {
+        spiceacl_primary_territory: {
             field: 'spiceacl_primary_territory',
             fieldconfig: {}
         },
-        'spiceacl_territories_hash': {
+        spiceacl_territories_hash: {
             field: 'spiceacl_territories_hash',
             fieldconfig: {}
         },
-        'assigned_user_name': {
+        assigned_user_name: {
             field: 'assigned_user_name',
             fieldconfig: {}
         },
-        'created_by_name': {
+        created_by_name: {
             field: 'created_by_name',
             fieldconfig: {fieldtype: 'modifiedby', field_date: 'date_entered'}
         },
-        'modified_by_name': {
+        modified_by_name: {
             field: 'modified_by_name',
             fieldconfig: {fieldtype: 'modifiedby', field_date: 'date_modified'}
         }
@@ -43,22 +43,21 @@ export class ObjectRecordAdministrationTab implements OnInit {
     constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         if (this.componentconfig.collapsed) {
             this.expanded = false;
         }
 
         let fields = this.metadata.getModuleFields(this.model.module)
         {
-            if (fields.spiceacl_primary_territory)
+            if (fields.spiceacl_primary_territory){
                 this.territorymanaged = true;
+            }
         }
-
     }
 
 
     get hidden() {
         return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
-
 }
