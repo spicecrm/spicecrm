@@ -18,14 +18,15 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     private fieldset: string = '';
 
     private standardactions = [
-        {id: 0, action: 'LBL_LIST'},
-        {id: 1, action: 'LBL_DETAIL'},
-        {id: 2, action: 'LBL_EDIT'},
-        {id: 3, action: 'LBL_CREATE'},
-        {id: 4, action: 'LBL_DELETE'},
-        {id: 5, action: 'LBL_EXPORT'},
-        {id: 6, action: 'LBL_IMPORT'},
-        {id: 7, action: 'LBL_MASSUPDATE'}
+        {id: 'list', action: 'LBL_LIST'},
+        {id: 'listrelated', action: 'LBL_LISTRELATED'},
+        {id: 'view', action: 'LBL_VIEW'},
+        {id: 'edit', action: 'LBL_EDIT'},
+        {id: 'create', action: 'LBL_CREATE'},
+        {id: 'delete', action: 'LBL_DELETE'},
+        {id: 'export', action: 'LBL_EXPORT'},
+        {id: 'import', action: 'LBL_IMPORT'},
+        {id: 'massupdate', action: 'LBL_MASSUPDATE'}
         // {id: 8, action: 'LBL_REASSIGN'},
         // {id: 9, action: 'LBL_CHANGE_TERRITORY'}
     ];
