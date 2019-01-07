@@ -38,22 +38,19 @@
 </head>
 <body>
 <spicecrm>
-    <div style="height: 100vh;" class="slds-align--absolute-center">
+    <div style="height: 100vh; width: 100%" class="slds-align--absolute-center">
         <div>
-            <div>
-                <img src="./config/loginimage"/>
-            </div>
-            <div class="slds-text-align_center slds-p-around--medium">
-                <span class="slds-p-top--medium">... preparing your experience ...</span>
+            <div class="slds-text-align_center slds-is-relative slds-p-around--medium">
+                <div class="slds-p-around--small slds-align--absolute-center loader-logo-image">
+                    <img width="100%" height="auto" src="./config/loginimage"/>
+                </div>
                 <div class="loaderspinner">
-                    <svg class="bag" height="100" width="100">
-                        <circle cx="50" cy="50" r="25" stroke="#CA1B1F" stroke-width="3" fill="none"></circle>
-                    </svg>
-                    <svg class="over" height="100" width="100">
-                        <circle cx="50" cy="50" r="25" stroke="#ccc" stroke-width="3" fill="none">
-                            <animate attributeType="CSS" attributeName="stroke-dasharray" from="1,254" to="157,07"
-                                     dur="5s" repeatCount="indefinite"/>
+                    <svg class="bag" height="400" width="400">
+                        <circle cx="200" cy="200" r="100" stroke-width="5" fill="none">
                         </circle>
+                    </svg>
+                    <svg class="over" height="400" width="400">
+                        <circle cx="200" cy="200" r="100" stroke-width="6" fill="none"></circle>
                     </svg>
                 </div>
             </div>
