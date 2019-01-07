@@ -18,6 +18,7 @@ export class SystemSelect implements OnChanges {
     @Input() public selectList: any = [];
     @Input() public label: string = "";
     @Input() public selectedItem: any;
+    @Input() public listheight: string = "7";
     @Input() public disabled: boolean = false;
 
     @Output() public selectedOutputItem: EventEmitter<any> = new EventEmitter<any>();
@@ -53,10 +54,15 @@ export class SystemSelect implements OnChanges {
         }
     }
 
+    get getDropdownLength() {
+        return "slds-dropdown_length-" + this.listheight;
+    }
+
     private onKeydown(value) {
 
         this.searchList = [];
         let copiedList = this.copyList();
+        let contentCheck = false;
 
         for (let listGroup in copiedList) {
             for (let item of copiedList[listGroup]) {
@@ -66,6 +72,7 @@ export class SystemSelect implements OnChanges {
                 let pos = name.search(inputValue);
                 if (pos > -1) {
                     if (inputValue.length > 0) {
+                        contentCheck = true;
                         let boldadd = [item.name.slice(0, pos), "<mark>", item.name.slice(pos, pos + value.target.value.length), "</mark>", item.name.slice(pos + value.target.value.length)].join("");
                         item.name = boldadd;
                     }
@@ -77,6 +84,11 @@ export class SystemSelect implements OnChanges {
                     }
                 }
             }
+        }
+        if(contentCheck) {
+            this.show_list = true;
+        } else {
+            this.show_list = false;
         }
     }
 
