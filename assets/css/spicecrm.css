@@ -607,13 +607,6 @@ field-generic-display .slds-button--icon{
     border-color: #CA1B21;
 }
 
-.slds-button:hover{
-    color: #111;
-}
-
-.slds-but
-
-
 /* special rule for the action container since the first child is an empty div
 object-action-container .slds-button-group .slds-button:nth-child(2) {
     border-radius: .25rem 0 0 .25rem;
