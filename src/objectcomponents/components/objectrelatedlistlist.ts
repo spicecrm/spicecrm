@@ -12,11 +12,10 @@ import {language} from "../../services/language.service";
 export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
     public activeTab: number = 0;
     public componentconfig: any = {};
-    public listfields: Array<any> = [];
+    public listfields: any[] = [];
     public fieldset: string = "";
     public editcomponentset: string = "";
     public module: string = "";
-
 
     constructor(
         public language: language,
@@ -25,7 +24,7 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
         public model: model,
     ) {
         this.relatedmodels.module = this.model.module;
-        this.relatedmodels.id = this.model.id
+        this.relatedmodels.id = this.model.id;
     }
 
     get isloading() {
@@ -58,6 +57,7 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public loadRelated() {
+        if(!this.aclAccess()) return;
         this.relatedmodels.relatedModule = this.componentconfig.object;
         this.relatedmodels.getData();
     }
@@ -72,6 +72,10 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
 
         if (this.componentconfig.items) {
             this.relatedmodels.loaditems = this.componentconfig.items;
+        }
+
+        if (this.componentconfig.modulefilter) {
+            this.relatedmodels.modulefilter = this.componentconfig.modulefilter;
         }
 
         /*
