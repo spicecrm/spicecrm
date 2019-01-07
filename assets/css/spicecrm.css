@@ -752,8 +752,12 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     background: #002D31;
 }
 
-.slds-nav-vertical__item.slds-is-active:before {
-    background: #CA1B1F;
+.slds-nav-vertical__item.slds-is-active:before, .slds-nav-vertical__item:hover:before {
+    background: #ddd;
+}
+
+.slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action, .slds-nav-vertical__action:hover {
+    box-shadow: inset 0.25rem 0 0 #CA1B1F;
 }
 
 /*
