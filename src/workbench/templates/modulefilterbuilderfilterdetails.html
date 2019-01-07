@@ -1,0 +1,39 @@
+<div *ngIf="filter">
+    <div class="slds-p-vertical--x-small slds-grid slds-grid--vertical-align-center slds-border--bottom ">
+        <div class="slds-col slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label" >{{language.getLabel('LBL_NAME')}}</label>
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input  class="slds-input" type="text" [(ngModel)]="filter.name"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-grid slds-grid--vertical-align-center slds-size--1-of-4 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label" >{{language.getLabel('LBL_PACKAGE')}}</label>
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input  class="slds-input" type="text" [(ngModel)]="filter.package"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-grid slds-grid--vertical-align-center slds-size--1-of-4 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label" >{{language.getLabel('LBL_VERSION')}}</label>
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input  class="slds-input" type="text" [(ngModel)]="filter.version"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <div tobottom class="slds-expression">
+            <h2 class="slds-expression__title">{{language.getLabel('LBL_CONDITIONS')}}</h2>
+            <ul>
+                <module-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="filter.module"></module-filter-builder-expression-group>
+            </ul>
+            <div class="slds-expression__buttons">
+                <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            </div>
+        </div>
+    </div>
+</div>

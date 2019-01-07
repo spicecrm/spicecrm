@@ -17,14 +17,11 @@
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package" [(ngModel)]="currentField.package"/>
     </div>
 </div>
-<!--<div class="slds-form-element slds-m-vertical&#45;&#45;xxx-small">-->
-    <!--<label class="slds-form-element__label">{{language.getAppLanglabel('LBL_LABEL')}}</label>-->
-    <!--<div class="slds-form-element__control">-->
-        <!--<input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.label"/>-->
-    <!--</div>-->
-<!--</div>-->
-<label-selector [selected_item]="configValuesLabel" [disabled]="!view.isEditMode()" [option]="InputConfig" (select)="configValuesLabelEmit($event)"></label-selector>
-
+<div class="slds-form-element slds-m-vertical--xx-small">
+    <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_LABEL')}}</label>
+    <system-input-label *ngIf="view.isEditMode()" [(ngModel)]="configValues.label"></system-input-label>
+    <input class="slds-input" disabled *ngIf="!view.isEditMode()" [(ngModel)]="configValues.label"/>
+</div>
 <fieldset class="slds-form-element slds-m-vertical--xxx-small">
     <legend class="slds-form-element__legend slds-form-element__label">{{language.getAppLanglabel('LBL_OPTIONS')}}</legend>
     <div class="slds-form-element__control">

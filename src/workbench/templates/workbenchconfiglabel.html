@@ -1,0 +1,15 @@
+<div class="slds-grid slds-grid--vertical-align-center">
+    <label class="slds-form-element__label">{{option}}</label>
+    <div *ngIf="description" class="slds-is-relative">
+        <div class="slds-form-element">
+            <div class="slds-form-element__icon slds-align-middle">
+                <button class="slds-button slds-button_icon slds-button slds-button_icon" aria-describedby="help" title="Description" (mouseenter)="showInfo = true" (mouseleave)="showInfo = false">
+                    <system-button-icon [size]="'small'" [icon]="'info'"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="showInfo" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right slds-rise-from-ground slds-is-absolute" role="tooltip" style="bottom: 25px; right: -17px; width: 320px; height: auto;">
+            <div class="slds-popover__body slds-scrollable_y">{{description}}</div>
+        </div>
+    </div>
+</div>

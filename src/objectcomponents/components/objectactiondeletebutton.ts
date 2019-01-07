@@ -33,7 +33,7 @@ export class ObjectActionDeleteButton implements OnInit {
 
     get canDelete() {
         try {
-            return this.model.data.acl.delete;
+            return this.model.checkAccess('delete');
         } catch (e) {
             return false;
         }
@@ -57,7 +57,10 @@ export class ObjectActionDeleteButton implements OnInit {
     }
 
     private handleDisabled(mode) {
-        if (!this.canDelete) this.disabled = true;
+        if (!this.canDelete) {
+            this.disabled = true;
+            return;
+        }
         this.disabled = mode == 'edit' ? true : false;
     }
 }

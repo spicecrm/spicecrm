@@ -1,9 +1,5 @@
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
     ViewChild,
     ViewContainerRef,
     Output,
@@ -13,9 +9,6 @@ import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
-import {navigation} from '../../../services/navigation.service';
-import {ACLObjectsManagerAddObjectModal} from "./aclobjectsmanageraddobjectmodal";
-
 
 @Component({
     selector: 'aclprofiles-manager-profiles',
@@ -23,21 +16,19 @@ import {ACLObjectsManagerAddObjectModal} from "./aclobjectsmanageraddobjectmodal
 })
 export class ACLProfilesManagerProfiles {
 
-    @ViewChild('header', {read: ViewContainerRef}) header: ViewContainerRef;
+    private loading: boolean = false;
+    private aclprofiles: any[] = [];
+    private activeProfile: any = {};
+    private activeProfileId: string = '';
+    private searchterm: string = '';
 
-    loading: boolean = false;
-
-    aclprofiles: Array<any> = [];
-    activeProfileId: String = '';
-    searchterm: String = '';
-
-    @Output() profileselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private profileselected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
         this.getProfiles();
     }
 
-    keyUp(_e) {
+    private keyUp(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.getProfiles();
@@ -45,7 +36,7 @@ export class ACLProfilesManagerProfiles {
         }
     }
 
-    getProfiles() {
+    private getProfiles() {
         this.loading = true;
         this.aclprofiles = [];
 
@@ -58,53 +49,46 @@ export class ACLProfilesManagerProfiles {
         this.backend.getRequest('module/SpiceACLProfiles', params).subscribe(aclprofiles => {
             this.aclprofiles = aclprofiles.list;
             this.loading = false;
-        })
+        });
     }
 
-    get contentStyle() {
-        let rect = this.header.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        }
-    }
-
-    addProfile(){
+    private addProfile() {
         this.modal.openModal('ACLProfilesManagerAddProfileModal').subscribe(modalRef => {
 
             modalRef.instance.newObjectData.subscribe(modelData => {
-                if(modelData){
+                if (modelData) {
                     this.aclprofiles.push(modelData);
                     this.selectProfile(modelData);
                 }
-            })
-        })
+            });
+        });
     }
 
-    selectProfile(aclprofile) {
+    private selectProfile(aclprofile) {
+        this.activeProfile = aclprofile;
         this.activeProfileId = aclprofile.id;
-        this.profileselected.emit(this.activeProfileId);
+        this.profileselected.emit(this.activeProfile);
     }
 
-    activateProfile(profileid){
-        this.backend.postRequest('spiceaclprofiles/'+profileid+'/activate').subscribe(aclobjects => {
+    private activateProfile(profileid) {
+        this.backend.postRequest('spiceaclprofiles/' + profileid + '/activate').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
-                if(profile.id == profileid){
+                if (profile.id == profileid) {
                     profile.status = 'r';
                     return true;
                 }
-            })
-        })
+            });
+        });
     }
 
-    deactivateProfile(profileid){
-        this.backend.postRequest('spiceaclprofiles/'+profileid+'/deactivate').subscribe(aclobjects => {
+    private deactivateProfile(profileid) {
+        this.backend.postRequest('spiceaclprofiles/' + profileid + '/deactivate').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
-                if(profile.id == profileid){
+                if (profile.id == profileid) {
                     profile.status = 'd';
                     return true;
                 }
-            })
-        })
+            });
+        });
     }
-
 }

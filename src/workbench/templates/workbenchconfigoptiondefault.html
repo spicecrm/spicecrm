@@ -1,21 +1,5 @@
-<div class="slds-form-element slds-m-vertical--xxx-small" style="clear: both">
-
-    <label class="slds-form-element__label slds-float_left" style="margin-right: 3px;">{{option.option}}</label>
-    <div *ngIf="option.description.length > 0" class="slds-float_left" style="position: relative; margin-top: 3px;">
-        <div class="slds-form-element">
-            <div class="slds-form-element__icon slds-align-middle">
-                <button class="slds-button slds-button_icon slds-button slds-button_icon" aria-describedby="help" title="Description" (mouseenter)="showInfo = true" (mouseleave)="showInfo = false">
-                    <system-button-icon [size]="'small'" [icon]="'info'"></system-button-icon>
-                </button>
-            </div>
-        </div>
-        <div *ngIf="showInfo" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right slds-rise-from-ground" role="tooltip" id="help"
-             style="position: absolute; bottom: 25px; right: -17px; width: 320px; height: auto;">
-            <div class="slds-popover__body slds-scrollable_y">{{option.description}}</div>
-        </div>
-    </div>
-
-
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <workbench-config-label [option]="option.option" [description]="option.description"></workbench-config-label>
     <div class="slds-form-element__control">
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues[option.option]"/>
     </div>

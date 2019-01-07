@@ -20,6 +20,7 @@ export class fts {
     public searchSort: any = {};
     public searchAggregates: any = {};
     public searchModules: any[] = [];
+    public modulefilter: string = '';
     public moduleSearchresults: any[] = [];
     private lastSearchParams: any = {};
 
@@ -34,6 +35,11 @@ export class fts {
         private metadata: metadata,
     ) {
         this.getSearchModules();
+    }
+
+
+    get loadedSearchModules() {
+        return this.searchModules.filter(module => this.metadata.checkModuleAcl(module, 'list'));
     }
 
     private transformHits(hits) {
@@ -71,7 +77,7 @@ export class fts {
         this.runningsearch = this.backend.postRequest('search', {}, {
             size,
             searchterm,
-            modules: this.searchModules.join(',')
+            modules: this.loadedSearchModules.join(',')
         }).subscribe((response) => {
             this.hits = response.hits.hits;
             this.found = response.hits.total;
@@ -79,11 +85,11 @@ export class fts {
         });
     }
 
-    public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false) {
+    public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
         let retSubject = new Subject<any>();
         // if no module is passed .. search all modules
         if (modules.length === 0) {
-            modules = this.searchModules;
+            modules = this.loadedSearchModules;
         }
 
         if (searchterm.indexOf('%') != -1) {
@@ -94,6 +100,7 @@ export class fts {
         this.searchTerm = searchterm;
         this.searchAggregates = aggregates;
         this.searchSort = sortparams;
+        this.modulefilter = modulefilter;
 
 
         // todo: check if same search is done .. and then do nothing .. avoid too many calls
@@ -109,7 +116,8 @@ export class fts {
             records: size,
             owner,
             aggregates: this.searchAggregates,
-            sort: this.searchSort
+            sort: this.searchSort,
+            modulefilter
         }).subscribe(response => {
             // var response = res.json();
             this.moduleSearchresults = [];
@@ -165,7 +173,8 @@ export class fts {
             aggregates: this.searchAggregates,
             sort: this.searchSort,
             records: this.lastSearchParams.size,
-            start: this.moduleSearchresults[0].data.hits.length
+            start: this.moduleSearchresults[0].data.hits.length,
+            modulefilter: this.modulefilter
         }).subscribe(response => {
             // var response = res.json();
             for (let module of this.lastSearchParams.modules) {
