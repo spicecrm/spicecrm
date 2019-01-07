@@ -57,6 +57,7 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public loadRelated() {
+        if(!this.aclAccess()) return;
         this.relatedmodels.relatedModule = this.componentconfig.object;
         this.relatedmodels.getData();
     }
