@@ -69,6 +69,8 @@ export class GlobalLoginGoogle {
                 let access_token = googleUser.getAuthResponse().access_token;
                 this.loginService.oauthToken = user_token;
                 this.loginService.accessToken = access_token;
+                this.loginService.authData.userName = "";
+                this.loginService.authData.password = "";
                 // this.session.authData.sessionId = user_token;
                 this.loginService.login().subscribe(
                     (res) => {

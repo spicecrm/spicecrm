@@ -18,6 +18,32 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     text-align: center;*/
 }
 
+.loader-logo-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    margin-top: -75px
+}
+
+.loader-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50px
+}
+
+.loaderspinner .over circle {
+    stroke-dasharray: 150;
+    stroke: #ccc;
+}
+
+.loaderspinner .bag circle {
+    stroke: #CA1B1F;
+}
+
 .spiceRotate {
     animation-name: wag;
     animation-duration: 3000ms;
@@ -34,8 +60,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 }
 
 .loaderspinner .over {
-    -webkit-animation: spin 2s ease-in-out infinite;
-    stroke-dasharray: 78, 38;
+    -webkit-animation: spin 3s linear infinite;
 }
 
 .loaderspinner .bag {
@@ -579,7 +604,7 @@ field-generic-display .slds-button--icon{
 }
 
 .slds-button:focus {
-    box-shadow: 0 0 3px #01464C;
+    box-shadow: 0 0 3px #a7161a;
 }
 
 .slds-tabs--default__item.slds-active:after,
@@ -601,6 +626,10 @@ field-generic-display .slds-button--icon{
 .slds-button.slds-button--brand,
 .slds-button.slds-button--icon-inverse {
     color: #fff;
+}
+
+.slds-button_outline-brand{
+    border-color: #CA1B21;
 }
 
 /* special rule for the action container since the first child is an empty div
@@ -748,8 +777,12 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     background: #002D31;
 }
 
-.slds-nav-vertical__item.slds-is-active:before {
-    background: #CA1B1F;
+.slds-nav-vertical__item.slds-is-active:before, .slds-nav-vertical__item:hover:before {
+    background: #ddd;
+}
+
+.slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action, .slds-nav-vertical__action:hover {
+    box-shadow: inset 0.25rem 0 0 #CA1B1F;
 }
 
 /*

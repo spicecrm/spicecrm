@@ -2,7 +2,7 @@
     <div class="slds-form-element">
         <label class="slds-form-element__label">Module</label>
         <div style="width:400px"  class="slds-form-element__control">
-            <system-select style="width:100%"  [selectList]="moduleReposSelect" [(selectedItem)]="moduleReposSelectedItem" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
+            <system-select style="width:100%" [listheight]="10"  [selectList]="moduleReposSelect" [(selectedItem)]="moduleReposSelectedItem" (selectedOutputItem)="selectedOutputItemModule($event)"></system-select>
         </div>
     </div>
     <div class="slds-form-element slds-col--bump-left">
@@ -20,15 +20,13 @@
             </div>
             <button [disabled]="!view.isEditMode()" class="slds-button slds-button_neutral" (click)="addObjRepo()">{{language.getLabel('LBL_ADD')}}</button>
         </div>
-        <ul class="slds-has-dividers_around-space">
+        <ul tobottom class="slds-has-dividers_around-space">
             <li class="slds-item" *ngFor="let objrepoItem of objrepoList|objectrepositorymanagerfilter:objectFilter" (click)="clickObjRepo(objrepoItem)" [ngClass]="{'slds-theme--shade': checkCurrentObjRepo(objrepoItem.id)}">
                     {{objrepoItem.object}}
             </li>
         </ul>
     </div>
-    <div *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small">
-        <!--configList-->
-
+    <div tobottom *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small">
         <div class="slds-form-element slds-m-vertical_medium">
             <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_OBJECT')}}</label>
             <div class="slds-form-element__control">

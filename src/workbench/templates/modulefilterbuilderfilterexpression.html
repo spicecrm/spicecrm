@@ -1,0 +1,62 @@
+<div class="slds-grid slds-gutters_xx-small slds-grid--vertical-align-start">
+    <div class="slds-col slds-size--1-of-4">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_FIELD')}}</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="field">
+                        <option *ngFor="let f of fields" [value]="f.name">{{f.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-col slds-size--1-of-4">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR')}}</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
+                        <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator">{{language.getLabel(operator.name)}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showValueField()" class="slds-col">
+        <div class="slds-form-element">
+            <label *ngIf="operatortype != 'enum' || (operatortype == 'enum' && filterexpression.operator.length > 0)" class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
+            <div class="slds-form-element__control">
+                <input *ngIf="operatortype != 'enum'" type="text" [disabled]="!filterexpression.operator" class="slds-input" [(ngModel)]="filterexpression.filtervalue" />
+                <ng-container *ngIf="operatortype == 'enum'">
+                    <div *ngIf="filterexpression.operator == 'equals'" class="slds-select_container">
+                        <select class="slds-select" [disabled]="enumDisabled()" [(ngModel)]="filterexpression.filtervalue">
+                            <option *ngFor="let option of getFieldDisplayOptions()" [value]="option.value">{{option.display}}</option>
+                        </select>
+                    </div>
+                    <div *ngIf="filterexpression.operator == 'oneof'" class="slds-grid slds-wrap">
+                        <div class="slds-form-element__control slds-medium-size--1-of-1 slds-large-size--1-of-3" *ngFor="let option of getFieldDisplayOptions()">
+                            <div class="slds-checkbox">
+                                <input type="checkbox" [id]="option.value" (click)="checkEnumOption(option.value, $event.srcElement.checked)" [checked]="enumOptionValue(option.value)">
+                                <label class="slds-checkbox__label" [attr.for]="option.value">
+                                    <span class="slds-checkbox--faux"></span>
+                                    <span class="slds-form-element__label slds-has-flexi-truncate">{{option.display}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="slds-col slds-grow-none">
+        <div class="slds-form-element">
+            <span class="slds-form-element__label" aria-hidden="true" style="visibility: hidden">delete</span>
+            <div class="slds-form-element__control">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="delete()">
+                    <system-button-icon icon="delete"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

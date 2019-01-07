@@ -72,13 +72,6 @@ export class ACLProfilesManagerAddObjectModal {
         })
     }
 
-    get contentStyle() {
-        let rect = this.header.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        }
-    }
-
     getType(type){
         return this.language.getFieldDisplayOptionValue('SpiceACLObjects', 'spiceaclobjecttype', type);
     }

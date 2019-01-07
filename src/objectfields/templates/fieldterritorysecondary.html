@@ -4,8 +4,7 @@
     </ul>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()"
-     class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small"
-     [ngClass]="css_classes">
+     class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small" [ngClass]="css_classes">
     <div class="slds-form-element__control slds-size--1-of-1">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox"
@@ -16,7 +15,7 @@
                             <li class="slds-listbox-item" role="presentation" *ngFor="let territory of territories|fieldterritorysecondarypipe:primary_territory_id">
                                   <span class="slds-pill" role="option">
                                         <span class="slds-icon_container">
-                                            <system-icon module="SpiceACLTerritories" size="x-small" divClass="slds-p-right--x-small"></system-icon>
+                                            <system-icon icon="service_territory" size="x-small" divClass="slds-p-right--x-small"></system-icon>
                                         </span>
                                         <span class="slds-pill__label">{{territory.name}}</span>
                                         <span class="slds-icon_container slds-pill__remove">

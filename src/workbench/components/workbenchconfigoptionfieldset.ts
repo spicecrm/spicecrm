@@ -52,7 +52,6 @@ export class WorkbenchConfigOptionFieldset implements AfterViewInit {
     private fieldsets: Array<any> = [];
     private modules: Array<any> = [];
     private module: string = '';
-    private showInfo: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,

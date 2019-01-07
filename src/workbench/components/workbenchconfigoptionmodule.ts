@@ -22,7 +22,6 @@ export class WorkbenchConfigOptionModule implements AfterViewInit {
     public objtype: string = "";
 
     private modules: Array<any> = [];
-    private showInfo: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,

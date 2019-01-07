@@ -24,9 +24,9 @@
                         <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                 </div>
-                <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
-                    <field-lookup-recent *ngIf="relateSearchTerm === ''" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="relateSearchTerm !== ''" [module]="relateType" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
+                <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                    <field-lookup-recent *ngIf="relateSearchTerm === '' && !fieldconfig.modulefilter" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
+                    <field-lookup-search *ngIf="relateSearchTerm !== '' || fieldconfig.modulefilter" [module]="relateType" [modulefilter]="fieldconfig.modulefilter" [disableadd]="disableadd" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>

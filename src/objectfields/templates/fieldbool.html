@@ -1,17 +1,9 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <span class="slds-checkbox">
-        <input type="checkbox" id="{{fieldid + '_display'}}" [(ngModel)]="value" disabled/>
-        <label class="slds-checkbox__label" [attr.for]="fieldid + '_display'">
-            <span class="slds-checkbox--faux"></span>
-        </label>
-    </span>
+    <system-checkbox disabled [(ngModel)]="value"></system-checkbox>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-        <span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--small ">
-            <input type="checkbox" name="options" id="{{fieldid}}" [(ngModel)]="value"/>
-            <label class="slds-checkbox__label" [attr.for]="fieldid">
-                <span class="slds-checkbox--faux"></span>
-            </label>
-        </span>
+        <div class="slds-p-vertical--x-small">
+            <system-checkbox [(ngModel)]="value"></system-checkbox>
+        </div>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

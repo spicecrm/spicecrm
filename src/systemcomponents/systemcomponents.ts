@@ -44,6 +44,8 @@ import {configurationService} from "../services/configuration.service";
 import {modal} from "../services/modal.service";
 import {userpreferences} from "../services/userpreferences.service";
 import {loader} from "../services/loader.service";
+import {modelutilities} from "../services/modelutilities.service";
+import {broadcast} from "../services/broadcast.service";
 
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
@@ -80,7 +82,7 @@ import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
-import /*embed*/ {SystemCheckbox} from "./components/checkbox";
+import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
 import /*embed*/ {SystemCard, SystemCardBody, SystemCardFooter, SystemCardHeaderTitle} from "./components/card";
 import /*embed*/ {SystemTree} from "./components/systemtree";
 import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
@@ -100,6 +102,7 @@ import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrat
 import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
+import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -176,7 +179,8 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemIllustrationNoAccess,
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
-        SystemIllustrationNoRecords
+        SystemIllustrationNoRecords,
+        SystemInputLabel
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -231,7 +235,8 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemIllustrationNoAccess,
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
-        SystemIllustrationNoRecords
+        SystemIllustrationNoRecords,
+        SystemInputLabel
     ]
 })
 export class SystemComponents {
