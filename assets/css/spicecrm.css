@@ -18,6 +18,32 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     text-align: center;*/
 }
 
+.loader-logo-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    margin-top: -75px
+}
+
+.loader-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50px
+}
+
+.loaderspinner .over circle {
+    stroke-dasharray: 150;
+    stroke: #ccc;
+}
+
+.loaderspinner .bag circle {
+    stroke: #CA1B1F;
+}
+
 .spiceRotate {
     animation-name: wag;
     animation-duration: 3000ms;
@@ -34,8 +60,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 }
 
 .loaderspinner .over {
-    -webkit-animation: spin 2s ease-in-out infinite;
-    stroke-dasharray: 78, 38;
+    -webkit-animation: spin 3s linear infinite;
 }
 
 .loaderspinner .bag {
