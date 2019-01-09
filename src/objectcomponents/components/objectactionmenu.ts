@@ -116,6 +116,10 @@ export class ObjectActionMenu implements OnDestroy {
         })
     }
 
+    private viewModel() {
+        this.model.goDetail();
+    }
+
     doCustomAction(action) {
         this.action.emit(action);
         this.isOpen = false;
