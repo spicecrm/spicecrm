@@ -190,10 +190,8 @@ export class KRESTLogViewer {
                 this.lineNrInModal = lineNr;
                 modal.instance.toLeft$.subscribe( () => {
                     if ( this.lineNrInModal > 0 ) this.showLineInModal( --this.lineNrInModal );
-                    console.log('to left');
                 });
                 modal.instance.toRight$.subscribe( () => {
-                    console.log('to right');
                     if ( this.lineNrInModal < this.linesToShow.length-1 ) this.showLineInModal( ++this.lineNrInModal );
                 });
             } );
@@ -203,8 +201,7 @@ export class KRESTLogViewer {
     }
 
     private handOverModalData( lineNr ) {
-        console.log( 'handOverModalData '+lineNr );
-        this.currPage = Math.ceil( (lineNr+1) / 20 ); console.log('LineNr: ',lineNr,'currPage:',this.currPage);
+        this.currPage = Math.ceil( (lineNr+1) / 20 );
         this.modal.instance.lineNr = lineNr;
         this.modal.instance.line = this.linesToShow[lineNr];
         this.modal.instance.username = this.getUsername( this.linesToShow[lineNr].uid );
