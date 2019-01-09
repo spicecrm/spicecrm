@@ -37,11 +37,11 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 
 .loaderspinner .over circle {
     stroke-dasharray: 150;
-    stroke: #ccc;
+    stroke: #ddd;
 }
 
 .loaderspinner .bag circle {
-    stroke: #999;
+    stroke: #777;
 }
 
 .spiceRotate {
