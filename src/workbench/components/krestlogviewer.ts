@@ -56,14 +56,15 @@ export class KRESTLogViewer {
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
         // Load all CRM users to have their user names. Needed to map the user ids given by the log lines:
-        /* TEMPORARY DISABLED. See Ticket SPICEUI-159.
-        this.backend.getRequest( 'module/Users' ).subscribe( response => {
+        /* TEMPORARY DISABLED. See Ticket SPICEUI-159. */
+
+        this.backend.getRequest( 'krestlog/userlist' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
             });
         });
-        */
+
         this.yearNow = (new Date()).getFullYear().toString();
         this.backend.getRequest( 'krestlog/routes' ).subscribe( response => {
             this.routes = response.routes;
@@ -76,7 +77,7 @@ export class KRESTLogViewer {
     // Get the name for a specific user.
     private getUsername( userId ) {
         if ( !userId || !this.userlistIndexes.hasOwnProperty( userId )) return userId;
-        return this.userlist[this.userlistIndexes[userId]].user_name;
+        return this.userlist[this.userlistIndexes[userId]].name;
     }
 
     private changedYear() {
@@ -122,7 +123,7 @@ export class KRESTLogViewer {
             limit: this.limit.length ? this.limit : undefined,
             method: this.filter.method.length ? this.filter.method : undefined,
             route: this.filter.route.length ? this.filter.route : undefined,
-            uuurl: this.filter.url.length ? this.filter.url : undefined,
+            theUrl: this.filter.url.length ? this.filter.url : undefined, // "theUrl" because "url" doesn't work. proxy?
             userId: this.filter.userId.length ? this.filter.userId : undefined,
             routeArgs: this.filter.routeArgs.length ? this.filter.routeArgs : undefined,
             postParams: this.filter.postParams.length ? this.filter.postParams : undefined,
