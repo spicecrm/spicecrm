@@ -152,6 +152,7 @@ export class KRESTLogViewer {
 
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
+        if ( this.isLoading ) return false;
         if ( this.period.year.length && !this.period.year.match(/^\d{4}$/) ) return false;
         if ( this.limit.length && !this.limit.match(/\d$/) ) return false;
         return true;
