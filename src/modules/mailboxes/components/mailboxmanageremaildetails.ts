@@ -15,6 +15,7 @@ import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {mailboxesEmails} from "../services/mailboxesemail.service";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     providers: [model, view],
@@ -35,6 +36,7 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         private mailboxesEmails: mailboxesEmails,
         private elementref: ElementRef,
         private backend: backend,
+        private toast: toast,
     ) {
         // set the module to the model
         this.model.module = 'Emails';
@@ -161,18 +163,30 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
     public setStatus(status) {
         // set the model
         this.model.setField('status', status);
-        // also set it in the service
-        this.mailboxesEmails.activeEmail.status = status;
         // update the backend
-        this.backend.postRequest('/module/Emails/' + this.model.id + '/setstatus/' + status);
+        this.backend.postRequest('/module/Emails/' + this.model.id + '/setstatus/' + status).subscribe(
+            (res: any) => {
+                // also set it in the service
+                this.mailboxesEmails.activeEmail.status = status;
+            },
+            (err: any) => {
+                this.toast.sendAlert('Cannot change status to ' + status);
+            }
+        );
     }
 
     public setOpenness(openness) {
         // set the model
         this.model.setField("openness", openness);
-        // also set it in the service
-        this.mailboxesEmails.activeEmail.openness = openness;
         // update the backend
-        this.backend.postRequest("/module/Emails/" + this.model.id + "/setopenness/" + openness);
+        this.backend.postRequest("/module/Emails/" + this.model.id + "/setopenness/" + openness).subscribe(
+            (res: any) => {
+                // also set it in the service
+                this.mailboxesEmails.activeEmail.openness = openness;
+            },
+            (err: any) => {
+                this.toast.sendAlert('Cannot change openness to ' + openness);
+            }
+        );
     }
 }
