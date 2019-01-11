@@ -11,7 +11,7 @@ import {backend} from './backend.service';
 @Injectable()
 export class territories {
 
-    private userTerritories: any = {};
+    public userTerritories: any = {};
     private addTerritories: any = {};
 
     constructor(private backend: backend, private metadata: metadata, private configurationService: configurationService, private session: session) {
