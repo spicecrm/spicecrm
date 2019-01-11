@@ -2,9 +2,8 @@ import {
     AfterViewInit, ComponentFactoryResolver, Component, Input, ElementRef, Renderer2, NgModule, ViewChild,
     ViewContainerRef, OnInit, OnDestroy
 } from '@angular/core';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {broadcast} from '../../services/broadcast.service';
-import {popup} from '../../services/popup.service';
 import {model} from '../../services/model.service';
 import {recent} from '../../services/recent.service';
 import {favorite} from '../../services/favorite.service';
@@ -25,28 +24,27 @@ interface menuItem {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()',
     },
-    providers: [popup, model]
+    providers: [model]
 })
 export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestroy {
 
 
-    @ViewChild('menulist', {read: ViewContainerRef}) menulist: ViewContainerRef;
-    @ViewChild('menucontainer', {read: ViewContainerRef}) menucontainer: ViewContainerRef;
+    @ViewChild('menulist', {read: ViewContainerRef}) private menulist: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef}) private menucontainer: ViewContainerRef;
 
-    clickListener: any;
-    @Input() itemtext: string = 'test';
-    @Input() item: menuItem = {
+    private clickListener: any;
+    @Input() private itemtext: string = 'test';
+    @Input() private item: menuItem = {
         module: null,
         name: null
     };
 
-    isOpen: boolean = false;
-    isInitialized: boolean = false;
+    private isOpen: boolean = false;
+    private isInitialized: boolean = false;
 
-    itemMenu: Array<any> = [];
-    favorites: Array<any> = [];
-    recentItems: Array<any> = [];
-    menucomponents: Array<any> = [];
+    private itemMenu: any[] = [];
+    private favorites: any[] = [];
+    private menucomponents: any[] = [];
 
     constructor(private metadata: metadata,
                 private language: language,
@@ -54,14 +52,13 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
                 private elementRef: ElementRef,
                 private broadcast: broadcast,
                 private navigation: navigation,
-                private popup: popup,
                 private model: model,
                 private recent: recent,
                 private favorite: favorite,
                 private renderer: Renderer2) {
     }
 
-    executeMenuItem(id) {
+    private executeMenuItem(id) {
         this.itemMenu.some((item, index) => {
             if (item.id === id) {
                 switch (item.action) {
@@ -73,100 +70,95 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
                 return true
             }
         });
-    };
-
-    navigateTo() {
-        this.isOpen = false;
-        this.router.navigate(['/module/' + this.item['module']]);
     }
 
-    navigateRecent(recentid) {
+    private navigateTo() {
         this.isOpen = false;
-        this.router.navigate(['/module/' + this.item['module'] + '/' + recentid]);
+        this.router.navigate(['/module/' + this.item.module]);
     }
 
-    editRecent(recentid) {
+    private navigateRecent(recentid) {
         this.isOpen = false;
-        this.model.id = recentid;
-        this.model.edit(true);
+        this.router.navigate(['/module/' + this.item.module + '/' + recentid]);
     }
 
-    ngOnInit() {
+
+    public ngOnInit() {
         this.itemMenu = this.metadata.getModuleMenu(this.item.module);
         this.model.module = this.item.module;
     }
 
-    toggleOpen() {
+    private toggleOpen() {
         if (!this.isInitialized) this.initialize();
         this.isOpen = !this.isOpen;
 
         // toggle the listener
         if (this.isOpen) {
             this.favorites = this.getFavorites();
-            this.recentItems = this.recentitems;
             this.buildMenu();
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener)
+        } else if (this.clickListener) {
             this.clickListener();
+        }
     }
 
 
-    initialize() {
+    private initialize() {
         // get recent .. if it is an observable .. wait ..
-        let recent = this.recent.getModuleRecent(this.item.module);
-        if (recent instanceof Array)
-            this.isInitialized = true;
-        else
-            recent.subscribe(recentItems => {
+        if(this.item.module != 'Home') {
+            this.recent.getModuleRecent(this.item.module).subscribe(recentItems => {
                 this.isInitialized = true;
             });
+        } else {
+            this.isInitialized = true;
+        }
     }
 
     get recentitems() {
         return this.recent.moduleItems[this.item.module] ? this.recent.moduleItems[this.item.module] : [];
     }
 
-    getFavorites() {
+    private getFavorites() {
         return this.favorite.getFavorites(this.item.module);
     }
 
     private onClick(event: MouseEvent): void {
-        if (!this.elementRef.nativeElement.contains(event.target) || (this.elementRef.nativeElement.contains(event.target) && this.menulist.element.nativeElement.contains(event.target)) ) {
+        if (!this.elementRef.nativeElement.contains(event.target) || (this.elementRef.nativeElement.contains(event.target) && this.menulist.element.nativeElement.contains(event.target))) {
             this.isOpen = false;
         }
     }
 
-    hasMenu() {
+    private hasMenu() {
         return this.itemMenu.length > 0 || this.metadata.getModuleTrackflag(this.item.module);
     }
 
-    getMenuLabel(menuitem) {
+    private getMenuLabel(menuitem) {
         return this.language.getModuleLabel(this.item.module, menuitem);
     }
 
-    isActive(): boolean {
-        if (this.navigation.activeModule == this.item.module)
+    private isActive(): boolean {
+        if (this.navigation.activeModule == this.item.module) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.broadcast.broadcastMessage('navigation.itemadded', {
             module: this.item.module,
             width: this.elementRef.nativeElement.offsetWidth
         })
 
-
         this.model.module = this.item.module;
     }
 
-    buildMenu() {
+    private buildMenu() {
         this.destroyMenu();
         for (let menuitem of this.itemMenu) {
             switch (menuitem.action) {
                 case 'NEW':
-                    if(this.metadata.checkModuleAcl(this.item.module, 'create')) {
+                    if (this.metadata.checkModuleAcl(this.item.module, 'create')) {
                         this.metadata.addComponent('GlobalNavigationMenuItemNew', this.menucontainer).subscribe(item => {
                             this.menucomponents.push(item);
                         });
@@ -174,7 +166,7 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
                     break;
                 case 'ROUTE':
                     this.metadata.addComponent('GlobalNavigationMenuItemRoute', this.menucontainer).subscribe(item => {
-                        item.instance['actionconfig'] = menuitem.actionconfig;
+                        item.instance.actionconfig = menuitem.actionconfig;
                         this.menucomponents.push(item);
                     });
                     break;
@@ -182,14 +174,15 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         }
     }
 
-    destroyMenu() {
+    public ngOnDestroy() {
+        this.destroyMenu();
+    }
+
+    private destroyMenu() {
         // destroy all components
         for (let component of this.menucomponents) {
             component.destroy();
         }
     }
 
-    ngOnDestroy() {
-        this.destroyMenu();
-    }
 }

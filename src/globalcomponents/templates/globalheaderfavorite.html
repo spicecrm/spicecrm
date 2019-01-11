@@ -1,4 +1,4 @@
-<div *ngIf="canShowFavorites" class="slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open">
+<div *ngIf="canShowFavorites" class="slds-show--medium slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open">
     <div class="slds-button-group">
         <button class="slds-button slds-button--neutral slds-p-horizontal--xx-small slds-p-vertical--xx-small-small" [ngClass]="getFavoriteActive()" [disabled]="isDisabled()" (click)="toggleFavorite()">
             <system-utility-icon icon="favorite" size="x-small"></system-utility-icon>
@@ -12,8 +12,7 @@
             <li class="slds-dropdown__header" role="separator">
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_FAVORITES')}}</span>
             </li>
-            <li global-header-search-recent-item class="slds-dropdown__item" role="presentation"
-                *ngFor="let item of favorite.favorites" [item]="item"></li>
+            <li global-header-search-recent-item class="slds-dropdown__item" role="presentation" *ngFor="let item of favorite.favorites" [item]="item" (selected)="closeFavorites()"></li>
         </ul>
     </div>
 </div>

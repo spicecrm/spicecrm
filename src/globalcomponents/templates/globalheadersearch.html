@@ -2,7 +2,7 @@
     <div class="slds-form-element">
         <div class="slds-form-element__control">
             <div class="slds-combobox-group">
-                <div class="slds-combobox_object-switcher slds-combobox-addon_start">
+                <div *ngIf="showModuleSelector" class="slds-combobox_object-switcher slds-combobox-addon_start">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
                             <div class="slds-combobox_container">
@@ -42,12 +42,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-combobox_container slds-combobox-addon_end">
+                <div class="slds-combobox_container slds-combobox-addon_end" [ngClass]="{'slds-combobox-addon_start': !showModuleSelector}">
                     <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [ngClass]="{'slds-is-open': showRecent}">
                         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
                              role="none">
                             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-                            <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH_SPICE')" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+                            <input class="slds-input slds-combobox__input" style="max-width: 65%;" type="search" [placeholder]="language.getLabel('LBL_SEARCH_SPICE')" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
                         </div>
                         <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
                             <global-header-search-recent-items *ngIf="searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>

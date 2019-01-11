@@ -1,19 +1,10 @@
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
     ElementRef,
-    Renderer,
-    EventEmitter,
-    HostListener
+    Renderer
 } from '@angular/core';
 import {Router} from '@angular/router';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {fts} from '../../services/fts.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
 
@@ -28,7 +19,7 @@ export class GlobalHeaderSearch {
     private searchTerm: string = '';
     private searchTermUntrimmed: string = '';
     private clickListener: any;
-    private _searchmodule: string = 'all';
+    public _searchmodule: string = 'all';
     private searchresults: any[] = [];
 
 
@@ -43,7 +34,11 @@ export class GlobalHeaderSearch {
         }
     }
 
-    constructor(private router: Router, private broadcast: broadcast, private fts: fts, private elementRef: ElementRef, private renderer: Renderer, private language: language) {
+    constructor(public router: Router, public broadcast: broadcast, public fts: fts, public elementRef: ElementRef, public renderer: Renderer, public language: language) {
+    }
+
+    get showModuleSelector() {
+        return window.innerWidth >= 768;
     }
 
     private onFocus() {
@@ -68,7 +63,7 @@ export class GlobalHeaderSearch {
 
     private executeSearch() {
         let searchmodules = [];
-        if (this._searchmodule != 'all') searchmodules.push(this._searchmodule);
+        if (this.showModuleSelector && this._searchmodule != 'all') searchmodules.push(this._searchmodule);
 
         this.searchresults = [];
         this.fts.searchByModules(this.searchTerm, searchmodules, 10).subscribe(rsults => {
