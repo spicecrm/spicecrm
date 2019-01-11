@@ -563,19 +563,10 @@ export class backend {
 
     public save(module: string, id: string, cdata: any): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
-
-        let saveData = {};
-        for (let fieldName in cdata) {
-            saveData[fieldName] = this.spice2backend(module, fieldName, cdata[fieldName]);
-        }
-
-        this.postRequest("module/" + module + "/" + id, {}, JSON.stringify(saveData))
+        this.postRequest("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata))
             .subscribe(
                 (response: any) => {
-                    for (let fieldName in response) {
-                        response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
-                    }
-                    responseSubject.next(response);
+                    responseSubject.next(this.modelutilities.backendModel2spice(module, response));
                     responseSubject.complete();
                 },
                 (error: any) => {
