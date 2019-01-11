@@ -3,7 +3,7 @@
         <button class="slds-button slds-button--icon" (click)="print()">
             <system-custom-icon size="x-small" icon="print"></system-custom-icon>
         </button>
-        <iframe #printframe [srcdoc]="htmlValue" style="width:0;height:0;border:0"></iframe>
+        <iframe #printframe [src]="sanitizedValue" style="width:0;height:0;border:0"></iframe>
         <button *ngIf="isEditable() && !isEditMode()" class="slds-button slds-button--icon" (click)="setEditMode()">
             <system-button-icon [icon]="'edit'"></system-button-icon>
         </button>
@@ -14,7 +14,7 @@
 </div>
 <div *ngIf="!isEditMode()" class="slds-scrollable--y" style="max-height: 300px;" [ngClass]="fielddisplayclass">
     <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue"></div>
-    <iframe *ngIf="asiframe" [srcdoc]="htmlValue" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
+    <iframe *ngIf="asiframe" [src]="sanitizedValue" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
 </div>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <field-html-editor [fieldid]="fieldid" [fieldvalue]="value" [fieldconfig]="fieldconfig" [useStylesheets]="useStylesheets" [useStylesheetSwitcher]="useStylesheetSwitcher" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></field-html-editor>
