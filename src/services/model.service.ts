@@ -614,6 +614,9 @@ export class model {
                     }
 
                     this.endEdit();
+
+                    // reinitialize the Field Stats in case ACL Changed
+                    this.initializeFieldsStati();
                 },
                 error => {
                     console.log(error);

@@ -49,22 +49,22 @@ export class CRMLogViewer {
     @ViewChild('tbody') private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
-        // Load all CRM users to have their user names. Needed to map the user ids given by the log lines:
-        /* TEMPORARY DISABLED. See Ticket SPICEUI-159.
-        this.backend.getRequest( 'module/Users' ).subscribe( response => {
+
+        // Individual route, because of bug SPICEUI-159.
+        this.backend.getRequest( 'krestlog/userlist' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
             });
         });
-        */
+
         this.yearNow = (new Date()).getFullYear().toString();
     }
 
     // Get the name for a specific user.
     private getUsername( userId ) {
         if ( !userId || !this.userlistIndexes.hasOwnProperty( userId )) return userId;
-        return this.userlist[this.userlistIndexes[userId]].user_name;
+        return this.userlist[this.userlistIndexes[userId]].name;
     }
 
     private changedYear() {
