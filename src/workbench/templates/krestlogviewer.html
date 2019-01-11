@@ -8,7 +8,7 @@
 
     <div>
 
-        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
+        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--xxx-small" style="padding-top:0">
 
             <div class="slds-form-element slds-m-right--x-small">
                 <label class="slds-form-element__label" for="year">{{lang.getLabel('LBL_YEAR')}}</label>
@@ -75,43 +75,7 @@
 
         </div>
 
-        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
-
-            <div class="slds-form-element slds-m-right--x-small">
-                <label class="slds-form-element__label" for="user">{{lang.getLabel('LBL_USER')}}</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" id="user" [(ngModel)]="filter.userId">
-                            <option value=""></option>
-                            <option *ngFor="let user of userlist" value="{{user.id}}">{{user.name}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="slds-form-element slds-m-right--x-small">
-                <label class="slds-form-element__label" for="ipAddress">{{lang.getLabel('LBL_IP_ADDRESS')}}</label>
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                    <input id="ipAddress" class="slds-input" type="text" trim [(ngModel)]="filter.ipAddress" />
-                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.ipAddress=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="slds-form-element slds-m-right--x-small">
-                <label class="slds-form-element__label" for="sessionId">{{lang.getLabel('LBL_SESSION_ID')}}</label>
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                    <input id="sessionId" class="slds-input" type="text" trim [(ngModel)]="filter.sessionId" />
-                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.sessionId=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--xxx-small" style="padding-top:0">
 
             <div class="slds-form-element slds-m-right--x-small">
                 <label class="slds-form-element__label" for="url">{{lang.getLabel('LBL_URL')}}</label>
@@ -134,6 +98,18 @@
                             <option *ngFor="let method of methods">{{method}}</option>
                         </select>
                     </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="status">{{lang.getLabel('LBL_STATUS')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="status" class="slds-input" type="text" trim size="3" [(ngModel)]="filter.status" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.status=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -185,6 +161,46 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--medium" style="padding-top:0">
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="user">{{lang.getLabel('LBL_USER')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="user" [(ngModel)]="filter.userId">
+                            <option value=""></option>
+                            <option *ngFor="let user of userlist" value="{{user.id}}">{{user.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="ipAddress">{{lang.getLabel('LBL_IP_ADDRESS')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="ipAddress" class="slds-input" type="text" trim [(ngModel)]="filter.ipAddress" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.ipAddress=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="sessionId">{{lang.getLabel('LBL_SESSION_ID')}}</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input id="sessionId" class="slds-input" type="text" trim [(ngModel)]="filter.sessionId" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.sessionId=''">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
             <div class="slds-form-element slds-m-right--x-small">
                 <label class="slds-form-element__label" for="limit">{{lang.getLabel('LBL_ROW_LIMIT')}}</label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
@@ -197,7 +213,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="slds-m-left--large">
                 <button class="slds-button slds-button--brand" (click)="buttonLoad()" [attr.disabled]="!canLoad()?true:null">{{lang.getLabel('LBL_LOAD')}}</button>
             </div>
 
@@ -221,25 +237,7 @@
 
             <div *ngIf="lines.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
 
-                <pagination-controls class="slds-col_bump-right slds-m-vertical--small" [(page)]="currPage" [limit]="linesPerPage" [total_records]="linesToShow.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
-
-                <!--
-
-                <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{lines.length-linesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
-
-                <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
-                    <div class="slds-form-element__control slds-grid">
-                        <input id="filtertext" class="slds-input" type="text" trim="blur" [(ngModel)]="filtertext" (keyup.enter)="doTextFilter()" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" />
-                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="doTextFilter()" [attr.disabled]="filtertext===''?true:null">
-                            <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
-                        </button>
-                        <button class="slds-button slds-button--icon-border" (click)="clearTextFilter()" [attr.disabled]="filtertext===''?true:null">
-                            <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
-                        </button>
-                    </div>
-                </div>
-
-                -->
+                <pagination-controls class="slds-col_bump-right slds-m-vertical--small" [(page)]="currPage" [limit]="linesPerPage" [total_records]="lines.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
 
             </div>
 
@@ -253,7 +251,7 @@
                             <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
                             <th style="width:1%">{{lang.getLabel('LBL_ROUTE')}}</th>
                             <th style="width:1%">{{lang.getLabel('LBL_METHOD')}}</th>
-                            <th style="width:100%">{{lang.getLabel('LBL_STATUS')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_STATUS')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_ROUTE_ARGUMENTS')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_URL_PARAMETERS')}}</th>
                             <th style="width:2rem"></th>
@@ -263,7 +261,7 @@
                         </tr>
                     </thead>
                     <tbody #tbody>
-                        <tr *ngFor="let line of linesToShow | paginate: { page: currPage, limit: 20 }">
+                        <tr *ngFor="let line of lines | paginate: { page: currPage, limit: 20 }">
                             <td class="slds-text-align--right">{{line.date}}</td>
                             <td class="slds-text-align--right">{{line.time}}</td>
                             <td>{{getUsername(line.uid)}}</td>
@@ -285,11 +283,6 @@
                                 <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showLineInModal(line.i)">
                                     <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
                                 </button>
-                            </td>
-                        </tr>
-                        <tr *ngIf="isFiltered && linesToShow.length === 0">
-                            <td colspan="8" class="slds-p-around--x-large">
-                                <div class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">Empty list (filter is active).</div>
                             </td>
                         </tr>
                     </tbody>

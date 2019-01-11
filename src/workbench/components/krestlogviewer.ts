@@ -21,13 +21,12 @@ export class KRESTLogViewer {
 
     // Configuration:
     private routeBase = 'krestlog';
-    private methods = [ 'DELETE', 'GET', 'POST', 'PUT' ];
+    private methods = [ 'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'TRACE' ];
     private limit = '5000';
     private linesPerPage = 20;
 
     // The log data from the backend:
     private lines: any[] = [];
-    private linesToShow: any[] = []; // Same as lines if no text filter is applied.
 
     // The hole list of CRM users:
     private userlist: any[];
@@ -39,7 +38,7 @@ export class KRESTLogViewer {
 
     // Various:
     private currPage = 1;
-    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '' };
+    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '', status: '' };
     private period = { year: '', month: '', day: '', hour: '' };
     private filtertext = '';
     private yearNow: string;
@@ -99,7 +98,6 @@ export class KRESTLogViewer {
         let route = this.routeBase;
         this.isLoading = true;
         this.isLoaded = false;
-        this.linesToShow = [];
         this.filtertext = '';
 
         // Build the REST route:
@@ -128,6 +126,7 @@ export class KRESTLogViewer {
             postParams: this.filter.postParams.length ? this.filter.postParams : undefined,
             urlParams: this.filter.urlParams.length ? this.filter.urlParams : undefined,
             ipAddress: this.filter.ipAddress.length ? this.filter.ipAddress : undefined,
+            status: this.filter.status.length ? this.filter.status : undefined,
         };
         this.toast.clearToast( this.toastId );
         this.backend.getRequest( route, queryParams ).subscribe(
@@ -138,7 +137,6 @@ export class KRESTLogViewer {
                     line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
                     line.i = i;
                 });
-                this.doTextFilter();
                 this.isLoaded = true;
                 this.isLoading = false;
             },
@@ -186,14 +184,14 @@ export class KRESTLogViewer {
             this.modalservice.openModal( 'KRESTLogViewerModal' ).subscribe( modal => {
                 this.modal = modal;
                 this.modal.instance.routeBase = this.routeBase;
-                this.modal.instance.nrOfLines = this.linesToShow.length;
+                this.modal.instance.nrOfLines = this.lines.length;
                 this.handOverModalData( lineNr );
                 this.lineNrInModal = lineNr;
                 modal.instance.toLeft$.subscribe( () => {
                     if ( this.lineNrInModal > 0 ) this.showLineInModal( --this.lineNrInModal );
                 });
                 modal.instance.toRight$.subscribe( () => {
-                    if ( this.lineNrInModal < this.linesToShow.length-1 ) this.showLineInModal( ++this.lineNrInModal );
+                    if ( this.lineNrInModal < this.lines.length-1 ) this.showLineInModal( ++this.lineNrInModal );
                 });
             } );
         } else {
@@ -204,50 +202,9 @@ export class KRESTLogViewer {
     private handOverModalData( lineNr ) {
         this.currPage = Math.ceil( (lineNr+1) / 20 );
         this.modal.instance.lineNr = lineNr;
-        this.modal.instance.line = this.linesToShow[lineNr];
-        this.modal.instance.username = this.getUsername( this.linesToShow[lineNr].uid );
+        this.modal.instance.line = this.lines[lineNr];
+        this.modal.instance.username = this.getUsername( this.lines[lineNr].uid );
         this.modal.instance.load();
-    }
-
-    // Apply filter text to the list. Or clear filtering when no filter text.
-    private doTextFilter() {
-        if ( !this.filtertext.length ) {
-            if ( this.isFiltered ) this.clearTextFilter(); // this.resetLinesToShow();
-        } else {
-            if ( this.lines.length) this.buildLinesToShow();
-        }
-    }
-
-    // Iterate the lines to build the filtered list.
-    private buildLinesToShow() {
-        this.isBuildingTextfilter = true;
-        this.linesToShow = [];
-        this.lines.forEach( line => {
-            if( line.txt.toLowerCase().indexOf( this.filtertext.toLowerCase() ) !== -1 ) this.linesToShow.push( line ); // todo: change to regex (might be faster than changing all the text to uppercase)
-        });
-        this.currPage = 1;
-        window.setTimeout( () => this.isBuildingTextfilter = false, 750 );
-    }
-
-    // Remove filter.
-    private clearTextFilter() {
-        this.filtertext = '';
-        if ( this.isFiltered ) this.resetLinesToShow();
-    }
-
-    private resetLinesToShow() {
-        this.isBuildingTextfilter = true; // Changes opacity of the table (for a moment), to indicate that the table is changed.
-        this.linesToShow = [];
-        this.lines.forEach( line => {
-            this.linesToShow.push( line );
-        });
-        this.currPage = 1;
-        window.setTimeout( () => this.isBuildingTextfilter = false, 750 );
-    }
-
-    // A filter text has been applied?
-    private get isFiltered() {
-        return this.lines.length != this.linesToShow.length;
     }
 
     // Mark expand property for every line. But only neccessary for the page shown at last.
