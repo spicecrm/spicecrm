@@ -18,12 +18,13 @@ export class fieldHtml extends fieldGeneric {
     private stylesheetField: string = '';
     private useStylesheets: boolean;
     private useStylesheetSwitcher: boolean;
-    private stylesheets: Array<any>;
+    private stylesheets: any[];
     private stylesheetToUse: string = '';
-    private _cached_html_value; // the cached sanitized html object to prevent "filckering" of the iframe
-    private _cached_value; // for change detection reasons...
+    private _sanitizedValue;
+    private fullValue_cached = ''; // the cached full html code to prevent "flickering" of the iframe (change detection)
+    private fullValue: string;
 
-    @ViewChild('printframe', {read: ViewContainerRef}) printframe: ViewContainerRef;
+    @ViewChild('printframe', {read: ViewContainerRef}) private printframe: ViewContainerRef;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private zone: NgZone, public sanitized: DomSanitizer, private modal: modal) {
         super(model, view, language, metadata, router);
@@ -48,20 +49,24 @@ export class fieldHtml extends fieldGeneric {
         this.useStylesheetSwitcher = this.useStylesheets && _.isEmpty(this.stylesheetToUse);
     }
 
+    get styleTag() {
+        return ( this.useStylesheets && !_.isEmpty( this.model.data[this.stylesheetField] )) ?
+            '<style>' + this.metadata.getHtmlStylesheetCode( this.model.data[this.stylesheetField] ) + '</style>' : '';
+    }
+
     /**
      * get the html representation of the corresponding value
      * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should be rebuild on change
      * @returns {any}
      */
-    get htmlValue() {
-        // if value changed, generate html value
-        if (this.value != this._cached_value) {
-            this._cached_html_value = this.sanitized.bypassSecurityTrustHtml(
-                '<html><head>' + (this.useStylesheets && !_.isEmpty(this.model.data[this.stylesheetField]) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.model.data[this.stylesheetField]) + '</style>' : '') + '</head><body class="spice">' + this.value + '</body></html>'
-            );
-            this._cached_value = this.value;
+    get sanitizedValue() {
+        this.fullValue = '<html><head>' + this.styleTag + '</head><body class="spice">' + this.value + '</body></html>';
+        // if value changed, generate sanitized html value
+        if ( this.fullValue != this.fullValue_cached ) {
+            this._sanitizedValue = this.sanitized.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + this.fullValue );
+            this.fullValue_cached = this.fullValue;
         }
-        return this._cached_html_value;
+        return this._sanitizedValue;
     }
 
     get stylesheetId(): string {
@@ -103,7 +108,7 @@ export class fieldHtml extends fieldGeneric {
             componentRef.instance.stylesheetId = this.stylesheetId;
             componentRef.instance.updateContent.subscribe(update => {
                 this.value = update;
-            })
+            });
         });
     }
 

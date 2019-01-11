@@ -17,6 +17,11 @@
                             <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
                         </a>
                     </li>
+                    <li class="slds-dropdown__item" role="presentation" (click)="viewModel()">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                            <span class="slds-truncate">{{language.getLabel('LBL_OPEN')}}</span>
+                        </a>
+                    </li>
                 </ng-container>
                 <ng-container *ngIf="addactions.length > 0">
                     <!--li class="slds-has-divider--top-space" role="separator"></li-->
