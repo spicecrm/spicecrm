@@ -29,24 +29,24 @@ export class GlobalHeaderFavorite {
         private language: language
     ) {
         this.router.events.subscribe((event: any) => {
-            if(event instanceof NavigationStart) {
+            if (event instanceof NavigationStart) {
                 this.favorite.disable();
             }
         });
 
         popup.closePopup$.subscribe(close => {
             this.showFavorites = false;
-            if(this.clickListener) {
+            if (this.clickListener) {
                 this.clickListener();
             }
         });
     }
 
-    get canShowFavorites(){
+    get canShowFavorites() {
         return this.metadata.getActiveRole().showfavorites && this.metadata.getActiveRole().showfavorites != '0';
     }
 
-    get nofavorites(){
+    get nofavorites() {
         return this.favorite.favorites.length == 0;
     }
 
@@ -54,12 +54,12 @@ export class GlobalHeaderFavorite {
         return !this.favorite.isEnabled;
     }
 
-    get isfavorite(){
+    get isfavorite() {
         return this.favorite.isFavorite;
     }
 
     private getFavoriteActive() {
-        if(this.favorite.isFavorite) {
+        if (this.favorite.isFavorite) {
             return 'spicecrm-favorite--active';
         } else {
             return 'spicecrm-favorite--inactive';
@@ -67,17 +67,21 @@ export class GlobalHeaderFavorite {
     }
 
     private toggleFavorite() {
-        if(this.favorite.isFavorite) {
+        if (this.favorite.isFavorite) {
             this.favorite.deleteFavorite();
         } else {
             this.favorite.setFavorite();
         }
     }
 
+    private closeFavorites() {
+        this.showFavorites = false;
+    }
+
     private toggleFavorites() {
         this.showFavorites = !this.showFavorites;
 
-        if(this.showFavorites) {
+        if (this.showFavorites) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
         } else if (this.clickListener) {
             this.clickListener();

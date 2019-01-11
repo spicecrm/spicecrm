@@ -11,13 +11,13 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 })
 export class GlobalComposeButton {
 
-    @Input() module: string = '';
+    @Input() private module: string = '';
 
     constructor(private dockedComposer: dockedComposer) {
 
     }
 
-    showComposer(){
+    private showComposer(){
         this.dockedComposer.addComposer(this.module);
     }
 

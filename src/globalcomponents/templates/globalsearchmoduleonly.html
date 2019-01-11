@@ -29,5 +29,8 @@
             </tbody>
             <tbody system-table-stencils [columns]="listfields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="fts.runningmodulesearch"></tbody>
         </table>
+        <div *ngIf="!fts.runningmodulesearch && getCount().total == 0" class="slds-align--absolute-center slds-height_full">
+            <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+        </div>
     </div>
 </div>

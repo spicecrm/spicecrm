@@ -4,6 +4,7 @@ import {
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {metadata} from '../../../services/metadata.service';
+
 // import 'hammerjs';
 
 @Component({
@@ -23,7 +24,11 @@ export class Home {
         }
     }
 
-    private displayHomeAssistant() {
+    get displayHomeAssistant() {
+        // only if screen size is bigger than medium
+        if (window.innerWidth < 1024) return false;
+
+        // check if assistant is enabled at all
         if (this.componentconfig.HomeAssistant !== undefined) {
             return this.componentconfig.HomeAssistant;
         }
