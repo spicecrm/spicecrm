@@ -118,6 +118,7 @@ import /*embed*/ {fieldModuleIcon} from "./components/fieldmoduleicon";
 import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
 import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
+import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 
 @NgModule({
     imports: [
@@ -211,7 +212,8 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
         fieldModuleIcon,
         fieldRichText,
         fieldEnumMulti,
-        fieldPhone
+        fieldPhone,
+        fieldCronInterval
     ],
     entryComponents: [
         fieldLabel,
@@ -247,7 +249,8 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
         fieldUrl,
         fieldEmail,
         fieldColorEnum,
-        fieldEnumMulti
+        fieldEnumMulti,
+        fieldCronInterval
     ],
     exports: [
         fieldSet,
