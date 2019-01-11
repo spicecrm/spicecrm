@@ -25,18 +25,18 @@
             <div class="slds-p-vertical--small  slds-col slds-size--2-of-12 slds-border--right">
                 {{ log.msg }}
             </div>
-            <div [hidden]="opened && log.id == activeLogId"
+            <div [hidden]="opened && log.id == activeLogId && itemHeader"
                  class="slds-p-around--small  slds-col slds-size--9-of-12 slds-truncate">
                 {{ log.data.join(' , ') }}
             </div>
-            <div class="slds-p-around--small slds-size--1-of-12 slds-col_bump-left">
+            <div *ngIf="itemHeader" class="slds-p-around--small slds-size--1-of-12 slds-col_bump-left">
                 <button class="slds-button slds-button_icon">
                     <system-button-icon [icon]="getButtonicon(log.id)"></system-button-icon>
                 </button>
             </div>
         </div>
 
-        <table *ngIf="opened && log.id == activeLogId" class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <table *ngIf="opened && log.id == activeLogId && itemHeader" class="slds-table slds-table--bordered slds-table--cell-buffer">
             <tbody>
             <tr *ngFor="let field of log.data; let index = index">
                 <td class="slds-truncate">{{ itemHeader[index] }}</td>
