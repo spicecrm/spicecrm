@@ -1,13 +1,13 @@
 <a href="javascript:void(0);" class="slds-assistive-text slds-assistive-text--focus">Skip to Navigation</a><a
         href="javascript:void(0);" class="slds-assistive-text slds-assistive-text--focus">Skip to Main Content</a>
 <div class="slds-global-header slds-grid slds-grid--align-spread">
-    <div class="slds-global-header__item slds-large-size--1-of-3">
+    <div class="slds-global-header__item slds-show--large slds-large-size--1-of-3">
         <img style="max-height: 25px;" src="./config/headerimage" alt=""/>
     </div>
-    <div class="slds-global-header__item slds-large-size--1-of-3">
-        <global-header-search *ngIf="showSearch"></global-header-search>
+    <div *ngIf="showSearch" class="slds-global-header__item slds-size--1-of-2 slds-large-size--1-of-3">
+        <global-header-search></global-header-search>
     </div>
-    <div class="slds-global-header__item slds-grid slds-grid--align-end slds-grid--vertical-align-center slds-large-size--1-of-3">
+    <div class="slds-global-header__item slds-size--1-of-2 slds-large-size--1-of-3 slds-grid slds-grid--align-end slds-grid--vertical-align-center">
         <global-header-tools></global-header-tools>
         <global-user></global-user>
     </div>
