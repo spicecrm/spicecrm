@@ -30,6 +30,10 @@ export class DashboardContainerElement implements AfterViewInit {
         this.renderDashlet();
     }
 
+    get compactView() {
+        return this.dashboardlayout.compactView;
+    }
+
     private renderDashlet() {
         for (let component of this.componentRefs) {
             component.destroy();

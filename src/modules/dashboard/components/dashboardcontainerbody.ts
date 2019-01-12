@@ -28,7 +28,6 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 })
 export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy, OnChanges {
     @ViewChild('bodycontainer', {read: ViewContainerRef}) private bodycontainer: ViewContainerRef;
-    @Input() private dashboardid: string = '';
     private resizeListener: any = {};
 
     constructor(private dashboardlayout: dashboardlayout, private language: language, private elementRef: ElementRef, private renderer: Renderer2) {
@@ -46,11 +45,11 @@ export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy,
     }
 
     public ngOnInit() {
-        this.dashboardlayout.loadDashboard(this.dashboardid);
+        // this.dashboardlayout.loadDashboard(this.dashboardid);
     }
 
     public ngOnChanges() {
-        this.dashboardlayout.loadDashboard(this.dashboardid);
+        // this.dashboardlayout.loadDashboard(this.dashboardid);
     }
 
     public ngAfterViewInit() {
@@ -67,8 +66,8 @@ export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy,
 
     get bodyContainerStyle() {
         return {
-            height: 'calc(100vh - ' + this.bodycontainer.element.nativeElement.getBoundingClientRect().top + 'px)',
-            border: this.dashboardlayout.editMode ? '1px dashed #ca1b21' : '0',
+            'height': 'calc(100vh - ' + this.bodycontainer.element.nativeElement.getBoundingClientRect().top + 'px)',
+            'border': this.dashboardlayout.editMode ? '1px dashed #ca1b21' : '0',
             'padding-right': this.dashboardlayout.paddingRight + 'px'
         };
     }
