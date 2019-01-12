@@ -20,9 +20,12 @@ import {toast} from '../services/toast.service';
 import {broadcast} from '../services/broadcast.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 import { RouterModule, Routes, Router } from '@angular/router';
-import { loginCheck } from '../services/login.service';
+import {loginCheck } from '../services/login.service';
 import {DirectivesModule} from "../directives/directives";
-import { SystemComponents } from '../systemcomponents/systemcomponents';
+import {SystemComponents} from '../systemcomponents/systemcomponents';
+import {relatedmodels} from '../services/relatedmodels.service';
+import {model} from '../services/model.service';
+import {view} from '../services/view.service';
 
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service'
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service'
