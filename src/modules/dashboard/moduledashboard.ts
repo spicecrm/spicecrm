@@ -14,7 +14,9 @@ import {
     ViewContainerRef,
     Injectable,
     EventEmitter,
-    Renderer2
+    Renderer2,
+    Output,
+    SimpleChanges
 } from "@angular/core";
 import {RouterModule, Router, Routes} from "@angular/router";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
