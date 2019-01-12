@@ -1,4 +1,4 @@
-<div [ngStyle]="getBoxStyle()" style="position:absolute;" class="slds-box--border slds-theme--default" [ngClass]="{'slds-scrollable--y': !isEditing()}" (mousedown)="onMousedown('content', $event)">
+<div [ngStyle]="getBoxStyle()" class="slds-box--border slds-theme--default" [ngClass]="{'slds-scrollable--y': !isEditing(), 'slds-is-absolute': !compactView, 'slds-m-vertical_xx-small': compactView}" (mousedown)="onMousedown('content', $event)">
     <div style="width: 100%; height: 100%" [ngStyle]="isEditing() ? {overflow: 'hidden'}: {}">
         <div *ngIf="isAuthorized" #containerelement></div>
         <div *ngIf="!isAuthorized" class="slds-align_absolute-center" style="height: 100%">

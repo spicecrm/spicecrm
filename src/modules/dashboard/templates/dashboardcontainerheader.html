@@ -1,13 +1,19 @@
-<div class="slds-grid slds-p-around--small">
+<div class="slds-grid slds-grid--vertical-align-center slds-p-around--small">
+    <div class="slds-p-right--small" *ngIf="showdashboardselector">
+        <button class="slds-button slds-button--icon" (click)="showpanel()">
+            <system-button-icon icon="rows"></system-button-icon>
+        </button>
+    </div>
     <div class="slds-col slds-has-flexi-truncate slds-grid slds-grid--vertical-align-center">
+        <system-spinner size="16" class="slds-p-right--small" *ngIf="dashboardlayout.isloading"></system-spinner>
         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-            {{dashboardlayout.model.data.name}}
+            {{dashboardlayout.model.getField('name')}}
         </h1>
-        <button *ngIf="editable" class="slds-button" (click)="edit()">
+        <button *ngIf="editable" class="slds-button slds-show--large" (click)="edit()">
             <system-button-icon [icon]="'edit'"></system-button-icon>
         </button>
     </div>
-    <div class="slds-col slds-no-flex slds-grid slds-align-top">
+    <div class="slds-col slds-no-flex slds-grid slds-align-top slds-show--large">
         <div *ngIf="editable" class="slds-button-group" role="group">
             <button class="slds-button slds-button--neutral" (click)="toggleEditMode()">{{language.getLabel('LBL_EDIT')}}</button>
             <!--button *ngIf="canDelete"  class="slds-button slds-button--neutral" (click)="deleteDashlet()">{{language.getLabel('LBL_DELETE')}}</button-->
