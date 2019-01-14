@@ -1,11 +1,7 @@
-<div *ngIf="taggingEnabled" class="slds-m-top_medium">
-
+<div *ngIf="taggingEnabled" class="slds-m-top_medium slds-show--medium">
     <system-stencil *ngIf="model.isLoading; else displayContent"></system-stencil>
-
     <ng-template #displayContent>
-
         <div class="slds-grid slds-grid--vertical-align-start">
-
             <div>
                 <ng-container *ngIf="tags.length; else noAssignedTags">
                     <div #badgeListContainer class="badgeListContainer" [class.open]="listIsExpanded">
@@ -20,29 +16,19 @@
                     <div style="font-style:italic">{{language.getLabel('LBL_NO_TAGS_ASSIGNED')}}</div>
                 </ng-template>
             </div>
-
             <div class="slds-p-left_medium">
-
                 <ng-container *ngIf="tags.length">
-
                     <button *ngIf="!listIsExpanded && listIsExpandable" class="slds-button slds-button_icon slds-m-top--x-small" (click)="listIsExpanded=true">
                         <system-button-icon [icon]="'expand_all'"></system-button-icon>
                     </button>
-
                     <button *ngIf="listIsExpanded" class="slds-button slds-button_icon slds-m-top--x-small" (click)="listIsExpanded=false">
                         <system-button-icon [icon]="'collapse_all'"></system-button-icon>
                     </button>
-
                 </ng-container>
-
                 <button *ngIf="tags.length === 0 || listIsExpanded || !listIsExpandable" class="slds-button slds-button_icon slds-m-left--none" [class.slds-m-top--x-small]="tags.length>0" (click)="editTags()">
                     <system-button-icon [icon]="'edit'"></system-button-icon>
                 </button>
-
             </div>
-
         </div>
-
     </ng-template>
-
 </div>
