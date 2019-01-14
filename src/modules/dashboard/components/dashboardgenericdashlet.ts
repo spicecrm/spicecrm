@@ -43,7 +43,7 @@ export class DashboardGenericDashlet implements OnInit {
     }
 
     get islarge() {
-        return window.innerWidth > 768;
+        return window.innerWidth >= 768;
     }
 
     private loadRecords() {
