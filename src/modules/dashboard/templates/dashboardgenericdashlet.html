@@ -17,7 +17,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr dashboard-generic-dashlet-row *ngFor="let record of records" [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
+                <ng-container *ngFor="let record of records">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
+                        {{record.summary_text}}
+                    </div>
+                    <tr dashboard-generic-dashlet-row  [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
+                </ng-container>
             </tbody>
             <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
         </table>
