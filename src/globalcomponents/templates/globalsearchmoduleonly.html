@@ -13,7 +13,7 @@
     </div>
 </div>
 <div>
-    <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+    <table class="slds-show--medium slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
         <thead>
         <tr class="slds-text-title--caps">
             <th *ngFor="let item of listfields" scope="col">
@@ -23,9 +23,14 @@
         </thead>
     </table>
     <div tobottom (scroll)="onScroll($event)">
-        <table #tablecontent class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+        <table #tablecontent class="slds-table slds-table--bordered slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" role="grid">
             <tbody>
-                <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+                <ng-container *ngFor="let item of getItems()">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
+                        {{item._source.summary_text}}
+                    </div>
+                    <tr global-search-module-item [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+                </ng-container>
             </tbody>
             <tbody system-table-stencils [columns]="listfields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="fts.runningmodulesearch"></tbody>
         </table>
