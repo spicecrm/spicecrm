@@ -8,17 +8,14 @@ declare var _;
 
 @Component({
     selector: 'global-search-module',
-    templateUrl: './src/globalcomponents/templates/globalsearchmodule.html',
-    host: {
-        '[style.display]': 'getDisplay()'
-    }
+    templateUrl: './src/globalcomponents/templates/globalsearchmodule.html'
 })
 export class GlobalSearchModule implements OnInit {
     @Input() private module: string = '';
     @Output() private scope: EventEmitter<string> = new EventEmitter<string>();
     private listfields: any[] = [];
 
-    constructor( private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
+    constructor(private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
 
     }
 
@@ -49,11 +46,9 @@ export class GlobalSearchModule implements OnInit {
         return resultCount;
     }
 
-
-    private getDisplay() {
-        return !this.fts.runningmodulesearch && this.getCount().total > 0 ? 'inherit' : 'none';
+    get hidepanel() {
+        return !this.fts.runningmodulesearch && this.getCount().total > 0 ? false : true;
     }
-
 
     private canViewMore(): boolean {
         return this.getCount().total > 5;

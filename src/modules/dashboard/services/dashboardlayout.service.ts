@@ -15,7 +15,7 @@ export class dashboardlayout {
     public elementWidth: number = 100;
     public boxMargin: number = 5;
     public columns: number = 9;
-    public paddingRight = 0;
+    public paddingRight = 20;
     public editMode: boolean = false;
     public editing: string = '';
     public editModal: boolean = false;

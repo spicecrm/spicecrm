@@ -18,7 +18,7 @@ export class GlobalSearchModuleItem implements OnInit {
     @Input() private listfields: string = '';
     @Input() private listitem: any = {};
 
-    constructor(private elementref: ElementRef, private router: Router, private view: view, private model: model) {
+    constructor(private elementref: ElementRef, private router: Router, private view: view, private model: model, private language: language) {
         this.view.isEditable = false;
     }
 
