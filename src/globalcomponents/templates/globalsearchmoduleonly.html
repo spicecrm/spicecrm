@@ -1,14 +1,19 @@
-<div class="slds-p-around--medium slds-theme--default slds-border--top">
-    <div class="slds-grid">
-        <div class="slds-col slds-has-flexi-truncate">
-            <h1 class="slds-page-header__title slds-truncate">{{language.getModuleName(module)}}</h1>
-        </div>
+<div class="slds-theme--default slds-border--top slds-grid slds-grid--vertical-align-center">
+    <div class="slds-p-left--small slds-show--medium">
+        <system-icon [module]="module" divClass=""></system-icon>
     </div>
-    <div class="slds-grid">
-        <div class="slds-col slds-align-bottom">
-            <ul class="slds-list--horizontal slds-has-dividers--left">
-                <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
-            </ul>
+    <div class="slds-p-around--small">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <h1 class="slds-page-header__title slds-truncate">{{language.getModuleName(module)}}</h1>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-align-bottom">
+                <ul class="slds-list--horizontal slds-has-dividers--left">
+                    <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -27,7 +32,8 @@
             <tbody>
                 <ng-container *ngFor="let item of getItems()">
                     <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
-                        {{item._source.summary_text}}
+                        <system-icon [module]="module" size="xx-small" divClass="slds-p-right--xx-small"></system-icon>
+                        <span>{{item._source.summary_text}}</span>
                     </div>
                     <tr global-search-module-item [module]="module" [listfields]="listfields" [listitem]="item"></tr>
                 </ng-container>
