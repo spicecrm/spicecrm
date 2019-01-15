@@ -1,4 +1,4 @@
-<div #bodycontainer class="slds-is-relative slds-scrollable--y" [ngStyle]="bodyContainerStyle">
+<div #bodycontainer tobottom class="slds-is-relative slds-scrollable--y" [ngStyle]="bodyContainerStyle">
     <ng-container *ngIf="isEditing">
         <ng-container *ngFor="let row of dashboardlayout.dashboardGrid">
             <ng-container *ngFor="let column of row">
@@ -10,5 +10,7 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <dashboard-container-element *ngFor="let item of dashboardlayout.dashboardElements" [item]="item"></dashboard-container-element>
+    <dashboard-container-element *ngFor="let item of dashboardlayout.dashboardElements; let last = last" [item]="item">
+        {{last === true ? calculateGrid() : null}}
+    </dashboard-container-element>
 </div>
