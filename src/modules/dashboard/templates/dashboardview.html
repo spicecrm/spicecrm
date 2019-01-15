@@ -1,11 +1,11 @@
 <div class="slds-grid">
-    <div class="slds-theme--shade" [ngClass]="{'slds-is-absolute': ismobile}" style="transition: left 1s" tobottom [ngStyle]="panelstyle">
+    <div class="slds-theme--shade" [ngClass]="{'slds-is-absolute': ismobile}" style="transition: left 1s" [ngStyle]="panelstyle">
         <dashboard-select-panel (hide)="showpanel = false;"></dashboard-select-panel>
     </div>
     <div class="slds-theme--default" [ngStyle]="dashboardstyle">
         <dashboard-container-header [showdashboardselector]="ismobile" (showselect)="showpanel = true;"></dashboard-container-header>
         <dashboard-container-body></dashboard-container-body>
-        <div class="slds-align--absolute-center" style="height: 100%;" *ngIf="!dashboardlayout.dashboardId">
+        <div *ngIf="!dashboardlayout.dashboardId" class="slds-align--absolute-center" style="height: 100%;">
             <span class="slds-text-heading--small">Please Select a Dashboard</span>
         </div>
     </div>

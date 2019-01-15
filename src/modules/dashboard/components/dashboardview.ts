@@ -62,7 +62,6 @@ export class DashboardView implements OnInit {
         return {
             'width': this.panelwidth + 'px',
             'z-index': 1,
-            'height': this.elementRef.nativeElement.getBoundingClientRect().height,
             'left': this.ismobile && !this.showpanel ? '-250px' : '0px'
         };
     }
