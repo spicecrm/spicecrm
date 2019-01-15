@@ -28,8 +28,6 @@ export class DashboardContainer implements OnChanges, OnInit {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        console.log(this.dashboardid);
         this.dashboardlayout.loadDashboard(this.dashboardid);
     }
-
 }

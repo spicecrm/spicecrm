@@ -1,13 +1,11 @@
 import {
     Component,
-    Input,
     AfterViewInit,
-    OnInit,
     ElementRef,
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    OnDestroy, OnChanges
+    OnDestroy,
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
@@ -26,7 +24,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
         }`
     ]
 })
-export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy, OnChanges {
+export class DashboardContainerBody implements AfterViewInit, OnDestroy {
     @ViewChild('bodycontainer', {read: ViewContainerRef}) private bodycontainer: ViewContainerRef;
     private resizeListener: any = {};
 
@@ -44,14 +42,6 @@ export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy,
         });
     }
 
-    public ngOnInit() {
-        // this.dashboardlayout.loadDashboard(this.dashboardid);
-    }
-
-    public ngOnChanges() {
-        // this.dashboardlayout.loadDashboard(this.dashboardid);
-    }
-
     public ngAfterViewInit() {
         this.calculateGrid();
     }
@@ -61,19 +51,21 @@ export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy,
     }
 
     get isEditing() {
-        return this.dashboardlayout.editMode === true ? true : false;
+        return this.dashboardlayout.editMode;
     }
 
     get bodyContainerStyle() {
         return {
-            'height': 'calc(100vh - ' + this.bodycontainer.element.nativeElement.getBoundingClientRect().top + 'px)',
             'border': this.dashboardlayout.editMode ? '1px dashed #ca1b21' : '0',
-            'padding-right': this.dashboardlayout.paddingRight + 'px'
+            'width': '100%'
         };
     }
 
     private calculateGrid() {
-        this.dashboardlayout.mainContainer = this.elementRef.nativeElement.getBoundingClientRect();
+        this.dashboardlayout.mainContainer = {
+            width: this.bodycontainer.element.nativeElement.clientWidth,
+            height: this.bodycontainer.element.nativeElement.clientHeight
+        };
         this.dashboardlayout.calculateGrid();
     }
 

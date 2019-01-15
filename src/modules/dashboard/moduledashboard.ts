@@ -1,5 +1,7 @@
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {DirectivesModule} from "../../directives/directives";
+
 import {
     Component,
     Input,
@@ -62,6 +64,7 @@ import /*embed*/ {DashboardRemindersDashlet} from "./components/dashboardreminde
         FormsModule,
         ObjectFields,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         DashboardView,

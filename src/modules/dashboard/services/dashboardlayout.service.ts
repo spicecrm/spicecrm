@@ -15,10 +15,8 @@ export class dashboardlayout {
     public elementWidth: number = 100;
     public boxMargin: number = 5;
     public columns: number = 9;
-    public paddingRight = 0;
     public editMode: boolean = false;
     public editing: string = '';
-    public editModal: boolean = false;
     public mainContainer: any = undefined;
     public isMoving: boolean = false;
     public isloading: boolean = false;
@@ -50,7 +48,7 @@ export class dashboardlayout {
      */
     public calculateGrid() {
         // rect = container div
-        this.elementWidth = (this.mainContainer.width - this.paddingRight) / this.columns;
+        this.elementWidth = this.mainContainer.width / this.columns;
         this.dashboardGrid = [];
         let rowIndex = 0;
         let mainContainerHeight = this.mainContainer.height;
@@ -64,10 +62,10 @@ export class dashboardlayout {
             let dashBoardRow = [];
             while (colIndex < this.columns) {
                 dashBoardRow.push({
-                    width: ((this.mainContainer.width - this.paddingRight) / this.columns) - (2 * this.boxMargin),
+                    width: (this.mainContainer.width / this.columns) - (2 * this.boxMargin),
                     height: this.elementHeight - (2 * this.boxMargin),
                     top: ((rowIndex * this.elementHeight) + this.boxMargin),
-                    left: (colIndex * (this.mainContainer.width - this.paddingRight) / this.columns) + this.boxMargin
+                    left: (colIndex * this.mainContainer.width / this.columns) + this.boxMargin
                 });
                 colIndex++;
             }
@@ -84,7 +82,7 @@ export class dashboardlayout {
 
         style.top = top * this.elementHeight + this.boxMargin;
         style.left = left * this.elementWidth + this.boxMargin;
-        style.width = this.compactView ? 'calc(100% - .5rem)' : (width * this.elementWidth - 2 * this.boxMargin);
+        style.width = this.compactView ? '100%' : (width * this.elementWidth - 2 * this.boxMargin);
         style.height = height * this.elementHeight - 2 * this.boxMargin;
         return style;
     }
