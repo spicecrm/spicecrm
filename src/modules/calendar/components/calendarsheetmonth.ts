@@ -39,7 +39,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
 
     private currentGrid: any[] = [];
-    private eventHeight: number = 25;
     private offsetHeight: number = 20;
     private maxEventsPerBox: number = 1;
     private resizeHandler: any = {};
@@ -69,6 +68,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         if (changes.setdate) {
             this.getEvents();
         }
+
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
         }
@@ -82,6 +82,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     get allEvents() {
         return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+    }
+
+    get eventHeight() {
+        return !this.calendar.isMobileView ? 25 : 20;
     }
 
     private startDate() {
@@ -132,7 +136,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private getGoogleEvents() {
         this.googleEvents = [];
         this.arrangeEvents();
-        if (!this.googleIsVisible) {return}
+        if (!this.googleIsVisible || this.calendar.isMobileView) {return}
+
             this.calendar.loadGoogleEvents(this.startDate(), this.endDate()).subscribe(events => {
             if (events.length > 0) {
                 events = events.map(event => {
@@ -149,6 +154,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private getUsersEvents() {
         this.userEvents = [];
         this.arrangeEvents();
+        if (this.calendar.isMobileView) {return}
 
         for (let calendar of this.calendar.usersCalendars) {
             if (!calendar.visible) {continue}
@@ -170,6 +176,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private getOtherEvents() {
         this.otherEvents = [];
         this.arrangeEvents();
+        if (this.calendar.isMobileView) {return}
 
         for (let calendar of this.calendar.otherCalendars) {
             if (!calendar.visible) {continue}
@@ -361,7 +368,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             'border-radius': '50%',
             'line-height': '1rem',
             'text-align': 'center',
-            'font-size': '.7rem',
             width: '1rem',
             height: '1rem',
             display: 'block',

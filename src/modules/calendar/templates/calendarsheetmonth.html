@@ -11,7 +11,7 @@
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
             </div>
             <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight">
-                <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [moreevents]="sheetDay.items"></calendar-more-button>
+                <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [moreevents]="sheetDay.items" [ismobileview]="calendar.isMobileView"></calendar-more-button>
             </div>
         </div>
         <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>

@@ -25,9 +25,8 @@ export class calendar {
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
-    public sidebarWidth: number = 300;
+    public sidebarwidth: number = 300;
     public sheetHourHeight: number = 80;
-    public multiEventHeight: number = 25;
     public weekstartday: number = 0;
     public weekDaysCount: number = 7;
     public startHour: number = 0;
@@ -39,6 +38,7 @@ export class calendar {
     public loggedByGoogle: boolean = false;
     public asPicker: boolean = false;
     public isAllToken: boolean = false;
+    public isMobileView: boolean = false;
 
     constructor(private backend: backend,
                 private session: session,
@@ -47,8 +47,18 @@ export class calendar {
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
-        this.getOtherCalendars();
+        if (!this.isMobileView) {
+            this.getOtherCalendars();
+        }
         this.modelChangesSubscriber();
+    }
+
+    get sidebarWidth() {
+        return !this.isMobileView ? this.sidebarwidth : 0;
+    }
+
+    get multiEventHeight() {
+        return !this.isMobileView ? 25 : 20;
     }
 
     get owner() {
@@ -197,7 +207,7 @@ export class calendar {
     }
 
     public addOtherCalendar() {
-        if (this.isAllToken) {return}
+        if (this.isAllToken || this.isMobileView) {return}
         let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
 
         this.modal.openModal('CalendarAddCalendar').subscribe(modalRef => {
@@ -218,6 +228,7 @@ export class calendar {
     }
 
     public removeOtherCalendar(id) {
+        if (this.isMobileView) {return}
         let otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
         this.setOtherCalendars(otherCalendars);
     }
@@ -234,6 +245,7 @@ export class calendar {
     }
 
     public addUserCalendar(id, name) {
+        if (this.isMobileView) {return}
         let usersCalendars = this.usersCalendars;
         let color = '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "eee" : (Math.random() * 0xFFF << 0).toString(16);
 
@@ -242,6 +254,7 @@ export class calendar {
     }
 
     public removeUserCalendar(id) {
+        if (this.isMobileView) {return}
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
         this.setUserCalendars(usersCalendars);
     }

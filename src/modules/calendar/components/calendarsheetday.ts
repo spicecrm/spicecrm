@@ -150,7 +150,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     private getGoogleEvents() {
         this.googleEvents = [];
         this.googleMultiEvents = [];
-        if (!this.googleIsVisible) {return}
+        if (!this.googleIsVisible || this.calendar.isMobileView) {return}
 
         this.calendar.loadGoogleEvents(this.startDate, this.endDate).subscribe(events => {
             if (events.length > 0) {
@@ -165,6 +165,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     private getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
+        if (this.calendar.isMobileView) {return}
 
         for (let calendar of this.calendar.usersCalendars) {
             if (!calendar.visible) {continue}
@@ -188,6 +189,8 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
     private getOtherEvents() {
         this.otherEvents = [];
+        if (this.calendar.isMobileView) {return}
+
         for (let calendar of this.calendar.otherCalendars) {
             if (!calendar.visible) {continue}
             this.calendar.loadEvents(this.startDate.hour(0).minute(0).second(0), this.endDate.hour(23).minute(0).second(0), calendar.id, true).subscribe(events => {
@@ -262,13 +265,6 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         let isToday = today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date()
         return {
             color: isToday ? this.calendar.todayColor : 'inherit'
-        };
-    }
-
-    private getSheetStyle() {
-        return {
-            height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
-            'margin-top': '-1px'
         };
     }
 
