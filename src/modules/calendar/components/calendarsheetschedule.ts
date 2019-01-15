@@ -79,6 +79,7 @@ export class CalendarSheetSchedule implements OnChanges {
             this.setUntilDate();
             this.getEvents();
         }
+
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
         }
@@ -159,7 +160,8 @@ export class CalendarSheetSchedule implements OnChanges {
 
     private getGoogleEvents() {
         this.googleEvents = [];
-        if (!this.googleIsVisible) {
+
+        if (!this.googleIsVisible || this.calendar.isMobileView) {
             this.allEvents = this.allevents.slice();
             return;
         }
@@ -173,6 +175,7 @@ export class CalendarSheetSchedule implements OnChanges {
     private getUsersEvents() {
         this.userEvents = [];
         this.allEvents = this.allevents.slice();
+        if (this.calendar.isMobileView) {return}
 
         for (let i = 0; i < this.calendar.usersCalendars.length; i++) {
             let calendar = this.calendar.usersCalendars[i];
@@ -199,6 +202,7 @@ export class CalendarSheetSchedule implements OnChanges {
     private getOtherEvents() {
         this.otherEvents = [];
         this.allEvents = this.allevents.slice();
+        if (this.calendar.isMobileView) {return}
 
         for (let i = 0; i < this.calendar.otherCalendars.length; i++) {
             let calendar = this.calendar.otherCalendars[i];
@@ -220,24 +224,6 @@ export class CalendarSheetSchedule implements OnChanges {
                 }
             });
         }
-    }
-
-    private displayDate(format) {
-        return this.setdate.format(format);
-    }
-
-    private isTodayStyle() {
-        let today = new moment();
-        let isToday = today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date();
-        return {
-            color: isToday ? this.calendar.todayColor : 'inherit'
-        };
-    }
-
-    private getSheetStyle() {
-        return {
-            height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
-        };
     }
 
     private getShortDay(date) {
