@@ -3,10 +3,10 @@
     <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}})</h2>
 </div>
 <!-- the table - hidden if no records have been found and the dashlet is not loading-->
-<div class="slds-table--header-fixed_container" style="width: 100%" [ngStyle]="tablestyle">
+<div class="slds-size--1-of-1" [ngClass]="{'slds-table--header-fixed_container': islarge}">
     <div #tablecontainer class="slds-scrollable--y" style="width: 100%;height:100%" (scroll)="onScroll()">
-        <table  class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_header-fixed" style="border-top: 0">
-            <thead>
+        <table  class="slds-table slds-table_bordered slds-table_cell-buffer slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table_header-fixed': islarge}">
+            <thead *ngIf="islarge">
                 <tr class="slds-text-title_caps">
                     <th scope="col" *ngFor="let field of dashletFields; let isFirst = first">
                         <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small"
@@ -17,11 +17,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr dashboard-generic-dashlet-row *ngFor="let record of records" [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record">
-                    <td *ngFor="let field of listfields">
-                        <field-container [fieldname]="field.field" [fieldconfig]="field.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
-                    </td>
-                </tr>
+                <ng-container *ngFor="let record of records">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
+                        {{record.summary_text}}
+                    </div>
+                    <tr dashboard-generic-dashlet-row  [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
+                </ng-container>
             </tbody>
             <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
         </table>

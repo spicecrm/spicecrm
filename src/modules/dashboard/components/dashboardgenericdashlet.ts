@@ -42,6 +42,10 @@ export class DashboardGenericDashlet implements OnInit {
         return this.language.getLabel(this.dashletLabel);
     }
 
+    get islarge() {
+        return window.innerWidth > 768;
+    }
+
     private loadRecords() {
         let params = this.params;
         if (this.dashletModule) {
@@ -49,8 +53,9 @@ export class DashboardGenericDashlet implements OnInit {
                 this.records = records.list;
                 this.recordcount = +records.list.length;
                 this.loading = false;
-                if (records.list.length < this.loadLimit)
+                if (records.list.length < this.loadLimit) {
                     this.canLoadMore = false;
+                }
             });
         }
     }
@@ -73,7 +78,7 @@ export class DashboardGenericDashlet implements OnInit {
                 }
             }
             if (this.dashletconfig.modulefilter) {
-                    params.modulefilter = this.dashletconfig.modulefilter;
+                params.modulefilter = this.dashletconfig.modulefilter;
             }
         }
         params.limit = this.loadLimit;
@@ -83,7 +88,7 @@ export class DashboardGenericDashlet implements OnInit {
 
     get tablestyle() {
         let element = this.headercontainer.element.nativeElement;
-        return {height: `calc(98% - ${element.clientHeight}px`}
+        return {height: `calc(98% - ${element.clientHeight}px`};
 
     }
 
