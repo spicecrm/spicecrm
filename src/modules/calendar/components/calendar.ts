@@ -1,10 +1,11 @@
 import {
+    AfterViewInit,
     Component,
     ElementRef,
     EventEmitter,
     Input,
     OnDestroy,
-    Output,
+    Output, Renderer2,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
@@ -44,11 +45,16 @@ declare var _: any;
     `]
 })
 
-export class Calendar {
+export class Calendar implements AfterViewInit, OnDestroy {
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-
+    touchStartListener: any = {};
+    touchMoveListener: any = {};
+    xDown: number = null;
+    yDown: number = null;
+    private resizeListener: any;
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
+    public openPicker: boolean = false;
     public googleIsVisible: boolean = true;
     public scheduleUntilDate: any = {};
     private showTypeSelector: boolean = false;
@@ -65,12 +71,26 @@ export class Calendar {
     constructor(private language: language,
                 private navigation: navigation,
                 private elementRef: ElementRef,
+                private renderer: Renderer2,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         this.calendarDate = new moment();
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
+        this.resizeListener = this.renderer.listen('window', 'resize', () => {
+            this.calendar.isMobileView = this.elementRef.nativeElement.getBoundingClientRect().width < 1024;
+        });
+        this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
+        this.touchMoveListener = this.renderer.listen('document', 'touchmove', e => this.handleTouchMove(e));
+    }
+
+    public ngAfterViewInit() {
+        this.calendar.isMobileView = this.elementRef.nativeElement.getBoundingClientRect().width < 1024;
+    }
+
+    get isMobileView() {
+        return this.calendar.isMobileView;
     }
 
     get owner() {
@@ -110,14 +130,15 @@ export class Calendar {
         return this.calendar.asPicker;
     }
 
-    private addOtherCalendar() {
-        this.calendar.addOtherCalendar();
+    get sidebarStyle() {
+        return {
+            'width': this.calendar.sidebarwidth + 'px',
+            'z-index': 1,
+        };
     }
 
-    private getContentStyle() {
-        return {
-            height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop + 'px)'
-        };
+    private addOtherCalendar() {
+        this.calendar.addOtherCalendar();
     }
 
     private getSheetStyle() {
@@ -131,37 +152,32 @@ export class Calendar {
         const focDate = new moment(this.calendarDate);
         switch (this.sheetType) {
             case 'Week':
-                return 'Week ' + this.getCalendarWeek() + ': ' + this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
+                return this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
             case 'Month':
                 return focDate.format('MMMM YYYY');
             case 'Day':
-                return focDate.format('MMMM D, YYYY');
+                return focDate.format('MMMM D');
             case 'Schedule':
                 return focDate.format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
             case 'Three_Days':
-                return focDate.format("MMM D, YYYY") + ' - ' + moment(focDate.add(2, 'd')).format("MMM D, YYYY");
+                return focDate.format("MMM D") + ' - ' + moment(focDate.add(2, 'd')).format("MMM D");
         }
-    }
-
-    private getCalendarWeek() {
-        let focDate = new moment(this.calendarDate);
-        focDate.day(1);
-        return focDate.isoWeek();
     }
 
     private getFirstDayOfWeek() {
         let focDate = new moment(this.calendarDate);
         focDate.day(this.weekStartDay);
-        return focDate.format('MMMM D, YYYY');
+        return focDate.format('MMM D');
     }
 
     private getLastDayOfWeek() {
         let focDate = new moment(this.calendarDate);
         focDate.day(this.weekDaysCount);
-        return focDate.format('MMMM D, YYYY');
+        return focDate.format('MMM D');
     }
 
     private setDateChanged(event) {
+        this.openPicker = false;
         this.calendarDate = new moment(event);
         this.refresh();
     }
@@ -223,4 +239,33 @@ export class Calendar {
     private closeModal() {
         this.self.destroy();
     }
+
+    public ngOnDestroy() {
+        this.resizeListener();
+        this.touchStartListener();
+        this.touchMoveListener();
+    }
+
+    private handleTouchStart(evt) {
+        const touches = evt.touches || evt.originalEvent.touches;
+        this.xDown = touches[0].clientX;
+        this.yDown = touches[0].clientY;
+    };
+
+    private handleTouchMove(evt) {
+        if (!this.xDown || !this.yDown) {return}
+        let xDiff = this.xDown - evt.touches[0].clientX;
+
+        if ( Math.abs( xDiff ) > Math.abs( this.yDown - evt.touches[0].clientY ) ) {
+            if ( xDiff < 0 ) {
+                this.shiftMinus();
+
+            } else {
+                this.shiftPlus();
+            }
+        }
+
+        this.xDown = null;
+        this.yDown = null;
+    };
 }

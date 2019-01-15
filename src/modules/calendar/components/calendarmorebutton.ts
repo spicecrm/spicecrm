@@ -14,6 +14,7 @@ declare var moment: any;
 export class CalendarMoreButton implements OnDestroy{
 
     @Input("moreevents") private events: any[] = [];
+    @Input("ismobileview") private isMobileView: boolean = false;
     private popoverCmp = null;
     private showPopoverTimeout: any = {};
 
@@ -43,6 +44,7 @@ export class CalendarMoreButton implements OnDestroy{
         this.metadata.addComponent('CalendarMorePopover', this.footer.modalcontainer).subscribe(
             popover => {
                 popover.instance.events = this.events;
+                popover.instance.isMobileView = this.isMobileView;
                 popover.instance.parentElementRef = this.elementRef;
                 this.popoverCmp = popover.instance;
             }

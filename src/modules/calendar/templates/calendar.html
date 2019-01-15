@@ -1,8 +1,8 @@
-<div [ngClass]="!asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large'" [attr.role]="!asPicker ? 'none' : 'dialog'">
+<div [ngClass]="!asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large'" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'">
     <div [class.slds-modal__container]="asPicker">
-        <div class="slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+        <div class="slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" [class.slds-p-around--x-small]="isMobileView">
             <div class="slds-grid">
-                <div class="slds-col slds-has-flexi-truncate">
+                <div *ngIf="!isMobileView" class="slds-col" [class.slds-m-bottom--xx-small]="isMobileView">
                     <div class="slds-media slds-no-space slds-grow">
                         <object-icon [module]="'Calendar'"></object-icon>
                         <div class="slds-media__body">
@@ -11,7 +11,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-col slds-no-flex slds-grid slds-align-top">
+                <button *ngIf="isMobileView" class="slds-button slds-button--icon-border" (click)="openPicker = true">
+                    <system-utility-icon icon="event" size="x-small"></system-utility-icon>
+                </button>
+                <div class="slds-align-top slds-col slds-grid slds-no-flex slds-col--bump-left">
                     <div class="slds-button-group" role="group">
                         <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
                             <system-button-icon [icon]="'chevronleft'"></system-button-icon>
@@ -24,12 +27,23 @@
                         <system-button-icon [icon]="'refresh'"></system-button-icon>
                     </button>
                     <ng-container *ngIf="!asPicker">
-                        <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
+                        <button *ngIf="!isMobileView" class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
                             <system-button-icon [icon]="'add'"></system-button-icon>
                         </button>
-                        <button class="slds-button slds-button--neutral" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
-                        <div class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--x-small" [ngClass]="{'slds-is-open': showTypeSelector}">
-                            <button class="slds-button slds-button--neutral" (click)="toggleTypeSelector()">
+                        <div *ngIf="!isMobileView" class="slds-button-group slds-m-left--x-small" role="group">
+                            <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
+                                <system-button-icon [icon]="'zoomout'"></system-button-icon>
+                            </button>
+                            <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
+                                <system-button-icon [icon]="'undo'"></system-button-icon>
+                            </button>
+                            <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
+                                <system-button-icon [icon]="'zoomin'"></system-button-icon>
+                            </button>
+                        </div>
+                        <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
+                        <div class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" [ngClass]="{'slds-is-open': showTypeSelector}">
+                            <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleTypeSelector()">
                                 {{language.getLabel('LBL_'+ sheetType | uppercase )}}
                                 <system-button-icon [icon]="'down'"></system-button-icon>
                             </button>
@@ -63,23 +77,15 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="slds-button-group slds-m-left--x-small" role="group">
-                            <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
-                                <system-button-icon [icon]="'zoomout'"></system-button-icon>
-                            </button>
-                            <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
-                                <system-button-icon [icon]="'undo'"></system-button-icon>
-                            </button>
-                            <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
-                                <system-button-icon [icon]="'zoomin'"></system-button-icon>
-                            </button>
-                        </div>
                     </ng-container>
                 </div>
             </div>
         </div>
-        <div #calendarcontent class="slds-grid slds-theme_default slds-border--right" [ngStyle]="getContentStyle()">
-            <div [style.width]="sidebarWidth + 'px'" class="slds-border--right slds-p-top--xx-small slds-scrollable--y slds-size--1-of-1">
+        <div [class.slds-hidden]="!openPicker" aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown_left" role="dialog">
+            <system-input-date-picker *ngIf="openPicker" [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
+        </div>
+        <div #calendarcontent tobottom class="slds-grid slds-theme_default slds-border--right">
+            <div *ngIf="!isMobileView" tobottom [ngStyle]="sidebarStyle" class="slds-border--right slds-p-top--xx-small slds-scrollable--y slds-size--1-of-1 slds-theme--default">
                 <system-input-date-picker [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
                 <calendar_other_calendars_monitor (googleIsVisible$)="googleIsVisible = $event" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
             </div>

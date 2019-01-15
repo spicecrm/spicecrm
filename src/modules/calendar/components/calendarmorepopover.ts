@@ -14,6 +14,7 @@ export class CalendarMorePopover implements OnInit {
     public popoverside: string = 'right';
     public popoverpos: string = 'top';
     public styles = null;
+    public isMobileView: boolean = false;
 
     private hidePopoverTimeout: any = {};
 
@@ -43,6 +44,10 @@ export class CalendarMorePopover implements OnInit {
     }
 
     get popoverStyle() {
+        if (this.isMobileView) {
+            return {left:0, bottom:0, width: '100%'};
+        }
+
         let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
 

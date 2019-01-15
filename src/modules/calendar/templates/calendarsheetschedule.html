@@ -1,33 +1,23 @@
-<div #calendarsheet class="slds-p-vertical--xx-small slds-scrollable" [ngStyle]="getSheetStyle()">
+<div tobottom class="slds-scrollable">
     <div *ngFor="let day of allEvents" class="slds-grid slds-border--bottom">
-        <div class="slds-border--right slds-p-around--x-small slds-size--1-of-12">
+        <div class="slds-border--right slds-p-around--xx-small slds-size--1-of-4">
             <div>{{getShortDay(day.date)}}</div>
             <div>
                 <a style="cursor: pointer" class="slds-text-link" (click)="goToDay(day.date)">{{getMonthDayYear(day.date)}}</a>
             </div>
         </div>
-        <div class="slds-size--11-of-12 slds-grid slds-grid--vertical-align-center">
-            <table class="slds-table slds-max-medium-table_stacked-horizontal">
-                <tbody>
-                <tr style="cursor: pointer" *ngFor="let event of day.events">
-                    <td style="width: 16px">
-                        <div class="slds-truncate">
-                            <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="event.color">
-                                <system-button-icon icon="user" size="small"></system-button-icon>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="width: 100px">
-                        <div class="slds-truncate" [title]="getTime(event.start, event.end, event.isMulti)">
-                            {{getTime(event.start, event.end, event.isMulti)}}
-                        </div>
-                    </td>
-                    <td [style.height]="calendar.multiEventHeight">
-                        <calendar-sheet-event [event]="event" [isschedulesheet]="true" style="position: initial"></calendar-sheet-event>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="slds-p-around--xx-small slds-size--3-of-4">
+            <div *ngFor="let event of day.events" class="slds-grid slds-grid--vertical-align-center" [style.height]="calendar.multiEventHeight">
+                <div class="slds-button slds-button--icon slds-m-right--x-small slds-p-top--xxx-small" style="height: 100%" [style.color]="event.color">
+                    <system-button-icon icon="user" size="small"></system-button-icon>
+                </div>
+                <div class="slds-truncate slds-size--1-of-4" style="height: 100%;" [title]="getTime(event.start, event.end, event.isMulti)">
+                    {{getTime(event.start, event.end, event.isMulti)}}
+                </div>
+                <div class="slds-size--3-of-4">
+                    <calendar-sheet-event [event]="event" [isschedulesheet]="true" style="position: initial"></calendar-sheet-event>
+                </div>
+            </div>
         </div>
     </div>
     <div class="slds-grid slds-p-around--small">

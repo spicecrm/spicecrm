@@ -58,11 +58,19 @@ export class CalendarSheetEvent implements OnInit {
 
     get canEdit() {
         return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
-            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker;
+            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView;
     }
 
     get owner() {
        return this.calendar.owner;
+    }
+
+    get eventStyle() {
+       return {
+           'height': '100%',
+           'border-radius': '2px',
+           'background-color': !this.isScheduleSheet ? this.event.color : 'transparent',
+       };
     }
 
     private dragStart(event) {

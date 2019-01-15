@@ -106,6 +106,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         if (changes.setdate) {
             this.getEvents();
         }
+
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
         }
@@ -196,7 +197,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         this.googleEvents = [];
         this.googleMultiEvents = [];
         this.arrangeMultiEvents();
-        if (!this.googleIsVisible) {return}
+        if (!this.googleIsVisible || this.calendar.isMobileView) {return}
 
         this.calendar.loadGoogleEvents(this.startDate, this.endDate).subscribe(events => {
             if (events.length > 0) {
@@ -213,6 +214,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         this.userEvents = [];
         this.userMultiEvents = [];
         this.arrangeMultiEvents();
+        if (this.calendar.isMobileView) {return}
 
         for (let calendar of this.calendar.usersCalendars) {
             if (!calendar.visible) {continue}
@@ -238,6 +240,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
     private getOtherEvents() {
         this.otherEvents = [];
         this.arrangeMultiEvents();
+        if (this.calendar.isMobileView) {return}
 
         for (let calendar of this.calendar.otherCalendars) {
             if (!calendar.visible) {continue}

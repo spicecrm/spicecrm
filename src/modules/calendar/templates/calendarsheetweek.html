@@ -8,7 +8,7 @@
             <div *ngFor="let sheetDay of sheetDays" class="slds-border--left" [ngStyle]="getDayColStyle()">
                 <div class="slds-p-top--xx-small">
                     <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('ddd', sheetDay.date)}}</div>
-                    <div style="font-size: 2.5rem;line-height: 2.5rem;" class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom">
+                    <div class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom slds-text-heading--large">
                         <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.day)" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('D',sheetDay.date)}}</a>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-is-relative">
     <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
-        <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index)"></div>
+        <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index + 1)"></div>
         <ng-container *ngIf="notLastHour(index)">
             <div class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(index)"></div>
             <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(index)">{{sheetHour}}:00</div>
