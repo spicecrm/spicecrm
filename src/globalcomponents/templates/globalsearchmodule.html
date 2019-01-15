@@ -1,35 +1,45 @@
-<div class="slds-p-around--medium slds-theme--default slds-border--top">
-    <div class="slds-grid">
-        <div class="slds-col slds-has-flexi-truncate">
-            <h1 class="slds-page-header__title slds-truncate">{{language.getModuleName(module)}}</h1>
+<div [ngClass]="{'slds-hide': hidepanel}">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-p-left--small slds-show--medium">
+            <system-icon [module]="module" divClass=""></system-icon>
+        </div>
+        <div class="slds-p-around--small slds-theme--default slds-border--top">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <h1 class="slds-page-header__title slds-truncate">{{language.getModuleName(module)}}</h1>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-align-bottom">
+                    <!--p class="slds-text-body--small">{{getCount()}} items</p-->
+                    <ul class="slds-list--horizontal slds-has-dividers--left">
+                        <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
+                        <li *ngIf="canViewMore()" class="slds-item slds-text-link--reset" (click)="setSearchScope()">{{language.getLabel('LBL_VIEWALL')}}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="slds-grid">
-        <div class="slds-col slds-align-bottom">
-            <!--p class="slds-text-body--small">{{getCount()}} items</p-->
-            <ul class="slds-list--horizontal slds-has-dividers--left">
-                <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
-                <li *ngIf="canViewMore()" class="slds-item slds-text-link--reset" (click)="setSearchScope()">{{language.getLabel('LBL_VIEWALL')}}</li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div>
-    <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
-        <thead>
-        <tr class="slds-text-title--caps">
-            <th *ngFor="let item of listfields" scope="col">
-                <div class="slds-truncate slds-p-around--x-small">{{language.getFieldDisplayName(module, item.field)}}</div>
-            </th>
-        </tr>
-        </thead>
-    </table>
-    <div #tablecontent class="slds-scrollable--y" (scroll)="onScroll($event)">
-        <table class="slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+    <div>
+        <table class="slds-show--medium slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th *ngFor="let item of listfields" scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">{{language.getFieldDisplayName(module, item.field)}}</div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" role="grid">
             <tbody>
-            <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+                <ng-container *ngFor="let item of getItems()">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
+                        <system-icon [module]="module" size="xx-small" divClass="slds-p-right--xx-small"></system-icon>
+                        <span>{{item._source.summary_text}}</span>
+                    </div>
+                    <tr global-search-module-item [module]="module" [listfields]="listfields" [listitem]="item"></tr>
+                </ng-container>
             </tbody>
-            <!--tbody *ngIf="fts.runningmodulesearch" system-table-stencils [columns]="listfields.length" [rows]="3"></tbody-->
         </table>
         <system-spinner *ngIf="fts.runningmodulesearch"></system-spinner>
     </div>
