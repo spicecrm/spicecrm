@@ -46,6 +46,7 @@ declare var _: any;
 })
 
 export class Calendar implements AfterViewInit, OnDestroy {
+    @ViewChild('calendarcontainer', {read: ViewContainerRef}) private calendarContainer: ViewContainerRef;
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
     touchStartListener: any = {};
     touchMoveListener: any = {};
@@ -79,14 +80,14 @@ export class Calendar implements AfterViewInit, OnDestroy {
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
-            this.calendar.isMobileView = this.elementRef.nativeElement.getBoundingClientRect().width < 1024;
+            this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 1024;
         });
         this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
         this.touchMoveListener = this.renderer.listen('document', 'touchmove', e => this.handleTouchMove(e));
     }
 
     public ngAfterViewInit() {
-        this.calendar.isMobileView = this.elementRef.nativeElement.getBoundingClientRect().width < 1024;
+        this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 1024;
     }
 
     get isMobileView() {
