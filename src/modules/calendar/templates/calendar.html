@@ -1,4 +1,4 @@
-<div [ngClass]="!asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large'" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'">
+<div #calendarcontainer [ngClass]="!asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large'" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'">
     <div [class.slds-modal__container]="asPicker">
         <div class="slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" [class.slds-p-around--x-small]="isMobileView">
             <div class="slds-grid">
@@ -81,7 +81,7 @@
                 </div>
             </div>
         </div>
-        <div [class.slds-hidden]="!openPicker" aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown_left" role="dialog">
+        <div *ngIf="isMobileView" [class.slds-hidden]="!openPicker" aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown_left" role="dialog">
             <system-input-date-picker *ngIf="openPicker" [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
         </div>
         <div #calendarcontent tobottom class="slds-grid slds-theme_default slds-border--right">
