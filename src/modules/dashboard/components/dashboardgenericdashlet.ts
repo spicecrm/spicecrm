@@ -46,6 +46,13 @@ export class DashboardGenericDashlet implements OnInit {
         return window.innerWidth > 768;
     }
 
+    get tableContainerStyle() {
+        return {
+          width: '100%',
+          height: `calc(100% - ${this.headercontainer.element.nativeElement.getBoundingClientRect().height}px)`
+        };
+    }
+
     private loadRecords() {
         let params = this.params;
         if (this.dashletModule) {
