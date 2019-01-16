@@ -57,6 +57,7 @@ import /*embed*/ {DashboardWeatherDashlet} from "./components/dashboardweatherda
 import /*embed*/ {DashboardGenericDashlet} from "./components/dashboardgenericdashlet";
 import /*embed*/ {DashboardGenericDashletRow} from "./components/dashboardgenericdashletrow";
 import /*embed*/ {DashboardRemindersDashlet} from "./components/dashboardremindersdashlet";
+import /*embed*/ {DashboardComponentset} from "./components/dashboardcomponentset";
 
 @NgModule({
     imports: [
@@ -79,6 +80,7 @@ import /*embed*/ {DashboardRemindersDashlet} from "./components/dashboardreminde
         DashboardGenericDashlet,
         DashboardGenericDashletRow,
         DashboardRemindersDashlet,
+        DashboardComponentset,
     ],
     exports: [
         DashboardContainer,
