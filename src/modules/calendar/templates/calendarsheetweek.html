@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div #scrollcontainer aria-hidden="true" style="overflow: scroll; visibility: hidden; flex: none"></div>
+    <div #scrollcontainer class="spicecrm-scrollbar" aria-hidden="true" style="overflow: scroll; visibility: hidden; flex: none"></div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable spicecrm-scrollbar slds-is-relative">
     <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
