@@ -8,31 +8,7 @@ import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-book-selector",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html",
-    styles: [`
-
-        /* Scrollbar */
-
-        /* width */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: #aaa;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: #888;
-        }
-    `]
+    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html"
 })
 export class KnowledgeBookSelector {
 

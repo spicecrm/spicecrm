@@ -27,7 +27,7 @@
         <div class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-border--bottom">
             {{searchResults.length}} {{language.getLabel('MSG_BOOKS_FOUND')}}
         </div>
-        <ul class="slds-lookup__list" style="height: 175px" role="listbox">
+        <ul class="slds-lookup__list spicecrm-scrollbar-thin" style="height: 175px" role="listbox">
             <li *ngFor="let book of searchResults" role="presentation" (mousedown)="selectBook(book)">
                 <div class="slds-lookup__item-action slds-media" role="option">
                     <span class="slds-lookup__result-text">{{book.name}}</span>

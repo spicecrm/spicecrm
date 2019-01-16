@@ -85,7 +85,7 @@
             <system-input-date-picker *ngIf="openPicker" [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
         </div>
         <div #calendarcontent tobottom class="slds-grid slds-theme_default slds-border--right">
-            <div *ngIf="!isMobileView" tobottom [ngStyle]="sidebarStyle" class="slds-border--right slds-p-top--xx-small slds-scrollable--y slds-size--1-of-1 slds-theme--default">
+            <div *ngIf="!isMobileView" tobottom [ngStyle]="sidebarStyle" class="slds-border--right slds-p-top--xx-small spicecrm-scrollbar slds-scrollable--y slds-size--1-of-1 slds-theme--default">
                 <system-input-date-picker [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
                 <calendar_other_calendars_monitor (googleIsVisible$)="googleIsVisible = $event" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
             </div>

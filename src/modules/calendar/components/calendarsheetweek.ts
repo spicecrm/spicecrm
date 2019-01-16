@@ -20,30 +20,7 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-week',
-    templateUrl: './src/modules/calendar/templates/calendarsheetweek.html',
-    styles: [`
-        /* Scrollbar */
-        /* width */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: #aaa;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: #888;
-        }
-    `]
+    templateUrl: './src/modules/calendar/templates/calendarsheetweek.html'
 })
 export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
