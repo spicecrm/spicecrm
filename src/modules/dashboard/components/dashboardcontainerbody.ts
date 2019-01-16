@@ -5,7 +5,7 @@ import {
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    OnDestroy, AfterViewChecked,
+    AfterViewChecked,
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
@@ -24,12 +24,10 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
         }`
     ]
 })
-export class DashboardContainerBody implements AfterViewInit, AfterViewChecked ,OnDestroy {
+export class DashboardContainerBody implements AfterViewInit, AfterViewChecked {
     @ViewChild('bodycontainer', {read: ViewContainerRef}) private bodycontainer: ViewContainerRef;
-    private resizeListener: any = {};
 
     constructor(private dashboardlayout: dashboardlayout, private language: language, private elementRef: ElementRef, private renderer: Renderer2) {
-        this.resizeListener = this.renderer.listen('window', 'resize', () => this.calculateGrid());
         this.renderer.listen('window', 'mousemove', (event) => {
             if (this.dashboardlayout.editMode && this.dashboardlayout.isMoving) {
                 if (event.pageY < (this.dashboardlayout.mainContainer.top + 20) && this.bodycontainer.element.nativeElement.scrollTop > 0) {
@@ -50,10 +48,6 @@ export class DashboardContainerBody implements AfterViewInit, AfterViewChecked ,
         if (this.bodycontainer.element.nativeElement.clientWidth != this.dashboardlayout.mainContainer.width) {
             this.calculateGrid();
         }
-    }
-
-    public ngOnDestroy() {
-        this.resizeListener();
     }
 
     get isEditing() {
