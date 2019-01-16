@@ -3,8 +3,8 @@
     <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}})</h2>
 </div>
 <!-- the table - hidden if no records have been found and the dashlet is not loading-->
-<div class="slds-size--1-of-1" [ngClass]="{'slds-table--header-fixed_container': islarge}">
-    <div #tablecontainer class="slds-scrollable--y" style="width: 100%;height:100%" (scroll)="onScroll()">
+<div #tablecontainer class="slds-size--1-of-1" [ngStyle]="tableContainerStyle" [ngClass]="{'slds-table--header-fixed_container': islarge}">
+    <div class="slds-scrollable--y" style="height: 100%; width: 100%" (scroll)="onScroll()">
         <table  class="slds-table slds-table_bordered slds-table_cell-buffer slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table_header-fixed': islarge}">
             <thead *ngIf="islarge">
                 <tr class="slds-text-title_caps">

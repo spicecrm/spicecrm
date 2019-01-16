@@ -25,10 +25,10 @@ declare var _: any;
 export class Calendar implements AfterViewInit, OnDestroy {
     @ViewChild('calendarcontainer', {read: ViewContainerRef}) private calendarContainer: ViewContainerRef;
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    touchStartListener: any = {};
-    touchMoveListener: any = {};
-    xDown: number = null;
-    yDown: number = null;
+    private touchStartListener: any = {};
+    private touchMoveListener: any = {};
+    private xDown: number = null;
+    private yDown: number = null;
     private resizeListener: any;
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
