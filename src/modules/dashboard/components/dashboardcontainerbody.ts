@@ -66,6 +66,10 @@ export class DashboardContainerBody implements AfterViewInit, AfterViewChecked {
             width: this.bodycontainer.element.nativeElement.clientWidth,
             height: this.bodycontainer.element.nativeElement.clientHeight
         };
+        if (window.innerWidth < 1024) {
+            this.dashboardlayout.editing = '';
+            this.dashboardlayout.editMode = false;
+        }
         this.dashboardlayout.calculateGrid();
     }
 
