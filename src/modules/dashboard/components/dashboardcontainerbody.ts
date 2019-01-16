@@ -5,7 +5,7 @@ import {
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    OnDestroy,
+    OnDestroy, AfterViewChecked,
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
@@ -24,7 +24,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
         }`
     ]
 })
-export class DashboardContainerBody implements AfterViewInit, OnDestroy {
+export class DashboardContainerBody implements AfterViewInit, AfterViewChecked ,OnDestroy {
     @ViewChild('bodycontainer', {read: ViewContainerRef}) private bodycontainer: ViewContainerRef;
     private resizeListener: any = {};
 
@@ -44,6 +44,12 @@ export class DashboardContainerBody implements AfterViewInit, OnDestroy {
 
     public ngAfterViewInit() {
         this.calculateGrid();
+    }
+
+    public ngAfterViewChecked() {
+        if (this.bodycontainer.element.nativeElement.clientWidth != this.dashboardlayout.mainContainer.width) {
+            this.calculateGrid();
+        }
     }
 
     public ngOnDestroy() {
