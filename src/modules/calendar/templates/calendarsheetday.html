@@ -12,7 +12,7 @@
         </div>
     </div>
 </div>
-<div #calendarsheet tobottom style="margin-top: -1px;" class="slds-scrollable--y slds-is-relative">
+<div #calendarsheet tobottom style="margin-top: -1px;" class="slds-scrollable--y spicecrm-scrollbar slds-is-relative">
     <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
         <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index + 1)"></div>
         <ng-container *ngIf="notLastHour(index)">

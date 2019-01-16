@@ -997,3 +997,29 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .html-text .align-justify {
     text-align: justify;
 }
+
+
+/* SpiceCRM Scrollbar */
+
+/* width normal */
+.spicecrm-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+/* width thin */
+.spicecrm-scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+/* Track */
+.spicecrm-scrollbar::-webkit-scrollbar-track, .spicecrm-scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+/* Handle */
+.spicecrm-scrollbar::-webkit-scrollbar-thumb, .spicecrm-scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #aaa;
+}
+/* Handle on hover */
+.spicecrm-scrollbar::-webkit-scrollbar-thumb:hover, .spicecrm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
