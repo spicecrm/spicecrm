@@ -12,7 +12,6 @@ import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {model} from "../../services/model.service";
 import {ObjectActionContainerItem} from "./objectactioncontaineritem";
-import {disableBindings} from "@angular/core/src/render3";
 
 
 @Component({
