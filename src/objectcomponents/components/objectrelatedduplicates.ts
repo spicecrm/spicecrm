@@ -9,40 +9,46 @@ import {language} from '../../services/language.service';
     templateUrl: './src/objectcomponents/templates/objectrelatedduplicates.html'
 })
 export class ObjectRelatedDuplicates implements AfterViewInit {
-    componentconfig: any = {};
-    displayitems: number = 5;
+    public componentconfig: any = {};
+    private displayitems: number = 5;
 
-    duplicates: Array<any> = [];
-    hideDuplicates: boolean = true;
+    private duplicates: any[] = [];
+    private hideDuplicates: boolean = true;
 
     constructor(private language: language, private model: model, private toast: toast) {
 
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.checkDuplicates();
     }
 
-    toggleDuplicates(){
+    private toggleDuplicates() {
         this.hideDuplicates = !this.hideDuplicates;
     }
 
-    getToggleIcon(){
-        return this.hideDuplicates ? 'down' : 'up';
+    private merged(merged) {
+        if (merged) this.checkDuplicates();
     }
 
-    merged(merged){
-        if(merged) this.checkDuplicates();
-    }
-
-    get showMergeButton(){
+    get showMergeButton() {
         return this.duplicates.length > 0 && this.model.checkAccess('edit');
     }
 
-    checkDuplicates(){
+    private checkDuplicates() {
         this.duplicates = [];
         this.model.duplicateCheck().subscribe(data => {
             this.duplicates = data;
         });
+    }
+
+    get iconStyle() {
+        if (this.hideDuplicates) {
+            return {
+                transform: 'scale(1, -1)'
+            };
+        } else {
+            return {};
+        }
     }
 }

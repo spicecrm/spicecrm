@@ -1,8 +1,9 @@
-import {Component, AfterViewInit, OnInit, OnDestroy} from "@angular/core";
+import {Component, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList} from "@angular/core";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
+import {ObjectRelatedlistHeader} from "./objectrelatedlistheader";
 
 @Component({
     selector: "object-relatedlist-list",
@@ -10,6 +11,9 @@ import {language} from "../../services/language.service";
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
+
+    @ViewChildren(ObjectRelatedlistHeader) private listheaders: QueryList<ObjectRelatedlistHeader>;
+
     public activeTab: number = 0;
     public componentconfig: any = {};
     public listfields: any[] = [];
@@ -43,6 +47,14 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
         return !this.checkModelState() || !this.aclAccess();
     }
 
+    get isopen() {
+        if (this.listheaders && !this.listheaders.first.isopen) {
+            return false;
+        }
+
+        return this.relatedmodels.count > 0 || this.isloading;
+    }
+
     public checkModelState() {
         if (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate)) {
             return false;
@@ -57,7 +69,7 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public loadRelated() {
-        if(!this.aclAccess()) return;
+        if (!this.aclAccess()) return;
         this.relatedmodels.relatedModule = this.componentconfig.object;
         this.relatedmodels.getData();
     }

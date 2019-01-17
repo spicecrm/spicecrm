@@ -30,6 +30,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     private theFile: string = "";
     private theProgress: number = 0;
     private showUploadModal: boolean = false;
+    private isopen: boolean = true;
 
     constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal ) {
         this.modelattachments.module = this.model.module;
@@ -42,6 +43,20 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
 
     public ngAfterViewInit() {
         this.loadFiles();
+    }
+
+    private toggleOpen() {
+        this.isopen = !this.isopen;
+    }
+
+    get iconStyle() {
+        if (!this.isopen) {
+            return {
+                transform: 'scale(1, -1)'
+            };
+        } else {
+            return {};
+        }
     }
 
     private preventdefault(event: any) {

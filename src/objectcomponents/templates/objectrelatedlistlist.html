@@ -1,6 +1,6 @@
 <article *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
     <object-relatedlist-header [module]="module" [title]="panelTitle" [actionset]="componentconfig.actionset"></object-relatedlist-header>
-    <ng-container *ngIf="relatedmodels.count > 0 || isloading">
+    <ng-container *ngIf="isopen">
         <div class="slds-card__body">
             <object-relatedlist-table [listfields]="listfields" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset"></object-relatedlist-table>
         </div>
