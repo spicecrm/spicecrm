@@ -60,6 +60,7 @@ import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigati
 import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
 import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
 import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
+import /*embed*/ {GlobalNavigationCompact} from "./components/globalnavigationcompact";
 import /*embed*/ {GlobalDockedComposerContainer} from "./components/globaldockedcomposercontainer";
 import /*embed*/ {GlobalDockedComposer} from "./components/globaldockedcomposer";
 import /*embed*/ {GlobalDockedComposerCall} from "./components/globaldockedcomposercall";
@@ -125,6 +126,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalNavigationMenuItemRoute,
         GlobalNavigationMenuItemIcon,
         GlobalNavigationMenuMore,
+        GlobalNavigationCompact,
         GlobalLogin,
         GlobalSetup,
         GlobalLoginForgotPassword,
