@@ -1,0 +1,24 @@
+<button class="slds-button slds-button--icon" (click)="toggleMenu()">
+    <!--system-button-icon icon="rows"></system-button-icon-->
+    <div class="slds-context-bar__icon-action slds-m-top_small" (click)="showAppLauncher()">
+        <a href="javascript:void(0);" class="slds-icon-waffle_container slds-context-bar__button">
+            <div class="slds-icon-waffle">
+                <div class="slds-r1"></div>
+                <div class="slds-r2"></div>
+                <div class="slds-r3"></div>
+                <div class="slds-r4"></div>
+                <div class="slds-r5"></div>
+                <div class="slds-r6"></div>
+                <div class="slds-r7"></div>
+                <div class="slds-r8"></div>
+                <div class="slds-r9"></div>
+            </div>
+        </a>
+    </div>
+</button>
+<div class="slds-is-absolute slds-theme--shade" style="width: 200px; top:0px; z-index: 998; height: 100vh; transition: left 1s;" [ngStyle]="menustyle">
+    menu
+    <button class="slds-button slds-button--icon" (click)="toggleMenu()">
+        <system-button-icon icon="rows"></system-button-icon>
+    </button>
+</div>

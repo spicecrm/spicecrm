@@ -1,4 +1,3 @@
-
 import {
     AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
     ElementRef
@@ -8,19 +7,27 @@ import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 
 @Component({
-    selector: 'global-navigation',
-    templateUrl: './src/globalcomponents/templates/globalnavigation.html',
+    selector: 'global-navigation-compact',
+    templateUrl: './src/globalcomponents/templates/globalnavigationcompact.html',
     providers: [MenuService]
 })
-export class GlobalNavigation{
-    @ViewChild('menucontainer', {read: ViewContainerRef}) private menucontainer: ViewContainerRef;
+export class GlobalNavigationCompact {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
-    private resizeTimeOut: any = undefined;
+
+    private showmenu: boolean = false;
 
     constructor(private menuService: MenuService, private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast) {
-        menuService.loadModules();
 
     }
 
+    private toggleMenu() {
+        this.showmenu = !this.showmenu;
+    }
+
+    get menustyle() {
+        return {
+            left: this.showmenu ? '0px' : '-200px'
+        };
+    }
 }
