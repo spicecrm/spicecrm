@@ -1,9 +1,10 @@
-import {Component, AfterViewInit, OnInit} from '@angular/core';
+import {Component, AfterViewInit, OnInit, ViewChildren, QueryList} from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {Router} from '@angular/router';
+import {ObjectRelatedlistHeader} from "./objectrelatedlistheader";
 
 @Component({
     selector: 'object-relatedlist-tiles',
@@ -11,6 +12,9 @@ import {Router} from '@angular/router';
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistTiles implements OnInit, AfterViewInit {
+
+    @ViewChildren(ObjectRelatedlistHeader) private listheaders: QueryList<ObjectRelatedlistHeader>;
+
     private activeTab: number = 0;
     private componentconfig: any = {};
     private displayitems: number = 5;
@@ -23,6 +27,14 @@ export class ObjectRelatedlistTiles implements OnInit, AfterViewInit {
 
     get hidden() {
         return !this.checkModelState() || !this.aclAccess();
+    }
+
+    get isopen() {
+        if (this.listheaders && !this.listheaders.first.isopen) {
+            return false;
+        }
+
+        return this.relatedmodels.count > 0;
     }
 
     private checkModelState() {
