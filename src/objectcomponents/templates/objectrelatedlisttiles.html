@@ -1,6 +1,6 @@
 <article *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
     <object-relatedlist-header [module]="module" [actionset]="componentconfig.actionset"></object-relatedlist-header>
-    <ng-container *ngIf="relatedmodels.count > 0 || isloading">
+    <ng-container *ngIf="isopen">
         <div class="slds-card__body">
             <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
                 <div *ngFor="let relateditem of relatedmodels.items" class="slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent" object-related-card-tile [fieldset]="componentconfig.fieldset" [data]="relateditem" [module]="module"></div>

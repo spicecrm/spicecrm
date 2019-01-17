@@ -8,7 +8,7 @@
                         <span class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{duplicates.length}})</span>
                     </a>
                 </h2>
-                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicates.length > 0" [icon]="getToggleIcon()" [size]="'x-small'" (click)="toggleDuplicates()"></system-utility-icon>
+                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicates.length > 0" icon="up" [ngStyle]="iconStyle" style="transition: .5s;" size="x-small" (click)="toggleDuplicates()"></system-utility-icon>
             </div>
         </header>
         <object-merge-button *ngIf="showMergeButton" [mergemodels]="duplicates" (merged)="merged($event)"></object-merge-button>
