@@ -1012,14 +1012,64 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     height: 4px;
 }
 /* Track */
-.spicecrm-scrollbar::-webkit-scrollbar-track, .spicecrm-scrollbar-thin::-webkit-scrollbar-track {
+.spicecrm-scrollbar::-webkit-scrollbar-track,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 /* Handle */
-.spicecrm-scrollbar::-webkit-scrollbar-thumb, .spicecrm-scrollbar-thin::-webkit-scrollbar-thumb {
+.spicecrm-scrollbar::-webkit-scrollbar-thumb {
     background: #aaa;
+    border-top: 2px solid #f1f1f1;
+    border-bottom: 2px solid #f1f1f1;
+}
+.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-top: 1px solid #f1f1f1;
+    border-bottom: 1px solid #f1f1f1;
 }
 /* Handle on hover */
-.spicecrm-scrollbar::-webkit-scrollbar-thumb:hover, .spicecrm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+.spicecrm-scrollbar::-webkit-scrollbar-thumb:hover,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: #888;
+}
+/* Buttons */
+.spicecrm-scrollbar::-webkit-scrollbar-button:single-button {
+    background-color: #f1f1f1;
+    display: block;
+    border-style: solid;
+    height: 6px;
+    width: 8px;
+}
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button {
+    background-color: #f1f1f1;
+    display: block;
+    border-style: solid;
+    height: 3px;
+    width: 4px;
+}
+/* Up */
+.spicecrm-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement {
+    border-width: 0 4px 4px 4px;
+    border-color: transparent transparent #aaa transparent;
+}
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button:vertical:decrement {
+    border-width: 0 2px 2px 2px;
+    border-color: transparent transparent #aaa transparent;
+}
+.spicecrm-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement:hover,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+    border-color: transparent transparent #888 transparent;
+}
+/* Down */
+.spicecrm-scrollbar::-webkit-scrollbar-button:single-button:vertical:increment {
+    border-width: 4px 4px 0 4px;
+    border-color: #aaa transparent transparent transparent;
+}
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button:vertical:increment {
+    border-width: 2px 2px 0 2px;
+    border-color: #aaa transparent transparent transparent;
+}
+.spicecrm-scrollbar::-webkit-scrollbar-button:vertical:single-button:increment:hover,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:vertical:single-button:increment:hover {
+    border-color: #888 transparent transparent transparent;
 }
