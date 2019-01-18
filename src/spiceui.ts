@@ -155,3 +155,16 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
     document.getElementById('loadstatus').innerHTML = '...preparing..';
     platformBrowserDynamic().bootstrapModule(SpiceUIModule);
 }
+
+window.name = 'SpiceCRM';
+( () => {
+    if ( window.BroadcastChannel ) { // Does the browser know the Broadcast API?
+        let bc = new BroadcastChannel('spiceCRM_channel');
+        bc.onmessage = e => {
+            if (e.data.url && e.data.url.startsWith( window.location.origin + window.location.pathname )) {
+                window.location = e.data.url;
+                bc.postMessage({ urlReceived: true });
+            }
+        };
+    }
+})();
