@@ -73,10 +73,11 @@ export class GlobalNavigationCompact {
 
     get activeRoleName() {
         let role = this.metadata.getActiveRole();
-        if (role.label && role.label != '')
+        if (role.label && role.label != '') {
             return this.language.getLabel(role.label);
-        else
+        } else {
             return this.metadata.getActiveRole().name;
+        }
     }
 
     get containerMiddleStyle() {
@@ -85,13 +86,9 @@ export class GlobalNavigationCompact {
         };
     }
 
-    get recentSeparatorClasses() {
-        return this.favorites.length > 0 || this.activeItemMenu.length > 0 ? 'slds-has-divider--top-space': 'slds-p-top--x-small';
-    }
-
     get menuStyle() {
         return {
-            left: this.showmenu ? '0px' : '-200px',
+            'left': this.showmenu ? '0px' : '-250px',
             'box-shadow': this.showmenu ? '5px 0 15px #888' : 'none'
         };
     }
@@ -102,6 +99,7 @@ export class GlobalNavigationCompact {
 
     private navigateTo(module) {
         this.router.navigate(['/module/' + module]);
+        this.showmenu = false;
     }
 
     private buildMenuItems() {
@@ -115,23 +113,11 @@ export class GlobalNavigationCompact {
         this.model.module = this.activeItem;
         this.reset();
 
-        if(this.activeItem != 'Home') {
-            this.activeItemMenu = this.metadata.getModuleMenu(this.activeItem);
-            this.buildActiveItemMenu();
-            this.favorites = this.favorite.getFavorites(this.activeItem);
-            this.recent.getModuleRecent(this.activeItem).subscribe(recentItems => {
-                this.recentItems = recentItems;
-            });
-        }
-
-        if (!this.hasMenu && this.favorites.length == 0 && this.recentItems.length == 0) {
-            this.showmenu = false;
-        }
+        this.activeItemMenu = this.metadata.getModuleMenu(this.activeItem);
+        this.buildActiveItemMenu();
     }
 
     private reset() {
-        this.favorites = [];
-        this.recentItems = [];
         this.activeItemMenu = [];
         this.destroyActiveItemMenu();
     }
@@ -151,11 +137,6 @@ export class GlobalNavigationCompact {
 
     private logout() {
         this.loginService.logout();
-    }
-
-    private navigateRecent(recentid) {
-        this.showmenu = false;
-        this.router.navigate(['/module/' + this.activeItem + '/' + recentid]);
     }
 
     private buildActiveItemMenu() {
