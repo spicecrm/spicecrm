@@ -1,95 +1,65 @@
 <button class="slds-button slds-button--icon" (click)="toggleMenu()">
     <system-utility-icon icon="rows" size="small"></system-utility-icon>
 </button>
-<div class="slds-is-absolute slds-theme--shade" style="width: 200px; top: 0; z-index: 998; height: 100vh; transition: left 1s" [ngStyle]="menuStyle">
+<div class="slds-is-absolute slds-theme--shade" style="width: 250px; top: 0; z-index: 998; height: 100vh; transition: left 1s" [ngStyle]="menuStyle">
     <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-start slds-p-around--x-small">
         <div class="slds-grid slds-grid--vertical-align-center">
-            <div class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
-                <system-utility-icon icon="user" size="x-small" colorclass=""></system-utility-icon>
+            <div style="transform:scale(0.8);" (click)="showAppLauncher()">
+                <a href="javascript:void(0);" class="slds-icon-waffle_container">
+                    <div class="slds-icon-waffle">
+                        <div class="slds-r1"></div>
+                        <div class="slds-r2"></div>
+                        <div class="slds-r3"></div>
+                        <div class="slds-r4"></div>
+                        <div class="slds-r5"></div>
+                        <div class="slds-r6"></div>
+                        <div class="slds-r7"></div>
+                        <div class="slds-r8"></div>
+                        <div class="slds-r9"></div>
+                    </div>
+                </a>
             </div>
-            <div class="slds-m-left--xx-small slds-text-heading--small" [title]="userName">{{displayName}}</div>
+            <div class="slds-truncate slds-p-left--xx-small slds-text-heading_small">{{activeRoleName}}</div>
         </div>
         <button class="slds-button slds-button--icon" (click)="toggleMenu()">
             <system-button-icon icon="close"></system-button-icon>
         </button>
     </div>
-    <div class="slds-grid">
-        <nav class="slds-nav-vertical" style="width: 100%;">
-            <div class="slds-nav-vertical__section">
-                <ul style="max-height: 300px">
-                    <li class="slds-nav-vertical__item">
-                        <a href="javascript:void(0);" class="slds-nav-vertical__action slds-p-left--small slds-text-heading--small slds-text-title--caps" (click)="showAppLauncher()">
-                            {{activeRoleName}}
-                        </a>
-                    </li>
-                    <li class="slds-nav-vertical__item slds-is-active">
-                        <a href="javascript:void(0);" class="slds-nav-vertical__action slds-p-left--small" (click)="navigateTo(activeItem)">
-                            <system-utility-icon *ngIf="hasMenu" icon="chevrondown" size="xx-small" class="slds-m-right--xx-small"></system-utility-icon>
-                            {{language.getModuleName(activeItem)}}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <ul *ngIf="hasMenu" role="menu">
-                <ng-container #menucontainer></ng-container>
-                <ng-container *ngIf="favorites.length > 0">
-                    <li class="slds-has-divider--top-space" role="separator"></li>
-                    <li class="slds-nav-vertical__item slds-text-heading--small slds-p-left--medium" role="separator">
-                        <span class="slds-text-title--caps slds-truncate">{{language.getLabel('LBL_FAVORITES')}}</span>
-                    </li>
-                    <li *ngFor="let favorite of favorites" class="slds-m-left--large" role="presentation" (click)="navigateRecent(favorite.item_id)">
-                        <a href="javascript:void(0);" role="menuitem">
-                            <span class="slds-truncate">{{favorite.item_summary}}</span>
-                        </a>
-                    </li>
-                </ng-container>
-                <ng-container *ngIf="activeItem != 'Home'">
-                    <li [ngClass]="recentSeparatorClasses" role="separator"></li>
-                    <li class="slds-nav-vertical__item slds-text-heading--small" role="separator">
-                        <span class="slds-text-title--caps slds-truncate slds-p-left--medium">{{language.getLabel('LBL_RECENTLYVIEWED')}}</span>
-                    </li>
-                    <li *ngFor="let recentItem of recentItems" class="slds-m-left--large" role="presentation" (click)="navigateRecent(recentItem.item_id)">
-                        <a href="javascript:void(0);" role="menuitem">
-                            <span class="slds-truncate">{{recentItem.item_summary}}</span>
-                        </a>
-                    </li>
-                    <li class="slds-m-left--large" *ngIf="recentItems.length == 0">{{language.getLabel('LBL_NO_ENTRIES')}}</li>
-                </ng-container>
-            </ul>
-        </nav>
+    <div class="slds-theme--default slds-p-vertical--x-small">
+        <div class="slds-grid slds-grid--vertical-align-center slds-p-left--small slds-p-vertical--xx-small">
+            <system-icon [module]="activeItem" size="x-small" divClass=""></system-icon>
+            <a href="javascript:void(0);" class="slds-p-left--small slds-text-heading_small">
+                <span class="slds-truncate" style="font-weight: bold;">{{language.getModuleName(activeItem)}}</span>
+            </a>
+        </div>
+        <ul role="menu">
+            <ng-container #menucontainer></ng-container>
+        </ul>
     </div>
     <div #containermiddle [ngStyle]="containerMiddleStyle" class="slds-grid">
-        <div class="slds-has-divider--top-space slds-has-divider--bottom-space slds-scrollable--y spicecrm-scrollbar" style="width: 100%;">
-            <nav class="slds-nav-vertical" style="width: 100%;">
-                <div class="slds-nav-vertical__section">
-                    <ul>
-                        <li *ngFor="let item of menuItems" class="slds-nav-vertical__item">
-                            <a href="javascript:void(0);" class="slds-nav-vertical__action slds-p-left--small" (click)="navigateTo(item)">
-                                <span class="slds-truncate">{{language.getModuleName(item)}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+        <div class="slds-has-divider--bottom-space slds-scrollable--y spicecrm-scrollbar" style="width: 100%;">
+            <div *ngFor="let item of menuItems" (click)="navigateTo(item)" class="slds-grid slds-grid--vertical-align-center slds-p-vertical--x-small  slds-p-left--small">
+                <system-icon [module]="item" size="x-small" divClass=""></system-icon>
+                <a href="javascript:void(0);" class="slds-p-left--small slds-text-heading_small">
+                    <span class="slds-truncate">{{language.getModuleName(item)}}</span>
+                </a>
+            </div>
         </div>
     </div>
-    <div #containerbottom class="slds-grid">
-        <div class="slds-form--stacked slds-p-around--small slds-size--1-of-1">
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_LANGUAGE')}}</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage">
-                            <option *ngFor="let language of getAvialableLanguages()" [value]="language.language">
-                                {{language.text}}
-                            </option>
-                        </select>
-                    </div>
+    <div #containerbottom class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
+        <div class="slds-form-element slds-grow">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage">
+                        <option *ngFor="let language of getAvialableLanguages()" [value]="language.language">
+                            {{language.text}}
+                        </option>
+                    </select>
                 </div>
             </div>
-            <div class="slds-grid slds-grid--align-end slds-m-top--small">
-                <system-utility-icon icon="logout" size="x-small" [title]="language.getLabel('LBL_LOGOFF')" (click)="logout()"></system-utility-icon>
-            </div>
+        </div>
+        <div class="slds-grid slds-grid--align-end slds-p-horizontal--small slds-col--bump-left">
+            <system-utility-icon icon="logout" size="x-small" [title]="language.getLabel('LBL_LOGOFF')" (click)="logout()"></system-utility-icon>
         </div>
     </div>
 </div>
