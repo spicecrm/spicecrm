@@ -35,7 +35,6 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
 
-    private sheetTimeWidth: number = 80;
     private sheetTopMargin: number = 0;
     private sheetDay: any = {};
     private sheetHours: any[] = [];
@@ -56,6 +55,14 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
                 private session: session,
                 private calendar: calendar) {
         this.buildHours();
+    }
+
+    get offset() {
+        return moment.tz(moment.tz.guess()).format('z Z');
+    }
+
+    get sheetTimeWidth() {
+        return this.calendar.sheetTimeWidth;
     }
 
     get allEvents() {

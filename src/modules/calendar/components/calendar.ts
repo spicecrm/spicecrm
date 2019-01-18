@@ -1,5 +1,5 @@
 import {
-    AfterViewInit,
+    AfterViewInit, ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -25,11 +25,13 @@ declare var _: any;
 export class Calendar implements AfterViewInit, OnDestroy {
     @ViewChild('calendarcontainer', {read: ViewContainerRef}) private calendarContainer: ViewContainerRef;
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    private touchStartListener: any = {};
-    private touchMoveListener: any = {};
+
+    private clickListener: any;
+    private touchStartListener: any;
+    private touchMoveListener: any;
+    private resizeListener: any;
     private xDown: number = null;
     private yDown: number = null;
-    private resizeListener: any;
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public openPicker: boolean = false;
@@ -49,22 +51,26 @@ export class Calendar implements AfterViewInit, OnDestroy {
     constructor(private language: language,
                 private navigation: navigation,
                 private elementRef: ElementRef,
+                private cdr: ChangeDetectorRef,
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
-        this.calendarDate = new moment();
+        this.language.currentlanguage$.subscribe(lang => this.calendarDate = this.calendar.calendarDate);
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
         this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
-            this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 1024;
+            this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
         });
         this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
-        this.touchMoveListener = this.renderer.listen('document', 'touchmove', e => this.handleTouchMove(e));
     }
 
     public ngAfterViewInit() {
-        this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 1024;
+        this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
+    }
+
+    public ngAfterViewChecked() {
+        this.cdr.detectChanges();
     }
 
     get isMobileView() {
@@ -88,7 +94,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     }
 
     set calendarDate(value) {
-        this.calendar.calendarDate = value;
+        this.calendar.calendarDate = new moment(value).locale(this.language.currentlanguage.substring(0,2));
     }
 
     get calendarDate() {
@@ -142,6 +148,11 @@ export class Calendar implements AfterViewInit, OnDestroy {
         }
     }
 
+    private getCompactCalendarHeader() {
+        const focDate = new moment(this.calendarDate);
+        return focDate.format('MMM, YYYY');
+    }
+
     private getFirstDayOfWeek() {
         let focDate = new moment(this.calendarDate);
         focDate.day(this.weekStartDay);
@@ -155,7 +166,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     }
 
     private setDateChanged(event) {
-        this.openPicker = false;
+        this.toggleClosed();
         this.calendarDate = new moment(event);
         this.refresh();
     }
@@ -218,16 +229,11 @@ export class Calendar implements AfterViewInit, OnDestroy {
         this.self.destroy();
     }
 
-    public ngOnDestroy() {
-        this.resizeListener();
-        this.touchStartListener();
-        this.touchMoveListener();
-    }
-
     private handleTouchStart(evt) {
         const touches = evt.touches || evt.originalEvent.touches;
         this.xDown = touches[0].clientX;
         this.yDown = touches[0].clientY;
+        this.touchMoveListener = this.renderer.listen('document', 'touchmove', e => this.handleTouchMove(e));
     };
 
     private handleTouchMove(evt) {
@@ -237,13 +243,49 @@ export class Calendar implements AfterViewInit, OnDestroy {
         if ( Math.abs( xDiff ) > Math.abs( this.yDown - evt.touches[0].clientY ) ) {
             if ( xDiff < 0 ) {
                 this.shiftMinus();
-
             } else {
                 this.shiftPlus();
             }
         }
-
         this.xDown = null;
         this.yDown = null;
+        this.touchMoveListener();
     };
+
+    private toggleOpen(picker, button) {
+        this.openPicker = !this.openPicker;
+        if (this.openPicker) {
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event, picker, button));
+        }
+    }
+
+    private toggleClosed() {
+        this.openPicker = false;
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+    private onDocumentClick(event: MouseEvent, picker, button) {
+        if (this.openPicker && !picker.contains(event.target) && !button.contains(event.target)) {
+            this.openPicker = false;
+            this.clickListener();
+        }
+    }
+
+    public ngOnDestroy() {
+        if (this.resizeListener) {
+            this.resizeListener();
+        }
+        if (this.touchStartListener) {
+            this.touchStartListener();
+        }
+        if (this.touchMoveListener) {
+            this.touchMoveListener();
+        }
+        if (this.clickListener) {
+            this.clickListener();
+        }
+        this.cdr.detach();
+    }
 }
