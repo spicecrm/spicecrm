@@ -15,6 +15,7 @@ export class CalendarMorePopover implements OnInit {
     public popoverpos: string = 'top';
     public styles = null;
     public isMobileView: boolean = false;
+    public sheetDay: any = {};
 
     private hidePopoverTimeout: any = {};
 
@@ -41,6 +42,11 @@ export class CalendarMorePopover implements OnInit {
 
     private onMouseOut() {
         this.closePopover(true);
+    }
+
+    get shortDate() {
+        let navigateDate = moment(this.calendar.calendarDate);
+        return navigateDate.month(this.sheetDay.month).date(this.sheetDay.day).format('D MMM,');
     }
 
     get popoverStyle() {

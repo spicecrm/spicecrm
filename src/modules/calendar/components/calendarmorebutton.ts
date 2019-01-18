@@ -15,6 +15,7 @@ export class CalendarMoreButton implements OnDestroy{
 
     @Input("moreevents") private events: any[] = [];
     @Input("ismobileview") private isMobileView: boolean = false;
+    @Input("sheetday") private sheetDay: any = {};
     private popoverCmp = null;
     private showPopoverTimeout: any = {};
 
@@ -45,6 +46,7 @@ export class CalendarMoreButton implements OnDestroy{
             popover => {
                 popover.instance.events = this.events;
                 popover.instance.isMobileView = this.isMobileView;
+                popover.instance.sheetDay = this.sheetDay;
                 popover.instance.parentElementRef = this.elementRef;
                 this.popoverCmp = popover.instance;
             }
