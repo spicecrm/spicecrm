@@ -7,6 +7,7 @@ import {
     Input,
     NgModule,
     AfterViewInit,
+    AfterViewChecked,
     OnInit,
     OnDestroy,
     OnChanges,
