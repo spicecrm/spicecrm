@@ -23,8 +23,8 @@ import {modal} from "../../services/modal.service";
 export class GlobalNavigationCompact {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
-    @ViewChild('containermiddle', {read: ViewContainerRef}) containermiddle: ViewContainerRef;
-    @ViewChild('containerbottom', {read: ViewContainerRef}) containerbottom: ViewContainerRef;
+    @ViewChild('containermiddle', {read: ViewContainerRef}) private containermiddle: ViewContainerRef;
+    @ViewChild('containerbottom', {read: ViewContainerRef}) private containerbottom: ViewContainerRef;
     @ViewChild('menucontainer', {read: ViewContainerRef}) private menucontainer: ViewContainerRef;
 
     private showmenu: boolean = false;

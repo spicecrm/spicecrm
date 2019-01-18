@@ -30,6 +30,7 @@ import {footer} from "../services/footer.service";
 import {cookie} from "../services/cookie.service";
 import { modal } from "../services/modal.service";
 import { loader } from "../services/loader.service";
+import { layout } from "../services/layout.service";
 
 import {ObjectFields}      from "../objectfields/objectfields";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
