@@ -78,6 +78,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     get weekdays() {
+        let lang = this.language.currentlanguage.substring(0,2);
+        moment.locale(lang);
         let weekDays = moment.weekdaysShort();
         switch (this.weekStartDay) {
             case 1:
@@ -90,6 +92,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     private weekdayLong(dayIndex) {
+        let lang = this.language.currentlanguage.substring(0,2);
+        moment.locale(lang);
         return moment.weekdays(dayIndex + this.weekStartDay);
     }
 
