@@ -36,7 +36,6 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
 
     public sheetDays: any[] = [];
-    private sheetTimeWidth: number = 80;
     private sheetHours: any[] = [];
     private sheetTopMargin: number = 0;
     private ownerEvents: any[] = [];
@@ -58,8 +57,12 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         this.sheetDays = this.buildSheetDays();
     }
 
+    get sheetTimeWidth() {
+        return this.calendar.sheetTimeWidth;
+    }
+
     get offset() {
-        return moment().utcOffset();
+        return moment.tz(moment.tz.guess()).format('z Z');
     }
 
     get allEvents() {
@@ -306,14 +309,6 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             height: this.calendar.multiEventHeight + "px",
             top: this.calendar.multiEventHeight * eventI + "px",
         };
-    }
-
-    private getMultiEventsContainerStyle() {
-        let eventsHeight = 1;
-        for (let day of this.sheetDays) {
-            eventsHeight = day.items.length > eventsHeight ? day.items.length : eventsHeight;
-        }
-        return {height: this.calendar.multiEventHeight * eventsHeight};
     }
 
     private displayDate(format, date) {

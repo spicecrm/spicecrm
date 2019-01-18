@@ -6,6 +6,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
+import {language} from "../../../services/language.service";
 
 
 declare var moment: any;
@@ -26,6 +27,7 @@ export class calendar {
     public currentStart: any = {};
     public currentEnd: any = {};
     public sidebarwidth: number = 300;
+    public sheetTimeWidth: number = 50;
     public sheetHourHeight: number = 80;
     public weekstartday: number = 0;
     public weekDaysCount: number = 7;
@@ -44,6 +46,7 @@ export class calendar {
                 private session: session,
                 private broadcast: broadcast,
                 private modal: modal,
+                private language: language,
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
@@ -341,7 +344,7 @@ export class calendar {
         this.weekDaysCount = +preferences['week_days_count'] || this.weekDaysCount;
         this.startHour = +preferences['calendar_day_start_hour'] || this.startHour;
         this.endHour = +preferences['calendar_day_end_hour'] || this.endHour;
-        this.calendarDate = moment();
+        this.calendarDate = moment().locale(this.language.currentlanguage.substring(0,2));
     }
 
     private getOtherCalendars() {

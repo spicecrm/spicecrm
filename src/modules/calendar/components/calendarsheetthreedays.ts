@@ -37,7 +37,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
 
     public sheetDays: any[] = [];
-    private sheetTimeWidth: number = 80;
     private sheetHours: any[] = [];
     private sheetTopMargin: number = 0;
     private ownerEvents: any[] = [];
@@ -60,7 +59,11 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     }
 
     get offset() {
-        return moment().utcOffset();
+        return moment.tz(moment.tz.guess()).format('z Z');
+    }
+
+    get sheetTimeWidth() {
+        return this.calendar.sheetTimeWidth;
     }
 
     get allEvents() {
