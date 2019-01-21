@@ -113,7 +113,7 @@ export class ObjectEditModal implements OnInit {
                 }
                 modalRef.instance.self.destroy();
             },
-                error => { console.log('fehler-zweig');
+                error => {
                     modalRef.instance.self.destroy();
                 });
         });
