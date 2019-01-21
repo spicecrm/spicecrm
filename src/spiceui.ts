@@ -51,6 +51,7 @@ import {cookie} from "./services/cookie.service";
 import {assistant} from "./services/assistant.service";
 import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
+import {layout} from "./services/layout.service";
 
 // declarations for TS
 declare var System: any;
@@ -66,10 +67,17 @@ moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
 @Component({
     selector: "spicecrm",
-    template: "<global-header></global-header><div class=\"spiceContent\"><router-outlet></router-outlet></div><global-footer></global-footer>"
+    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet></div><global-footer></global-footer>"
 })
 export class SpiceUI {
+    constructor(private layout: layout) {
+    }
 
+    get outletstyle() {
+        return {
+            'margin-top': this.layout.headerheight + 'px'
+        };
+    }
 }
 
 @NgModule({
@@ -93,6 +101,7 @@ export class SpiceUI {
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         backend,
         broadcast,
+        layout,
         navigation,
         session,
         metadata,
@@ -157,13 +166,13 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
 }
 
 window.name = 'SpiceCRM';
-( () => {
-    if ( window.BroadcastChannel ) { // Does the browser know the Broadcast API?
+(() => {
+    if (window.BroadcastChannel) { // Does the browser know the Broadcast API?
         let bc = new BroadcastChannel('spiceCRM_channel');
         bc.onmessage = e => {
-            if (e.data.url && e.data.url.startsWith( window.location.origin + window.location.pathname )) {
+            if (e.data.url && e.data.url.startsWith(window.location.origin + window.location.pathname)) {
                 window.location = e.data.url;
-                bc.postMessage({ urlReceived: true });
+                bc.postMessage({urlReceived: true});
             }
         };
     }
