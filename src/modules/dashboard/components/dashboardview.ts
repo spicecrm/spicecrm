@@ -41,7 +41,7 @@ export class DashboardView implements OnInit {
             }
         });
 
-        this.navigation.setActiveModule('Dashbords');
+        this.navigation.setActiveModule('Dashboards');
     }
 
     get ismobile() {
