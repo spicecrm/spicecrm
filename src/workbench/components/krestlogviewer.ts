@@ -38,7 +38,7 @@ export class KRESTLogViewer {
 
     // Various:
     private currPage = 1;
-    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '', status: '' };
+    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '', status: '', transactionId: '' };
     private period = { year: '', month: '', day: '', hour: '' };
     private filtertext = '';
     private yearNow: string;
@@ -49,7 +49,6 @@ export class KRESTLogViewer {
     // Stati:
     private isLoading = false;
     private isLoaded = false;
-    private isBuildingTextfilter = false;
 
     @ViewChild('tbody') private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
@@ -76,18 +75,6 @@ export class KRESTLogViewer {
     private getUsername( userId ) {
         if ( !userId || !this.userlistIndexes.hasOwnProperty( userId )) return userId;
         return this.userlist[this.userlistIndexes[userId]].name;
-    }
-
-    private changedYear() {
-        if ( !this.period.year.length ) this.period.month = this.period.day = this.period.hour = '';
-    }
-
-    private changedMonth() {
-        if ( !this.period.month.length ) this.period.day = this.period.hour = '';
-    }
-
-    private changedDay() {
-        if ( !this.period.day.length ) this.period.hour = '';
     }
 
     // Load the log lines from the backend.
@@ -127,6 +114,7 @@ export class KRESTLogViewer {
             urlParams: this.filter.urlParams.length ? this.filter.urlParams : undefined,
             ipAddress: this.filter.ipAddress.length ? this.filter.ipAddress : undefined,
             status: this.filter.status.length ? this.filter.status : undefined,
+            transactionId: this.filter.transactionId.length ? this.filter.transactionId : undefined,
         };
         this.toast.clearToast( this.toastId );
         this.backend.getRequest( route, queryParams ).subscribe(
@@ -151,8 +139,9 @@ export class KRESTLogViewer {
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
         if ( this.isLoading ) return false;
-        if ( this.period.year.length && !this.period.year.match(/^\d{4}$/) ) return false;
-        if ( this.limit.length && !this.limit.match(/\d$/) ) return false;
+        if ( this.period.year && !this.period.year.match(/^\d{4}$/) ) return false;
+        if ( this.limit && !this.limit.match(/\d$/) ) return false;
+        if ( this.period.hour && !this.period.day ) return false;
         return true;
     }
 
@@ -162,14 +151,15 @@ export class KRESTLogViewer {
     }
 
     // Get the number of days for a specific month/year (28, 29, 30 or 31).
-    private daysInMonth( month, year ) {
-        return new Date( year, month, 0 ).getDate();
+    private daysInMonth( month: string, year: string ) {
+        return new Date( parseInt( year, 10 ), parseInt( month, 10 ), 0 ).getDate();
     }
 
-    // Get a simple array of day numbers (for ngIf).
+    // Get a simple array of day numbers (for ngFor).
     private get daylist() {
+        let daysInMonth = ( !this.period.month || !this.period.year ) ? 31 : this.daysInMonth( this.period.month, this.period.year );
         let list = [];
-        for ( let i=1; i <= this.daysInMonth( parseInt( this.period.month, 10 ), parseInt( this.period.year, 10 )); i++ ) list.push( ( i < 10 ? '0':'' ) + i );
+        for ( let i=1; i <= daysInMonth; i++ ) list.push( ( i < 10 ? '0':'' ) + i );
         return list;
     }
 
@@ -199,6 +189,13 @@ export class KRESTLogViewer {
         }
     }
 
+    // Open the modal window to display a log line with unusual long log text.
+    private showCRMlog( transactionId: string ) {
+        this.modalservice.openModal( 'CRMLogViewerListModal' ).subscribe( modal => {
+            modal.instance.filter = { transactionId: transactionId };
+        } );
+    }
+
     private handOverModalData( lineNr ) {
         this.currPage = Math.ceil( (lineNr+1) / 20 );
         this.modal.instance.lineNr = lineNr;
@@ -211,6 +208,69 @@ export class KRESTLogViewer {
     private collapseLinesOfPage( pageNr ) {
         for ( let i=(pageNr-1)*this.linesPerPage; i < pageNr*this.linesPerPage; i++ ) {
             if( this.lines[i] ) this.lines[i].expand = false;
+        }
+    }
+
+    private changedYear() {
+        if ( !this.period.year ) this.period.month = this.period.day = this.period.hour = '';
+    }
+    private changedHour() {
+        if ( this.period.hour ) {
+            this.setYearNow();
+            this.setMonthNow();
+            this.setDayNow();
+        }
+    }
+    private changedDay() {
+        if ( !this.period.day ) this.period.hour = '';
+        else {
+            this.setYearNow();
+            this.setMonthNow();
+        }
+    }
+    private changedMonth() {
+        if ( !this.period.month ) this.period.day = this.period.hour = '';
+        else {
+            if ( this.period.day && parseInt( this.period.day, 10 ) > this.daysInMonth( this.period.month, this.period.year )) this.period.day = '';
+            this.setYearNow();
+        }
+    }
+
+    private setYearNow() {
+        if ( !this.period.year ) this.period.year = (new Date()).getFullYear().toString();
+    }
+    private setMonthNow() {
+        if ( !this.period.month ) {
+            this.period.month = ((new Date()).getMonth()+1).toString();
+            if ( this.period.month.length === 1 ) this.period.month = '0'+this.period.month;
+        }
+    }
+    private setDayNow() {
+        if( !this.period.day ) {
+            this.period.day = (new Date()).getDate().toString();
+            if ( this.period.day.length === 1 ) this.period.day = '0'+this.period.day;
+        }
+    }
+
+    // The values in the list can be clicked to be transfered to the corresponding filter input field.
+    private valueClicked( type: string, value: string ) {
+        let items: string[];
+        switch ( type ) {
+            case 'date':
+                items = value.split('\.');
+                this.period.day = items[0];
+                this.period.month = items[1];
+                this.period.year = items[2];
+                break;
+            case 'time':
+                items = value.split(':');
+                this.period.hour = items[0];
+                break;
+            case 'tid': this.filter.transactionId = value; break;
+            case 'uid': this.filter.userId = value; break;
+            case 'route': this.filter.route = value; break;
+            case 'method': this.filter.method = value; break;
+            case 'status': this.filter.status = value; break;
         }
     }
 
