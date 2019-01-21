@@ -1,15 +1,23 @@
-<div class="slds-global-header slds-grid slds-grid--align-spread">
-    <div class="slds-global-header__item slds-large-size--1-of-3 slds-show--large">
-        <img class="slds-show--large" style="max-height: 25px;" src="./config/headerimage" alt=""/>
+<div class="slds-global-header slds-grid slds-grid--align-spread slds-p-left--medium">
+    <div class="slds-show--large slds-large-size--1-of-6">
+        <div class="slds-global-header__item slds-p-left--none">
+            <img class="slds-show--large" style="max-height: 25px;" src="./config/headerimage" alt=""/>
+        </div>
     </div>
-    <div class="slds-global-header__item slds-hide--medium">
-        <global-navigation-compact></global-navigation-compact>
+    <div class="slds-hide--medium slds-x-small-size--1-of-12">
+        <div class="slds-global-header__item slds-p-horizontal--none">
+            <global-navigation-compact></global-navigation-compact>
+        </div>
     </div>
-    <div *ngIf="showSearch" class="slds-global-header__item slds-large-size--1-of-3">
-        <global-header-search></global-header-search>
+    <div *ngIf="showSearch" class="slds-x-small-size--11-of-12 slds-medium-size--4-of-6 slds-large-size--3-of-6">
+        <div class="slds-global-header__item">
+            <global-header-search></global-header-search>
+        </div>
     </div>
-    <div class="slds-global-header__item slds-large-size--1-of-3 slds-grid slds-grid--align-end slds-grid--vertical-align-center slds-show--medium">
-        <global-header-tools></global-header-tools>
-        <global-user></global-user>
+    <div class="slds-show--medium slds-medium-size--2-of-6 slds-large-size--1-of-6">
+        <div class="slds-global-header__item slds-grid slds-grid--align-end slds-grid--vertical-align-center">
+            <global-header-tools></global-header-tools>
+            <global-user></global-user>
+        </div>
     </div>
 </div>
