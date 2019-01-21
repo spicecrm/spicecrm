@@ -50,7 +50,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
     }
 
     private buildMenuItems() {
-        this.menuItems = ['Home'];
+        this.menuItems = [];
 
         let modules = this.metadata.getRoleModules(true);
         for (let module of modules) {
