@@ -125,6 +125,7 @@ export class KRESTLogViewer {
                     line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
                     line.i = i;
                 });
+                this.currPage = 1;
                 this.isLoaded = true;
                 this.isLoading = false;
             },
