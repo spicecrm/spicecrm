@@ -1,0 +1,9 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">CRM Log for KREST Request {{filter.transactionId}}</system-modal-header>
+    <system-modal-content style="height:100%">
+        <crm-log-viewer-list [filter]="filter" [valuesNotClickable]="true"></crm-log-viewer-list>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
+    </system-modal-footer>
+</system-modal>
