@@ -32,8 +32,6 @@ export class GlobalNavigationCompact {
     public activeItem: string = '';
     public activeItemMenu: any[] = [];
     private activeItemMenucomponents: any[] = [];
-    public favorites: any[] = [];
-    public recentItems: any[] = [];
 
     constructor(
         private menuService: MenuService,
@@ -57,14 +55,6 @@ export class GlobalNavigationCompact {
 
     get currentlanguage() {
         return this.language.currentlanguage;
-    }
-
-    get displayName() {
-        return this.session.authData.display_name ? this.session.authData.display_name : this.session.authData.userName;
-    }
-
-    get userName() {
-        return this.session.authData.userName;
     }
 
     get menuItems() {
@@ -93,17 +83,13 @@ export class GlobalNavigationCompact {
         };
     }
 
-    get hasMenu() {
-        return this.activeItemMenu.length > 0 || this.metadata.getModuleTrackflag(this.activeItem);
-    }
-
     private navigateTo(module) {
         this.router.navigate(['/module/' + module]);
         this.showmenu = false;
     }
 
     private buildMenuItems() {
-        this.menuitems = ['Home'];
+        this.menuitems = [];
 
         let modules = this.metadata.getRoleModules(true);
         for (let module of modules) {
@@ -111,15 +97,11 @@ export class GlobalNavigationCompact {
         }
         this.activeItem = this.navigation.activeModule;
         this.model.module = this.activeItem;
-        this.reset();
 
+        this.destroyActiveItemMenu();
+        this.activeItemMenu = [];
         this.activeItemMenu = this.metadata.getModuleMenu(this.activeItem);
         this.buildActiveItemMenu();
-    }
-
-    private reset() {
-        this.activeItemMenu = [];
-        this.destroyActiveItemMenu();
     }
 
     private showAppLauncher() {
