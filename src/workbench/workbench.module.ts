@@ -100,7 +100,9 @@ import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepos
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
+import /*embed*/ {CRMLogViewerList} from './components/crmlogviewerlist';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
+import /*embed*/ {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
 import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
@@ -190,10 +192,11 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ObjectRepositoryExport,
         ObjectRepositoryManagerAddModule,
         CRMLogViewer,
+        CRMLogViewerList,
         CRMLogViewerModal,
+        CRMLogViewerListModal,
         KRESTLogViewer,
         KRESTLogViewerModal,
-        CRMLogViewerModal,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
         ModuleFilterBuilderFilterDetails,
@@ -220,7 +223,9 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfig,
         ObjectRepositoryManager,
         CRMLogViewer,
+        CRMLogViewerList,
         CRMLogViewerModal,
+        CRMLogViewerListModal,
         KRESTLogViewer,
         KRESTLogViewerModal
     ],
