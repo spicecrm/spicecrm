@@ -628,8 +628,10 @@ export class model {
                             break;
                         default:
                             if (notify) {
-                                this.toast.sendToast(this.language.getLabel("BL_ERROR") + " " + error.status, "error", error.error.message);
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
                             }
+                            responseSubject.error(true);
+                            responseSubject.complete();
                     }
                 });
         return responseSubject.asObservable();
