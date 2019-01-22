@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -7,7 +7,6 @@ import {modal} from '../../services/modal.service';
 import {backend} from '../../services/backend.service';
 import {session} from '../../services/session.service';
 import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
-import {ObjectRelatedlistFiles} from "./objectrelatedlistfiles";
 
 @Component({
     selector: 'object-activitiytimeline-add-email',
@@ -77,7 +76,7 @@ export class ObjectActivitiyTimelineAddEmail implements OnInit {
     }
 
     determineToAddr(){
-        // see if we have anemail from the parent
+        // see if we have an email from the parent
         if(this.activitiyTimeLineService.parent.data.email1){
             this.model.data.recipient_addresses = [{
                 parent_type: this.activitiyTimeLineService.parent.module,
