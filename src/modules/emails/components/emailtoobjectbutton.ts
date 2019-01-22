@@ -6,18 +6,12 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: "email-to-object-button",
     templateUrl: "./src/modules/emails/templates/emailtoobjectbutton.html",
-    host: {
-        "class": "slds-button slds-button--neutral",
-        "(click)" : "open()"
-    },
-    styles: [
-        ":host {cursor:pointer;}"
-    ]
 })
 export class EmailToObjectButton {
     private object_module_name: string;
     private actionconfig; // can be set inside actionsets...
     @Output() public actionemitter = new EventEmitter();
+    public disabled = false;
 
     constructor(
         private language: language,
@@ -31,7 +25,7 @@ export class EmailToObjectButton {
         this.object_module_name = this.actionconfig.module;
     }
 
-    public open() {
+    public execute() {
         this.modal.openModal("EmailToObjectModal", true).subscribe(
             cmpref => {
                 cmpref.instance.email_model = this.model;
