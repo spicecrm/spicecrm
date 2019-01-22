@@ -14,9 +14,12 @@
         </button>
     </div>
     <div class="slds-col slds-no-flex slds-grid slds-align-top slds-show--large">
-        <div *ngIf="editable" class="slds-button-group" role="group">
-            <button class="slds-button slds-button--neutral" (click)="toggleEditMode()">{{language.getLabel('LBL_EDIT')}}</button>
-            <!--button *ngIf="canDelete"  class="slds-button slds-button--neutral" (click)="deleteDashlet()">{{language.getLabel('LBL_DELETE')}}</button-->
+        <div *ngIf="!dashboardlayout.isloading && dashboardlayout.dashboardId.length > 0" class="slds-button-group" role="group">
+            <button class="slds-button slds-button--neutral" (click)="toggleHomeDashboard()">
+                <system-button-icon class="slds-m-right--xx-small" *ngIf="isHomeDashboard" icon="check"></system-button-icon>
+                <span class="slds-truncate">{{language.getLabel('LBL_AS_HOME_DASHBOARD')}}</span>
+            </button>
+            <button *ngIf="editable" class="slds-button slds-button--neutral" (click)="toggleEditMode()">{{language.getLabel('LBL_EDIT')}}</button>
         </div>
         <div *ngIf="dashboardlayout.editMode" class="slds-button-group" role="group">
             <button class="slds-button slds-button--neutral" (click)="dashboardlayout.cancelEdit()">{{language.getLabel('LBL_CANCEL')}}</button>
