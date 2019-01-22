@@ -97,7 +97,7 @@ export class ObjectEditModal implements OnInit {
     private saveModel(goDetail: boolean = false) {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
-            this.model.save().subscribe(status => {
+            this.model.save(true).subscribe(status => {
                 if (status) {
                     // emit that we saved;
                     this.actionSubject.next(this.model.data);
@@ -112,7 +112,10 @@ export class ObjectEditModal implements OnInit {
                     this.self.destroy();
                 }
                 modalRef.instance.self.destroy();
-            });
+            },
+                error => {
+                    modalRef.instance.self.destroy();
+                });
         });
     }
 
