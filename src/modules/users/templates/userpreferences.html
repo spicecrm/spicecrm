@@ -307,6 +307,48 @@
             </div>
         </div>
     </div>
+    <div class="slds-section" [ngClass]="{'slds-is-open': expanded.home}">
+        <h3 class="slds-section__title">
+            <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel('home')">
+                <system-utility-icon [icon]="'switch'" [size]="'x-small'"
+                                     [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                <span class="slds-truncate">{{ language.getLabel('LBL_HOME_PREFERENCES') }}</span>
+            </button>
+        </h3>
+        <div [ngStyle]="getTabStyle('home')">
+            <div class="slds-grid slds-grid--align-spread">
+                <div class="slds-form-element slds-size--1-of-3 slds-p-around--x-small">
+                    <label class="slds-form-element__label" for="homedashboard">{{ language.getLabel('LBL_HOME_DASHBOARD') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{homeDashboardName}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" id="homedashboard" (change)="change($event,'home_dashboard')">
+                                <option value="-" [selected]="!preferences.home_dashboard">-- Default Dashboard --</option>
+                                <option *ngFor="let dashboard of dashboards" [value]="dashboard.id"
+                                        [selected]="dashboard.id == preferences.home_dashboard">{{dashboard.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="slds-form-element slds-size&#45;&#45;1-of-3 slds-p-around&#45;&#45;x-small">-->
+                    <!--<div class="slds-form-element__control slds-grid">-->
+                        <!--<span class="slds-checkbox slds-m-vertical&#45;&#45;x-small slds-m-horizontal&#45;&#45;small ">-->
+                            <!--<input type="checkbox" name="auto" id="autoGenerate" [(ngModel)]="preferences.show_assistant"/>-->
+                            <!--<label class="slds-checkbox__label" for="autoGenerate">-->
+                                <!--<span class="slds-checkbox&#45;&#45;faux"></span>-->
+                                <!--<span class="slds-form-element__label">{{ language.getLabel('LBL_SHOW_ASSISTANT') }}</span>-->
+                            <!--</label>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
 
     <div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
         <button class="slds-button slds-button--neutral" (click)="cancel()">

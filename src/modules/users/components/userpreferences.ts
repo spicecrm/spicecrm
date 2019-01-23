@@ -29,7 +29,7 @@ declare var moment: any;
 export class UserPreferences {
 
     private preferences: any = {};
-
+    private dashboards: any[] = [];
     private names = [
         "export_delimiter",
         "default_export_charset",
@@ -45,12 +45,13 @@ export class UserPreferences {
         "week_days_count",
         "calendar_day_start_hour",
         "calendar_day_end_hour",
+        "home_dashboard",
     ];
     private weekDayStartList = ["Sunday", "Monday"];
     private weekDaysCountList = [5,6,7];
     private dayHoursList = [];
 
-    private expanded = {loc: true, exp: true, other: true, calendar: true};
+    private expanded = {loc: true, exp: true, other: true, calendar: true, home: true};
     private exportDelimiterList = [",", ";"];
     private charsetlist = [
         "BIG-5", "CP1251", "CP1252", "EUC-CN", "EUC-JP", "EUC-KR", "EUC-TW", "ISO-2022-JP",
@@ -137,6 +138,10 @@ export class UserPreferences {
             this.dayHoursList.push(i);
         }
 
+        this.backend.getList("Dashboards", "name", "DESC", ["name", "id"], {limit: -1})
+            .subscribe((dashboards: any) => {
+                this.dashboards = dashboards.list;
+            });
     }
 
     get datef() {
@@ -145,6 +150,11 @@ export class UserPreferences {
 
     get timef() {
         return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
+    }
+
+    get homeDashboardName() {
+        let dashboard = this.dashboards.find(dashboard => dashboard.id == this.preferences.home_dashboard);
+        return dashboard ? dashboard.name : '-- Default Dashboard --';
     }
 
     get formattingOfNumbers(): string {

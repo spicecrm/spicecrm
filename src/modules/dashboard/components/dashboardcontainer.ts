@@ -8,6 +8,7 @@ import {
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'dashboard-container',
@@ -19,12 +20,15 @@ export class DashboardContainer implements OnChanges, OnInit {
     @Input() dashboardid: string = '';
     @Input() context: string = 'Dashboard';
 
-    constructor(private dashboardlayout: dashboardlayout, private language: language) {
+    constructor(private dashboardlayout: dashboardlayout, private language: language, private router: Router) {
     }
-
 
     public ngOnInit(): void {
         this.dashboardlayout.loadDashboard(this.dashboardid);
+    }
+
+    private navigate() {
+        this.router.navigate(['/module/Dashboards']);
     }
 
     public ngOnChanges(changes: SimpleChanges): void {

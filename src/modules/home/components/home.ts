@@ -4,6 +4,7 @@ import {
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {metadata} from '../../../services/metadata.service';
+import {userpreferences} from "../../../services/userpreferences.service";
 
 // import 'hammerjs';
 
@@ -12,11 +13,13 @@ import {metadata} from '../../../services/metadata.service';
 })
 export class Home {
     private componentconfig: any = {};
+    private isOpen: boolean = true;
 
-    constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata) {
+    constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata, private userpreferences: userpreferences) {
         // set theenavigation paradigm
         this.navigation.setActiveModule('Home');
-
+        let collapsed = this.userpreferences.unchangedPreferences.global['home_assistant_collapsed'];
+        this.isOpen = collapsed == undefined || collapsed;
         // get config
         let componentconfig = this.metadata.getComponentConfig('Home', 'Home');
         if (componentconfig && componentconfig.HomeAssistant) {
@@ -33,5 +36,10 @@ export class Home {
             return this.componentconfig.HomeAssistant;
         }
         return true;
+    }
+
+    private toggleOpen() {
+        this.isOpen = !this.isOpen;
+        this.userpreferences.setPreference('home_assistant_collapsed', this.isOpen);
     }
 }
