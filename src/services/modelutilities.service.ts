@@ -89,19 +89,17 @@ export class modelutilities {
     }
 
     public spiceModel2backend(module: string, modelData: any) {
+        let retData = {};
         let moduleFields = this.metadata.getModuleFields(module);
         for (let field in moduleFields) {
-            if (modelData[field]) {
-                modelData[field] = this.spice2backend(module, field, modelData[field]);
+            if (modelData.hasOwnProperty(field)) {
+                retData[field] = this.spice2backend(module, field, modelData[field]);
             }
         }
-        return modelData;
+        return retData;
     }
 
     public spice2backend(module: string, field: string, value: any) {
-        if(!value) {
-            return value;
-        }
 
         let fieldDefs = this.metadata.getFieldDefs(module, field);
         if(!fieldDefs || !fieldDefs.type) {
@@ -126,7 +124,7 @@ export class modelutilities {
                 return pDateTime.format("YYYY-MM-DD HH:mm:ss");
             // return value.getUTCFullYear() + "-" + value.getUTCMonth() + "-" + (value.getUTCDate() < 10 ? "0" + value.getUTCDate() : value.getUTCDate()) + " " + value.getUTCHours() + ":" + value.getUTCMinutes() + ":" + value.getUTCSeconds();
             case "json":
-                return JSON.stringify(value);
+                return !value ? '' : JSON.stringify(value);
             // todo: type mutlienum!
             case "link":
                 if(_.isObject(value) && value.beans && fieldDefs.module) {
@@ -135,6 +133,9 @@ export class modelutilities {
                     }
                 }
                 return value;
+            case "bool":
+            case "boolean":
+                return value && ( value == "1" || value > 0 || value === true) ? '1' : '0';
             default:
                 return value;
         }
