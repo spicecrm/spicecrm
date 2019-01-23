@@ -83,7 +83,13 @@ export class ObjectRelatedListItem implements OnInit {
                 break;
             case "saverelated":
                 if (this.model.validate()) {
-                    this.relatedmodels.setItem(this.model.data);
+                    // get changed Data
+                    let changedData: any = this.model.getDirtyFields();
+                    // in any case update date modified and set the id for the PUT
+                    changedData.date_modified = this.model.getField('date_modified');
+                    changedData.id = this.model.id;
+                    // save related model
+                    this.relatedmodels.setItem(changedData);
                     this.model.endEdit();
                     this.view.setViewMode();
                 }
