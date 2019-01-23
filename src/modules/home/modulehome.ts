@@ -25,6 +25,7 @@ import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
 import {toast} from '../../services/toast.service';
 import {fts} from '../../services/fts.service';
+import {userpreferences} from '../../services/userpreferences.service';
 import {configurationService} from '../../services/configuration.service';
 import {VersionManagerService} from '../../services/versionmanager.service';
 
