@@ -1,9 +1,8 @@
-
-<div class="slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open': isOpen}">
+<div *ngIf="!isSmall; else smallformfactor" class="slds-dropdown-trigger slds-dropdown-trigger--click" dropdowntrigger>
     <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions()" (click)="toggleOpen()">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
-    <div *ngIf="isOpen" class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
+    <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
         <ul class="slds-dropdown__list" role="menu">
             <ng-container *ngIf="!isEditMode()">
                 <ng-container *ngIf="standardactions">
@@ -57,3 +56,16 @@
         </ul>
     </div>
 </div>
+<ng-template #smallformfactor>
+    <div class="slds-align--absolute-center">
+        <div *ngIf="!isEditMode()" class="slds-button-group" role="group">
+            <button class="slds-button slds-button_neutral" *ngIf="canEdit()" (click)="editModel()">{{language.getLabel('LBL_EDIT')}}</button>
+            <button class="slds-button slds-button_neutral" *ngIf="canDelete()" (click)="confirmDelete()">{{language.getLabel('LBL_DELETE')}}</button>
+            <button class="slds-button slds-button_neutral" *ngIf="canView()" (click)="viewModel()">{{language.getLabel('LBL_OPEN')}}</button>
+        </div>
+        <div *ngIf="isEditMode()" class="slds-button-group" role="group">
+            <button class="slds-button slds-button_neutral" *ngIf="canEdit()" (click)="cancelEdit()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button_neutral" *ngIf="canDelete()" (click)="saveModel()">{{language.getLabel('LBL_SAVE')}}</button>
+        </div>
+    </div>
+</ng-template>
