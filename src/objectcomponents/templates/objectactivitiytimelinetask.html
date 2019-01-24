@@ -23,7 +23,7 @@
                 </div>
                 <div class="slds-timeline__actions slds-timeline__actions_inline">
                     <p class="slds-timeline__date">{{time}} | {{date}}</p>
-                    <object-action-menu *ngIf="showtoolset" [buttonsize]="'x-small'"></object-action-menu>
+                    <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'"></object-action-menu>
                 </div>
             </div>
             <p class="slds-m-horizontal_xx-small">
@@ -38,4 +38,5 @@
             </article>
         </div>
     </div>
+    <object-action-menu class="slds-hide--medium" *ngIf="showtoolset" [buttonsize]="'x-small'"></object-action-menu>
 </div>
