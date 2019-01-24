@@ -1,10 +1,11 @@
 import {CommonModule} from "@angular/common";
-import {NgModule,Directive, Renderer2, Input, HostListener, HostBinding, OnDestroy, ElementRef, OnInit, DoCheck, TemplateRef, ViewContainerRef, Pipe, PipeTransform, Optional} from "@angular/core";
+import {NgModule,Directive, Renderer2, Input, HostListener, HostBinding, OnDestroy, ElementRef, OnInit, DoCheck, TemplateRef, ViewContainerRef, Pipe, PipeTransform, Optional, AfterViewInit} from "@angular/core";
 import {Router}   from '@angular/router';
 
 import {metadata} from '../services/metadata.service';
 import {footer} from '../services/footer.service';
 import {model} from '../services/model.service';
+import {view} from '../services/view.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {ModelPopOverDirective} from "./directives/modelpopover";
