@@ -16,6 +16,7 @@ import /*embed*/ {FirstUpperCasePipe} from "./directives/firstuppercase";
 import /*embed*/ {DropdownTriggerDirective} from "./directives/dropdowntrigger";
 import /*embed*/ {ToBottomDirective} from "./directives/tobottom";
 import /*embed*/ {TrimInputDirective} from './directives/triminput';
+import /*embed*/ {ViewProviderDirective} from './directives/viewProvider';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import /*embed*/ {TrimInputDirective} from './directives/triminput';
         FirstUpperCasePipe,
         DropdownTriggerDirective,
         ToBottomDirective,
-        TrimInputDirective
+        TrimInputDirective,
+        ViewProviderDirective
     ],
     exports: [
         ModelPopOverDirective,
@@ -41,7 +43,8 @@ import /*embed*/ {TrimInputDirective} from './directives/triminput';
         FirstUpperCasePipe,
         DropdownTriggerDirective,
         ToBottomDirective,
-        TrimInputDirective
+        TrimInputDirective,
+        ViewProviderDirective
     ]
 })
 export class DirectivesModule {
