@@ -69,6 +69,7 @@ import {helper} from '../services/helper.service';
 import {userpreferences} from '../services/userpreferences.service';
 import {dockedComposer} from '../services/dockedcomposer.service';
 import {VersionManagerService} from '../services/versionmanager.service';
+import {layout} from '../services/layout.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
 import /*embed*/ {objectimport} from './services/objectimport.service';
