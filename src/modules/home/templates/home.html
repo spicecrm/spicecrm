@@ -1,17 +1,12 @@
-<div class="slds-grid" *ngIf="displayHomeAssistant">
-    <div class="slds-grid slds-border--right" [ngClass]="isOpen ? 'slds-col slds-large-size--1-of-4 slds-medium-size--1-of-2' : ''" [style.width]="!isOpen ? '16px': ''">
-        <div class="slds-split-view slds-grid slds-grid_vertical slds-grow" [ngClass]="!isOpen ? 'slds-hidden slds-scrollable--none' : ''">
-            <home-assistant></home-assistant>
-        </div>
-        <button style="width: 15px" class="slds-button slds-button_icon" (click)="toggleOpen()">
-            <system-button-icon [icon]="!isOpen ? 'right' : 'left'"></system-button-icon>
-        </button>
-    </div>
-    <div [ngClass]="isOpen ? 'slds-col slds-large-size--3-of-4 slds-medium-size--1-of-2' : ''" [style.width]="!isOpen ? 'calc(100% - 16px)': ''">
+<div *ngIf="displayHomeAssistant" class="slds-grid">
+    <div class="slds-col slds-large-size--3-of-4 slds-medium-size--1-of-2">
         <home-dashboard></home-dashboard>
     </div>
+    <div class="slds-col slds-large-size--1-of-4 slds-medium-size--1-of-2">
+        <home-assistant></home-assistant>
+    </div>
 </div>
-<div class="slds-grid" *ngIf="!displayHomeAssistant">
+<div *ngIf="!displayHomeAssistant" class="slds-grid">
     <div class="slds-col slds-size--1-of-1">
         <home-dashboard></home-dashboard>
     </div>
