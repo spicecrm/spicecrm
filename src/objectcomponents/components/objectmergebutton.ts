@@ -11,8 +11,8 @@ import {modal} from '../../services/modal.service';
 })
 export class ObjectMergeButton {
 
-    @Input() mergemodels: Array<any>;
-    @Output() merged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() private mergemodels: any[];
+    @Output() private merged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     showDialog: boolean = false;
 

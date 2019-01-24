@@ -18,7 +18,7 @@ export class Home {
     constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata, private userpreferences: userpreferences) {
         // set theenavigation paradigm
         this.navigation.setActiveModule('Home');
-        let collapsed = this.userpreferences.unchangedPreferences.global['home_assistant_collapsed'];
+        let collapsed = this.userpreferences.unchangedPreferences.global.home_assistant_collapsed;
         this.isOpen = collapsed == undefined || collapsed;
         // get config
         let componentconfig = this.metadata.getComponentConfig('Home', 'Home');
