@@ -6,40 +6,18 @@ import {navigation} from '../../../services/navigation.service';
 import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 
-// import 'hammerjs';
-
 @Component({
     templateUrl: './src/modules/home/templates/home.html',
 })
 export class Home {
-    private componentconfig: any = {};
-    private isOpen: boolean = true;
 
     constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata, private userpreferences: userpreferences) {
         // set theenavigation paradigm
         this.navigation.setActiveModule('Home');
-        let collapsed = this.userpreferences.unchangedPreferences.global.home_assistant_collapsed;
-        this.isOpen = collapsed == undefined || collapsed;
-        // get config
-        let componentconfig = this.metadata.getComponentConfig('Home', 'Home');
-        if (componentconfig && componentconfig.HomeAssistant) {
-            this.componentconfig = componentconfig.HomeAssistant;
-        }
     }
 
     get displayHomeAssistant() {
-        // only if screen size is bigger than medium
-        if (window.innerWidth < 1024) return false;
-
-        // check if assistant is enabled at all
-        if (this.componentconfig.HomeAssistant !== undefined) {
-            return this.componentconfig.HomeAssistant;
-        }
-        return true;
-    }
-
-    private toggleOpen() {
-        this.isOpen = !this.isOpen;
-        this.userpreferences.setPreference('home_assistant_collapsed', this.isOpen);
+        let hidden = this.userpreferences.unchangedPreferences.global.home_assistant == 'hidden';
+        return window.innerWidth > 1024 && !hidden;
     }
 }
