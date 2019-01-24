@@ -40,6 +40,6 @@ export class ObjectRecordFieldset implements OnInit {
     }
 
     private sizeClass(i) {
-        return this.renderVertical ? '' :  ' slds-size--' + this.fieldsetitems[i].fieldconfig.width + '-of-' + this.numberOfColumns;
+        return this.renderVertical ? '' :  ' slds-medium-size--' + this.fieldsetitems[i].fieldconfig.width + '-of-' + this.numberOfColumns;
     }
 }
