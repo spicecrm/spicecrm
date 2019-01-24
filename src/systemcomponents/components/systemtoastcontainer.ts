@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, Renderer2} from '@angular/core';
 import {toast} from '../../services/toast.service';
 import {layout} from '../../services/layout.service';
 
@@ -6,13 +6,19 @@ import {layout} from '../../services/layout.service';
     selector: 'system-toast-container',
     templateUrl: './src/systemcomponents/templates/systemtoastcontainer.html'
 })
-export class SystemToastContainer {
+export class SystemToastContainer{
 
-    constructor(private toast: toast, private layout: layout) {
+    constructor(private toast: toast, private layout: layout, private renderer: Renderer2, private cdr: ChangeDetectorRef) {
+        this.renderer.listen('window', 'resize', () => this.cdr.detectChanges());
+
     }
 
     get isnarrow() {
         return this.layout.screenwidth == 'small';
+    }
+
+    get toastStyle() {
+        return this.isnarrow ? {'min-width': 'unset','border-radius': 0, 'border-bottom': '1px solid #fff'} : {};
     }
 
     private getToastClass(type, theme) {
@@ -37,7 +43,8 @@ export class SystemToastContainer {
                 toastclass += 'slds-theme--error';
                 break;
         }
-        return toastclass;
+
+        return this.isnarrow ? toastclass + ' slds-size--1-of-1 slds-m-around--none' : toastclass;
     }
 
     private getToastIcon(type) {
