@@ -21,18 +21,18 @@
             </div>
             <div class="slds-truncate slds-p-left--xx-small slds-text-heading_small">{{activeRoleName}}</div>
         </div>
-        <button class="slds-button slds-button--icon" (click)="toggleMenu()">
+        <button class="slds-button slds-button--icon" (click)="closeMenu()">
             <system-button-icon icon="close"></system-button-icon>
         </button>
     </div>
-    <div class="slds-theme--default slds-p-vertical--x-small">
+    <div *ngIf="activeItemIsModule" class="slds-theme--default slds-p-vertical--x-small">
         <div class="slds-grid slds-grid--vertical-align-center slds-p-left--small slds-p-vertical--xx-small">
             <system-icon [module]="activeItem" size="x-small" divClass=""></system-icon>
             <a href="javascript:void(0);" class="slds-p-left--small slds-text-heading_small">
                 <span class="slds-truncate" style="font-weight: bold;">{{language.getModuleName(activeItem)}}</span>
             </a>
         </div>
-        <ul role="menu">
+        <ul role="menu" (click)="closeMenu()">
             <ng-container #menucontainer></ng-container>
         </ul>
     </div>

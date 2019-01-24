@@ -2,30 +2,31 @@ import {EventEmitter, Injectable} from '@angular/core';
 
 @Injectable()
 export class view {
-    mode: string = 'view';
-    mode$ = new EventEmitter();
-    isEditable: boolean = false;
-    displayLinks: boolean = true;
+    private mode: string = 'view';
+    public mode$ = new EventEmitter();
+    public isEditable: boolean = false;
+    public displayLinks: boolean = true;
 
     // defines the labele .. can be value none, default, long or short
-    labels: string = 'default';
+    public labels: string = 'default';
 
-    constructor() {
-    }
+    // set the size
+    public size: 'regular' | 'small' = 'regular';
 
-    isEditMode(){
-        if(this.mode === 'edit')
+    public isEditMode() {
+        if (this.mode === 'edit') {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    setEditMode(){
+    public setEditMode() {
         this.mode = 'edit';
         this.mode$.emit(this.mode);
     }
 
-    setViewMode(){
+    public setViewMode() {
         this.mode = 'view';
         this.mode$.emit(this.mode);
     }

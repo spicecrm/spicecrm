@@ -52,9 +52,35 @@ export class fieldFullName extends fieldGeneric {
     }
 
     private getClassesForSubField(fieldname: string) {
-        if (this.getStati(fieldname).invalid) {
-            return 'slds-has-error';
+
+
+        let fieldClass = '';
+
+        switch (fieldname) {
+            case this.fieldsalutation:
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--1' : 'slds-size--1-of-7';
+                break;
+            case this.fielddegree:
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--2' : 'slds-size--1-of-7';
+                break;
+            case this.fieldlasttitle:
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--3' : 'slds-size--1-of-7';
+                break;
+            case this.fieldfirstname:
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--4' : 'slds-p-left--xx-small slds-size--2-of-7';
+                break;
+            case this.fieldlastname:
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--5' : 'slds-size--2-of-7';
+                break;
         }
+
+        if (this.getStati(fieldname).invalid) {
+            fieldClass += ' slds-has-error';
+        }
+
+        return fieldClass;
+
+
     }
 
     private getSalutations(): any[] {
