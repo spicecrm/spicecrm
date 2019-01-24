@@ -316,7 +316,7 @@
             </button>
         </h3>
         <div [ngStyle]="getTabStyle('home')">
-            <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-3 slds-p-around--x-small">
                     <label class="slds-form-element__label" for="homedashboard">{{ language.getLabel('LBL_HOME_DASHBOARD') }}</label>
                     <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
@@ -335,17 +335,23 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="slds-form-element slds-size&#45;&#45;1-of-3 slds-p-around&#45;&#45;x-small">-->
-                    <!--<div class="slds-form-element__control slds-grid">-->
-                        <!--<span class="slds-checkbox slds-m-vertical&#45;&#45;x-small slds-m-horizontal&#45;&#45;small ">-->
-                            <!--<input type="checkbox" name="auto" id="autoGenerate" [(ngModel)]="preferences.show_assistant"/>-->
-                            <!--<label class="slds-checkbox__label" for="autoGenerate">-->
-                                <!--<span class="slds-checkbox&#45;&#45;faux"></span>-->
-                                <!--<span class="slds-form-element__label">{{ language.getLabel('LBL_SHOW_ASSISTANT') }}</span>-->
-                            <!--</label>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
+                <div class="slds-form-element slds-size--1-of-3 slds-p-around--x-small">
+                    <label class="slds-form-element__label" for="home_assistant">{{ language.getLabel('LBL_HOME_ASSISTANT') }}</label>
+                    <div *ngIf="!view.isEditMode()" class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">{{preferences.home_assistant || 'visible'}}</span>
+                        <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="view.setEditMode()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="view.isEditMode()" class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" id="home_assistant" (change)="change($event,'home_assistant')">
+                                <option *ngFor="let option of assistantOptions" [value]="option"
+                                        [selected]="option == preferences.home_assistant || (option == 'visible' && !preferences.home_assistant)">{{option}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
