@@ -80,7 +80,7 @@ export class fieldGeneric implements OnInit {
     }
 
     public isEditMode() {
-        if (this.view.mode === 'edit' && this.isEditable()) {
+        if (this.view.isEditMode() && this.isEditable()) {
             return true;
         } else {
             return false;
