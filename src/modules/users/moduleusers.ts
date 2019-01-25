@@ -35,6 +35,9 @@ import /*embed*/ {UserRoles} from "./components/userroles";
 import /*embed*/ {UserRolesAddModal} from "./components/userrolesaddmodal";
 import /*embed*/ {UserAddButton} from "./components/useraddbutton";
 import /*embed*/ {UserAddModal} from "./components/useraddmodal";
+import /*embed*/ {UserPreferencesItem} from "./components/userpreferencesitem";
+import /*embed*/ {UserPreferencesItemDisplay} from "./components/userpreferencesitemdisplay";
+import /*embed*/ {UserPreferencesItemEdit} from "./components/userpreferencesitemedit";
 
 @NgModule({
     imports: [
@@ -56,6 +59,9 @@ import /*embed*/ {UserAddModal} from "./components/useraddmodal";
         UserRolesAddModal,
         UserAddButton,
         UserAddModal,
+        UserPreferencesItem,
+        UserPreferencesItemDisplay,
+        UserPreferencesItemEdit
     ]
 })
 export class ModuleUsers {
