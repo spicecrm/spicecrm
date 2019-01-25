@@ -57,7 +57,7 @@
     </div>
 </div>
 <ng-template #smallformfactor>
-    <div class="slds-text-align--right">
+    <div class="slds-text-align--right slds-p-top--xx-small slds-p-horizontal--xx-small">
         <div *ngIf="!isEditMode()" class="slds-button-group" role="group">
             <button class="slds-button slds-button_neutral" *ngIf="canEdit()" (click)="editModel()">{{language.getLabel('LBL_EDIT')}}</button>
             <button class="slds-button slds-button_neutral" *ngIf="canDelete()" (click)="confirmDelete()">{{language.getLabel('LBL_DELETE')}}</button>

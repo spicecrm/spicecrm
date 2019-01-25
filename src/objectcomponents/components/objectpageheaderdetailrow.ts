@@ -56,4 +56,13 @@ export class ObjectPageHeaderDetailRow implements OnInit{
         else
             this.view.labels = 'default';
     }
+
+    private showLabel(fieldConfig) {
+        if (fieldConfig.hidelabel === true) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

@@ -25,7 +25,7 @@ export class fieldGenericDisplay {
     }
 
     public isEditMode() {
-        if (this.view.mode === 'edit' && this.editable) {
+        if (this.view.isEditMode() && this.editable) {
             return true;
         } else {
             return false;

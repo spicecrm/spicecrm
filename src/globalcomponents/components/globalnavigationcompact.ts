@@ -20,7 +20,7 @@ import {modal} from "../../services/modal.service";
     templateUrl: './src/globalcomponents/templates/globalnavigationcompact.html',
     providers: [MenuService, model]
 })
-export class GlobalNavigationCompact {
+export class GlobalNavigationCompact implements AfterViewInit {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
     @ViewChild('containermiddle', {read: ViewContainerRef}) private containermiddle: ViewContainerRef;
@@ -44,8 +44,22 @@ export class GlobalNavigationCompact {
         private recent: recent,
         private session: session,
         private modal: modal,
+        private broadcast: broadcast,
         private router: Router) {
-        this.navigation.activeModule$.subscribe(activeModule => this.buildMenuItems());
+
+        // get the menu items
+        this.buildMenuItems();
+
+        // subscribe to the changes imn the navigation
+        this.navigation.activeModule$.subscribe(activeModule => this.buildModuleMenuItems());
+
+        this.broadcast.message$.subscribe(message => {
+            this.handleMessage(message);
+        });
+    }
+
+    get activeItemIsModule() {
+        return this.metadata.getModuleDefs(this.activeItem) ? true : false;
     }
 
     set currentlanguage(value) {
@@ -83,6 +97,20 @@ export class GlobalNavigationCompact {
         };
     }
 
+    public ngAfterViewInit(): void {
+        // might have been fired while the component was not rendered .. in any case rebuild it
+        this.buildModuleMenuItems();
+    }
+
+    private handleMessage(message) {
+        switch (message.messagetype) {
+            case 'applauncher.setrole':
+            case 'loader.reloaded':
+                this.buildMenuItems();
+                break;
+        }
+    }
+
     private navigateTo(module) {
         this.router.navigate(['/module/' + module]);
         this.showmenu = false;
@@ -95,13 +123,20 @@ export class GlobalNavigationCompact {
         for (let module of modules) {
             this.menuitems.push(module);
         }
+    }
+
+    private buildModuleMenuItems() {
+
         this.activeItem = this.navigation.activeModule;
-        this.model.module = this.activeItem;
 
         this.destroyActiveItemMenu();
         this.activeItemMenu = [];
-        this.activeItemMenu = this.metadata.getModuleMenu(this.activeItem);
-        this.buildActiveItemMenu();
+
+        if (this.activeItemIsModule && this.menucontainer) {
+            this.model.module = this.activeItem;
+            this.activeItemMenu = this.metadata.getModuleMenu(this.activeItem);
+            this.buildActiveItemMenu();
+        }
     }
 
     private showAppLauncher() {
@@ -115,6 +150,10 @@ export class GlobalNavigationCompact {
 
     private toggleMenu() {
         this.showmenu = !this.showmenu;
+    }
+
+    private closeMenu() {
+        this.showmenu = false;
     }
 
     private logout() {
