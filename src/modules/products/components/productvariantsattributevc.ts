@@ -80,7 +80,7 @@ export class ProductVariantsAttributeVC implements OnInit{
 
 
     get editmode(){
-        if (this.view.mode === 'edit')
+        if (this.view.isEditMode())
             return true;
         else
             return false;
