@@ -1,18 +1,13 @@
-/**
- * Created by christian on 08.11.2016.
- */
 import {
     AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
     ElementRef, OnInit, OnDestroy
 } from '@angular/core';
 import {Title} from '@angular/platform-browser';
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {broadcast} from '../../services/broadcast.service';
 import {navigation} from '../../services/navigation.service';
-
-//var System = require('../../../../node_modules/systemjs/dist/system.js');
 
 @Component({
     selector: 'object-recordview-detail-1',
@@ -20,26 +15,25 @@ import {navigation} from '../../services/navigation.service';
 
 })
 export class ObjectRecordViewDetail1 implements AfterViewInit, OnInit, OnDestroy {
-    @ViewChild('contentcontainer', {read: ViewContainerRef}) contentcontainer: ViewContainerRef;
-    initialized: boolean = false;
-    componentRefs: any = [];
-    componentSubscriptions: Array<any> = [];
-    listViewDefs: any = [];
-    componentSets: any = {};
+    @ViewChild('contentcontainer', {read: ViewContainerRef}) private contentcontainer: ViewContainerRef;
+    private initialized: boolean = false;
+    private componentRefs: any = [];
+    private componentSubscriptions: Array<any> = [];
+    private listViewDefs: any = [];
+    private componentSets: any = {};
 
 
-    constructor( private metadata: metadata, private model: model, private elementRef: ElementRef ) {
+    constructor(private metadata: metadata, private model: model, private elementRef: ElementRef) {
 
     }
 
-    ngOnInit(){
-
-        if (this.initialized)
+    public ngOnInit() {
+        if (this.initialized) {
             this.buildContainer();
-
+        }
     }
 
-    ngOnDestroy(){
+    public ngOnDestroy() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -49,13 +43,13 @@ export class ObjectRecordViewDetail1 implements AfterViewInit, OnInit, OnDestroy
         }
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.initialized = true;
         this.buildContainer();
     }
 
 
-    buildContainer() {
+    private buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -65,7 +59,7 @@ export class ObjectRecordViewDetail1 implements AfterViewInit, OnInit, OnDestroy
         if (componentconfig.main) {
             for (let view of this.metadata.getComponentSetObjects(componentconfig.main)) {
                 this.metadata.addComponent(view.component, this.contentcontainer).subscribe(componentRef => {
-                    componentRef.instance['componentconfig'] = view.componentconfig;
+                    componentRef.instance.componentconfig = view.componentconfig;
                     this.componentRefs.push(componentRef);
                 })
             }

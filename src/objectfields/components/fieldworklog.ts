@@ -18,8 +18,7 @@ declare var moment: any;
     selector: "field-worklog",
     templateUrl: "./src/objectfields/templates/fieldworklog.html"
 })
-export class fieldWorklog extends fieldGeneric
-{
+export class fieldWorklog extends fieldGeneric {
     private _new_log_entry: string;
     private origin_logs = [];
 
@@ -34,11 +33,10 @@ export class fieldWorklog extends fieldGeneric
     ) {
         super(model, view, language, metadata, router);
         // in case edit modal is opened... and the view is already in edit mode...
-        if(this.view.mode != "edit") {
+        if (this.view.isEditMode()) {
             this.view.mode$.subscribe(
                 (mode) => {
-                    if( mode == "edit" )
-                    {
+                    if (mode == "edit") {
                         this.origin_logs = this.logs;
                     }
                 }
@@ -48,13 +46,13 @@ export class fieldWorklog extends fieldGeneric
 
     public ngOnInit() {
         super.ngOnInit();
-        if(this.view.mode == "edit") {
+        if (this.view.isEditMode()) {
             this.origin_logs = this.logs;
         }
     }
 
-    get logs()    {
-        if( this.value ) {
+    get logs() {
+        if (this.value) {
             if (typeof this.value == "string") {
                 return JSON.parse(this.value);
             } else {
@@ -65,32 +63,29 @@ export class fieldWorklog extends fieldGeneric
         }
     }
 
-    set logs(val)
-    {
-        if(this.field_defs.type != "json") {
+    set logs(val) {
+        if (this.field_defs.type != "json") {
             this.value = JSON.stringify(val);
         } else {
             this.value = val;
         }
     }
 
-    set new_log_entry(val)
-    {
+    set new_log_entry(val) {
         this._new_log_entry = val;
         let new_logs = [...this.origin_logs];
         new_logs.unshift(
             {
-                "timestamp": + new Date(),
-                "user_name": this.session.authData.userName,
-                "user_id": this.session.authData.userId,
-                "text": val,
+                timestamp: +new Date(),
+                user_name: this.session.authData.userName,
+                user_id: this.session.authData.userId,
+                text: val,
             }
         );
         this.logs = new_logs;
     }
 
-    get styles()
-    {
+    get styles() {
         let styles = {
             height: this.fieldconfig.height ? this.fieldconfig.height + "px" : "200px"
         };
