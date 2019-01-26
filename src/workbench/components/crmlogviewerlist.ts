@@ -22,7 +22,7 @@ declare var moment: any;
 export class CRMLogViewerList implements OnInit {
 
     @Input() private filter = { level: '', processId: '', userId: '', text: '', transactionId: '' };
-    @Input() private period = { year: '', month: '', day: '', hour: '' };
+    @Input() private period = { begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' } };
     @Input() private limit = '';
     @Input('load') private load$: EventEmitter<null>;
     @Input() private valuesNotClickable = false;
@@ -88,18 +88,30 @@ export class CRMLogViewerList implements OnInit {
         this.localFiltertext = '';
 
         // Build the REST route:
-        if ( this.period.year.length ) {
-            if ( this.period.month.length ) {
-                if ( this.period.day.length ) {
-                    if ( this.period.hour.length ) {
-                        route += '/day/'+this.period.year+this.period.month+this.period.day+'/hour/'+this.period.hour;
-                    } else {
-                        route += '/day/' + this.period.year + this.period.month + this.period.day;
-                    }
-                } else {
-                    route += '/month/'+this.period.year+this.period.month;
-                }
-            } else route += '/year/'+this.period.year;
+
+        let periodType: string;
+        if ( !this.period.begin.year ) periodType = '';
+        else if ( !this.period.begin.month ) periodType = 'year';
+        else if ( !this.period.begin.day ) periodType = 'month';
+        else if ( !this.period.begin.hour ) periodType = 'day';
+        else periodType = 'hour';
+
+        if ( periodType ) {
+
+            let begin = moment.tz( this.period.begin.year + '-'
+                + (this.period.begin.month ? this.period.begin.month : '00') + '-'
+                + (this.period.begin.day ? this.period.begin.day : '01') + ' '
+                + (this.period.begin.hour ? this.period.begin.hour : '00')
+                + ':00', this.prefs.toUse.timezone );
+
+            let end = begin.clone();
+            end.add( 1, periodType );
+
+            begin.tz('UTC');
+            end.tz('UTC');
+
+            route += '/' + begin.format( 'YYYYMMDDHH' ) + '/' + end.format( 'YYYYMMDDHH' );
+
         }
 
         // Build the query parameters for the request:
