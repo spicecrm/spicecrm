@@ -1,3 +1,9 @@
+<td class="slds-hide--medium">
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small  slds-text-title_bold">
+        <system-icon [module]="model.module" size="xx-small" divClass="slds-p-right--xx-small"></system-icon>
+        <span>{{model.data.summary_text}}</span>
+    </div>
+</td>
 <td *ngFor="let item of listfields" scope="row" (click)="navigateDetail($event)" [attr.data-label]="language.getFieldDisplayName(module, item.field)">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
 </td>
