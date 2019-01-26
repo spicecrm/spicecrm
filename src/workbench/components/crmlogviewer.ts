@@ -17,7 +17,7 @@ export class CRMLogViewer {
 
     // Various:
     private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
-    private period = { year: '', month: '', day: '', hour: '' };
+    private period = { start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' } };
 
     private load$ = new EventEmitter();
 
@@ -25,10 +25,10 @@ export class CRMLogViewer {
 
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
-        if ( this.period.year && !this.period.year.match(/^\d{4}$/) ) return false;
+        if ( this.period.begin.year && !this.period.begin.year.match(/^\d{4}$/) ) return false;
         if ( this.filter.processId && !this.filter.processId.match(/\d$/) ) return false;
         if ( this.limit && !this.limit.match(/\d$/) ) return false;
-        if ( this.period.hour && !this.period.day ) return false;
+        if ( this.period.begin.hour && !this.period.begin.day ) return false;
         return true;
     }
 
@@ -44,7 +44,7 @@ export class CRMLogViewer {
 
     // Get a simple array of day numbers (for ngIf).
     private get daylist() {
-        let daysInMonth = ( !this.period.month || !this.period.year ) ? 31 : this.daysInMonth( this.period.month, this.period.year );
+        let daysInMonth = ( !this.period.begin.month || !this.period.begin.year ) ? 31 : this.daysInMonth( this.period.begin.month, this.period.begin.year );
         let list = [];
         for ( let i=1; i <= daysInMonth; i++ ) list.push( ( i < 10 ? '0':'' ) + i );
         return list;
@@ -52,47 +52,47 @@ export class CRMLogViewer {
 
     // Check, if the year input field has a valid value.
     private checkYear() {
-        return this.period.year.match(/^\d{4}$/);
+        return this.period.begin.year.match(/^\d{4}$/);
     }
 
     private changedYear() {
-        if ( !this.period.year ) this.period.month = this.period.day = this.period.hour = '';
+        if ( !this.period.begin.year ) this.period.begin.month = this.period.begin.day = this.period.begin.hour = '';
     }
     private changedHour() {
-        if ( this.period.hour ) {
+        if ( this.period.begin.hour ) {
             this.setYearNow();
             this.setMonthNow();
             this.setDayNow();
         }
     }
     private changedDay() {
-        if ( !this.period.day ) this.period.hour = '';
+        if ( !this.period.begin.day ) this.period.begin.hour = '';
         else {
             this.setYearNow();
             this.setMonthNow();
         }
     }
     private changedMonth() {
-        if ( !this.period.month ) this.period.day = this.period.hour = '';
+        if ( !this.period.begin.month ) this.period.begin.day = this.period.begin.hour = '';
         else {
-            if ( this.period.day && parseInt( this.period.day, 10 ) > this.daysInMonth( this.period.month, this.period.year )) this.period.day = '';
+            if ( this.period.begin.day && parseInt( this.period.begin.day, 10 ) > this.daysInMonth( this.period.begin.month, this.period.begin.year )) this.period.begin.day = '';
             this.setYearNow();
         }
     }
 
     private setYearNow() {
-        if ( !this.period.year ) this.period.year = (new Date()).getFullYear().toString();
+        if ( !this.period.begin.year ) this.period.begin.year = (new Date()).getFullYear().toString();
     }
     private setMonthNow() {
-        if ( !this.period.month ) {
-            this.period.month = ((new Date()).getMonth()+1).toString();
-            if ( this.period.month.length === 1 ) this.period.month = '0'+this.period.month;
+        if ( !this.period.begin.month ) {
+            this.period.begin.month = ((new Date()).getMonth()+1).toString();
+            if ( this.period.begin.month.length === 1 ) this.period.begin.month = '0'+this.period.begin.month;
         }
     }
     private setDayNow() {
-        if( !this.period.day ) {
-            this.period.day = (new Date()).getDate().toString();
-            if ( this.period.day.length === 1 ) this.period.day = '0'+this.period.day;
+        if( !this.period.begin.day ) {
+            this.period.begin.day = (new Date()).getDate().toString();
+            if ( this.period.begin.day.length === 1 ) this.period.begin.day = '0'+this.period.begin.day;
         }
     }
 
@@ -102,13 +102,13 @@ export class CRMLogViewer {
         switch ( click.type ) {
             case 'date':
                 items = click.value.split('\.');
-                this.period.day = items[0];
-                this.period.month = items[1];
-                this.period.year = items[2];
+                this.period.begin.day = items[0];
+                this.period.begin.month = items[1];
+                this.period.begin.year = items[2];
                 break;
             case 'time':
                 items = click.value.split(':');
-                this.period.hour = items[0];
+                this.period.begin.hour = items[0];
                 break;
             case 'tid': this.filter.transactionId = click.value; break;
             case 'uid': this.filter.userId = click.value; break;
