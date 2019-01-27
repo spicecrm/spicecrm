@@ -1,6 +1,14 @@
-<td *ngFor="let item of listfields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
-    <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+<td class="slds-hide--medium">
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small" >
+        <div class="slds-text-align--left slds-truncate slds-grow" (click)="navigateDetail($event)">{{model.data.summary_text}}</div>
+        <system-utility-icon [icon]="expandicon" size="xx-small" (click)="toggleexpanded()"></system-utility-icon>
+    </div>
 </td>
-<td role="gridcell" class="slds-cell-shrink">
-    <object-action-menu [buttonsize]="'x-small'" [standardactions]="false" [addactions]="customActions" [standardeditactions]="false" [addeditactions]="customEditActions"(action)="handleAction($event)"></object-action-menu>
-</td>
+<ng-container *ngIf="isexpanded">
+    <td *ngFor="let item of listfields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
+        <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+    </td>
+    <td role="gridcell" class="slds-cell-shrink">
+        <object-action-menu [buttonsize]="'x-small'" [standardactions]="false" [addactions]="customActions" [standardeditactions]="false" [addeditactions]="customEditActions"(action)="handleAction($event)"></object-action-menu>
+    </td>
+</ng-container>

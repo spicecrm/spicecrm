@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, ActivatedRoute}   from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
 import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
-import {modellist} from "../../services/modellist.service";
+import {layout} from "../../services/layout.service";
 import {view} from "../../services/view.service";
 
 @Component({
@@ -14,16 +14,17 @@ import {view} from "../../services/view.service";
     providers: [model, view]
 })
 export class ObjectRelatedListItem implements OnInit {
-    @Input() private listfields: Array<any> = [];
+    @Input() private listfields: any[] = [];
     @Input() private listitem: any = {};
     @Input() private module: string = "";
-    @Input() private editable: boolean = false;private
+    @Input() private editable: boolean = false;
     @Input() private editcomponentset: string = "";
 
-    private customEditActions: Array<any> = [];
-    private customActions: Array<any> = [];
+    private customEditActions: any[] = [];
+    private customActions: any[] = [];
+    private expanded: boolean = false;
 
-    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language) {
+    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout) {
 
     }
 
@@ -33,7 +34,7 @@ export class ObjectRelatedListItem implements OnInit {
         this.model.data = this.listitem;
 
         // set editable if the user is allowed to edit the record
-        if (this.model.data.acl.edit){
+        if (this.model.data.acl.edit) {
             this.view.isEditable = this.editable;
 
             this.customActions.push({action: "edit", name: this.language.getLabel("LBL_EDIT")});
@@ -65,9 +66,9 @@ export class ObjectRelatedListItem implements OnInit {
                     if (this.editcomponentset && this.editcomponentset != "") {
                         editModalRef.instance.componentSet = this.editcomponentset;
                     }
-                   this.model.startEdit();
+                    this.model.startEdit();
                     editModalRef.instance.modalAction$.subscribe(action => {
-                        if(action === false){
+                        if (action === false) {
                             editModalRef.destroy();
                             this.model.cancelEdit();
                         } else {
@@ -95,5 +96,18 @@ export class ObjectRelatedListItem implements OnInit {
                 }
                 break;
         }
+    }
+
+
+    private toggleexpanded() {
+        this.expanded = !this.expanded;
+    }
+
+    get isexpanded() {
+        return this.layout.screenwidth != 'small' || this.expanded;
+    }
+
+    get expandicon() {
+        return this.expanded ? 'chevronup' : 'chevrondown';
     }
 }

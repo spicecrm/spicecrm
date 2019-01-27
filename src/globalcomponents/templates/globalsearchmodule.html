@@ -21,16 +21,14 @@
         </div>
     </div>
     <div>
-        <table class="slds-show--medium slds-table slds-table--bordered slds-table--fixed-layout" role="grid">
-            <thead>
-            <tr class="slds-text-title--caps">
-                <th *ngFor="let item of listfields" scope="col">
-                    <div class="slds-truncate slds-p-around--x-small">{{language.getFieldDisplayName(module, item.field)}}</div>
-                </th>
-            </tr>
+        <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
+            <thead class="slds-show--medium">
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let item of listfields" scope="col">
+                        <div class="slds-truncate slds-p-around--x-small">{{language.getFieldDisplayName(module, item.field)}}</div>
+                    </th>
+                </tr>
             </thead>
-        </table>
-        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" role="grid">
             <tbody>
                 <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
             </tbody>
