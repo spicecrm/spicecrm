@@ -28,7 +28,7 @@
         </thead>
     </table>
     <div tobottom (scroll)="onScroll($event)">
-        <table #tablecontent class="slds-table slds-table--bordered slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" role="grid">
+        <table #tablecontent class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
             <tbody>
                 <tr global-search-module-item *ngFor="let item of getItems()" [module]="module" [listfields]="listfields" [listitem]="item"></tr>
             </tbody>
