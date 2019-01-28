@@ -2,8 +2,8 @@
     <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
         <system-button-icon icon="close"></system-button-icon>
     </button>
-    <div #popover>
-        <div class="slds-popover__header slds-p-right--none">
+    <div #popover [ngStyle]="detailsStyle">
+        <div class="slds-popover__header">
             <header class="slds-media slds-media_center slds-m-bottom_small slds-p-right--large">
                 <system-icon [module]="popovermodule" size="small"></system-icon>
                 <div class="slds-media__body">
@@ -24,7 +24,7 @@
                 </div>
             </footer>
         </div>
-        <div class="slds-popover__body  slds-scrollable--y spicecrm-scrollbar">
+        <div #relatedcontainer class="slds-popover__body  slds-scrollable--y spicecrm-scrollbar" [ngStyle]="relatedStyle">
             <system-componentset [componentset]="componentset"></system-componentset>
         </div>
     </div>
