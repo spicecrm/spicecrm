@@ -69,6 +69,18 @@
                 </div>
             </div>
 
+            <div class="slds-form-element slds-m-right--x-small slds-m-left--x-small">
+                <label class="slds-form-element__label" for="duration">{{lang.getLabel('LBL_DURATION')}}<span *ngIf="period.type"> ({{lang.getLabel(durationLabel)}})</span></label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input [disabled]="!period.type" id="duration" class="slds-input slds-text-align--right" size="2" type="text" trim [(ngModel)]="period.duration" (change)="sanitizeDuration()"/>
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
         </div>
 
         <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--xxx-small" style="padding-top:0">
@@ -248,21 +260,21 @@
                             <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
                             <th style="width:1%">{{lang.getLabel('LBL_ROUTE')}}</th>
                             <th style="width:1%">{{lang.getLabel('LBL_METHOD')}}</th>
-                            <th style="width:1%">{{lang.getLabel('LBL_STATUS')}}</th>
+                            <th style="width:1%" class="slds-text-align--right">{{lang.getLabel('LBL_STATUS')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_ROUTE_ARGUMENTS')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_URL_PARAMETERS')}}</th>
                             <th style="width:2rem"></th>
                         </tr>
                     </thead>
                     <tbody #tbody>
-                        <tr *ngFor="let line of lines | paginate: { page: currPage, limit: 20 }">
+                        <tr *ngFor="let line of lines | paginate: { page: currPage, limit: 20 }" [ngClass]="{notStatus200:line.status!==200}">
                             <td class="slds-text-align--right"><a (click)="valueClicked( 'date', line.date )">{{line.date}}</a></td>
                             <td class="slds-text-align--right"><a (click)="valueClicked( 'date', line.date );valueClicked( 'time', line.time )">{{line.time}}</a></td>
                             <td><a *ngIf="line.clr" (click)="showCRMlog(line.tid)"><b>[ {{line.clr}} ]</b></a></td>
                             <td><a (click)="valueClicked( 'uid', line.uid )">{{getUsername(line.uid)}}</a></td>
                             <td><a (click)="valueClicked( 'route', line.route )">{{line.route}}</a></td>
                             <td><a (click)="valueClicked( 'method', line.method )">{{line.method}}</a></td>
-                            <td><a (click)="valueClicked( 'status', line.status )">{{line.status}}</a></td>
+                            <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', line.status )">{{line.status}}</a></td>
                             <td>{{line.routeArgs}}</td>
                             <td>{{line.getParams}}</td>
                             <td>

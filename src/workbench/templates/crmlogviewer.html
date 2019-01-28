@@ -68,6 +68,18 @@
         </div>
 
         <div class="slds-form-element slds-m-right--x-small">
+            <label class="slds-form-element__label" for="duration">{{lang.getLabel('LBL_DURATION')}}<span *ngIf="period.type"> ({{lang.getLabel(durationLabel)}})</span></label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input [disabled]="!period.type" id="duration" class="slds-input slds-text-align--right" size="2" type="text" trim [(ngModel)]="period.duration" (change)="sanitizeDuration()"/>
+                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="processId">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                 <input id="processId" class="slds-input slds-text-align--right" type="text" size="5" trim [(ngModel)]="filter.processId" />
@@ -80,7 +92,7 @@
         </div>
 
         <div class="slds-form-element slds-m-right--x-small">
-            <label class="slds-form-element__label" for="transactionId">{{lang.getLabel('LBL_TRANSACTION_ID')}}</label>
+            <label class="slds-form-element__label" for="transactionId">{{lang.getLabel('LBL_TRANSACTION')}}</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                 <input id="transactionId" class="slds-input slds-text-align--right" type="text" trim [(ngModel)]="filter.transactionId" />
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.transactionId=''">

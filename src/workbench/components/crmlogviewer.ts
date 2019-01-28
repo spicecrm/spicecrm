@@ -17,7 +17,7 @@ export class CRMLogViewer {
 
     // Various:
     private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
-    private period = { start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' } };
+    private period = { type: '', start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' }, duration: '1' };
 
     private load$ = new EventEmitter();
 
@@ -57,6 +57,7 @@ export class CRMLogViewer {
 
     private changedYear() {
         if ( !this.period.begin.year ) this.period.begin.month = this.period.begin.day = this.period.begin.hour = '';
+        this.setPeriodType();
     }
     private changedHour() {
         if ( this.period.begin.hour ) {
@@ -64,6 +65,7 @@ export class CRMLogViewer {
             this.setMonthNow();
             this.setDayNow();
         }
+        this.setPeriodType();
     }
     private changedDay() {
         if ( !this.period.begin.day ) this.period.begin.hour = '';
@@ -71,6 +73,7 @@ export class CRMLogViewer {
             this.setYearNow();
             this.setMonthNow();
         }
+        this.setPeriodType();
     }
     private changedMonth() {
         if ( !this.period.begin.month ) this.period.begin.day = this.period.begin.hour = '';
@@ -78,6 +81,7 @@ export class CRMLogViewer {
             if ( this.period.begin.day && parseInt( this.period.begin.day, 10 ) > this.daysInMonth( this.period.begin.month, this.period.begin.year )) this.period.begin.day = '';
             this.setYearNow();
         }
+        this.setPeriodType();
     }
 
     private setYearNow() {
@@ -115,6 +119,28 @@ export class CRMLogViewer {
             case 'lev': this.filter.level = click.value; break;
             case 'pid': this.filter.processId = click.value.toString(); break;
         }
+    }
+
+    private sanitizeDuration() {
+        if ( !this.period.duration.match( /\d+/ )) this.period.duration = '1';
+    }
+
+    private get durationLabel() {
+        let labels = {
+            'year': 'LBL_YEARS',
+            'month': 'LBL_MONTHS',
+            'day': 'LBL_DAYS',
+            'hour': 'LBL_HOURS'
+        };
+        return this.period.type ? labels[this.period.type] : '';
+    }
+
+    private setPeriodType() {
+        this.period.type =
+            !this.period.begin.year ?  '' :
+                !this.period.begin.month ? 'year' :
+                    !this.period.begin.day ? 'month' :
+                        !this.period.begin.hour ? 'day' : 'hour';
     }
 
 }
