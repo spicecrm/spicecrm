@@ -3,6 +3,7 @@ import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
+import {DirectivesModule} from "../../directives/directives";
 
 import {Subject, Observable} from 'rxjs';
 
@@ -38,7 +39,10 @@ import /*embed*/ { productfinder } from './services/productfinder.service';
 
 import /*embed*/ {ProductManager} from './components/productmanager';
 import /*embed*/ {ProductBrowser} from './components/productbrowser';
+import /*embed*/ {ProductGroupManager} from "./components/productgroupmanager";
+import /*embed*/ {ProductGroupManagerDetails} from "./components/productgroupmanagerdetails";
 import /*embed*/ {ProductBrowserTree} from './components/productbrowsertree';
+import /*embed*/ {ProductGroupManagerTree} from './components/productgroupmanagertree';
 import /*embed*/ {ProductBrowserVariants} from './components/productbrowservariants';
 import /*embed*/ {ProductBrowserVariant} from './components/productbrowservariant';
 import /*embed*/ {ProductBrowserAttributes} from './components/productbrowserattributes';
@@ -64,11 +68,15 @@ import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/produ
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ProductManager,
+        ProductGroupManager,
+        ProductGroupManagerDetails,
         ProductBrowser,
         ProductBrowserTree,
+        ProductGroupManagerTree,
         ProductBrowserVariants,
         ProductBrowserVariant,
         ProductBrowserAttributes,
