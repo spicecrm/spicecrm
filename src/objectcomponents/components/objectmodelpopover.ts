@@ -17,6 +17,7 @@ export class ObjectModelPopover implements OnInit {
     private hidePopoverTimeout: any = {};
 
     @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
+    @ViewChild('relatedcontainer', {read: ViewContainerRef}) private relatedContainer: ViewContainerRef;
 
     public parentElementRef: any = null;
     public self: any = null;
@@ -34,6 +35,14 @@ export class ObjectModelPopover implements OnInit {
         private metadata: metadata,
     ) {
 
+    }
+
+    get detailsStyle() {
+        return {'max-height': `calc(100vh - ${(this.popover.element.nativeElement.getBoundingClientRect().top + 5)}px)`};
+    }
+
+    get relatedStyle() {
+        return {'max-height': `calc(100vh - ${(this.relatedContainer.element.nativeElement.getBoundingClientRect().top  + 5)}px)`};
     }
 
     private goDetail() {
