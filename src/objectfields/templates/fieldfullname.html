@@ -2,8 +2,8 @@
     {{value}}
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()">
-    <div class="slds-grid slds-grid_vertical-align-center">
-        <div class="slds-col slds-form-element__control slds-size--1-of-7 slds-align-top" [ngClass]="getClassesForSubField(fieldsalutation)">
+    <div class="slds-grid slds-grid_vertical-align-center slds-wrap">
+        <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldsalutation)">
             <field-label [fieldname]="fieldsalutation"></field-label>
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="model.data[fieldsalutation]">
@@ -12,22 +12,22 @@
             </div>
             <field-messages [fieldname]="fieldsalutation"></field-messages>
         </div>
-        <div class="slds-col slds-form-element__control slds-size--1-of-7 slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fielddegree)">
+        <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fielddegree)">
             <field-label [fieldname]="fielddegree"></field-label>
             <input class="slds-input" type="text" [(ngModel)]="model.data[fielddegree]"/>
             <field-messages [fieldname]="fielddegree"></field-messages>
         </div>
-        <div class="slds-col slds-form-element__control slds-size--2-of-7 slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldfirstname)">
+        <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldfirstname)">
             <field-label [fieldname]="fieldfirstname"></field-label>
             <input class="slds-input" type="text" [(ngModel)]="model.data[fieldfirstname]"/>
             <field-messages [fieldname]="fieldfirstname"></field-messages>
         </div>
-        <div class="slds-col slds-form-element__control slds-size--2-of-7 slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlastname)">
+        <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlastname)">
             <field-label [fieldname]="fieldlastname"></field-label>
             <input class="slds-input" type="text" [(ngModel)]="model.data[fieldlastname]"/>
             <field-messages [fieldname]="fieldlastname"></field-messages>
         </div>
-        <div class="slds-col slds-form-element__control slds-size--1-of-7 slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">
+        <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">
             <field-label [fieldname]="fieldlasttitle"></field-label>
             <input class="slds-input" type="text" [(ngModel)]="model.data[fieldlasttitle]"/>
             <field-messages [fieldname]="fieldlasttitle"></field-messages>
