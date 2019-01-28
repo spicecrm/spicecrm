@@ -1,33 +1,37 @@
 import {Component, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {layout} from '../../services/layout.service';
 import {modellist} from '../../services/modellist.service';
 
 @Component({
     selector: 'object-list',
     templateUrl: './src/objectcomponents/templates/objectlist.html'
 })
-export class ObjectList implements OnDestroy{
+export class ObjectList implements OnDestroy {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) tablecontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
 
-    get isloading(){ return this.modellist.isLoading};
-    allFields: Array<any> = [];
-    listFields: Array<any> = [];
+    get isloading() {
+        return this.modellist.isLoading;
+    };
+
+    private allFields: any[] = [];
+    private listFields: any[] = [];
     private module: string = '';
-    modellistsubscribe: any = undefined;
-    componentconfig: any = {};
+    private modellistsubscribe: any = undefined;
+    public componentconfig: any = {};
 
-    get actionset(){
+    get actionset() {
         return this.componentconfig.actionset;
     }
 
-    get rowselect(){
+    get rowselect() {
         return true;
     }
 
-    constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language) {
+    constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
         // set the module
         this.module = this.modellist.module;
 
@@ -39,30 +43,24 @@ export class ObjectList implements OnDestroy{
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
     }
 
-    get inlineedit(){
+    get inlineedit() {
         return this.componentconfig.inlineedit;
     }
 
-    ngOnDestroy(){
+    get issmall() {
+        return this.layout.screenwidth == 'small';
+    }
+
+    public ngOnDestroy() {
         this.modellistsubscribe.unsubscribe();
     }
 
-    // todo : fix this for scrolling with a fixed table header
-    getContainerStyle() {
-        let rect = this.tablecontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px)',
-            'overflow-y': 'scroll',
-            'margin-top': '-1px'
-        }
-    }
-
-    switchListtype(){
+    private switchListtype() {
         this.setFieldDefs();
         this.loadList();
     }
 
-    setFieldDefs(): void {
+    private setFieldDefs(): void {
         this.listFields = [];
 
         // check if we have fielddefs
@@ -71,32 +69,33 @@ export class ObjectList implements OnDestroy{
         this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         this.allFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
         for (let listField of this.allFields) {
-            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length === 0 && listField.fieldconfig.default !== false))
+            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length === 0 && listField.fieldconfig.default !== false)) {
                 this.listFields.push(listField);
+            }
         }
 
         // sort the fields properly
         if (fielddefs.length > 0) {
             this.listFields.sort((a, b) => {
                 return fielddefs.indexOf(a.field) - fielddefs.indexOf(b.field);
-            })
+            });
         }
     }
 
 
-    navigateDetail(id) {
+    private navigateDetail(id) {
         this.router.navigate(['/module/' + this.module + '/' + id]);
     }
 
-    loadList() {
-        var requestedFields = [];
+    private loadList() {
+        let requestedFields = [];
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
         this.modellist.getListData(requestedFields);
     }
 
-    onScroll(e) {
+    private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.modellist.loadMoreList();
