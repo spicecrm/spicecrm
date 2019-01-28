@@ -1,6 +1,9 @@
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-     {{value}}
-</field-generic-display>
+<div *ngIf="!isEditMode()">
+    <field-label fieldname="field" [fieldconfig]="fieldconfig"></field-label>
+    <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+        {{value}}
+    </field-generic-display>
+</div>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <fieldset>
         <legend class="slds-form-element__label slds-text-title--caps slds-p-bottom--x-small">{{getAddressLabel()}}</legend>

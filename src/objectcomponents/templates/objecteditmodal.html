@@ -2,7 +2,7 @@
     <system-modal-header (close)="closeModal()">
         {{modalHeader}}
     </system-modal-header>
-    <system-modal-content margin="none" #modalContent>
+    <system-modal-content margin="none" #modalContent viewprovider>
         <object-edit-modal-dialog-container [module]="model.module" [componentSet]="componentSet" *ngIf="!showDuplicates"></object-edit-modal-dialog-container>
         <object-edit-modal-dialog-duplicates class="slds-theme--shade" *ngIf="showDuplicates" [duplicates]="duplicates"></object-edit-modal-dialog-duplicates>
     </system-modal-content>

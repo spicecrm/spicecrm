@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-record-fieldset',
@@ -20,7 +21,7 @@ export class ObjectRecordFieldset implements OnInit {
     private fieldsetitems: any[] = [];
     private numberOfColumns: number = 0; // in grid
 
-    constructor(private metadata: metadata, private model: model) {
+    constructor(private metadata: metadata, private model: model, private view: view) {
     }
 
     public ngOnInit() {
@@ -40,6 +41,13 @@ export class ObjectRecordFieldset implements OnInit {
     }
 
     private sizeClass(i) {
-        return this.renderVertical ? '' :  ' slds-medium-size--' + this.fieldsetitems[i].fieldconfig.width + '-of-' + this.numberOfColumns;
+        // render vertical ... none
+        if (this.renderVertical) return '';
+
+        // in case of small view sioze 1-of-1
+        if (this.view.size == 'small') return 'slds-size--1-of-1';
+
+        // regular -- calulate grid
+        return 'slds-size--' + this.fieldsetitems[i].fieldconfig.width + '-of-' + this.numberOfColumns;
     }
 }
