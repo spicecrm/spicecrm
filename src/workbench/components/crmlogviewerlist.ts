@@ -22,7 +22,7 @@ declare var moment: any;
 export class CRMLogViewerList implements OnInit {
 
     @Input() private filter = { level: '', processId: '', userId: '', text: '', transactionId: '' };
-    @Input() private period = { begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' } };
+    @Input() private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
     @Input() private limit = '';
     @Input('load') private load$: EventEmitter<null>;
     @Input() private valuesNotClickable = false;
@@ -96,7 +96,7 @@ export class CRMLogViewerList implements OnInit {
         else if ( !this.period.begin.hour ) periodType = 'day';
         else periodType = 'hour';
 
-        if ( periodType ) {
+        if ( this.period.type ) {
 
             let begin = moment.tz( this.period.begin.year + '-'
                 + (this.period.begin.month ? this.period.begin.month : '00') + '-'
@@ -105,7 +105,7 @@ export class CRMLogViewerList implements OnInit {
                 + ':00', this.prefs.toUse.timezone );
 
             let end = begin.clone();
-            end.add( 1, periodType );
+            end.add( this.period.duration, this.period.type );
 
             begin.tz('UTC');
             end.tz('UTC');
