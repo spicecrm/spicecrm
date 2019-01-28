@@ -2,8 +2,8 @@
     <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
         <system-button-icon icon="close"></system-button-icon>
     </button>
-    <div #popover>
-        <div class="slds-popover__header slds-p-right--none">
+    <div #popover [ngStyle]="detailsStyle">
+        <div class="slds-popover__header">
             <header class="slds-media slds-media_center slds-m-bottom_small slds-p-right--large">
                 <system-icon [module]="popovermodule" size="small"></system-icon>
                 <div class="slds-media__body">
@@ -11,7 +11,7 @@
                     <h2 class="slds-text-heading_small slds-hyphenate" ><a href="javascript:void(0);" (click)="goDetail()">{{model.data.summary_text}}</a></h2>
                 </div>
             </header>
-            <footer class="slds-grid slds-wrap slds-scrollable--y spicecrm-scrollbar slds-p-right--large" style="max-height: 90px">
+            <footer class="slds-grid slds-wrap slds-p-right--large">
                 <div class="slds-p-horizontal--small slds-size--1-of-2 slds-p-bottom--x-small" *ngFor="let field of fields">
                     <dl>
                         <dt>
@@ -24,7 +24,7 @@
                 </div>
             </footer>
         </div>
-        <div class="slds-popover__body  slds-scrollable--y spicecrm-scrollbar" style="max-height: 150px">
+        <div #relatedcontainer class="slds-popover__body  slds-scrollable--y spicecrm-scrollbar" [ngStyle]="relatedStyle">
             <system-componentset [componentset]="componentset"></system-componentset>
         </div>
     </div>
