@@ -3,7 +3,7 @@ import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {Router}   from '@angular/router';
+import {layout} from '../../services/layout.service';
 
 @Component({
     selector: 'object-relatedlist-table',
@@ -11,40 +11,44 @@ import {Router}   from '@angular/router';
 })
 export class ObjectRelatedlistTable {
 
-    @Input() listfields: Array<any> = [];
-    @Input() module: Array<any> = [];
-    @Input() editable: boolean = false;
-    @Input() editcomponentset: boolean = false;
+    @Input() private listfields: any[] = [];
+    @Input() private module: any[] = [];
+    @Input() private editable: boolean = false;
+    @Input() private editcomponentset: boolean = false;
 
-    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public router: Router) {
+    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout) {
 
     }
 
-    get isloading(){
+    get isloading() {
         return this.relatedmodels.isloading;
     }
 
-
-    isSortable(field): boolean {
-        if (field.fieldconfig.sortable === true)
-            return true;
-        else
-            return false;
+    get isSmall(){
+        return this.layout.screenwidth == 'small';
     }
 
-    setSortField(field): void {
-        if(this.isSortable(field)) {
+    private isSortable(field): boolean {
+        if (field.fieldconfig.sortable === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private setSortField(field): void {
+        if (this.isSortable(field)) {
             this.relatedmodels.sortfield = field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field;
         }
     }
 
-    getSortIcon(field): string {
-        if(this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field) ) {
-            if (this.relatedmodels.sort.sortdirection === 'ASC')
+    private getSortIcon(field): string {
+        if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
+            if (this.relatedmodels.sort.sortdirection === 'ASC') {
                 return 'arrowdown';
-            else
+            } else {
                 return 'arrowup';
+            }
         }
     }
-
 }

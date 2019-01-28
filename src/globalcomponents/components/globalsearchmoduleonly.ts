@@ -1,10 +1,8 @@
-/**
- * Created by christian on 08.11.2016.
- */
 import {ElementRef, Component, Input, ViewChild, ViewContainerRef, OnInit, OnChanges} from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
 import {language} from '../../services/language.service';
+import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 
@@ -19,8 +17,12 @@ export class GlobalSearchModuleOnly implements OnChanges {
     @Input() private module: string = '';
     private listfields: any[] = [];
 
-    constructor(private broadcast: broadcast, private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language) {
+    constructor(private broadcast: broadcast, private metadata: metadata, private elementref: ElementRef, router: Router, private fts: fts, private language: language, private layout: layout) {
 
+    }
+
+    get issmall() {
+        return this.layout.screenwidth == 'small';
     }
 
     public ngOnChanges() {

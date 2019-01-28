@@ -69,7 +69,11 @@ export class fieldEmail extends fieldGeneric {
     }
 
     private changed() {
-        if (this.value && this.value.length && this.validation.test(this.value)) {
+
+        if (!this.value || this.value == '') {
+            this.model.resetFieldMessages(this.fieldname, 'error', this.mark);
+            this.invalid = false;
+        } else if (this.validation.test(this.value)) {
             this.model.resetFieldMessages(this.fieldname, 'error', this.mark);
             this.invalid = false;
         } else {

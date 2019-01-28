@@ -25,7 +25,7 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
         public language: language,
         public metadata: metadata,
         public relatedmodels: relatedmodels,
-        public model: model,
+        public model: model
     ) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;

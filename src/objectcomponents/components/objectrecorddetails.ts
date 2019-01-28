@@ -1,5 +1,13 @@
-import {AfterViewInit, OnInit, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {
+    AfterViewInit,
+    OnInit,
+    ComponentFactoryResolver,
+    Component,
+    ViewChild,
+    ViewContainerRef,
+    Renderer2, OnDestroy
+} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -11,31 +19,31 @@ import {language} from '../../services/language.service';
     providers: [view]
 })
 export class ObjectRecordDetails implements OnInit, AfterViewInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef}) private detailcontainer: ViewContainerRef;
 
-    initialized: boolean = false;
-    componentSet: string = '';
-    componentconfig: any = {};
-    componentRefs: any = [];
+    private initialized: boolean = false;
+    private componentSet: string = '';
+    private componentconfig: any = {};
+    private componentRefs: any = [];
 
-    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language) {
+    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2) {
         this.view.isEditable = true;
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         // check if readonly
-        if(this.componentconfig.readonly){
+        if (this.componentconfig.readonly) {
             this.view.isEditable = false;
         }
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.initialized = true;
 
         this.buildContainer();
     }
 
-    buildContainer() {
+    private buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -52,43 +60,43 @@ export class ObjectRecordDetails implements OnInit, AfterViewInit {
 
         for (let panel of this.metadata.getComponentSetObjects(this.componentSet)) {
             this.metadata.addComponent(panel.component, this.detailcontainer).subscribe(componentRef => {
-                componentRef.instance['componentconfig'] = panel.componentconfig;
+                componentRef.instance.componentconfig = panel.componentconfig;
                 this.componentRefs.push(componentRef);
             });
         }
     }
 
-    cancel() {
+    private cancel() {
         this.model.cancelEdit();
         this.view.setViewMode();
     }
 
-    save() {
+    private save() {
         if (this.model.validate()) {
             this.model.save(true);
             this.view.setViewMode();
         }
     }
 
-    getBoxStyle() {
+    private getBoxStyle() {
         if (this.view.isEditMode()) {
             return {
                 'box-shadow': '0 2px 4px 4px rgba(0,0,0,.16)',
                 'border-radius': '.25rem'
-            }
-        } else if(this.componentconfig.displayborder) {
+            };
+        } else if (this.componentconfig.displayborder) {
             return {
-                'border' : '1px solid #dddbda',
+                'border': '1px solid #dddbda',
                 'border-radius': '.25rem'
-            }
+            };
         }
     }
 
-    get showHeader(){
-        return this.componentconfig['header'] ? true : false;
+    get showHeader() {
+        return this.componentconfig.header ? true : false;
     }
 
-    get header(){
-        return this.language.getLabel(this.componentconfig['header'], this.model.module);
+    get header() {
+        return this.language.getLabel(this.componentconfig.header, this.model.module);
     }
 }
