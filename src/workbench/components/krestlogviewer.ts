@@ -14,7 +14,9 @@ declare var moment: any;
         'td.expanded { white-space: normal; }',
         'td.expanded div { overflow-wrap: break-word; }',
         'td.collapsed > div { position: absolute; top:0; bottom:0; right:0; left:0; padding: calc(0.25rem + 4px) calc(0.5rem + 0px); }',
-        'input::placeholder { font-style: italic; color: #666 !important; }'
+        'input::placeholder { font-style: italic; color: #666 !important; }',
+        'tr.notStatus200 td, tr.notStatus200 td a { color: #d00; }',
+        'tr.notStatus200 td.status { font-weight: bold !important; }'
     ]
 })
 export class KRESTLogViewer {
@@ -39,7 +41,7 @@ export class KRESTLogViewer {
     // Various:
     private currPage = 1;
     private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '', status: '', transactionId: '' };
-    private period = { begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' } };
+    private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '1' };
     private filtertext = '';
     private yearNow: string;
     private toastId = '';
@@ -89,14 +91,7 @@ export class KRESTLogViewer {
 
         // Build the REST route:
 
-        let periodType: string;
-        if ( !this.period.begin.year ) periodType = '';
-        else if ( !this.period.begin.month ) periodType = 'year';
-        else if ( !this.period.begin.day ) periodType = 'month';
-        else if ( !this.period.begin.hour ) periodType = 'day';
-        else periodType = 'hour';
-
-        if ( periodType ) {
+        if ( this.period.type ) {
 
             let begin = moment.tz( this.period.begin.year + '-'
                 + (this.period.begin.month ? this.period.begin.month : '00') + '-'
@@ -105,7 +100,7 @@ export class KRESTLogViewer {
                 + ':00', this.prefs.toUse.timezone );
 
             let end = begin.clone();
-            end.add( 1, periodType );
+            end.add( this.period.duration, this.period.type );
 
             begin.tz('UTC');
             end.tz('UTC');
@@ -226,6 +221,7 @@ export class KRESTLogViewer {
 
     private changedYear() {
         if ( !this.period.begin.year ) this.period.begin.month = this.period.begin.day = this.period.begin.hour = '';
+        this.setPeriodType();
     }
     private changedHour() {
         if ( this.period.begin.hour ) {
@@ -233,6 +229,7 @@ export class KRESTLogViewer {
             this.setMonthNow();
             this.setDayNow();
         }
+        this.setPeriodType();
     }
     private changedDay() {
         if ( !this.period.begin.day ) this.period.begin.hour = '';
@@ -240,6 +237,7 @@ export class KRESTLogViewer {
             this.setYearNow();
             this.setMonthNow();
         }
+        this.setPeriodType();
     }
     private changedMonth() {
         if ( !this.period.begin.month ) this.period.begin.day = this.period.begin.hour = '';
@@ -247,6 +245,7 @@ export class KRESTLogViewer {
             if ( this.period.begin.day && parseInt( this.period.begin.day, 10 ) > this.daysInMonth( this.period.begin.month, this.period.begin.year )) this.period.begin.day = '';
             this.setYearNow();
         }
+        this.setPeriodType();
     }
 
     private setYearNow() {
@@ -285,6 +284,28 @@ export class KRESTLogViewer {
             case 'method': this.filter.method = value; break;
             case 'status': this.filter.status = value; break;
         }
+    }
+
+    private sanitizeDuration() {
+        if ( !this.period.duration.match( /\d+/ )) this.period.duration = '1';
+    }
+
+    private get durationLabel() {
+        let labels = {
+            'year': 'LBL_YEARS',
+            'month': 'LBL_MONTHS',
+            'day': 'LBL_DAYS',
+            'hour': 'LBL_HOURS'
+        };
+        return this.period.type ? labels[this.period.type] : '';
+    }
+
+    private setPeriodType() {
+        this.period.type =
+            !this.period.begin.year ?  '' :
+                !this.period.begin.month ? 'year' :
+                    !this.period.begin.day ? 'month' :
+                        !this.period.begin.hour ? 'day' : 'hour';
     }
 
 }
