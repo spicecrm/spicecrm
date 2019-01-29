@@ -59,6 +59,8 @@ import /*embed*/ {ProductVariantsAttributeF} from './components/productvariantsa
 import /*embed*/ {ProductTextGenerator} from './components/producttextgenerator';
 import /*embed*/ {ProductGroupsContentCodeAssignments} from './components/productgroupscontentcodeassignments';
 import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/productgroupslongtextcodeassignments';
+import /*embed*/ {ProductGroupManagerDetailsAttributes} from './components/productgroupmanagerdetailsattributes';
+import /*embed*/ {ProductGroupManagerDetailsAttributesItem} from "./components/productgroupmanagerdetailsattributesitem";
 
 @NgModule({
     imports: [
@@ -74,6 +76,8 @@ import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/produ
         ProductManager,
         ProductGroupManager,
         ProductGroupManagerDetails,
+        ProductGroupManagerDetailsAttributes,
+        ProductGroupManagerDetailsAttributesItem,
         ProductBrowser,
         ProductBrowserTree,
         ProductGroupManagerTree,

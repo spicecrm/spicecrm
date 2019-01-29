@@ -1,23 +1,25 @@
-import {Component} from '@angular/core';
-import {model} from '../../../services/model.service';
+import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
-import {Router} from "@angular/router";
 import {productfinder} from "../services/productfinder.service";
 
 @Component({
     templateUrl: './src/modules/products/templates/productgroupmanager.html',
-    providers:[productfinder, model]
-
+    providers: [productfinder]
 })
 
 export class ProductGroupManager {
 
+    @ViewChild("bodycontainer", {read: ViewContainerRef}) private bodyContainer: ViewContainerRef;
+
     private selectedGroupId: string;
 
-    constructor(private language: language, private model: model, private navigation: navigation, private router: Router) {
+    constructor(private language: language, private navigation: navigation) {
         this.navigation.setActiveModule('ProductGroups');
-        this.model.module = 'ProductGroups';
+    }
+
+    get bodyStyle() {
+        return {height: `calc(100vh - ${this.bodyContainer.element.nativeElement.offsetHeight}`};
     }
 
     selectionChanged(data) {

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
@@ -8,25 +8,24 @@ import {metadata} from "../../../services/metadata.service";
     templateUrl: './src/modules/products/templates/Productgroupmanagerdetails.html',
     providers: [model]
 })
-export class ProductGroupManagerDetails {
+export class ProductGroupManagerDetails implements OnChanges {
     @ViewChild("detailscontainer", {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
 
     @Input('groupid') private groupId: string;
     private renderedComponents: any[] = [];
 
     constructor(private language: language, private model: model, private metadata: metadata) {
+        this.model.module = 'ProductGroups';
     }
 
     ngOnChanges() {
         if (!this.groupId) {return}
         this.model.id = this.groupId;
-        this.model.getData(true, "", true);
-        if (this.renderedComponents.length == 0) {
-            this.buildContainer();
-        }
+        this.model.getData(true, "", true).subscribe(() => this.buildContainer());
     }
 
     private buildContainer() {
+        this.renderedComponents.forEach(c => c.destroy());
         let componentconfig = this.metadata.getComponentConfig("ProductGroupManagerDetails", this.model.module);
         let componentSet = componentconfig.componentset;
 

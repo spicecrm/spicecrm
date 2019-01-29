@@ -1,2 +1,4 @@
-<div #detailscontainer></div>
-<div *ngIf="!groupId" class="slds-align_absolute-center">{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
+<div [class.slds-hidden]="!groupId" class="slds-theme_default slds-p-around--xx-small" style="height: 100%;">
+    <div #detailscontainer></div>
+    <div *ngIf="!groupId" class="slds-align_absolute-center" style="height: 100%;">{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
+</div>

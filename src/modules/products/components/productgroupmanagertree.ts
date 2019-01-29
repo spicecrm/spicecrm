@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
@@ -11,12 +11,10 @@ import {Subject} from 'rxjs';
 
 export class ProductGroupManagerTree {
 
-    @ViewChild('treeheader', {read: ViewContainerRef}) private treeheader: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     private productgroups: Array<any> = [];
     private productgrouptree: Array<any> = [];
-    private productgrouptreeresultsonly: boolean = false;
     private selectedid: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
@@ -32,13 +30,6 @@ export class ProductGroupManagerTree {
                 }
             });
 
-    }
-
-    get treestyle() {
-        let rect = this.treeheader.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        };
     }
 
     private getProductGroups(parentId = '') {
@@ -76,34 +67,8 @@ export class ProductGroupManagerTree {
         return retSubject.asObservable();
     }
 
-    private getProducts(parentId = '') {
-        let searchfields = {
-            field: 'productgroup_id',
-            operator: '=',
-            value: parentId
-        };
-
-        let fields = ['id', 'name', 'summary_text'];
-        this.backend.getRequest('module/Products', {
-            searchfields: JSON.stringify(searchfields),
-            fields: JSON.stringify(fields),
-            offset: 0,
-            limit: 250,
-            sortfield: 'name'
-        }).subscribe(items => {
-            for (let item of items.list) {
-                item.expanded = false;
-                item.loaded = false;
-                item.type = 'product';
-                item.parent_productgroup_id = parentId;
-                this.productgroups.push(item);
-            }
-            this.buildTree();
-        });
-    }
-
     private canexpand(item) {
-        return item.member_count > 0 || item.product_count > 0;
+        return item.member_count > 0;
     }
 
     private toggle(productgroup) {
@@ -117,8 +82,6 @@ export class ProductGroupManagerTree {
                             item.loaded = true;
                             if (item.member_count > 0) {
                                 this.getProductGroups(productgroup.id);
-                            } else {
-                                this.getProducts(productgroup.id);
                             }
                         }
                     } else {
@@ -162,28 +125,7 @@ export class ProductGroupManagerTree {
         this.selectionchanged.emit(this.productfinder.searchfocus);
     }
 
-    private selectProduct(product) {
-        this.productfinder.searchfocus = {
-            type: 'Product',
-            object: product
-        };
-        this.productfinder.getAttributes('products', product.id, true).subscribe(status => {
-            this.productfinder.getProductVariants();
-        });
-        this.selectedid = product.id;
-        this.selectionchanged.emit(this.productfinder.searchfocus);
-    }
-
     private isSelected(id) {
         return this.selectedid == id;
-    }
-
-    private getAggregateCount(item) {
-        let aggregate = this.productfinder.getAggegateCount(item.type === 'product' ? 'productid' : 'productgroups', item.id);
-        return aggregate ? aggregate : '-';
-    }
-
-    private displayTreeNode(node) {
-        return this.productgrouptreeresultsonly ? this.getAggregateCount(node) !== '-' : true;
     }
 }
