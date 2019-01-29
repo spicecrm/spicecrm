@@ -1,6 +1,6 @@
 import {
     AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef
+    ElementRef, ChangeDetectorRef
 } from '@angular/core';
 import {MenuService} from '../services/menu.service';
 import {metadata} from '../../services/metadata.service';
@@ -43,6 +43,7 @@ export class GlobalNavigationCompact implements AfterViewInit {
         private model: model,
         private recent: recent,
         private session: session,
+        private cdr: ChangeDetectorRef,
         private modal: modal,
         private broadcast: broadcast,
         private router: Router) {
@@ -59,7 +60,7 @@ export class GlobalNavigationCompact implements AfterViewInit {
     }
 
     get activeItemIsModule() {
-        return this.metadata.getModuleDefs(this.activeItem) ? true : false;
+        return !!this.metadata.getModuleDefs(this.activeItem);
     }
 
     set currentlanguage(value) {
@@ -100,6 +101,7 @@ export class GlobalNavigationCompact implements AfterViewInit {
     public ngAfterViewInit(): void {
         // might have been fired while the component was not rendered .. in any case rebuild it
         this.buildModuleMenuItems();
+        this.cdr.detectChanges();
     }
 
     private handleMessage(message) {
