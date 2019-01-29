@@ -28,6 +28,9 @@ export class QuestionsManagerEditBinaryOption implements OnInit {
     }
 
     change() {
+        this.option.name = this.option.text;
+        this.option.name = this.option.name.replace( /\s/g, ' ' );
+        if ( this.option.name.length > 50 ) this.option.name = this.option.name.substring( 0, 49 )+'…';
         this.data_changed.emit(true);
     }
 
