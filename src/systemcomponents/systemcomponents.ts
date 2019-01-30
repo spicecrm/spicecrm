@@ -104,6 +104,7 @@ import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustratio
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
+import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -171,6 +172,7 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemComponentSet,
         SystemProgressRing,
         SystemLoaderProgress,
+        SystemUploadImage,
         PackageLoader,
         PackageLoaderPipe,
         PackageLoaderPackages,

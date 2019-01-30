@@ -1,13 +1,7 @@
-<ul class="slds-grid slds-grid--vertical-align-center">
-    <li class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--x-small">
-        <button class="slds-button" aria-haspopup="true" (click)="toggleUserDetails()">
-            <span class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
-                <!--svg class="slds-icon slds-icon--small" aria-hidden="true">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./sldassets/icons/action-sprite/svg/symbols.svg#user"></use>
-                </svg-->
-                <system-utility-icon [icon]="'user'" [size]="'x-small'" [addclasses]="'slds-icon'" [colorclass]="''"></system-utility-icon>
-            </span>
-        </button>
-    </li>
-</ul>
+<button class="slds-button" aria-haspopup="true" (click)="toggleUserDetails()">
+    <span *ngIf="!userimage" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
+        <system-utility-icon  [icon]="'user'" [size]="'x-small'" [addclasses]="'slds-icon'" [colorclass]="''"></system-utility-icon>
+    </span>
+    <img style="height: 32px; width: 32px" *ngIf="userimage" [src]="userimage"/>
+</button>
 <global-user-panel *ngIf="!hideUserDetails"></global-user-panel>

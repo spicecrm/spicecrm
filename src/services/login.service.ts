@@ -76,6 +76,7 @@ export class loginService {
                     this.session.authData.sessionId = response.id;
                     this.session.authData.userId = response.userid;
                     this.session.authData.userName = response.user_name;
+                    this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
                     this.session.authData.last_name = response.last_name;
                     this.session.authData.display_name = response.display_name;
