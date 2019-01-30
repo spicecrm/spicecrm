@@ -25,6 +25,7 @@ export class ObjectModelPopover implements OnInit {
     public fields: Array<any> = [];
     public fieldset: string = '';
     public componentset: string = '';
+    public headercomponentset: string = '';
 
     private heightcorrection = 30;
     private widthcorrection = 30;
@@ -34,7 +35,7 @@ export class ObjectModelPopover implements OnInit {
         private view: view,
         private metadata: metadata,
     ) {
-
+        this.view.displayLinks = false;
     }
 
     get detailsStyle() {
@@ -99,6 +100,7 @@ export class ObjectModelPopover implements OnInit {
 
             this.fieldset = componentconfig.fieldset;
             this.componentset = componentconfig.componentset;
+            this.headercomponentset = componentconfig.headercomponentset;
         }
 
         // if we did not find a fieldset try to take the header one instead
