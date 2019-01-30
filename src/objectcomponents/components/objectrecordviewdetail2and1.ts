@@ -1,85 +1,27 @@
-/**
- * Created by christian on 08.11.2016.
- */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef, OnInit, OnDestroy
+    AfterViewInit, Component, ElementRef, OnInit
 } from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {broadcast} from '../../services/broadcast.service';
-import {navigation} from '../../services/navigation.service';
-
-//var System = require('../../../../node_modules/systemjs/dist/system.js');
 
 @Component({
     selector: 'object-recordview-detail-2and1',
     templateUrl: './src/objectcomponents/templates/objectrecordviewdetail2and1.html'
 
 })
-export class ObjectRecordViewDetail2and1 implements AfterViewInit, OnInit, OnDestroy {
-    @ViewChild('contentcontainer', {read: ViewContainerRef}) contentcontainer: ViewContainerRef;
-    @ViewChild('sidebarcontainer', {read: ViewContainerRef}) sidebarcontainer: ViewContainerRef;
-    initialized: boolean = false;
-    componentRefs: any = [];
-    componentSubscriptions: Array<any> = [];
-    listViewDefs: any = [];
-    componentSets: any = {};
+export class ObjectRecordViewDetail2and1 implements OnInit {
+    private initialized: boolean = false;
+    private componentconfig: any = {};
 
-
-    constructor( private metadata: metadata, private model: model, private elementRef: ElementRef ) {
+    constructor(private metadata: metadata, private model: model, private elementRef: ElementRef) {
 
     }
 
-    ngOnInit(){
-
-        if (this.initialized)
-            this.buildContainer();
-
+    public ngOnInit() {
+            this.getComponentconfig();
     }
 
-    ngOnDestroy(){
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-
-        for (let subscription of this.componentSubscriptions) {
-            subscription.unsubscribe();
-        }
-    }
-
-    ngAfterViewInit() {
-        this.initialized = true;
-        this.buildContainer();
-    }
-
-
-    buildContainer() {
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-
-        let componentconfig = this.metadata.getComponentConfig('ObjectRecordViewDetail2and1', this.model.module);
-
-        if (componentconfig.main) {
-            for (let view of this.metadata.getComponentSetObjects(componentconfig.main)) {
-                this.metadata.addComponent(view.component, this.contentcontainer).subscribe(componentRef => {
-                    componentRef.instance['componentconfig'] = view.componentconfig;
-                    this.componentRefs.push(componentRef);
-                })
-            }
-        }
-
-        if (componentconfig.sidebar) {
-            for (let view of this.metadata.getComponentSetObjects(componentconfig.sidebar)) {
-                this.metadata.addComponent(view.component, this.sidebarcontainer).subscribe(componentRef => {
-                    componentRef.instance['componentconfig'] = view.componentconfig;
-                    this.componentRefs.push(componentRef);
-                })
-            }
-        }
-
+    private getComponentconfig() {
+        this.componentconfig = this.metadata.getComponentConfig('ObjectRecordViewDetail2and1', this.model.module);
     }
 }
