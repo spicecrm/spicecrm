@@ -11,7 +11,7 @@ export class SystemComponentSet implements AfterViewInit, OnChanges {
 
     private viewInitialized: boolean = false;
     private _componentset: string = '';
-    private _componentRefs: Array<any> = [];
+    private _componentRefs: any[] = [];
 
     constructor(private metadata: metadata) {
     }
