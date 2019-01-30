@@ -14,12 +14,13 @@ import {navigation} from '../../services/navigation.service';
     templateUrl: './src/objectcomponents/templates/objectrecordviewcontainer.html',
     providers: [model]
 })
-export class ObjectRecordViewContainer implements OnDestroy {
-    // @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
+    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
     private module: string = '';
     private id: string = '';
     private initialized: boolean = false;
     private componentset: string = '';
+    private componentRefs: any[] = [];
 
     private routeSubscribe: any = {};
     private componentSubscriptions: any[] = [];
@@ -38,8 +39,9 @@ export class ObjectRecordViewContainer implements OnDestroy {
 
                 // set theenavigation paradigm
                 this.navigation.setActiveModule(this.module);
-
-                this.buildContainer();
+                if (this.initialized) {
+                    this.buildContainer();
+                }
             })
         );
         this.componentSubscriptions.push(
@@ -57,6 +59,11 @@ export class ObjectRecordViewContainer implements OnDestroy {
         }
     }
 
+    public ngAfterViewInit(): void {
+        this.initialized = true;
+        this.buildContainer();
+    }
+
     public ngOnDestroy() {
         // unsubscribe from Observables
         for (let componentSubscription of this.componentSubscriptions) {
@@ -65,15 +72,19 @@ export class ObjectRecordViewContainer implements OnDestroy {
     }
 
     private buildContainer() {
+        for (let component of this.componentRefs) {
+            component.destroy();
+        }
+
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordViewContainer', this.module);
         this.componentset = componentconfig.componentset;
-        /*
-        for (let view of this.metadata.getComponentSetObjects(componentconfig.componentset)) {
+
+        for (let view of this.metadata.getComponentSetObjects(this.componentset)) {
             this.metadata.addComponent(view.component, this.container).subscribe(componentRef => {
                 componentRef.instance.componentconfig = view.componentconfig;
                 this.componentRefs.push(componentRef);
             });
         }
-        */
+
     }
 }

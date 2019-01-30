@@ -8,6 +8,7 @@ import {metadata} from '../../services/metadata.service';
 export class SystemComponentSet implements AfterViewInit, OnChanges {
     @ViewChild('componentcontainer', {read: ViewContainerRef}) private componentcontainer: ViewContainerRef;
     @Input() private componentset: string = '';
+    @Input() private forceReloadOnChange: boolean = false;
 
     private viewInitialized: boolean = false;
     private _componentset: string = '';
@@ -25,7 +26,7 @@ export class SystemComponentSet implements AfterViewInit, OnChanges {
     }
 
     public ngOnChanges() {
-        if (this.viewInitialized && this.componentset != this._componentset) {
+        if (this.viewInitialized && (this.componentset != this._componentset || this.forceReloadOnChange)) {
             // destroy all components if the componentset has changed
             for (let _componentRef of this._componentRefs) {
                 _componentRef.destroy();
