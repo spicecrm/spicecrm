@@ -1,5 +1,6 @@
 import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output} from "@angular/core";
 import {language} from "../../services/language.service";
+import {metadata} from "../../services/metadata.service";
 
 
 declare var Croppie: any;
@@ -20,8 +21,7 @@ export class SystemUploadImage {
     private imageBase64: any;
     private croppie: any;
 
-    constructor(private language: language) {
-
+    constructor(private language: language, private metadata: metadata) {
     }
 
     get croppiestyle() {
@@ -50,23 +50,27 @@ export class SystemUploadImage {
 
     private doCrop(event) {
         if (!this.croppie) {
-            this.croppie = new Croppie(document.getElementById('croppieimage'), {
-                enableExif: true,
-                enableOrientation: true,
-                enableZoom: true,
-                enforceBoundary: true,
-                mouseWheelZoom: true,
-                showZoomer: true,
-                enableResize: false,
-                viewport: {
-                    width: this.cropwidth,
-                    height: this.cropheight,
-                    type: 'circle'
-                },
-                boundary: {
-                    height: this.cropheight * 2
+            this.metadata.loadLibs('croppie').subscribe(
+                (next) => {
+                    this.croppie = new Croppie(document.getElementById('croppieimage'), {
+                        enableExif: true,
+                        enableOrientation: true,
+                        enableZoom: true,
+                        enforceBoundary: true,
+                        mouseWheelZoom: true,
+                        showZoomer: true,
+                        enableResize: false,
+                        viewport: {
+                            width: this.cropwidth,
+                            height: this.cropheight,
+                            type: 'circle'
+                        },
+                        boundary: {
+                            height: this.cropheight * 2
+                        }
+                    });
                 }
-            });
+            );
         }
     }
 
