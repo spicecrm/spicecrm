@@ -4,6 +4,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 import {modal} from '../../../services/modal.service';
 import {model} from '../../../services/model.service';
 
+declare var _;
 
 @Injectable()
 export class dashboardlayout {
@@ -62,10 +63,10 @@ export class dashboardlayout {
             let dashBoardRow = [];
             while (colIndex < this.columns) {
                 dashBoardRow.push({
-                    width: Math.round((this.mainContainer.width / this.columns) - (2 * this.boxMargin)) + 'px',
-                    height: Math.round(this.elementHeight - (2 * this.boxMargin)) + 'px',
-                    top: Math.round(((rowIndex * this.elementHeight) + this.boxMargin)) + 'px',
-                    left: Math.round((colIndex * this.mainContainer.width / this.columns) + this.boxMargin) + 'px'
+                    width: (this.mainContainer.width / this.columns) - (2 * this.boxMargin),
+                    height: this.elementHeight - (2 * this.boxMargin),
+                    top: ((rowIndex * this.elementHeight) + this.boxMargin),
+                    left: (colIndex * this.mainContainer.width / this.columns) + this.boxMargin
                 });
                 colIndex++;
             }
@@ -80,10 +81,10 @@ export class dashboardlayout {
     public getElementStyle(top, left, width, height) {
         let style: any = {};
 
-        style.top = Math.round(top * this.elementHeight + this.boxMargin) + 'px';
-        style.left = Math.round(left * this.elementWidth + this.boxMargin) + 'px';
-        style.width = this.compactView ? '100%' : Math.round((width * this.elementWidth - 2 * this.boxMargin)) + 'px';
-        style.height = Math.round(height * this.elementHeight - 2 * this.boxMargin) + 'px';
+        style.top = top * this.elementHeight + this.boxMargin;
+        style.left = left * this.elementWidth + this.boxMargin;
+        style.width = this.compactView ? '100%' : (width * this.elementWidth - 2 * this.boxMargin);
+        style.height = height * this.elementHeight - 2 * this.boxMargin;
         return style;
     }
 
@@ -252,7 +253,7 @@ export class dashboardlayout {
             modalRef.instance.addDashlet.subscribe(dashlet => {
                 if (dashlet !== false) {
                     this.editing = this.modelutilities.generateGuid();
-                    this.dashboardElements.push({
+                    let element = {
                         id: this.editing,
                         name: dashlet.name,
                         component: dashlet.component,
@@ -271,7 +272,8 @@ export class dashboardlayout {
                             height: Math.round(position.height / this.elementHeight)
                         },
                         is_new: true,
-                    });
+                    };
+                    this.dashboardElements = [...this.dashboardElements, element];
                 }
             });
         });
@@ -312,9 +314,9 @@ export class dashboardlayout {
 
     public cancelEdit() {
         this.expandedRows = [];
-        this.calculateGrid();
         this.editMode = false;
-        this.dashboardElements = JSON.parse(JSON.stringify(this.dashboardData.components));
+        this.calculateGrid();
+        this.dashboardElements = this.model.getField('components');
     }
 
     public saveDashboard() {
@@ -332,5 +334,15 @@ export class dashboardlayout {
                 return a.position.top > b.position.top ? 1 : -1;
             }
         });
+    }
+
+    public prepareStyle(style) {
+        let returnStyle = _.clone(style);
+        for (let prop in returnStyle) {
+            if (returnStyle.hasOwnProperty(prop) && typeof returnStyle[prop] == 'number') {
+                returnStyle[prop] = Math.round(returnStyle[prop]) + 'px';
+            }
+        }
+        return returnStyle;
     }
 }
