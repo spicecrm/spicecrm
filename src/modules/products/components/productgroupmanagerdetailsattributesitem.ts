@@ -1,39 +1,48 @@
-import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {Router} from "@angular/router";
+import {relatedmodels} from "../../../services/relatedmodels.service";
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'product-group-manager-details-attributes-item',
     templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributesitem.html',
-    providers: [model]
+    providers: [model, relatedmodels]
 })
-export class ProductGroupManagerDetailsAttributesItem {
+export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit{
     @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
 
     @Input() private attribute: any;
     public detailsItems: any[] = [];
     private isOpen: boolean = false;
 
-    constructor(private language: language, private model: model, private metadata: metadata, private router: Router) {
+    constructor(private language: language, private model: model, private metadata: metadata, private router: Router, private relatedmodels: relatedmodels,
+    ) {}
+
+    get thisModel() {
+        return {id: this.model.id, module: this.model.module, data: this.model.data};
     }
 
     public ngOnInit() {
         this.model.module = 'ProductAttributes';
         this.model.id = this.attribute.id;
         this.model.data = this.attribute;
+        this.relatedmodels.module = this.model.module;
+        this.relatedmodels.id = this.model.id;
+        this.relatedmodels.relatedModule = 'ProductAttributeValueValidations';
     }
 
     public ngAfterViewInit() {
-        let compConfig = this.metadata.getComponentConfig('ProductGroupManagerDetailsAttributesItem', 'ProductGroups');
-        let components = this.metadata.getComponentSetObjects(compConfig.componentset);
+        let componentConfig = this.metadata.getComponentConfig('ProductGroupManagerDetailsAttributesItem', 'ProductGroups');
+        let components = componentConfig && componentConfig.componentset ? this.metadata.getComponentSetObjects(componentConfig.componentset) : [];
         for (let component of components) {
             this.metadata.addComponent(component.component, this.detailsContainer).subscribe(componentRef => {
-                componentRef.instance['componentconfig'] = component.componentconfig;
                 this.detailsItems.push(componentRef);
             });
         }
+        this.relatedmodels.getData();
     }
 
     private goDetails() {
@@ -42,6 +51,11 @@ export class ProductGroupManagerDetailsAttributesItem {
 
     private toggleOpen() {
         this.isOpen = !this.isOpen;
+    }
+
+
+    private expand(bool) {
+        this.isOpen = bool;
     }
 
     get iconStyle() {

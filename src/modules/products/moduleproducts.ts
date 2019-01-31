@@ -60,7 +60,10 @@ import /*embed*/ {ProductTextGenerator} from './components/producttextgenerator'
 import /*embed*/ {ProductGroupsContentCodeAssignments} from './components/productgroupscontentcodeassignments';
 import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/productgroupslongtextcodeassignments';
 import /*embed*/ {ProductGroupManagerDetailsAttributes} from './components/productgroupmanagerdetailsattributes';
+import /*embed*/ {ProductGroupManagerDetailsAttributesValidation} from "./components/productgroupmanagerdetailsattributesvalidation";
 import /*embed*/ {ProductGroupManagerDetailsAttributesItem} from "./components/productgroupmanagerdetailsattributesitem";
+import /*embed*/ {ProductGroupManagerDetailsAttributesValidationItem} from "./components/productgroupmanagerdetailsattributesvalidationitem";
+import /*embed*/ {ProductGroupManagerDetailsAttributesAddButton} from "./components/productgroupmanagerdetailsattributesaddbutton";
 
 @NgModule({
     imports: [
@@ -77,6 +80,9 @@ import /*embed*/ {ProductGroupManagerDetailsAttributesItem} from "./components/p
         ProductGroupManager,
         ProductGroupManagerDetails,
         ProductGroupManagerDetailsAttributes,
+        ProductGroupManagerDetailsAttributesAddButton,
+        ProductGroupManagerDetailsAttributesValidation,
+        ProductGroupManagerDetailsAttributesValidationItem,
         ProductGroupManagerDetailsAttributesItem,
         ProductBrowser,
         ProductBrowserTree,

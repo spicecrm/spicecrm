@@ -1,5 +1,5 @@
-<div class="slds-box_border slds-m-bottom--xx-small">
-    <article class="slds-card">
+<article class="slds-card">
+    <div style="box-shadow: 0 0 1px grey;border-radius: .25rem;">
         <div class="slds-card__header slds-grid slds-grid--align-spread">
             <header class="slds-media slds-media--center slds-has-flexi-truncate">
                 <object-icon [module]="model.module" [size]="'small'"></object-icon>
@@ -14,7 +14,14 @@
             <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
         </div>
         <div [class.slds-hidden]="!isOpen" [style.height]="!isOpen ? '0':'initial'" class="slds-card__body">
-            <div #detailscontainer></div>
+            <div class="slds-grid slds-p-bottom--small slds-p-top--small slds-wrap">
+                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                   <div #detailscontainer></div>
+                </div>
+                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                    <product-group-manager-details-attributes-validation [parent]="thisModel"></product-group-manager-details-attributes-validation>
+                </div>
+            </div>
         </div>
-    </article>
-</div>
+    </div>
+</article>
