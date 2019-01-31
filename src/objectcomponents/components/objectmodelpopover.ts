@@ -22,7 +22,7 @@ export class ObjectModelPopover implements OnInit {
     public parentElementRef: any = null;
     public self: any = null;
 
-    public fields: Array<any> = [];
+    public fields: any[] = [];
     public fieldset: string = '';
     public componentset: string = '';
     public headercomponentset: string = '';
@@ -36,10 +36,6 @@ export class ObjectModelPopover implements OnInit {
         private metadata: metadata,
     ) {
         this.view.displayLinks = false;
-    }
-
-    get detailsStyle() {
-        return {'max-height': `calc(100vh - ${(this.popover.element.nativeElement.getBoundingClientRect().top + 5)}px)`};
     }
 
     get relatedStyle() {
@@ -126,9 +122,5 @@ export class ObjectModelPopover implements OnInit {
         } else {
             this.hidePopoverTimeout = window.setTimeout(() => this.self.destroy(), 500);
         }
-    }
-
-    private renderComponents() {
-
     }
 }
