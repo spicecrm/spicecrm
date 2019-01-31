@@ -16,7 +16,7 @@
     </div>
 </div>
 <div *ngIf="model.id && hasContent" class="slds-grid">
-    <div [innerHTML]="model.data.description" [ngStyle]="iframContainerStyle" class="slds-scrollable--y slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
+    <div [innerHTML]="model.data.description" [ngStyle]="iframContainerStyle" class="slds-scrollable--y spicecrm-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
 </div>
 <system-spinner *ngIf="model.isloading"></system-spinner>
 <div *ngIf="!model.isloading && !hasContent" class="slds-align--absolute-center slds-text-heading--medium" [ngStyle]="iframContainerStyle">

@@ -83,7 +83,7 @@ export class KnowledgeManager implements AfterViewInit {
     }
 
     private saveListEdit(toEdit: any) {
-        let data = {parent_id: toEdit.parent_id, parent_name: toEdit.parent_name}
+        let data = {parent_id: toEdit.parent_id, parent_name: toEdit.parent_name};
         this.backend.save("KnowledgeDocuments", toEdit.id, data);
         for (let doc of this.knowledgeService.documents) {
             if (doc.id === toEdit.id) {

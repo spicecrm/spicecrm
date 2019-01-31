@@ -9,7 +9,7 @@ import {userpreferences} from "../../../services/userpreferences.service";
 @Injectable()
 
 export class KnowledgeService {
-    public selectedBook: any = undefined;
+    public selectedBook: any;
     public documents: any[] = [];
     public selectedId: string = "";
     public isLoading: boolean = false;
@@ -24,12 +24,18 @@ export class KnowledgeService {
                 private broadcast: broadcast,
                 public userPreferences: userpreferences,
                 private fts: fts) {
-        this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeDocuments") {
+        this.userPreferences.loadPreferences('KnowledgeBooks').subscribe(res => {
+            if (res && res['lastViewedBook']) {
+                this.selectedBook = res['lastViewedBook'];
                 this.getDocuments(this.selectedBook.id);
             }
+        });
+        this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
-                this.getBooks();
+                let book = msg.messagedata.data;
+                this.books = [...this.books, book];
+                this.selectedBook = book;
+                this.getDocuments(book.id);
             }
         });
 
@@ -54,7 +60,7 @@ export class KnowledgeService {
     }
 
     public setLastViewedBook(none = false) {
-        let value = none ? null : this.selectedBook.id;
+        let value = none ? null : this.selectedBook;
         this.userPreferences.setPreference("lastViewedBook", value, true, "KnowledgeBooks");
     }
 
@@ -68,13 +74,15 @@ export class KnowledgeService {
     }
 
     public getBooks() {
-        this.isLoading = true;
         this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id", "html"], {limit: -1})
             .subscribe((books: any) => {
-                this.books = books.list;
-                this.isLoading = false;
-                this.userPreferences.loadPreferences("KnowledgeBooks")
-                    .subscribe(pref => this.selectedBook = this.books.find(book => book.id == pref.lastViewedBook));
+                this.books = books && books.list ? books.list : [];
+                let pref = this.userPreferences.unchangedPreferences;
+                if (pref['KnowledgeBooks'] && pref['KnowledgeBooks']['lastViewedBook'] && !this.selectedBook) {
+                    let lastViewedBook = pref['KnowledgeBooks']['lastViewedBook'];
+                    this.selectedBook = lastViewedBook;
+                    this.getDocuments(lastViewedBook);
+                }
             });
     }
 

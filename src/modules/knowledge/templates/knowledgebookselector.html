@@ -19,7 +19,9 @@
                 <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="searchTerm"
                        (focus)="searchOpen = true"
                        (blur)="searchOpen = false"
-                       [placeholder]="language.getLabel('MSG_SEARCH_BOOKS')" role="combobox" [disabled]="books.length == 0">
+                       [placeholder]="language.getLabel('MSG_SEARCH_BOOKS')" role="combobox"
+                       [class.slds-theme_shade]="isLoading || books.length == 0"
+                       [disabled]="isLoading || books.length == 0">
             </div>
         </div>
     </div>
