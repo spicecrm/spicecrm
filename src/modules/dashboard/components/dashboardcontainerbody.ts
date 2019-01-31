@@ -50,6 +50,10 @@ export class DashboardContainerBody implements AfterViewInit, AfterViewChecked {
         }
     }
 
+    get dashboardElements() {
+        return this.dashboardlayout.dashboardElements;
+    }
+
     get isEditing() {
         return this.dashboardlayout.editMode;
     }

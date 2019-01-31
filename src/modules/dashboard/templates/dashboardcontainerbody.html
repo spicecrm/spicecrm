@@ -2,7 +2,7 @@
     <ng-container *ngIf="isEditing">
         <ng-container *ngFor="let row of dashboardlayout.dashboardGrid">
             <ng-container *ngFor="let column of row">
-                <div [ngStyle]="column" style="padding:10px;border: 1px solid #ddd;position: absolute;">
+                <div [ngStyle]="dashboardlayout.prepareStyle(column)" style="padding:10px;border: 1px solid #ddd;position: absolute;">
                     <button class="slds-button slds-button--icon slds-align--absolute-center"  style="height: 100%; width: 100%" (click)="addDashlet(column)">
                         <system-button-icon [icon]="'add'" [size]="'medium'"  style="height: 100%; width: 100%"></system-button-icon>
                     </button>
@@ -10,5 +10,5 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <dashboard-container-element *ngFor="let item of dashboardlayout.dashboardElements; let last = last" [item]="item"></dashboard-container-element>
+    <dashboard-container-element *ngFor="let item of dashboardElements" [item]="item"></dashboard-container-element>
 </div>

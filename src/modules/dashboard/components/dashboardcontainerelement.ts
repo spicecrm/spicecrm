@@ -69,39 +69,40 @@ export class DashboardContainerElement implements AfterViewInit {
                 style["z-index"] = "9999";
             }
         }
-        return style;
+        return this.dashboardlayout.prepareStyle(style);
     }
 
     private getBoundingBoxStyle(position): any {
-        let rect = this.getBoxStyle();
+        let rect = this.dashboardlayout.getElementStyle(this.item.position.top, this.item.position.left, this.item.position.width, this.item.position.height);
+        rect = this.applyMove(rect);
         let style: any = {};
 
         switch (position) {
             case "top":
                 style = {
-                    top: '-4px',
-                    left: Math.round(rect.width / 2 - 4) + 'px',
+                    top: -4,
+                    left: rect.width / 2 - 4,
                     cursor: "n-resize"
                 };
                 break;
             case "bottom":
                 style = {
-                    top: Math.round(rect.height - 5) + 'px',
-                    left: Math.round(rect.width / 2 - 4) + 'px',
+                    top: rect.height - 5,
+                    left: rect.width / 2 - 4,
                     cursor: "s-resize"
                 };
                 break;
             case "left":
                 style = {
-                    top: Math.round(rect.height / 2 - 4) + 'px',
+                    top: rect.height / 2 - 4,
                     left: '-4px',
                     cursor: "w-resize"
                 };
                 break;
             case "right":
                 style = {
-                    left: Math.round(rect.width - 5) + 'px',
-                    top: Math.round(rect.height / 2 - 4) + 'px',
+                    left: rect.width - 5,
+                    top: rect.height / 2 - 4,
                     cursor: "e-resize"
                 };
                 break;
@@ -113,7 +114,7 @@ export class DashboardContainerElement implements AfterViewInit {
         style.width = "8px";
         style.height = "8px";
 
-        return style;
+        return this.dashboardlayout.prepareStyle(style);
     }
 
     private applyMove(rect) {
