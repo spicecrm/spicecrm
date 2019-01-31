@@ -79,29 +79,29 @@ export class DashboardContainerElement implements AfterViewInit {
         switch (position) {
             case "top":
                 style = {
-                    top: -4,
-                    left: rect.width / 2 - 4,
+                    top: '-4px',
+                    left: Math.round(rect.width / 2 - 4) + 'px',
                     cursor: "n-resize"
                 };
                 break;
             case "bottom":
                 style = {
-                    top: rect.height - 5,
-                    left: rect.width / 2 - 4,
+                    top: Math.round(rect.height - 5) + 'px',
+                    left: Math.round(rect.width / 2 - 4) + 'px',
                     cursor: "s-resize"
                 };
                 break;
             case "left":
                 style = {
-                    top: rect.height / 2 - 4,
-                    left: -4,
+                    top: Math.round(rect.height / 2 - 4) + 'px',
+                    left: '-4px',
                     cursor: "w-resize"
                 };
                 break;
             case "right":
                 style = {
-                    left: rect.width - 5,
-                    top: rect.height / 2 - 4,
+                    left: Math.round(rect.width - 5) + 'px',
+                    top: Math.round(rect.height / 2 - 4) + 'px',
                     cursor: "e-resize"
                 };
                 break;
