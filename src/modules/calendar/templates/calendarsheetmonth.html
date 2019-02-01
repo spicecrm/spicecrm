@@ -7,10 +7,10 @@
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
     <ng-container *ngFor="let sheetWeek of currentGrid; let i = index">
         <div #boxcontainer *ngFor="let sheetDay of sheetWeek; let j = index" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
-            <div class="slds-p-around--xx-small" [style.height]="offsetHeight">
+            <div class="slds-p-around--xx-small" [style.height]="offsetHeight + 'px'">
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
             </div>
-            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight">
+            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight + 'px'">
                 <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [sheetday]="sheetDay" [moreevents]="sheetDay.items" [ismobileview]="calendar.isMobileView"></calendar-more-button>
             </div>
         </div>

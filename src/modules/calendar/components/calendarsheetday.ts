@@ -203,10 +203,10 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         let endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
         let itemWidth = ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth)) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
         return {
-            left: this.sheetTimeWidth + (itemWidth * event.displayIndex) + 'px',
+            left: (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
             width: itemWidth + 'px',
-            top: this.calendar.sheetHourHeight / 60 * startminutes + 'px',
-            height: this.calendar.sheetHourHeight / 60 * (endminutes - startminutes) + 'px',
+            top: (this.calendar.sheetHourHeight / 60 * startminutes) + 'px',
+            height: (this.calendar.sheetHourHeight / 60 * (endminutes - startminutes)) + 'px',
             'z-index': event.resizing ? 20 : 15,
             'border-bottom': event.resizing ? '1px dotted #fff' : 0
         };
@@ -218,13 +218,13 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return {
             height: this.calendar.multiEventHeight + "px",
             width: multiEvents.width + "px",
-            top: multiEvents.top + (this.calendar.multiEventHeight * index) + "px",
+            top: (multiEvents.top + (this.calendar.multiEventHeight * index)) + "px",
             left: multiEvents.left + "px",
         };
     }
 
     private getMultiEventsContainerStyle() {
-        return {height: this.allMultiEvents.length > 0 ? this.calendar.multiEventHeight * this.allMultiEvents.length : this.calendar.multiEventHeight};
+        return {height: this.allMultiEvents.length > 0 ? (this.calendar.multiEventHeight * this.allMultiEvents.length) + 'px' : this.calendar.multiEventHeight + 'px'};
     }
 
     private getTimeColStyle() {
@@ -260,7 +260,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
     private getHalfHourDividerStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2 + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2) + 'px',
             left: this.sheetTimeWidth + 'px',
             width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'
         };
@@ -268,7 +268,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
     private getHourLabelStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
             width: this.sheetTimeWidth + 'px'
         };
     }
@@ -277,7 +277,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return {
             left: this.sheetTimeWidth + 'px',
             top: '0px',
-            height: this.calendar.sheetHourHeight * this.sheetHours.length + 'px'
+            height: (this.calendar.sheetHourHeight * this.sheetHours.length) + 'px'
         };
     }
 
@@ -289,7 +289,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return {
             left: this.sheetTimeWidth + 'px',
             width: 'calc(100% - ' + this.sheetTimeWidth + 'px)',
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
             height: this.calendar.sheetHourHeight + 'px'
         };
     }
