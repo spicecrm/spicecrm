@@ -352,10 +352,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         });
 
         return {
-            left: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI,
-            width: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * eDays,
-            top: this.offsetHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI),
-            height: this.eventHeight,
+            left: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI) + 'px',
+            width: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * eDays) + 'px',
+            top: (this.offsetHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI)) + 'px',
+            height: this.eventHeight + 'px',
             display: visible
         };
     }

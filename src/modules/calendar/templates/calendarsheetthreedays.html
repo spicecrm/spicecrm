@@ -19,8 +19,8 @@
             </ng-container>
         </div>
         <div class="slds-grid">
-            <div *ngFor="let sheetDay of sheetDays" [ngStyle]="getDayColStyle()" [style.min-height]="calendar.multiEventHeight" class="slds-border--left">
-                <div *ngFor="let item of sheetDay.items"  [style.height]="calendar.multiEventHeight"></div>
+            <div *ngFor="let sheetDay of sheetDays" [ngStyle]="getDayColStyle()" [style.min-height]="calendar.multiEventHeight + 'px'" class="slds-border--left">
+                <div *ngFor="let item of sheetDay.items"  [style.height]="calendar.multiEventHeight + 'px'"></div>
             </div>
         </div>
     </div>
