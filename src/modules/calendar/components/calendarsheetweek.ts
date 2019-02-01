@@ -307,7 +307,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             width: width + "px",
             left: left + "px",
             height: this.calendar.multiEventHeight + "px",
-            top: this.calendar.multiEventHeight * eventI + "px",
+            top: (this.calendar.multiEventHeight * eventI) + "px",
         };
     }
 
@@ -331,7 +331,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
         return {
-            width: sheetWidth - this.sheetTimeWidth + 'px'
+            width: (sheetWidth - this.sheetTimeWidth) + 'px'
         };
     }
 
@@ -346,20 +346,20 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
     private getSheetStyle() {
         return {
-            height: this.calendarContent.getBoundingClientRect().height - this.headerContainer.element.nativeElement.getBoundingClientRect().height,
+            height: (this.calendarContent.getBoundingClientRect().height - this.headerContainer.element.nativeElement.getBoundingClientRect().height) + 'px',
             'margin-top': '-1px'
         };
     }
 
     private getHourDividerStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px'
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px'
         };
     }
 
     private getHalfHourDividerStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2 + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2 ) + 'px',
             left: this.sheetTimeWidth + 'px',
             width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'
         };
@@ -367,7 +367,7 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
 
     private getHourLabelStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
             width: this.sheetTimeWidth + 'px'
         };
     }
@@ -376,9 +376,9 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
         return {
-            left: this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount * day) + 'px',
+            left: (this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount * day)) + 'px',
             top: '0px',
-            height: this.calendar.sheetHourHeight * this.sheetHours.length + 'px'
+            height: (this.calendar.sheetHourHeight * this.sheetHours.length) + 'px'
         };
     }
 
@@ -392,9 +392,9 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
         return {
-            left: this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount * day) + 'px',
+            left: (this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount * day)) + 'px',
             width: ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount) + 'px',
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
             height: this.calendar.sheetHourHeight + 'px',
         };
     }
