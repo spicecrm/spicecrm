@@ -89,7 +89,7 @@ export class modelutilities {
     }
 
     public spiceModel2backend(module: string, modelData: any) {
-        let retData = {};
+        let retData = {...modelData};
         let moduleFields = this.metadata.getModuleFields(module);
         for (let field in moduleFields) {
             if (modelData.hasOwnProperty(field)) {
