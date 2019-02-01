@@ -305,7 +305,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
             width: width + "px",
             left: left + "px",
             height: this.calendar.multiEventHeight + "px",
-            top: this.calendar.multiEventHeight * eventI + "px",
+            top: (this.calendar.multiEventHeight * eventI) + "px",
         };
     }
 
@@ -314,7 +314,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         for (let day of this.sheetDays) {
             eventsHeight = day.items.length > eventsHeight ? day.items.length : eventsHeight;
         }
-        return {height: this.calendar.multiEventHeight * eventsHeight};
+        return {height: (this.calendar.multiEventHeight * eventsHeight) + 'px'};
     }
 
     private displayDate(format, date) {
@@ -335,7 +335,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
         return {
-            width: sheetWidth - this.sheetTimeWidth + 'px'
+            width: (sheetWidth - this.sheetTimeWidth) + 'px'
         };
     }
 
@@ -351,7 +351,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     private getSheetStyle() {
         if (this.footerContainer && this.calendar.asPicker) {
             return {
-                height: this.footerContainer.offsetTop - this.calendarsheet.element.nativeElement.offsetTop,
+                height: (this.footerContainer.offsetTop - this.calendarsheet.element.nativeElement.offsetTop) + 'px',
                 'margin-top': '-1px'};
         }
         return {
@@ -362,13 +362,13 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
 
     private getHourDividerStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px'
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px'
         };
     }
 
     private getHalfHourDividerStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2 + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2) + 'px',
             left: this.sheetTimeWidth + 'px',
             width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'
         };
@@ -376,7 +376,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
 
     private getHourLabelStyle(hour) {
         return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
             width: this.sheetTimeWidth + 'px'
         };
     }
@@ -385,9 +385,9 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
         return {
-            left: this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day) + 'px',
+            left: (this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day)) + 'px',
             top: '0px',
-            height: this.calendar.sheetHourHeight * this.sheetHours.length + 'px'
+            height: (this.calendar.sheetHourHeight * this.sheetHours.length) + 'px'
         };
     }
 
@@ -401,9 +401,9 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
         return {
-            left: this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day) + 'px',
+            left: (this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day)) + 'px',
             width: ((sheetWidth - this.sheetTimeWidth) / 3) + 'px',
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px',
+            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
             height: this.calendar.sheetHourHeight + 'px',
         };
     }
