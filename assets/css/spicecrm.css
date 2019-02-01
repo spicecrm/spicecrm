@@ -156,12 +156,6 @@ global-user-panel {
     content: ' ';
 }
 
-.spiceActivitiyTimelineHeader .showmorebutton {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-}
-
 
 .spicecrm-fieldbody {
     /*padding: 5px 0px*/;
