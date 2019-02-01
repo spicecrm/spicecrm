@@ -907,6 +907,11 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     fill: #eee;
 }
 
+/* override for teh input icon gropup */
+.slds-input__icon-group_right{
+    top: .5rem;
+}
+
 
 /* responsive tables */
 /* reduce padding */
