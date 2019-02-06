@@ -1,6 +1,6 @@
 import {
     AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef
+    ElementRef, ChangeDetectorRef, OnDestroy
 } from '@angular/core';
 import {MenuService} from '../services/menu.service';
 import {metadata} from '../../services/metadata.service';
@@ -14,13 +14,15 @@ import {favorite} from "../../services/favorite.service";
 import {recent} from "../../services/recent.service";
 import {model} from "../../services/model.service";
 import {modal} from "../../services/modal.service";
+import {Subscription} from "rxjs";
+import {take} from "rxjs/operators";
 
 @Component({
     selector: 'global-navigation-compact',
     templateUrl: './src/globalcomponents/templates/globalnavigationcompact.html',
     providers: [MenuService, model]
 })
-export class GlobalNavigationCompact implements AfterViewInit {
+export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
     @ViewChild('containermiddle', {read: ViewContainerRef}) private containermiddle: ViewContainerRef;
@@ -32,6 +34,7 @@ export class GlobalNavigationCompact implements AfterViewInit {
     public activeItem: string = '';
     public activeItemMenu: any[] = [];
     private activeItemMenucomponents: any[] = [];
+    private subscriptions: Subscription = new Subscription();
 
     constructor(
         private menuService: MenuService,
@@ -44,6 +47,7 @@ export class GlobalNavigationCompact implements AfterViewInit {
         private recent: recent,
         private session: session,
         private modal: modal,
+        private cdr: ChangeDetectorRef,
         private broadcast: broadcast,
         private router: Router) {
 
@@ -51,15 +55,17 @@ export class GlobalNavigationCompact implements AfterViewInit {
         this.buildMenuItems();
 
         // subscribe to the changes imn the navigation
-        this.navigation.activeModule$.subscribe(activeModule => this.buildModuleMenuItems());
+        let navigationSubscriber = this.navigation.activeModule$.subscribe(activeModule => this.buildModuleMenuItems());
+        this.subscriptions.add(navigationSubscriber);
 
-        this.broadcast.message$.subscribe(message => {
+        let broadcastSubscriber = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
+        this.subscriptions.add(broadcastSubscriber);
     }
 
     get activeItemIsModule() {
-        return this.metadata.getModuleDefs(this.activeItem) ? true : false;
+        return !!this.metadata.getModuleDefs(this.activeItem);
     }
 
     set currentlanguage(value) {
@@ -100,6 +106,7 @@ export class GlobalNavigationCompact implements AfterViewInit {
     public ngAfterViewInit(): void {
         // might have been fired while the component was not rendered .. in any case rebuild it
         this.buildModuleMenuItems();
+        this.cdr.detectChanges();
     }
 
     private handleMessage(message) {
@@ -160,18 +167,26 @@ export class GlobalNavigationCompact implements AfterViewInit {
         this.loginService.logout();
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private buildActiveItemMenu() {
         for (let menuitem of this.activeItemMenu) {
             switch (menuitem.action) {
                 case 'NEW':
                     if (this.metadata.checkModuleAcl(this.activeItem, 'create')) {
-                        this.metadata.addComponent('GlobalNavigationMenuItemNew', this.menucontainer).subscribe(item => {
+                        this.metadata.addComponent('GlobalNavigationMenuItemNew', this.menucontainer)
+                            .pipe(take(1))
+                            .subscribe(item => {
                             this.activeItemMenucomponents.push(item);
                         });
                     }
                     break;
                 case 'ROUTE':
-                    this.metadata.addComponent('GlobalNavigationMenuItemRoute', this.menucontainer).subscribe(item => {
+                    this.metadata.addComponent('GlobalNavigationMenuItemRoute', this.menucontainer)
+                        .pipe(take(1))
+                        .subscribe(item => {
                         item.instance.actionconfig = menuitem.actionconfig;
                         this.activeItemMenucomponents.push(item);
                     });
@@ -187,6 +202,8 @@ export class GlobalNavigationCompact implements AfterViewInit {
     }
 
     public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
         this.destroyActiveItemMenu();
+        this.cdr.detach();
     }
 }
