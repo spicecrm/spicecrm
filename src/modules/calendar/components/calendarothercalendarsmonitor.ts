@@ -90,6 +90,10 @@ export class CalendarOtherCalendarsMonitor {
         this.resultsList = resultsList.filter(user => user.id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.id}) == undefined);
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private addUserCalendar(id, name) {
         this.calendar.addUserCalendar(id, name);
         this.filterRecent(this.recentUsers);

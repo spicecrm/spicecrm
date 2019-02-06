@@ -31,4 +31,8 @@ export class CalendarAddCalendar {
         this.addCalendar.emit(calendar);
         this.self.destroy();
     }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
 }

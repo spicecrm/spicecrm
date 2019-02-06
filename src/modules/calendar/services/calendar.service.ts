@@ -42,6 +42,7 @@ export class calendar implements OnDestroy {
     public asPicker: boolean = false;
     public isAllToken: boolean = false;
     public isMobileView: boolean = false;
+    public isDashlet: boolean = false;
     public sheetType: string = 'Week';
     public duration: any = {
         Day: 'd',
@@ -60,7 +61,7 @@ export class calendar implements OnDestroy {
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
         this.loadPreferences();
-        if (!this.isMobileView) {
+        if (!this.isMobileView && !this.isDashlet) {
             this.getOtherCalendars();
         }
         this.modelChangesSubscriber();
@@ -75,7 +76,7 @@ export class calendar implements OnDestroy {
     }
 
     get sidebarWidth() {
-        return !this.isMobileView ? this.sidebarwidth : 0;
+        return !this.isMobileView && !this.isDashlet ? this.sidebarwidth : 0;
     }
 
     get multiEventHeight() {
@@ -232,7 +233,7 @@ export class calendar implements OnDestroy {
     }
 
     public addOtherCalendar() {
-        if (this.isAllToken || this.isMobileView) {
+        if (this.isAllToken || this.isMobileView || this.isDashlet) {
             return;
         }
         let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
@@ -259,7 +260,7 @@ export class calendar implements OnDestroy {
     }
 
     public removeOtherCalendar(id) {
-        if (this.isMobileView) {
+        if (this.isMobileView || this.isDashlet) {
             return;
         }
         let otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
@@ -280,7 +281,7 @@ export class calendar implements OnDestroy {
     }
 
     public addUserCalendar(id, name) {
-        if (this.isMobileView) {
+        if (this.isMobileView || this.isDashlet) {
             return;
         }
         let usersCalendars = this.usersCalendars;
@@ -291,7 +292,7 @@ export class calendar implements OnDestroy {
     }
 
     public removeUserCalendar(id) {
-        if (this.isMobileView) {
+        if (this.isMobileView || this.isDashlet) {
             return;
         }
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);

@@ -26,13 +26,10 @@ declare var _: any;
 export class Calendar implements AfterViewInit, OnDestroy {
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
-    public openPicker: boolean = false;
     public googleIsVisible: boolean = true;
-    public scheduleUntilDate: any = {};
     @ViewChild('calendarcontainer', {read: ViewContainerRef}) private calendarContainer: ViewContainerRef;
     @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
     @ViewChild(CalendarHeader) private calendarHeader: CalendarHeader;
-    private clickListener: any;
     private subscriptions: Subscription = new Subscription();
     private touchStartListener: any;
     private touchMoveListener: any;
@@ -48,7 +45,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
-        this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
         let languageSubscriber = this.language.currentlanguage$.subscribe(lang => this.calendar.calendarDate = moment(this.calendar.calendarDate));
         this.subscriptions.add(languageSubscriber);
         let usersSubscriber = this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
@@ -133,10 +129,11 @@ export class Calendar implements AfterViewInit, OnDestroy {
         if (this.touchMoveListener) {
             this.touchMoveListener();
         }
-        if (this.clickListener) {
-            this.clickListener();
-        }
         this.cdr.detach();
+    }
+
+    private handleUntiDate(event) {
+        this.calendarHeader.scheduleUntilDate = event;
     }
 
     private setDateChanged(event) {
