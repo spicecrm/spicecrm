@@ -41,8 +41,8 @@ import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
 
-import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarHeader} from "./components/calendarheader";
+import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
