@@ -9,7 +9,7 @@
                 <a class="slds-text-body--regular slds-truncate" [style.color]="!googleIsVisible ? '#dddbda' : 'initial'">{{language.getLabel('MY_GOOGLE_CALENDAR')}}</a>
             </div>
         </div>
-        <div *ngFor="let otherCalendar of otherCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+        <div *ngFor="let otherCalendar of otherCalendars; trackBy: trackByFn"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
              (mouseenter)="hovered = otherCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == otherCalendar.id">
             <div class="slds-grid" (click)="toggleVisible(otherCalendar.id, 'Other')" style="cursor: pointer">
                 <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="otherCalendar.visible ? otherCalendar.color : '#dddbda'">
@@ -24,7 +24,7 @@
                </button>
            </div>
         </div>
-        <div *ngFor="let usersCalendar of usersCalendars"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+        <div *ngFor="let usersCalendar of usersCalendars; trackBy: trackByFn"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
              (mouseenter)="hovered = usersCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == usersCalendar.id">
             <div class="slds-grid" (click)="toggleVisible(usersCalendar.id, 'Users')" style="cursor: pointer">
                 <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">
@@ -62,7 +62,7 @@
         </div>
         <ul class="slds-lookup__list" style="height: 175px" role="listbox">
             <ng-container *ngIf="searchTerm.length > 0">
-                <li *ngFor="let user of resultsList" role="presentation" (mousedown)="addUserCalendar(user.id, user.summary_text)">
+                <li *ngFor="let user of resultsList; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.id, user.summary_text)">
                     <div class="slds-lookup__item-action slds-media" role="option">
                         <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
                         <span class="slds-lookup__result-text">{{user.summary_text}}</span>
@@ -70,7 +70,7 @@
                 </li>
             </ng-container>
             <ng-container *ngIf="searchTerm.length == 0">
-                <li *ngFor="let user of recentUsers" role="presentation" (mousedown)="addUserCalendar(user.item_id, user.item_summary)">
+                <li *ngFor="let user of recentUsers; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.item_id, user.item_summary)">
                     <div class="slds-lookup__item-action slds-media" role="option">
                         <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
                         <span class="slds-lookup__result-text">{{user.item_summary}}</span>

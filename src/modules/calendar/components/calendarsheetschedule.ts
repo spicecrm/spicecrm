@@ -81,6 +81,10 @@ export class CalendarSheetSchedule implements OnChanges {
         }
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private setUntilDate() {
         this.untilDate = moment(this.setdate).add(1, "M");
         this.untildate$.emit(this.untilDate);

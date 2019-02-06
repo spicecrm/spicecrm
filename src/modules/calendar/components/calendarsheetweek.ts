@@ -102,6 +102,10 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
         this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private arrangeMultiEvents() {
         this.sheetDays.forEach(day => day.items = []);
         for (let event of this.allMultiEvents) {

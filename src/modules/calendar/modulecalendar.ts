@@ -56,6 +56,9 @@ import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
 import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
+import /*embed*/ {CalendarScheduleDashlet} from "./components/calendarscheduledashlet";
+import /*embed*/ {CalendarDayDashlet} from "./components/calendardaydashlet";
+import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedaysdashlet";
 
 
 @NgModule({
@@ -86,6 +89,9 @@ import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
         CalendarAddCalendar,
         CalendarOtherCalendarsMonitor,
         CalendarColorPicker,
+        CalendarScheduleDashlet,
+        CalendarDayDashlet,
+        CalendarThreeDaysDashlet
     ],
     providers: [userpreferences]
 })
