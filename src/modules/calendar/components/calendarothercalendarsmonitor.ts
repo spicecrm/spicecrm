@@ -3,6 +3,7 @@ import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {recent} from "../../../services/recent.service";
 import {calendar} from "../services/calendar.service";
+import {take} from "rxjs/operators";
 
 declare var _: any;
 
@@ -11,20 +12,17 @@ declare var _: any;
     templateUrl: './src/modules/calendar/templates/calendarothercalendarsmonitor.html'
 })
 export class CalendarOtherCalendarsMonitor {
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
-
-    @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('othercalendars') private otherCalendars: any[] = [];
-
     @Output() public googleIsVisible$: EventEmitter<any> = new EventEmitter<any>();
-
-    private googleIsVisible: boolean = true;
     public searchterm: string = "";
     public searchopen: boolean = false;
     public resultsList: any[] = [];
     public recentUsers: any[] = [];
     public timeout: any = undefined;
     public isLoading: boolean = false;
+    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @Input('userscalendars') private usersCalendars: any[] = [];
+    @Input('othercalendars') private otherCalendars: any[] = [];
+    private googleIsVisible: boolean = true;
 
     constructor(private language: language,
                 private recent: recent,
@@ -41,14 +39,15 @@ export class CalendarOtherCalendarsMonitor {
         return this.calendar.owner;
     }
 
+    get searchOpen() {
+        return this.searchopen;
+    }
+
     set searchOpen(value) {
         this.searchopen = value;
         if (value) {
             this.getRecent();
         }
-    }
-    get searchOpen() {
-        return this.searchopen;
     }
 
     get lookupMenuStyle() {
@@ -56,6 +55,10 @@ export class CalendarOtherCalendarsMonitor {
             display: this.searchOpen ? "block" : "none",
             width: this.inputContainer.element.nativeElement.getBoundingClientRect().width + "px",
         };
+    }
+
+    get searchTerm() {
+        return this.searchterm;
     }
 
     set searchTerm(value) {
@@ -66,6 +69,7 @@ export class CalendarOtherCalendarsMonitor {
         }
         this.isLoading = true;
         this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
+            .pipe(take(1))
             .subscribe(res => {
                 this.filterResultsList(res["Users"].hits.map(user => user = user._source));
                 this.isLoading = false;
@@ -73,15 +77,13 @@ export class CalendarOtherCalendarsMonitor {
     }
 
     private getRecent() {
-        this.recent.getModuleRecent("Users").subscribe(recent => this.filterRecent(recent));
-    }
-
-    get searchTerm() {
-        return this.searchterm;
+        this.recent.getModuleRecent("Users")
+            .pipe(take(1))
+            .subscribe(recent => this.filterRecent(recent));
     }
 
     private filterRecent(recent) {
-        this.recentUsers =  recent.filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
+        this.recentUsers = recent.filter(user => user.item_id != this.owner && _.findWhere(this.calendar.usersCalendars, {id: user.item_id}) == undefined);
     }
 
     private filterResultsList(resultsList) {
