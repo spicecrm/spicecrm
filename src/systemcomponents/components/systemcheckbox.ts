@@ -84,14 +84,14 @@ export class SystemCheckbox implements ControlValueAccessor {
     }
 
     // ControlValueAccessor implementation:
-    private onChange: (val: string) => void;
+    private onChange(val: string){};// => void;
     public registerOnChange(fn: any): void {
         this.onChange = (val) => {
             fn(val);
         };
     }
 
-    private onTouched: () => void;
+    private onTouched(){};// => void;
     public registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
