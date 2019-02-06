@@ -103,6 +103,10 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private arrangeMultiEvents() {
         this.sheetDays.forEach(day => day.items = []);
         for (let event of this.allMultiEvents) {
@@ -374,7 +378,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
             };
         }
         return {
-            height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
+            height: 'calc(100% - ' + this.headerContainer.element.nativeElement.clientHeight + 'px)',
             'margin-top': '-1px'
         };
     }

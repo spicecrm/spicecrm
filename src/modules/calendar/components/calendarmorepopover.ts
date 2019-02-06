@@ -73,6 +73,10 @@ export class CalendarMorePopover implements OnInit {
         }
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private onMouseOver() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);

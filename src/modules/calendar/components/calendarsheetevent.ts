@@ -52,7 +52,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
 
     get canEdit() {
         return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
-            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView;
+            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView && !this.calendar.isDashlet;
     }
 
     get owner() {

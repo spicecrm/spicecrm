@@ -31,6 +31,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @ViewChild('multieventscontainer', {read: ViewContainerRef}) private multiEventsContainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef}) private headerContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
@@ -55,6 +56,13 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
                 private session: session,
                 private calendar: calendar) {
         this.buildHours();
+    }
+
+    get sheetStyle() {
+        return {
+            height: 'calc(100% - ' + this.headerContainer.element.nativeElement.clientHeight + 'px)',
+            'margin-top': '-1px'
+        };
     }
 
     get offset() {
@@ -99,6 +107,10 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 
     private correctHours(events) {

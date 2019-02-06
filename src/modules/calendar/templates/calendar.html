@@ -48,7 +48,7 @@
                         [othercalendars]="otherCalendars"
                         [setdate]="calendarDate"
                         (navigateday)="gotToDayView($event)"
-                        (untildate$)="scheduleUntilDate = $event">
+                        (untildate$)="handleUntiDate($event)">
                 </calendar-sheet-schedule>
             </div>
         </div>

@@ -1,4 +1,4 @@
-<div class="slds-grid slds-border--bottom">
+<div #headercontainer class="slds-grid slds-border--bottom">
     <div class="slds-align--absolute-center slds-m-around--none slds-p-vertical--x-small slds-text-align--center" [ngStyle]="getTimeColStyle()">
         {{offset}}
     </div>
@@ -6,14 +6,14 @@
         <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle()">{{displayDate('ddd')}}</div>
         <h1 class="slds-p-left--x-small slds-p-bottom--xx-small slds-text-heading--large" [ngStyle]="isTodayStyle()">{{displayDate('D')}}</h1>
         <div #multieventscontainer class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small" [ngStyle]="getMultiEventsContainerStyle()">
-            <ng-container *ngFor="let event of allMultiEvents; let index = index">
+            <ng-container *ngFor="let event of allMultiEvents; let index = index; trackBy: trackByFn">
                 <calendar-sheet-event [ngStyle]="getMultiEventStyle(index)" [event]="event"></calendar-sheet-event>
             </ng-container>
         </div>
     </div>
 </div>
-<div #calendarsheet tobottom style="margin-top: -1px;" class="slds-scrollable--y spicecrm-scrollbar slds-is-relative">
-    <ng-container *ngFor="let sheetHour of sheetHours; let index = index">
+<div #calendarsheet [ngStyle]="sheetStyle" class="slds-scrollable--y spicecrm-scrollbar slds-is-relative">
+    <ng-container *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByFn">
         <div class="slds-is-absolute slds-border--top slds-size--1-of-1" [ngStyle]="getHourDividerStyle(index + 1)"></div>
         <ng-container *ngIf="notLastHour(index)">
             <div  class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(index)"></div>
@@ -26,7 +26,7 @@
     <ng-container>
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle()"></div>
     </ng-container>
-    <ng-container *ngFor="let event of allEvents">
+    <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
         <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event"></calendar-sheet-event>
     </ng-container>
 </div>
