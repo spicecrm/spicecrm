@@ -1,5 +1,5 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {of, Subject} from 'rxjs';
+import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {of, Subject, Subscription} from 'rxjs';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
@@ -7,13 +7,14 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
+import {take} from "rxjs/operators";
 
 
 declare var moment: any;
 declare var _: any;
 
 @Injectable()
-export class calendar {
+export class calendar implements OnDestroy {
 
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
@@ -22,7 +23,7 @@ export class calendar {
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public sysUICalendars: any[] = [];
-    public calendarDate: any = {};
+    public calendardate: any = {};
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
@@ -41,6 +42,15 @@ export class calendar {
     public asPicker: boolean = false;
     public isAllToken: boolean = false;
     public isMobileView: boolean = false;
+    public sheetType: string = 'Week';
+    public duration: any = {
+        Day: 'd',
+        Three_Days: 'd',
+        Week: 'w',
+        Month: 'M',
+        Schedule: 'M',
+    };
+    private subscription: Subscription = new Subscription();
 
     constructor(private backend: backend,
                 private session: session,
@@ -54,6 +64,14 @@ export class calendar {
             this.getOtherCalendars();
         }
         this.modelChangesSubscriber();
+    }
+
+    get calendarDate() {
+        return this.calendardate;
+    }
+
+    set calendarDate(value) {
+        this.calendardate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
     }
 
     get sidebarWidth() {
@@ -76,10 +94,32 @@ export class calendar {
         this.weekstartday = value;
     }
 
+    public refresh() {
+        this.currentStart = {};
+        this.currentEnd = {};
+        this.calendarDate = new moment(this.calendarDate);
+    }
+
+    public shiftPlus() {
+        let weekDaysCountOffset = 7 - this.weekDaysCount;
+        if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay + (this.weekDaysCount - 1)) {
+            this.calendarDate = new moment(this.calendarDate.add(moment.duration(weekDaysCountOffset, "d")));
+        }
+        this.calendarDate = new moment(this.calendarDate.add(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
+    }
+
+    public shiftMinus() {
+        let weekDaysCountOffset = 7 - this.weekDaysCount;
+        if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay) {
+            this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(weekDaysCountOffset, "d")));
+        }
+        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
+    }
+
     public doReload(start, end, calendar) {
         let noRecords = !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0);
         let dateChanged = !this.currentStart[calendar] || !this.currentEnd[calendar] || !this.currentStart[calendar].isSame(start) || !this.currentEnd[calendar].isSame(end);
-        return  noRecords || dateChanged;
+        return noRecords || dateChanged;
     }
 
     public loadEvents(start, end, calendar = this.owner, isOther = false) {
@@ -91,43 +131,45 @@ export class calendar {
             this.currentEnd[calendar] = end;
             this.currentStart[calendar] = start;
 
-            this.backend.getRequest(endPoint + calendar, params).subscribe(events => {
-                this.calendars[calendar] = [];
-                for (let event of events) {
-                    event.data = this.modelutilities.backendModel2spice(event.module, event.data);
-                    switch (event.type) {
-                        case 'event':
-                            event.start = moment(event.start).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                            event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
-                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
-                            event.color = this.eventColor;
-                            break;
-                        case 'absence':
-                            event.start = moment(event.start).second(1);
-                            event.end = moment(event.end).second(1);
-                            event.isMulti = true;
-                            event.color = this.absenceColor;
-                            break;
-                        case 'other':
-                            event.start = moment(event.start).year(start.year()).second(1);
-                            event.end = moment(event.end).year(start.year()).second(1);
-                            event.isMulti = true;
-                            break;
-                    }
+            this.backend.getRequest(endPoint + calendar, params)
+                .pipe(take(1))
+                .subscribe(events => {
+                    this.calendars[calendar] = [];
+                    for (let event of events) {
+                        event.data = this.modelutilities.backendModel2spice(event.module, event.data);
+                        switch (event.type) {
+                            case 'event':
+                                event.start = moment(event.start).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                                event.end = moment(event.end).tz(moment.tz.guess()).add(moment().utcOffset(), 'm');
+                                event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                                event.color = this.eventColor;
+                                break;
+                            case 'absence':
+                                event.start = moment(event.start).second(1);
+                                event.end = moment(event.end).second(1);
+                                event.isMulti = true;
+                                event.color = this.absenceColor;
+                                break;
+                            case 'other':
+                                event.start = moment(event.start).year(start.year()).second(1);
+                                event.end = moment(event.end).year(start.year()).second(1);
+                                event.isMulti = true;
+                                break;
+                        }
 
-                    if (event.module == 'UserAbsences') {
-                        if (event.type == 'other') {
-                            event.data.summary_text = event.data.user_name;
+                        if (event.module == 'UserAbsences') {
+                            if (event.type == 'other') {
+                                event.data.summary_text = event.data.user_name;
+                            }
+                            if (this.absenceExists(event)) {
+                                continue;
+                            }
                         }
-                        if (this.absenceExists(event)) {
-                            continue
-                        }
+                        this.calendars[calendar].push(event);
                     }
-                    this.calendars[calendar].push(event);
-                }
-                responseSubject.next(this.calendars[calendar]);
-                responseSubject.complete();
-            });
+                    responseSubject.next(this.calendars[calendar]);
+                    responseSubject.complete();
+                });
             return responseSubject.asObservable();
         } else {
             let filteredEntries: any[] = [];
@@ -152,29 +194,29 @@ export class calendar {
             this.currentEnd["google"] = endDate;
             this.currentStart["google"] = startDate;
 
-            this.backend.getRequest("google/calendar/getgoogleevents", params).subscribe(res => {
+            this.backend.getRequest("google/calendar/getgoogleevents", params)
+                .pipe(take(1))
+                .subscribe(res => {
+                    if (res.events && res.events.length > 0) {
+                        for (let event of res.events) {
+                            event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
+                            event.end = moment(event.end.dateTime).format('YYYY-MM-DD HH:mm:ss');
+                            event.start = moment(event.start);
+                            event.end = moment(event.end);
+                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                            event.data = {};
+                            event.data.summary_text = event.summary;
+                            event.data.assigned_user_id = null;
+                            event.color = this.googleColor;
 
-                if (res.events && res.events.length > 0) {
-                    for (let event of res.events) {
-                        event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
-                        event.end = moment(event.end.dateTime).format('YYYY-MM-DD HH:mm:ss');
-                        event.start = moment(event.start);
-                        event.end = moment(event.end);
-                        event.isMulti = +event.end.diff(event.start, 'days') > 0;
-                        event.data = {};
-                        event.data.summary_text = event.summary;
-                        event.data.assigned_user_id = null;
-                        event.color = this.googleColor;
-
-                        this.calendars["google"].push(event);
+                            this.calendars["google"].push(event);
+                        }
                     }
-                }
-                responseSubject.next(this.calendars["google"]);
-                responseSubject.complete();
-            });
+                    responseSubject.next(this.calendars["google"]);
+                    responseSubject.complete();
+                });
             return responseSubject.asObservable();
-        }
-        else {
+        } else {
             let filteredEntries = [];
             for (let event of this.calendars["google"]) {
                 if (event.start < endDate && event.end > startDate) {
@@ -189,55 +231,45 @@ export class calendar {
         return this.calendars[calendar] ? this.calendars[calendar] : [];
     }
 
-    private absenceExists(event) {
-        let found = false;
-        for (let prop in this.calendars) {
-            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id)) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
-
-    private getRandomColor() {
-        let letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
     public addOtherCalendar() {
-        if (this.isAllToken || this.isMobileView) {return}
+        if (this.isAllToken || this.isMobileView) {
+            return;
+        }
         let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
 
-        this.modal.openModal('CalendarAddCalendar').subscribe(modalRef => {
-            modalRef.instance.calendars = calendars;
-            modalRef.instance.addCalendar.subscribe(calendar => {
-                if (calendar !== false) {
-                    let otherCalendars = this.otherCalendars;
-                    otherCalendars.push({
-                        id: calendar.id,
-                        name: calendar.name,
-                        visible: true,
-                        color: this.getRandomColor()
+        this.modal.openModal('CalendarAddCalendar')
+            .pipe(take(1))
+            .subscribe(modalRef => {
+                modalRef.instance.calendars = calendars;
+                modalRef.instance.addCalendar
+                    .pipe(take(1))
+                    .subscribe(calendar => {
+                        if (calendar !== false) {
+                            let otherCalendars = this.otherCalendars;
+                            otherCalendars.push({
+                                id: calendar.id,
+                                name: calendar.name,
+                                visible: true,
+                                color: this.getRandomColor()
+                            });
+                            this.setOtherCalendars(otherCalendars.slice());
+                        }
                     });
-                    this.setOtherCalendars(otherCalendars.slice());
-                }
-            })
-        });
+            });
     }
 
     public removeOtherCalendar(id) {
-        if (this.isMobileView) {return}
+        if (this.isMobileView) {
+            return;
+        }
         let otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
         this.setOtherCalendars(otherCalendars);
     }
 
     public setOtherCalendars(calendars, save = true) {
-        if (!calendars) {return}
+        if (!calendars) {
+            return;
+        }
 
         this.otherCalendars = calendars;
         if (save) {
@@ -248,7 +280,9 @@ export class calendar {
     }
 
     public addUserCalendar(id, name) {
-        if (this.isMobileView) {return}
+        if (this.isMobileView) {
+            return;
+        }
         let usersCalendars = this.usersCalendars;
         let color = '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "eee" : (Math.random() * 0xFFF << 0).toString(16);
 
@@ -257,112 +291,23 @@ export class calendar {
     }
 
     public removeUserCalendar(id) {
-        if (this.isMobileView) {return}
+        if (this.isMobileView) {
+            return;
+        }
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
         this.setUserCalendars(usersCalendars);
     }
 
     public setUserCalendars(calendars, save = true) {
-        if (!calendars) {return}
+        if (!calendars) {
+            return;
+        }
 
         this.usersCalendars = calendars;
         if (save) {
             this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
         this.usersCalendars$.emit(this.usersCalendars);
-    }
-
-    private modelChangesSubscriber() {
-        this.broadcast.message$.subscribe(message => {
-            let id = message.messagedata.id;
-            let module = message.messagedata.module;
-            let data = message.messagedata.data;
-
-            if (module == 'Meetings' || module == 'Calls') {
-                switch (message.messagetype) {
-                    case "model.save":
-                        let uid = data.assigned_user_id;
-                        if (!this.calendars[uid]) {return}
-                        if (!this.modifyEvent(id, module, data, uid)) {
-                            if (this.isValid(data.date_end) && this.isValid(data.date_start)) {
-                                this.calendars[uid].push({
-                                    id: id,
-                                    module: module,
-                                    type: 'event',
-                                    start: data.date_start,
-                                    end: data.date_end,
-                                    data: data
-                                });
-                                this.calendarDate = moment(this.calendarDate);
-                            }
-                        }
-                        break;
-                    case "model.delete":
-                        if (!this.calendars[this.owner]) {return}
-                        this.deleteEvent(id, module);
-                        this.calendarDate = moment(this.calendarDate);
-                        break;
-                }
-            }
-        });
-    }
-
-    private modifyEvent(id, module, data, uid) {
-        if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
-            return true;
-        }
-        if (data.date_start > this.currentEnd && data.date_end < this.currentStart) {
-            this.deleteEvent(id, module);
-            return true;
-        }
-        return this.calendars[uid].some(event => {
-            if (event.id == id && module == event.module) {
-                event.data = data;
-                event.start = data.date_start;
-                event.end = data.date_end;
-                this.calendarDate = moment(this.calendarDate);
-                return true;
-            }
-        });
-    }
-
-    private deleteEvent(id, module) {
-        this.calendars[this.owner].some(event => {
-            if (event.id == id && module == event.module) {
-                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
-                this.calendarDate = moment(this.calendarDate);
-                return true;
-            }
-        });
-    }
-    private isValid(field) {
-        return field && typeof field === 'object' && field.isValid();
-    }
-    private loadPreferences() {
-        let preferences = this.userPreferences.unchangedPreferences.global;
-        this.weekStartDay = preferences['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
-        this.weekDaysCount = +preferences['week_days_count'] || this.weekDaysCount;
-        this.startHour = +preferences['calendar_day_start_hour'] || this.startHour;
-        this.endHour = +preferences['calendar_day_end_hour'] || this.endHour;
-        this.calendarDate = moment().locale(this.language.currentlanguage.substring(0,2));
-    }
-
-    private getOtherCalendars() {
-        this.userPreferences.loadPreferences("Calendar").subscribe(calendars => {
-            this.setUserCalendars(calendars["Users"], false);
-            this.setOtherCalendars(calendars["Other"], false);
-            this.getSysUICalendars();
-        });
-        if (this.session.authData.googleToken) {
-            this.loggedByGoogle = true;
-        }
-    }
-
-    private getSysUICalendars(){
-        this.backend.getRequest('calendar/calendars').subscribe(calendars => {
-            this.sysUICalendars = calendars;
-            this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
-        });
     }
 
     public setColor(id, color, type) {
@@ -487,5 +432,132 @@ export class calendar {
         }
         return events;
 
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    private absenceExists(event) {
+        let found = false;
+        for (let prop in this.calendars) {
+            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id)) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
+    private getRandomColor() {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    private modelChangesSubscriber() {
+        this.subscription = this.broadcast.message$.subscribe(message => {
+            let id = message.messagedata.id;
+            let module = message.messagedata.module;
+            let data = message.messagedata.data;
+
+            if (module == 'Meetings' || module == 'Calls') {
+                switch (message.messagetype) {
+                    case "model.save":
+                        let uid = data.assigned_user_id;
+                        if (!this.calendars[uid]) {
+                            return;
+                        }
+                        if (!this.modifyEvent(id, module, data, uid)) {
+                            if (this.isValid(data.date_end) && this.isValid(data.date_start)) {
+                                this.calendars[uid].push({
+                                    id: id,
+                                    module: module,
+                                    type: 'event',
+                                    start: data.date_start,
+                                    end: data.date_end,
+                                    data: data
+                                });
+                                this.calendarDate = moment(this.calendarDate);
+                            }
+                        }
+                        break;
+                    case "model.delete":
+                        if (!this.calendars[this.owner]) {
+                            return;
+                        }
+                        this.deleteEvent(id, module);
+                        this.calendarDate = moment(this.calendarDate);
+                        break;
+                }
+            }
+        });
+    }
+
+    private modifyEvent(id, module, data, uid) {
+        if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
+            return true;
+        }
+        if (data.date_start > this.currentEnd && data.date_end < this.currentStart) {
+            this.deleteEvent(id, module);
+            return true;
+        }
+        return this.calendars[uid].some(event => {
+            if (event.id == id && module == event.module) {
+                event.data = data;
+                event.start = data.date_start;
+                event.end = data.date_end;
+                this.calendarDate = moment(this.calendarDate);
+                return true;
+            }
+        });
+    }
+
+    private deleteEvent(id, module) {
+        this.calendars[this.owner].some(event => {
+            if (event.id == id && module == event.module) {
+                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
+                this.calendarDate = moment(this.calendarDate);
+                return true;
+            }
+        });
+    }
+
+    private isValid(field) {
+        return field && typeof field === 'object' && field.isValid();
+    }
+
+    private loadPreferences() {
+        let preferences = this.userPreferences.unchangedPreferences.global;
+        this.weekStartDay = preferences['week_day_start'] == "Monday" ? 1 : 0 || this.weekStartDay;
+        this.weekDaysCount = +preferences['week_days_count'] || this.weekDaysCount;
+        this.startHour = +preferences['calendar_day_start_hour'] || this.startHour;
+        this.endHour = +preferences['calendar_day_end_hour'] || this.endHour;
+        this.calendarDate = moment(this.calendarDate);
+    }
+
+    private getOtherCalendars() {
+        this.userPreferences.loadPreferences("Calendar")
+            .pipe(take(1))
+            .subscribe(calendars => {
+                this.setUserCalendars(calendars["Users"], false);
+                this.setOtherCalendars(calendars["Other"], false);
+                this.getSysUICalendars();
+            });
+        if (this.session.authData.googleToken) {
+            this.loggedByGoogle = true;
+        }
+    }
+
+    private getSysUICalendars() {
+        this.backend.getRequest('calendar/calendars')
+            .pipe(take(1))
+            .subscribe(calendars => {
+                this.sysUICalendars = calendars;
+                this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
+            });
     }
 }

@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {calendar} from "../services/calendar.service";
 import {language} from "../../../services/language.service";
@@ -16,32 +16,14 @@ export class CalendarMorePopover implements OnInit {
     public styles = null;
     public isMobileView: boolean = false;
     public sheetDay: any = {};
-
-    private hidePopoverTimeout: any = {};
-
-    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
-
     public parentElementRef: any = null;
     public self: any = null;
-
+    private hidePopoverTimeout: any = {};
+    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
     private heightcorrection = 30;
     private widthcorrection = 30;
 
-    constructor(private metadata: metadata, private calendar: calendar, private language: language) {}
-
-    public ngOnInit() {
-        // don't know why... but this call fixes ExpressionChangedAfterItHasBeenCheckedError ... maybe because it sets the nubbin class earlier so it won't change after changedetection anymore?
-        this.styles = this.popoverStyle;
-    }
-
-    private onMouseOver() {
-        if (this.hidePopoverTimeout) {
-            window.clearTimeout(this.hidePopoverTimeout);
-        }
-    }
-
-    private onMouseOut() {
-        this.closePopover(true);
+    constructor(private metadata: metadata, private calendar: calendar, private language: language) {
     }
 
     get shortDate() {
@@ -51,7 +33,7 @@ export class CalendarMorePopover implements OnInit {
 
     get popoverStyle() {
         if (this.isMobileView) {
-            return {left:0, bottom:0, width: '100%'};
+            return {left: 0, bottom: 0, width: '100%'};
         }
 
         let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
@@ -78,8 +60,9 @@ export class CalendarMorePopover implements OnInit {
         }
     }
 
-    private getNubbinClass() {
-        return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
+    public ngOnInit() {
+        // don't know why... but this call fixes ExpressionChangedAfterItHasBeenCheckedError ... maybe because it sets the nubbin class earlier so it won't change after changedetection anymore?
+        this.styles = this.popoverStyle;
     }
 
     public closePopover(force = false) {
@@ -88,5 +71,19 @@ export class CalendarMorePopover implements OnInit {
         } else {
             this.hidePopoverTimeout = window.setTimeout(() => this.self.destroy(), 500);
         }
+    }
+
+    private onMouseOver() {
+        if (this.hidePopoverTimeout) {
+            window.clearTimeout(this.hidePopoverTimeout);
+        }
+    }
+
+    private onMouseOut() {
+        this.closePopover(true);
+    }
+
+    private getNubbinClass() {
+        return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
     }
 }
