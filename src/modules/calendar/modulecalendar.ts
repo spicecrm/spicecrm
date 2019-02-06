@@ -4,7 +4,8 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";
 
-import {Subject, Observable, of} from "rxjs";
+import {Subject, Observable, of, Subscription, pipe} from "rxjs";
+import {take} from "rxjs/operators";
 
 
 import {loginService, loginCheck} from "../../services/login.service";
