@@ -2,7 +2,6 @@ import {Component, ElementRef, HostListener, Input, OnDestroy} from '@angular/co
 import {footer} from "../../../services/footer.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
-import {take} from "rxjs/operators";
 
 declare var moment: any;
 
@@ -49,7 +48,6 @@ export class CalendarMoreButton implements OnDestroy {
 
     private renderPopover() {
         this.metadata.addComponent('CalendarMorePopover', this.footer.modalcontainer)
-            .pipe(take(1))
             .subscribe(
                 popover => {
                     popover.instance.events = this.events;

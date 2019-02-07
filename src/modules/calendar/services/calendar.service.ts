@@ -51,7 +51,7 @@ export class calendar implements OnDestroy {
         Month: 'M',
         Schedule: 'M',
     };
-    private subscription: Subscription = new Subscription();
+    private subscriptions: Subscription = new Subscription();
 
     constructor(private backend: backend,
                 private session: session,
@@ -60,6 +60,9 @@ export class calendar implements OnDestroy {
                 private language: language,
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
+        let languageSubscriber = this.language.currentlanguage$.subscribe(lang => this.calendarDate = moment(this.calendarDate));
+        this.subscriptions.add(languageSubscriber);
+
         this.loadPreferences();
         if (!this.isMobileView && !this.isDashlet) {
             this.getOtherCalendars();
@@ -133,7 +136,6 @@ export class calendar implements OnDestroy {
             this.currentStart[calendar] = start;
 
             this.backend.getRequest(endPoint + calendar, params)
-                .pipe(take(1))
                 .subscribe(events => {
                     this.calendars[calendar] = [];
                     for (let event of events) {
@@ -196,7 +198,6 @@ export class calendar implements OnDestroy {
             this.currentStart["google"] = startDate;
 
             this.backend.getRequest("google/calendar/getgoogleevents", params)
-                .pipe(take(1))
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
@@ -239,7 +240,6 @@ export class calendar implements OnDestroy {
         let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
 
         this.modal.openModal('CalendarAddCalendar')
-            .pipe(take(1))
             .subscribe(modalRef => {
                 modalRef.instance.calendars = calendars;
                 modalRef.instance.addCalendar
@@ -436,7 +436,7 @@ export class calendar implements OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.subscriptions.unsubscribe();
     }
 
     private absenceExists(event) {
@@ -460,7 +460,7 @@ export class calendar implements OnDestroy {
     }
 
     private modelChangesSubscriber() {
-        this.subscription = this.broadcast.message$.subscribe(message => {
+        let subscriber = this.broadcast.message$.subscribe(message => {
             let id = message.messagedata.id;
             let module = message.messagedata.module;
             let data = message.messagedata.data;
@@ -496,6 +496,7 @@ export class calendar implements OnDestroy {
                 }
             }
         });
+        this.subscriptions.add(subscriber);
     }
 
     private modifyEvent(id, module, data, uid) {
@@ -555,7 +556,6 @@ export class calendar implements OnDestroy {
 
     private getSysUICalendars() {
         this.backend.getRequest('calendar/calendars')
-            .pipe(take(1))
             .subscribe(calendars => {
                 this.sysUICalendars = calendars;
                 this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
