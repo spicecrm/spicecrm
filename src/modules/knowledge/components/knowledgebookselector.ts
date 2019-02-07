@@ -69,4 +69,8 @@ export class KnowledgeBookSelector {
         this.knowledgeService.setLastViewedBook(true);
         this.knowledgeService.favoriteDisable();
     }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
 }
