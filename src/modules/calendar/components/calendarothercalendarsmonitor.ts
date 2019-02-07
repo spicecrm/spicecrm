@@ -3,7 +3,6 @@ import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {recent} from "../../../services/recent.service";
 import {calendar} from "../services/calendar.service";
-import {take} from "rxjs/operators";
 
 declare var _: any;
 
@@ -69,7 +68,6 @@ export class CalendarOtherCalendarsMonitor {
         }
         this.isLoading = true;
         this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
-            .pipe(take(1))
             .subscribe(res => {
                 this.filterResultsList(res["Users"].hits.map(user => user = user._source));
                 this.isLoading = false;
@@ -78,7 +76,6 @@ export class CalendarOtherCalendarsMonitor {
 
     private getRecent() {
         this.recent.getModuleRecent("Users")
-            .pipe(take(1))
             .subscribe(recent => this.filterRecent(recent));
     }
 

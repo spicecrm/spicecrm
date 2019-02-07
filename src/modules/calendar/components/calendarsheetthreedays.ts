@@ -16,7 +16,6 @@ import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 import {backend} from "../../../services/backend.service";
-import {take} from "rxjs/operators";
 
 declare var moment: any;
 
@@ -172,7 +171,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         this.arrangeMultiEvents();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
-            .pipe(take(1))
             .subscribe(events => {
                 if (events.length > 0) {
                     events = this.correctHours(events);
@@ -193,7 +191,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.endDate)
-            .pipe(take(1))
             .subscribe(events => {
                 if (events.length > 0) {
                     events = this.correctHours(events);
@@ -218,7 +215,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
                 continue;
             }
             this.calendar.loadEvents(this.startDate, this.endDate, calendar.id)
-                .pipe(take(1))
                 .subscribe(events => {
                     if (events.length > 0) {
                         events = this.correctHours(events);
@@ -250,7 +246,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
                 continue;
             }
             this.calendar.loadEvents(this.startDate.hour(0).minute(0).second(0), this.endDate.hour(0).minute(0).second(0), calendar.id, true)
-                .pipe(take(1))
                 .subscribe(events => {
                     if (events.length > 0) {
                         events.forEach(event => {

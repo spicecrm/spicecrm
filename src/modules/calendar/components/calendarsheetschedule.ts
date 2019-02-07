@@ -15,7 +15,6 @@ import {navigation} from '../../../services/navigation.service';
 import {session} from '../../../services/session.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
-import {take} from "rxjs/operators";
 
 declare var moment: any;
 declare var _: any;
@@ -141,7 +140,6 @@ export class CalendarSheetSchedule implements OnChanges {
         this.allEvents = this.allevents.slice();
 
         this.calendar.loadEvents(this.startDate, this.untilDate)
-            .pipe(take(1))
             .subscribe(events => {
                 if (events.length > 0) {
                     this.ownerEvents = events;
@@ -159,7 +157,6 @@ export class CalendarSheetSchedule implements OnChanges {
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.untilDate)
-            .pipe(take(1))
             .subscribe(events => {
                 this.googleEvents = events;
                 this.allEvents = this.allevents.slice();
@@ -177,7 +174,6 @@ export class CalendarSheetSchedule implements OnChanges {
             let calendar = this.calendar.usersCalendars[i];
             let last = this.calendar.usersCalendars.length == (i + 1);
             this.calendar.loadEvents(this.startDate, this.untilDate, calendar.id)
-                .pipe(take(1))
                 .subscribe(events => {
                     if (events.length > 0) {
                         events.forEach(event => {
@@ -208,7 +204,6 @@ export class CalendarSheetSchedule implements OnChanges {
             let calendar = this.calendar.otherCalendars[i];
             let last = this.calendar.otherCalendars.length == (i + 1);
             this.calendar.loadEvents(this.startDate, this.untilDate, calendar.id, true)
-                .pipe(take(1))
                 .subscribe(events => {
                     if (events.length > 0) {
                         events.forEach(event => {

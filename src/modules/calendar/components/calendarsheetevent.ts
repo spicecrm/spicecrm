@@ -6,7 +6,6 @@ import {view} from '../../../services/view.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
-import {take} from "rxjs/operators";
 
 declare var moment: any;
 
@@ -134,11 +133,12 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     private onMouseUp() {
+        this.mouseUpListener();
+        this.mouseMoveListener();
+
         if (!this.canEdit) {
             return;
         }
-        this.mouseUpListener();
-        this.mouseMoveListener();
 
         if (this.mouseLast.pageY != this.mouseStart.pageY) {
             let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
@@ -150,7 +150,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
             // save the event
             this.event.saving = true;
             this.model.save()
-                .pipe(take(1))
                 .subscribe(data => {
                     this.event.saving = false;
                 });

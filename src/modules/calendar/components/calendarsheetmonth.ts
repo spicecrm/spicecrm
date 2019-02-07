@@ -18,7 +18,6 @@ import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
-import {take} from "rxjs/operators";
 
 declare var moment: any;
 declare var _: any;
@@ -89,6 +88,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.cdr.detach();
+        if (this.resizeHandler) {
+            this.resizeHandler();
+        }
     }
 
     private trackByFn(index, item) {
@@ -133,7 +135,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.arrangeEvents();
 
         this.calendar.loadEvents(this.startDate(), this.endDate())
-            .pipe(take(1))
             .subscribe(events => {
                 if (events.length > 0) {
                     events.forEach(event => {
@@ -154,7 +155,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         }
 
         this.calendar.loadGoogleEvents(this.startDate(), this.endDate())
-            .pipe(take(1))
             .subscribe(events => {
                 if (events.length > 0) {
                     events = events.map(event => {
@@ -180,7 +180,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 continue;
             }
             this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id)
-                .pipe(take(1))
                 .subscribe(events => {
                     if (events.length > 0) {
                         events.forEach(event => {
@@ -208,7 +207,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 continue;
             }
             this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true)
-                .pipe(take(1))
                 .subscribe(events => {
                     if (events.length > 0) {
                         events.forEach(event => {
