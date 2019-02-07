@@ -45,8 +45,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
-        let languageSubscriber = this.language.currentlanguage$.subscribe(lang => this.calendar.calendarDate = moment(this.calendar.calendarDate));
-        this.subscriptions.add(languageSubscriber);
         let usersSubscriber = this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.subscriptions.add(usersSubscriber);
         let otherSubscriber = this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
@@ -126,9 +124,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
         if (this.touchStartListener) {
             this.touchStartListener();
         }
-        if (this.touchMoveListener) {
-            this.touchMoveListener();
-        }
         this.cdr.detach();
     }
 
@@ -164,6 +159,8 @@ export class Calendar implements AfterViewInit, OnDestroy {
     }
 
     private handleTouchMove(evt) {
+        this.touchMoveListener();
+
         if (!this.xDown || !this.yDown) {
             return;
         }
@@ -178,6 +175,5 @@ export class Calendar implements AfterViewInit, OnDestroy {
         }
         this.xDown = null;
         this.yDown = null;
-        this.touchMoveListener();
     }
 }
