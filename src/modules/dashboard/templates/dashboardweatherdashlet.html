@@ -25,7 +25,7 @@
     </div>
     <ng-container *ngIf="!todayOnly">
         <div class="slds-grid slds-m-top--small slds-m-bottom--xx-small slds-p-horizontal--x-small slds-p-vertical--small slds-border--top slds-border--bottom">
-            <div *ngFor="let dayHour of dayToShow"
+            <div *ngFor="let dayHour of dayToShow; trackBy: trackByFn"
                  class="slds-size--1-of-5 slds-text-body--small"
                  [ngClass]="(dayHour.dt == dayHourToShow.dt) ? 'slds-text-color--error': ''"
                  style="cursor: pointer; max-width: 2.2rem"
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="slds-grid slds-m-horizontal--xx-small">
-            <div *ngFor="let day of sortedDays; let first = first"
+            <div *ngFor="let day of sortedDays; let first = first; trackBy: trackByFn"
                  class="slds-size--1-of-5 slds-p-vertical--xx-small"
                  style="cursor: pointer; max-width: 4.3rem"
                  [ngStyle]="(getDayName(first ? day[0].dt : day[4].dt) == getDayName(dayHourToShow.dt)) ? {'background-color': '#faf7f7', 'border': '1px solid #e0dfdf'}: {}"
