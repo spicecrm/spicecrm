@@ -8,7 +8,7 @@
         <table  class="slds-table slds-table_bordered slds-table_cell-buffer slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table_header-fixed': islarge}">
             <thead *ngIf="islarge">
                 <tr class="slds-text-title_caps">
-                    <th scope="col" *ngFor="let field of dashletFields; let isFirst = first">
+                    <th scope="col" *ngFor="let field of dashletFields; let isFirst = first; trackBy: trackByFn">
                         <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small"
                              [style.padding-left]="isFirst ? 0 : false">
                             <field-label *ngIf="!field.fieldconfig.hidelabel" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let record of records">
+                <ng-container *ngFor="let record of records; trackBy: trackByFn">
                     <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
                         {{record.summary_text}}
                     </div>

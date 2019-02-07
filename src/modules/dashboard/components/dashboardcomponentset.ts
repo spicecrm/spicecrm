@@ -17,20 +17,21 @@ export class DashboardComponentset implements AfterViewInit, OnDestroy {
         this.renderComnponentset();
     }
 
-    private renderComnponentset() {
-        if (this.dashletconfig && this.dashletconfig.componentset) {
-            for (let component of this.metadata.getComponentSetObjects(this.dashletconfig.componentset)) {
-                this.metadata.addComponent(component.component, this.componentcontainer).subscribe(componentRef => {
-                    componentRef.instance.componentconfig = component.componentconfig;
-                    this.componentRefs.push(componentRef);
-                });
-            }
-        }
-    }
-
     public ngOnDestroy() {
         for (let componentRef of this.componentRefs) {
             componentRef.destroy();
+        }
+    }
+
+    private renderComnponentset() {
+        if (this.dashletconfig && this.dashletconfig.componentset) {
+            for (let component of this.metadata.getComponentSetObjects(this.dashletconfig.componentset)) {
+                this.metadata.addComponent(component.component, this.componentcontainer)
+                    .subscribe(componentRef => {
+                        componentRef.instance.componentconfig = component.componentconfig;
+                        this.componentRefs.push(componentRef);
+                    });
+            }
         }
     }
 }
