@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
@@ -8,7 +8,7 @@ import {metadata} from "../../../services/metadata.service";
     templateUrl: './src/modules/products/templates/Productgroupmanagerdetails.html',
     providers: [model]
 })
-export class ProductGroupManagerDetails implements OnChanges {
+export class ProductGroupManagerDetails implements OnChanges, OnDestroy {
     @ViewChild("detailscontainer", {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
 
     @Input('groupid') private groupId: string;
@@ -18,10 +18,16 @@ export class ProductGroupManagerDetails implements OnChanges {
         this.model.module = 'ProductGroups';
     }
 
-    ngOnChanges() {
-        if (!this.groupId) {return}
+    public ngOnChanges() {
+        if (!this.groupId) {
+            return;
+        }
         this.model.id = this.groupId;
         this.model.getData(true, "", true).subscribe(() => this.buildContainer());
+    }
+
+    public ngOnDestroy() {
+        this.renderedComponents.forEach(c => c.destroy());
     }
 
     private buildContainer() {

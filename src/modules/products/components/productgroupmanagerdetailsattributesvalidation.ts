@@ -47,6 +47,10 @@ export class ProductGroupManagerDetailsAttributesValidation implements OnInit, O
         });
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     public ngOnDestroy() {
         this.relatedmodels.stopSubscriptions();
     }

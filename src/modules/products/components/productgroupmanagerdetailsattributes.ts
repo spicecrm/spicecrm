@@ -46,6 +46,10 @@ export class ProductGroupManagerDetailsAttributes {
         return this.model.checkAccess('edit');
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private sortAttributes(array) {
         return array.sort((a,b) => {
             let summaryTextA = a.summary_text.toUpperCase();

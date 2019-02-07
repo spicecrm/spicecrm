@@ -31,4 +31,8 @@ export class ProductGroupManagerDetailsAttributesValidationItem {
         this.model.id = this.item.id;
         this.model.data = this.item;
     }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
 }

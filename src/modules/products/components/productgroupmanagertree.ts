@@ -32,6 +32,10 @@ export class ProductGroupManagerTree {
 
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private getProductGroups(parentId = '') {
         let retSubject: Subject<any> = new Subject<any>();
         let searchfields = {

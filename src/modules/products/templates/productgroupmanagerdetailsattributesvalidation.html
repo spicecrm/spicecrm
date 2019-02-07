@@ -4,7 +4,7 @@
             <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table_header-fixed" role="grid">
                 <thead>
                 <tr class="slds-text-title_caps">
-                    <th scope="col" *ngFor="let item of listFields">
+                    <th scope="col" *ngFor="let item of listFields; trackBy: trackByFn">
                         <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center  slds-p-horizontal--x-small">
                             {{language.getFieldDisplayName('ProductAttributeValueValidations', item.field, item.fieldconfig, 'short')}}
                         </div>

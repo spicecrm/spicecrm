@@ -1,6 +1,6 @@
 <div class="slds-tree_container slds-p-around--x-small" style="max-width: 100%" role="application">
     <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
-        <li *ngFor="let productgroup of productgrouptree" role="treeitem" [attr.aria-level]="productgroup.level" [ngClass]="{'slds-theme--shade': isSelected(productgroup.id)}">
+        <li *ngFor="let productgroup of productgrouptree; trackBy: trackByFn" role="treeitem" [attr.aria-level]="productgroup.level" [ngClass]="{'slds-theme--shade': isSelected(productgroup.id)}">
             <div *ngIf="productgroup.type=='group'" class="slds-tree__item">
                 <button [class.slds-hidden]="productgroup.member_count == 0" class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" (click)="toggle(productgroup)">
                     <system-button-icon [icon]="'chevronright'"></system-button-icon>
