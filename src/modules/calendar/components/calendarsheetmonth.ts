@@ -95,6 +95,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         return item.id;
     }
 
+    private trackByFnDate(index, item) {
+        return index;
+    }
+
     private startDate() {
         return new moment(this.setdate).date(1).hour(0).minute(0).second(0);
     }
