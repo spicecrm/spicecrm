@@ -107,6 +107,10 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         return item.id;
     }
 
+    private trackByFnDate(index, item) {
+        return index;
+    }
+
     private arrangeMultiEvents() {
         this.sheetDays.forEach(day => day.items = []);
         for (let event of this.allMultiEvents) {

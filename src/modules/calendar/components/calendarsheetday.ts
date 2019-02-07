@@ -113,6 +113,10 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return item.id;
     }
 
+    private trackByFnHours(index, item) {
+        return index;
+    }
+
     private correctHours(events) {
         events.forEach(event => {
             if (!event.isMulti) {
