@@ -1,12 +1,12 @@
 <div class="slds-border--bottom">
     <div class="slds-grid">
         <div class="slds-text-align--center slds-p-vertical--small slds-border--left"
-             *ngFor="let sheetDay of getSheetDays()" [ngStyle]="getDayColStyle(sheetDay.text)">{{sheetDay.text}}</div>
+             *ngFor="let sheetDay of getSheetDays(); trackBy: trackByFnDate" [ngStyle]="getDayColStyle(sheetDay.text)">{{sheetDay.text}}</div>
     </div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
-    <ng-container *ngFor="let sheetWeek of currentGrid; let i = index">
-        <div #boxcontainer *ngFor="let sheetDay of sheetWeek; let j = index" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
+    <ng-container *ngFor="let sheetWeek of currentGrid; let i = index; trackBy: trackByFnDate">
+        <div #boxcontainer *ngFor="let sheetDay of sheetWeek; let j = index; trackBy: trackByFn" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
             <div class="slds-p-around--xx-small" [style.height]="offsetHeight + 'px'">
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
             </div>
@@ -16,11 +16,11 @@
         </div>
         <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>
     </ng-container>
-    <ng-container *ngFor="let sheetDay of getSheetDays()">
+    <ng-container *ngFor="let sheetDay of getSheetDays(); trackBy: trackByFnDate">
         <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
     </ng-container>
-    <ng-container *ngFor="let event of allEvents">
-        <ng-container *ngFor="let week of event.weeksI">
+    <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
+        <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFn">
             <calendar-sheet-event [event]="event" [ismonthsheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
         </ng-container>
     </ng-container>
