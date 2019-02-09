@@ -7,7 +7,8 @@ import {
     Injectable,
     NgModuleFactory,
     NgModuleFactoryLoader,
-    Compiler
+    Compiler,
+    Renderer2
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
@@ -61,7 +62,6 @@ declare global {
         format(format): string;
     }
 }
-;
 
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -70,7 +70,16 @@ moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
     template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet></div><global-footer></global-footer>"
 })
 export class SpiceUI {
-    constructor(private layout: layout) {
+    constructor(private layout: layout, private render: Renderer2) {
+        // stop just dropping files on the app
+        this.render.listen('window', 'dragover', e => {
+            e.preventDefault();
+            e.dataTransfer.effectAllowed = "none";
+            e.dataTransfer.dropEffect = "none";
+        });
+        this.render.listen('window', 'drop', e => {
+            e.preventDefault();
+        });
     }
 
     get outletstyle() {

@@ -1,4 +1,5 @@
-import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output, Renderer2} from "@angular/core";
+import {DomSanitizer} from '@angular/platform-browser';
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 
@@ -20,8 +21,16 @@ export class SystemUploadImage {
     private self: any;
     private imageBase64: any;
     private croppie: any;
+    private pasteListener: any;
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(private language: language, private metadata: metadata, private renderer: Renderer2, private sanitizer: DomSanitizer) {
+        this.pasteListener = this.renderer.listen('window', 'paste', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            let blob = e.clipboardData.items[0].getAsFile();
+            let URLObj = window.URL;
+            this.imageBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(URLObj.createObjectURL(blob));
+        });
     }
 
     get croppiestyle() {
