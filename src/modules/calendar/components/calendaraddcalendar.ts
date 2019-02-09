@@ -1,8 +1,6 @@
 import {Component, EventEmitter} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {recent} from '../../../services/recent.service';
 import {backend} from '../../../services/backend.service';
-import {metadata} from '../../../services/metadata.service';
 
 @Component({
     templateUrl: './src/modules/calendar/templates/calendaraddcalendar.html',
@@ -10,17 +8,17 @@ import {metadata} from '../../../services/metadata.service';
 export class CalendarAddCalendar {
 
     public calendars: any[] = [];
+    addCalendar: EventEmitter<any> = new EventEmitter<any>();
     private self: any = {};
 
-    addCalendar: EventEmitter<any> = new EventEmitter<any>();
+    constructor(private language: language, private backend: backend) {
+    }
 
-    constructor(private language: language, private backend: backend) {}
-
-    getIcon(icon){
+    getIcon(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[1] : icon;
     }
 
-    getSprite(icon){
+    getSprite(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[0] : 'standard';
     }
 
@@ -32,5 +30,9 @@ export class CalendarAddCalendar {
     save(calendar) {
         this.addCalendar.emit(calendar);
         this.self.destroy();
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 }

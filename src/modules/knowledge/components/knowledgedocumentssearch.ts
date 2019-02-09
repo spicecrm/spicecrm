@@ -54,4 +54,8 @@ export class KnowledgeDocumentsSearch {
         this.knowledgeService.selectedBook = {id: doc.knowledgebook_id, name: doc.knowledgebook_name};
         this.knowledgeService.getDocuments(doc.knowledgebook_id);
     }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
 }

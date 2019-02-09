@@ -25,7 +25,8 @@ import {FormsModule} from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 
-import {Subject, Observable} from "rxjs";
+import {Subject, Observable, of, Subscription, pipe} from "rxjs";
+import {take} from "rxjs/operators";
 
 import {loginService, loginCheck} from "../../services/login.service";
 import {metadata, aclCheck} from "../../services/metadata.service";

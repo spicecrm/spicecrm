@@ -3,6 +3,7 @@ import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {modal} from '../../../services/modal.service';
 import {model} from '../../../services/model.service';
+import {take} from "rxjs/operators";
 
 declare var _;
 
@@ -249,34 +250,37 @@ export class dashboardlayout {
 
     public addDashlet(position) {
 
-        this.modal.openModal('DashboardAddElement').subscribe(modalRef => {
-            modalRef.instance.addDashlet.subscribe(dashlet => {
-                if (dashlet !== false) {
-                    this.editing = this.modelutilities.generateGuid();
-                    let element = {
-                        id: this.editing,
-                        name: dashlet.name,
-                        component: dashlet.component,
-                        componentconfig: dashlet.componentconfig,
-                        dashletconfig: dashlet.dashletconfig,
-                        dashlet_id: dashlet.dashlet_id,
-                        module: dashlet.module,
-                        icon: dashlet.icon,
-                        acl_action: dashlet.acl_action,
-                        label: dashlet.label,
-                        sysuidashboard_id: this.dashboardId,
-                        position: {
-                            top: Math.round(position.top / this.elementHeight),
-                            left: Math.round(position.left / this.elementWidth),
-                            width: Math.round(position.width / this.elementWidth),
-                            height: Math.round(position.height / this.elementHeight)
-                        },
-                        is_new: true,
-                    };
-                    this.dashboardElements = [...this.dashboardElements, element];
-                }
+        this.modal.openModal('DashboardAddElement')
+            .subscribe(modalRef => {
+                modalRef.instance.addDashlet
+                    .pipe(take(1))
+                    .subscribe(dashlet => {
+                        if (dashlet !== false) {
+                            this.editing = this.modelutilities.generateGuid();
+                            let element = {
+                                id: this.editing,
+                                name: dashlet.name,
+                                component: dashlet.component,
+                                componentconfig: dashlet.componentconfig,
+                                dashletconfig: dashlet.dashletconfig,
+                                dashlet_id: dashlet.dashlet_id,
+                                module: dashlet.module,
+                                icon: dashlet.icon,
+                                acl_action: dashlet.acl_action,
+                                label: dashlet.label,
+                                sysuidashboard_id: this.dashboardId,
+                                position: {
+                                    top: Math.round(position.top / this.elementHeight),
+                                    left: Math.round(position.left / this.elementWidth),
+                                    width: Math.round(position.width / this.elementWidth),
+                                    height: Math.round(position.height / this.elementHeight)
+                                },
+                                is_new: true,
+                            };
+                            this.dashboardElements = [...this.dashboardElements, element];
+                        }
+                    });
             });
-        });
     }
 
     public deleteDashlet(id) {
@@ -300,15 +304,16 @@ export class dashboardlayout {
                 this.model.setField('name', name);
             }
 
-            this.model.getData(false).subscribe(loaded => {
-                this.dashboardData = this.model.data;
-                this.dashboardElements = this.model.getField('components');
+            this.model.getData(false)
+                .subscribe(loaded => {
+                    this.dashboardData = this.model.data;
+                    this.dashboardElements = this.model.getField('components');
 
-                // sort the elements for the compact view
-                this.sortElements();
+                    // sort the elements for the compact view
+                    this.sortElements();
 
-                this.isloading = false;
-            });
+                    this.isloading = false;
+                });
         }
     }
 
@@ -321,19 +326,10 @@ export class dashboardlayout {
 
     public saveDashboard() {
         this.editMode = false;
-        this.backend.postRequest('dashboards/' + this.dashboardId, {}, this.dashboardElements).subscribe(data => {
-            this.dashboardData.components = this.dashboardElements.slice(0);
-        });
-    }
-
-    private sortElements() {
-        this.dashboardElements = this.dashboardElements.sort((a, b) => {
-            if (a.position.top == b.position.top) {
-                return a.position.left > b.position.left ? 1 : -1;
-            } else {
-                return a.position.top > b.position.top ? 1 : -1;
-            }
-        });
+        this.backend.postRequest('dashboards/' + this.dashboardId, {}, this.dashboardElements)
+            .subscribe(data => {
+                this.dashboardData.components = this.dashboardElements.slice(0);
+            });
     }
 
     public prepareStyle(style) {
@@ -344,5 +340,15 @@ export class dashboardlayout {
             }
         }
         return returnStyle;
+    }
+
+    private sortElements() {
+        this.dashboardElements = this.dashboardElements.sort((a, b) => {
+            if (a.position.top == b.position.top) {
+                return a.position.left > b.position.left ? 1 : -1;
+            } else {
+                return a.position.top > b.position.top ? 1 : -1;
+            }
+        });
     }
 }

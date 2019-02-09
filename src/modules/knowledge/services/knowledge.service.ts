@@ -1,14 +1,16 @@
-import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
+import {Injectable, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
+import {take} from "rxjs/operators";
+import {Subscription} from "rxjs";
 
 
 @Injectable()
 
-export class KnowledgeService {
+export class KnowledgeService implements OnDestroy {
     public selectedBook: any;
     public documents: any[] = [];
     public selectedId: string = "";
@@ -16,6 +18,7 @@ export class KnowledgeService {
     public books: any[] = [];
     public searchterm: string = "";
     public resultsList: any[] = [];
+    private subscription: Subscription = new Subscription();
 
     @ViewChild("searchcontainer", {read: ViewContainerRef}) private searchContainer: ViewContainerRef;
 
@@ -24,13 +27,15 @@ export class KnowledgeService {
                 private broadcast: broadcast,
                 public userPreferences: userpreferences,
                 private fts: fts) {
-        this.userPreferences.loadPreferences('KnowledgeBooks').subscribe(res => {
-            if (res && res['lastViewedBook']) {
-                this.selectedBook = res['lastViewedBook'];
-                this.getDocuments(this.selectedBook.id);
-            }
-        });
-        this.broadcast.message$.subscribe(msg => {
+        this.userPreferences.loadPreferences('KnowledgeBooks')
+            .pipe(take(1))
+            .subscribe(res => {
+                if (res && res['lastViewedBook']) {
+                    this.selectedBook = res['lastViewedBook'];
+                    this.getDocuments(this.selectedBook.id);
+                }
+            });
+        this.subscription = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
                 let book = msg.messagedata.data;
                 this.books = [...this.books, book];
@@ -96,23 +101,35 @@ export class KnowledgeService {
     }
 
     public sortDocuments() {
-         this.documents.sort((a,b) => {
+        this.documents.sort((a, b) => {
             if (+a.parent_sequence == +b.parent_sequence) {
                 return a.name - b.name;
             } else {
                 return a.parent_sequence - b.parent_sequence;
             }
         });
-        return this.documents.sort(function(a, b) {
+        return this.documents.sort(function (a, b) {
             if (+a.parent_sequence == +b.parent_sequence) {
                 var nameA = a.name.toUpperCase();
                 var nameB = b.name.toUpperCase();
-                if (nameA < nameB) {return -1}
-                if (nameA > nameB) {return 1}
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
             } else {
-                if (+a.parent_sequence < +b.parent_sequence) {return -1}
-                if (+a.parent_sequence > +b.parent_sequence) {return 1}
+                if (+a.parent_sequence < +b.parent_sequence) {
+                    return -1;
+                }
+                if (+a.parent_sequence > +b.parent_sequence) {
+                    return 1;
+                }
             }
         });
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
