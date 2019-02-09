@@ -24,7 +24,7 @@
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="dashletModule" [disabled]="noData">
                             <option value="*">All</option>
-                            <option *ngFor="let module of modules" [value]="module">{{module}}</option>
+                            <option *ngFor="let module of modules; trackBy: trackByFnModule" [value]="module">{{module}}</option>
                         </select>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                 <label class="slds-form-element__label">{{language.getLabel('LBL_DASHLET')}}</label>
                 <system-spinner *ngIf="isLoading && noData"></system-spinner>
                 <div class="slds-grid slds-wrap">
-                    <div *ngFor="let dashlet of dashboardDashletsFiltered"
+                    <div *ngFor="let dashlet of dashboardDashletsFiltered; trackBy: trackByFn"
                          class="slds-size--1-of-3 slds-p-around--xx-small ">
                         <a href="javascript:void(0);" (click)="save(dashlet.id)" class="slds-box slds-box_link slds-box_x-small slds-media">
                             <system-icon [icon]="getIcon(dashlet.icon)" [sprite]="getSprite(dashlet.icon)" [module]="!dashlet.module ? 'Dashboards': dashlet.module" [size]="'large'"
@@ -77,7 +77,7 @@
             <div *ngIf="getType() === 'Reporter'" #lookupfield class="slds-form-element slds-lookup">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_KREPORT')}}</label>
                 <div class="slds-grid slds-wrap">
-                    <div *ngFor="let kreport of kreportsFiltered" class="slds-size--1-of-3 slds-p-around--xx-small">
+                    <div *ngFor="let kreport of kreportsFiltered; trackBy: trackByFn" class="slds-size--1-of-3 slds-p-around--xx-small">
                         <a href="javascript:void(0);" (click)="save(kreport.id)"
                            class="slds-box slds-box_link slds-box_x-small slds-media">
                             <system-icon [module]="kreport.report_module" [size]="'large'"

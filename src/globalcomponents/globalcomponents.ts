@@ -5,6 +5,8 @@ import {AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild,
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {RouterModule, Routes, Router, ActivationStart, NavigationStart, ActivatedRoute} from "@angular/router";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import {Subject, Observable, of, Subscription, pipe} from "rxjs";
+import {take} from "rxjs/operators";
 
 declare var _: any;
 declare var gapi: any;

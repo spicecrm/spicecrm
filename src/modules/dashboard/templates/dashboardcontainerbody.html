@@ -10,5 +10,5 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <dashboard-container-element *ngFor="let item of dashboardElements" [item]="item"></dashboard-container-element>
+    <dashboard-container-element *ngFor="let item of dashboardElements; trackBy: trackByFn" [item]="item"></dashboard-container-element>
 </div>

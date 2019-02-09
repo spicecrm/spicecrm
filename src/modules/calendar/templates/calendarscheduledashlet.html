@@ -1,0 +1,13 @@
+<div class="slds-theme--default" style="height: 100%">
+    <div #headercontainer class="slds-border--bottom slds-grid slds-p-around--xx-small slds-theme--shade">
+        <h1 class="slds-align_absolute-center slds-text-heading--small slds-truncate">{{title}}</h1>
+    </div>
+    <div #calendarcontent [ngStyle]="contentStyle" class="slds-grid slds-theme_default slds-border--right">
+        <div style="width: 100%">
+            <calendar-sheet-schedule
+                    [setdate]="calendarDate"
+                    (untildate$)="scheduleUntilDate = $event">
+            </calendar-sheet-schedule>
+        </div>
+    </div>
+</div>

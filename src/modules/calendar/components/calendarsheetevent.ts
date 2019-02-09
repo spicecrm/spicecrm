@@ -1,10 +1,11 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {calendar} from '../services/calendar.service';
+import {Subscription} from "rxjs";
 
 declare var moment: any;
 
@@ -19,7 +20,7 @@ declare var moment: any;
         '[class.slds-hidden]': 'this.hidden'
     }
 })
-export class CalendarSheetEvent implements OnInit {
+export class CalendarSheetEvent implements OnInit, OnDestroy {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     public fields: any[] = [];
     @Input() public event: any = {};
@@ -30,6 +31,7 @@ export class CalendarSheetEvent implements OnInit {
     private mouseStart: any = undefined;
     private mouseLast: any = undefined;
     private hidden: boolean = false;
+    private subscription: Subscription = new Subscription();
 
     private lastMoveTimeSpan: number = 0;
 
@@ -40,11 +42,28 @@ export class CalendarSheetEvent implements OnInit {
                 private elementRef: ElementRef,
                 private model: model,
                 private renderer: Renderer2) {
-        this.calendar.color$.subscribe(calendar => {
+        this.subscription = this.calendar.color$.subscribe(calendar => {
             if (this.calendar.calendars[calendar.id] && this.calendar.calendars[calendar.id].some(event => this.event.id == event.id)) {
                 this.event.color = calendar.color;
             }
         });
+    }
+
+    get canEdit() {
+        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
+            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView && !this.calendar.isDashlet;
+    }
+
+    get owner() {
+        return this.calendar.owner;
+    }
+
+    get eventStyle() {
+        return {
+            'height': '100%',
+            'border-radius': '2px',
+            'background-color': !this.isScheduleSheet ? this.event.color : 'transparent',
+        };
     }
 
     public ngOnInit() {
@@ -56,26 +75,15 @@ export class CalendarSheetEvent implements OnInit {
         }
     }
 
-    get canEdit() {
-        return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
-            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView;
-    }
-
-    get owner() {
-       return this.calendar.owner;
-    }
-
-    get eventStyle() {
-       return {
-           'height': '100%',
-           'border-radius': '2px',
-           'background-color': !this.isScheduleSheet ? this.event.color : 'transparent',
-       };
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     private dragStart(event) {
-        if (!this.canEdit) {return}
-        setTimeout(()=> this.hidden = true, 0);
+        if (!this.canEdit) {
+            return;
+        }
+        setTimeout(() => this.hidden = true, 0);
         this.event.dragging = true;
     }
 
@@ -105,7 +113,9 @@ export class CalendarSheetEvent implements OnInit {
     }
 
     private onMouseMove(e) {
-        if (!this.canEdit) {return}
+        if (!this.canEdit) {
+            return;
+        }
         this.mouseLast = e;
         let moved = (this.mouseLast.pageY - this.mouseStart.pageY);
         let span = Math.floor(moved / 15);
@@ -123,9 +133,12 @@ export class CalendarSheetEvent implements OnInit {
     }
 
     private onMouseUp() {
-        if (!this.canEdit) {return}
         this.mouseUpListener();
         this.mouseMoveListener();
+
+        if (!this.canEdit) {
+            return;
+        }
 
         if (this.mouseLast.pageY != this.mouseStart.pageY) {
             let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
@@ -136,9 +149,10 @@ export class CalendarSheetEvent implements OnInit {
 
             // save the event
             this.event.saving = true;
-            this.model.save().subscribe(data => {
-                this.event.saving = false;
-            });
+            this.model.save()
+                .subscribe(data => {
+                    this.event.saving = false;
+                });
 
             // emit to rearrange on the sheet
             this.rearrange.emit();
