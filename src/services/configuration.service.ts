@@ -10,7 +10,7 @@ declare var _: any;
 
 @Injectable()
 export class configurationService {
-    private initialized: boolean = false;
+    public initialized: boolean = false;
     public sites: any[] = [];
     public data: any = {
         backendUrl: 'proxy',
