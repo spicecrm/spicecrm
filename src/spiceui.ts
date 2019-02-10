@@ -4,26 +4,18 @@ import {
     NgModule,
     Component,
     SystemJsNgModuleLoader,
-    Injectable,
-    NgModuleFactory,
-    NgModuleFactoryLoader,
-    Compiler,
-    Renderer2
+    Renderer2,
+    enableProdMode
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
-
+import {LocationStrategy, HashLocationStrategy} from "@angular/common";
 
 // spicecrm generic modules
 import {SystemComponents} from "./systemcomponents/systemcomponents";
 import {GlobalComponents} from "./globalcomponents/globalcomponents";
 import {ObjectComponents} from "./objectcomponents/objectcomponents";
-
-
-// support browser location strategy
-import {LocationStrategy, HashLocationStrategy} from "@angular/common";
-// import {AdminComponentsModule, AdministrationMain} from "./admincomponents/admincomponents.module";
 
 // various services we need on global app level
 import {configurationService} from "./services/configuration.service";
@@ -154,10 +146,7 @@ export class SpiceUIModule {
 }
 
 // set prod mode
-/*
- import {enableProdMode} from "@angular/core";
- enableProdMode();
- */
+// enableProdMode();
 
 // browser detection to display mesaeg when we have IE
 declare global {
@@ -176,7 +165,7 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
 
 window.name = 'SpiceCRM';
 (() => {
-    if (window.BroadcastChannel) { // Does the browser know the Broadcast API?
+    if (window.hasOwnProperty('BroadcastChannel')) { // Does the browser know the Broadcast API?
         let bc = new BroadcastChannel('spiceCRM_channel');
         bc.onmessage = e => {
             if (e.data.url && e.data.url.startsWith(window.location.origin + window.location.pathname)) {
