@@ -16,6 +16,7 @@ export class SystemUploadImage {
     @Input() public cropheight: number = 200;
     @Input() public cropwidth: number = 200;
     @Input() public croptype: 'square' | 'circle' = 'circle';
+    @Input() public cropresize: boolean = false;
     @Output() public imagedata: EventEmitter<any> = new EventEmitter<any>();
 
     private self: any;
@@ -68,7 +69,7 @@ export class SystemUploadImage {
                         enforceBoundary: true,
                         mouseWheelZoom: true,
                         showZoomer: true,
-                        enableResize: false,
+                        enableResize: this.cropresize,
                         viewport: {
                             width: this.cropwidth,
                             height: this.cropheight,
