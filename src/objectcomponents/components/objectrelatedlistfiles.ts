@@ -74,7 +74,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     private onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
-        if (files && files.length > 1) {
+        if (files && files.length >= 1) {
             this.doupload(files);
         }
     }
