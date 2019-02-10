@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output, Renderer2} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output, Renderer2, OnDestroy} from "@angular/core";
 import {DomSanitizer} from '@angular/platform-browser';
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
@@ -10,7 +10,7 @@ declare var Croppie: any;
     selector: "system-upload-image",
     templateUrl: "./src/systemcomponents/templates/systemuploadimage.html"
 })
-export class SystemUploadImage {
+export class SystemUploadImage implements OnDestroy{
     @ViewChild("imgupload", {read: ViewContainerRef}) public imgupload: ViewContainerRef;
 
     @Input() public cropheight: number = 200;
@@ -32,6 +32,10 @@ export class SystemUploadImage {
             let URLObj = window.URL;
             this.imageBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(URLObj.createObjectURL(blob));
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.pasteListener();
     }
 
     get croppiestyle() {
