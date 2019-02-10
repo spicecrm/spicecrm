@@ -134,7 +134,11 @@ export class ObjectRelatedCardFile {
                                 });
                             });
                             break;
+                        default:
+                            this.downloadFile();
+                            break;
                     }
+                    break;
                 default:
                     this.downloadFile();
                     break;
