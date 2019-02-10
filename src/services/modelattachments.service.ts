@@ -17,6 +17,7 @@ export class modelattachments {
     public items: any = [];
     public count: number = 0;
     public files: any[] = [];
+    public loading: boolean = false;
 
     private serviceSubscriptions: any[] = [];
 
@@ -31,14 +32,20 @@ export class modelattachments {
     }
 
     public getAttachments() {
-        this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/ui").subscribe(response => {
-            this.resetData();
-            for (let file of response) {
-                file.date = new moment(file.date);
-                this.files.push(file);
-            }
-            // this.files = response;
-        });
+        this.resetData();
+        this.loading = true;
+        this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/ui").subscribe(
+            response => {
+                for (let file of response) {
+                    file.date = new moment(file.date);
+                    this.files.push(file);
+                }
+                this.loading = false;
+                // this.files = response;
+            },
+            error => {
+                this.loading = false;
+            });
     }
 
     public humanFileSize(filesize) {
