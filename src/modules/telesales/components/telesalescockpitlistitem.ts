@@ -1,9 +1,11 @@
-import {Component, Input, HostBinding, OnInit} from '@angular/core';
+import {Component, Input, HostBinding, OnInit, Output, EventEmitter} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {telecockpitservice} from '../services/telecockpit.service';
+
+declare var moment;
 
 @Component({
     selector: 'tele_sales_cockpit_list_item',
@@ -12,9 +14,9 @@ import {telecockpitservice} from '../services/telecockpit.service';
 })
 export class TeleSalesCockpitListItem implements OnInit{
 
-    @Input() item : any = {};
-    componentconfig: any = {};
-    componentFields: any = {};
+    @Input() public item : any = {};
+    public componentFields: any[] = [];
+    public isSelected: boolean = false;
 
     constructor(private language: language,
                 private model: model,
@@ -24,25 +26,22 @@ export class TeleSalesCockpitListItem implements OnInit{
     }
 
     ngOnInit(){
-
-        this.model.module = this.item.module;
+        this.model.module = this.item.target_type;
         this.model.id = this.item.id;
         this.model.data = this.item.data;
-
-        this.componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitListItem', this.model.module);
-        this.componentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
+        let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitListItem', this.model.module);
+        this.componentFields = componentConf && componentConf.fieldset ? this.metadata.getFieldSetFields(componentConf.fieldset) : [];
     }
 
-    setselectedLogId(){
-        this.telecockpitservice.logId = this.model.id;
+    setSelectedListItem(event){
+        this.telecockpitservice.selectedListItem$ = this.item;
     }
 
-    get selectedLogId() {
-        return this.telecockpitservice.selectedLogId;
+    get activityDate() {
+        return moment(this.item.planned_activity_date).format('YYYY-MM-DD HH:mm');
     }
 
-    getHitsStyle(){
-
+    get hitsStyle(){
         return {
             'border-radius': '50%',
             'padding': this.item.hits.length > 1 ? '5px 5px 5px 3px': '5px',
@@ -52,5 +51,11 @@ export class TeleSalesCockpitListItem implements OnInit{
         }
     }
 
+    get selectedClass() {
+        return this.isSelected ? 'slds-theme--shade' : '';
+    }
 
+    private trackByFn(index, item) {
+        return item.item_id;
+    }
 }

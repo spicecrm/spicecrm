@@ -1,62 +1,52 @@
 import {Component, Input} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
-import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {telecockpitservice} from "../services/telecockpit.service";
-
-declare var moment: any;
+import {model} from "../../../services/model.service";
+import {take} from "rxjs/operators";
 
 @Component({
     selector: 'tele_sales_cockpit_add_attempt_button',
     templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptbutton.html'
 })
+
 export class TeleSalesCockpitAddAttemptButton {
 
-    public parent: any = undefined;
-    private data: any;
     @Input() public actionconfig: any;
+    public parent: any = undefined;
 
     constructor(
         public telecockpitservice: telecockpitservice,
         private language: language,
-        private modalservice: modal,
-        private metadata: metadata,
         private model: model,
-    ) {
-
+        private modalservice: modal) {
     }
 
-
-    private removeItem() {
-        for (let i: number = 0; i < this.telecockpitservice.items.length; i++) {
-            if (this.telecockpitservice.items[i].id === this.telecockpitservice.selectedLogId) {
-                this.telecockpitservice.items.splice(i, 1);
-            }
-        }
+    get maxAttempts() {
+        return this.actionconfig && this.actionconfig.maxAttempts ? this.actionconfig.maxAttempts : 5;
     }
 
     public execute() {
-
-        let item = this.telecockpitservice.getSelectedLogData;
-
-        this.modalservice.openModal('TeleSalesCockpitAddAttemptModal').subscribe(attemptcallModalRef => {
-            attemptcallModalRef.instance.data = item.data;
-            attemptcallModalRef.instance.selectedLogId = this.telecockpitservice.selectedLogId;
-            attemptcallModalRef.instance.maxAttempts = this.actionconfig.maxAttempts;
-            attemptcallModalRef.instance.response.subscribe(response => {
-
-                if (response == "removed") {
-                    this.removeItem();
-                    this.telecockpitservice.logId = this.telecockpitservice.items[0].id;
-                }
-
-                if (response == "attempted") {
-                    item.campaignlog_hits++;
-                    this.removeItem();
-                }
-            });
+        let item = this.telecockpitservice.selectedListItem;
+        if (!item) {
+            return;
+        }
+        this.modalservice.openModal('TeleSalesCockpitAddAttemptModal').subscribe(modalRef => {
+            modalRef.instance.selectedListItem = item;
+            modalRef.instance.maxAttempts = this.maxAttempts;
+            modalRef.instance.response
+                .pipe(take(1))
+                .subscribe(response => this.removeItem(item));
         });
+    }
+
+    private removeItem(item) {
+        let index = this.telecockpitservice.listItems.indexOf(item);
+        if (index < 0) {
+            return;
+        }
+        this.telecockpitservice.listItems.splice(index, 1);
+        this.telecockpitservice.listItems = this.telecockpitservice.listItems.slice();
+        this.telecockpitservice.selectedListItem$ = this.telecockpitservice.listItems[0];
     }
 }

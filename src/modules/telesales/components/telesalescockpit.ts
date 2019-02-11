@@ -1,10 +1,12 @@
-import {Component, ViewContainerRef, ViewChild, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {telecockpitservice} from '../services/telecockpit.service';
+import {Subscription} from "rxjs";
+import {TeleSalesCockpitMain} from "./telesalescockpitmain";
+import {TeleSalesCockpitList} from "./telesalescockpitlist";
 
 @Component({
     templateUrl: './src/modules/telesales/templates/telesalescockpit.html',
@@ -15,52 +17,60 @@ import {telecockpitservice} from '../services/telecockpit.service';
     ]
 })
 
-export class TeleSalesCockpit implements OnInit {
+export class TeleSalesCockpit implements OnInit, OnDestroy {
 
-    @ViewChild('telecockpitscrollcontainer', {read: ViewContainerRef}) telecockpitscrollcontainer: ViewContainerRef;
+    @ViewChild('scrollcontainer', {read: ViewContainerRef}) scrollContainer: ViewContainerRef;
+    @ViewChild(TeleSalesCockpitMain) mainComponent: TeleSalesCockpitMain;
+    @ViewChild(TeleSalesCockpitList) private listComponent: TeleSalesCockpitList;
 
-    actionset: string = '';
-    campaigntasks: Array<any> = [];
+    private actionset: string = '';
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private model: model,
                 private metadata: metadata,
-                private backend: backend,
                 private telecockpitservice: telecockpitservice) {
-
-        let fields = JSON.stringify(["name", "start_date", "end_date", "status", "campaigntask_type", "campaign_name", "campaign_id"]);
-        this.backend.getRequest("module/CampaignTasks", {fields: fields}).subscribe(response => {
-            this.campaigntasks = response.list;
-            if (response.list.length > 0) {
-                this.telecockpitservice.campaignTaskId = this.campaigntasks[0].id;
-            }
-        });
-
-        this.telecockpitservice.selectedItem$.subscribe(data => this.loadModel(data));
-        this.telecockpitservice.campaignTaskId$.subscribe(id => this.setCampaignData(id));
-
-
+        this.subscription = this.telecockpitservice.selectedListItem$.subscribe(listItem => this.loadModel(listItem));
     }
 
-    setCampaignData(id) {
-        for (let campaigntask of this.campaigntasks) {
-            if (campaigntask.id == id) {
-                this.telecockpitservice.currentCampaignTaskName = campaigntask.campaign_name;
-                this.telecockpitservice.currentCampaignId = campaigntask.campaign_id;
-            }
-        }
+    get campaignTasks() {
+        return this.telecockpitservice.campaigntasks;
     }
 
-    loadModel(modeldata) {
-        this.model.module = modeldata.module;
-        this.model.id = modeldata.data.id;
-        this.model.data = modeldata.data;
+    get selectedCampaignTask() {
+        return this.telecockpitservice.selectedCampaignTask;
     }
 
-    ngOnInit() {
-        // get the Componentconfig if not set yet
+    public ngOnInit() {
         let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpit');
+        this.actionset = componentconfig && componentconfig.actionset ? componentconfig.actionset : '';
+    }
 
-        this.actionset = componentconfig.actionset;
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    private selectCampaignTask(value) {
+        this.telecockpitservice.selectedCampaignTask = value;
+        this.mainComponent.resetView();
+    }
+
+    private getCampaigntaskDisplay(campaignTask) {
+        let campaignName = campaignTask.campaign_name && campaignTask.campaign_name.length > 0 ? (campaignTask.campaign_name + ' / ') : '';
+        return campaignName + campaignTask.name;
+    }
+
+    private loadModel(modelData) {
+        this.model.reset();
+        if (!modelData) {
+            return;
+        }
+        this.model.module = modelData.target_type;
+        this.model.id = modelData.data.id;
+        this.model.data = modelData.data;
+    }
+
+    private trackByFn(index, item) {
+        return item.item_id;
     }
 }
