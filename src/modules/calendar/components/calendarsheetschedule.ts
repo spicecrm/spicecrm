@@ -53,6 +53,10 @@ export class CalendarSheetSchedule implements OnChanges {
         return this.allevents;
     }
 
+    get showNoneMsg() {
+        return this.allEvents.length == 0 && this.calendar.isDashlet;
+    }
+
     set allEvents(value) {
         let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents));
         events.sort((a, b) => a.date - b.date);

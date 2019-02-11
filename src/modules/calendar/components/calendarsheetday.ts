@@ -64,6 +64,10 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         };
     }
 
+    get isDashlet() {
+        return this.calendar.isDashlet;
+    }
+
     get offset() {
         return moment.tz(moment.tz.guess()).format('z Z');
     }
@@ -86,6 +90,18 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
     get endDate() {
         return new moment(this.startDate).add((this.calendar.endHour - this.calendar.startHour), 'h');
+    }
+
+    get dayTextContainerClass() {
+        return this.isDashlet ? 'slds-grid slds-grid--vertical-align-center' : '';
+    }
+
+    get dayTextDayClass() {
+        return this.isDashlet ? 'slds-text-heading--medium' : 'slds-text-body--regular';
+    }
+
+    get dateTextDateClass() {
+        return this.isDashlet ? 'slds-text-heading--medium' : 'slds-text-heading--large';
     }
 
     public ngAfterViewInit() {
@@ -222,8 +238,13 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour || ('absence' == event.type));
     }
 
-    private displayDate(format) {
-        return this.setdate.format(format);
+    private displayDate(type) {
+        switch (type) {
+            case 'day':
+                return this.setdate.format('ddd');
+            case 'date':
+                return this.setdate.format(this.isDashlet ? 'D, MMMM' :'D');
+        }
     }
 
     private getEventStyle(event): any {
