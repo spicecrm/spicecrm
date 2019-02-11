@@ -2,7 +2,6 @@ import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@an
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
-import {Subscription} from "rxjs";
 
 declare var moment: any;
 declare var _: any;
@@ -14,9 +13,7 @@ declare var _: any;
 })
 
 export class CalendarThreeDaysDashlet {
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef}) private headerContainer: ViewContainerRef;
-    private subscription: Subscription = new Subscription();
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarContent: ViewContainerRef;
     private titleUntilDate: any = {};
 
     constructor(private language: language,
@@ -25,6 +22,7 @@ export class CalendarThreeDaysDashlet {
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.calendar.isDashlet = true;
+        this.calendar.sheetHourHeight = 50;
         this.titleUntilDate = moment(this.calendar.calendarDate).add(2, 'd');
     }
 
@@ -34,12 +32,8 @@ export class CalendarThreeDaysDashlet {
 
     get contentStyle() {
         return {
-            height: `calc(100% - ${this.headerContainer.element.nativeElement.offsetHeight}px)`,
+            height: `calc(100% - ${this.calendarContent.element.nativeElement.offsetTop}px)`,
             width: '100%'
         };
-    }
-
-    get title() {
-        return moment(this.calendar.calendarDate).format("MMM D") + ' - ' + this.titleUntilDate.format("MMM D");
     }
 }

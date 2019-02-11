@@ -20,10 +20,13 @@
             </div>
         </div>
     </div>
-    <div class="slds-grid slds-p-around--small">
+    <div *ngIf="!showNoneMsg" class="slds-grid slds-p-around--small">
         {{language.getLabel('MSG_SHOWING_EVENTS_UNTIL')}} {{getUntilDate()}}
         <a style="cursor: pointer" class="slds-text-link slds-m-left--xx-small" (click)="loadMore()">
             {{language.getLabel('LBL_MORE')}}
         </a>
+    </div>
+    <div *ngIf="showNoneMsg" class="slds-align_absolute-center slds-m-top--medium">
+        {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
     </div>
 </div>

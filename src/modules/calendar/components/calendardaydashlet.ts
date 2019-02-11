@@ -13,27 +13,23 @@ declare var _: any;
 })
 
 export class CalendarDayDashlet {
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef}) private headerContainer: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarContent: ViewContainerRef;
 
     constructor(private language: language,
                 private navigation: navigation,
                 private elementRef: ElementRef,
                 private calendar: calendar) {
         this.calendar.isDashlet = true;
+        this.calendar.sheetHourHeight = 50;
     }
 
     get calendarDate() {
         return this.calendar.calendarDate;
     }
 
-    get title() {
-        return new moment(this.calendarDate).format('MMMM D');
-    }
-
     get contentStyle() {
         return {
-            height: `calc(100% - ${this.headerContainer.element.nativeElement.offsetHeight}px)`,
+            height: `calc(100% - ${this.calendarContent.element.nativeElement.offsetTop}px)`,
             width: '100%'
         };
     }
