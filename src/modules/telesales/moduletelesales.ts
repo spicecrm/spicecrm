@@ -9,9 +9,11 @@ import {
     Renderer,
     Renderer2,
     ViewChild,
+    ViewChildren,
     ViewContainerRef,
     Injectable,
     Input,
+    QueryList,
     Output,
     EventEmitter,
     SimpleChanges,
@@ -24,8 +26,8 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 
-import {Subject, Observable} from 'rxjs';
-
+import {Subject, Observable, of, Subscription, pipe} from "rxjs";
+import {take} from "rxjs/operators";
 
 import {loginService, loginCheck} from '../../services/login.service';
 import {metadata, aclCheck} from '../../services/metadata.service';
@@ -56,8 +58,8 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import /*embed*/ {telecockpitservice} from "./services/telecockpit.service";
 
-import /*embed*/ {TeleSalesCockpitList} from './components/telesalescockpitlist';
 import /*embed*/ {TeleSalesCockpitListItem} from './components/telesalescockpitlistitem';
+import /*embed*/ {TeleSalesCockpitList} from './components/telesalescockpitlist';
 import /*embed*/ {TeleSalesCockpitMain} from './components/telesalescockpitmain';
 import /*embed*/ {TeleSalesCockpitCreateLeadButton} from './components/telesalescockpitcreateleadbutton';
 import /*embed*/ {TeleSalesCockpitLogCallButton} from './components/telesalescockpitlogcallbutton';
