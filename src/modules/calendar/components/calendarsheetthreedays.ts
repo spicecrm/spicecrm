@@ -65,6 +65,10 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         return this.calendar.sheetTimeWidth;
     }
 
+    get isDashlet() {
+        return this.calendar.isDashlet;
+    }
+
     get allEvents() {
         return this.calendar.arrangeEvents(this.ownerEvents.concat(this.userEvents, this.googleEvents));
     }
@@ -79,6 +83,18 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
 
     get endDate() {
         return new moment(this.startDate).add(moment.duration(2, 'd')).hour(this.calendar.endHour);
+    }
+
+    get dayTextContainerClass() {
+        return this.isDashlet ? 'slds-grid slds-grid--vertical-align-center' : '';
+    }
+
+    get dayTextClass() {
+        return this.isDashlet ? 'slds-text-heading--medium' : 'slds-text-body--regular';
+    }
+
+    get dateTextClass() {
+        return this.isDashlet ? 'slds-text-heading--medium' : 'slds-text-heading--large';
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -338,8 +354,13 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         return {height: (this.calendar.multiEventHeight * eventsHeight) + 'px'};
     }
 
-    private displayDate(format, date) {
-        return date.format(format);
+    private displayDate(type, date) {
+        switch (type) {
+            case 'day':
+                return date.format('ddd');
+            case 'date':
+                return date.format(this.isDashlet ? 'D, MMM' :'D');
+        }
     }
 
     private getTimeColStyle() {
