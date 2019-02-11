@@ -33,7 +33,7 @@ export class ProductGroupManagerDetailsAttributes {
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.relatedModule = 'ProductAttributes';
 
-        this.backend.getRequest(`productgroups/${this.model.id}/productattributes`).subscribe(res => {
+        this.backend.getRequest(`productgroups/${this.model.id}/productattributes/direct`).subscribe(res => {
             this.attributes = this.sortAttributes(res) || [];
         });
     }
