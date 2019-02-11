@@ -410,14 +410,16 @@ export class model {
 
         check = modelutilities.compare(val_left, condition.comparator, val_right);
 
+        /*
         console.log("checking: " + condition.fieldname + " " + condition.comparator + " " + condition.valuations,
             val_left + " " + condition.comparator + " " + val_right + " is " + check);
+        */
 
         return check;
     }
 
     public executeValidationAction(action): boolean {
-        console.log("doing: " + action.action + " with " + action.params + " on " + action.fieldname);
+        // console.log("doing: " + action.action + " with " + action.params + " on " + action.fieldname);
         let params = this.evaluateValidationParams(action.params);
         switch (action.action) {
             case "set_value":
@@ -619,7 +621,7 @@ export class model {
                     this.initializeFieldsStati();
                 },
                 error => {
-                    console.log(error);
+                    // console.log(error);
                     switch (error.status) {
                         case 409:
                             this.modal.openModal("ObjectOptimisticLockingModal", false, this.injector).subscribe(lockingModalRef => {

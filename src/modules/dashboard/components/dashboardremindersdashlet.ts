@@ -35,6 +35,10 @@ export class DashboardRemindersDashlet {
             .sort((a, b) => a.reminder_date - b.reminder_date);
     }
 
+    private trackByFn(index, item) {
+        return item.item_id;
+    }
+
     private goRecord(module, id) {
         this.router.navigate(['/module/' + module + '/' + id]);
     }

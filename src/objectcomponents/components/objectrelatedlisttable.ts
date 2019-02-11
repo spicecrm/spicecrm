@@ -11,7 +11,7 @@ import {layout} from '../../services/layout.service';
 })
 export class ObjectRelatedlistTable {
 
-    @Input() private listfields: any[] = [];
+    @Input() public listfields: any[] = [];
     @Input() private module: any[] = [];
     @Input() private editable: boolean = false;
     @Input() private editcomponentset: boolean = false;

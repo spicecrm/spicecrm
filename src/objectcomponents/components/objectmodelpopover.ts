@@ -22,9 +22,10 @@ export class ObjectModelPopover implements OnInit {
     public parentElementRef: any = null;
     public self: any = null;
 
-    public fields: Array<any> = [];
+    public fields: any[] = [];
     public fieldset: string = '';
     public componentset: string = '';
+    public headercomponentset: string = '';
 
     private heightcorrection = 30;
     private widthcorrection = 30;
@@ -34,11 +35,7 @@ export class ObjectModelPopover implements OnInit {
         private view: view,
         private metadata: metadata,
     ) {
-
-    }
-
-    get detailsStyle() {
-        return {'max-height': `calc(100vh - ${(this.popover.element.nativeElement.getBoundingClientRect().top + 5)}px)`};
+        this.view.displayLinks = false;
     }
 
     get relatedStyle() {
@@ -99,6 +96,7 @@ export class ObjectModelPopover implements OnInit {
 
             this.fieldset = componentconfig.fieldset;
             this.componentset = componentconfig.componentset;
+            this.headercomponentset = componentconfig.headercomponentset;
         }
 
         // if we did not find a fieldset try to take the header one instead
@@ -124,9 +122,5 @@ export class ObjectModelPopover implements OnInit {
         } else {
             this.hidePopoverTimeout = window.setTimeout(() => this.self.destroy(), 500);
         }
-    }
-
-    private renderComponents() {
-
     }
 }

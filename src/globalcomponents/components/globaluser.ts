@@ -1,4 +1,3 @@
-
 import {Router} from '@angular/router';
 import {
     Component,
@@ -6,34 +5,36 @@ import {
     HostListener,
     EventEmitter,
     Output,
-    Renderer
+    Renderer2
 } from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {popup} from '../../services/popup.service';
+import {session} from '../../services/session.service';
 
 @Component({
     selector: 'global-user',
     templateUrl: './src/globalcomponents/templates/globaluser.html',
-    providers:[popup]
+    providers: [popup]
 })
 export class GlobalUser {
 
-    clickListener: any;
+    private clickListener: any;
+    private hideUserDetails: boolean = true;
 
-    constructor(private loginService: loginService, private router: Router, private elementRef: ElementRef, private renderer: Renderer, private popup: popup) {
+    constructor(private loginService: loginService, private router: Router, private elementRef: ElementRef, private renderer: Renderer2, private popup: popup, private session: session) {
         popup.closePopup$.subscribe(close => {
             this.hideUserDetails = true;
-        })
+        });
     }
-    hideUserDetails: boolean = true;
 
-    toggleUserDetails(){
+    private toggleUserDetails() {
         this.hideUserDetails = !this.hideUserDetails;
 
-        if(!this.hideUserDetails) {
-            this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
-        } else if(this.clickListener)
+        if (!this.hideUserDetails) {
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
+        } else if (this.clickListener) {
             this.clickListener();
+        }
     }
 
     public onClick(event: MouseEvent): void {
@@ -43,5 +44,9 @@ export class GlobalUser {
             this.hideUserDetails = true;
             this.clickListener();
         }
+    }
+
+    get userimage() {
+        return this.session.authData.userimage;
     }
 }

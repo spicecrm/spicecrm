@@ -42,6 +42,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         }
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private setprimary(id) {
         for (let emailaddress of this.model.data.emailaddresses) {
             if (emailaddress.id == id) {

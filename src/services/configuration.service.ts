@@ -5,17 +5,19 @@ import {session} from './session.service';
 
 import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
-declare var _:any;
+
+declare var _: any;
+
 @Injectable()
 export class configurationService {
-kopie:any;
-    initialized: boolean = false;
-    sites: Array<any> = [];
-    data: any = {
+    public initialized: boolean = false;
+    public sites: any[] = [];
+    public data: any = {
         backendUrl: 'proxy',
-        backendextensions: {}
+        backendextensions: {},
+        systemparameters: {}
     };
-    loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private http: HttpClient,
                 private cookie: cookie,
@@ -31,7 +33,7 @@ kopie:any;
          );
          */
 
-        let storedSites = localStorage['spiceuisites'];
+        let storedSites = localStorage.spiceuisites;
 
         if (storedSites) {
             this.sites = JSON.parse(atob(storedSites));
@@ -64,14 +66,16 @@ kopie:any;
                         this.router.navigate(['/setup']);
                     }
 
-                    for ( let attrname in dataObject.general ) { this.data[attrname] = dataObject.general[attrname]; }
+                    for (let attrname in dataObject.general) {
+                        this.data[attrname] = dataObject.general[attrname];
+                    }
 
                     // if multiple are set try to find the proper one
                     if (sites.length > 0) {
                         this.sites = sites;
 
                         // this.session.setSessionData('sites', sites);
-                        localStorage['spiceuisites'] = btoa(JSON.stringify(sites));
+                        localStorage.spiceuisites = btoa(JSON.stringify(sites));
 
                         if (!this.data.id) {
                             let selectedsite = this.cookie.getValue('spiceuibackend');
@@ -96,19 +100,23 @@ kopie:any;
 
     }
 
-    setSiteData(data) {
+    public setSiteData(data) {
         this.sites.push(data);
-        for ( let attrname in data ) { this.data[attrname] = data[attrname]; } // before: this.data = data;
+        for (let attrname in data) {
+            this.data[attrname] = data[attrname];
+        } // before: this.data = data;
         // this.session.setSessionData('sites', sites);
-        localStorage['spiceuisites'] = btoa(JSON.stringify(this.sites));
+        localStorage.spiceuisites = btoa(JSON.stringify(this.sites));
 
         this.getSysinfo();
     }
 
-    setSiteID(id) {
+    public setSiteID(id) {
         this.sites.some(site => {
             if (site.id == id) {
-                for ( let attrname in site ) { this.data[attrname] = site[attrname]; } // before: this.data = site;
+                for (let attrname in site) {
+                    this.data[attrname] = site[attrname];
+                } // before: this.data = site;
                 this.cookie.setValue('spiceuibackend', id);
                 return true;
             }
@@ -117,36 +125,37 @@ kopie:any;
         return this.data;
     }
 
-    getSiteId() {
+    public getSiteId() {
         return this.data.id;
     }
 
-    getBackendUrl() {
+    public getBackendUrl() {
         return this.data.backendUrl;
     }
 
-    getFrontendUrl() {
-        if (typeof this.data.frontendUrl != "undefined")
+    public getFrontendUrl() {
+        if (typeof this.data.frontendUrl != "undefined") {
             return this.data.frontendUrl;
+        }
         return "";
     }
 
-    getUser() {
+    public getUser() {
         return this.data.user;
     }
 
-    getPassword() {
+    public getPassword() {
         return this.data.password;
     }
 
-    getSysinfo() {
+    public getSysinfo() {
         let sysinfo = this.http.get(this.getBackendUrl() + '/sysinfo');
         sysinfo.subscribe(
             (res: any) => {
                 if (res) {
-                    var response = res;
-                    this.data.languages = response.languages;
-                    this.data.backendextensions = response.extensions;
+                    this.data.languages = res.languages;
+                    this.data.backendextensions = res.extensions;
+                    this.data.systemparameters = res.systemsettings;
                     this.loaded$.emit(true);
                 }
             },
@@ -156,23 +165,31 @@ kopie:any;
         return sysinfo;
     }
 
-    checkCapability(capability) {
-        return  this.data.backendextensions && this.data.backendextensions.hasOwnProperty(capability);;
+    public getSystemParamater(parameter) {
+        try {
+            return this.data.systemparameters[parameter];
+        } catch (e) {
+            return false;
+        }
     }
 
-    getCapabilityConfig(capability){
-        try{
+    public checkCapability(capability) {
+        return this.data.backendextensions && this.data.backendextensions.hasOwnProperty(capability);
+    }
+
+    public getCapabilityConfig(capability) {
+        try {
             return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {}
-        } catch(e){
+        } catch (e) {
             return {};
         }
     }
 
-    setData(key, data) {
+    public setData(key, data) {
         this.data[key] = data;
     }
 
-    getData(key) {
+    public getData(key) {
         return this.data[key] ? this.data[key] : false;
     }
 }

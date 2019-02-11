@@ -5,7 +5,7 @@ import {session} from "../../services/session.service";
 import {popup} from "../../services/popup.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
-import {footer} from "../../services/footer.service";
+import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 import {modal} from "../../services/modal.service";
 import {cookie} from "../../services/cookie.service";
@@ -26,21 +26,37 @@ export class GlobaUserPanel {
         private popup: popup,
         private language: language,
         private metadata: metadata,
-        private footer: footer,
+        private backend: backend,
         private config: configurationService,
         private modalservice: modal,
-        private cookie: cookie,
+        private cookie: cookie
     ) {
 
     }
 
     private logoff() {
-        this.loginService.logout()
+        this.loginService.logout();
     }
 
     private changeImage() {
-        let event = new MouseEvent("click", {bubbles: true});
-        this.rendered.invokeElementMethod(this.imgupload.element.nativeElement, "dispatchEvent", [event]);
+        this.modalservice.openModal("SystemUploadImage").subscribe(componentref => {
+            componentref.instance.cropheight = 150;
+            componentref.instance.cropwidth = 150;
+            componentref.instance.imagedata.subscribe(image => {
+                if (image !== false) {
+                    // make a backup of the image, set it to emtpy and if case call fails set back the saved image
+                    let imagebackup = this.session.authData.userimage;
+                    this.session.authData.userimage = '';
+                    this.backend.postRequest('module/Users/' + this.session.authData.userId + '/image', {}, {imagedata: image}).subscribe(
+                        response => {
+                            this.session.authData.userimage = image;
+                        },
+                        error => {
+                            this.session.authData.userimage = imagebackup;
+                        });
+                }
+            });
+        });
     }
 
     private getAvialableLanguages() {
@@ -72,5 +88,9 @@ export class GlobaUserPanel {
 
     private changePassword() {
         this.modalservice.openModal("UserChangePasswordModal");
+    }
+
+    get userimage() {
+        return this.session.authData.userimage;
     }
 }
