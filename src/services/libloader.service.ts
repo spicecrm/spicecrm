@@ -13,8 +13,7 @@ export class LibLoaderService {
     private scripts = [];
     private is_ready = false;
 
-    constructor()
-    {
+    constructor(){
         // load available libraries into this.scripts...
     }
 
@@ -29,8 +28,7 @@ export class LibLoaderService {
 
         let sub = new Subject();
         let cnt = 0;
-        for(let o of observables)
-        {
+        for(let o of observables){
             o.subscribe(
                 (res) => {
                     cnt++;
@@ -100,8 +98,7 @@ export class LibLoaderService {
 
     public isLibLoaded(name): boolean {
         if( this.scripts[name] ) {
-            for(let lib of this.scripts[name])
-            {
+            for(let lib of this.scripts[name]){
                 if(!lib.loaded) {
                     return false;
                 }

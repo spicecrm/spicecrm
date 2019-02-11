@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {footer} from '../../../services/footer.service';
@@ -15,35 +15,29 @@ export class TeleSalesCockpitCompleteButton {
 
     constructor(private language: language, private toast: toast, private backend: backend, private metadata: metadata,
                 private model: model, private telecockpitservice: telecockpitservice, private footer: footer) {
-
-        this.telecockpitservice.selectedItem$.subscribe(item => {
-            this.telecockpitservice.selectedLogId = item.id;
-        });
-    }
-
-    private removeCompletedItem() {
-        for (let i: number = 0; i < this.telecockpitservice.items.length; i++) {
-            if (this.telecockpitservice.items[i].id === this.telecockpitservice.selectedLogId) {
-                this.telecockpitservice.items.splice(i, 1);
-            }
-        }
     }
 
     public execute() {
-        // execute on backend
-        this.backend.postRequest('/module/CampaignLog/' + this.telecockpitservice.selectedLogId + '/completed').subscribe(status => {
+        let item = this.telecockpitservice.selectedListItem;
+        this.backend.postRequest(`/module/CampaignLog/${item.id}/completed`)
+            .subscribe(
+                status => {
+                    if (status.success) {
+                        this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'), 'success');
+                        this.removeItem(item);
+                    } else {
+                        this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+                    }
+                }, err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
+    }
 
-            // send toast and set complete
-            if (status.success) {
-                this.toast.sendToast('Completed', 'success');
-                this.model.data.activated = true;
-
-                this.removeCompletedItem();
-                this.telecockpitservice.logId = this.telecockpitservice.items[0].id;
-            } else {
-                this.toast.sendToast('Error');
-            }
-        });
-
+    private removeItem(item) {
+        let index = this.telecockpitservice.listItems.indexOf(item);
+        if (index < 0) {
+            return;
+        }
+        this.telecockpitservice.listItems.splice(index, 1);
+        this.telecockpitservice.listItems = this.telecockpitservice.listItems.slice();
+        this.telecockpitservice.selectedListItem$ = this.telecockpitservice.listItems[0];
     }
 }

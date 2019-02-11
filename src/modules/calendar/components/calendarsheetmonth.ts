@@ -1,13 +1,13 @@
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
     Input,
     OnChanges,
-    ChangeDetectorRef,
-    Output,
     OnDestroy,
+    Output,
     Renderer2,
     SimpleChanges,
     ViewChild,
@@ -28,16 +28,14 @@ declare var _: any;
 })
 export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
+    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
     @ViewChild('boxcontainer', {read: ViewContainerRef}) private boxContainer: ViewContainerRef;
     @ViewChild('morecontainer', {read: ViewContainerRef}) private moreContainer: ViewContainerRef;
-
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
-    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
-
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
     private maxEventsPerBox: number = 1;
@@ -56,6 +54,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private cdr: ChangeDetectorRef,
                 private calendar: calendar) {
         this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
+    }
+
+    get allEvents() {
+        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+    }
+
+    get eventHeight() {
+        return !this.calendar.isMobileView ? 25 : 20;
     }
 
     public ngAfterViewInit() {
@@ -80,12 +86,19 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         }
     }
 
-    get allEvents() {
-        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+    public ngOnDestroy() {
+        this.cdr.detach();
+        if (this.resizeHandler) {
+            this.resizeHandler();
+        }
     }
 
-    get eventHeight() {
-        return !this.calendar.isMobileView ? 25 : 20;
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
+    private trackByFnDate(index, item) {
+        return index;
     }
 
     private startDate() {
@@ -121,77 +134,91 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.ownerEvents = [];
         this.arrangeEvents();
 
-        this.calendar.loadEvents(this.startDate(), this.endDate()).subscribe(events => {
-            if (events.length > 0) {
-                events.forEach(event => {
-                    event.start = this.resetTime(event.start);
-                    event.end = this.resetTime(event.end);
-                });
-                this.ownerEvents = events;
-                this.arrangeEvents();
-            }
-        });
+        this.calendar.loadEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                    });
+                    this.ownerEvents = events;
+                    this.arrangeEvents();
+                }
+            });
     }
 
     private getGoogleEvents() {
         this.googleEvents = [];
         this.arrangeEvents();
-        if (!this.googleIsVisible || this.calendar.isMobileView) {return}
+        if (!this.googleIsVisible || this.calendar.isMobileView) {
+            return;
+        }
 
-            this.calendar.loadGoogleEvents(this.startDate(), this.endDate()).subscribe(events => {
-            if (events.length > 0) {
-                events = events.map(event => {
-                    event.start = this.resetTime(event.start);
-                    event.end = this.resetTime(event.end);
-                    return event;
-                });
-                this.googleEvents = events;
-                this.arrangeEvents();
-            }
-        });
+        this.calendar.loadGoogleEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events = events.map(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                        return event;
+                    });
+                    this.googleEvents = events;
+                    this.arrangeEvents();
+                }
+            });
     }
 
     private getUsersEvents() {
         this.userEvents = [];
         this.arrangeEvents();
-        if (this.calendar.isMobileView) {return}
+        if (this.calendar.isMobileView) {
+            return;
+        }
 
         for (let calendar of this.calendar.usersCalendars) {
-            if (!calendar.visible) {continue}
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id).subscribe(events => {
-                if (events.length > 0) {
-                    events.forEach(event => {
-                        event.color = calendar.color;
-                        event.visible = calendar.visible;
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                        this.userEvents.push(event);
-                        this.arrangeEvents();
-                    });
-                }
-            });
+            if (!calendar.visible) {
+                continue;
+            }
+            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id)
+                .subscribe(events => {
+                    if (events.length > 0) {
+                        events.forEach(event => {
+                            event.color = calendar.color;
+                            event.visible = calendar.visible;
+                            event.start = this.resetTime(event.start);
+                            event.end = this.resetTime(event.end);
+                            this.userEvents.push(event);
+                            this.arrangeEvents();
+                        });
+                    }
+                });
         }
     }
 
     private getOtherEvents() {
         this.otherEvents = [];
         this.arrangeEvents();
-        if (this.calendar.isMobileView) {return}
+        if (this.calendar.isMobileView) {
+            return;
+        }
 
         for (let calendar of this.calendar.otherCalendars) {
-            if (!calendar.visible) {continue}
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true).subscribe(events => {
-                if (events.length > 0) {
-                    events.forEach(event => {
-                        event.color = calendar.color;
-                        event.visible = calendar.visible;
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                        this.otherEvents.push(event);
-                        this.arrangeEvents();
-                    });
-                }
-            });
+            if (!calendar.visible) {
+                continue;
+            }
+            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true)
+                .subscribe(events => {
+                    if (events.length > 0) {
+                        events.forEach(event => {
+                            event.color = calendar.color;
+                            event.visible = calendar.visible;
+                            event.start = this.resetTime(event.start);
+                            event.end = this.resetTime(event.end);
+                            this.otherEvents.push(event);
+                            this.arrangeEvents();
+                        });
+                    }
+                });
         }
     }
 
@@ -352,10 +379,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         });
 
         return {
-            left: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI,
-            width: (sheetContainer.clientWidth / this.calendar.weekDaysCount) * eDays,
-            top: this.offsetHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI),
-            height: this.eventHeight,
+            left: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI) + 'px',
+            width: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * eDays) + 'px',
+            top: (this.offsetHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI)) + 'px',
+            height: this.eventHeight + 'px',
             display: visible
         };
     }
@@ -374,9 +401,5 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             color: isToday ? '#fff' : 'inherit',
             'background-color': isToday ? this.calendar.todayColor : 'inherit',
         };
-    }
-
-    ngOnDestroy() {
-        this.cdr.detach();
     }
 }

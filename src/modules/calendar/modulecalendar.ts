@@ -4,7 +4,8 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";
 
-import {Subject, Observable, of} from "rxjs";
+import {Subject, Observable, of, Subscription, pipe} from "rxjs";
+import {take} from "rxjs/operators";
 
 
 import {loginService, loginCheck} from "../../services/login.service";
@@ -40,6 +41,7 @@ import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
 
+import /*embed*/ {CalendarHeader} from "./components/calendarheader";
 import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
@@ -55,6 +57,9 @@ import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
 import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
+import /*embed*/ {CalendarScheduleDashlet} from "./components/calendarscheduledashlet";
+import /*embed*/ {CalendarDayDashlet} from "./components/calendardaydashlet";
+import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedaysdashlet";
 
 
 @NgModule({
@@ -70,6 +75,7 @@ import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
 
     declarations: [
         Calendar,
+        CalendarHeader,
         CalendarSheetDay,
         CalendarSheetThreeDays,
         CalendarSheetWeek,
@@ -84,6 +90,9 @@ import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
         CalendarAddCalendar,
         CalendarOtherCalendarsMonitor,
         CalendarColorPicker,
+        CalendarScheduleDashlet,
+        CalendarDayDashlet,
+        CalendarThreeDaysDashlet
     ],
     providers: [userpreferences]
 })

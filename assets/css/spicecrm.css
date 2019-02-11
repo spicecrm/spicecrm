@@ -156,12 +156,6 @@ global-user-panel {
     content: ' ';
 }
 
-.spiceActivitiyTimelineHeader .showmorebutton {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-}
-
 
 .spicecrm-fieldbody {
     /*padding: 5px 0px*/;
@@ -905,6 +899,11 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 
 .slds-illustration .slds-illustration__fill-secondary {
     fill: #eee;
+}
+
+/* override for teh input icon gropup */
+.slds-input__icon-group_right{
+    top: .5rem;
 }
 
 

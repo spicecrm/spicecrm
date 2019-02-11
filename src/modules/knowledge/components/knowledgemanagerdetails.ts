@@ -27,6 +27,7 @@ export class KnowledgeManagerDetails {
     private ngOnChanges() {
         if (this.docId && this.docId !== "") {
             this.view.setViewMode();
+            this.resetView();
             this.model.id = this.docId;
             this.model.getData(true, "", true).subscribe(data => this.buildContainer());
         }
@@ -44,7 +45,6 @@ export class KnowledgeManagerDetails {
     }
 
     private buildContainer() {
-        this.resetView();
         let componentconfig = this.metadata.getComponentConfig("KnowledgeManagerDetails", "KnowledgeDocuments");
         let componentSet = componentconfig.componentset;
 

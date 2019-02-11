@@ -38,6 +38,7 @@ import /*embed*/ {UserAddModal} from "./components/useraddmodal";
 import /*embed*/ {UserPreferencesItem} from "./components/userpreferencesitem";
 import /*embed*/ {UserPreferencesItemDisplay} from "./components/userpreferencesitemdisplay";
 import /*embed*/ {UserPreferencesItemEdit} from "./components/userpreferencesitemedit";
+import /*embed*/ {UserPopoverHeader} from "./components/userpopoverheader";
 
 @NgModule({
     imports: [
@@ -61,7 +62,8 @@ import /*embed*/ {UserPreferencesItemEdit} from "./components/userpreferencesite
         UserAddModal,
         UserPreferencesItem,
         UserPreferencesItemDisplay,
-        UserPreferencesItemEdit
+        UserPreferencesItemEdit,
+        UserPopoverHeader
     ]
 })
 export class ModuleUsers {

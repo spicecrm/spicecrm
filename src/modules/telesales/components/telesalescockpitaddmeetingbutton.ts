@@ -30,17 +30,12 @@ export class TeleSalesCockpitAddMeetingButton {
 
     }
 
-    public execute () {
+    public execute() {
         this.model.id = undefined;
+        let item = this.telecockpitservice.selectedCampaignTask;
+        let presets = {name: item.summary_text, campaign_id: item.campaign_id, campaigntask_id: item.id};
 
-        this.model.addModel(
-            '', this.parent,
-            {
-                name: this.telecockpitservice.currentCampaignTaskName,
-                campaign_id: this.telecockpitservice.currentCampaignId,
-                campaigntask_id: this.telecockpitservice.campaignTaskId,
-            }
-        ).subscribe(
+        this.model.addModel('', this.parent, presets).subscribe(
             response => {
                 if (typeof response == 'object')
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_ADDED'), 'success');

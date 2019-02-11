@@ -1,11 +1,11 @@
 import {
-    Component,
+    AfterViewChecked,
     AfterViewInit,
+    Component,
     ElementRef,
     Renderer2,
     ViewChild,
     ViewContainerRef,
-    AfterViewChecked,
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
@@ -40,14 +40,8 @@ export class DashboardContainerBody implements AfterViewInit, AfterViewChecked {
         });
     }
 
-    public ngAfterViewInit() {
-        this.calculateGrid();
-    }
-
-    public ngAfterViewChecked() {
-        if (this.bodycontainer.element.nativeElement.clientWidth != this.dashboardlayout.mainContainer.width) {
-            this.calculateGrid();
-        }
+    get dashboardElements() {
+        return this.dashboardlayout.dashboardElements;
     }
 
     get isEditing() {
@@ -59,6 +53,20 @@ export class DashboardContainerBody implements AfterViewInit, AfterViewChecked {
             'border': this.dashboardlayout.editMode ? '1px dashed #ca1b21' : '0',
             'width': '100%'
         };
+    }
+
+    public ngAfterViewInit() {
+        this.calculateGrid();
+    }
+
+    public ngAfterViewChecked() {
+        if (this.bodycontainer.element.nativeElement.clientWidth != this.dashboardlayout.mainContainer.width) {
+            this.calculateGrid();
+        }
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 
     private calculateGrid() {

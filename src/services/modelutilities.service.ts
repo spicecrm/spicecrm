@@ -54,7 +54,7 @@ export class modelutilities {
             case "date":
                 // return new Date(Date.parse(value));
                 let pDate = moment.utc(value);
-                return pDate;
+                return pDate.isValid() ? pDate : null;
             case "datetime":
             case "datetimecombo":
                 // return new Date(Date.parse(value));
@@ -89,7 +89,7 @@ export class modelutilities {
     }
 
     public spiceModel2backend(module: string, modelData: any) {
-        let retData = {};
+        let retData = {...modelData};
         let moduleFields = this.metadata.getModuleFields(module);
         for (let field in moduleFields) {
             if (modelData.hasOwnProperty(field)) {
@@ -113,7 +113,7 @@ export class modelutilities {
                     return value.format("YYYY-MM-DD");
                 } else {
                     let pDate = new moment.utc(value);
-                    return pDate.format("YYYY-MM-DD");
+                    return pDate.isValid() ? pDate.format("YYYY-MM-DD") : '';
                 }
             case "datetime":
             case "datetimecombo":

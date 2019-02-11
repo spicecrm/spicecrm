@@ -27,4 +27,8 @@ export class KnowledgeDocumentFavorites {
         this.knowledgeService.selectedId = id;
         this.location.replaceState("/module/KnowledgeDocuments/" + id);
     }
+
+    private trackByFn(index, item) {
+        return item.item_id;
+    }
 }

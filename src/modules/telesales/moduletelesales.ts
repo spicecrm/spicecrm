@@ -56,7 +56,6 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import /*embed*/ {telecockpitservice} from "./services/telecockpit.service";
 
-import /*embed*/ {TeleSalesCockpit} from './components/telesalescockpit';
 import /*embed*/ {TeleSalesCockpitList} from './components/telesalescockpitlist';
 import /*embed*/ {TeleSalesCockpitListItem} from './components/telesalescockpitlistitem';
 import /*embed*/ {TeleSalesCockpitMain} from './components/telesalescockpitmain';
@@ -67,6 +66,7 @@ import /*embed*/ {TeleSalesCockpitAddAttemptButton} from './components/telesales
 import /*embed*/ {TeleSalesCockpitAddAttemptModal} from './components/telesalescockpitaddattemptmodal';
 import /*embed*/ {TeleSalesCockpitModuleActions} from './components/telesalescockpitmoduleactions';
 import /*embed*/ {TeleSalesCockpitAddMeetingButton} from './components/telesalescockpitaddmeetingbutton';
+import /*embed*/ {TeleSalesCockpit} from './components/telesalescockpit';
 
 @NgModule({
     imports: [

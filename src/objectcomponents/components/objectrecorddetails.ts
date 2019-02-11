@@ -18,16 +18,14 @@ import {language} from '../../services/language.service';
     templateUrl: './src/objectcomponents/templates/objectrecorddetails.html',
     providers: [view]
 })
-export class ObjectRecordDetails implements OnInit, AfterViewInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef}) private detailcontainer: ViewContainerRef;
-
-    private initialized: boolean = false;
+export class ObjectRecordDetails implements OnInit {
     private componentSet: string = '';
     private componentconfig: any = {};
-    private componentRefs: any = [];
 
     constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2) {
         this.view.isEditable = true;
+
+        this.buildContainer();
     }
 
     public ngOnInit() {
@@ -37,32 +35,13 @@ export class ObjectRecordDetails implements OnInit, AfterViewInit {
         }
     }
 
-    public ngAfterViewInit() {
-        this.initialized = true;
-
-        this.buildContainer();
-    }
-
     private buildContainer() {
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-
         // if we do not have a coimponentset from external check the default config
-
         if (!this.componentconfig.componentset) {
             let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
             this.componentSet = componentconfig.componentset;
         } else {
             this.componentSet = this.componentconfig.componentset;
-        }
-
-
-        for (let panel of this.metadata.getComponentSetObjects(this.componentSet)) {
-            this.metadata.addComponent(panel.component, this.detailcontainer).subscribe(componentRef => {
-                componentRef.instance.componentconfig = panel.componentconfig;
-                this.componentRefs.push(componentRef);
-            });
         }
     }
 

@@ -11,7 +11,7 @@ import {language} from '../../../services/language.service';
 })
 export class TeleSalesCockpitCreateLeadButton {
 
-    public parent: any = undefined;
+    public parent: any;
 
     constructor(private language: language, private metadata: metadata, private model: model, private footer: footer) {
         this.model.module = 'Leads';

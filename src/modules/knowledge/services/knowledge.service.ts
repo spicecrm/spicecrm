@@ -1,21 +1,24 @@
-import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
+import {Injectable, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
+import {take} from "rxjs/operators";
+import {Subscription} from "rxjs";
 
 
 @Injectable()
 
-export class KnowledgeService {
-    public selectedBook: any = undefined;
+export class KnowledgeService implements OnDestroy {
+    public selectedBook: any;
     public documents: any[] = [];
     public selectedId: string = "";
     public isLoading: boolean = false;
     public books: any[] = [];
     public searchterm: string = "";
     public resultsList: any[] = [];
+    private subscription: Subscription = new Subscription();
 
     @ViewChild("searchcontainer", {read: ViewContainerRef}) private searchContainer: ViewContainerRef;
 
@@ -24,12 +27,20 @@ export class KnowledgeService {
                 private broadcast: broadcast,
                 public userPreferences: userpreferences,
                 private fts: fts) {
-        this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeDocuments") {
-                this.getDocuments(this.selectedBook.id);
-            }
+        this.userPreferences.loadPreferences('KnowledgeBooks')
+            .pipe(take(1))
+            .subscribe(res => {
+                if (res && res['lastViewedBook']) {
+                    this.selectedBook = res['lastViewedBook'];
+                    this.getDocuments(this.selectedBook.id);
+                }
+            });
+        this.subscription = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
-                this.getBooks();
+                let book = msg.messagedata.data;
+                this.books = [...this.books, book];
+                this.selectedBook = book;
+                this.getDocuments(book.id);
             }
         });
 
@@ -54,7 +65,7 @@ export class KnowledgeService {
     }
 
     public setLastViewedBook(none = false) {
-        let value = none ? null : this.selectedBook.id;
+        let value = none ? null : this.selectedBook;
         this.userPreferences.setPreference("lastViewedBook", value, true, "KnowledgeBooks");
     }
 
@@ -68,13 +79,15 @@ export class KnowledgeService {
     }
 
     public getBooks() {
-        this.isLoading = true;
         this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id", "html"], {limit: -1})
             .subscribe((books: any) => {
-                this.books = books.list;
-                this.isLoading = false;
-                this.userPreferences.loadPreferences("KnowledgeBooks")
-                    .subscribe(pref => this.selectedBook = this.books.find(book => book.id == pref.lastViewedBook));
+                this.books = books && books.list ? books.list : [];
+                let pref = this.userPreferences.unchangedPreferences;
+                if (pref['KnowledgeBooks'] && pref['KnowledgeBooks']['lastViewedBook'] && !this.selectedBook) {
+                    let lastViewedBook = pref['KnowledgeBooks']['lastViewedBook'];
+                    this.selectedBook = lastViewedBook;
+                    this.getDocuments(lastViewedBook);
+                }
             });
     }
 
@@ -88,23 +101,35 @@ export class KnowledgeService {
     }
 
     public sortDocuments() {
-         this.documents.sort((a,b) => {
+        this.documents.sort((a, b) => {
             if (+a.parent_sequence == +b.parent_sequence) {
                 return a.name - b.name;
             } else {
                 return a.parent_sequence - b.parent_sequence;
             }
         });
-        return this.documents.sort(function(a, b) {
+        return this.documents.sort(function (a, b) {
             if (+a.parent_sequence == +b.parent_sequence) {
                 var nameA = a.name.toUpperCase();
                 var nameB = b.name.toUpperCase();
-                if (nameA < nameB) {return -1}
-                if (nameA > nameB) {return 1}
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
             } else {
-                if (+a.parent_sequence < +b.parent_sequence) {return -1}
-                if (+a.parent_sequence > +b.parent_sequence) {return 1}
+                if (+a.parent_sequence < +b.parent_sequence) {
+                    return -1;
+                }
+                if (+a.parent_sequence > +b.parent_sequence) {
+                    return 1;
+                }
             }
         });
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }

@@ -1,34 +1,33 @@
-import {Component, ViewContainerRef, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
-
-import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele_sales_cockpit_module_actions',
     templateUrl: './src/modules/telesales/templates/telesalescockpitmoduleactions.html',
 })
-export class TeleSalesCockpitModuleActions {
+export class TeleSalesCockpitModuleActions implements OnChanges {
 
-    @ViewChild('moduleactionscontainer', {read: ViewContainerRef}) moduleactionscontainer: ViewContainerRef;
+    @ViewChild('moduleactionscontainer', {read: ViewContainerRef}) private moduleactionscontainer: ViewContainerRef;
+    @Input() private module: string;
 
-    actionset: any = [];
+    private actionset: string = '';
 
-    constructor(
-        private language: language,
-        private model: model,
-        private telecockpitservice: telecockpitservice,
-        private metadata: metadata,
+    constructor(private language: language,
+                private model: model,
+                private metadata: metadata,
     ) {
-        this.telecockpitservice.selectedItem$.subscribe(data => this.loadActionset(data));
-
     }
 
-    loadActionset(modeldata){
-        let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitModuleActions', modeldata.module);
-        this.actionset = componentconfig.actionset;
+    ngOnChanges() {
+        if (this.module) {
+            this.loadActionset(this.module);
+        }
+    }
+
+    loadActionset(module) {
+        let conf = this.metadata.getComponentConfig('TeleSalesCockpitModuleActions', module);
+        this.actionset = conf && conf.actionset ? conf.actionset : '';
     }
 }

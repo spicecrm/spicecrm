@@ -9,7 +9,10 @@
                             <media-file-image [media_id]="options[question.id][0].image_id" [variant]="'mw'"
                                               [frameWidth]="imageWidthOption" [classOuter]="'slds-m-horizontal--x-small slds-m-vertical--small'"></media-file-image>
                         </ng-container>
-                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">{{options[question.id][0].name}}</ng-container>
+                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                            <span *ngIf="options[question.id][0].text; else name0" style="white-space:pre-line">{{options[question.id][0].text}}</span>
+                            <ng-template #name0>{{options[question.id][0].name}}</ng-template>
+                        </ng-container>
                     </td>
                     <td class="slds-text-align_right binary-left-radio"><input type="radio"
                                                                                [checked]="!previewMode && answers[question.id][0].value"
@@ -28,7 +31,10 @@
                             <media-file-image [media_id]="options[question.id][1].image_id" [variant]="'mw'"
                                               [frameWidth]="imageWidthOption" [classOuter]="'slds-m-horizontal--x-small slds-m-vertical--small'"></media-file-image>
                         </ng-container>
-                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">{{options[question.id][1].name}}</ng-container>
+                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                            <span *ngIf="options[question.id][1].text; else name1" style="white-space:pre-line">{{options[question.id][1].text}}</span>
+                            <ng-template #name1>{{options[question.id][1].name}}</ng-template>
+                        </ng-container>
                     </td>
                 </tr>
             </ng-container>

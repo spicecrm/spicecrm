@@ -1,13 +1,17 @@
 import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {calendar} from '../services/calendar.service';
+import {take} from "rxjs/operators";
 
 declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-drop-target',
-    template: `<div *ngIf="this.showPlus" style="cursor: pointer" (click)="this.addEvent()" 
-                    class="slds-align--absolute-center spice-h-full slds-theme_shade slds-text-heading_medium slds-text-color--inverse-weak">+</div>`,
+    template: `
+        <div *ngIf="this.showPlus" style="cursor: pointer" (click)="this.addEvent()"
+             class="slds-align--absolute-center spice-h-full slds-theme_shade slds-text-heading_medium slds-text-color--inverse-weak">
+            +
+        </div>`,
     providers: [model],
     host: {
         '(dragover)': 'this.dragOver($event)',
@@ -25,7 +29,8 @@ export class CalendarSheetDropTarget {
     private isDropTarget: boolean = false;
     private showPlus: boolean = false;
 
-    constructor(private calendar: calendar, private model: model) {}
+    constructor(private calendar: calendar, private model: model) {
+    }
 
     get content() {
         return this.hour + ' ' + this.day;
@@ -121,8 +126,10 @@ export class CalendarSheetDropTarget {
         this.model.id = event.id;
         this.model.data = event.data;
         event.saving = true;
-        this.model.save().subscribe(data => {
-            event.saving = false;
-        });
+        this.model.save()
+            .pipe(take(1))
+            .subscribe(data => {
+                event.saving = false;
+            });
     }
 }

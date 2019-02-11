@@ -10,7 +10,9 @@
         <div *ngIf="selectedBook.html.length == 0">{{language.getLabel('LBL_NO_DESCRIPTION_FOUND')}}</div>
     </div>
 </div>
-<system-spinner *ngIf="model.isloading"></system-spinner>
 <div [hidden]="!docId || docId == ''" class="slds-p-around--xxx-small" style="background-color: #fff">
     <div #detailscontent></div>
+</div>
+<div tobottom *ngIf="model.isLoading" class="slds-align_absolute-center">
+    <system-spinner></system-spinner>
 </div>

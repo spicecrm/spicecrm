@@ -1,14 +1,16 @@
-<div class="slds-popover slds-popover_large slds-popover--panel slds-is-fixed" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
+<div class="slds-popover slds-popover_large slds-popover--panel slds-is-fixed" style="transition: .5s;" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
     <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
         <system-button-icon icon="close"></system-button-icon>
     </button>
-    <div #popover [ngStyle]="detailsStyle">
+    <div #popover>
         <div class="slds-popover__header">
-            <header class="slds-media slds-media_center slds-m-bottom_small slds-p-right--large">
+            <system-componentset *ngIf="headercomponentset" [componentset]="headercomponentset"></system-componentset>
+            <header *ngIf="!headercomponentset" class="slds-media slds-media_center slds-m-bottom_small slds-p-right--large">
                 <system-icon [module]="popovermodule" size="small"></system-icon>
                 <div class="slds-media__body">
                     <system-stencil *ngIf="model.isLoading"></system-stencil>
                     <h2 class="slds-text-heading_small slds-hyphenate" ><a href="javascript:void(0);" (click)="goDetail()">{{model.data.summary_text}}</a></h2>
+                    {{popoverpos}}
                 </div>
             </header>
             <footer class="slds-grid slds-wrap slds-p-right--large">

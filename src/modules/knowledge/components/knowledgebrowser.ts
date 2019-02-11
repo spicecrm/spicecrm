@@ -6,6 +6,7 @@ import {navigation} from "../../../services/navigation.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
+import {Subscription} from "rxjs";
 
 @Component({
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
@@ -15,7 +16,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public config: any = {clickable: true};
     public activeTab: string = "tree";
-    private routeSubscribe: any = {};
+    private routeSubscriber: Subscription = new Subscription();
 
     @ViewChild("maincontainer", {read: ViewContainerRef}) private maincontainer: ViewContainerRef;
     @ViewChild("tabsheadercontainer", {read: ViewContainerRef}) private tabsHeaderContainer: ViewContainerRef;
@@ -29,7 +30,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
                 private activatedRoute: ActivatedRoute,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
-        this.routeSubscribe = this.activatedRoute.params.subscribe(params => {
+        this.routeSubscriber = this.activatedRoute.params.subscribe(params => {
             if (!params.id) {
                 return;
             }
@@ -76,7 +77,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.routeSubscribe.unsubscribe();
+        this.routeSubscriber.unsubscribe();
     }
 
     private handleSelectedItemEvent(id) {

@@ -56,6 +56,7 @@ export class GlobalLogin {
                     this.session.authData.sessionId = repsonse.id;
                     this.session.authData.userId = repsonse.userid;
                     this.session.authData.userName = repsonse.user_name;
+                    this.session.authData.userimage = repsonse.user_image;
                     this.session.authData.first_name = repsonse.first_name;
                     this.session.authData.last_name = repsonse.last_name;
                     this.session.authData.display_name = repsonse.display_name;

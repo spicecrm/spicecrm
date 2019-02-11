@@ -34,6 +34,10 @@ export class KnowledgeBrowserDetailsContainerLeft {
         this.knowledgeService.selectedId = id;
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private print() {
         let printWindow = window.open('', 'PRINT');
 

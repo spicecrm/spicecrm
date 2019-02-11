@@ -1,5 +1,5 @@
 <div *ngIf="!isEditMode()" class="slds-scrollable--x">
-    <field-generic-display *ngFor="let emailaddress of model.data.emailaddresses" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <field-generic-display *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
         <div class="slds-grid slds-p-vertical--xxx-small">
             <div class="slds-size--1-of-2">
                 <div class="slds-grid slds-grid--vertical-align-center">
@@ -44,7 +44,7 @@
     </field-generic-display>
 </div>
 <div *ngIf="isEditMode()" class="slds-scrollable--x">
-    <div *ngFor="let emailaddress of model.data.emailaddresses" class="slds-form-element__control slds-grid slds-grid--align-spread" [ngClass]="getFieldClass()">
+    <div *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" class="slds-form-element__control slds-grid slds-grid--align-spread" [ngClass]="getFieldClass()">
         <div class="slds-size--1-of-1">
             <field-email-emailaddress class="slds-size--1-of-1" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)"></field-email-emailaddress>
         </div>
