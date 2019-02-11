@@ -22,4 +22,8 @@ export class AdministrationSchedulerJobsEnum {
                 public backend: backend) {
         this.backend.getRequest('module/Scheduler/jobslist').subscribe(jobslist => this.jobsList = Object.keys(jobslist));
     }
+
+    private trackByFn(index, item) {
+        return index;
+    }
 }

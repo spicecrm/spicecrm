@@ -28,7 +28,7 @@
                         </th>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let scheduler of schedulerLogs" class="slds-hint-parent">
+                    <tr *ngFor="let scheduler of schedulerLogs; trackBy: trackByFn" class="slds-hint-parent">
                         <td scope="row">
                             <div class="slds-truncate">{{displayDateValue(scheduler.execute_time)}}</div>
                         </td>

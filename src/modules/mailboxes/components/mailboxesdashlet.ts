@@ -48,6 +48,10 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
         }
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private getMailboxes(refresh = false) {
             this.backend.getRequest('/modules/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
                 if (!mailboxes || mailboxes.length == 0) {return;}
