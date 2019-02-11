@@ -1,4 +1,4 @@
-<ng-container *ngFor="let field of fieldsetfields">
+<ng-container *ngFor="let field of fieldsetfields; trackBy: trackByFn">
     <td style="min-width: 8rem" [attr.data-label]="language.getFieldDisplayName(module, field.field)">
         <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
     </td>

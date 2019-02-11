@@ -93,15 +93,16 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     /**
      *  focus the text area when the editor is focussed
      */
-    private onEditorClick() {
+    private onEditorClick(e) {
         // check if we are active already
         if (!this.isActive) {
-            this.htmlEditor.nativeElement.focus();
             this.isActive = true;
+            this.htmlEditor.nativeElement.focus();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
         }
+        e.stopPropagation();
     }
 
     private onDocumentClick(event: MouseEvent) {

@@ -4,6 +4,6 @@
     </li>
 </ul>
 <ng-template #nocontent>
-    <system-illustration-no-records>{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
+    <system-illustration-no-records *ngIf="!loading">{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
 </ng-template>
 <system-spinner *ngIf="loading" class="slds-p-vertical--small"></system-spinner>

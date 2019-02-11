@@ -15,7 +15,7 @@
             </div>
         </div>
         <ul>
-            <li class="slds-nav-vertical__item" [ngClass]="getActiveClass(dashboard.id)" *ngFor="let dashboard of dashboards" (click)="setDashboard(dashboard)">
+            <li class="slds-nav-vertical__item" [ngClass]="getActiveClass(dashboard.id)" *ngFor="let dashboard of dashboards; trackBy: trackByFn" (click)="setDashboard(dashboard)">
                 <div class="slds-nav-vertical__action slds-text-link_reset" >{{dashboard.name}}</div>
             </li>
         </ul>

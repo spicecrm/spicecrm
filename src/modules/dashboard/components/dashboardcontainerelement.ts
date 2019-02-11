@@ -26,12 +26,12 @@ export class DashboardContainerElement implements AfterViewInit {
                 private elementRef: ElementRef) {
     }
 
-    public ngAfterViewInit() {
-        this.renderDashlet();
-    }
-
     get compactView() {
         return this.dashboardlayout.compactView;
+    }
+
+    public ngAfterViewInit() {
+        this.renderDashlet();
     }
 
     private renderDashlet() {
@@ -40,16 +40,17 @@ export class DashboardContainerElement implements AfterViewInit {
         }
         this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true;
         if (this.item.component && this.isAuthorized) {
-            this.metadata.addComponent(this.item.component, this.containerelement).subscribe(componentRef => {
-                componentRef.instance.dashletconfig = this.item.dashletconfig;
-                componentRef.instance.acl_action = this.item.acl_action;
-                componentRef.instance.icon = this.item.icon;
-                componentRef.instance.dashlet_id = this.item.dashlet_id;
-                componentRef.instance.componentconfig = this.item.componentconfig;
-                componentRef.instance.dashletModule = this.item.module;
-                componentRef.instance.dashletLabel = this.item.label;
-                this.componentRefs.push(componentRef);
-            });
+            this.metadata.addComponent(this.item.component, this.containerelement)
+                .subscribe(componentRef => {
+                    componentRef.instance.dashletconfig = this.item.dashletconfig;
+                    componentRef.instance.acl_action = this.item.acl_action;
+                    componentRef.instance.icon = this.item.icon;
+                    componentRef.instance.dashlet_id = this.item.dashlet_id;
+                    componentRef.instance.componentconfig = this.item.componentconfig;
+                    componentRef.instance.dashletModule = this.item.module;
+                    componentRef.instance.dashletLabel = this.item.label;
+                    this.componentRefs.push(componentRef);
+                });
         }
     }
 
@@ -69,11 +70,12 @@ export class DashboardContainerElement implements AfterViewInit {
                 style["z-index"] = "9999";
             }
         }
-        return style;
+        return this.dashboardlayout.prepareStyle(style);
     }
 
     private getBoundingBoxStyle(position): any {
-        let rect = this.getBoxStyle();
+        let rect = this.dashboardlayout.getElementStyle(this.item.position.top, this.item.position.left, this.item.position.width, this.item.position.height);
+        rect = this.applyMove(rect);
         let style: any = {};
 
         switch (position) {
@@ -94,7 +96,7 @@ export class DashboardContainerElement implements AfterViewInit {
             case "left":
                 style = {
                     top: rect.height / 2 - 4,
-                    left: -4,
+                    left: '-4px',
                     cursor: "w-resize"
                 };
                 break;
@@ -113,7 +115,7 @@ export class DashboardContainerElement implements AfterViewInit {
         style.width = "8px";
         style.height = "8px";
 
-        return style;
+        return this.dashboardlayout.prepareStyle(style);
     }
 
     private applyMove(rect) {

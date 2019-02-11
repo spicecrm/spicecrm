@@ -5,6 +5,7 @@ import {backend} from '../../services/backend.service';
 import {broadcast} from '../../services/broadcast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {layout} from "../../services/layout.service";
 import {Router}   from '@angular/router';
 import {ObjectRelatedlistTable} from './objectrelatedlisttable';
 
@@ -16,8 +17,8 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
 
     @Input() sequencefield: string = 'sequence_number';
 
-    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public router: Router, private backend: backend, private broadcast: broadcast) {
-        super(language, metadata, relatedmodels, model, router);
+    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, private backend: backend, private broadcast: broadcast) {
+        super(language, metadata, relatedmodels, model, layout);
     }
 
     get displayfields(){
