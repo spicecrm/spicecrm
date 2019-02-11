@@ -213,7 +213,7 @@ export class language {
         let label = '';
         if (fieldconfig.label) {
             if (fieldconfig.label.indexOf(':') > 0) {
-                let labeldata = fieldconfig.label.split(':')
+                let labeldata = fieldconfig.label.split(':');
                 label = this.getLabel(labeldata[1], labeldata[0]);
             } else {
                 label = this.getLabel(fieldconfig.label, module, length);
@@ -230,7 +230,7 @@ export class language {
                 return fieldname;
             }
         } else {
-            return label
+            return label;
         }
     }
 
@@ -247,7 +247,7 @@ export class language {
                         ret.push({
                             value: option,
                             display: tmp_ret[option],
-                        })
+                        });
                     }
                 }
                 return ret;

@@ -44,9 +44,16 @@ export class GlobaUserPanel {
             componentref.instance.cropwidth = 150;
             componentref.instance.imagedata.subscribe(image => {
                 if (image !== false) {
-                    this.backend.postRequest('module/Users/'+this.session.authData.userId+'/image', {}, {imagedata: image}).subscribe(response => {
-                        this.session.authData.userimage = image;
-                    });
+                    // make a backup of the image, set it to emtpy and if case call fails set back the saved image
+                    let imagebackup = this.session.authData.userimage;
+                    this.session.authData.userimage = '';
+                    this.backend.postRequest('module/Users/' + this.session.authData.userId + '/image', {}, {imagedata: image}).subscribe(
+                        response => {
+                            this.session.authData.userimage = image;
+                        },
+                        error => {
+                            this.session.authData.userimage = imagebackup;
+                        });
                 }
             });
         });

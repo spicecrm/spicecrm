@@ -5,7 +5,7 @@ import {toast} from "../../services/toast.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
-import {modal} from "../../services/modal.service";
+import { modal } from "../../services/modal.service";
 
 @Component({
     selector: "object-relatedlist-files",
@@ -13,10 +13,15 @@ import {modal} from "../../services/modal.service";
     providers: [modelattachments],
     host: {
         "(drop)": "this.onDrop($event)",
-        "(dragover)": "this.preventdefault($event)"
-    }
+        "(dragover)": "this.preventdefault($event)",
+        "(dragleave)": "this.preventdefault($event)"
+    },
+    styles: [
+        ":host >>> div.uploadbar {margin-left:-16px;margin-right:-16px;margin-top:16px;margin-bottom:-16px;width:calc(100% + 32px);height:8px;}",
+        ":host >>> div.uploadprogress {width: 90%;height: 100%;background-color: red;}"
+    ]
 })
-export class ObjectRelatedlistFiles implements AfterViewInit {
+export class ObjectRelatedlistFilesUploadModal implements AfterViewInit {
 
     @ViewChild("fileupload", {read: ViewContainerRef}) private fileupload: ViewContainerRef;
 
@@ -27,7 +32,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     private showUploadModal: boolean = false;
     private isopen: boolean = true;
 
-    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
+    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal ) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -55,28 +60,17 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     }
 
     private preventdefault(event: any) {
-        if ((event.dataTransfer.items.length >= 1 && this.allItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
+        if((event.dataTransfer.items.length == 1 && event.dataTransfer.items[0].kind === "file") || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
         }
     }
 
-    private allItemsFile(items) {
-        for (let item of items) {
-            if (item.kind != 'file') {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     private onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
-        if (files && files.length >= 1) {
+        if (files && files.length == 1)
             this.doupload(files);
-        }
     }
 
 
@@ -95,7 +89,20 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     }
 
     private doupload(files) {
-        this.modelattachments.uploadAttachmentsBase64(files);
+        this.showUploadModal = true;
+        this.theFile = files[0].name;
+        this.modelattachments.uploadAttachmentsBase64(files).subscribe((retVal: any) => {
+            if (retVal.progress) {
+                this.theProgress = retVal.progress.loaded / retVal.progress.total * 100;
+            } else if (retVal.files) {
+                for (let file of retVal.files) {
+                    this.modelattachments.files.push(file);
+                }
+            }
+        }, error => {
+            this.toast.sendToast("upload failed");
+            this.closeUploadPopup();
+        }, () => this.closeUploadPopup());
     }
 
     private closeUploadPopup() {
