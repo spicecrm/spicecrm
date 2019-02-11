@@ -1,4 +1,4 @@
-<article class="slds-card slds-card_boundary slds-m-bottom--medium">
+<div class="slds-card slds-card_boundary slds-m-bottom--medium">
     <div class="slds-card__header slds-grid">
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <object-icon [icon]="'file'" [size]="'small'"></object-icon>
@@ -8,31 +8,21 @@
                         <span class="slds-text-heading--small">{{language.getLabel('LBL_FILES')}} ({{modelattachments.files.length}})</span>
                     </a>
                 </h2>
-                <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
+                <system-utility-icon *ngIf="modelattachments.files.length > 0" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
             </div>
         </header>
         <div class="slds-no-flex slds-button-group" role="group">
             <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()">{{language.getLabel('LBL_UPLOAD')}}</button>
-            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="takeFoto()">{{language.getLabel('LBL_PHOTO')}}</button>
+            <!--button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="takeFoto()">{{language.getLabel('LBL_PHOTO')}}</button-->
         </div>
-        <input #fileupload style="display:none" type="file" accept="image/*" (change)="uploadFile()"/>
+        <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
     </div>
     <div class="slds-card__body" *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
             <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent"></div>
         </div>
-    </div>
-</article>
-<!-- upload modal-->
-<div *ngIf="showUploadModal" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
-    <div class="slds-modal__container">
-        <div class="slds-modal__header slds-modal__header--empty"></div>
-        <div class="slds-modal__content slds-p-around--medium">
-            uploading {{theFile}} ...
-            <div class="uploadbar">
-                <div class="uploadprogress" [ngStyle]="getBarStyle()"></div>
-            </div>
+        <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
+            <system-spinner></system-spinner>
         </div>
     </div>
 </div>
-<div *ngIf="showUploadModal" class="slds-backdrop slds-backdrop--open"></div>
