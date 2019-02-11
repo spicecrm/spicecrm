@@ -167,7 +167,7 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
 
 window.name = 'SpiceCRM';
 (() => {
-    if (window.BroadcastChannel) { // Does the browser know the Broadcast API?
+    if (window['BroadcastChannel']) { // Does the browser know the Broadcast API?
         let bc = new BroadcastChannel('spiceCRM_channel');
         bc.onmessage = e => {
             if (e.data.url && e.data.url.startsWith(window.location.origin + window.location.pathname)) {

@@ -6,6 +6,7 @@ import {backend} from "../../services/backend.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {broadcast} from "../../services/broadcast.service";
 import {userpreferences} from "../../services/userpreferences.service";
+import {Subscription} from "rxjs";
 
 declare var _;
 declare var moment;
@@ -19,7 +20,7 @@ export class AdministrationSchedulerJobLog implements OnDestroy{
     @ViewChild('logcontainer', {read: ViewContainerRef}) private logContainer: ViewContainerRef;
     public schedulerLogs: any[] = [];
     private expanded: boolean = true;
-    private subscriber: any;
+    private subscription: Subscription = new Subscription();
 
     constructor(public model: model,
                 public language: language,
@@ -27,7 +28,7 @@ export class AdministrationSchedulerJobLog implements OnDestroy{
                 public broadcast: broadcast,
                 public userpreferences: userpreferences,
                 public backend: backend) {
-        this.subscriber = this.broadcast.message$.subscribe(res => {
+        this.subscription = this.broadcast.message$.subscribe(res => {
             if (res.messagetype == 'scheduler.run') {
                 this.getData();
             }
@@ -74,9 +75,11 @@ export class AdministrationSchedulerJobLog implements OnDestroy{
         return date.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     public ngOnDestroy() {
-        if (this.subscriber) {
-            this.subscriber.unsubscribe();
-        }
+        this.subscription.unsubscribe();
     }
 }
