@@ -24,8 +24,7 @@
                 </div>
             </div>
         </div>
-        <div class="slds-form-element"
-             [ngClass]="{'slds-size--3-of-4':currencyidfield && !fieldconfig.currencyReadonly, 'slds-size--1-of-1': !currencyidfield && fieldconfig.currencyReadonly, 'slds-grow':fieldconfig.currencyReadonly}">
+        <div class="slds-form-element slds-grow">
             <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
         </div>
     </div>
