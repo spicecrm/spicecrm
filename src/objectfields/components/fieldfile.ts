@@ -54,6 +54,8 @@ export class fieldFile extends fieldGeneric {
                 this.theProgress = retVal.progress.loaded / retVal.progress.total * 100
             } else if (retVal.complete) {
                 this.value = retVal.filename ? retVal.filename : this.theFile;
+                // set the filetype
+                this.model.setField('file_mime_type', retVal.filetype);
             }
         }, error => {
 
@@ -63,6 +65,7 @@ export class fieldFile extends fieldGeneric {
 
     private removeFile() {
         this.value = '';
+        this.model.setField('file_mime_type', '');
     }
 
     private closeUploadPopup() {
@@ -131,7 +134,7 @@ export class fieldFile extends fieldGeneric {
                     if (request.readyState == 4) {
                         try {
                             let retVal = JSON.parse(request.response);
-                            retSub.next({complete: true, filename: retVal.filename});
+                            retSub.next({complete: true, filename: retVal.filename, filetype: retVal.filetype});
                             retSub.complete();
                         } catch (e) {
                             resp = {
@@ -209,5 +212,56 @@ export class fieldFile extends fieldGeneric {
         if (files && files.length == 1) {
             this.doupload(files);
         }
+    }
+
+
+    private determineFileIcon() {
+        let filetype = this.model.getField('file_mime_type');
+        if (filetype) {
+            let fileTypeArray = filetype.split("/");
+            // check the application
+            switch (fileTypeArray[0]) {
+                case "image":
+                    return "image";
+                case "text":
+                    switch (fileTypeArray[1]) {
+                        case 'html':
+                            return 'html';
+                        default:
+                            return "txt";
+                    }
+                case "audio":
+                    return "audio";
+                case "video":
+                    return "video";
+                default:
+                    break;
+            }
+
+            // check the type
+            switch (fileTypeArray[1]) {
+                case "xml":
+                    return "xml";
+                case "pdf":
+                    return "pdf";
+                case "vnd.ms-excel":
+                case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                    return "excel";
+                case "vnd.openxmlformats-officedocument.wordprocessingml.document":
+                case "vnd.oasis.opendocument.text":
+                    return "word";
+                case "vnd.oasis.opendocument.presentation":
+                case "vnd.openxmlformats-officedocument.presentationml.presentation":
+                    return "ppt";
+                case "x-zip-compressed":
+                    return "zip";
+                case "x-msdownload":
+                    return "exe";
+                default:
+                    break;
+            }
+        }
+
+        return "unknown";
     }
 }
