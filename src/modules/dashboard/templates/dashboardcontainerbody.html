@@ -1,6 +1,6 @@
-<div #bodycontainer tobottom class="slds-is-relative slds-scrollable--y spicecrm-scrollbar" [ngStyle]="bodyContainerStyle">
+<div #bodycontainer tobottom class="slds-is-relative spicecrm-scrollbar" [ngStyle]="bodyContainerStyle">
     <ng-container *ngIf="isEditing">
-        <ng-container *ngFor="let row of dashboardlayout.dashboardGrid">
+        <ng-container *ngFor="let row of dashboardGrid; trackBy: trackByGridFn">
             <ng-container *ngFor="let column of row">
                 <div [ngStyle]="dashboardlayout.prepareStyle(column)" style="padding:10px;border: 1px solid #ddd;position: absolute;">
                     <button class="slds-button slds-button--icon slds-align--absolute-center"  style="height: 100%; width: 100%" (click)="addDashlet(column)">
