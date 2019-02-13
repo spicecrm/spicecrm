@@ -1,13 +1,4 @@
-import {
-    AfterViewInit,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    OnDestroy,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
@@ -41,7 +32,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
     constructor(private language: language,
                 private navigation: navigation,
                 private elementRef: ElementRef,
-                private cdr: ChangeDetectorRef,
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
@@ -108,11 +98,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     }
 
     public ngAfterViewInit() {
-        this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
-    }
-
-    public ngAfterViewChecked() {
-        this.cdr.detectChanges();
+        setTimeout(() => this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768, 10);
     }
 
     public ngOnDestroy() {
@@ -124,7 +110,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
         if (this.touchStartListener) {
             this.touchStartListener();
         }
-        this.cdr.detach();
     }
 
     private handleUntiDate(event) {
