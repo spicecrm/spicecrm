@@ -1,6 +1,6 @@
 <div *ngIf="!isEditMode()">
     <field-label fieldname="field" [fieldconfig]="fieldconfig"></field-label>
-    <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [fieldid]="fieldid">
         {{value}}
     </field-generic-display>
 </div>
@@ -18,7 +18,7 @@
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_STREET')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="street"/>
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street"/>
                     </div>
                 </div>
             <div class="slds-grid">

@@ -1,15 +1,27 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    Input,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    ViewContainerRef
+} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
+import {ObjectRelatedlistHeader} from "../../objectcomponents/components/objectrelatedlistheader";
+import {fieldGenericDisplay} from "./fieldgenericdisplay";
 
 @Component({
     selector: 'field-generic',
     templateUrl: './src/objectfields/templates/fieldgeneric.html'
 })
 export class fieldGeneric implements OnInit {
+    @ViewChild('focus', {read: ViewContainerRef}) public focuselement: ViewContainerRef;
     @Input() public fieldname: string = '';
     @Input() public fieldconfig: any = {};
     public fieldid: string = '';
@@ -25,6 +37,12 @@ export class fieldGeneric implements OnInit {
         public router: Router
     ) {
         this.fieldid = this.model.generateGuid();
+
+        this.view.mode$.subscribe(mode => {
+            if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
+                this.setFocus();
+            }
+        });
     }
 
     public ngOnInit() {
@@ -65,6 +83,15 @@ export class fieldGeneric implements OnInit {
             this._field_defs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         }
         return this._field_defs;
+    }
+
+    public setFocus() {
+        setTimeout(() => {
+            if (this.focuselement) {
+                if(!this.focuselement.element.nativeElement.tabIndex) this.focuselement.element.nativeElement.tabIndex = '-1';
+                this.focuselement.element.nativeElement.focus();
+            }
+        });
     }
 
     public getStati(field: string = this.fieldname) {
