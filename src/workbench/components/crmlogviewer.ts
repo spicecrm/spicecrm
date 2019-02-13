@@ -1,5 +1,6 @@
 import { Component, EventEmitter } from '@angular/core';
 import { language } from '../../services/language.service';
+import { backend } from '../../services/backend.service';
 
 declare var moment: any;
 
@@ -19,9 +20,23 @@ export class CRMLogViewer {
     private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
     private period = { type: '', start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' }, duration: '1' };
 
+    // The hole list of CRM users:
+    private userlist: any[];
+    private userlistIndexes = {};
+
     private load$ = new EventEmitter();
 
-    constructor( private lang: language ) { }
+    constructor( private lang: language, private backend: backend ) {
+
+        // Individual route, because of bug SPICEUI-159.
+        this.backend.getRequest( 'crmlog/userlist' ).subscribe( response => {
+            this.userlist = response.list;
+            this.userlist.forEach( ( val, i ) => {
+                this.userlistIndexes[val.id] = i;
+            });
+        });
+
+    }
 
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
