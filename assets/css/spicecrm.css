@@ -25,7 +25,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     width: 150px;
     height: 150px;
     margin-left: -75px;
-    margin-top: -75px
+    margin-top: -60px;
 }
 
 .loader-text {
