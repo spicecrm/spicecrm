@@ -37,7 +37,8 @@
     "triple-equals": false,
     "switch-default": false,
     "variable-name": false,
-    "whitespace" : false
+    "whitespace" : false,
+    "object-literal-shorthand": ["error","consistent"]
   },
   "jsRules": {
     "max-line-length": {
