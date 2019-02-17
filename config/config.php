@@ -107,6 +107,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 echo json_encode(array('success' => $success, 'message' => $message));
                 break;
+            case 'outlookxml':
+                header('Content-Type: application/xml' );
+                $dir = dirname(__DIR__);
+                $serverurl = str_replace('/config/outlookxml', '', "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+                $filepath = "$dir/assets/outlook/spicecrmoutlookplugin.xml";
+                $file = file_get_contents($filepath);
+                echo( str_replace('<serverurl>', $serverurl, $file) );
+                break;
         }
         break;
     case 'POST':
