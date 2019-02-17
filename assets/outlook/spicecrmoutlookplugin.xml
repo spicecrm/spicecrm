@@ -19,8 +19,8 @@
     <Description DefaultValue="SpiceCRM Outlook add-in"/>
 
     <!-- Icon for your add-in. Used on installation screens and the add-ins dialog. -->
-    <IconUrl DefaultValue="https://gsuite.spicecrm.io/assets/icon-32.png"/>
-    <HighResolutionIconUrl DefaultValue="https://gsuite.spicecrm.io/assets/icon-80.png"/>
+    <IconUrl DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-32.png"/>
+    <HighResolutionIconUrl DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-80.png"/>
 
     <!--If you plan to submit this add-in to the Office Store, uncomment the SupportUrl element below-->
     <SupportUrl DefaultValue="http://community.spicecrm.io"/>
@@ -103,9 +103,9 @@
 
         <Resources>
             <bt:Images>
-                <bt:Image id="icon16" DefaultValue="https://gsuite.spicecrm.io/assets/icon-16.png"/>
-                <bt:Image id="icon32" DefaultValue="https://gsuite.spicecrm.io/assets/icon-32.png"/>
-                <bt:Image id="icon80" DefaultValue="https://gsuite.spicecrm.io/assets/icon-80.png"/>
+                <bt:Image id="icon16" DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-16.png"/>
+                <bt:Image id="icon32" DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-32.png"/>
+                <bt:Image id="icon80" DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-80.png"/>
             </bt:Images>
             <bt:Urls>
                 <bt:Url id="functionFile"
@@ -199,9 +199,9 @@
 
             <Resources>
                 <bt:Images>
-                    <bt:Image id="icon16" DefaultValue="https://gsuite.spicecrm.io/assets/icon-16.png"/>
-                    <bt:Image id="icon32" DefaultValue="https://gsuite.spicecrm.io/assets/icon-32.png"/>
-                    <bt:Image id="icon80" DefaultValue="https://gsuite.spicecrm.io/assets/icon-80.png"/>
+                    <bt:Image id="icon16" DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-16.png"/>
+                    <bt:Image id="icon32" DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-32.png"/>
+                    <bt:Image id="icon80" DefaultValue="https://gsuite.spicecrm.io/assets/icons/icon-80.png"/>
                 </bt:Images>
                 <bt:Urls>
                     <bt:Url id="functionFile"
