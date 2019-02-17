@@ -44,7 +44,7 @@
     <FormSettings>
         <Form xsi:type="ItemRead">
             <DesktopSettings>
-                <SourceLocation DefaultValue="https://gsuite.spicecrm.io/assets/outlook/mailitemread.html"/>
+                <SourceLocation DefaultValue="https://gsuite.spicecrm.io/outlookmailitemread.html"/>
                 <RequestedHeight>250</RequestedHeight>
             </DesktopSettings>
         </Form>
@@ -110,7 +110,7 @@
             <bt:Urls>
                 <bt:Url id="functionFile"
                         DefaultValue="https://gsuite.spicecrm.io/assets/outlook/function-file.html"/>
-                <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://gsuite.spicecrm.io/assets/outlook/mailitemread.html"/>
+                <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://gsuite.spicecrm.io/outlookmailitemread.html"/>
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
@@ -207,7 +207,7 @@
                     <bt:Url id="functionFile"
                             DefaultValue="https://gsuite.spicecrm.io/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadTaskPaneUrl"
-                            DefaultValue="https://gsuite.spicecrm.io/assets/outlook/mailitemread.html"/>
+                            DefaultValue="https://gsuite.spicecrm.io/outlookmailitemread.html"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
