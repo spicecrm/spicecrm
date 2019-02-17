@@ -114,7 +114,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $serverurl = str_replace('/config/outlookxml', '', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
                 // check if we have parameers in the request
                 $parampos = strpos($serverurl,'?');
-                if($parampos >= 0){
+                if($parampos !== false){
                     $serverurl = substr($serverurl, 0, $parampos);
                 }
 
