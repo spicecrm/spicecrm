@@ -109,13 +109,18 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'outlookxml':
                 header('Content-Type: application/xml' );
-                $dir = dirname(__DIR__);
+
+                // build the serverurl from teh request
                 $serverurl = str_replace('/config/outlookxml', '', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
                 // check if we have parameers in the request
                 $parampos = strpos($serverurl,'?');
                 if($parampos >= 0){
                     $serverurl = substr($serverurl, 0, $parampos);
                 }
+
+                // read the template XML and parse it
+                $dir = dirname(__DIR__);
+                $filepath = "$dir/assets/outlook/spicecrmoutlookplugin.xml";
                 $file = file_get_contents($filepath);
                 echo( str_replace('<serverurl>', $serverurl, $file) );
                 break;
