@@ -1,13 +1,6 @@
 <div class="userProfilePanel">
     <div class="slds-grid slds-p-around--small slds-grid--vertical-align-center">
-        <div>
-            <div (click)="changeImage()">
-                <span *ngIf="!userimage" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle" style="width:40px;height:40px;">
-                    <system-icon [sprite]="'action'" [icon]="'user'" [size]="'small'"></system-icon>
-                </span>
-                <img style="height: 40px; width: 40px" *ngIf="userimage" [src]="userimage"/>
-            </div>
-        </div>
+        <global-user-panel-icon></global-user-panel-icon>
         <div class="slds-m-left--small">
             <h1 class="slds-text-heading--medium" [title]="userName">{{displayName}}</h1>
         </div>

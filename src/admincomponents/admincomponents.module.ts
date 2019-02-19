@@ -3,7 +3,7 @@ import {FormsModule}   from '@angular/forms';
 import {AfterViewInit, OnInit, OnDestroy, ComponentFactoryResolver, Component, NgModule, Injectable, ViewChild, ViewContainerRef, ElementRef, Input, Output, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, Subscription} from 'rxjs';
 import {CanActivate}    from '@angular/router';
 
 import {session} from '../services/session.service';

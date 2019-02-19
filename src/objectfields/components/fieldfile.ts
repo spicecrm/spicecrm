@@ -5,8 +5,9 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
+import {toast} from '../../services/toast.service';
 import {fieldGeneric} from './fieldgeneric';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 
 import {Subject, Observable} from 'rxjs';
 
@@ -14,30 +15,47 @@ import {Subject, Observable} from 'rxjs';
     selector: 'field-file',
     templateUrl: './src/objectfields/templates/fieldfile.html'
 })
-export class fieldFile extends fieldGeneric{
+export class fieldFile extends fieldGeneric {
 
-    @ViewChild('fileupload', {read: ViewContainerRef}) fileupload: ViewContainerRef;
-    showUploadModal: boolean = false;
-    theFile: string = '';
-    theProgress: number = 0;
+    @ViewChild('fileupload', {read: ViewContainerRef}) private fileupload: ViewContainerRef;
+    private showUploadModal: boolean = false;
+    private theFile: string = '';
+    private theProgress: number = 0;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configurationService: configurationService, private session: session) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configurationService: configurationService, private session: session, private toast: toast) {
         super(model, view, language, metadata, router);
     }
 
-    uploadFile(){
+    public humanFileSize(filesize) {
+        let thresh = 1024;
+        let bytes: number = filesize;
+        if (Math.abs(filesize) < thresh) {
+            return bytes + " B";
+        }
+        let units = ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        let u = -1;
+        do {
+            bytes /= thresh;
+            ++u;
+        } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+        return bytes.toFixed(1) + " " + units[u];
+    }
+
+    private uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
 
-    doupload(files){
+    private doupload(files) {
         this.showUploadModal = true;
         this.theFile = files[0].name;
-        this.uploadAttachments(files).subscribe((retVal: any) => {
+        this.uploadAttachmentsBase64(files).subscribe((retVal: any) => {
             if (retVal.progress) {
                 this.theProgress = retVal.progress.loaded / retVal.progress.total * 100
             } else if (retVal.complete) {
-                this.value = this.theFile;
+                this.value = retVal.filename ? retVal.filename : this.theFile;
+                // set the filetype
+                this.model.setField('file_mime_type', retVal.filetype);
             }
         }, error => {
 
@@ -45,25 +63,27 @@ export class fieldFile extends fieldGeneric{
         }, () => this.closeUploadPopup());
     }
 
-    removeFile(){
+    private removeFile() {
         this.value = '';
+        this.model.setField('file_mime_type', '');
     }
 
-    closeUploadPopup() {
+    private closeUploadPopup() {
         this.showUploadModal = false;
     }
 
-    uploadAttachments(files): Observable<any> {
-        if (files.length === 0)
-            return;
+    /*
+    private uploadAttachments(files): Observable<any> {
+        if (files.length === 0){
+            return;}
 
         let retSub = new Subject<any>();
 
 
-        var data = new FormData();
+        let data = new FormData();
         data.append('file', files[0], files[0].name);
 
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         let resp: any = {};
         request.onreadystatechange = function (scope: any = this) {
             if (request.readyState == 4) {
@@ -81,7 +101,6 @@ export class fieldFile extends fieldGeneric{
 
         request.upload.addEventListener('progress', function (e: any) {
             retSub.next({progress: {total: e.total, loaded: e.loaded}});
-            // console.log('progress' + e.loaded + '/' + e.total + '=' + Math.ceil(e.loaded/e.total) * 100 + '%');
         }, false);
 
         request.open('POST', this.configurationService.getBackendUrl() + '/module/' + this.model.module + '/' + this.model.id + '/noteattachment', true);
@@ -90,15 +109,89 @@ export class fieldFile extends fieldGeneric{
 
         return retSub.asObservable();
     }
+    */
 
-    getBarStyle() {
-        return {
-            width: this.theProgress + '%'
+    public uploadAttachmentsBase64(files): Observable<any> {
+        if (files.length === 0) {
+            return;
         }
+
+        let retSub = new Subject<any>();
+        let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
+
+        for (let file of files) {
+
+            // check max filesize
+            if (maxSize && file.size > maxSize) {
+                this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [file.name, this.humanFileSize(maxSize)]), 'error');
+                continue;
+            }
+
+            this.readFile(file).subscribe(filecontent => {
+                let request = new XMLHttpRequest();
+                let resp: any = {};
+                request.onreadystatechange = (scope: any = this) => {
+                    if (request.readyState == 4) {
+                        try {
+                            let retVal = JSON.parse(request.response);
+                            retSub.next({complete: true, filename: retVal.filename, filetype: retVal.filetype});
+                            retSub.complete();
+                        } catch (e) {
+                            resp = {
+                                status: "error",
+                                data: "Unknown error occurred: [" + request.responseText + "]"
+                            };
+                        }
+                    }
+                };
+
+                request.upload.addEventListener("progress", e => {
+                    retSub.next({progress: {total: e.total, loaded: e.loaded}});
+                }, false);
+
+                // request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
+                request.open('POST', this.configurationService.getBackendUrl() + '/module/' + this.model.module + '/' + this.model.id + '/noteattachment', true);
+                request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
+                request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+                let fileBody = {
+                    file: file.filecontent,
+                    filename: file.name,
+                    filemimetype: file.type
+                };
+
+                request.send(JSON.stringify(fileBody));
+            });
+        }
+
+        return retSub.asObservable();
     }
 
-    downloadAttachment(id) {
-        let params: Array<string> = [];
+    private readFile(file): Observable<any> {
+        let responseSubject = new Subject<any>();
+        let reader = new FileReader();
+        reader['file'] = file;
+        reader.onloadend = (e) => {
+            let filecontent = reader.result.toString();
+            filecontent = filecontent.substring(filecontent.indexOf('base64,') + 7);
+
+            let file = reader['file'];
+            file.filecontent = filecontent;
+            responseSubject.next(file);
+            responseSubject.complete();
+        };
+        reader.readAsDataURL(file);
+        return responseSubject.asObservable();
+    }
+
+    private getBarStyle() {
+        return {
+            width: this.theProgress + '%'
+        };
+    }
+
+    private downloadAttachment(id) {
+        let params: string[] = [];
         params.push('sessionid=' + this.session.authData.sessionId);
         window.open(
             this.configurationService.getBackendUrl() + '/module/' + this.model.module + '/' + this.model.id + '/noteattachment/download?' + params.join('&'),
@@ -106,17 +199,69 @@ export class fieldFile extends fieldGeneric{
         );
     }
 
-    preventdefault(event: any) {
-        if((event.dataTransfer.items.length == 1 && event.dataTransfer.items[0].kind === 'file') || (event.dataTransfer.files.length > 0)) {
+    private preventdefault(event: any) {
+        if ((event.dataTransfer.items.length == 1 && event.dataTransfer.items[0].kind === 'file') || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
         }
     }
 
-    onDrop(event: any) {
+    private onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
-        if (files && files.length == 1)
+        if (files && files.length == 1) {
             this.doupload(files);
+        }
+    }
+
+
+    private determineFileIcon() {
+        let filetype = this.model.getField('file_mime_type');
+        if (filetype) {
+            let fileTypeArray = filetype.split("/");
+            // check the application
+            switch (fileTypeArray[0]) {
+                case "image":
+                    return "image";
+                case "text":
+                    switch (fileTypeArray[1]) {
+                        case 'html':
+                            return 'html';
+                        default:
+                            return "txt";
+                    }
+                case "audio":
+                    return "audio";
+                case "video":
+                    return "video";
+                default:
+                    break;
+            }
+
+            // check the type
+            switch (fileTypeArray[1]) {
+                case "xml":
+                    return "xml";
+                case "pdf":
+                    return "pdf";
+                case "vnd.ms-excel":
+                case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                    return "excel";
+                case "vnd.openxmlformats-officedocument.wordprocessingml.document":
+                case "vnd.oasis.opendocument.text":
+                    return "word";
+                case "vnd.oasis.opendocument.presentation":
+                case "vnd.openxmlformats-officedocument.presentationml.presentation":
+                    return "ppt";
+                case "x-zip-compressed":
+                    return "zip";
+                case "x-msdownload":
+                    return "exe";
+                default:
+                    break;
+            }
+        }
+
+        return "unknown";
     }
 }
