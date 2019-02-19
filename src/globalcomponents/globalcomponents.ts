@@ -77,6 +77,7 @@ import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalappl
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
 import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
+import /*embed*/ {GlobaUserPanelIcon} from "./components/globauserpanelicon";
 
 import /*embed*/ {GlobalRecentItems} from "./components/globalrecentitems";
 import /*embed*/ {GlobalSearch} from "./components/globalsearch";
@@ -136,6 +137,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalLoginResetPassword,
         GlobalUser,
         GlobaUserPanel,
+        GlobaUserPanelIcon,
         GlobalAppLauncher,
         GlobalAppLauncherDialog,
         GlobalAppLauncherDialogRoleTile,
