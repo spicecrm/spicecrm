@@ -1,4 +1,4 @@
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     {{value}}
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()">
@@ -24,7 +24,7 @@
         </div>
         <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlastname)">
             <field-label [fieldname]="fieldlastname"></field-label>
-            <input class="slds-input" type="text" [(ngModel)]="model.data[fieldlastname]"/>
+            <input #focus class="slds-input" type="text" [(ngModel)]="model.data[fieldlastname]"/>
             <field-messages [fieldname]="fieldlastname"></field-messages>
         </div>
         <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">

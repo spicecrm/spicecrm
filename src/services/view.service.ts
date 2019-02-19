@@ -6,6 +6,7 @@ export class view {
     public mode$ = new EventEmitter();
     public isEditable: boolean = false;
     public displayLinks: boolean = true;
+    public editfieldid: string = '';
 
     // defines the labele .. can be value none, default, long or short
     public labels: string = 'default';
@@ -21,8 +22,9 @@ export class view {
         }
     }
 
-    public setEditMode() {
+    public setEditMode(fieldid = '') {
         this.mode = 'edit';
+        this.editfieldid = fieldid;
         this.mode$.emit(this.mode);
     }
 
