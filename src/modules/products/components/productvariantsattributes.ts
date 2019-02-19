@@ -17,7 +17,7 @@ export class ProductVariantsAttributes implements OnDestroy {
 
     constructor(private language: language, private model: model, private backend: backend) {
         this.subscription = this.model.data$.subscribe(data => {
-            this.loadAttributes(data['product_id']);
+            this.loadAttributes(data);
         });
     }
 
@@ -26,14 +26,28 @@ export class ProductVariantsAttributes implements OnDestroy {
     }
 
     public ngOnInit() {
-        this.loadAttributes(this.model.data['product_id']);
+        this.loadAttributes(this.model.data);
     }
 
-    private loadAttributes(newProductId) {
+    private loadAttributes(data) {
+        let parentField;
+        let type;
+        switch (this.model.module) {
+            case 'ProductVariants':
+                parentField =  'product_id';
+                type = 'products';
+                break;
+            case 'Products':
+                parentField =  'productgroup_id';
+                type = 'productgroups';
+                break;
+        }
+
+        let newProductId = data[parentField];
         if (newProductId && newProductId.length > 0 && newProductId != this.productId) {
             this.isLoading = true;
             this.productId = newProductId;
-            this.backend.getRequest(`products/${newProductId}/productattributes/direct`)
+            this.backend.getRequest(`${type}/${newProductId}/productattributes/direct`)
                 .subscribe(attributes => {
                     this.attributes = attributes;
                     this.isLoading = false;
