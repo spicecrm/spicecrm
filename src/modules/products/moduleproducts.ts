@@ -51,11 +51,13 @@ import /*embed*/ {ProductBrowserAttributeVCSearch} from './components/productbro
 import /*embed*/ {ProductBrowserAttributeDISearch} from './components/productbrowserattributedisearch';
 import /*embed*/ {ProductBrowserAttributeNSearch} from './components/productbrowserattributensearch';
 import /*embed*/ {ProductBrowserAttributeFSearch} from './components/productbrowserattributefsearch';
+import /*embed*/ {ProductBrowserAttributeSSearch} from './components/productbrowserattributessearch';
 import /*embed*/ {ProductVariantsAttributes} from './components/productvariantsattributes';
 import /*embed*/ {ProductVariantsAttributeVC} from './components/productvariantsattributevc';
 import /*embed*/ {ProductVariantsAttributeDI} from './components/productvariantsattributedi';
 import /*embed*/ {ProductVariantsAttributeN} from './components/productvariantsattributen';
 import /*embed*/ {ProductVariantsAttributeF} from './components/productvariantsattributef';
+import /*embed*/ {ProductVariantsAttributeSS} from "./components/productvariantsattributess";
 import /*embed*/ {ProductTextGenerator} from './components/producttextgenerator';
 import /*embed*/ {ProductGroupsContentCodeAssignments} from './components/productgroupscontentcodeassignments';
 import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/productgroupslongtextcodeassignments';
@@ -95,11 +97,13 @@ import /*embed*/ {ProductGroupManagerDetailsAttributesAddButton} from "./compone
         ProductBrowserAttributeDISearch,
         ProductBrowserAttributeNSearch,
         ProductBrowserAttributeFSearch,
+        ProductBrowserAttributeSSearch,
         ProductVariantsAttributes,
         ProductVariantsAttributeVC,
         ProductVariantsAttributeDI,
         ProductVariantsAttributeN,
         ProductVariantsAttributeF,
+        ProductVariantsAttributeSS,
         ProductTextGenerator,
         ProductGroupsContentCodeAssignments,
         ProductGroupsLongtextCodeAssignments

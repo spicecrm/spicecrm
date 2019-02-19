@@ -1,14 +1,4 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
@@ -29,32 +19,32 @@ export class ProductBrowserAttributes {
 
     }
 
-    get hasSearchFilters(){
-        return this.productfinder.hasSearchFilters();
+    get hasSearchFilters() {
+        return this.productfinder.hasSearchFilters;
     }
 
-    clearFilters(){
-        this.productfinder.resetSearchFilters();
-    }
-
-    get attributesstyle(){
+    get attributesStyle() {
         let rect = this.attributesheader.element.nativeElement.getBoundingClientRect();
         return {
             height: 'calc(100% - ' + rect.height + 'px)'
-        }
+        };
     }
 
-    get loading(){
-        return this.productfinder.loadingattributes;
+    get loading() {
+        return this.productfinder.loadingAttributes;
     }
 
-    get attributes(){
+    get attributes() {
         let attributes = [];
-        for(let attribute of this.productfinder.groupattributes){
-            if(attribute.name.toLowerCase().indexOf(this.attributefilter.toLowerCase()) >= 0){
+        for (let attribute of this.productfinder.selectedGroupAttributes) {
+            if (attribute.name.toLowerCase().indexOf(this.attributefilter.toLowerCase()) >= 0) {
                 attributes.push(attribute);
             }
         }
         return attributes;
+    }
+
+    clearFilters() {
+        this.productfinder.resetSearchFilters();
     }
 }

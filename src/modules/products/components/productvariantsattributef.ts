@@ -21,7 +21,7 @@ declare var moment: any;
     selector: 'product-variants-attribute-f',
     templateUrl: './src/modules/products/templates/productvariantsattributef.html'
 })
-export class ProductVariantsAttributeF extends ProductVariantsAttributeVC{
+export class ProductVariantsAttributeF extends ProductVariantsAttributeVC {
 
     constructor(public language: language, public backend: backend, public elementRef: ElementRef, public view: view, public model: model) {
         super(language, backend, elementRef, view, model);

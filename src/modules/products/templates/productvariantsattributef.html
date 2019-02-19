@@ -1,24 +1,4 @@
-<!--div class="slds-form-element slds-p-vertical--x-small">
-    <label class="slds-form-element__label">{{attribute.summary_text}}</label>
-    <div class="slds-form-element__control">
-        <span class="slds-checkbox">
-          <input type="checkbox" name="options" [id]="attribute.id" [disabled]="!editmode">
-          <label class="slds-checkbox__label" [for]="attribute.id">
-            <span class="slds-checkbox_faux"></span>
-          </label>
-        </span>
-    </div>
-</div-->
-<div class="slds-form-element__control">
-    <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-        <span class="slds-checkbox">
-          <input type="checkbox" name="options" [id]="attribute.id" [disabled]="!editmode || attribute.attr_usage == 'none'" [(ngModel)]="value">
-          <label class="slds-checkbox__label" [for]="attribute.id">
-            <span class="slds-checkbox_faux"></span>
-          </label>
-        </span>
-        <button *ngIf="editable && !editmode" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
-            <system-button-icon [icon]="'edit'"></system-button-icon>
-        </button>
-    </div>
-</div>
+<field-generic-display *ngIf="!editmode" [editable]="editable">
+    <system-checkbox [(ngModel)]="value" [disabled]="true"></system-checkbox>
+</field-generic-display>
+<system-checkbox *ngIf="editmode" [(ngModel)]="value"></system-checkbox>

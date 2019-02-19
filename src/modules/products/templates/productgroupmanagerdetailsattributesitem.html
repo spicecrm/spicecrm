@@ -8,7 +8,7 @@
                         <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" (click)="goDetails()">
                             {{attribute.summary_text}}
                         </a>
-                        <span class="slds-text-color--inverse-weak"> / {{attribute.parent_name}}</span>
+                        <span *ngIf="showParent" class="slds-text-color--inverse-weak"> / {{attribute.parent_name}}</span>
                     </h2>
                 </div>
             </header>

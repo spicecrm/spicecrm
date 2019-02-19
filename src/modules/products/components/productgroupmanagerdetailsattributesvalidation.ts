@@ -24,7 +24,7 @@ export class ProductGroupManagerDetailsAttributesValidation implements OnInit, O
     }
 
     get canEdit() {
-        return this.model.checkAccess('edit');
+        return this.metadata.checkModuleAcl(this.model.module, "create");
     }
 
     get tableContainerStyle() {
@@ -40,6 +40,7 @@ export class ProductGroupManagerDetailsAttributesValidation implements OnInit, O
     }
 
     public addItem() {
+        this.model.id = '';
         this.model.addModel('', this.parent).subscribe(item => {
             if (typeof item === "object") {
                 this.relatedmodels.items = [...this.relatedmodels.items,item];

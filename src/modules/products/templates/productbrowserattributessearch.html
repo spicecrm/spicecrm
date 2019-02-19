@@ -1,0 +1,16 @@
+<div class="slds-box--border slds-m-vertical--x-small">
+    <div class="slds-p-horizontal--x-small slds-p-bottom--x-small">
+        <label class="slds-form-element__label slds-m-bottom--x-small">{{attribute.name}}</label>
+        <div class="slds-grid slds-wrap">
+            <div *ngFor="let attributeValue of attributeValues" class="slds-form-element__control slds-medium-size--1-of-1 slds-large-size--1-of-3">
+        <span class="slds-checkbox">
+            <input id="{{attributeValue}}" type="checkbox" (click)="checkEnumOption(attributeValue, $event.srcElement.checked)" [checked]="enumOptionValue(attributeValue)">
+            <label for="{{attributeValue}}" [title]="attributeValue" style="display: block" class="slds-checkbox__label slds-truncate">
+                <span class="slds-checkbox_faux slds-m-right--x-small"></span>
+                <span class="slds-form-element__label slds-has-flexi-truncate">{{attributeValue}}</span>
+            </label>
+        </span>
+            </div>
+        </div>
+    </div>
+</div>

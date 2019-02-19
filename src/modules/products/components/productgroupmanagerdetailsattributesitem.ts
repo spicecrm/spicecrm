@@ -1,28 +1,39 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {Router} from "@angular/router";
 import {relatedmodels} from "../../../services/relatedmodels.service";
-import {Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
+import {productfinder} from "../services/productfinder.service";
 
 @Component({
     selector: 'product-group-manager-details-attributes-item',
     templateUrl: './src/modules/products/templates/productgroupmanagerdetailsattributesitem.html',
     providers: [model, relatedmodels]
 })
-export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit{
+export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit {
     @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
 
     @Input() private attribute: any;
     public detailsItems: any[] = [];
     private isOpen: boolean = false;
 
-    constructor(private language: language, private model: model, private metadata: metadata, private router: Router, private relatedmodels: relatedmodels,
-    ) {}
+    constructor(private language: language,
+                private model: model,
+                private metadata: metadata,
+                private router: Router,
+                private relatedmodels: relatedmodels,
+                private productFinder: productfinder
+    ) {
+    }
 
     get thisModel() {
         return {id: this.model.id, module: this.model.module, data: this.model.data};
+    }
+
+    get showParent() {
+        return this.attribute.parent_id != this.productFinder.searchfocus.object.id;
     }
 
     public ngOnInit() {
@@ -31,6 +42,7 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
         this.model.data = this.attribute;
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
+        this.relatedmodels.loaditems = -1;
         this.relatedmodels.relatedModule = 'ProductAttributeValueValidations';
     }
 
@@ -53,7 +65,7 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
         this.isOpen = !this.isOpen;
     }
 
-
+    // will be called from parent
     private expand(bool) {
         this.isOpen = bool;
     }

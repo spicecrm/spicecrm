@@ -13,7 +13,7 @@
                 </tr>
                 </thead>
                 <tbody *ngIf="!relatedmodels.isloading">
-                    <tr *ngFor="let item of relatedmodels.items" product-group-manager-details-attributes-validation-item [listFields]="listFields" [item]="item" class="slds-hint-parent"></tr>
+                    <tr *ngFor="let item of relatedmodels.items; trackBy: trackByFn" product-group-manager-details-attributes-validation-item [listFields]="listFields" [item]="item" class="slds-hint-parent"></tr>
                 </tbody>
                 <tbody system-table-stencils *ngIf="relatedmodels.isloading" [columns]="listFields?.length" [tools]="true" [rows]="3"></tbody>
             </table>

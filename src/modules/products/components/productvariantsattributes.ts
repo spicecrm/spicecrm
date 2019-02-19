@@ -1,46 +1,46 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef, OnChanges, OnInit, EventEmitter, OnDestroy
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
-
-declare var moment: any;
+import {Subscription} from "rxjs";
+import {model} from "../../../services/model.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'product-variants-attributes',
     templateUrl: './src/modules/products/templates/productvariantsattributes.html'
 })
-export class ProductVariantsAttributes  {
+export class ProductVariantsAttributes implements OnDestroy {
 
-    requiredopen: boolean = true;
+    public attributes: any[] = [];
+    private productId: string = '';
+    private isLoading: boolean = false;
+    private subscription: Subscription = new Subscription();
 
-    @Input() showrequired: boolean = true;
-    @Input() showoptional: boolean = true;
-    @Input() showreadonly: boolean = true;
-
-    constructor(private language: language) {
-
+    constructor(private language: language, private model: model, private backend: backend) {
+        this.subscription = this.model.data$.subscribe(data => {
+            this.loadAttributes(data['product_id']);
+        });
     }
 
-    togglerequired() {
-        this.requiredopen = !this.requiredopen;
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
-    getRequiredStyle() {
-        if (!this.requiredopen)
-            return {
-                height: '0px',
-                transform: 'rotateX(90deg)'
-            }
+    public ngOnInit() {
+        this.loadAttributes(this.model.data['product_id']);
     }
 
+    private loadAttributes(newProductId) {
+        if (newProductId && newProductId.length > 0 && newProductId != this.productId) {
+            this.isLoading = true;
+            this.productId = newProductId;
+            this.backend.getRequest(`products/${newProductId}/productattributes/direct`)
+                .subscribe(attributes => {
+                    this.attributes = attributes;
+                    this.isLoading = false;
+                }, err => this.isLoading = false);
+        } else if (!newProductId) {
+            this.productId = '';
+            this.attributes = [];
+        }
+    }
 }

@@ -11,5 +11,6 @@
     </div>
 </div>
 <div class="slds-border--top slds-p-top--small slds-p-horizontal--xx-small">
+    <system-spinner *ngIf="isLoading"></system-spinner>
     <product-group-manager-details-attributes-item *ngFor="let attribute of filteredAttributes; trackBy: trackByFn" [attribute]="attribute" class="slds-size--1-of-1"></product-group-manager-details-attributes-item>
 </div>
