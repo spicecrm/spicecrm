@@ -1,0 +1,12 @@
+<div class="slds-is-relative" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    <div >
+        <span *ngIf="!userimage" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle" style="width:40px;height:40px;">
+            <system-icon [sprite]="'action'" [icon]="'user'" [size]="'small'"></system-icon>
+        </span>
+        <img style="height: 40px; width: 40px" *ngIf="userimage" [src]="userimage"/>
+    </div>
+    <div [ngStyle]="editstyle" class="slds-is-absolute__top slds-align--absolute-center" style="transition: .5s; height: 40px; width: 40px;" (click)="changeImage()">
+        <div class="slds-is-absolute__top" style="background: white;height: 40px; width: 40px; opacity: .7;"></div>
+        <system-utility-icon icon="edit" size="x-small" style="z-index: 1;"></system-utility-icon>
+    </div>
+</div>
