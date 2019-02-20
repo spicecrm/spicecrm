@@ -11,7 +11,6 @@ import {Router} from "@angular/router";
     templateUrl: './src/admincomponents/templates/administrationschedulerjobsenum.html'
 })
 export class AdministrationSchedulerJobsEnum {
-    expanded: boolean = true;
     jobsList: any[] = [];
 
     constructor(public model: model,
