@@ -92,7 +92,7 @@
                                         <SourceLocation resid="messageReadTaskPaneUrl"/>
                                     </Action>
                                 </Control>
-                                <Control xsi:type="Button" id="msgReadOpenPaneButton">
+                                <Control xsi:type="Button" id="crmPaneButton">
                                     <Label resid="CRMButtonLabel"/>
                                     <Supertip>
                                         <Title resid="paneReadSuperTipTitle"/>
@@ -126,13 +126,13 @@
                 <bt:Url id="functionFile"
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                 <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlookmailitemread.html"/>
-                <bt:Url id="crmURL" DefaultValue="https://<serverurl>/index.html"/>
+                <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlookcrm.html"/>
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
                 <bt:String id="customTabLabel" DefaultValue="SpiceCRM"/>
                 <bt:String id="paneReadButtonLabel" DefaultValue="Archive Email"/>
-                <bt:String id="CRMButtonLabel" DefaultValue="CRM"/>
+                <bt:String id="CRMButtonLabel" DefaultValue="CRM (experimental)"/>
                 <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
             </bt:ShortStrings>
             <bt:LongStrings>
@@ -178,7 +178,7 @@
                                             <SourceLocation resid="messageReadTaskPaneUrl"/>
                                         </Action>
                                     </Control>
-                                    <Control xsi:type="Button" id="msgReadOpenPaneButton">
+                                    <Control xsi:type="Button" id="crmPaneButton">
                                         <Label resid="CRMButtonLabel"/>
                                         <Supertip>
                                             <Title resid="paneReadSuperTipTitle"/>
@@ -223,6 +223,26 @@
                                         <SourceLocation resid="messageReadTaskPaneUrl"/>
                                     </Action>
                                 </Control>
+                                <Control xsi:type="MobileButton" id="CRMButton">
+                                    <Label resid="CRMButtonLabel"/>
+                                    <Icon xsi:type="bt:MobileIconList">
+                                        <bt:Image size="25" scale="1" resid="icon16"/>
+                                        <bt:Image size="25" scale="2" resid="icon16"/>
+                                        <bt:Image size="25" scale="3" resid="icon16"/>
+
+                                        <bt:Image size="32" scale="1" resid="icon32"/>
+                                        <bt:Image size="32" scale="2" resid="icon32"/>
+                                        <bt:Image size="32" scale="3" resid="icon32"/>
+
+                                        <bt:Image size="48" scale="1" resid="icon32"/>
+                                        <bt:Image size="48" scale="2" resid="icon32"/>
+                                        <bt:Image size="48" scale="3" resid="icon32"/>
+                                    </Icon>
+                                    <Action xsi:type="ShowTaskpane">
+                                        <SourceLocation resid="crmURL"/>
+                                    </Action>
+                                </Control>
+
                             </Group>
                         </ExtensionPoint>
                     </MobileFormFactor>
@@ -238,13 +258,13 @@
                 <bt:Urls>
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlookmailitemread.html"/>
-                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/index.html"/>
+                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlookcrm.html"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
                     <bt:String id="customTabLabel" DefaultValue="SpiceCRM"/>
                     <bt:String id="paneReadButtonLabel" DefaultValue="Archive Email"/>
-                    <bt:String id="CRMButtonLabel" DefaultValue="CRM"/>
+                    <bt:String id="CRMButtonLabel" DefaultValue="CRM (experimental)"/>
                     <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
                 </bt:ShortStrings>
                 <bt:LongStrings>
