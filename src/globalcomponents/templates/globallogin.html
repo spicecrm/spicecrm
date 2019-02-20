@@ -7,7 +7,7 @@
             </div>
             <div class="slds-box--border" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
-                    <form *ngIf="!showForgotPass">
+                    <form *ngIf="!showForgotPass" (submit)="login($event)">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="slds-button slds-button--brand" style="width:100%;" (click)="login()" tabindex="0">Login</div>
+                        <button type="submit" value="Submit" class="slds-button slds-button--brand" style="width:100%;" tabindex="0">Login</button>
                         <global-login-google (googletoken)="doLogin()"></global-login-google>
                     </form>
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
