@@ -29,7 +29,7 @@ export class ProductBrowserVariant implements OnInit {
     }
 
     get groupAttributes() {
-        return this.productfinder.selectedGroupAttributes;
+        return this.productfinder.groupAttributes;
     }
 
     public ngOnInit() {

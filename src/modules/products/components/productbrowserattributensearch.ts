@@ -28,7 +28,7 @@ export class ProductBrowserAttributeNSearch {
         if (!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
         this.productfinder.searchfilters[this.attribute.id].valuefrom = value;
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.productfinder.getProductVariants(true), 500);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
     get toValue() {
@@ -43,7 +43,7 @@ export class ProductBrowserAttributeNSearch {
         if (!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
         this.productfinder.searchfilters[this.attribute.id].valueto = value;
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.productfinder.getProductVariants(true), 500);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
     get uom() {

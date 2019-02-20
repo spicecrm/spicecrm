@@ -20,7 +20,7 @@ export class ProductBrowserVariants {
     }
 
     get productVariants() {
-        return this.productfinder.selectedProductVariants;
+        return this.productfinder.productVariants;
     }
 
     get loading() {
@@ -37,7 +37,7 @@ export class ProductBrowserVariants {
 
     keyUp() {
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.productfinder.getProductVariants(true), 500);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
     onScroll(e) {

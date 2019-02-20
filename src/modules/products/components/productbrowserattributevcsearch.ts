@@ -29,6 +29,6 @@ export class ProductBrowserAttributeVCSearch {
         this.productfinder.searchfilters[this.attribute.id].value = value;
 
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.productfinder.getProductVariants(true), 500);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 }

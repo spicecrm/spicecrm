@@ -32,7 +32,7 @@ export class ProductBrowserAttributes {
 
     get attributes() {
         let attributes = [];
-        for (let attribute of this.productfinder.selectedGroupAttributes) {
+        for (let attribute of this.productfinder.groupAttributes) {
             if (attribute.name.toLowerCase().indexOf(this.attributeFilter.toLowerCase()) >= 0) {
                 attributes.push(attribute);
             }

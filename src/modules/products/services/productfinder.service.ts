@@ -7,8 +7,8 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 export class productfinder {
 
-    public groupAttributes: any = {};
-    public productVariants: any = {};
+    public groupAttributes: any[] = [];
+    public productVariants: any[] = [];
     public productVariantAggregates: any = {};
     public loading: boolean = false;
     public loadingAttributes: boolean = false;
@@ -25,38 +25,27 @@ export class productfinder {
         return JSON.stringify({}) !== JSON.stringify(this.searchfilters);
     }
 
-    get selectedProductVariants() {
-        return this.productVariants[this.searchfocus.object.id] || [];
-    }
-
-    get selectedGroupAttributes() {
-        return this.groupAttributes[this.searchfocus.object.id] || [];
-    }
-
     public setSearchFocus(searchFocus) {
         this.searchfocus = searchFocus;
         let type = searchFocus.type == 'Product' ? 'products' : 'productgroups';
-        this.getAttributes(type, searchFocus.object.id, true);
+        this.getAttributes(type, searchFocus.object.id);
     }
 
     /*
     *  - type can be products or productgroups
     */
-    public getAttributes(type, id, searchonly = false) {
-        if (this.groupAttributes[id]) {
-            return;
-        }
+    public getAttributes(type, id) {
         this.loadingAttributes = true;
-        this.groupAttributes[id] = [];
-        let params = {searchparams: searchonly};
+        this.groupAttributes = [];
+        let params = {searchparams: true};
 
         this.backend.getRequest(`${type}/${id}/productattributes/direct`, params)
             .subscribe(attributes => {
                 for (let attribute of attributes) {
-                    this.groupAttributes[id].push(this.modelutilities.backendModel2spice('ProductAtrtibutes', attribute));
+                    this.groupAttributes.push(this.modelutilities.backendModel2spice('ProductAtrtibutes', attribute));
                 }
 
-                this.groupAttributes[id].sort((a, b) => {
+                this.groupAttributes.sort((a, b) => {
                     return a.name > b.name ? 1 : -1;
                 });
 
@@ -65,13 +54,13 @@ export class productfinder {
             });
     }
 
-    public getProductVariants(searching = false) {
-        let objId = this.searchfocus.object.id;
-        if (this.loading || (this.productVariants[objId] && !searching)) {
+    public getProductVariants() {
+
+        if (this.loading) {
             return;
         }
 
-        this.productVariants[objId] = [];
+        this.productVariants = [];
         this.loading = true;
         let params = {
             searchterm: this.searchterm,
@@ -80,12 +69,12 @@ export class productfinder {
             size: 25
         };
 
-        this.backend.getRequest(`productvariants/${this.searchfocus.type.toLowerCase()}/${objId}`, params)
+        this.backend.getRequest(`productvariants/${this.searchfocus.type.toLowerCase()}/${this.searchfocus.object.id}`, params)
             .subscribe((variants: any) => {
                 for (let variant of variants.variants) {
-                    this.productVariants[objId].push(this.modelutilities.backendModel2spice('ProductVariants', variant));
+                    this.productVariants.push(this.modelutilities.backendModel2spice('ProductVariants', variant));
                 }
-                this.productVariantAggregates[objId] = variants.aggregates;
+                this.productVariantAggregates = variants.aggregates;
                 this.loading = false;
 
                 this.searchtotal = parseInt(variants.total, 10);
@@ -94,15 +83,14 @@ export class productfinder {
     }
 
     public getMoreProductVariants() {
-        let objId = this.searchfocus.object.id;
 
-        if (!this.loading && this.searchtotal > this.productVariants[objId].length) {
+        if (!this.loading && this.searchtotal > this.productVariants.length) {
             this.loading = true;
 
             let params = {
                 searchterm: this.searchterm,
                 searchfilters: JSON.stringify(this.buildSearchFilters()),
-                start: this.productVariants[objId].length,
+                start: this.productVariants.length,
                 size: 25
             };
 
@@ -110,7 +98,7 @@ export class productfinder {
             this.backend.getRequest(`productvariants/${this.searchfocus.type.toLowerCase()}/${this.searchfocus.object.id}`, params)
                 .subscribe((variants: any) => {
                     for (let variant of variants.variants) {
-                        this.productVariants[objId].push(this.modelutilities.backendModel2spice('ProductVariants', variant));
+                        this.productVariants.push(this.modelutilities.backendModel2spice('ProductVariants', variant));
                     }
                     this.loading = false;
                     this.searchtotal = parseInt(variants.total, 10);
@@ -127,25 +115,21 @@ export class productfinder {
 
     public getAggregateCount(aggregate, id) {
         let aggs = this.productVariantAggregates;
-        return aggs[id] && aggs[id][aggregate] && aggs[id][aggregate][id] ? aggs[id][aggregate][id] : '-';
+        return aggs && aggs[aggregate] && aggs[aggregate][id] ? aggs[aggregate][id] : '-';
     }
 
     public buildSearchFilters() {
         let filters = {};
-        for (let prop in this.groupAttributes) {
-            if (this.groupAttributes.hasOwnProperty(prop)) {
-                this.groupAttributes[prop].forEach(attr => {
-                    if (this.searchfilters[attr.id]) {
-                        filters[attr.id] = {
-                            datatype: attr.prat_datatype,
-                            value: this.searchfilters[attr.id].value,
-                            valuefrom: this.searchfilters[attr.id].valuefrom,
-                            valueto: this.searchfilters[attr.id].valueto
-                        };
-                    }
-                });
+        this.groupAttributes.forEach(attr => {
+            if (this.searchfilters[attr.id]) {
+                filters[attr.id] = {
+                    datatype: attr.prat_datatype,
+                    value: this.searchfilters[attr.id].value,
+                    valuefrom: this.searchfilters[attr.id].valuefrom,
+                    valueto: this.searchfilters[attr.id].valueto
+                };
             }
-        }
+        });
         return filters;
     }
 }
