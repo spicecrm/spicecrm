@@ -1,27 +1,51 @@
-import {Component, ElementRef, EventEmitter, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
+import {broadcast} from "../../../services/broadcast.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'product-group-manager-tree',
     templateUrl: './src/modules/products/templates/productgroupmanagertree.html'
 })
 
-export class ProductGroupManagerTree {
+export class ProductGroupManagerTree implements OnDestroy {
 
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     private productGroups: Array<any> = [];
     private productGroupTree: Array<any> = [];
     private selectedId: string = '';
+    private subscription: Subscription = new Subscription();
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
+    constructor(private language: language,
+                private backend: backend,
+                private elementRef: ElementRef,
+                private broadcast: broadcast,
+                private productfinder: productfinder) {
+        this.subscribeModelChanges();
         this.getProductGroups();
     }
 
     private trackByFn(index, item) {
         return item.id;
+    }
+
+    private subscribeModelChanges() {
+        this.subscription = this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype == 'model.save' && msg.messagedata.module == 'ProductGroups') {
+                this.productGroups.some((group) => {
+                    if (group.id == msg.messagedata.id) {
+                        group.summary_text = msg.messagedata.data.summary_text;
+                        group.sortseq = msg.messagedata.data.sortseq;
+                        this.sortProductGroups();
+                        this.buildTree();
+                        return true;
+                    }
+                });
+            }
+        });
     }
 
     private getProductGroups(parentId = '') {
@@ -40,10 +64,6 @@ export class ProductGroupManagerTree {
 
         this.backend.getRequest('module/ProductGroups', params)
             .subscribe(items => {
-                items.list.sort((a, b) => {
-                    return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
-                });
-
                 for (let item of items.list) {
                     item.expanded = false;
                     item.loaded = false;
@@ -52,11 +72,18 @@ export class ProductGroupManagerTree {
                     item.product_count = parseInt(item.product_count, 10);
                     this.productGroups.push(item);
                 }
+                this.sortProductGroups();
                 this.buildTree();
-                if (this.productfinder.searchfocus.type.length == 0) {
+                if (this.productfinder.searchfocus.type.length == 0 && this.productGroupTree.length > 0) {
                     this.selectGroup(this.productGroupTree[0]);
                 }
             });
+    }
+
+    private sortProductGroups() {
+        this.productGroups.sort((a, b) => {
+            return a.sortseq > b.sortseq ? 1 : -1;
+        });
     }
 
     private toggle(productgroup) {
@@ -108,5 +135,9 @@ export class ProductGroupManagerTree {
 
     private isSelected(id) {
         return this.selectedId == id;
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
