@@ -114,6 +114,7 @@ import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackage
 import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
+import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 
 @NgModule({
     imports: [
@@ -168,6 +169,7 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemRichTextEditor,
         SystemRichTextSourceModal,
         SystemInputTime,
+        SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
         SystemGoogleplacesSearch,
@@ -232,6 +234,7 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemSection,
         SystemRichTextEditor,
         SystemInputTime,
+        SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
         SystemGoogleplacesSearch,
