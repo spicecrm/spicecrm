@@ -11,9 +11,10 @@ declare var moment: any;
 })
 export class ProductBrowserAttributeSSearch extends ProductBrowserAttributeVCSearch {
 
+    private arrayvalue: any[] = [];
+
     constructor(public language: language, public productfinder: productfinder) {
         super(language, productfinder);
-        this.autosearch = true;
     }
 
     get attributeValues() {
@@ -24,35 +25,12 @@ export class ProductBrowserAttributeSSearch extends ProductBrowserAttributeVCSea
             }) : [];
     }
 
-    get value() {
-        try {
-            return this.productfinder.searchfilters[this.attribute.id].value;
-        } catch (e) {
-            return '';
-        }
+    get arrayValue() {
+        return this.arrayvalue;
     }
 
-    set value(value) {
-        if (!this.productfinder.searchfilters[this.attribute.id]) {
-            this.productfinder.searchfilters[this.attribute.id] = {};
-        }
-
-        this.productfinder.searchfilters[this.attribute.id].value = value;
-        if (this.autosearch) {
-            this.productfinder.getProductVariants();
-        }
-    }
-
-    private checkEnumOption(value, checked) {
-        let enumArray = this.value.length > 0 ? this.value.split(",") : [];
-        enumArray = enumArray.filter(item => item != value);
-        if (checked) {
-            enumArray.push(value);
-        }
-        this.value = enumArray.toString();
-    }
-
-    private enumOptionValue(value) {
-        return !!this.value.includes(value);
+    set arrayValue(value) {
+        this.arrayvalue = value;
+        this.value = value.length > 0 ? value.join(',') : '';
     }
 }

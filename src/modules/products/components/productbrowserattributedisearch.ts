@@ -11,7 +11,6 @@ export class ProductBrowserAttributeDISearch extends ProductBrowserAttributeVCSe
 
     constructor(public language: language, public productfinder: productfinder) {
         super(language, productfinder);
-        this.autosearch = true;
     }
 
     get attributeValues() {

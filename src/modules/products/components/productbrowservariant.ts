@@ -44,7 +44,6 @@ export class ProductBrowserVariant implements OnInit {
     }
 
     private godetail() {
-        // this.model.goDetail();
         this.selectionchanged.emit({
             type: 'ProductVariant',
             object: this.model

@@ -3,9 +3,6 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
 
-
-declare var moment: any;
-
 @Component({
     selector: 'product-browser-attributes',
     templateUrl: './src/modules/products/templates/productbrowserattributes.html'
@@ -13,10 +10,9 @@ declare var moment: any;
 export class ProductBrowserAttributes {
 
     @ViewChild('attributesheader', {read: ViewContainerRef}) attributesheader: ViewContainerRef;
-    attributefilter: string = '';
+    private attributeFilter: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
-
     }
 
     get hasSearchFilters() {
@@ -37,14 +33,14 @@ export class ProductBrowserAttributes {
     get attributes() {
         let attributes = [];
         for (let attribute of this.productfinder.selectedGroupAttributes) {
-            if (attribute.name.toLowerCase().indexOf(this.attributefilter.toLowerCase()) >= 0) {
+            if (attribute.name.toLowerCase().indexOf(this.attributeFilter.toLowerCase()) >= 0) {
                 attributes.push(attribute);
             }
         }
         return attributes;
     }
 
-    clearFilters() {
+    private clearFilters() {
         this.productfinder.resetSearchFilters();
     }
 }

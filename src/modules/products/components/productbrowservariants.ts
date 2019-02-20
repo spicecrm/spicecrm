@@ -10,7 +10,7 @@ import {metadata} from '../../../services/metadata.service';
 })
 export class ProductBrowserVariants {
 
-    private interval: any;
+    private timeout: any;
     private fieldset: string = '';
     @ViewChild('variantscontent', {read: ViewContainerRef}) private variantsContent: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
@@ -36,8 +36,8 @@ export class ProductBrowserVariants {
     }
 
     keyUp() {
-        clearTimeout(this.interval);
-        this.interval = setTimeout(() => this.productfinder.getProductVariants(), 500);
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(true), 500);
     }
 
     onScroll(e) {

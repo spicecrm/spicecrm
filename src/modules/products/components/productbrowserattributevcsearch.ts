@@ -1,21 +1,6 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {Component, Input} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
-
-
-declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-vc-search',
@@ -23,38 +8,27 @@ declare var moment: any;
 })
 export class ProductBrowserAttributeVCSearch {
 
-    @Input() attribute : any = {};
-    autosearch = false;
+    @Input() attribute: any = {};
+    private timeout: any;
 
     constructor(public language: language, public productfinder: productfinder) {
-
     }
 
-    get value(){
-        try{
+    get value() {
+        try {
             return this.productfinder.searchfilters[this.attribute.id].value;
-        } catch(e){
+        } catch (e) {
             return '';
         }
     }
 
-    set value(value){
-        if(!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
-        this.productfinder.searchfilters[this.attribute.id].value = value;
-        if(this.autosearch)
-            this.productfinder.getProductVariants();
-    }
-
-    keyUp(_e) {
-
-        // handle the key pressed
-        switch (_e.key) {
-
-            case 'Enter':
-                this.productfinder.getProductVariants();
-                break;
+    set value(value) {
+        if (!this.productfinder.searchfilters[this.attribute.id]) {
+            this.productfinder.searchfilters[this.attribute.id] = {};
         }
+        this.productfinder.searchfilters[this.attribute.id].value = value;
+
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(true), 500);
     }
-
-
 }

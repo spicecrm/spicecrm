@@ -3,7 +3,7 @@
         <div class="slds-grid slds-p-around--x-small slds-grid--vertical-align-center slds-grid--align-spread slds-border--bottom">
             <h4 class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small" id="treeheading">{{language.getModuleName('ProductAttributes')}}</h4>
             <div class="slds-grid slds-grid--vertical-align-center">
-                <input type="text" class="slds-input slds-m-right--xx-small" placeholder="Filter" [(ngModel)]="attributefilter">
+                <input type="text" class="slds-input slds-m-right--xx-small" placeholder="Filter" [(ngModel)]="attributeFilter">
                 <button [disabled]="!hasSearchFilters" class="slds-button slds-button_icon slds-button_icon slds-button_icon-border" (click)="clearFilters()">
                     <system-button-icon [icon]="'clear'"></system-button-icon>
                 </button>

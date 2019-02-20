@@ -65,9 +65,9 @@ export class productfinder {
             });
     }
 
-    public getProductVariants() {
+    public getProductVariants(searching = false) {
         let objId = this.searchfocus.object.id;
-        if (this.loading || this.productVariants[objId]) {
+        if (this.loading || (this.productVariants[objId] && !searching)) {
             return;
         }
 
