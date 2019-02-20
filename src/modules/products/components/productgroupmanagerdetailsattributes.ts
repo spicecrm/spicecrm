@@ -3,10 +3,11 @@ import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
-import {Subject, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {ProductGroupManagerDetailsAttributesItem} from "./productgroupmanagerdetailsattributesitem";
 import {broadcast} from "../../../services/broadcast.service";
+import {productfinder} from "../services/productfinder.service";
 
 @Component({
     selector: 'product-group-manager-details-attributes',
@@ -15,14 +16,12 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
 
-    @ViewChild('buttoncontainer', {read: ViewContainerRef}) private buttonContainer: ViewContainerRef;
-    @ViewChild('itemcontainer', {read: ViewContainerRef}) private itemContainer: ViewContainerRef;
-
-    @ViewChildren(ProductGroupManagerDetailsAttributesItem) private attributeItems;
-
     public fields: any[] = [];
     public attributes: any[] = [];
     public filterKeyword: string = '';
+    @ViewChild('buttoncontainer', {read: ViewContainerRef}) private buttonContainer: ViewContainerRef;
+    @ViewChild('itemcontainer', {read: ViewContainerRef}) private itemContainer: ViewContainerRef;
+    @ViewChildren(ProductGroupManagerDetailsAttributesItem) private attributeItems;
     private allExpanded: boolean = false;
     private isLoading: boolean = true;
     private modelSubscription: Subscription = new Subscription();
@@ -30,6 +29,7 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     constructor(private language: language,
                 private backend: backend,
                 private metadata: metadata,
+                private productFinder: productfinder,
                 private broadcast: broadcast,
                 private relatedmodels: relatedmodels,
                 private model: model) {
@@ -37,13 +37,6 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.relatedModule = 'ProductAttributes';
         this.saveSubscriber();
-    }
-
-    public ngOnInit() {
-        this.backend.getRequest(`productgroups/${this.model.id}/productattributes/direct`).subscribe(res => {
-            this.attributes = this.sortAttributes(res) || [];
-            this.isLoading = false;
-        }, err => this.isLoading = false);
     }
 
     get filteredAttributes() {
@@ -54,12 +47,23 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
         return this.metadata.checkModuleAcl(this.model.module, "create");
     }
 
+    public ngOnInit() {
+        this.backend.getRequest(`productgroups/${this.model.id}/productattributes/direct`).subscribe(res => {
+            this.attributes = this.sortAttributes(res) || [];
+            this.isLoading = false;
+        }, err => this.isLoading = false);
+    }
+
+    public ngOnDestroy() {
+        this.modelSubscription.unsubscribe();
+    }
+
     private trackByFn(index, item) {
         return item.id;
     }
 
     private sortAttributes(array) {
-        return array.sort((a,b) => {
+        return array.sort((a, b) => {
             return a.sort_sequence > b.sort_sequence ? 1 : -1;
         });
     }
@@ -80,13 +84,10 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     }
 
     private handleAddEvent(item) {
-        item.parent_name = this.model.data.summary_text;
+        item.parent_name = this.productFinder.searchfocus.object.id != this.model.id ? this.model.data.summary_text : '';
+        item.parent_id = this.model.id;
         this.attributes = [...this.attributes, item];
         this.attributes = this.sortAttributes(this.attributes);
         this.relatedmodels.addItems([item]);
-    }
-
-    public ngOnDestroy() {
-        this.modelSubscription.unsubscribe();
     }
 }

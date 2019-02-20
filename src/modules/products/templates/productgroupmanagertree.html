@@ -5,7 +5,7 @@
                 <button [class.slds-hidden]="productgroup.member_count == 0" class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" (click)="toggle(productgroup)">
                     <system-button-icon [icon]="'chevronright'"></system-button-icon>
                 </button>
-                <a href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate" (click)="selectGroup(productgroup)" [title]="productgroup.summary_text">{{productgroup.summary_text}}</a>
+                <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" (click)="selectGroup(productgroup)" [title]="productgroup.summary_text">{{productgroup.summary_text}}</a>
             </div>
         </li>
     </ul>
