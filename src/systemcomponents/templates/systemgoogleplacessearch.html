@@ -1,15 +1,15 @@
-<div *ngIf="isenabled" class="slds-form-element">
+<div class="slds-form-element">
     <div class="slds-form-element__control">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': displayAutocompleteResults}" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" class="slds-input slds-combobox__input" [placeholder]="language.getLabel('LBL_SEARCH_ADDRESS')" [(ngModel)]="searchterm" (focus)="onSearchFocus()"/>
-                    <system-custom-icon icon="google" addclasses="slds-input__icon slds-input__icon--left"></system-custom-icon>
+                    <input type="text" class="slds-input slds-combobox__input" [placeholder]="language.getLabel('LBL_SEARCH_PLACE')" [(ngModel)]="searchterm" (focus)="onSearchFocus()"/>
+                    <system-custom-icon *ngIf="isenabled" [desaturate]="!isSearching" icon="google" addclasses="slds-input__icon slds-input__icon--left"></system-custom-icon>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                     <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                        <li *ngFor="let autocompleteResult of autocompleteResults" class="slds-listbox__item" role="presentation" (click)="getAddressDetail(autocompleteResult.place_id)">
-                            <div class="slds-lookup__result-text slds-p-around--x-small"><a href="javascript:void(0)">{{autocompleteResult.description}}</a></div>
+                        <li *ngFor="let autocompleteResult of autocompleteResults" class="slds-listbox__item" role="presentation" (click)="getDetails(autocompleteResult)">
+                            <div class="slds-lookup__result-text slds-p-around--x-small"><a href="javascript:void(0)">{{autocompleteResult.name}}, {{autocompleteResult.formatted_address}}</a></div>
                         </li>
                     </ul>
                 </div>
