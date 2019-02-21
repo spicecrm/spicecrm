@@ -95,7 +95,8 @@ import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextso
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
-import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
+import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
+import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
@@ -172,7 +173,8 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
-        SystemGoogleplacesSearch,
+        SystemGooglePlacesAutocomplete,
+        SystemGooglePlacesSearch,
         SystemComponentSet,
         SystemProgressRing,
         SystemLoaderProgress,
@@ -237,7 +239,8 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
-        SystemGoogleplacesSearch,
+        SystemGooglePlacesAutocomplete,
+        SystemGooglePlacesSearch,
         SystemStencil,
         SystemComponentSet,
         SystemProgressRing,
