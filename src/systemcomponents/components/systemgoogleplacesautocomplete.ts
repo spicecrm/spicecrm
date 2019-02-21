@@ -68,19 +68,20 @@ export class SystemGooglePlacesAutocomplete {
         if (this.autocompletesearchterm.length > 5) {
             this.isSearching = true;
             this.backend.getRequest('googleapi/places/autocomplete/' + this.autocompletesearchterm).subscribe((res: any) => {
-                if (res.predictions && res.predictions.length > 0) {
-                    this.autocompleteResults = res.predictions;
-                    this.openSearchResults();
-                    this.isSearching = false;
-                } else {
-                    this.autocompleteResults = [];
-                    this.closeSearchResutls();
-                    this.isSearching = false;
-                }
-            },
+                    if (res.predictions && res.predictions.length > 0) {
+                        this.autocompleteResults = res.predictions;
+                        this.openSearchResults();
+                        this.isSearching = false;
+                    } else {
+                        this.autocompleteResults = [];
+                        this.closeSearchResutls();
+                        this.isSearching = false;
+                    }
+                },
                 error => {
                     this.isSearching = false;
-                });
+                }
+            );
         }
     }
 
