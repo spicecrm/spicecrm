@@ -53,6 +53,14 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         }
     }
 
+    get placeholder() {
+        if (this.isenabled) {
+            return this.language.getLabel('LBL_SEARCH');
+        } else {
+            return '';
+        }
+    }
+
     private onSearchFocus() {
         if (this.autocompletesearchterm.length > 1 && this.autocompleteResults.length > 0) {
             this.openSearchResults();
@@ -76,6 +84,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
             this.autocompleteClickListener();
         }
         this.displayAutocompleteResults = false;
+        this.autocompleteResults = [];
     }
 
     private doAutocomplete() {
@@ -107,22 +116,28 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         this.autocompletesearchterm = placedetails.name;
         this.onChange(placedetails.name);
 
+        this.isSearching = true;
+
         this.backend.getRequest('googleapi/places/' + placedetails.place_id).subscribe((res: any) => {
-            this.details.emit({
-                address: {
-                    street: res.address.street,
-                    city: res.address.city,
-                    postalcode: res.address.postalcode,
-                    state: res.address.state,
-                    country: res.address.country,
-                    latitude: parseFloat(res.address.location.lat),
-                    longitude: parseFloat(res.address.location.lng)
-                },
-                formatted_phone_number: res.formatted_phone_number,
-                international_phone_number: res.international_phone_number,
-                website: res.website,
+                this.details.emit({
+                    address: {
+                        street: res.address.street,
+                        city: res.address.city,
+                        postalcode: res.address.postalcode,
+                        state: res.address.state,
+                        country: res.address.country,
+                        latitude: parseFloat(res.address.location.lat),
+                        longitude: parseFloat(res.address.location.lng)
+                    },
+                    formatted_phone_number: res.formatted_phone_number,
+                    international_phone_number: res.international_phone_number,
+                    website: res.website,
+                });
+                this.isSearching = false;
+            },
+            error => {
+                this.isSearching = false;
             });
-        });
     }
 
     // for the valueaccessor
