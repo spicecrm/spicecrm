@@ -1,10 +1,8 @@
 import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 
 declare var moment: any;
-declare var _: any;
 
 @Component({
     selector: 'calendar-three-days-dashlet',
@@ -17,9 +15,7 @@ export class CalendarThreeDaysDashlet {
     private titleUntilDate: any = {};
 
     constructor(private language: language,
-                private navigation: navigation,
                 private elementRef: ElementRef,
-                private renderer: Renderer2,
                 private calendar: calendar) {
         this.calendar.isDashlet = true;
         this.calendar.sheetHourHeight = 50;
@@ -32,8 +28,7 @@ export class CalendarThreeDaysDashlet {
 
     get contentStyle() {
         return {
-            height: `calc(100% - ${this.calendarContent.element.nativeElement.offsetTop}px)`,
-            width: '100%'
+            height: this.elementRef.nativeElement.getBoundingClientRect().height - this.calendarContent.element.nativeElement.offsetTop + 'px',
         };
     }
 }
