@@ -24,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <div class="slds-page-header__col-actions">
+        <div *ngIf="repositories.length > 0" class="slds-page-header__col-actions">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
@@ -68,6 +68,9 @@
     <package-loader-packages [ngClass]="{'slds-show': scope == 'packages', 'slds-hide': scope != 'packages'}" [packages]="packages" packagescope="config" [repository]="repository"></package-loader-packages>
     <package-loader-languages [ngClass]="{'slds-show': scope == 'languages', 'slds-hide': scope != 'languages'}" [languages]="languages"  [repository]="repository"></package-loader-languages>
     <package-loader-packages [ngClass]="{'slds-show': scope == 'content', 'slds-hide': scope != 'content'}" [packages]="packages" packagescope="content" [repository]="repository"></package-loader-packages>
+</div>
+<div *ngIf="!loading && !repository" tobottom class="slds-theme--default slds-align--absolute-center">
+    <h2 class="slds-text-heading--medium slds-p-vertical--small">Please select a Repository</h2>
 </div>
 <div tobottom class="slds-align_absolute-center" *ngIf="loading">
     <div class="slds-grid slds-grid_vertical-align-center">
