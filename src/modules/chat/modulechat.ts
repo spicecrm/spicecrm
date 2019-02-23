@@ -4,7 +4,7 @@ import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 
 import {Subject, Observable} from 'rxjs';
-import * as socketIo from 'socket.io-client';
+//import * as socketIo from 'socket.io-client';
 
 
 import {loginService, loginCheck} from '../../services/login.service';
