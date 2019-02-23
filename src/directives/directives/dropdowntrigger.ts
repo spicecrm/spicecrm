@@ -4,15 +4,17 @@ import {
     HostBinding,
     OnDestroy,
     ElementRef,
-    Renderer2
+    Renderer2,
+    Input
 } from '@angular/core';
 
 @Directive({
-    selector: '[dropdowntrigger]',
+    selector: '[dropdowntrigger]'
 })
 export class DropdownTriggerDirective implements OnDestroy {
 
     private clickListener: any;
+    @Input('dropdowntrigger') private dropdowntriggerdisabled: boolean = false;
 
     constructor(
         private renderer: Renderer2,
@@ -25,13 +27,15 @@ export class DropdownTriggerDirective implements OnDestroy {
 
     @HostListener('click', ['$event'])
     private openDropdown(event) {
-        this.dropDownOpen = !this.dropDownOpen;
+        if(!this.dropdowntriggerdisabled) {
+            this.dropDownOpen = !this.dropDownOpen;
 
-        if (this.dropDownOpen) {
-            event.preventDefault();
-            this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
-        } else {
-            this.clickListener();
+            if (this.dropDownOpen) {
+                event.preventDefault();
+                this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
+            } else {
+                this.clickListener();
+            }
         }
     }
 
