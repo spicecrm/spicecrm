@@ -1,3 +1,6 @@
+/**
+ * @module directives
+ */
 import {
     Directive,
     HostListener,
@@ -8,6 +11,14 @@ import {
     Input
 } from '@angular/core';
 
+/**
+ * a directive that can be added to an element and then makes this act as a dropdowntrigger in
+ * the sense of lightning design. It reacts to a click and then sets the attribute slds-is-open as class to the element this is rendered to
+ *
+ * ```html
+ * <div dropdowntrigger></div>
+ * ```
+ */
 @Directive({
     selector: '[dropdowntrigger]'
 })
