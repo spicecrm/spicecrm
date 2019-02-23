@@ -19,6 +19,8 @@ export class PackageLoader {
     private loading: boolean = true;
     private packagefilterterm: string = '';
 
+    protected repositories = [];
+    protected repository: any;
     protected packages = [];
     protected versions = [];
     protected languages = [];
@@ -32,7 +34,46 @@ export class PackageLoader {
         private metadata: metadata
     ) {
 
-        this.backend.getRequest('/packages').subscribe(
+        this.backend.getRequest('packages/repositories').subscribe(
+            (res) => {
+                this.loading = false;
+                this.repositories = res;
+
+                if (this.repositories.length == 0) {
+                    this.repository = 'default';
+                    this.loadpackages();
+                } else if (this.repositories.length == 1) {
+                    this.repository = this.repositories[0];
+                    this.loadpackages();
+                }
+            },
+            (err) => {
+                this.loading = false;
+            },
+        );
+    }
+
+
+    get errorpackagesdisplay() {
+        return this.errorpackages.join(', ');
+    }
+
+    get repositoryname() {
+        return this.repository && this.repository.name ? this.repository.name : '';
+    }
+    get repositoryaddurl() {
+        return this.repository && this.repository.id ? '/' + this.repository.id : '';
+    }
+
+    private loadpackages() {
+        this.loading = true;
+
+        this.packages = [];
+        this.languages = [];
+        this.opencrs = false;
+        this.errorpackages = [];
+
+        this.backend.getRequest('packages' + this.repositoryaddurl).subscribe(
             (res) => {
                 this.loading = false;
                 try {
@@ -73,8 +114,10 @@ export class PackageLoader {
         );
     }
 
-    get errorpackagesdisplay() {
-        return this.errorpackages.join(', ');
+    private selectRepository(repository) {
+        this.repository = repository;
+        this.loadpackages();
     }
+
 
 }
