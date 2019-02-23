@@ -17,6 +17,7 @@ declare var _;
 export class PackageLoaderLanguage {
 
     @Input() private package: any;
+    @Input() private repository: any;
 
     private loading: boolean = false;
 
@@ -37,6 +38,9 @@ export class PackageLoaderLanguage {
     get deletedisabled() {
         return this.isDefault || this.package.language_code == this.language.currentlanguage;
     }
+    get repositoryaddurl() {
+        return this.repository && this.repository.id ? '/' + this.repository.id : '';
+    }
 
     private setDefault() {
         if (!this.isDefault) {
@@ -47,7 +51,7 @@ export class PackageLoaderLanguage {
     private loadLanguage(languagecode) {
 
         this.loading = true;
-        this.backend.getRequest('/packages/language/' + languagecode).subscribe(response => {
+        this.backend.getRequest('/packages/language/' + languagecode + this.repositoryaddurl).subscribe(response => {
             this.loading = false;
             if (response.success) {
                 this.package.installed = true;

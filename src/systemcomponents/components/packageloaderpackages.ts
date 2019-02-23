@@ -14,6 +14,7 @@ export class PackageLoaderPackages {
     private packagefilterterm: string = '';
 
     @Input() private packages = [];
+    @Input() private repository: any;
 
     constructor(
         private language: language
