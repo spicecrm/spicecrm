@@ -41,12 +41,19 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     private autocompleteClickListener: any = undefined;
     private displayAutocompleteResults: boolean = false;
     private isSearching: boolean = false;
+    private locationbias: string = 'ipbias ';
 
     constructor(private language: language, private backend: backend, private configuration: configurationService, private elementref: ElementRef, private renderer: Renderer2) {
         let googleAPIConfig = this.configuration.getCapabilityConfig('google_api');
         if (googleAPIConfig.key && googleAPIConfig.key != '') {
             this.isenabled = true;
         }
+
+        // try to get the location for the search
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                this.locationbias = `point:${position.coords.latitude},${position.coords.longitude}`;
+            });
 
         // override the native focus functionality if focus is called proigramatically in a view
         this.elementref.nativeElement.focus = () => {
@@ -115,7 +122,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
-            this.backend.getRequest('googleapi/places/search/' + this.autocompletesearchterm).subscribe(
+            this.backend.getRequest('googleapi/places/search/' +  btoa(this.autocompletesearchterm) + '/' + btoa(this.locationbias)).subscribe(
                 (res: any) => {
                     if (res.candidates && res.candidates.length > 0) {
                         this.autocompleteResults = res.candidates;
