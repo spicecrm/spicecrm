@@ -1,18 +1,21 @@
-import { Directive, ElementRef, Input } from '@angular/core';
-@Directive({
-    selector: '[spoiceui-autofocus]'
-})
-export class SpiceUIAutofocusDirective {
-    @Input() appAutofocus: boolean;
-    private el: any;
-    constructor(
-        private elementRef:ElementRef,
-    ) {
-        this.el = this.elementRef.nativeElement;
+import {AfterViewInit, Directive, ElementRef, Input} from '@angular/core';
 
+@Directive({
+    selector: '[spiceuiautofocus]'
+})
+export class SpiceUIAutofocusDirective implements AfterViewInit {
+
+
+    constructor(
+        private elementRef: ElementRef
+    ) {
     }
-    ngOnInit(){
-        this.el.focus();
+
+    public ngAfterViewInit() {
+        setTimeout(() => {
+            if (!this.elementRef.nativeElement.tabIndex) this.elementRef.nativeElement.tabIndex = '-1';
+            this.elementRef.nativeElement.focus();
+        });
     }
 
 }
