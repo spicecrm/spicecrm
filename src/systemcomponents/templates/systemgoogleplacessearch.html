@@ -3,7 +3,7 @@
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': displayAutocompleteResults}" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" class="slds-input slds-combobox__input" [placeholder]="placeholder" [(ngModel)]="searchterm" (focus)="onSearchFocus()"/>
+                    <input #inputfield type="text" class="slds-input slds-combobox__input" [placeholder]="placeholder" [(ngModel)]="searchterm" (focus)="onSearchFocus()"/>
                     <system-custom-icon *ngIf="isenabled" [desaturate]="!isSearching" icon="google" addclasses="slds-input__icon slds-input__icon--left"></system-custom-icon>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
