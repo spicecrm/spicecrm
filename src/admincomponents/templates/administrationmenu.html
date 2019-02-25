@@ -4,7 +4,7 @@
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-vertical--xx-small">
                 <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="itemfilter" />
                 <system-utility-icon *ngIf="itemfilter == ''" [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
-                <div *ngIf="itemfilter != ''" class="slds-input__icon-group slds-input__icon-group_right">
+                <div *ngIf="itemfilter != ''" class="slds-input__icon-group">
                     <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"  (click)="itemfilter = ''">
                         <system-button-icon [icon]="'clear'"></system-button-icon>
                     </button>
