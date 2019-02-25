@@ -248,7 +248,11 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
-
+/**
+ * This module encapsulates various components that are used related to an object or the handling of multiple objects
+ *
+ * @module ObjectComponents
+ */
 @NgModule({
     imports: [
         CommonModule,
