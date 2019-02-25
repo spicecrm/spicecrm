@@ -13,7 +13,7 @@ declare var moment: any;
 export class CRMLogViewer {
 
     // Configuration:
-    private levels = [ 'debug', 'info', 'warn', 'deprecated', 'error', 'fatal', 'security' ];
+    private levels = [ 'debug', 'info', 'warn', 'deprecated', 'login', 'error', 'fatal', 'security' ];
     private limit = '5000';
 
     // Various:
