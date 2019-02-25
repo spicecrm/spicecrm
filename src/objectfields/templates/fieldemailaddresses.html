@@ -1,7 +1,7 @@
-<div *ngIf="!isEditMode()" class="slds-scrollable--x">
+<div *ngIf="!isEditMode()">
     <field-generic-display *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-        <div class="slds-grid slds-p-vertical--xxx-small">
-            <div class="slds-size--1-of-2">
+        <div class="slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size--1-of-1 slds-large-size--1-of-2 slds-p-vertical--xxx-small">
                 <div class="slds-grid slds-grid--vertical-align-center">
                     <button class="slds-button slds-button_icon slds-m-right--xx-small" [disabled]="emailaddress.invalid_email == '1'" (click)="sendEmail(emailaddress)">
                         <system-button-icon icon="email" sprite="action"></system-button-icon>
@@ -9,41 +9,41 @@
                     <div class="slds-truncate" [ngStyle]="emailaddress.invalid_email == '1' ? {'text-decoration': 'line-through'} : {}">{{emailaddress.email_address}}</div>
                 </div>
             </div>
-            <div class="slds-p-left--x-small slds-size--1-of-2">
-                <div class="slds-grid slds-grid--align-start">
-                    <div class="slds-form-element__control">
-                    <span class="slds-radio">
-                      <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="emailaddress.primary_address == '1'" disabled>
-                      <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">primary</span>
-                      </label>
-                    </span>
+            <div class="slds-col slds-size--1-of-1 slds-large-size--1-of-2 slds-p-vertical--xxx-small">
+                <div class="slds-grid slds-grid--align-spread">
+                    <div class="slds-truncate slds-form-element__control">
+                        <span class="slds-radio">
+                          <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="emailaddress.primary_address == '1'" disabled>
+                          <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
+                            <span class="slds-radio--faux"></span>
+                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">primary</span>
+                          </label>
+                        </span>
                     </div>
-                    <div class="slds-form-element__control">
-                    <span class="slds-checkbox">
-                      <input type="checkbox" [id]="emailaddress.id + 'optout'" [checked]="emailaddress.opt_out == '1'" disabled>
-                      <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
-                        <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">opt out</span>
-                      </label>
-                    </span>
+                    <div class="slds-truncate slds-form-element__control">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" [id]="emailaddress.id + 'optout'" [checked]="emailaddress.opt_out == '1'" disabled>
+                          <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">opt out</span>
+                          </label>
+                        </span>
                     </div>
-                    <div class="slds-form-element__control">
-                    <span class="slds-checkbox">
-                      <input type="checkbox" [id]="emailaddress.id + 'invalid'" [checked]="emailaddress.invalid_email == '1'" disabled>
-                      <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
-                        <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">invalid</span>
-                      </label>
-                    </span>
+                    <div class="slds-truncate slds-form-element__control">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" [id]="emailaddress.id + 'invalid'" [checked]="emailaddress.invalid_email == '1'" disabled>
+                          <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">invalid</span>
+                          </label>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </field-generic-display>
 </div>
-<div *ngIf="isEditMode()" class="slds-scrollable--x">
+<div *ngIf="isEditMode()">
     <div *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" class="slds-form-element__control slds-grid slds-grid--align-spread" [ngClass]="getFieldClass()">
         <div class="slds-size--1-of-1">
             <field-email-emailaddress class="slds-size--1-of-1" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)"></field-email-emailaddress>

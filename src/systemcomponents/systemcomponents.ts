@@ -92,6 +92,7 @@ import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./comp
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
@@ -189,6 +190,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
+        SystemInputRadio,
         SystemInputLabel,
         SystemImagePreviewModal,
         SystemObjectPreviewModal
@@ -235,6 +237,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
+        SystemInputRadio,
         SystemInputTime,
         SystemInputNumber,
         SystemInputDate,

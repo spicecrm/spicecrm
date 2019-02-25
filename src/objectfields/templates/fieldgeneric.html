@@ -1,7 +1,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     {{value}}
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
-    <input #focus type="text" class="slds-input" [(ngModel)]="value" required minlength="3" [maxlength]="fieldlength" [ngModelOptions]="modelOptions" />
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
+    <input #focus type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [ngModelOptions]="modelOptions" />
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
