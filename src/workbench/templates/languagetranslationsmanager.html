@@ -1,0 +1,95 @@
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom slds-grid--align-end">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div>
+            <span class="slds-radio">
+                <input type="radio" name="translation_scope" [(ngModel)]="scope" [disabled]="isLoading" id="scope_global" value="global">
+                <label class="slds-radio__label" for="scope_global">
+                    <span class="slds-radio_faux"></span>
+                    <span class="slds-form-element__label">{{language.getLabel('LBL_GLOBAL')}}</span>
+                </label>
+            </span>
+            <span class="slds-radio">
+                <input type="radio" name="translation_scope" [(ngModel)]="scope" [disabled]="isLoading" id="scope_custom" value="custom">
+                <label class="slds-radio__label" for="scope_custom">
+                    <span class="slds-radio_faux"></span>
+                    <span class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM')}}</span>
+                </label>
+            </span>
+        </div>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" disabled [value]="selectedLanguageText">
+            </div>
+        </div>
+        <system-utility-icon icon="sort" size="xx-small" class="slds-m-right--x-small" addclasses="slds-path__trigger_open"></system-utility-icon>
+        <div class="slds-form-element__control slds-p-right--x-small">
+            <div class="slds-select_container" style="min-width: 150px;">
+                <select class="slds-select" [(ngModel)]="selectedLanguage" (change)="getTranslations()" [disabled]="isLoading">
+                    <option *ngFor="let lang of languages" [value]="lang.language">{{lang.text}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button--icon-border" (click)="getTranslations()" [disabled]="isLoading">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div tobottom class="slds-size--1-of-1 spicecrm-scrollbar">
+    <div *ngIf="isLoading" class="slds-align_absolute-center" style="height: 100%;">
+        <system-spinner></system-spinner>
+    </div>
+    <div *ngFor="let label of labels | slice:0:20; trackBy: trackByFn">
+        <div class="slds-card slds-m-around--small">
+            <div class="slds-card__header">
+                <h2 class="slds-text-heading--small">
+                    {{language.getLabel('LBL_LABEL')}}:
+                    <span class="slds-required">{{language.getLangText(label.name)}}</span>
+                </h2>
+            </div>
+            <div class="slds-card__body slds-p-around--small" style="margin-bottom: 0;">
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-p-right--small">
+                        <div class="slds-form-element">
+                            <label>{{language.getLabel('LBL_TEXT_SHORT')}}:</label>
+                            <input type="text" class="slds-input" [value]="language.getLabel(label.name, '', 'short')" disabled>
+                        </div>
+                        <div class="slds-form-element">
+                            <label>{{language.getLabel('LBL_DEFAULT')}}:</label>
+                            <input type="text" class="slds-input" required="required" [value]="language.getLabel(label.name, '', 'default')" disabled>
+                        </div>
+                        <div class="slds-form-element">
+                            <label>{{language.getLabel('LBL_TEXT_LONG')}}:</label>
+                            <textarea class="slds-textarea" [value]="language.getLabel(label.name, '', 'long')" disabled></textarea>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-2">
+                        <div class="slds-form-element">
+                            <label>{{language.getLabel('LBL_TEXT_SHORT')}}:</label>
+                            <input type="text" class="slds-input" [(ngModel)]="label.translation_short" />
+                        </div>
+                        <div class="slds-form-element">
+                            <label><abbr class="slds-required">*</abbr>{{language.getLabel('LBL_DEFAULT')}}:</label>
+                            <input type="text" class="slds-input" required="required" [(ngModel)]="label.translation_default" />
+                        </div>
+                        <div class="slds-form-element">
+                            <label>{{language.getLabel('LBL_TEXT_LONG')}}:</label>
+                            <textarea class="slds-textarea" [(ngModel)]="label.translation_long"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-p-top--x-small">
+                    <div class="slds-col--bump-left">
+                        <button type="button" class="slds-button slds-button--brand" [disabled]="!canSave(label)" (click)="save(label)">
+                            {{language.getLabel('LBL_SAVE')}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!isLoading && selectedLanguage.length == 0" class="slds-align_absolute-center" style="height: 100%;">{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
+</div>
