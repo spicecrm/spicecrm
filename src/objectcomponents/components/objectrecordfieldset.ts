@@ -14,7 +14,7 @@ import {view} from '../../services/view.service';
 export class ObjectRecordFieldset implements OnInit {
 
     @Input() private fieldset: string = '';
-    @Input() private fieldpadding: string = 'x-small';
+    @Input() private fieldpadding: string = 'xx-small';
     @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight';
     @Input() private direction: string = 'horizontal';
 

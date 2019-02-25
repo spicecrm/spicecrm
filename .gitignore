@@ -6,3 +6,4 @@ src/**/*.js
 config.json
 /config/sites
 dist
+documentation

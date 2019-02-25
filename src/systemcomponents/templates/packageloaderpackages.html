@@ -8,7 +8,7 @@
     </div>
     <div class="slds-grid slds-wrap">
         <div class="slds-size--1-of-2 slds-p-around--xx-small" *ngFor="let package of packages|packageloaderpipe:packagefilterterm:packagescope">
-            <package-loader-package [package]="package" [packages]="packages"></package-loader-package>
+            <package-loader-package [package]="package" [packages]="packages" [repository]="repository"></package-loader-package>
         </div>
     </div>
 </div>
