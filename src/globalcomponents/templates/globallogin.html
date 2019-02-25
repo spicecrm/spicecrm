@@ -65,7 +65,7 @@
             © 2015 - 2019 aac services k.s. All rights reserved.
         </div>
     </div>
-    <div *ngIf="promptUser && showSidebar" class="slds-size--1-of-1 slds-large-size--1-of-2" [class.slds-scrollable--y]="!showExternalSidebar">
+    <div *ngIf="promptUser && showSidebar" class="slds-size--1-of-1 slds-large-size--1-of-2 slds-height_full" [class.slds-scrollable--y]="!showExternalSidebar">
         <iframe *ngIf="showExternalSidebar" [src]="externalSidebarUrl" style="border:none;width:100%;height:100%"></iframe>
         <ng-container *ngIf="showNewsfeed">
             <global-newsfeed></global-newsfeed>
