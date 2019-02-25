@@ -52,7 +52,9 @@ export class fieldEmailRecipients extends fieldGeneric {
 
     closeSearchDialog() {
         // close the cliklistener sine the component is gone
-        this.clickListener();
+        if (this.clickListener) {
+            this.clickListener();
+        }
         this.searchResults = [];
         this.showSearchResults = false;
     }
