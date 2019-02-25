@@ -24,6 +24,7 @@
     "delete-empty": "^2.0.0",
     "google-auth-library": "^1.6.1",
     "gulp-load-plugins": "^1.5.0",
+    "gulp-remove-empty-lines": "^0.1.0",
     "gulp-run-command": "0.0.9",
     "gulp-systemjs-builder": "^0.15.0",
     "gulp-typedoc": "^2.2.2",
