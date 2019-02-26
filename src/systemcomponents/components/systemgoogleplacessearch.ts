@@ -74,7 +74,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
 
     set searchterm(value) {
         this.autocompletesearchterm = value;
-        this.onChange(value);
+        // this.onChange(value);
 
         if (this.isenabled) {
             // set the timeout for the search
@@ -91,6 +91,13 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         } else {
             return '';
         }
+    }
+
+    /**
+     * private function called with the blur event of teh inout field
+     */
+    private updateModel() {
+        this.onChange(this.autocompletesearchterm);
     }
 
     private onSearchFocus() {
@@ -122,7 +129,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
-            this.backend.getRequest('googleapi/places/search/' +  btoa(this.autocompletesearchterm) + '/' + btoa(this.locationbias)).subscribe(
+            this.backend.getRequest('googleapi/places/search/' + btoa(this.autocompletesearchterm) + '/' + btoa(this.locationbias)).subscribe(
                 (res: any) => {
                     if (res.candidates && res.candidates.length > 0) {
                         this.autocompleteResults = res.candidates;
