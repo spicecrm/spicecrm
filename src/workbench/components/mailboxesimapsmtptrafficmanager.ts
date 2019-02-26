@@ -109,7 +109,7 @@ export class MailboxesImapSmtpTrafficManager implements OnInit {
     public testConnection() {
 
         this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.ViewContainerRef.injector).subscribe(testmodal => {
-            testmodal.instance.isvalid.subsribe(validconnection => {
+            testmodal.instance.isvalid.subscribe(validconnection => {
                 this.validConnection = validconnection;
             });
         });
