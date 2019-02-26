@@ -120,6 +120,9 @@ export class MailboxesManager {
             this.relatecontainerElement.destroy();
         }
 
+        if (!this.relatecontainer) {
+            return;
+        }
         this.metadata.addComponent(
             "ObjectRelateContainer",
             this.relatecontainer,
