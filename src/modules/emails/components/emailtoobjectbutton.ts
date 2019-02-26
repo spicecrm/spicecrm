@@ -9,7 +9,7 @@ import {metadata} from "../../../services/metadata.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 /**
- * this renders a buttopn as part of an actionset that allows conversion of an email to an object. The component there allows an action config with the following paramaters:
+ * this renders a button as part of an actionset that allows conversion of an email to an object. The component there allows an action config with the following parameters:
  *
  * - module: the module name of the object that ahosul be created
  * - checklink: the link in the module pointing towards the component. If this is set the component will check if there are object already linked with that module on that link. And if so disable the button
@@ -31,11 +31,16 @@ export class EmailToObjectButton {
         private modal: modal,
         private relatedmodels: relatedmodels
     ) {
-
+        // dirty... shouldn't be necessary
+        this.model.data$.subscribe(
+            next => {
+                this.ngOnInit();
+            }
+        );
     }
 
     /**
-     * a getter that returns the disabled status. This getter checks if it is allowed for the user to create such a record and if checklink is set in the actioncopnfig if a record already exists
+     * a getter that returns the disabled status. This getter checks if it is allowed for the user to create such a record and if checklink is set in the actionconfig if a record already exists
      */
     get disabled() {
         // check ACL if we can crate such an object at all
@@ -51,9 +56,6 @@ export class EmailToObjectButton {
         return false;
     }
 
-    /**
-     * @ignore
-     */
     public ngOnInit() {
         this.object_module_name = this.actionconfig.module;
 
