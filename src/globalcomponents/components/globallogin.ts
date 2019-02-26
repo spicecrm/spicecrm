@@ -16,7 +16,6 @@ declare var _: any;
     selector: 'global-login',
     templateUrl: './src/globalcomponents/templates/globallogin.html',
     host: {
-        '(window:keypress)': 'this.keypressed($event)',
         '(window:resize)': 'handleResize()'
     }
 })
@@ -96,12 +95,6 @@ export class GlobalLogin {
 
     private handleResize() {
         this.changeDetectorRef.detectChanges();
-    }
-
-    private keypressed(event) {
-        if (event.keyCode === 13 && !this.showForgotPass && !this.session.authData.renewPass) {
-            this.login();
-        }
     }
 
     private login() {

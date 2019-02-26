@@ -57,15 +57,20 @@ export class SystemTreeItem {
         if (!this.config.draggable) {
             return;
         }
-        this.renderer.setStyle(e.target, "border", "1px solid red");
+        if (e.currentTarget.firstChild.tagName == 'ARTICLE') {
+            this.renderer.setStyle(e.currentTarget.firstChild, "border", "1px solid red");
+        }
         e.preventDefault();
+        e.stopPropagation();
     }
 
     private onDragLeave(e) {
         if (!this.config.draggable) {
             return;
         }
-        this.renderer.removeStyle(e.target, "border");
+        if (e.currentTarget.firstChild.tagName == 'ARTICLE') {
+            this.renderer.removeStyle(e.currentTarget.firstChild, "border");
+        }
     }
 
     // Pass to emitter: Ids of moved and targeted item
@@ -73,7 +78,9 @@ export class SystemTreeItem {
         if (!this.config.draggable) {
             return;
         }
-        this.renderer.removeStyle(e.target, "border");
+        if (e.currentTarget.firstChild.tagName == 'ARTICLE') {
+            this.renderer.removeStyle(e.currentTarget.firstChild, "border");
+        }
         let itemId: string = e.dataTransfer.getData("itemId");
         if (itemId && itemId !== dropitemId) {
             this.handleDragDropEvent({child: itemId, parent: dropitemId});
