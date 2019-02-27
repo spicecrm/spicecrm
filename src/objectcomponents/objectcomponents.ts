@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {CommonModule} from '@angular/common';
 import {
     AfterViewInit,
@@ -112,6 +115,8 @@ import /*embed*/ {ObjectEditModal} from './components/objecteditmodal';
 import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalwreference';
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
+import /*embed*/ {ObjectEditModalDialogDuplicatesPanel} from './components/objecteditmodaldialogduplicatespanel';
+import /*embed*/ {ObjectEditModalDialogDuplicatesPanelItem} from './components/objecteditmodaldialogduplicatespanelitem';
 import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
 import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
 import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
@@ -250,8 +255,6 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
- *
- * @module ObjectComponents
  */
 @NgModule({
     imports: [
@@ -324,6 +327,8 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
+        ObjectEditModalDialogDuplicatesPanel,
+        ObjectEditModalDialogDuplicatesPanelItem,
         ObjectOptimisticLockingModal,
         ObjectOptimisticLockingModalDataField,
         ObjectOptimisticLockingModalChange,
