@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ChangeDetectorRef, NgZone, Directive, HostListener, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges, Pipe, Optional } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
@@ -123,6 +126,9 @@ import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacess
 
 declare var _: any;
 
+/**
+ * the ObjectFields module holds all components taht are relevant for rendering fields. So they are resonsible for the display and editing of information tied to the metadata of a model
+ */
 @NgModule({
     imports: [
         CommonModule,

@@ -1,19 +1,54 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, Input} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 
+/**
+ * a component that is the base for a modal window. It can conatain a set of other components
+ * - system-modal-header
+ * - system-modal-content
+ * - system-modal footer
+ *
+ * ```html
+ * <system-modal size="large">
+ * <system-modal-header (close)="closeModal()">
+ * {{modalHeader}}
+ * </system-modal-header>
+ * <system-modal-content margin="none" #modalContent viewprovider>
+ * </system-modal-content>
+ * <system-modal-footer>
+ * <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+ * <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+ * </system-modal-footer>
+ * </system-modal>
+ * ``
+ */
 @Component({
     selector: 'system-modal',
     templateUrl: './src/systemcomponents/templates/systemmodal.html'
 })
 export class SystemModal {
 
-    @Input() private size: string = '';
+    /**
+     * the size of the modal tobe rendered
+     */
+    @Input() private size: 'small'|'medium'|'large' = 'medium';
+
+    /**
+     * additonal classes that are put in and are rendered with the modal
+     */
     @Input() private class: string = '';
 
     constructor(private metadata: metadata) {
 
     }
 
+    /**
+     * @ignore
+     *
+     * helper function to get the classes for the template
+     */
     get sizeClass() {
         if (this.size) {
             return this.class + ' slds-modal_' + this.size;
