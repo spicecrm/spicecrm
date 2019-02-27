@@ -872,6 +872,20 @@ export class metadata {
         }
     }
 
+    /**
+     * returns all fields that are relevant for a duplicate check for the given module
+     *
+     * @param module the module object that the fields are supposed to be returned for
+     */
+    public getModuleDuplicateCheckFields(module: string): any {
+        let dupfields = [];
+        let fields = this.getModuleFields(module);
+        for (let field in fields) {
+            if (fields[field].duplicatecheck) dupfields.push(field);
+        }
+        return dupfields;
+    }
+
     public getModuleValidations(module: string) {
         try {
             return this.validationRules[module].validations;

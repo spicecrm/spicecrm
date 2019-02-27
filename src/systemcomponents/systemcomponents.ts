@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -79,6 +82,7 @@ import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
+import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
 import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
@@ -152,6 +156,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemLoadingModal,
         SystemModal,
         SystemModalHeader,
+        SystemModalHeaderRight,
         SystemModalContent,
         SystemModalFooter,
         SystemCollabsableTab,
@@ -220,6 +225,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemModalWrapper,
         SystemModal,
         SystemModalHeader,
+        SystemModalHeaderRight,
         SystemModalContent,
         SystemModalFooter,
         SystemCollabsableTab,
