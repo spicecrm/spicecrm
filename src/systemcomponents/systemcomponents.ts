@@ -92,10 +92,12 @@ import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./comp
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
-import /*embed*/ {SystemGoogleplacesSearch} from "./components/systemgoogleplacessearch";
+import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
+import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
@@ -114,6 +116,7 @@ import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackage
 import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
+import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 
 @NgModule({
     imports: [
@@ -168,9 +171,11 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemRichTextEditor,
         SystemRichTextSourceModal,
         SystemInputTime,
+        SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
-        SystemGoogleplacesSearch,
+        SystemGooglePlacesAutocomplete,
+        SystemGooglePlacesSearch,
         SystemComponentSet,
         SystemProgressRing,
         SystemLoaderProgress,
@@ -185,6 +190,7 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
+        SystemInputRadio,
         SystemInputLabel,
         SystemImagePreviewModal,
         SystemObjectPreviewModal
@@ -231,10 +237,13 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
+        SystemInputRadio,
         SystemInputTime,
+        SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
-        SystemGoogleplacesSearch,
+        SystemGooglePlacesAutocomplete,
+        SystemGooglePlacesSearch,
         SystemStencil,
         SystemComponentSet,
         SystemProgressRing,

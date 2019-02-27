@@ -83,8 +83,8 @@ export class fieldEmail extends fieldGeneric {
     }
 
     private sendEmail() {
-        if (this.model.data[this.fieldname] != '') {
-            window.location.assign('mailto:' + this.model.data[this.fieldname]);
+        if (this.model.getField(this.fieldname) != '') {
+            window.location.assign('mailto:' + this.model.getField(this.fieldname));
         }
     }
 

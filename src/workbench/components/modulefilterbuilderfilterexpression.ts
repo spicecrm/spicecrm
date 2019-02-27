@@ -142,7 +142,6 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
             enumArray.push(value);
         }
         this.filterexpression.filtervalue = enumArray.toString();
-        console.log(this.filterexpression.filtervalue);
     }
 
     private enumOptionValue(value) {
@@ -151,7 +150,7 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
 
     private determineOperatorType(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
-        if (!fieldtype) {return};
+        if (!fieldtype) {return}
         switch (fieldtype.type) {
             case 'date':
             case 'datetime':
