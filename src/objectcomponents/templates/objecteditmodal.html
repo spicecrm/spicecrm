@@ -2,7 +2,7 @@
     <system-modal-header (close)="closeModal()">
         {{modalHeader}}
         <system-modal-header-right>
-            <button class="slds-button slds-button--brand" [disabled]="model.duplicates.length == 0" (click)="showDuplicates = !showDuplicates" [ngClass]="{'slds-hidden': showDuplicatesTable}">
+            <button *ngIf="duplicateCheckEnabled" class="slds-button slds-button--brand" [disabled]="model.duplicates.length == 0" (click)="showDuplicates = !showDuplicates" [ngClass]="{'slds-hidden': showDuplicatesTable}">
                 {{model.duplicateChecking ? '' : model.duplicates.length}} {{language.getLabel('LBL_DUPLICATES')}}
             </button>
         </system-modal-header-right>
