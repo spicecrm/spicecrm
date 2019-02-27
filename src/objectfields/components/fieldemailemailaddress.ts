@@ -26,7 +26,7 @@ export class fieldEmailEmailAddress  {
         }
     }
 
-    get emailadr(){
+    get emailadr() {
         return this.emailaddress.email_address;
     }
 
@@ -46,7 +46,7 @@ export class fieldEmailEmailAddress  {
         }
     }
 
-    get opt_out(){
+    get opt_out() {
         return this.emailaddress.opt_out == 1;
     }
 
