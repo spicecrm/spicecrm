@@ -11,7 +11,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 @Component({
     selector: 'object-action-mail-modal',
     templateUrl: './src/objectcomponents/templates/objectactionmailmodal.html',
-    providers: [view]
+    providers: [view, model]
 })
 export class ObjectActionMailModal implements OnInit {
 
@@ -21,9 +21,17 @@ export class ObjectActionMailModal implements OnInit {
     private sending: boolean = false;
 
     public parent: any = null;
-    public self: any = null
+    public self: any = null;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view, private backend: backend, private prefs: userpreferences, private modal: modal) {
+    constructor(
+        private language: language,
+        private metadata: metadata,
+        private model: model,
+        private view: view,
+        private backend: backend,
+        private prefs: userpreferences,
+        private modal: modal
+    ) {
         // initialize model
         this.model.module = 'Emails';
 
@@ -62,7 +70,7 @@ export class ObjectActionMailModal implements OnInit {
                 recipientok = true;
                 return true;
             }
-        })
+        });
 
         if (!recipientok) return true;
 
