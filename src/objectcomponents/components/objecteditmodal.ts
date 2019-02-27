@@ -120,7 +120,7 @@ export class ObjectEditModal implements OnInit {
     private save(goDetail: boolean = false) {
         if (this.preventGoingToRecord) goDetail = false;
         if (this.model.validate()) {
-            if (this.model.isNew && this.doDuplicateCheck && !this.showDuplicatesTable && this.metadata.getModuleDuplicatecheck(this.model.module)) {
+            if (this.model.isNew && this.doDuplicateCheck && !this.showDuplicatesTable && this.duplicateCheckEnabled) {
                 this.model.duplicateCheck(true).subscribe(dupdata => {
                     if (dupdata.length > 0) {
                         this.model.duplicates = dupdata;
@@ -137,6 +137,13 @@ export class ObjectEditModal implements OnInit {
             console.warn(this.model.messages);
         }
 
+    }
+
+    /**
+     * returns if the duplicate check iss enabled for the module. Used for the visiblity of he duplicates button in the view
+     */
+    get duplicateCheckEnabled() {
+        return this.metadata.getModuleDuplicatecheck(this.model.module);
     }
 
     /**
