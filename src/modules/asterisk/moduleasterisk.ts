@@ -28,6 +28,7 @@ import {toast} from "../../services/toast.service";
 import {fts} from "../../services/fts.service";
 import {recent} from "../../services/recent.service";
 import {configurationService} from "../../services/configuration.service";
+import {dockedComposer} from '../../services/dockedcomposer.service';
 
 import {VersionManagerService} from "../../services/versionmanager.service";
 

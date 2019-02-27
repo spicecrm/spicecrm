@@ -2,15 +2,16 @@
 
 <ng-container *ngIf="!isLoading">
 
-    <div class="questionset-render" [ngClass]="{'in-modal':in_modal}">
+    <div class="questionset-render slds-text-heading_small" [ngClass]="{'in-modal':in_modal}">
 
         <div class="questionset-render-header">
             <div class="slds-grid slds-grid--vertical-align-center">
-                <h3 class="slds-size--3-of-5 slds-text-heading_medium">{{questionset.name}}</h3>
+
+                <h3 class="slds-size--3-of-5 slds-text-heading--medium">{{questionset.name}}</h3>
+
                 <div class="slds-size--2-of-5" *ngIf="!previewMode && questions.length">
-                    <!--div class="slds-m-left--x-small slds-text-align_center">{{language.getLabelFormatted( 'LBL_NUMBER_QUESTIONS_COMPLETED', [ numOfFinishedQuestions, questions.length ] )}}</div-->
                     <div class="slds-grid slds-grid_vertical-align-center">
-                        <div *ngIf="timerText" class="slds-box_border slds-text-heading_medium slds-m-left_medium" [class.slds-theme--warning]="timerWarning">
+                        <div *ngIf="timerText" class="slds-box_border slds-m-left_medium" [class.slds-theme--warning]="timerWarning">
                             <span class="slds-p-left--xx-small slds-p-right--xx-small">{{timerText}}</span>
                         </div>
                         <div *ngIf="in_modal" class="slds-col slds-m-left_medium">

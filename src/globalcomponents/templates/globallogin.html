@@ -7,7 +7,7 @@
             </div>
             <div class="slds-box--border" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
-                    <form *ngIf="!showForgotPass">
+                    <form *ngIf="!showForgotPass" (submit)="login($event)">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="slds-button slds-button--brand" style="width:100%;" (click)="login()" tabindex="0">Login</div>
+                        <button type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                         <global-login-google (googletoken)="doLogin()"></global-login-google>
                     </form>
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
@@ -65,7 +65,7 @@
             © 2015 - 2019 aac services k.s. All rights reserved.
         </div>
     </div>
-    <div *ngIf="promptUser && showSidebar" class="slds-size--1-of-1 slds-large-size--1-of-2" [class.slds-scrollable--y]="!showExternalSidebar">
+    <div *ngIf="promptUser && showSidebar" class="slds-size--1-of-1 slds-large-size--1-of-2 slds-height_full" [class.slds-scrollable--y]="!showExternalSidebar">
         <iframe *ngIf="showExternalSidebar" [src]="externalSidebarUrl" style="border:none;width:100%;height:100%"></iframe>
         <ng-container *ngIf="showNewsfeed">
             <global-newsfeed></global-newsfeed>
