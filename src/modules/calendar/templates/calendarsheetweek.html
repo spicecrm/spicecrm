@@ -32,8 +32,7 @@
         <ng-container *ngIf="notLastHour(index)">
             <div class="slds-is-absolute slds-border--top" [ngStyle]="getHalfHourDividerStyle(index)"></div>
             <div class="slds-is-absolute slds-text-align--center" [ngStyle]="getHourLabelStyle(index)">{{sheetHour}}:00</div>
-            <calendar-sheet-drop-target [hour]="sheetHour" [day]="sheetDay" class="slds-is-absolute"
-                                        *ngFor="let sheetDay of sheetDays; trackBy: trackByFnDate" [ngStyle]="getDropTargetStyle(index, sheetDay.index)">
+            <calendar-sheet-drop-target *ngFor="let sheetDay of sheetDays; trackBy: trackByFnDate" [hour]="sheetHour" [day]="sheetDay" [ngStyle]="getDropTargetStyle(index, sheetDay.index)">
                 {{sheetHour + ',' + sheetDay.index}}
             </calendar-sheet-drop-target>
         </ng-container>

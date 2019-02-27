@@ -3,7 +3,7 @@
         <div class="slds-form-element slds-truncate">
             <div class="slds-form-element__control">
                 <span *ngIf="invalid_email" class="slds-p-left--small" style="text-decoration: line-through">{{emailadr}}</span>
-                <input #inputText *ngIf="!invalid_email" type="text" class="slds-input" [(ngModel)]="emailadr">
+                <input #inputText *ngIf="!invalid_email" type="text" class="slds-input" [(ngModel)]="emailadr" (blur)="onBlur.emit()">
             </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
         <div class="slds-grid slds-grid--align-spread">
             <div class="slds-truncate slds-form-element__control" (click)="primary = true">
                 <span class="slds-radio">
-                  <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="primary" [disabled]="invalid_email || this.emailaddress.email_address == ''">
+                  <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="primary" (change)="onBlur.emit()" [disabled]="invalid_email || this.emailaddress.email_address == ''">
                   <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
                     <span class="slds-radio--faux"></span>
                     <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">primary</span>
