@@ -18,7 +18,6 @@ import {DOCUMENT} from "@angular/common";
 
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
-import {SystemRichTextSourceModal} from "./systemrichtextsourcemodal";
 import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
 
 @Component({

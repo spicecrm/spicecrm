@@ -43,7 +43,8 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
     }
 
     get moduleFilterName(){
-        return this.metadata.getModuleFilter(this.moduleFilter)['name'];
+        let moduleFilter = this.metadata.getModuleFilter(this.moduleFilter);
+        return moduleFilter ? moduleFilter['name'] : '';
     }
 
     get module(){

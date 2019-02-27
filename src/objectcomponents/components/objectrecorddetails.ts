@@ -19,13 +19,12 @@ import {language} from '../../services/language.service';
     providers: [view]
 })
 export class ObjectRecordDetails implements OnInit {
-    private componentSet: string = '';
+
+    private componentSet = '';
     private componentconfig: any = {};
 
-    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2) {
+    constructor( private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2 ) {
         this.view.isEditable = true;
-
-        this.buildContainer();
     }
 
     public ngOnInit() {
@@ -33,6 +32,7 @@ export class ObjectRecordDetails implements OnInit {
         if (this.componentconfig.readonly) {
             this.view.isEditable = false;
         }
+        this.buildContainer();
     }
 
     private buildContainer() {
@@ -78,4 +78,5 @@ export class ObjectRecordDetails implements OnInit {
     get header() {
         return this.language.getLabel(this.componentconfig.header, this.model.module);
     }
+
 }
