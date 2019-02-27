@@ -138,16 +138,35 @@
                 </span>
                 </div>
             </div>
-            <div class="slds-form-element" *ngIf="fieldDetails.duplicatecheck">
-                <label class="slds-form-element__label">Duplicate Fuzziness</label>
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
+            <div *ngIf="fieldDetails.duplicatecheck" class="slds-grid slds-grid_vertical-align-center slds-gutters">
+                <div class="slds-col slds-size--1-of-2 slds-form-element">
+                    <label class="slds-form-element__label">Duplicate Query</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="fieldDetails.duplicatequery">
+                                <option value=''>Match</option>
+                                <option value='term'>Term</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size--1-of-2 slds-form-element">
+                    <label class="slds-form-element__label">Duplicate Fuzziness</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
+                    </div>
                 </div>
             </div>
             <div class="slds-form-element">
                 <label class="slds-form-element__label">Analyzer</label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="fieldDetails.analyzer"/>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">Search Analyzer</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.search_analyzer"/>
                 </div>
             </div>
         </div>

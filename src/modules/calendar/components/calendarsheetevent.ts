@@ -1,4 +1,15 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostBinding,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    Renderer2
+} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
@@ -12,13 +23,7 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-event',
     templateUrl: './src/modules/calendar/templates/calendarsheetevent.html',
-    providers: [model, view],
-    host: {
-        'class': 'slds-is-absolute slds-p-bottom--xxx-small',
-        '(dragstart)': 'this.dragStart($event)',
-        '(dragend)': 'this.dragEnd($event)',
-        '[class.slds-hidden]': 'this.hidden'
-    }
+    providers: [model, view]
 })
 export class CalendarSheetEvent implements OnInit, OnDestroy {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
@@ -32,7 +37,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     private mouseLast: any = undefined;
     private hidden: boolean = false;
     private subscription: Subscription = new Subscription();
-
     private lastMoveTimeSpan: number = 0;
 
     constructor(private language: language,
@@ -48,6 +52,20 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
             }
         });
     }
+
+    get isAbsense() {
+        return this.event.type == 'absence' || this.event.module == 'UserAbsences';
+    }
+
+    get isDraggable() {
+        return this.canEdit && !this.event.isMulti && !this.isMonthSheet;
+    }
+
+    @HostBinding('class')
+    get eventClass() {
+        return 'slds-is-absolute slds-p-bottom--xxx-small' + (this.hidden ? ' slds-hidden' : '');
+    }
+
 
     get canEdit() {
         return this.owner == this.event.data.assigned_user_id && !this.isScheduleSheet &&
@@ -79,17 +97,22 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
+    @HostListener('dragstart', ['$event'])
     private dragStart(event) {
+        event.stopPropagation();
         if (!this.canEdit) {
+            event.preventDefault();
             return;
         }
-        setTimeout(() => this.hidden = true, 0);
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData("event", 'cross browser dumb');
         this.event.dragging = true;
+        setTimeout(() => this.hidden = true, 0);
     }
 
-    private dragEnd(event) {
+    @HostListener('dragend')
+    private dragEnd() {
         this.hidden = false;
-        this.event.dragging = false;
     }
 
     private onMouseDown(e) {
