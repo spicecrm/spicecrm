@@ -19,6 +19,7 @@ export class ObjectActionBeanToMailButton {
     }
     // should be inject the parent to the modal???
     public execute() {
-        this.modal.openModal('ObjectActionMailModal', true, this.viewContainerRef.injector);
+        this.modal.openModal('ObjectActionMailModal', true, this.viewContainerRef.injector)
+            .subscribe(ref => ref.instance.parent = this.model);
     }
 }
