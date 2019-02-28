@@ -1,3 +1,6 @@
+/**
+* @module services
+*/
 import {Injectable, Inject, Injector, NgZone, EventEmitter,    ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy} from '@angular/core';
 import {Title, DomSanitizer} from '@angular/platform-browser';
 import {CanActivate}    from '@angular/router';

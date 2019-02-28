@@ -6,37 +6,52 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/systemcomponents/templates/systemcustomicon.html'
 })
 export class SystemCustomIcon {
-    @Input() icon: string = '';
-    @Input() file: string = './assets/icons/spicecrm.svg';
-    @Input() size: string = '';
-    @Input() color: string = '';
-    @Input() addclasses: string = ''
-    @Input() divClass = 'slds-media__figure';
+    @Input() private icon: string = '';
+    @Input() private file: string = './assets/icons/spicecrm.svg';
+    @Input() private size: string = '';
+    @Input() private color: string = '';
+    @Input() private desaturate: boolean = false;
+    @Input() private addclasses: string = ''
+    @Input() private divClass = 'slds-media__figure';
 
     constructor(private metadata: metadata) {
 
     }
 
-    getSizeClass() {
-        if (this.size)
+    private getSizeClass() {
+        if (this.size) {
             return 'slds-icon--' + this.size;
-        else
+        } else {
             return ''
+        }
     }
 
-    getSvg() {
+    private getSvg() {
         return this.file + '#' + this.icon;
     }
 
-    getIconClass() {
+    get iconClass() {
         return 'slds-icon' + (this.size ? ' slds-icon--' + this.size : '') + ' slds-icon-text-default' + ' ' + this.addclasses;
     }
 
-    getIconColor() {
-        if (this.color) {
-            return {fill: this.color};
-        } else {
-            return '';
+    get iconStyle() {
+        if (this.desaturate) {
+            return {
+                filter: 'saturate(0)'
+            };
         }
+    }
+
+    get iconColor() {
+        let iconStyle = {};
+        if (this.color) {
+            iconStyle['color'] = this.color;
+        }
+
+        if (this.desaturate) {
+            iconStyle['filter'] = 'saturate(0)';
+        }
+
+        return iconStyle;
     }
 }
