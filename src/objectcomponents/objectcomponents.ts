@@ -116,7 +116,6 @@ import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalw
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
 import /*embed*/ {ObjectEditModalDialogDuplicatesPanel} from './components/objecteditmodaldialogduplicatespanel';
-import /*embed*/ {ObjectEditModalDialogDuplicatesPanelItem} from './components/objecteditmodaldialogduplicatespanelitem';
 import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
 import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
 import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
@@ -328,7 +327,6 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
         ObjectEditModalDialogDuplicatesPanel,
-        ObjectEditModalDialogDuplicatesPanelItem,
         ObjectOptimisticLockingModal,
         ObjectOptimisticLockingModalDataField,
         ObjectOptimisticLockingModalChange,
