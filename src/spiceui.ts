@@ -148,7 +148,7 @@ export class SpiceUIModule {
 }
 
 // set prod mode
-enableProdMode();
+// enableProdMode();
 
 // browser detection to display mesaeg when we have IE
 declare global {
