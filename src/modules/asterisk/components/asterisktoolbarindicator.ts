@@ -2,7 +2,7 @@ import {Component, Input, HostBinding, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 
 declare var socketIo: any;
-import 'socket.io-client';
+// import 'socket.io-client';
 
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';

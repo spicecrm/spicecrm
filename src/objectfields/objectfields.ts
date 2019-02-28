@@ -119,6 +119,9 @@ import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
 import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
+import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
+
+declare var _: any;
 
 @NgModule({
     imports: [
@@ -213,44 +216,8 @@ import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
         fieldRichText,
         fieldEnumMulti,
         fieldPhone,
-        fieldCronInterval
-    ],
-    entryComponents: [
-        fieldLabel,
-        fieldBlank,
-        fieldNotAuthorized,
-        fieldContainer,
-        fieldGeneric,
-        fieldText,
-        fieldHtml,
-        fieldEnum,
-        fieldMailboxes,
-        fieldEmailTo,
-        fieldEmailTemplates,
-        fieldMailRelais,
-        fieldMultienum,
-        fieldEnumAlternate,
-        fieldBool,
-        fieldDate,
-        fieldDateTime,
-        fieldDateTimeDuration,
-        fieldDuration,
-        fieldDateTimeSpan,
-        fieldParent,
-        fieldModuleFilter,
-        fieldRelate,
-        fieldLookup,
-        fieldFloat,
-        fieldCurrency,
-        fieldAddress,
-        fieldFullName,
-        fieldTitle,
-        fieldFile,
-        fieldUrl,
-        fieldEmail,
-        fieldColorEnum,
-        fieldEnumMulti,
-        fieldCronInterval
+        fieldCronInterval,
+        fieldGooglePlacesSearch
     ],
     exports: [
         fieldSet,

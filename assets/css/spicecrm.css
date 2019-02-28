@@ -549,6 +549,13 @@ a, a:focus, a:hover {
     box-shadow: 0 0 3px #01464C;
 }
 
+.slds-button_dual-stateful.slds-is-pressed,
+.slds-button_dual-stateful.slds-is-pressed:active,
+.slds-button_dual-stateful.slds-is-pressed:focus,
+.slds-button_dual-stateful.slds-is-pressed:hover {
+    background-color: #CA1B21;
+    border-color: #CA1B21;
+}
 
 .slds-button--icon-border.slds-is-selected:focus,
 .slds-button--icon-border.slds-is-selected:active,
