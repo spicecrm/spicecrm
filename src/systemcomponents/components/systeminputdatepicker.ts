@@ -16,7 +16,6 @@ import {popup} from '../../services/popup.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
-import {SystemInputTime} from "./systeminputtime";
 import {userpreferences} from "../../services/userpreferences.service";
 
 declare var moment: any;

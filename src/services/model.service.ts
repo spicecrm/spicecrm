@@ -552,6 +552,16 @@ export class model {
         return this.setFieldValue(field, value);
     }
 
+    public setFields(fieldData) {
+        for(let fieldName in fieldData){
+            let fieldValue = fieldData[fieldName];
+            if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
+            this.data[fieldName] = fieldValue;
+        }
+        this.data$.emit(this.data);
+        this.evaluateValidationRules(null, "change");
+    }
+
     public cancelEdit() {
         this.isEditing = false;
         this.mode$.emit('display');

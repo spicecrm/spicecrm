@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostBinding, HostListener, Input, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {calendar} from '../services/calendar.service';
 import {take} from "rxjs/operators";
@@ -8,18 +8,11 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-drop-target',
     template: `
-        <div *ngIf="this.showPlus" style="cursor: pointer" (click)="this.addEvent()"
+        <div *ngIf="showPlus" style="cursor: pointer" (click)="addEvent()"
              class="slds-align--absolute-center spice-h-full slds-theme_shade slds-text-heading_medium slds-text-color--inverse-weak">
             +
         </div>`,
-    providers: [model],
-    host: {
-        '(dragover)': 'this.dragOver($event)',
-        '(dragenter)': 'this.dragEnter($event)',
-        '(dragleave)': 'this.dragLeave($event)',
-        '(drop)': 'this.drop($event)',
-        '[class]': 'this.getClass()'
-    }
+    providers: [model]
 })
 export class CalendarSheetDropTarget {
 
@@ -36,16 +29,19 @@ export class CalendarSheetDropTarget {
         return this.hour + ' ' + this.day;
     }
 
-    private getClass() {
-        if (this.isDropTarget) {
-            return 'slds-is-absolute slds-theme--shade';
-        } else {
-            return 'slds-is-absolute';
+    @HostBinding('class')
+    get targetClass() {
+        return this.isDropTarget ? 'slds-is-absolute slds-theme--shade' : 'slds-is-absolute';
+    }
+
+    private addEvent() {
+        if (this.day) {
+            this.calendar.addingEvent$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
         }
     }
 
-    @HostListener('mouseover')
-    private mouseOver() {
+    @HostListener('mouseenter')
+    private mouseEnter() {
         if (this.calendar.asPicker) {
             this.showPlus = true;
         }
@@ -56,27 +52,28 @@ export class CalendarSheetDropTarget {
         this.showPlus = false;
     }
 
-    private addEvent() {
-        if (this.day) {
-            this.calendar.addingEvent$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
-        }
-    }
-
+    @HostListener('dragover', ['$event'])
     private dragOver(event) {
         event.preventDefault();
+        event.stopPropagation();
     }
 
-    private dragEnter(event) {
+    @HostListener('dragenter')
+    private dragEnter() {
         this.isDropTarget = true;
-        event.preventDefault();
     }
 
-    private dragLeave(event) {
+    @HostListener('dragleave')
+    private dragLeave() {
         this.isDropTarget = false;
     }
 
+    @HostListener('drop', ['$event'])
     private drop(event) {
-        let dragEvent: any = null;
+        event.preventDefault();
+        event.stopPropagation();
+
+        let dragEvent: any;
         this.calendar.getEvents().some(calendarEvent => {
             if (calendarEvent.dragging) {
                 dragEvent = calendarEvent;
@@ -86,7 +83,6 @@ export class CalendarSheetDropTarget {
         if (dragEvent) {
             dragEvent.dragging = false;
 
-            let utcOffset = moment().utcOffset() / 60;
             if (this.day) {
                 dragEvent.data.date_start.date(this.day.date.date());
                 dragEvent.data.date_start.month(this.day.date.month());

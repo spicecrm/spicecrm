@@ -1,12 +1,6 @@
 <div class="slds-p-around--x-small">
     <div class="slds-form-element" (click)="onFocus()">
         <field-label [fieldname]="'name'" [fieldconfig]="{required:true}"></field-label>
-        <!--div class="slds-form-element__control">
-            <div class="slds-truncate" title="{{field}}">
-                <input class="slds-input slds-m-vertical--xx-small" type="text" (focus)="onFocus()"
-                       [(ngModel)]="model.data.name" placeholder="Email Subject"/>
-            </div>
-        </div-->
         <field-container field="name"></field-container>
     </div>
     <ng-container *ngIf="isExpanded">

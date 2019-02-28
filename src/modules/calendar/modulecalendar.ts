@@ -1,5 +1,25 @@
 import {CommonModule} from "@angular/common";
-import {AfterViewInit, ChangeDetectorRef, HostListener, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from "@angular/core";
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    HostListener,
+    HostBinding,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    NgModule,
+    Renderer,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef,
+    Injectable,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    OnInit,
+    OnDestroy,
+    OnChanges} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from "@angular/forms";
 import {RouterModule, Routes, Router, ActivatedRoute} from "@angular/router";

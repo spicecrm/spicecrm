@@ -8,7 +8,7 @@
     <fieldset>
         <legend class="slds-form-element__label slds-text-title--caps slds-p-bottom--x-small">{{getAddressLabel()}}</legend>
         <div class="slds-form-element__group">
-                <system-googleplaces-search (address)="addressSelected($event)"></system-googleplaces-search>
+                <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_ATTN')}}</label>
                     <div class="slds-form-element__control">

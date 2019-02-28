@@ -11,5 +11,6 @@ import {language} from '../../services/language.service';
 export class PackageLoaderLanguages {
 
     @Input() private languages = [];
+    @Input() private repository: any;
 
 }

@@ -4,44 +4,41 @@ import { Observable ,  Subject } from 'rxjs';
 
 @Component({
     selector: 'system-prompt',
-    templateUrl: './src/systemcomponents/templates/systemprompt.html',
-    host: {
-        '( window:keydown )': 'this.keyPressed( $event )'
-    }
+    templateUrl: './src/systemcomponents/templates/systemprompt.html'
 })
-export class SystemPrompt {
+export class SystemPrompt implements OnInit, AfterViewInit {
 
-    @Input() type: string; // 'info', 'input' or 'confirm'
-    @Input() text: string;
-    @Input() headertext: string;
-    @Input() theme: string; // theme according to lightning design -> https://www.lightningdesignsystem.com/utilities/themes/
-    @Input() value: string;
+    @Input() private type: string; // 'info', 'input' or 'confirm'
+    @Input() private text: string;
+    @Input() private headertext: string;
+    @Input() private theme: string; // theme according to lightning design -> https://www.lightningdesignsystem.com/utilities/themes/
+    @Input() private value: string;
 
-    answer: Observable<boolean> = null;
-    answerSubject: Subject<any> = null;
+    private answer: Observable<boolean> = null;
+    private answerSubject: Subject<any> = null;
 
-    self: any = {};
+    private self: any;
 
-    @ViewChild('cancelButton') cancelButton;
-    @ViewChild('okButton') okButton;
-    @ViewChild('inputField') inputField;
+    @ViewChild('cancelButton') private cancelButton;
+    @ViewChild('okButton') private okButton;
+    @ViewChild('inputField') private inputField;
 
-    constructor( private language: language )  {
+    constructor( private language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
     }
 
-    ngOnInit() {
-        if( !this.theme ) this.theme = 'shade';
+    public ngOnInit() {
+        if ( !this.theme ) this.theme = 'shade';
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         if ( this.type === 'confirm' ) this.cancelButton.nativeElement.focus();
         else if ( this.type === 'info' ) this.okButton.nativeElement.focus();
         else if ( this.type === 'input' ) this.inputField.nativeElement.focus();
     }
 
-    clickOK() {
+    private clickOK() {
         if ( this.type === 'input' ) {
             this.answerSubject.next( this.value );
         } else {
@@ -51,15 +48,15 @@ export class SystemPrompt {
         this.self.destroy();
     }
 
-    clickCancel() {
-        if ( this.type === 'info' ) return;
+    private clickCancel() {
         this.answerSubject.next( false );
         this.answerSubject.complete();
         this.self.destroy();
     }
 
-    keyPressed(event) {
-        if ( event.keyCode === 27 ) this.clickCancel();
+    public onModalEscX() {
+        if ( this.type === 'info' ) return false; // No ESC-Key allowed when type is 'info'
+        else this.clickCancel();
     }
 
 }

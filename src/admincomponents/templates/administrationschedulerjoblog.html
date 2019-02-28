@@ -1,53 +1,40 @@
-<div class="slds-grid slds-grid--vertical slds-m-top--small slds-nowrap slds-panel slds-panel--filters slds-scrollable--none">
-    <div class="slds-section slds-m-vertical--none" [ngClass]="{'slds-is-open': expanded, 'slds-is-closed': !expanded}">
-        <h3 class="slds-section__title">
-            <button aria-controls="expando-unique-id" aria-expanded="true"
-                    class="slds-button slds-section__title-action"
-                    (click)="expanded = !expanded">
-                <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                     [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                <span class="slds-truncate" title="Section Title">{{language.getLabel('LBL_JOB_LOG')}}</span>
-            </button>
-        </h3>
-        <div [ngStyle]="!expanded ? {height: '0px', transform: 'rotateX(90deg)'} : {}">
-            <div #logcontainer [ngStyle]="logContainerStyle" class="slds-scrollable--y">
-                <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout" role="grid">
-                    <thead>
-                    <tr class="slds-line-height_reset">
-                        <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_EXECUTE_TIME')}}</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_STATUS')}}</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_RESOLUTION')}}</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_MESSAGE')}}</div>
-                        </th>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let scheduler of schedulerLogs; trackBy: trackByFn" class="slds-hint-parent">
-                        <td scope="row">
-                            <div class="slds-truncate">{{displayDateValue(scheduler.execute_time)}}</div>
-                        </td>
-                        <td scope="row">
-                            <div class="slds-truncate">{{scheduler.status}}</div>
-                        </td>
-                        <td scope="row">
-                            <div class="slds-truncate" [ngClass]="getResolutionClass(scheduler.resolution)">{{scheduler.resolution}}</div>
-                        </td>
-                        <td scope="row" class="slds-grid">
-                            <div class="slds-truncate" aria-describedby="more" [title]="scheduler.message">{{scheduler.message}}</div>
-                        </td>
-                    </tr>
-                    <tr *ngIf="schedulerLogs.length == 0">
-                        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout" role="grid">
+    <thead>
+    <tr class="slds-line-height_reset">
+        <th scope="col">
+            <div class="slds-truncate">{{language.getLabel('LBL_EXECUTE_TIME')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">{{language.getLabel('LBL_STATUS')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">{{language.getLabel('LBL_RESOLUTION')}}</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">{{language.getLabel('LBL_MESSAGE')}}</div>
+        </th>
+    </thead>
+    <tbody>
+    <tr *ngFor="let scheduler of schedulerLogs; trackBy: trackByFn" class="slds-hint-parent">
+        <td scope="row">
+            <div class="slds-truncate">{{displayDateValue(scheduler.execute_time)}}</div>
+        </td>
+        <td scope="row">
+            <div class="slds-truncate">{{scheduler.status}}</div>
+        </td>
+        <td scope="row">
+            <div class="slds-truncate" [ngClass]="getResolutionClass(scheduler.resolution)">{{scheduler.resolution}}</div>
+        </td>
+        <td scope="row" class="slds-grid">
+            <div class="slds-truncate" aria-describedby="more" [title]="scheduler.message">{{scheduler.message}}&nbsp;</div>
+        </td>
+    </tr>
+    <tr *ngIf="schedulerLogs.length == 0">
+        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+    </tr>
+    </tbody>
+</table>
+<system-spinner *ngIf="isLoading" class="slds-m-around--xx-small"></system-spinner>
+<div class="slds-p-around--xxx-small">
+    <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-m-top--x-small" [disabled]="isLoading" (click)="getMoreData()">{{language.getLabel('LBL_MORE')}}</button>
 </div>

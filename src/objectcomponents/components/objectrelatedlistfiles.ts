@@ -37,7 +37,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.loadFiles();
+        setTimeout(()=> this.loadFiles(), 10);
     }
 
     private toggleOpen() {
