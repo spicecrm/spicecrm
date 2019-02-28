@@ -5,13 +5,14 @@ import {CanActivate} from '@angular/router';
 import {configurationService} from './configuration.service';
 import {loader} from './loader.service';
 import {Router} from '@angular/router';
+import {loggerService} from './logger.service';
 
 // Taken from https://github.com/killmenot/webtoolkit.md5
 
 interface authDataIf {
     renewPass: boolean;
     sessionId: string;
-    loaded: boolean,
+    loaded: boolean;
     userId: string;
     userName: string;
     first_name: string;
@@ -52,6 +53,10 @@ export class session {
     // add an observable for the auth data
     private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
     private authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
+
+    constructor( private logger: loggerService ) {
+        this.logger.setSession( this );
+    }
 
     public getSessionHeader(): HttpHeaders {
         let headers = new HttpHeaders();
