@@ -57,7 +57,7 @@ export class model {
         }
     };
     /**
-     * a priovate element that holds a copy of the data and is created when the model is set to editmode. This is internal only and used for the assessment of dirty fields
+     * a private element that holds a copy of the data and is created when the model is set to editmode. This is internal only and used for the assessment of dirty fields
      */
     private backupData: any = {};
     /**
@@ -258,7 +258,7 @@ export class model {
      * a central function that will load the model data from teh backend and transform it to the internal data formats. When sucessfully accomplished the Observable returned will be reolved with the data of the model
      *
      * @param resetData send true to reset all data already loaded and reload
-     * @param trackAction the action that will be set in the tracker int he backend. This is relevant for the tracker histoy and the recently viewed records by the user. Leave empty if no tracking shoudl be done
+     * @param trackAction the action that will be set in the tracker int he backend. This is relevant for the tracker histoy and the recently viewed records by the user. Leave empty if no tracking should be done
      * @param setLoading sets the isLoading paramater on the model and sets it back once the load is completed. This has an impact e.g. on the view service as this renders stencilc there ot other. If this is not to be done set to false then teh model will be loaded "silent"
      * @param redirectNotFound if set to true if the model is not found the userwill be redirected to the main moduel if the user has the proper access right or the home screen. Shoudl be passed in in e.g. a detail view but not in case of e.g. loading a related record.
      */
