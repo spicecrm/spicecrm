@@ -18,6 +18,7 @@ import {GlobalComponents} from "./globalcomponents/globalcomponents";
 import {ObjectComponents} from "./objectcomponents/objectcomponents";
 
 // various services we need on global app level
+import {loggerService} from './services/logger.service';
 import {configurationService} from "./services/configuration.service";
 import {loginService, loginCheck} from "./services/login.service";
 import {session} from "./services/session.service";
@@ -130,7 +131,8 @@ export class SpiceUI {
         assistant,
         VersionManagerService,
         modal,
-        Title
+        Title,
+        loggerService
     ]
 })
 export class SpiceUIModule {

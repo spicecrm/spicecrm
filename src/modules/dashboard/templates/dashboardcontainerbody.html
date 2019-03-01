@@ -1,5 +1,5 @@
 <div #bodycontainer tobottom class="slds-is-relative spicecrm-scrollbar" [ngStyle]="bodyContainerStyle">
-    <ng-container *ngIf="isEditing">
+    <ng-container *ngIf="isEditMode">
         <ng-container *ngFor="let row of dashboardGrid; trackBy: trackByGridFn">
             <ng-container *ngFor="let column of row">
                 <div [ngStyle]="dashboardlayout.prepareStyle(column)" style="padding:10px;border: 1px solid #ddd;position: absolute;">
