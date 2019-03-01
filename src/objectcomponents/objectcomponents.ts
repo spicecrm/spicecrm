@@ -199,6 +199,7 @@ import /*embed*/ {ObjectActivitiyTimelineAddTask} from './components/objectactiv
 import /*embed*/ {ObjectActivitiyTimelineAddEmail} from './components/objectactivitiytimelineaddemail';
 import /*embed*/ {ObjectActivitiyTimelineAddNote} from './components/objectactivitiytimelineaddnote';
 import /*embed*/ {ObjectActivitiyTimelineSummary} from './components/objectactivitiytimelinesummary';
+import /*embed*/ {ObjectActivitiyTimelineSummaryItemView} from './components/objectactivitiytimelinesummaryitemview';
 import /*embed*/ {ObjectActivitiyTimelineSummaryButton} from './components/objectactivitiytimelinesummarybutton';
 import /*embed*/ {ObjectActivitiyTimelineSummaryModal} from './components/objectactivitiytimelinesummarymodal';
 
@@ -267,13 +268,10 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
             {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, aclCheck]},
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
+            {path: 'module/:module/historysummary/:id', component: ObjectActivitiyTimelineSummary, canActivate: [loginCheck]},
             {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {
-                path: 'module/:module/:id/:related/:link/:fieldset',
-                component: ObjectRelatedlistAll,
-                canActivate: [loginCheck]
-            },
+            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
@@ -382,6 +380,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActivitiyTimelineAddEmail,
         ObjectActivitiyTimelineAddNote,
         ObjectActivitiyTimelineSummary,
+        ObjectActivitiyTimelineSummaryItemView,
         ObjectActivitiyTimelineSummaryButton,
         ObjectActivitiyTimelineSummaryModal,
         ObjectRecordDetails,
