@@ -1,7 +1,7 @@
 /**
 * @module services
 */
-import {Injectable, Inject, Injector, NgZone, EventEmitter,    ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy} from '@angular/core';
+import {Injectable, Inject, Injector, NgZone, EventEmitter,  isDevMode,  ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy} from '@angular/core';
 import {Title, DomSanitizer} from '@angular/platform-browser';
 import {CanActivate}    from '@angular/router';
 declare var moment: any;
