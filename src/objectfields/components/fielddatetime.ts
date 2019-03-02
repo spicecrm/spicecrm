@@ -13,9 +13,6 @@ import {userpreferences} from "../../services/userpreferences.service";
 /**
 * @ignore
 */
-/**
-* @ignore
-*/
 declare var moment: any;
 
 @Component({

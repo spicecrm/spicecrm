@@ -8,6 +8,9 @@ import {toast} from "../../services/toast.service";
 import {metadata} from '../../services/metadata.service';
 import {view} from "../../services/view.service";
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

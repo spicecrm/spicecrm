@@ -11,6 +11,9 @@ import {RouterModule,} from "@angular/router";
 * @ignore
 */
 declare var _: any;
+/**
+ * @ignore
+ */
 declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";

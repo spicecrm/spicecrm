@@ -9,6 +9,9 @@ import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

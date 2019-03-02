@@ -9,6 +9,9 @@ import {language} from '../../services/language.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

@@ -11,6 +11,9 @@ import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 
+/**
+ * @ignore
+ */
 declare var google: any;
 
 @Component({
