@@ -11,6 +11,9 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

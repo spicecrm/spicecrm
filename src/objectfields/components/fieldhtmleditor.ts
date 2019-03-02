@@ -7,7 +7,14 @@ import {metadata} from '../../services/metadata.service';
 import {configurationService} from '../../services/configuration.service';
 import {footer} from '../../services/footer.service';
 
+/**
+ * @ignore
+ */
 declare var tinymce: any;
+
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

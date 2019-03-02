@@ -3,6 +3,9 @@
  */
 import {Component, OnDestroy} from '@angular/core';
 
+/**
+ * @ignore
+ */
 declare var socketIo: any;
 
 import {toast} from '../../../services/toast.service';

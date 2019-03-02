@@ -16,6 +16,9 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {ACManagerService} from '../services/acmanager.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

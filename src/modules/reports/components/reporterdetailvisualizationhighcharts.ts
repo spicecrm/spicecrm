@@ -14,6 +14,9 @@ import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modelutilities} from "../../../services/modelutilities.service";
 
+/**
+ * @ignore
+ */
 declare var Highcharts: any;
 
 @Component({

@@ -4,6 +4,9 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import {language} from '../../services/language.service';
 
+/**
+ * @ignore
+ */
 declare var window: any;
 
 @Component({

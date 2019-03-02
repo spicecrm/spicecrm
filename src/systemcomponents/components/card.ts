@@ -4,6 +4,9 @@
 import {Component, Directive, EventEmitter, Input, Output} from '@angular/core';
 import {language} from "../../services/language.service";
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

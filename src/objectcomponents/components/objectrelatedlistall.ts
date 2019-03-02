@@ -9,6 +9,9 @@ import {navigation} from '../../services/navigation.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

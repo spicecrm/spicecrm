@@ -8,6 +8,9 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {layout} from '../../services/layout.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

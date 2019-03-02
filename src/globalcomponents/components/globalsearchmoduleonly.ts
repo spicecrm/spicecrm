@@ -9,6 +9,9 @@ import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

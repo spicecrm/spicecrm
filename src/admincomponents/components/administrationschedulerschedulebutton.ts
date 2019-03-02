@@ -10,6 +10,9 @@ import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {broadcast} from "../../services/broadcast.service";
 
+/**
+* @ignore
+*/
 declare var _;
 
 @Component({
