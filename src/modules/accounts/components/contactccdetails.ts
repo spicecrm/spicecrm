@@ -9,6 +9,9 @@ import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {ACManagerService} from '../services/acmanager.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

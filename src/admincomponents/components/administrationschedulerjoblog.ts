@@ -11,7 +11,13 @@ import {broadcast} from "../../services/broadcast.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {Subscription} from "rxjs";
 
+/**
+* @ignore
+*/
 declare var _;
+/**
+* @ignore
+*/
 declare var moment;
 
 @Component({

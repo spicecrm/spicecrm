@@ -10,6 +10,9 @@ import {configurationService} from '../../services/configuration.service';
 import {loader} from '../../services/loader.service';
 import {broadcast} from '../../services/broadcast.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

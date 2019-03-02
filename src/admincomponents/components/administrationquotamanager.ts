@@ -8,6 +8,9 @@ import {Observable, Subject} from "rxjs";
 /**
 * @ignore
 */
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

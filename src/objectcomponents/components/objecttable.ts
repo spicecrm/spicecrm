@@ -9,6 +9,9 @@ import {
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 /**

@@ -51,6 +51,9 @@ import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 
 // declarations for TS
+/**
+ * @ignore
+ */
 declare var System: any;
 /**
 * @ignore
