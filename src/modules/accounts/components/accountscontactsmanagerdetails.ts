@@ -1,3 +1,6 @@
+/**
+ * @module ModuleAccounts
+ */
 import {
     Component,
     ViewChild,

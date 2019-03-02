@@ -1,9 +1,10 @@
+/**
+ * @module ModuleMailboxes
+ */
 import {
     AfterViewInit,
-    OnInit,
     Component,
     ElementRef,
-    Input,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -13,7 +14,6 @@ import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
-import {modelutilities} from "../../../services/modelutilities.service";
 import {mailboxesEmails} from "../services/mailboxesemail.service";
 import {toast} from "../../../services/toast.service";
 

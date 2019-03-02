@@ -1,5 +1,5 @@
 /**
- * @module globalcomponents
+ * @module GlobalComponents
  */
 import {
     Component

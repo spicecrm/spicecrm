@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, Input, OnInit, ViewContainerRef} from '@angular/core';
+/**
+ * @module ServiceComponentsModule
+ */
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';

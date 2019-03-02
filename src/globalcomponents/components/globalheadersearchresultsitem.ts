@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {
     Component, Input, EventEmitter,
     OnInit, Output

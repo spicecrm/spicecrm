@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -17,6 +20,9 @@ import {productfinder} from '../services/productfinder.service';
 import {metadata} from '../../../services/metadata.service';
 
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

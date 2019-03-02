@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component, Input, OnInit
 } from '@angular/core';

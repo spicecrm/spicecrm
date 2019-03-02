@@ -2,7 +2,6 @@
  * @module SystemComponents
  */
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 /**
@@ -28,7 +27,7 @@ export class SystemModalHeader {
      */
     @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private metadata: metadata, private language: language) {
+    constructor(private language: language) {
 
     }
 }

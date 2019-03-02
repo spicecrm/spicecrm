@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -15,6 +18,9 @@ import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
 import {ProductBrowserAttributeVCSearch} from './productbrowserattributevcsearch';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

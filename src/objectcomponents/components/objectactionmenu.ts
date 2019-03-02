@@ -1,4 +1,7 @@
-import {Component, ElementRef, Renderer2, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, ElementRef, Renderer2, Input, Output, EventEmitter} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';

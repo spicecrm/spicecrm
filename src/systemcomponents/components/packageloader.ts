@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {
     Component, Pipe
 } from '@angular/core';
@@ -5,7 +8,6 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
-import {spiceprocess} from "../../addcomponents/services/spiceprocess";
 
 declare var _;
 

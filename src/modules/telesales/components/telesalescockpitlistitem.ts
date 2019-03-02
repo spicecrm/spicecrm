@@ -1,3 +1,6 @@
+/**
+ * @module ModuleTeleSales
+ */
 import {Component, Input, HostBinding, OnInit, Output, EventEmitter} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';

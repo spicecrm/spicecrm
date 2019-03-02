@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Input, Output, OnInit, Pipe } from '@angular/core';
+/**
+ * @module ModuleQuestionnaires
+ */
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { language } from '../../../services/language.service';
 import { backend } from "../../../services/backend.service";
 import { session } from '../../../services/session.service';

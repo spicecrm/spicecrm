@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, ViewChild, ViewContainerRef, Renderer} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';

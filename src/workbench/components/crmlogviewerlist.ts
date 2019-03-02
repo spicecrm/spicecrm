@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import { Component, ViewChild, ElementRef, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { metadata } from '../../services/metadata.service';
@@ -6,6 +9,9 @@ import { userpreferences } from '../../services/userpreferences.service';
 import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

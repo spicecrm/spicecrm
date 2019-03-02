@@ -1,3 +1,6 @@
+/**
+ * @module ModuleCalendar
+ */
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from "../../../services/view.service";
@@ -6,6 +9,9 @@ import {userpreferences} from '../../../services/userpreferences.service';
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

@@ -1,4 +1,10 @@
+/**
+ * @module services
+ */
 import {Injectable, NgZone} from '@angular/core';
+/**
+* @ignore
+*/
 declare var moment: any;
 
 import {configurationService} from './configuration.service';

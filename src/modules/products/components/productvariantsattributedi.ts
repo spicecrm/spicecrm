@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -16,6 +19,9 @@ import {view} from '../../../services/view.service';
 import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

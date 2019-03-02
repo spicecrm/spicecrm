@@ -1,10 +1,16 @@
-import {Component, AfterViewInit, OnInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, ElementRef, Input} from '@angular/core';
+/**
+ * @module ServiceComponentsModule
+ */
+import {Component, OnInit, Input} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -12,7 +18,7 @@ declare var moment: any;
     templateUrl: './src/modules/servicecomponents/templates/servicemyqueuesticketsdashletitem.html',
     providers: [model, view]
 })
-export class ServiceMyQueuesTicketsDashletItem implements OnInit{
+export class ServiceMyQueuesTicketsDashletItem implements OnInit {
 
     @Input() ticket;
     headerfieldset: string = '';
@@ -26,7 +32,7 @@ export class ServiceMyQueuesTicketsDashletItem implements OnInit{
 
     }
 
-    ngOnInit(){
+    ngOnInit() {
         this.model.id = this.ticket.id;
         this.model.data = this.modelutilities.backendModel2spice('ServiceTickets', this.ticket);
     }

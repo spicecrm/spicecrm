@@ -1,3 +1,6 @@
+/**
+ * @module ModuleTeleSales
+ */
 import {ChangeDetectorRef, Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';

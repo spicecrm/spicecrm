@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';

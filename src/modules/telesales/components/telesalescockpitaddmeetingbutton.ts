@@ -1,3 +1,6 @@
+/**
+ * @module ModuleTeleSales
+ */
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -7,6 +10,9 @@ import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
 import {telecockpitservice} from "../services/telecockpit.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

@@ -1,14 +1,12 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
+
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
+    ComponentFactoryResolver, Component, ViewChild, ViewContainerRef,
     ElementRef
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router, ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {listfilters} from '../services/listfilters.service';

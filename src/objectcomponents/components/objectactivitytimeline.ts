@@ -1,10 +1,11 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
+    Component,
     Input, OnInit, OnDestroy
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {activitiyTimeLineService} from '../../services/activitiytimeline.service';

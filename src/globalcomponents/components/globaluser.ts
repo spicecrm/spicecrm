@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {Router} from '@angular/router';
 import {
     Component,

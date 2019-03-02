@@ -1,21 +1,15 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
     Input,
     Output,
-    EventEmitter,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    EventEmitter
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
-
 
 import  {reporterconfig} from '../services/reporterconfig';
 
@@ -25,8 +19,8 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterFilterPanel {
 
-    @Output() filtersaved: EventEmitter<any> = new EventEmitter<any>();
-    @Input() integrationparams: any = {};
+    @Output() private filtersaved: EventEmitter<any> = new EventEmitter<any>();
+    @Input() private integrationparams: any = {};
 
     constructor(private metadata: metadata, private model: model, private language: language, private reporterconfig: reporterconfig) {
 /*
@@ -42,7 +36,7 @@ export class ReporterFilterPanel {
         return this.reporterconfig.userFilters;
     }
 
-    saveFilter(){
+    private saveFilter(){
         this.filtersaved.emit(true);
         this.reporterconfig.refresh();
     }

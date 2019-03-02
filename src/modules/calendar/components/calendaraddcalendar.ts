@@ -1,3 +1,6 @@
+/**
+ * @module ModuleCalendar
+ */
 import {Component, EventEmitter} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';

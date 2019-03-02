@@ -1,4 +1,7 @@
-import {Component, ElementRef, Renderer, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, OnInit} from '@angular/core';
 import {userpreferences} from "../../services/userpreferences.service";
 import {fieldGeneric} from './fieldgeneric';
 import {view} from "../../services/view.service";
@@ -7,6 +10,12 @@ import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {Router} from "@angular/router";
 
+/**
+* @ignore
+*/
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

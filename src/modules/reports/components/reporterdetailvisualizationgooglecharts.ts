@@ -1,9 +1,11 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component, Input, AfterViewInit,  OnInit,
+    Component, AfterViewInit,  OnInit,
     OnDestroy, ElementRef, Renderer
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';

@@ -1,10 +1,9 @@
-import {Component, Input, OnInit, Renderer2, ElementRef} from '@angular/core';
-import {Router, ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
+/**
+ * @module ObjectComponents
+ */
+import {Component, Input, Renderer2, ElementRef} from '@angular/core';
 import {language} from '../../services/language.service';
-import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
-import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-list-header-actionmenu',

@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, OnDestroy, Input, NgZone, OnInit, ViewContainerRef, ViewChild} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, NgZone, ViewContainerRef, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
@@ -122,12 +125,12 @@ export class fieldHtml extends fieldGeneric {
         if (this.fieldconfig.label) {
             if (this.fieldconfig.label.indexOf(':') > 0) {
                 let fielddetails = this.fieldconfig.label.split(':');
-                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels)
+                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels);
             } else {
-                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels)
+                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels);
             }
         } else {
-            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels)
+            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels);
         }
     }
 

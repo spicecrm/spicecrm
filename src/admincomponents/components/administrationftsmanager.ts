@@ -1,5 +1,5 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module AdminComponentsModule
  */
 import {Component} from '@angular/core';
 import {metadata} from '../../services/metadata.service';

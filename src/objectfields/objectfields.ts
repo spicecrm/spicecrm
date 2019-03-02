@@ -2,38 +2,11 @@
  * @module ObjectFields
  */
 import {CommonModule} from '@angular/common';
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ChangeDetectorRef, NgZone, Directive, HostListener, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges, Pipe, Optional } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
-import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
-import {Title, DomSanitizer} from '@angular/platform-browser';
 
-import {Subject} from 'rxjs';
-import {Observable} from 'rxjs';
-// import 'rxjs/add/observable/of';
-
-import {loginService, loginCheck} from '../services/login.service';
 import {metadata} from '../services/metadata.service';
-import {model} from '../services/model.service';
-import {modal} from '../services/modal.service';
-import {modelutilities} from '../services/modelutilities.service';
-import {language} from '../services/language.service';
-import {broadcast} from '../services/broadcast.service';
-import {backend} from '../services/backend.service';
-import {view} from '../services/view.service';
-import {popup} from '../services/popup.service';
-import {fts} from '../services/fts.service';
-import {recent} from '../services/recent.service';
-import {currency} from '../services/currency.service';
-import {configurationService} from '../services/configuration.service';
-import {session} from '../services/session.service';
-import {toast} from '../services/toast.service';
-import {footer} from '../services/footer.service';
-import {mediafiles} from '../services/mediafiles.service';
 import {VersionManagerService} from '../services/versionmanager.service';
-import {territories} from "../services/territories.service";
-import {userpreferences} from '../services/userpreferences.service';
-import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
 
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../directives/directives";
@@ -124,6 +97,9 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 /**

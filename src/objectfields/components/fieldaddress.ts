@@ -1,14 +1,9 @@
 /**
  * @module ObjectFields
  */
-import {Component, Renderer, ViewChild, ViewContainerRef} from '@angular/core';
-import {model} from '../../services/model.service';
-import {backend} from '../../services/backend.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
+import {Component} from '@angular/core';
 import {fieldGeneric} from './fieldgeneric';
-import {Router} from '@angular/router';
+
 
 /**
  * renders an address field with all elements
@@ -70,7 +65,7 @@ export class fieldAddress extends fieldGeneric {
      * getter for the field label if the form is rendered as subform
      */
     private getAddressLabel() {
-        return this.language.getModuleLabel(this.model.module, this.fieldconfig.label);
+        return this.language.getLabel(this.model.module, this.fieldconfig.label);
     }
 
     /**

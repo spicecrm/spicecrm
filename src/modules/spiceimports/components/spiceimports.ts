@@ -1,3 +1,6 @@
+/**
+ * @module ModuleSpiceImports
+ */
 import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 

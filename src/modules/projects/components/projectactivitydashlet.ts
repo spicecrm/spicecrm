@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProjects
+ */
 import {Component, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
@@ -6,6 +9,9 @@ import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

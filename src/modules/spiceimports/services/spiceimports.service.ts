@@ -1,3 +1,6 @@
+/**
+ * @module ModuleSpiceImports
+ */
 import {EventEmitter, Injectable} from "@angular/core";
 import {backend} from '../../../services/backend.service';
 

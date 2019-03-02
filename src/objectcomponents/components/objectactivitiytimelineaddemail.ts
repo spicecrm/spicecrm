@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';

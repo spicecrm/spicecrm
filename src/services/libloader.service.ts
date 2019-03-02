@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {Subject, Observable, of} from "rxjs";
 import {Injectable} from "@angular/core";
 import {backend} from "./backend.service";

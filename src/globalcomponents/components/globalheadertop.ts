@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {metadata} from '../../services/metadata.service';
 import {layout} from '../../services/layout.service';
 import {AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
