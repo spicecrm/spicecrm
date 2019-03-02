@@ -1,6 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {modellist} from '../../services/modellist.service';
-import {popup} from '../../services/popup.service';
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 

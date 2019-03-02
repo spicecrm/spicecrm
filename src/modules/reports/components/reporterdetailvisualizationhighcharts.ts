@@ -1,5 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component, Input, AfterViewInit, OnInit,
+    Component, AfterViewInit,
     OnDestroy, ElementRef
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';

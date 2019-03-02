@@ -1,6 +1,7 @@
 /**
- * @module emails
+ * @module ModuleEmails
  */
+
 import {Component, EventEmitter, Output} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";

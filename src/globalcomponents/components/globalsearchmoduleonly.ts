@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {ElementRef, Component, Input, ViewChild, ViewContainerRef, OnInit, OnChanges} from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';

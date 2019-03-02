@@ -4,7 +4,7 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders,  HttpParams} from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
@@ -20,6 +20,9 @@ import {language} from './language.service';
 /**
  * @ignore
  */
+/**
+* @ignore
+*/
 declare var moment: any;
 
 /**

@@ -1,5 +1,8 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    Component, Output, EventEmitter, Input, OnChanges
+    Component, Input, OnChanges
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';

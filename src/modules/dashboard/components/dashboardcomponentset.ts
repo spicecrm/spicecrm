@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 

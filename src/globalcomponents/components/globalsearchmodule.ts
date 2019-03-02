@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {ElementRef, Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';

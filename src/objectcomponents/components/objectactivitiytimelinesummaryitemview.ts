@@ -1,15 +1,15 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    Input, OnInit, OnDestroy, OnChanges
+    Component, ViewChild, ViewContainerRef,
+    Input, OnChanges
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
-
-declare var moment: any;
 
 @Component({
     selector: 'object-activitiy-timeline-summary-item-view',

@@ -3,39 +3,8 @@
  */
 import {CommonModule} from '@angular/common';
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    NgZone,
-    HostListener,
-    Renderer,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef,
-    Injectable,
-    Input,
-    Output,
-    EventEmitter,
-    SimpleChanges,
-    OnInit,
-    OnDestroy,
-    OnChanges,
-    ChangeDetectorRef,
-    HostBinding,
-    Pipe,
-    PipeTransform,
-    Optional,
-    Attribute,
-    ViewChildren,
-    QueryList
+    NgModule
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Title, DomSanitizer} from '@angular/platform-browser';
-
-import {Subject, Observable} from 'rxjs';
-
 
 import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
@@ -44,35 +13,10 @@ import {ObjectFields} from '../objectfields/objectfields';
 import {GlobalComponents} from '../globalcomponents/globalcomponents';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
-import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
-import {modal} from '../services/modal.service';
-import {loginService, loginCheck} from '../services/login.service';
+
+import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
-import {model} from '../services/model.service';
-import {modellist} from '../services/modellist.service';
-import {relatedmodels} from '../services/relatedmodels.service';
-import {modelutilities} from '../services/modelutilities.service';
-import {language} from '../services/language.service';
-import {broadcast} from '../services/broadcast.service';
-import {navigation} from '../services/navigation.service';
-import {backend} from '../services/backend.service';
-import {session} from '../services/session.service';
-import {footer} from '../services/footer.service';
-import {assistant} from '../services/assistant.service';
-import {view} from '../services/view.service';
-import {popup} from '../services/popup.service';
-import {toast} from '../services/toast.service';
-import {fts} from '../services/fts.service';
-import {modelattachments} from '../services/modelattachments.service';
-import {activitiyTimeLineService} from '../services/activitiytimeline.service';
-import {favorite} from '../services/favorite.service';
-import {configurationService} from '../services/configuration.service';
-import {reminder} from '../services/reminder.service';
-import {helper} from '../services/helper.service';
-import {userpreferences} from '../services/userpreferences.service';
-import {dockedComposer} from '../services/dockedcomposer.service';
 import {VersionManagerService} from '../services/versionmanager.service';
-import {layout} from '../services/layout.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
 import /*embed*/ {objectimport} from './services/objectimport.service';

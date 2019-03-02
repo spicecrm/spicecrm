@@ -1,5 +1,8 @@
+/**
+ * @module ObjectComponents
+ */
 
-import {AfterViewInit, Component, ViewChild, ViewContainerRef, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import { ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';

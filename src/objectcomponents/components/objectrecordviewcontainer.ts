@@ -1,8 +1,10 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef,
+    AfterViewInit,  Component, ElementRef,  ViewChild, ViewContainerRef,
     OnDestroy
 } from '@angular/core';
-import {Title} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';

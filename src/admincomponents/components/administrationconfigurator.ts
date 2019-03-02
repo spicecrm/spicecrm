@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,

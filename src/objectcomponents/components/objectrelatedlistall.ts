@@ -1,4 +1,7 @@
-import {Component, AfterViewInit, OnInit, OnDestroy} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';

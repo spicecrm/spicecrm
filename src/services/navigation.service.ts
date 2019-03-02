@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {Injectable, EventEmitter} from "@angular/core";
 import {Title} from "@angular/platform-browser";
 import {broadcast} from "./broadcast.service";

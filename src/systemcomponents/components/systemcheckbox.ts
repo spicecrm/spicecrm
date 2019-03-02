@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
 import {language} from "../../services/language.service";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";

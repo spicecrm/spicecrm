@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {Injectable, EventEmitter} from '@angular/core';
 
 import {configurationService} from './configuration.service';
@@ -6,6 +9,9 @@ import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Observable, Subject} from 'rxjs';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 

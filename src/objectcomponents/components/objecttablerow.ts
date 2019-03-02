@@ -1,12 +1,13 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    Attribute,
     Component, EventEmitter,
     Input, Output,
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {modelutilities} from "../../services/modelutilities.service";
 
 declare var _;
 

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -6,7 +9,7 @@ import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
 import {fieldGeneric} from './fieldgeneric';
 
-declare var SignaturePad:any;
+declare var SignaturePad: any;
 
 /**
  * documentation: https://spicecrm.gitbooks.io/spicecrm-ui/content/component-directory/fields/signature.html

@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {
     Component,
     OnDestroy,
@@ -5,7 +8,6 @@ import {
     EventEmitter,
     Input,
     Output,
-    OnInit
 } from '@angular/core';
 import {metadata} from "../../services/metadata.service";
 import { configurationService } from '../../services/configuration.service';

@@ -1,7 +1,13 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {Component, Pipe, PipeTransform, OnInit} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {Observable, Subject} from "rxjs";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

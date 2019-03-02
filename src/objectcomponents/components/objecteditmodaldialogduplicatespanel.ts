@@ -1,9 +1,9 @@
 /**
  * @module ObjectComponents
  */
+
 import {
     Component,
-    Input,
     Output,
     EventEmitter,
     OnInit
