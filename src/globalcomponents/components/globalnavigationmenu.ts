@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {
     AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
     ElementRef

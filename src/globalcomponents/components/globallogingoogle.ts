@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {HttpClient} from "@angular/common/http";
 import {AfterViewInit, Component, ElementRef, EventEmitter, Output} from "@angular/core";
 import {backend} from "../../services/backend.service";

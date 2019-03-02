@@ -1,21 +1,16 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
+
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
     ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Input, OnInit
+OnInit
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {ActivatedRoute, Router}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
+
 
 @Component({
     selector: 'object-page-header-details',

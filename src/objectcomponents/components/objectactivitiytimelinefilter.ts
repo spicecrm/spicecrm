@@ -1,6 +1,8 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef, Input,
-    OnInit, Renderer2, ElementRef
+    Component, Renderer2, ElementRef
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';

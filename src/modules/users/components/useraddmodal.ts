@@ -1,3 +1,6 @@
+/**
+ * @module ModuleUsers
+ */
 import {AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
@@ -8,6 +11,9 @@ import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

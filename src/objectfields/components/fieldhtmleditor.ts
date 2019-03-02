@@ -1,11 +1,9 @@
+/**
+ * @module ObjectFields
+ */
 import { AfterViewInit, Component, OnDestroy, Input, OnChanges, Output, EventEmitter, OnInit } from '@angular/core';
-import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
-import {fieldGeneric} from './fieldgeneric';
-import {Router} from '@angular/router';
 import {configurationService} from '../../services/configuration.service';
 import {footer} from '../../services/footer.service';
 

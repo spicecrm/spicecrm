@@ -1,3 +1,6 @@
+/**
+ * @module ModuleUsers
+ */
 import {Component} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
@@ -8,6 +11,9 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {session} from "../../../services/session.service";
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component({

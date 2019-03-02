@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';

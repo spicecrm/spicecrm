@@ -1,4 +1,7 @@
-import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, ElementRef, Renderer2,  OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {AfterViewInit, Component, OnDestroy, Renderer2, ViewChild, ViewContainerRef,} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';

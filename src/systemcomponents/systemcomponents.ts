@@ -2,55 +2,16 @@
  * @module SystemComponents
  */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    Input,
-    Output,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    OnInit,
-    OnDestroy,
-    EventEmitter,
-    ElementRef,
-    ChangeDetectorRef,
-    ApplicationRef,
-    Pipe,
-    forwardRef,
-    Directive,
-    Renderer2,
-    SimpleChanges,
-    OnChanges,
-    Host,
-    Injectable,
-    Inject
+    NgModule
 } from "@angular/core";
-import {Subject} from "rxjs";
-import {Observable} from "rxjs";
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {DOCUMENT} from "@angular/common";
-import {DomSanitizer} from '@angular/platform-browser';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 // SERVICEs
-import {ActivatedRoute, Router} from "@angular/router";
 import {metadata} from "../services/metadata.service";
-import {toast} from "../services/toast.service";
-import {language} from "../services/language.service";
-import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
-import {configurationService} from "../services/configuration.service";
-import {modal} from "../services/modal.service";
-import {userpreferences} from "../services/userpreferences.service";
-import {loader} from "../services/loader.service";
-import {modelutilities} from "../services/modelutilities.service";
-import {broadcast} from "../services/broadcast.service";
-import {layout} from "../services/layout.service";
-
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleCalendar
+ */
 import {
     Component,
     ElementRef,
@@ -18,6 +21,9 @@ import {broadcast} from '../../../services/broadcast.service';
 import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

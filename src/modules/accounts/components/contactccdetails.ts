@@ -1,3 +1,6 @@
+/**
+ * @module ModuleAccounts
+ */
 import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';

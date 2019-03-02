@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     Component
 } from '@angular/core';
