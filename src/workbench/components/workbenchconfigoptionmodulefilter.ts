@@ -2,16 +2,12 @@
  * @module WorkbenchModule
  */
 import {Component, ChangeDetectorRef} from "@angular/core";
-import {modelutilities} from "../../services/modelutilities.service";
-import {backend} from "../../services/backend.service";
-import {broadcast} from "../../services/broadcast.service";
-import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {view} from "../../services/view.service";
 
 @Component({
-    selector: "workbench-config-option-actionset",
+    selector: "workbench-config-option-module-filter",
     templateUrl: "./src/workbench/templates/workbenchconfigoptionmodulefilter.html"
 })
 export class WorkbenchConfigOptionModulefilter {
@@ -24,12 +20,8 @@ export class WorkbenchConfigOptionModulefilter {
     private module: string = "";
 
     constructor(
-        private backend: backend,
-        private broadcast: broadcast,
         private language: language,
         private metadata: metadata,
-        private modelutilities: modelutilities,
-        private toast: toast,
         private cdRef: ChangeDetectorRef,
         private view: view
     ) {
