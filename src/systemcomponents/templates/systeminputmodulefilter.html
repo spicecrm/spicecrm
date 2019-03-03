@@ -1,0 +1,20 @@
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <div class="slds-grid">
+        <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
+            <div class="slds-select_container">
+                <select [disabled]="disabled" class="slds-select" [(ngModel)]="module">
+                    <option value=""></option>
+                    <option *ngFor="let module of modules" [value]="module">{{module}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
+            <div class="slds-select_container">
+                <select [disabled]="!module || disabled" class="slds-select" [(ngModel)]="modulefilter">
+                    <option></option>
+                    <option *ngFor="let modulefilter of modulefilters" [value]="modulefilter.id">{{modulefilter.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
