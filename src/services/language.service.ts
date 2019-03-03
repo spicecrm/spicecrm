@@ -309,7 +309,7 @@ export class language {
                 label = this.getLabel(fieldconfig.label, module, length);
             }
         } else {
-            label = this.getLabel(module, this.metadata.getFieldlabel(module, fieldname), length);
+            label = this.getLabel(this.metadata.getFieldlabel(module, fieldname), module, length);
         }
 
         // return the value
