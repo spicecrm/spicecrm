@@ -3,7 +3,17 @@
         <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
     </li>
 </ul>
+<ul class="slds-timeline" *ngIf="loading">
+    <li>
+        <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+    </li>
+    <li style="opacity: 0.6">
+        <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+    </li>
+    <li style="opacity: 0.3">
+        <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+    </li>
+</ul>
 <ng-template #nocontent>
     <system-illustration-no-records *ngIf="!loading">{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
 </ng-template>
-<system-spinner *ngIf="loading" class="slds-p-vertical--small"></system-spinner>
