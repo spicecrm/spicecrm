@@ -61,6 +61,7 @@ import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
+import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
@@ -159,7 +160,8 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemInputRadio,
         SystemInputLabel,
         SystemImagePreviewModal,
-        SystemObjectPreviewModal
+        SystemObjectPreviewModal,
+        SystemInputModuleFilter
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -219,7 +221,8 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
-        SystemInputLabel
+        SystemInputLabel,
+        SystemInputModuleFilter
     ]
 })
 export class SystemComponents {
