@@ -135,13 +135,10 @@ import /*embed*/ {ObjectActivitiyTimelineEvent} from './components/objectactivit
 import /*embed*/ {ObjectActivitiyTimelineEmail} from './components/objectactivitytimelineemail';
 import /*embed*/ {ObjectActivitiyTimelineNote} from './components/objectactivitiytimelinenote';
 import /*embed*/ {ObjectActivitiyTimelineTask} from './components/objectactivitiytimelinetask';
+import /*embed*/ {ObjectActivitiyTimelineStencil} from './components/objectactivitiytimelinestencil';
 import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/objectactivitiytimelineaddcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddItem} from './components/objectactivitiytimelineadditem';
-import /*embed*/ {ObjectActivitiyTimelineAddCall} from './components/objectactivitiytimelineaddcall';
-import /*embed*/ {ObjectActivitiyTimelineAddMeeting} from './components/objectactivitiytimelineaddmeeting';
-import /*embed*/ {ObjectActivitiyTimelineAddTask} from './components/objectactivitiytimelineaddtask';
 import /*embed*/ {ObjectActivitiyTimelineAddEmail} from './components/objectactivitiytimelineaddemail';
-import /*embed*/ {ObjectActivitiyTimelineAddNote} from './components/objectactivitiytimelineaddnote';
 import /*embed*/ {ObjectActivitiyTimelineSummary} from './components/objectactivitiytimelinesummary';
 import /*embed*/ {ObjectActivitiyTimelineSummaryItemView} from './components/objectactivitiytimelinesummaryitemview';
 import /*embed*/ {ObjectActivitiyTimelineSummaryButton} from './components/objectactivitiytimelinesummarybutton';
@@ -316,13 +313,10 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActivitiyTimelineEmail,
         ObjectActivitiyTimelineTask,
         ObjectActivitiyTimelineNote,
+        ObjectActivitiyTimelineStencil,
         ObjectActivitiyTimelineAddContainer,
         ObjectActivitiyTimelineAddItem,
-        ObjectActivitiyTimelineAddCall,
-        ObjectActivitiyTimelineAddMeeting,
-        ObjectActivitiyTimelineAddTask,
         ObjectActivitiyTimelineAddEmail,
-        ObjectActivitiyTimelineAddNote,
         ObjectActivitiyTimelineSummary,
         ObjectActivitiyTimelineSummaryItemView,
         ObjectActivitiyTimelineSummaryButton,
@@ -439,7 +433,8 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectTabContainerItemHeader,
         ObjectTableRow,
         ObjectTable,
-        ObjectActivitiyTimelineItemContainer
+        ObjectActivitiyTimelineItemContainer,
+        ObjectActivitiyTimelineStencil
     ]
 })
 export class ObjectComponents {

@@ -25,8 +25,8 @@
         </div>
     </div>
 </div>
-<div class="slds-grid" style="height: 100%">
-    <div #listContainer  tobottom="" class="slds-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
+<div class="slds-grid" >
+    <div #listContainer tobottom class="slds-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
         <!--div class="slds-border--bottom slds-p-vertical--small slds-grid">
             <object-activitiy-timeline-filter class="slds-col--bump-left slds-p-horizontal--xxx-small"></object-activitiy-timeline-filter>
         </div-->
@@ -35,7 +35,24 @@
                 <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
             </li>
         </ul>
-        <system-spinner class="slds-p-around--small" *ngIf="activitiyTimeLineService.activities.History.loading"></system-spinner>
+        <!-- stencils when loading -->
+        <ul class="slds-timeline" *ngIf="activitiyTimeLineService.activities.History.loading">
+            <li class="slds-p-around--x-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.8" class="slds-p-around--x-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.6" class="slds-p-around--x-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.4" class="slds-p-around--x-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.2" class="slds-p-around--x-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+        </ul>
     </div>
     <div class="slds-size--2-of-3" tobottom>
         <object-activitiy-timeline-summary-item-view *ngIf="activitymodule" [module]="activitymodule" [id]="activityid" [data]="activitydata"></object-activitiy-timeline-summary-item-view>
