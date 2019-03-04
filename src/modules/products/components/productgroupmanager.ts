@@ -3,10 +3,11 @@ import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {productfinder} from "../services/productfinder.service";
 import {metadata} from "../../../services/metadata.service";
+import {model} from "../../../services/model.service";
 
 @Component({
     templateUrl: './src/modules/products/templates/productgroupmanager.html',
-    providers: [productfinder]
+    providers: [productfinder, model]
 })
 
 export class ProductGroupManager {
@@ -16,13 +17,10 @@ export class ProductGroupManager {
     private selectedGroupId: string;
     private actionSet: string = '';
 
-    constructor(private language: language, private navigation: navigation, private metadata: metadata) {
+    constructor(private language: language, private navigation: navigation, private metadata: metadata, private model: model) {
+        this.model.module = 'ProductGroups';
         this.navigation.setActiveModule('ProductGroups');
         this.getActionSet();
-    }
-
-    get actionSetModel() {
-        return {module: 'ProductGroups'};
     }
 
     private getActionSet() {
