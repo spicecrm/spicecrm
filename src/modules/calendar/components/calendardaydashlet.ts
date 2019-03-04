@@ -1,3 +1,6 @@
+/**
+ * @module ModuleCalendar
+ */
 import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';

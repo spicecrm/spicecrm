@@ -1,5 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ModuleDeployment
+ */
+import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {broadcast} from '../../../services/broadcast.service';

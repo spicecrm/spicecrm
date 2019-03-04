@@ -1,13 +1,13 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {modelutilities} from './modelutilities.service';
 import {backend} from './backend.service';
 import {metadata} from './metadata.service';
-import {Router} from '@angular/router';
-import {Observable, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 
 @Injectable()
 export class fts {
@@ -28,7 +28,6 @@ export class fts {
 
     constructor(
         private backend: backend,
-        private http: HttpClient,
         private configurationService: configurationService,
         private session: session,
         private modelutilities: modelutilities,

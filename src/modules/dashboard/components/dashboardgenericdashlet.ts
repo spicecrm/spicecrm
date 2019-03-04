@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";

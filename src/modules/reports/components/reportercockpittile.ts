@@ -1,32 +1,38 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
     Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
 } from '@angular/core';
-import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
-import {Router, ActivatedRoute}   from '@angular/router';
+import {Router}   from '@angular/router';
 
+/**
+ * represents a tile in the cockpit that is one report the user can visualize
+ */
 @Component({
     selector: 'reporter-cockpit-tile',
     templateUrl: './src/modules/reports/templates/reportercockpittile.html',
     host:{
-        'class': 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent'
+        class: 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent'
     }
 })
 export class ReporterCockpitTile {
 
-    @Input() report: any = {};
+    /**
+     * an Input parameter set that holds the report object
+     */
+    @Input() private report: any = {};
 
     constructor(private backend: backend, private router: Router) {
 
     }
 
-    navgiateDetail(){
+    /**
+     * changes the route and displays the report
+     */
+    private navgiateDetail(){
         this.router.navigate(['/module/KReports/' + this.report.kreport_id]);
     }
 }

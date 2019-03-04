@@ -1,3 +1,6 @@
+/**
+ * @module ServiceComponentsModule
+ */
 import {Component, EventEmitter, OnInit, ViewContainerRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';

@@ -1,12 +1,13 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
-import {Router} from '@angular/router';
-import {Observable, Subject, of} from 'rxjs';
+import {Subject, of} from 'rxjs';
 
 @Injectable()
 export class recent {

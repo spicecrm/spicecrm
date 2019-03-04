@@ -1,18 +1,12 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
-    AfterViewInit,
     Component,
     Input,
-    OnChanges,
-    ViewChild,
-    ViewContainerRef,
     Pipe
 } from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
-import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
-import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
 
 @Pipe({name: 'filteractual'})
 export class filteractualpipe {

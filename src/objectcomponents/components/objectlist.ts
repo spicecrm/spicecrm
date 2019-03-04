@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';

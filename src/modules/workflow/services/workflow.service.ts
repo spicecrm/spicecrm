@@ -1,7 +1,10 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
     Injectable
 } from '@angular/core';
-import {Subject, Observable} from 'rxjs';
+import {Subject} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
 

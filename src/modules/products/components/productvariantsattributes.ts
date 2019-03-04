@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -13,6 +16,9 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

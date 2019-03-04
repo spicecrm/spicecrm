@@ -1,24 +1,11 @@
+/**
+ * @module ModuleReports
+ */
 import {CommonModule} from '@angular/common';
-import {AfterViewInit,  Component, Injectable, ElementRef, NgModule, Renderer,  ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, Renderer2} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
-
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
-import {broadcast} from '../../services/broadcast.service';
-import {backend} from '../../services/backend.service';
-import {navigation} from '../../services/navigation.service';
-
 import {ObjectFields}      from '../../objectfields/objectfields';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-
-import {userpreferences} from '../../services/userpreferences.service';
-import {currency} from '../../services/currency.service';
-import {modelutilities} from '../../services/modelutilities.service';
-import {footer} from '../../services/footer.service';
-import {modal} from '../../services/modal.service';
-import {language} from '../../services/language.service';
-import {configurationService} from '../../services/configuration.service';
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
@@ -57,6 +44,9 @@ import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterint
 import /*embed*/ {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton"
 import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal"
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @NgModule({

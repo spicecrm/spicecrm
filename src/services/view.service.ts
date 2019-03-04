@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {EventEmitter, Injectable} from '@angular/core';
 
 @Injectable()
@@ -9,7 +12,7 @@ export class view {
     public editfieldid: string = '';
 
     // defines the labele .. can be value none, default, long or short
-    public labels: string = 'default';
+    public labels: 'default' | 'long' | 'short' = 'default';
 
     // set the size
     public size: 'regular' | 'small' = 'regular';

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import { Component, OnChanges, Input, Renderer2, ElementRef, OnDestroy } from '@angular/core';
 import {language} from '../../../services/language.service';
 

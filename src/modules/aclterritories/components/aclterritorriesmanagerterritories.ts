@@ -1,3 +1,6 @@
+/**
+ * @module ModuleACLTerritories
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,

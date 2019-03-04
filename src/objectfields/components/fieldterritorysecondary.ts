@@ -1,4 +1,7 @@
-import {Component, Renderer2, ViewChild, ViewContainerRef, ElementRef, OnInit, Pipe} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, Renderer2, ElementRef, Pipe} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {territories} from '../../services/territories.service';

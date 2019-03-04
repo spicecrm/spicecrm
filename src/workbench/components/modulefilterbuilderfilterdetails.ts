@@ -1,11 +1,17 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    Component, Output, EventEmitter, Input, OnChanges
+    Component, Input, OnChanges
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

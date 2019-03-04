@@ -1,10 +1,10 @@
-import {Component, Input, HostBinding} from '@angular/core';
-import {Router} from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
+/**
+ * @module ModuleCampaigns
+ */
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
-import {popup} from '../../../services/popup.service';
 import {backend} from "../../../services/backend.service";
 
 @Component({

@@ -1,4 +1,7 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, Input,   OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';

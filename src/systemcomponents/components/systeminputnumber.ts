@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, forwardRef, Input} from '@angular/core';
 import {userpreferences} from '../../services/userpreferences.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";

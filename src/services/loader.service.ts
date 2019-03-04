@@ -1,11 +1,11 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate} from '@angular/router';
 
 import {configurationService} from './configuration.service';
-import {loginService} from './login.service';
-import {Router} from '@angular/router';
 import {language} from './language.service';
 import {territories} from './territories.service';
 import {recent} from './recent.service';

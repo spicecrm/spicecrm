@@ -1,5 +1,7 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
-    AfterViewInit,
     Component,
     Input,
     OnChanges,

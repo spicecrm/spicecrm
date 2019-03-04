@@ -1,3 +1,6 @@
+/**
+ * @module ModuleCalendar
+ */
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -19,7 +22,13 @@ import {navigation} from '../../../services/navigation.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component({

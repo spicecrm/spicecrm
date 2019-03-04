@@ -1,38 +1,10 @@
+/**
+ * @module ObjectComponents
+ */
 import {CommonModule} from '@angular/common';
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    NgZone,
-    HostListener,
-    Renderer,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef,
-    Injectable,
-    Input,
-    Output,
-    EventEmitter,
-    SimpleChanges,
-    OnInit,
-    OnDestroy,
-    OnChanges,
-    ChangeDetectorRef,
-    HostBinding,
-    Pipe,
-    PipeTransform,
-    Optional,
-    Attribute,
-    ViewChildren,
-    QueryList
+    NgModule
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Title, DomSanitizer} from '@angular/platform-browser';
-
-import {Subject, Observable} from 'rxjs';
-
 
 import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
@@ -41,35 +13,10 @@ import {ObjectFields} from '../objectfields/objectfields';
 import {GlobalComponents} from '../globalcomponents/globalcomponents';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
-import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
-import {modal} from '../services/modal.service';
-import {loginService, loginCheck} from '../services/login.service';
+
+import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
-import {model} from '../services/model.service';
-import {modellist} from '../services/modellist.service';
-import {relatedmodels} from '../services/relatedmodels.service';
-import {modelutilities} from '../services/modelutilities.service';
-import {language} from '../services/language.service';
-import {broadcast} from '../services/broadcast.service';
-import {navigation} from '../services/navigation.service';
-import {backend} from '../services/backend.service';
-import {session} from '../services/session.service';
-import {footer} from '../services/footer.service';
-import {assistant} from '../services/assistant.service';
-import {view} from '../services/view.service';
-import {popup} from '../services/popup.service';
-import {toast} from '../services/toast.service';
-import {fts} from '../services/fts.service';
-import {modelattachments} from '../services/modelattachments.service';
-import {activitiyTimeLineService} from '../services/activitiytimeline.service';
-import {favorite} from '../services/favorite.service';
-import {configurationService} from '../services/configuration.service';
-import {reminder} from '../services/reminder.service';
-import {helper} from '../services/helper.service';
-import {userpreferences} from '../services/userpreferences.service';
-import {dockedComposer} from '../services/dockedcomposer.service';
 import {VersionManagerService} from '../services/versionmanager.service';
-import {layout} from '../services/layout.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
 import /*embed*/ {objectimport} from './services/objectimport.service';
@@ -112,6 +59,7 @@ import /*embed*/ {ObjectEditModal} from './components/objecteditmodal';
 import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalwreference';
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
+import /*embed*/ {ObjectEditModalDialogDuplicatesPanel} from './components/objecteditmodaldialogduplicatespanel';
 import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
 import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
 import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
@@ -187,14 +135,12 @@ import /*embed*/ {ObjectActivitiyTimelineEvent} from './components/objectactivit
 import /*embed*/ {ObjectActivitiyTimelineEmail} from './components/objectactivitytimelineemail';
 import /*embed*/ {ObjectActivitiyTimelineNote} from './components/objectactivitiytimelinenote';
 import /*embed*/ {ObjectActivitiyTimelineTask} from './components/objectactivitiytimelinetask';
+import /*embed*/ {ObjectActivitiyTimelineStencil} from './components/objectactivitiytimelinestencil';
 import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/objectactivitiytimelineaddcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddItem} from './components/objectactivitiytimelineadditem';
-import /*embed*/ {ObjectActivitiyTimelineAddCall} from './components/objectactivitiytimelineaddcall';
-import /*embed*/ {ObjectActivitiyTimelineAddMeeting} from './components/objectactivitiytimelineaddmeeting';
-import /*embed*/ {ObjectActivitiyTimelineAddTask} from './components/objectactivitiytimelineaddtask';
 import /*embed*/ {ObjectActivitiyTimelineAddEmail} from './components/objectactivitiytimelineaddemail';
-import /*embed*/ {ObjectActivitiyTimelineAddNote} from './components/objectactivitiytimelineaddnote';
 import /*embed*/ {ObjectActivitiyTimelineSummary} from './components/objectactivitiytimelinesummary';
+import /*embed*/ {ObjectActivitiyTimelineSummaryItemView} from './components/objectactivitiytimelinesummaryitemview';
 import /*embed*/ {ObjectActivitiyTimelineSummaryButton} from './components/objectactivitiytimelinesummarybutton';
 import /*embed*/ {ObjectActivitiyTimelineSummaryModal} from './components/objectactivitiytimelinesummarymodal';
 
@@ -250,8 +196,6 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
- *
- * @module ObjectComponents
  */
 @NgModule({
     imports: [
@@ -265,13 +209,10 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
             {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, aclCheck]},
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
+            {path: 'module/:module/historysummary/:id', component: ObjectActivitiyTimelineSummary, canActivate: [loginCheck]},
             {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {
-                path: 'module/:module/:id/:related/:link/:fieldset',
-                component: ObjectRelatedlistAll,
-                canActivate: [loginCheck]
-            },
+            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
@@ -324,6 +265,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
+        ObjectEditModalDialogDuplicatesPanel,
         ObjectOptimisticLockingModal,
         ObjectOptimisticLockingModalDataField,
         ObjectOptimisticLockingModalChange,
@@ -371,14 +313,12 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActivitiyTimelineEmail,
         ObjectActivitiyTimelineTask,
         ObjectActivitiyTimelineNote,
+        ObjectActivitiyTimelineStencil,
         ObjectActivitiyTimelineAddContainer,
         ObjectActivitiyTimelineAddItem,
-        ObjectActivitiyTimelineAddCall,
-        ObjectActivitiyTimelineAddMeeting,
-        ObjectActivitiyTimelineAddTask,
         ObjectActivitiyTimelineAddEmail,
-        ObjectActivitiyTimelineAddNote,
         ObjectActivitiyTimelineSummary,
+        ObjectActivitiyTimelineSummaryItemView,
         ObjectActivitiyTimelineSummaryButton,
         ObjectActivitiyTimelineSummaryModal,
         ObjectRecordDetails,
@@ -493,7 +433,8 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectTabContainerItemHeader,
         ObjectTableRow,
         ObjectTable,
-        ObjectActivitiyTimelineItemContainer
+        ObjectActivitiyTimelineItemContainer,
+        ObjectActivitiyTimelineStencil
     ]
 })
 export class ObjectComponents {

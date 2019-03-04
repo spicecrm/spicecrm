@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import {Component, OnInit, Input } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';

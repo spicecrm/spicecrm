@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+/**
+ * @module ServiceComponentsModule
+ */
+import {Component, Input, Output,  EventEmitter} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
-import {footer} from '../../../services/footer.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
-
-
 
 @Component({
     selector: 'service-add-ticket-button',

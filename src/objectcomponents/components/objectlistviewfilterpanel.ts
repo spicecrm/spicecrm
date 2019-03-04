@@ -1,12 +1,10 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
+    Component,
     ElementRef, Renderer2
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router, ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -25,7 +23,7 @@ export class ObjectListViewFilterPanel {
         this.modellist.listtype$.subscribe(newlist => this.setBaseFilter());
     }
 
-    setBaseFilter(){
+    setBaseFilter() {
         this.listfilters.basefilter = this.modellist.getBaseFilter();
         this.listfilters.loadedBasefilter = this.modellist.getBaseFilter();
 
@@ -33,22 +31,26 @@ export class ObjectListViewFilterPanel {
         this.listfilters.loadedFilters = this.modellist.getFilterDefs();
     }
 
-    isChanged(){
+    isChanged() {
         return this.listfilters.isDirty();
     }
 
-    save(){
-        this.modellist.updateListType({basefilter: this.listfilters.basefilter, filterdefs: btoa(JSON.stringify(this.listfilters.filters))}).subscribe(retval => {
+    save() {
+        this.modellist.updateListType({
+            basefilter: this.listfilters.basefilter,
+            filterdefs: btoa(JSON.stringify(this.listfilters.filters))
+        }).subscribe(retval => {
             this.listfilters.loadedBasefilter = this.modellist.getBaseFilter();
             this.listfilters.loadedFilters = this.modellist.getFilterDefs();
         });
     }
-    cancel(){
+
+    cancel() {
         this.listfilters.basefilter = this.modellist.getBaseFilter();
         this.listfilters.filters = this.modellist.getFilterDefs();
     }
 
-    addFilter(){
+    addFilter() {
         this.listfilters.filters.push({
             id: this.model.generateGuid(),
             field: '',
@@ -57,14 +59,14 @@ export class ObjectListViewFilterPanel {
         })
     }
 
-    removeAllFilters(){
+    removeAllFilters() {
         this.listfilters.filters = [];
     }
 
-    getPanelStyle(){
+    getPanelStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         return {
-            height: 'calc(100vh - ' + rect.top +'px)'
+            height: 'calc(100vh - ' + rect.top + 'px)'
         }
     }
 }
