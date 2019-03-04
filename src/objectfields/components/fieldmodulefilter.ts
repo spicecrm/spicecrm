@@ -1,8 +1,10 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, ElementRef, Renderer, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import {Router}   from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {footer} from '../../services/footer.service';
 import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';

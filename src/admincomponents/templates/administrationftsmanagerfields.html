@@ -50,6 +50,8 @@
                             <option value='keyword'>keyword</option>
                             <option value='date'>date</option>
                             <option value='double'>double</option>
+                            <option value='parentid'>parentid</option>
+                            <option value='activitydate'>activitydate</option>
                         </select>
                     </div>
                 </div>
@@ -160,14 +162,36 @@
             <div class="slds-form-element">
                 <label class="slds-form-element__label">Analyzer</label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.analyzer"/>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
+                            <option value=''>standard</option>
+                            <option value='spice_ngram'>NGram</option>
+                            <option value='spice_html'>HTML</option>
+                            <option value='spice_edgengram'>Edge NGram</option>
+                            <option value='spice_email'>email Address</option>
+                        </select>
+                    </div>
                 </div>
+                <!--div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.analyzer"/>
+                </div-->
             </div>
             <div class="slds-form-element">
                 <label class="slds-form-element__label">Search Analyzer</label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.search_analyzer"/>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="fieldDetails.search_analyzer">
+                            <option value=''>standard</option>
+                            <option value='spice_ngram'>NGram</option>
+                            <option value='spice_html'>HTML</option>
+                            <option value='spice_edgengram'>Edge NGram</option>
+                            <option value='spice_email'>email Address</option>
+                        </select>
+                    </div>
                 </div>
+                <!--div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.search_analyzer"/>
+                </div-->
             </div>
         </div>
         <ng-template #selectfield>

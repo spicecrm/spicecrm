@@ -1,10 +1,13 @@
-import {Injectable, EventEmitter} from "@angular/core";
+/**
+ * @module services
+ */
+import {Injectable} from "@angular/core";
 import {modelutilities} from "./modelutilities.service";
 
 @Injectable()
 export class toast {
 
-    private activeToasts: Array<any> = [];
+    private activeToasts: any[] = [];
 
     constructor(private modelutilities: modelutilities) {
 

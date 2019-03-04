@@ -1,4 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, Input} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -65,7 +68,7 @@ export class fieldLabel {
         if (this.fieldconfig.label) {
             if (this.fieldconfig.label.indexOf(':') > 0) {
                 let fielddetails = this.fieldconfig.label.split(':');
-                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels)
+                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels);
             } else {
                 return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels)
             }

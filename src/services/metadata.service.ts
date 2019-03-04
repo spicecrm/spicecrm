@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {Subject, Observable, of} from "rxjs";
 import {
     Injectable,
@@ -39,7 +42,7 @@ export class metadata {
     private fieldDefs: any = {};
     private fieldTypeMappings: any = {};
     private fieldStatusNetworks: any = {};
-    private roles: Array<any> = [];
+    private roles: any[] = [];
     private rolemodules: any = {};
     private role: string = "";
     private copyrules: any = {};
@@ -870,6 +873,20 @@ export class metadata {
         } catch (e) {
             return [];
         }
+    }
+
+    /**
+     * returns all fields that are relevant for a duplicate check for the given module
+     *
+     * @param module the module object that the fields are supposed to be returned for
+     */
+    public getModuleDuplicateCheckFields(module: string): any {
+        let dupfields = [];
+        let fields = this.getModuleFields(module);
+        for (let field in fields) {
+            if (fields[field].duplicatecheck) dupfields.push(field);
+        }
+        return dupfields;
     }
 
     public getModuleValidations(module: string) {

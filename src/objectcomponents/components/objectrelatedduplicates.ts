@@ -1,5 +1,7 @@
-import {Component, AfterViewInit, OnInit} from '@angular/core';
-import {relatedmodels} from '../../services/relatedmodels.service';
+/**
+ * @module ObjectComponents
+ */
+import {Component, AfterViewInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';

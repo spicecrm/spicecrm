@@ -1,7 +1,9 @@
-import {Component, AfterViewInit, OnInit, OnDestroy, Input} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, Input} from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {Router} from '@angular/router';
 

@@ -1,10 +1,9 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate} from '@angular/router';
-import {configurationService} from './configuration.service';
-import {loader} from './loader.service';
-import {Router} from '@angular/router';
 import {loggerService} from './logger.service';
 
 // Taken from https://github.com/killmenot/webtoolkit.md5

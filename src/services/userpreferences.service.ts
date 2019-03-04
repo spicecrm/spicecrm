@@ -1,11 +1,20 @@
-import {EventEmitter, Injectable} from '@angular/core';
+/**
+ * @module services
+ */
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Observable} from 'rxjs';
 import {backend} from './backend.service';
 import {toast} from './toast.service';
 import {language} from './language.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Injectable()

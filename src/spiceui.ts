@@ -1,3 +1,6 @@
+/**
+ * @module SpiceUI
+ */
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {BrowserModule, Title} from "@angular/platform-browser";
 import {
@@ -48,7 +51,13 @@ import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 
 // declarations for TS
+/**
+ * @ignore
+ */
 declare var System: any;
+/**
+* @ignore
+*/
 declare var moment: any;
 declare global {
     interface Date {

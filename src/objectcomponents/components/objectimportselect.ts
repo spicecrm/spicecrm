@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, EventEmitter, Output, Renderer, ViewChild, ViewContainerRef,} from '@angular/core';
 import {model} from '../../services/model.service';
 import {configurationService} from '../../services/configuration.service';
