@@ -1,5 +1,8 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    Component, ElementRef, ViewChild, OnInit, AfterViewInit, AfterViewChecked, ChangeDetectorRef
+    Component, ElementRef, ViewChild,  ChangeDetectorRef
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';

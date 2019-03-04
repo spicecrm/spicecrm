@@ -1,5 +1,5 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module GlobalComponents
  */
 import {AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";

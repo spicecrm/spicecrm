@@ -1,3 +1,6 @@
+/**
+ * @module ModuleACL
+ */
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {modellist} from '../../../services/modellist.service';

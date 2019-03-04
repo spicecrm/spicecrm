@@ -1,16 +1,16 @@
-import {EventEmitter, Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {CanActivate}    from "@angular/router";
+/**
+ * @module services
+ */
 
-import {configurationService} from "./configuration.service";
-import {session} from "./session.service";
+import {EventEmitter, Injectable} from "@angular/core";
 import {broadcast} from "./broadcast.service";
 import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
 import {modelutilities} from "./modelutilities.service";
-import {Router}   from "@angular/router";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Injectable()

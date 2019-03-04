@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, Input, AfterViewInit, ViewContainerRef, ViewChild, OnChanges} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 

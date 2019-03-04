@@ -1,5 +1,5 @@
 /**
- * @module globalcomponents
+ * @module GlobalComponents
  */
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';

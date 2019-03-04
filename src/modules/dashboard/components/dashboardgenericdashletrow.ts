@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';

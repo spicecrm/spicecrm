@@ -1,10 +1,14 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component} from "@angular/core";
-import {Observable, Subject} from "rxjs";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {model} from "../../services/model.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
+
+import {Subject} from 'rxjs';
 
 @Component({
     providers: [model, view],
@@ -31,7 +35,7 @@ export class GoogleCalendarManager {
 
     public saveBeanMappings() {
         let postData = {
-            'bean_mappings': this.beanMappings,
+            bean_mappings: this.beanMappings
         };
 
         this.backend.postRequest('google/calendar/savebeanmappings', {}, postData)
@@ -58,22 +62,22 @@ export class GoogleCalendarManager {
         }
 
         this.beanMappings.push({
-            'id':       this.model.generateGuid(),
-            'deleted':  false,
-            'bean':     {
-                'module': '',
-                'class':  '',
+            id:       this.model.generateGuid(),
+            deleted:  false,
+            bean:     {
+                module: '',
+                class:  '',
             },
-            'calendar': {
-                'id':   '',
-                'name': '',
+            calendar: {
+                id:   '',
+                name: '',
             },
         });
     }
 
     public removeMapping(mappingId: string) {
         console.log(mappingId);
-        this.beanMappings.forEach(function(mapping) {
+        this.beanMappings.forEach((mapping) => {
             if (mapping.id === mappingId) {
                 mapping.deleted = true;
             }
@@ -81,7 +85,7 @@ export class GoogleCalendarManager {
     }
 
     private getBeans() {
-        let responseSubject = new Subject<Array<any>>();
+        let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest('google/calendar/getbeans').subscribe(
             (response: any) => {
@@ -94,14 +98,14 @@ export class GoogleCalendarManager {
             },
             (err: any) => {
 
-            },
+            }
         );
 
         return responseSubject.asObservable();
     }
 
     private getCalendars() {
-        let responseSubject = new Subject<Array<any>>();
+        let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest('google/calendar/getcalendars').subscribe(
             (response: any) => {
@@ -121,14 +125,14 @@ export class GoogleCalendarManager {
     }
 
     private getBeanMappings() {
-        let responseSubject = new Subject<Array<any>>();
+        let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest('google/calendar/getbeanmappings').subscribe(
             (response: any) => {
                 if (response.result === true) {
                     // this.beanMappings = response.bean_mappings;
 
-                    this.beanMappings = Object.keys(response.bean_mappings).map(function(index) {
+                    this.beanMappings = Object.keys(response.bean_mappings).map((index) => {
                         let mapping = response.bean_mappings[index];
                         return mapping;
                     });

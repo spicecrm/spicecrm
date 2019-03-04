@@ -1,7 +1,9 @@
-import {Component, ElementRef, Input, Output, EventEmitter, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component,  Input, Output, EventEmitter} from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {fts} from '../../services/fts.service';
 import {modal} from '../../services/modal.service';

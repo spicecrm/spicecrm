@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import { Component, Input, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { language } from '../../services/language.service';
 import { Observable ,  Subject } from 'rxjs';

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';

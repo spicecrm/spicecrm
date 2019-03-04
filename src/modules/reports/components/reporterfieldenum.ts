@@ -1,14 +1,9 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Component
 } from '@angular/core';
-import {currency} from '../../../services/currency.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'reporter-field-enum',
@@ -16,11 +11,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 })
 export class ReporterFieldEnum {
 
-    record: any = {};
-    field: any = {};
-
-    constructor() {
-
-    }
+    private record: any = {};
+    private field: any = {};
 
 }
