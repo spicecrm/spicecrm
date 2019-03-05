@@ -409,6 +409,7 @@ export class backend {
                     "error",
                     null,
                     false,
+                    'sessionexpired'
                 );
                 this.modalservice.closeAllModals();
                 this.session.endSession();
