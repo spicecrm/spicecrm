@@ -7,28 +7,39 @@ import {
 
 
 /**
- * a service which provides math expression compiler functions
+ * a service which provides a compiler to evaluate mathematical expressions
  * author: Sebastian Franz
  */
 @Injectable()
 export class MathExpressionCompilerService {
-    public do(input) {
+
+    /**
+     * the main function, it parses the input text and compiles it to return the evaluated math expression
+     * @param {string} input a mathematical expression like "12 * 3 + (2 - 1.999)"
+     * @returns {string} the compiled result. e.g "36.0001"
+     */
+    public do(input:string) {
         return this.evaluate(this.parse(this.lex(input)));
     }
 
-    public lex(input: string) {
+    /**
+     * only for internal use...
+     * @param {string} input
+     * @returns {any[]}
+     */
+    private lex(input: string) {
         let isOperator = (c) => {
-                return /[+\-*\/\^%=(),]/.test(c);
-            };
+            return /[+\-*\/\^%=(),]/.test(c);
+        };
         let isDigit = (c) => {
-                return /[0-9]/.test(c);
-            };
+            return /[0-9]/.test(c);
+        };
         let isWhiteSpace = (c) => {
-                return /\s/.test(c);
-            };
+            return /\s/.test(c);
+        };
         let isIdentifier = (c) => {
-                return typeof c === "string" && !isOperator(c) && !isDigit(c) && !isWhiteSpace(c);
-            };
+            return typeof c === "string" && !isOperator(c) && !isDigit(c) && !isWhiteSpace(c);
+        };
 
         let tokens = [];
         let c;
@@ -78,7 +89,12 @@ export class MathExpressionCompilerService {
         return tokens;
     }
 
-    public parse(tokens) {
+    /**
+     * parses the tokens return from this.lex()
+     * @param tokens
+     * @returns {any[]}
+     */
+    private parse(tokens) {
 
         let symbols = {};
         let symbol = (id, nud?, lbp?, led?) => {
@@ -212,7 +228,12 @@ export class MathExpressionCompilerService {
         return parseTree;
     }
 
-    public evaluate(parseTree) {
+    /**
+     * parses the tree returned from this.parse()
+     * @param parseTree
+     * @returns {string} the evaluated result
+     */
+    private evaluate(parseTree) {
         let operators = {
             "+": (a, b) => a + b,
             "-": (a, b) => a - b,
