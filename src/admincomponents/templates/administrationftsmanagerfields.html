@@ -146,8 +146,9 @@
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="fieldDetails.duplicatequery">
-                                <option value=''>Match</option>
-                                <option value='term'>Term</option>
+                                <option value="">match (or)</option>
+                                <option value='match_and'>match (and)</option>
+                                <option value='term'>term</option>
                             </select>
                         </div>
                     </div>
