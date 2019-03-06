@@ -132,7 +132,7 @@ export class administrationconfigurator {
                 editMode = entry.mode === 'edit' || entry.mode === 'new';
                 return true;
             }
-        })
+        });
         return editMode;
     }
 
@@ -145,6 +145,7 @@ export class administrationconfigurator {
                     new_entry.data = JSON.parse(JSON.stringify(entry.data)); //  {...entry.data};
                     new_entry.mode = 'new';
                     new_entry.id = this.modelutilities.generateGuid();
+                    new_entry.data.id = new_entry.id;
                     this.entries.unshift(new_entry);
                     return true;
                 }
