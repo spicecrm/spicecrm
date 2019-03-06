@@ -294,8 +294,8 @@ export class model {
                 this.isLoading = false;
             },
             err => {
-                if (redirectNotFound) {
-                    this.toast.sendToast("Error loading Record", "error");
+                if (redirectNotFound && err.status != 401) {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_RECORD"), "error");
                     this.router.navigate(["/module/" + this.module]);
                 }
             }
