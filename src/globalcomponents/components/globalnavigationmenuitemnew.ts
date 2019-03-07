@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleCalendar
+ */
 import {AfterViewInit, Component, ElementRef, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
@@ -5,7 +8,13 @@ import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
 import {CalendarHeader} from "./calendarheader";
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component({

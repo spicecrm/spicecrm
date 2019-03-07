@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     Component,
     Input,
@@ -6,11 +9,9 @@ import {
     ElementRef,
     OnInit,
     OnDestroy,
-    AfterViewInit,
     Renderer2
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {listfilters} from '../services/listfilters.service';

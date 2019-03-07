@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';

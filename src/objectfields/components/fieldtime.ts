@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, ElementRef, Renderer, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {popup} from '../../services/popup.service';
@@ -7,6 +10,12 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router}   from '@angular/router';
 
+/**
+* @ignore
+*/
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

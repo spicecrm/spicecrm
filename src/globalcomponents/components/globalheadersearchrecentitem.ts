@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {
     AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef, EventEmitter,
     OnInit, Output
@@ -8,7 +11,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: '[global-header-search-recent-item]',
-    templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitem.html',
+    templateUrl: './src/globalcomponents/templates/globalheadersearchrecentitem.html',
     providers: [model],
     host: {
         "(click)": "navigateTo()"

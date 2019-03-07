@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {
     AfterViewInit,
     Component,

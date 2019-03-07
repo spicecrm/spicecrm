@@ -1,12 +1,14 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    Component, ElementRef, Renderer, Input, Output, OnDestroy, EventEmitter, ViewChild,
-    ViewContainerRef, OnInit, AfterViewInit
+    Component, ElementRef, Renderer, Input, Output, EventEmitter, ViewChild,
+    ViewContainerRef, AfterViewInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {popup} from '../../services/popup.service';
-import {view} from '../../services/view.service';
 import {helper} from '../../services/helper.service';
 
 @Component({

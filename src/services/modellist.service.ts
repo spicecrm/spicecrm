@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {backend} from './backend.service';
@@ -8,6 +11,9 @@ import {metadata} from "./metadata.service";
 import {broadcast} from "./broadcast.service";
 import {session} from "./session.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Injectable()
@@ -15,7 +21,7 @@ export class modellist implements OnDestroy {
     public module: string = '';
     public modulefilter: string = '';
     public listtype: string = 'all';
-    public listtype$: EventEmitter<String>;
+    public listtype$: EventEmitter<string>;
     public listData: any = {
         list: [],
         totalcount: 0
@@ -89,7 +95,7 @@ export class modellist implements OnDestroy {
         private session: session,
     ) {
         // create the event Emitter
-        this.listtype$ = new EventEmitter<String>();
+        this.listtype$ = new EventEmitter<string>();
 
         // subscribe to the broadcast service
         this.serviceSubscriptions.push(

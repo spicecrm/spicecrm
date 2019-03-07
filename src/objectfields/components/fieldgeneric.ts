@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {
     Component,
     Input,

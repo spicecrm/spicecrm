@@ -1,6 +1,7 @@
-<div class="slds-form-element slds-m-vertical--xxx-small" style="clear: both">
+<div class="slds-form-element slds-m-vertical--xxx-small">
     <workbench-config-label [option]="option.option" [description]="option.description"></workbench-config-label>
-    <div class="slds-grid">
+    <system-input-module-filter [(ngModel)]="configValues[option.option]" [disabled]="!view.isEditMode()"></system-input-module-filter>
+    <!--div class="slds-grid">
         <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
             <div class="slds-select_container">
                 <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="module">
@@ -24,5 +25,5 @@
                 </select>
             </div>
         </div>
-    </div>
+    </div-->
 </div>

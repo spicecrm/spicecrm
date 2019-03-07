@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Injectable, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';

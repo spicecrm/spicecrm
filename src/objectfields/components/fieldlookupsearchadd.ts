@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { model } from '../../services/model.service';
 import { language } from '../../services/language.service';
