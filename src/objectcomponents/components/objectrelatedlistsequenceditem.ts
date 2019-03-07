@@ -2,8 +2,6 @@
  * @module ObjectComponents
  */
 import {Component, Input, OnInit} from '@angular/core';
-import {Router,}   from '@angular/router';
-import { ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnInit } from '@angular/core';
 import {Router}   from '@angular/router';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
