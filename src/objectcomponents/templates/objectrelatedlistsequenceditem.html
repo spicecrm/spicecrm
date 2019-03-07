@@ -1,4 +1,4 @@
-<td scope="row" [ngClass]="{'draged':isDragged}">
+<td scope="row" [ngClass]="{'dragged':isDragged}">
     <system-utility-icon draggable="true" (dragstart)="dragstart($event)" (dragend)="dragend()" [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
 </td>
 <td *ngFor="let item of listfields" scope="row" [ngClass]="{'dragged':isDragged}">
