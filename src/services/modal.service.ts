@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {EventEmitter, Injectable, Injector} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {Observable, Subject, of} from "rxjs";

@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {Component, Pipe, PipeTransform, OnInit, Input} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {Observable, Subject} from "rxjs";

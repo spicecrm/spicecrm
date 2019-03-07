@@ -1,4 +1,7 @@
-import {Component, HostBinding, Input} from "@angular/core";
+/**
+ * @module ModuleMailboxes
+ */
+import {Component} from "@angular/core";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";

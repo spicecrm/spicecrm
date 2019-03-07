@@ -1,8 +1,8 @@
-import {Component, Input, AfterViewInit} from "@angular/core";
-import {model} from "../../services/model.service";
-import {view} from "../../services/view.service";
+/**
+ * @module ObjectComponents
+ */
+import {Component, Input} from "@angular/core";
 import {toast} from "../../services/toast.service";
-import {Router} from "@angular/router";
 import {modelattachments} from "../../services/modelattachments.service";
 import {modal} from "../../services/modal.service";
 import {userpreferences} from "../../services/userpreferences.service";

@@ -1,8 +1,12 @@
+/**
+ * @module SystemComponents
+ */
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { metadata } from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import { toast } from '../../services/toast.service';
 
+/**
+ * @ignore
+ */
 declare var window: any;
 
 @Component({

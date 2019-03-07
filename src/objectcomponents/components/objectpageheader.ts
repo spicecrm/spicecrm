@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     Component,
     OnInit
@@ -8,6 +11,9 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component({

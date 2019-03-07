@@ -1,9 +1,10 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component,
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
-import {broadcast} from '../../services/broadcast.service';
-import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 

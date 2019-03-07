@@ -1,3 +1,6 @@
+/**
+ * @module ModuleActivities
+ */
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {model} from '../../../services/model.service';

@@ -1,4 +1,7 @@
-import {Component, Input, ViewChild, ViewContainerRef, AfterViewInit, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, Input, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 
 @Component({

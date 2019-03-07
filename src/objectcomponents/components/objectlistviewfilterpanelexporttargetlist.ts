@@ -1,18 +1,16 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
+
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef, Renderer2
+    Component
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {modal} from '../../services/modal.service';
-import {listfilters} from '../services/listfilters.service';
 import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
 
 @Component({

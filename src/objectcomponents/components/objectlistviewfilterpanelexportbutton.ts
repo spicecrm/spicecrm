@@ -1,12 +1,11 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
+
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
+    Component,
     ElementRef, Renderer2
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router, ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -16,6 +15,9 @@ import {modellist} from '../../services/modellist.service';
 import {listfilters} from '../services/listfilters.service';
 import {ObjectListViewFilterPanelExportTargetlist} from "./objectlistviewfilterpanelexporttargetlist";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

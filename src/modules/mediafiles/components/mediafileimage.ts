@@ -1,3 +1,6 @@
+/**
+ * @module ModuleMediaFiles
+ */
 import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
 import {mediafiles} from '../../../services/mediafiles.service';
 

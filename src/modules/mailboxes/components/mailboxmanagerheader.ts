@@ -1,6 +1,7 @@
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {Subject} from 'rxjs';
-import {backend} from '../../../services/backend.service';
+/**
+ * @module ModuleMailboxes
+ */
+import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {mailboxesEmails} from '../services/mailboxesemail.service';
@@ -13,11 +14,11 @@ import {ActivatedRoute} from '@angular/router';
 export class MailboxManagerHeader implements OnInit {
 
     private mailboxselection: string;
-    //private emailopenness: string = '';
-    get emailopenness()
-    {
+
+    get emailopenness() {
         return this.mailboxesEmails.emailopenness == "" ? 'all' : this.mailboxesEmails.emailopenness;
     }
+
     set emailopenness(val) {
         this.mailboxesEmails.emailopenness = val == 'all' ? "" : val;
         this.mailboxesEmails.loadMails();

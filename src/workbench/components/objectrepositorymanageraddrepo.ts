@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component,
     Input,
@@ -9,8 +12,6 @@ import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
 
-import {Subject} from 'rxjs';
-import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'objectrepositorymanager-add-repo',

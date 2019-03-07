@@ -1,7 +1,9 @@
-import {Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from "../../services/language.service";
 import {relatedmodels} from "../../services/relatedmodels.service";

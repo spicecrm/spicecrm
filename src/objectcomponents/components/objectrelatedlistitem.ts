@@ -1,5 +1,8 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router} from "@angular/router";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
