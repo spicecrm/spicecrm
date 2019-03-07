@@ -1,18 +1,16 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
     Component,
-    Input,
-    AfterViewInit,
-    OnInit,
     ViewChild,
     ViewContainerRef,
-    OnDestroy,
     ElementRef
 } from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
-
 
 @Component({
     selector: 'workflow-taks-dashlet',

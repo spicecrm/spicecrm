@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Output, EventEmitter} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -5,6 +8,9 @@ import {navigation} from '../../../services/navigation.service';
 import {Router} from "@angular/router";
 
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

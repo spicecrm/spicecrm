@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, Pipe } from '@angular/core';
+/**
+ * @module ModuleQuestionnaires
+ */
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {session} from '../../../services/session.service';
 import {toast} from "../../../services/toast.service";
-//import { ApplicationRef } from '@angular/core';
 
 @Component({
     selector: 'questionset-render-rating',

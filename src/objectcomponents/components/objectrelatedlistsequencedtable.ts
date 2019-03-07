@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import { Component, Input } from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';

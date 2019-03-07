@@ -1,22 +1,17 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component,
     Input,
     Output,
-    AfterViewInit,
     OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy,
     EventEmitter,
 } from '@angular/core';
-import {model} from '../../services/model.service';
+
 import {backend} from '../../services/backend.service';
-import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
-
-import {Subject} from 'rxjs';
-import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'fieldsetmanager-add-dialog',

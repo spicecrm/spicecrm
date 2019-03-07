@@ -1,8 +1,10 @@
+/**
+ * @module ModuleMailboxes
+ */
 import {
     Component,
     ElementRef,
     EventEmitter,
-    HostBinding,
     Input,
     OnDestroy,
     Output,
@@ -10,11 +12,7 @@ import {
     ViewChild,
     ViewContainerRef,
 } from "@angular/core";
-import {footer} from "../../../services/footer.service";
 import {language} from "../../../services/language.service";
-import {metadata} from "../../../services/metadata.service";
-import {model} from "../../../services/model.service";
-import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "mailbox-email-to-lead-emailtext",

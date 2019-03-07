@@ -1,4 +1,7 @@
-import {Component, Input} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {Component} from '@angular/core';
 
 
 @Component({

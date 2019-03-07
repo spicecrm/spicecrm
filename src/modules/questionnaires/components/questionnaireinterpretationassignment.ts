@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import { Component, OnInit, ViewChild, ViewContainerRef, Input, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
 import { metadata } from '../../../services/metadata.service';
 import { language } from '../../../services/language.service';

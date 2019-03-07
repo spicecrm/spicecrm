@@ -1,8 +1,8 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, Input, OnInit} from '@angular/core';
-import {Router, ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 

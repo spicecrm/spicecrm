@@ -1,14 +1,12 @@
-import {Component, AfterViewInit, OnInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, ElementRef} from '@angular/core';
+/**
+ * @module ServiceComponentsModule
+ */
+import {Component, OnInit, ViewChild, ViewContainerRef, ElementRef} from '@angular/core';
 import { Router } from '@angular/router';
-import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {reminder} from '../../../services/reminder.service';
-import {toast} from '../../../services/toast.service';
 
-declare var moment: any;
 
 @Component({
     selector: 'service-myqueues-tickets-dashlet',

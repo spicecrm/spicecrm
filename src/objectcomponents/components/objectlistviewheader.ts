@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {modellist} from '../../services/modellist.service';

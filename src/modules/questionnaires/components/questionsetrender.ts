@@ -1,9 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+/**
+ * @module ModuleQuestionnaires
+ */
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { language } from '../../../services/language.service';
 import { backend } from "../../../services/backend.service";
-import { Subject ,  Observable } from 'rxjs';
 import { helper } from '../../../services/helper.service';
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component( {

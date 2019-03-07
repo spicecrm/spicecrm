@@ -1,4 +1,7 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';

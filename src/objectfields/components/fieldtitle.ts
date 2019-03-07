@@ -1,6 +1,8 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, ElementRef, Renderer} from '@angular/core';
 import {model} from '../../services/model.service';
-import {popup} from '../../services/popup.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';

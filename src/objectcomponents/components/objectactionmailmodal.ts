@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';

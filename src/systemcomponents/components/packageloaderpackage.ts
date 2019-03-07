@@ -1,13 +1,18 @@
+/**
+ * @module SystemComponents
+ */
 import {
     Component, Input, OnInit
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {configurationService} from '../../services/configuration.service';
-import {toast} from '../../services/toast.service';
 import {loader} from '../../services/loader.service';
 import {broadcast} from '../../services/broadcast.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

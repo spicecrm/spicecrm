@@ -1,3 +1,6 @@
+/**
+ * @module SpiceUI
+ */
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {BrowserModule, Title} from "@angular/platform-browser";
 import {
@@ -48,7 +51,13 @@ import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 
 // declarations for TS
+/**
+ * @ignore
+ */
 declare var System: any;
+/**
+* @ignore
+*/
 declare var moment: any;
 declare global {
     interface Date {
@@ -58,6 +67,9 @@ declare global {
 
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
+/**
+ * the main component that gets bootstrapped withthe main module
+ */
 @Component({
     selector: "spicecrm",
     template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet></div><global-footer></global-footer>"
@@ -75,6 +87,9 @@ export class SpiceUI {
         });
     }
 
+    /**
+     * sets the top margin the headers that is set static requires
+     */
     get outletstyle() {
         return {
             'margin-top': this.layout.headerheight + 'px'
@@ -82,6 +97,9 @@ export class SpiceUI {
     }
 }
 
+/**
+ * the main module
+ */
 @NgModule({
     imports: [
         BrowserModule,
@@ -147,10 +165,14 @@ export class SpiceUIModule {
     }
 }
 
-// set prod mode
+/**
+ * sets the prod mode. THis is enabled in the build workflow for production build
+ */
 // enableProdMode();
 
-// browser detection to display mesaeg when we have IE
+/**
+ * browser detection .. IE is not supported
+ */
 declare global {
     interface Document {
         documentMode?: any;
@@ -165,6 +187,9 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
     platformBrowserDynamic().bootstrapModule(SpiceUIModule);
 }
 
+/**
+ * a handler for using an existing window if a link is clicked e.g. in an email so SpiceCRM is not started for a second time but the existing one navigates properly to the requested ressource
+ */
 window.name = 'SpiceCRM';
 (() => {
     if (window.hasOwnProperty('BroadcastChannel')) { // Does the browser know the Broadcast API?

@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import { Component, OnInit, ChangeDetectorRef, ApplicationRef } from '@angular/core';
 import { metadata } from '../../services/metadata.service';
 import {language} from '../../services/language.service';

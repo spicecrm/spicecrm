@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Injectable, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";

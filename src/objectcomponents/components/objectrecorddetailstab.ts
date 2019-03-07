@@ -1,7 +1,8 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     Component,
     Input,
@@ -6,26 +9,50 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    ChangeDetectorRef, AfterViewInit, AfterContentInit, PipeTransform, Pipe, OnChanges
+    ChangeDetectorRef,
+    OnChanges
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {model} from "../../services/model.service";
 import {ObjectActionContainerItem} from "./objectactioncontaineritem";
 
-
+/**
+ * a container that renders an actionset with the buttons in teh actionset
+ */
 @Component({
     selector: "object-action-container",
     templateUrl: "./src/objectcomponents/templates/objectactioncontainer.html"
 })
 export class ObjectActionContainer implements OnChanges {
+    /**
+     * reference to the container item where the indivvidual components can be rendered into dynamically
+     */
     @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>;
 
+    /**
+     * the id of the actionset to be rendered
+     */
     @Input() private actionset: string = "";
+
+    /**
+     * an array with the main action items. Allothers are rendered in the overflow
+     */
     public mainactionitems: any[] = [];
+
+    /**
+     * the overflow action items
+     */
     private addactionitems: any[] = [];
+
+    /**
+     * an event emitter that emits if an action is triggered in the actionset. Tis is usefuly if custom actionitems are used or if you want to subscribe in your application to an event from an actionset and trigger additonal actions once the action has been selected
+     */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * indicates internally if the overflow menu item is opened
+     */
     private isOpen: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private model: model, private changeDetectorRef: ChangeDetectorRef) {

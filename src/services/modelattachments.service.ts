@@ -1,5 +1,7 @@
+/**
+ * @module services
+ */
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Subject, Observable} from "rxjs";
 
 import {configurationService} from "./configuration.service";
@@ -8,6 +10,9 @@ import {backend} from "./backend.service";
 import {toast} from "./toast.service";
 import {language} from "./language.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Injectable()
@@ -22,7 +27,6 @@ export class modelattachments {
     private serviceSubscriptions: any[] = [];
 
     constructor(
-        private http: HttpClient,
         private backend: backend,
         private configurationService: configurationService,
         private session: session,
