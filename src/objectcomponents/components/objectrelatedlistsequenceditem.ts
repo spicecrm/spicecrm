@@ -40,10 +40,12 @@ export class ObjectRelatedListSequencedItem implements OnInit {
         event.dataTransfer.setData( 'text/plain', this.listitem.id );
         event.dataTransfer.effectAllowed = 'move';
         this.isDragged = true;
+        return true;
     }
 
     private dragend() {
         this.isDragged = false;
+        return true;
     }
 
 }

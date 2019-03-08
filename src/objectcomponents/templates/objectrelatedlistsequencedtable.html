@@ -12,7 +12,7 @@
     </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let relateditem of relatedmodels.items; let i=index" (dragover)="dragover()" (dragenter)="dragenter( i )" (dragleave)="dragleave( i )" (drop)="drop( $event, relateditem )" object-related-list-seqeunced-item [module]="module" [listfields]="displayfields" [listitem]="relateditem" class="slds-hint-parent" [ngClass]="{'would-drop-before':over[i]>0}"></tr>
+        <tr *ngFor="let relateditem of relatedmodels.items; let i=index" (dragover)="dragover($event)" (dragenter)="dragenter($event,i)" (dragleave)="dragleave(i)" (drop)="drop($event,relateditem)" object-related-list-seqeunced-item [module]="module" [listfields]="displayfields" [listitem]="relateditem" class="slds-hint-parent" [ngClass]="{'would-drop-before':over[i]>0}"></tr>
     </tbody>
     <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="true" [tools]="true"></tbody>
 </table>
