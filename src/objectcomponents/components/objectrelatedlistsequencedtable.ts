@@ -45,19 +45,22 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
         if ( this.relatedmodels.items ) this.relatedmodels.items.forEach( () => this.over.push(0) );
     }
 
-    private dragover() {
+    private dragover( event ) {
+        // event.preventDefault(); // needed? not sure
         event.stopPropagation();
-        event.preventDefault();
+        return false;
     }
 
-    private dragenter( i ) {
+    private dragenter( event, i ) {
         event.preventDefault();
         this.over[i]++;
+        event.dataTransfer.dropEffect = 'move';
+        return false;
     }
 
     private dragleave( i ) {
         this.over[i]--;
-        event.preventDefault();
+        return false;
     }
 
     /**
@@ -78,6 +81,7 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
 
     private drop( event, targetitem ) {
 
+        event.preventDefault();
         let sourceID = event.dataTransfer.getData('text/plain');
 
         // build an internal array with ids and sequence
