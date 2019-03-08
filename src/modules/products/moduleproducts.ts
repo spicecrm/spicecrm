@@ -5,7 +5,7 @@ import {FormsModule}   from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {DirectivesModule} from "../../directives/directives";
 
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, Subscription} from 'rxjs';
 
 
 import {loginService, loginCheck} from '../../services/login.service';
@@ -66,6 +66,7 @@ import /*embed*/ {ProductGroupManagerDetailsAttributesValidation} from "./compon
 import /*embed*/ {ProductGroupManagerDetailsAttributesItem} from "./components/productgroupmanagerdetailsattributesitem";
 import /*embed*/ {ProductGroupManagerDetailsAttributesValidationItem} from "./components/productgroupmanagerdetailsattributesvalidationitem";
 import /*embed*/ {ProductGroupManagerDetailsAttributesAddButton} from "./components/productgroupmanagerdetailsattributesaddbutton";
+import /*embed*/ {ProductUOMConversions} from "./components/productuomconversions";
 
 @NgModule({
     imports: [
@@ -106,7 +107,8 @@ import /*embed*/ {ProductGroupManagerDetailsAttributesAddButton} from "./compone
         ProductVariantsAttributeSS,
         ProductTextGenerator,
         ProductGroupsContentCodeAssignments,
-        ProductGroupsLongtextCodeAssignments
+        ProductGroupsLongtextCodeAssignments,
+        ProductUOMConversions,
     ]
 })
 export class ModuleProducts {

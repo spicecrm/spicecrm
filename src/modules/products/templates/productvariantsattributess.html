@@ -1,6 +1,6 @@
 <field-generic-display *ngIf="!editmode" [editable]="editable">{{value}}</field-generic-display>
 <system-checkbox-group *ngIf="editmode" [(ngModel)]="value" class="slds-grid slds-wrap">
-    <div *ngFor="let attributeValue of attributeValues; trackBy: trackByFn" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+    <div *ngFor="let attributeValue of attributeValues; trackBy: trackByFn" [title]="attributeValue" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
         <system-checkbox-group-checkbox [value]="attributeValue"> {{attributeValue}}</system-checkbox-group-checkbox>
     </div>
 </system-checkbox-group>
