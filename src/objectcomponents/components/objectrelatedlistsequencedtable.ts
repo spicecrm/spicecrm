@@ -79,6 +79,10 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
     }
     */
 
+    private getIdOfRow( index, item ) {
+        return item.id;
+    }
+
     private drop( event, targetitem ) {
 
         event.preventDefault();
