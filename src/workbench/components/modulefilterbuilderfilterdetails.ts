@@ -58,7 +58,6 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
     }
 
     private cleangroup(group) {
-        console.log(group.conditions);
         for (let condition of group.conditions) {
             let i = group.conditions.indexOf(condition);
             if (condition.deleted === true) {
