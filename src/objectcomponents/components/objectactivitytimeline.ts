@@ -23,8 +23,30 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
 
     public displayAddContainer: boolean = false;
 
+    private displayaggregates = {
+        Activities: false,
+        History: false
+    }
+
     constructor(private model: model, private language: language, private activitiyTimeLineService: activitiyTimeLineService, private activatedRoute: ActivatedRoute) {
 
+    }
+
+    /**
+     * getter for the searchterm
+     */
+    get ftsSearchTerm() {
+        return this.activitiyTimeLineService.filters.searchterm;
+    }
+
+    /**
+     * setter for the searchterm. When entered will also start a reload
+     *
+     * @param searchterm the searchterm
+     */
+    set ftsSearchTerm(searchterm) {
+        this.activitiyTimeLineService.filters.searchterm = searchterm;
+        this.activitiyTimeLineService.reload();
     }
 
     public ngOnInit() {
@@ -36,6 +58,9 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
         if (!this.componentconfig.hideaddcontainer) {
             this.displayAddContainer = true;
         }
+
+        if (this.componentconfig.usefts) this.activitiyTimeLineService.usefts = true;
+        if (this.componentconfig.defaultentries) this.activitiyTimeLineService.defaultLimit = this.componentconfig.defaultentries;
 
     }
 

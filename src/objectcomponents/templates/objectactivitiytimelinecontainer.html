@@ -1,5 +1,8 @@
+<div *ngIf="displayaggregates && hasAggregates" class="slds-p-vertical--x-small slds-m-top--x-small">
+    <object-activitiy-timeline-aggregates [module]="module" labellength="short"></object-activitiy-timeline-aggregates>
+</div>
 <ul *ngIf="hasActivities; else nocontent" class="slds-timeline slds-p-vertical--small">
-    <li *ngFor="let activity of activities">
+    <li *ngFor="let activity of activities; trackBy:trackByFn">
         <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
     </li>
 </ul>

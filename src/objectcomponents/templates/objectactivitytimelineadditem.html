@@ -2,12 +2,12 @@
     <!--button *ngIf="isExpanded" class="slds-button slds-button_icon slds-button_icon" (click)="expand()">
         <system-button-icon [icon]="'expand_alt'" [size]="'xx-small'"></system-button-icon>
     </button-->
-    <div (click)="onHeaderClick()">
+    <div class="slds-p-horizontal--xx-small" (click)="onHeaderClick()">
         <object-record-fieldset [fieldset]="headerFieldSet"></object-record-fieldset>
     </div>
-    <ng-container *ngIf="isExpanded">
+    <div class="slds-p-horizontal--xx-small" *ngIf="isExpanded">
         <object-record-fieldset [fieldset]="bodyFieldSet" [direction]="'vertical'"></object-record-fieldset>
-        <div class="slds-p-around--x-small slds-grid">
+        <div class="slds-p-vertical--x-small slds-grid">
             <div class="slds-button-group" role="group">
                 <button class="slds-button slds-button--neutral" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
                     <system-button-icon icon="close"></system-button-icon>
@@ -26,5 +26,5 @@
                 <object-action-container [actionset]="actionset" (actionemitter)="handleaction($event)" ></object-action-container>
             </div>
         </div>
-    </ng-container>
+    </div>
 </div>
