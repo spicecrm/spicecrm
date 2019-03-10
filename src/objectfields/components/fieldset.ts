@@ -20,7 +20,7 @@ export class fieldSet implements OnInit{
     }
 
     ngOnInit(){
-        this.fieldsetItems = this.metadata.getFieldSetFields(this.fieldset);
+        this.fieldsetItems = this.metadata.getFieldSetItems(this.fieldset);
     }
 
     getFormClass(){
