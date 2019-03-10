@@ -50,7 +50,7 @@ export class reminder {
                     this.reminders.push(reminder);
                 }
                 this.loaded$.emit(true);
-                delete(this.loaded$);
+                // delete(this.loaded$);
                 loadhandler.next('loadReminders');
             });
         }
