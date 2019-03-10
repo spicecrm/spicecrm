@@ -1,9 +1,9 @@
-<td scope="row">
-    <system-utility-icon [icon]="'rows'" [size]="'x-small'"></system-utility-icon>
+<td scope="row" [ngClass]="{'dragged':isDragged}">
+    <system-utility-icon draggable="true" (dragstart)="dragstart($event)" (dragend)="dragend()" [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
 </td>
-<td *ngFor="let item of listfields" scope="row">
+<td *ngFor="let item of listfields" scope="row" [ngClass]="{'dragged':isDragged}">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
 </td>
-<td role="gridcell" class="slds-cell-shrink" data-label="Actions">
+<td role="gridcell" class="slds-cell-shrink" data-label="Actions" [ngClass]="{'dragged':isDragged}">
     <object-action-menu [buttonsize]="'x-small'"></object-action-menu>
 </td>

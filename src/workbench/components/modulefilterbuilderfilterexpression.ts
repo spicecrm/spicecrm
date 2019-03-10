@@ -138,17 +138,17 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
         }
     }
 
-    private checkEnumOption(value, checked) {
-        let enumArray = this.filterexpression.filtervalue.length > 0 ? this.filterexpression.filtervalue.split(",") : [];
-        enumArray = enumArray.filter(item => item != value);
-        if (checked) {
-            enumArray.push(value);
+    get enumValue() {
+        let val = this.filterexpression.filtervalue;
+        if (val && typeof val != 'string') {
+            return val;
         }
-        this.filterexpression.filtervalue = enumArray.toString();
+        return this.filterexpression.filtervalue = val.length > 1 ? val.split(',') : [val];
     }
 
-    private enumOptionValue(value) {
-        return !!this.filterexpression.filtervalue.includes(value);
+    set enumValue(value) {
+        this.filterexpression.filtervalue = value.length > 1 ? value.join(',') : value.toString();
+
     }
 
     private determineOperatorType(field) {
@@ -206,5 +206,9 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
 
     private delete() {
         this.filterexpression.deleted = true;
+    }
+
+    private trackByFn(i, item) {
+        return item.value;
     }
 }
