@@ -51,7 +51,7 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
         // get the fields
         let componentconfig = this.metadata.getComponentConfig('ServiceActivitiyTimelineAddServiceCall', this.model.module);
         this.formFieldSet = componentconfig.fieldset;
-        this.formFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+        this.formFields = this.metadata.getFieldSetItems(componentconfig.fieldset);
     }
 
     initializeCall(){
