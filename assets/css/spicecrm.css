@@ -150,7 +150,7 @@ global-user-panel {
     position: absolute;
     right: 0;
     top: 50%;
-    left: 120px;
+    left: 160px;
     margin-top: -1px;
     border-bottom: 1px solid rgb(216, 221, 230);
     content: ' ';
