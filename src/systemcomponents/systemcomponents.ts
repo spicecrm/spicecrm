@@ -57,6 +57,7 @@ import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./comp
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
@@ -137,6 +138,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemSection,
         SystemRichTextEditor,
         SystemRichTextSourceModal,
+        SystemInputDelayed,
         SystemInputTime,
         SystemInputNumber,
         SystemInputDate,
@@ -206,6 +208,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
+        SystemInputDelayed,
         SystemInputRadio,
         SystemInputTime,
         SystemInputNumber,
