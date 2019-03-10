@@ -13,7 +13,6 @@ import {ObjectFields} from '../objectfields/objectfields';
 import {GlobalComponents} from '../globalcomponents/globalcomponents';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
-
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
 import {VersionManagerService} from '../services/versionmanager.service';
@@ -130,6 +129,7 @@ import /*embed*/ {ObjectActivityTimelineFilter} from "./components/objectactivit
 import /*embed*/ {ObjectActivitiyTimelineContainer} from './components/objectactivitytimelinecontainer';
 import /*embed*/ {ObjectActivitiyTimelineItemContainer} from './components/objectactivitiytimelineitemcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddTabContainer} from './components/objectactivitiytimelineaddtabcontainer';
+import /*embed*/ {ObjectActivitiyTimelineItem} from './components/objectactivitiytimelineitem';
 import /*embed*/ {ObjectActivitiyTimelineCall} from './components/objectactivitytimelinecall';
 import /*embed*/ {ObjectActivitiyTimelineEvent} from './components/objectactivitytimelineevent';
 import /*embed*/ {ObjectActivitiyTimelineEmail} from './components/objectactivitytimelineemail';
@@ -140,9 +140,11 @@ import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/object
 import /*embed*/ {ObjectActivitiyTimelineAddItem} from './components/objectactivitiytimelineadditem';
 import /*embed*/ {ObjectActivitiyTimelineAddEmail} from './components/objectactivitiytimelineaddemail';
 import /*embed*/ {ObjectActivitiyTimelineSummary} from './components/objectactivitiytimelinesummary';
+import /*embed*/ {ObjectActivitiyTimelineAggregates} from './components/objectactivitiytimelineaggregates';
 import /*embed*/ {ObjectActivitiyTimelineSummaryItemView} from './components/objectactivitiytimelinesummaryitemview';
 import /*embed*/ {ObjectActivitiyTimelineSummaryButton} from './components/objectactivitiytimelinesummarybutton';
 import /*embed*/ {ObjectActivitiyTimelineSummaryModal} from './components/objectactivitiytimelinesummarymodal';
+import /*embed*/ {ObjectActivitiyTimelineSummaryAggregates} from './components/objectactivitiytimelinesummaryaggregates';
 
 import /*embed*/ {ObjectRecordDetails} from './components/objectrecorddetails';
 import /*embed*/ {ObjectRecordDetailsTab} from './components/objectrecorddetailstab';
@@ -308,6 +310,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActivitiyTimelineContainer,
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineAddTabContainer,
+        ObjectActivitiyTimelineItem,
         ObjectActivitiyTimelineCall,
         ObjectActivitiyTimelineEvent,
         ObjectActivitiyTimelineEmail,
@@ -318,9 +321,11 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActivitiyTimelineAddItem,
         ObjectActivitiyTimelineAddEmail,
         ObjectActivitiyTimelineSummary,
+        ObjectActivitiyTimelineAggregates,
         ObjectActivitiyTimelineSummaryItemView,
         ObjectActivitiyTimelineSummaryButton,
         ObjectActivitiyTimelineSummaryModal,
+        ObjectActivitiyTimelineSummaryAggregates,
         ObjectRecordDetails,
         ObjectRecordDetailsTab,
         ObjectRecordAdministrationTab,

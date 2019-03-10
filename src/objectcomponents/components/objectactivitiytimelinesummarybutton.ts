@@ -20,11 +20,11 @@ export class ObjectActivitiyTimelineSummaryButton {
     }
 
     private displaySummary() {
-        // this.router.navigate(["/module/" + this.model.module + "/historysummary/" + this.model.id]);
-
+        this.router.navigate(["/module/" + this.model.module + "/historysummary/" + this.model.id]);
+/*
         this.modal.openModal('ObjectActivitiyTimelineSummaryModal').subscribe(modalRef => {
             modalRef.instance.parent = this.model;
         });
-
+*/
     }
 }
