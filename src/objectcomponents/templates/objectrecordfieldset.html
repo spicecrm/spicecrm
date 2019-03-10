@@ -1,11 +1,11 @@
-<div *ngIf="renderVertical" class="slds-p-horizontal--x-small">
+<div *ngIf="renderVertical">
     <div *ngFor="let fieldsetitem of fieldsetitems">
         <!--field-container *ngIf="isField(fieldsetitem)" [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig"></field-container-->
         <object-record-fieldset-field *ngIf="isField(fieldsetitem)" [fieldsetitem]="fieldsetitem" [fielddisplayclass]="fielddisplayclass" [fieldpadding]="fieldpadding"></object-record-fieldset-field>
         <object-record-fieldset *ngIf="!isField(fieldsetitem)" [fieldset]="fieldsetitem.fieldset" [fielddisplayclass]="fielddisplayclass" [fieldpadding]="fieldpadding" [direction]="fieldsetitem.fieldconfig.direction"></object-record-fieldset>
     </div>
 </div>
-<div *ngIf="!renderVertical" class="slds-grid slds-wrap slds-p-horizontal--x-small">
+<div *ngIf="!renderVertical" class="slds-grid slds-wrap">
     <div *ngFor="let fieldsetitem of fieldsetitems; let i=index" [ngClass]="sizeClass(i)">
         <object-record-fieldset-field *ngIf="isField(fieldsetitem)" [fieldsetitem]="fieldsetitem" [fielddisplayclass]="fielddisplayclass" [fieldpadding]="fieldpadding"></object-record-fieldset-field>
         <object-record-fieldset *ngIf="!isField(fieldsetitem)" [fieldset]="fieldsetitem.fieldset" [fielddisplayclass]="fielddisplayclass" [fieldpadding]="fieldpadding" [direction]="fieldsetitem.fieldconfig.direction"></object-record-fieldset>
