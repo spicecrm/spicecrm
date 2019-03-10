@@ -47,7 +47,7 @@ export class ObjectRecordDetailsTab implements OnInit{
     }
 
     getFieldsets(){
-        return this.metadata.getFieldSetFields(this.componentconfig['fieldset']);
+        return this.metadata.getFieldSetItems(this.componentconfig['fieldset']);
     }
 
     togglePanel(){
