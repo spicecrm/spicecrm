@@ -789,7 +789,7 @@ export class metadata {
      *
      * @param fieldset the id of the fieldset
      */
-    public getFieldSetFields(fieldset: string, parents: string = '') {
+    public getFieldSetFields(fieldset: string, parents: string = ''): any[] {
         if (this.fieldSets[fieldset]) {
 
             let fields = [];
