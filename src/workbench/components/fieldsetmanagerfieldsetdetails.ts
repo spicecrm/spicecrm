@@ -39,7 +39,7 @@ export class FieldsetManagerFieldsetDetails implements OnChanges{
 
         try {
             let currentFieldsetItem;
-            this.metadata.getFieldSetFields(this.fieldset.fieldset).some(item => {
+            this.metadata.getFieldSetItems(this.fieldset.fieldset).some(item => {
                 if(item.id == this.fieldset.id){
                     this.currentFieldSet = this.metadata.getFieldset(item.fieldset);
                     this.currentFieldSetConfig = item.fieldconfig;
@@ -55,7 +55,7 @@ export class FieldsetManagerFieldsetDetails implements OnChanges{
     get fieldsetname(){
         try {
             let currentFieldsetItem;
-            this.metadata.getFieldSetFields(this.fieldset.fieldset).some(fieldset => {
+            this.metadata.getFieldSetItems(this.fieldset.fieldset).some(fieldset => {
                 if(fieldset.id == this.fieldset.id){
                     currentFieldsetItem = fieldset;
                     return true;

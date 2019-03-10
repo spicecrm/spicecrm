@@ -26,6 +26,9 @@ declare var _;
 @Injectable()
 export class metadata {
     // modules: Array<any> = [];
+    /**
+     * hols the module defs returned from teh backend. This has all teh necesary info on the module itself
+     */
     private moduleDefs: any = {};
     private moduleFilters: any = {};
     private moduleDirectory: any = {};
@@ -46,7 +49,10 @@ export class metadata {
     private rolemodules: any = {};
     private role: string = "";
     private copyrules: any = {};
-    // stores external libraries and their loading state which can be lazyloaded any time via loadLibrary()...
+
+    /**
+     *  stores external libraries and their loading state which can be lazyloaded any time via loadLibrary()...
+     */
     private scripts: any = [];
 
     constructor(
@@ -63,8 +69,8 @@ export class metadata {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
     }
 
-    /*
-     message handler for workbench updates
+    /**
+     * message handler for workbench updates
      */
     private handleMessage(message) {
         switch (message.messagetype) {
@@ -95,10 +101,9 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      * LOADER functions
      */
-
     public loadComponents(loadhandler: Subject<string>, forceLoading = false) {
         if (sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)] &&
             sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)].length > 0 &&
@@ -155,9 +160,9 @@ export class metadata {
         }
     }
 
-    private moduleLoadHandler = new Subject<any>();
-
-    public loadModules() {
+    /**
+     private moduleLoadHandler = new Subject<any>();
+     public loadModules() {
         let loaderSubject = new Subject<any>();
 
         // start with the first
@@ -185,7 +190,7 @@ export class metadata {
         return loaderSubject.asObservable();
     }
 
-    private loadModule(module: any) {
+     private loadModule(module: any) {
         System.import(module.path)
             .then((fileContents: any) => {
                 return fileContents[module.module];
@@ -200,6 +205,7 @@ export class metadata {
                 });
             });
     }
+     */
 
     public loadFieldSets(loadhandler: Subject<string>, forceLoading = false) {
         if (
@@ -221,7 +227,7 @@ export class metadata {
     }
 
     public loadFieldDefs(loadhandler: Subject<string>, forceLoading = false) {
-        let modules: Array<String> = [];
+        let modules: string[] = [];
         for (let module in this.moduleDefs) {
             modules.push(module);
         }
@@ -255,7 +261,7 @@ export class metadata {
 
         this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/routes", {headers: this.session.getSessionHeader()})
             .subscribe(res => {
-                let routerConfig: Route[] = <Route[]>res;
+                let routerConfig: Route[] = res as Route[];
                 this.router.resetConfig(routerConfig);
                 loadhandler.next("loadRoutes");
             });
@@ -602,7 +608,7 @@ export class metadata {
     }
 
     public getComponentSets(module = "") {
-        let retComponentSets: Array<any> = [];
+        let retComponentSets: any[] = [];
 
         for (let componenset in this.componentSets) {
             if (module !== "" && this.componentSets[componenset].module !== module) {
@@ -656,7 +662,7 @@ export class metadata {
     }
 
     public getFieldSets(module: string = "", filter: string = "") {
-        let retFieldsets: Array<any> = [];
+        let retFieldsets: any[] = [];
 
         for (let fieldset in this.fieldSets) {
             if (module !== "" && this.fieldSets[fieldset].module !== module) {
@@ -765,6 +771,11 @@ export class metadata {
         }
     }
 
+    /**
+     * returns the name of a fieldset
+     *
+     * @param fieldset the id of the fieldset
+     */
     public getFieldsetName(fieldset) {
         try {
             return this.fieldSets[fieldset].name;
@@ -773,14 +784,38 @@ export class metadata {
         }
     }
 
-    public getFieldSetFields(fieldset) {
+    /**
+     * flattens out a fieldset and returns all fields. If an item in the fieldset is a fieldset this is recursively flattened out
+     *
+     * @param fieldset the id of the fieldset
+     */
+    public getFieldSetFields(fieldset: string, parents: string = '') {
         if (this.fieldSets[fieldset]) {
-            return this.fieldSets[fieldset].items;
+
+            let fields = [];
+            for (let fieldsetitem of this.fieldSets[fieldset].items) {
+                if (fieldsetitem.field) {
+                    fields.push(fieldsetitem);
+                } else if (fieldsetitem.fieldset) {
+                    // check for recursion
+                    if(parents.indexOf(fieldset) < 0) {
+                        // resolve feidlset adding the current fieldset to the parents string
+                        fields = fields.concat(this.getFieldSetFields(fieldsetitem.fieldset, parents + ':' + fieldset));
+                    }
+                }
+            }
+            return fields;
+
         } else {
             return [];
         }
     }
 
+    /**
+     * get the items of a fieldset which is a mix of fieldsets and fields
+     *
+     * @param fieldset the id of the fieldset
+     */
     public getFieldSetItems(fieldset) {
         if (this.fieldSets[fieldset]) {
             return this.fieldSets[fieldset].items;
@@ -789,6 +824,12 @@ export class metadata {
         }
     }
 
+    /**
+     * returns the name of the label of a fields. This does not return the translation. For that the language service must be queried resp is there a method on the language service
+     *
+     * @param module the name of the module
+     * @param field the name of the field
+     */
     public getFieldlabel(module, field) {
         try {
             return this.fieldDefs[module][field].vname;
@@ -808,10 +849,20 @@ export class metadata {
         return ret;
     }
 
+    /**
+     * returns the definition data for thge module
+     *
+     * @param module the name of the module
+     */
     public getModuleDefs(module) {
         return this.moduleDefs[module];
     }
 
+    /**
+     * returns for a given modulename if the duplicate check is active for the module
+     *
+     * @param module the name of the module
+     */
     public getModuleDuplicatecheck(module) {
         try {
             return this.moduleDefs[module].duplicatecheck === "1";
@@ -820,7 +871,12 @@ export class metadata {
         }
     }
 
-    public getModules() {
+    /**
+     * returns a list of all modules defined in teh current config
+     *
+     * @return an array of modulenames
+     */
+    public getModules(): string[] {
         let modules = [];
 
         for (let module in this.moduleDefs) {
@@ -830,6 +886,11 @@ export class metadata {
         return modules;
     }
 
+    /**
+     * returns the name of the icon to be used for the module
+     *
+     * @param module the name of the module
+     */
     public getModuleIcon(module) {
         try {
             return this.moduleDefs[module].icon;
@@ -864,7 +925,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      * to read module field defs
      */
     public getModuleFields(module: string) {
@@ -981,7 +1042,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      get modules from Repository
      */
     public getSystemModules() {
@@ -998,10 +1059,10 @@ export class metadata {
         return modArray;
     }
 
-    /*
+    /**
      get components from Repository
      */
-    public getSystemComponents(module = undefined) {
+    public getSystemComponents(module?) {
         let compArray = [];
 
         for (let component in this.componentDirectory) {
@@ -1018,7 +1079,7 @@ export class metadata {
     }
 
 
-    /*
+    /**
      get a components config option
      */
     public getComponentConfigOptions(component) {
@@ -1029,7 +1090,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      get all module specific options that are available
      */
     public getComponentConfigurations(module = "*") {
@@ -1040,7 +1101,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      get the component config
      */
     public getComponentConfig(component: string = "", module: string = "", role = "") {
@@ -1048,7 +1109,6 @@ export class metadata {
         if (role === "") {
             role = this.role ? this.role : "*";
         }
-        ;
 
         if (module != "" && this.componentModuleConfigs[module] && this.componentModuleConfigs[module][component] && this.componentModuleConfigs[module][component][role]) {
             return this.componentModuleConfigs[module][component][role];
@@ -1221,7 +1281,7 @@ export class metadata {
      for the field typoe handling
      */
     public getFieldTypes() {
-        let fieldTypes: Array<string> = [];
+        let fieldTypes: string[] = [];
 
         for (let fieldType in this.fieldTypeMappings) {
             fieldTypes.push(fieldType);
@@ -1283,7 +1343,7 @@ export class metadata {
      */
 
     public loadLibs(...scripts: string[]): Observable<object> {
-        let observables: Observable<object>[] = [];
+        let observables: Array<Observable<object>> = [];
         scripts.forEach((script) => {
             observables.push(this.loadLib(script));
         });
@@ -1447,11 +1507,11 @@ export class metadata {
         return false;
     }
 
-    public getHtmlStylesheetCode(stylesheetId: string): String {
+    public getHtmlStylesheetCode(stylesheetId: string): string {
         return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
     }
 
-    public getHtmlFormats(stylesheetId: string): Array<any> {
+    public getHtmlFormats(stylesheetId: string): any[] {
         if (!_.isObject(this.htmlStyleData.stylesheets[stylesheetId])) {
             console.log("HTML Styling: Unknown style sheet with ID " + stylesheetId + ".");
             return [];
@@ -1484,7 +1544,7 @@ export class metadata {
         this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded = true;
     }
 
-    public getHtmlStylesheetNames(): Array<any> {
+    public getHtmlStylesheetNames(): any[] {
         let stylesheets = [];
         for (let sheetId in this.htmlStyleData.stylesheets) {
             stylesheets.push({

@@ -25,7 +25,7 @@ export class TasksManagerTask implements OnInit{
     constructor(private language: language, private metadata: metadata, private model: model, private modelutilities: modelutilities, private view: view) {
         let componentconfig = this.metadata.getComponentConfig('TasksManagerTask', 'Tasks');
         if(componentconfig.fieldset){
-            this.fielsetFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+            this.fielsetFields = this.metadata.getFieldSetItems(componentconfig.fieldset);
         }
     }
 
