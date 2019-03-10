@@ -44,7 +44,7 @@ export class MailboxManagerEmail implements OnInit {
         // get the module conf
         let fieldset = this.metadata.getComponentConfig("MailboxManagerEmail").fieldset;
         if (fieldset) {
-            this.componentFields = this.metadata.getFieldSetFields(fieldset);
+            this.componentFields = this.metadata.getFieldSetItems(fieldset);
         }
     }
 

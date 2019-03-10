@@ -44,7 +44,7 @@ export class FieldsetManagerFieldDetails implements OnChanges {
 
         try {
             let currentFieldsetItem;
-            this.metadata.getFieldSetFields(this.field.fieldset).some(field => {
+            this.metadata.getFieldSetItems(this.field.fieldset).some(field => {
                 if (field.id == this.field.id) {
                     this.currentField = field;
                     this.component = this.metadata.getFieldTypeComponent(field.fieldconfig.fieldtype);

@@ -237,7 +237,7 @@ export class FieldsetManager {
     }
 
     private addFieldSetItems(fieldSet, level = 0, parentScope = "global") {
-        let fieldsetItems = this.metadata.getFieldSetFields(fieldSet);
+        let fieldsetItems = this.metadata.getFieldSetItems(fieldSet);
 
         // for(let [index, fieldsetItem] of fieldsetItems){
         fieldsetItems.forEach((fieldsetItem, index) => {
@@ -335,7 +335,7 @@ export class FieldsetManager {
     }
 
     private moveDown(item) {
-        let fieldsetItems = this.metadata.getFieldSetFields(item.fieldset);
+        let fieldsetItems = this.metadata.getFieldSetItems(item.fieldset);
 
         // get the current ind ex in the array
         let currentIndex = 0;
@@ -363,7 +363,7 @@ export class FieldsetManager {
     }
 
     private moveUp(item) {
-        let fieldsetItems = this.metadata.getFieldSetFields(item.fieldset);
+        let fieldsetItems = this.metadata.getFieldSetItems(item.fieldset);
 
         // get the current ind ex in the array
         let currentIndex = 0;
