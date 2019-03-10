@@ -26,7 +26,7 @@ export class ObjectPageHeader implements OnInit {
     public componentconfig: any = {};
     private actionSet: string = '';
     private fieldset: string = '';
-    private fieldsetitems: string = '';
+    private fieldsetitems: any[];
 
     get moduleName() {
         return this.model.module;
