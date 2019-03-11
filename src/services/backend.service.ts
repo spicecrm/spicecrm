@@ -724,7 +724,7 @@ export class backend {
             params.limit = limit;
         }
 
-        this.getRequest("spiceui/core/recent", params)
+        this.getRequest("modules/Trackers/recent", params)
             .subscribe((response) => {
                 responseSubject.next(response);
                 responseSubject.complete();
