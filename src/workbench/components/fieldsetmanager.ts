@@ -55,9 +55,9 @@ export class FieldsetManager {
             this.sysModules = modules;
 
             // iniutialize the metadata service
-            this.metadata.loadFieldSets(new Subject<any>(), true);
-            this.metadata.loadFieldDefs(new Subject<any>(), true);
-            this.metadata.loadComponents(new Subject<any>(), true);
+            // this.metadata.loadFieldSets(new Subject<any>(), true);
+            // this.metadata.loadFieldDefs(new Subject<any>(), true);
+            // this.metadata.loadComponents(new Subject<any>(), true);
         });
         this.checkMode();
     }
