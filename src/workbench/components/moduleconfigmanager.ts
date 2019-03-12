@@ -74,18 +74,10 @@ export class ModuleConfigManager {
         this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
-            // iniutialize the metadata service
-            this.metadata.loadFieldSets(new Subject<any>());
-            let moduleLoader = new Subject<any>();
-            this.metadata.loadComponents(moduleLoader, true);
-            moduleLoader.subscribe(done => {
-                // set initialized to true
-                this.initialized = true;
+            this.initialized = true;
 
-                /// load for the general conf
-                this.currentModule = "*";
-                this.selectedModule();
-            });
+            this.currentModule = "*";
+            this.selectedModule();
         });
 
         // view.setEditMode(); //quickfix
