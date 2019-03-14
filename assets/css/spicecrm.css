@@ -1076,7 +1076,15 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+.slds-drag--preview.cdk-drag-placeholder {
+    opacity: 0;
+}
 .cdk-drag-preview {
+    opacity: 0;
+}
+
+.slds-drag--preview.cdk-drag-preview {
+    opacity: 1;
     box-sizing: border-box;
     border-radius: 4px;
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),

@@ -93,7 +93,6 @@ export class ObjectListViewSettingsSetfieldsModal implements OnInit {
     }
 
     private onFieldDrop(event) {
-        console.log(event);
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
