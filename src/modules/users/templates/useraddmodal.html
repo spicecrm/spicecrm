@@ -1,124 +1,59 @@
 <system-modal size="large">
-    <system-modal-header (close)="cancel()">
-        {{model.module}}
-    </system-modal-header>
+    <system-modal-header (close)="cancel()">{{model.module}}</system-modal-header>
     <system-modal-content #addcontainer>
-        <div class="slds-section" [ngClass]="{'slds-is-open': expanded.profile, 'slds-is-closed': !expanded.profile}">
-            <h3 class="slds-section__title">
-                <button aria-controls="expando-unique-id" aria-expanded="true"
-                        class="slds-button slds-section__title-action"
-                        (click)="togglePanel('profile')">
-                    <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                         [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                    <span class="slds-truncate" title="Section Title">User Profile</span>
-                </button>
-            </h3>
-            <div [ngStyle]="getTabStyle('profile')">
-                <object-record-fieldset [fieldset]="profileFieldset" [direction]="'vertical'"></object-record-fieldset>
-            </div>
-        </div>
-        <div class="slds-section" [ngClass]="{'slds-is-open': expanded.password, 'slds-is-closed': !expanded.password}">
-            <h3 class="slds-section__title">
-                <button aria-controls="expando-unique-id" aria-expanded="true"
-                        class="slds-button slds-section__title-action"
-                        (click)="togglePanel('password')">
-                    <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                         [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                    <span class="slds-truncate" title="Section Title">User Password</span>
-                </button>
-            </h3>
-            <div [ngStyle]="getTabStyle('password')">
-                <div class="slds-size--1-of-2">
-                    <div class="slds-p-around--x-small">
-                        <div class="slds-form--stacked slds-text-align--left">
-                            <div *ngIf="pwdGuideline" class="slds-m-vertical--medium">
-                                {{language.getLabel('LBL_PWD_GUIDELINE')}}<br>
-                                {{pwdGuideline}}
-                            </div>
-                            <div class="slds-grid">
-                                <div class="slds-size--10-of-12">
-                                    <div class="slds-form-element slds-m-vertical--small"
-                                         [ngClass]="getPasswordStyle(passField)">
-                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                            <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                            <input #passField="ngModel" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
-                                                   class="slds-input" placeholder="enter new password" [disabled]="autoGenerate"/>
-                                        </div>
-                                        <div *ngIf=" passField.touched && passField.dirty && pwderror && !autoGenerate" class="slds-form-element__help slds-text-color--error">{{pwderror}}</div>
-                                        <div *ngIf="!password && saveTriggered && !autoGenerate" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
-                                            <div class="slds-media__figure">
-                                                <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
-                                            <div class="slds-media__body">Input Required!</div>
-                                        </div>
-                                    </div>
-                                    <div class="slds-form-element  slds-m-vertical--small"
-                                         [ngClass]="getPasswordStyle(repPassField, true)">
-                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                            <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                            <input [type]="showPassword ? 'text' : 'password'" #repPassField="ngModel"[(ngModel)]="repeatPassword"
-                                                   class="slds-input" placeholder="repeat new password" [disabled]="autoGenerate"/>
-                                        </div>
-                                        <div *ngIf=" repPassField.touched && repPassField.dirty && pwdreperror && !autoGenerate" class="slds-form-element__help slds-text-color--error">{{pwdreperror}}</div>
-                                        <div *ngIf="!repeatPassword && saveTriggered && !autoGenerate" class="slds-media slds-media-center slds-inline_icon_text slds-form-element__help slds-m-top--x-small">
-                                            <div class="slds-media__figure">
-                                                <span class="slds-icon_container"><system-utility-icon [icon]="'error'" [size]="'x-small'" [colorclass]="'slds-icon-text-error'"></system-utility-icon></span></div>
-                                            <div class="slds-media__body">Input Required!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-size--2-of-12 slds-p-horizontal--xx-small slds-p-vertical--small">
-                                    <button class="slds-button slds-button--neutral slds-p-around--x-small" (click)="toggleShowPassword()">
-                                        <system-button-icon [icon]="!showPassword ? 'preview': 'hide'" size="medium"></system-button-icon>
-                                    </button>
-                                    <button *ngIf="autoGenerate" class="slds-button slds-button--neutral slds-p-around--x-small" (click)="copyPassword()">
-                                        <system-button-icon icon="copy" size="medium"></system-button-icon>
-                                    </button>
-                                </div>
-                            </div>
+        <system-section titlelabel="LBL_USER_PROFILE">
+            <object-record-fieldset [fieldset]="profileFieldset" [direction]="'vertical'"></object-record-fieldset>
+        </system-section>
+        <system-section titlelabel="LBL_USER_PASSWORD">
+            <div class="slds-small-size--1-of-1 slds-medium-size--1-of-2">
+                <div class="slds-p-around--x-small">
+                    <div class="slds-form--stacked slds-text-align--left">
+                        <div *ngIf="pwdGuideline" class="slds-m-vertical--medium">
+                            <div>{{language.getLabel('LBL_PWD_GUIDELINE')}}</div>
+                            <div>{{pwdGuideline}}</div>
                         </div>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control slds-grid">
-                                <span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--small ">
-                                    <input type="checkbox" name="auto" id="autoGenerate" [(ngModel)]="autoGenerate"/>
-                                    <label class="slds-checkbox__label" for="autoGenerate">
-                                        <span class="slds-checkbox--faux"></span>
-                                        <span class="slds-form-element__label">Auto Generate</span>
-                                    </label>
-                                </span>
-                                <span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--small ">
-                                    <input type="checkbox" name="auto" id="sendByEmail" [disabled]="!canSendByEmail" [(ngModel)]="sendByEmail"/>
-                                    <label class="slds-checkbox__label" for="sendByEmail">
-                                        <span class="slds-checkbox--faux"></span>
-                                        <span class="slds-form-element__label">Send By Email</span>
-                                    </label>
-                                </span>
+                        <div class="slds-grid">
+                            <div class="slds-size--10-of-12">
+                                <div class="slds-form-element slds-m-vertical--small" [ngClass]="pwdFieldStyle">
+                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                                        <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
+                                        <input [type]="PwdFieldType" [(ngModel)]="password" class="slds-input" [placeholder]="language.getLabel('MSG_ENTER_NEW_PASSWORD')"
+                                               [disabled]="autoGenerate" [ngModelOptions]="modelOptions">
+                                    </div>
+                                    <field-messages [messages]="passwordMsg"></field-messages>
+                                </div>
+                                <div class="slds-form-element  slds-m-vertical--small" [ngClass]="rePwdFieldStyle">
+                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                                        <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
+                                        <input [type]="PwdFieldType" [(ngModel)]="repeatPassword" class="slds-input" [placeholder]="language.getLabel('LBL_REPEAT_PWD')"
+                                               [disabled]="autoGenerate" [ngModelOptions]="modelOptions">
+                                    </div>
+                                    <field-messages [messages]="rePasswordMsg"></field-messages>
+                                </div>
+                            </div>
+
+                            <div class="slds-size--2-of-12 slds-p-horizontal--xx-small slds-p-vertical--small">
+                                <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleShowPassword()">
+                                    <system-button-icon [icon]="!showPassword ? 'preview': 'hide'" size="medium"></system-button-icon>
+                                </button>
+                                <button *ngIf="autoGenerate" class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="copyPassword()">
+                                    <system-button-icon icon="copy" size="medium"></system-button-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
+                    <system-checkbox [(ngModel)]="autoGenerate">{{language.getLabel('LBL_AUTO_GENERATE')}}</system-checkbox>
+                    <system-checkbox [(ngModel)]="sendByEmail">{{language.getLabel('LBL_SEND_BY_EMAIL')}}</system-checkbox>
                 </div>
             </div>
-        </div>
-
-        <div class="slds-section" [ngClass]="{'slds-is-open': expanded.info, 'slds-is-closed': !expanded.info}">
-            <h3 class="slds-section__title">
-                <button aria-controls="expando-unique-id" aria-expanded="true"
-                        class="slds-button slds-section__title-action"
-                        (click)="togglePanel('info')">
-                    <system-utility-icon [icon]="'switch'" [size]="'x-small'"
-                                         [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                    <span class="slds-truncate" title="Section Title">User Information</span>
-                </button>
-            </h3>
-            <div [ngStyle]="getTabStyle('info')">
-                <object-record-fieldset [fieldset]="informationFieldset" [direction]="'vertical'"></object-record-fieldset>
-            </div>
-        </div>
+        </system-section>
+        <system-section titlelabel="LBL_USER_INFORMATION">
+            <object-record-fieldset [fieldset]="informationFieldset" [direction]="'vertical'"></object-record-fieldset>
+        </system-section>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
         <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
-        <button class="slds-button slds-button--brand" (click)="save(true)">
-            {{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}
-        </button>
+        <button class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
     </system-modal-footer>
 </system-modal>
