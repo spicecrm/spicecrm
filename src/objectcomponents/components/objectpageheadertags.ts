@@ -2,88 +2,96 @@
  * @module ObjectComponents
  */
 import {
-    Component, ElementRef, ViewChild,  ChangeDetectorRef
+    Component, ElementRef, ViewChild, ChangeDetectorRef
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {footer} from '../../services/footer.service';
-import { language } from "../../services/language.service";
-import { modal } from '../../services/modal.service';
+import {language} from "../../services/language.service";
+import {modal} from '../../services/modal.service';
 
+/**
+ * renders a list of tags int eh object page header and allows editing and management of the tags
+ */
 @Component({
     selector: 'object-page-header-tags',
-    templateUrl: './src/objectcomponents/templates/objectpageheadertags.html',
-    styles: [
-        '.badgeListContainer { overflow-y: hidden; margin-bottom: -0.125rem; }',
-        'ul { line-height: 1.7; }',
-        'li { margin-bottom: 0.125rem; }',
-        '.badgeListContainer.open { overflow-y: visible; height: auto !important; }',
-        '.slds-badge { text-transform: none; font-size: 0.75rem; padding-top: 0.1875rem; line-height: 2.333; }', // 0.75rem == slds-text-body_small
-    ]
+    templateUrl: './src/objectcomponents/templates/objectpageheadertags.html'
 })
 export class ObjectPageHeaderTags {
 
-    @ViewChild('badgeList') badgeList: ElementRef;
-    @ViewChild('badgeListContainer') badgeListContainer: ElementRef;
+    /**
+     * indicates if we are editing
+     */
+    private isEditing: boolean = false;
 
-    listIsExpanded = false;
-    tags = [ ' ' ];
-
-    heightOfBadge: number = null;
-
-    constructor( private model: model, private metadata: metadata, private footer: footer, private cd: ChangeDetectorRef, private language: language, private modalservice: modal )  {    }
-
-    ngOnInit() {
-        if ( this.model.isLoading )
-            this.model.data$.subscribe( () => { this.parseTags(); } );
-        else
-            this.parseTags();
+    constructor(private model: model, private metadata: metadata, private language: language) {
     }
 
-    ngAfterViewChecked() {
-        if ( this.heightOfBadge === null && this.badgeList && this.badgeList.nativeElement && this.badgeList.nativeElement.children[0] ) {
-            this.heightOfBadge = this.getHeightOfBadge();
-            this.badgeListContainer.nativeElement.style.height = this.heightOfBadge + 'px';
-            // if ( !this.model.isLoading ) this.parseTags();
-            this.cd.detectChanges();
-        }
-    }
-
-    get taggingEnabled() {
-        return this.metadata.checkTagging( this.model.module );
-    }
-
-    parseTags() {
-        if( !this.model.data.tags || this.model.data.tags === '' ) this.tags = [];
+    /**
+     * parses the tags from teh model and returns an array to be handled in the display for loop
+     */
+    get objecttags() {
+        let tags = this.model.getField('tags');
+        if (!tags || tags === '') return [];
         else {
             try {
-                this.tags = JSON.parse( this.model.data.tags );
-            } catch( e ) {
-                this.tags = [];
+                return JSON.parse(tags);
+            } catch (e) {
+                return [];
             }
         }
     }
 
-    get listIsExpandable() {
-        if ( this.heightOfBadge !== null )
-            return this.heightOfBadge !== this.getHeightOfBadgeList();
-        else return false;
+    /**
+     * checks if the module is set for tagging in the metadata service
+     */
+    get taggingEnabled() {
+        return this.metadata.checkTagging(this.model.module);
     }
 
-    editTags(){
+    /**
+     * switch to editing mode
+     */
+    private editTags() {
+        this.isEditing = true;
+        this.model.startEdit();
+        /*
         this.modalservice.openModal('ObjectPageHeaderTagPicker').subscribe(cmp => {
             cmp.instance.model = this.model;
         });
-        this.listIsExpanded = false;
+        */
     }
 
-    getHeightOfBadge() {
-        return Number( getComputedStyle( this.badgeList.nativeElement.children[0], null ).height.replace( /px$/, '' ))
-            + Number( getComputedStyle( this.badgeList.nativeElement.children[0], null ).marginBottom.replace( /px$/, '' ));
+    /**
+     * cancels the editing process
+     */
+    private cancelEdit() {
+        this.isEditing = false;
+        this.model.cancelEdit();
     }
 
-    getHeightOfBadgeList() {
-        return Number( getComputedStyle( this.badgeList.nativeElement, null ).height.replace( /px$/, '' ));
+    /**
+     * saves the changes
+     */
+    private saveTags() {
+        this.model.save();
+        this.isEditing = false;
     }
 
+    private removeByIndex(index) {
+        let tags = this.objecttags;
+        tags.splice(index, 1);
+        this.model.setField('tags', JSON.stringify(tags));
+    }
+
+    /**
+     * adds the tag. This is called fromt eh event emitter ont he input box in the component that fires the tag when a new tag shoudl be added
+     *
+     * @param tag the tag
+     */
+    private addTag(tag) {
+        let tags = this.objecttags;
+        tags.push(tag);
+        this.model.setField('tags', JSON.stringify(tags));
+    }
 }
