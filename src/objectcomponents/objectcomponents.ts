@@ -2,6 +2,7 @@
  * @module ObjectComponents
  */
 import {CommonModule} from '@angular/common';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {
     NgModule
 } from '@angular/core';
@@ -202,6 +203,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 @NgModule({
     imports: [
         CommonModule,
+        DragDropModule,
         FormsModule,
         ObjectFields,
         GlobalComponents,
