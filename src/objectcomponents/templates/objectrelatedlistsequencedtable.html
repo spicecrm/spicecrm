@@ -11,8 +11,8 @@
         <th class="slds-cell-shrink" scope="col"></th>
     </tr>
     </thead>
-    <tbody>
-        <tr *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" (dragover)="dragover($event)" (dragenter)="dragenter($event,i)" (dragleave)="dragleave(i)" (drop)="drop($event,relateditem)" object-related-list-seqeunced-item [module]="module" [listfields]="displayfields" [listitem]="relateditem" class="slds-hint-parent" [ngClass]="{'would-drop-before':over[i]>0}"></tr>
+    <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
+        <tr *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" object-related-list-seqeunced-item [module]="module" [listfields]="displayfields" [listitem]="relateditem" class="slds-hint-parent" [ngClass]="{'would-drop-before':over[i]>0}"></tr>
     </tbody>
     <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="true" [tools]="true"></tbody>
 </table>

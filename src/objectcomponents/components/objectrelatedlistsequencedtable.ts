@@ -13,11 +13,7 @@ import {ObjectRelatedlistTable} from './objectrelatedlisttable';
 
 @Component({
     selector: 'object-relatedlist-sequenced-table',
-    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequencedtable.html',
-    styles: [
-        'tr.would-drop-before ::ng-deep td { border: 0 solid #3d3b3a; border-top-width: 3px; }',
-        'tr.dragged { opacity: 0.33; }'
-    ]
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequencedtable.html'
 })
 export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
 
@@ -31,13 +27,7 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
     }
 
     get displayfields() {
-        let displayfields = [];
-        for ( let listfield of this.listfields ) {
-            if ( listfield.fieldconfig.default ) {
-                displayfields.push(listfield);
-            }
-        }
-        return displayfields;
+        return this.listfields;
     }
 
     public setOver() {
@@ -45,45 +35,38 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
         if ( this.relatedmodels.items ) this.relatedmodels.items.forEach( () => this.over.push(0) );
     }
 
-    private dragover( event ) {
-        // event.preventDefault(); // needed? not sure
-        event.stopPropagation();
-        return false;
-    }
-
-    private dragenter( event, i ) {
-        event.preventDefault();
-        this.over[i]++;
-        event.dataTransfer.dropEffect = 'move';
-        return false;
-    }
-
-    private dragleave( i ) {
-        this.over[i]--;
-        return false;
-    }
-
-    /**
-     *  Search up the DOM tree for the upper tr html element.
-     *  Recursive method!
-     *  Might be needed ...
-     * @param element
-     */
-    /*
-    private getParentTr( element ) {
-        if ( element.tagName === 'TR') return element;
-        else {
-            if ( element.parentElement === null ) return null;
-            return this.getParentTr( element.parentElement );
-        }
-    }
-    */
-
     private getIdOfRow( index, item ) {
         return item.id;
     }
 
-    private drop( event, targetitem ) {
+    private drop(event) {
+        let previousItem = this.relatedmodels.items.splice(event.previousIndex, 1);
+        this.relatedmodels.items.splice(event.currentIndex, 0, previousItem[0]);
+
+        let updateArray = [];
+        let i = 0;
+        for ( let item of this.relatedmodels.items ) {
+            item[this.sequencefield] = i;
+            updateArray.push({id: item.id, sequence_number: i});
+            i++;
+        }
+
+        // send to the backen saving the models
+        /*
+        this.backend.postRequest('/module/'+this.relatedmodels.relatedModule, {}, updateArray).subscribe(updated => {
+            for ( let modeldata of updated ) {
+                this.broadcast.broadcastMessage('model.save', {
+                    id: modeldata.id,
+                    module: this.relatedmodels.relatedModule,
+                    data: modeldata.data
+                });
+            }
+        });*/
+        this.backend.postRequest('/module/'+this.relatedmodels.relatedModule, {}, updateArray);
+    }
+
+    /*
+    private drop_back( event, targetitem ) {
 
         event.preventDefault();
         let sourceID = event.dataTransfer.getData('text/plain');
@@ -145,5 +128,5 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
             }
         });
     }
-
+    */
 }
