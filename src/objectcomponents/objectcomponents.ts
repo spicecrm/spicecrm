@@ -2,6 +2,7 @@
  * @module ObjectComponents
  */
 import {CommonModule} from '@angular/common';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {
     NgModule
 } from '@angular/core';
@@ -206,6 +207,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 @NgModule({
     imports: [
         CommonModule,
+        DragDropModule,
         FormsModule,
         ObjectFields,
         GlobalComponents,

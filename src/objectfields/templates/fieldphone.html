@@ -1,6 +1,6 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <div class="slds-truncate">{{value}}</div>
+        <div class="slds-truncate"><a [href]="'tel:'+value">{{value}}</a></div>
         <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="value" [icon]="'call'" [sprite]="'utility'" [size]="'x-small'" (click)="makeCall()"></system-icon>
     </div>
 </field-generic-display>
