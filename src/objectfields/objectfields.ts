@@ -40,6 +40,7 @@ import /*embed*/ {fieldBool} from './components/fieldbool';
 import /*embed*/ {fieldParent} from './components/fieldparent';
 import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
 import /*embed*/ {fieldRelate} from './components/fieldrelate';
+import /*embed*/ {fieldRelateList} from './components/fieldrelatelist';
 import /*embed*/ {fieldModifiedBy} from './components/fieldmodifiedby';
 import /*embed*/ {fieldLookup} from './components/fieldlookup';
 import /*embed*/ {fieldDate} from './components/fielddate';
@@ -151,6 +152,7 @@ declare var _: any;
         fieldParent,
         fieldModuleFilter,
         fieldRelate,
+        fieldRelateList,
         fieldModifiedBy,
         fieldLookup,
         fieldLookupRecent,
