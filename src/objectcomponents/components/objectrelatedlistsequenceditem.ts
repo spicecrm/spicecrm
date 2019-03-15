@@ -10,17 +10,12 @@ import {view} from '../../services/view.service';
 @Component({
     selector: '[object-related-list-seqeunced-item]',
     templateUrl: './src/objectcomponents/templates/objectrelatedlistsequenceditem.html',
-    providers: [model, view],
-    styles: [
-        'td.dragged { opacity: 0.33; }'
-    ]
+    providers: [model, view]
 })
 export class ObjectRelatedListSequencedItem implements OnInit {
     @Input() private listfields: any[] = [];
     @Input() private listitem: any = {};
     @Input() private module = '';
-
-    private isDragged = false;
 
     constructor( private model: model, private view: view, private router: Router, private language: language ) {
         this.view.isEditable = false;
@@ -34,18 +29,6 @@ export class ObjectRelatedListSequencedItem implements OnInit {
 
     private navigateDetail() {
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
-    }
-
-    public dragstart( event ) {
-        event.dataTransfer.setData( 'text/plain', this.listitem.id );
-        event.dataTransfer.effectAllowed = 'move';
-        this.isDragged = true;
-        return true;
-    }
-
-    private dragend() {
-        this.isDragged = false;
-        return true;
     }
 
 }
