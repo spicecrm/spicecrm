@@ -1,5 +1,10 @@
-<system-collapsable-tab [title]="componentconfig.name" [expanded]="expanded">
+<system-collapsable-tab *ngIf="showTitle" [title]="componentconfig.name" [expanded]="expanded">
     <div class="slds-p-horizontal--xx-small">
         <object-record-fieldset [fieldset]="fieldSet" [direction]="'vertical'"></object-record-fieldset>
     </div>
 </system-collapsable-tab>
+<div *ngIf="!showTitle" class="slds-section">
+    <div class="slds-p-horizontal--xx-small">
+        <object-record-fieldset [fieldset]="fieldSet" [direction]="'vertical'"></object-record-fieldset>
+    </div>
+</div>
