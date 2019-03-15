@@ -197,6 +197,10 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
+import /*embed*/ {ObjectTexts} from "./components/objecttexts";
+import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
+import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
+
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
  */
@@ -377,7 +381,10 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectModelPopover,
         ObjectModelPopoverField,
         ObjectModelPopoverRelated,
-        ObjectModelPopoverRelatedItem
+        ObjectModelPopoverRelatedItem,
+        ObjectTexts,
+        ObjectTextsAddButton,
+        ObjectTextsAddModal
     ],
     entryComponents: [
         ObjectIcon,

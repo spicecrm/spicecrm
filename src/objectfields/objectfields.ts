@@ -40,6 +40,7 @@ import /*embed*/ {fieldBool} from './components/fieldbool';
 import /*embed*/ {fieldParent} from './components/fieldparent';
 import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
 import /*embed*/ {fieldRelate} from './components/fieldrelate';
+import /*embed*/ {fieldRelateList} from './components/fieldrelatelist';
 import /*embed*/ {fieldModifiedBy} from './components/fieldmodifiedby';
 import /*embed*/ {fieldLookup} from './components/fieldlookup';
 import /*embed*/ {fieldDate} from './components/fielddate';
@@ -96,6 +97,7 @@ import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
+import /*embed*/ {fieldTextID} from "./components/fieldtextid";
 
 /**
 * @ignore
@@ -151,6 +153,7 @@ declare var _: any;
         fieldParent,
         fieldModuleFilter,
         fieldRelate,
+        fieldRelateList,
         fieldModifiedBy,
         fieldLookup,
         fieldLookupRecent,
@@ -199,7 +202,8 @@ declare var _: any;
         fieldEnumMulti,
         fieldPhone,
         fieldCronInterval,
-        fieldGooglePlacesSearch
+        fieldGooglePlacesSearch,
+        fieldTextID
     ],
     exports: [
         fieldSet,
