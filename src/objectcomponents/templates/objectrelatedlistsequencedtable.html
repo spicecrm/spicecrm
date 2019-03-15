@@ -1,4 +1,4 @@
-<table class="slds-table slds-table--bordered slds-table--fixed-layout">
+<table class="slds-table slds-table--bordered slds-table--fixed-layout" [ngClass]="{'slds-no-row-hover':nowDragging}">
     <thead>
     <tr class="slds-text-title--caps slds-p-vertical--xxx-small">
         <th class="slds-cell-shrink" scope="col"></th>
@@ -12,7 +12,7 @@
     </tr>
     </thead>
     <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
-        <tr *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" object-related-list-seqeunced-item [module]="module" [listfields]="displayfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+        <tr *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" object-related-list-seqeunced-item [module]="module" [listfields]="displayfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
     </tbody>
     <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="true" [tools]="true"></tbody>
 </table>
