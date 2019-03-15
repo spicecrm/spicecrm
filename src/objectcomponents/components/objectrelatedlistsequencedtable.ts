@@ -19,20 +19,12 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
 
     @Input() private sequencefield: string = 'sequence_number';
 
-    private over: number[];
-
     constructor( public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, private backend: backend, private broadcast: broadcast ) {
         super(language, metadata, relatedmodels, model, layout);
-        this.relatedmodels.items$.subscribe( () => this.setOver() );
     }
 
     get displayfields() {
         return this.listfields;
-    }
-
-    public setOver() {
-        this.over = [];
-        if ( this.relatedmodels.items ) this.relatedmodels.items.forEach( () => this.over.push(0) );
     }
 
     private getIdOfRow( index, item ) {
@@ -62,7 +54,7 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
                 });
             }
         });*/
-        this.backend.postRequest('/module/'+this.relatedmodels.relatedModule, {}, updateArray);
+        this.backend.postRequest('module/'+this.relatedmodels.relatedModule, {}, updateArray);
     }
 
     /*
