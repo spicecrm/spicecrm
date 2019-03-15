@@ -97,6 +97,7 @@ import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
+import /*embed*/ {fieldTextID} from "./components/fieldtextid";
 
 /**
 * @ignore
@@ -201,7 +202,8 @@ declare var _: any;
         fieldEnumMulti,
         fieldPhone,
         fieldCronInterval,
-        fieldGooglePlacesSearch
+        fieldGooglePlacesSearch,
+        fieldTextID
     ],
     exports: [
         fieldSet,
