@@ -11,11 +11,16 @@ import {Subject, of} from 'rxjs';
 
 @Injectable()
 export class recent {
-    public items: any[] = [];
+    // public items: any[] = [];
     public moduleItems: any = {};
 
-    constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
-        this.broadcast.message$.subscribe(message => this.handleMessage(message))
+    constructor(private backend: backend, private broadcast: broadcast, private configuration: configurationService, private session: session) {
+        this.broadcast.message$.subscribe(message => this.handleMessage(message));
+    }
+
+    get items() {
+        let recentItems = this.configuration.getData('recentitmes')
+        return recentItems ? recentItems : [];
     }
 
     private handleMessage(message: any) {
@@ -97,24 +102,6 @@ export class recent {
             while (this.moduleItems[module_name].length > 5) {
                 this.moduleItems[module_name].pop();
             }
-        }
-    }
-
-    public getRecent(loadhandler: Subject<string>) {
-        if (sessionStorage[window.btoa('recent' + this.session.authData.sessionId)] && sessionStorage[window.btoa('recent' + this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            let response = this.session.getSessionData('recent');
-            for (let item of response) {
-                this.items.push(item);
-            }
-            loadhandler.next('getRecent');
-        } else {
-            this.backend.getRecent('', 50).subscribe(response => {
-                this.session.setSessionData('recent', response);
-                for (let item of response) {
-                    this.items.push(item);
-                }
-                loadhandler.next('getRecent');
-            });
         }
     }
 
