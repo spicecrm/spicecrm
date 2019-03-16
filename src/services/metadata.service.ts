@@ -10,6 +10,7 @@ import {
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {session} from "./session.service";
+import {AppDataService} from './appdata.service';
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {Router, Route, CanActivate} from "@angular/router";
@@ -29,44 +30,99 @@ export class metadata {
     /**
      * hols the module defs returned from teh backend. This has all teh necesary info on the module itself
      */
-    private moduleDefs: any = {};
-    private moduleFilters: any = {};
-    private moduleDirectory: any = {};
-    private validationRules: any = {};
-    private htmlStyleData: any = {};
-    private componentDirectory: any = {};
     private componentFactories: any = {};
-    private componentSets: any = {};
-    private componentDefaultConfigs: any = {};
-    private componentModuleConfigs: any = {};
-    private routes: any = {};
-    private fieldSets: any = {};
-    private actionSets: any = {};
-    private fieldDefs: any = {};
-    private fieldTypeMappings: any = {};
-    private fieldStatusNetworks: any = {};
-    private roles: any[] = [];
-    private rolemodules: any = {};
     private role: string = "";
-    private copyrules: any = {};
-
-    /**
-     *  stores external libraries and their loading state which can be lazyloaded any time via loadLibrary()...
-     */
-    private scripts: any = [];
 
     constructor(
         private NgModuleFactoryLoader: NgModuleFactoryLoader,
         private http: HttpClient,
         private session: session,
-        private configurationService: configurationService,
+        private configuration: configurationService,
         private componentFactoryResolver: ComponentFactoryResolver,
         private router: Router,
         private broadcast: broadcast,
         private compiler: Compiler,
+        private appdata: AppDataService,
         private Injector: Injector
     ) {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
+    }
+
+
+    get actionSets() {
+        return this.configuration.getData('actionsets');
+    }
+
+    get componentDefaultConfigs() {
+        return this.configuration.getData('componentdefaultconfigs');
+    }
+
+    get componentModuleConfigs() {
+        return this.configuration.getData('componentmoduleconfigs');
+    }
+
+    get moduleDirectory() {
+        return this.configuration.getData('modules');
+    }
+
+    get componentDirectory() {
+        return this.configuration.getData('components');
+    }
+
+    get componentSets() {
+        return this.configuration.getData('componentsets');
+    }
+
+    get routes() {
+        return this.configuration.getData('routes');
+    }
+
+    get scripts() {
+        return this.configuration.getData('scripts');
+    }
+
+    get fieldSets() {
+        return this.configuration.getData('fieldsets');
+    }
+
+    get validationRules() {
+        return this.configuration.getData('validationrules');
+    }
+
+    get fieldDefs() {
+        return this.configuration.getData('fielddefs');
+    }
+
+    get fieldTypeMappings() {
+        return this.configuration.getData('fieldtypemappings');
+    }
+
+    get fieldStatusNetworks() {
+        return this.configuration.getData('fieldstatusnetworks');
+    }
+
+    get moduleDefs() {
+        return this.configuration.getData('moduledefs');
+    }
+
+    get moduleFilters() {
+        return this.configuration.getData('modulefilters');
+    }
+
+    get roles() {
+        return this.configuration.getData('roles');
+    }
+
+    get rolemodules() {
+        return this.configuration.getData('rolemodules');
+    }
+
+    get copyrules() {
+        return this.configuration.getData('copyrules');
+    }
+
+    get htmlStyleData() {
+        return this.configuration.getData('htmlstyles');
     }
 
     /**
@@ -74,6 +130,25 @@ export class metadata {
      */
     private handleMessage(message) {
         switch (message.messagetype) {
+            case "loader.completed":
+                if (message.messagedata == 'loadRepository') {
+                    // set Routes
+                    this.addRoutes();
+                }
+                if (message.messagedata == 'loadModules') {
+                    // set Role
+                    this.roles.some(role => {
+                        if (role.defaultrole == 1) {
+                            this.role = role.id;
+                            return true;
+                        }
+                    });
+
+                    if (this.role === "" && this.roles.length > 0) {
+                        this.role = this.roles[0].id;
+                    }
+                }
+                break;
             case "metadata.updatefieldsets":
                 for (let fieldset in message.messagedata.add) {
                     this.fieldSets[fieldset] = message.messagedata.add[fieldset];
@@ -98,264 +173,6 @@ export class metadata {
                 break;
             default:
                 break;
-        }
-    }
-
-    /**
-     * LOADER functions
-     */
-    public loadComponents(loadhandler: Subject<string>, forceLoading = false) {
-        if (sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)] &&
-            sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)].length > 0 &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            let response = this.session.getSessionData("metadataComponents");
-            this.moduleDirectory = response.modules;
-            this.componentDirectory = response.components;
-            this.componentSets = response.componentsets;
-            this.actionSets = response.actionsets;
-            this.componentDefaultConfigs = response.componentdefaultconfigs;
-            this.componentModuleConfigs = response.componentmoduleconfigs;
-            this.routes = response.routes;
-            this.scripts = response.scripts;
-
-
-            // set Routes
-            this.addRoutes();
-
-            loadhandler.next("loadComponents");
-        } else {
-            this.http.get(
-                this.configurationService.getBackendUrl() + "/spiceui/core/components",
-                {headers: this.session.getSessionHeader()}
-            ).subscribe(
-                (res: any) => {
-                    let response = res;
-                    this.moduleDirectory = response.modules;
-                    this.componentDirectory = response.components;
-                    this.componentSets = response.componentsets;
-                    this.routes = response.routes;
-                    this.actionSets = response.actionsets;
-                    this.componentDefaultConfigs = response.componentdefaultconfigs;
-                    this.componentModuleConfigs = response.componentmoduleconfigs;
-                    this.scripts = response.scripts;
-
-                    this.session.setSessionData("metadataComponents", {
-                        modules: response.modules,
-                        components: response.components,
-                        componentsets: response.componentsets,
-                        actionsets: response.actionsets,
-                        componentdefaultconfigs: response.componentdefaultconfigs,
-                        componentmoduleconfigs: response.componentmoduleconfigs,
-                        routes: response.routes,
-                        scripts: response.scripts,
-                    });
-
-                    // set Routes
-                    this.addRoutes();
-
-                    loadhandler.next("loadComponents");
-                }
-            );
-        }
-    }
-
-    /**
-     private moduleLoadHandler = new Subject<any>();
-     public loadModules() {
-        let loaderSubject = new Subject<any>();
-
-        // start with the first
-        this.moduleDirectory.some(module => {
-            this.loadModule(module);
-            return true;
-        });
-
-        // subscriber
-        this.moduleLoadHandler.subscribe(next => {
-            let loading = false;
-            this.moduleDirectory.some((module) => {
-                if (!this.componentFactories[module.id]) {
-                    loading = true;
-                    this.loadModule(module);
-                    return true;
-                }
-            });
-
-            if (!loading) {
-                loaderSubject.next(true);
-                loaderSubject.complete();
-            }
-        });
-        return loaderSubject.asObservable();
-    }
-
-     private loadModule(module: any) {
-        System.import(module.path)
-            .then((fileContents: any) => {
-                return fileContents[module.module];
-            })
-            .then((type: any) => {
-                this.componentFactories[module.id] = {};
-                this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                    for (let factory of componentfactory.componentFactories) {
-                        this.componentFactories[module.id][factory.componentType.name] = factory;
-                    }
-                    this.moduleLoadHandler.next();
-                });
-            });
-    }
-     */
-
-    public loadFieldSets(loadhandler: Subject<string>, forceLoading = false) {
-        if (
-            this.session.existsData("metadataFieldSets") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            this.fieldSets = this.session.getSessionData("metadataFieldSets");
-            loadhandler.next("loadFieldSets");
-        } else {
-            this.http.get(
-                this.configurationService.getBackendUrl() + "/spiceui/core/fieldsets",
-                {headers: this.session.getSessionHeader()}
-            ).subscribe(res => {
-                this.fieldSets = res;
-                this.session.setSessionData("metadataFieldSets", this.fieldSets);
-                loadhandler.next("loadFieldSets");
-            });
-        }
-    }
-
-    public loadFieldDefs(loadhandler: Subject<string>, forceLoading = false) {
-        let modules: string[] = [];
-        for (let module in this.moduleDefs) {
-            modules.push(module);
-        }
-
-        if (
-            this.session.existsData("metadataFieldDefs") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            let result = this.session.getSessionData("metadataFieldDefs");
-            this.fieldDefs = result.fielddefs;
-            this.fieldTypeMappings = result.fieldtypemappings;
-            this.fieldStatusNetworks = result.fieldstatusnetworks;
-            loadhandler.next("loadFieldDefs");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/fielddefs", {
-                headers: this.session.getSessionHeader(),
-                params: {modules: JSON.stringify(modules)}
-            })
-                .subscribe((res: any) => {
-                    let result = res;
-                    this.session.setSessionData("metadataFieldDefs", result);
-                    this.fieldDefs = result.fielddefs;
-                    this.fieldTypeMappings = result.fieldtypemappings;
-                    this.fieldStatusNetworks = result.fieldstatusnetworks;
-                    loadhandler.next("loadFieldDefs");
-                });
-        }
-    }
-
-    public loadRoutes(loadhandler: Subject<string>) {
-
-        this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/routes", {headers: this.session.getSessionHeader()})
-            .subscribe(res => {
-                let routerConfig: Route[] = res as Route[];
-                this.router.resetConfig(routerConfig);
-                loadhandler.next("loadRoutes");
-            });
-
-    }
-
-    public loadModuleDefinitions(loadhandler: Subject<string>, forceLoading = false) {
-        if (
-            this.session.existsData("metadataModuleDefinitions") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            let response = this.session.getSessionData("metadataModuleDefinitions");
-            this.moduleDefs = response.modules;
-            this.moduleFilters = response.modulefilters;
-            this.roles = response.roles;
-            this.roles.some(role => {
-                if (role.defaultrole == 1) {
-                    this.role = role.id;
-                    return true;
-                }
-            });
-            if (this.role === "" && this.roles.length > 0) {
-                this.role = this.roles[0].id;
-            }
-            this.rolemodules = response.rolemodules;
-            this.copyrules = response.copyrules;
-            loadhandler.next("loadModuleDefinitions");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/modules", {headers: this.session.getSessionHeader()})
-                .subscribe((res: any) => {
-                    let response = res;
-                    this.session.setSessionData("metadataModuleDefinitions", response);
-                    this.moduleDefs = response.modules;
-                    this.moduleFilters = response.modulefilters;
-                    this.roles = response.roles;
-                    // todo: integrate validation rules
-                    this.role = '';
-                    // set the default role
-                    this.roles.some(role => {
-                        if (role.defaultrole == 1) {
-                            this.role = role.id;
-                            return true;
-                        }
-                    });
-
-                    if (this.role === "" && this.roles.length > 0) {
-                        this.role = this.roles[0].id;
-                    }
-
-                    this.rolemodules = response.rolemodules;
-
-                    this.copyrules = response.copyrules;
-
-
-                    loadhandler.next("loadModuleDefinitions");
-                });
-        }
-    }
-
-    public loadValidationRules(loadhandler: Subject<string>, forceLoading = false): void {
-        if (
-            this.session.existsData("metadataValidationRules") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            this.validationRules = this.session.getSessionData("metadataValidationRules");
-            loadhandler.next("loadValidationRules");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/modelvalidations", {headers: this.session.getSessionHeader()}).subscribe(
-                res => {
-                    let result = res;
-                    this.session.setSessionData("metadataValidationRules", result);
-                    this.validationRules = result;
-                    loadhandler.next("loadValidationRules");
-                }
-            );
-        }
-    }
-
-    public loadHtmlStyling(loadhandler: Subject<string>, forceLoading = false): void {
-        if (
-            this.session.existsData("metadataHtmlStyleData") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            this.htmlStyleData = this.session.getSessionData("metadataHtmlStyleData");
-            loadhandler.next("loadHtmlStyling");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/htmlstyling", {headers: this.session.getSessionHeader()}).subscribe(
-                res => {
-                    let result = res;
-                    this.session.setSessionData("metadataHtmlStyleData", result);
-                    this.htmlStyleData = result;
-                    loadhandler.next("loadHtmlStyling");
-                }
-            );
         }
     }
 
@@ -798,7 +615,7 @@ export class metadata {
                     fields.push(fieldsetitem);
                 } else if (fieldsetitem.fieldset) {
                     // check for recursion
-                    if(parents.indexOf(fieldset) < 0) {
+                    if (parents.indexOf(fieldset) < 0) {
                         // resolve feidlset adding the current fieldset to the parents string
                         fields = fields.concat(this.getFieldSetFields(fieldsetitem.fieldset, parents + ':' + fieldset));
                     }
@@ -1210,7 +1027,7 @@ export class metadata {
      * @param type: object
      */
     public setModuleFilter(id, name, module, type = 'custom') {
-        if (!this.moduleFilters) this.moduleFilters = {};
+        if (!this.moduleFilters) this.configuration.setData('moduleFilters', {});
         this.moduleFilters[id] = {
             id,
             name,

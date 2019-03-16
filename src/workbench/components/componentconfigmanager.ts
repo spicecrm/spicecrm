@@ -42,8 +42,8 @@ export class ComponentConfigManager {
             this.sysModules = modules;
 
             // iniutialize the metadata service
-            this.metadata.loadFieldSets(new Subject<any>());
-            this.metadata.loadComponents(new Subject<any>());
+            // this.metadata.loadFieldSets(new Subject<any>());
+            // this.metadata.loadComponents(new Subject<any>());
         });
 
     }

@@ -8,7 +8,7 @@ import {session} from './session.service';
 import {modelutilities} from './modelutilities.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 
 
@@ -17,7 +17,6 @@ export class favorite {
 
     public isFavorite: boolean = false;
     public isEnabled: boolean = false;
-    public favorites: Array<any> = [];
 
     private currentModule: string = '';
     private currentId: string = '';
@@ -25,10 +24,15 @@ export class favorite {
     constructor(
         private backend: backend,
         private broadcast: broadcast,
-        private configurationService: configurationService,
+        private configuration: configurationService,
         private session: session
     ) {
         this.broadcast.message$.subscribe(message => this.handleMessage(message))
+    }
+
+    get favorites() {
+        let favorites = this.configuration.getData('favorites')
+        return favorites ? favorites : [];
     }
 
     private handleMessage(message: any) {
@@ -66,35 +70,22 @@ export class favorite {
         this.isFavorite = false;
     }
 
-    public loadFavorites(loadhandler: Subject<string>) {
-        if (sessionStorage[window.btoa('favorites'+this.session.authData.sessionId)] && sessionStorage[window.btoa('favorites'+this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            this.favorites = this.session.getSessionData('favorites');
-            loadhandler.next('loadFavorites');
-        } else {
-            this.backend.getRequest('spiceui/core/favorites').subscribe(fav => {
-                this.session.setSessionData('favorites',fav);
-                this.favorites = fav;
-                loadhandler.next('loadFavorites');
-            });
-        }
-    }
-
-
     public getFavorites(module) {
         let retArr = [];
         for (let favorite of this.favorites) {
-            if (favorite.module_name === module)
+            if (favorite.module_name === module) {
                 retArr.push({
                     item_id: favorite.item_id,
                     item_summary: favorite.item_summary
                 });
+            }
         }
 
         return retArr;
     }
 
     public setFavorite() {
-        this.backend.postRequest('spiceui/core/favorites/' + this.currentModule + '/' + this.currentId).subscribe((fav : any) => {
+        this.backend.postRequest('SpiceFavorites/' + this.currentModule + '/' + this.currentId).subscribe((fav: any) => {
             this.favorites.splice(0, 0, {
                 item_id: fav.id,
                 module_name: fav.module,
@@ -106,7 +97,7 @@ export class favorite {
     }
 
     public deleteFavorite() {
-        this.backend.deleteRequest('spiceui/core/favorites/' + this.currentModule + '/' + this.currentId).subscribe(fav => {
+        this.backend.deleteRequest('SpiceFavorites/' + this.currentModule + '/' + this.currentId).subscribe(fav => {
             this.favorites.some((fav, favindex) => {
                 if (fav.module_name === this.currentModule && fav.item_id === this.currentId) {
                     this.favorites.splice(favindex, 1);
