@@ -67,6 +67,9 @@ import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objecto
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
 import /*embed*/ {ObjectListViewAggregateItem} from './components/objectlistviewaggregateitem';
+import /*embed*/ {ObjectListViewAggregateItemTerm} from './components/objectlistviewaggregateitemterm';
+import /*embed*/ {ObjectListViewAggregateItemRange} from './components/objectlistviewaggregateitemrange';
+import /*embed*/ {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
 
 import /*embed*/ {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
 import /*embed*/ {ObjectListViewFilterPanelExportButton} from './components/objectlistviewfilterpanelexportbutton';
@@ -243,6 +246,9 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectListViewAggregatesPanel,
         ObjectListViewAggregate,
         ObjectListViewAggregateItem,
+        ObjectListViewAggregateItemTerm,
+        ObjectListViewAggregateItemRange,
+        ObjectListViewTagsAggregate,
         ObjectListViewFilterPanel,
         ObjectListViewFilterPanelExportButton,
         ObjectListViewFilterPanelExportTargetlist,
