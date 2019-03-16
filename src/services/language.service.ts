@@ -389,7 +389,7 @@ export class language {
         let options = this.metadata.getFieldOptions(module, fieldname);
         if (options !== false) {
             try {
-                return this.languagedata.applist[options][value];
+                return this.languagedata.applist[options][value] ? this.languagedata.applist[options][value] : value;
             } catch (e) {
                 return value;
             }
