@@ -40,7 +40,7 @@ export class modellist implements OnDestroy {
 
     public searchConditions: any[] = [];
     public searchTerm: string = '';
-    public searchAggregates: Array<any> = [];
+    public searchAggregates: any = {};
     public selectedAggregates: Array<any> = [];
 
     public standardLists: Array<any> = [
