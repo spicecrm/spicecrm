@@ -12,7 +12,6 @@ declare var _;
 
 /**
  * a standard checkbox component, compatible with ngModel!
- * created by: sebastian franz at 2018-07-19
  */
 @Component({
     selector: 'system-checkbox',
