@@ -1,0 +1,18 @@
+<div class="slds-filters__item slds-grid slds-wrap slds-grid--align-cente">
+    <ng-container *ngIf="hasItems">
+        <div *ngFor="let bucketItem of aggregate.buckets" class="slds-p-around--xxx-small slds-truncate" style="max-width: 50%;">
+            <div class="slds-badge slds-truncate" [title]="bucketItem.displayName" [ngClass]="{'slds-badge_inverse': isactive(bucketItem)}" (click)="toggle(bucketItem)">
+                <div class="slds-grid">
+                    <div class="slds-truncate slds-text-link_reset">{{bucketItem.displayName}}</div>
+                    <div class="slds-p-left--xxx-small">({{bucketItem.doc_count}})</div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="aggregate.sum_other_doc_count" class="slds-p-vertical--xxx-small slds-truncate" style="max-width: 50%;">
+            <div class="slds-badge slds-truncate">{{aggregate.sum_other_doc_count}} {{language.getLabel('LBL_MORE')}}</div>
+        </div>
+    </ng-container>
+    <div *ngIf="!hasItems" class="slds-align--absolute-center">
+        {{language.getLabel('MSG_NO_RECORDS_TAGGED')}};
+    </div>
+</div>
