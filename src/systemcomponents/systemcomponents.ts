@@ -73,6 +73,7 @@ import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustratio
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
+import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
 import /*embed*/ {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
@@ -161,6 +162,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoRecords,
         SystemInputRadio,
         SystemInputLabel,
+        SystemInputTags,
         SystemImagePreviewModal,
         SystemObjectPreviewModal,
         SystemInputModuleFilter
@@ -225,6 +227,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
         SystemInputLabel,
+        SystemInputTags,
         SystemInputModuleFilter
     ]
 })
