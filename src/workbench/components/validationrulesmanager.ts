@@ -37,7 +37,8 @@ export class ValidationRulesManager
     }
 
     get modules() {
-        return this.appdata.modules;
+        return this.metadata.getModules();
+        // return this.appdata.modules;
     }
 
     set current_module(val: string) {
