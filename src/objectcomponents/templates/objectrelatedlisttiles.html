@@ -1,13 +1,7 @@
-<article *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
-    <object-relatedlist-header [module]="module" [actionset]="componentconfig.actionset"></object-relatedlist-header>
-    <ng-container *ngIf="isopen">
-        <div class="slds-card__body">
-            <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-                <div *ngFor="let relateditem of relatedmodels.items" class="slds-p-around--xx-small slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-3">
-                    <div  class="slds-box slds-box--x-small slds-media slds-card__tile" object-related-card-tile [fieldset]="componentconfig.fieldset" [data]="relateditem" [module]="module"></div>
-                </div>
-            </div>
+<object-related-card [componentconfig]="componentconfig">
+    <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+        <div *ngFor="let relateditem of relatedmodels.items" class="slds-p-around--xx-small slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-3">
+            <div class="slds-box slds-box--x-small slds-media slds-card__tile" object-related-card-tile [fieldset]="componentconfig.fieldset" [data]="relateditem" [module]="module"></div>
         </div>
-        <object-relatedlist-footer [module]="module"></object-relatedlist-footer>
-    </ng-container>
-</article>
+    </div>
+</object-related-card>

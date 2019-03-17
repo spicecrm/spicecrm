@@ -6,7 +6,7 @@ import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
-import {ObjectRelatedlistHeader} from "./objectrelatedlistheader";
+
 
 @Component({
     selector: "object-relatedlist-list",
@@ -14,8 +14,6 @@ import {ObjectRelatedlistHeader} from "./objectrelatedlistheader";
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
-
-    @ViewChildren(ObjectRelatedlistHeader) private listheaders: QueryList<ObjectRelatedlistHeader>;
 
     public activeTab: number = 0;
     public componentconfig: any = {};
@@ -32,39 +30,6 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
-    }
-
-    get isloading() {
-        return this.relatedmodels.isloading;
-    }
-
-    get panelTitle() {
-
-        if (!this.componentconfig.title) {
-            this.componentconfig.title = this.language.getModuleName(this.componentconfig.object);
-        }
-        return this.componentconfig.title ? this.componentconfig.title : "";
-    }
-
-    get hidden() {
-        return !this.checkModelState() || !this.aclAccess();
-    }
-
-    get isopen() {
-        if (this.listheaders && !this.listheaders.first.isopen) {
-            return false;
-        }
-
-        return this.relatedmodels.count > 0 || this.isloading;
-    }
-
-    public checkModelState() {
-        if (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate)) {
-            return false;
-        }
-
-        // by default return true
-        return true;
     }
 
     public aclAccess() {

@@ -1,7 +1,3 @@
-<article *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
-    <object-relatedlist-header [module]="module" [actionset]="componentconfig.actionset"></object-relatedlist-header>
-    <div class="slds-card__body">
-        <object-relatedlist-sequenced-table [listfields]="listfields" [module]="module" [sequencefield]="sequencefield"></object-relatedlist-sequenced-table>
-    </div>
-    <object-relatedlist-footer [module]="module"></object-relatedlist-footer>
-</article>
+<object-related-card [componentconfig]="componentconfig">
+    <object-relatedlist-sequenced-table [listfields]="listfields" [module]="module" [sequencefield]="sequencefield"></object-relatedlist-sequenced-table>
+</object-related-card>
