@@ -100,8 +100,9 @@ import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageh
 import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
-import /*embed*/ {ObjectRelatedlistHeader} from './components/objectrelatedlistheader';
-import /*embed*/ {ObjectRelatedlistFooter} from './components/objectrelatedlistfooter';
+import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
+import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
+import /*embed*/ {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
 import /*embed*/ {ObjectRelatedlistList} from './components/objectrelatedlistlist';
 import /*embed*/ {ObjectRelatedListItem} from './components/objectrelatedlistitem';
 import /*embed*/ {ObjectRelatedlistTiles} from './components/objectrelatedlisttiles';
@@ -301,8 +302,9 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectVerticalTabContainerItem,
         ObjectVerticalTabContainerItemHeader,
         ObjectRelateContainer,
-        ObjectRelatedlistHeader,
-        ObjectRelatedlistFooter,
+        ObjectRelatedCard,
+        ObjectRelatedCardHeader,
+        ObjectRelatedCardFooter,
         ObjectRelatedlistList,
         ObjectRelatedListItem,
         ObjectRelatedlistTiles,
@@ -392,6 +394,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectTextsAddButton,
         ObjectTextsAddModal
     ],
+    /*
     entryComponents: [
         ObjectIcon,
         ObjectListViewHeader,
@@ -432,6 +435,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActionBeanToMailButton,
         ObjectNotes
     ],
+    */
     exports: [
         ObjectListViewHeader,
         ObjectList,
@@ -454,7 +458,8 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectTableRow,
         ObjectTable,
         ObjectActivitiyTimelineItemContainer,
-        ObjectActivitiyTimelineStencil
+        ObjectActivitiyTimelineStencil,
+        ObjectRelatedCard
     ]
 })
 export class ObjectComponents {

@@ -11,12 +11,7 @@ import {ObjectRelatedlistList} from './objectrelatedlistlist';
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistSequenced extends ObjectRelatedlistList {
-
-    sequencefield: string = '';
-
-    ngOnInit(){
-        super.ngOnInit();
-
-        this.sequencefield = this.componentconfig.sequencefield;
+    get sequencefield() {
+        return this.componentconfig.sequencefield;
     }
 }
