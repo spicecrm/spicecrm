@@ -23,7 +23,7 @@ declare var _: any;
 export class userpreferences {
 
     public preferences: any = {
-        global: {}
+        global: this.configuration.getData('globaluserpreferences')
     };
     // toUse is a "shortcut" to preferences.global. For easier code.
     // The user preferences in toUse (like preferences.global) will be available anytime, even when the user hasn´t set the preferences yet.
