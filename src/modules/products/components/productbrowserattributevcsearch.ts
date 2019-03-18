@@ -1,26 +1,14 @@
-import {Component, Input} from '@angular/core';
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {Component, Input} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {productfinder} from '../services/productfinder.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -29,7 +17,7 @@ declare var moment: any;
 })
 export class ProductBrowserAttributeVCSearch {
 
-    @Input() attribute: any = {};
+    @Input() public attribute: any = {};
     private timeout: any;
 
     constructor(public language: language, public productfinder: productfinder) {

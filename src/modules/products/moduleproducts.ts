@@ -64,11 +64,11 @@ import /*embed*/ {ProductVariantsAttributeSS} from "./components/productvariants
 import /*embed*/ {ProductTextGenerator} from './components/producttextgenerator';
 import /*embed*/ {ProductGroupsContentCodeAssignments} from './components/productgroupscontentcodeassignments';
 import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/productgroupslongtextcodeassignments';
-import /*embed*/ {ProductGroupManagerDetailsAttributes} from './components/productgroupmanagerdetailsattributes';
+import /*embed*/ {ProductGroupManagerDetailsAttributesValidationItem} from "./components/productgroupmanagerdetailsattributesvalidationitem";
 import /*embed*/ {ProductGroupManagerDetailsAttributesValidation} from "./components/productgroupmanagerdetailsattributesvalidation";
 import /*embed*/ {ProductGroupManagerDetailsAttributesItem} from "./components/productgroupmanagerdetailsattributesitem";
-import /*embed*/ {ProductGroupManagerDetailsAttributesValidationItem} from "./components/productgroupmanagerdetailsattributesvalidationitem";
 import /*embed*/ {ProductGroupManagerDetailsAttributesAddButton} from "./components/productgroupmanagerdetailsattributesaddbutton";
+import /*embed*/ {ProductGroupManagerDetailsAttributes} from './components/productgroupmanagerdetailsattributes';
 import /*embed*/ {ProductUOMConversions} from "./components/productuomconversions";
 
 @NgModule({
@@ -85,29 +85,29 @@ import /*embed*/ {ProductUOMConversions} from "./components/productuomconversion
         ProductManager,
         ProductGroupManager,
         ProductGroupManagerDetails,
-        ProductGroupManagerDetailsAttributes,
-        ProductGroupManagerDetailsAttributesAddButton,
-        ProductGroupManagerDetailsAttributesValidation,
         ProductGroupManagerDetailsAttributesValidationItem,
+        ProductGroupManagerDetailsAttributesValidation,
+        ProductGroupManagerDetailsAttributesAddButton,
         ProductGroupManagerDetailsAttributesItem,
+        ProductGroupManagerDetailsAttributes,
         ProductBrowser,
         ProductBrowserTree,
         ProductGroupManagerTree,
         ProductBrowserVariants,
         ProductBrowserVariant,
         ProductBrowserAttributes,
-        ProductVariantsAttributesTable,
         ProductBrowserAttributeVCSearch,
         ProductBrowserAttributeDISearch,
         ProductBrowserAttributeNSearch,
         ProductBrowserAttributeFSearch,
         ProductBrowserAttributeSSearch,
-        ProductVariantsAttributes,
         ProductVariantsAttributeVC,
         ProductVariantsAttributeDI,
         ProductVariantsAttributeN,
         ProductVariantsAttributeF,
         ProductVariantsAttributeSS,
+        ProductVariantsAttributesTable,
+        ProductVariantsAttributes,
         ProductTextGenerator,
         ProductGroupsContentCodeAssignments,
         ProductGroupsLongtextCodeAssignments,
@@ -115,8 +115,8 @@ import /*embed*/ {ProductUOMConversions} from "./components/productuomconversion
     ]
 })
 export class ModuleProducts {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+    public readonly version = '1.0';
+    public readonly build_date = '/*build_date*/';
 
     constructor(
         private vms: VersionManagerService,

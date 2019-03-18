@@ -1,17 +1,6 @@
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Component, ElementRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -21,8 +10,8 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({

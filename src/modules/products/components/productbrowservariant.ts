@@ -1,18 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Input, Output, OnInit, EventEmitter
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {language} from '../../../services/language.service';
@@ -21,8 +10,8 @@ import {view} from '../../../services/view.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({

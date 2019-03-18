@@ -1,26 +1,15 @@
-import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -29,7 +18,7 @@ declare var moment: any;
 })
 export class ProductBrowserAttributes {
 
-    @ViewChild('attributesheader', {read: ViewContainerRef}) attributesheader: ViewContainerRef;
+    @ViewChild('attributesheader', {read: ViewContainerRef}) private attributesheader: ViewContainerRef;
     private attributeFilter: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
