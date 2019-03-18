@@ -1,10 +1,16 @@
-import {Component, Input, OnInit, EventEmitter, AfterViewInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
 import {language} from '../../services/language.service';
 
+/**
+ * a standard actionset item to deltete a model
+ */
 @Component({
     selector: 'object-action-delete-button',
     templateUrl: './src/objectcomponents/templates/objectactiondeletebutton.html',
@@ -12,6 +18,9 @@ import {language} from '../../services/language.service';
 })
 export class ObjectActionDeleteButton implements OnInit {
 
+    /**
+     * defines if the delete ooptionis disabled. By defualt it is but this is checked on model load and model changes and set accordingly to ACL Rules there
+     */
     public disabled: boolean = true;
 
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper) {

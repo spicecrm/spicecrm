@@ -1,11 +1,17 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    Component, Output, EventEmitter, Input, OnChanges
+    Component, Input, OnChanges
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({
@@ -52,7 +58,6 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
     }
 
     private cleangroup(group) {
-        console.log(group.conditions);
         for (let condition of group.conditions) {
             let i = group.conditions.indexOf(condition);
             if (condition.deleted === true) {

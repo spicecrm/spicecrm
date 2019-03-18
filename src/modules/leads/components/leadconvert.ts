@@ -1,4 +1,7 @@
-import {Component, Input, Output, EventEmitter, AfterViewInit, ViewChild, ViewContainerRef} from '@angular/core';
+/**
+ * @module ModuleLeads
+ */
+import {Component, AfterViewInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {navigation} from '../../../services/navigation.service';

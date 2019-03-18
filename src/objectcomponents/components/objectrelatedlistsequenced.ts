@@ -1,9 +1,8 @@
-import {Component, AfterViewInit, OnInit, OnDestroy} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component} from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
-import {model} from '../../services/model.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {Router}   from '@angular/router';
 import {ObjectRelatedlistList} from './objectrelatedlistlist';
 
 @Component({
@@ -12,12 +11,7 @@ import {ObjectRelatedlistList} from './objectrelatedlistlist';
     providers: [relatedmodels]
 })
 export class ObjectRelatedlistSequenced extends ObjectRelatedlistList {
-
-    sequencefield: string = '';
-
-    ngOnInit(){
-        super.ngOnInit();
-
-        this.sequencefield = this.componentconfig.sequencefield;
+    get sequencefield() {
+        return this.componentconfig.sequencefield;
     }
 }

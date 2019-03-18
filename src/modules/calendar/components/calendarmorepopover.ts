@@ -1,8 +1,14 @@
+/**
+ * @module ModuleCalendar
+ */
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {calendar} from "../services/calendar.service";
 import {language} from "../../../services/language.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

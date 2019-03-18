@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, Output, EventEmitter, ElementRef, Renderer2} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";

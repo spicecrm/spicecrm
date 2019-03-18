@@ -1,14 +1,9 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
-} from '@angular/core';
-import {model} from '../../../services/model.service';
-import {backend} from '../../../services/backend.service';
+    Component
+} from '@angular/core';;
 
 @Component({
     selector: 'reporter-field-standard',
@@ -16,8 +11,8 @@ import {backend} from '../../../services/backend.service';
 })
 export class ReporterFieldStandard {
 
-    record: any = {};
-    field: any = {};
+    private record: any = {};
+    private field: any = {};
 
     constructor() {
 

@@ -1,5 +1,7 @@
-import {Component, Input} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ModuleReports
+ */
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';
@@ -12,26 +14,26 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 })
 export class ReporterIntegrationTargetlistexportModal {
 
-    self: any = {};
-    model: any = {};
-    whereConditions: any = {};
+    private self: any = {};
+    private model: any = {};
+    private whereConditions: any = {};
 
-    targetlistname: string = '';
+    private targetlistname: string = '';
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private modal: modal) {
     }
 
-    closeModal() {
+    private closeModal() {
         this.self.destroy();
     }
 
-    exportTargetList() {
+    private exportTargetList() {
 
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             // set the loading popover message
             modalRef.instance.messagelabel = 'LBL_CREATING_TARGETLIST';
 
-            //generate body
+            // generate body
             let requestbody = {
                 targetlist_action: "new",
                 targetlist_name: this.targetlistname,

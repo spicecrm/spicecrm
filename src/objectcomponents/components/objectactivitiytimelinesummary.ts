@@ -1,53 +1,141 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    Input, OnInit, OnDestroy
+    Component, OnDestroy, ViewChild, ViewContainerRef
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
+import {layout} from '../../services/layout.service';
 import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
+/**
+ * displays a timeline summary with all activities from the parent record. Activities are on the left hand side, details on teh right hand side
+ */
 @Component({
-    selector: 'object-activitiytimeline-summary',
     templateUrl: './src/objectcomponents/templates/objectactivitiytimelinesummary.html',
-    providers: [model]
+    providers: [activitiyTimeLineService, model]
 })
-export class ObjectActivitiyTimelineSummary{
-    @ViewChild('listContainer', {read: ViewContainerRef}) listContainer: ViewContainerRef;
-    @ViewChild('detailContainer', {read: ViewContainerRef}) detailContainer: ViewContainerRef;
-    showSummary: boolean = false;
-    componentRefs: Array<any> = [];
+export class ObjectActivitiyTimelineSummary implements OnDestroy {
+    /**
+     * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
+     */
+    @ViewChild('listContainer', {read: ViewContainerRef}) private listContainer: ViewContainerRef;
 
-    constructor(private metadata: metadata, private model: model, private language: language, private activitiyTimeLineService: activitiyTimeLineService) {
+    /**
+     * the module of the selcted activitis
+     */
+    private activitymodule: string;
+
+    /**
+     * the id of the current selcted activitiy
+     */
+    private activityid: string;
+
+    /**
+     * the data of the current selcted activitiy
+     */
+    private activitydata: any;
+
+    /**
+     * a subscription to cath the loading event
+     */
+    private subscription: any;
+
+    private componentconfig: any;
+
+    constructor(private metadata: metadata, private parent: model, private language: language, private activitiyTimeLineService: activitiyTimeLineService, private activatedRoute: ActivatedRoute, private layout: layout) {
+
+        // check the componentconfig wether to use fts or not
+        this.componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineSummary');
+        if (this.componentconfig.usefts) this.activitiyTimeLineService.usefts = true;
+
+        this.activatedRoute.params.subscribe(params => this.initialize(params));
+
+        this.subscription = this.activitiyTimeLineService.loading$.subscribe(loading => this.clearActivitiy());
     }
 
-    get activities(){
+    /**
+     * handles the destory and unsubscribes from the activitiy service
+     */
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    /**
+     * loads the activities for the parent module
+     */
+    get activities() {
         return this.activitiyTimeLineService.activities.History.list;
     }
 
-    displaySummary() {
-        this.showSummary = true;
-        if(this.activitiyTimeLineService.activities.History.list.length < 25 && this.activitiyTimeLineService.canLoadMore('History'))
-            this.activitiyTimeLineService.getMoreTimeLineData('History', 20);
+    /**
+     * a helper function that queries the layout service to not display a spülit screen on small devices. This shoudl not be done by media queries so the cmponent is not even rendered at all and kept hidden with an ngIf
+     */
+    get displayDetailsPane() {
+        return this.layout.screenwidth != 'small';
     }
 
-    onScroll(e) {
+    get searchterm() {
+        return this.activitiyTimeLineService.filters.searchterm;
+    }
+
+    set searchterm(seacrhterm) {
+        this.activitiyTimeLineService.filters.searchterm = seacrhterm;
+        this.activitiyTimeLineService.reload();
+    }
+
+    /**
+     * reloads the list
+     */
+    private reload() {
+        this.activitiyTimeLineService.reload();
+    }
+
+    /**
+     * initializes when the activated Route returns the promise in the constructor
+     *
+     * @param params the Route Params returned
+     */
+    private initialize(params: Params) {
+        // get the bean details
+        this.parent.module = params.module;
+        this.parent.id = params.id;
+        this.parent.getData(true, '', true);
+
+        this.activitiyTimeLineService.parent = this.parent;
+        this.activitiyTimeLineService.defaultLimit = 25;
+        this.activitiyTimeLineService.modules = ['History'];
+        this.activitiyTimeLineService.reload();
+    }
+
+    /**
+     * handles scrolling
+     *
+     * @param e the event emitted from teh DOM element
+     */
+    private onScroll(e) {
         let element = this.listContainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            if(this.activitiyTimeLineService.canLoadMore('History'))
+            if (this.activitiyTimeLineService.canLoadMore('History')) {
                 this.activitiyTimeLineService.getMoreTimeLineData('History', 20);
+            }
         }
     }
 
-    hideSummary() {
-        this.showSummary = false;
-    }
-
-    getDate(activity) {
+    /**
+     * gets the proper date field for the activits
+     *
+     * @param activity the activitiy itself
+     */
+    private getDate(activity) {
 
         let dateField = 'date_start';
         switch (activity.module) {
@@ -64,26 +152,37 @@ export class ObjectActivitiyTimelineSummary{
         return date.format('DD.MM.YYYY');
     }
 
-    setActivitiy(activity) {
-        this.model.module = activity.module;
-        this.model.id = activity.id;
-        this.model.data = activity.data;
+    /**
+     * triggers setting the activitiy and thus updating the form on the right side with the activitiy content and details
+     *
+     * @param activity the activity
+     */
+    private setActivitiy(activity) {
+        this.activitymodule = activity.module;
+        this.activityid = activity.id;
+        this.activitydata = activity.data;
+    }
 
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
+    /**
+     * clears the active activitiy
+     */
+    private clearActivitiy() {
+        this.activitymodule = '';
+        this.activityid = '';
+        this.activitydata = '';
+    }
 
-        let componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineSummary', activity.module);
-        if (componentconfig && componentconfig.componentsets) {
-            for (let componentSet of componentconfig.componentsets) {
-                for (let view of this.metadata.getComponentSetObjects(componentSet)) {
-                    this.metadata.addComponent(view.component, this.detailContainer).subscribe(componentRef => {
-                        componentRef.instance['componentconfig'] = view.componentconfig;
-                        this.componentRefs.push(componentRef);
-                    })
-                }
-            }
-        }
+    /**
+     * navigates to the parent model record. Used in the breadcrumbs
+     */
+    private goModel() {
+        this.parent.goDetail();
+    }
 
+    /**
+     * navigates to the parent module. Used in the breadcrumbs
+     */
+    private goModule() {
+        this.parent.goModule();
     }
 }

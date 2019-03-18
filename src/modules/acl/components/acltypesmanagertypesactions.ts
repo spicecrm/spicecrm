@@ -1,3 +1,6 @@
+/**
+ * @module ModuleACL
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,

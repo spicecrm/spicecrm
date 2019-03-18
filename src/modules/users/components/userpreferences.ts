@@ -1,3 +1,6 @@
+/**
+ * @module ModuleUsers
+ */
 import {Component} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
@@ -9,7 +12,13 @@ import {Subject} from "rxjs";
 import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
 
+/**
+* @ignore
+*/
 declare var _: any;
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

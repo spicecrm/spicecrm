@@ -1,8 +1,8 @@
-import {Component, Input, HostBinding, ViewContainerRef, EventEmitter, OnInit, AfterViewInit} from "@angular/core";
-import {Router} from "@angular/router";
-import {metadata} from "../../../services/metadata.service";
+/**
+ * @module ModuleContacts
+ */
+import {Component, ViewContainerRef, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
-import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 

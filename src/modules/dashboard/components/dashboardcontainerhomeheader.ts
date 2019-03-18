@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {
     Component,
     Input

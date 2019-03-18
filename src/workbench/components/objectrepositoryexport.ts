@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';

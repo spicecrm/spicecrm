@@ -1,4 +1,7 @@
-import {Component, ElementRef, Renderer, OnInit, Output, EventEmitter, Input} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, ElementRef, Renderer, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {modal} from '../../services/modal.service';
@@ -6,8 +9,6 @@ import {Router} from '@angular/router';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
-import {fts} from "../../services/fts.service";
-import {popup} from "../../services/popup.service";
 import {territories} from "../../services/territories.service";
 
 @Component({

@@ -1,4 +1,7 @@
-import {Component, AfterViewInit, OnInit, OnDestroy, Input, ChangeDetectionStrategy} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import { Component, Input } from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {backend} from '../../services/backend.service';
@@ -16,91 +19,43 @@ export class ObjectRelatedlistSequencedTable extends ObjectRelatedlistTable {
 
     @Input() private sequencefield: string = 'sequence_number';
 
-    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, private backend: backend, private broadcast: broadcast) {
+    private nowDragging = false;
+
+    constructor( public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, private backend: backend, private broadcast: broadcast ) {
         super(language, metadata, relatedmodels, model, layout);
     }
 
     get displayfields() {
-        let displayfields = [];
-        for ( let listfield of this.listfields ) {
-            if ( listfield.fieldconfig.default ) {
-                displayfields.push(listfield);
-            }
-        }
-        return displayfields;
+        return this.listfields;
     }
 
-    private dragstart( event, item ) {
-        event.dataTransfer.setData( "text", item.id );
+    private getIdOfRow( index, item ) {
+        return item.id;
     }
 
-    private dragover(event, item) {
-        event.stopPropagation();
-        let data = event.dataTransfer.getData("text");
-        if ( data != item.id ) event.preventDefault();
-    }
+    private drop(event) {
+        let previousItem = this.relatedmodels.items.splice(event.previousIndex, 1);
+        this.relatedmodels.items.splice(event.currentIndex, 0, previousItem[0]);
 
-    private drop( event, targetitem ) {
-
-        let sourceID = event.dataTransfer.getData("text");
-
-        // build an internal array with ids and sequence
-        let itemsArray = [];
+        let updateArray = [];
+        let i = 0;
         for ( let item of this.relatedmodels.items ) {
-            itemsArray.push({id: item.id, sequence: parseInt( item[this.sequencefield], 10 )});
+            item[this.sequencefield] = i;
+            updateArray.push({id: item.id, sequence_number: i});
+            i++;
         }
 
-        // sort the Array
-        itemsArray.sort((a, b) => {
-            return a.sequence > b.sequence ? 1 : -1;
-        });
+        this.backend.postRequest('module/'+this.relatedmodels.relatedModule, {}, updateArray);
+    }
 
-        // get the indexes of the two records
-        let sourceitem = {};
-        itemsArray.some((item, index) => {
-            if ( item.id == sourceID ) {
-                sourceitem = itemsArray.splice(index, 1);
-                return true;
-            }
-        });
+    private dragStarted(e) {
+        this.nowDragging = true;
+        e.source.element.nativeElement.classList.add('slds-is-selected');
+    }
 
-        // get the current source element
-        itemsArray.some((item, index) => {
-            if ( item.id == targetitem.id ) {
-                itemsArray.splice(index, 0, sourceitem[0]);
-                return true;
-            }
-        });
-
-        // get the droptarget and
-        let currentIndex = 0; let indexObj = {}; let updateArray = [];
-        for ( let item of itemsArray ) {
-            indexObj[item.id] = currentIndex;
-            updateArray.push({id: item.id, sequence_number: currentIndex});
-            currentIndex++;
-        }
-
-        // transverse array to object
-        for ( let item of this.relatedmodels.items ) {
-            item[this.sequencefield] = indexObj[item.id];
-        }
-
-        // resort the array
-        this.relatedmodels.items.sort((a, b) => {
-            return parseInt( a[this.sequencefield], 10 ) > parseInt( b[this.sequencefield], 10 ) ? 1 : -1;
-        });
-
-        // send to the backen saving the models
-        this.backend.postRequest('/module/'+this.relatedmodels.relatedModule, {}, updateArray).subscribe(updated => {
-            console.log('updated models');
-            for ( let modeldata of updated ) {
-                this.broadcast.broadcastMessage('model.save', {
-                    id: modeldata.id,
-                    module: this.relatedmodels.relatedModule,
-                    data: modeldata.data
-                });
-            }
-        });
+    private dragEnded(e) {
+        this.nowDragging = false;
+        e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 
 }

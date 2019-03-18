@@ -1,3 +1,6 @@
+/**
+ * @module directives
+ */
 import {
     Directive,
     HostBinding,

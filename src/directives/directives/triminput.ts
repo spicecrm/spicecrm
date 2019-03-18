@@ -1,3 +1,6 @@
+/**
+ * @module directives
+ */
 import { Directive, HostListener, Input } from '@angular/core';
 
 /*

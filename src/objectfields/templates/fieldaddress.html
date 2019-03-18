@@ -12,26 +12,26 @@
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_ATTN')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="attn"/>
+                        <input type="text" class="slds-input" [(ngModel)]="attn" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_STREET')}}</label>
                     <div class="slds-form-element__control">
-                        <input #focus type="text" class="slds-input" [(ngModel)]="street"/>
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_POSTALCODE')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="postalcode"/>
+                        <input type="text" class="slds-input" [(ngModel)]="postalcode" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
                 <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_CITY')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="city"/>
+                        <input type="text" class="slds-input" [(ngModel)]="city" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
             </div>
@@ -39,13 +39,13 @@
                 <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_STATE')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="state"/>
+                        <input type="text" class="slds-input" [(ngModel)]="state" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
                 <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_COUNTRY')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="country"/>
+                        <input type="text" class="slds-input" [(ngModel)]="country" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
             </div>
