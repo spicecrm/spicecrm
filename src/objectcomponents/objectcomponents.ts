@@ -100,8 +100,8 @@ import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageh
 import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
-import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
+import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
 import /*embed*/ {ObjectRelatedlistList} from './components/objectrelatedlistlist';
 import /*embed*/ {ObjectRelatedListItem} from './components/objectrelatedlistitem';
