@@ -84,9 +84,9 @@ export class ProductUOMConversions implements OnInit, OnDestroy {
     }
 
     private getUomFieldDefs() {
-        this.fieldBaseUom = this.componentconfig['baseuomfield'] || this.fieldBaseUom;
+        this.fieldBaseUom = this.componentconfig.baseuomfield || this.fieldBaseUom;
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldBaseUom);
-        this.fieldBaseUomId = fieldDefs && fieldDefs['id_name'] ? fieldDefs['id_name'] : this.fieldBaseUomId;
+        this.fieldBaseUomId = fieldDefs && fieldDefs.id_name ? fieldDefs.id_name : this.fieldBaseUomId;
     }
 
     private getUomUnits() {
@@ -129,9 +129,9 @@ export class ProductUOMConversions implements OnInit, OnDestroy {
         this.model.data.uomconversions.beans[guid] = {
             id: guid,
             quantity: '1',
-            reference_uom_unit: '',
             conversion_factor: '',
             uom_unit: '',
+            reference_uom_unit: this.baseUom.id,
             deleted: '0',
             assigned_user_id: this.session.authData.userId
         };
