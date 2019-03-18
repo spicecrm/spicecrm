@@ -1,33 +1,43 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
+import { backend } from '../../services/backend.service';
 
 @Component({
     selector: 'object-relatedlist-table',
     templateUrl: './src/objectcomponents/templates/objectrelatedlisttable.html'
 })
-export class ObjectRelatedlistTable {
+export class ObjectRelatedlistTable implements OnInit {
 
     @Input() public listfields: any[] = [];
     @Input() private module: any[] = [];
     @Input() private editable: boolean = false;
     @Input() private editcomponentset: boolean = false;
+    @Input() private sequencefield: string = null;
 
-    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout) {
+    public nowDragging = false;
+    public isSequenced = false;
 
+    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend) { }
+
+    public ngOnInit() {
+        if ( !this.sequencefield && this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+            this.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
+        }
+        if ( this.sequencefield ) this.isSequenced = true;
     }
 
     get isloading() {
         return this.relatedmodels.isloading;
     }
 
-    get isSmall(){
+    get isSmall() {
         return this.layout.screenwidth == 'small';
     }
 
@@ -54,4 +64,34 @@ export class ObjectRelatedlistTable {
             }
         }
     }
+
+    private getIdOfRow( index, item ) {
+        return item.id;
+    }
+
+    private drop(event) {
+        let previousItem = this.relatedmodels.items.splice(event.previousIndex, 1);
+        this.relatedmodels.items.splice(event.currentIndex, 0, previousItem[0]);
+
+        let updateArray = [];
+        let i = 0;
+        for ( let item of this.relatedmodels.items ) {
+            item[this.sequencefield] = i;
+            updateArray.push({id: item.id, sequence_number: i});
+            i++;
+        }
+
+        this.backend.postRequest('module/'+this.relatedmodels.relatedModule, {}, updateArray);
+    }
+
+    private dragStarted(e) {
+        this.nowDragging = true;
+        e.source.element.nativeElement.classList.add('slds-is-selected');
+    }
+
+    private dragEnded(e) {
+        this.nowDragging = false;
+        e.source.element.nativeElement.classList.remove('slds-is-selected');
+    }
+
 }

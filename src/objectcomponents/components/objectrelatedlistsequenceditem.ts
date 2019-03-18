@@ -8,7 +8,7 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 
 @Component({
-    selector: '[object-related-list-seqeunced-item]',
+    selector: '[object-related-list-sequenced-item]',
     templateUrl: './src/objectcomponents/templates/objectrelatedlistsequenceditem.html',
     providers: [model, view]
 })

@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList} from "@angular/core";
+import { Component, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList, Input } from "@angular/core";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
@@ -15,12 +15,12 @@ import {language} from "../../services/language.service";
 })
 export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
 
-    public activeTab: number = 0;
-    public componentconfig: any = {};
-    public listfields: any[] = [];
-    public fieldset: string = "";
-    public editcomponentset: string = "";
-    public module: string = "";
+    @Input() public componentconfig: any = {};
+    private listfields: any[] = [];
+    private fieldset: string = "";
+    private editcomponentset: string = "";
+    private module: string = "";
+    private sequencefield = null;
 
     constructor(
         public language: language,
@@ -38,7 +38,6 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
 
     public loadRelated() {
         if (!this.aclAccess()) return;
-        this.relatedmodels.relatedModule = this.componentconfig.object;
         this.relatedmodels.getData();
     }
 
@@ -46,17 +45,16 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
         this.fieldset = this.componentconfig.fieldset;
         this.listfields = this.metadata.getFieldSetFields(this.fieldset);
         this.module = this.componentconfig.object;
-        if (this.componentconfig.link) {
-            this.relatedmodels.linkName = this.componentconfig.link;
-        }
 
-        if (this.componentconfig.items) {
-            this.relatedmodels.loaditems = this.componentconfig.items;
-        }
+        this.relatedmodels.relatedModule = this.componentconfig.object;
 
-        if (this.componentconfig.modulefilter) {
-            this.relatedmodels.modulefilter = this.componentconfig.modulefilter;
-        }
+        if (this.componentconfig.sequencefield) this.sequencefield = this.componentconfig.sequencefield;
+
+        if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
+
+        if (this.componentconfig.items) this.relatedmodels.loaditems = this.componentconfig.items;
+
+        if (this.componentconfig.modulefilter) this.relatedmodels.modulefilter = this.componentconfig.modulefilter;
 
         /*
         if(this.componentconfig.editable) {
@@ -64,14 +62,13 @@ export class ObjectRelatedlistList implements OnInit, OnDestroy, AfterViewInit {
         }
         */
 
-        if (this.componentconfig.editcomponentset) {
-            this.editcomponentset = this.componentconfig.editcomponentset;
-        }
+        if (this.componentconfig.editcomponentset) this.editcomponentset = this.componentconfig.editcomponentset;
 
         if (this.componentconfig.sortfield) {
             this.relatedmodels.sort.sortfield = this.componentconfig.sortfield;
             this.relatedmodels.sort.sortdirection = this.componentconfig.sortdirection ? this.componentconfig.sortdirection : "ASC";
         }
+
     }
 
     get editable() {

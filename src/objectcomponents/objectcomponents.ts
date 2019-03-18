@@ -114,7 +114,6 @@ import /*embed*/ {ObjectRelatedDuplicateTile} from './components/objectrelateddu
 import /*embed*/ {ObjectRelatedlistAll} from './components/objectrelatedlistall';
 import /*embed*/ {ObjectRelatedlistTable} from './components/objectrelatedlisttable';
 import /*embed*/ {ObjectRelatedlistSequenced} from './components/objectrelatedlistsequenced';
-import /*embed*/ {ObjectRelatedlistSequencedTable} from './components/objectrelatedlistsequencedtable';
 import /*embed*/ {ObjectRelatedListSequencedItem} from './components/objectrelatedlistsequenceditem';
 
 import /*embed*/ {ObjectFileActionMenu} from './components/objectfileactionmenu';
@@ -317,7 +316,6 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectRelatedlistAll,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
-        ObjectRelatedlistSequencedTable,
         ObjectRelatedListSequencedItem,
         ObjectFileActionMenu,
         ObjectActivitiyTimeline,
