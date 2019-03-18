@@ -10,7 +10,6 @@ import {
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {session} from "./session.service";
-import {AppDataService} from './appdata.service';
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {Router, Route, CanActivate} from "@angular/router";
@@ -42,7 +41,6 @@ export class metadata {
         private router: Router,
         private broadcast: broadcast,
         private compiler: Compiler,
-        private appdata: AppDataService,
         private Injector: Injector
     ) {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
