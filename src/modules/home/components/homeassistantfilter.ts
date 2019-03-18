@@ -1,7 +1,7 @@
-import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef, Input,
-    OnInit, Renderer2, ElementRef
-} from '@angular/core';
+/**
+ * @module ModuleHome
+ */
+import {Component, Renderer2, ElementRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {assistant} from '../../../services/assistant.service';

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';

@@ -1,8 +1,28 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
+/**
+ * @module ModuleProducts
+ */
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    Input,
+    NgModule,
+    ViewChild,
+    ViewContainerRef, OnInit
+} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {view} from '../../../services/view.service';
+
+
+/**
+* @ignore
+*/
+declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-vc',

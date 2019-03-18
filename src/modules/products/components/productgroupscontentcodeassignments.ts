@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {
     AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Output,
     EventEmitter, OnInit
@@ -8,6 +11,9 @@ import {backend} from '../../../services/backend.service';
 import {toast} from '../../../services/toast.service';
 import {navigation} from '../../../services/navigation.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

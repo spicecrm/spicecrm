@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {
     Component,
     forwardRef,

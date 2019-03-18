@@ -1,3 +1,6 @@
+/**
+ * @module ModuleTeleSales
+ */
 import {Injectable} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';

@@ -1,9 +1,10 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     AfterViewInit,
-    ComponentFactoryResolver,
     Component,
     Input,
-    NgModule,
     ViewChild,
     ViewContainerRef, OnDestroy, OnInit, EventEmitter, Output
 } from '@angular/core';

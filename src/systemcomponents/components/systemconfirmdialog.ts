@@ -1,9 +1,9 @@
+/**
+ * @module SystemComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef,
-    OnInit, EventEmitter
+    Component
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 import {Subject, Observable} from 'rxjs';

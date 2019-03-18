@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component} from "@angular/core";
 import {favorite} from "../../../services/favorite.service";
 import {language} from "../../../services/language.service";

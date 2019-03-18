@@ -1,5 +1,7 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, ElementRef, Input, Renderer} from "@angular/core";
-import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {popup} from "../../services/popup.service";

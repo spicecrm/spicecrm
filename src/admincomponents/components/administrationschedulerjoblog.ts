@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -8,7 +11,13 @@ import {broadcast} from "../../services/broadcast.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {Subscription} from "rxjs";
 
+/**
+* @ignore
+*/
 declare var _;
+/**
+* @ignore
+*/
 declare var moment;
 
 @Component({

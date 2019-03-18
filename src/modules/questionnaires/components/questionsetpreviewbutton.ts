@@ -1,4 +1,7 @@
-import { Component, Input } from '@angular/core';
+/**
+ * @module ModuleQuestionnaires
+ */
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { metadata } from '../../../services/metadata.service';
 import { model } from '../../../services/model.service';

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {model} from "../../../services/model.service";

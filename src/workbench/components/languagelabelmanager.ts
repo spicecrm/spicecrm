@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component, Pipe, PipeTransform,
 } from '@angular/core';

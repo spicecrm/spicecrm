@@ -1,6 +1,27 @@
 import {Component, Input} from '@angular/core';
+/**
+ * @module ModuleProducts
+ */
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    Input,
+    NgModule,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {productfinder} from '../services/productfinder.service';
+
+
+/**
+* @ignore
+*/
+declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-vc-search',

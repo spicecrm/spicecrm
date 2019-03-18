@@ -1,7 +1,17 @@
+/**
+ * @module ModuleProducts
+ */
+import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Output, EventEmitter} from '@angular/core';
 import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {productfinder} from '../services/productfinder.service';
+
+
+/**
+* @ignore
+*/
+declare var moment: any;
 
 @Component({
     selector: 'product-browser',

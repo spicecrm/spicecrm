@@ -1,7 +1,17 @@
+/**
+ * @module ModuleProducts
+ */
 import {Injectable} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
 import {modelutilities} from '../../../services/modelutilities.service';
+
+import {Subject, Observable} from 'rxjs';
+
+/**
+* @ignore
+*/
+declare var moment: any;
 
 @Injectable()
 

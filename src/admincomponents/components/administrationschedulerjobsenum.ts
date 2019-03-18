@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {Component} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';

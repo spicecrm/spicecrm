@@ -1,7 +1,30 @@
 import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+/**
+ * @module ModuleProducts
+ */
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    NgModule,
+    ViewChild,
+    ViewContainerRef,
+    Output,
+    EventEmitter
+} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
+
+import {Subject, Observable} from 'rxjs';
+
+/**
+* @ignore
+*/
+declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-tree',

@@ -1,27 +1,41 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, Input, OnInit} from '@angular/core';
 
+/**
+ * a loading spinner that can be rendered while a component is loading
+ */
 @Component({
     selector: 'system-spinner',
     templateUrl: './src/systemcomponents/templates/systemspinner.html'
 })
 export class SystemSpinner implements OnInit {
 
+    /**
+     * the size of the spinner in pixel
+     */
     @Input() private size: number = 0;
+
+    /**
+     * an optional paramater for the border with in pixel
+     */
     @Input() private border: number = 0;
+
+    /**
+     * set to true to inverse the spinner color schema
+     */
     @Input() private inverse: string = 'false';
 
+    /**
+     * @ignore
+     */
     private spinnerStyle: any = {};
 
     public ngOnInit() {
-        let
+        let            styleObj = {};
 
-            styleObj = {};
-
-        if (this
-
-                .size
-            !=
-            0
+        if (this.size != 0
         ) {
             this.spinnerStyle.width = this.size + 'px';
             this.spinnerStyle.height = this.size + 'px';

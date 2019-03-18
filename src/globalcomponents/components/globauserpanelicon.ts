@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {Component} from "@angular/core";
 import {session} from "../../services/session.service";
 import {backend} from "../../services/backend.service";

@@ -1,8 +1,10 @@
-<!-- the id (bucketitem.aggdata) used below isn't unique... don't use that! -->
-<!--span class="slds-checkbox slds-m-vertical--x-small slds-m-horizontal--x-small">
-    <input type="checkbox" [id]="bucketitem.aggdata" [(ngModel)]="checked"/>
-    <label class="slds-checkbox__label" [attr.for]="bucketitem.aggdata">
-        <span class="slds-checkbox--faux"></span>{{bucketitem.displayName}} ({{bucketitem.doc_count}})
-    </label>
-</span-->
-<system-checkbox [(ngModel)]="checked">{{bucketitem.displayName}} ({{bucketitem.doc_count}})</system-checkbox>
+<div class="slds-grid slds-grid--vertical-align-center">
+    <system-checkbox [(ngModel)]="checked"></system-checkbox>
+    <!-- switch between the different display types-->
+    <ng-container  [ngSwitch]="aggregate.type">
+        <object-listview-aggregate-item-range *ngSwitchCase="'range'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-range>
+        <object-listview-aggregate-item-term *ngSwitchCase="'term'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-term>
+        <div *ngSwitchDefault>{{bucketitem.displayName}}</div>
+    </ng-container>
+    <div class="slds-p-left--xx-small">({{bucketitem.doc_count}})</div>
+</div>

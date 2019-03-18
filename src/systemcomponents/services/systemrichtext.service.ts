@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 // from https://github.com/kolkov/angular-editor
 import {
     AfterContentInit,

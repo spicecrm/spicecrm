@@ -1,46 +1,17 @@
+/**
+ * @module ModuleDashboard
+ */
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
-import {Subject, Observable, of, Subscription, pipe} from "rxjs";
-import {take} from "rxjs/operators";
-import {
-    Component,
-    Input,
-    NgModule,
-    AfterViewInit,
-    AfterViewChecked,
-    OnInit,
-    OnDestroy,
-    OnChanges,
-    Renderer,
-    ElementRef,
-    ViewChild,
-    ViewContainerRef,
-    Injectable,
-    EventEmitter,
-    Renderer2,
-    Output,
-    SimpleChanges
-} from "@angular/core";
-import {RouterModule, Router, Routes} from "@angular/router";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {NgModule} from "@angular/core";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
-import {loginCheck} from "../../services/login.service";
-import {language} from "../../services/language.service";
-import {model} from "../../services/model.service";
-import {modal} from "../../services/modal.service";
-import {modellist} from "../../services/modellist.service";
-import {modelutilities} from "../../services/modelutilities.service";
-import {view} from "../../services/view.service";
-import {fts} from "../../services/fts.service";
-import {recent} from "../../services/recent.service";
-import {backend} from "../../services/backend.service";
 import {metadata} from "../../services/metadata.service";
-import {reminder} from "../../services/reminder.service";
-import {navigation} from "../../services/navigation.service";
-import {userpreferences} from "../../services/userpreferences.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 
 import {ObjectFields} from "../../objectfields/objectfields";

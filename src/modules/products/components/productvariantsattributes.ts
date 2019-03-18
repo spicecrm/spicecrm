@@ -1,8 +1,29 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+/**
+ * @module ModuleProducts
+ */
+import {
+    AfterViewInit,
+    ComponentFactoryResolver,
+    Component,
+    ElementRef,
+    Input,
+    NgModule,
+    ViewChild,
+    ViewContainerRef, OnChanges, OnInit, EventEmitter, OnDestroy
+} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
+import {backend} from '../../../services/backend.service';
+
+/**
+* @ignore
+*/
+declare var moment: any;
 
 @Component({
     selector: 'product-variants-attributes',

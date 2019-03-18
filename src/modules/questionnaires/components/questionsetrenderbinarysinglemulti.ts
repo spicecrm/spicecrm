@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { language } from '../../../services/language.service';
 import { backend } from "../../../services/backend.service";
