@@ -1,3 +1,4 @@
+import {Component, ElementRef, Input} from '@angular/core';
 /**
  * @module ModuleProducts
  */
@@ -29,49 +30,44 @@ declare var moment: any;
 })
 export class ProductBrowserAttributeNSearch {
 
-    @Input() attribute : any = {};
+    @Input() private attribute: any = {};
+    private timeout: any;
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
 
     }
 
-    get fromValue(){
-        try{
+    get fromValue() {
+        try {
             return this.productfinder.searchfilters[this.attribute.id].valuefrom;
-        } catch(e){
+        } catch (e) {
             return '';
         }
     }
 
-    set fromValue(value){
-        if(!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
+    set fromValue(value) {
+        if (!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
         this.productfinder.searchfilters[this.attribute.id].valuefrom = value;
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
-    get toValue(){
-        try{
+    get toValue() {
+        try {
             return this.productfinder.searchfilters[this.attribute.id].valueto;
-        } catch(e){
+        } catch (e) {
             return '';
         }
     }
 
-    set toValue(value){
-        if(!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
+    set toValue(value) {
+        if (!this.productfinder.searchfilters[this.attribute.id]) this.productfinder.searchfilters[this.attribute.id] = {};
         this.productfinder.searchfilters[this.attribute.id].valueto = value;
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
-    keyUp(_e) {
-
-        // handle the key pressed
-        switch (_e.key) {
-            case 'Enter':
-                this.productfinder.getProductVariants();
-                break;
-        }
-    }
-
-    get uom(){
+    get uom() {
         return this.attribute.uom;
     }
 }

@@ -1,3 +1,4 @@
+import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 /**
  * @module ModuleProducts
  */
@@ -27,62 +28,48 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-variants',
-    templateUrl: './src/modules/products/templates/productbrowservariants.html',
-    host:{
-        'style' : '{height: 100%}'
-    }
+    templateUrl: './src/modules/products/templates/productbrowservariants.html'
 })
 export class ProductBrowserVariants {
 
-    @ViewChild('variantsheader', {read: ViewContainerRef}) variantsheader: ViewContainerRef;
-    @ViewChild('variantscontent', {read: ViewContainerRef}) variantscontent: ViewContainerRef;
-
-    @Output() selectionchanged: EventEmitter<any> = new EventEmitter<any>();
-
-    fieldset: string = '';
+    private timeout: any;
+    private fieldset: string = '';
+    @ViewChild('variantscontent', {read: ViewContainerRef}) private variantsContent: ViewContainerRef;
+    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
         this.fieldset = this.metadata.getComponentConfig('ProductBrowserVariants').fieldset;
     }
 
-    get variantsstyle(){
-        let rect = this.variantsheader.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        }
+    get productVariants() {
+        return this.productfinder.productVariants;
     }
 
-    get productvariants(){
-        return this.productfinder.productvariants;
-    }
-
-    get loading(){
+    get loading() {
         return this.productfinder.loading;
     }
 
-    search(){
-        this.productfinder.getProductVariants();
+    set searchTerm(value) {
+        this.productfinder.searchterm = value;
     }
 
-    keyUp(_e) {
+    get searchTerm() {
+        return this.productfinder.searchterm;
+    }
 
-        // handle the key pressed
-        switch (_e.key) {
-
-            case 'Enter':
-                this.productfinder.getProductVariants();
-                break;
-        }
+    keyUp() {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
     onScroll(e) {
-        let element = this.variantscontent.element.nativeElement;
+        let element = this.variantsContent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.productfinder.getMoreProductVariants();
         }
     }
 
-    handleSelection(data){
+    handleSelection(data) {
         this.selectionchanged.emit(data);
     }
 }

@@ -1,3 +1,4 @@
+import {Component, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 /**
  * @module ModuleProducts
  */
@@ -29,38 +30,37 @@ declare var moment: any;
 export class ProductBrowserAttributes {
 
     @ViewChild('attributesheader', {read: ViewContainerRef}) attributesheader: ViewContainerRef;
-    attributefilter: string = '';
+    private attributeFilter: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
-
     }
 
-    get hasSearchFilters(){
-        return this.productfinder.hasSearchFilters();
+    get hasSearchFilters() {
+        return this.productfinder.hasSearchFilters;
     }
 
-    clearFilters(){
-        this.productfinder.resetSearchFilters();
-    }
-
-    get attributesstyle(){
+    get attributesStyle() {
         let rect = this.attributesheader.element.nativeElement.getBoundingClientRect();
         return {
             height: 'calc(100% - ' + rect.height + 'px)'
-        }
+        };
     }
 
-    get loading(){
-        return this.productfinder.loadingattributes;
+    get loading() {
+        return this.productfinder.loadingAttributes;
     }
 
-    get attributes(){
+    get attributes() {
         let attributes = [];
-        for(let attribute of this.productfinder.groupattributes){
-            if(attribute.name.toLowerCase().indexOf(this.attributefilter.toLowerCase()) >= 0){
+        for (let attribute of this.productfinder.groupAttributes) {
+            if (attribute.name.toLowerCase().indexOf(this.attributeFilter.toLowerCase()) >= 0) {
                 attributes.push(attribute);
             }
         }
         return attributes;
+    }
+
+    private clearFilters() {
+        this.productfinder.resetSearchFilters();
     }
 }

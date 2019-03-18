@@ -1,3 +1,4 @@
+import {Component, ElementRef} from '@angular/core';
 /**
  * @module ModuleProducts
  */
@@ -16,7 +17,6 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {view} from '../../../services/view.service';
-import {productfinder} from '../services/productfinder.service';
 import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 
 /**
@@ -34,12 +34,22 @@ export class ProductVariantsAttributeN extends ProductVariantsAttributeVC {
         super(language, backend, elementRef, view, model);
     }
 
-    get displayvalue(){
-        return parseFloat(this.value);
+    get precision() {
+      return this.attribute.prat_precision;
     }
 
-    get uom(){
+    get valueTo() {
+          let vali = this.attribute.validations;
+          vali = vali && vali.length > 0 ? vali[0] : {};
+        return parseInt(vali['value_to'], 10);
+    }
+
+    get valueFrom() {
+        let vali = this.attribute.validations;
+        vali = vali && vali.length > 0 ? vali[0] : {};
+        return parseInt(vali['value_from'], 10);
+    }
+    get uom() {
         return this.attribute.uom;
     }
-
 }

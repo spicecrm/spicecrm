@@ -1,0 +1,29 @@
+<div class="slds-m-top--small slds-size--1-of-1 slds-table--header-fixed_container" style="height: 100%">
+    <div class="slds-theme_default slds-p-bottom--x-small" style="height: 100%">
+        <div class="slds-size--1-of-1 slds-scrollable--y spicecrm-scrollbar" [ngStyle]="tableContainerStyle">
+            <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table_header-fixed" role="grid">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col" *ngFor="let item of listFields; trackBy: trackByFn">
+                        <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center  slds-p-horizontal--x-small">
+                            {{language.getFieldDisplayName('ProductAttributeValueValidations', item.field, item.fieldconfig, 'short')}}
+                        </div>
+                    </th>
+                    <th class="slds-cell-shrink"></th>
+                </tr>
+                </thead>
+                <tbody *ngIf="!relatedmodels.isloading">
+                    <tr *ngFor="let item of relatedmodels.items; trackBy: trackByFn" product-group-manager-details-attributes-validation-item [listFields]="listFields" [item]="item" class="slds-hint-parent"></tr>
+                </tbody>
+                <tbody system-table-stencils *ngIf="relatedmodels.isloading" [columns]="listFields?.length" [tools]="true" [rows]="3"></tbody>
+            </table>
+        </div>
+        <div #buttoncontainer>
+            <div *ngIf="canEdit" class="slds-box--border">
+                <button class="slds-button slds-button--icon slds-align--absolute-center slds-p-around--xx-small" title="add item" (click)="addItem()">
+                    <system-utility-icon icon="new" size="x-small"></system-utility-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
