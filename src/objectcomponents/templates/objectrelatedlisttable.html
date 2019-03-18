@@ -1,6 +1,7 @@
-<table class="slds-table slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall}">
+<table class="slds-table slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
     <thead>
         <tr class="slds-text-title--caps">
+            <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
             <th *ngFor="let item of listfields" class="slds-is-sortable" scope="col">
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="setSortField(item)">
                     <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
@@ -10,8 +11,15 @@
             <th class="slds-cell-shrink" scope="col"></th>
         </tr>
     </thead>
-    <tbody>
-        <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
-    </tbody>
-    <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [tools]="true"></tbody>
+    <ng-container *ngIf="!isSequenced">
+        <tbody>
+            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+        </tbody>
+    </ng-container>
+    <ng-container *ngIf="isSequenced">
+        <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
+            <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+        </tbody>
+    </ng-container>
+    <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="true"></tbody>
 </table>

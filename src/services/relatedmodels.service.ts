@@ -24,7 +24,7 @@ export class relatedmodels {
     public items$ = new EventEmitter();
     public count: number = 0;
     public loaditems: number = 5;
-    private relationshipFields: Array<string> = [];
+    private relationshipFields: string[] = [];
     public isloading: boolean = true;
     public sort: any = {
         sortfield: "",
@@ -32,7 +32,7 @@ export class relatedmodels {
     };
     private lastLoad: any = new moment();
 
-    private serviceSubscriptions: Array<any> = [];
+    private serviceSubscriptions: any[] = [];
 
     constructor(
         private metadata: metadata,
@@ -196,7 +196,7 @@ export class relatedmodels {
     }
 
     public addItems(items) {
-        let relatedIds: Array<any> = [];
+        let relatedIds: any[] = [];
         for (let item of items) {
             relatedIds.push(item.id);
         }
