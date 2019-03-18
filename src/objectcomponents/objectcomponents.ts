@@ -153,6 +153,7 @@ import /*embed*/ {ObjectActivitiyTimelineSummaryAggregates} from './components/o
 
 import /*embed*/ {ObjectRecordDetails} from './components/objectrecorddetails';
 import /*embed*/ {ObjectRecordDetailsTab} from './components/objectrecorddetailstab';
+import /*embed*/ {ObjectRecordDetailsFooter} from './components/objectrecorddetailsfooter';
 import /*embed*/ {ObjectRecordAdministrationTab} from './components/objectrecordadministrationtab';
 import /*embed*/ {ObjectRecordDetailsTabRow} from './components/objectrecorddetailstabrow';
 import /*embed*/ {ObjectRecordDetailsTabRowField} from './components/objectrecorddetailstabrowfield';
@@ -342,6 +343,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActivitiyTimelineSummaryAggregates,
         ObjectRecordDetails,
         ObjectRecordDetailsTab,
+        ObjectRecordDetailsFooter,
         ObjectRecordAdministrationTab,
         ObjectRecordDetailsTabRow,
         ObjectRecordDetailsTabRowField,
@@ -459,7 +461,9 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectTable,
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineStencil,
-        ObjectRelatedCard
+        ObjectRelatedCard,
+        ObjectRecordDetails,
+        ObjectRecordDetailsFooter
     ]
 })
 export class ObjectComponents {
