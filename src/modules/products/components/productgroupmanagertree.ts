@@ -14,8 +14,8 @@ export class ProductGroupManagerTree implements OnDestroy {
 
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
-    private productGroups: Array<any> = [];
-    private productGroupTree: Array<any> = [];
+    private productGroups: any[] = [];
+    private productGroupTree: any[] = [];
     private selectedId: string = '';
     private subscription: Subscription = new Subscription();
 

@@ -1,20 +1,7 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
@@ -22,8 +9,8 @@ import {metadata} from '../../../services/metadata.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -49,27 +36,27 @@ export class ProductBrowserVariants {
         return this.productfinder.loading;
     }
 
-    set searchTerm(value) {
-        this.productfinder.searchterm = value;
-    }
-
     get searchTerm() {
         return this.productfinder.searchterm;
     }
 
-    keyUp() {
+    set searchTerm(value) {
+        this.productfinder.searchterm = value;
+    }
+
+    private keyUp() {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
     }
 
-    onScroll(e) {
+    private onScroll(e) {
         let element = this.variantsContent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.productfinder.getMoreProductVariants();
         }
     }
 
-    handleSelection(data) {
+    private handleSelection(data) {
         this.selectionchanged.emit(data);
     }
 }

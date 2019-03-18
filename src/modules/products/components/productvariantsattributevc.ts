@@ -1,18 +1,7 @@
-import {Component, ElementRef, Input, OnInit} from '@angular/core';
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef, OnInit
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
@@ -20,8 +9,8 @@ import {view} from '../../../services/view.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -60,6 +49,18 @@ export class ProductVariantsAttributeVC implements OnInit {
         this.setAttributeValueSet();
     }
 
+    public createAttributeValueSet() {
+        let guid = this.model.generateGuid();
+        this.model.data.productattributevalues.beans[guid] = {
+            id: guid,
+            productattribute_id: this.attribute.id,
+            pratvalue: '',
+            parent_id: this.model.id,
+            parent_type: this.model.module
+        };
+        this.attrbutevalueset = this.model.data.productattributevalues.beans[guid];
+    }
+
     private setAttributeValueSet() {
         let attrValues = this.model.data.productattributevalues;
         if (attrValues) {
@@ -77,17 +78,5 @@ export class ProductVariantsAttributeVC implements OnInit {
             };
             this.createAttributeValueSet();
         }
-    }
-
-    public createAttributeValueSet() {
-        let guid = this.model.generateGuid();
-        this.model.data.productattributevalues.beans[guid] = {
-            id: guid,
-            productattribute_id: this.attribute.id,
-            pratvalue: '',
-            parent_id: this.model.id,
-            parent_type: this.model.module
-        };
-        this.attrbutevalueset = this.model.data.productattributevalues.beans[guid];
     }
 }

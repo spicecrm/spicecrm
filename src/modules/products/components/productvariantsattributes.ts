@@ -1,28 +1,15 @@
-import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 /**
  * @module ModuleProducts
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef, OnChanges, OnInit, EventEmitter, OnDestroy
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, OnDestroy} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
-import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
-import {backend} from '../../../services/backend.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -55,11 +42,11 @@ export class ProductVariantsAttributes implements OnDestroy {
         let type;
         switch (this.model.module) {
             case 'ProductVariants':
-                parentField =  'product_id';
+                parentField = 'product_id';
                 type = 'products';
                 break;
             case 'Products':
-                parentField =  'productgroup_id';
+                parentField = 'productgroup_id';
                 type = 'productgroups';
                 break;
         }
