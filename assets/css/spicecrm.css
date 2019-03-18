@@ -689,22 +689,34 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 }
 
 /* for the progress indicator */
+.slds-path__nav .slds-is-active,
+.slds-path__nav .slds-is-active:after,
+.slds-path__nav .slds-is-active:before,
 .slds-tabs--path .slds-is-current,
 .slds-tabs--path .slds-is-current + .slds-is-incomplete:before {
     background-color: #CA1B1F;
 }
 
+.slds-path__nav .slds-is-active:hover,
+.slds-path__nav .slds-is-active:hover:after,
+.slds-path__nav .slds-is-active:hover:before,
 .slds-tabs--path .slds-is-current:hover,
 .slds-tabs--path .slds-is-current:hover + .slds-is-incomplete:before {
     background-color: #7C0003;
 }
 
+.slds-path__nav .slds-is-complete,
+.slds-path__nav .slds-is-complete:after,
+.slds-path__nav .slds-is-complete:before,
 .slds-tabs--path .slds-is-complete,
 .slds-tabs--path .slds-is-active + .slds-tabs--path__item.slds-is-current:before,
 .slds-tabs--path__item + .slds-is-complete:before, .slds-tabs--path__item + .slds-is-current:before {
     background-color: #2D2D2D;
 }
 
+.slds-path__nav .slds-is-complete:hover,
+.slds-path__nav .slds-is-complete:hover:after,
+.slds-path__nav .slds-is-complete:hover:before,
 .slds-tabs--path .slds-is-complete:hover,
 .slds-tabs--path .slds-is-active:hover + .slds-tabs--path__item.slds-is-current:before,
 .slds-tabs--path__item:hover + .slds-is-complete:before, .slds-tabs--path__item:hover + .slds-is-current:before {
