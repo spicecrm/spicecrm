@@ -19,7 +19,7 @@ export class ObjectRecordFieldset implements OnInit {
     @Input() private fieldset: string = '';
     @Input() private fieldpadding: string = 'xx-small';
     @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight';
-    @Input() private direction: string = 'horizontal';
+    @Input() private direction: 'horizontal'|'vertical' = 'horizontal';
 
     private fieldsetitems: any[] = [];
     private numberOfColumns: number = 0; // in grid
