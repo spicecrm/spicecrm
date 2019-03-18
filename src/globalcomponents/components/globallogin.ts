@@ -1,5 +1,5 @@
 /**
- * @module globalcomponents
+ * @module GlobalComponents
  */
 import {
     Component, ChangeDetectorRef, Renderer2
@@ -13,6 +13,9 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 /**

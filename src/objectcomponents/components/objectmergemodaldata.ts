@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+/**
+ * @module ObjectComponents
+ */
+import { Component} from '@angular/core';
 import { metadata } from '../../services/metadata.service';
-import { model } from '../../services/model.service';
 import { modellist } from '../../services/modellist.service';
 import { language } from '../../services/language.service';
 import { view } from '../../services/view.service';
-import { popup } from '../../services/popup.service';
 
 import { objectmerge } from '../services/objectmerge.service';
 

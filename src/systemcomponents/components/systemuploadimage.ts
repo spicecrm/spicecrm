@@ -1,27 +1,76 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output, Renderer2, OnDestroy} from "@angular/core";
 import {DomSanitizer} from '@angular/platform-browser';
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 
-
+/**
+ * @ignore
+ */
 declare var Croppie: any;
 
+/**
+ * a generic modal component that renders a cnavas with an uipload button,. The user can select an image and then resize and crop it
+ */
 @Component({
     selector: "system-upload-image",
     templateUrl: "./src/systemcomponents/templates/systemuploadimage.html"
 })
-export class SystemUploadImage implements OnDestroy{
+export class SystemUploadImage implements OnDestroy {
+    /**
+     * a reference to the image container
+     */
     @ViewChild("imgupload", {read: ViewContainerRef}) public imgupload: ViewContainerRef;
 
+    /**
+     * the height of a crop area in pixel
+     */
     @Input() public cropheight: number = 200;
+
+    /**
+     * the with of the crop area in pixel
+     */
     @Input() public cropwidth: number = 200;
+
+    /**
+     * the shape of the crop area
+     */
     @Input() public croptype: 'square' | 'circle' = 'circle';
+
+    /**
+     * set to true to allow the user to resize the crop area
+     */
     @Input() public cropresize: boolean = false;
+
+    /**
+     * an event emitter with the image data of the resulting crop image
+     */
     @Output() public imagedata: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * a reference to the modal itsel
+     */
     private self: any;
+
+    /**
+     * @ignore
+     *
+     * the base64 string of the image
+     */
     private imageBase64: any;
+
+    /**
+     * @ignore
+     *
+     * the croppie image when the croppie has been loaded andis initialized
+     */
     private croppie: any;
+
+    /**
+     * allow pasting an image. This is the listener that catches the past event on the window
+     */
     private pasteListener: any;
 
     constructor(private language: language, private metadata: metadata, private renderer: Renderer2, private sanitizer: DomSanitizer) {
@@ -38,22 +87,40 @@ export class SystemUploadImage implements OnDestroy{
         this.pasteListener();
     }
 
+    /**
+     * @ignore
+     *
+     * a getter for the style of the croppie component
+     */
     get croppiestyle() {
         return {
             height: (this.cropheight * 2) + 'px'
         };
     }
 
+    /**
+     * closes the modal
+     *
+     * @param emitfalse set to false to not emit an image if one is set
+     */
     private close(emitfalse = true) {
         if (emitfalse) this.imagedata.emit(false);
         this.self.destroy();
     }
 
+    /**
+     * trigger the upload image window and prompt the user to select an image
+     */
     private showUpload() {
         let event = new MouseEvent("click", {bubbles: true});
         this.imgupload.element.nativeElement.dispatchEvent(event);
     }
 
+    /**
+     * uploading the filw using the HTML5 FileReader
+     *
+     * @param event the event object when the file has been selected or has been pasted
+     */
     private uploadImage(event) {
         let reader = new FileReader();
         reader.onloadend = (e) => {
@@ -62,7 +129,12 @@ export class SystemUploadImage implements OnDestroy{
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    private doCrop(event) {
+    /**
+     * execute the crop on the image on the canvas. This is triggered when the image has been loaded
+     *
+     * @param event the event itself
+     */
+    private doCrop(event): void {
         if (!this.croppie) {
             this.metadata.loadLibs('croppie').subscribe(
                 (next) => {
@@ -88,7 +160,10 @@ export class SystemUploadImage implements OnDestroy{
         }
     }
 
-    private getcroppedImage() {
+    /**
+     * gets the cropped image as sized and positioned by the user in the modal. This emits the imagedata and closes the image
+     */
+    private getcroppedImage(): void {
         this.croppie.result({
             type: 'base64',
             size: 'viewport'

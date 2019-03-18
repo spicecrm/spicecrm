@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {Component, ViewContainerRef, ViewChild, AfterViewInit} from '@angular/core';
 import {toast} from '../../services/toast.service';
 import {session} from '../../services/session.service';

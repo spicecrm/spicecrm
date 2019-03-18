@@ -4,7 +4,7 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders,  HttpParams} from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
@@ -17,9 +17,10 @@ import {modelutilities} from './modelutilities.service';
 import {modal} from './modal.service';
 import {language} from './language.service';
 
+
 /**
- * @ignore
- */
+* @ignore
+*/
 declare var moment: any;
 
 /**
@@ -408,6 +409,7 @@ export class backend {
                     "error",
                     null,
                     false,
+                    'sessionexpired'
                 );
                 this.modalservice.closeAllModals();
                 this.session.endSession();
@@ -571,8 +573,14 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getDuplicates(module: string, id: string): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    /**
+     * checks the backend for potential duplicates for the record with the given module and id. This requires that the reccord exists on teh database and is properly indexed
+     *
+     * @param module the modul the reocrd shodul be checked for, e.g. 'Contacts'
+     * @param id the id of the record to be checked for
+     */
+    public getDuplicates(module: string, id: string): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         this.getRequest("module/" + module + "/" + id + "/duplicates")
             .subscribe((response: any) => {
@@ -582,8 +590,14 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public checkDuplicates(module: string, modeldata: any): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    /**
+     * checks with the backend if for the given module and mopdeldata instance any duplicates exist. This is used when new records are created or changed and during the process a record duplicate check shoudl be triggered, the data is yet not stored ont eh backend
+     *
+     * @param module the module of the record e.g. 'Accounts'
+     * @param modeldata a json object with the values of the model. this is the typical model.data instance
+     */
+    public checkDuplicates(module: string, modeldata: any): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         this.postRequest("module/" + module + "/duplicates", {}, modeldata)
             .subscribe((response: any) => {
@@ -710,7 +724,7 @@ export class backend {
             params.limit = limit;
         }
 
-        this.getRequest("spiceui/core/recent", params)
+        this.getRequest("modules/Trackers/recent", params)
             .subscribe((response) => {
                 responseSubject.next(response);
                 responseSubject.complete();

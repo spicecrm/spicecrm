@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component} from '@angular/core';
 
 @Component({

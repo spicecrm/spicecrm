@@ -1,8 +1,9 @@
+/**
+ * @module SystemComponents
+ */
 import {
     Component, Input
 } from '@angular/core';
-import {language} from '../../services/language.service';
-
 
 @Component({
     selector: 'package-loader-languages',

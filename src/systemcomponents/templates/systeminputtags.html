@@ -1,0 +1,16 @@
+<div class="slds-combobox_container">
+    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [ngClass]="{'slds-is-open': isOpen}">
+        <div class="slds-combobox__form-element" role="none">
+            <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH_TAG')" [(ngModel)]="querystring" (keyup)="search($event)"/>
+        </div>
+        <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                <li *ngFor="let matchedtag of matchedtags" role="presentation" class="slds-listbox__item" (click)="addTag(matchedtag)">
+                    <div class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
+                        {{matchedtag}}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

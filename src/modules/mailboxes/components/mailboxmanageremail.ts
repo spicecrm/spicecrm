@@ -1,18 +1,17 @@
+/**
+ * @module ModuleMailboxes
+ */
 import {
     Component,
     Input,
     ElementRef,
-    ViewChild,
-    ViewContainerRef,
     OnInit
 } from "@angular/core";
-import {Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {language} from "../../../services/language.service";
-import {navigation} from "../../../services/navigation.service";
 import {mailboxesEmails} from "../services/mailboxesemail.service";
 
 @Component({
@@ -45,7 +44,7 @@ export class MailboxManagerEmail implements OnInit {
         // get the module conf
         let fieldset = this.metadata.getComponentConfig("MailboxManagerEmail").fieldset;
         if (fieldset) {
-            this.componentFields = this.metadata.getFieldSetFields(fieldset);
+            this.componentFields = this.metadata.getFieldSetItems(fieldset);
         }
     }
 

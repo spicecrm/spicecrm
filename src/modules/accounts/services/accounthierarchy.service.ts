@@ -1,3 +1,6 @@
+/**
+ * @module ModuleAccounts
+ */
 import {Injectable} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 

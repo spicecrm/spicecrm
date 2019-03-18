@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component,} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';

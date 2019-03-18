@@ -1,8 +1,17 @@
+/**
+ * @module services
+ */
 import {Injectable} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {MathExpressionCompilerService} from "./mathexpressioncompiler";
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
 declare var _: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 

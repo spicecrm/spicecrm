@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, Input} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
@@ -5,6 +8,9 @@ import {language} from '../../services/language.service';
 
 import {objectimport} from '../services/objectimport.service';
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component({

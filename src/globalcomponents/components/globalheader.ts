@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {
     Component,
     ElementRef,
