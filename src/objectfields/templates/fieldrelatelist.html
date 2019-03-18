@@ -1,4 +1,4 @@
-<field-generic-display *ngIf="!isEditMode()" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <a href="javascript:void(0);" modelPopOver [module]="relateType" [id]="relatedFieldId">{{value}}</a>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element">
@@ -12,6 +12,5 @@
             </select>
         </div>
     </div>
-
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
