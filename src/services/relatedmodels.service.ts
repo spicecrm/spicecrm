@@ -15,22 +15,23 @@ declare var moment: any;
 
 @Injectable()
 export class relatedmodels {
-    public module: string = "";
-    public relatedModule: string = "";
-    public linkName: string = "";
-    public modulefilter: string = "";
-    public id: string = "";
+    public module = '';
+    public relatedModule = '';
+    public linkName = '';
+    public modulefilter = '';
+    public id = '';
     public items: any = [];
     public items$ = new EventEmitter();
-    public count: number = 0;
-    public loaditems: number = 5;
+    public count = 0;
+    public loaditems = 5;
     private relationshipFields: string[] = [];
-    public isloading: boolean = true;
+    public isloading = true;
     public sort: any = {
-        sortfield: "",
-        sortdirection: "ASC"
+        sortfield: '',
+        sortdirection: 'ASC'
     };
     private lastLoad: any = new moment();
+    public sequencefield: string = null;
 
     private serviceSubscriptions: any[] = [];
 
@@ -71,6 +72,11 @@ export class relatedmodels {
 
     get _linkName() {
         return this.linkName != "" ? this.linkName : this.relatedModule.toLowerCase();
+    }
+
+    get sortBySequencefield() {
+        if ( this.sequencefield && !this.modulefilter && !this.sort.sortfield ) return true;
+        else return false;
     }
 
     private handleMessage(message: any) {
@@ -175,19 +181,30 @@ export class relatedmodels {
     }
 
     private sortItems() {
-        if (this.sort.sortfield) {
+
+        let sortfield: string;
+        let sortdirection: string;
+        if ( this.sort.sortfield ) {
+            sortfield = this.sort.sortfield;
+            sortdirection = this.sort.sortdirection;
+        } else if ( this.sortBySequencefield ) {
+            sortfield = this.sequencefield;
+            sortdirection = 'ASC';
+        }
+
+        if ( sortfield ) {
             this.items.sort((a, b) => {
                 let sortval = 0;
                 // check if we can sort as integer
-                if (!isNaN(parseInt(a[this.sort.sortfield], 10)) && !isNaN(parseInt(b[this.sort.sortfield], 10))) {
-                    sortval = parseInt(a[this.sort.sortfield], 10) > parseInt(b[this.sort.sortfield], 10) ? 1 : -1;
+                if (!isNaN(parseInt(a[sortfield], 10)) && !isNaN(parseInt(b[sortfield], 10))) {
+                    sortval = parseInt(a[sortfield], 10) > parseInt(b[sortfield], 10) ? 1 : -1;
                 } else {
-                    sortval = a[this.sort.sortfield] > b[this.sort.sortfield] ? 1 : -1;
+                    sortval = a[sortfield] > b[sortfield] ? 1 : -1;
                 }
-
-                return this.sort.sortdirection == "ASC" ? sortval : (sortval * -1);
+                return sortdirection == 'ASC' ? sortval : (sortval * -1);
             });
         }
+
     }
 
     private resetData() {
