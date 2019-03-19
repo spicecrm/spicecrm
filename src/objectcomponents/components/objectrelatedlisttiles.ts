@@ -7,11 +7,11 @@ import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {Router} from '@angular/router';
-import {ObjectRelatedlistList} from "./objectrelatedlistlist";
+import {ObjectRelatedList} from "./objectrelatedlist";
 
 @Component({
     selector: 'object-relatedlist-tiles',
     templateUrl: './src/objectcomponents/templates/objectrelatedlisttiles.html',
     providers: [relatedmodels]
 })
-export class ObjectRelatedlistTiles extends ObjectRelatedlistList {}
+export class ObjectRelatedlistTiles extends ObjectRelatedList {}

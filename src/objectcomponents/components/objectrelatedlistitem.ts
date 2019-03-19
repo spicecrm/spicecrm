@@ -23,6 +23,11 @@ export class ObjectRelatedListItem implements OnInit {
     @Input() private editable: boolean = false;
     @Input() private editcomponentset: string = "";
 
+    /**
+     * set to true to hide the actionset menu item being display
+     */
+    @Input() private hideActions: boolean = false;
+
     private customEditActions: any[] = [];
     private customActions: any[] = [];
     private expanded: boolean = false;
