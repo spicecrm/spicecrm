@@ -9,8 +9,8 @@ import {metadata} from "./metadata.service";
 import {modelutilities} from "./modelutilities.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Injectable()
@@ -92,7 +92,6 @@ export class relatedmodels {
                 }
                 break;
             case "model.save":
-                this.getData();
                 let eventHandled = false;
                 for (let item of this.items) {
                     if (item.id === message.messagedata.id) {
@@ -102,16 +101,15 @@ export class relatedmodels {
                             }
                         }
                         eventHandled = true;
+                        this.sortItems();
                     }
                 }
 
-
-                if (!eventHandled) {
-                    this.getData();
+                if (!eventHandled || this.modulefilter) {
+                    this.getData(true);
                 } else {
                     this.sortItems();
                 }
-
 
                 break;
         }
@@ -121,16 +119,17 @@ export class relatedmodels {
         return this.lastLoad.format("HH:mm");
     }
 
-    public getData() {
+    public getData(silent: boolean = false) {
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
             return false;
         }
 
         // set that we are loading
-        this.resetData();
-        this.isloading = true;
-
+        if (!silent) {
+            this.resetData();
+            this.isloading = true;
+        }
         let params = {
             getcount: true,
             offset: 0,
