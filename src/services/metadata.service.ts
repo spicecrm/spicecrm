@@ -1060,12 +1060,14 @@ export class metadata {
     public getActiveRole(): any {
         let currentRole = {};
 
-        this.roles.some(role => {
-            if (this.role == role.id) {
-                currentRole = role;
-                return true;
-            }
-        });
+        if (this.roles) {
+            this.roles.some(role => {
+                if (this.role == role.id) {
+                    currentRole = role;
+                    return true;
+                }
+            });
+        }
 
         return currentRole;
     }
