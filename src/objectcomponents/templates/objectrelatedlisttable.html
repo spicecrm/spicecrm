@@ -8,12 +8,12 @@
                     <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
                 </a>
             </th>
-            <th class="slds-cell-shrink" scope="col"></th>
+            <th *ngIf="!hideActions"  class="slds-cell-shrink" scope="col"></th>
         </tr>
     </thead>
     <ng-container *ngIf="!isSequenced">
         <tbody>
-            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" [hideActions]="hideActions" class="slds-hint-parent"></tr>
         </tbody>
     </ng-container>
     <ng-container *ngIf="isSequenced">
@@ -21,5 +21,5 @@
             <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
         </tbody>
     </ng-container>
-    <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="true"></tbody>
+    <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="!hideActions"></tbody>
 </table>

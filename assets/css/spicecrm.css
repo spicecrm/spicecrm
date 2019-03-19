@@ -692,6 +692,8 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .slds-path__nav .slds-is-active,
 .slds-path__nav .slds-is-active:after,
 .slds-path__nav .slds-is-active:before,
+.slds-path__nav .slds-is-active:first-child:after,
+.slds-path__nav .slds-is-active:first-child:before,
 .slds-tabs--path .slds-is-current,
 .slds-tabs--path .slds-is-current + .slds-is-incomplete:before {
     background-color: #CA1B1F;

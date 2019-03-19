@@ -103,6 +103,7 @@ import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontaine
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
 import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
+import /*embed*/ {ObjectRelatedList} from './components/objectrelatedlist';
 import /*embed*/ {ObjectRelatedlistList} from './components/objectrelatedlistlist';
 import /*embed*/ {ObjectRelatedListItem} from './components/objectrelatedlistitem';
 import /*embed*/ {ObjectRelatedlistTiles} from './components/objectrelatedlisttiles';
@@ -305,6 +306,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectRelatedCard,
         ObjectRelatedCardHeader,
         ObjectRelatedCardFooter,
+        ObjectRelatedList,
         ObjectRelatedlistList,
         ObjectRelatedListItem,
         ObjectRelatedlistTiles,
@@ -394,48 +396,6 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectTextsAddButton,
         ObjectTextsAddModal
     ],
-    /*
-    entryComponents: [
-        ObjectIcon,
-        ObjectListViewHeader,
-        ObjectListView,
-        ObjectList,
-        ObjectPageHeader,
-        ObjectPageHeaderDetails,
-        ObjectPageHeaderDetailRow,
-        ObjectPageHeaderDetailRowField,
-        ObjectTabContainer,
-        ObjectTabContainerItem,
-        ObjectRelateContainer,
-        ObjectRelatedlistList,
-        ObjectRelatedlistTiles,
-        ObjectRelatedCardTile,
-        ObjectRelatedlistFiles,
-        ObjectRelatedDuplicates,
-        ObjectActivitiyTimeline,
-        ObjectActivitiyTimelineContainer,
-        ObjectActivitiyTimelineCall,
-        ObjectActivitiyTimelineEvent,
-        ObjectActivitiyTimelineEmail,
-        ObjectActivitiyTimelineTask,
-        ObjectActivitiyTimelineAddContainer,
-        ObjectRecordView,
-        ObjectRecordViewDetail1,
-        ObjectRecordViewDetail2and1,
-        ObjectRecordDetails,
-        ObjectRecordDetailsTab,
-        ObjectRecordDetailsTabRow,
-        ObjectRecordDetailsTabRowField,
-        ObjectActionEditButton,
-        ObjectActionDeleteButton,
-        ObjectActionNewButton,
-        ObjectActionNewrelatedButton,
-        ObjectActionImportButton,
-        ObjectActionSelectButton,
-        ObjectActionBeanToMailButton,
-        ObjectNotes
-    ],
-    */
     exports: [
         ObjectListViewHeader,
         ObjectList,
@@ -447,6 +407,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActionMenu,
         ObjectActionsetMenu,
         ObjectSelectButton,
+        ObjectRelatedList,
         ObjectRelatedListItem,
         ObjectPopoverHeader,
         ObjectPopoverBodyItem,
