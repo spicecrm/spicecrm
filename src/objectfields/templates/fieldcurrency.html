@@ -1,9 +1,9 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div class="slds-grid slds-grid--align-spread">
+    <div class="slds-grid slds-grid--align-end">
         <div>
             {{getCurrencySymbol()}}&nbsp;
         </div>
-        <div class="slds-col_bump-left">
+        <div>
             <span>{{getValAsText()}}</span>
         </div>
     </div>
