@@ -28,6 +28,10 @@ export class ProductGroupManagerTree implements OnDestroy {
         this.getProductGroups();
     }
 
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
     private trackByFn(index, item) {
         return item.id;
     }
@@ -82,7 +86,11 @@ export class ProductGroupManagerTree implements OnDestroy {
 
     private sortProductGroups() {
         this.productGroups.sort((a, b) => {
-            return a.sortseq > b.sortseq ? 1 : -1;
+            if (a.sortseq && a.sortseq.length > 0) {
+                return a.sortseq > b.sortseq ? 1 : -1;
+            } else {
+                return a.name > b.name ? 1 : -1;
+            }
         });
     }
 
@@ -135,9 +143,5 @@ export class ProductGroupManagerTree implements OnDestroy {
 
     private isSelected(id) {
         return this.selectedId == id;
-    }
-
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
     }
 }
