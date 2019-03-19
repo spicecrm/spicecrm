@@ -71,6 +71,12 @@ export class userpreferences {
         }
     }
 
+    public getPreferences(loadhandler: Subject<string>) {
+        this.loadPreferences().subscribe((ret) => {
+            loadhandler.next('getPreferences');
+        });
+    }
+
     public loadPreferences(category = 'global'): Observable<any> {
         let retSubject: Subject<any> = new Subject<any>();
 
