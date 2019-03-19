@@ -21,14 +21,14 @@ declare var _;
 })
 export class ObjectRelatedlistAll implements OnInit {
 
-    private module: string = '';
-    private id: string = '';
-    private link: string = '';
-    private related: string = '';
+    private module = '';
+    private id = '';
+    private link = '';
+    private related = '';
     private fieldset: string = undefined;
 
     private componentconfig: any = {};
-    private listfields: Array<any> = [];
+    private listfields: any[] = [];
 
     constructor(private activatedRoute: ActivatedRoute, private navigation: navigation, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
@@ -73,6 +73,11 @@ export class ObjectRelatedlistAll implements OnInit {
         this.relatedmodels.relatedModule = this.activatedRoute.params['value']['related'];
         this.relatedmodels.linkName = this.link;
         this.relatedmodels.loaditems = 50;
+        if ( this.componentconfig.sequencefield ) {
+            this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
+        } else if ( this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+            this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
+        }
         this.relatedmodels.getData();
     }
 
@@ -80,7 +85,7 @@ export class ObjectRelatedlistAll implements OnInit {
         this.model.goModule();
     }
 
-    private goModel(){
+    private goModel() {
         this.model.goDetail();
     }
 
