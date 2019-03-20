@@ -14,7 +14,7 @@ import {metadata} from "../../services/metadata.service";
 export class ObjectTexts implements OnInit {
 
     public searchTerm: string = '';
-    public languageFilter: string = '';
+    public languageFilter: string = 'all';
 
     constructor(private model: model,
                 private language: language,
@@ -31,8 +31,8 @@ export class ObjectTexts implements OnInit {
                 let textDesc = item.description.toLowerCase();
                 let term = this.searchTerm.toLowerCase();
                 let sameTerm = (this.searchTerm.length == 0 || textName.includes(term) || textDesc.includes(term));
-                let sameFilterLang = (this.languageFilter.length == 0 || this.languageFilter == item.text_language);
-                return sameTerm && sameFilterLang;
+                let sameFilterLang = (this.languageFilter == item.text_language);
+                return sameTerm && (this.languageFilter == 'all' || sameFilterLang);
             });
     }
 
