@@ -11,6 +11,8 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 })
 export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
 
+    private valuearray: any[] = [];
+
     constructor(public language: language, public backend: backend, public elementRef: ElementRef, public view: view, public model: model) {
         super(language, backend, elementRef, view, model);
     }
@@ -23,16 +25,15 @@ export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
             }) : [];
     }
 
-    get value() {
-        let val = this.attrbutevalueset.pratvalue;
-        if (val && typeof val != 'string') {
-            return val;
+    get valueArray() {
+        if (this.valuearray.length == 0 && this.value) {
+            return this.valuearray = this.value.length > 2 ? this.value.split(',') : [];
         }
-        return this.attrbutevalueset.pratvalue = val.length > 1 ? val.split(',') : [val];
+        return this.valuearray;
     }
 
-    set value(value) {
-        this.attrbutevalueset.pratvalue = value.length > 1 ? value.join(',') : value.toString();
+    private setValue(value) {
+        this.value = value.length > 1 ? value.join(',') : value.toString();
 
     }
 
