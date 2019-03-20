@@ -1,6 +1,10 @@
 /**
  * @module ObjectComponents
+ *
+ * @deprecated
+ * Use ObjectRelatedlistList instead.
  */
+
 import { Component, Input } from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {ObjectRelatedlistList} from './objectrelatedlistlist';
