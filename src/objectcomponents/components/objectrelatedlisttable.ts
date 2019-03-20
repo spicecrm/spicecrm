@@ -10,7 +10,7 @@ import {layout} from '../../services/layout.service';
 import {backend} from '../../services/backend.service';
 
 /**
- * a generic component that displays a list for a set of related models. Requiies to b embedded ina  component that provides a [[relatedmodels]] service
+ * A generic component that displays a list for a set of related models. Requires to be embedded in a component that provides a [[relatedmodels]] service.
  */
 @Component({
     selector: 'object-relatedlist-table',
@@ -22,7 +22,6 @@ export class ObjectRelatedlistTable implements OnInit {
      * an array with the fields to be displayed in the table
      */
     @Input() public listfields: any[] = [];
-
 
     /**
      * set to true if inline editing shoudlbe enabled for the table
@@ -46,13 +45,8 @@ export class ObjectRelatedlistTable implements OnInit {
      */
     @Input() private hideActions: boolean = false;
 
-    /**
-     * @ignore
-     *
-     * ToDo: check why theese are public
-     */
-    public nowDragging = false;
-    public isSequenced = false;
+    private nowDragging = false;
+    private isSequenced = false;
 
     constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend) {
     }
@@ -69,7 +63,7 @@ export class ObjectRelatedlistTable implements OnInit {
     }
 
     get isSmall() {
-        return this.layout.screenwidth == 'small';
+        return this.layout.screenwidth === 'small';
     }
 
     get module() {
@@ -77,27 +71,22 @@ export class ObjectRelatedlistTable implements OnInit {
     }
 
     private isSortable(field): boolean {
-        if (field.fieldconfig.sortable === true) {
-            return true;
-        } else {
-            return false;
-        }
+        if ( this.relatedmodels.sortBySequencefield ) return false;
+        return field.fieldconfig.sortable === true;
     }
 
     private setSortField(field): void {
+        if ( this.relatedmodels.sortBySequencefield ) return;
         if (this.isSortable(field)) {
             this.relatedmodels.sortfield = field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field;
         }
     }
 
     private getSortIcon(field): string {
-        if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
-            if (this.relatedmodels.sort.sortdirection === 'ASC') {
-                return 'arrowdown';
-            } else {
-                return 'arrowup';
-            }
+        if ( this.relatedmodels.sortfield == ( field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field )) {
+            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown':'arrowup';
         }
+        return '';
     }
 
     private getIdOfRow(index, item) {

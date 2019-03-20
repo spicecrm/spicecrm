@@ -20,7 +20,7 @@ export class relatedmodels {
     public linkName = '';
     public modulefilter = '';
     public id = '';
-    public items: any = [];
+    public items: any[] = [];
     public items$ = new EventEmitter();
     public count = 0;
     public loaditems = 5;
@@ -87,15 +87,15 @@ export class relatedmodels {
 
         switch (message.messagetype) {
             case "model.delete":
-                for (let itemIndex in this.items) {
-                    if (this.items[itemIndex].id === message.messagedata.id) {
-                        this.items.splice(itemIndex, 1);
+                this.items.some( ( item, i ) => {
+                    if( item.id === message.messagedata.id ) {
+                        this.items.splice( i, 1 );
                         this.count--;
-
                         // emit that a change has happened
-                        this.items$.emit(this.items);
+                        this.items$.emit( this.items );
+                        return true;
                     }
-                }
+                });
                 break;
             case "model.save":
                 let eventHandled = false;
