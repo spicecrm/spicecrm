@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'object-record-tabbed-details',
     templateUrl: './src/objectcomponents/templates/objectrecordtabbeddetails.html',
-    providers: [view],
+    // providers: [view],
     styles: [
         '.slds-badge { font-weight: bold; background-color: #c00; color: #fff; padding: .125rem .4rem; }'
     ]
