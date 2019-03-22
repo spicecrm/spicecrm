@@ -138,7 +138,7 @@ export class modal {
 
     public await(messagelabel: string = null): EventEmitter<boolean> {
         let stopper = new EventEmitter<boolean>();
-        this.openModal("SystemLoadingModal").subscribe(component => {
+        this.openModal('SystemLoadingModal', false ).subscribe(component => {
             component.instance.messagelabel = messagelabel;
             stopper.subscribe(() => {
                 component.instance.self.destroy();

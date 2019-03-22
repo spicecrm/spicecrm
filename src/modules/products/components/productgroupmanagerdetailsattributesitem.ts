@@ -1,10 +1,9 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {Router} from "@angular/router";
 import {relatedmodels} from "../../../services/relatedmodels.service";
-import {Subject, Subscription} from "rxjs";
 import {productfinder} from "../services/productfinder.service";
 
 @Component({
@@ -13,10 +12,9 @@ import {productfinder} from "../services/productfinder.service";
     providers: [model, relatedmodels]
 })
 export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit {
-    @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
-
-    @Input() private attribute: any;
     public detailsItems: any[] = [];
+    @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
+    @Input() private attribute: any;
     private isOpen: boolean = false;
 
     constructor(private language: language,
@@ -33,7 +31,11 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
     }
 
     get showParent() {
-        return this.attribute.parent_id != this.productFinder.searchfocus.object.id;
+        return (this.attribute.parent_id != this.productFinder.searchfocus.object.id) && (this.attribute.parent_name && this.attribute.parent_name.length > 0);
+    }
+
+    get iconStyle() {
+        return !this.isOpen ? {transform: 'scale(1, -1)'} : {};
     }
 
     public ngOnInit() {
@@ -68,9 +70,5 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
     // will be called from parent
     private expand(bool) {
         this.isOpen = bool;
-    }
-
-    get iconStyle() {
-        return !this.isOpen ? {transform: 'scale(1, -1)'} : {};
     }
 }
