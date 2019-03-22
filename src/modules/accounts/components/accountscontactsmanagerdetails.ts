@@ -70,8 +70,8 @@ export class AccountsContactsManagerDetails implements AfterViewInit, OnChanges 
     }
 
     buildContainer() {
-        let componentconfig = this.metadata.getComponentConfig('AccountsContactsManagerDetails', 'Accounts');
-        let componentSet = componentconfig.componentset;
+        let componentconfig = this.metadata.getComponentConfig('AccountsContactsManager', 'Accounts');
+        let componentSet = componentconfig.detailscomponentset;
 
         if (componentSet) {
             let components = this.metadata.getComponentSetObjects(componentSet);
