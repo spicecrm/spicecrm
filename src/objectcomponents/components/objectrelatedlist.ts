@@ -20,7 +20,6 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
     private fieldset: string = "";
     private editcomponentset: string = "";
     private module: string = "";
-    private sequencefield = null;
 
     constructor(
         public language: language,
@@ -48,9 +47,13 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
 
         this.relatedmodels.relatedModule = this.componentconfig.object;
 
-        if (this.componentconfig.sequencefield) this.sequencefield = this.componentconfig.sequencefield;
-
         if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
+
+        if ( this.componentconfig.sequencefield ) {
+            this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
+        } else if ( this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+            this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
+        }
 
         if (this.componentconfig.items) this.relatedmodels.loaditems = this.componentconfig.items;
 
@@ -79,7 +82,7 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    get hideactions(){
+    get hideactions() {
         return this.componentconfig.hideactions;
     }
 
