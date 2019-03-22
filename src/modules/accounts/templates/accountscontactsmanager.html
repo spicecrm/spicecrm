@@ -1,8 +1,18 @@
-<div class="slds-grid slds-m-around--small" [ngStyle]="mainStyle">
+<!--div class="slds-grid slds-m-around--small" [ngStyle]="mainStyle">
     <div class="slds-size--1-of-3 slds-border--right slds-p-around--xxx-small">
         <accounts-contacts-manager-list (activeContactId$)="setActiveContactId($event)" [tableHeight]="childrenHeight"></accounts-contacts-manager-list>
     </div>
     <div class="slds-size--2-of-3" [ngStyle]="childrenHeight">
         <accounts-contacts-manager-details [activecontactid]="activeContactId"></accounts-contacts-manager-details>
     </div>
-</div>
+</div-->
+<object-related-card [componentconfig]="{object: 'Contacts'}">
+    <div class="slds-grid slds-border--top" style="height: 350px;">
+    <div class="slds-size--1-of-3 slds-border--right slds-p-around--xxx-small">
+        <accounts-contacts-manager-list (activeContactId$)="setActiveContactId($event)" [tableHeight]="childrenHeight"></accounts-contacts-manager-list>
+    </div>
+    <div class="slds-size--2-of-3" [ngStyle]="childrenHeight">
+        <accounts-contacts-manager-details [activecontactid]="activeContactId"></accounts-contacts-manager-details>
+    </div>
+    </div>
+</object-related-card>
