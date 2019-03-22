@@ -35,7 +35,7 @@ export class ObjectRelatedCard {
      * a simple getter to extract the module out of the component config
      */
     get module() {
-        return this.componentconfig.object
+        return this.componentconfig.object;
     }
 
     /**
