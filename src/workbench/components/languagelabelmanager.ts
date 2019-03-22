@@ -237,9 +237,9 @@ export class LanguageLabelManagerComponent {
         this.modalservice.confirm('Transfering custom labels from language files will change your database content and might destroy/overwrite existing language data in your database! Do you really want to do this?', 'Caution!', 'warning' ).subscribe( (answer) => {
             if ( answer ) {
                 let stopper = this.modalservice.await('Transfering language data from files to database …');
-                this.backend.postRequest( 'syslanguages/filesToDB', {}, {yes:true} ).subscribe( (data) => {
+                this.backend.postRequest( 'syslanguages/filesToDB', {}, {confirmed:true} ).subscribe( (data) => {
                         stopper.emit();
-                        this.modalservice.info('Language data successfully transfered ('+data.countLabels+' labels with '+data.countTranslations+'translations). Look into console for more details.','Done','success');
+                        this.modalservice.info('Language data successfully transfered ('+data.countLabels+' labels with '+data.countTranslations+' translations). Look into console for more details.','Done','success');
                         console.info(data);
                     },
                     (error) => {
