@@ -9,10 +9,10 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 @Component({
-    selector: 'module-filter-builder-expression-group',
-    templateUrl: './src/workbench/templates/modulefilterbuilderfilterexpressiongroup.html',
+    selector: 'system-filter-builder-expression-group',
+    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpressiongroup.html',
 })
-export class ModuleFilterBuilderFilterExpressionGroup implements OnChanges {
+export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
 
     @Input() private module: string;
     @Input() private filtergroup: any;
