@@ -2,12 +2,19 @@
     <thead>
         <tr class="slds-text-title--caps">
             <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
-            <th *ngFor="let item of listfields" class="slds-is-sortable" scope="col">
-                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="setSortField(item)">
+            <ng-container *ngIf="isSequenced">
+                <th *ngFor="let item of listfields" scope="col">
                     <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
-                    <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
-                </a>
-            </th>
+                </th>
+            </ng-container>
+            <ng-container *ngIf="!isSequenced">
+                <th *ngFor="let item of listfields" class="slds-is-sortable" scope="col">
+                    <a href="javascript:void(0);" class="slds-text-link--reset" (click)="setSortField(item)">
+                        <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
+                        <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
+                    </a>
+                </th>
+            </ng-container>
             <th *ngIf="!hideActions"  class="slds-cell-shrink" scope="col"></th>
         </tr>
     </thead>
