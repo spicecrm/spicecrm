@@ -2,6 +2,13 @@
  * @module ObjectComponents
  */
 import {Component, Input} from '@angular/core';
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {language} from '../../services/language.service';
 
@@ -12,7 +19,19 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-related-card-header',
-    templateUrl: './src/objectcomponents/templates/objectrelatedcardheader.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedcardheader.html',
+    animations: [
+        trigger('animateicon', [
+            state('open', style({ transform: 'scale(1, 1)'})),
+            state('closed', style({ transform: 'scale(1, -1)'})),
+            transition('open => closed', [
+                animate('.5s'),
+            ]),
+            transition('closed => open', [
+                animate('.5s'),
+            ])
+        ])
+    ],
 })
 export class ObjectRelatedCardHeader {
 
@@ -66,18 +85,5 @@ export class ObjectRelatedCardHeader {
      */
     private toggleOpen() {
         this.isopen = !this.isopen;
-    }
-
-    /**
-     * a getter function for the open icon to transform it and tilt it via ngStyle
-     */
-    get iconStyle() {
-        if (!this.isopen) {
-            return {
-                transform: 'scale(1, -1)'
-            };
-        } else {
-            return {};
-        }
     }
 }
