@@ -10,6 +10,7 @@ import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {layout} from "../../services/layout.service";
 import {view} from "../../services/view.service";
+import { modal } from '../../services/modal.service';
 
 @Component({
     selector: "[object-related-list-item]",
@@ -32,9 +33,7 @@ export class ObjectRelatedListItem implements OnInit {
     private customActions: any[] = [];
     private expanded: boolean = false;
 
-    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout) {
-
-    }
+    constructor( private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal ) { }
 
     public ngOnInit() {
         this.model.module = this.module;
@@ -84,11 +83,13 @@ export class ObjectRelatedListItem implements OnInit {
                             this.model.endEdit();
                             editModalRef.destroy();
                         }
-                    })
+                    });
                 });
                 break;
             case "remove":
-                this.relatedmodels.deleteItem(this.model.id);
+                this.modalservice.confirm( this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short')).subscribe( (answer) => {
+                    if ( answer ) this.relatedmodels.deleteItem(this.model.id);
+                });
                 break;
             case "saverelated":
                 if (this.model.validate()) {
