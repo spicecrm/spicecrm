@@ -5,7 +5,7 @@
             <span class="slds-truncate" title="Section Title">{{language.getLabel(title)}}</span>
         </button>
     </h3>
-    <div [@tabanimation]="expanded ? 'open' : 'closed'">
+    <div [@tabanimation]="expanded">
         <ng-content></ng-content>
     </div>
 </div>
