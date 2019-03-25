@@ -2,6 +2,7 @@
  * @module SystemComponents
  */
 import {Component, Input} from '@angular/core';
+import {animate, state, style, transition, trigger} from "@angular/animations";
 import {metadata} from '../../services/metadata.service';
 
 /**
@@ -26,7 +27,18 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'system-modal',
-    templateUrl: './src/systemcomponents/templates/systemmodal.html'
+    templateUrl: './src/systemcomponents/templates/systemmodal.html',
+    animations: [
+        trigger('modalanimation', [
+            transition(':enter', [
+                style({opacity: 0}),
+                animate('.3s', style({opacity: 1}))
+            ]),
+            transition(':leave', [
+                animate('.3s', style({opacity: 0}))
+            ])
+        ])
+    ]
 })
 export class SystemModal {
 

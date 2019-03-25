@@ -85,6 +85,8 @@ import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage"
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
+import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
+import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 
 @NgModule({
     imports: [
@@ -165,7 +167,9 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemInputTags,
         SystemImagePreviewModal,
         SystemObjectPreviewModal,
-        SystemInputModuleFilter
+        SystemInputModuleFilter,
+        SystemFilterBuilderFilterExpressionGroup,
+        SystemFilterBuilderFilterExpression
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -228,7 +232,9 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoRecords,
         SystemInputLabel,
         SystemInputTags,
-        SystemInputModuleFilter
+        SystemInputModuleFilter,
+        SystemFilterBuilderFilterExpressionGroup,
+        SystemFilterBuilderFilterExpression
     ]
 })
 export class SystemComponents {

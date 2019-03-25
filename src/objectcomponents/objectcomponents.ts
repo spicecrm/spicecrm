@@ -153,6 +153,7 @@ import /*embed*/ {ObjectActivitiyTimelineSummaryAggregates} from './components/o
 
 import /*embed*/ {ObjectRecordDetails} from './components/objectrecorddetails';
 import /*embed*/ {ObjectRecordDetailsTab} from './components/objectrecorddetailstab';
+import /*embed*/ {ObjectRecordDetailsModelstateTab} from './components/objectrecorddetailsmodelstatetab';
 import /*embed*/ {ObjectRecordDetailsFooter} from './components/objectrecorddetailsfooter';
 import /*embed*/ {ObjectRecordAdministrationTab} from './components/objectrecordadministrationtab';
 import /*embed*/ {ObjectRecordDetailsTabRow} from './components/objectrecorddetailstabrow';
@@ -343,6 +344,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActivitiyTimelineSummaryAggregates,
         ObjectRecordDetails,
         ObjectRecordDetailsTab,
+        ObjectRecordDetailsModelstateTab,
         ObjectRecordDetailsFooter,
         ObjectRecordAdministrationTab,
         ObjectRecordDetailsTabRow,

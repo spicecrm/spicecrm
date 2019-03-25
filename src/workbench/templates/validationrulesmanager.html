@@ -1,3 +1,4 @@
+<workbench-header titlelabel="LBL_VALIDATIONRULES_MANAGER"></workbench-header>
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-form-element">
         <label class="slds-form-element__label">Module</label>
@@ -5,7 +6,7 @@
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="current_module">
                     <option></option>
-                    <option *ngFor="let m of modules" [value]="m.module">{{m.module}}</option>
+                    <option *ngFor="let m of modules" [value]="m">{{m}}</option>
                 </select>
             </div>
         </div>
