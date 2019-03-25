@@ -13,15 +13,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {SpicePathTrack} from './components/spicepathtrack';
-import /*embed*/ {SpicePathModel} from './components/spicepathmodel';
-import /*embed*/ {SpicePathWithCoaching} from './components/spicepathwithcoaching';
-import /*embed*/ {SpicePathRelatedListTiles} from './components/spicepathrelatedlisttiles';
-import /*embed*/ {SpicePathRelatedListTile} from './components/spicepathrelatedlisttile';
+import /*embed*/ {SpiceMap} from './components/spicemap';
 
-import /*embed*/ {SpiceKanbanStagePipe} from "./components/spicekanbanstagepipe";
-import /*embed*/ {SpiceKanban} from "./components/spicekanban";
-import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
 
 @NgModule({
     imports: [
@@ -34,17 +27,10 @@ import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
         DirectivesModule,
     ],
     declarations: [
-        SpicePathTrack,
-        SpicePathModel,
-        SpicePathWithCoaching,
-        SpicePathRelatedListTiles,
-        SpicePathRelatedListTile,
-        SpiceKanbanStagePipe,
-        SpiceKanban,
-        SpiceKanbanTile
+        SpiceMap
     ]
 })
-export class ModuleSpicePath {
+export class ModuleSpiceMap {
     public readonly version = "1.0";
     public readonly build_date = "/*build_date*/";
 

@@ -8,7 +8,7 @@
                         <span class="slds-text-heading--small">{{language.getLabel('LBL_FILES')}} ({{modelattachments.files.length}})</span>
                     </a>
                 </h2>
-                <system-utility-icon *ngIf="modelattachments.files.length > 0" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
+                <system-utility-icon *ngIf="modelattachments.files.length > 0" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
         </header>
         <div class="slds-no-flex slds-button-group" role="group">
@@ -17,7 +17,7 @@
         </div>
         <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
     </div>
-    <div class="slds-card__body" *ngIf="isopen">
+    <div class="slds-card__body" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
             <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent"></div>
         </div>
