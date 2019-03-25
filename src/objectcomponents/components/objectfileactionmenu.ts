@@ -6,6 +6,7 @@ import {language} from "../../services/language.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {popup} from "../../services/popup.service";
 import {broadcast} from "../../services/broadcast.service";
+import { modal } from '../../services/modal.service';
 
 @Component({
     selector: "object-file-action-menu",
@@ -20,7 +21,7 @@ export class ObjectFileActionMenu {
     private isOpen: boolean = false;
     private clickListener: any;
 
-    constructor(private broadcast: broadcast, private modelattachments: modelattachments, private language: language, private elementRef: ElementRef, private popup: popup, private renderer: Renderer) {
+    constructor(private broadcast: broadcast, private modelattachments: modelattachments, private language: language, private elementRef: ElementRef, private popup: popup, private renderer: Renderer, private modalservice: modal) {
         popup.closePopup$.subscribe(close => {
             this.isOpen = false;
         });
@@ -56,7 +57,9 @@ export class ObjectFileActionMenu {
 
     private deleteFile() {
         this.isOpen = false;
-        this.modelattachments.deleteAttachment(this.fileid);
+        this.modalservice.confirm( this.language.getLabel('QST_DELETE_FILE'), this.language.getLabel('QST_DELETE_FILE', null, 'short')).subscribe( (answer) => {
+            if ( answer ) this.modelattachments.deleteAttachment(this.fileid);
+        });
     }
 
     private downloadFile() {
