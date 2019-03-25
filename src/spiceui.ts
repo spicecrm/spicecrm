@@ -3,6 +3,7 @@
  */
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {BrowserModule, Title} from "@angular/platform-browser";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
     NgModule,
     Component,
@@ -103,6 +104,7 @@ export class SpiceUI {
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
         SystemComponents,

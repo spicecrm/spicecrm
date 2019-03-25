@@ -2,37 +2,41 @@
  * @module SystemComponents
  */
 import {Component, Input} from '@angular/core';
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
 import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-collapsable-tab',
-    templateUrl: './src/systemcomponents/templates/systemcollapsabletab.html'
+    templateUrl: './src/systemcomponents/templates/systemcollapsabletab.html',
+    animations: [
+        trigger('tabanimation', [
+            state('open', style({ height: '*', opacity: 1})),
+            state('closed', style({ height: '0px', opacity: 0 })),
+            transition('open => closed', [
+                style({ overflow: 'hidden'}),
+                animate('.5s')
+            ]),
+            transition('closed => open', [
+                animate('.5s'),
+                style({ overflow: 'unset'})
+            ])
+        ])
+    ]
 })
 export class SystemCollabsableTab {
 
-    @Input() expanded: boolean = true;
-    @Input() title: string = '';
+    @Input() private expanded: boolean = true;
+    @Input() private title: string = '';
 
     constructor(private language: language){}
 
-    togglePanel(){
+    private togglePanel(){
         this.expanded = !this.expanded;
     }
-
-    getChevronStyle(){
-        if(!this.expanded)
-            return{
-                'transform': 'rotate(45deg)',
-                'margin-top' : '4px'
-            }
-    }
-
-    getTabStyle(){
-        if(!this.expanded)
-            return {
-                height: '0px',
-                transform: 'rotateX(90deg)'
-            }
-    }
-
 }

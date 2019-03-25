@@ -39,7 +39,7 @@ export class WorkflowManager {
     }
 
     get modules() {
-        return this.metadata.getModules();
+        return this.metadata.getModules().sort();
         // return this.appdata.modules;
     }
 

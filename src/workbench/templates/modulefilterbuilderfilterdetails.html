@@ -29,7 +29,7 @@
         <div tobottom class="slds-expression">
             <h2 class="slds-expression__title">{{language.getLabel('LBL_CONDITIONS')}}</h2>
             <ul>
-                <module-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="filter.module"></module-filter-builder-expression-group>
+                <system-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="filter.module"></system-filter-builder-expression-group>
             </ul>
             <div class="slds-expression__buttons">
                 <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
