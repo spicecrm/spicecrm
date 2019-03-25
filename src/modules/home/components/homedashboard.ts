@@ -18,7 +18,7 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
 
     @ViewChild('dashboardcontainer', {read: ViewContainerRef}) private dashboardcontainer: ViewContainerRef;
 
-    public componentSubscriptions: Array<any> = [];
+    public componentSubscriptions: any[] = [];
     public dashboardid: string = '';
     public dashboardcontainercomponent: any = undefined;
 
@@ -44,7 +44,7 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
     }
 
     private loadDashboardConfig() {
-        let homeDashboard = this.userpreferences.unchangedPreferences.global.home_dashboard || undefined;
+        let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
         this.dashboardid = homeDashboard || activeRole.default_dashboard || '';
 
