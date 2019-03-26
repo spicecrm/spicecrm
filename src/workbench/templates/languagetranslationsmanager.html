@@ -55,15 +55,15 @@
                     <div class="slds-size--1-of-2 slds-p-right--small">
                         <div class="slds-form-element">
                             <label>{{language.getLabel('LBL_TEXT_SHORT')}}:</label>
-                            <input type="text" class="slds-input" [value]="language.getLabel(label.name, '', 'short')" disabled>
+                            <input type="text" class="slds-input" [value]="getLabelSpecificLength(label.name, 'short')" disabled>
                         </div>
                         <div class="slds-form-element">
                             <label>{{language.getLabel('LBL_DEFAULT')}}:</label>
-                            <input type="text" class="slds-input" required="required" [value]="language.getLabel(label.name, '', 'default')" disabled>
+                            <input type="text" class="slds-input" required="required" [value]="language.getLabel(label.name)" disabled>
                         </div>
                         <div class="slds-form-element">
                             <label>{{language.getLabel('LBL_TEXT_LONG')}}:</label>
-                            <textarea class="slds-textarea" [value]="language.getLabel(label.name, '', 'long')" disabled></textarea>
+                            <textarea class="slds-textarea" [value]="getLabelSpecificLength(label.name, 'long')" disabled></textarea>
                         </div>
                     </div>
                     <div class="slds-size--1-of-2">
