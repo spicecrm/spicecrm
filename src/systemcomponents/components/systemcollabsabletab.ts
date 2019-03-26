@@ -16,15 +16,19 @@ import {language} from '../../services/language.service';
     templateUrl: './src/systemcomponents/templates/systemcollapsabletab.html',
     animations: [
         trigger('tabanimation', [
-            state('open', style({ height: '*', opacity: 1})),
-            state('closed', style({ height: '0px', opacity: 0 })),
-            transition('open => closed', [
-                style({ overflow: 'hidden'}),
+            // open
+            state('true', style({ height: '*', opacity: 1})),
+            // closed
+            state('false', style({ height: '0px', opacity: 0})),
+            // open => close
+            transition('true => false', [
+                style({overflow: 'hidden'}),
                 animate('.5s')
             ]),
-            transition('closed => open', [
+            // close => open
+            transition('false => true', [
                 animate('.5s'),
-                style({ overflow: 'unset'})
+                style({ overflow: 'inherit'})
             ])
         ])
     ]
