@@ -54,7 +54,9 @@ export class ObjectRelatedCardHeader {
      */
     get panelTitle() {
         if ( this.componentconfig.title ) return this.language.getLabel( this.componentconfig.title );
-        if ( this.metadata.fieldDefs[this.module][this.relatedmodels._linkName].vname ) return this.language.getLabel( this.metadata.fieldDefs[this.module][this.relatedmodels._linkName].vname );
+        if ( this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname ) {
+            return this.language.getLabel( this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname );
+        }
         return this.language.getModuleName( this.module );
     }
 
