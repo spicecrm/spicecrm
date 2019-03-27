@@ -251,7 +251,7 @@ export class backend {
      *
      * @return an Observable for the request. If the response is successful the observable will return an objecturl to the dowlnoaded file in the browser
      */
-    private getLinkToDownload(
+    public getLinkToDownload(
         route: string,
         method: 'GET' | 'POST' = 'GET',
         params = null,
