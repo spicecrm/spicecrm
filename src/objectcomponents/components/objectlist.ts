@@ -16,10 +16,6 @@ export class ObjectList implements OnDestroy {
 
     @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
 
-    get isloading() {
-        return this.modellist.isLoading;
-    };
-
     private allFields: any[] = [];
     private listFields: any[] = [];
     private module: string = '';
@@ -34,12 +30,17 @@ export class ObjectList implements OnDestroy {
         return true;
     }
 
+    get isloading() {
+        return this.modellist.isLoading;
+    }
+
     constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
         // set the module
         this.module = this.modellist.module;
 
         // load the list intiially
         this.setFieldDefs();
+
         this.loadList();
 
         // subscribe to changes of the listtype
@@ -95,7 +96,7 @@ export class ObjectList implements OnDestroy {
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
-        this.modellist.getListData(requestedFields);
+        this.modellist.getListData(requestedFields, true);
     }
 
     private onScroll(e) {
