@@ -121,8 +121,6 @@ export class ObjectActionMenu {
 
     private getDropdownLocationClass() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        if (window.innerHeight - rect.bottom < 100) {
-            return 'slds-dropdown--bottom';
-        }
+        return {'slds-dropdown--bottom': window.innerHeight - rect.bottom < 100};
     }
 }
