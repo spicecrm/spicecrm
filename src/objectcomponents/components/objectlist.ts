@@ -41,7 +41,8 @@ export class ObjectList implements OnDestroy {
         // load the list intiially
         this.setFieldDefs();
 
-        this.loadList();
+        // load the list and initialize from sesson data if this is set
+        this.loadList(true);
 
         // subscribe to changes of the listtype
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
@@ -91,12 +92,12 @@ export class ObjectList implements OnDestroy {
         this.router.navigate(['/module/' + this.module + '/' + id]);
     }
 
-    private loadList() {
+    private loadList(loadfromcache: boolean = false) {
         let requestedFields = [];
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
-        this.modellist.getListData(requestedFields, true);
+        this.modellist.getListData(requestedFields, loadfromcache);
     }
 
     private onScroll(e) {

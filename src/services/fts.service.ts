@@ -155,6 +155,35 @@ export class fts {
         return retSubject.asObservable();
     }
 
+    public export(searchterm: string, module: string, fields: string[], aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
+        let retSubject = new Subject<any>();
+
+        if (searchterm.indexOf('%') != -1) {
+            searchterm = searchterm.replace(/%/g, '*');
+        }
+        searchterm = searchterm.trim();
+        // set the searchterm
+        this.searchTerm = searchterm;
+        this.searchAggregates = aggregates;
+        this.searchSort = sortparams;
+        this.modulefilter = modulefilter;
+
+        this.runningmodulesearch = this.backend.getDownloadPostRequestFile('search/export', {}, {
+            module,
+            searchterm,
+            fields,
+            owner,
+            aggregates,
+            sort: this.searchSort,
+            modulefilter
+        }).subscribe(response => {
+            retSubject.next(response);
+            retSubject.complete();
+        });
+
+        return retSubject.asObservable();
+    }
+
     public loadMore() {
         let retSubject = new Subject<any>();
         // if we are in a serch ... do nothing

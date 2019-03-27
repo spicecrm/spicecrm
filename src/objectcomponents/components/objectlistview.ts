@@ -8,6 +8,7 @@ import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
 import {model} from '../../services/model.service';
 import {navigation} from '../../services/navigation.service';
+import {userpreferences} from '../../services/userpreferences.service';
 
 /**
  * the default route set to display the list view
@@ -46,7 +47,7 @@ export class ObjectListView implements OnInit, AfterViewInit {
     private currentList: string = '';
     private currentListComponent: any = undefined;
 
-    constructor(private navigation: navigation, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model) {
+    constructor(private navigation: navigation, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model, private userpreferences: userpreferences) {
 
         // get the module from teh activated route
         this.moduleName = this.activatedRoute.params['value']['module'];
@@ -95,7 +96,13 @@ export class ObjectListView implements OnInit, AfterViewInit {
                     });
                 }
                 // set the first as default list
-                this.componentconfig.defaultlist = this.componentconfig.lists[0].component;
+                // this.userpreferences.setPreference('defaultlisttype', event.list, true, this.modellist.module);
+                let preflist = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
+                if (preflist) {
+                    this.componentconfig.defaultlist = preflist;
+                } else {
+                    this.componentconfig.defaultlist = this.componentconfig.lists[0].component;
+                }
             }
         }
     }
@@ -119,11 +126,30 @@ export class ObjectListView implements OnInit, AfterViewInit {
 
     /**
      * renders a compoentnset in the container
+     *
+     * @param forcelist set a dedicated list to be rendered
      */
-    private buildContainer() {
+    private buildContainer(forcelist: string = '') {
         for (let component of this.componentRefs) {
             component.destroy();
         }
+
+        if (forcelist) {
+            this.metadata.addComponent(forcelist, this.container).subscribe(componentRef => {
+                this.componentRefs.push(componentRef);
+            });
+            return;
+        }
+        // get the list from teh preferences if set
+        let preflist = this.userpreferences.getPreference('defaultlisttype', 'SpiceUI_' + this.modellist.module);
+        if (preflist) {
+            this.metadata.addComponent(preflist, this.container).subscribe(componentRef => {
+                this.componentRefs.push(componentRef);
+            });
+            return;
+        }
+
+        // final resort
         if (this.componentconfig.defaultlist) {
             this.metadata.addComponent(this.currentList, this.container).subscribe(componentRef => {
                 this.componentRefs.push(componentRef);
@@ -149,8 +175,12 @@ export class ObjectListView implements OnInit, AfterViewInit {
      */
     private handleHeaderEvent(event) {
         if (event.event && event.event == 'changelist') {
+            // set preferences
+            this.userpreferences.setPreference('defaultlisttype', event.list, false, 'SpiceUI_' + this.modellist.module);
+
+            // set the current list and rebuild the container
             this.currentList = event.list;
-            this.buildContainer();
+            this.buildContainer(event.list);
         }
     }
 }
