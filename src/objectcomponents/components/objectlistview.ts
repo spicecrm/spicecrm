@@ -3,28 +3,48 @@
  */
 
 import {AfterViewInit, Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
-import { ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
 import {model} from '../../services/model.service';
 import {navigation} from '../../services/navigation.service';
 
-
+/**
+ * the default route set to display the list view
+ */
 @Component({
     selector: 'object-listview',
     templateUrl: './src/objectcomponents/templates/objectlistview.html',
     providers: [modellist, model]
 })
 export class ObjectListView implements OnInit, AfterViewInit {
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
-    moduleName: any = '';
-    initialized: boolean = false;
+    /**
+     * an elament ref to the container to render the compoonentsets
+     */
+    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
 
-    componentRefs: any = [];
-    componentconfig: any = {lists:[]};
+    /**
+     * the name of the module
+     */
+    private moduleName: any = '';
 
-    currentList: string = '';
-    currentListComponent: any = undefined;
+    /**
+     * indicates if the view has been initialized
+     */
+    private initialized: boolean = false;
+
+    /**
+     * holds references to the rendered components. if rerendering they need to be destoryed when the route changes
+     */
+    private componentRefs: any = [];
+
+    /**
+     * the componentconfig as passed in or initialized
+     */
+    private componentconfig: any = {lists: []};
+
+    private currentList: string = '';
+    private currentListComponent: any = undefined;
 
     constructor(private navigation: navigation, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model) {
 
@@ -38,12 +58,17 @@ export class ObjectListView implements OnInit, AfterViewInit {
         // set the module and get the list
         this.modellist.setModule(this.moduleName);
 
-        if (this.initialized)
-            this.buildContainer();
+        // set so the views use the cahced results
+        this.modellist.usecache = true;
+
+        if (this.initialized) this.buildContainer();
     }
 
-    ngOnInit(){
-        if(this.lists.length == 0){
+    /**
+     * @ignore
+     */
+    public ngOnInit() {
+        if (this.lists.length == 0) {
             if (this.componentconfig && this.componentconfig.componentset) {
                 let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
                 this.componentconfig.lists = [];
@@ -75,21 +100,27 @@ export class ObjectListView implements OnInit, AfterViewInit {
         }
     }
 
-    get lists(){
-        try{
+    get lists() {
+        try {
             return this.componentconfig.lists ? this.componentconfig.lists : [];
-        } catch(e){
+        } catch (e) {
             return [];
         }
     }
 
-    ngAfterViewInit() {
+    /**
+     * @ignore
+     */
+    public ngAfterViewInit() {
         this.initialized = true;
         this.currentList = this.componentconfig.defaultlist;
         this.buildContainer();
     }
 
-    buildContainer() {
+    /**
+     * renders a compoentnset in the container
+     */
+    private buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -100,19 +131,24 @@ export class ObjectListView implements OnInit, AfterViewInit {
         }
     }
 
-    getContainerStyle(){
+    /**
+     * a getter for the style of the container to ensure that is rendered at full hieght with overflow hidden
+     *
+     * ToDo: check if not a specific toBottom compoennt would be better that is not scrollable
+     */
+    get containerStyle() {
         let rect = this.container.element.nativeElement.getBoundingClientRect();
         return {
-            height: 'calc(100vh - ' + rect.top +'px)',
+            'height': 'calc(100vh - ' + rect.top + 'px)',
             'overflow-y': 'hidden'
-        }
+        };
     }
 
     /*
      * tied to the oputput fromthe header to tolggle the event wnhn the list type changes
      */
-    handleHeaderEvent(event){
-        if(event.event && event.event == 'changelist') {
+    private handleHeaderEvent(event) {
+        if (event.event && event.event == 'changelist') {
             this.currentList = event.list;
             this.buildContainer();
         }
