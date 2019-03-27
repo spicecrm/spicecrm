@@ -9,10 +9,10 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 @Component({
-    selector: 'module-filter-builder-expression',
-    templateUrl: './src/workbench/templates/modulefilterbuilderfilterexpression.html',
+    selector: 'system-filter-builder-expression',
+    templateUrl: './src/systemcomponents/templates/systemfilterbuilderfilterexpression.html',
 })
-export class ModuleFilterBuilderFilterExpression implements OnInit {
+export class SystemFilterBuilderFilterExpression implements OnInit {
 
     @Input() private module: string;
     @Input() private filterexpression: any = {};
@@ -199,6 +199,8 @@ export class ModuleFilterBuilderFilterExpression implements OnInit {
         for (let field in fields) {
             this.fields.push(fields[field]);
         }
+
+        this.fields.sort();
 
         // set the initial operatortype
         this.determineOperatorType(this.field);

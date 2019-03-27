@@ -32,8 +32,8 @@ export class AccountsContactsManagerList {
     }
 
     ngOnInit(){
-        let componentConfig = this.metadata.getComponentConfig('AccountsContactsManagerList', 'Accounts');
-        this.listfields = this.metadata.getFieldSetFields(componentConfig.fieldset);
+        let componentConfig = this.metadata.getComponentConfig('AccountsContactsManager', 'Accounts');
+        this.listfields = this.metadata.getFieldSetFields(componentConfig.listfieldset);
     }
 
     setActiveContactId(id){

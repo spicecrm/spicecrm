@@ -2,6 +2,14 @@
  * @module ObjectComponents
  */
 import {Component, ViewChildren, QueryList, Input, ViewChild} from "@angular/core";
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
+
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
@@ -15,7 +23,20 @@ import {ObjectRelatedCardHeader} from "./objectrelatedcardheader";
  */
 @Component({
     selector: "object-related-card",
-    templateUrl: "./src/objectcomponents/templates/objectrelatedcard.html"
+    templateUrl: "./src/objectcomponents/templates/objectrelatedcard.html",
+    animations: [
+        trigger('displaycard', [
+            transition(':enter', [
+                style({ opacity: 0 , height: '0px',overflow: 'hidden'}),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({ overflow: 'hidden'}),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
+            ])
+        ])
+    ]
 })
 export class ObjectRelatedCard {
 
@@ -35,7 +56,7 @@ export class ObjectRelatedCard {
      * a simple getter to extract the module out of the component config
      */
     get module() {
-        return this.componentconfig.object
+        return this.componentconfig.object;
     }
 
     /**

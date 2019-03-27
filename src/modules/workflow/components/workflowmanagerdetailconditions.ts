@@ -2,7 +2,7 @@
  * @module ModuleWorkflow
  */
 import {
-    Component
+    Component, Input
 } from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {model} from '../../../services/model.service';
@@ -17,12 +17,24 @@ import {language} from '../../../services/language.service';
 })
 export class WorkflowManagerDetailConditions {
 
+    @Input() private filter: any;
+    private primaryGroup: any = {
+        logicaloperator: 'and',
+        groupscope: 'all',
+        conditions: []
+    }
+
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    addCondition(){
+
+    get module(){
+        return this.model.getField('workflowdefinition_module');
+    }
+
+    private addCondition(){
         let newGuid = this.modelutilities.generateGuid();
         this.model.data.conditions.push({
             id: newGuid,

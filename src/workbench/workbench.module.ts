@@ -86,8 +86,6 @@ import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
 import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
-import /*embed*/ {ModuleFilterBuilderFilterExpressionGroup} from "./components/modulefilterbuilderfilterexpressiongroup";
-import /*embed*/ {ModuleFilterBuilderFilterExpression} from "./components/modulefilterbuilderfilterexpression";
 
 import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
 import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
@@ -174,8 +172,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
         ModuleFilterBuilderFilterDetails,
-        ModuleFilterBuilderFilterExpressionGroup,
-        ModuleFilterBuilderFilterExpression,
         DashletGenerator,
         DashletGeneratorDashlets,
         DashletGeneratorDashletDetails,
