@@ -719,10 +719,24 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .slds-path__nav .slds-is-complete:hover,
 .slds-path__nav .slds-is-complete:hover:after,
 .slds-path__nav .slds-is-complete:hover:before,
+.slds-path__nav .slds-is-complete:first-child:after,
+.slds-path__nav .slds-is-complete:first-child:before,
 .slds-tabs--path .slds-is-complete:hover,
 .slds-tabs--path .slds-is-active:hover + .slds-tabs--path__item.slds-is-current:before,
 .slds-tabs--path__item:hover + .slds-is-complete:before, .slds-tabs--path__item:hover + .slds-is-current:before {
     background-color: #111;
+}
+
+.slds-path__nav .slds-is-current:after,
+.slds-path__nav .slds-is-current:before {
+    background-image: linear-gradient(90deg,#2D2D2D,#2D2D2D .125rem,transparent .125rem),linear-gradient(90deg,#2D2D2D,#2D2D2D .125rem,transparent .125rem),linear-gradient(#2D2D2D,#2D2D2D .125rem,transparent .125rem);
+    color: #CA1B1F;
+}
+
+.slds-path__nav .slds-is-current:hover:after,
+.slds-path__nav .slds-is-current:hover:before{
+    background-image: linear-gradient(90deg,#CA1B1F,#CA1B1F .125rem,transparent .125rem),linear-gradient(90deg,#CA1B1F,#CA1B1F .125rem,transparent .125rem),linear-gradient(#CA1B1F,#CA1B1F .125rem,transparent .125rem);
+    color: #CA1B1F;
 }
 
 /*

@@ -108,8 +108,7 @@ export class fieldHtml extends fieldGeneric {
         this.value = newVal;
 
         // make sure we propagate the change
-        this.zone.run(() => {
-        });
+        this.zone.run(() => { 1; });
     }
 
     private updateStylesheet(stylesheetId) {
