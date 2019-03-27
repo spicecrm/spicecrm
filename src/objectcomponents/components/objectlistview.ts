@@ -176,7 +176,7 @@ export class ObjectListView implements OnInit, AfterViewInit {
     private handleHeaderEvent(event) {
         if (event.event && event.event == 'changelist') {
             // set preferences
-            this.userpreferences.setPreference('defaultlisttype', event.list, true, 'SpiceUI_' + this.modellist.module);
+            this.userpreferences.setPreference('defaultlisttype', event.list, false, 'SpiceUI_' + this.modellist.module);
 
             // set the current list and rebuild the container
             this.currentList = event.list;
