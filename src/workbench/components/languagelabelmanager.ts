@@ -77,8 +77,9 @@ export class LanguageLabelManagerComponent {
 
     public search(search_term = null) {
         this.page = 1;
+
+        search_term = !search_term ? this.search_term : search_term;
         if (!search_term) {
-            search_term = this.search_term;
             return false;
         }
 
@@ -93,8 +94,9 @@ export class LanguageLabelManagerComponent {
     }
 
     public addTranslation(scope: string, language_name: string = null) {
-        if (!this.selected_label[scope + '_translations'])
+        if (!this.selected_label[scope + '_translations']) {
             this.selected_label[scope + '_translations'] = [];
+        }
 
         if (!language_name) {
             let langs = this.getMissingLanguages(scope);
