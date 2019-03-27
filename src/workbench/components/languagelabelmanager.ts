@@ -11,6 +11,7 @@ import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
 import {footer} from "../../services/footer.service";
 import {modal} from '../../services/modal.service';
+import { session } from '../../services/session.service';
 
 @Component({
     selector: 'language-label-manager',
@@ -60,7 +61,8 @@ export class LanguageLabelManagerComponent {
         private utils: modelutilities,
         private toast: toast,
         private footer: footer,
-        private modalservice: modal
+        private modalservice: modal,
+        private sessionservice: session
     ) {
         this.languages = this.language.getAvialableLanguages();
     }
@@ -75,10 +77,11 @@ export class LanguageLabelManagerComponent {
 
     public search(search_term = null) {
         this.page = 1;
-        if (!search_term)
-            search_term = this.search_term;
-        if (!search_term)
+
+        search_term = !search_term ? this.search_term : search_term;
+        if (!search_term) {
             return false;
+        }
 
         this.selected_label = null;
         this.is_searching = true;
@@ -91,8 +94,9 @@ export class LanguageLabelManagerComponent {
     }
 
     public addTranslation(scope: string, language_name: string = null) {
-        if (!this.selected_label[scope + '_translations'])
+        if (!this.selected_label[scope + '_translations']) {
             this.selected_label[scope + '_translations'] = [];
+        }
 
         if (!language_name) {
             let langs = this.getMissingLanguages(scope);
@@ -107,8 +111,7 @@ export class LanguageLabelManagerComponent {
     }
 
     public getMissingLanguages(scope: string = null): any[] {
-        if (!scope)
-            scope = this.translation_scope;
+        if (!scope) scope = this.translation_scope;
 
         let missing_langs = [];
         for (let lang of this.languages) {
@@ -217,12 +220,9 @@ export class LanguageLabelManagerComponent {
     }
 
     public sortTranslations(a, b) {
-        if (a.syslanguage == this.language.languagedata.languages.default || a.syslanguage < b.syslanguage)
-            return -1;
-        else if (a.syslanguage > b.syslanguage)
-            return +1;
-        else
-            return 0;
+        if (a.syslanguage == this.language.languagedata.languages.default || a.syslanguage < b.syslanguage) return -1;
+        else if (a.syslanguage > b.syslanguage) return +1;
+        else return 0;
     }
 
     /**
@@ -233,6 +233,23 @@ export class LanguageLabelManagerComponent {
      */
     public getLangText(language) {
         return this.language.getLangText(language);
+    }
+
+    private filesToDB() {
+        this.modalservice.confirm('Transfering custom labels from language files will change your database content and might destroy/overwrite existing language data in your database! Do you really want to do this?', 'Caution!', 'warning' ).subscribe( (answer) => {
+            if ( answer ) {
+                let stopper = this.modalservice.await('Transfering language data from files to database …');
+                this.backend.postRequest( 'syslanguages/filesToDB', {}, {confirmed:true} ).subscribe( (data) => {
+                        stopper.emit();
+                        this.modalservice.info('Language data successfully transfered ('+data.countLabels+' labels with '+data.countTranslations+' translations). Look into console for more details.','Done','success');
+                        console.info(data);
+                    },
+                    (error) => {
+                        stopper.emit();
+                        this.toast.sendToast('Error transfering language data.', 'error');
+                    });
+            }
+        });
     }
 
 }

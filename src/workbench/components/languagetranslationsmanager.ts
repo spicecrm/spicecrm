@@ -72,6 +72,12 @@ export class LanguageTranslationsManager {
         );
     }
 
+    private getLabelSpecificLength(label, length) {
+        let defaultText: string = this.language.getLabel(label);
+        let text: string = this.language.getLabel(label, '', length);
+        return text != defaultText ? text: '';
+    }
+
     private getTranslations() {
         if (this.selectedLanguage.length == 0) {
             return;

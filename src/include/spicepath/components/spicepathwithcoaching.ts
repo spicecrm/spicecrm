@@ -1,0 +1,137 @@
+/**
+ * @module ModuleSpicePath
+ */
+import {Component, Input, AfterViewInit, OnInit} from "@angular/core";
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
+import {model} from "../../../services/model.service";
+import {configurationService} from "../../../services/configuration.service";
+import {broadcast} from "../../../services/broadcast.service";
+
+/**
+ * renders a path with coaching in the context of a model
+ *
+ * the component embedding this component needs to provide a model
+ */
+@Component({
+    selector: "spice-path-with-coaching",
+    templateUrl: "./src/include/spicepath/templates/spicepathwithcoaching.html",
+    animations: [
+        trigger('displaycoaching', [
+            transition(':enter', [
+                style({ opacity: 0 , height: '0px',overflow: 'hidden'}),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({ overflow: 'hidden'}),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
+            ])
+        ]),
+        trigger('coachingicon', [
+            state('open', style({ transform: 'rotate(90deg)'})),
+            state('closed', style({ transform: 'rotate(0deg)'})),
+            transition('open => closed', [
+                animate('.5s'),
+            ]),
+            transition('closed => open', [
+                animate('.5s'),
+            ])
+        ])
+    ],
+})
+export class SpicePathWithCoaching {
+
+    /**
+     * determines if the coaching is visible or not
+     */
+    private coachingVisible: boolean = false;
+
+    /**
+     * holds the current active stage if the user clicks on another stage
+     */
+    private activeStage: string;
+
+    constructor(private configuration: configurationService, private model: model) {
+    }
+
+    /**
+     * gets the icon style for the coaching checvron and roitates it by 90degress if open (animated)
+     */
+    get coachingIconStyle() {
+        if (this.coachingVisible) {
+            return {
+                transform: 'rotate(90deg)'
+            };
+        } else {
+            return {};
+        }
+    }
+
+    /**
+     * returns the stages for the module from teh configuration service
+     */
+    get stages() {
+        return this.configuration.getData('spicebeanguides')[this.model.module].stages;
+    }
+
+    /**
+     * returns the field on the model that holds the status that is used for the path
+     */
+    get statusfield() {
+        return this.configuration.getData('spicebeanguides')[this.model.module].statusfield;
+    }
+
+    get currentStage() {
+        return this.model.getField(this.statusfield);
+    }
+
+    private toggleCoaching() {
+        this.coachingVisible = !this.coachingVisible;
+    }
+
+    /**
+     * event handler when the active stage is set in the path component
+     */
+    private setActiveStage(stage) {
+        this.activeStage = stage;
+    }
+
+    /**
+     * simple getter for the stage to be displayed. Returns the current stage or if an active stage is set the active stage
+     */
+    get displayStage() {
+        return this.activeStage ? this.activeStage : this.currentStage;
+    }
+
+    /**
+     * retrieves the checks for the curretn stage
+     */
+    get checks() {
+        let checks = []
+        this.stages.some(stage => {
+            if (stage.stage === this.displayStage) {
+                checks = stage.stagedata.checks
+                return true;
+            }
+        })
+        return checks;
+    }
+
+    // gets the current stage description
+    get stageDescription() {
+        let stagetext: string = "";
+        this.stages.some(stage => {
+            if (this.displayStage === stage.stage) {
+                stagetext = stage.stagedata.stage_description;
+                return true;
+            }
+        });
+        return stagetext;
+    }
+}
