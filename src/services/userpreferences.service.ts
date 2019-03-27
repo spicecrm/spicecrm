@@ -129,10 +129,14 @@ export class userpreferences {
             prefs[name] = value;
             this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe((prefstatus) => {
 
+                // set the preference
                 if (!this.preferences[category]) this.preferences[category] = {};
-
                 this.preferences[category][name] = value;
+
+                // ToDo: check what this is for
+                if (!this.unchangedPreferences[category]) this.unchangedPreferences[category] = {};
                 this.unchangedPreferences[category][name] = value;
+
                 this.completePreferencesWithDefaults();
             });
         } else {
