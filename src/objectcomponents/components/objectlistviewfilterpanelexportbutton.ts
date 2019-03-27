@@ -75,10 +75,11 @@ export class ObjectListViewFilterPanelExportButton {
 
             this.backend.downloadFile({
                 route: '/module/' + this.model.module + '/export',
-                params: params
+                method: "POST",
+                body: params
             }, filename).subscribe(loaded =>{
                 loadingRef.instance.self.destroy();
-            })
+            });
         });
 
     }
