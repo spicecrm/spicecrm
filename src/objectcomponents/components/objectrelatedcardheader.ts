@@ -12,6 +12,7 @@ import {
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {language} from '../../services/language.service';
 import { model } from '../../services/model.service';
+import { metadata } from '../../services/metadata.service';
 
 /**
  * the header in the object-related-card
@@ -46,14 +47,14 @@ export class ObjectRelatedCardHeader {
      */
     public isopen: boolean = true;
 
-    constructor(private language: language, private relatedmodels: relatedmodels, private model: model ) { }
+    constructor( private language: language, private relatedmodels: relatedmodels, private model: model, private metadata: metadata ) { }
 
     /**
      * a getter for the Title to be displayed. This either translates a tilte if set int he config or it renders the module name
      */
     get panelTitle() {
         if ( this.componentconfig.title ) return this.language.getLabel( this.componentconfig.title );
-        if ( this.model.fields[this.relatedmodels.linkName].vname ) return this.language.getLabel( this.model.fields[this.relatedmodels.linkName].vname );
+        if ( this.metadata.fieldDefs[this.module][this.relatedmodels.linkName].vname ) return this.language.getLabel( this.metadata.fieldDefs[this.module][this.relatedmodels.linkName].vname );
         return this.language.getModuleName( this.module );
     }
 
