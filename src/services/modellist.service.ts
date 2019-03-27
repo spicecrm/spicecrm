@@ -247,7 +247,7 @@ export class modellist implements OnDestroy {
      */
     private setToSession() {
         // only if the results shoudl be cached
-        if(!this.usecache) return false;
+        if (!this.usecache) return false;
 
         // set to the session
         this.session.setSessionData('lastlist', {
@@ -265,7 +265,7 @@ export class modellist implements OnDestroy {
      */
     private getFromSession() {
         // only if the results shoudl be cached
-        if(!this.usecache) return false;
+        if (!this.usecache) return false;
 
         let listData = this.session.getSessionData('lastlist', false);
         if (listData && listData.module == this.module) {
@@ -687,7 +687,7 @@ export class modellist implements OnDestroy {
         let retSub = new Subject<boolean>();
         this.resetListData();
 
-        if(checksession && this.getFromSession()) return of(true);
+        if (checksession && this.getFromSession()) return of(true);
 
         this.isLoading = true;
         if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
@@ -775,15 +775,19 @@ export class modellist implements OnDestroy {
                     retSub.complete();
                 });
             } else {
-                this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
-                    start: 0,
-                    limit: this.loadlimit,
-                    listid: this.currentList.id,
-                    modulefilter: this.modulefilter
-                }).subscribe(
-                    res => {
-                        this.listData = res;
-                        retSub.next(true);
+                this.backend.getLinkToDownload(
+                    '/module/' + this.module + '/export',
+                    'POST',
+                    {},
+                    {
+                        listid: this.currentList.id,
+                        sortfield: this.sortfield,
+                        sortdirection: this.sortdirection,
+                        fields: JSON.stringify(this.lastFields)
+                    }
+                ).subscribe(
+                    (res) => {
+                        retSub.next(res);
                         retSub.complete();
                     }
                 );
