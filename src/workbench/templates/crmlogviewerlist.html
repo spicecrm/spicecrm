@@ -17,18 +17,21 @@
                 <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{lines.length-linesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
 
                 <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
-                    <!--label class="slds-form-element__label" for="level">{{lang.getLabel('LBL_TEXT_FILTER')}} (by client)</label-->
                     <div class="slds-form-element__control slds-grid">
-                        <input id="localFiltertext" class="slds-input" type="text" trim="blur" [(ngModel)]="localFiltertext" (keyup.enter)="doLocalTextFilter()" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" />
-                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="doLocalTextFilter()" [attr.disabled]="localFiltertext===''?true:null">
-                            <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
-                        </button>
-                        <button class="slds-button slds-button--icon-border" (click)="clearLocalTextFilter()" [attr.disabled]="localFiltertext===''?true:null">
+                        <input id="localFiltertextPositive" class="slds-input" type="text" trim="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" />
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterPositive()" [attr.disabled]="localFiltertextPositive===''?true:null">
                             <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                        </button>
+                        <input id="localFiltertextNegative" class="slds-input slds-m-left--small slds-text-align--right" style="width:inherit" type="text" [ngModel]="localFiltertextNegative.length" size="3" disabled title="Negative Text Filter: Number of Terms" />
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterNegative()" [attr.disabled]="localFiltertextNegative.length===0?true:null">
+                            <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                        </button>
+                        <span></span>
+                        <button class="slds-button slds-button--icon-border slds-m-left--small" (click)="updateLocalFiltering()" [attr.disabled]="localFiltertextPositive==='' && localFiltertextNegative.length===0?true:null">
+                            <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
                         </button>
                     </div>
                 </div>
-
             </div>
 
             <div *ngIf="lines.length">
@@ -56,7 +59,7 @@
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:line.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(line.uid)}}</a></td>
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:line.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{line.lev}}</a></td>
                             <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
-                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div></td>
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}" (mouseup)="filterSelectedText()">{{line.txt}}</div></td>
                             <td class="slds-p-left--none" style="border-left:0">
                                 <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
                                     <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>

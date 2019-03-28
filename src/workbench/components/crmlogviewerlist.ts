@@ -49,7 +49,8 @@ export class CRMLogViewerList implements OnInit {
 
     // Various:
     private currPage = 1;
-    private localFiltertext = '';
+    private localFiltertextPositive = '';
+    private localFiltertextNegative: any[] = [];
     private toastId = '';
 
     // Stati:
@@ -91,7 +92,8 @@ export class CRMLogViewerList implements OnInit {
         this.isLoading = true;
         this.isLoaded = false;
         this.linesToShow = [];
-        this.localFiltertext = '';
+        this.localFiltertextPositive = '';
+        this.localFiltertextNegative = [];
 
         // Build the REST route:
 
@@ -138,7 +140,7 @@ export class CRMLogViewerList implements OnInit {
                     line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
                     line.i = i;
                 });
-                this.doLocalTextFilter();
+                this.updateLocalFiltering();
                 this.isLoaded = true;
                 this.isLoading = false;
                 // The backend has to use "SpiceLogger" instead of "SugarLogger", because only SpiceLogger logs to the database. Warning in case of wrong configuration in config.php.
@@ -183,7 +185,10 @@ export class CRMLogViewerList implements OnInit {
         this.isBuildingLocalTextfilter = true;
         this.linesToShow = [];
         this.lines.forEach( line => {
-            if( line.txt.toLowerCase().indexOf( this.localFiltertext.toLowerCase() ) !== -1 ) this.linesToShow.push( line ); // todo: change to regex (might be faster than changing all the text to uppercase)
+            let localFiltertextPositiveLowercase = this.localFiltertextPositive.toLowerCase();
+            if ( line.txt.toLowerCase().indexOf( localFiltertextPositiveLowercase ) !== -1 && !this.localFiltertextNegative.some( ( term ) => {
+                if ( line.txt.toLowerCase().indexOf( term.lowercase ) !== -1 ) return true;
+            })) this.linesToShow.push( line );
         });
         this.currPage = 1;
         window.setTimeout( () => this.isBuildingLocalTextfilter = false, 750 );
@@ -211,19 +216,31 @@ export class CRMLogViewerList implements OnInit {
         }
     }
 
-    // Apply filter text to the list. Or clear filtering when no filter text.
-    private doLocalTextFilter() {
-        if ( !this.localFiltertext.length ) {
-            if ( this.isFiltered ) this.clearLocalTextFilter(); // this.resetLinesToShow();
-        } else {
-            if ( this.lines.length) this.buildLinesToShow();
-        }
+    // Remove positive filter.
+    private clearLocalTextFilterPositive() {
+        this.localFiltertextPositive = '';
+        this.updateLocalFiltering();
     }
 
-    // Remove filter.
-    private clearLocalTextFilter() {
-        this.localFiltertext = '';
-        if ( this.isFiltered ) this.resetLinesToShow();
+    // Remove negative filter.
+    private clearLocalTextFilterNegative() {
+        this.localFiltertextNegative = [];
+        this.updateLocalFiltering();
+    }
+
+    private updateLocalFiltering() {
+        if (  !this.localFiltertextPositive && !this.localFiltertextNegative.length && this.isFiltered ) this.resetLinesToShow();
+        else if ( this.lines.length) this.buildLinesToShow();
+    }
+
+    private filterSelectedText(oField) {
+        let text = '';
+        if ( window.getSelection ) text = window.getSelection().toString();
+        text = text.trim();
+        if ( text ) {
+            this.localFiltertextNegative.push( { original: text, lowercase: text.toLowerCase() } );
+            this.updateLocalFiltering();
+        }
     }
 
 }
