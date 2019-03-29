@@ -3,75 +3,71 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 
+/**
+ * renders a tab item with a fieldset as part of the details view on a model
+ *
+ * in any case requires a component that provides a view and a model
+ */
 @Component({
     selector: 'object-record-details-tab',
     templateUrl: './src/objectcomponents/templates/objectrecorddetailstab.html'
 })
-export class ObjectRecordDetailsTab implements OnInit{
+export class ObjectRecordDetailsTab implements OnInit {
 
-    componentconfig: any = {};
-    expanded: boolean = true;
+    /**
+     * @ignore
+     */
+    private componentconfig: any = {};
 
-    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language) {}
+    /**
+     * defines if the panel is expanded or collapsed. Expanded by default
+     */
+    private expanded: boolean = true;
 
-    ngOnInit(){
-        if(this.componentconfig.collapsed){
+    constructor(private metadata: metadata, private model: model, private language: language) {
+    }
+
+    /**
+     * @ignore
+     */
+    public ngOnInit() {
+        if (this.componentconfig.collapsed) {
             this.expanded = false;
         }
     }
 
-    get fieldSet(){
+    /**
+     * simple getter to get the fieldset id from teh componentconfig
+     */
+    get fieldSet() {
         try {
-            return this.componentconfig['fieldset'];
-        } catch(e){
+            return this.componentconfig.fieldset;
+        } catch (e) {
             return '';
         }
     }
 
-    get showTitle(){
+    /**
+     * a simple getter for the componentconfig to determine if the label should be shown or hidden
+     */
+    get showTitle() {
         try {
-            return !this.componentconfig['hidelabel'];
-        } catch(e){
+            return !this.componentconfig.hidelabel;
+        } catch (e) {
             return false;
         }
     }
 
-    get hidden()
-    {
-        return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate) );
-    }
-
-    getFieldsets(){
-        return this.metadata.getFieldSetItems(this.componentconfig['fieldset']);
-    }
-
-    togglePanel(){
-        this.expanded = !this.expanded;
-    }
-
-    getChevronStyle(){
-        if(!this.expanded)
-            return{
-                'transform': 'rotate(45deg)',
-                'margin-top' : '4px'
-            }
-    }
-
-    getTabStyle(){
-        if(!this.expanded)
-                return {
-                    height: '0px',
-                    transform: 'rotateX(90deg)'
-                }
-    }
-    getContainerStyle(){
-            return{
-                // 'overflow': 'hidden'
-            }
+    /**
+     * determine if the panel as such is hidden
+     *
+     * this is mainly driven by the required model state
+     */
+    get hidden() {
+        return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 }

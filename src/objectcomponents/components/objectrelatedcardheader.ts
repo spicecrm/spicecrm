@@ -2,8 +2,17 @@
  * @module ObjectComponents
  */
 import {Component, Input} from '@angular/core';
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {language} from '../../services/language.service';
+import { model } from '../../services/model.service';
+import { metadata } from '../../services/metadata.service';
 
 /**
  * the header in the object-related-card
@@ -12,7 +21,19 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-related-card-header',
-    templateUrl: './src/objectcomponents/templates/objectrelatedcardheader.html'
+    templateUrl: './src/objectcomponents/templates/objectrelatedcardheader.html',
+    animations: [
+        trigger('animateicon', [
+            state('open', style({ transform: 'scale(1, 1)'})),
+            state('closed', style({ transform: 'scale(1, -1)'})),
+            transition('open => closed', [
+                animate('.5s'),
+            ]),
+            transition('closed => open', [
+                animate('.5s'),
+            ])
+        ])
+    ],
 })
 export class ObjectRelatedCardHeader {
 
@@ -26,38 +47,30 @@ export class ObjectRelatedCardHeader {
      */
     public isopen: boolean = true;
 
-    constructor(private language: language, private relatedmodels: relatedmodels) {
-
-    }
-
-    /**
-     * a getter for the title from the componentconfig
-     */
-    get title() {
-        if (!this.componentconfig.title) {
-            this.componentconfig.title = this.language.getModuleName(this.componentconfig.object);
-        }
-        return this.componentconfig.title ? this.componentconfig.title : "";
-    }
+    constructor( private language: language, private relatedmodels: relatedmodels, private model: model, private metadata: metadata ) { }
 
     /**
      * a getter for the Title to be displayed. This either translates a tilte if set int he config or it renders the module name
      */
     get panelTitle() {
-        return this.title != '' ? this.language.getLabel(this.title, this.module) : this.language.getModuleName(this.module);
+        if ( this.componentconfig.title ) return this.language.getLabel( this.componentconfig.title );
+        if ( this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname ) {
+            return this.language.getLabel( this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname );
+        }
+        return this.language.getModuleName( this.module );
     }
 
     /**
      * a getter to extract the actionset from the componentconfig
      */
-    get actionset(){
+    get actionset() {
         return this.componentconfig.actionset;
     }
 
     /**
      * a getter to extract the module from the componentconfig
      */
-    get module(){
+    get module() {
         return this.componentconfig.object;
     }
 
@@ -68,16 +81,4 @@ export class ObjectRelatedCardHeader {
         this.isopen = !this.isopen;
     }
 
-    /**
-     * a getter function for the open icon to transform it and tilt it via ngStyle
-     */
-    get iconStyle() {
-        if (!this.isopen) {
-            return {
-                transform: 'scale(1, -1)'
-            };
-        } else {
-            return {};
-        }
-    }
 }

@@ -1,27 +1,3 @@
-<div class="slds-path slds-p-horizontal--none slds-scrollable--x">
-    <div class="slds-grid slds-path__track">
-        <div class="slds-grid slds-path__scroller-container">
-            <div class="slds-path__scroller" role="application">
-                <div class="slds-path__scroller_inner">
-                    <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
-                        <li *ngFor="let stage of stages" class="slds-path__item" [ngClass]="stageClass(stage.stage)" role="presentation">
-                            <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" role="option" >
-                                <span class="slds-path__stage">
-                                    <system-utility-icon icon="check" size="x-small"></system-utility-icon>
-                                </span>
-                                <span class="slds-path__title">{{stage.stage}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <!--div class="slds-grid slds-path__action">
-            <span class="slds-path__stage-name">Stage: Unqualified</span>
-            <button class="slds-button slds-button_brand slds-path__mark-complete">
-                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check" />
-                </svg>Mark Status as Complete</button>
-        </div-->
-    </div>
+<div class="slds-path slds-p-vertical--small slds-scrollable--x">
+    <spice-path-track></spice-path-track>
 </div>

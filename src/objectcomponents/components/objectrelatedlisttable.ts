@@ -8,6 +8,7 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {backend} from '../../services/backend.service';
+import {loggerService} from '../../services/logger.service';
 
 /**
  * A generic component that displays a list for a set of related models. Requires to be embedded in a component that provides a [[relatedmodels]] service.
@@ -48,12 +49,15 @@ export class ObjectRelatedlistTable implements OnInit {
     private nowDragging = false;
     private isSequenced = false;
 
-    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend) {
-    }
+    constructor( public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend, private logger: loggerService ) { }
 
     public ngOnInit() {
-        if (!this.sequencefield && this.model.fields[this.relatedmodels._linkName].sequence_field) {
-            this.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
+        if ( !this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] ) {
+            this.logger.error('Missing link or wrong link name ("'+this.relatedmodels._linkName+'")!');
+        } else {
+            if( !this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field ) {
+                this.sequencefield = this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field;
+            }
         }
         if (this.sequencefield) this.isSequenced = true;
     }

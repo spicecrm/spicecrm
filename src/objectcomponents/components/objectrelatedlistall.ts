@@ -89,4 +89,9 @@ export class ObjectRelatedlistAll implements OnInit {
         this.model.goDetail();
     }
 
+    get listingTitle() {
+        if ( this.metadata.fieldDefs[this.model.module][this.link].vname ) return this.language.getLabel( this.metadata.fieldDefs[this.model.module][this.link].vname );
+        return this.language.getModuleName( this.related );
+    }
+
 }

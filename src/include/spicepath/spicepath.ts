@@ -13,9 +13,15 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
+import /*embed*/ {SpicePathTrack} from './components/spicepathtrack';
 import /*embed*/ {SpicePathModel} from './components/spicepathmodel';
+import /*embed*/ {SpicePathWithCoaching} from './components/spicepathwithcoaching';
 import /*embed*/ {SpicePathRelatedListTiles} from './components/spicepathrelatedlisttiles';
 import /*embed*/ {SpicePathRelatedListTile} from './components/spicepathrelatedlisttile';
+
+import /*embed*/ {SpiceKanbanStagePipe} from "./components/spicekanbanstagepipe";
+import /*embed*/ {SpiceKanban} from "./components/spicekanban";
+import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
 
 @NgModule({
     imports: [
@@ -28,9 +34,14 @@ import /*embed*/ {SpicePathRelatedListTile} from './components/spicepathrelatedl
         DirectivesModule,
     ],
     declarations: [
+        SpicePathTrack,
         SpicePathModel,
+        SpicePathWithCoaching,
         SpicePathRelatedListTiles,
-        SpicePathRelatedListTile
+        SpicePathRelatedListTile,
+        SpiceKanbanStagePipe,
+        SpiceKanban,
+        SpiceKanbanTile
     ]
 })
 export class ModuleSpicePath {
