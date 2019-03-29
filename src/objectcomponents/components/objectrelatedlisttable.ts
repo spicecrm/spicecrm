@@ -52,11 +52,11 @@ export class ObjectRelatedlistTable implements OnInit {
     constructor( public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend, private logger: loggerService ) { }
 
     public ngOnInit() {
-        if ( !this.model.fields[this.relatedmodels._linkName] ) {
+        if ( !this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] ) {
             this.logger.error('Missing link or wrong link name ("'+this.relatedmodels._linkName+'")!');
         } else {
-            if( !this.sequencefield && this.model.fields[this.relatedmodels._linkName].sequence_field ) {
-                this.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
+            if( !this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field ) {
+                this.sequencefield = this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field;
             }
         }
         if (this.sequencefield) this.isSequenced = true;
