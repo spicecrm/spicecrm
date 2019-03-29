@@ -23,6 +23,9 @@
                             <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
                         </button>
                         <input id="localFiltertextNegative" class="slds-input slds-m-left--small slds-text-align--right" style="width:inherit" type="text" [ngModel]="localFiltertextNegative.length" size="3" disabled title="Negative Text Filter: Number of Terms" />
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="filterSelectedText()">
+                            <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
+                        </button>
                         <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterNegative()" [attr.disabled]="localFiltertextNegative.length===0?true:null">
                             <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
                         </button>
@@ -59,7 +62,7 @@
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:line.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(line.uid)}}</a></td>
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:line.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{line.lev}}</a></td>
                             <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
-                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}" (mouseup)="filterSelectedText()">{{line.txt}}</div></td>
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div></td>
                             <td class="slds-p-left--none" style="border-left:0">
                                 <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
                                     <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
