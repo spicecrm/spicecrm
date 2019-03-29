@@ -9,7 +9,7 @@ import { language } from '../../services/language.service';
 })
 export class CRMLogViewerListModal {
 
-    @Input() filter: any;
+    @Input() private filter: any;
     private self;
 
     constructor( private language: language ) { }
