@@ -18,11 +18,11 @@
 
                 <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
                     <div class="slds-form-element__control slds-grid">
-                        <input id="localFiltertextPositive" class="slds-input" type="text" trim="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" />
+                        <input id="localFiltertextPositive" class="slds-input" type="text" trim="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" style="border-bottom-color:#090" />
                         <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterPositive()" [attr.disabled]="localFiltertextPositive===''?true:null">
                             <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
                         </button>
-                        <input id="localFiltertextNegative" class="slds-input slds-m-left--small slds-text-align--right" style="width:inherit" type="text" [ngModel]="localFiltertextNegative.length" size="3" disabled title="Negative Text Filter: Number of Terms" />
+                        <input id="localFiltertextNegative" class="slds-input slds-m-left--small slds-text-align--right" style="width:inherit;border-bottom-color:#c00" type="text" [ngModel]="localFiltertextNegative.length" size="3" disabled title="Negative Text Filter: Number of Terms" />
                         <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="filterSelectedText()">
                             <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
                         </button>
