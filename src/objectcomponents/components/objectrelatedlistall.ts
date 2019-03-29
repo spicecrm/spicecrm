@@ -90,7 +90,7 @@ export class ObjectRelatedlistAll implements OnInit {
     }
 
     get listingTitle() {
-        if ( this.model.fields[this.link].vname ) return this.language.getLabel( this.model.fields[this.link].vname );
+        if ( this.metadata.fieldDefs[this.model.module][this.link].vname ) return this.language.getLabel( this.metadata.fieldDefs[this.model.module][this.link].vname );
         return this.language.getModuleName( this.related );
     }
 
