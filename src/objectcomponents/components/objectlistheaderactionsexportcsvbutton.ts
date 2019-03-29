@@ -23,10 +23,10 @@ import {modellist} from '../../services/modellist.service';
  * either downloads the full list with all entries or the selected entries
  */
 @Component({
-    selector: 'object-list-header-actions-export-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexportbutton.html',
+    selector: 'object-list-header-actions-export-csv-button',
+    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexportcsvbutton.html',
 })
-export class ObjectListHeaderActionsExportButton {
+export class ObjectListHeaderActionsExportCSVButton {
 
     constructor(private language: language, private metadata: metadata, private modellist: modellist, private model: model, private modal: modal, private backend: backend) {
     }
