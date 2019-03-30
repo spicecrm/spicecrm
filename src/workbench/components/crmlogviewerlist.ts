@@ -233,7 +233,7 @@ export class CRMLogViewerList implements OnInit {
         else if ( this.lines.length) this.buildLinesToShow();
     }
 
-    private filterSelectedText(oField) {
+    private filterSelectedText() {
         let text = '';
         if ( window.getSelection ) text = window.getSelection().toString();
         text = text.trim();
