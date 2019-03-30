@@ -66,6 +66,7 @@ export class ObjectListHeaderActionsExportCSVButton {
 
                     // handle the download
                     let a: any = document.createElement("a");
+                    document.body.appendChild(a);
                     a.href = downloadurl;
                     a.download = this.exportfilename;
                     a.click();
