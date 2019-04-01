@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
@@ -12,12 +15,12 @@ import {backend} from "../../../services/backend.service";
 })
 export class DashboardGenericDashlet implements OnInit {
     private loading: boolean = true;
-    private records: Array<any> = [];
+    private records: any[] = [];
     private recordcount: number = 0;
     private dashletconfig: any = null;
     private dashletModule: string = undefined;
     private dashletLabel: string = undefined;
-    private dashletFields: Array<any> = [];
+    private dashletFields: any[] = [];
     private dashletFieldSet: any = undefined;
     private canLoadMore: boolean = true;
     private loadLimit: number = 20;
@@ -58,7 +61,9 @@ export class DashboardGenericDashlet implements OnInit {
             }
             if (this.dashletconfig.filters) {
                 for (let filter in this.dashletconfig.filters) {
-                    params[filter] = this.dashletconfig.filters[filter];
+                    if (this.dashletconfig.filters.hasOwnProperty(filter)) {
+                        params[filter] = this.dashletconfig.filters[filter];
+                    }
                 }
             }
             if (this.dashletconfig.modulefilter) {
@@ -79,7 +84,7 @@ export class DashboardGenericDashlet implements OnInit {
     public ngOnInit() {
         // set the module on the model
         this.model.module = this.dashletModule;
-        this.loadLimit = this.dashletconfig.limit || this.loadLimit;
+        this.loadLimit = (this.dashletconfig && this.dashletconfig.limit) ?  this.dashletconfig.limit : this.loadLimit;
 
         // load the dashlet records
         this.loadRecords();
@@ -127,6 +132,4 @@ export class DashboardGenericDashlet implements OnInit {
                 });
         }
     }
-
-
 }

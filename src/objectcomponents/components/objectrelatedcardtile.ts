@@ -1,13 +1,14 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
-import {Component, Input, AfterViewInit} from '@angular/core';
+
+import {Component, Input} from '@angular/core';
 import {model} from '../../services/model.service';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import { metadata } from '../../services/metadata.service';
-import {Router, ActivatedRoute}   from '@angular/router';
+import {Router}   from '@angular/router';
 
 @Component({
     selector: '[object-related-card-tile]',

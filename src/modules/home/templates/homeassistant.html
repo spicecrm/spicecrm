@@ -9,15 +9,29 @@
         </div>
     </div>
     <div tobottom class="spicecrm-scrollbar">
-        <div *ngIf="loading" class="slds-p-around--medium slds-height_full">
-            <system-spinner></system-spinner>
-        </div>
         <div *ngIf="noActivities" class="slds-align--absolute-center slds-height_full">
             <system-illustration-no-task></system-illustration-no-task>
         </div>
         <ul #itemcontainer class="slds-timeline">
             <li *ngFor="let item of assistant.assitantItems" class="slds-p-around--xx-small">
                 <object-activitiytimeline-item-container [activity]="item"></object-activitiytimeline-item-container>
+            </li>
+        </ul>
+        <ul *ngIf="loading" class="slds-timeline">
+            <li class="slds-p-around--xx-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.8" class="slds-p-around--xx-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.6" class="slds-p-around--xx-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.4" class="slds-p-around--xx-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+            </li>
+            <li style="opacity: 0.2" class="slds-p-around--xx-small">
+                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
             </li>
         </ul>
     </div>

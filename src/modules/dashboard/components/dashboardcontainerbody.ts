@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {AfterViewInit, Component, OnDestroy, Renderer2, ViewChild, ViewContainerRef,} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
@@ -16,7 +19,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
         }`
     ]
 })
-export class DashboardContainerBody implements AfterViewInit, OnDestroy {
+export class DashboardContainerBody implements OnDestroy {
     @ViewChild('bodycontainer', {read: ViewContainerRef}) private bodycontainer: ViewContainerRef;
     private resizeListener: any;
 
@@ -32,7 +35,7 @@ export class DashboardContainerBody implements AfterViewInit, OnDestroy {
         return this.dashboardlayout.dashboardElements;
     }
 
-    get isEditing() {
+    get isEditMode() {
         return this.dashboardlayout.editMode;
     }
 
@@ -44,7 +47,7 @@ export class DashboardContainerBody implements AfterViewInit, OnDestroy {
     }
 
     public ngAfterViewInit() {
-        this.calculateGrid();
+        this.dashboardlayout.bodyContainerRef = this.bodycontainer;
     }
 
     private trackByGridFn(index, item) {
@@ -59,7 +62,9 @@ export class DashboardContainerBody implements AfterViewInit, OnDestroy {
         if (window.innerWidth < 1024) {
             this.dashboardlayout.editMode = false;
         }
-        this.dashboardlayout.bodyContainerRef = this.bodycontainer;
+        if (!this.isEditMode) {
+            return;
+        }
         this.dashboardlayout.calculateGrid();
     }
 

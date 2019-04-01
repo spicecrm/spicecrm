@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Injectable, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';
@@ -12,42 +15,60 @@ export class dashboardlayout {
     public dashboardGrid: any[] = [];
     public dashboardId: string = '';
     public dashboardElements: any[] = [];
-    public elementWidth: number = 100;
     public boxMargin: number = 5;
     public columns: number = 9;
-    public editMode: boolean = false;
+    public editmode: boolean = false;
     public editing: string = '';
-    public mainContainer: any = undefined;
     public isMoving: boolean = false;
     public isloading: boolean = false;
-    public bodyContainerRef: ViewContainerRef;
+    public bodycontainerref: ViewContainerRef;
 
     constructor(private backend: backend, public model: model, private modal: modal) {
     }
 
+    set bodyContainerRef(value) {
+        this.bodycontainerref = value;
+    }
+
+    get bodyContainerRef() {
+        return this.bodycontainerref.element.nativeElement;
+    }
+
+    set editMode(bool) {
+        this.editmode = bool;
+        if (this.editmode) {
+            setTimeout(()=> this.calculateGrid(), 100);
+        }
+    }
+
+    get editMode() {
+        return this.editmode;
+    }
+
     get elementHeight() {
-        return this.mainContainer ? this.mainContainer.height / this.columns : 100;
+        return this.bodyContainerRef ? this.bodyContainerRef.clientHeight / this.columns : 100;
+    }
+
+    get elementWidth() {
+        return this.bodyContainerRef ? this.bodyContainerRef.clientWidth / this.columns : 100;
     }
 
     get compactView() {
-        return this.mainContainer.width < 768;
+        return this.bodyContainerRef.clientWidth < 768;
     }
 
     public calculateGrid() {
-        let bodyContainer = this.bodyContainerRef.element.nativeElement;
-        this.mainContainer = {
-            width: bodyContainer.clientWidth,
-            height: bodyContainer.clientHeight,
-            bottom: bodyContainer.getBoundingClientRect().bottom - bodyContainer.offsetTop,
-        };
-        this.elementWidth = this.mainContainer.width / this.columns;
+        if (!this.bodyContainerRef) {
+            return;
+        }
+
         this.dashboardGrid = [];
         let rowIndex = 0;
         let takenIndices = this.columns;
 
         for (let element of this.dashboardElements) {
             let elBottom = element.position.top + element.position.height;
-            if (this.mainContainer.height && elBottom > this.columns) {
+            if (this.bodyContainerRef.clientHeight && elBottom > this.columns) {
                 takenIndices = elBottom > takenIndices ? elBottom : takenIndices;
             }
         }
@@ -56,10 +77,10 @@ export class dashboardlayout {
             let dashBoardRow = [];
             while (colIndex < this.columns) {
                 dashBoardRow.push({
-                    width: (this.mainContainer.width / this.columns) - (2 * this.boxMargin),
+                    width: (this.bodyContainerRef.clientWidth / this.columns) - (2 * this.boxMargin),
                     height: this.elementHeight - (2 * this.boxMargin),
                     top: ((rowIndex * this.elementHeight) + this.boxMargin),
-                    left: (colIndex * this.mainContainer.width / this.columns) + this.boxMargin
+                    left: (colIndex * this.bodyContainerRef.clientWidth / this.columns) + this.boxMargin
                 });
                 colIndex++;
             }
@@ -127,7 +148,7 @@ export class dashboardlayout {
                 return true;
             }
         });
-        this.calculateGrid();
+        setTimeout(()=> this.calculateGrid(), 100);
     }
 
     public canDrop(id, item, movex, movey, mouseLast, mouseTarget) {
@@ -225,7 +246,7 @@ export class dashboardlayout {
 
     public applyMove(rect, mouseTarget, mouseStart, mouseLast) {
         let style = rect;
-        let mainContainer: any = this.mainContainer;
+        let mainContainer: any = this.bodyContainerRef;
         let mainContainerRight: number = mainContainer.right - mainContainer.x;
         let margin: number = this.boxMargin;
         let boxWidth: number = this.elementWidth - (2 * margin);
@@ -374,7 +395,6 @@ export class dashboardlayout {
 
     public cancelEdit() {
         this.editMode = false;
-        this.calculateGrid();
         this.dashboardElements = this.model.getField('components');
     }
 

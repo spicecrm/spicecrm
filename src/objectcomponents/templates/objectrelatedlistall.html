@@ -11,7 +11,7 @@
     </nav>
     <div class="slds-media">
         <div class="slds-media__body">
-            <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-p-vertical--xx-small">{{language.getModuleName( related )}}</h1>
+            <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-p-vertical--xx-small">{{listingTitle}}</h1>
         </div>
     </div>
     <div class="slds-col slds-align-bottom">
@@ -19,5 +19,5 @@
     </div>
 </div>
 <div>
-    <object-relatedlist-table [listfields]="listfields" [module]="related"></object-relatedlist-table>
+    <object-relatedlist-table [listfields]="listfields" ></object-relatedlist-table>
 </div>

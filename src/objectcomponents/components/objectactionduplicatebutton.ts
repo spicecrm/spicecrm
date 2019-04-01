@@ -1,8 +1,10 @@
-import {Component, Input, Optional, OnInit, EventEmitter} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {session} from '../../services/session.service';
-import {relatedmodels} from '../../services/relatedmodels.service';
 import {language} from '../../services/language.service';
 
 @Component({

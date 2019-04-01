@@ -1,3 +1,6 @@
+/**
+ * @module ModuleUsers
+ */
 import {Component} from "@angular/core";
 import {modal} from "../../../services/modal.service";
 import {session} from "../../../services/session.service";

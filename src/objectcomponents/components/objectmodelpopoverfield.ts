@@ -1,7 +1,9 @@
-import {Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {metadata} from '../../services/metadata.service';
 
 @Component({
     templateUrl: './src/objectcomponents/templates/objectmodelpopoverfield.html',

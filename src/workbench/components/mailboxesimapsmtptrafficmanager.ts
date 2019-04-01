@@ -1,6 +1,7 @@
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef} from "@angular/core";
-import {Input} from "@angular/core";
-import {SimpleChange} from "@angular/core";
+/**
+ * @module WorkbenchModule
+ */
+import {Component, OnInit, ViewContainerRef} from "@angular/core";
 import {Subject, Observable} from "rxjs";
 import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
@@ -8,7 +9,6 @@ import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {modal} from "../../services/modal.service";
 import {model} from "../../services/model.service";
-import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
 import {MailboxesIMAPSMTPSelectFoldersModal} from "./mailboxesimapsmtpselectfoldersmodal";
@@ -20,7 +20,6 @@ import {MailboxesIMAPSMTPSelectFoldersModal} from "./mailboxesimapsmtpselectfold
 export class MailboxesImapSmtpTrafficManager implements OnInit {
     private mailboxes: any[] = [];
     private validConnection: boolean = false;
-    private modelsubscription: any = undefined;
 
     constructor(
         private backend: backend,
@@ -75,7 +74,7 @@ export class MailboxesImapSmtpTrafficManager implements OnInit {
     }
 
     private getMailboxes(): Observable<any> {
-        let responseSubject = new Subject<Array<any>>();
+        let responseSubject = new Subject<any[]>();
 
         this.backend.getRequest("mailboxes/imap/getmailboxfolders", {mailbox_id: this.model.data.id})
             .subscribe((response: any) => {

@@ -1,3 +1,6 @@
+/**
+ * @module directives
+ */
 import { Pipe, PipeTransform } from '@angular/core';
 
 /*

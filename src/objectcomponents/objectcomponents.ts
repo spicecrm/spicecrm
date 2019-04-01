@@ -1,38 +1,11 @@
+/**
+ * @module ObjectComponents
+ */
 import {CommonModule} from '@angular/common';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    NgZone,
-    HostListener,
-    Renderer,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef,
-    Injectable,
-    Input,
-    Output,
-    EventEmitter,
-    SimpleChanges,
-    OnInit,
-    OnDestroy,
-    OnChanges,
-    ChangeDetectorRef,
-    HostBinding,
-    Pipe,
-    PipeTransform,
-    Optional,
-    Attribute,
-    ViewChildren,
-    QueryList
+    NgModule
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Title, DomSanitizer} from '@angular/platform-browser';
-
-import {Subject, Observable} from 'rxjs';
-
 
 import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
@@ -41,35 +14,9 @@ import {ObjectFields} from '../objectfields/objectfields';
 import {GlobalComponents} from '../globalcomponents/globalcomponents';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
-import {fielderrorgrouping} from '../services/fielderrorgrouping.service';
-import {modal} from '../services/modal.service';
-import {loginService, loginCheck} from '../services/login.service';
+import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
-import {model} from '../services/model.service';
-import {modellist} from '../services/modellist.service';
-import {relatedmodels} from '../services/relatedmodels.service';
-import {modelutilities} from '../services/modelutilities.service';
-import {language} from '../services/language.service';
-import {broadcast} from '../services/broadcast.service';
-import {navigation} from '../services/navigation.service';
-import {backend} from '../services/backend.service';
-import {session} from '../services/session.service';
-import {footer} from '../services/footer.service';
-import {assistant} from '../services/assistant.service';
-import {view} from '../services/view.service';
-import {popup} from '../services/popup.service';
-import {toast} from '../services/toast.service';
-import {fts} from '../services/fts.service';
-import {modelattachments} from '../services/modelattachments.service';
-import {activitiyTimeLineService} from '../services/activitiytimeline.service';
-import {favorite} from '../services/favorite.service';
-import {configurationService} from '../services/configuration.service';
-import {reminder} from '../services/reminder.service';
-import {helper} from '../services/helper.service';
-import {userpreferences} from '../services/userpreferences.service';
-import {dockedComposer} from '../services/dockedcomposer.service';
 import {VersionManagerService} from '../services/versionmanager.service';
-import {layout} from '../services/layout.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
 import /*embed*/ {objectimport} from './services/objectimport.service';
@@ -83,6 +30,9 @@ import /*embed*/ {ObjectListViewContainer} from './components/objectlistviewcont
 import /*embed*/ {ObjectListView} from './components/objectlistview';
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
+import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
+import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
+import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
 import /*embed*/ {ObjectListItem} from './components/objectlistitem';
 import /*embed*/ {ObjectListItemField} from './components/objectlistitemfield';
 import /*embed*/ {ObjectActionMenu} from './components/objectactionmenu';
@@ -112,6 +62,7 @@ import /*embed*/ {ObjectEditModal} from './components/objecteditmodal';
 import /*embed*/ {ObjectEditModalWReference} from './components/objecteditmodalwreference';
 import /*embed*/ {ObjectEditModalDialogContainer} from './components/objecteditmodaldialogcontainer';
 import /*embed*/ {ObjectEditModalDialogDuplicates} from './components/objecteditmodaldialogduplicates';
+import /*embed*/ {ObjectEditModalDialogDuplicatesPanel} from './components/objecteditmodaldialogduplicatespanel';
 import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimisticlockingmodal';
 import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
 import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
@@ -119,6 +70,9 @@ import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objecto
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
 import /*embed*/ {ObjectListViewAggregateItem} from './components/objectlistviewaggregateitem';
+import /*embed*/ {ObjectListViewAggregateItemTerm} from './components/objectlistviewaggregateitemterm';
+import /*embed*/ {ObjectListViewAggregateItemRange} from './components/objectlistviewaggregateitemrange';
+import /*embed*/ {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
 
 import /*embed*/ {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
 import /*embed*/ {ObjectListViewFilterPanelExportButton} from './components/objectlistviewfilterpanelexportbutton';
@@ -149,8 +103,10 @@ import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageh
 import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
-import /*embed*/ {ObjectRelatedlistHeader} from './components/objectrelatedlistheader';
-import /*embed*/ {ObjectRelatedlistFooter} from './components/objectrelatedlistfooter';
+import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
+import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
+import /*embed*/ {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
+import /*embed*/ {ObjectRelatedList} from './components/objectrelatedlist';
 import /*embed*/ {ObjectRelatedlistList} from './components/objectrelatedlistlist';
 import /*embed*/ {ObjectRelatedListItem} from './components/objectrelatedlistitem';
 import /*embed*/ {ObjectRelatedlistTiles} from './components/objectrelatedlisttiles';
@@ -162,7 +118,6 @@ import /*embed*/ {ObjectRelatedDuplicateTile} from './components/objectrelateddu
 import /*embed*/ {ObjectRelatedlistAll} from './components/objectrelatedlistall';
 import /*embed*/ {ObjectRelatedlistTable} from './components/objectrelatedlisttable';
 import /*embed*/ {ObjectRelatedlistSequenced} from './components/objectrelatedlistsequenced';
-import /*embed*/ {ObjectRelatedlistSequencedTable} from './components/objectrelatedlistsequencedtable';
 import /*embed*/ {ObjectRelatedListSequencedItem} from './components/objectrelatedlistsequenceditem';
 
 import /*embed*/ {ObjectFileActionMenu} from './components/objectfileactionmenu';
@@ -182,24 +137,27 @@ import /*embed*/ {ObjectActivityTimelineFilter} from "./components/objectactivit
 import /*embed*/ {ObjectActivitiyTimelineContainer} from './components/objectactivitytimelinecontainer';
 import /*embed*/ {ObjectActivitiyTimelineItemContainer} from './components/objectactivitiytimelineitemcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddTabContainer} from './components/objectactivitiytimelineaddtabcontainer';
+import /*embed*/ {ObjectActivitiyTimelineItem} from './components/objectactivitiytimelineitem';
 import /*embed*/ {ObjectActivitiyTimelineCall} from './components/objectactivitytimelinecall';
 import /*embed*/ {ObjectActivitiyTimelineEvent} from './components/objectactivitytimelineevent';
 import /*embed*/ {ObjectActivitiyTimelineEmail} from './components/objectactivitytimelineemail';
 import /*embed*/ {ObjectActivitiyTimelineNote} from './components/objectactivitiytimelinenote';
 import /*embed*/ {ObjectActivitiyTimelineTask} from './components/objectactivitiytimelinetask';
+import /*embed*/ {ObjectActivitiyTimelineStencil} from './components/objectactivitiytimelinestencil';
 import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/objectactivitiytimelineaddcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddItem} from './components/objectactivitiytimelineadditem';
-import /*embed*/ {ObjectActivitiyTimelineAddCall} from './components/objectactivitiytimelineaddcall';
-import /*embed*/ {ObjectActivitiyTimelineAddMeeting} from './components/objectactivitiytimelineaddmeeting';
-import /*embed*/ {ObjectActivitiyTimelineAddTask} from './components/objectactivitiytimelineaddtask';
 import /*embed*/ {ObjectActivitiyTimelineAddEmail} from './components/objectactivitiytimelineaddemail';
-import /*embed*/ {ObjectActivitiyTimelineAddNote} from './components/objectactivitiytimelineaddnote';
 import /*embed*/ {ObjectActivitiyTimelineSummary} from './components/objectactivitiytimelinesummary';
+import /*embed*/ {ObjectActivitiyTimelineAggregates} from './components/objectactivitiytimelineaggregates';
+import /*embed*/ {ObjectActivitiyTimelineSummaryItemView} from './components/objectactivitiytimelinesummaryitemview';
 import /*embed*/ {ObjectActivitiyTimelineSummaryButton} from './components/objectactivitiytimelinesummarybutton';
 import /*embed*/ {ObjectActivitiyTimelineSummaryModal} from './components/objectactivitiytimelinesummarymodal';
+import /*embed*/ {ObjectActivitiyTimelineSummaryAggregates} from './components/objectactivitiytimelinesummaryaggregates';
 
 import /*embed*/ {ObjectRecordDetails} from './components/objectrecorddetails';
 import /*embed*/ {ObjectRecordDetailsTab} from './components/objectrecorddetailstab';
+import /*embed*/ {ObjectRecordDetailsModelstateTab} from './components/objectrecorddetailsmodelstatetab';
+import /*embed*/ {ObjectRecordDetailsFooter} from './components/objectrecorddetailsfooter';
 import /*embed*/ {ObjectRecordAdministrationTab} from './components/objectrecordadministrationtab';
 import /*embed*/ {ObjectRecordDetailsTabRow} from './components/objectrecorddetailstabrow';
 import /*embed*/ {ObjectRecordDetailsTabRowField} from './components/objectrecorddetailstabrowfield';
@@ -248,14 +206,17 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
+import /*embed*/ {ObjectTexts} from "./components/objecttexts";
+import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
+import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
+
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
- *
- * @module ObjectComponents
  */
 @NgModule({
     imports: [
         CommonModule,
+        DragDropModule,
         FormsModule,
         ObjectFields,
         GlobalComponents,
@@ -265,14 +226,11 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
             {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, aclCheck]},
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
+            {path: 'module/:module/historysummary/:id', component: ObjectActivitiyTimelineSummary, canActivate: [loginCheck]},
             {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {
-                path: 'module/:module/:id/:related/:link/:fieldset',
-                component: ObjectRelatedlistAll,
-                canActivate: [loginCheck]
-            },
-            // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
+            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
+            {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
         ObjectIcon,
@@ -284,6 +242,9 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectList,
         ObjectListHeader,
         ObjectListHeaderActionMenu,
+        ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportTargetlistButton,
+        ObjectListHeaderActionsExportTargetlistModal,
         ObjectListItem,
         ObjectListItemField,
         ObjectActionMenu,
@@ -294,6 +255,9 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectListViewAggregatesPanel,
         ObjectListViewAggregate,
         ObjectListViewAggregateItem,
+        ObjectListViewAggregateItemTerm,
+        ObjectListViewAggregateItemRange,
+        ObjectListViewTagsAggregate,
         ObjectListViewFilterPanel,
         ObjectListViewFilterPanelExportButton,
         ObjectListViewFilterPanelExportTargetlist,
@@ -324,6 +288,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
         ObjectEditModalDialogDuplicates,
+        ObjectEditModalDialogDuplicatesPanel,
         ObjectOptimisticLockingModal,
         ObjectOptimisticLockingModalDataField,
         ObjectOptimisticLockingModalChange,
@@ -345,8 +310,10 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectVerticalTabContainerItem,
         ObjectVerticalTabContainerItemHeader,
         ObjectRelateContainer,
-        ObjectRelatedlistHeader,
-        ObjectRelatedlistFooter,
+        ObjectRelatedCard,
+        ObjectRelatedCardHeader,
+        ObjectRelatedCardFooter,
+        ObjectRelatedList,
         ObjectRelatedlistList,
         ObjectRelatedListItem,
         ObjectRelatedlistTiles,
@@ -358,7 +325,6 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectRelatedlistAll,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
-        ObjectRelatedlistSequencedTable,
         ObjectRelatedListSequencedItem,
         ObjectFileActionMenu,
         ObjectActivitiyTimeline,
@@ -366,23 +332,26 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActivitiyTimelineContainer,
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineAddTabContainer,
+        ObjectActivitiyTimelineItem,
         ObjectActivitiyTimelineCall,
         ObjectActivitiyTimelineEvent,
         ObjectActivitiyTimelineEmail,
         ObjectActivitiyTimelineTask,
         ObjectActivitiyTimelineNote,
+        ObjectActivitiyTimelineStencil,
         ObjectActivitiyTimelineAddContainer,
         ObjectActivitiyTimelineAddItem,
-        ObjectActivitiyTimelineAddCall,
-        ObjectActivitiyTimelineAddMeeting,
-        ObjectActivitiyTimelineAddTask,
         ObjectActivitiyTimelineAddEmail,
-        ObjectActivitiyTimelineAddNote,
         ObjectActivitiyTimelineSummary,
+        ObjectActivitiyTimelineAggregates,
+        ObjectActivitiyTimelineSummaryItemView,
         ObjectActivitiyTimelineSummaryButton,
         ObjectActivitiyTimelineSummaryModal,
+        ObjectActivitiyTimelineSummaryAggregates,
         ObjectRecordDetails,
         ObjectRecordDetailsTab,
+        ObjectRecordDetailsModelstateTab,
+        ObjectRecordDetailsFooter,
         ObjectRecordAdministrationTab,
         ObjectRecordDetailsTabRow,
         ObjectRecordDetailsTabRowField,
@@ -430,47 +399,10 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectModelPopover,
         ObjectModelPopoverField,
         ObjectModelPopoverRelated,
-        ObjectModelPopoverRelatedItem
-    ],
-    entryComponents: [
-        ObjectIcon,
-        ObjectListViewHeader,
-        ObjectListView,
-        ObjectList,
-        ObjectPageHeader,
-        ObjectPageHeaderDetails,
-        ObjectPageHeaderDetailRow,
-        ObjectPageHeaderDetailRowField,
-        ObjectTabContainer,
-        ObjectTabContainerItem,
-        ObjectRelateContainer,
-        ObjectRelatedlistList,
-        ObjectRelatedlistTiles,
-        ObjectRelatedCardTile,
-        ObjectRelatedlistFiles,
-        ObjectRelatedDuplicates,
-        ObjectActivitiyTimeline,
-        ObjectActivitiyTimelineContainer,
-        ObjectActivitiyTimelineCall,
-        ObjectActivitiyTimelineEvent,
-        ObjectActivitiyTimelineEmail,
-        ObjectActivitiyTimelineTask,
-        ObjectActivitiyTimelineAddContainer,
-        ObjectRecordView,
-        ObjectRecordViewDetail1,
-        ObjectRecordViewDetail2and1,
-        ObjectRecordDetails,
-        ObjectRecordDetailsTab,
-        ObjectRecordDetailsTabRow,
-        ObjectRecordDetailsTabRowField,
-        ObjectActionEditButton,
-        ObjectActionDeleteButton,
-        ObjectActionNewButton,
-        ObjectActionNewrelatedButton,
-        ObjectActionImportButton,
-        ObjectActionSelectButton,
-        ObjectActionBeanToMailButton,
-        ObjectNotes
+        ObjectModelPopoverRelatedItem,
+        ObjectTexts,
+        ObjectTextsAddButton,
+        ObjectTextsAddModal
     ],
     exports: [
         ObjectListViewHeader,
@@ -483,6 +415,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectActionMenu,
         ObjectActionsetMenu,
         ObjectSelectButton,
+        ObjectRelatedList,
         ObjectRelatedListItem,
         ObjectPopoverHeader,
         ObjectPopoverBodyItem,
@@ -493,7 +426,11 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
         ObjectTabContainerItemHeader,
         ObjectTableRow,
         ObjectTable,
-        ObjectActivitiyTimelineItemContainer
+        ObjectActivitiyTimelineItemContainer,
+        ObjectActivitiyTimelineStencil,
+        ObjectRelatedCard,
+        ObjectRecordDetails,
+        ObjectRecordDetailsFooter
     ]
 })
 export class ObjectComponents {

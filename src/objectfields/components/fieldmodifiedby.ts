@@ -1,4 +1,7 @@
-import {Component, ElementRef, Input, OnInit, Renderer} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, ElementRef,} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';

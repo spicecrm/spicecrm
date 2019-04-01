@@ -1,4 +1,7 @@
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+/**
+ * @module services
+ */
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';

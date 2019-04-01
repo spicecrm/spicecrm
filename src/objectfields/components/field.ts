@@ -1,4 +1,7 @@
-import {Component, Input, ViewChild, ViewContainerRef, AfterViewInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'field',
@@ -8,5 +11,5 @@ import {Component, Input, ViewChild, ViewContainerRef, AfterViewInit} from '@ang
     }
 })
 export class field{
-    @Input() field: any = {};
+    @Input() private field: any = {};
 }

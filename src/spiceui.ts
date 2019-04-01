@@ -1,5 +1,9 @@
+/**
+ * @module SpiceUI
+ */
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {BrowserModule, Title} from "@angular/platform-browser";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
     NgModule,
     Component,
@@ -18,6 +22,7 @@ import {GlobalComponents} from "./globalcomponents/globalcomponents";
 import {ObjectComponents} from "./objectcomponents/objectcomponents";
 
 // various services we need on global app level
+import {loggerService} from './services/logger.service';
 import {configurationService} from "./services/configuration.service";
 import {loginService, loginCheck} from "./services/login.service";
 import {session} from "./services/session.service";
@@ -48,7 +53,13 @@ import {layout} from "./services/layout.service";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 
 // declarations for TS
+/**
+ * @ignore
+ */
 declare var System: any;
+/**
+* @ignore
+*/
 declare var moment: any;
 declare global {
     interface Date {
@@ -58,6 +69,9 @@ declare global {
 
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
+/**
+ * the main component that gets bootstrapped withthe main module
+ */
 @Component({
     selector: "spicecrm",
     template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet></div><global-footer></global-footer>"
@@ -75,6 +89,9 @@ export class SpiceUI {
         });
     }
 
+    /**
+     * sets the top margin the headers that is set static requires
+     */
     get outletstyle() {
         return {
             'margin-top': this.layout.headerheight + 'px'
@@ -82,9 +99,13 @@ export class SpiceUI {
     }
 }
 
+/**
+ * the main module
+ */
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
         SystemComponents,
@@ -133,7 +154,8 @@ export class SpiceUI {
         assistant,
         VersionManagerService,
         modal,
-        Title
+        Title,
+        loggerService
     ]
 })
 export class SpiceUIModule {
@@ -148,10 +170,14 @@ export class SpiceUIModule {
     }
 }
 
-// set prod mode
+/**
+ * sets the prod mode. THis is enabled in the build workflow for production build
+ */
 // enableProdMode();
 
-// browser detection to display mesaeg when we have IE
+/**
+ * browser detection .. IE is not supported
+ */
 declare global {
     interface Document {
         documentMode?: any;
@@ -166,6 +192,9 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
     platformBrowserDynamic().bootstrapModule(SpiceUIModule);
 }
 
+/**
+ * a handler for using an existing window if a link is clicked e.g. in an email so SpiceCRM is not started for a second time but the existing one navigates properly to the requested ressource
+ */
 window.name = 'SpiceCRM';
 (() => {
     if (window.hasOwnProperty('BroadcastChannel')) { // Does the browser know the Broadcast API?

@@ -1,23 +1,18 @@
-import {Component, AfterViewInit, OnInit, OnDestroy} from '@angular/core';
+/**
+ * @module ObjectComponents
+ *
+ * @deprecated
+ * Use ObjectRelatedlistList instead.
+ */
+
+import { Component, Input } from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
-import {model} from '../../services/model.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {Router}   from '@angular/router';
 import {ObjectRelatedlistList} from './objectrelatedlistlist';
 
 @Component({
-    selector: 'object-relatedlist-list',
-    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequenced.html',
-    providers: [relatedmodels]
+    selector: 'object-relatedlist-sequenced',
+    templateUrl: './src/objectcomponents/templates/objectrelatedlistsequenced.html'
 })
-export class ObjectRelatedlistSequenced extends ObjectRelatedlistList {
-
-    sequencefield: string = '';
-
-    ngOnInit(){
-        super.ngOnInit();
-
-        this.sequencefield = this.componentconfig.sequencefield;
-    }
+export class ObjectRelatedlistSequenced {
+    @Input() private componentconfig: any = {};
 }

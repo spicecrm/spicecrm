@@ -1,5 +1,7 @@
-import {Component, Input, OnInit, Pipe} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ObjectComponents
+ */
+import {Component,  OnInit, Pipe} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';

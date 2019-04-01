@@ -1,3 +1,6 @@
+/**
+ * @module ModuleActivities
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,

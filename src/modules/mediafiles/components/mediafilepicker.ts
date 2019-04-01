@@ -1,4 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+/**
+ * @module ModuleMediaFiles
+ */
+import { Component, OnInit } from '@angular/core';
 import {mediafiles} from '../../../services/mediafiles.service';
 import { backend } from '../../../services/backend.service';
 import { language } from '../../../services/language.service';

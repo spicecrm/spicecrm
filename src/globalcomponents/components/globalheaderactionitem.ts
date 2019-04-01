@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {Component, EventEmitter, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {session} from '../../services/session.service';
@@ -35,7 +38,7 @@ export class GlobalHeaderActionItem implements OnInit {
         if (this.actionconfig.label) {
             return this.language.getLabel(this.actionconfig.label);
         } else {
-            return this.language.getModuleLabel(this.model.module, 'LBL_NEW_FORM_TITLE');
+            return this.language.getLabel(this.model.module, 'LBL_NEW_FORM_TITLE');
         }
     }
 }

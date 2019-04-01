@@ -1,19 +1,17 @@
+/**
+ * @module SystemComponents
+ */
+
 // from https://github.com/kolkov/angular-editor
 import {
-    AfterContentInit,
     Component, ElementRef,
-    EventEmitter,
     forwardRef,
     Inject,
-    Input,
-    OnInit,
     OnDestroy,
-    Output,
     Renderer2,
     ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {metadata} from "../../services/metadata.service";
 import {DOCUMENT} from "@angular/common";
 
 import {modal} from "../../services/modal.service";
