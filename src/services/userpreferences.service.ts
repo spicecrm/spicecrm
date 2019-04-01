@@ -150,7 +150,7 @@ export class userpreferences {
         this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(
             (savedprefs) => {
                 for (let prop of this.preferences[category]) {
-                    if (savedprefs.hasOwnProperty(prop)) this.preferences[category] = savedprefs[prop];
+                    if (savedprefs.hasOwnProperty(prop)) this.preferences[category][prop] = savedprefs[prop];
                     else delete this.preferences[category][prop];
                 }
                 this.unchangedPreferences[category] = savedprefs;
