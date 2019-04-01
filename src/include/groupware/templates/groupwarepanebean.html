@@ -1,0 +1,20 @@
+<article class="slds-tile slds-media slds-p-vertical--xx-small">
+    <div class="slds-p-vertical--xx-small">
+        <system-icon [module]="model.module" size="small"></system-icon>
+    </div>
+    <div class="slds-media__body">
+        <div class="slds-grid slds-grid_align-spread slds-has-flexi-truncate">
+            <h3 class="slds-tile__title slds-truncate" [title]="bean.summary_text">{{model.getField('summary_text')}}</h3>
+            <div class="slds-checkbox">
+                <input type="checkbox" name="beans" [id]="'bean-'+bean.id" (click)="onClick($event)" [checked]="groupware.checkBeanArchive(bean)"/>
+                <label class="slds-checkbox__label" [attr.for]="'bean-'+bean.id">
+                    <span class="slds-checkbox_faux"></span>
+                    <span class="slds-form-element__label slds-assistive-text">{{bean.name}}</span>
+                </label>
+            </div>
+        </div>
+        <div class="slds-tile__detail">
+            <p class="slds-truncate slds-text-body_small" title="Bean Module">{{bean.module}}</p>
+        </div>
+    </div>
+</article>

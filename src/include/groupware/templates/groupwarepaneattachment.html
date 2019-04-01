@@ -1,0 +1,21 @@
+<article class="slds-tile slds-media slds-p-vertical--xx-small">
+    <div class="slds-media__figure">
+        <div class="slds-checkbox">
+            <input type="checkbox" name="attachments" [id]="'attachment-'+attachment.id" (click)="onClick($event)" [checked]="groupware.checkAttachmentArchive(attachment)" />
+            <label class="slds-checkbox__label" [attr.for]="'attachment-'+attachment.id">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label slds-assistive-text">{{attachment.name}}</span>
+            </label>
+        </div>
+    </div>
+    <div class="slds-media__body">
+        <h3 class="slds-tile__title slds-truncate slds-text-heading--label" [title]="attachment.name">
+            {{attachment.name}}
+        </h3>
+        <div class="slds-tile__detail">
+            <p class="slds-truncate slds-text-body_small" title="Attachment Type">
+                {{attachment.contentType}}
+            </p>
+        </div>
+    </div>
+</article>
