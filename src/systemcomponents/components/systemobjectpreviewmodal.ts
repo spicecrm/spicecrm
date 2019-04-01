@@ -74,6 +74,7 @@ export class SystemObjectPreviewModal {
      */
     private download() {
         let a = document.createElement("a");
+        document.body.appendChild(a);
         a.href = this.blobUrl;
         a.download = this.name;
         a.click();
