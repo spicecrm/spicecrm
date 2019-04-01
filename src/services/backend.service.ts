@@ -323,7 +323,8 @@ export class backend {
      */
     public downloadFile(
         request_params: backendRequestParams,
-        file_name: string = null
+        file_name: string = null,
+        file_type: string = null
     ): Observable<any> {
         let sub = new Subject<any>();
 
@@ -338,7 +339,9 @@ export class backend {
                 let downloadUrl = res;
                 // window.open(downloadUrl);
                 let a = document.createElement("a");
+                document.body.appendChild(a);
                 a.href = downloadUrl;
+                if(file_type) a.type = file_type;
                 a.download = file_name;
                 // start download
                 a.click();

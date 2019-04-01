@@ -30,7 +30,9 @@ import /*embed*/ {ObjectListViewContainer} from './components/objectlistviewcont
 import /*embed*/ {ObjectListView} from './components/objectlistview';
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
-import /*embed*/ {ObjectListHeaderActionsExportButton} from './components/objectlistheaderactionsexportbutton';
+import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
+import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
+import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
 import /*embed*/ {ObjectListItem} from './components/objectlistitem';
 import /*embed*/ {ObjectListItemField} from './components/objectlistitemfield';
 import /*embed*/ {ObjectActionMenu} from './components/objectactionmenu';
@@ -240,7 +242,9 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectList,
         ObjectListHeader,
         ObjectListHeaderActionMenu,
-        ObjectListHeaderActionsExportButton,
+        ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportTargetlistButton,
+        ObjectListHeaderActionsExportTargetlistModal,
         ObjectListItem,
         ObjectListItemField,
         ObjectActionMenu,
