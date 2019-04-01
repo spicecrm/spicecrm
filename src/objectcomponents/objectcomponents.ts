@@ -272,7 +272,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
                 component: ObjectRelatedlistAll,
                 canActivate: [loginCheck]
             },
-            {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
+            // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
         ObjectIcon,

@@ -160,8 +160,11 @@ export class loginCheck implements CanActivate {
     }
 
     public canActivate(route, state) {
+
         if (!this.session || !this.session.authData.sessionId) {
-            this.login.redirectUrl = state.url;
+            if(state.url != '/') {
+                this.login.redirectUrl = state.url;
+            }
             this.router.navigate(['/login']);
             return false;
         } else {

@@ -45,6 +45,7 @@ import {assistant} from "./services/assistant.service";
 import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
+import {GlobalLogin} from "./globalcomponents/components/globallogin";
 
 // declarations for TS
 declare var System: any;
@@ -91,7 +92,9 @@ export class SpiceUI {
         ObjectComponents,
         RouterModule.forRoot(
             [
+                {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
+                {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
             ]
         )
     ],
