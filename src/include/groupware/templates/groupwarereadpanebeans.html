@@ -1,0 +1,3 @@
+<div class="slds-p-around--x-small">
+    <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
+</div>
