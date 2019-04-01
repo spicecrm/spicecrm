@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {AfterViewInit, Component, ViewChild, ViewContainerRef, Renderer2, ElementRef} from '@angular/core';
 import {session} from '../../services/session.service';
 import {language} from '../../services/language.service';

@@ -1,9 +1,15 @@
+/**
+ * @module ModuleCalendar
+ */
 import {Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {recent} from "../../../services/recent.service";
 import {calendar} from "../services/calendar.service";
 
+/**
+* @ignore
+*/
 declare var _: any;
 
 @Component({

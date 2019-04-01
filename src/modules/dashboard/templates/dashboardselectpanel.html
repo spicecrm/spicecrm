@@ -1,4 +1,4 @@
-<nav tobottom class="slds-nav-vertical" aria-label="Sub page">
+<nav class="slds-nav-vertical" aria-label="Sub page">
     <div class="slds-nav-vertical__section">
         <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-center slds-p-horizontal--small slds-p-vertical--x-small">
             <h2 id="entity-header" class="slds-text-heading--small">{{language.getModuleName('Dashboards')}}</h2>
@@ -14,7 +14,7 @@
                 <input type="text" class="slds-input" [(ngModel)]="dashboardFilter">
             </div>
         </div>
-        <ul>
+        <ul tobottom class="spicecrm-scrollbar">
             <li class="slds-nav-vertical__item" [ngClass]="getActiveClass(dashboard.id)" *ngFor="let dashboard of dashboards; trackBy: trackByFn" (click)="setDashboard(dashboard)">
                 <div class="slds-nav-vertical__action slds-text-link_reset" >{{dashboard.name}}</div>
             </li>

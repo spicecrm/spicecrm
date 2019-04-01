@@ -1,5 +1,5 @@
 <td scope="row">
-    <system-utility-icon [icon]="'rows'" [size]="'x-small'"></system-utility-icon>
+    <system-utility-icon cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
 </td>
 <td *ngFor="let item of listfields" scope="row">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>

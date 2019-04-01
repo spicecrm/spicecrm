@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component,} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -67,6 +70,12 @@ export class LanguageTranslationsManager {
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             }
         );
+    }
+
+    private getLabelSpecificLength(label, length) {
+        let defaultText: string = this.language.getLabel(label);
+        let text: string = this.language.getLabel(label, '', length);
+        return text != defaultText ? text: '';
     }
 
     private getTranslations() {

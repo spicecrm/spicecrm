@@ -1,5 +1,5 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
 import {Component, Input, OnInit} from '@angular/core';
 import {language} from '../../services/language.service';

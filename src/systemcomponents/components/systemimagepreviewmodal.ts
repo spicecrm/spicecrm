@@ -1,4 +1,7 @@
-import {Component, EventEmitter, OnInit, Input} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {Component, Input} from '@angular/core';
 import {language} from '../../services/language.service';
 
 @Component({
@@ -22,6 +25,7 @@ export class SystemImagePreviewModal {
         let blob = this.b64toBlob(this.imgsrc.replace('data:' + this.imgtype + ';base64,', ''), this.imgtype);
         let blobUrl = URL.createObjectURL(blob);
         let a = document.createElement("a");
+        document.body.appendChild(a);
         a.href = blobUrl;
         a.download = this.imgname;
         a.click();

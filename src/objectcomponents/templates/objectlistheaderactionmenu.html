@@ -1,20 +1,22 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open': menuOpen}">
-    <button class="slds-button  slds-button--icon" title="settings" (click)="toggleMenu()">
+<div dropdowntrigger class="slds-dropdown-trigger slds-dropdown-trigger--click">
+    <button class="slds-button  slds-button--icon" title="settings">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
     <div class="slds-dropdown slds-dropdown--left">
         <ul class="slds-dropdown__list" role="menu">
-            <li *ngIf="!selectAll" class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" (click)="setAllSelected()">
-                    <span class="slds-truncate">Select All</span>
-                </a>
-            </li>
-            <li *ngIf="selectAll" class="slds-dropdown__item" role="presentation">
+            <li *ngIf="hasSelection" class="slds-dropdown__item slds-has-divider--bottom-space" role="presentation">
                 <a href="javascript:void(0);" role="menuitem" (click)="setAllUnselected()">
                     <span class="slds-truncate">Select None</span>
                 </a>
             </li>
-            <ng-container *ngIf="hasSelection() && actionset">
+            <object-list-header-actions-export-csv-button></object-list-header-actions-export-csv-button>
+            <object-list-header-actions-export-targetlist-button></object-list-header-actions-export-targetlist-button>
+            <!--li *ngIf="!selectAll" class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="setAllSelected()">
+                    <span class="slds-truncate">Select All</span>
+                </a>
+            </li-->
+            <ng-container *ngIf="hasSelection && actionset">
                 <li class="slds-has-divider--top-space" role="separator"></li>
                 <li class="slds-dropdown__item" role="presentation">
                     <a href="javascript:void(0);" role="menuitem">

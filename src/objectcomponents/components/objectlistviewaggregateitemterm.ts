@@ -1,0 +1,42 @@
+/**
+ * @module ObjectComponents
+ */
+import {
+    Component,
+    Input, OnInit
+} from '@angular/core';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+
+/**
+ * renders a term Aggregate item using a field container
+ */
+@Component({
+    selector: 'object-listview-aggregate-item-term',
+    templateUrl: './src/objectcomponents/templates/objectlistviewaggregateitemterm.html',
+    providers: [view, model]
+})
+export class ObjectListViewAggregateItemTerm implements OnInit {
+
+    /**
+     * the item in the aggregate
+     */
+    @Input() private item: any = {};
+
+    /**
+     * the aggregate
+     */
+    @Input() private aggregate: any = {};
+
+    constructor(private model: model) {
+
+    }
+
+    /**
+     * initializes teh model with the module and the value for the one field
+     */
+    public ngOnInit(): void {
+            this.model.module = this.aggregate.fielddetails.module;
+            this.model.setField(this.aggregate.fielddetails.field, this.item.key);
+    }
+}

@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {Component, EventEmitter, Output} from '@angular/core';
 import {configurationService} from '../../services/configuration.service';
 import {toast} from '../../services/toast.service';

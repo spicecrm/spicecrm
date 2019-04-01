@@ -1,5 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component, Input, AfterViewInit, OnInit,
+    Component, AfterViewInit,
     OnDestroy, ElementRef
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
@@ -11,6 +14,9 @@ import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modelutilities} from "../../../services/modelutilities.service";
 
+/**
+ * @ignore
+ */
 declare var Highcharts: any;
 
 @Component({

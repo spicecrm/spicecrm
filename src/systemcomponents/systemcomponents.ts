@@ -1,53 +1,17 @@
+/**
+ * @module SystemComponents
+ */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    Input,
-    Output,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    OnInit,
-    OnDestroy,
-    EventEmitter,
-    ElementRef,
-    ChangeDetectorRef,
-    ApplicationRef,
-    Pipe,
-    forwardRef,
-    Directive,
-    Renderer2,
-    SimpleChanges,
-    OnChanges,
-    Host,
-    Injectable,
-    Inject
+    NgModule
 } from "@angular/core";
-import {Subject} from "rxjs";
-import {Observable} from "rxjs";
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {DOCUMENT} from "@angular/common";
-import {DomSanitizer} from '@angular/platform-browser';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 // SERVICEs
-import {ActivatedRoute, Router} from "@angular/router";
 import {metadata} from "../services/metadata.service";
-import {toast} from "../services/toast.service";
-import {language} from "../services/language.service";
-import {backend} from "../services/backend.service";
 import {VersionManagerService} from "../services/versionmanager.service";
-import {configurationService} from "../services/configuration.service";
-import {modal} from "../services/modal.service";
-import {userpreferences} from "../services/userpreferences.service";
-import {loader} from "../services/loader.service";
-import {modelutilities} from "../services/modelutilities.service";
-import {broadcast} from "../services/broadcast.service";
-import {layout} from "../services/layout.service";
-
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
@@ -79,6 +43,7 @@ import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
+import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
 import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
@@ -92,10 +57,12 @@ import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./comp
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
+import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
@@ -106,6 +73,7 @@ import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustratio
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
+import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
 import /*embed*/ {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
@@ -117,6 +85,8 @@ import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage"
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
+import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
+import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 
 @NgModule({
     imports: [
@@ -152,6 +122,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemLoadingModal,
         SystemModal,
         SystemModalHeader,
+        SystemModalHeaderRight,
         SystemModalContent,
         SystemModalFooter,
         SystemCollabsableTab,
@@ -170,6 +141,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemSection,
         SystemRichTextEditor,
         SystemRichTextSourceModal,
+        SystemInputDelayed,
         SystemInputTime,
         SystemInputNumber,
         SystemInputDate,
@@ -192,8 +164,12 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoRecords,
         SystemInputRadio,
         SystemInputLabel,
+        SystemInputTags,
         SystemImagePreviewModal,
-        SystemObjectPreviewModal
+        SystemObjectPreviewModal,
+        SystemInputModuleFilter,
+        SystemFilterBuilderFilterExpressionGroup,
+        SystemFilterBuilderFilterExpression
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -220,6 +196,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemModalWrapper,
         SystemModal,
         SystemModalHeader,
+        SystemModalHeaderRight,
         SystemModalContent,
         SystemModalFooter,
         SystemCollabsableTab,
@@ -237,6 +214,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
+        SystemInputDelayed,
         SystemInputRadio,
         SystemInputTime,
         SystemInputNumber,
@@ -252,7 +230,11 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
         SystemIllustrationNoTask,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
-        SystemInputLabel
+        SystemInputLabel,
+        SystemInputTags,
+        SystemInputModuleFilter,
+        SystemFilterBuilderFilterExpressionGroup,
+        SystemFilterBuilderFilterExpression
     ]
 })
 export class SystemComponents {

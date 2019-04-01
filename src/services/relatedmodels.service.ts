@@ -1,38 +1,39 @@
-import {EventEmitter, Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {CanActivate}    from "@angular/router";
+/**
+ * @module services
+ */
 
-import {configurationService} from "./configuration.service";
-import {session} from "./session.service";
+import {EventEmitter, Injectable} from "@angular/core";
 import {broadcast} from "./broadcast.service";
 import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
 import {modelutilities} from "./modelutilities.service";
-import {Router}   from "@angular/router";
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
 @Injectable()
 export class relatedmodels {
-    public module: string = "";
-    public relatedModule: string = "";
-    public linkName: string = "";
-    public modulefilter: string = "";
-    public id: string = "";
-    public items: any = [];
+    public module = '';
+    public relatedModule = '';
+    public linkName = '';
+    public modulefilter = '';
+    public id = '';
+    public items: any[] = [];
     public items$ = new EventEmitter();
-    public count: number = 0;
-    public loaditems: number = 5;
-    private relationshipFields: Array<string> = [];
-    public isloading: boolean = true;
+    public count = 0;
+    public loaditems = 5;
+    private relationshipFields: string[] = [];
+    public isloading = true;
     public sort: any = {
-        sortfield: "",
-        sortdirection: "ASC"
+        sortfield: '',
+        sortdirection: 'ASC'
     };
     private lastLoad: any = new moment();
+    public sequencefield: string = null;
 
-    private serviceSubscriptions: Array<any> = [];
+    private serviceSubscriptions: any[] = [];
 
     constructor(
         private metadata: metadata,
@@ -73,6 +74,11 @@ export class relatedmodels {
         return this.linkName != "" ? this.linkName : this.relatedModule.toLowerCase();
     }
 
+    get sortBySequencefield() {
+        if ( this.sequencefield && !this.modulefilter && !this.sort.sortfield ) return true;
+        else return false;
+    }
+
     private handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== this.relatedModule) {
@@ -81,18 +87,17 @@ export class relatedmodels {
 
         switch (message.messagetype) {
             case "model.delete":
-                for (let itemIndex in this.items) {
-                    if (this.items[itemIndex].id === message.messagedata.id) {
-                        this.items.splice(itemIndex, 1);
+                this.items.some( ( item, i ) => {
+                    if( item.id === message.messagedata.id ) {
+                        this.items.splice( i, 1 );
                         this.count--;
-
                         // emit that a change has happened
-                        this.items$.emit(this.items);
+                        this.items$.emit( this.items );
+                        return true;
                     }
-                }
+                });
                 break;
             case "model.save":
-                this.getData();
                 let eventHandled = false;
                 for (let item of this.items) {
                     if (item.id === message.messagedata.id) {
@@ -102,16 +107,15 @@ export class relatedmodels {
                             }
                         }
                         eventHandled = true;
+                        this.sortItems();
                     }
                 }
 
-
-                if (!eventHandled) {
-                    this.getData();
+                if (!eventHandled || this.modulefilter) {
+                    this.getData(true);
                 } else {
                     this.sortItems();
                 }
-
 
                 break;
         }
@@ -121,16 +125,17 @@ export class relatedmodels {
         return this.lastLoad.format("HH:mm");
     }
 
-    public getData() {
+    public getData(silent: boolean = false) {
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
             return false;
         }
 
         // set that we are loading
-        this.resetData();
-        this.isloading = true;
-
+        if (!silent) {
+            this.resetData();
+            this.isloading = true;
+        }
         let params = {
             getcount: true,
             offset: 0,
@@ -176,19 +181,30 @@ export class relatedmodels {
     }
 
     private sortItems() {
-        if (this.sort.sortfield) {
+
+        let sortfield: string;
+        let sortdirection: string;
+        if ( this.sort.sortfield ) {
+            sortfield = this.sort.sortfield;
+            sortdirection = this.sort.sortdirection;
+        } else if ( this.sortBySequencefield ) {
+            sortfield = this.sequencefield;
+            sortdirection = 'ASC';
+        }
+
+        if ( sortfield ) {
             this.items.sort((a, b) => {
                 let sortval = 0;
                 // check if we can sort as integer
-                if (!isNaN(parseInt(a[this.sort.sortfield], 10)) && !isNaN(parseInt(b[this.sort.sortfield], 10))) {
-                    sortval = parseInt(a[this.sort.sortfield], 10) > parseInt(b[this.sort.sortfield], 10) ? 1 : -1;
+                if (!isNaN(parseInt(a[sortfield], 10)) && !isNaN(parseInt(b[sortfield], 10))) {
+                    sortval = parseInt(a[sortfield], 10) > parseInt(b[sortfield], 10) ? 1 : -1;
                 } else {
-                    sortval = a[this.sort.sortfield] > b[this.sort.sortfield] ? 1 : -1;
+                    sortval = a[sortfield] > b[sortfield] ? 1 : -1;
                 }
-
-                return this.sort.sortdirection == "ASC" ? sortval : (sortval * -1);
+                return sortdirection == 'ASC' ? sortval : (sortval * -1);
             });
         }
+
     }
 
     private resetData() {
@@ -196,7 +212,7 @@ export class relatedmodels {
     }
 
     public addItems(items) {
-        let relatedIds: Array<any> = [];
+        let relatedIds: any[] = [];
         for (let item of items) {
             relatedIds.push(item.id);
         }

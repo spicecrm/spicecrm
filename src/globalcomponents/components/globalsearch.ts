@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {ElementRef, Component, NgModule, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {fts} from '../../services/fts.service';

@@ -1,11 +1,11 @@
-import {Component, ElementRef, Renderer, Input, Output, OnDestroy, EventEmitter, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {popup} from '../../services/popup.service';
-import {broadcast} from '../../services/broadcast.service';
-
 @Component({
     selector: '[object-popover-header]',
     templateUrl: './src/objectcomponents/templates/objectpopoverheader.html',

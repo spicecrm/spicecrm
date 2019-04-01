@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     Component,
     Input,
@@ -6,26 +9,43 @@ import {
     AfterViewInit,
     ViewChild,
     ViewContainerRef,
-    OnInit,
-    HostListener,
     NgZone
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
-import {broadcast} from "../../services/broadcast.service";
 import {model} from "../../services/model.service";
 
+/**
+ * the component that is rendered as part of an actionset and renders the actionset item
+ */
 @Component({
     selector: "object-action-container-item",
     templateUrl: "./src/objectcomponents/templates/objectactioncontaineritem.html"
 })
 export class ObjectActionContainerItem implements AfterViewInit {
+    /**
+     * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
+     */
     @ViewChild("actioncontainer", {read: ViewContainerRef}) private actioncontainer: ViewContainerRef;
 
+    /**
+     * an Input parameter with the action item from the actionset items defined in the metadata
+     */
     @Input() public actionitem: any;
+
+    /**
+     * an emitter that emits if the action was executed. This fires up through the acitonset item container as well
+     */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * a reference to the individual component that was rendered in the conatinerrf as part of the actionset item config
+     */
     private componentref: any;
+
+    /**
+     * defines standrd actions and their compoenntes that can be used in actionset items
+     */
     private standardActions = {
         NEW: "ObjectActionNewButton",
         DUPLICATE: "ObjectActionDuplicateButton",
@@ -38,7 +58,15 @@ export class ObjectActionContainerItem implements AfterViewInit {
         PRINT: "ObjectActionOutputBeanButton",
         SELECT: "ObjectActionSelectButton"
     }
+
+    /**
+     * @ignore
+     */
     private stable: boolean = false;
+
+    /**
+     * @ignore
+     */
     private stableSub: any;
 
     constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone) {

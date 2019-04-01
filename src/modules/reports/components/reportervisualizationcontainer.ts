@@ -1,11 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Component
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 

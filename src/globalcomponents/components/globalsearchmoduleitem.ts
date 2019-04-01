@@ -1,5 +1,5 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module GlobalComponents
  */
 import {ElementRef, Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';

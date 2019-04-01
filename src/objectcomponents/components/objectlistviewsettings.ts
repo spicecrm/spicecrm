@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, ElementRef, Renderer2} from '@angular/core';
 import {modellist} from '../../services/modellist.service';
 import {modal} from '../../services/modal.service';

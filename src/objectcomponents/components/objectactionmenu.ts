@@ -1,4 +1,7 @@
-import {Component, ElementRef, Renderer2, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component, ElementRef, Renderer2, Input, Output, EventEmitter} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -118,8 +121,6 @@ export class ObjectActionMenu {
 
     private getDropdownLocationClass() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        if (window.innerHeight - rect.bottom < 100) {
-            return 'slds-dropdown--bottom';
-        }
+        return {'slds-dropdown--bottom': window.innerHeight - rect.bottom < 100};
     }
 }
