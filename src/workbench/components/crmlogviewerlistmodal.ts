@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import { Component, Input } from '@angular/core';
 import { language } from '../../services/language.service';
 
@@ -6,7 +9,7 @@ import { language } from '../../services/language.service';
 })
 export class CRMLogViewerListModal {
 
-    @Input() filter: any;
+    @Input() private filter: any;
     private self;
 
     constructor( private language: language ) { }

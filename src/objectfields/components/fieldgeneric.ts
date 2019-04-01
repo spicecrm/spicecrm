@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {
     Component,
     Input,
@@ -19,6 +22,7 @@ export class fieldGeneric implements OnInit {
     @ViewChild('focus', {read: ViewContainerRef}) public focuselement: ViewContainerRef;
     @Input() public fieldname: string = '';
     @Input() public fieldconfig: any = {};
+    @Input() public fielddisplayclass: any = {};
     public fieldid: string = '';
     public fieldlength: number = 999;
     private _field_defs;

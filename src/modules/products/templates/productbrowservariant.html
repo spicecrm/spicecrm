@@ -1,32 +1,21 @@
 <div class="slds-m-around--x-small slds-box slds-box_x-small slds-theme--shade">
     <div class="slds-grid">
-        <header class="slds-media slds-media_center slds-has-flexi-truncate">
-            <div class="slds-media__figure">
-                <system-icon [module]="'ProductVariants'" [size]="'x-small'"></system-icon>
-            </div>
-            <div class="slds-media__body">
-                <h2 class="slds-truncate">
-                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
-                       [title]="model.data.summary_text" (click)="godetail()">
-                        <span class="slds-text-heading_x-small">{{model.data.summary_text}}</span>
-                    </a>
-                </h2>
-                <!--div class="slds-text-heading_x-small slds-grid slds-grid--vertical-align-center">
-                    <div class="slds-m-right--x-small" style="height: 12px;width:12px;border-radius: 6px;" [ngStyle]="{'background-color': model.data.sap_inventory == '1' ? 'green' : 'red'}"></div>
-                    <div class="slds-truncate">{{model.data.sap_matnr}}</div>
-                </div-->
-            </div>
+        <header class="slds-grid slds-grid--vertical-align-end slds-has-flexi-truncate">
+            <system-icon [module]="'ProductVariants'" size="x-small"></system-icon>
+            <h2 class="slds-truncate">
+                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                   [title]="model.data.summary_text" (click)="godetail()">
+                    <span class="slds-text-heading_x-small">{{model.data.summary_text}}</span>
+                </a>
+            </h2>
         </header>
         <div class="slds-no-flex">
-            <!--button class="slds-button slds-button_icon" (click)="edit()">
-                <system-button-icon [icon]="'edit'"></system-button-icon>
-            </button-->
             <button class="slds-button slds-button_icon" (click)="toggleOpen()">
-                <system-button-icon [icon]="buttonicon"></system-button-icon>
+                <system-button-icon [icon]="buttonIcon"></system-button-icon>
             </button>
         </div>
     </div>
     <div class="slds-p-top--xx-small">
-        <product-variants-attributes-table *ngIf="opened" [showoptional]="false" [showreadonly]="false"></product-variants-attributes-table>
+        <product-variants-attributes-table [attributes]="groupAttributes" *ngIf="opened"></product-variants-attributes-table>
     </div>
 </div>

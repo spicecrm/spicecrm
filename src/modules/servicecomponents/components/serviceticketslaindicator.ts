@@ -1,11 +1,14 @@
-import {Component, EventEmitter, Input, OnInit, ViewContainerRef} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ServiceComponentsModule
+ */
+import {Component, Input, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
-import {setUpLocationSync} from "@angular/router/upgrade";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -114,7 +117,7 @@ export class ServiceTicketSLAIndicator {
         let totaltime = moment.duration(sladate.diff(dateentered));
         let timeleft = moment.duration(sladate.diff(curdate));
 
-        let percentage =  Math.round(timeleft.as('minutes') / totaltime.as('minutes') * 100);
+        let percentage = Math.round(timeleft.as('minutes') / totaltime.as('minutes') * 100);
         return percentage > 99 ? 99 : percentage;
 
     }

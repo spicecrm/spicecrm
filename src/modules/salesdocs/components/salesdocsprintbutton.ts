@@ -1,8 +1,9 @@
-import {Component, Input, HostBinding} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ModuleSalesDocs
+ */
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {toast} from '../../../services/toast.service';
 import {session} from '../../../services/session.service';
 import {configurationService} from '../../../services/configuration.service';
 import {language} from '../../../services/language.service';

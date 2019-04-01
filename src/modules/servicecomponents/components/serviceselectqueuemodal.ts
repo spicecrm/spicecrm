@@ -1,3 +1,6 @@
+/**
+ * @module ServiceComponentsModule
+ */
 import {Component, EventEmitter} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";

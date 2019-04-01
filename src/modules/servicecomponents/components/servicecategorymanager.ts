@@ -1,3 +1,6 @@
+/**
+ * @module ServiceComponentsModule
+ */
 import {
     Component,
 } from '@angular/core';

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {
     Component,
     Input,
@@ -7,23 +10,58 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 
+/**
+ * renders a fieldset
+ *
+ * requires a component that provides a model and view
+ */
 @Component({
     selector: 'object-record-fieldset',
     templateUrl: './src/objectcomponents/templates/objectrecordfieldset.html'
 })
 export class ObjectRecordFieldset implements OnInit {
 
+    /**
+     * the id of the fieldset to be rendered
+     */
     @Input() private fieldset: string = '';
-    @Input() private fieldpadding: string = 'xx-small';
-    @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight';
-    @Input() private direction: string = 'horizontal';
 
+    /**
+     * the direction to render this fieldset. Thsi decides if the start is vertical or horizontal. Typical for a listview it is horizontal, for a record it is vertical
+     */
+    @Input() private direction: 'horizontal' | 'vertical' = 'horizontal';
+
+    /**
+     * a padding class to be applied
+     */
+    @Input() private fieldpadding: string = 'xx-small';
+
+    /**
+     * an optional set of classes that will be applied to fields in teh fieldset
+     */
+    @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight';
+
+
+    /**
+     * internal array of the fieldset items
+     */
     private fieldsetitems: any[] = [];
+
+    /**
+     * @ignore
+     *
+     * helper for the number of columns
+     */
     private numberOfColumns: number = 0; // in grid
 
     constructor(private metadata: metadata, private model: model, private view: view) {
     }
 
+    /**
+     * @ignore
+     *
+     * loads the fieldsetitems and determines the number of columns to be rendered
+     */
     public ngOnInit() {
         this.fieldsetitems = this.metadata.getFieldSetItems(this.fieldset);
         for (let item of this.fieldsetitems) {
@@ -32,6 +70,9 @@ export class ObjectRecordFieldset implements OnInit {
         if (!this.renderVertical && this.numberOfColumns > 8) console.warn('wrong fieldset grid (' + this.fieldset + ')');
     }
 
+    /**
+     * a helper getter to determine the direction
+     */
     get renderVertical() {
         return this.direction == 'vertical' ? true : false;
     }
@@ -40,6 +81,11 @@ export class ObjectRecordFieldset implements OnInit {
         return fieldsetitem.field ? true : false;
     }
 
+    /**
+     * a helper for the item to determine the size class in the grid
+     *
+     * @param i the index of the item
+     */
     private sizeClass(i) {
         // render vertical ... none
         if (this.renderVertical) return '';

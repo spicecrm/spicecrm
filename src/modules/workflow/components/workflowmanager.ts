@@ -1,3 +1,6 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
     Component,
     Pipe
@@ -11,8 +14,7 @@ import {AppDataService} from "../../../services/appdata.service";
 
 
 @Component({
-    templateUrl: './src/modules/workflow/templates/workflowmanager.html',
-    //providers: [metadata]
+    templateUrl: './src/modules/workflow/templates/workflowmanager.html'
 })
 export class WorkflowManager {
     rules: Array<any> = [];
@@ -37,7 +39,8 @@ export class WorkflowManager {
     }
 
     get modules() {
-        return this.appdata.modules;
+        return this.metadata.getModules().sort();
+        // return this.appdata.modules;
     }
 
     set current_module(val: string) {

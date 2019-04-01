@@ -1,12 +1,17 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
 import {language} from "../../services/language.service";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
+/**
+ * @ignore
+ */
 declare var _;
 
 /**
  * a standard checkbox component, compatible with ngModel!
- * created by: sebastian franz at 2018-07-19
  */
 @Component({
     selector: 'system-checkbox',

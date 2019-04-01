@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {ElementRef, Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
@@ -5,6 +8,9 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {layout} from '../../services/layout.service';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({

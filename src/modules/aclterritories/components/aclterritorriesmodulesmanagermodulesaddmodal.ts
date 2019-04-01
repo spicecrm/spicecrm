@@ -1,3 +1,6 @@
+/**
+ * @module ModuleACLTerritories
+ */
 import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -7,16 +10,17 @@ import {KnowledgeService} from "../services/knowledge.service";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {Subscription} from "rxjs";
+import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
-    providers: [KnowledgeService, model]
+    providers: [KnowledgeService, model, relatedmodels]
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public config: any = {clickable: true};
     public activeTab: string = "tree";
-    private routeSubscriber: Subscription = new Subscription();
+    private subscription: Subscription = new Subscription();
 
     @ViewChild("maincontainer", {read: ViewContainerRef}) private maincontainer: ViewContainerRef;
     @ViewChild("tabsheadercontainer", {read: ViewContainerRef}) private tabsHeaderContainer: ViewContainerRef;
@@ -27,24 +31,12 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
                 private navigation: navigation,
                 private router: Router,
                 private location: Location,
+                private relatedmodels: relatedmodels,
                 private activatedRoute: ActivatedRoute,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
-        this.routeSubscriber = this.activatedRoute.params.subscribe(params => {
-            if (!params.id) {
-                return;
-            }
-            this.model.id = params.id;
-            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
-            this.knowledgeService.selectedId = params.id;
-            this.model.getData(true, 'detailview').subscribe(data => {
-                this.navigation.setActiveModule("KnowledgeBooks", data.knowledgebook_id, data.knowledgebook_name);
-                if (!this.knowledgeService.selectedBook) {
-                    this.knowledgeService.selectedBook = {id: data.knowledgebook_id, name: data.knowledgebook_name};
-                    this.knowledgeService.getDocuments(data.knowledgebook_id);
-                }
-            });
-        });
+        this.prepareRelatedModel();
+        this.routerSubscriber();
     }
 
     get selectedBook() {
@@ -77,7 +69,34 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.routeSubscriber.unsubscribe();
+        this.relatedmodels.stopSubscriptions();
+        this.subscription.unsubscribe();
+    }
+
+    private prepareRelatedModel() {
+        this.relatedmodels.module = "KnowledgeBooks";
+        this.relatedmodels.relatedModule = "KnowledgeDocuments";
+        this.relatedmodels.sort.sortfield = "name";
+        this.relatedmodels.sort.sortdirection = "ASC";
+        this.relatedmodels.loaditems = -1;
+    }
+
+    private routerSubscriber() {
+        this.subscription = this.activatedRoute.params.subscribe(params => {
+            if (!params.id) {
+                return;
+            }
+            this.model.id = params.id;
+            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+            this.knowledgeService.selectedId = params.id;
+            this.model.getData(true, 'detailview').subscribe(data => {
+                this.navigation.setActiveModule("KnowledgeBooks", data.knowledgebook_id, data.knowledgebook_name);
+                if (!this.knowledgeService.selectedBook) {
+                    this.knowledgeService.selectedBook = {id: data.knowledgebook_id, name: data.knowledgebook_name};
+                    this.knowledgeService.getDocuments(data.knowledgebook_id);
+                }
+            });
+        });
     }
 
     private handleSelectedItemEvent(id) {

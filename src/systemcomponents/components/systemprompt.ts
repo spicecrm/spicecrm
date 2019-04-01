@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import { Component, Input, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { language } from '../../services/language.service';
 import { Observable ,  Subject } from 'rxjs';
@@ -12,7 +15,8 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     @Input() private text: string;
     @Input() private headertext: string;
     @Input() private theme: string; // theme according to lightning design -> https://www.lightningdesignsystem.com/utilities/themes/
-    @Input() private value: string;
+    @Input() private value: string|number = null;
+    @Input() private options: string[] = null;
 
     private answer: Observable<boolean> = null;
     private answerSubject: Subject<any> = null;
@@ -39,11 +43,8 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     }
 
     private clickOK() {
-        if ( this.type === 'input' ) {
-            this.answerSubject.next( this.value );
-        } else {
-            this.answerSubject.next( true );
-        }
+        if ( this.type === 'input' ) this.answerSubject.next( this.value );
+        else this.answerSubject.next( true );
         this.answerSubject.complete();
         this.self.destroy();
     }

@@ -1,0 +1,22 @@
+<ul class="slds-list_horizontal slds-has-dividers_right">
+
+        <li *ngFor="let aggregate of moduleaggregates" class="slds-item slds-grid slds-grid--vertical-align-center" [ngStyle]="getElementStyle(aggregate.module)" (click)="toggleModuleFilter(aggregate.module)">
+            <div class="slds-p-right--xxx-small">
+                <system-icon [title]="language.getModuleName(aggregate.module)" [module]="aggregate.module" size="xx-small" divClass="slds-align--absolute-center"></system-icon>
+            </div>
+            <div class="slds-p-right--xxx-small">
+                {{aggregate.count}}
+            </div>
+            <div>
+                {{language.getModuleName(aggregate.module)}}
+            </div>
+        </li>
+        <li *ngFor="let aggregate of yearaggregates" class="slds-item slds-grid slds-grid--vertical-align-center">
+            <div class="slds-p-right--xxx-small">
+                {{aggregate.year}}:
+            </div>
+            <div>
+                {{aggregate.count}}
+            </div>
+        </li>
+</ul>

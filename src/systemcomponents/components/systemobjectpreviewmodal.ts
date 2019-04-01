@@ -1,29 +1,61 @@
-import {Component, EventEmitter, OnInit, Input} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {Component, Input} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {language} from '../../services/language.service';
 
+/**
+ * a modal that renders and provides a preview for an object
+ */
 @Component({
     templateUrl: './src/systemcomponents/templates/systemobjectpreviewmodal.html'
 })
 export class SystemObjectPreviewModal {
 
+    /**
+     * reference to the modal itself
+     */
     private self: any = {};
+
+    /**
+     * the type of the object that will be passed in
+     */
     @Input() private type: string = '';
+
+    /**
+     * the name of the object. This is displayed in the header
+     */
     @Input() private name: string = '';
+
+    /**
+     * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
+     */
     private blobUrl: any;
 
     constructor(private language: language, private sanitizer: DomSanitizer) {
     }
 
+    /**
+     * handles closing the modal
+     */
     private closeModal() {
         this.self.destroy();
     }
 
+    /**
+     * a setter for the data
+     *
+     * @param data the raw data of the object being passed in. When the data is pased in the bloburl is created
+     */
     set data(data) {
         let blob = this.datatoBlob(data, this.type);
         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
     }
 
+    /**
+     * translates the type passed in into the proper obejcttype
+     */
     get objecttype() {
         if (!this.type) return '';
 
@@ -37,14 +69,25 @@ export class SystemObjectPreviewModal {
         }
     }
 
+    /**
+     * a download option in teh window that triggers creation of a link elekent and simulates a click. This will prompt the download in the UI
+     */
     private download() {
         let a = document.createElement("a");
+        document.body.appendChild(a);
         a.href = this.blobUrl;
         a.download = this.name;
         a.click();
         a.remove();
     }
 
+    /**
+     * internal function to translate the data to a BLOL URL
+     *
+     * @param byteCharacters the file data
+     * @param contentType the type
+     * @param sliceSize optional parameter to change performance
+     */
     private datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
         let byteArrays = [];
 

@@ -1,20 +1,21 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, Input, ViewChild, ViewContainerRef,
+    Component, Input,
     OnInit
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
-import { model } from '../../services/model.service';
-import { view } from '../../services/view.service';
-import { userpreferences } from '../../services/userpreferences.service';
+import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
+import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'object-activitiytimeline-event',
     templateUrl: './src/objectcomponents/templates/objectactivitiytimelineevent.html',
-    providers:[model, view]
+    providers: [model, view]
 })
-export class ObjectActivitiyTimelineEvent implements OnInit{
+export class ObjectActivitiyTimelineEvent implements OnInit {
     @Input() private activity: any = {};
     @Input() private showtoolset: boolean = true;
 
@@ -30,16 +31,16 @@ export class ObjectActivitiyTimelineEvent implements OnInit{
         this.formFieldSet = componentconfig.fieldset;
     }
 
-    public ngOnInit(){
+    public ngOnInit() {
         this.model.id = this.activity.id;
         this.model.data = this.activity.data;
     }
 
-    get enableDetail(){
+    get enableDetail() {
         return this.model.checkAccess('detail');
     }
 
-    private goDetail(){
+    private goDetail() {
         this.model.goDetail();
     }
 

@@ -1,21 +1,19 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    AfterViewInit,
-    Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Pipe,
+    Component, Pipe
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
-
-import {Subject} from 'rxjs';
 import {modal} from "../../services/modal.service";
-import {ModuleConfigAddDialog} from "./moduleconfigadddialog";
 import {ObjectRepositoryManagerAddRepo} from "./objectrepositorymanageraddrepo";
 import {modelutilities} from "../../services/modelutilities.service";
 import {configurationService} from "../../services/configuration.service";
 import {view} from "../../services/view.service";
-import {spiceprocess} from "../../addcomponents/services/spiceprocess";
 
 /*
 * add a pipe to filter by the object

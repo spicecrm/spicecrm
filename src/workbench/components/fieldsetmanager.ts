@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component
 } from '@angular/core';
@@ -52,9 +55,9 @@ export class FieldsetManager {
             this.sysModules = modules;
 
             // iniutialize the metadata service
-            this.metadata.loadFieldSets(new Subject<any>(), true);
-            this.metadata.loadFieldDefs(new Subject<any>(), true);
-            this.metadata.loadComponents(new Subject<any>(), true);
+            // this.metadata.loadFieldSets(new Subject<any>(), true);
+            // this.metadata.loadFieldDefs(new Subject<any>(), true);
+            // this.metadata.loadComponents(new Subject<any>(), true);
         });
         this.checkMode();
     }
@@ -113,34 +116,34 @@ export class FieldsetManager {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
-        if(!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')) {
+        if (!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')) {
             this.edit_mode = 'custom';
         }
 
-        if(this.change_request_required) {
+        if (this.change_request_required) {
             this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     this.crNoneActive = true;
                     this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
-                }else {
+                } else {
                     this.crNoneActive = false;
-                    if(this.edit_mode == "all") {
+                    if (this.edit_mode == "all") {
                         this.setAllMode();
-                    }else if(this.edit_mode == "custom") {
+                    } else if (this.edit_mode == "custom") {
                         this.setCustomMode();
-                    }else {
+                    } else {
                         this.setNoneMode();
                     }
                 }
             });
-        }else {
+        } else {
             this.crNoneActive = false;
-            if(this.edit_mode == "all") {
+            if (this.edit_mode == "all") {
                 this.setAllMode();
-            }else if(this.edit_mode == "custom") {
+            } else if (this.edit_mode == "custom") {
                 this.setCustomMode();
-            }else {
+            } else {
                 this.setNoneMode();
             }
         }
@@ -150,13 +153,15 @@ export class FieldsetManager {
         this.view.setViewMode();
         this.allowBarButtons = false;
     }
+
     private setCustomMode() {
-        if(this.fieldSetType == "custom") {
+        if (this.fieldSetType == "custom") {
             this.view.setEditMode();
-        }else {
+        } else {
             this.view.setViewMode();
         }
     }
+
     private setAllMode() {
         this.view.setEditMode();
     }
@@ -181,7 +186,9 @@ export class FieldsetManager {
             modal.instance.edit_mode = this.edit_mode;
             modal.instance.parent = parent ? parent : this.currentFieldSet;
             modal.instance.closedialog.subscribe(added => {
-                if (added) {this.loadCurrentFieldset();}
+                if (added) {
+                    this.loadCurrentFieldset();
+                }
             });
         });
     }
@@ -234,17 +241,17 @@ export class FieldsetManager {
     }
 
     private addFieldSetItems(fieldSet, level = 0, parentScope = "global") {
-        let fieldsetItems = this.metadata.getFieldSetFields(fieldSet);
+        let fieldsetItems = this.metadata.getFieldSetItems(fieldSet);
 
         // for(let [index, fieldsetItem] of fieldsetItems){
         fieldsetItems.forEach((fieldsetItem, index) => {
 
             let customModeGlobalField = false;
-            if(this.edit_mode == "custom" && !this.crNoneActive) {
-                if(parentScope == "global") {
+            if (this.edit_mode == "custom" && !this.crNoneActive) {
+                if (parentScope == "global") {
                     customModeGlobalField = true;
                 }
-            }else if(this.edit_mode == "none" || this.crNoneActive) {
+            } else if (this.edit_mode == "none" || this.crNoneActive) {
                 customModeGlobalField = true;
             }
 
@@ -266,14 +273,14 @@ export class FieldsetManager {
             } else if (fieldsetItem.fieldset) {
 
                 let customModeGlobalField = false;
-                if(this.edit_mode == "custom" && !this.crNoneActive) {
+                if (this.edit_mode == "custom" && !this.crNoneActive) {
                     let item = this.metadata.getFieldset(fieldsetItem.fieldset);
                     if (item) {
                         if (item.type == "global") {
                             customModeGlobalField = true;
                         }
                     }
-                }else if(this.edit_mode == "none" || this.crNoneActive) {
+                } else if (this.edit_mode == "none" || this.crNoneActive) {
                     customModeGlobalField = true;
                 }
                 // getDisplayType(currentFieldSetItem) == 'global'
@@ -332,7 +339,7 @@ export class FieldsetManager {
     }
 
     private moveDown(item) {
-        let fieldsetItems = this.metadata.getFieldSetFields(item.fieldset);
+        let fieldsetItems = this.metadata.getFieldSetItems(item.fieldset);
 
         // get the current ind ex in the array
         let currentIndex = 0;
@@ -360,7 +367,7 @@ export class FieldsetManager {
     }
 
     private moveUp(item) {
-        let fieldsetItems = this.metadata.getFieldSetFields(item.fieldset);
+        let fieldsetItems = this.metadata.getFieldSetItems(item.fieldset);
 
         // get the current ind ex in the array
         let currentIndex = 0;
@@ -431,7 +438,9 @@ export class FieldsetManager {
                     let type = update.type;
                     let name = update.name;
 
-                    if (module == "*") {module = 'global';}
+                    if (module == "*") {
+                        module = 'global';
+                    }
 
 
                     let checkParams = {
@@ -448,7 +457,9 @@ export class FieldsetManager {
                                 let tablescope = this.findTable(type);
 
                                 fieldset.module = module;
-                                if (module == "global") {fieldset.module = '*';}
+                                if (module == "global") {
+                                    fieldset.module = '*';
+                                }
                                 fieldset.name = name;
 
                                 let newid = this.modelutilities.generateGuid(); // generate id
@@ -464,7 +475,6 @@ export class FieldsetManager {
                                     copied_item.fieldset_id = newid;
                                     save_items.push(copied_item);
                                 }
-
 
 
                                 delete fieldset.items;
@@ -541,49 +551,49 @@ export class FieldsetManager {
 
     private saveChanges() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-        this.backend.getRequest('spiceui/core/fieldsets').subscribe((res: any) => {
+            this.backend.getRequest('spiceui/core/fieldsets').subscribe((res: any) => {
 
 
-            let rawFieldsets = this.metadata.getRawFieldSets();
-            let addedFieldsets: any = {};
-            let changedFieldsets: any = {};
-            let deletedFieldsets: any = {};
+                let rawFieldsets = this.metadata.getRawFieldSets();
+                let addedFieldsets: any = {};
+                let changedFieldsets: any = {};
+                let deletedFieldsets: any = {};
 
-            for (let fieldset in rawFieldsets) {
-                if (!res[fieldset]) {
-                    addedFieldsets[fieldset] = rawFieldsets[fieldset];
-                    continue;
+                for (let fieldset in rawFieldsets) {
+                    if (!res.fieldsets[fieldset]) {
+                        addedFieldsets[fieldset] = rawFieldsets[fieldset];
+                        continue;
+                    }
+
+                    if (JSON.stringify(rawFieldsets[fieldset]) !== JSON.stringify(res.fieldsets[fieldset])) {
+                        changedFieldsets[fieldset] = rawFieldsets[fieldset];
+                    }
+
+                    delete (res.fieldsets[fieldset]);
                 }
 
-                if (JSON.stringify(rawFieldsets[fieldset]) !== JSON.stringify(res[fieldset])) {
-                    changedFieldsets[fieldset] = rawFieldsets[fieldset];
-                }
-
-                delete(res[fieldset]);
-            }
-
-            deletedFieldsets = res;
+                deletedFieldsets = res.fieldsets;
 
 
-            let postData = {
-                add: addedFieldsets,
-                update: changedFieldsets,
-                delete: deletedFieldsets
-            };
+                let postData = {
+                    add: addedFieldsets,
+                    update: changedFieldsets,
+                    delete: deletedFieldsets
+                };
 
-            this.backend.postRequest('spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
-                this.broadcast.broadcastMessage('metadata.updatefieldsets', postData);
-                loadingModalRef.instance.self.destroy();
-                this.toast.sendToast('changes saved');
+                this.backend.postRequest('spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
+                    this.broadcast.broadcastMessage('metadata.updatefieldsets', postData);
+                    loadingModalRef.instance.self.destroy();
+                    this.toast.sendToast('changes saved');
+                });
             });
-        });
         });
     }
 
     get getAllowCopyButton() {
-        if(!this.currentFieldSet) {
+        if (!this.currentFieldSet) {
             return false;
-        }else {
+        } else {
             return this.allowBarButtons;
         }
     }

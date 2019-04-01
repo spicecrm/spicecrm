@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Injectable, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";
@@ -6,6 +9,7 @@ import {broadcast} from "../../../services/broadcast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {take} from "rxjs/operators";
 import {Subscription} from "rxjs";
+import {relatedmodels} from "../../../services/relatedmodels.service";
 
 
 @Injectable()
@@ -25,6 +29,7 @@ export class KnowledgeService implements OnDestroy {
     constructor(private backend: backend,
                 private favorite: favorite,
                 private broadcast: broadcast,
+                private relatedmodels: relatedmodels,
                 public userPreferences: userpreferences,
                 private fts: fts) {
         this.userPreferences.loadPreferences('KnowledgeBooks')
@@ -43,7 +48,6 @@ export class KnowledgeService implements OnDestroy {
                 this.getDocuments(book.id);
             }
         });
-
     }
 
     get searchTerm() {
@@ -93,11 +97,15 @@ export class KnowledgeService implements OnDestroy {
 
     public getDocuments(bookId) {
         this.isLoading = true;
-        this.backend.getRequest(`module/KnowledgeDocuments/${bookId}/items`).subscribe((docs: any) => {
-            this.documents = docs;
-            this.sortDocuments();
-            this.isLoading = false;
-        });
+        this.relatedmodels.id = bookId;
+        this.relatedmodels.items$
+            .pipe(take(1))
+            .subscribe((docs: any[]) => {
+                this.documents = docs;
+                this.sortDocuments();
+                this.isLoading = false;
+            });
+        this.relatedmodels.getData();
     }
 
     public sortDocuments() {

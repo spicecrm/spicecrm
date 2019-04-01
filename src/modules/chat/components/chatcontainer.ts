@@ -1,13 +1,12 @@
-import {Component, Input, HostBinding, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ModuleChat
+ */
+import {Component, OnDestroy} from '@angular/core';
 
-// import * as socketIo from 'socket.io-client';
 
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
-import {popup} from '../../../services/popup.service';
 import {backend} from "../../../services/backend.service";
 
 declare var socketIo: any;

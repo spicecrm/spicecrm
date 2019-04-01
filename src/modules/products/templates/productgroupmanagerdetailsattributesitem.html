@@ -1,0 +1,28 @@
+<article class="slds-card">
+    <div style="box-shadow: 0 0 1px grey;border-radius: .25rem;">
+        <div class="slds-card__header slds-grid slds-grid--align-spread">
+            <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                <object-icon [module]="model.module" [size]="'small'"></object-icon>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" (click)="goDetails()">
+                            {{attribute.summary_text}}
+                        </a>
+                        <span *ngIf="showParent" class="slds-text-color--inverse-weak"> / {{attribute.parent_name}}</span>
+                    </h2>
+                </div>
+            </header>
+            <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
+        </div>
+        <div [class.slds-hidden]="!isOpen" [style.height]="!isOpen ? '0':'initial'" class="slds-card__body">
+            <div class="slds-grid slds-p-bottom--small slds-p-top--small slds-wrap">
+                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                   <div #detailscontainer></div>
+                </div>
+                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                    <product-group-manager-details-attributes-validation [parent]="thisModel"></product-group-manager-details-attributes-validation>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

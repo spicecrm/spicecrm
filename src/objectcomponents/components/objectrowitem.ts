@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, EventEmitter, HostBinding, Input, OnInit, Output} from '@angular/core';
 import {Router}   from '@angular/router';
 import {language} from '../../services/language.service';

@@ -1,19 +1,12 @@
+/**
+ * @module ModuleAccounts
+ */
 import {CommonModule} from "@angular/common";
-import {NgModule, Renderer2, Output, Component, Injectable, EventEmitter, OnInit, AfterViewInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, Input} from "@angular/core";
+import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-
-import {Subject, Observable} from "rxjs";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
-
-import {language} from "../../services/language.service";
-import {view} from "../../services/view.service";
-import {metadata} from "../../services/metadata.service";
-import {backend} from "../../services/backend.service";
-import {model} from "../../services/model.service";
-import {toast} from "../../services/toast.service";
-import {relatedmodels} from "../../services/relatedmodels.service";
 
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";

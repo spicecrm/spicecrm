@@ -1,13 +1,16 @@
-import {
-    AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Output,
-    EventEmitter, OnInit
-} from '@angular/core';
+/**
+ * @module ModuleProducts
+ */
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {toast} from '../../../services/toast.service';
 import {navigation} from '../../../services/navigation.service';
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -22,75 +25,14 @@ declare var moment: any;
 })
 export class ProductGroupsContentCodeAssignments {
 
-    dialogvisible: boolean = false;
-    assignedAttributes: Array<any> = [];
-    allAttributes: Array<any> = [];
-    selectedAttribute: string = '';
-    isLoading: boolean = false;
+    private dialogvisible: boolean = false;
+    private assignedAttributes: any[] = [];
+    private allAttributes: any[] = [];
+    private selectedAttribute: string = '';
+    private isLoading: boolean = false;
 
     constructor(private language: language, private model: model, private navigation: navigation, private backend: backend, private toast: toast) {
 
-    }
-
-    getDisplay() {
-        if (this.model.data.acl && !this.model.data.acl.edit)
-            return 'none';
-
-        return this.model.isEditing ? 'none' : 'inherit';
-    }
-
-    editDisable(productgroup_id) {
-        return productgroup_id != this.model.id;
-    }
-
-    showDialog() {
-        // get the attributes
-        this.assignedAttributes = [];
-        this.isLoading = true;
-        this.backend.getRequest('module/ProductGroups/' + this.model.id + '/productattributes/textgenerator').subscribe((attributes: any) => {
-
-            // write the assigned attributes
-            for (let attributeid in attributes.assignedattributes) {
-                this.assignedAttributes.push(attributes.assignedattributes[attributeid]);
-            }
-            this.assignedAttributes.sort((a, b) => {
-                return a.name > b.name ? 1 : -1;
-            })
-
-            // get all availabel attriobutes
-            this.allAttributes = attributes.allattributes;
-            this.allAttributes.sort((a, b) => {
-                return a.name > b.name ? 1 : -1;
-            })
-
-            this.isLoading = false;
-        })
-
-
-        this.dialogvisible = true;
-    }
-
-    hideDialog() {
-        this.dialogvisible = false;
-    }
-
-    save() {
-        this.isLoading = true;
-        let attributes = [];
-        for (let attribute of this.assignedAttributes) {
-            if (attribute.productgroup_id === this.model.id)
-                attributes.push({
-                    id: attribute.id,
-                    contentcode: attribute.contentcode,
-                    contentcode2: attribute.contentcode2,
-                    contentprefix: attribute.contentprefix
-                });
-        }
-        this.backend.postRequest('module/ProductGroups/' + this.model.id + '/productattributes/textgenerator', {}, attributes).subscribe(response => {
-            this.hideDialog();
-            this.toast.sendToast('changes saved');
-            this.isLoading = false;
-        })
     }
 
     get addDisabled() {
@@ -104,12 +46,77 @@ export class ProductGroupsContentCodeAssignments {
                 attribfound = true;
                 return true;
             }
-        })
+        });
 
         return attribfound;
     }
 
-    addAttribute() {
+    private getDisplay() {
+        if (this.model.data.acl && !this.model.data.acl.edit) {
+            return 'none';
+        }
+
+        return this.model.isEditing ? 'none' : 'inherit';
+    }
+
+    private editDisable(productgroup_id) {
+        return productgroup_id != this.model.id;
+    }
+
+    private showDialog() {
+        // get the attributes
+        this.assignedAttributes = [];
+        this.isLoading = true;
+        this.backend.getRequest('module/ProductGroups/' + this.model.id + '/productattributes/textgenerator').subscribe((attributes: any) => {
+
+            // write the assigned attributes
+            for (let attributeid in attributes.assignedattributes) {
+                if (attributes.assignedattributes.hasOwnProperty(attributeid)) {
+                    this.assignedAttributes.push(attributes.assignedattributes[attributeid]);
+                }
+            }
+            this.assignedAttributes.sort((a, b) => {
+                return a.name > b.name ? 1 : -1;
+            });
+
+            // get all availabel attriobutes
+            this.allAttributes = attributes.allattributes;
+            this.allAttributes.sort((a, b) => {
+                return a.name > b.name ? 1 : -1;
+            });
+
+            this.isLoading = false;
+        });
+
+
+        this.dialogvisible = true;
+    }
+
+    private hideDialog() {
+        this.dialogvisible = false;
+    }
+
+    private save() {
+        this.isLoading = true;
+        let attributes = [];
+        for (let attribute of this.assignedAttributes) {
+            if (attribute.productgroup_id === this.model.id) {
+                attributes.push({
+                    id: attribute.id,
+                    contentcode: attribute.contentcode,
+                    contentcode2: attribute.contentcode2,
+                    contentprefix: attribute.contentprefix
+                });
+            }
+        }
+        this.backend.postRequest('module/ProductGroups/' + this.model.id + '/productattributes/textgenerator', {}, attributes).subscribe(response => {
+            this.hideDialog();
+            this.toast.sendToast('changes saved');
+            this.isLoading = false;
+        });
+    }
+
+    private addAttribute() {
         this.allAttributes.some(attribute => {
             if (attribute.id == this.selectedAttribute) {
                 this.assignedAttributes.push({
@@ -119,13 +126,13 @@ export class ProductGroupsContentCodeAssignments {
                     contentcode2: '',
                     contentprefix: '',
                     productgroup_id: this.model.id,
-                })
+                });
                 return true;
             }
-        })
+        });
     }
 
-    removeAttribute(attribute) {
+    private removeAttribute(attribute) {
         let foundindex = 0;
 
         this.assignedAttributes.some(thisAttribute => {
@@ -134,7 +141,7 @@ export class ProductGroupsContentCodeAssignments {
                 return true;
             }
             foundindex++;
-        })
+        });
 
     }
 

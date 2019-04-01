@@ -1,0 +1,6 @@
+<td *ngFor="let listField of listFields; trackBy: trackByFn" [attr.data-label]="language.getFieldDisplayName(model.module, listField.field)" scope="row">
+    <field-container [field]="listField.field" [fieldconfig]="listField.fieldconfig" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+</td>
+<td role="gridcell" class="slds-cell-shrink" *ngIf="canEdit">
+    <object-action-menu [buttonsize]="'small'"></object-action-menu>
+</td>

@@ -1,4 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+/**
+ * @module ModuleQuestionnaires
+ */
+import { Component, OnInit, Input, EventEmitter, ViewChild } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';

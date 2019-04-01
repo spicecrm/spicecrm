@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, Input, OnInit, ViewContainerRef} from '@angular/core';
+/**
+ * @module ServiceComponentsModule
+ */
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
@@ -48,7 +51,7 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
         // get the fields
         let componentconfig = this.metadata.getComponentConfig('ServiceActivitiyTimelineAddServiceCall', this.model.module);
         this.formFieldSet = componentconfig.fieldset;
-        this.formFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+        this.formFields = this.metadata.getFieldSetItems(componentconfig.fieldset);
     }
 
     initializeCall(){

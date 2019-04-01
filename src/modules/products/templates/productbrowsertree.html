@@ -1,32 +1,26 @@
-<div class="slds-tree_container slds-p-around--x-small" role="application" style="height: 50%;max-width: none;">
-    <div #treeheader class="slds-grid slds-p-around--x-small slds-grid--vertical-align-center slds-grid--align-spread">
-        <h4  class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small">{{language.getModuleName('ProductGroups')}}</h4>
-        <div class="slds-grid slds-grid--vertical-align-center">
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                    <span class="slds-checkbox">
-                      <input type="checkbox" name="options" id="onlyitemswithproducts" [(ngModel)]="productgrouptreeresultsonly">
-                      <label class="slds-checkbox__label" for="onlyitemswithproducts">
-                        <span class="slds-checkbox_faux"></span>
-                        <span class="slds-form-element__label">results only</span>
-                      </label>
-                    </span>
-                </div>
-            </div>
+<div class="slds-tree_container" role="application" style="max-width: none; height: inherit;">
+    <div #treeheader>
+        <div class="slds-border--bottom slds-grid slds-p-around--x-small slds-grid--vertical-align-center slds-grid--align-spread">
+            <h4  class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small">{{language.getModuleName('ProductGroups')}}</h4>
+            <system-checkbox [(ngModel)]="productGroupTreeResultsOnly">{{language.getLabel('LBL_RESULTS_ONLY')}}</system-checkbox>
         </div>
     </div>
-    <div class="slds-scrollable" [ngStyle]="treestyle">
+    <div class="slds-scrollable--y spicecrm-scrollbar" [ngStyle]="treeStyle">
         <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
-            <li *ngFor="let productgroup of productgrouptree" role="treeitem" [attr.aria-level]="productgroup.level" [ngClass]="{'slds-theme--shade': isSelected(productgroup.id)}">
-                <div *ngIf="productgroup.type=='group' && displayTreeNode(productgroup)" class="slds-tree__item">
-                    <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" [disabled]="!canexpand(productgroup)" (click)="toggle(productgroup)">
+            <li *ngFor="let productgroup of productGroupTree; trackBy: trackByFn" role="treeitem" [attr.aria-level]="productgroup.level" [class.slds-theme--shade]="isSelected(productgroup.id)">
+                <div *ngIf="productgroup.type=='ProductGroup' && displayTreeNode(productgroup)" class="slds-tree__item">
+                    <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" [disabled]="!canExpand(productgroup)" (click)="toggle(productgroup)">
                         <system-button-icon [icon]="'chevronright'"></system-button-icon>
                     </button>
-                    <a href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate" (click)="selectGroup(productgroup)" [title]="productgroup.summary_text +' ('+ getAggregateCount(productgroup) +')'">{{productgroup.summary_text}}&nbsp;({{getAggregateCount(productgroup)}})</a>
+                    <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" (click)="selectGroup(productgroup)" [title]="getLinkTitle(productgroup)">
+                        {{productgroup.summary_text}}&nbsp;({{getAggregateCount(productgroup)}})
+                    </a>
                 </div>
-                <div *ngIf="productgroup.type=='product' && displayTreeNode(productgroup)" class="slds-tree__item slds grid slds-grid--vertical-align-center" (click)="selectProduct(productgroup)">
+                <div *ngIf="productgroup.type=='Product' && displayTreeNode(productgroup)" class="slds-tree__item slds grid slds-grid--vertical-align-center" (click)="selectProduct(productgroup)">
                     <system-icon [module]="'Products'" [size]="'small'"></system-icon>
-                    <a href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate">{{productgroup.summary_text}}&nbsp;({{getAggregateCount(productgroup)}})</a>
+                    <a href="javascript:void(0);" tabindex="-1" class="slds-truncate">
+                        {{productgroup.summary_text}}&nbsp;({{getAggregateCount(productgroup)}})
+                    </a>
                 </div>
             </li>
         </ul>

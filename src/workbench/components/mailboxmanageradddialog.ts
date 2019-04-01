@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {metadata} from "../../services/metadata.service";
@@ -11,7 +14,7 @@ import {model} from "../../services/model.service";
     providers: [model]
 })
 export class MailboxManagerAddDialog {
-    //@Output()
+    // @Output()
     closedialog: EventEmitter<any> = new EventEmitter<any>();
     @Input() mailboxes: Array<any>;
 
