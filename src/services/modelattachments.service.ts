@@ -224,8 +224,10 @@ export class modelattachments {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
+            document.body.appendChild(a);
             a.href = blobUrl;
             a.download = fileData.filename;
+            a.type = fileData.file_mime_type;
             a.click();
             a.remove();
         });
