@@ -10,6 +10,8 @@ import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 
+declare var _: any;
+
 @Component({
     selector: 'workflow-manager-detail-conditions',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailconditions.html',
@@ -29,12 +31,32 @@ export class WorkflowManagerDetailConditions {
         this.view.setEditMode();
     }
 
+    /**
+     * getter for teh conditions stored on the workflow definition
+     */
+    get conditions() {
+        // get from the model
+        let conditions = this.model.getField('conditions');
 
-    get module(){
+        // if none are set initialize
+        if (!conditions || (_.isArray(conditions) && _.isEmpty(conditions))) {
+            conditions = {
+                logicaloperator: 'and',
+                groupscope: 'all',
+                conditions: []
+            };
+            this.model.setField('conditions', conditions);
+        }
+
+        // return the object
+        return conditions;
+    }
+
+    get module() {
         return this.model.getField('workflowdefinition_module');
     }
 
-    private addCondition(){
+    private addCondition() {
         let newGuid = this.modelutilities.generateGuid();
         this.model.data.conditions.push({
             id: newGuid,
