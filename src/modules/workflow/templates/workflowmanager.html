@@ -42,10 +42,16 @@
     <div *ngIf="current_module" class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral" (click)="addWorkflow()">{{language.getLabel('LBL_ADD')}}</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="deleteWorkflow()">{{language.getLabel('LBL_DELETE')}}</button>
+            <!--button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="deleteWorkflow()">{{language.getLabel('LBL_DELETE')}}</button-->
+        </div>
+    </div>
+</div>
+<div *ngIf="current_workflow">
+    <workflow-manager-detail  [modeldata]="_current_workflow_data"></workflow-manager-detail>
+    <div *ngIf="current_module" class="slds-form-element slds-grid slds-grid--align-center slds-theme--default slds-p-around--x-small">
+        <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
             <button type="button" class="slds-button slds-button--brand" [disabled]="!current_workflow" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
     </div>
 </div>
-<workflow-manager-detail *ngIf="current_workflow" [modeldata]="_current_workflow_data"></workflow-manager-detail>

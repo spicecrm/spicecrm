@@ -98,6 +98,8 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import /*embed*/ {fieldTextID} from "./components/fieldtextid";
+import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
+import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
 
 /**
 * @ignore
@@ -203,7 +205,9 @@ declare var _: any;
         fieldPhone,
         fieldCronInterval,
         fieldGooglePlacesSearch,
-        fieldTextID
+        fieldTextID,
+        fieldBackendMethod,
+        fieldSystemLabel
     ],
     exports: [
         fieldSet,
