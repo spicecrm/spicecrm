@@ -60,7 +60,7 @@ export class ObjectListViewAggregatesPanel {
     }
 
     get tagsaggregate(): any[] {
-        return this.modellist.searchAggregates.hasOwnProperty('tags') ? this.modellist.searchAggregates.tags : [];
+        return this.modellist.searchAggregates && this.modellist.searchAggregates.hasOwnProperty('tags') ? this.modellist.searchAggregates.tags : [];
     }
 
     /**
