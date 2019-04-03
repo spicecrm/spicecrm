@@ -140,6 +140,7 @@ export class userpreferences {
                 this.completePreferencesWithDefaults();
             });
         } else {
+            if(!this.preferences[category]) this.preferences[category] = {};
             this.preferences[category][name] = value;
             this.completePreferencesWithDefaults();
         }
