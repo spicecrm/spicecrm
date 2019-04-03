@@ -82,7 +82,7 @@ declare var Office: any;
         RouterModule.forRoot([
             {path: 'settings', component: OutlookSettingsPane},
             {path: 'login', component: GlobalLogin},
-            {path: "", component: OutlookRouteHandler, pathMatch: "full", canActivate: [loginCheck]}
+            // {path: "", component: OutlookRouteHandler, pathMatch: "full", canActivate: [loginCheck]}
         ])
     ],
     declarations: [
