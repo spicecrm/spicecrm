@@ -113,9 +113,9 @@ export class SpiceUI {
         ObjectComponents,
         RouterModule.forRoot(
             [
-                // {path: "login", component: GlobalLogin},
-                // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
+                {path: "login", component: GlobalLogin},
+                {path: "", redirectTo: "/module/Home", pathMatch: "full"},
+                {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
             ]
         )
     ],

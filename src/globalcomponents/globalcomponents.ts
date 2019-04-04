@@ -87,7 +87,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         DirectivesModule,
         SystemComponents,
         RouterModule.forRoot([
-            {path: "login", component: GlobalLogin},
+            // {path: "login", component: GlobalLogin},
             {path: "setup", component: GlobalSetup},
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},

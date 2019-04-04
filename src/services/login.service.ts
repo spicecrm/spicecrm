@@ -131,7 +131,8 @@ export class loginService {
                 this.router.navigate([this.redirectUrl]);
                 this.redirectUrl = '';
             } else {
-                this.router.navigate(['/module/Home']);
+                // this.router.navigate(['/module/Home']);
+                this.router.navigate(['/']);
             }
         }
     }
