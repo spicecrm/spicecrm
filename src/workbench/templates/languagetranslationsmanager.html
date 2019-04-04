@@ -1,5 +1,8 @@
-<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom slds-grid--align-end">
-    <div class="slds-grid slds-grid--vertical-align-center">
+<div class="slds-border--bottom slds-form--inline slds-grid slds-grid--vertical-align-end slds-p-around--small">
+    <div *ngIf="!isLoading && selectedLanguage?.length > 0 && labels?.length" class="slds-text-heading--label">
+        Untranslated records: <span class="slds-text-color--error">{{labels?.length}}</span>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center slds-col--bump-left">
         <div>
             <span class="slds-radio">
                 <input type="radio" name="translation_scope" [(ngModel)]="scope" [disabled]="isLoading" id="scope_global" value="global">
@@ -25,6 +28,7 @@
         <div class="slds-form-element__control slds-p-right--x-small">
             <div class="slds-select_container" style="min-width: 150px;">
                 <select class="slds-select" [(ngModel)]="selectedLanguage" (change)="getTranslations()" [disabled]="isLoading">
+                    <option></option>
                     <option *ngFor="let lang of languages" [value]="lang.language">{{lang.text}}</option>
                 </select>
             </div>
@@ -92,4 +96,5 @@
         </div>
     </div>
     <div *ngIf="!isLoading && selectedLanguage.length == 0" class="slds-align_absolute-center" style="height: 100%;">{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
+    <div *ngIf="!isLoading && selectedLanguage?.length > 0 && labels?.length == 0" class="slds-align_absolute-center" style="height: 100%;">{{language.getLabel('LBL_NO_ENTRIES')}}</div>
 </div>
