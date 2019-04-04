@@ -19,7 +19,7 @@ import {Subject, Observable} from 'rxjs';
 
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {GlobalComponents} from "../../globalcomponents/globalcomponents";
+// import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
 /*
@@ -72,7 +72,7 @@ declare var Office: any;
         HttpClientModule,
         FormsModule,
         SystemComponents,
-        GlobalComponents,
+        // GlobalComponents,
         ObjectComponents,
         DirectivesModule,
         RouterModule.forRoot([

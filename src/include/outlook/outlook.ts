@@ -19,7 +19,7 @@ import {Subject, Observable} from 'rxjs';
 
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import {GlobalComponents} from "../../globalcomponents/globalcomponents";
+// import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 // // various services we need on global app level
@@ -67,6 +67,7 @@ import /*embed*/ {OutlookRouteHandler} from './components/outlookroutehandler';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
 import {GlobalLogin} from "../../globalcomponents/components/globallogin";
+import {loggerService} from "../../services/logger.service";
 
 declare var Office: any;
 
@@ -76,13 +77,13 @@ declare var Office: any;
         HttpClientModule,
         FormsModule,
         SystemComponents,
-        GlobalComponents,
+        // GlobalComponents,
         ObjectComponents,
         ModuleGroupware,
         RouterModule.forRoot([
             {path: 'settings', component: OutlookSettingsPane},
-            {path: 'login', component: GlobalLogin},
-            // {path: "", component: OutlookRouteHandler, pathMatch: "full", canActivate: [loginCheck]}
+            {path: 'login', component: OutlookLoginPane},
+            {path: "", component: OutlookRouteHandler, pathMatch: "full", canActivate: [loginCheck]}
         ])
     ],
     declarations: [
@@ -128,6 +129,7 @@ declare var Office: any;
         // assistant,
         VersionManagerService,
         modal,
+        loggerService
         // Title
         //
     ]

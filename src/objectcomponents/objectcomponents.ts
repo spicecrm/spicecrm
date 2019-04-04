@@ -230,8 +230,8 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
             {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-            {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
+            // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
+            // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
         ObjectIcon,
