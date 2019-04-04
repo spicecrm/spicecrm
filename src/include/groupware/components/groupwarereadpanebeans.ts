@@ -3,7 +3,6 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 // import AsyncResultStatus = Office.AsyncResultStatus;
 import {Subject, Observable} from 'rxjs';
 import {GroupwareService} from '../services/groupware.service';
-import {configuration} from '../services/configuration.service';
 
 import {backend} from '../../../services/backend.service';
 
@@ -18,7 +17,6 @@ export class GroupwareReadPaneBeans {
     constructor(
         private http: HttpClient,
         private groupware: GroupwareService,
-        private configuration: configuration,
         private backend: backend
     ) {
         this.loadLinkedBeans();
