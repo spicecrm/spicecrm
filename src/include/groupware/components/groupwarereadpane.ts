@@ -4,7 +4,6 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
-import {configuration} from '../services/configuration.service';
 import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
 
@@ -20,7 +19,6 @@ export class GroupwareReadPane {
 
     constructor(
         private backend: backend,
-        private configuration: configuration,
         private groupware: GroupwareService,
         private http: HttpClient,
         private router: Router,

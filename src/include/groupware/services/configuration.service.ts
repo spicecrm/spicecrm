@@ -1,6 +1,7 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
+import {backend} from "../../../services/backend.service";
 // import AsyncResultStatus = Office.AsyncResultStatus;
 
 declare var Office: any;
@@ -11,7 +12,6 @@ export class configuration {
 
     public username: string;
     public password: string;
-    public spiceUrl: string;
 
     public serviceRequest = {
         attachmentToken: '',
@@ -20,7 +20,8 @@ export class configuration {
     };
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+        private backend: backend,
     ) {
         this.loadSettings();
     }
@@ -28,11 +29,10 @@ export class configuration {
     public loadSettings() {
         this.username = this.settings.get('username');
         this.password = this.settings.get('password');
-        this.spiceUrl = this.settings.get('spiceUrl');
     }
 
     public hasSettings() {
-        return this.username != '' && this.password != '' && this.spiceUrl != '';
+        return this.username != '' && this.password != '';
     }
 
     public saveSettings(): Observable<any> {
@@ -40,7 +40,6 @@ export class configuration {
 
         this.settings.set('username', this.username);
         this.settings.set('password', this.password);
-        this.settings.set('spiceUrl', this.spiceUrl);
 
         this.settings.saveAsync(result => {
             if (result.status == Office.AsyncResultStatus.Failed) {
@@ -60,13 +59,8 @@ export class configuration {
     public testSettings(): Observable<any> {
 
         let retSubject = new Subject();
-        let requestUrl = this.spiceUrl + '/login';
-        let headers = this.getHeaders();
 
-        this.http.get(
-            requestUrl,
-            {headers: headers}
-        ).subscribe(
+        this.backend.getRequest('login').subscribe(
             (res: any) => {
                 // OK
                 retSubject.next(true);
@@ -78,12 +72,5 @@ export class configuration {
             }
         );
         return retSubject.asObservable();
-    }
-
-    public getHeaders(): HttpHeaders {
-        let headers = new HttpHeaders();
-        headers = headers.set("Authorization", "Basic "
-            + btoa(this.username + ":" + this.password));
-        return headers;
     }
 }

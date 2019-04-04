@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 
-import {configuration} from '../services/configuration.service';
 import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
 
@@ -20,7 +19,6 @@ export class GroupwareReadPaneSearch {
 
     constructor(
         private backend: backend,
-        private configuration: configuration,
         private groupware: GroupwareService,
         private http: HttpClient,
     ) {

@@ -44,7 +44,7 @@
     <FormSettings>
         <Form xsi:type="ItemRead">
             <DesktopSettings>
-                <SourceLocation DefaultValue="https://<serverurl>/outlookmailitemread.html"/>
+                <SourceLocation DefaultValue="https://<serverurl>/outlook.html"/>
                 <RequestedHeight>250</RequestedHeight>
             </DesktopSettings>
         </Form>
@@ -125,7 +125,7 @@
             <bt:Urls>
                 <bt:Url id="functionFile"
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
-                <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlookmailitemread.html"/>
+                <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html"/>
                 <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlookcrm.html"/>
             </bt:Urls>
             <bt:ShortStrings>
@@ -257,7 +257,7 @@
                 </bt:Images>
                 <bt:Urls>
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
-                    <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlookmailitemread.html"/>
+                    <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html"/>
                     <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlookcrm.html"/>
                 </bt:Urls>
                 <bt:ShortStrings>
