@@ -20,13 +20,6 @@
                    class="slds-input" [(ngModel)]="this.configuration.password"/>
         </div>
     </div>
-    <div class="slds-form-element">
-        <label class="slds-form-element__label" >SpiceCRM API URL</label>
-        <div class="slds-form-element__control">
-            <input type="text"autocomplete="off" placeholder="Please enter your SpiceCRM API URL"
-                   class="slds-input" [(ngModel)]="this.configuration.spiceUrl"/>
-        </div>
-    </div>
     <div *ngIf="saveFailed" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
          role="alert">
         <span class="slds-assistive-text">error</span>
