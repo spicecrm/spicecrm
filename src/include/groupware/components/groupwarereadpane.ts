@@ -7,8 +7,6 @@ import {Router} from '@angular/router';
 import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
 
-// declare var Office: any;
-
 @Component({
     selector: 'groupware-read-pane',
     templateUrl: './src/include/groupware/templates/groupwarereadpane.html'
