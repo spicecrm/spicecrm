@@ -62,6 +62,8 @@ import /*embed*/ {GroupwareReadPaneAttachments} from './components/groupwareread
 import /*embed*/ {GroupwareReadPaneBeans} from './components/groupwarereadpanebeans';
 import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanelinked';
 import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
+import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
+import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
 import {loginCheck} from "../../services/login.service";
 
 declare var Office: any;
@@ -76,7 +78,8 @@ declare var Office: any;
         ObjectComponents,
         DirectivesModule,
         RouterModule.forRoot([
-            {path: 'mailitem', component: GroupwareReadPane, canActivate: [loginCheck]}
+            {path: 'mailitem', component: GroupwareReadPane, canActivate: [loginCheck]},
+            {path: 'details', component: GroupwareDetailPane, canActivate: [loginCheck]},
         ])
     ],
     declarations: [
@@ -86,7 +89,9 @@ declare var Office: any;
         GroupwareReadPaneAttachments,
         GroupwareReadPaneBeans,
         GroupwareReadPaneLinked,
-        GroupwareReadPaneSearch
+        GroupwareReadPaneSearch,
+        GroupwareDetailPane,
+        GroupwareDetailPaneBean,
     ],
     providers: [
         /*
