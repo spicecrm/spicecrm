@@ -56,7 +56,9 @@ export class GroupwareReadPane {
         this.backend.postRequest('emails/getattachedbeans', {}, data).subscribe(
             (res: any) => {
                 for (let beanId in res) {
-                    this.groupware.addBean(res[beanId]);
+                    if (!this.groupware.checkBeanArchive(res[beanId])) {
+                        this.groupware.addBean(res[beanId]);
+                    }
                 }
             },
             (err) => {
