@@ -6,7 +6,7 @@ import {backend} from "../../../services/backend.service";
 @Injectable()
 export abstract class GroupwareService {
 
-    protected emailId: string = "";
+    public emailId: string = "";
     public messageId: string = "";
 
     public archiveto: any[] = [];
