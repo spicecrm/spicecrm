@@ -1,7 +1,6 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {configuration} from "./configuration.service";
 import {backend} from "../../../services/backend.service";
 
 @Injectable()
@@ -13,9 +12,14 @@ export abstract class GroupwareService {
     public archiveto: any[] = [];
     public archiveattachments: any[] = [];
 
+    public outlookAttachments = {
+        attachmentToken: '',
+        ewsUrl: '',
+        attachments: [],
+    };
+
     constructor(
         protected backend: backend,
-        protected configuration: configuration,
         protected http: HttpClient,
     ) {}
 
@@ -59,8 +63,8 @@ export abstract class GroupwareService {
                     success => {
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
-                                attachmentToken: this.configuration.serviceRequest.attachmentToken,
-                                ewsUrl: this.configuration.serviceRequest.ewsUrl,
+                                attachmentToken: this.outlookAttachments.attachmentToken,
+                                ewsUrl: this.outlookAttachments.ewsUrl,
                                 outlookAttachments: this.archiveattachments,
                                 email_id: this.emailId,
                             };

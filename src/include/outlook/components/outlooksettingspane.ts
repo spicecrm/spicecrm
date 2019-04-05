@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
-import {configuration} from '../../groupware/services/configuration.service';
+import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 
 @Component({
     selector: 'outlook-read-pane-settings',
@@ -15,7 +15,7 @@ export class OutlookSettingsPane {
     private loading: boolean = false;
 
     constructor(
-        private configuration: configuration,
+        private configuration: OutlookConfiguration,
         private router: Router,
     ) {
         this.isconfigured = this.configuration.hasSettings();

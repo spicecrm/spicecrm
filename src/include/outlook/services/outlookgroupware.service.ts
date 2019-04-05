@@ -76,25 +76,25 @@ export class OutlookGroupware extends GroupwareService {
     public getAttachments(): Observable<any> {
         let responseSubject = new Subject<any>();
 
-        this.configuration.serviceRequest.ewsUrl = Office.context.mailbox.ewsUrl;
+        this.outlookAttachments.ewsUrl = Office.context.mailbox.ewsUrl;
 
-        if (this.configuration.serviceRequest.attachmentToken == '') {
+        if (this.outlookAttachments.attachmentToken == '') {
             this.getAttachmentToken().subscribe(
                 (res: any) => {
-                    this.configuration.serviceRequest.attachmentToken = res;
+                    this.outlookAttachments.attachmentToken = res;
 
                     // set to the mailitem
                     // this.krest.attachmentToken = res;
-                    // this.krest.ewsUrl = this.configuration.serviceRequest.ewsUrl;
+                    // this.krest.ewsUrl = this.outlookAttachments.ewsUrl;
 
                     for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
-                        this.configuration.serviceRequest.attachments[i] = JSON.parse(
+                        this.outlookAttachments.attachments[i] = JSON.parse(
                             JSON.stringify(Office.context.mailbox.item.attachments[i]._data$p$0)
                         );
-                        this.configuration.serviceRequest.attachments[i].selected = false;
+                        this.outlookAttachments.attachments[i].selected = false;
                     }
 
-                    responseSubject.next(this.configuration.serviceRequest);
+                    responseSubject.next(this.outlookAttachments);
                     responseSubject.complete();
                 },
                 (err) => {
@@ -111,7 +111,7 @@ export class OutlookGroupware extends GroupwareService {
     public getAttachmentToken(): Observable<any> {
         let responseSubject = new Subject<any>();
 
-        if (this.configuration.serviceRequest.attachmentToken == '') {
+        if (this.outlookAttachments.attachmentToken == '') {
             Office.context.mailbox.getCallbackTokenAsync(res => {
                 if (res.status === Office.AsyncResultStatus.Succeeded) {
                     responseSubject.next(res.value);

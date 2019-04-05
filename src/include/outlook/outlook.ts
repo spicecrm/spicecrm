@@ -58,7 +58,7 @@ import {layout} from "../../services/layout.service";
 import ModuleGroupware from "../groupware/groupware";
 import {GroupwareService} from '../groupware/services/groupware.service';
 
-import /*embed*/ {configuration} from '../groupware/services/configuration.service';
+import /*embed*/ {OutlookConfiguration} from './services/outlookconfiguration.service';
 import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
 
 
@@ -96,7 +96,7 @@ declare var Office: any;
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: OutlookGroupware},
-        configuration,
+        OutlookConfiguration,
         //
         // // gobal items
         backend,

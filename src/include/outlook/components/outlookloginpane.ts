@@ -11,7 +11,7 @@ import {cookie} from '../../../services/cookie.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 // import {DomSanitizer,SafeResourceUrl} from '@angular/platform-browser';
 
-import {configuration} from '../../groupware/services/configuration.service';
+import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 
 declare var _: any;
 
@@ -32,7 +32,7 @@ export class OutlookLoginPane implements OnInit {
 
     constructor(
         private router: Router,
-        private outlookConfiguration: configuration,
+        private outlookConfiguration: OutlookConfiguration,
 
         private loginService: loginService,
         private http: HttpClient,

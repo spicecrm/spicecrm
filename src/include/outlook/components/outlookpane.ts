@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {configuration} from '../../groupware/services/configuration.service';
+import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {GroupwareService} from "../../groupware/services/groupware.service";
 
 declare var Office: any;
@@ -13,7 +13,7 @@ declare var Office: any;
 export class OutlookPane implements OnInit {
 
     constructor(
-        private configuration: configuration,
+        private configuration: OutlookConfiguration,
         private groupware: GroupwareService,
         private router: Router,
     ) {
