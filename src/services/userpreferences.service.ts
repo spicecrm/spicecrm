@@ -23,7 +23,7 @@ declare var _: any;
 export class userpreferences {
 
     public preferences: any = {
-        global: this.configuration.getData('globaluserpreferences')
+        global: {}
     };
     // toUse is a "shortcut" to preferences.global. For easier code.
     // The user preferences in toUse (like preferences.global) will be available anytime, even when the user hasn´t set the preferences yet.
@@ -54,21 +54,17 @@ export class userpreferences {
 
     constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast) {
         this.toUse = this.preferences.global;
-
-        this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
+        this.retrievePrefsFromConfigService();
+        this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') this.retrievePrefsFromConfigService();
+        });
     }
 
-    private handleMessage(message) {
-        switch (message.messagetype) {
-            case "loader.completed":
-                if (message.messagedata == 'loadUserData') {
-                    let prefs = this.configuration.getData('globaluserpreferences');
-                    this.preferences.global = _.extendOwn(this.preferences.global, prefs);
-                    this.unchangedPreferences.global = _.clone(prefs);
-                    this.completePreferencesWithDefaults();
-                }
-                break;
-        }
+    private retrievePrefsFromConfigService() {
+        let prefs = this.configuration.getData('globaluserpreferences');
+        this.preferences.global = _.extendOwn(this.preferences.global, prefs);
+        this.unchangedPreferences.global = _.clone(prefs);
+        this.completePreferencesWithDefaults();
     }
 
     public getPreferences(loadhandler: Subject<string>) {
@@ -140,6 +136,7 @@ export class userpreferences {
                 this.completePreferencesWithDefaults();
             });
         } else {
+            if(!this.preferences[category]) this.preferences[category] = {};
             this.preferences[category][name] = value;
             this.completePreferencesWithDefaults();
         }
@@ -149,8 +146,8 @@ export class userpreferences {
         const saved = new Subject();
         this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(
             (savedprefs) => {
-                for (let prop of this.preferences[category]) {
-                    if (savedprefs.hasOwnProperty(prop)) this.preferences[category] = savedprefs[prop];
+                for (let prop in this.preferences[category]) {
+                    if (savedprefs.hasOwnProperty(prop)) this.preferences[category][prop] = savedprefs[prop];
                     else delete this.preferences[category][prop];
                 }
                 this.unchangedPreferences[category] = savedprefs;

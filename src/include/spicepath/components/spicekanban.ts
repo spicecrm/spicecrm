@@ -42,7 +42,11 @@ export class SpiceKanban implements OnDestroy {
      * returns teh stages for the module from teh configuration service
      */
     get stages() {
-        return this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
+        try {
+            return this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
+        }catch(e){
+            return [];
+        }
     }
 
     private getStageData(stage): any {
