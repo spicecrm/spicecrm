@@ -79,11 +79,11 @@ export class LanguageTranslationsManager {
     }
 
     private getTranslations() {
+        this.labels = [];
         if (this.selectedLanguage.length == 0) {
             return;
         }
         this.isLoading = true;
-        this.labels = [];
         this.backend.getRequest(`syslanguage/${this.selectedLanguage}/${this.scope}/labels/untranslated`)
             .subscribe(
                 (res) => {

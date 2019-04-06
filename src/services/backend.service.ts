@@ -4,7 +4,7 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders,  HttpParams} from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
@@ -291,6 +291,26 @@ export class backend {
         );
 
         return sub.asObservable();
+    }
+
+    /**
+     * Determines the charset of a http response.
+     *
+     * @param response
+     *
+     * @return The string defining the character set.
+     */
+    private getCharsetOfResponse( response: any ): string {
+        if ( !response.headers ) return null;
+        response.headers.lazyInit();
+        let dummy = response.headers.headers.get('content-type');
+        if ( !dummy ) return null;
+        dummy = dummy[0];
+        dummy = dummy.split(';');
+        if ( !dummy[1] ) return null;
+        dummy = dummy[1].split('=');
+        if ( !dummy[1] ) return null;
+        return dummy[1];
     }
 
     /**
