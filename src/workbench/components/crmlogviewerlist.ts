@@ -188,18 +188,25 @@ export class CRMLogViewerList implements OnInit {
             let localFiltertextPositiveLowercase = this.localFiltertextPositive.toLowerCase();
             if ( line.txt.toLowerCase().indexOf( localFiltertextPositiveLowercase ) !== -1 && !this.localFiltertextNegative.some( ( term ) => {
                 if ( line.txt.toLowerCase().indexOf( term.lowercase ) !== -1 ) return true;
-            })) this.linesToShow.push( line );
+            })) {
+                this.linesToShow.push( line );
+            }
         });
+        this.updateIndexNumbers();
         this.currPage = 1;
         window.setTimeout( () => this.isBuildingLocalTextfilter = false, 750 );
+    }
+
+    private updateIndexNumbers() {
+        let i = 0;
+        this.linesToShow.forEach( line => line.i = i++ );
     }
 
     private resetLinesToShow() {
         this.isBuildingLocalTextfilter = true; // Changes opacity of the table (for a moment), to indicate that the table is changed.
         this.linesToShow = [];
-        this.lines.forEach( line => {
-            this.linesToShow.push( line );
-        });
+        this.lines.forEach( line => this.linesToShow.push( line ) );
+        this.updateIndexNumbers();
         this.currPage = 1;
         window.setTimeout( () => this.isBuildingLocalTextfilter = false, 750 );
     }
