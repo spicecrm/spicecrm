@@ -3,9 +3,16 @@
         <system-icon [module]="model.module" size="small"></system-icon>
     </div>
     <div class="slds-media__body">
-        <div class="slds-grid slds-grid_align-spread slds-has-flexi-truncate">
-            <h3 class="slds-tile__title slds-truncate" [title]="bean.summary_text">{{model.getField('summary_text')}}</h3>
-            <div class="slds-checkbox">
+        <div class="slds-grid slds-has-flexi-truncate">
+            <span *ngIf="!mainfieldsetfields">{{model.data.summary_text}}</span>
+            <ul *ngIf="mainfieldsetfields" class="slds-list_horizontal slds-has-dividers_right slds-truncate">
+                <ng-container *ngFor="let fieldsetitem of mainfieldsetfields">
+                    <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
+                        <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+                    </li>
+                </ng-container>
+            </ul>
+            <div class="slds-col--bump-left slds-checkbox">
                 <input type="checkbox" name="beans" [id]="'bean-'+bean.id" (click)="onClick($event)" [checked]="groupware.checkBeanArchive(bean)"/>
                 <label class="slds-checkbox__label" [attr.for]="'bean-'+bean.id">
                     <span class="slds-checkbox_faux"></span>
@@ -13,8 +20,15 @@
                 </label>
             </div>
         </div>
-        <div class="slds-tile__detail">
-            <p class="slds-truncate slds-text-body_small" title="Bean Module">{{bean.module}}</p>
+        <div class="slds-truncate slds-text-body_small" title="Bean Module">
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-truncate">
+                <li class="slds-item">{{language.getModuleName(model.module, true)}}</li>
+                <ng-container *ngFor="let fieldsetitem of subfieldsetfields">
+                    <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
+                        <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+                    </li>
+                </ng-container>
+            </ul>
         </div>
     </div>
 </article>

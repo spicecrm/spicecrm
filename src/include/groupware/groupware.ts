@@ -65,6 +65,7 @@ import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanes
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
 import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
 import {loginCheck} from "../../services/login.service";
+import {ObjectFields} from "../../objectfields/objectfields";
 
 declare var Office: any;
 
@@ -77,6 +78,7 @@ declare var Office: any;
         // GlobalComponents,
         ObjectComponents,
         DirectivesModule,
+        ObjectFields,
         RouterModule.forRoot([
             {path: 'mailitem', component: GroupwareReadPane, canActivate: [loginCheck]},
             {path: 'details', component: GroupwareDetailPane, canActivate: [loginCheck]},
