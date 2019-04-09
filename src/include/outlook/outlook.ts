@@ -7,6 +7,7 @@ import {
     enableProdMode,
     SystemJsNgModuleLoader
 } from '@angular/core';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NgModule} from '@angular/core';
 import {LocationStrategy, HashLocationStrategy} from "@angular/common";
 import {BrowserModule, Title} from '@angular/platform-browser';
@@ -19,7 +20,6 @@ import {Subject, Observable} from 'rxjs';
 
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-// import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 // // various services we need on global app level
@@ -30,7 +30,6 @@ import {
     metadata,
     aclCheck
 } from "../../services/metadata.service";
-// import {AppDataService} from "../services/appdata.service";
 import {MathExpressionCompilerService} from "../../services/mathexpressioncompiler";
 import {language} from "../../services/language.service";
 import {recent} from "../../services/recent.service";
@@ -49,7 +48,6 @@ import {territories} from "../../services/territories.service";
 import {currency} from "../../services/currency.service";
 import {footer} from "../../services/footer.service";
 import {cookie} from "../../services/cookie.service";
-// import {assistant} from "../services/assistant.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
@@ -74,10 +72,10 @@ declare var Office: any;
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
         SystemComponents,
-        // GlobalComponents,
         ObjectComponents,
         ModuleGroupware,
         RouterModule.forRoot([
@@ -97,15 +95,12 @@ declare var Office: any;
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: OutlookGroupware},
         OutlookConfiguration,
-        //
-        // // gobal items
         backend,
         broadcast,
         layout,
         navigation,
         session,
         metadata,
-        // AppDataService,
         aclCheck,
         loginCheck,
         loginService,
@@ -115,7 +110,6 @@ declare var Office: any;
         dockedComposer,
         fts,
         recent,
-        // SystemJsNgModuleLoader,
         modelutilities,
         toast,
         favorite,
@@ -126,12 +120,9 @@ declare var Office: any;
         userpreferences,
         cookie,
         MathExpressionCompilerService,
-        // assistant,
         VersionManagerService,
         modal,
         loggerService
-        // Title
-        //
     ]
 })
 export class Outlook {
