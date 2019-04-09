@@ -16,35 +16,72 @@ import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {listfilters} from '../services/listfilters.service';
 
+/**
+ * displays a filter item
+ */
 @Component({
     selector: '[object-listview-filter-panel-filter-item]',
     templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilteritem.html'
 })
 export class ObjectListViewFilterPanelFilterItem implements OnInit, OnDestroy {
-    @ViewChild('popover', {read: ViewContainerRef}) popover: ViewContainerRef;
-    showPopover: boolean = false;
-    listFields: Array<any> = [];
-    @Input() filter: any = {};
-    clickListener: any = null;
+    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
 
-    currentFieldType: string = 'text';
+    /**
+     * boolean if the popover is open
+     */
+    private showPopover: boolean = false;
+
+    /**
+     * the aray of fileds to be available to the user
+     */
+    private listFields: any[] = [];
+
+    /**
+     * the filter in focus
+     */
+    @Input() private filter: any = {};
+
+    /**
+     * helper listener to close the popup when a click happens outside
+     */
+    private clickListener: any = null;
+
+    /**
+     * the fieldtype determined by the field selected
+     */
+    private currentFieldType: string = 'text';
+
+    /**
+     * list of fieldtypes that shoudl not be allowed for filtering
+     */
+    private excludedFieldtypes: string[] = ['link', 'relate', 'email'];
 
     constructor(private listfilters: listfilters, private elementRef: ElementRef, private metadata: metadata, private language: language, private modellist: modellist, private renderer: Renderer2) {
+
+        /**
+         * build the field list
+         *
+         * ToDo: build a nicer logic here
+         */
         let componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         let allListFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allListFields) {
-            listField.displayName = this.language.getFieldDisplayName(this.modellist.module, listField.field);
-            this.listFields.push(listField);
+            let fieldtype = this.metadata.getFieldType(this.modellist.module, listField.field);
+            if (this.excludedFieldtypes.indexOf(fieldtype) == -1 && this.metadata.getFieldSource(this.modellist.module, listField.field) != 'non-db') {
+                listField.displayName = this.language.getFieldDisplayName(this.modellist.module, listField.field);
+                this.listFields.push(listField);
+            }
         }
         this.listFields = this.listFields.sort((a, b) => {
             return a.displayName === b.displayName ? 0 : a.displayName > b.displayName ? 1 : -1;
-        })
+        });
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         // if no filter field is set .. popup the filter with short delay
-        if (this.filter.field === '')
+        if (this.filter.field === '') {
             window.setTimeout(() => this.showPopover = true, 250);
+        }
 
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
 
@@ -53,37 +90,38 @@ export class ObjectListViewFilterPanelFilterItem implements OnInit, OnDestroy {
 
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
         }
     }
 
-    onClick() {
+    private onClick() {
         if (!this.showPopover) {
             this.showPopover = true;
             return;
         }
     }
 
-    onFocus(event) {
-        window.setTimeout(function () {
+    private onFocus(event) {
+        window.setTimeout(() => {
             event.target.blur();
         }, 250);
     }
 
     get operator() {
-        if (this.filter.operator)
+        if (this.filter.operator) {
             return this.language.getLabel('LBL_' + this.filter.operator.toUpperCase());
-        else
+        } else {
             return '';
+        }
     }
 
-    closePopover() {
+    private closePopover() {
         this.showPopover = false;
     }
 
-    onDocumentClick(event: MouseEvent): void {
+    private onDocumentClick(event: MouseEvent): void {
         if (this.showPopover) {
             const clickedInside = this.elementRef.nativeElement.contains(event.target);
             if (!clickedInside) {
@@ -92,38 +130,39 @@ export class ObjectListViewFilterPanelFilterItem implements OnInit, OnDestroy {
         }
     }
 
-    getPopoverStyle() {
+    private getPopoverStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
         return {
             position: 'fixed',
-            top: (rect.top + ( (rect.height - poprect.height) / 2 )) + 'px',
+            top: (rect.top + ((rect.height - poprect.height) / 2)) + 'px',
             left: (rect.left - poprect.width - 15) + 'px',
             display: (this.showPopover ? '' : 'none')
-        }
+        };
     }
 
     /*
      for the filter handling
      */
 
-    getDisplayName() {
-        if (this.filter.field)
+    private getDisplayName() {
+        if (this.filter.field) {
             return this.language.getFieldDisplayName(this.modellist.module, this.filter.field);
-        else
+        } else {
             return 'new Filter';
+        }
     }
 
-    deleteFilter() {
+    private deleteFilter() {
         this.listfilters.filters.some((filter, index) => {
             if (filter.id == this.filter.id) {
                 this.listfilters.filters.splice(index, 1);
                 return true;
             }
-        })
+        });
     }
 
-    fieldChanged() {
+    private fieldChanged() {
         // clear hte operator
         this.filter.operator = '';
         this.filter.filtervalue = '';
@@ -132,7 +171,7 @@ export class ObjectListViewFilterPanelFilterItem implements OnInit, OnDestroy {
         this.getFieldType();
     }
 
-    getFieldType() {
+    private getFieldType() {
         // if we have no field set text by default
         if (!this.filter.field) {
             this.currentFieldType = 'text';
