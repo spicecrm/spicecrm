@@ -50,5 +50,5 @@ import {ObjectFields} from "../../objectfields/objectfields";
         GroupwareDetailPaneBean,
     ]
 })
-export default class ModuleGroupware {
+export class ModuleGroupware {
 }
