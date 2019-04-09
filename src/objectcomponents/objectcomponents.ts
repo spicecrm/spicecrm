@@ -163,6 +163,7 @@ import /*embed*/ {ObjectRecordDetailsTabRow} from './components/objectrecorddeta
 import /*embed*/ {ObjectRecordDetailsTabRowField} from './components/objectrecorddetailstabrowfield';
 import /*embed*/ {ObjectRecordTabbedDetails} from './components/objectrecordtabbeddetails';
 import /*embed*/ {ObjectRecordTabbedDetailsTab} from './components/objectrecordtabbeddetailstab';
+import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectrecorddetailsrelatedlisttab';
 
 import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
@@ -360,6 +361,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectRecordChecklistItem,
         ObjectRecordTabbedDetails,
         ObjectRecordTabbedDetailsTab,
+        ObjectRecordDetailsRelatedListTab,
         ObjectModalModuleLookup,
         ObjectSelectButton,
         ObjectReminderButton,
