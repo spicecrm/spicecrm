@@ -1,6 +1,9 @@
-<div class="slds-p-around--x-small">
+<div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
+    <system-spinner></system-spinner>
+</div>
+<div *ngIf="!loading" class="slds-p-around--x-small">
     <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-detail-pane-bean>
 </div>
-<div *ngIf="beans.length == 0">
+<div *ngIf="beans.length == 0 && !loading">
     No Beans found
 </div>
