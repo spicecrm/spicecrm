@@ -5,5 +5,5 @@ src/**/*.js.map
 src/**/*.js
 config.json
 /config/sites
-dist
+/dist
 documentation
