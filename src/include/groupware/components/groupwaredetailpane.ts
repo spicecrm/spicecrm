@@ -1,12 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-// import AsyncResultStatus = Office.AsyncResultStatus;
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
 
+/**
+ * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
+ * In case there is just one such bean, the details of it will be shown.
+ */
 @Component({
     selector: 'groupware-detail-pane',
     templateUrl: './src/include/groupware/templates/groupwaredetailpane.html'
@@ -14,6 +17,7 @@ import {backend} from "../../../services/backend.service";
 export class GroupwareDetailPane implements OnInit {
 
     private beans: any = [];
+    private loading: boolean = false;
 
     constructor(
         private backend: backend,
@@ -24,18 +28,21 @@ export class GroupwareDetailPane implements OnInit {
     }
 
     public ngOnInit(): void {
-        console.log('detail pane on init');
+        this.loading = true;
 
         this.loadBeans().subscribe(
             (res) => {
                 if (res.length == 1) {
                     // just one bean found -> show it
-                    console.log('one bean found. redirecting');
                     this.router.navigate(['module/' + res[0].module + '/' + res[0].id]);
                 }
+                this.loading = false;
             },
             (err) => {
+                // todo logger service
                 console.log(err);
+
+                this.loading = false;
             }
         );
     }
@@ -51,7 +58,6 @@ export class GroupwareDetailPane implements OnInit {
                 }
                 responseSubject.next(this.beans);
                 responseSubject.complete();
-                // this.beansloaded$.emit(true);
             },
             (err) => {
                 responseSubject.error(err);
@@ -59,15 +65,5 @@ export class GroupwareDetailPane implements OnInit {
         );
 
         return responseSubject.asObservable();
-    }
-
-    private showBean() {
-        if (this.beans.length == 0) {
-            // no beans found
-            console.log('no beans found');
-        } else {
-            // multiple beans found -> show a list
-            console.log('multiple beans found');
-        }
     }
 }
