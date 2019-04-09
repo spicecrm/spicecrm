@@ -126,7 +126,7 @@
                 <bt:Url id="functionFile"
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                 <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/mailitem"/>
-                <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlookcrm.html"/>
+                <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/details"/>
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
@@ -258,7 +258,7 @@
                 <bt:Urls>
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/mailitem"/>
-                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlookcrm.html"/>
+                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/details"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
