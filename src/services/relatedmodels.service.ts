@@ -7,6 +7,7 @@ import {broadcast} from "./broadcast.service";
 import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
 import {modelutilities} from "./modelutilities.service";
+import {Observable, of, Subject} from "rxjs";
 
 /**
  * @ignore
@@ -21,7 +22,7 @@ export class relatedmodels {
     public modulefilter = '';
     public id = '';
     public items: any[] = [];
-    public items$ = new EventEmitter();
+    // public items$ = new EventEmitter();
     public count = 0;
     public loaditems = 5;
     private relationshipFields: string[] = [];
@@ -75,7 +76,7 @@ export class relatedmodels {
     }
 
     get sortBySequencefield() {
-        if ( this.sequencefield && !this.modulefilter && !this.sort.sortfield ) return true;
+        if (this.sequencefield && !this.modulefilter && !this.sort.sortfield) return true;
         else return false;
     }
 
@@ -87,12 +88,12 @@ export class relatedmodels {
 
         switch (message.messagetype) {
             case "model.delete":
-                this.items.some( ( item, i ) => {
-                    if( item.id === message.messagedata.id ) {
-                        this.items.splice( i, 1 );
+                this.items.some((item, i) => {
+                    if (item.id === message.messagedata.id) {
+                        this.items.splice(i, 1);
                         this.count--;
                         // emit that a change has happened
-                        this.items$.emit( this.items );
+                        // this.items$.emit(this.items);
                         return true;
                     }
                 });
@@ -175,24 +176,92 @@ export class relatedmodels {
                 this.lastLoad = new moment();
 
                 // emit that a change has happened
-                this.items$.emit(this.items);
+                // this.items$.emit(this.items);
             }
         );
+    }
+
+    /**
+     * a short getter to indicate if more items can be loaded
+     */
+    get canloadmore() {
+        return !this.isloading && this.count && this.count - this.items.length > 0;
+    }
+
+    /**
+     * loads the next set of items
+     *
+     * @param loaditems the number of items to be laoded
+     */
+    public getMoreData(loaditems = 5): Observable<any> {
+
+        // check if we can list per acl
+        if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
+            return of(true);
+        }
+
+        this.isloading = true;
+
+        let params = {
+            getcount: true,
+            offset: this.items.length,
+            limit: this.items.length + loaditems,
+            modulefilter: this.modulefilter,
+            relationshipFields: JSON.stringify(this.relationshipFields),
+            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
+        };
+
+        let retSubject = new Subject<any>();
+
+        this.backend.getRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(
+            (response: any) => {
+
+                // get the count
+                this.count = parseInt(response.count, 10);
+
+                // count .. this is not an array but an object
+                for (let key in response.list) {
+                    if (response.list.hasOwnProperty(key)) {
+                        response.list[key].relid = key;
+
+                        response.list[key] = this.modelutilities.backendModel2spice(this.relatedModule, response.list[key]);
+
+                        this.items.push(response.list[key]);
+                    }
+                }
+
+                // sort
+                this.sortItems();
+
+                // set the load time
+                this.lastLoad = new moment();
+
+                // emit that a change has happened
+                // this.items$.emit(this.items);
+
+                this.isloading = false;
+
+                retSubject.next(true);
+                retSubject.complete();
+            }
+        );
+
+        return retSubject.asObservable();
     }
 
     private sortItems() {
 
         let sortfield: string;
         let sortdirection: string;
-        if ( this.sort.sortfield ) {
+        if (this.sort.sortfield) {
             sortfield = this.sort.sortfield;
             sortdirection = this.sort.sortdirection;
-        } else if ( this.sortBySequencefield ) {
+        } else if (this.sortBySequencefield) {
             sortfield = this.sequencefield;
             sortdirection = 'ASC';
         }
 
-        if ( sortfield ) {
+        if (sortfield) {
             this.items.sort((a, b) => {
                 let sortval = 0;
                 // check if we can sort as integer
@@ -235,7 +304,7 @@ export class relatedmodels {
             }
 
             // emit that a change has happened
-            this.items$.emit(this.items);
+            // this.items$.emit(this.items);
 
             // this.items = this.items.concat(items);
             // this.count += items.length;
@@ -261,7 +330,7 @@ export class relatedmodels {
                     this.count--;
 
                     // emit that a change has happened
-                    this.items$.emit(this.items);
+                    // this.items$.emit(this.items);
 
                     // return
                     return true;
