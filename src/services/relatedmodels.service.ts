@@ -2,7 +2,7 @@
  * @module services
  */
 
-import {EventEmitter, Injectable} from "@angular/core";
+import {EventEmitter, Injectable, OnDestroy} from "@angular/core";
 import {broadcast} from "./broadcast.service";
 import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
@@ -14,26 +14,84 @@ import {Observable, of, Subject} from "rxjs";
  */
 declare var moment: any;
 
+/**
+ * handles related models for subpanels etc.
+ */
 @Injectable()
-export class relatedmodels {
+export class relatedmodels implements OnDestroy {
+    /**
+     * the parent module
+     */
     public module = '';
-    public relatedModule = '';
-    public linkName = '';
-    public modulefilter = '';
+
+    /**
+     * the id of the parent records
+     */
     public id = '';
+
+    /**
+     * the related module
+     */
+    public relatedModule = '';
+
+    /**
+     * the link in the parents vardefs. If none is set it is assmed that the name of the link is the same as the name of the module but in lowercase
+     */
+    public linkName = '';
+
+    /**
+     * an optional filterid to be applied to the selection of the related models
+     */
+    public modulefilter = '';
+
+    /**
+     * an array with the related records
+     */
     public items: any[] = [];
-    // public items$ = new EventEmitter();
+
+    /**
+     * the total count o related records
+     */
     public count = 0;
+
+    /**
+     * default value for number of items loaded with a backend request
+     */
     public loaditems = 5;
+
+    /**
+     * ToDo: check wha this is for
+     */
     private relationshipFields: string[] = [];
+
+    /**
+     * inidcates if the servic eis currently retrieving data from teh backend
+     */
     public isloading = true;
+
+    /**
+     * sort parameters
+     */
     public sort: any = {
         sortfield: '',
         sortdirection: 'ASC'
     };
+
+    /**
+     *  a moment object for the indication when the data was last loaded
+     *
+     *  currently only used for display purposes
+     */
     private lastLoad: any = new moment();
+
+    /**
+     * an optional sequence field. if a value is set the table can be sequenced by drag and drop
+     */
     public sequencefield: string = null;
 
+    /**
+     * a handler to the broadcast subscrition. M;aking sure the susbcription is cancelled whent he component is destroyed
+     */
     private serviceSubscriptions: any[] = [];
 
     constructor(
@@ -50,16 +108,37 @@ export class relatedmodels {
         );
     }
 
+    /**
+     * @ignore
+     *
+     * cancel the subscription
+     */
+    public ngOnDestroy(): void {
+        this.stopSubscriptions();
+    }
+
+    /**
+     * to be called when the component for this servuice is destroyed
+     */
     public stopSubscriptions() {
         for (let subscription of this.serviceSubscriptions) {
             subscription.unsubscribe();
         }
+        this.serviceSubscriptions = [];
     }
 
+    /**
+     * a getter for the sortfield currently set
+     */
     get sortfield() {
         return this.sort.sortfield;
     }
 
+    /**
+     * set the sortfield and sort the results
+     *
+     * @param field the fieldname
+     */
     set sortfield(field) {
         if (this.sort.sortfield == field) {
             this.sort.sortdirection = this.sort.sortdirection == "ASC" ? "DESC" : "ASC";
@@ -71,15 +150,30 @@ export class relatedmodels {
         this.getData();
     }
 
+    /**
+     * simple getter for the linkname
+     *
+     * @private
+     */
     get _linkName() {
         return this.linkName != "" ? this.linkName : this.relatedModule.toLowerCase();
     }
 
+    /**
+     * getter for the sequencefield
+     */
     get sortBySequencefield() {
         if (this.sequencefield && !this.modulefilter && !this.sort.sortfield) return true;
         else return false;
     }
 
+    /**
+     * handler for teh broadcast messeg
+     *
+     * this handles delete and save actions and updates the related list items when in opther areas of the application a model is changed
+     *
+     * @param message
+     */
     private handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== this.relatedModule) {
@@ -122,10 +216,20 @@ export class relatedmodels {
         }
     }
 
+    /**
+     * returns the last load time
+     *
+     * ToDo: change to user preferences so it is properly displayed in the users time settings
+     */
     public getLastLoadTime(): string {
         return this.lastLoad.format("HH:mm");
     }
 
+    /**
+     * get the data. Resets all currently loaded data and reloads from scratch
+     *
+     * @param silent if set to true all items will remain in the list and the user will not dierclty see that the related list is loading
+     */
     public getData(silent: boolean = false) {
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
@@ -249,6 +353,9 @@ export class relatedmodels {
         return retSubject.asObservable();
     }
 
+    /**
+     * sorts the items according to the sort settings
+     */
     private sortItems() {
 
         let sortfield: string;
@@ -276,10 +383,18 @@ export class relatedmodels {
 
     }
 
+    /**
+     * helper method to reset the items
+     */
     private resetData() {
         this.items = [];
     }
 
+    /**
+     * helper to add items when called fromt eh handler
+     *
+     * @param items
+     */
     public addItems(items) {
         let relatedIds: any[] = [];
         for (let item of items) {
@@ -311,12 +426,24 @@ export class relatedmodels {
         });
     }
 
+    /**
+     * set item data
+     *
+     * ToDo: check where this is called from
+     *
+     * @param item the item
+     */
     public setItem(item) {
         this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
 
         });
     }
 
+    /**
+     * removes the relationship for an items
+     *
+     * @param id the related id
+     */
     public deleteItem(id) {
         let relatedids = [];
         relatedids.push(id);
