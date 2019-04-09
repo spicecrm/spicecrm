@@ -90,7 +90,7 @@ export class ObjectActivitiyTimelineAddItem implements OnInit, OnDestroy {
      * cancels the subscription on the parent
      */
     public ngOnDestroy(): void {
-        this.parentSubscription.unsubscribe();
+        if(this.parentSubscription) this.parentSubscription.unsubscribe();
     }
 
     /**
