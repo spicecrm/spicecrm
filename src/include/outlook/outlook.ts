@@ -55,8 +55,8 @@ import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
 
 
-import ModuleGroupware from "../groupware/groupware";
-import {GroupwareService} from '../groupware/services/groupware.service';
+import {ModuleGroupware} from "../../include/groupware/groupware";
+import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
 import /*embed*/ {OutlookConfiguration} from './services/outlookconfiguration.service';
 import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
@@ -134,7 +134,7 @@ declare var Office: any;
         //
     ]
 })
-export default class Outlook {
+export class Outlook {
 }
 
 // set prod mode
