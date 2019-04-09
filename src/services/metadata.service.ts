@@ -833,11 +833,31 @@ export class metadata {
         return false;
     }
 
+    /**
+     * returns the type for the field
+     *
+     * @param module the module
+     * @param field the fieldname
+     */
     public getFieldType(module: string, field: string) {
         try {
             return this.fieldDefs[module][field].type;
         } catch (e) {
             return "varchar";
+        }
+    }
+
+    /**
+     * returns the source information for the field (useful to check if field is non-db)
+     *
+     * @param module the module
+     * @param field the fieldname
+     */
+    public getFieldSource(module: string, field: string) {
+        try {
+            return this.fieldDefs[module][field].source;
+        } catch (e) {
+            return "";
         }
     }
 
