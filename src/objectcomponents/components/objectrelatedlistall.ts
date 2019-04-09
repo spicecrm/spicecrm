@@ -1,8 +1,8 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {navigation} from '../../services/navigation.service';
@@ -20,6 +20,8 @@ declare var _;
     providers: [model, relatedmodels]
 })
 export class ObjectRelatedlistAll implements OnInit {
+
+    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
 
     private module = '';
     private id = '';
@@ -54,16 +56,16 @@ export class ObjectRelatedlistAll implements OnInit {
         // load the config and fieldset
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedlistAll', this.related);
         // if nothing is defined, try to take the default list config...
-        if(!this.componentconfig.fieldset) {
+        if (!this.componentconfig.fieldset) {
             this.componentconfig = this.metadata.getModuleDefaultComponentConfigByUsage(this.related, 'list');
         }
 
-        if(_.isEmpty(this.componentconfig)) {
+        if (_.isEmpty(this.componentconfig)) {
             console.warn(`no componentconfig found for ObjectRelatedlistAll nor ObjectList with module ${this.related}`);
         }
 
         this.listfields = this.metadata.getFieldSetFields(this.fieldset ? this.fieldset : this.componentconfig.fieldset);
-        if(_.isEmpty(this.listfields)) {
+        if (_.isEmpty(this.listfields)) {
             console.warn('no fieldset to use!');
         }
 
@@ -73,9 +75,9 @@ export class ObjectRelatedlistAll implements OnInit {
         this.relatedmodels.relatedModule = this.activatedRoute.params['value']['related'];
         this.relatedmodels.linkName = this.link;
         this.relatedmodels.loaditems = 50;
-        if ( this.componentconfig.sequencefield ) {
+        if (this.componentconfig.sequencefield) {
             this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
-        } else if ( this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+        } else if (this.model.fields[this.relatedmodels._linkName].sequence_field) {
             this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
         }
         this.relatedmodels.getData();
@@ -90,8 +92,23 @@ export class ObjectRelatedlistAll implements OnInit {
     }
 
     get listingTitle() {
-        if ( this.metadata.fieldDefs[this.model.module][this.link].vname ) return this.language.getLabel( this.metadata.fieldDefs[this.model.module][this.link].vname );
-        return this.language.getModuleName( this.related );
+        if (this.metadata.fieldDefs[this.model.module][this.link].vname) return this.language.getLabel(this.metadata.fieldDefs[this.model.module][this.link].vname);
+        return this.language.getModuleName(this.related);
+    }
+
+    private loadMore() {
+        this.relatedmodels.getMoreData(25).subscribe(loaded => {
+            console.log('loaded');
+        });
+    }
+
+    private onScroll(e) {
+        if(this.relatedmodels.canloadmore) {
+            let element = this.tablecontent.element.nativeElement;
+            if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
+                this.relatedmodels.getMoreData(25);
+            }
+        }
     }
 
 }
