@@ -51,7 +51,7 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
 
         if ( this.componentconfig.sequencefield ) {
             this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
-        } else if ( this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+        } else if ( this.relatedmodels._linkName && this.model.fields[this.relatedmodels._linkName] && this.model.fields[this.relatedmodels._linkName].sequence_field ) {
             this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
         }
 
