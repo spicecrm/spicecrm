@@ -1,10 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component, OnInit, OnDestroy, Pipe
-} from '@angular/core';
-import {session} from '../../../services/session.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
@@ -15,28 +12,50 @@ import {broadcast} from '../../../services/broadcast.service';
     templateUrl: './src/modules/workflow/templates/workflowpanel.html',
     providers: [workflow]
 })
-export class WorkflowPanel implements OnInit, OnDestroy{
+export class WorkflowPanel implements OnInit, OnDestroy {
 
-    broadcastSubscription: any = {};
+    /**
+     * pointer to the subscription on teh broiadcast service
+     */
+    private broadcastSubscription: any = {};
 
+    /**
+     * @ignore
+     */
     constructor(private model: model, private workflow: workflow, private language: language, private broadcast: broadcast) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
-        })
+        });
     }
 
-    ngOnInit(){
+    /**
+     * @ignore
+     *
+     * get the workflows
+     */
+    public ngOnInit() {
         this.workflow.getWorkflowsForModule(this.model.module, this.model.id);
     }
 
-    ngOnDestroy(){
+    /**
+     * @ignore
+     *
+     * cancel the boadcast subscription
+     */
+    public ngOnDestroy() {
         this.broadcastSubscription.unsubscribe();
     }
 
-    handleMessage(message: any) {
+    /**
+     * mesage handler for the broacast subscription
+     *
+     * in case the current model is saved it reloads the workflows since that might have resulted in changes
+     *
+     * @param message
+     */
+    private handleMessage(message: any) {
         // only handle if the module is the list module
-        if (message.messagedata.module !== this.model.module && message.messagedata.id !== this.model.id)
-            return;
+        if (message.messagedata.module !== this.model.module && message.messagedata.id !== this.model.id) return;
 
         switch (message.messagetype) {
             case 'model.save':
@@ -44,54 +63,5 @@ export class WorkflowPanel implements OnInit, OnDestroy{
                 break;
 
         }
-    }
-}
-
-
-@Pipe({
-    name: 'myopentasks',
-    pure: false
-})
-export class myopentaskspipe {
-
-    constructor(private session: session){
-
-    }
-
-    transform(values) {
-        let retvalues = [];
-
-        if(values) {
-            for (let value of values) {
-                if (parseInt(value.status) < 30 && (value.assigned_user_id == this.session.authData.userId || this.session.authData.admin))
-                    retvalues.push(value);
-            }
-        }
-
-        return retvalues;
-    }
-}
-
-@Pipe({
-    name: 'openworkflows',
-    pure: false
-})
-export class openworkflowspipe {
-
-    constructor(){
-
-    }
-
-    transform(values) {
-        let retvalues = [];
-
-        if(values) {
-            for (let value of values) {
-                if (parseInt(value.workflow_status) < 30)
-                    retvalues.push(value);
-            }
-        }
-
-        return retvalues;
     }
 }

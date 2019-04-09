@@ -77,6 +77,7 @@ import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
 import /*embed*/ {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
+import /*embed*/ {SystemPopover} from "./components/systempopover";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -85,6 +86,8 @@ import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage"
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
+
+import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 
@@ -168,8 +171,10 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemImagePreviewModal,
         SystemObjectPreviewModal,
         SystemInputModuleFilter,
+        SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
-        SystemFilterBuilderFilterExpression
+        SystemFilterBuilderFilterExpression,
+        SystemPopover
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -233,6 +238,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputLabel,
         SystemInputTags,
         SystemInputModuleFilter,
+        SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression
     ]

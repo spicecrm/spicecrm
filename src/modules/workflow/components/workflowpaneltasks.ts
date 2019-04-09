@@ -14,29 +14,24 @@ import {broadcast} from '../../../services/broadcast.service';
     templateUrl: './src/modules/workflow/templates/workflowpaneltasks.html'
 
 })
-export class WorkflowPanelTasks implements OnInit{
+export class WorkflowPanelTasks {
 
-    @Input()workflowtasks: Array<any> = [];
-    selectedTask: string = '';
+    @Input() private workflowtasks: any[] = [];
 
     constructor(private model: model, private workflow: workflow, private language: language, private broadcast: broadcast) {
-
     }
 
-    ngOnInit(){
-        if(this.workflowtasks.length > 0){
-            this.selectedTask = this.workflowtasks[this.workflowtasks.length - 1].id;
-        };
-    }
 
-    getStatusIcon(status){
-        switch(status){
+    private getStatusIcon(status) {
+        switch (status) {
+            case '5':
+                return 'clock';
             case '10':
-                return 'right'
+                return 'threedots';
             case '20':
-                return 'clock'
+                return 'play';
             case '30':
-                return 'check'
+                return 'check';
         }
     }
 }

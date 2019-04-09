@@ -100,6 +100,7 @@ import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacess
 import /*embed*/ {fieldTextID} from "./components/fieldtextid";
 import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
 import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
+import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
 
 /**
 * @ignore
@@ -207,7 +208,8 @@ declare var _: any;
         fieldGooglePlacesSearch,
         fieldTextID,
         fieldBackendMethod,
-        fieldSystemLabel
+        fieldSystemLabel,
+        fieldTimeDifference
     ],
     exports: [
         fieldSet,

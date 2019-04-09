@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Input, OnInit
+    Component, EventEmitter, Input, OnInit, Output
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
@@ -30,6 +30,8 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      * the selected operator type .. this is determined by the field definitions
      */
     private operatortype = 'default';
+
+    @Output() private expressionDeleted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the operators available also grouped by type
@@ -275,6 +277,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
 
     private delete() {
         this.filterexpression.deleted = true;
+        this.expressionDeleted.emit(true);
     }
 
     private trackByFn(i, item) {

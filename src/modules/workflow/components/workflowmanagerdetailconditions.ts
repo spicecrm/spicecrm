@@ -32,20 +32,31 @@ export class WorkflowManagerDetailConditions {
      */
     get conditions() {
         // get from the model
-        let conditions = this.model.getField('conditions');
+        return this.model.getField('conditions');
+    }
 
-        // if none are set initialize
-        if (!conditions || (_.isArray(conditions) && _.isEmpty(conditions))) {
-            conditions = {
-                logicaloperator: 'and',
-                groupscope: 'all',
-                conditions: []
-            };
-            this.model.setField('conditions', conditions);
-        }
+    /**
+     * simple setter for the conditions
+     *
+     * @param conditions
+     */
+    set conditions(conditions) {
+        this.model.setField('conditions', conditions);
+    }
 
-        // return the object
-        return conditions;
+    /**
+     * getter for the conditions to end the workflow stored on the workflow definition
+     */
+    get conditions_end() {
+        return this.model.getField('conditions_end');
+    }
+
+    /**
+     * simple setter for eht conditions to end the workflow
+     * @param conditions
+     */
+    set conditions_end(conditions) {
+        this.model.setField('conditions_end', conditions);
     }
 
     /**
