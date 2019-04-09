@@ -14,6 +14,9 @@ import {language} from '../../services/language.service';
  */
 declare var _;
 
+/**
+ * displays all related models .. navigated to via a separate route
+ */
 @Component({
     selector: 'object-relatedlist-all',
     templateUrl: './src/objectcomponents/templates/objectrelatedlistall.html',
@@ -21,21 +24,53 @@ declare var _;
 })
 export class ObjectRelatedlistAll implements OnInit {
 
+    /**
+     * the content container required to load more when scrolled
+     */
     @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
 
+    /**
+     * the module
+     */
     private module = '';
+
+    /**
+     * the id of the record
+     */
     private id = '';
+
+    /**
+     * a linkname if a specific link is to be used
+     */
     private link = '';
+
+    /**
+     * the related module
+     */
     private related = '';
+
+    /**
+     * the fieldset to be used
+     */
     private fieldset: string = undefined;
 
+    /**
+     * the component configuration
+     */
     private componentconfig: any = {};
+
+    /**
+     * the fields to be used
+     */
     private listfields: any[] = [];
 
     constructor(private activatedRoute: ActivatedRoute, private navigation: navigation, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }
 
+    /**
+     * load teh info from teh rtelated route and load the related models initially
+     */
     public ngOnInit() {
         this.module = this.activatedRoute.params['value']['module'];
         this.link = this.activatedRoute.params['value']['link'];
@@ -72,7 +107,7 @@ export class ObjectRelatedlistAll implements OnInit {
         // load the related data
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
-        this.relatedmodels.relatedModule = this.activatedRoute.params['value']['related'];
+        this.relatedmodels.relatedModule = this.related ;
         this.relatedmodels.linkName = this.link;
         this.relatedmodels.loaditems = 50;
         if (this.componentconfig.sequencefield) {
@@ -83,25 +118,34 @@ export class ObjectRelatedlistAll implements OnInit {
         this.relatedmodels.getData();
     }
 
+    /**
+     * navigates to the listview of the parent module
+     *
+     * used in the breadcrumbs
+     */
     private goModule() {
         this.model.goModule();
     }
 
+    /**
+     * navigates to the model
+     */
     private goModel() {
         this.model.goDetail();
     }
 
+    /**
+     * retirves the title to be displayed
+     */
     get listingTitle() {
         if (this.metadata.fieldDefs[this.model.module][this.link].vname) return this.language.getLabel(this.metadata.fieldDefs[this.model.module][this.link].vname);
         return this.language.getModuleName(this.related);
     }
 
-    private loadMore() {
-        this.relatedmodels.getMoreData(25).subscribe(loaded => {
-            console.log('loaded');
-        });
-    }
-
+    /**
+     * triggered on scroll to handle infinite scrolling when the user scrolls and more items can be loaded
+     * @param e
+     */
     private onScroll(e) {
         if(this.relatedmodels.canloadmore) {
             let element = this.tablecontent.element.nativeElement;
