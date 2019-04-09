@@ -132,7 +132,7 @@
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
                 <bt:String id="customTabLabel" DefaultValue="SpiceCRM"/>
                 <bt:String id="paneReadButtonLabel" DefaultValue="Archive Email"/>
-                <bt:String id="CRMButtonLabel" DefaultValue="CRM (experimental)"/>
+                <bt:String id="CRMButtonLabel" DefaultValue="Contact Details"/>
                 <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
             </bt:ShortStrings>
             <bt:LongStrings>
@@ -264,7 +264,7 @@
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
                     <bt:String id="customTabLabel" DefaultValue="SpiceCRM"/>
                     <bt:String id="paneReadButtonLabel" DefaultValue="Archive Email"/>
-                    <bt:String id="CRMButtonLabel" DefaultValue="CRM (experimental)"/>
+                    <bt:String id="CRMButtonLabel" DefaultValue="Contact Details"/>
                     <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
                 </bt:ShortStrings>
                 <bt:LongStrings>
