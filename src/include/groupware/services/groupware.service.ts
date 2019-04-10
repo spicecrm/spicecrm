@@ -1,5 +1,4 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 
@@ -20,7 +19,6 @@ export abstract class GroupwareService {
 
     constructor(
         protected backend: backend,
-        protected http: HttpClient,
     ) {}
 
     public addBean(bean) {
@@ -60,13 +58,13 @@ export abstract class GroupwareService {
                 };
 
                 this.backend.postRequest('emails/saveemailwithbeans', {}, data).subscribe(
-                    success => {
+                    (res) => {
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
                                 attachmentToken: this.outlookAttachments.attachmentToken,
                                 ewsUrl: this.outlookAttachments.ewsUrl,
                                 outlookAttachments: this.archiveattachments,
-                                email_id: this.emailId,
+                                email_id: res.email_id,
                             };
 
                             this.backend.postRequest('emails/saveaddinattachments', {}, attachmentData).subscribe(
