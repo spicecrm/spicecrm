@@ -5,6 +5,8 @@ import {Router} from '@angular/router';
 
 import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
+import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -12,29 +14,48 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'groupware-detail-pane',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html'
+    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html',
+    providers: [model]
 })
 export class GroupwareDetailPane implements OnInit {
 
+    /**
+     * found beans
+     */
     private beans: any = [];
+
+    /**
+     * boolean indicator that the component is loading
+     */
     private loading: boolean = false;
+
+    /**
+     * the componentset found and to be rendered to view the details
+     */
+    private componentset: string;
+
+    private componentconfig: any = {};
 
     constructor(
         private backend: backend,
         private groupware: GroupwareService,
         private http: HttpClient,
         private router: Router,
+        private model: model,
+        private metadata: metadata,
     ) {
     }
 
+    /**
+     * triggers the loader and if one record is found opens that one
+     */
     public ngOnInit(): void {
         this.loading = true;
 
         this.loadBeans().subscribe(
             (res) => {
                 if (res.length == 1) {
-                    // just one bean found -> show it
-                    this.router.navigate(['module/' + res[0].module + '/' + res[0].id]);
+                    this.loadRecord(res[0].module, res[0].id);
                 }
                 this.loading = false;
             },
@@ -65,5 +86,21 @@ export class GroupwareDetailPane implements OnInit {
         );
 
         return responseSubject.asObservable();
+    }
+
+    private selectBean(bean) {
+        this.loadRecord(bean.module, bean.id);
+    }
+
+    private loadRecord(module, id) {
+
+        // load te model
+        this.model.module = module;
+        this.model.id = id;
+        this.model.getData(true);
+
+        // load the componentset
+        this.componentconfig = this.metadata.getComponentConfig('GroupwareDetailPane', module);
+        // this.componentset = this.metadata.getComponentConfig('GroupwareDetailPane', module).componentset;
     }
 }

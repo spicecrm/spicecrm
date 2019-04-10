@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {GroupwareService} from '../services/groupware.service';
 import {model} from '../../../services/model.service';
 import {Router} from "@angular/router";
@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 export class GroupwareDetailPaneBean implements OnInit {
 
     @Input() private bean: any;
+    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         private groupware: GroupwareService,
@@ -23,6 +24,7 @@ export class GroupwareDetailPaneBean implements OnInit {
     }
 
     private onClick(event) {
-        this.router.navigate(['module/' + this.bean.module + '/' + this.bean.id]);
+        this.selected.emit({module: this.bean.module, id: this.bean.id});
+        // this.router.navigate(['module/' + this.bean.module + '/' + this.bean.id]);
     }
 }
