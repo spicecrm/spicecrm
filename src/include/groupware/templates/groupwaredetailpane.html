@@ -1,9 +1,17 @@
-<div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
-    <system-spinner></system-spinner>
-</div>
-<div *ngIf="!loading" class="slds-p-around--x-small">
-    <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-detail-pane-bean>
-</div>
-<div *ngIf="beans.length == 0 && !loading">
-    No Beans found
-</div>
+<ng-container *ngIf="!model.id; else modeldetails">
+    <div *ngIf="!loading" class="slds-p-around--x-small">
+        <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
+    </div>
+    <div *ngIf="beans.length == 0 && !loading">
+        No Beans found
+    </div>
+    <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
+        <system-spinner></system-spinner>
+    </div>
+</ng-container>
+<ng-template #modeldetails>
+    <system-componentset [componentset]="componentconfig.header"></system-componentset>
+    <div class="slds-theme--default" tobottom>
+        <system-componentset [componentset]="componentconfig.main"></system-componentset>
+    </div>
+</ng-template>
