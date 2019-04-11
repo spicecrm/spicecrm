@@ -20,6 +20,10 @@ export class OutlookPaneFooter {
     ) {
     }
 
+    private callAction(action) {
+        this.router.navigate([action.actionconfig.route]);
+    }
+
     get currentroute() {
         return this._currentroute;
     }

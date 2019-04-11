@@ -1,4 +1,23 @@
 <ng-container *ngIf="!model.id; else modeldetails">
+    <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <object-icon module="Emails"></object-icon>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span>{{language.getModuleName('Emails')}}</span>
+                                    <span class="slds-page-header__title slds-truncate">searching records</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div *ngIf="!loading" class="slds-p-around--x-small">
         <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
     </div>

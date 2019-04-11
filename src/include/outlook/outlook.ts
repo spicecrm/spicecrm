@@ -21,6 +21,7 @@ import {Subject, Observable} from 'rxjs';
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
+import {DirectivesModule} from "../../directives/directives";
 
 // // various services we need on global app level
 import {configurationService} from "../../services/configuration.service";
@@ -78,6 +79,7 @@ declare var Office: any;
         FormsModule,
         SystemComponents,
         ObjectComponents,
+        DirectivesModule,
         ModuleGroupware,
         RouterModule.forRoot([
             {path: 'settings', component: OutlookSettingsPane},
