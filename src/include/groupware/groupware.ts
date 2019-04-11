@@ -15,6 +15,7 @@ import /*embed*/ {GroupwareService} from '../groupware/services/groupware.servic
 import /*embed*/ {GroupwarePaneBean} from './components/groupwarepanebean';
 import /*embed*/ {GroupwarePaneAttachment} from './components/groupwarepaneattachment';
 import /*embed*/ {GroupwareReadPane} from './components/groupwarereadpane';
+import /*embed*/ {GroupwareReadPaneHeader} from './components/groupwarereadpaneheader';
 import /*embed*/ {GroupwareReadPaneAttachments} from './components/groupwarereadpaneattachments';
 import /*embed*/ {GroupwareReadPaneBeans} from './components/groupwarereadpanebeans';
 import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanelinked';
@@ -42,6 +43,7 @@ import {ObjectFields} from "../../objectfields/objectfields";
         GroupwarePaneBean,
         GroupwarePaneAttachment,
         GroupwareReadPane,
+        GroupwareReadPaneHeader,
         GroupwareReadPaneAttachments,
         GroupwareReadPaneBeans,
         GroupwareReadPaneLinked,

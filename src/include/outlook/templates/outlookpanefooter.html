@@ -1,0 +1,15 @@
+<div class="slds-docked-form-footer">
+    <div class="slds-size--1-of-1 slds-p-horizontal--xx-small slds-grid slds-grid--align-spread">
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentroute">
+                        <option *ngFor="let action of actions" [value]="action.actionconfig.route">
+                            {{language.getLabel(action.actionconfig.label)}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

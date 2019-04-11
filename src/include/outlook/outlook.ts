@@ -61,6 +61,7 @@ import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
 
 
 import /*embed*/ {OutlookPane} from './components/outlookpane';
+import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
 import /*embed*/ {OutlookRouteHandler} from './components/outlookroutehandler';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
@@ -86,6 +87,7 @@ declare var Office: any;
     ],
     declarations: [
         OutlookPane,
+        OutlookPaneFooter,
         OutlookRouteHandler,
         OutlookSettingsPane,
         OutlookLoginPane,
@@ -129,7 +131,7 @@ export class Outlook {
 }
 
 // set prod mode
-// enableProdMode();
+enableProdMode();
 
 Office.initialize = reason => {
     platformBrowserDynamic().bootstrapModule(Outlook).catch(error => console.error(error));
