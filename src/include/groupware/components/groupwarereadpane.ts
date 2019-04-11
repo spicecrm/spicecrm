@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-// import AsyncResultStatus = Office.AsyncResultStatus;
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
@@ -30,20 +29,6 @@ export class GroupwareReadPane {
 
     private openSettings() {
         this.router.navigate(['settings']);
-    }
-
-    private archive() {
-        this.groupware.archiveEmail().subscribe(
-            next => {
-                // update message
-            },
-            error => {
-                // display error
-            },
-            () => {
-                // Office.context.ui.closeContainer();
-                // todo move that into the specific module
-            });
     }
 
     private getAttachedBeans() {
