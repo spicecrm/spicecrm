@@ -7,6 +7,7 @@ import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {language} from "../../../services/language.service";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -43,6 +44,7 @@ export class GroupwareDetailPane implements OnInit {
         private router: Router,
         private model: model,
         private metadata: metadata,
+        private language: language
     ) {
     }
 
