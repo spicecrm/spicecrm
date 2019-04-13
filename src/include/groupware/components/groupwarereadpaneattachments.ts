@@ -3,6 +3,8 @@ import {Component, ChangeDetectorRef} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {GroupwareService} from '../services/groupware.service';
 
+import {language} from '../../../services/language.service';
+
 @Component({
     selector: 'groupware-read-pane-attachments',
     templateUrl: './src/include/groupware/templates/groupwarereadpaneattachments.html'
@@ -12,6 +14,7 @@ export class GroupwareReadPaneAttachments {
     constructor(
         private groupware: GroupwareService,
         private changeDetectorRef: ChangeDetectorRef,
+        private language: language
     ) {
         this.loadAttachments();
     }
