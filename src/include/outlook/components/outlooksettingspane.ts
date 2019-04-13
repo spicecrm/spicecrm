@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
+import {language} from "../../../services/language.service";
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class OutlookSettingsPane {
     constructor(
         private configuration: OutlookConfiguration,
         private router: Router,
+        private language: language
     ) {
         this.isconfigured = this.configuration.hasSettings();
     }
