@@ -1,10 +1,6 @@
 import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../groupware/services/groupware.service";
 import {Observable, Subject} from "rxjs";
-import {CanActivate, Router} from "@angular/router";
-import {session} from "../../../services/session.service";
-import {loader} from "../../../services/loader.service";
-import {loginService} from "../../../services/login.service";
 
 declare var Office: any;
 
@@ -12,26 +8,6 @@ declare var Office: any;
 export class OutlookGroupware extends GroupwareService {
 
     public iframeUrl: string = '';
-
-    protected getEmailId() {
-        let messageId = Office.context.mailbox.item.itemId;
-        let data = {
-            message_id: messageId,
-        };
-
-        this.backend.postRequest('emails/getemailid', {}, data).subscribe(
-            (res: any) => {
-                if (res.email_id != null) {
-                    this.emailId = res.email_id;
-                    this.archiveto = res.linked_beans;
-                }
-                console.log(res);
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
-    }
 
     public assembleEmail(): Observable<any> {
         let responseSubject = new Subject<any>();

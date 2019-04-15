@@ -1,8 +1,6 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
-// import AsyncResultStatus = Office.AsyncResultStatus;
 
 declare var Office: any;
 
@@ -20,7 +18,6 @@ export class OutlookConfiguration {
     };
 
     constructor(
-        private http: HttpClient,
         private backend: backend,
     ) {
         this.loadSettings();
