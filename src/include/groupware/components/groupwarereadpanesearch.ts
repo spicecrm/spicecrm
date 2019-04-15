@@ -1,7 +1,5 @@
 import {Component} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 
-import {GroupwareService} from '../services/groupware.service';
 import {backend} from "../../../services/backend.service";
 
 @Component({
@@ -19,8 +17,6 @@ export class GroupwareReadPaneSearch {
 
     constructor(
         private backend: backend,
-        private groupware: GroupwareService,
-        private http: HttpClient,
     ) {
 
     }
@@ -59,7 +55,7 @@ export class GroupwareReadPaneSearch {
             sort: {},
         };
 
-        this.backend.postRequest('emails/search', {}, searchParams).subscribe(
+        this.backend.postRequest('module/Emails/groupware/search', {}, searchParams).subscribe(
             (res: any) => {
                 this.searchResults = res;
                 this.searching = false;
