@@ -61,7 +61,7 @@ export abstract class GroupwareService {
                     email: email,
                 };
 
-                this.backend.postRequest('emails/saveemailwithbeans', {}, data).subscribe(
+                this.backend.postRequest('module/Emails/groupware/saveemailwithbeans', {}, data).subscribe(
                     (res) => {
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
@@ -71,7 +71,7 @@ export abstract class GroupwareService {
                                 email_id: res.email_id,
                             };
 
-                            this.backend.postRequest('emails/saveaddinattachments', {}, attachmentData).subscribe(
+                            this.backend.postRequest('module/Emails/groupware/saveaddinattachments', {}, attachmentData).subscribe(
                                 success => {
                                     retSubject.next(true);
                                     retSubject.complete();
@@ -81,6 +81,8 @@ export abstract class GroupwareService {
                                     retSubject.complete();
                                 }
                             );
+
+                            this.emailId = res.email_id;
                         } else {
                             retSubject.next(true);
                             retSubject.complete();
