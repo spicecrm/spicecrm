@@ -9,8 +9,7 @@
         </li>
     </ul>
     <ng-container *ngFor="let tab of tabs; let tabindex = index">
-        <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--default__content slds-show" role="tabpanel"
-             [ngStyle]="getDisplay(tabindex)">
+        <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--default__content" role="tabpanel" [ngClass]="{'slds-show': tabindex == activeTab, 'slds-hide': tabindex != activeTab}">
             <object-tab-container-item *ngIf="tab.componentset" [componentset]="tab.componentset"></object-tab-container-item>
         </div>
     </ng-container>
