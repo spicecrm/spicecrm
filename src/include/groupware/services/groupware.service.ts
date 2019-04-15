@@ -6,7 +6,7 @@ import {backend} from "../../../services/backend.service";
 export abstract class GroupwareService {
 
     public emailId: string = "";
-    public messageId: string = "";
+    public _messageId: string = "";
 
     public archiveto: any[] = [];
     public archiveattachments: any[] = [];
@@ -45,6 +45,10 @@ export abstract class GroupwareService {
 
     public checkAttachmentArchive(attachment) {
         return this.archiveattachments.findIndex(element => attachment.id == element.id) >= 0 ? true : false;
+    }
+
+    public getAttachment(id) {
+        return this.outlookAttachments.attachments.filter(element => id == element.id);
     }
 
     public archiveEmail(): Observable<any> {
@@ -93,13 +97,55 @@ export abstract class GroupwareService {
             }
         );
 
+        return retSubject.asObservable();
+    }
 
+    public getEmailFromSpice(): Observable<any> {
+        let retSubject = new Subject();
+
+        let data = {
+            message_id: this._messageId
+        };
+
+        this.backend.postRequest('module/Emails/groupware/getemail', {}, data).subscribe(
+            (res) => {
+                this.emailId = res.email_id;
+
+                for (let beanId in res.linkedBeans) {
+                    if (!this.checkBeanArchive(res.linkedBeans[beanId])) {
+                        this.addBean(res.linkedBeans[beanId]);
+                    }
+                }
+
+                for (let attId in res.attachments) {
+                    if (attId == "") {
+                        continue;
+                    }
+
+                    let currentAttachment = this.getAttachment(attId);
+                    this.addAttachment(currentAttachment[0]);
+                }
+
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            (err) => {
+                console.log(err);
+                retSubject.error(false);
+                retSubject.complete();
+            }
+        );
 
         return retSubject.asObservable();
     }
 
+    get messageId() {
+        return this._messageId;
+    }
 
-    protected abstract getEmailId();
+    set messageId(value) {
+        this._messageId = value;
+    }
 
     public abstract assembleEmail(): Observable<any>;
 
