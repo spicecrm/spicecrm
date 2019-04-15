@@ -5,22 +5,6 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 
-/**
- * GroupwarePaneBean test
- *
- * * Codeblocks are great for examples
- *
- * ```
- * <my-custom-element>Highlight JS will autodetect the language</my-custom-element>
- * ```
- *
- * ```typescript
- * // Or you can specify the language explicitly
- * const instance = new MyClass();
- * ```
- * This comment _supports_ [Markdown](https://marked.js.org/)
- *
- */
 @Component({
     selector: 'groupware-pane-bean',
     templateUrl: './src/include/groupware/templates/groupwarepanebean.html',
