@@ -1,16 +1,18 @@
 /**
  * @module ModuleTeleSales
  */
-import {Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {telecockpitservice} from '../services/telecockpit.service';
+import {backend} from '../../../services/backend.service';
 import {modellist} from '../../../services/modellist.service';
 import {model} from '../../../services/model.service';
 import {view} from "../../../services/view.service";
 import {TeleSalesCockpitListItem} from "./telesalescockpitlistitem";
 
 @Component({
-    selector: 'tele-sales-cockpit-list',
+    selector: 'tele_sales_cockpit_list',
     templateUrl: './src/modules/telesales/templates/telesalescockpitlist.html',
     providers: [view, model, modellist]
 })
@@ -19,13 +21,22 @@ export class TeleSalesCockpitList {
     @ViewChild('listcontainer', {read: ViewContainerRef}) private listcontainer: ViewContainerRef;
     @ViewChild('itemscontainer', {read: ViewContainerRef}) private itemscontainer: ViewContainerRef;
     @ViewChildren(TeleSalesCockpitListItem) private itemsComponents: QueryList<TeleSalesCockpitListItem>;
-    @Input() private selectedListItemId: string;
+    @Input('selectedlistitemid') private selectedListItemId: string;
 
-    constructor(private language: language,
+    constructor(private backend: backend,
+                private modellist: modellist,
+                private language: language,
+                private metadata: metadata,
+                private cdr: ChangeDetectorRef,
+                private model: model,
                 private telecockpitservice: telecockpitservice) {
     }
 
-    get isLoading() {
+    ngOnChanges() {
+        this.setSelectedItem();
+    }
+
+    get isloading() {
         return this.telecockpitservice.isloading;
     }
 
@@ -36,12 +47,8 @@ export class TeleSalesCockpitList {
     get listStyle() {
         let rect = this.listcontainer.element.nativeElement.getBoundingClientRect();
         return {
-            height: 'calc(100vh - ' + rect.top + 'px)'
+            'height': 'calc(100vh - ' + rect.top + 'px)'
         };
-    }
-
-    public ngOnChanges() {
-        this.setSelectedItem();
     }
 
     private setSelectedItem() {

@@ -5,6 +5,8 @@ import {Component, Input} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {telecockpitservice} from "../services/telecockpit.service";
+import {model} from "../../../services/model.service";
+import {take} from "rxjs/operators";
 
 @Component({
     selector: 'tele_sales_cockpit_add_attempt_button',
@@ -19,6 +21,7 @@ export class TeleSalesCockpitAddAttemptButton {
     constructor(
         public telecockpitservice: telecockpitservice,
         private language: language,
+        private model: model,
         private modalservice: modal) {
     }
 
@@ -34,14 +37,13 @@ export class TeleSalesCockpitAddAttemptButton {
         this.modalservice.openModal('TeleSalesCockpitAddAttemptModal').subscribe(modalRef => {
             modalRef.instance.selectedListItem = item;
             modalRef.instance.maxAttempts = this.maxAttempts;
-            modalRef.instance.response.subscribe(response => this.removeItem(response, item));
+            modalRef.instance.response
+                .pipe(take(1))
+                .subscribe(response => this.removeItem(item));
         });
     }
 
-    private removeItem(response, item) {
-        if (!response) {
-            return;
-        }
+    private removeItem(item) {
         let index = this.telecockpitservice.listItems.indexOf(item);
         if (index < 0) {
             return;

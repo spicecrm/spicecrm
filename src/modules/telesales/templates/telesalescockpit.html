@@ -1,9 +1,21 @@
-<tele-sales-cockpit-header></tele-sales-cockpit-header>
+<div class="slds-grid slds-page-header slds-p-horizontal--none slds-p-vertical--xx-small slds-grid--vertical-align-center">
+    <div class="slds-p-horizontal--small slds-size--1-of-4">
+        <select [ngModel]="selectedCampaignTask" (ngModelChange)="selectCampaignTask($event)" [disabled]="campaignTasks.length == 0" class="slds-select slds-m-around_xx-small">
+            <option *ngFor="let campaigntask of campaignTasks; trackBy: trackByFn" [ngValue]="campaigntask">
+                {{getCampaigntaskDisplay(campaigntask)}}
+            </option>
+        </select>
+    </div>
+    <div *ngIf="model.id" class="slds-p-around_xx-small slds-col--bump-left">
+        <tele_sales_cockpit_module_actions [module]="model.module"></tele_sales_cockpit_module_actions>
+        <object-action-container class="slds-m-left--small" [actionset]="actionset"></object-action-container>
+    </div>
+</div>
 <div class="slds-grid slds-theme--default">
     <div class="slds-size--1-of-4 slds-border--right">
-        <tele-sales-cockpit-list [selectedListItemId]="model.id"></tele-sales-cockpit-list>
+        <tele_sales_cockpit_list [selectedlistitemid]="model.id"></tele_sales_cockpit_list>
     </div>
     <div class="slds-size--3-of-4">
-        <tele-sales-cockpit-main [selectedListItemId]="model.id"></tele-sales-cockpit-main>
+        <tele_sales_cockpit_main [module]="model.module"></tele_sales_cockpit_main>
     </div>
 </div>

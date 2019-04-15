@@ -1,7 +1,8 @@
 /**
  * @module ModuleTeleSales
  */
-import {Component, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -19,34 +20,60 @@ import {TeleSalesCockpitList} from "./telesalescockpitlist";
     ]
 })
 
-export class TeleSalesCockpit implements OnDestroy {
+export class TeleSalesCockpit implements OnInit, OnDestroy {
 
-    @ViewChild(TeleSalesCockpitMain) private mainComponent: TeleSalesCockpitMain;
+    @ViewChild('scrollcontainer', {read: ViewContainerRef}) scrollContainer: ViewContainerRef;
+    @ViewChild(TeleSalesCockpitMain) mainComponent: TeleSalesCockpitMain;
     @ViewChild(TeleSalesCockpitList) private listComponent: TeleSalesCockpitList;
 
+    private actionset: string = '';
     private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private model: model,
+                private metadata: metadata,
                 private telecockpitservice: telecockpitservice) {
-        this.selectedListItemSubscriber();
+        this.subscription = this.telecockpitservice.selectedListItem$.subscribe(listItem => this.loadModel(listItem));
+    }
+
+    get campaignTasks() {
+        return this.telecockpitservice.campaigntasks;
+    }
+
+    get selectedCampaignTask() {
+        return this.telecockpitservice.selectedCampaignTask;
+    }
+
+    public ngOnInit() {
+        let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpit');
+        this.actionset = componentconfig && componentconfig.actionset ? componentconfig.actionset : '';
     }
 
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
-    private selectedListItemSubscriber() {
-        this.subscription = this.telecockpitservice.selectedListItem$.subscribe(listItem => this.loadModel(listItem));
+    private selectCampaignTask(value) {
+        this.telecockpitservice.selectedCampaignTask = value;
+        this.mainComponent.resetView();
     }
 
-    private loadModel(selectedListItem) {
+    private getCampaigntaskDisplay(campaignTask) {
+        let campaignName = campaignTask.campaign_name && campaignTask.campaign_name.length > 0 ? (campaignTask.campaign_name + ' / ') : '';
+        return campaignName + campaignTask.name;
+    }
+
+    private loadModel(modelData) {
         this.model.reset();
-        if (!selectedListItem) {
+        if (!modelData) {
             return;
         }
-        this.model.module = selectedListItem.target_type;
-        this.model.id = selectedListItem.data.id;
-        this.model.data = selectedListItem.data;
+        this.model.module = modelData.target_type;
+        this.model.id = modelData.data.id;
+        this.model.data = modelData.data;
+    }
+
+    private trackByFn(index, item) {
+        return item.item_id;
     }
 }

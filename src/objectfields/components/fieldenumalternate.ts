@@ -2,7 +2,7 @@
  * @module ObjectFields
  */
 import {Component} from '@angular/core';
-import {fieldEnum} from './fieldenum';
+import {fieldEnum} from './fieldEnum';
 
 @Component({
     selector: 'field-enum-alternate',

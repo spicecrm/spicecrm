@@ -59,12 +59,11 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
     @Input() componentset: any = [];
     @Output() taberrors = new EventEmitter();
 
-    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping) {
-    }
+    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping ) { }
 
     ngOnInit() {
-        this.fielderrorgroup.change$.subscribe((nr) => {
-            this.taberrors.emit(nr);
+        this.fielderrorgroup.change$.subscribe( (nr) => {
+            this.taberrors.emit( nr );
         });
     }
 
@@ -94,36 +93,19 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
     templateUrl: './src/objectcomponents/templates/objecttabcontainer.html'
 })
 export class ObjectTabContainer implements OnInit {
-    /**
-     * the index of the active tab
-     */
-    private activeTab: number = 0;
+    activeTab: number = 0;
+    activatedTabs: Array<number> = [0];
+    componentconfig: any = {
+        tabs: []
+    };
 
-    /**
-     * holds which tabs have been activated. Since they are only rnedered when clicked or set to forcerender
-     */
-    private activatedTabs: number[] = [0];
-
-    /**
-     * the componentconfig
-     */
-    private componentconfig: any ;
-
-    /**
-     * the tabs to be rendered
-     *
-     * ToDo: remove from the legacy support that this can also be defined as JSON
-     */
-    private tabs: any[] = [];
+    tabs: Array<any> = [];
 
     constructor(private language: language, private metadata: metadata, private model: model) {
 
     }
 
-    /**
-     * loads the tabs
-     */
-    public ngOnInit() {
+    ngOnInit() {
         if (this.getTabs().length == 0) {
             if (this.componentconfig && this.componentconfig.componentset) {
                 let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
@@ -144,14 +126,7 @@ export class ObjectTabContainer implements OnInit {
         }
     }
 
-    /**
-     * @deprecated
-     *
-     * legacy support to get tabs from the config. Shoudl be removd already in most of the config and no longer really be used
-     *
-     * ToDo: remove
-     */
-    private getTabs() {
+    getTabs() {
         try {
             return this.componentconfig.tabs ? this.componentconfig.tabs : [];
         } catch (e) {
@@ -159,20 +134,29 @@ export class ObjectTabContainer implements OnInit {
         }
     }
 
-    /**
-     * chanmge teh active tab and render it
-     * @param index
-     */
-    private setActiveTab(index) {
+    getTabLabel(label) {
+        if (label.indexOf(':') > 0) {
+            let arr = label.split(':');
+            return this.language.getLabel(arr[0], arr[1])
+        } else
+            return this.language.getLabel(label)
+    }
+
+    setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
 
-    /**
-     * checks if the tab is to be rendered or forced to be rendered. If not is will be (by ngIf only be rendered when the tab is selected
-     * @param tabindex
-     */
-    private checkRenderTab(tabindex) {
-        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.tabs && this.tabs[tabindex].forcerender);
+    checkRenderTab(tabindex) {
+        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.componentconfig.tabs && this.componentconfig.tabs[tabindex].forcerender);
+    }
+
+    getDisplay(tabindex) {
+
+        if (tabindex !== this.activeTab)
+            return {
+                display: 'none'
+            };
+
     }
 }

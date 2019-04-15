@@ -12,12 +12,12 @@ import {Observable, Subject} from 'rxjs';
 import {metadata} from "../../../services/metadata.service";
 
 /**
- * @ignore
- */
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
-    selector: 'tele-sales-cockpit-add-attempt-modal',
+    selector: 'tele_sales_cockpit_add_attempt_modal',
     templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptmodal.html',
     providers: [model, view]
 })
@@ -44,30 +44,24 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     }
 
     public ngOnInit() {
-        this.initializeModel();
-        this.loadFieldset();
-        this.setEditMode();
-    }
-
-    private initializeModel() {
         this.model.module = 'CampaignLog';
         this.model.id = this.selectedListItem.id;
         this.model.data = {
             hits: this.selectedListItem.hits,
-            planned_activity_date: new moment().add(1, 'days'),
+            planned_activity_date: this.selectedListItem.planned_activity_date,
             activity_type: this.selectedListItem.activity_type,
-            activity_date: new moment(),
+            activity_date: '',
         };
-    }
 
-    private loadFieldset() {
         let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitAddAttemptModal');
         this.fieldset = componentConf && componentConf.fieldset ? componentConf.fieldset : '';
-    }
 
-    private setEditMode() {
+        // set view to editable and edit mode
         this.view.isEditable = true;
         this.view.setEditMode();
+        this.model.data.planned_activity_date = new moment().add(1, 'days');
+        this.model.data.activity_date = new moment();
+
     }
 
     private cancel() {
@@ -76,11 +70,16 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         this.self.destroy();
     }
 
+    private onModalEscX() {
+        this.cancel();
+    }
+
     private save() {
+        // execute on backend
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.data.planned_activity_date);
         let params = {planned_activity_date: planned_activity_date};
 
-        this.backend.postRequest(`/module/CampaignLog/${this.model.id}/attempted`, params)
+        this.backend.postRequest(`/module/CampaignLog/${this.model.id}/attempted`,params)
             .subscribe(
                 status => {
                     if (status.success) {
