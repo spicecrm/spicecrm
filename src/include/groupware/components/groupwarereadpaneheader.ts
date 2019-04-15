@@ -12,9 +12,7 @@ export class GroupwareReadPaneHeader {
     constructor(
         private language: language,
         private groupware: GroupwareService
-    ) {
-
-    }
+    ) {}
 
     private archive() {
         this.groupware.archiveEmail().subscribe(
@@ -34,4 +32,11 @@ export class GroupwareReadPaneHeader {
         return this.groupware.archiveto.length > 0;
     }
 
+    get isArchived() {
+        if (this.groupware.emailId.length === 0) {
+            return false;
+        }
+
+        return true;
+    }
 }
