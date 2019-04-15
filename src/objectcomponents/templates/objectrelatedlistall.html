@@ -18,6 +18,6 @@
         <p class="slds-text-body--small">{{relatedmodels.items.length}} {{language.getLabel('LBL_OF')}} {{relatedmodels.count}} {{language.getLabel('LBL_ITEMS')}} • {{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(related, relatedmodels.sortfield)}}   • {{language.getLabel('LBL_LASTUPDATE')}} {{relatedmodels.getLastLoadTime()}}</p>
     </div>
 </div>
-<div tobottom #tablecontent (scroll)="onScroll($event)">
+<div>
     <object-relatedlist-table [listfields]="listfields" ></object-relatedlist-table>
 </div>
