@@ -24,11 +24,6 @@ export class fieldEmail extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
         this.mark = this.model.generateGuid();
-        this.model.data$.subscribe(modeldata => {
-            if((!this.value || (this.value && this.value != modeldata.email1.toLowerCase())) && modeldata.email1) {
-                this.value = modeldata.email1;
-            }
-        });
     }
 
     get value() {
