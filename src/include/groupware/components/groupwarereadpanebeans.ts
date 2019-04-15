@@ -1,6 +1,5 @@
 import {Component, ChangeDetectorRef} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-// import AsyncResultStatus = Office.AsyncResultStatus;
 import {Subject, Observable} from 'rxjs';
 import {GroupwareService} from '../services/groupware.service';
 
