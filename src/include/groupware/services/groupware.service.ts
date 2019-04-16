@@ -11,6 +11,8 @@ export abstract class GroupwareService {
     public archiveto: any[] = [];
     public archiveattachments: any[] = [];
 
+    public relatedBeans: any[] = [];
+
     public outlookAttachments = {
         attachmentToken: '',
         ewsUrl: '',
@@ -49,6 +51,10 @@ export abstract class GroupwareService {
 
     public getAttachment(id) {
         return this.outlookAttachments.attachments.filter(element => id == element.id);
+    }
+
+    public checkRelatedBeans(bean) {
+        return this.relatedBeans.findIndex(element => bean.id == element.id) >= 0 ? true : false;
     }
 
     public archiveEmail(): Observable<any> {
@@ -139,6 +145,31 @@ export abstract class GroupwareService {
         );
 
         return retSubject.asObservable();
+    }
+
+    /**
+     * loads the beans from SpiceCRM that are related to any of the email addresses used in the email
+     */
+    public loadLinkedBeans(): Observable<any> {
+        let responseSubject = new Subject<any>();
+        let payload = this.getEmailAddressData();
+
+        this.backend.postRequest('EmailAddress/searchBeans', {}, payload).subscribe(
+            (res: any) => {
+                for (let item in res) {
+                    if (!this.checkRelatedBeans(res[item])) {
+                        this.relatedBeans.push(res[item]);
+                    }
+                }
+                responseSubject.next(this.relatedBeans);
+                responseSubject.complete();
+            },
+            (err) => {
+                responseSubject.error(err);
+            }
+        );
+
+        return responseSubject.asObservable();
     }
 
     get messageId() {
