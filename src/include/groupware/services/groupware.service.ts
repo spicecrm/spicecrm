@@ -172,6 +172,31 @@ export abstract class GroupwareService {
         return responseSubject.asObservable();
     }
 
+    public searchSpice(searchTerm: string = ""): Observable<any> {
+        let responseSubject = new Subject<any>();
+
+        let searchParams = {
+            aggregates: {},
+            modules: "",
+            owner: false,
+            records: 10,
+            searchterm: searchTerm,
+            sort: {},
+        };
+
+        this.backend.postRequest('module/Emails/groupware/search', {}, searchParams).subscribe(
+            (searchResults: any) => {
+                responseSubject.next(searchResults);
+                responseSubject.complete();
+            },
+            (err) => {
+                responseSubject.error(err);
+            }
+        );
+
+        return responseSubject.asObservable();
+    }
+
     get messageId() {
         return this._messageId;
     }
