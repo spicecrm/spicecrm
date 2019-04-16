@@ -1,43 +1,25 @@
-import {Component, ChangeDetectorRef} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Subject, Observable} from 'rxjs';
+import {Component} from '@angular/core';
 import {GroupwareService} from '../services/groupware.service';
-
-import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 
+/**
+ * Outlook add-in beans pane showing a checklist of beans that use the email addresses found in the email.
+ * Any beans already linked to the email will have their checkboxes selected.
+ */
 @Component({
     selector: 'groupware-read-pane-beans',
     templateUrl: './src/include/groupware/templates/groupwarereadpanebeans.html'
 })
 export class GroupwareReadPaneBeans {
 
-    private beans: any[] = [];
-
     constructor(
-        private http: HttpClient,
         private groupware: GroupwareService,
-        private backend: backend,
         private language: language
     ) {
-        this.loadLinkedBeans();
+        this.groupware.loadLinkedBeans();
     }
 
-
-    public loadLinkedBeans() {
-        let payload = this.groupware.getEmailAddressData();
-
-        this.backend.postRequest('EmailAddress/searchBeans', {}, payload).subscribe(
-            (res: any) => {
-                for (let item in res) {
-                    this.beans.push(res[item]);
-                }
-
-                // this.beansloaded$.emit(true);
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
+    get beans() {
+        return this.groupware.relatedBeans;
     }
 }
