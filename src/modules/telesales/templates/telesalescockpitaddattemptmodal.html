@@ -1,19 +1,12 @@
-<section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
-    <div class="slds-modal__container">
-        <header class="slds-modal__header slds-theme_shade">
-            <h2 class="slds-text-heading_medium slds-hyphenate">
-                {{language.getLabel('LBL_ADD_ATTEMPT')}}
-            </h2>
-        </header>
-        <div class="slds-modal__content slds-p-around_medium">
+<system-modal size="medium">
+    <system-modal-header (close)="cancel()">{{language.getLabel('LBL_ADD_ATTEMPT')}}</system-modal-header>
+    <system-modal-content>
             <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
-        </div>
-        <footer class="slds-modal__footer">
-            <button *ngIf="model.data.hits >= maxAttempts" class="slds-button slds-button--neutral" (click)="remove()">
-                {{language.getLabel('LBL_REMOVE')}}
-            </button>
-            <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
-        </footer>
-    </div>
-</section>
-
+    </system-modal-content>
+    <system-modal-footer>
+        <button *ngIf="model.data.hits >= maxAttempts" class="slds-button slds-button--neutral" (click)="remove()">
+            {{language.getLabel('LBL_REMOVE')}}
+        </button>
+        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+    </system-modal-footer>
+</system-modal>

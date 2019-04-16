@@ -2,9 +2,7 @@
  * @module ModuleTeleSales
  */
 import {Component} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {toast} from '../../../services/toast.service';
@@ -21,15 +19,14 @@ export class TeleSalesCockpitLogCallButton {
 
     constructor(private language: language,
                 private telecockpitservice: telecockpitservice,
-                private metadata: metadata,
                 private model: model,
-                private footer: footer,
-                private backend: backend, private toast: toast) {
+                private backend: backend,
+                private toast: toast) {
         this.model.module = 'Calls';
     }
 
     public execute() {
-        this.model.id = undefined;
+        this.model.id = '';
         let item = this.telecockpitservice.selectedListItem;
         if (!item) {
             return;
@@ -60,3 +57,4 @@ export class TeleSalesCockpitLogCallButton {
         item.planned_activity_date = undefined;
     }
 }
+
