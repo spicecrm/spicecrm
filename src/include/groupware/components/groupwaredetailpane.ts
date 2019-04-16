@@ -1,10 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Subject, Observable} from 'rxjs';
-import {Router} from '@angular/router';
-
 import {GroupwareService} from '../services/groupware.service';
-import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -21,11 +16,6 @@ import {language} from "../../../services/language.service";
 export class GroupwareDetailPane implements OnInit {
 
     /**
-     * found beans
-     */
-    private beans: any = [];
-
-    /**
      * boolean indicator that the component is loading
      */
     private loading: boolean = false;
@@ -38,10 +28,7 @@ export class GroupwareDetailPane implements OnInit {
     private componentconfig: any = {};
 
     constructor(
-        private backend: backend,
         private groupware: GroupwareService,
-        private http: HttpClient,
-        private router: Router,
         private model: model,
         private metadata: metadata,
         private language: language
@@ -54,7 +41,7 @@ export class GroupwareDetailPane implements OnInit {
     public ngOnInit(): void {
         this.loading = true;
 
-        this.loadBeans().subscribe(
+        this.groupware.loadLinkedBeans().subscribe(
             (res) => {
                 if (res.length == 1) {
                     this.loadRecord(res[0].module, res[0].id);
@@ -70,30 +57,16 @@ export class GroupwareDetailPane implements OnInit {
         );
     }
 
-    private loadBeans(): Observable<any> {
-        let responseSubject = new Subject<any>();
-        let payload = this.groupware.getEmailAddressData();
-
-        this.backend.postRequest('EmailAddress/searchBeans', {}, payload).subscribe(
-            (res: any) => {
-                for (let item in res) {
-                    this.beans.push(res[item]);
-                }
-                responseSubject.next(this.beans);
-                responseSubject.complete();
-            },
-            (err) => {
-                responseSubject.error(err);
-            }
-        );
-
-        return responseSubject.asObservable();
-    }
-
     private selectBean(bean) {
         this.loadRecord(bean.module, bean.id);
     }
 
+    /**
+     * loads a selected bean and shows its details
+     *
+     * @param module
+     * @param id
+     */
     private loadRecord(module, id) {
 
         // load te model
@@ -104,5 +77,9 @@ export class GroupwareDetailPane implements OnInit {
         // load the componentset
         this.componentconfig = this.metadata.getComponentConfig('GroupwareDetailPane', module);
         // this.componentset = this.metadata.getComponentConfig('GroupwareDetailPane', module).componentset;
+    }
+
+    get beans() {
+        return this.groupware.relatedBeans;
     }
 }
