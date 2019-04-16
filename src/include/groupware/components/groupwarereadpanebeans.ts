@@ -19,6 +19,9 @@ export class GroupwareReadPaneBeans {
         this.groupware.loadLinkedBeans();
     }
 
+    /**
+     * Getter for the related beans array.
+     */
     get beans() {
         return this.groupware.relatedBeans;
     }

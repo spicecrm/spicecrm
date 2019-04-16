@@ -79,6 +79,9 @@ export class GroupwareDetailPane implements OnInit {
         // this.componentset = this.metadata.getComponentConfig('GroupwareDetailPane', module).componentset;
     }
 
+    /**
+     * Getter for the related beans array.
+     */
     get beans() {
         return this.groupware.relatedBeans;
     }

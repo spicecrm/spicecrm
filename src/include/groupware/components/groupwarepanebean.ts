@@ -5,6 +5,9 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 
+/**
+ * Renders a bean with a checkbox in the read pane bean checklist
+ */
 @Component({
     selector: 'groupware-pane-bean',
     templateUrl: './src/include/groupware/templates/groupwarepanebean.html',
@@ -25,6 +28,9 @@ export class GroupwarePaneBean implements OnInit {
     ) {
     }
 
+    /**
+     * Loads the display configuration for the component.
+     */
     public ngOnInit() {
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig(

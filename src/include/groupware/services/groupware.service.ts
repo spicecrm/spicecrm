@@ -2,6 +2,10 @@ import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 
+/**
+ * Groupware service used to communicate with the SpiceCRM KREST backend.
+ * Needs to be extended in order to communicate with email software (i.e. Outlook, Gmail).
+ */
 @Injectable()
 export abstract class GroupwareService {
 
@@ -23,40 +27,83 @@ export abstract class GroupwareService {
         protected backend: backend,
     ) {}
 
+    /**
+     * Adds a selected bean to the archive list.
+     *
+     * @param bean
+     */
     public addBean(bean) {
         this.archiveto.push(bean);
     }
 
+    /**
+     * Removes a selected bean from the archive list.
+     *
+     * @param bean
+     */
     public removeBean(bean) {
         let foundindex = this.archiveto.findIndex(element => bean.id == element.id);
         this.archiveto.splice(foundindex, 1);
     }
 
+    /**
+     * Checks if a bean is already on the archive list.
+     *
+     * @param bean
+     */
     public checkBeanArchive(bean) {
         return this.archiveto.findIndex(element => bean.id == element.id) >= 0 ? true : false;
     }
 
+    /**
+     * Adds an attachment to the archive list.
+     *
+     * @param attachment
+     */
     public addAttachment(attachment) {
         this.archiveattachments.push(attachment);
     }
 
+    /**
+     * Removes an attachment from the archive list.
+     *
+     * @param attachment
+     */
     public removeAttachment(attachment) {
         let foundindex = this.archiveattachments.findIndex(element => attachment.id == element.id);
         this.archiveattachments.splice(foundindex, 1);
     }
 
+    /**
+     * Checks if an attachment is already on the archive list.
+     *
+     * @param attachment
+     */
     public checkAttachmentArchive(attachment) {
         return this.archiveattachments.findIndex(element => attachment.id == element.id) >= 0 ? true : false;
     }
 
+    /**
+     * Returns an attachment from the list by its ID (Outlook/Exchange ID)
+     *
+     * @param id
+     */
     public getAttachment(id) {
         return this.outlookAttachments.attachments.filter(element => id == element.id);
     }
 
+    /**
+     * Checks if a bean is already on the related beans list.
+     *
+     * @param bean
+     */
     public checkRelatedBeans(bean) {
         return this.relatedBeans.findIndex(element => bean.id == element.id) >= 0 ? true : false;
     }
 
+    /**
+     * Sends a request to archive the email along with the selected beans and attachments.
+     */
     public archiveEmail(): Observable<any> {
         let retSubject = new Subject();
 
@@ -108,6 +155,10 @@ export abstract class GroupwareService {
         return retSubject.asObservable();
     }
 
+    /**
+     * Uses the message ID to check if the email has already been archived in SpiceCRM.
+     * If it has, its ID (SpiceCRM DB GUID), linked beans and linked attachments are loaded.
+     */
     public getEmailFromSpice(): Observable<any> {
         let retSubject = new Subject();
 
@@ -148,7 +199,7 @@ export abstract class GroupwareService {
     }
 
     /**
-     * loads the beans from SpiceCRM that are related to any of the email addresses used in the email
+     * Loads the beans from SpiceCRM that are related to any of the email addresses used in the email.
      */
     public loadLinkedBeans(): Observable<any> {
         let responseSubject = new Subject<any>();
@@ -172,6 +223,11 @@ export abstract class GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Performs the search for beans in SpiceCRM using KREST.
+     *
+     * @param searchTerm
+     */
     public searchSpice(searchTerm: string = ""): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -197,10 +253,18 @@ export abstract class GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Getter for the message ID.
+     */
     get messageId() {
         return this._messageId;
     }
 
+    /**
+     * Setter for the message ID.
+     *
+     * @param value
+     */
     set messageId(value) {
         this._messageId = value;
     }

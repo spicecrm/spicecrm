@@ -1,11 +1,13 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {GroupwareService} from '../services/groupware.service';
 import {model} from '../../../services/model.service';
-import {Router} from "@angular/router";
 import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 
+/**
+ * Renders a bean in the detail pane bean list.
+ */
 @Component({
     selector: 'groupware-detail-pane-bean',
     templateUrl: './src/include/groupware/templates/groupwaredetailpanebean.html',
@@ -24,9 +26,11 @@ export class GroupwareDetailPaneBean implements OnInit {
         private language: language,
         private metadata: metadata,
         private model: model,
-        private router: Router,
     ) {}
 
+    /**
+     * Loads the display configuration for the component.
+     */
     public ngOnInit() {
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig(
@@ -43,6 +47,5 @@ export class GroupwareDetailPaneBean implements OnInit {
 
     private onClick(event) {
         this.selected.emit({module: this.bean.module, id: this.bean.id});
-        // this.router.navigate(['module/' + this.bean.module + '/' + this.bean.id]);
     }
 }
