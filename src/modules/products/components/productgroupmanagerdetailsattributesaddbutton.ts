@@ -18,6 +18,7 @@ export class ProductGroupManagerDetailsAttributesAddButton {
     }
 
     private addItem() {
+        this.model.id = '';
         this.model.addModel().subscribe(res => {
             if (typeof res == 'object') {
                 this.changes.emit(res);
