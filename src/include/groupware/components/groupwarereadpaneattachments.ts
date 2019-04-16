@@ -1,10 +1,10 @@
 import {Component, ChangeDetectorRef} from '@angular/core';
-// import AsyncResultStatus = Office.AsyncResultStatus;
-import {Subject, Observable} from 'rxjs';
 import {GroupwareService} from '../services/groupware.service';
-
 import {language} from '../../../services/language.service';
 
+/**
+ * Outlook add-in pane showing the attachments of the chosen email.
+ */
 @Component({
     selector: 'groupware-read-pane-attachments',
     templateUrl: './src/include/groupware/templates/groupwarereadpaneattachments.html'
@@ -19,14 +19,19 @@ export class GroupwareReadPaneAttachments {
         this.loadAttachments();
     }
 
+    /**
+     * Getter for the attachment array
+     */
     get attachments() {
         return this.groupware.outlookAttachments.attachments;
     }
 
+    /**
+     * Loads the attachments in the groupware service.
+     */
     public loadAttachments() {
         this.groupware.getAttachments().subscribe(
             (res: any) => {
-                // todo get a list of the already selected attachments
                 this.changeDetectorRef.detectChanges();
             },
             (err) => {
