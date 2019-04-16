@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {GroupwareService} from "../../groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
@@ -16,9 +15,11 @@ export class OutlookPane implements OnInit {
         private configuration: OutlookConfiguration,
         private groupware: GroupwareService,
         private session: session
-    ) {
-    }
+    ) {}
 
+    /**
+     * Loads the message ID into the groupware service.
+     */
     public ngOnInit(): void {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
     }

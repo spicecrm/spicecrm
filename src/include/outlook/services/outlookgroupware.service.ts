@@ -4,11 +4,17 @@ import {Observable, Subject} from "rxjs";
 
 declare var Office: any;
 
+/**
+ * Extension of the groupware service used to communicate with Outlook.
+ */
 @Injectable()
 export class OutlookGroupware extends GroupwareService {
 
     public iframeUrl: string = '';
 
+    /**
+     * Loads the email data from Outlook and assembles it into a GroupwareEmail object.
+     */
     public assembleEmail(): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -49,6 +55,10 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Load the email attachment data from Outlook including the information about each attachment,
+     * as well as the EWS server URL and a temporary attachment token used to download the attachments in the backend.
+     */
     public getAttachments(): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -58,10 +68,6 @@ export class OutlookGroupware extends GroupwareService {
             this.getAttachmentToken().subscribe(
                 (res: any) => {
                     this.outlookAttachments.attachmentToken = res;
-
-                    // set to the mailitem
-                    // this.krest.attachmentToken = res;
-                    // this.krest.ewsUrl = this.outlookAttachments.ewsUrl;
 
                     for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
                         this.outlookAttachments.attachments[i] = JSON.parse(
@@ -84,6 +90,9 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Load the attachment token.
+     */
     public getAttachmentToken(): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -101,6 +110,9 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Returns an array of email adresses used in the selected email.
+     */
     public getAddressArray() {
         let toAddresses = [];
         toAddresses.push(Office.context.mailbox.item.from.emailAddress);
@@ -118,6 +130,9 @@ export class OutlookGroupware extends GroupwareService {
         return allAddresses;
     }
 
+    /**
+     * Returns the email adresses array and the message ID (Outlook ID) of the selected email.
+     */
     public getEmailAddressData() {
         let data = {
             addresses: this.getAddressArray(),

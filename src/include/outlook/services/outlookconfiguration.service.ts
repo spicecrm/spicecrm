@@ -4,6 +4,9 @@ import {backend} from "../../../services/backend.service";
 
 declare var Office: any;
 
+/**
+ * Outlook add-in configuration service. Used to store login data and save it in the roaming settings.
+ */
 @Injectable()
 export class OutlookConfiguration {
     private settings = Office.context.roamingSettings;
@@ -11,27 +14,30 @@ export class OutlookConfiguration {
     public username: string;
     public password: string;
 
-    public serviceRequest = {
-        attachmentToken: '',
-        ewsUrl: '',
-        attachments: [],
-    };
-
     constructor(
         private backend: backend,
     ) {
         this.loadSettings();
     }
 
+    /**
+     * Loads the settings from roaming settings.
+     */
     public loadSettings() {
         this.username = this.settings.get('username');
         this.password = this.settings.get('password');
     }
 
+    /**
+     * Checks if any of the settings are set.
+     */
     public hasSettings() {
         return this.username != '' && this.password != '';
     }
 
+    /**
+     * Saves the settings from the form into roaming settings.
+     */
     public saveSettings(): Observable<any> {
         let retSubject = new Subject();
 
@@ -53,6 +59,9 @@ export class OutlookConfiguration {
         return retSubject.asObservable();
     }
 
+    /**
+     * Tests the login settings against the KREST endpoint.
+     */
     public testSettings(): Observable<any> {
 
         let retSubject = new Subject();

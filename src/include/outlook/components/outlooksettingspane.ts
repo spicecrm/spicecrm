@@ -1,16 +1,17 @@
 import {Component} from '@angular/core';
-import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 import {language} from "../../../services/language.service";
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 
+/**
+ * Outlook add-in pane used to gather the login settings.
+ */
 @Component({
     selector: 'outlook-read-pane-settings',
     templateUrl: './src/include/outlook/templates/outlooksettingspane.html'
 })
 export class OutlookSettingsPane {
-    private submitSettingsString: string = "Save Settings";
     private errormessage: any;
     private isconfigured: boolean;
     private loading: boolean = false;
@@ -23,6 +24,9 @@ export class OutlookSettingsPane {
         this.isconfigured = this.configuration.hasSettings();
     }
 
+    /**
+     * Saves the settings in the configuration service.
+     */
     private saveSettings() {
         this.loading = true;
         this.configuration.testSettings().subscribe(
@@ -44,6 +48,9 @@ export class OutlookSettingsPane {
         );
     }
 
+    /**
+     * Cancels changes.
+     */
     private cancel() {
         this.configuration.loadSettings();
         this.router.navigate(['mailitem']);
