@@ -1,22 +1,22 @@
+/**
+ * @module SystemComponents
+ */
+
 // from https://github.com/kolkov/angular-editor
 import {
-    AfterContentInit,
     Component, ElementRef,
-    EventEmitter,
     forwardRef,
-    Inject,
-    Input,
-    OnInit,
     OnDestroy,
-    Output,
-    Renderer2,
-    ViewChild
+    Renderer2
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
 import {userpreferences} from "../../services/userpreferences.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -31,8 +31,6 @@ declare var moment: any;
     ]
 })
 export class SystemInputTime implements OnDestroy, ControlValueAccessor {
-
-
     // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
@@ -46,16 +44,22 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
 
     // for the dropdown
     private isOpen: boolean = false;
-    private clickListener: any;
+    //private clickListener: any;
+    private readonly minutes_interval = 30;
 
-    constructor(private elementref: ElementRef, private renderer: Renderer2, private userpreferences: userpreferences, private language: language) {
+    constructor(
+        private elementref: ElementRef,
+        private renderer: Renderer2,
+        private userpreferences: userpreferences,
+        private language: language
+    ) {
         this.dropdownValues = this.getDropdownValues();
     }
 
     public ngOnDestroy() {
-        if (this.clickListener) {
+        /*if (this.clickListener) {
             this.clickListener();
-        }
+        }*/
     }
 
     get isValid() {
@@ -74,9 +78,25 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
                 current: false
                 // current: start.isSame(this._time.moment, 'hour') && start.isSame(this._time.moment, 'minute')
             });
-            addMinutes += 30;
+            addMinutes += this.minutes_interval;
         }
         return retArray;
+    }
+
+    public getDropDownValueByOffset(offset) {
+        return this.dropdownValues.find(e => e.offset == offset);
+    }
+
+    public getNextDropDownValue() {
+        return this.getDropDownValueByOffset(this._time.offset + this.minutes_interval);
+    }
+
+    public setDisplayToNextDropDownValue() {
+        this.display = this.getNextDropDownValue().display;
+    }
+
+    public setDisplayToPreviousDropDownValue() {
+        this.display = this.getDropDownValueByOffset(this._time.offset - this.minutes_interval).display;
     }
 
     get display() {
@@ -95,16 +115,24 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
                 this._time.moment.hour(newDate.hour()).minutes(newDate.minutes());
                 this._time.valid = true;
                 this._time.offset = this.calculateOffset(this._time.moment);
+                this._time.display = value;
 
                 // close the dropdown
-                this.toggleClosed();
+                this.closeDropDown();
 
                 // emit the value to the ngModel directive
-                if (typeof this.onChange === 'function') {
-                    this.onChange(this._time.moment);
-                }
-
+                this.onChange(this._time.moment);
             } else {
+                // if only the hours are given... like "1", "22"...
+                if (typeof value == 'string' && value.length <= 2 && value.length > 0) {
+                    if (parseInt(value, 10) < 10) {
+                        value = `0${value}:00`;
+                    } else {
+                        value = `${value}:00`;
+                    }
+                    this.display = value;
+                    return;
+                }
                 this._time.valid = false;
             }
         } else {
@@ -131,32 +159,32 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private toggleOpen() {
+    private toggleDropDown() {
 
         this.isOpen = !this.isOpen;
         // check if we are active already
         if (this.isOpen) {
             // listen to the click event if it is ousoide of the current elements scope
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+            // this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
         }
     }
 
-    private toggleClosed() {
+    private closeDropDown() {
         // close the dropdown
         this.isOpen = false;
-        if (this.clickListener) {
+        /*if (this.clickListener) {
             this.clickListener();
-        }
+        }*/
     }
 
-
-    private onDocumentClick(event: MouseEvent) {
-        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
-            this.isOpen = false;
-            this.clickListener();
+    /*
+        private onDocumentClick(event: MouseEvent) {
+            if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
+                this.isOpen = false;
+                this.clickListener();
+            }
         }
-    }
-
+    */
     /**
      * Set the function to be called
      * when the control receives a change event.
@@ -184,7 +212,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
      */
     public writeValue(value: any): void {
         // this._time = value ? value : '';
-        if (value) {
+        if (value && value.isValid && value.isValid()) {
             this._time.moment = new moment(value);
             this._time.offset = this.calculateOffset(this._time.moment);
             this._time.display = this._time.moment.format(this.userpreferences.getTimeFormat());
@@ -193,6 +221,11 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         }
     }
 
+    /**
+     * not really needed?!
+     * @deprecated
+     * @param value
+     */
     public selectValue(value) {
 
         if (!this._time.moment) {
@@ -210,10 +243,16 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         }
 
         // close the dropdown
-        this.toggleClosed();
+        this.closeDropDown();
     }
 
+    /**
+     * returns the nearest possible offset...
+     * @param date
+     * @returns {any}
+     */
     private calculateOffset(date) {
-        return date.hour() * 60 + date.minute();
+        let mins = date.hour() * 60 + date.minute();
+        return Math.floor(mins / this.minutes_interval) * this.minutes_interval;
     }
 }

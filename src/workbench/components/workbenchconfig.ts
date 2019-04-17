@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component,
     Input,
@@ -47,16 +50,16 @@ export class WorkbenchConfig implements OnChanges {
         let options = this.metadata.getComponentConfigOptions(this.component);
         for (let option in options) {
             this.configOptions.push({
-                option: option,
+                option,
                 type: options[option].type ? options[option].type : 'string',
                 description: options[option].description ? options[option].description : ''
             });
         }
 
         // add the elements dynamically
-        for (let option of this.configOptions) {
+        for (let fieldconfig of this.configOptions) {
             let component = '';
-            let type = option.type.charAt(0).toUpperCase() + option.type.slice(1);
+            let type = fieldconfig.type.charAt(0).toUpperCase() + fieldconfig.type.slice(1);
             component = 'WorkbenchConfigOption' + type;
 
             // check availability
@@ -66,26 +69,9 @@ export class WorkbenchConfig implements OnChanges {
 
             this.metadata.addComponent(component, this.optionscontainer).subscribe(
                 cmpref => {
-
                     this.optionsElements.push(cmpref);
-
-                    cmpref.instance.option = option;
+                    cmpref.instance.option = fieldconfig;
                     cmpref.instance.configValues = this.configValues;
-
-                    if (component == 'LabelSelectorComponent') {
-                        let val = "";
-                        val = this.configValues[option.option];
-
-                        if (val && this.language.languagedata.applang[val]) {
-                            // fake a label object...
-                            cmpref.instance._selected_item = {name: val};
-                        }
-                        cmpref.instance.select$.subscribe(
-                            item => {
-                                this.configValues[option.option] = item.name;
-                            }
-                        );
-                    }
                 }
             );
         }

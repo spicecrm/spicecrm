@@ -1,11 +1,12 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component} from "@angular/core";
 import {Subject, Observable} from "rxjs";
 import {backend} from "../../services/backend.service";
-import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
-import {modelutilities} from "../../services/modelutilities.service";
 import {view} from "../../services/view.service";
 
 @Component({

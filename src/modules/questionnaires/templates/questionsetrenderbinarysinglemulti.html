@@ -9,7 +9,10 @@
                             <media-file-image [media_id]="options[question.id][0].image_id" [variant]="'mw'"
                                               [frameWidth]="imageWidthOption" [classOuter]="'slds-m-horizontal--x-small slds-m-vertical--small'"></media-file-image>
                         </ng-container>
-                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">{{options[question.id][0].name}}</ng-container>
+                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                            <span *ngIf="options[question.id][0].text; else name0" style="white-space:pre-line">{{options[question.id][0].text}}</span>
+                            <ng-template #name0>{{options[question.id][0].name}}</ng-template>
+                        </ng-container>
                     </td>
                     <td class="slds-text-align_right binary-left-radio"><input type="radio"
                                                                                [checked]="!previewMode && answers[question.id][0].value"
@@ -28,7 +31,10 @@
                             <media-file-image [media_id]="options[question.id][1].image_id" [variant]="'mw'"
                                               [frameWidth]="imageWidthOption" [classOuter]="'slds-m-horizontal--x-small slds-m-vertical--small'"></media-file-image>
                         </ng-container>
-                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">{{options[question.id][1].name}}</ng-container>
+                        <ng-container *ngIf="!( options[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                            <span *ngIf="options[question.id][1].text; else name1" style="white-space:pre-line">{{options[question.id][1].text}}</span>
+                            <ng-template #name1>{{options[question.id][1].name}}</ng-template>
+                        </ng-container>
                     </td>
                 </tr>
             </ng-container>
@@ -39,16 +45,16 @@
 
         <ng-container *ngFor="let question of questions; let i = index">
             <div *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" class="slds-box slds-m-bottom--medium questionset-render-question">
-                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_small slds-m-bottom--x-small">{{question.name}}</h3>
+                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium slds-m-bottom--x-small">{{question.name}}</h3>
                 <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion" [classOuter]="'slds-m-vertical--small'"></media-file-image>
 
                 <!-- Options vertical -->
                 <div *ngIf="!questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of options[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':options[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="options[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}">
-                        <div class="slds-p-left--none x-slds-size--1-of-1 slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
+                        <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
                             <input type="checkbox" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || no_edit">
                         </div>
-                        <div class="x-slds-size--1-of-1 slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
+                        <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
                             <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
                                 <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
                                 <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
@@ -78,16 +84,16 @@
         <ng-container *ngFor="let question of questions; let i = index">
             <div *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" class="slds-box slds-m-bottom--medium questionset-render-question">
 
-                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_small x-slds-m-bottom--x-small">{{question.name}}</h3>
+                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium">{{question.name}}</h3>
                 <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion" [classOuter]="'slds-m-top--small'"></media-file-image>
 
                 <!-- Options vertical -->
                 <div *ngIf="!questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of options[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':options[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="options[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}">
-                        <div class="slds-p-left--none x-slds-size--1-of-1 slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
+                        <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
                             <input style="margin:auto" type="radio" name="question-{{question.id}}" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || no_edit">
                         </div>
-                        <div class="x-slds-size--1-of-1 slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
+                        <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
                             <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
                                 <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
                                 <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>

@@ -1,14 +1,7 @@
-import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ElementRef,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy, OnChanges
-} from '@angular/core';
+/**
+ * @module ModuleDashboard
+ */
+import {AfterViewInit, Component, OnDestroy, Renderer2, ViewChild, ViewContainerRef,} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
 
@@ -26,59 +19,62 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
         }`
     ]
 })
-export class DashboardContainerBody implements AfterViewInit, OnInit, OnDestroy, OnChanges {
+export class DashboardContainerBody implements OnDestroy {
     @ViewChild('bodycontainer', {read: ViewContainerRef}) private bodycontainer: ViewContainerRef;
-    @Input() private dashboardid: string = '';
-    private resizeListener: any = {};
+    private resizeListener: any;
 
-    constructor(private dashboardlayout: dashboardlayout, private language: language, private elementRef: ElementRef, private renderer: Renderer2) {
-        this.resizeListener = this.renderer.listen('window', 'resize', () => this.calculateGrid());
-        this.renderer.listen('window', 'mousemove', (event) => {
-            if (this.dashboardlayout.editMode && this.dashboardlayout.isMoving) {
-                if (event.pageY < (this.dashboardlayout.mainContainer.top + 20) && this.bodycontainer.element.nativeElement.scrollTop > 0) {
-                    this.bodycontainer.element.nativeElement.scrollTop -= ((this.dashboardlayout.mainContainer.top + 20) - event.pageY) * ((this.dashboardlayout.mainContainer.top + 20) - event.pageY);
-                }
-                if (event.pageY > (this.dashboardlayout.mainContainer.bottom - 20)) {
-                    this.bodycontainer.element.nativeElement.scrollTop += (event.pageY - (this.dashboardlayout.mainContainer.bottom - 20)) * (event.pageY - (this.dashboardlayout.mainContainer.bottom - 20));
-                }
-            }
-        });
+    constructor(private dashboardlayout: dashboardlayout, private language: language, private renderer: Renderer2) {
+        this.resizeListener = this.renderer.listen('window', 'resize',()=> this.calculateGrid());
     }
 
-    public ngOnInit() {
-        this.dashboardlayout.loadDashboard(this.dashboardid);
+    get dashboardGrid() {
+        return this.dashboardlayout.dashboardGrid;
     }
 
-    public ngOnChanges() {
-        this.dashboardlayout.loadDashboard(this.dashboardid);
+    get dashboardElements() {
+        return this.dashboardlayout.dashboardElements;
     }
 
-    public ngAfterViewInit() {
-        this.calculateGrid();
-    }
-
-    public ngOnDestroy() {
-        this.resizeListener();
-    }
-
-    get isEditing() {
-        return this.dashboardlayout.editMode === true ? true : false;
+    get isEditMode() {
+        return this.dashboardlayout.editMode;
     }
 
     get bodyContainerStyle() {
         return {
-            height: 'calc(100vh - ' + this.bodycontainer.element.nativeElement.getBoundingClientRect().top + 'px)',
-            border: this.dashboardlayout.editMode ? '1px dashed #ca1b21' : '0',
-            'padding-right': this.dashboardlayout.paddingRight + 'px'
+            'border': this.dashboardlayout.editMode ? '1px dashed #ca1b21' : '0',
+            'width': '100%'
         };
     }
 
+    public ngAfterViewInit() {
+        this.dashboardlayout.bodyContainerRef = this.bodycontainer;
+    }
+
+    private trackByGridFn(index, item) {
+        return index;
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     private calculateGrid() {
-        this.dashboardlayout.mainContainer = this.elementRef.nativeElement.getBoundingClientRect();
+        if (window.innerWidth < 1024) {
+            this.dashboardlayout.editMode = false;
+        }
+        if (!this.isEditMode) {
+            return;
+        }
         this.dashboardlayout.calculateGrid();
     }
 
     private addDashlet(column) {
         this.dashboardlayout.addDashlet(column);
+    }
+
+    ngOnDestroy() {
+        if (this.resizeListener) {
+            this.resizeListener();
+        }
     }
 }

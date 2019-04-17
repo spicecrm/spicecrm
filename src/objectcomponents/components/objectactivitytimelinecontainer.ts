@@ -1,8 +1,13 @@
+/**
+ * @module ObjectComponents
+ */
 import {OnInit, Component, Input} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import { activitiyTimeLineService } from '../../services/activitiytimeline.service';
+import {activitiyTimeLineService, activityTimeLineModules} from '../../services/activitiytimeline.service';
 
+/**
+ * a component that renders a contianer with activities (past or future) as well as aggergates etc.
+ */
 @Component({
     selector: 'object-activitiytimeline-container',
     templateUrl: './src/objectcomponents/templates/objectactivitiytimelinecontainer.html',
@@ -10,39 +15,67 @@ import { activitiyTimeLineService } from '../../services/activitiytimeline.servi
 })
 export class ObjectActivitiyTimelineContainer implements OnInit {
 
-    @Input() module: string = '';
+    /**
+     * the module to be displayed
+     */
+    @Input() private module: activityTimeLineModules;
 
-    constructor(private activitiyTimeLineService: activitiyTimeLineService, private language: language) {}
+    /**
+     * toggles the aggregates to be displayed or not
+     */
+    @Input() private displayaggregates: boolean = false;
 
-    ngOnInit() {
+    constructor(private activitiyTimeLineService: activitiyTimeLineService, private language: language) {
+    }
+
+    /**
+     * @ignore
+     */
+    public ngOnInit() {
         this.activitiyTimeLineService.getTimeLineData(this.module);
     }
 
-    get activities(){
-        return this.activitiyTimeLineService.activities[this.module].list
+    /**
+     * a getter for the activities
+     */
+    get activities() {
+        return this.activitiyTimeLineService.activities[this.module].list;
     }
 
-    get hasActivities(){
+    /**
+     * checks if tehera are any activiites to be displayed. Otherwise shows an illustration
+     */
+    get hasActivities() {
         return this.activitiyTimeLineService.activities[this.module].list.length > 0 ? true : false;
     }
 
-    isCall(module){
-        return module === 'Calls';
-    }
-    isMeeting(module){
-        return module === 'Meetings';
-    }
-    isEmail(module){
-        return module === 'Emails';
-    }
-    isTask(module){
-        return module === 'Tasks';
-    }
-    isNote(module){
-        return module === 'Notes';
+    /**
+     * indicator if teh service is loading. This displays stencils
+     */
+    get loading() {
+        return this.activitiyTimeLineService.activities[this.module].loading;
     }
 
-    get loading(){
-        return this.activitiyTimeLineService.activities[this.module].loading;
+    /**
+     * checks if there are aggregates
+     */
+    get hasAggregates() {
+        try {
+            return this.activitiyTimeLineService.activities[this.module].aggregates.module.length > 0;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     * @ignore
+     *
+     * a trackby function for the loop
+     *
+     * @param index
+     * @param item
+     */
+    private trackByFn(index, item) {
+        return item.data.id;
     }
 }

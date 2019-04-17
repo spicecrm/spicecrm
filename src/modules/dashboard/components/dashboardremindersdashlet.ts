@@ -1,9 +1,15 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {reminder} from '../../../services/reminder.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -33,6 +39,10 @@ export class DashboardRemindersDashlet {
                 return reminder;
             })
             .sort((a, b) => a.reminder_date - b.reminder_date);
+    }
+
+    private trackByFn(index, item) {
+        return item.item_id;
     }
 
     private goRecord(module, id) {

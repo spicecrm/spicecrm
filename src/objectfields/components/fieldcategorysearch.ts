@@ -1,10 +1,9 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, ElementRef, EventEmitter, Input, Output,} from '@angular/core';
 import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
-import {metadata} from "../../services/metadata.service";
-import {Router} from "@angular/router";
-import {fieldGeneric} from "./fieldgeneric";
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 

@@ -1,4 +1,7 @@
-import {Component, Input, HostBinding, ViewContainerRef, ViewChild, AfterViewInit, OnInit} from "@angular/core";
+/**
+ * @module ModuleEmails
+ */
+import {Component, ViewContainerRef, ViewChild, AfterViewInit, OnInit} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";

@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -15,7 +18,8 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
     selector: 'global-docked-composer-container',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposercontainer.html',
     host: {
-        '[class.slds-docked_container]': 'isVisible'
+        '[class.slds-docked_container]': 'isVisible',
+        'style': 'z-index: 9999'
     }
 })
 export class GlobalDockedComposerContainer {
@@ -25,16 +29,16 @@ export class GlobalDockedComposerContainer {
     }
 
     get isVisible() {
-        return this.dockedComposer.composers.length > 0;
+        return this.dockedComposer.composers.length > 0 || this.dockedComposer.calls.length > 0;
     }
 
     private closeComposer() {
-        this.dockedComposer.showComposer = false;
+
     }
 
     // function to return the style if multiple composers are shown .. to stack them
     private getComposerStyle(composerindex): any {
-        if (composerindex >= this.dockedComposer.maxComposers) {
+        if (composerindex >= this.dockedComposer.maxComposers - this.dockedComposer.calls.length) {
             return {
                 display: 'none'
             };
@@ -42,6 +46,6 @@ export class GlobalDockedComposerContainer {
     }
 
     get displayOverflow(): boolean {
-        return this.dockedComposer.composers.length > this.dockedComposer.maxComposers ? true : false;
+        return this.dockedComposer.composers.length + this.dockedComposer.calls.length > this.dockedComposer.maxComposers ? true : false;
     }
 }

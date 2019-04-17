@@ -1,0 +1,16 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_UPLOAD_IMAGE')}}</system-modal-header>
+    <system-modal-content>
+            <div [ngStyle]="croppiestyle" class="slds-align--absolute-center slds-scrollable--none">
+                <div *ngIf="!imageBase64">
+                    <button class="slds-button slds-button--neutral" (click)="showUpload()">{{language.getLabel('LBL_SELECT_IMAGE')}}</button>
+                    <input #imgupload style="display:none" type="file" accept="image/*" (change)="uploadImage($event)"/>
+                </div>
+                <img *ngIf="imageBase64" id="croppieimage" [src]="imageBase64" (load)="doCrop($event)"/>
+            </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button [disabled]="!imageBase64" class="slds-button slds-button--brand" (click)="getcroppedImage()">{{language.getLabel('LBL_USE')}}</button>
+    </system-modal-footer>
+</system-modal>

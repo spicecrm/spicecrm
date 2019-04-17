@@ -1,7 +1,7 @@
-import {
-    AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef,
-    OnInit, EventEmitter
-} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {Component} from '@angular/core';
 import {language} from '../../services/language.service';
 
 @Component({
@@ -9,10 +9,9 @@ import {language} from '../../services/language.service';
 })
 export class SystemLoadingModal {
 
-    messagelabel: string = 'LBL_LOADING';
+    private messagelabel: string = 'LBL_LOADING';
 
     constructor(private language: language) {
 
     }
-
 }

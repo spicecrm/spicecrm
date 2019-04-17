@@ -1,6 +1,6 @@
 <system-collapsable-tab title="LBL_FAVORITES">
-    <ul class="slds-scrollable--y" style="max-height: 200px">
-        <li *ngFor="let favorite of favorites" [title]="favorite.item_summary" class="slds-m-around--xx-small">
+    <ul class="slds-scrollable--y spicecrm-scrollbar" style="max-height: 200px">
+        <li *ngFor="let favorite of favorites; trackBy: trackByFn" [title]="favorite.item_summary" class="slds-m-around--xx-small">
             <a style="cursor: pointer" (click)="navigateTo(favorite.item_id)">{{favorite.item_summary}}</a>
         </li>
     </ul>

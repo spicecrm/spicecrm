@@ -1,11 +1,10 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {configurationService} from './configuration.service';
 import {broadcast} from './broadcast.service';
-import {Router}   from '@angular/router';
-import {Observable, Subject} from 'rxjs';
-//import {isUndefined} from "util";
 
 @Injectable()
 export class googleapiloader {

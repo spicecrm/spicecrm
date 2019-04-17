@@ -1,3 +1,6 @@
+/**
+ * @module ModuleACLTerritories
+ */
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input, OnChanges} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {modal} from '../../../services/modal.service';

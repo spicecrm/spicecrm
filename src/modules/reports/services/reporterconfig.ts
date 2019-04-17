@@ -1,3 +1,6 @@
+/**
+ * @module ModuleReports
+ */
 import {Injectable, EventEmitter} from '@angular/core';
 import {configurationService} from '../../../services/configuration.service';
 import {backend} from '../../../services/backend.service';

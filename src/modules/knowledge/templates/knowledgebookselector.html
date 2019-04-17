@@ -19,7 +19,9 @@
                 <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="searchTerm"
                        (focus)="searchOpen = true"
                        (blur)="searchOpen = false"
-                       [placeholder]="language.getLabel('MSG_SEARCH_BOOKS')" role="combobox" [disabled]="books.length == 0">
+                       [placeholder]="language.getLabel('MSG_SEARCH_BOOKS')" role="combobox"
+                       [class.slds-theme_shade]="isLoading || books.length == 0"
+                       [disabled]="isLoading || books.length == 0">
             </div>
         </div>
     </div>
@@ -27,8 +29,8 @@
         <div class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-border--bottom">
             {{searchResults.length}} {{language.getLabel('MSG_BOOKS_FOUND')}}
         </div>
-        <ul class="slds-lookup__list" style="height: 175px" role="listbox">
-            <li *ngFor="let book of searchResults" role="presentation" (mousedown)="selectBook(book)">
+        <ul class="slds-lookup__list spicecrm-scrollbar-thin" style="height: 175px" role="listbox">
+            <li *ngFor="let book of searchResults; trackBy: trackByFn" role="presentation" (mousedown)="selectBook(book)">
                 <div class="slds-lookup__item-action slds-media" role="option">
                     <span class="slds-lookup__result-text">{{book.name}}</span>
                 </div>

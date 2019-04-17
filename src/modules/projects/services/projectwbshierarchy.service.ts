@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProjects
+ */
 import {Injectable} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";

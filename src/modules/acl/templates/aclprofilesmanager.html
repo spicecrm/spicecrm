@@ -1,9 +1,5 @@
-<div style="height: 100%;">
-    <div>
-        <acl-manager-header displaylabel="LBL_SPICEACLPROFILES"></acl-manager-header>
-    </div>
-    <div #managercontent class="slds-grid" [ngStyle]="contentStyle">
-        <aclprofiles-manager-profiles class="slds-size--1-of-2 slds-border--right" (profileselected)="setProfile($event)"></aclprofiles-manager-profiles>
-        <aclprofiles-manager-profile [profileid]="activeprofileid" class="slds-size--1-of-2" style="height: 100%;"></aclprofiles-manager-profile>
-    </div>
+<acl-manager-header displaylabel="LBL_SPICEACLPROFILES"></acl-manager-header>
+<div class="slds-grid">
+    <aclprofiles-manager-profiles class="slds-size--1-of-2 slds-border--right" (profileselected)="setProfile($event)"></aclprofiles-manager-profiles>
+    <aclprofiles-manager-profile [profileid]="activeprofileid" [profile]="activeprofile" class="slds-size--1-of-2" style="height: 100%;"></aclprofiles-manager-profile>
 </div>

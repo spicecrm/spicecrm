@@ -1,37 +1,98 @@
-import {EventEmitter, Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {CanActivate}    from "@angular/router";
+/**
+ * @module services
+ */
 
-import {configurationService} from "./configuration.service";
-import {session} from "./session.service";
+import {EventEmitter, Injectable, OnDestroy} from "@angular/core";
 import {broadcast} from "./broadcast.service";
 import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
 import {modelutilities} from "./modelutilities.service";
-import {Router}   from "@angular/router";
+import {Observable, of, Subject} from "rxjs";
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
+/**
+ * handles related models for subpanels etc.
+ */
 @Injectable()
-export class relatedmodels {
-    public module: string = "";
-    public relatedModule: string = "";
-    public linkName: string = "";
-    public id: string = "";
-    public items: any = [];
-    public items$ = new EventEmitter();
-    public count: number = 0;
-    public loaditems: number = 5;
-    private relationshipFields: Array<string> = [];
-    public isloading: boolean = true;
+export class relatedmodels implements OnDestroy {
+    /**
+     * the parent module
+     */
+    public module = '';
+
+    /**
+     * the id of the parent records
+     */
+    public id = '';
+
+    /**
+     * the related module
+     */
+    public relatedModule = '';
+
+    /**
+     * the link in the parents vardefs. If none is set it is assmed that the name of the link is the same as the name of the module but in lowercase
+     */
+    public linkName = '';
+
+    /**
+     * an optional filterid to be applied to the selection of the related models
+     */
+    public modulefilter = '';
+
+    /**
+     * an array with the related records
+     */
+    public items: any[] = [];
+
+    /**
+     * the total count o related records
+     */
+    public count = 0;
+
+    /**
+     * default value for number of items loaded with a backend request
+     */
+    public loaditems = 5;
+
+    /**
+     * ToDo: check wha this is for
+     */
+    private relationshipFields: string[] = [];
+
+    /**
+     * inidcates if the servic eis currently retrieving data from teh backend
+     */
+    public isloading = true;
+
+    /**
+     * sort parameters
+     */
     public sort: any = {
-        sortfield: "",
-        sortdirection: "ASC"
+        sortfield: '',
+        sortdirection: 'ASC'
     };
+
+    /**
+     *  a moment object for the indication when the data was last loaded
+     *
+     *  currently only used for display purposes
+     */
     private lastLoad: any = new moment();
 
-    private serviceSubscriptions: Array<any> = [];
+    /**
+     * an optional sequence field. if a value is set the table can be sequenced by drag and drop
+     */
+    public sequencefield: string = null;
+
+    /**
+     * a handler to the broadcast subscrition. M;aking sure the susbcription is cancelled whent he component is destroyed
+     */
+    private serviceSubscriptions: any[] = [];
 
     constructor(
         private metadata: metadata,
@@ -47,16 +108,37 @@ export class relatedmodels {
         );
     }
 
+    /**
+     * @ignore
+     *
+     * cancel the subscription
+     */
+    public ngOnDestroy(): void {
+        this.stopSubscriptions();
+    }
+
+    /**
+     * to be called when the component for this servuice is destroyed
+     */
     public stopSubscriptions() {
         for (let subscription of this.serviceSubscriptions) {
             subscription.unsubscribe();
         }
+        this.serviceSubscriptions = [];
     }
 
+    /**
+     * a getter for the sortfield currently set
+     */
     get sortfield() {
         return this.sort.sortfield;
     }
 
+    /**
+     * set the sortfield and sort the results
+     *
+     * @param field the fieldname
+     */
     set sortfield(field) {
         if (this.sort.sortfield == field) {
             this.sort.sortdirection = this.sort.sortdirection == "ASC" ? "DESC" : "ASC";
@@ -68,10 +150,30 @@ export class relatedmodels {
         this.getData();
     }
 
+    /**
+     * simple getter for the linkname
+     *
+     * @private
+     */
     get _linkName() {
         return this.linkName != "" ? this.linkName : this.relatedModule.toLowerCase();
     }
 
+    /**
+     * getter for the sequencefield
+     */
+    get sortBySequencefield() {
+        if (this.sequencefield && !this.modulefilter && !this.sort.sortfield) return true;
+        else return false;
+    }
+
+    /**
+     * handler for teh broadcast messeg
+     *
+     * this handles delete and save actions and updates the related list items when in opther areas of the application a model is changed
+     *
+     * @param message
+     */
     private handleMessage(message: any) {
         // only handle if the module is the list module
         if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== this.relatedModule) {
@@ -80,18 +182,17 @@ export class relatedmodels {
 
         switch (message.messagetype) {
             case "model.delete":
-                for (let itemIndex in this.items) {
-                    if (this.items[itemIndex].id === message.messagedata.id) {
-                        this.items.splice(itemIndex, 1);
+                this.items.some((item, i) => {
+                    if (item.id === message.messagedata.id) {
+                        this.items.splice(i, 1);
                         this.count--;
-
                         // emit that a change has happened
-                        this.items$.emit(this.items);
+                        // this.items$.emit(this.items);
+                        return true;
                     }
-                }
+                });
                 break;
             case "model.save":
-                this.getData();
                 let eventHandled = false;
                 for (let item of this.items) {
                     if (item.id === message.messagedata.id) {
@@ -101,39 +202,50 @@ export class relatedmodels {
                             }
                         }
                         eventHandled = true;
+                        this.sortItems();
                     }
                 }
 
-
-                if (!eventHandled) {
-                    this.getData();
+                if (!eventHandled || this.modulefilter) {
+                    this.getData(true);
                 } else {
                     this.sortItems();
                 }
-
 
                 break;
         }
     }
 
+    /**
+     * returns the last load time
+     *
+     * ToDo: change to user preferences so it is properly displayed in the users time settings
+     */
     public getLastLoadTime(): string {
         return this.lastLoad.format("HH:mm");
     }
 
-    public getData() {
+    /**
+     * get the data. Resets all currently loaded data and reloads from scratch
+     *
+     * @param silent if set to true all items will remain in the list and the user will not dierclty see that the related list is loading
+     */
+    public getData(silent: boolean = false) {
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
             return false;
         }
 
         // set that we are loading
-        this.resetData();
-        this.isloading = true;
-
+        if (!silent) {
+            this.resetData();
+            this.isloading = true;
+        }
         let params = {
             getcount: true,
             offset: 0,
             limit: this.loaditems,
+            modulefilter: this.modulefilter,
             relationshipFields: JSON.stringify(this.relationshipFields),
             sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
         };
@@ -168,33 +280,123 @@ export class relatedmodels {
                 this.lastLoad = new moment();
 
                 // emit that a change has happened
-                this.items$.emit(this.items);
+                // this.items$.emit(this.items);
             }
         );
     }
 
+    /**
+     * a short getter to indicate if more items can be loaded
+     */
+    get canloadmore() {
+        return !this.isloading && this.count && this.count - this.items.length > 0;
+    }
+
+    /**
+     * loads the next set of items
+     *
+     * @param loaditems the number of items to be laoded
+     */
+    public getMoreData(loaditems = 5): Observable<any> {
+
+        // check if we can list per acl
+        if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
+            return of(true);
+        }
+
+        this.isloading = true;
+
+        let params = {
+            getcount: true,
+            offset: this.items.length,
+            limit: this.items.length + loaditems,
+            modulefilter: this.modulefilter,
+            relationshipFields: JSON.stringify(this.relationshipFields),
+            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
+        };
+
+        let retSubject = new Subject<any>();
+
+        this.backend.getRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(
+            (response: any) => {
+
+                // get the count
+                this.count = parseInt(response.count, 10);
+
+                // count .. this is not an array but an object
+                for (let key in response.list) {
+                    if (response.list.hasOwnProperty(key)) {
+                        response.list[key].relid = key;
+
+                        response.list[key] = this.modelutilities.backendModel2spice(this.relatedModule, response.list[key]);
+
+                        this.items.push(response.list[key]);
+                    }
+                }
+
+                // sort
+                this.sortItems();
+
+                // set the load time
+                this.lastLoad = new moment();
+
+                // emit that a change has happened
+                // this.items$.emit(this.items);
+
+                this.isloading = false;
+
+                retSubject.next(true);
+                retSubject.complete();
+            }
+        );
+
+        return retSubject.asObservable();
+    }
+
+    /**
+     * sorts the items according to the sort settings
+     */
     private sortItems() {
+
+        let sortfield: string;
+        let sortdirection: string;
         if (this.sort.sortfield) {
+            sortfield = this.sort.sortfield;
+            sortdirection = this.sort.sortdirection;
+        } else if (this.sortBySequencefield) {
+            sortfield = this.sequencefield;
+            sortdirection = 'ASC';
+        }
+
+        if (sortfield) {
             this.items.sort((a, b) => {
                 let sortval = 0;
                 // check if we can sort as integer
-                if (!isNaN(parseInt(a[this.sort.sortfield], 10)) && !isNaN(parseInt(b[this.sort.sortfield], 10))) {
-                    sortval = parseInt(a[this.sort.sortfield], 10) > parseInt(b[this.sort.sortfield], 10) ? 1 : -1;
+                if (!isNaN(parseInt(a[sortfield], 10)) && !isNaN(parseInt(b[sortfield], 10))) {
+                    sortval = parseInt(a[sortfield], 10) > parseInt(b[sortfield], 10) ? 1 : -1;
                 } else {
-                    sortval = a[this.sort.sortfield] > b[this.sort.sortfield] ? 1 : -1;
+                    sortval = a[sortfield] > b[sortfield] ? 1 : -1;
                 }
-
-                return this.sort.sortdirection == "ASC" ? sortval : (sortval * -1);
+                return sortdirection == 'ASC' ? sortval : (sortval * -1);
             });
         }
+
     }
 
+    /**
+     * helper method to reset the items
+     */
     private resetData() {
         this.items = [];
     }
 
+    /**
+     * helper to add items when called fromt eh handler
+     *
+     * @param items
+     */
     public addItems(items) {
-        let relatedIds: Array<any> = [];
+        let relatedIds: any[] = [];
         for (let item of items) {
             relatedIds.push(item.id);
         }
@@ -217,19 +419,31 @@ export class relatedmodels {
             }
 
             // emit that a change has happened
-            this.items$.emit(this.items);
+            // this.items$.emit(this.items);
 
             // this.items = this.items.concat(items);
             // this.count += items.length;
         });
     }
 
+    /**
+     * set item data
+     *
+     * ToDo: check where this is called from
+     *
+     * @param item the item
+     */
     public setItem(item) {
         this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
 
         });
     }
 
+    /**
+     * removes the relationship for an items
+     *
+     * @param id the related id
+     */
     public deleteItem(id) {
         let relatedids = [];
         relatedids.push(id);
@@ -243,7 +457,7 @@ export class relatedmodels {
                     this.count--;
 
                     // emit that a change has happened
-                    this.items$.emit(this.items);
+                    // this.items$.emit(this.items);
 
                     // return
                     return true;

@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, OnDestroy, Input, NgZone, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {AfterViewInit, Component, Input,  ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
-
 
 @Component({
     selector: 'field-wysiwyg-editor',

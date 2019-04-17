@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -7,6 +10,9 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {userpreferences} from "../../services/userpreferences.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

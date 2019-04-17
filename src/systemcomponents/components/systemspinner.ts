@@ -1,32 +1,55 @@
-import {Component, Input} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {Component, Input, OnInit} from '@angular/core';
 
+/**
+ * a loading spinner that can be rendered while a component is loading
+ */
 @Component({
     selector: 'system-spinner',
     templateUrl: './src/systemcomponents/templates/systemspinner.html'
 })
-export class SystemSpinner {
+export class SystemSpinner implements OnInit {
 
-    @Input()size : number = 0;
-    @Input()border : number = 0;
-    @Input()inverse : string = 'false';
+    /**
+     * the size of the spinner in pixel
+     */
+    @Input() private size: number = 0;
 
+    /**
+     * an optional paramater for the border with in pixel
+     */
+    @Input() private border: number = 0;
 
-    get spinnerStyle(){
-        let styleObj = {};
-        if(this.size  != 0){
-            styleObj['width'] = this.size + 'px';
-            styleObj['height'] = this.size + 'px';
+    /**
+     * set to true to inverse the spinner color schema
+     */
+    @Input() private inverse: string = 'false';
+
+    /**
+     * @ignore
+     */
+    private spinnerStyle: any = {};
+
+    public ngOnInit() {
+        let            styleObj = {};
+
+        if (this.size != 0
+        ) {
+            this.spinnerStyle.width = this.size + 'px';
+            this.spinnerStyle.height = this.size + 'px';
         }
-        if(this.border  != 0){
-            styleObj['border-width'] = this.border + 'px';
+
+        if (this.border != 0) {
+            this.spinnerStyle['border-width'] = this.border + 'px';
         }
 
-        if(this.inverse == 'true'){
-            styleObj['border-right-color'] = '#fff';
-            styleObj['border-left-color'] = '#fff';
-            styleObj['border-bottom-color'] = '#fff';
+        if (this.inverse == 'true') {
+            this.spinnerStyle['border-right-color'] = '#fff';
+            this.spinnerStyle['border-left-color'] = '#fff';
+            this.spinnerStyle['border-bottom-color'] = '#fff';
         }
         return styleObj;
     }
-
 }

@@ -1,11 +1,14 @@
-import {Component, Input, HostBinding, ViewContainerRef, ViewChild, OnInit, AfterViewInit} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
+/**
+ * @module ModuleTeleSales
+ */
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-
 import {telecockpitservice} from '../services/telecockpit.service';
+import {Subscription} from "rxjs";
+import {TeleSalesCockpitMain} from "./telesalescockpitmain";
+import {TeleSalesCockpitList} from "./telesalescockpitlist";
 
 @Component({
     templateUrl: './src/modules/telesales/templates/telesalescockpit.html',
@@ -15,70 +18,35 @@ import {telecockpitservice} from '../services/telecockpit.service';
         model
     ]
 })
-export class TeleSalesCockpit implements OnInit, AfterViewInit {
 
-    @ViewChild('telecockpitactionscontainer', {read: ViewContainerRef}) telecockpitactionscontainer: ViewContainerRef;
-    @ViewChild('telecockpitscrollcontainer', {read: ViewContainerRef}) telecockpitscrollcontainer: ViewContainerRef;
+export class TeleSalesCockpit implements OnDestroy {
 
-    componentconfig: any = {};
-    actionset: string = '';
-    campaigntasks: Array<any> = [];
-    actionitems: any;
+    @ViewChild(TeleSalesCockpitMain) private mainComponent: TeleSalesCockpitMain;
+    @ViewChild(TeleSalesCockpitList) private listComponent: TeleSalesCockpitList;
+
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private model: model,
-                private metadata: metadata,
-                private backend: backend,
                 private telecockpitservice: telecockpitservice) {
-
-        let fields = JSON.stringify(["name", "start_date", "end_date", "status", "campaigntask_type", "campaign_name", "campaign_id"]);
-        this.backend.getRequest("module/CampaignTasks", {fields: fields}).subscribe(response => {
-            this.campaigntasks = response.list;
-            if (response.list.length > 0) {
-                this.telecockpitservice.campaignTaskId = this.campaigntasks[0].id;
-            }
-        });
-
-        this.telecockpitservice.selectedItem$.subscribe(data => this.loadModel(data));
-        this.telecockpitservice.campaignTaskId$.subscribe(id => this.setCampaignData(id));
-
+        this.selectedListItemSubscriber();
     }
 
-    setCampaignData(id) {
-        for (let campaigntask of this.campaigntasks) {
-            if (campaigntask.id == id) {
-                this.telecockpitservice.currentCampaignTaskName = campaigntask.campaign_name;
-                this.telecockpitservice.currentCampaignId = campaigntask.campaign_id;
-            }
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    private selectedListItemSubscriber() {
+        this.subscription = this.telecockpitservice.selectedListItem$.subscribe(listItem => this.loadModel(listItem));
+    }
+
+    private loadModel(selectedListItem) {
+        this.model.reset();
+        if (!selectedListItem) {
+            return;
         }
+        this.model.module = selectedListItem.target_type;
+        this.model.id = selectedListItem.data.id;
+        this.model.data = selectedListItem.data;
     }
-
-    loadModel(modeldata) {
-        this.model.module = modeldata.module;
-        this.model.id = modeldata.data.id;
-        this.model.data = modeldata.data;
-    }
-
-    ngOnInit() {
-        // get the Componentconfig if not set yet
-        let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpit');
-
-        this.actionset = componentconfig.actionset;
-    }
-
-    ngAfterViewInit() {
-
-        this.actionitems = this.metadata.getActionSetItems(this.actionset);
-
-        if (this.actionitems)
-            for (let actionitem of this.actionitems) {
-
-                this.metadata.addComponent(actionitem.component, this.telecockpitactionscontainer).subscribe(componentref => {
-                    componentref.instance.parent = this.model;
-                    componentref.instance['actionconfig'] = actionitem.actionconfig;
-                });
-
-            }
-    }
-
 }

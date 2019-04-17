@@ -6,7 +6,7 @@
         <div class="slds-select_container slds-m-vertical--xx-small">
             <select class="slds-select " [(ngModel)]="value">
                 <ng-container *ngFor="let o of options">
-                    <option [value]="o.value"> {{o.display}}</option>
+                    <option [value]="o.value"> {{o.long}}</option>
                 </ng-container>
             </select>
         </div>

@@ -1,0 +1,14 @@
+<div class="slds-tile slds-tile--board">
+    <div class="slds-grid slds-grid--align-spread">
+        <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{item.summary_text}}</a>
+        </h3>
+        <object-action-menu [buttonsize]="'x-small'"></object-action-menu>
+    </div>
+    <div class="slds-tile__detail slds-text-body--small">
+        <field-container *ngIf="componentconfig.amount" [field]="componentconfig.amount" [fielddisplayclass]="'slds-text-heading--medium'"></field-container>
+        <div class="slds-grid" *ngFor="let componentField of componentFields">
+            <field-label class="slds-truncate"  [fieldname]="componentField.field" [fieldconfig]="componentField.fieldconfig"></field-label>
+            <field-container class="slds-col--bump-left slds-truncate" [field]="componentField.field" [fieldconfig]="componentField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+        </div>
+    </div>
+</div>

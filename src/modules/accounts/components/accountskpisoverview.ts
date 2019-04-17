@@ -1,9 +1,15 @@
+/**
+ * @module ModuleAccounts
+ */
 import {Component, Renderer2} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

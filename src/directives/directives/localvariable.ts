@@ -1,8 +1,10 @@
+/**
+ * @module directives
+ */
 import {Directive, Input, TemplateRef, ViewContainerRef} from "@angular/core";
 
 /**
  * a directive to store variables locally for use in templates... most used inside ngFor loops...
- * author: sebastian franz
  * source: https://stackoverflow.com/questions/38582293/how-to-declare-a-variable-in-a-template-in-angular2/43172992#43172992
  */
 @Directive({
@@ -15,11 +17,11 @@ export class LocalVariableDirective {
         this.updateView();
     }
 
-    context: any = {};
+    private context: any = {};
 
     constructor(private vcRef: ViewContainerRef, private templateRef: TemplateRef<any>) {}
 
-    updateView() {
+    private updateView() {
         this.vcRef.clear();
         this.vcRef.createEmbeddedView(this.templateRef, this.context);
     }

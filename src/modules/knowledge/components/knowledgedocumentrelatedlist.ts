@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {model} from "../../../services/model.service";
@@ -6,6 +9,7 @@ import {language} from "../../../services/language.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {Router} from '@angular/router';
 import {Location} from "@angular/common";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: "Knowledge-document-related-list",
@@ -14,6 +18,7 @@ import {Location} from "@angular/common";
 })
 export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
     public componentconfig: any = {};
+    private subscription: Subscription = new Subscription();
 
     constructor(
         private language: language,
@@ -26,7 +31,7 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
     ) {
         this.relatedmodels.module = "KnowledgeDocuments";
         this.relatedmodels.relatedModule = "KnowledgeDocuments";
-        this.model.data$.subscribe(data => {
+        this.subscription = this.model.data$.subscribe(data => {
             if (!data.id || data.id == "") {
                 return;
             }
@@ -51,10 +56,15 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
 
     public ngOnDestroy() {
         this.relatedmodels.stopSubscriptions();
+        this.subscription.unsubscribe();
     }
 
     private navigateTo(id) {
         this.knowledgeService.selectedId = id;
         this.location.replaceState("/module/KnowledgeDocuments/" + id);
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 }

@@ -1,8 +1,9 @@
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {Subject} from 'rxjs';
-import {backend} from '../../../services/backend.service';
+/**
+ * @module ModuleMailboxes
+ */
+import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
+import {metadata} from '../../../services/metadata.service';
 import {mailboxesEmails} from '../services/mailboxesemail.service';
 import {ActivatedRoute} from '@angular/router';
 
@@ -13,13 +14,32 @@ import {ActivatedRoute} from '@angular/router';
 export class MailboxManagerHeader implements OnInit {
 
     private mailboxselection: string;
-    private emailopenness: string = '';
+
+    get emailopenness() {
+        return this.mailboxesEmails.emailopenness == "" ? 'all' : this.mailboxesEmails.emailopenness;
+    }
+
+    set emailopenness(val) {
+        this.mailboxesEmails.emailopenness = val == 'all' ? "" : val;
+        this.mailboxesEmails.loadMails();
+    }
+
+    get buttonenabled() {
+        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading ? true : false;
+    }
 
     constructor(
         private activatedRoute: ActivatedRoute,
         private language: language,
         private mailboxesEmails: mailboxesEmails,
-    ) {}
+        private metadata: metadata
+    ) {
+
+        // load default settings for the openness selection and the unread only flag
+        let componentconfig = this.metadata.getComponentConfig('MailboxManagerHeader');
+        this.emailopenness = componentconfig.selectionstatus ? componentconfig.selectionstatus : '';
+        this.mailboxesEmails.unreadonly = componentconfig.unreadonly ? componentconfig.unreadonly : false;
+    }
 
     public ngOnInit() {
         let routeSubscribe = this.activatedRoute.params.subscribe(
@@ -46,15 +66,6 @@ export class MailboxManagerHeader implements OnInit {
             }
         }
         this.mailboxesEmails.loadMails();
-    }
-
-    private selectEmailOpenness() {
-        this.mailboxesEmails.emailopenness = this.emailopenness == "all" ? "" : this.emailopenness;
-        this.mailboxesEmails.loadMails();
-    }
-
-    get buttonenabled() {
-        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading ? true : false;
     }
 
     private reloadList() {

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleAccounts
+ */
 import {Component, AfterViewInit, OnInit, OnDestroy, Input} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";

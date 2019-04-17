@@ -1,20 +1,14 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+/**
+ * @module ModuleProducts
+ */
+import {Component} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
 import {ProductBrowserAttributeVCSearch} from './productbrowserattributevcsearch';
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -23,20 +17,14 @@ declare var moment: any;
 })
 export class ProductBrowserAttributeDISearch extends ProductBrowserAttributeVCSearch {
 
-
     constructor(public language: language, public productfinder: productfinder) {
-        super(language, productfinder)
-        this.autosearch = true;
+        super(language, productfinder);
     }
 
-    get attributevalues() {
-        let retArray = [];
-
-        if (this.attribute.validations)
-            for (let validation of this.attribute.validations)
-                retArray.push(validation.value);
-
-        return retArray
+    get attributeValues() {
+        return this.attribute.validations ? this.attribute.validations.map(va => {
+            va = va.value;
+            return va;
+        }) : [];
     }
-
 }

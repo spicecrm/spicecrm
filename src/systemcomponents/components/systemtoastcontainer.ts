@@ -1,5 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {ChangeDetectorRef, Component, Renderer2} from '@angular/core';
 import {toast} from '../../services/toast.service';
+import {layout} from '../../services/layout.service';
 
 @Component({
     selector: 'system-toast-container',
@@ -7,20 +11,31 @@ import {toast} from '../../services/toast.service';
 })
 export class SystemToastContainer {
 
-    constructor(private toast: toast) {}
+    constructor(private toast: toast, private layout: layout, private renderer: Renderer2, private cdr: ChangeDetectorRef) {
+        this.renderer.listen('window', 'resize', () => this.cdr.detectChanges());
 
-    getToastClass(type, theme){
+    }
+
+    get isnarrow() {
+        return this.layout.screenwidth == 'small';
+    }
+
+    get toastStyle() {
+        return this.isnarrow ? {'min-width': 'unset', 'border-radius': 0, 'border-bottom': '1px solid #fff'} : {};
+    }
+
+    private getToastClass(type, theme) {
         let toastclass = '';
-        switch(theme){
+        switch (theme) {
             case 'alert':
-                toastclass = 'slds-notify--alert slds-theme--alert-texture '
+                toastclass = 'slds-notify--alert slds-theme--alert-texture ';
                 break;
             default:
-                toastclass = 'slds-notify--toast '
+                toastclass = 'slds-notify--toast ';
                 break;
         }
 
-        switch(type){
+        switch (type) {
             case 'success':
                 toastclass += 'slds-theme--success';
                 break;
@@ -31,11 +46,12 @@ export class SystemToastContainer {
                 toastclass += 'slds-theme--error';
                 break;
         }
-        return toastclass
+
+        return this.isnarrow ? toastclass + ' slds-size--1-of-1 slds-m-around--none' : toastclass;
     }
 
-    getToastIcon(type){
-        switch(type){
+    private getToastIcon(type) {
+        switch (type) {
             case 'success':
                 return 'success';
             case 'warning':

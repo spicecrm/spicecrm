@@ -1,6 +1,7 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, Input} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
+/**
+ * @module ObjectComponents
+ */
+import {Component, Input} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {view} from '../../services/view.service';

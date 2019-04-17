@@ -1,3 +1,6 @@
+/**
+ * @module ServiceComponentsModule
+ */
 import {Component} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
@@ -9,51 +12,54 @@ import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
 
 @Component({
     selector: 'service-select-queue-button',
-    templateUrl: './src/modules/servicecomponents/templates/serviceselectqueuebutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-        '[style.display]': 'getDisplay()'
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ]
+    templateUrl: './src/modules/servicecomponents/templates/serviceselectqueuebutton.html'
 })
-export class ServiceSelectQueueButton
-{
+export class ServiceSelectQueueButton {
     constructor(
         private model: model,
         private metadata: metadata,
         private language: language,
         private modal: modal,
-    )
-    {
+    ) {
 
     }
 
-    showModal()
-    {
-        this.modal.openModal('ServiceSelectQueueModal').subscribe(
-            cmp =>
-            {
-                cmp.instance.parentqueue_id = this.model.getField('servicequeue_id');
-                cmp.instance.displaynote = true;
-                cmp.instance.selectedqueue.subscribe(response => {
-                    if(response != false){
-                        this.model.setField('servicequeue_id', response.servicequeue_id);
-                        this.model.setField('servicequeue_name', response.servicequeue_name);
+    get canChange() {
+        if (this.model.data.acl && !this.model.data.acl.edit) return false;
 
-                        if(!this.model.isEditing)
-                            this.model.save();
-                    };
-                })
-            }
-        );
+        let resolveDate = this.model.getField('resolve_date');
+        if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
+            return false;
+        }
+
+        return this.model.isEditing ? false : true;
     }
 
-    getDisplay() {
-        if(this.model.data.acl && !this.model.data.acl.edit)
-            return 'none';
+    private showModal() {
+        if (this.canChange) {
+            this.modal.openModal('ServiceSelectQueueModal').subscribe(
+                cmp => {
+                    cmp.instance.parentqueue_id = this.model.getField('servicequeue_id');
+                    cmp.instance.displaynote = true;
+                    cmp.instance.selectedqueue.subscribe(response => {
+                        if (response != false) {
+                            if (!this.model.isEditing) {
+                                this.model.setField('servicequeue_id', response.servicequeue_id);
+                                this.model.setField('servicequeue_name', response.servicequeue_name);
+                            } else {
+                                this.model.startEdit();
+                                this.model.setField('servicequeue_id', response.servicequeue_id);
+                                this.model.setField('servicequeue_name', response.servicequeue_name);
+                                this.model.save();
+                            }
+                        }
+                    });
+                }
+            );
+        }
+    }
 
-        return this.model.isEditing ? 'none' : 'inherit';
+    private getDisplay() {
+        return this.canChange ? 'inherit' : 'none';
     }
 }

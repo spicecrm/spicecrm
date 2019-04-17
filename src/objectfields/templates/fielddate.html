@@ -1,9 +1,9 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <div *ngIf="!displayLink()" class="slds-truncate">
-        <span [ngClass]="{'slds-text-color_error' : highlightdate}">{{editDate}}</span>
+        <span [ngClass]="{'slds-text-color_error' : highlightdate}">{{displayDate}}</span>
     </div>
     <div *ngIf="displayLink()" class="slds-truncate">
-        <a href="javascript:void(0);" (click)="goRecord()"><span [ngClass]="{'slds-text-color_error' : highlightdate}">{{editDate}}</span></a>
+        <a href="javascript:void(0);" (click)="goRecord()"><span [ngClass]="{'slds-text-color_error' : highlightdate}">{{displayDate}}</span></a>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" [ngClass]="getFieldClass()">

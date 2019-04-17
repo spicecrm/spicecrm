@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
@@ -82,13 +85,14 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
             }
         }
 
-
-        for(let item of this.gdprData.related ){
-            if(item.gdpr_marketing_agreement == '1'){
-                return {
-                    'background-color': '#009900',
-                    'color': 'white',
-                    'cursor': 'pointer'
+        if(this.gdprData.related) {
+            for(let item of this.gdprData.related ){
+                if(item.gdpr_marketing_agreement == '1'){
+                    return {
+                        'background-color': '#009900',
+                        'color': 'white',
+                        'cursor': 'pointer'
+                    }
                 }
             }
         }

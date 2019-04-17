@@ -1,3 +1,6 @@
+/**
+ * @module ModuleUsers
+ */
 import {Component} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
@@ -9,7 +12,13 @@ import {Subject} from "rxjs";
 import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
 
+/**
+* @ignore
+*/
 declare var _: any;
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -29,7 +38,7 @@ declare var moment: any;
 export class UserPreferences {
 
     private preferences: any = {};
-
+    private dashboards: any[] = [];
     private names = [
         "export_delimiter",
         "default_export_charset",
@@ -40,18 +49,28 @@ export class UserPreferences {
         "timezone",
         "num_grp_sep",
         "dec_sep",
-        "default_locale_name_format"
+        "default_locale_name_format",
+        "week_day_start",
+        "week_days_count",
+        "calendar_day_start_hour",
+        "calendar_day_end_hour",
+        "home_dashboard",
+        "home_assistant",
     ];
+    private weekDayStartList = ["Sunday", "Monday"];
+    private assistantOptions = ["visible", "hidden"];
+    private weekDaysCountList = [5,6,7];
+    private dayHoursList = [];
 
-    private expanded = {loc: true, exp: true, other: true};
+    private expanded = {loc: true, exp: true, other: true, calendar: true, home: true};
     private exportDelimiterList = [",", ";"];
     private charsetlist = [
         "BIG-5", "CP1251", "CP1252", "EUC-CN", "EUC-JP", "EUC-KR", "EUC-TW", "ISO-2022-JP",
         "ISO-2022-KR", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3", "ISO-8859-4", "ISO-8859-5",
         "ISO-8859-6", "ISO-8859-7", "ISO-8859-8", "ISO-8859-9", "ISO-8859-10", "ISO-8859-13",
         "ISO-8859-14", "ISO-8859-15", "KOI8-R", "KOI8-U", "SJIS", "UTF-8"];
-    private currencySignificantDigitsList: Array<string> = ["1", "2", "3", "4", "5", "6"];
-    private thousandDelimiterList: Array<any> = [",", "."];
+    private currencySignificantDigitsList: string[] = ["1", "2", "3", "4", "5", "6"];
+    private thousandDelimiterList: string[] = [",", "."];
     private dateFormatList = [
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y-m-d")), value: "Y-m-d"},
         {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m-d-Y")), value: "m-d-Y"},
@@ -92,7 +111,7 @@ export class UserPreferences {
     private prefsLoaded = new Subject<string>();
 
     private timezones: object;
-    private timezoneKeys: Array<any>;
+    private timezoneKeys: string[];
 
     private canPrefs: boolean;
 
@@ -126,6 +145,14 @@ export class UserPreferences {
 
         }
 
+        for (let i = 0; i < 24; i++) {
+            this.dayHoursList.push(i);
+        }
+
+        this.backend.getList("Dashboards", "name", "DESC", ["name", "id"], {limit: -1})
+            .subscribe((dashboards: any) => {
+                this.dashboards = dashboards.list;
+            });
     }
 
     get datef() {
@@ -134,6 +161,11 @@ export class UserPreferences {
 
     get timef() {
         return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
+    }
+
+    get homeDashboardName() {
+        let dashboard = this.dashboards.find(dashboard => dashboard.id == this.preferences.home_dashboard);
+        return dashboard ? dashboard.name : '-- Default Dashboard --';
     }
 
     get formattingOfNumbers(): string {

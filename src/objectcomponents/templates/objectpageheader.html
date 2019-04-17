@@ -9,13 +9,16 @@
                     </p>
                     <div>
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-                            {{model.data.summary_text}}
+                            <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
+                            <div *ngIf="fieldset" class="slds-grid">
+                                <field-container *ngFor="let fieldsetitem of fieldsetitems" [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-p-right--small"></field-container>
+                            </div>
                         </h1>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="slds-m-horizontal--x-small">
+        <div class="slds-m-horizontal--x-small slds-show--medium">
             <object-reminder-button></object-reminder-button>
             <object-status-network-button></object-status-network-button>
         </div>
@@ -23,6 +26,3 @@
     </div>
     <object-page-header-tags></object-page-header-tags>
 </div>
-<!--div class="slds-page-header slds-p-top--none">
-    <object-page-header-detail-row *ngFor="let thisFieldSet of fieldSets" [fieldSet]="thisFieldSet"></object-page-header-detail-row>
-</div-->

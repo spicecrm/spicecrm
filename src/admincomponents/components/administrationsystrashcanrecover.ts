@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -16,6 +19,10 @@ import {backend} from '../../services/backend.service';
 import {userpreferences} from '../../services/userpreferences.service';
 import {toast} from '../../services/toast.service';
 
+
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

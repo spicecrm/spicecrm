@@ -2,7 +2,7 @@
     <system-modal-header (close)="closeModal()">{{language.getLabel('LBL_EXPORT_TO_TARGETLIST_BUTTON_LABEL')}}</system-modal-header>
     <system-modal-content>
         <div class="slds-form-element slds-p-around--small">
-            <label class="slds-form-element__label">{{language.getModuleLabel('KReports', 'LBL_EXPORT_TO_TARGETLIST_BUTTON_LABEL')}}</label>
+            <label class="slds-form-element__label">{{language.getLabel('KReports', 'LBL_EXPORT_TO_TARGETLIST_BUTTON_LABEL')}}</label>
             <div class="slds-form-element__control">
                 <input type="text" class="slds-input" [(ngModel)]="targetlistname">
             </div>

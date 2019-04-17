@@ -18,6 +18,32 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     text-align: center;*/
 }
 
+.loader-logo-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    margin-top: -60px;
+}
+
+.loader-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50px
+}
+
+.loaderspinner .over circle {
+    stroke-dasharray: 150;
+    stroke: #ddd;
+}
+
+.loaderspinner .bag circle {
+    stroke: #777;
+}
+
 .spiceRotate {
     animation-name: wag;
     animation-duration: 3000ms;
@@ -34,8 +60,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 }
 
 .loaderspinner .over {
-    -webkit-animation: spin 2s ease-in-out infinite;
-    stroke-dasharray: 78, 38;
+    -webkit-animation: spin 3s linear infinite;
 }
 
 .loaderspinner .bag {
@@ -125,16 +150,10 @@ global-user-panel {
     position: absolute;
     right: 0;
     top: 50%;
-    left: 120px;
+    left: 160px;
     margin-top: -1px;
     border-bottom: 1px solid rgb(216, 221, 230);
     content: ' ';
-}
-
-.spiceActivitiyTimelineHeader .showmorebutton {
-    position: absolute;
-    right: 0px;
-    top: 0px;
 }
 
 
@@ -275,7 +294,7 @@ div[global-search-module] div.slds-page-header {
     width: 100%;
     /*height: 26px;*/
     text-align: center;
-    margin: 10px 0px;
+    /*margin: 10px 0px;*/
 }
 
 .cssload-double-torus {
@@ -530,6 +549,13 @@ a, a:focus, a:hover {
     box-shadow: 0 0 3px #01464C;
 }
 
+.slds-button_dual-stateful.slds-is-pressed,
+.slds-button_dual-stateful.slds-is-pressed:active,
+.slds-button_dual-stateful.slds-is-pressed:focus,
+.slds-button_dual-stateful.slds-is-pressed:hover {
+    background-color: #CA1B21;
+    border-color: #CA1B21;
+}
 
 .slds-button--icon-border.slds-is-selected:focus,
 .slds-button--icon-border.slds-is-selected:active,
@@ -544,13 +570,14 @@ a, a:focus, a:hover {
     fill: #CA1B21;
 }
 
-field-generic-display:hover .slds-button--icon{
+field-generic-display:hover .slds-button--icon {
     color: #5B5B5B;
 }
 
-field-generic-display .slds-button--icon{
+field-generic-display .slds-button--icon {
     color: #eeeeee;
 }
+
 /*
 .slds-button:not([disabled]):focus, .slds-button:not([disabled]):hover {
     color: #CA1B21;
@@ -559,6 +586,7 @@ field-generic-display .slds-button--icon{
 .slds-button--brand:not([disabled]):focus, .slds-button--brand:not([disabled]):hover {
     color: #FFF;
 }
+
 /*
 .slds-button:not([disabled]):focus svg, .slds-button:not([disabled]):hover svg {
     fill: #CA1B21;
@@ -579,7 +607,7 @@ field-generic-display .slds-button--icon{
 }
 
 .slds-button:focus {
-    box-shadow: 0 0 3px #01464C;
+    box-shadow: 0 0 3px #a7161a;
 }
 
 .slds-tabs--default__item.slds-active:after,
@@ -601,6 +629,10 @@ field-generic-display .slds-button--icon{
 .slds-button.slds-button--brand,
 .slds-button.slds-button--icon-inverse {
     color: #fff;
+}
+
+.slds-button_outline-brand {
+    border-color: #CA1B21;
 }
 
 /* special rule for the action container since the first child is an empty div
@@ -657,26 +689,54 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 }
 
 /* for the progress indicator */
+.slds-path__nav .slds-is-active,
+.slds-path__nav .slds-is-active:after,
+.slds-path__nav .slds-is-active:before,
+.slds-path__nav .slds-is-active:first-child:after,
+.slds-path__nav .slds-is-active:first-child:before,
 .slds-tabs--path .slds-is-current,
 .slds-tabs--path .slds-is-current + .slds-is-incomplete:before {
     background-color: #CA1B1F;
 }
 
+.slds-path__nav .slds-is-active:hover,
+.slds-path__nav .slds-is-active:hover:after,
+.slds-path__nav .slds-is-active:hover:before,
 .slds-tabs--path .slds-is-current:hover,
 .slds-tabs--path .slds-is-current:hover + .slds-is-incomplete:before {
     background-color: #7C0003;
 }
 
+.slds-path__nav .slds-is-complete,
+.slds-path__nav .slds-is-complete:after,
+.slds-path__nav .slds-is-complete:before,
 .slds-tabs--path .slds-is-complete,
 .slds-tabs--path .slds-is-active + .slds-tabs--path__item.slds-is-current:before,
 .slds-tabs--path__item + .slds-is-complete:before, .slds-tabs--path__item + .slds-is-current:before {
     background-color: #2D2D2D;
 }
 
+.slds-path__nav .slds-is-complete:hover,
+.slds-path__nav .slds-is-complete:hover:after,
+.slds-path__nav .slds-is-complete:hover:before,
+.slds-path__nav .slds-is-complete:first-child:after,
+.slds-path__nav .slds-is-complete:first-child:before,
 .slds-tabs--path .slds-is-complete:hover,
 .slds-tabs--path .slds-is-active:hover + .slds-tabs--path__item.slds-is-current:before,
 .slds-tabs--path__item:hover + .slds-is-complete:before, .slds-tabs--path__item:hover + .slds-is-current:before {
     background-color: #111;
+}
+
+.slds-path__nav .slds-is-current:after,
+.slds-path__nav .slds-is-current:before {
+    background-image: linear-gradient(90deg,#2D2D2D,#2D2D2D .125rem,transparent .125rem),linear-gradient(90deg,#2D2D2D,#2D2D2D .125rem,transparent .125rem),linear-gradient(#2D2D2D,#2D2D2D .125rem,transparent .125rem);
+    color: #CA1B1F;
+}
+
+.slds-path__nav .slds-is-current:hover:after,
+.slds-path__nav .slds-is-current:hover:before{
+    background-image: linear-gradient(90deg,#CA1B1F,#CA1B1F .125rem,transparent .125rem),linear-gradient(90deg,#CA1B1F,#CA1B1F .125rem,transparent .125rem),linear-gradient(#CA1B1F,#CA1B1F .125rem,transparent .125rem);
+    color: #CA1B1F;
 }
 
 /*
@@ -707,6 +767,10 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 
 .slds-context-bar__item.slds-is-active:after, .slds-context-bar__item.slds-is-active:before {
     background: #CA1B1F;
+}
+
+.slds-context-bar__item:before {
+    bottom: 1;
 }
 
 .slds-progress__item.slds-is-active .slds-progress__marker, .slds-progress__item.slds-is-completed .slds-progress__marker {
@@ -740,12 +804,20 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     background-color: transparent;
 }
 
+.slds-dropdown--actions a, .slds-dropdown_actions a {
+    color: #002D31;
+}
+
 .slds-popover--tooltip, .slds-popover_tooltip {
     background: #002D31;
 }
 
-.slds-nav-vertical__item.slds-is-active:before {
-    background: #CA1B1F;
+.slds-nav-vertical__item.slds-is-active:before, .slds-nav-vertical__item:hover:before {
+    background: #ddd;
+}
+
+.slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action, .slds-nav-vertical__action:hover {
+    box-shadow: inset 0.25rem 0 0 #CA1B1F;
 }
 
 /*
@@ -779,24 +851,24 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 
 .slds-active .slds-tabs--scoped__link, .slds-active .slds-tabs_scoped__link, .slds-is-active .slds-tabs--scoped__link, .slds-is-active .slds-tabs_scoped__link,
 .slds-tabs--default__item.slds-active, .slds-tabs--default__item.slds-is-active, .slds-tabs_default__item.slds-active, .slds-tabs_default__item.slds-is-active,
-.slds-tabs--default__item.slds-active .slds-tabs--default__link:hover{
+.slds-tabs--default__item.slds-active .slds-tabs--default__link:hover {
     color: #111
 }
 
 .slds-tabs--default__item:hover:after, .slds-tabs_default__item:hover:after,
-.slds-tabs--default__item.slds-active:after, .slds-tabs--default__item.slds-is-active:after, .slds-tabs_default__item.slds-active:after, .slds-tabs_default__item.slds-is-active:after{
+.slds-tabs--default__item.slds-active:after, .slds-tabs--default__item.slds-is-active:after, .slds-tabs_default__item.slds-active:after, .slds-tabs_default__item.slds-is-active:after {
     background-color: #CA1B1F;
 }
 
-.slds-progress__item.slds-is-completed .slds-progress__marker--icon, .slds-progress__item.slds-is-completed .slds-progress__marker_icon{
+.slds-progress__item.slds-is-completed .slds-progress__marker--icon, .slds-progress__item.slds-is-completed .slds-progress__marker_icon {
     color: #CA1B1F;
 }
 
-.slds-radio [type=radio]:checked+.slds-radio--faux:after, .slds-radio [type=radio]:checked+.slds-radio__label .slds-radio--faux:after, .slds-radio [type=radio]:checked+.slds-radio__label .slds-radio_faux:after, .slds-radio [type=radio]:checked+.slds-radio_faux:after, .slds-radio [type=radio]:checked~.slds-radio--faux:after, .slds-radio [type=radio]:checked~.slds-radio_faux:after{
+.slds-radio [type=radio]:checked + .slds-radio--faux:after, .slds-radio [type=radio]:checked + .slds-radio__label .slds-radio--faux:after, .slds-radio [type=radio]:checked + .slds-radio__label .slds-radio_faux:after, .slds-radio [type=radio]:checked + .slds-radio_faux:after, .slds-radio [type=radio]:checked ~ .slds-radio--faux:after, .slds-radio [type=radio]:checked ~ .slds-radio_faux:after {
     background-color: #CA1B1F;
 }
 
-.slds-theme--inverse, .slds-theme_inverse{
+.slds-theme--inverse, .slds-theme_inverse {
     background-color: #CA1B1F;
     border-color: #CA1B1F;
 }
@@ -805,21 +877,79 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     box-shadow: #CA1B1F 4px 0 0 inset;
 }
 
-.slds-listbox__icon-selected{
+.slds-listbox__icon-selected {
     fill: #CA1B1F;
 }
 
+.slds-listbox__option.slds-is-selected .slds-listbox__option-icon {
+    color: #CA1B1F;
+}
 
-.slds-button span{
+.slds-button span {
     text-transform: capitalize;
 }
 
 /* rich text editor */
-.slds-rich-text-area__content{
+.slds-rich-text-area__content {
     max-height: none;
     resize: vertical;
     overflow: auto;
     height: 300px;
+}
+
+.slds-timeline__item_expandable .slds-media__figure {
+    z-index: auto;
+}
+
+.slds-timeline__item_expandable:before {
+    height: calc(100% - 30px);
+    top: 30px;
+}
+
+.slds-text-align--justify {
+    text-align: justify;
+}
+
+.slds-height_full {
+    height: 100%;
+}
+
+.slds-is-absolute__top {
+    position: absolute;
+    top: 0px;
+}
+
+/* for illustrations */
+.slds-illustration .slds-illustration__stroke-primary {
+    stroke: #aaa;
+}
+
+.slds-illustration .slds-illustration__fill-primary {
+    fill: #bbb;
+}
+
+.slds-illustration .slds-illustration__stroke-secondary {
+    stroke: #ccc;
+}
+
+.slds-illustration .slds-illustration__fill-secondary {
+    fill: #eee;
+}
+
+/* override for teh input icon gropup */
+.slds-input__icon-group_right{
+    top: .5rem;
+}
+
+
+/* responsive tables */
+/* reduce padding */
+@media (max-width: 48em) {
+    .slds-max-medium-table--stacked-horizontal tr>td:first-child,
+    .slds-max-medium-table--stacked-horizontal td,
+    .slds-max-medium-table--stacked-horizontal tr>td:last-child {
+        padding: .5em;
+    }
 }
 
 /* Style Definition for HTML fields */
@@ -828,27 +958,165 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     margin: 0.75rem 0;
     line-height: 1.25;
 }
-.html-text h1 { font-size: 1.25rem; }
-.html-text h2 { font-size: 1rem; color: #000; }
-.html-text h3, .html-text h4, .html-text h5, .html-text h6 { font-size: 0.75rem; color: #000; line-height: 1.25; }
 
-.html-text b, .html-text strong { font-weight: 700; }
+.html-text h1 {
+    font-size: 1.25rem;
+}
 
-.html-text i, .html-text em { font-style: italic; }
+.html-text h2 {
+    font-size: 1rem;
+    color: #000;
+}
 
-.html-text p, .html-text ul { margin: 0.75rem 0; }
+.html-text h3, .html-text h4, .html-text h5, .html-text h6 {
+    font-size: 0.75rem;
+    color: #000;
+    line-height: 1.25;
+}
 
-.html-text *:first-child { margin-top: 0; }
-.html-text *:last-child { margin-bottom: 0; }
+.html-text b, .html-text strong {
+    font-weight: 700;
+}
 
-.html-text a { color: #444; text-decoration: underline; }
-.html-text a:hover { color: #000; text-decoration: none; }
+.html-text i, .html-text em {
+    font-style: italic;
+}
 
-.html-text ul { list-style: disc outside; }
-.html-text ol { list-style: decimal outside; }
-.html-text li { margin-left: 1.75rem; }
+.html-text p, .html-text ul {
+    margin: 0.75rem 0;
+}
 
-.html-text .align-right { text-align: right; }
-.html-text .align-left { text-align: left; }
-.html-text .align-center { text-align: center; }
-.html-text .align-justify { text-align: justify; }
+.html-text *:first-child {
+    margin-top: 0;
+}
+
+.html-text *:last-child {
+    margin-bottom: 0;
+}
+
+.html-text a {
+    color: #444;
+    text-decoration: underline;
+}
+
+.html-text a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+.html-text ul {
+    list-style: disc outside;
+}
+
+.html-text ol {
+    list-style: decimal outside;
+}
+
+.html-text li {
+    margin-left: 1.75rem;
+}
+
+.html-text .align-right {
+    text-align: right;
+}
+
+.html-text .align-left {
+    text-align: left;
+}
+
+.html-text .align-center {
+    text-align: center;
+}
+
+.html-text .align-justify {
+    text-align: justify;
+}
+
+
+/* SpiceCRM Scrollbar */
+/* for firefox and*/
+.slds-scrollable,
+.slds-scrollable--x,
+.slds-scrollable--y {
+    scrollbar-width: thin;
+}
+
+/* width normal */
+.slds-scrollable::-webkit-scrollbar,
+.slds-scrollable--x::-webkit-scrollbar,
+.slds-scrollable--y::-webkit-scrollbar,
+.spicecrm-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* for firefox and*/
+    scrollbar-width: thin;
+}
+/* width thin */
+.spicecrm-scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+/* Track */
+.slds-scrollable::-webkit-scrollbar-track,
+.slds-scrollable--x::-webkit-scrollbar-track,
+.slds-scrollable--y::-webkit-scrollbar-track,
+.spicecrm-scrollbar::-webkit-scrollbar-track,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+/* Handle */
+.slds-scrollable::-webkit-scrollbar-thumb,
+.slds-scrollable--x::-webkit-scrollbar-thumb,
+.slds-scrollable--y::-webkit-scrollbar-thumb,
+.spicecrm-scrollbar::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-top: 2px solid #f1f1f1;
+    border-bottom: 2px solid #f1f1f1;
+}
+.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-top: 1px solid #f1f1f1;
+    border-bottom: 1px solid #f1f1f1;
+}
+/* Handle on hover */
+.slds-scrollable::-webkit-scrollbar-thumb:hover,
+.slds-scrollable--x::-webkit-scrollbar-thumb:hover,
+.slds-scrollable--y::-webkit-scrollbar-thumb:hover,
+.spicecrm-scrollbar::-webkit-scrollbar-thumb:hover,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+/* Buttons */
+.slds-scrollable::-webkit-scrollbar-button:single-button,
+.slds-scrollable--x::-webkit-scrollbar-button:single-button,
+.slds-scrollable--y::-webkit-scrollbar-button:single-button,
+.spicecrm-scrollbar::-webkit-scrollbar-button:single-button,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button{
+    display: none;
+}
+
+.cdk-drop-list-dragging .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+    transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.slds-drag--preview.cdk-drag-placeholder {
+    opacity: 0;
+}
+.cdk-drag-preview {
+    opacity: 0;
+}
+
+.slds-drag--preview.cdk-drag-preview {
+    opacity: 1;
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    z-index: 11000!important;
+}

@@ -1,11 +1,22 @@
-import {EventEmitter, Injectable} from '@angular/core';
+/**
+ * @module services
+ */
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Observable} from 'rxjs';
 import {backend} from './backend.service';
 import {toast} from './toast.service';
 import {language} from './language.service';
+import {broadcast} from './broadcast.service';
+import {configurationService} from './configuration.service';
 
+/**
+ * @ignore
+ */
 declare var moment: any;
+/**
+ * @ignore
+ */
 declare var _: any;
 
 @Injectable()
@@ -35,17 +46,29 @@ export class userpreferences {
         timef: 'H:i',
         timezone: 'Europe/Vienna',
         default_currency_significant_digits: 2,
-        default_locale_name_format: 'l, f'
+        default_locale_name_format: 'l, f',
+        week_day_start: 0
     };
 
     public formats = {nameFormats: [], loaded: false};
 
-    constructor(private backend: backend, private toast: toast, private l: language) {
+    constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast) {
         this.toUse = this.preferences.global;
+        this.retrievePrefsFromConfigService();
+        this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') this.retrievePrefsFromConfigService();
+        });
+    }
+
+    private retrievePrefsFromConfigService() {
+        let prefs = this.configuration.getData('globaluserpreferences');
+        this.preferences.global = _.extendOwn(this.preferences.global, prefs);
+        this.unchangedPreferences.global = _.clone(prefs);
+        this.completePreferencesWithDefaults();
     }
 
     public getPreferences(loadhandler: Subject<string>) {
-        this.loadPreferences().subscribe(ret => {
+        this.loadPreferences().subscribe((ret) => {
             loadhandler.next('getPreferences');
         });
     }
@@ -53,11 +76,13 @@ export class userpreferences {
     public loadPreferences(category = 'global'): Observable<any> {
         let retSubject: Subject<any> = new Subject<any>();
 
-        this.backend.getRequest('user/preferences/' + category).subscribe(prefs => {
+        this.backend.getRequest('user/preferences/' + category).subscribe((prefs) => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
-                this.unchangedPreferences[category] = _.clone(prefs);
+                this.unchangedPreferences.global = _.clone(prefs);
                 this.completePreferencesWithDefaults();
+            } else {
+                this.unchangedPreferences[category] = _.clone(prefs);
             }
             retSubject.next(prefs);
         });
@@ -98,30 +123,38 @@ export class userpreferences {
         if (save) {
             let prefs = {};
             prefs[name] = value;
-            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(prefstatus => {
+            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe((prefstatus) => {
+
+                // set the preference
+                if (!this.preferences[category]) this.preferences[category] = {};
                 this.preferences[category][name] = value;
+
+                // ToDo: check what this is for
+                if (!this.unchangedPreferences[category]) this.unchangedPreferences[category] = {};
                 this.unchangedPreferences[category][name] = value;
+
                 this.completePreferencesWithDefaults();
             });
         } else {
+            if(!this.preferences[category]) this.preferences[category] = {};
             this.preferences[category][name] = value;
             this.completePreferencesWithDefaults();
         }
     }
 
-    public setPreferences( prefs, category = 'global' ) {
-        let saved = new Subject();
-        this.backend.postRequest('user/preferences/global', {}, prefs).subscribe(
-            savedprefs => {
-                for ( let prop of this.preferences[category] ) {
-                    if ( savedprefs.hasOwnProperty(prop)) this.preferences[category] = savedprefs[prop];
+    public setPreferences(prefs, category = 'global') {
+        const saved = new Subject();
+        this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(
+            (savedprefs) => {
+                for (let prop in this.preferences[category]) {
+                    if (savedprefs.hasOwnProperty(prop)) this.preferences[category][prop] = savedprefs[prop];
                     else delete this.preferences[category][prop];
                 }
                 this.unchangedPreferences[category] = savedprefs;
                 this.completePreferencesWithDefaults();
                 saved.next(true);
             },
-            error => {
+            (error) => {
                 saved.error(error);
             }
         );
@@ -165,7 +198,7 @@ export class userpreferences {
 
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
-        this.backend.getRequest('user/preferencesformats').subscribe(formats => {
+        this.backend.getRequest('user/preferencesformats').subscribe((formats) => {
             for (let item of formats.nameFormats) {
                 this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});
             }
@@ -181,16 +214,16 @@ export class userpreferences {
         for (let i = 0; i < format.length; i++) {
             switch (format.charAt(i)) {
                 case 't':
-                    translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_TITLE');
+                    translation += this.language.getLabel('LBL_LOCALE_NAME_EXAMPLE_TITLE');
                     break;
                 case 'f':
-                    translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_FIRST');
+                    translation += this.language.getLabel('LBL_LOCALE_NAME_EXAMPLE_FIRST');
                     break;
                 case 'l':
-                    translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_LAST');
+                    translation += this.language.getLabel('LBL_LOCALE_NAME_EXAMPLE_LAST');
                     break;
                 case 's':
-                    translation += this.l.getLabel('LBL_LOCALE_NAME_EXAMPLE_SALUTATION');
+                    translation += this.language.getLabel('LBL_LOCALE_NAME_EXAMPLE_SALUTATION');
                     break;
                 default:
                     translation += format.charAt(i);
@@ -207,7 +240,7 @@ export class userpreferences {
         let re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')';
         let num = i.toFixed(Math.max(0, ~~n));
         return num.replace('.', decSep).replace(new RegExp(re, 'g'), '$&' + grpSep);
-    };
+    }
 
     public formatDate(d) {
         return moment(d).format(this.getDateFormat());

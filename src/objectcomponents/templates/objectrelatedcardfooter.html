@@ -1,0 +1,34 @@
+<footer class="slds-card__footer">
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <div class="slds-size--1-of-3 slds-text-align--left">
+            <!--div class="slds-radio_button-group">
+                  <div class="slds-button slds-radio_button">
+                    <input name="{{componentid}}}_setitems" type="radio" id="{{componentid}}_setitems_5" value="5" checked [(ngModel)]="displayitems"/>
+                    <label class="slds-radio_button__label" for="{{componentid}}_setitems_5">
+                      <span class="slds-radio_faux">5</span>
+                    </label>
+                  </div>
+                  <div class="slds-button slds-radio_button">
+                    <input name="{{componentid}}}_setitems" type="radio" id="{{componentid}}_setitems_15" value="15" [(ngModel)]="displayitems"/>
+                    <label class="slds-radio_button__label" for="{{componentid}}_setitems_15">
+                      <span class="slds-radio_faux">15</span>
+                    </label>
+                  </div>
+                  <div class="slds-button slds-radio_button">
+                    <input name="{{componentid}}}_setitems" type="radio" id="{{componentid}}_setitems_30" value="30" [(ngModel)]="displayitems"/>
+                    <label class="slds-radio_button__label" for="{{componentid}}_setitems_30">
+                      <span class="slds-radio_faux">30</span>
+                    </label>
+                  </div>
+            </div-->
+        </div>
+        <div class="slds-size--1-of-3 slds-text-align_center">
+            <a href="javascript:void(0);" (click)="showAll()">{{language.getLabel('LBL_VIEWALL')}}</a>
+        </div>
+        <div class="slds-size--1-of-3 slds-text-align--right">
+            <button class="slds-button slds-button_icon" (click)="reload()">
+                <system-button-icon icon="refresh"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</footer>

@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component, ViewChild, ViewContainerRef,EventEmitter} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";

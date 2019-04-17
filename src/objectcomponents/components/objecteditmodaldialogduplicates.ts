@@ -1,16 +1,14 @@
+/**
+ * @module ObjectComponents
+ */
 
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
     Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef, OnInit,
+    OnInit
 
 } from '@angular/core';
 
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -19,7 +17,7 @@ import {metadata} from '../../services/metadata.service';
     selector: 'object-edit-modal-dialog-duplicates',
     templateUrl: './src/objectcomponents/templates/objecteditmodaldialogduplicates.html'
 })
-export class ObjectEditModalDialogDuplicates implements OnInit{
+export class ObjectEditModalDialogDuplicates implements OnInit {
 
     @Input() module: string = '';
     @Input() duplicates: Array<any> = [];
@@ -29,7 +27,7 @@ export class ObjectEditModalDialogDuplicates implements OnInit{
 
     }
 
-    ngOnInit(){
+    ngOnInit() {
         let componentconfig = this.metadata.getComponentConfig('GlobalModalDialogDuplicates', this.model.module);
         this.fieldset = componentconfig.fieldset;
     }

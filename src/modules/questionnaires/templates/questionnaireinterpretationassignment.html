@@ -71,7 +71,7 @@
                             <ul class="interpretations">
                                 <li *ngFor="let interpretation of assignedInterpretations; let i=index">
                                     <div class="slds-m-top--medium slds-box--border slds-p-around--small">
-                                        <div class="slds-theme--shade x-slds-text-heading--small slds-p-around--x-small slds-grid slds-grid_align-spread slds-grid--vertical-align-center">
+                                        <div class="slds-theme--shade slds-p-around--x-small slds-grid slds-grid_align-spread slds-grid--vertical-align-center">
                                             <div class="slds-text-heading_small"><span class="slds-truncate">{{interpretation.name}}</span></div>
                                             <div class="slds-p-left--x-small">
                                                 <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="removeSingle(i)" title="{{language.getLabel('LBL_REMOVE')}}">

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleActivities
+ */
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {model} from '../../../services/model.service';
@@ -22,7 +25,7 @@ export class TasksManagerTask implements OnInit{
     constructor(private language: language, private metadata: metadata, private model: model, private modelutilities: modelutilities, private view: view) {
         let componentconfig = this.metadata.getComponentConfig('TasksManagerTask', 'Tasks');
         if(componentconfig.fieldset){
-            this.fielsetFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+            this.fielsetFields = this.metadata.getFieldSetItems(componentconfig.fieldset);
         }
     }
 

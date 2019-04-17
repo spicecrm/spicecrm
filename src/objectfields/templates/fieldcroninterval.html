@@ -1,0 +1,51 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    {{model.data.job_interval_read}}
+</field-generic-display>
+<div *ngIf="isEditMode() && isEditable()" class="slds-grid">
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="min">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_MINUTES')">{{language.getLabel('LBL_MINUTES')}}</span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.min"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="min" type="text" class="slds-input" [(ngModel)]="min" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="hrs">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_HOURS')">{{language.getLabel('LBL_HOURS')}}</span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.hrs"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="hrs" type="text" class="slds-input" [(ngModel)]="hrs" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="date">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_DAY_OF_MONTH')">{{language.getLabel('LBL_DAY_OF_MONTH')}}</span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.date"></system-utility-icon>
+
+        </label>
+        <div class="slds-form-element__control">
+            <input id="date" type="text" class="slds-input" [(ngModel)]="date" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="mo">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_MONTH')">{{language.getLabel('LBL_MONTH')}}</span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.mo"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="mo" type="text" class="slds-input" [(ngModel)]="mo" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="day">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_DAY_OF_WEEK')">{{language.getLabel('LBL_DAY_OF_WEEK')}}</span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.day"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="day" type="text" class="slds-input" [(ngModel)]="day" />
+        </div>
+    </div>
+</div>

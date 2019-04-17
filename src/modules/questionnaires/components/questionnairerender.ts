@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import {Component, Input} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';

@@ -1,53 +1,33 @@
-import {Component, Input, HostBinding, ViewContainerRef, ViewChild} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
+/**
+ * @module ModuleTeleSales
+ */
+import {Component, Input, OnChanges, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {telecockpitservice} from '../services/telecockpit.service';
+import {telecockpitservice} from "../services/telecockpit.service";
+import {model} from "../../../services/model.service";
 
 @Component({
-    selector: 'tele_sales_cockpit_main',
+    selector: 'tele-sales-cockpit-main',
     templateUrl: './src/modules/telesales/templates/telesalescockpitmain.html',
 })
-export class TeleSalesCockpitMain {
+export class TeleSalesCockpitMain implements OnChanges {
 
-    @ViewChild('maincontainer', {read: ViewContainerRef}) maincontainer: ViewContainerRef;
-    module: string;
-    renderedComponents: Array<any> = [];
+    @ViewChild('maincontainer', {read: ViewContainerRef}) private maincontainer: ViewContainerRef;
+    @Input() private selectedListItemId: string;
 
-    constructor(private language: language, private metadata: metadata, private telecockpitservice: telecockpitservice) {
-
-        this.telecockpitservice.selectedItem$.subscribe(data => this.renderView(data));
-
+    constructor(private language: language,
+                private model: model,
+                private teleSalesCockpit: telecockpitservice) {
     }
 
     get mainStyle() {
         let rect = this.maincontainer.element.nativeElement.getBoundingClientRect();
         return {
-            'height' : 'calc(100vh - ' + rect.top + 'px)'
-        }
+            height: 'calc(100vh - ' + rect.top + 'px)'
+        };
     }
 
-    resetView(){
-        for(let renderedComponent of this.renderedComponents){
-            renderedComponent.destroy();
-        }
-        this.renderedComponents = [];
+    public ngOnChanges() {
+        this.teleSalesCockpit.renderMainView(this.model.module, this.maincontainer);
     }
-
-    renderView(modeldata){
-
-        this.resetView();
-        let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitMain', modeldata.module);
-
-        let componentSet = componentconfig.componentset;
-        if(componentSet){
-            let components = this.metadata.getComponentSetObjects(componentSet);
-            for(let component of components){
-                this.metadata.addComponent(component.component, this.maincontainer).subscribe(componentref => {
-                    this.renderedComponents.push(componentref);
-                    componentref.instance.componentconfig = component.componentconfig;
-                });
-            }
-        }
-    }
-
 }

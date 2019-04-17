@@ -1,3 +1,6 @@
+/**
+ * @module ModuleContacts
+ */
 import {Component, OnInit} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -25,14 +28,16 @@ export class ContactPortalDetails implements OnInit {
     private pwdGuideline: string = "";
     private pwdCheckRegex: RegExp = new RegExp("//");
 
-    private aclRoles: Array<any> = [];
-    private portalRoles: Array<any> = [];
+    private aclRoles = [];
+    private portalRoles = [];
     private self: any = undefined;
 
     private usernameAlreadyExists = false;
     private usernameTesting = false;
 
     private lastToast;
+
+    private isSaving = false;
 
     constructor( private lang: language, private backend: backend, private metadata: metadata, private model: model, private toast: toast ) { }
 
@@ -106,6 +111,7 @@ export class ContactPortalDetails implements OnInit {
     }
 
     get canSave() {
+        if ( this.isSaving ) return false;
         if ( this.usernameTesting ) return false;
         if ( !this.user.name || !this.user.portalRole || !this.user.aclRole ) return false;
         if ( this.usernameAlreadyExists ) return false;
@@ -118,7 +124,8 @@ export class ContactPortalDetails implements OnInit {
     }
 
     private save() {
-        if( this.canSave ) {
+        if ( this.canSave ) {
+            this.isSaving = true;
             let body = {
                 status: this.user.active,
                 aclRole: this.user.aclRole,
@@ -134,6 +141,7 @@ export class ContactPortalDetails implements OnInit {
                 this.closeModal();
             }, ( errorResponse ) => {
                 this.lastToast = this.toast.sendToast( 'Error saving data of portal user.', 'error', errorResponse.error.error.message, false );
+                this.isSaving = false;
             });
         }
     }

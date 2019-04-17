@@ -1,3 +1,6 @@
+/**
+ * @module ModulePipl
+ */
 import {Component, Input, HostBinding} from "@angular/core";
 import {Router} from "@angular/router";
 import {metadata} from "../../../services/metadata.service";

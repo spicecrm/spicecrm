@@ -10,7 +10,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-p-vertical--none" [ngStyle]="resultsMenuStyle">
+    <div class="slds-p-vertical--none slds-scrollable--y spicecrm-scrollbar-thin" [ngStyle]="resultsMenuStyle">
         <div *ngIf="searchTerm != ''" class="slds-theme--shade slds-p-vertical--xx-small slds-p-horizontal--small slds-text-body--small slds-border--bottom">
             {{resultsList.length}} {{language.getLabel('MSG_DOCUMENTS_FOUND')}}
         </div>
@@ -26,7 +26,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let document of resultsList" class="slds-hint-parent">
+            <tr *ngFor="let document of resultsList; trackBy: trackByFn" class="slds-hint-parent">
                 <td scope="row">
                     <div class="slds-truncate" [title]="document.name">
                         <a style="cursor: pointer" (click)="selectDocument(document)" tabindex="-1">{{document.name}}</a>

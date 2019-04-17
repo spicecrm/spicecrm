@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component, Input, OnChanges, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";

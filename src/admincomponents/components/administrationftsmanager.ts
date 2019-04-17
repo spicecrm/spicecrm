@@ -1,14 +1,13 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module AdminComponentsModule
  */
 import {Component} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
-declare var Ext: any;
-declare var System: any;
-declare var SpiceCRM: any;
+
+
 
 @Component({
     selector: '[administration-ftsmanager]',

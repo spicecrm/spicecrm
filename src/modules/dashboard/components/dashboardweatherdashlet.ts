@@ -1,8 +1,14 @@
+/**
+ * @module ModuleDashboard
+ */
 import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {HttpClient} from "@angular/common/http";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -24,6 +30,26 @@ export class DashboardWeatherDashlet implements OnInit {
         private language: language,
         private metadata: metadata,
     ) {
+    }
+
+    get dayToShow() {
+        return this.daytoshow;
+    }
+
+    set dayToShow(value) {
+        this.daytoshow = value;
+        this.dayHourToShow = value.length == 8 ? value[4] : value[0];
+    }
+
+    get description() {
+        if (this.dayHourToShow) {
+            let lowerDesc = this.dayHourToShow.weather[0].description.split(' ');
+            let capsDesc = [];
+            for (let word of lowerDesc) {
+                capsDesc.push(word.replace(/\S/, (m) => m.toUpperCase()));
+            }
+            return capsDesc.join(' ');
+        }
     }
 
     public ngOnInit() {
@@ -94,26 +120,6 @@ export class DashboardWeatherDashlet implements OnInit {
         }
     }
 
-    set dayToShow(value) {
-        this.daytoshow = value;
-        this.dayHourToShow = value.length == 8 ? value[4] : value[0];
-    }
-
-    get dayToShow() {
-        return this.daytoshow;
-    }
-
-    get description() {
-        if (this.dayHourToShow) {
-            let lowerDesc = this.dayHourToShow.weather[0].description.split(' ');
-            let capsDesc = [];
-            for (let word of lowerDesc) {
-                capsDesc.push(word.replace(/\S/, (m) => m.toUpperCase()));
-            }
-            return capsDesc.join(' ');
-        }
-    }
-
     private setDayToShow(day) {
         this.dayToShow = day;
     }
@@ -128,7 +134,9 @@ export class DashboardWeatherDashlet implements OnInit {
 
     private getDayName(dt, short = false) {
         let dayIndex = new Date(dt * 1000).getDay();
-        if (short) { return moment.weekdaysShort(dayIndex); }
+        if (short) {
+            return moment.weekdaysShort(dayIndex);
+        }
         return moment.weekdays(dayIndex);
     }
 
@@ -143,7 +151,11 @@ export class DashboardWeatherDashlet implements OnInit {
 
     private getWeatherIconUrl(icon) {
         // private return `http://openweathermap.org/img/w/${icon}.png`;
-        return 'proxy/?useurl=' + btoa(`http://openweathermap.org/img/w/${icon}.png`)
+        return 'proxy/?useurl=' + btoa(`http://openweathermap.org/img/w/${icon}.png`);
+    }
+
+    private trackByFn(index, item) {
+        return index;
     }
 
 }

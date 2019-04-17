@@ -1,23 +1,11 @@
-import {CommonModule, JsonPipe} from '@angular/common';
-import {AfterViewInit,  Component, Injectable, ElementRef, NgModule, Renderer,  ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Pipe} from '@angular/core';
+/**
+ * @module ModuleWorkflow
+ */
+import {CommonModule,} from '@angular/common';
+import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
-
-import {Subject, Observable} from 'rxjs';
 
 import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {broadcast} from '../../services/broadcast.service';
-import {backend} from '../../services/backend.service';
-import {view} from '../../services/view.service';
-import {popup} from '../../services/popup.service';
-import {navigation} from '../../services/navigation.service';
-import {modelutilities} from '../../services/modelutilities.service';
-import {toast} from '../../services/toast.service';
-import {footer} from '../../services/footer.service';
-import {session} from '../../services/session.service';
-import {AppDataService} from '../../services/appdata.service';
 import {VersionManagerService} from '../../services/versionmanager.service';
 
 import { SystemComponents}      from '../../systemcomponents/systemcomponents';

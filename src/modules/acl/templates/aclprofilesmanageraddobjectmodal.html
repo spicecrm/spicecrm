@@ -1,7 +1,6 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_SELECT_OBJECT')}}</system-modal-header>
-    <system-modal-content>
-        <div style="height: 70vh;">
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_SELECT_SPICEACLOBJECT')}}</system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
             <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
                 <div class="slds-form-element__control slds-size--1-of-3 slds-p-right--xx-small">
                     <div class="slds-select_container">
@@ -14,41 +13,38 @@
                 </div>
                 <input [disabled]="!activeTypeId" class="slds-input" type="text" [(ngModel)]="searchterm" (keyup)="keyUp($event)"/>
             </div>
-            <div class="slds-scrollable" [ngStyle]="contentStyle">
-                <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
-                    <system-spinner></system-spinner>
-                </div>
-                <ng-template #typesdisplay>
-                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                        <thead>
-                        <tr class="slds-text-title_caps">
-                            <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_TYPE')}}</div>
-                            </th>
-                            <th scope="col" style="width: 3rem;"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let aclobject of aclobjects" (click)="selectObject(aclobject)" [ngClass]="{'slds-theme--shade': aclobject.id == activeObjectId}">
-                            <td>
-                                <div class="slds-truncate">{{aclobject.name}}</div>
-                            </td>
-                            <td>
-                                <div class="slds-truncate">{{getType(aclobject.spiceaclobjecttype)}}</div>
-                            </td>
-                            <td style="width: 3rem;">
-                                <system-custom-icon *ngIf="aclobject.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
-                                <system-custom-icon *ngIf="aclobject.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-custom-icon>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </ng-template>
+            <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
+                <system-spinner></system-spinner>
             </div>
-        </div>
+            <ng-template #typesdisplay>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">{{language.getLabel('LBL_TYPE')}}</div>
+                        </th>
+                        <th scope="col" style="width: 3rem;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let aclobject of aclobjects" (click)="selectObject(aclobject)" [ngClass]="{'slds-theme--shade': aclobject.id == activeObjectId}">
+                        <td>
+                            <div class="slds-truncate">{{aclobject.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{getType(aclobject.spiceaclobjecttype)}}</div>
+                        </td>
+                        <td style="width: 3rem;">
+                            <system-custom-icon *ngIf="aclobject.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
+                            <system-custom-icon *ngIf="aclobject.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-custom-icon>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </ng-template>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>

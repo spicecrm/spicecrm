@@ -1,4 +1,7 @@
-import {Component, Input, HostBinding} from '@angular/core';
+/**
+ * @module ModuleCampaigns
+ */
+import {Component} from '@angular/core';
 
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -7,38 +10,43 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: './src/modules/campaigns/templates/campaigntaskactivatebutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-        '[style.display]': 'getDisplay()'
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ]
+    templateUrl: './src/modules/campaigns/templates/campaigntaskactivatebutton.html'
 })
 export class CampaignTaskActivateButton {
 
-    activating: boolean = false;
+    private activating: boolean = false;
+    public disabled: boolean = true;
 
     constructor(private language: language, private metadata: metadata, private model: model, private toast: toast, private backend: backend) {
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled();
+        });
+
+        this.model.data$.subscribe(data => {
+            this.handleDisabled();
+        });
     }
 
-    getDisplay() {
+    private handleDisabled() {
 
         // not for email
-        if(this.model.getFieldValue('campaigntask_type') == 'Email')
-            return 'none';
+        if (this.model.getFieldValue('campaigntask_type') == 'Email'){
+            this.disabled = true;
+            return;
+        }
 
         // not if activated
-        if(this.model.getFieldValue('activated'))
-            return 'none';
+        if (this.model.getFieldValue('activated')){
+            this.disabled = true;
+            return;
+        }
 
-        return this.model.isEditing || this.model.data.activated === true ? 'none' : '';
+        this.disabled  =this.model.isEditing || this.model.data.activated === true ? true : false;
     }
 
-    activate() {
+    public execute() {
         // if we are activating .. do nothing
-        if(this.activating) return;
+        if (this.activating) return;
 
         // set activating indicator
         this.activating = true;
@@ -52,10 +60,9 @@ export class CampaignTaskActivateButton {
                 this.toast.sendToast('Activated');
                 this.model.setField('activated', true);
 
-            }
-            else
+            } else {
                 this.toast.sendToast('Error');
-        })
+            }
+        });
     }
-
 }

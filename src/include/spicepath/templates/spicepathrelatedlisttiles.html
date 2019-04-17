@@ -1,0 +1,5 @@
+<object-related-card [componentconfig]="componentconfig">
+        <div *ngFor="let relateditem of relatedmodels.items" class="slds-p-around--xx-small slds-size--1-of-1">
+            <spice-path-related-list-tile class="slds-box slds-box--x-small slds-media slds-card__tile" [fieldset]="componentconfig.fieldset" [data]="relateditem" [module]="module"></spice-path-related-list-tile>
+        </div>
+</object-related-card>

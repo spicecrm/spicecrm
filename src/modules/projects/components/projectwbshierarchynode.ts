@@ -1,4 +1,7 @@
-import {Component, AfterViewInit, OnInit, OnDestroy, Input} from "@angular/core";
+/**
+ * @module ModuleProjects
+ */
+import {Component, OnInit, Input} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";

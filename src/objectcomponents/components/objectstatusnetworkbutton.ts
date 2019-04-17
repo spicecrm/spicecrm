@@ -1,10 +1,11 @@
-import {Component, Input, Renderer2, ElementRef, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component,  Renderer2, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
-
-declare var moment: any;
 
 @Component({
     selector: 'object-status-network-button',

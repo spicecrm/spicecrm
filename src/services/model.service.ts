@@ -1,8 +1,8 @@
-import {Injectable, EventEmitter, ViewContainerRef, Injector} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {CanActivate} from "@angular/router";
-import {Observable} from "rxjs";
+/**
+ * @module services
+ */
+import {Injectable, EventEmitter, Injector} from "@angular/core";
+import {of, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
@@ -14,9 +14,15 @@ import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
+import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
 
+/**
+* @ignore
+*/
 declare var moment: any;
-moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
+/**
+* @ignore
+*/
 declare var _: any;
 
 interface fieldstati {
@@ -29,29 +35,118 @@ interface fieldstati {
     readonly: boolean;
 }
 
+/**
+ * a generic service that handles the model instance. This is one of the most central items in SpiceUI as this is the instance of an object (record) in the backend. The service provides all relevant getters and setters for the data handling, it validates etc.
+ */
 @Injectable()
 export class model {
+    /**
+     * @ignore
+     */
     private _module: string = "";
+    /**
+     * the id of the record in the backend
+     */
     public id: string = "";
+    /**
+     * an object holding the acl data for the record as it is set in the backend
+     */
     public acl: any = {};
+    /**
+     * the data object.
+     *
+     * ToDo: make a private property
+     */
     public data: any = {
         acl: {
             edit: true
         }
     };
+    /**
+     * a private element that holds a copy of the data and is created when the model is set to editmode. This is internal only and used for the assessment of dirty fields
+     */
     private backupData: any = {};
+    /**
+     * an event emitter. this is called every time when a value to the model is set or the validation is changed. Otheer components can subscribe to this emitter and get the current data passed out in the event that a change occured
+     *
+     * ```typescript
+     * constructor(private model: model) {
+     *        this.model.data$.subscribe(data => {
+     *            this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+     *         });
+     *}
+     *```
+     */
     public data$ = new EventEmitter();
+    /**
+     * an event emitter that fires when te mode of the model changes between display and editing. Components can subscribe to this to get notified when the mode is triggerd by the application or by the user
+     *
+     * ```typescript
+     * constructor(private model: model) {
+     *        this.model.mode$.subscribe(mode => {
+     *            this.handleDisabled(mode);
+     *        });
+     *}
+     *```
+     */
+    public mode$ = new EventEmitter();
+    /**
+     * indicates if the model state is valid
+     */
     public isValid: boolean = false;
+    /**
+     * indicates that the model is currently loading from the backend
+     */
     public isLoading: boolean = false;
+    /**
+     * indicates that the current model is in an edit state
+     */
     public isEditing: boolean = false;
+    /**
+     * set when a new record is created and teh model is not yet saved on the backend
+     */
     public isNew: boolean = false;
+    /**
+     * @ignore
+     *
+     * @ToDo: add documentation
+     */
     private _fields_stati: any = []; // will be build by initialization of the model
+    /**
+     * @ignore
+     *
+     * @ToDo: add documentation
+     */
     private _fields_stati_tmp: any = []; // will be erased when evaluateValidationRules() is called
+    /**
+     * @ignore
+     *
+     * @ToDo: add documentation
+     */
     private _model_stati_tmp: any = [];  // will be erased when evaluateValidationRules() is called
+    /**
+     * holds any collected messages during validation or propagation
+     */
     private _messages: any = [];
+    /**
+     * @ToDo: add documentation
+     */
     private reference: string = "";
     private _fields: any = [];
     public messageChange$ = new EventEmitter<boolean>();
+
+    /**
+     * indicating that the current model created is a duplicate. this avoids that the model when begin created, creates a new set of backupdata as this woudl limit the data being sent to the backend when saviong the model
+     */
+    public duplicate: boolean = false;
+    /**
+     * inidctaes thata duplicate check is ongoing
+     */
+    public duplicateChecking: boolean = false;
+    /**
+     * an array with duplicates the duplicate check on the model returned
+     */
+    public duplicates: any[] = [];
 
     constructor(
         private backend: backend,
@@ -98,12 +193,20 @@ export class model {
         return this._fields;
     }
 
+    /**
+     * a helper function that calls modelutilities generateGUID and returns a guid as used internally
+     */
     public generateGuid(): string {
         return this.utils.generateGuid();
     }
 
     /*
      * meta data related functions
+     */
+    /**
+     * queries the metadata and returns if the field is required by the metadata definitions of the bckend
+     *
+     * @param field the fieldname
      */
     public isFieldRequired(field: string): boolean {
         switch (field) {
@@ -116,14 +219,21 @@ export class model {
         }
     }
 
+    /**
+     * a shorthand function to [isFieldRequired]
+     *
+     * @param field the fieldname
+     */
     public isRequired(field: string) {
         return this.isFieldRequired(field);
     }
 
     /**
-     * access checkl
+     * checks the access right on the model instance and returns true or false
+     *
+     * @param access a strting with the access to be checked. Can be literally any acl string. standard are edit, display, list .. they are deifned in the backend
      */
-    public checkAccess(access) {
+    public checkAccess(access): boolean {
         if (this.data && this.data.acl) {
             return this.data.acl[access];
         } else {
@@ -132,7 +242,7 @@ export class model {
     }
 
     /**
-     * navigation function
+     * navigates to the detasil view route of the given model
      */
     public goDetail() {
         if (this.checkAccess("detail")) {
@@ -142,24 +252,21 @@ export class model {
         }
     }
 
-    public goToDetail() {
-        this.goDetail();
-    }
-
+    /**
+     * navigates to the listvioew of the module
+     */
     public goModule() {
         this.router.navigate(["/module/" + this.module]);
     }
 
-    public goToModule() {
-        this.goModule();
-    }
-
-    public goToListView() {
-        this.goModule();
-    }
 
     /**
-     * Model functions
+     * a central function that will load the model data from teh backend and transform it to the internal data formats. When sucessfully accomplished the Observable returned will be reolved with the data of the model
+     *
+     * @param resetData send true to reset all data already loaded and reload
+     * @param trackAction the action that will be set in the tracker int he backend. This is relevant for the tracker histoy and the recently viewed records by the user. Leave empty if no tracking should be done
+     * @param setLoading sets the isLoading paramater on the model and sets it back once the load is completed. This has an impact e.g. on the view service as this renders stencilc there ot other. If this is not to be done set to false then teh model will be loaded "silent"
+     * @param redirectNotFound if set to true if the model is not found the userwill be redirected to the main moduel if the user has the proper access right or the home screen. Shoudl be passed in in e.g. a detail view but not in case of e.g. loading a related record.
      */
     public getData(resetData: boolean = true, trackAction: string = "", setLoading: boolean = true, redirectNotFound = false): Observable<any> {
         let responseSubject = new Subject<any>();
@@ -187,8 +294,8 @@ export class model {
                 this.isLoading = false;
             },
             err => {
-                if (redirectNotFound) {
-                    this.toast.sendToast("Error loading Record", "error");
+                if (redirectNotFound && err.status != 401) {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_RECORD"), "error");
                     this.router.navigate(["/module/" + this.module]);
                 }
             }
@@ -196,6 +303,12 @@ export class model {
         return responseSubject.asObservable();
     }
 
+    /**
+     * validates the model
+     * ToDo: Sebastian to add some more details
+     *
+     * @param event
+     */
     public validate(event?: string) {
         this.resetMessages();
         this.isValid = true;
@@ -266,7 +379,7 @@ export class model {
     private resetFieldStati(field: string) {
         this._fields_stati[field] = this.evaluateFieldStati(field);
         // tmp stati
-        this._fields_stati_tmp[field] = {... this._fields_stati[field]};
+        this._fields_stati_tmp[field] = {...this._fields_stati[field]};
         if (this.getFieldMessages(field, "error")) {
             this._fields_stati_tmp[field].invalid = true;
         }
@@ -405,14 +518,16 @@ export class model {
 
         check = modelutilities.compare(val_left, condition.comparator, val_right);
 
+        /*
         console.log("checking: " + condition.fieldname + " " + condition.comparator + " " + condition.valuations,
             val_left + " " + condition.comparator + " " + val_right + " is " + check);
+        */
 
         return check;
     }
 
     public executeValidationAction(action): boolean {
-        console.log("doing: " + action.action + " with " + action.params + " on " + action.fieldname);
+        // console.log("doing: " + action.action + " with " + action.params + " on " + action.fieldname);
         let params = this.evaluateValidationParams(action.params);
         switch (action.action) {
             case "set_value":
@@ -486,9 +601,7 @@ export class model {
                         case "datetimecombo":
                         case "datetime":
                         case "date":
-                            if (replace)
-                                replace = replace.format("YYYY-MM-DD HH:mm:ss");
-                            break;
+                            if (replace) replace = replace.format("YYYY-MM-DD HH:mm:ss");
                     }
 
                     params = params.replace(match, replace);
@@ -513,8 +626,11 @@ export class model {
 
     public startEdit() {
         // shift to backend format .. no objects like date embedded
-        this.backupData = {...this.data};
+        if (!this.duplicate) {
+            this.backupData = {...this.data};
+        }
         this.isEditing = true;
+        this.mode$.emit('edit');
     }
 
 
@@ -538,14 +654,33 @@ export class model {
         this.data[field] = value;
         this.data$.emit(this.data);
         this.evaluateValidationRules(field, "change");
+
+        // run the duplicate check
+        this.duplicateCheckOnChange([field]);
     }
 
     public setField(field, value) {
         return this.setFieldValue(field, value);
     }
 
+    public setFields(fieldData) {
+        let changedFields = [];
+        for (let fieldName in fieldData) {
+            let fieldValue = fieldData[fieldName];
+            if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
+            this.data[fieldName] = fieldValue;
+            changedFields.push(fieldName);
+        }
+        this.data$.emit(this.data);
+        this.evaluateValidationRules(null, "change");
+
+        // run the duplicate check
+        this.duplicateCheckOnChange(changedFields);
+    }
+
     public cancelEdit() {
         this.isEditing = false;
+        this.mode$.emit('display');
         if (this.backupData) {
             this.data = {...this.backupData};
             this.data$.emit(this.data);
@@ -558,9 +693,10 @@ export class model {
     public endEdit() {
         this.backupData = null;
         this.isEditing = false;
+        this.mode$.emit('display');
     }
 
-    private getDirtyFields() {
+    public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
             if (property && (_.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
@@ -574,34 +710,58 @@ export class model {
         let responseSubject = new Subject<boolean>();
 
         // determine changed fields
-        let changedData = {};
+        let changedData: any = {};
         if (this.isEditing) {
             changedData = this.getDirtyFields();
+            // in any case send back date_modified
+            changedData.date_modified = this.data.date_modified;
+
+            // hack to provoke the changes for Testing
+            // changedData.date_modified.subtract( 1, 'days');
         } else {
             changedData = this.data;
         }
 
-
         this.backend.save(this.module, this.id, changedData)
-            .subscribe(res => {
-                this.data = res;
-                this.isNew = false;
-                this.data$.emit(res);
-                this.broadcast.broadcastMessage("model.save", {
-                    id: this.id,
-                    reference: this.reference,
-                    module: this.module,
-                    data: this.data
+            .subscribe(
+                res => {
+                    this.data = res;
+                    this.isNew = false;
+                    this.data$.emit(res);
+                    this.broadcast.broadcastMessage("model.save", {
+                        id: this.id,
+                        reference: this.reference,
+                        module: this.module,
+                        data: this.data
+                    });
+                    responseSubject.next(true);
+                    responseSubject.complete();
+
+                    if (notify) {
+                        this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
+                    }
+
+                    this.endEdit();
+
+                    // reinitialize the Field Stats in case ACL Changed
+                    this.initializeFieldsStati();
+                },
+                error => {
+                    // console.log(error);
+                    switch (error.status) {
+                        case 409:
+                            this.modal.openModal("ObjectOptimisticLockingModal", false, this.injector).subscribe(lockingModalRef => {
+                                lockingModalRef.instance.conflicts = error.error.error.conflicts;
+                            });
+                            break;
+                        default:
+                            if (notify) {
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                            }
+                            responseSubject.error(true);
+                            responseSubject.complete();
+                    }
                 });
-                responseSubject.next(true);
-                responseSubject.complete();
-
-                if (notify) {
-                    this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                }
-
-                this.endEdit();
-            });
         return responseSubject.asObservable();
     }
 
@@ -626,6 +786,7 @@ export class model {
 
         this.isLoading = false;
         this.isEditing = false;
+        this.mode$.emit('display');
         this.resetMessages();
         this.resetData();
     }
@@ -640,13 +801,18 @@ export class model {
         return clone;
     }
 
-    public getAuditLog(): Observable<any> {
+    public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
-        this.backend.getAudit(this.module, this.id)
-            .subscribe(res => {
-                responseSubject.next(res);
-                responseSubject.complete();
-            });
+        this.backend.getAudit(this.module, this.id, filters)
+            .subscribe(
+                res => {
+                    responseSubject.next(res);
+                    responseSubject.complete();
+                },
+                error => {
+                    responseSubject.next(error);
+                    responseSubject.complete();
+                });
         return responseSubject.asObservable();
     }
 
@@ -669,6 +835,10 @@ export class model {
             this.id = this.generateGuid();
         }
 
+        // reset the duplicates
+        this.duplicates = [];
+
+        // reset the data object
         this.data = {};
         this.data.assigned_user_id = this.session.authData.userId;
         this.data.assigned_user_name = this.session.authData.userName;
@@ -683,14 +853,14 @@ export class model {
         // set default acl to allow editing
         this.data.acl = {
             edit: true
-        }
+        };
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
         this.evaluateValidationRules(null, "init");
     }
 
-    public addModel(addReference: string = "", parent: any = null, presets: any = {}) {
+    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
 
         // a response subject to return if the model has been saved
         let retSubject = new Subject<any>();
@@ -712,7 +882,7 @@ export class model {
                 if (editModalRef) {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
-
+                    editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
                         retSubject.next(response);
@@ -729,8 +899,13 @@ export class model {
         return retSubject.asObservable();
     }
 
-    private executeCopyRules(parent) {
-        // get generic copy rules
+    public executeCopyRules(parent: model = null) {
+        this.executeCopyRulesGeneric();
+        if (parent && parent.data) this.executeCopyRulesParent(parent);
+    }
+
+    // get generic copy rules
+    public executeCopyRulesGeneric() {
         let copyrules = this.metadata.getCopyRules("*", this.module);
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
@@ -739,21 +914,19 @@ export class model {
                 this.setFieldValue(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
             }
         }
+    }
 
-        // apply parent specific copy rules
-        if (parent && parent.data) {
-
-            // todo: figure out why we loose the id in data
-            if (!parent.data.id) {
-                parent.data.id = parent.id;
-            }
-            copyrules = this.metadata.getCopyRules(parent.module, this.module);
-            for (let copyrule of copyrules) {
-                if (copyrule.fromfield && copyrule.tofield) {
-                    this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
-                } else if (copyrule.tofield && copyrule.fixedvalue) {
-                    this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
-                }
+    // apply parent specific copy rules
+    public executeCopyRulesParent(parent) {
+        // todo: figure out why we loose the id in data
+        if (!parent.data.id) parent.data.id = parent.id;
+        let copyrules = this.metadata.getCopyRules(parent.module, this.module);
+        for (let copyrule of copyrules) {
+            if (copyrule.fromfield && copyrule.tofield) {
+                // this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
+                this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
+            } else if (copyrule.tofield && copyrule.fixedvalue) {
+                this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
             }
         }
     }
@@ -805,28 +978,98 @@ export class model {
     }
 
 
-    public duplicateCheck(fromModelData = false) {
-        let responseSubject = new Subject<any>();
-        if (fromModelData) {
-            let _modeldata = this.data;
-            _modeldata.id = this.id;
-            this.backend.checkDuplicates(this.module, _modeldata)
-                .subscribe(res => {
-                    responseSubject.next(res);
-                    responseSubject.complete();
-                });
-        } else {
-            this.backend.getDuplicates(this.module, this.id)
-                .subscribe(res => {
-                    responseSubject.next(res);
-                    responseSubject.complete();
-                });
+    /**
+     * checks the given fields that have been changed internally if theey are relevant for the duplicate check
+     *
+     *  @param changedFields an array with fieldnames that has been changed in order to allow the method to determine the scope fo the change and if a duplicate check shoudl be performed
+     */
+    private duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
+        if (this.isNew && this.metadata.getModuleDuplicatecheck(this.module)) {
+            let dupCheckFields = this.metadata.getModuleDuplicateCheckFields(this.module);
+
+            // return if we do not have any fields to check for
+            if (dupCheckFields.length == 0) return;
+
+            // cancheeck determines if we have at least one of the duplicate valkues set, otherwise a duplicate check makes no sense
+            let cancheck = false;
+            // shoudlcheck determines if any of the duplicate check fields has been changed and a check shopudl be performed
+            let shouldcheck = false;
+            // determine the flags
+            for (let dupCheckField of dupCheckFields) {
+                if (!shouldcheck) shouldcheck = changedFields.indexOf(dupCheckField) >= 0;
+                if (!cancheck) cancheck = this.getField(dupCheckField);
+            }
+
+            // execute the check or empty the duplicates array on the bean
+            if (cancheck && shouldcheck) {
+                let retSubject = new Subject<any>();
+                // do the check
+                this.duplicateCheck(true).subscribe(
+                    duplciates => {
+                        this.duplicates = duplciates;
+                        retSubject.next(true);
+                        retSubject.complete();
+                    },
+                    error => {
+                        retSubject.next(false);
+                        retSubject.complete();
+                    });
+                return retSubject.asObservable();
+            } else if (shouldcheck && !cancheck) {
+                this.duplicates = [];
+            }
         }
-        return responseSubject.asObservable();
+        return of(false);
+    }
+
+    /**
+     * executes a duplicate check on the backend
+     *
+     * @param fromModelData indicates if the check is to be done from teh current actual modeldata. If set to true the curretn data will be used. Otherwise the data stored in the backend will be used and the data will be reloaded during the request on the backend
+     */
+    public duplicateCheck(fromModelData: boolean = false) {
+
+        // check if this is a new model and the model support the duplicate check
+        if (this.metadata.getModuleDuplicatecheck(this.module)) {
+            this.duplicateChecking = true;
+            let responseSubject = new Subject<any>();
+            if (fromModelData) {
+                let _modeldata = this.data;
+                _modeldata.id = this.id;
+                this.backend.checkDuplicates(this.module, _modeldata)
+                    .subscribe(res => {
+                            responseSubject.next(res);
+                            responseSubject.complete();
+                            this.duplicateChecking = false;
+                        },
+                        error => {
+                            responseSubject.next([]);
+                            responseSubject.complete();
+                            this.duplicateChecking = false;
+                        });
+            } else {
+                this.backend.getDuplicates(this.module, this.id)
+                    .subscribe(res => {
+                            responseSubject.next(res);
+                            responseSubject.complete();
+                            this.duplicateChecking = false;
+                        },
+                        error => {
+                            responseSubject.next([]);
+                            responseSubject.complete();
+                            this.duplicateChecking = false;
+                        }
+                    )
+                ;
+            }
+            return responseSubject.asObservable();
+        }
+        return of([]);
     }
 
     /**
      * adds a message to the global model if ref is null else to the field itself
+     *
      * @param {string} type can be of value error | warning | notice
      * @param {string} message
      * @param {string} ref  can be any fieldname
@@ -835,10 +1078,10 @@ export class model {
      */
     private addMessage(type: "error" | "warning" | "notice", message: string, ref: string = null, source = "validation"): boolean {
         this._messages.push({
-            type: type,
-            message: message,
+            type,
+            message,
             reference: ref,
-            source: source,
+            source,
         });
         if (type == "error" && ref) {
             this.setFieldStatus(ref, "invalid", true);
@@ -857,13 +1100,14 @@ export class model {
 
     /**
      * returns all messages for the given field/reference and if given, the type of your choice
+     *
      * @param {string} ref    can be any fieldname
      * @param {string} type     can be of value error | warning | notice
      * @returns {any[]}
      */
     public getFieldMessages(ref: string, type?: "error" | "warning" | "notice") {
         let messages = this._messages.filter((e) => {
-            return e.reference == ref && (!type || e.type == type)
+            return e.reference == ref && (!type || e.type == type);
         });
         if (messages.length > 0) {
             return messages;
@@ -907,22 +1151,6 @@ export class model {
         return true;
     }
 
-    /**
-     * overwrites this instance of model with another instance of model...
-     * @param model {model}
-     * @returns {boolean}
-     */
-
-    /*
-    public overwrite(model: model): boolean {
-        for(let prop in model) {
-            if(model.hasOwnProperty(prop)) {
-                this[prop] = model[prop];
-            }
-        }
-        return true;
-    }
-    */
 
     private isFieldARelationLink(field_name) {
         try {
@@ -938,6 +1166,7 @@ export class model {
 
     /**
      * returns an array of records instead of the object stored in the data...
+     *
      * @param relation_link_name {string} the name of the link used to retrieve the related records
      * @returns {any[]} an array of records
      */

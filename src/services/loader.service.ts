@@ -1,234 +1,221 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
 
 import {configurationService} from './configuration.service';
-import {loginService} from './login.service';
-import {Router}   from '@angular/router';
+import {session} from './session.service';
 import {language} from './language.service';
-import {territories} from './territories.service';
-import {recent} from './recent.service';
-import {favorite} from './favorite.service';
-import {reminder} from './reminder.service';
-import { metadata } from './metadata.service';
-import { currency } from './currency.service';
-import { userpreferences } from './userpreferences.service';
-
-
+import {broadcast} from './broadcast.service';
 
 @Injectable()
-export class loader
-{
-    module: string = '';
-    id: string = '';
-    data: any = {};
-    loaderHandler: Subject<string> = new Subject<string>();
-    loadComplete: Subject<boolean> = new Subject<boolean>();
-    start: any = '';
-    counterCompleted = 0;
-    progress = 0;
-    activeLoader: string = '';
-    loadPhase: string = 'primary';
+export class loader {
+    private module: string = '';
+    private id: string = '';
+    private data: any = {};
+    private loaderHandler: Subject<string> = new Subject<string>();
+    private loadComplete: Subject<boolean>;
+    private start: any = '';
+    private counterCompleted = 0;
+    private progress = 0;
+    private activeLoader: string = '';
+    private loadPhase: string = 'system';
 
-    loadElements: any = {
-        primary: [
-            {
-                name: 'loadComponents',
-                display: 'Components',
-                status: 'initial',
-                action: function (loader) {
-                    loader.metadata.loadComponents(loader.loaderHandler);
-                }
-
-            },
-            {
-                name: 'loadFieldSets',
-                display: 'Fieldsets',
-                status: 'initial',
-                action: function (loader) {
-                    loader.metadata.loadFieldSets(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadValidationRules',
-                display: 'Validations',
-                status: 'initial',
-                action: function (loader) {
-                    loader.metadata.loadValidationRules(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadModuleDefinitions',
-                display: 'Module Definitions',
-                status: 'initial',
-                action: function (loader) {
-                    loader.metadata.loadModuleDefinitions(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadFieldDefs',
-                display: 'Field Definitions',
-                status: 'initial',
-                action: function (loader) {
-                    loader.metadata.loadFieldDefs(loader.loaderHandler);
-                }
-            },
+    private loadElements: any = {
+        system: [
             {
                 name: 'getLanguage',
                 display: 'Language',
                 status: 'initial',
-                action: function (loader) {
+                sequence: 35,
+                action: (loader) => {
                     loader.language.getLanguage(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'getPreferences',
-                display: 'Preferences',
-                status: 'initial',
-                action: function (loader) {
-                    loader.userpreferences.getPreferences(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadCurrencies',
-                display: 'Currencies',
-                status: 'initial',
-                action: function (loader) {
-                    loader.currency.loadCurrencies(loader.loaderHandler);
                 }
             }
         ],
-        secondary: [
-            {
-                name: 'getTerritories',
-                display: 'Territories',
-                status: 'initial',
-                action: function (loader) {
-                    loader.territories.getTerritories(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'getRecent',
-                display: 'Recently viewed',
-                status: 'initial',
-                action: function (loader) {
-                    loader.recent.getRecent(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadFavorites',
-                display: 'Favorites',
-                status: 'initial',
-                action: function (loader) {
-                    loader.favorite.loadFavorites(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadReminders',
-                display: 'Reminders',
-                status: 'initial',
-                action: function (loader) {
-                    loader.reminder.loadReminders(loader.loaderHandler);
-                }
-            },
-            {
-                name: 'loadHtmlStyling',
-                display: 'HTML Styling',
-                status: 'initial',
-                action: function (loader) {
-                    loader.metadata.loadHtmlStyling(loader.loaderHandler);
-                }
-            }
-        ]
+        primary: [],
+        secondary: []
     };
 
     constructor(
         private http: HttpClient,
-        private configurationService: configurationService,
-        private language: language,
-        private territories: territories,
-        private metadata: metadata,
-        private recent: recent,
-        private favorite: favorite,
-        private reminder: reminder,
-        private currency: currency,
-        private userpreferences: userpreferences
+        private broadcast: broadcast,
+        private configuration: configurationService,
+        private session: session,
+        private language: language
     ) {
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
     }
 
-    load(): Observable<boolean>
-    {
-        this.resetLoader();
-        this.start = performance.now();
-        this.handleLoaderHandler();
+    /**
+     * gets the set tasks from teh backend
+     */
+    private getLoadTasks(): Observable<boolean> {
+        let retSubject = new Subject<boolean>();
+        this.http.get(
+            this.configuration.getBackendUrl() + "/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
+            (loadtasks: any) => {
+
+                // reset the primary tasks
+                this.loadElements.primary = [];
+                this.loadElements.secondary = [];
+
+                // add the loadtasks to the elements defined as fixed
+                for (let loadtask of loadtasks) {
+                    loadtask.status = 'initial';
+                    this.loadElements[loadtask.phase].push(loadtask);
+                }
+
+                // sort the loader arrays
+                this.loadElements.primary.sort((a, b) => {
+                    return a.sequence > b.sequence ? 1 : -1;
+                });
+
+                // sort the loader arrays
+                this.loadElements.secondary.sort((a, b) => {
+                    return a.sequence > b.sequence ? 1 : -1;
+                });
+
+                // resolve the subject to start the loader
+                retSubject.next(true);
+                retSubject.complete();
+            }
+        );
+        return retSubject.asObservable();
+    }
+
+
+    public load(): Observable<boolean> {
+        this.loadComplete = new Subject<boolean>();
+        this.getLoadTasks().subscribe(loaded => {
+            this.resetLoader();
+            this.start = performance.now();
+            this.handleLoaderHandler();
+        });
         return this.loadComplete.asObservable();
     }
 
-    resetLoader(){
+    public reloadPrimary() {
+        this.loadComplete = new Subject<boolean>();
+
+        // set the laodphase to primary
         this.loadPhase = 'primary';
 
-        for(let loaditem of this.loadElements.primary){
+        // reset the progress
+        this.progress = 0;
+        this.counterCompleted = 0;
+
+        // reset the primary load elements
+        for (let loaditem of this.loadElements.primary) {
             loaditem.status = 'initial';
         }
 
-        for(let loaditem of this.loadElements.secondary){
+        // start the handler
+        this.start = performance.now();
+        this.handleLoaderHandler();
+
+        // return the observable
+        return this.loadComplete.asObservable();
+    }
+
+    private resetLoader() {
+        // reset the progress
+        this.counterCompleted = 0;
+        this.progress = 0;
+
+        this.loadPhase = 'system';
+
+        for (let loaditem of this.loadElements.system) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.primary) {
+            loaditem.status = 'initial';
+        }
+
+        for (let loaditem of this.loadElements.secondary) {
             loaditem.status = 'initial';
         }
     }
 
-    reset(){
+    public reset() {
         this.counterCompleted = 0;
         this.progress = 0;
-        for(let loadElement of this.loadElements){
+
+        for (let loadElement of this.loadElements) {
             loadElement.status = 'initial';
         }
     }
 
 
-    setComplete(){
+    private setComplete() {
         let t1 = performance.now();
-        if(t1 - this.start > 500){
+        if (t1 - this.start > 500) {
             this.complete();
-        }else{
-            setTimeout(() => this.complete(),500);
+        } else {
+            setTimeout(() => this.complete(), 500);
         }
     }
 
-    complete(){
+    private complete() {
         // emit true
         this.loadComplete.next(true);
+        this.loadComplete.complete();
     }
 
-    handleLoaderHandler(){
+    private handleLoaderHandler() {
         let loadActive = false;
 
-        for(let loadElement of this.loadElements[this.loadPhase]){
-            if(loadElement.status === 'active'){
+        for (let loadElement of this.loadElements[this.loadPhase]) {
+            if (loadElement.status === 'active') {
                 loadElement.status = 'completed';
-                this.progress = ++this.counterCompleted / this.loadElements.primary.length * 100;
-                if(this.progress > 100) this.progress == 100;
-            }
-
-            else if(loadElement.status === 'initial'){
+                this.progress = ++this.counterCompleted / (this.loadElements.primary.length + this.loadElements.system.length) * 100;
+                if (this.progress > 100) {
+                    this.progress == 100;
+                }
+            } else if (loadElement.status === 'initial') {
                 loadElement.status = 'active';
-                loadElement.action(this);
+                if (loadElement.action) {
+                    loadElement.action(this);
+                } else {
+                    this.handleRouteElement(loadElement);
+                }
                 loadActive = true;
                 this.activeLoader = loadElement.display;
                 break;
             }
         }
 
-        if(loadActive === false && this.loadPhase == 'primary') {
+        if (loadActive === false && this.loadPhase == 'system') {
+            this.loadPhase = 'primary';
+            this.handleLoaderHandler();
+        } else if (loadActive === false && this.loadPhase == 'primary') {
             // set complete
             this.setComplete();
             // switch to secondary phase
             this.loadPhase = 'secondary';
             this.handleLoaderHandler();
-
         }
 
+    }
+
+    private handleRouteElement(loadElement) {
+        let loadroute = loadElement.route ? loadElement.route : '/spiceui/core/loadtasks/'+loadElement.id;
+        this.http.get(
+            this.configuration.getBackendUrl() + loadroute,
+            {headers: this.session.getSessionHeader()}
+        ).subscribe((loadElementResults: any) => {
+                for (let loadElementResultKey in loadElementResults) {
+                    this.configuration.setData(loadElementResultKey, loadElementResults[loadElementResultKey]);
+                }
+
+                this.broadcast.broadcastMessage('loader.completed', loadElement.name);
+
+                this.loaderHandler.next(loadElement.name);
+            }
+        );
     }
 
 }

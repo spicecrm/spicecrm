@@ -1,11 +1,12 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
     Input,
-    AfterViewInit,
     OnInit,
     ViewChild,
     ViewContainerRef,
-    OnDestroy,
     ElementRef
 } from '@angular/core';
 

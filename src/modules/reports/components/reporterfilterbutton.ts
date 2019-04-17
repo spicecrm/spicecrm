@@ -1,4 +1,7 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, Renderer2, ElementRef, ViewChild, ViewContainerRef, EventEmitter, Output } from '@angular/core';
+/**
+ * @module ModuleReports
+ */
+import { Component, Input, OnChanges, OnDestroy, ViewChild, ViewContainerRef, EventEmitter, Output } from '@angular/core';
 import { language } from '../../../services/language.service';
 
 import  {reporterconfig} from '../services/reporterconfig';

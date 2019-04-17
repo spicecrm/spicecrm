@@ -1,5 +1,7 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
-    AfterViewInit,
     Component,
     Input,
     OnChanges,
@@ -21,15 +23,15 @@ import {AppDataService} from "../../../services/appdata.service";
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetail.html',
     providers: [model, view]
 })
-export class WorkflowManagerDetail implements OnChanges{
+export class WorkflowManagerDetail implements OnChanges {
 
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
 
-    @Input() modeldata : any = {};
+    @Input() private modeldata: any = {};
 
-    activaTab: string = 'D';
+    private activeTab: string = 'D';
 
-    fieldset: string = '';
+    private fieldset: string = '';
 
     constructor(private appdata: AppDataService,
                 private backend: backend,
@@ -42,24 +44,23 @@ export class WorkflowManagerDetail implements OnChanges{
 
         this.view.isEditable = true;
         this.view.setEditMode();
-        //this.logicoperator_options = this.language.getDisplayOptions('logicoperators_dom', true);
         let componentconfig = this.metadata.getComponentConfig('WorkflowManagerDetail', 'WorkflowDefinitions');
-        if(componentconfig && componentconfig.fieldset){
+        if (componentconfig && componentconfig.fieldset) {
             this.fieldset = componentconfig.fieldset;
         }
 
         this.model.module = 'WorkflowDefinitions';
     }
 
-    ngOnChanges(){
-        if(this.modeldata.id){
+    public ngOnChanges() {
+        if (this.modeldata.id) {
             // this.model.module = this.module;
             this.model.id = this.modeldata.id;
             this.model.data = this.modeldata;
         }
     }
 
-    get displayDetails(){
+    get displayDetails() {
         return this.model.id ? true : false;
     }
 }

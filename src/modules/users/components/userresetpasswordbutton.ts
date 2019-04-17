@@ -1,3 +1,6 @@
+/**
+ * @module ModuleUsers
+ */
 import {Component} from "@angular/core";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
@@ -10,12 +13,18 @@ import {language} from "../../../services/language.service";
 
 export class UserResetPasswordButton {
 
-    constructor(private modal: modal, private language: language, private model: model, private session: session) {}
+    public disabled: boolean = true;
 
-    private resetPassword() {
-        if (!this.session.isAdmin) {return;}
+    constructor(private modal: modal, private language: language, private model: model, private session: session) {
+        if (this.session.isAdmin) this.disabled = false;
+    }
+
+    private execute() {
+        if (!this.session.isAdmin) {
+            return;
+        }
         this.modal.openModal("UserResetPasswordModal")
-            .subscribe( modalRef => {
+            .subscribe(modalRef => {
                 modalRef.instance.userId = this.model.id;
             });
     }

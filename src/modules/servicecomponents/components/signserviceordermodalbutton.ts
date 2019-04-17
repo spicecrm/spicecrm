@@ -1,10 +1,13 @@
+/**
+ * @module ServiceComponentsModule
+ */
 import {Component} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {footer} from "../../../services/footer.service";
 import {SignServiceOrderModalComponent} from "./signserviceordermodal";
 import {language} from "../../../services/language.service";
-import { modal } from "../../../services/modal.service";
+import {modal} from "../../../services/modal.service";
 
 
 @Component({
@@ -18,20 +21,19 @@ import { modal } from "../../../services/modal.service";
         ":host {cursor:pointer;}"
     ]
 })
-export class SignServiceOrderModalButtonComponent
-{
+export class SignServiceOrderModalButtonComponent {
     constructor(
         private model: model,
         private metadata: metadata,
         private language: language,
         private footer: footer,
         private modalservice: modal
-    ) {}
+    ) {
+    }
 
     private showModal() {
         this.modalservice.openModal("SignServiceOrderModalComponent").subscribe(
-            cmp =>
-            {
+            cmp => {
                 cmp.instance.setModel(this.model);
             },
             error => {
@@ -41,7 +43,7 @@ export class SignServiceOrderModalButtonComponent
     }
 
     private getDisplay() {
-        if(this.model.data.acl && !this.model.data.acl.edit) {
+        if (this.model.data.acl && !this.model.data.acl.edit) {
             return "none";
         }
 

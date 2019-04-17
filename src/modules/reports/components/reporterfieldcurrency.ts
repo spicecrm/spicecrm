@@ -1,11 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Component
 } from '@angular/core';
 import {currency} from '../../../services/currency.service';
 import {userpreferences} from '../../../services/userpreferences.service';
@@ -16,10 +13,10 @@ import {userpreferences} from '../../../services/userpreferences.service';
 })
 export class ReporterFieldCurrency {
 
-    record: any = {};
-    field: any = {};
+    private record: any = {};
+    private field: any = {};
 
-    currencies: Array<any> = [];
+    private currencies: any[] = [];
 
     constructor(private currency: currency, private userpreferences: userpreferences) {
 
@@ -27,21 +24,21 @@ export class ReporterFieldCurrency {
 
     }
 
-    get currencyidfield(){
-        return this.field.fieldid + '_curid' ;
+    get currencyidfield() {
+        return this.field.fieldid + '_curid';
     }
 
-    getCurrencySymbol(){
+    private getCurrencySymbol() {
         let currencySymbol = '';
 
-        if(!this.record[this.field.fieldid]) return currencySymbol;
+        if (!this.record[this.field.fieldid]) return currencySymbol;
 
         let currencyid = -99;
-        if(this.currencyidfield){
+        if (this.currencyidfield) {
             this.record[this.currencyidfield];
         }
         this.currencies.some(currency => {
-            if(currency.id == currencyid){
+            if (currency.id == currencyid) {
                 currencySymbol = currency.symbol;
                 return true;
             }
@@ -50,11 +47,12 @@ export class ReporterFieldCurrency {
 
     }
 
-    getValue() {
-        if (this.record[this.field.fieldid])
+    private getValue() {
+        if (this.record[this.field.fieldid]) {
             return this.userpreferences.formatMoney(parseFloat(this.record[this.field.fieldid]));
-        else
+        } else {
             return '';
+        }
     }
 
 }

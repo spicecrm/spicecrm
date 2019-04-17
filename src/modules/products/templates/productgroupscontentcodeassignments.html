@@ -1,9 +1,9 @@
-<span (click)="showDialog()">{{language.getModuleLabel(model.module, 'LBL_CONTENTCODE')}}</span>
+<span (click)="showDialog()">{{language.getLabel(model.module, 'LBL_CONTENTCODE')}}</span>
 <ng-container *ngIf="dialogvisible">
     <div role="dialog" tabindex="-1" class="slds-modal slds-modal--large slds-fade-in-open">
         <div class="slds-modal__container">
             <div class="slds-modal__header slds-theme--default">
-                <h2 class="slds-text-heading--medium">{{language.getModuleLabel(model.module, 'LBL_CONTENTCODE_LONG')}}</h2>
+                <h2 class="slds-text-heading--medium">{{language.getLabel(model.module, 'LBL_CONTENTCODE_LONG')}}</h2>
             </div>
             <div class="slds-modal__content slds-theme--default slds-scrollable" style="height:80%;">
                 <div *ngIf="!isLoading; else loading">
@@ -20,16 +20,16 @@
                         <thead>
                             <tr class="slds-text-title_caps">
                                 <th scope="col">
-                                    <div style="max-width: 200px;" class="slds-truncate">{{language.getModuleLabel('ProductAttributes', 'LBL_LIST_PRODUCTATTRIBUTES_NAME')}}</div>
+                                    <div style="max-width: 200px;" class="slds-truncate">{{language.getLabel('ProductAttributes', 'LBL_LIST_PRODUCTATTRIBUTES_NAME')}}</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate">{{language.getModuleLabel('ProductAttributes', 'LBL_CONTENTCODE')}}</div>
+                                    <div class="slds-truncate">{{language.getLabel('ProductAttributes', 'LBL_CONTENTCODE')}}</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate">{{language.getModuleLabel('ProductAttributes', 'LBL_CONTENTCODE2')}}</div>
+                                    <div class="slds-truncate">{{language.getLabel('ProductAttributes', 'LBL_CONTENTCODE2')}}</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate">{{language.getModuleLabel('ProductAttributes', 'LBL_CONTENTPREFIX')}}</div>
+                                    <div class="slds-truncate">{{language.getLabel('ProductAttributes', 'LBL_CONTENTPREFIX')}}</div>
                                 </th>
                                 <th class="slds-cell-shrink" scope="col"></th>
                             </tr>

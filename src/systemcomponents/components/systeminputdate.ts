@@ -1,22 +1,23 @@
+/**
+ * @module SystemComponents
+ */
+
 // from https://github.com/kolkov/angular-editor
 import {
-    AfterContentInit,
     Component, ElementRef,
-    EventEmitter,
     forwardRef,
-    Inject,
-    Input,
-    OnInit,
     OnDestroy,
-    Output,
     Renderer2,
-    ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
 import {userpreferences} from "../../services/userpreferences.service";
+import {modal} from "../../services/modal.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -36,6 +37,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
     // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
+    private showCalendarButton: boolean = true;
     private _date: any = {
         display: '',
         moment: null,
@@ -46,7 +48,11 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
     private isOpen: boolean = false;
     private clickListener: any;
 
-    constructor(private elementref: ElementRef, private renderer: Renderer2, private userpreferences: userpreferences, private language: language) {
+    constructor(private elementref: ElementRef,
+                private renderer: Renderer2,
+                private userpreferences: userpreferences,
+                private modal: modal,
+                private language: language) {
     }
 
     public ngOnDestroy() {
@@ -92,7 +98,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
     }
 
     get canclear() {
-        return this._date.display ? true : false;
+        return !!this._date.display;
     }
 
     private clear(notify = true) {
@@ -163,7 +169,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
      */
     public writeValue(value: any): void {
         // this._time = value ? value : '';
-        if (value) {
+        if (value && value.isValid && value.isValid()) {
             this._date.moment = new moment(value);
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
         } else {
@@ -177,7 +183,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 this._date.moment = new moment();
             }
 
-            this._date.moment = value
+            this._date.moment = value;
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
 
@@ -189,6 +195,17 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
             // close the dropdown
             this.toggleClosed();
         }
+    }
+
+    private openCalendar() {
+        this.toggleClosed();
+        this.modal.openModal('Calendar').subscribe(modalRef => {
+            modalRef.instance.asPicker = true;
+            modalRef.instance.calendar.addingEvent$.subscribe(date => {
+                modalRef.instance.asPicker = false;
+                this.datePicked(date);
+            });
+        });
     }
 
 }

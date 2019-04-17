@@ -1,6 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
-    Input,
     AfterViewInit,
     OnInit,
     ViewChild,

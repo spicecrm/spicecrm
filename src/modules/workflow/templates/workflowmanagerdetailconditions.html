@@ -1,4 +1,9 @@
 <div class="slds-p-around--x-small">
+    <!--div tobottom class="slds-expression">
+        <ul>
+            <system-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="module"></system-filter-builder-expression-group>
+        </ul>
+    </div-->
     <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
         <thead>
         <tr class="slds-text-title_caps">
@@ -38,26 +43,23 @@
         </tfoot>
     </table>
 </div>
-<div class="slds-section slds-is-open slds-p-around--x-small">
-    <h3 class="slds-section__title slds-m-bottom--small">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-            <span class="slds-truncate" title="Section Title">{{language.getLabel('LBL_SYSTEM_CONDITION')}}</span>
-        </button>
-    </h3>
-    <div>
-        <field-label [fieldname]="'condfile'"></field-label>
-        <field-container [field]="'condfile'"></field-container>
-    </div>
-    <div>
-        <field-label [fieldname]="'condclass'"></field-label>
-        <field-container [field]="'condclass'"></field-container>
-    </div>
-    <div>
-        <field-label [fieldname]="'condmethod'"></field-label>
-        <field-container [field]="'condmethod'"></field-container>
-    </div>
-    <div>
-        <field-label [fieldname]="'condparams'"></field-label>
-        <field-container [field]="'condparams'"></field-container>
-    </div>
+<div class="slds-p-around--x-small">
+    <system-section titlelabel="LBL_SYSTEM_CONDITION">
+        <div>
+            <field-label [fieldname]="'condfile'"></field-label>
+            <field-container [field]="'condfile'"></field-container>
+        </div>
+        <div>
+            <field-label [fieldname]="'condclass'"></field-label>
+            <field-container [field]="'condclass'"></field-container>
+        </div>
+        <div>
+            <field-label [fieldname]="'condmethod'"></field-label>
+            <field-container [field]="'condmethod'"></field-container>
+        </div>
+        <div>
+            <field-label [fieldname]="'condparams'"></field-label>
+            <field-container [field]="'condparams'"></field-container>
+        </div>
+    </system-section>
 </div>

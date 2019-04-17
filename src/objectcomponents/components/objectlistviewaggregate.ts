@@ -1,34 +1,47 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef, Input
+    Component,
+    Input, OnInit
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router, ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
+import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
-import {listfilters} from '../services/listfilters.service';
 
+/**
+ * a componentn that displays one set of aggregtaes returned from the Elastic Search
+ */
 @Component({
-    selector: '[object-listview-aggregate]',
+    selector: 'object-listview-aggregate',
     templateUrl: './src/objectcomponents/templates/objectlistviewaggregate.html'
 })
 export class ObjectListViewAggregate {
 
-    @Input() aggregate: any = {};
-    setaggregates: any = {};
+    /**
+     * an input for teh aggregate itself
+     */
+    @Input() public aggregate: any = {};
 
-    constructor(private elementRef: ElementRef, private language: language, private metadata: metadata, private modellist: modellist, private model: model) {
-
+    constructor(public language: language, public modellist: modellist, public model: model) {
     }
 
-    isChecked(aggregate, aggregateData){
-        return this.modellist.selectedAggregates.indexOf(aggregate+'::'+aggregateData) >= 0;
-    }
+    /**
+     * returns the items for teh display of the source of teh aggregate
+     *
+     * This is
+     *  - the module if different ot the model
+     *  - the fieldnam
+     */
+    get aggregateNameItems(): string[] {
+        let nameItems = [];
+        if (this.aggregate.fielddetails) {
+            if (this.model.module != this.aggregate.fielddetails.module) {
+                nameItems.push(this.language.getModuleName(this.aggregate.fielddetails.module, true));
+            }
 
-    selectAggregate(aggregate, aggregateData){
-        this.modellist.selectedAggregates.push(aggregate+'::'+aggregateData)
+            nameItems.push(this.language.getFieldDisplayName(this.aggregate.fielddetails.module, this.aggregate.fielddetails.field));
+        }
+        return nameItems;
     }
-
 }

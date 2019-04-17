@@ -1,121 +1,173 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+/**
+ * @module ModuleCalendar
+ */
+import {AfterViewInit, Component, ElementRef, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
+import {Subscription} from "rxjs";
+import {CalendarHeader} from "./calendarheader";
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
+declare var _: any;
 
 @Component({
+    selector: 'calendar',
     templateUrl: './src/modules/calendar/templates/calendar.html',
     providers: [calendar]
 })
-export class Calendar {
 
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) calendarcontent: ViewContainerRef;
+export class Calendar implements AfterViewInit, OnDestroy {
+    public usersCalendars: any[] = [];
+    public otherCalendars: any[] = [];
+    public googleIsVisible: boolean = true;
+    @ViewChild('calendarcontainer', {read: ViewContainerRef}) private calendarContainer: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarcontent: ViewContainerRef;
+    @ViewChild(CalendarHeader) private calendarHeader: CalendarHeader;
+    private subscriptions: Subscription = new Subscription();
+    private touchStartListener: any;
+    private touchMoveListener: any;
+    private resizeListener: any;
+    private xDown: number = null;
+    private yDown: number = null;
+    private self: any = {};
 
-    showTypeSelector: boolean = false;
-    calendarDate: any = {};
-    sheetType: string = 'Week';
-
-    duration: any = {
-        Day : 'd',
-        Week : 'w',
-        Month : 'M',
-    }
-
-    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
-        // set theenavigation paradigm
+    constructor(private language: language,
+                private navigation: navigation,
+                private elementRef: ElementRef,
+                private renderer: Renderer2,
+                private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
+        let usersSubscriber = this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
+        this.subscriptions.add(usersSubscriber);
+        let otherSubscriber = this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
+        this.subscriptions.add(otherSubscriber);
 
-        this.calendarDate = new moment();
+        this.resizeListener = this.renderer.listen('window', 'resize', () => {
+            this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
+        });
+        this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
     }
 
-    getOffset(){
-        return moment().utcOffset()
+    get isMobileView() {
+        return this.calendar.isMobileView;
     }
 
-    setDateChanged(event){
-        this.calendarDate = new moment(event);
+    get sheetType() {
+        return this.calendar.sheetType;
     }
 
-    toggleTypeSelector(){
-        this.showTypeSelector = !this.showTypeSelector;
+    get sidebarWidth() {
+        return this.calendar.sidebarWidth;
     }
 
-    setType(sheetType){
-        this.sheetType = sheetType;
-        this.showTypeSelector = false;
+    get weekStartDay() {
+        return this.calendar.weekStartDay;
     }
 
-    goToday(){
-        this.calendarDate = new moment();
+    get calendarDate() {
+        return this.calendar.calendarDate;
     }
 
-    gotToDayView(date){
-        this.calendarDate = date;
-        this.sheetType = 'Day';
+    get asPicker() {
+        return this.calendar.asPicker;
     }
 
-    goToWeekView(){
-        this.sheetType = 'Week';
-    }
-
-    shiftPlus(){
-        this.calendarDate = new moment(this.calendarDate.add(moment.duration(1, this.duration[this.sheetType])));
-    }
-    shiftMinus(){
-        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(1, this.duration[this.sheetType])));
-    }
-
-    getCalendarHeader(){
-        let focDate = new moment(this.calendarDate);
-        switch(this.sheetType){
-            case 'Week':
-                return 'Week ' + this.getCalendarWeek() + ': ' + this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
-            case 'Month':
-                return focDate.format('MMMM YYYY');
-            case 'Day':
-                return focDate.format('MMMM D, YYYY');
+    set asPicker(value) {
+        if (value) {
+            this.calendar.sheetType = 'Three_Days';
+            this.calendar.asPicker = value;
+        } else {
+            this.closeModal();
         }
     }
 
-    getCalendarWeek(){
-        let focDate = new moment(this.calendarDate);
-        focDate.day(1);
-        return focDate.isoWeek();
+    get sidebarStyle() {
+        return {
+            'width': this.calendar.sidebarwidth + 'px',
+            'z-index': 1,
+        };
     }
 
-    getFirstDayOfWeek(){
-        let focDate = new moment(this.calendarDate);
-        focDate.day(0);
-        return focDate.format('MMMM D, YYYY')
+    get mainContainerClass() {
+        return !this.asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large';
     }
 
-    getLastDayOfWeek(){
-        let focDate = new moment(this.calendarDate);
-        focDate.day(7);
-        return focDate.format('MMMM D, YYYY')
+    get sheetStyle() {
+        return {
+            width: `calc(100% - ${this.sidebarWidth}px)`,
+            height: '100%',
+        };
     }
 
-    getContentStyle(){
-        return{
-            height: 'calc(100vh - ' + this.calendarcontent.element.nativeElement.offsetTop  + 'px)'
+    public ngAfterViewInit() {
+        setTimeout(() => this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768, 10);
+    }
+
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+
+        if (this.resizeListener) {
+            this.resizeListener();
+        }
+        if (this.touchStartListener) {
+            this.touchStartListener();
         }
     }
 
-    zoomin(){
-        this.calendar.sheetHourHeight += 10;
+    private handleUntiDate(event) {
+        this.calendarHeader.scheduleUntilDate = event;
     }
 
-    zoomout(){
-        this.calendar.sheetHourHeight -= 10;
+    private setDateChanged(event) {
+        this.calendarHeader.toggleClosed();
+        this.calendar.calendarDate = new moment(event);
+        this.calendar.refresh();
     }
 
-    resetzoom(){
-        this.calendar.sheetHourHeight = 80;
+    private handleGoogleIsVisible(value) {
+        this.googleIsVisible = value;
     }
 
+    private gotToDayView(date) {
+        this.calendar.calendarDate = new moment(date);
+        this.calendar.refresh();
+        this.calendar.sheetType = 'Day';
+    }
+
+    private closeModal() {
+        this.self.destroy();
+    }
+
+    private handleTouchStart(evt) {
+        const touches = evt.touches || evt.originalEvent.touches;
+        this.xDown = touches[0].clientX;
+        this.yDown = touches[0].clientY;
+        this.touchMoveListener = this.renderer.listen('document', 'touchmove', e => this.handleTouchMove(e));
+    }
+
+    private handleTouchMove(evt) {
+        this.touchMoveListener();
+
+        if (!this.xDown || !this.yDown) {
+            return;
+        }
+        let xDiff = this.xDown - evt.touches[0].clientX;
+
+        if (Math.abs(xDiff) > Math.abs(this.yDown - evt.touches[0].clientY)) {
+            if (xDiff < 0) {
+                this.calendar.shiftMinus();
+            } else {
+                this.calendar.shiftPlus();
+            }
+        }
+        this.xDown = null;
+        this.yDown = null;
+    }
 }

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -20,9 +23,10 @@ export class fieldUrl extends fieldGeneric {
         return this.model.data[this.fieldname] ? this.model.data[this.fieldname].replace( /https?\:\/\//, '') : '';
     }
 
-    navigateTo() {
-        if (this.url != '')
+    private navigateTo() {
+        if (this.url != ''){
             window.open('//' + this.url, '_blank');
+        }
     }
 
 }

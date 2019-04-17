@@ -1,4 +1,7 @@
-import {Component, OnInit, Input, Output, EventEmitter, ViewChild} from '@angular/core';
+/**
+ * @module ModuleTeleSales
+ */
+import {Component, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {view} from '../../../services/view.service';
@@ -8,25 +11,24 @@ import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from 'rxjs';
 import {metadata} from "../../../services/metadata.service";
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
-    selector: 'tele_sales_cockpit_add_attempt_modal',
+    selector: 'tele-sales-cockpit-add-attempt-modal',
     templateUrl: './src/modules/telesales/templates/telesalescockpitaddattemptmodal.html',
     providers: [model, view]
 })
 export class TeleSalesCockpitAddAttemptModal implements OnInit {
 
-    componentconfig: any = {};
-    @Input() data: any;
-    @Input() selectedLogId: any;
-    @Input() maxAttempts: any;
-    self: any;
-    fieldset: any;
-    isAttemptAdded: boolean = false;
-    response: Observable<object> = null;
-    responseSubject: Subject<any> = null;
-
+    public response: Observable<object> = null;
+    public responseSubject: Subject<any> = null;
+    @Input() private selectedListItem: any;
+    @Input() private maxAttempts: any;
+    private self: any;
+    private fieldset: string = '';
 
     constructor(
         private language: language,
@@ -41,83 +43,72 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         this.response = this.responseSubject.asObservable();
     }
 
-
-    ngOnInit() {
-        this.model.module = 'CampaignLog';
-        this.model.id = this.data.id;
-        this.model.data = {
-            hits: this.data.hits,
-            planned_activity_date: this.data.planned_activity_date,
-            activity_type: this.data.activity_type,
-            activity_date: '',
-        };
-
-        this.componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitAddAttemptModal');
-        this.fieldset = this.componentconfig.fieldset;
-
-        // set view to editable and edit mode
-        this.view.isEditable = true;
-        this.view.setEditMode();
-        this.model.data.planned_activity_date = new moment().add(1, 'days');
-        this.model.data.activity_date = new moment();
-
+    public ngOnInit() {
+        this.initializeModel();
+        this.loadFieldset();
+        this.setEditMode();
     }
 
-    cancel() {
-        this.responseSubject.next( false );
+    private initializeModel() {
+        this.model.module = 'CampaignLog';
+        this.model.id = this.selectedListItem.id;
+        this.model.data = {
+            hits: this.selectedListItem.hits,
+            planned_activity_date: new moment().add(1, 'days'),
+            activity_type: this.selectedListItem.activity_type,
+            activity_date: new moment(),
+        };
+    }
+
+    private loadFieldset() {
+        let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitAddAttemptModal');
+        this.fieldset = componentConf && componentConf.fieldset ? componentConf.fieldset : '';
+    }
+
+    private setEditMode() {
+        this.view.isEditable = true;
+        this.view.setEditMode();
+    }
+
+    private cancel() {
+        this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    onModalEscX() {
-        this.cancel();
+    private save() {
+        let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.data.planned_activity_date);
+        let params = {planned_activity_date: planned_activity_date};
+
+        this.backend.postRequest(`/module/CampaignLog/${this.model.id}/attempted`, params)
+            .subscribe(
+                status => {
+                    if (status.success) {
+                        this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                        this.responseSubject.next(true);
+                        this.responseSubject.complete();
+                        this.self.destroy();
+
+                    } else {
+                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                        this.self.destroy();
+                    }
+                },
+                err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
     }
 
-    save() {
-
-            // execute on backend
-            let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date' , this.model.data.planned_activity_date);
-            let status = 'attempted';
-
-            this.backend.postRequest('/module/CampaignLog/' + this.selectedLogId + '/' + status,
-                {planned_activity_date: planned_activity_date}).subscribe(status => {
-
-                // send toast and set complete
-                if (status.success) {
-                    this.isAttemptAdded = true;
-                    this.toast.sendToast('Attempt added successfully', 'success');
-                    this.responseSubject.next( 'attempted' );
-                    this.responseSubject.complete();
-                    this.self.destroy();
-
-
-                }
-                else {
-                    this.toast.sendToast('Error, try again later');
-                    this.self.destroy();
-                }
-
-            });
+    private remove() {
+        this.backend.postRequest(`/module/CampaignLog/${this.model.id}/completed`)
+            .subscribe(
+                status => {
+                    if (status.success) {
+                        this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                        this.responseSubject.next(true);
+                        this.self.destroy();
+                    } else {
+                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    }
+                },
+                err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
     }
-
-    remove() {
-
-        // execute on backend
-        this.backend.postRequest('/module/CampaignLog/' + this.model.id + '/completed').subscribe(status => {
-
-            // send toast and set complete
-            if (status.success) {
-                this.toast.sendToast('Successfully removed from list!', 'success');
-                this.model.data.activated = true;
-                this.responseSubject.next( "removed" );
-                this.self.destroy();
-
-            }
-            else
-                this.toast.sendToast('Error,  try again later');
-
-        });
-        
-    }
-
 }

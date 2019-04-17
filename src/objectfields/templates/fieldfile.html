@@ -2,24 +2,29 @@
 <div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
-        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-            <div class="slds-truncate"><a href="javascript:void(0);" (click)="downloadAttachment()">{{value}}</a>
-            </div>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-icon [icon]="determineFileIcon()" divClass="slds-p-right--xx-small" sprite="doctype"  size="x-small"></system-icon>
+            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="downloadAttachment()">{{value}}</a></div>
             <button *ngIf="isEditable()" style="float: right"
                     class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
-                <system-button-icon [icon]="'edit'"></system-button-icon>
+                <system-button-icon icon="edit"></system-button-icon>
             </button>
         </div>
     </ng-template>
 </div>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-vertical--xx-small"
      [ngClass]="getFieldClass()">
-    <div *ngIf="value" class="slds-pill slds-m-around--xxx-small slds-pill_link slds-size--1-of-1">
-        <a href="javascript:void(0);" class="slds-pill__action" title="Full pill label verbiage mirrored here">
+    <div *ngIf="value" class="slds-pill slds-pill_link slds-size--1-of-1">
+        <span class="slds-pill__icon_container">
+            <span class="slds-icon_container slds-icon-standard-account" title="Account">
+                <system-icon [icon]="determineFileIcon()" divClass="" sprite="doctype"  size="x-small"></system-icon>
+            </span>
+        </span>
+        <a href="javascript:void(0);" class="slds-pill__action">
             <span class="slds-pill__label">{{value}}</span>
         </a>
         <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove" (click)="removeFile()">
-            <system-button-icon [icon]="'close'"></system-button-icon>
+            <system-button-icon icon="close"></system-button-icon>
         </button>
     </div>
     <div *ngIf="!value" class="slds-file-selector slds-file-selector_files">

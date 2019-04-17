@@ -1,5 +1,7 @@
-import {Component, Input} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ModuleDeployment
+ */
+import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {broadcast} from '../../../services/broadcast.service';
@@ -7,44 +9,50 @@ import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 
 @Component({
-    templateUrl: './src/modules/deployment/templates/deploymentcrsetactivebutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-        '(click)': 'setActive()',
-        '[style.display]': 'getDisplay()'
-    },
-    styles: [
-        ':host >>> {cursor:pointer;}'
-    ]
+    templateUrl: './src/modules/deployment/templates/deploymentcrsetactivebutton.html'
 })
-export class DeploymentCRSetActiveButton {
+export class DeploymentCRSetActiveButton implements OnInit {
 
-    activeID = '';
+    private activeID = '';
+    public disabled: boolean = false;
 
     constructor(private language: language, private backend: backend, private model: model, private toast: toast, private broadcast: broadcast) {
         this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
             this.activeID = crresponse.id;
-        })
+        });
     }
 
-    get isActive(){
+    public ngOnInit() {
+        this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled(mode);
+        });
+
+        this.model.data$.subscribe(data => {
+            this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+        });
+    }
+
+    get isActive() {
         return this.model.id == this.activeID;
     }
 
-    setActive() {
+    public execute() {
         this.backend.postRequest('systemdeploymentcrs/active/' + this.model.id).subscribe(status => {
             if (status.status == 'success') {
                 this.activeID = this.model.id;
 
-                this.broadcast.broadcastMessage('cr.setactive', {module: this.model.module, id: this.model.id, name: this.model.data.name});
+                this.broadcast.broadcastMessage('cr.setactive', {
+                    module: this.model.module,
+                    id: this.model.id,
+                    name: this.model.data.name
+                });
             }
-        })
+        });
     }
 
-    getDisplay() {
-        if(this.model.getFieldValue('crstatus') == '3')
-            return 'none';
-
-        return 'inherit';
+    private handleDisabled(mode) {
+        this.disabled = this.model.getFieldValue('crstatus') != '3' ? false : true;
     }
+
 }

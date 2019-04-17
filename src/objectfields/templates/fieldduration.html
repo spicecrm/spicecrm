@@ -21,16 +21,16 @@
     <div *ngIf="fieldconfig.freeentry" class="slds-grid">
         <div class="slds-form-element slds-size--1-of-2">
             <div class="slds-form-element__control slds-input-has-fixed-addon">
-                <input type="number" min="0" class="slds-input" title="hours" [(ngModel)]="editDurationHours" [ngModelOptions]="modelOptions" />
+                <input type="number" min="0" class="slds-input" title="hours" [(ngModel)]="editDurationHours" [ngModelOptions]="modelOptions" style="padding: 0 0.25rem 0 0.25rem" />
                 <span class="slds-form-element__addon" id="fixed-text-addon-post">h</span>
             </div>
         </div>
         <div class="slds-form-element slds-m-left--x-small slds-size--1-of-2">
             <div class="slds-form-element__control slds-input-has-fixed-addon">
-                <input type="number" min="0" max="59" class="slds-input" title="minutes" [(ngModel)]="editDurationMinutes" [ngModelOptions]="modelOptions" />
+                <input type="number" min="0" max="59" class="slds-input" title="minutes" [(ngModel)]="editDurationMinutes" [ngModelOptions]="modelOptions" style="padding: 0 0.25rem 0 0.25rem" />
                 <span class="slds-form-element__addon" id="fixed-text-addon-post2">min</span>
             </div>
         </div>
     </div>
-    <field-messages [fieldname]="fieldname"></field-messages>
+    <field-messages fieldname="{{fieldname}}"></field-messages>
 </div>

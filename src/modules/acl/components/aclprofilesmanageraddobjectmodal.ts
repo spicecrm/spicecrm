@@ -1,3 +1,6 @@
+/**
+ * @module ModuleACL
+ */
 import {
     AfterViewInit,
     ComponentFactoryResolver,
@@ -70,13 +73,6 @@ export class ACLProfilesManagerAddObjectModal {
             })
             this.loading = false;
         })
-    }
-
-    get contentStyle() {
-        let rect = this.header.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        }
     }
 
     getType(type){

@@ -1,6 +1,6 @@
 <system-collapsable-tab [title]="panelTitle">
-    <ul class="slds-scrollable--y" style="max-height: 200px">
-        <li *ngFor="let relateditem of relatedmodels.items" [title]="relateditem.name" class="slds-m-around--xx-small">
+    <ul class="slds-scrollable--y spicecrm-scrollbar" style="max-height: 200px">
+        <li *ngFor="let relateditem of relatedmodels.items; trackBy: trackByFn" [title]="relateditem.name" class="slds-m-around--xx-small">
             <a style="cursor: pointer" (click)="navigateTo(relateditem.id)">{{relateditem.name}}</a>
         </li>
     </ul>

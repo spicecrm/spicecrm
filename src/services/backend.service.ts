@@ -1,27 +1,57 @@
+/**
+ * the backend service
+ *
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse, HttpParams} from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
-import {Router}    from '@angular/router';
+import {Router} from '@angular/router';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {metadata} from './metadata.service';
 import {toast} from './toast.service';
 import {modelutilities} from './modelutilities.service';
-import { modal } from './modal.service';
-import { language } from './language.service';
+import {modal} from './modal.service';
+import {language} from './language.service';
 
+
+/**
+* @ignore
+*/
 declare var moment: any;
 
+/**
+ * a generic interface for Route Paramaters to be sent with a request
+ */
+interface backendRequestParams {
+    route: string;
+    method?: 'GET' | 'POST';
+    params?: any;
+    body?: any;
+    headers?: any;
+}
+
+/**
+ * The backend serviceprodivdes a set of methoids to communicate with the spicecrm backend
+ *
+ */
 @Injectable()
 export class backend {
+    /**
+     *
+     */
     private autoLogout: any = {};
 
     private httpErrorsToReport = [];
     private httpErrorReporting = false;
     private httpErrorReportingRetryTime = 10000; // 10 seconds
 
+    /**
+     * @ignore
+     */
     constructor(
         private toast: toast,
         private http: HttpClient,
@@ -33,17 +63,24 @@ export class backend {
         private modelutilities: modelutilities,
         private modalservice: modal,
         private language: language,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @ignore
+     */
     private getHeaders(): HttpHeaders {
         let headers = this.session.getSessionHeader();
-        headers = headers.set('Accept','application/json');
+        headers = headers.set('Accept', 'application/json');
         return headers;
     }
 
-    private prepareParams( params: object ): HttpParams {
+    /**
+     * @ignore
+     */
+    private prepareParams(params: object): HttpParams {
         let output = new HttpParams();
-        if(params) {
+        if (params) {
             Object.keys(params).forEach((key: string) => {
                 let value = params[key];
                 if (typeof value !== 'undefined' && value !== null) {
@@ -51,7 +88,7 @@ export class backend {
                         output = output.append(key, JSON.stringify(value));
                     } else if (typeof value === 'boolean') {
                         output = output.append(key, value === true ? '1' : '0');
-                     }else if (typeof value === 'number') {
+                    } else if (typeof value === 'number') {
                         output = output.append(key, value + '');
                     } else {
                         output = output.append(key, value.toString());
@@ -62,37 +99,51 @@ export class backend {
         return output;
     }
 
-    /*
-     * generic request functions
+    /**
+     * generic request function for a GET request to the backend
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Accounts'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     *
+     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public getRequest(route: string = "", params: any = {} ): Observable<any> {
+    public getRequest(route: string = "", params: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
         this.resetTimeOut();
         this.http.get(
             this.configurationService.getBackendUrl() + "/" + encodeURI(route),
 
-            {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params) }
+            {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
         ).subscribe(
             (res) => {
                 responseSubject.next(res.body);
                 responseSubject.complete();
             },
             err => {
-                this.handleError( err, route, 'GET', { getParams: params } );
-                responseSubject.error( err );
+                this.handleError(err, route, 'GET', {getParams: params});
+                responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
-    // todo test it
-    public getRawRequest(route: string = "", params: any = {}, responseType: string = "Json", headers: any = {} ) {
+    /**
+     * generic request function for a GET request that is sent and retruens the raw not parsed response. Add headers for the authentication etc.
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Accounts'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param responseType a response type the default is 'blob' (paramater is currently not used
+     * @param headers an object with additonal heders that will be parsed as headers obejt and sent with the
+     *
+     * @return the http object as an observable that will response with its own response
+     */
+    public getRawRequest(route: string = "", params: any = {}, responseType: string = "blob", headers: any = {}): Observable<any> {
 
         this.resetTimeOut();
 
         let headers2 = this.session.getSessionHeader();
-        for ( let prop in headers ) {
-            headers2 = headers2.set( prop, headers[prop] );
+        for (let prop in headers) {
+            headers2 = headers2.set(prop, headers[prop]);
         }
 
         return this.http.get(
@@ -105,7 +156,17 @@ export class backend {
         );
     }
 
-    public postRequest(route: string = "", params: any = {}, body: any = {},  httpErrorReport = true ): Observable<any> {
+    /**
+     * generic request function for a POST request to the backend
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param body an object being sent as body/payload with the request
+     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     *
+     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     */
+    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -127,47 +188,37 @@ export class backend {
                 responseSubject.complete();
             },
             err => {
-                this.handleError( err, route, 'POST', { getParams: params, body: body }, httpErrorReport );
-                responseSubject.error( err );
+                this.handleError(err, route, 'POST', {getParams: params, body: body}, httpErrorReport);
+                responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
-    // todo test it
-    public postRawRequest(route: string = "", params: any = {}, responseType: string = "Json", headers: any = {} ) {
 
-        this.resetTimeOut();
-
-        let headers2 = this.session.getSessionHeader();
-        for ( let prop in headers ) {
-            headers2 = headers2.set( prop, headers[prop] );
-        }
-
-        return this.http.post(
-            this.configurationService.getBackendUrl() + "/" + route,
-            {
-                headers: headers2,
-                params: this.prepareParams(params),
-                responseType: "blob",
-            }
-        );
-    }
-
-    // please use more meaningful function names, or at least use a description.
-    // todo test it
-    public getDownloadPostRequestFile(route: string = "", params: any= {}, body: any = {}): Observable<any> {
+    /**
+     * @ignore
+     *
+     * a generic post request function that expects a binary resonse from a download.
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param body an object being sent as body/payload with the request
+     *
+     * @return an Observable for the request. If the response is successful the observable will return an objecturl to the dowlnoaded file in the browser
+     */
+    public getDownloadPostRequestFile(route: string = "", params: any = {}, body: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
 
         let headers = this.getHeaders();
-        headers = headers.set("Accept","*/*");
+        headers = headers.set("Accept", "*/*");
 
         this.http.post(
             this.configurationService.getBackendUrl() + "/" + route,
             body,
-            { headers: headers, observe: "response", params: this.prepareParams(params), responseType: "blob" }
+            {headers: headers, observe: "response", params: this.prepareParams(params), responseType: "blob"}
         ).subscribe(
             (response: any) => {
                 // let blob = new Blob([response], {type: "octet/stream"});
@@ -179,7 +230,7 @@ export class backend {
                 responseSubject.complete();
             },
             err => {
-                this.handleError( err, route, 'POST', { getParams: params, body: body } );
+                this.handleError(err, route, 'POST', {getParams: params, body: body});
                 responseSubject.error(err);
             }
         );
@@ -188,9 +239,21 @@ export class backend {
     }
 
     // todo test it
-    private getLinkToDownload(
+    /**
+     *
+     * a generic post request function that expects a binary resonse from a download.
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param method the method to be used GET or POST
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param body an object being sent as body/payload with the request
+     * @param headers an object with additonal heders that will be parsed as headers obejt and sent with the
+     *
+     * @return an Observable for the request. If the response is successful the observable will return an objecturl to the dowlnoaded file in the browser
+     */
+    public getLinkToDownload(
         route: string,
-        method: string = 'GET',
+        method: 'GET' | 'POST' = 'GET',
         params = null,
         body = null,
         headers = null,
@@ -198,7 +261,7 @@ export class backend {
         let sub = new Subject<any>();
 
         let _headers = this.getHeaders();
-        _headers = _headers.set("Accept","*/*");
+        _headers = _headers.set("Accept", "*/*");
         // todo: add given headers here...
 
         this.http.request(
@@ -212,7 +275,7 @@ export class backend {
                 responseType: "blob",
             }).subscribe(
             (response: any) => {
-                if(response.status == 200) {
+                if (response.status == 200) {
                     // let objectUrl = URL.createObjectURL(response.blob());
                     let objectUrl = window.URL.createObjectURL(response.body);
                     sub.next(objectUrl);
@@ -222,7 +285,7 @@ export class backend {
                 }
             },
             (err) => {
-                this.handleError( err, route, method, { getParams: params, body: body } );
+                this.handleError(err, route, method, {getParams: params, body: body});
                 sub.error(err);
             }
         );
@@ -230,10 +293,38 @@ export class backend {
         return sub.asObservable();
     }
 
-    // todo test it
+    /**
+     * Determines the charset of a http response.
+     *
+     * @param response
+     *
+     * @return The string defining the character set.
+     */
+    private getCharsetOfResponse( response: any ): string {
+        if ( !response.headers ) return null;
+        response.headers.lazyInit();
+        let dummy = response.headers.headers.get('content-type');
+        if ( !dummy ) return null;
+        dummy = dummy[0];
+        dummy = dummy.split(';');
+        if ( !dummy[1] ) return null;
+        dummy = dummy[1].split('=');
+        if ( !dummy[1] ) return null;
+        return dummy[1];
+    }
+
+    /**
+     * a generic wrapper function for [[getLinkToDownload]] that will wrap the request and automatically trigger the download in the browser
+     *
+     * @param request_params an object of type [[backendRequestParams]]
+     * @param file_name
+     *
+     * @return an Observable that is reolved when the file has been tranferred and the download is triggered
+     */
     public downloadFile(
-        request_params: {route: string, method?: string, params?: any, body?: any, headers?: any},
-        file_name: string = null
+        request_params: backendRequestParams,
+        file_name: string = null,
+        file_type: string = null
     ): Observable<any> {
         let sub = new Subject<any>();
 
@@ -248,7 +339,9 @@ export class backend {
                 let downloadUrl = res;
                 // window.open(downloadUrl);
                 let a = document.createElement("a");
+                document.body.appendChild(a);
                 a.href = downloadUrl;
+                if(file_type) a.type = file_type;
                 a.download = file_name;
                 // start download
                 a.click();
@@ -261,7 +354,16 @@ export class backend {
         return sub.asObservable();
     }
 
-    // todo test it
+    /**
+     * generic request function for a PUT request to the backend
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param body an object being sent as body/payload with the request
+     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     *
+     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     */
     public putRequest(route: string = "", params: any = {}, body: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -277,14 +379,21 @@ export class backend {
                 responseSubject.complete();
             },
             (err) => {
-                this.handleError( err, route, 'PUT', { getParams: params, body: body } );
+                this.handleError(err, route, 'PUT', {getParams: params, body: body});
                 responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
-    // todo test it
+    /**
+     * generic request function for a DELETE request to the backend
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     *
+     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     */
     public deleteRequest(route: string = "", params: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -299,64 +408,93 @@ export class backend {
                 responseSubject.complete();
             },
             (err) => {
-                this.handleError( err, route, 'DELETE', { getParams: params } );
+                this.handleError(err, route, 'DELETE', {getParams: params});
                 responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
     }
 
-    private handleError( err, route, method: string, data = null, httpErrorReport = true ) {
+    /**
+     * a method to handle http errors
+     *
+     * @param err the error that occured
+     * @param route the route that has been called
+     * @param method the method of the all (e.g. POST, GET, ...
+     * @param data the data passed in
+     * @param httpErrorReport a boolean flag that specifies if the error shoudl be logged on teh backend. Defaults to true.
+     */
+    private handleError(err, route, method: string, data = null, httpErrorReport = true) {
         switch (err.status) {
             case 401:
                 this.toast.sendAlert(
-                    this.language.getLabel("ERR_LOGGED_OUT_SESSION_EXPIRED" ),
+                    this.language.getLabel("ERR_LOGGED_OUT_SESSION_EXPIRED"),
                     "error",
                     null,
                     false,
+                    'sessionexpired'
                 );
                 this.modalservice.closeAllModals();
                 this.session.endSession();
                 this.router.navigate(["/login"]);
                 break;
             case 0:
-                if ( httpErrorReport ) {
-                    this.reportError( err, route, method, data );
+                if (httpErrorReport) {
+                    this.reportError(err, route, method, data);
                 }
         }
     }
 
-    private reportError( err, route, method, data ) {
+    /**
+     * a helper method that will log failed requests to the backend and then allows deeperr analysis of errors that occured based on server side logs
+     *
+     * @param err the error that occured
+     * @param route the route that has been called
+     * @param method the method of the all (e.g. POST, GET, ...
+     * @param data the data passed in
+     */
+    private reportError(err: string, route: string, method: string, data: any): void {
         this.httpErrorsToReport.push({
             clientTime: (new Date()).toISOString(),
-            clientInfo: { sessionId: this.session.authData.sessionId, userId: this.session.authData.userId, userName: this.session.authData.userName },
+            clientInfo: {
+                sessionId: this.session.authData.sessionId,
+                userId: this.session.authData.userId,
+                userName: this.session.authData.userName
+            },
             route: route,
             method: method,
             getParams: data.getParams ? data.getParams : null,
             error: err,
             body: data.body ? data.body : null
         });
-        if ( !this.httpErrorReporting ) {
+        if (!this.httpErrorReporting) {
             this.httpErrorReporting = true;
-            window.setTimeout( () => this.errorsToBackend(), this.httpErrorReportingRetryTime );
+            window.setTimeout(() => this.errorsToBackend(), this.httpErrorReportingRetryTime);
         }
     }
 
+    /**
+     * a helper method to post the error to the backend
+     * @ignore
+     */
     private errorsToBackend() {
-        if ( this.httpErrorsToReport.length ) {
-            this.postRequest('httperrors', null, { 'errors' : this.httpErrorsToReport }, false ).subscribe(
+        if (this.httpErrorsToReport.length) {
+            this.postRequest('httperrors', null, {errors: this.httpErrorsToReport}, false).subscribe(
                 () => {
                     this.httpErrorsToReport.length = 0;
                     this.httpErrorReporting = false;
                 },
                 (e) => {
                     this.httpErrorReporting = true;
-                    window.setTimeout( () => this.errorsToBackend(), this.httpErrorReportingRetryTime );
+                    window.setTimeout(() => this.errorsToBackend(), this.httpErrorReportingRetryTime);
                 }
             );
         }
     }
 
+    /**
+     * @ignore
+     */
     private resetTimeOut() {
         if (this.configurationService.data.autoLogout > 0) {
             window.clearTimeout(this.autoLogout);
@@ -367,8 +505,11 @@ export class backend {
         }
     }
 
+    /**
+     * handles the reset of the session data, informs the user and send the user back to the login route
+     */
     private logout() {
-        if(this.session.authData.sessionId) {
+        if (this.session.authData.sessionId) {
             this.toast.sendAlert("you have been logged out", "error", "", false);
             this.session.endSession();
         }
@@ -431,19 +572,18 @@ export class backend {
     public all(module: string, params: any = {}): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
         // defaults...
-        if( !params.limit ) {
+        if (!params.limit) {
             params.limit = -99;
         }
 
-        if( !params.fields ) {
+        if (!params.fields) {
             params.fields = "*";
         }
 
         this.getRequest("module/" + module, params).subscribe(
             (response: any) => {
                 let list = response.list;
-                for(let r of list)
-                {
+                for (let r of list) {
                     for (let fieldName in r) {
                         r[fieldName] = this.backend2spice(module, fieldName, r[fieldName]);
                     }
@@ -456,8 +596,14 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getDuplicates(module: string, id: string): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    /**
+     * checks the backend for potential duplicates for the record with the given module and id. This requires that the reccord exists on teh database and is properly indexed
+     *
+     * @param module the modul the reocrd shodul be checked for, e.g. 'Contacts'
+     * @param id the id of the record to be checked for
+     */
+    public getDuplicates(module: string, id: string): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         this.getRequest("module/" + module + "/" + id + "/duplicates")
             .subscribe((response: any) => {
@@ -467,8 +613,14 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public checkDuplicates(module: string, modeldata: any): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    /**
+     * checks with the backend if for the given module and mopdeldata instance any duplicates exist. This is used when new records are created or changed and during the process a record duplicate check shoudl be triggered, the data is yet not stored ont eh backend
+     *
+     * @param module the module of the record e.g. 'Accounts'
+     * @param modeldata a json object with the values of the model. this is the typical model.data instance
+     */
+    public checkDuplicates(module: string, modeldata: any): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         this.postRequest("module/" + module + "/duplicates", {}, modeldata)
             .subscribe((response: any) => {
@@ -478,18 +630,18 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getAudit(module: string, id: string): Observable<any> {
+    public getAudit(module: string, id: string, filters: any = {}): Observable<any> {
         let responseSubject = new Subject<Array<any>>();
-        this.getRequest("module/" + module + "/" + id + "/auditlog")
+        this.getRequest("module/" + module + "/" + id + "/auditlog", filters)
             .subscribe(response => {
                     responseSubject.next(response);
                     responseSubject.complete();
                 },
                 response => {
-                    if ( response.error.error && response.error.error.errorCode && response.error.error.errorCode === 'moduleNotAudited' ) {
-                        responseSubject.next( [] );
+                    if (response.error.error && response.error.error.errorCode && response.error.error.errorCode === 'moduleNotAudited') {
+                        responseSubject.error(response.error.error.errorCode);
                         responseSubject.complete();
-                        console.warn(`Audit not enabled for module "${module}".`);
+                        // console.warn(`Audit not enabled for module "${module}".`);
                     }
                 });
         return responseSubject.asObservable();
@@ -559,20 +711,16 @@ export class backend {
 
     public save(module: string, id: string, cdata: any): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
-
-        let saveData = {};
-        for (let fieldName in cdata) {
-            saveData[fieldName] = this.spice2backend(module, fieldName, cdata[fieldName]);
-        }
-
-        this.postRequest("module/" + module + "/" + id, {}, JSON.stringify(saveData))
-            .subscribe((response: any) => {
-                for (let fieldName in response) {
-                    response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
-                }
-                responseSubject.next(response);
-                responseSubject.complete();
-            });
+        this.postRequest("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata))
+            .subscribe(
+                (response: any) => {
+                    responseSubject.next(this.modelutilities.backendModel2spice(module, response));
+                    responseSubject.complete();
+                },
+                (error: any) => {
+                    responseSubject.error(error);
+                    responseSubject.complete();
+                });
         return responseSubject.asObservable();
     }
 
@@ -599,7 +747,7 @@ export class backend {
             params.limit = limit;
         }
 
-        this.getRequest("spiceui/core/recent", params)
+        this.getRequest("modules/Trackers/recent", params)
             .subscribe((response) => {
                 responseSubject.next(response);
                 responseSubject.complete();

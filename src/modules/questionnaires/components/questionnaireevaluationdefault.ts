@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';

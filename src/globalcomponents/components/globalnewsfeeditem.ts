@@ -1,5 +1,11 @@
+/**
+ * @module GlobalComponents
+ */
 import {Component, Input, OnInit} from '@angular/core';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({

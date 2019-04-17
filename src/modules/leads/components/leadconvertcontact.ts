@@ -1,13 +1,13 @@
+/**
+ * @module ModuleLeads
+ */
 import {
     Component, Input, Output, EventEmitter, AfterViewInit, ViewChild, ViewContainerRef,
     OnInit
 } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
-import {navigation} from '../../../services/navigation.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-contact',

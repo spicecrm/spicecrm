@@ -1,19 +1,13 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
     Input,
-    Output,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    OnInit
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {broadcast} from '../../../services/broadcast.service';
 
 import  {reporterconfig} from '../services/reporterconfig';
 
@@ -23,19 +17,19 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterFilterItemEnum implements OnInit {
 
-    @Input() field: string = '';
-    @Input() wherecondition: any = {};
+    @Input() private field: string = '';
+    @Input() private wherecondition: any = {};
 
-    enumOptions: Array<any> = [];
+    private enumOptions: any[] = [];
 
     constructor(private language: language, private backend: backend, private reporterconfig: reporterconfig) {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.backend.getRequest('KReporter/core/enumoptions', {path: this.wherecondition.path}).subscribe(options => {
             this.enumOptions = options;
-        })
+        });
     }
 
     get isDisabled() {

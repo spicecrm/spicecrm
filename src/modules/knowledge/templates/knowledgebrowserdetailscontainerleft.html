@@ -1,7 +1,7 @@
 <div #headercontainer *ngIf="model.id" class="slds-grid slds-grid--vertical-align-center slds-border--bottom" style="border-radius: 0; height: 52px">
     <nav role="navigation" aria-label="Breadcrumbs" class="slds-grid slds-grid_vertical-align-center slds-p-around--x-small">
         <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
-            <li *ngFor="let breadcrumb of breadcrumbs" class="slds-breadcrumb__item slds-text-title--caps">
+            <li *ngFor="let breadcrumb of breadcrumbs; trackBy: trackByFn" class="slds-breadcrumb__item slds-text-title--caps">
                 <a style="cursor: pointer" (click)="navigateTo(breadcrumb.id)">{{breadcrumb.name}}</a>
             </li>
             <li class="slds-breadcrumb__item slds-text-title--caps">
@@ -16,7 +16,7 @@
     </div>
 </div>
 <div *ngIf="model.id && hasContent" class="slds-grid">
-    <div [innerHTML]="model.data.description" [ngStyle]="iframContainerStyle" class="slds-scrollable--y slds-p-around--x-small slds-theme--default html-text"></div>
+    <div [innerHTML]="model.data.description" [ngStyle]="iframContainerStyle" class="slds-scrollable--y spicecrm-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
 </div>
 <system-spinner *ngIf="model.isloading"></system-spinner>
 <div *ngIf="!model.isloading && !hasContent" class="slds-align--absolute-center slds-text-heading--medium" [ngStyle]="iframContainerStyle">

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -17,13 +20,15 @@ export class ObjectModelPopover implements OnInit {
     private hidePopoverTimeout: any = {};
 
     @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
+    @ViewChild('relatedcontainer', {read: ViewContainerRef}) private relatedContainer: ViewContainerRef;
 
     public parentElementRef: any = null;
     public self: any = null;
 
-    public fields: Array<any> = [];
+    public fields: any[] = [];
     public fieldset: string = '';
     public componentset: string = '';
+    public headercomponentset: string = '';
 
     private heightcorrection = 30;
     private widthcorrection = 30;
@@ -33,7 +38,11 @@ export class ObjectModelPopover implements OnInit {
         private view: view,
         private metadata: metadata,
     ) {
+        this.view.displayLinks = false;
+    }
 
+    get relatedStyle() {
+        return {'max-height': `calc(100vh - ${(this.relatedContainer.element.nativeElement.getBoundingClientRect().top  + 5)}px)`};
     }
 
     private goDetail() {
@@ -90,6 +99,7 @@ export class ObjectModelPopover implements OnInit {
 
             this.fieldset = componentconfig.fieldset;
             this.componentset = componentconfig.componentset;
+            this.headercomponentset = componentconfig.headercomponentset;
         }
 
         // if we did not find a fieldset try to take the header one instead
@@ -115,9 +125,5 @@ export class ObjectModelPopover implements OnInit {
         } else {
             this.hidePopoverTimeout = window.setTimeout(() => this.self.destroy(), 500);
         }
-    }
-
-    private renderComponents() {
-
     }
 }

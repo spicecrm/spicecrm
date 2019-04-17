@@ -1,10 +1,8 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
+
+import {Component, Input, } from '@angular/core';
 
 @Component({
     selector: 'object-record-details-tab-row-field',

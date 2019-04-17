@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, OnDestroy, Input, NgZone, OnInit, ViewContainerRef, ViewChild} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import { Component,  NgZone, ViewContainerRef, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
@@ -18,7 +21,7 @@ export class fieldRichText extends fieldGeneric {
     private stylesheetField: string = '';
     private useStylesheets: boolean;
     private useStylesheetSwitcher: boolean;
-    private stylesheets: Array<any>;
+    private stylesheets: any[];
     private stylesheetToUse: string = '';
     private _cached_html_value; // the cached sanitized html object to prevent "filckering" of the iframe
     private _cached_value; // for change detection reasons...

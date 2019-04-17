@@ -1,18 +1,10 @@
-<div #listcontainer (scroll)="onScroll($event)" class="slds-p-vertical_xx-small slds-scrollable--y"
-     [ngStyle]="listStyle">
-    <div *ngIf="!isloading && telecockpitservice.items.length == 0"
+<div #listcontainer (scroll)="onScroll($event)" class="slds-p-vertical_xx-small slds-scrollable--y spicecrm-scrollbar" [ngStyle]="listStyle">
+    <div *ngIf="!isLoading && listItems.length == 0"
          class="slds-text-align_center slds-p-vertical--medium">
         <span>{{ language.getLabel('LBL_NO_ENTRIES') }}</span>
     </div>
     <div #itemscontainer style="height: fit-content">
-        <tele_sales_cockpit_list_item *ngFor="let item of telecockpitservice.items" [item]="item">
-        </tele_sales_cockpit_list_item>
+        <tele-sales-cockpit-list-item *ngFor="let item of listItems; trackBy: trackByFn" [item]="item"></tele-sales-cockpit-list-item>
     </div>
-    <div *ngIf="!isloading && showButton" class="slds-align--absolute-center">
-        <button class="slds-button  slds-button--neutral slds-m-around--small"
-                (click)="telecockpitservice.loadMoreData()">
-            Load More
-        </button>
-    </div>
-    <system-spinner *ngIf="isloading"></system-spinner>
+    <system-spinner *ngIf="isLoading"></system-spinner>
 </div>

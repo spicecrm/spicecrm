@@ -1,11 +1,13 @@
-import {Component, Input} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ObjectComponents
+ */
+import {Component} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
-import {popup} from '../../services/popup.service';
+
 
 @Component({
     selector: 'object-merge-modal-records',

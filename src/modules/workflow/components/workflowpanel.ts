@@ -1,10 +1,9 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef, OnInit, OnDestroy, Pipe
+    Component, OnInit, OnDestroy, Pipe
 } from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
 import {session} from '../../../services/session.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';

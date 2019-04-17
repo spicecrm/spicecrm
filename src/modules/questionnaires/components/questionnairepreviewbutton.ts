@@ -1,3 +1,6 @@
+/**
+ * @module ModuleQuestionnaires
+ */
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { model } from '../../../services/model.service';

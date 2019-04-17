@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component, OnInit} from '@angular/core';
 import {view} from '../../services/view.service';
 

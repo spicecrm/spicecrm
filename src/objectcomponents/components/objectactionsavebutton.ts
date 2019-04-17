@@ -1,34 +1,29 @@
-import {Component, Input, Optional, OnInit, EventEmitter, Output} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component,  EventEmitter, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {relatedmodels} from '../../services/relatedmodels.service';
 import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-action-save-button',
-    templateUrl: './src/objectcomponents/templates/objectactionsavebutton.html',
-    host: {
-        'class': 'slds-button slds-button--brand',
-        '(click)': 'this.saveModel()'
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ]
+    templateUrl: './src/objectcomponents/templates/objectactionsavebutton.html'
 })
 export class ObjectActionSaveButton {
 
-    @Output() actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    parent: any = {};
-    module: string = '';
+    public parent: any = {};
+    public module: string = '';
 
-    saving: boolean = false;
+    private saving: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private model: model) {
 
     }
 
-    saveModel() {
+    public execute() {
         if(this.saving) return;
 
         if(this.model.validate()) {

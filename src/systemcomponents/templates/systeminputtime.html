@@ -3,19 +3,19 @@
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist slds-timepicker" [ngClass]="{'slds-is-open':isOpen}" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" placeholder=" " [(ngModel)]="display" />
+                    <input class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" [ngModelOptions]="{updateOn: 'blur'}" [(ngModel)]="display" (keyup.arrowup)="setDisplayToNextDropDownValue()" (keyup.arrowdown)="setDisplayToPreviousDropDownValue()" />
                     <div class="slds-input__icon-group slds-input__icon-group_right">
                         <button *ngIf="canclear" class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="clear()">
                             <system-button-icon icon="clear"></system-button-icon>
                         </button>
-                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="toggleOpen()">
+                        <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="toggleDropDown()">
                             <system-button-icon icon="clock"></system-button-icon>
                         </button>
                     </div>
                 </div>
-                <div role="listbox">
+                <div role="listbox" (mouseleave)="closeDropDown()">
                     <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown--fluid slds-dropdown--length-7" role="presentation">
-                        <li *ngFor="let dropdownValue of dropdownValues" role="presentation" class="slds-listbox__item" (click)="selectValue(dropdownValue.offset)">
+                        <li *ngFor="let dropdownValue of dropdownValues" role="presentation" class="slds-listbox__item" (click)="display = dropdownValue.display">
                             <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small slds-media_center" [ngClass]="{'slds-is-selected': dropdownValue.offset == _time.offset}" role="option">
                                 <span class="slds-media__figure">
                                     <system-icon addclasses="slds-icon slds-listbox__icon-selected" icon="check" sprite="utility" size="x-small"></system-icon>

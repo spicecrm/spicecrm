@@ -1,14 +1,12 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    Input,
-    NgModule,
     ViewChild,
     ViewContainerRef,
-    ElementRef, OnInit, EventEmitter
+    ElementRef, EventEmitter
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Router}   from '@angular/router';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';

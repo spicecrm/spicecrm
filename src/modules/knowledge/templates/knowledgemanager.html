@@ -5,7 +5,7 @@
             <ul #tabsheadercontainer class="slds-tabs--default__nav" role="tablist">
                 <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'tree'}"
                     role="presentation" (click)="activeTab = 'tree'">
-                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_CAPITALS') }}</a>
+                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_CHAPTERS') }}</a>
                 </li>
                 <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'search'}"
                     role="presentation" (click)="activeTab = 'search'">
@@ -13,7 +13,7 @@
                 </li>
             </ul>
             <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
-                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y">
+                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
                     <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-text-align--center slds-text-heading--small slds-truncate slds-p-top--x-small">
                         {{language.getLabel('MSG_CREATE_FIRST_RECORD')}}
                     </div>
@@ -24,8 +24,11 @@
                             [selectedItem]="selectedId"
                             (addItem$)="handleAddEvent($event)"
                             (selectedItem$)="handleSelectedItemEvent($event)"
-                            (treelistChange$)="saveListEdit($event)"></system-tree>
-                    <system-spinner *ngIf="isLoading && selectedBook"></system-spinner>
+                            (treelistChange$)="saveListEdit($event)">
+                    </system-tree>
+                    <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
+                        <system-spinner></system-spinner>
+                    </div>
                 </div>
             </div>
             <div *ngIf="activeTab == 'search'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
@@ -34,7 +37,7 @@
         </div>
     </div>
     <div class="slds-size--3-of-4">
-        <div [ngStyle]="detailsContainerStyle" class="slds-scrollable--y">
+        <div [ngStyle]="detailsContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
             <knowledge-manager-details [selectedId]="selectedId"></knowledge-manager-details>
         </div>
     </div>

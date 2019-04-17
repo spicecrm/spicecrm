@@ -1,4 +1,4 @@
-<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small" [ngClass]="{'slds-is-closed': isClosed, 'slds-is-open': !isClosed}" role="dialog">
+<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small" style="transition: .5s" [ngClass]="{'slds-is-closed': isClosed, 'slds-is-open': !isClosed}" role="dialog">
     <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
         <div class="slds-media slds-media_center slds-no-space">
             <div class="slds-media__figure slds-m-right_x-small">
@@ -29,6 +29,7 @@
         <div class="slds-col_bump-left slds-text-align_right">
             <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
             <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--brand" (click)="saveComposer(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
         </div>
     </footer>
 </section>

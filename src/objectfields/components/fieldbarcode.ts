@@ -1,4 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component} from '@angular/core';
 import {fieldGeneric} from "./fieldgeneric";
 import {model} from "../../services/model.service";
 import {view} from "../../services/view.service";

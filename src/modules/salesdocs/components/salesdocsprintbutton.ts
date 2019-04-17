@@ -1,8 +1,9 @@
-import {Component, Input, HostBinding} from '@angular/core';
-import {Router} from '@angular/router';
+/**
+ * @module ModuleSalesDocs
+ */
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {toast} from '../../../services/toast.service';
 import {session} from '../../../services/session.service';
 import {configurationService} from '../../../services/configuration.service';
 import {language} from '../../../services/language.service';
@@ -20,13 +21,20 @@ import {language} from '../../../services/language.service';
 })
 export class SalesDocsPrintButton {
 
-    showConvertModal: boolean = false;
+    public disabled: boolean = true;
 
     constructor(private language: language, private metadata: metadata, private model: model, private configurationService: configurationService, private session: session) {
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled();
+        });
+
+        this.model.data$.subscribe(data => {
+            this.handleDisabled();
+        });
     }
 
-    print() {
-        let params: Array<string> = [];
+    public execute() {
+        let params: string[] = [];
         params.push('sessionid=' + this.session.authData.sessionId);
         window.open(
             this.configurationService.getBackendUrl() + '/module/SalesDocs/' + this.model.id + '/printout?' + params.join('&'),
@@ -34,7 +42,8 @@ export class SalesDocsPrintButton {
         );
     }
 
-    getDisplay() {
-        return this.model.isEditing ? 'none' : 'inherit';
+    private handleDisabled() {
+        this.disabled
+        this.model.isEditing ? true : false;
     }
 }

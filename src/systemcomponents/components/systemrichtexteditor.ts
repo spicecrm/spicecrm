@@ -1,24 +1,21 @@
+/**
+ * @module SystemComponents
+ */
+
 // from https://github.com/kolkov/angular-editor
 import {
-    AfterContentInit,
     Component, ElementRef,
-    EventEmitter,
     forwardRef,
     Inject,
-    Input,
-    OnInit,
     OnDestroy,
-    Output,
     Renderer2,
     ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {metadata} from "../../services/metadata.service";
 import {DOCUMENT} from "@angular/common";
 
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
-import {SystemRichTextSourceModal} from "./systemrichtextsourcemodal";
 import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
 
 @Component({
@@ -93,15 +90,16 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     /**
      *  focus the text area when the editor is focussed
      */
-    private onEditorClick() {
+    private onEditorClick(e) {
         // check if we are active already
         if (!this.isActive) {
-            this.htmlEditor.nativeElement.focus();
             this.isActive = true;
+            this.htmlEditor.nativeElement.focus();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
         }
+        e.stopPropagation();
     }
 
     private onDocumentClick(event: MouseEvent) {

@@ -1,24 +1,9 @@
-<div class="slds-grid slds-page-header slds-p-horizontal--none slds-p-vertical--xx-small slds-grid--vertical-align-center">
-    <div class="slds-p-horizontal--small slds-size--1-of-4">
-        <select (change)="maincomponent.resetView()" [disabled]="campaigntasks.length == 0" class="slds-select slds-m-around_xx-small"
-                [(ngModel)]="telecockpitservice.campaignTaskId">
-            <option *ngFor="let campaigntask of campaigntasks" [value]="campaigntask.id"> {{ campaigntask.campaign_name
-                +' / ' + campaigntask.name }}
-            </option>
-        </select>
-    </div>
-    <div [hidden]="!telecockpitservice.selectedLogId" class="slds-p-around_xx-small slds-col--bump-left">
-        <tele_sales_cockpit_module_actions></tele_sales_cockpit_module_actions>
-        <div #telecockpitactionscontainer class="slds-m-left--small slds-button-group"></div>
-        <!--tele_sales_cockpit_create_lead_button></tele_sales_cockpit_create_lead_button>
-        <tele_sales_cockpit_log_call_button></tele_sales_cockpit_log_call_button-->
-    </div>
-</div>
-<div class="slds-grid">
+<tele-sales-cockpit-header></tele-sales-cockpit-header>
+<div class="slds-grid slds-theme--default">
     <div class="slds-size--1-of-4 slds-border--right">
-        <tele_sales_cockpit_list></tele_sales_cockpit_list>
+        <tele-sales-cockpit-list [selectedListItemId]="model.id"></tele-sales-cockpit-list>
     </div>
     <div class="slds-size--3-of-4">
-        <tele_sales_cockpit_main #maincomponent></tele_sales_cockpit_main>
+        <tele-sales-cockpit-main [selectedListItemId]="model.id"></tele-sales-cockpit-main>
     </div>
 </div>

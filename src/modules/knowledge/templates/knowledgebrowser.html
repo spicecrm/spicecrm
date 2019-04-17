@@ -5,7 +5,7 @@
             <ul #tabsheadercontainer class="slds-tabs--default__nav" role="tablist">
                 <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'tree'}"
                     role="presentation" (click)="activeTab = 'tree'">
-                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_CAPITALS') }}</a>
+                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_CHAPTERS') }}</a>
                 </li>
                 <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'search'}"
                     role="presentation" (click)="activeTab = 'search'">
@@ -13,14 +13,18 @@
                 </li>
             </ul>
             <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
-                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y">
+                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
                     <system-tree
                             *ngIf="selectedBook && documents.length > 0 && !isLoading"
                             [config]="config"
                             [treelist]="documents"
                             [selectedItem]="selectedId"
-                            (selectedItem$)="handleSelectedItemEvent($event)"></system-tree>
-                    <system-spinner *ngIf="isLoading && selectedBook"></system-spinner>
+                            (selectedItem$)="handleSelectedItemEvent($event)">
+
+                    </system-tree>
+                    <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
+                        <system-spinner></system-spinner>
+                    </div>
                     <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center spice-h-full slds-text-heading--medium">
                         <span>{{ language.getLabel('MSG_NO_RECORDS_FOUND') }}</span>
                     </div>

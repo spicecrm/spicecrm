@@ -1,13 +1,13 @@
-<div class="slds-filters__item slds-grid slds-grid--vertical-align-center">
-    <fieldset class="slds-form--stacked">
-        <div class="slds-form-element">
-            <p class="slds-text-body--regular">{{language.getLabel(aggregate.name)}}</p>
-        </div>
-        <div class="slds-form-element" *ngFor="let bucketItem of aggregate.buckets">
-            <div object-listview-aggregate-item [bucketitem]="bucketItem" [aggregate]="aggregate.aggregateindex" class="slds-form-element__control"></div>
-        </div>
-        <div *ngIf="aggregate.sum_other_doc_count">
-            <p class="slds-text-body--small slds-text-color--weak">{{aggregate.sum_other_doc_count}} {{language.getLabel('LBL_ARE_NOT_INCLUDED')}}...</p>
-        </div>
-    </fieldset>
+<div class="slds-filters__item">
+    <div class="slds-p-vertical--xx-small">
+        <ul class="slds-list_horizontal slds-has-dividers_right">
+            <li class="slds-item" *ngFor="let aggregateNameItem of aggregateNameItems">{{aggregateNameItem}}</li>
+        </ul>
+    </div>
+    <div class="slds-form-element" *ngFor="let bucketItem of aggregate.buckets">
+        <object-listview-aggregate-item  [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
+    </div>
+    <div *ngIf="aggregate.sum_other_doc_count">
+        <p class="slds-text-body--small slds-text-color--weak">{{aggregate.sum_other_doc_count}} {{language.getLabel('LBL_ARE_NOT_INCLUDED')}}...</p>
+    </div>
 </div>

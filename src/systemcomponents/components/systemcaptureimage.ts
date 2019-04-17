@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {Component, Input, AfterViewInit, ViewChild, ViewContainerRef, EventEmitter} from '@angular/core';
 import {backend} from '../../services/backend.service';
 

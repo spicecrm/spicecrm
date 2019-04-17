@@ -1,67 +1,51 @@
+<!DOCTYPE html>
 <html>
-<head>
-    <title>SpiceCRM</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#CA1B1F">
-    <link rel="SHORTCUT ICON" href="config/favicon">
-    <link rel="stylesheet" href="sldassets/styles/salesforce-lightning-design-system.min.css">
-    <link rel="stylesheet" href="./config/stylesheet">
-    <script src="vendor/underscorejs/underscore-min.js"></script>
-    <script src="vendor/core-js/client/shim.min.js"></script>
-    <script src="vendor/zone.js/dist/zone.min.js"></script>
-    <script src="vendor/reflect-metadata/Reflect.js"></script>
-    <script src="vendor/systemjs/dist/system.js"></script>
-    <script src="vendor/moment/moment.js"></script>
-    <script src="vendor/moment/moment-timezone.js"></script>
-    <script src="systemjs.config.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script>
-        window.name = 'SpiceCRM';
-        (function () {
-            if ( window.BroadcastChannel ) { // Does the browser know the Broadcast API?
-                let bc = new BroadcastChannel( 'spiceCRM_channel' );
-                bc.onmessage = function(e) {
-                    let myUrl = window.location.origin + window.location.pathname;
-                    if ( e.data.url && e.data.url.startsWith( myUrl )) {
-                        window.location = e.data.url;
-                        bc.postMessage({'urlReceived':true});
-                    }
-                }
-            }
-        })();
-        System.import('app').catch(function (err) {
-            console.error(err);
-        });
-    </script>
-</head>
-<body>
-<spicecrm>
-    <div style="height: 100vh;" class="slds-align--absolute-center">
-        <div>
-            <div>
-                <img src="./config/loginimage"/>
-            </div>
-            <div class="slds-text-align_center slds-p-around--medium">
-                <span class="slds-p-top--medium">... preparing your experience ...</span>
-                <div class="loaderspinner">
-                    <svg class="bag" height="100" width="100">
-                        <circle cx="50" cy="50" r="25" stroke="#CA1B1F" stroke-width="3" fill="none"></circle>
-                    </svg>
-                    <svg class="over" height="100" width="100">
-                        <circle cx="50" cy="50" r="25" stroke="#ccc" stroke-width="3" fill="none">
-                            <animate attributeType="CSS" attributeName="stroke-dasharray" from="1,254" to="157,07"
-                                     dur="5s" repeatCount="indefinite"/>
-                        </circle>
-                    </svg>
+    <head>
+        <title>SpiceCRM</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#CA1B1F">
+        <link rel="SHORTCUT ICON" href="config/favicon">
+        <link rel="stylesheet" href="sldassets/styles/salesforce-lightning-design-system.min.css">
+        <link rel="stylesheet" href="./config/stylesheet">
+        <script src="vendor/underscorejs/underscore-min.js"></script>
+        <script src="vendor/core-js/client/shim.min.js"></script>
+        <script src="vendor/zone.js/dist/zone.min.js"></script>
+        <script src="vendor/reflect-metadata/Reflect.js"></script>
+        <script src="vendor/systemjs/system.js"></script>
+        <script src="vendor/moment/moment.min.js"></script>
+        <script src="vendor/moment/moment-timezone.min.js"></script>
+        <script src="systemjs.config.js"></script>
+        <script src="https://apis.google.com/js/api.js"></script>
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <script>
+            System.import('app').catch(function (err) {
+                console.error(err);
+            });
+        </script>
+    </head>
+    <body>
+        <spicecrm>
+            <div style="height: 100vh" class="slds-align--absolute-center slds-size--1-of-1 slds-theme--default">
+                <div class="slds-grid--vertical">
+                    <div class="slds-text-align_center slds-is-relative slds-p-around--medium" style="height: 400px;">
+                        <div class="slds-p-around--small slds-align--absolute-center loader-logo-image">
+                            <img width="100%" height="auto" src="./config/loginimage"/>
+                        </div>
+                        <div class="loaderspinner">
+                            <svg class="bag" height="400" width="400">
+                                <circle cx="200" cy="200" r="100" stroke-width="5" fill="none"></circle>
+                            </svg>
+                            <svg class="over" height="400" width="400">
+                                <circle cx="200" cy="200" r="100" stroke-width="6" fill="none"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="loadstatus" class="slds-text-align_center slds-is-relative slds-p-around--medium" style="margin-top: -80px">...loading...</div>
+                    <div id="loadermessage" class="slds-text-align_center slds-is-relative slds-p-around--medium slds-text-heading--medium slds-text-color--error"></div>
                 </div>
+                <div class="slds-is-absolute" style="bottom: 10px;">© 2015 - 2019 aac services k.s. All rights reserved.</div>
             </div>
-        </div>
-        <div class="slds-is-absolute" style="bottom: 10px;">
-            © 2015 - 2018 aac services k.s. All rights reserved.
-        </div>
-    </div>
-</spicecrm>
-</body>
+        </spicecrm>
+    </body>
 </html>

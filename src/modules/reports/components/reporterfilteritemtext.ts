@@ -1,19 +1,12 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
-    Input,
-    Output,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Input
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
 
 import  {reporterconfig} from '../services/reporterconfig';
 
@@ -23,8 +16,8 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterFilterItemText {
 
-    @Input() field : string = '';
-    @Input() wherecondition : any = {};
+    @Input() private field : string = '';
+    @Input() private wherecondition : any = {};
 
     constructor(private language: language, private model: model, private reporterconfig: reporterconfig) {
 

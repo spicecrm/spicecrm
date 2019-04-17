@@ -1,4 +1,7 @@
-import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
+/**
+ * @module ModuleSpiceImports
+ */
+import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 
 import {spiceimportsservice} from '../services/spiceimports.service';
@@ -9,24 +12,24 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 })
 export class SpiceImportsList {
 
-    @ViewChild('listcontainer', {read: ViewContainerRef}) listcontainer: ViewContainerRef;
+    @ViewChild('listcontainer', {read: ViewContainerRef}) private listcontainer: ViewContainerRef;
 
     constructor(private language: language,
                 private spiceimportsservice: spiceimportsservice) {
     }
 
-    listStyle() {
+    private listStyle() {
         let rect = this.listcontainer.element.nativeElement.getBoundingClientRect();
         return {
-            'height': 'calc(100vh - ' + rect.top + 'px)'
-        }
+            height: 'calc(100vh - ' + rect.top + 'px)'
+        };
     }
 
     get items(){
         return this.spiceimportsservice.items;
     }
 
-    onScroll(e) {
+    private onScroll(e) {
 
         let element = this.listcontainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {

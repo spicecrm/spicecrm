@@ -1,22 +1,14 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+/**
+ * @module ModuleProducts
+ */
+import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
 
-import {Subject, Observable} from 'rxjs';
-
+/**
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -28,100 +20,92 @@ export class ProductBrowserTree {
     @ViewChild('treeheader', {read: ViewContainerRef}) private treeheader: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
-    private productgroups: Array<any> = [];
-    private productgrouptree: Array<any> = [];
-    private productgrouptreeresultsonly: boolean = false;
-    private selectedid: string = '';
+    private productGroups: any[] = [];
+    private productGroupTree: any[] = [];
+    private productGroupTreeResultsOnly: boolean = false;
+    private selectedId: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
-        this.getProductGroups().subscribe(
-            done => {
-                if (this.productgrouptree.length > 0) {
-                    this.selectGroup(this.productgrouptree[0]);
-                }
-            },
-            complete => {
-                if (this.productgrouptree.length > 0) {
-                    this.selectGroup(this.productgrouptree[0]);
-                }
-            });
-
+        this.getProductGroups();
     }
 
-    get treestyle(){
+    get treeStyle() {
         let rect = this.treeheader.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        };
+        return {height: `calc(100% - ${rect.height}px)`};
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
+    private getLinkTitle(productgroup) {
+        return `${productgroup.summary_text}(${this.getAggregateCount(productgroup)})`;
     }
 
     private getProductGroups(parentId = '') {
-        let retSubject: Subject<any> = new Subject<any>();
-        let searchfields = {
+        let fields = ['id', 'name', 'summary_text', 'parent_productgroup_id', 'member_count', 'product_count', 'sortparam', 'sortseq'];
+        let searchFields = {
             field: 'parent_productgroup_id',
             operator: (parentId != '' ? '=' : 'empty'),
             value: parentId
         };
-
-        let fields = ['id', 'name', 'summary_text', 'parent_productgroup_id', 'member_count', 'product_count', 'sortparam', 'sortseq'];
-        this.backend.getRequest('module/ProductGroups', {
-            searchfields: JSON.stringify(searchfields),
+        let params = {
+            searchfields: JSON.stringify(searchFields),
             fields: JSON.stringify(fields),
             offset: 0,
             limit: 250
-        }).subscribe(items => {
+        };
 
-            items.list.sort((a, b) => {
-                return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
+        this.backend.getRequest('module/ProductGroups', params)
+            .subscribe(items => {
+                items.list.sort((a, b) => {
+                    return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
+                });
+
+                for (let item of items.list) {
+                    item.expanded = false;
+                    item.loaded = false;
+                    item.type = 'ProductGroup';
+                    item.member_count = parseInt(item.member_count, 10);
+                    item.product_count = parseInt(item.product_count, 10);
+                    this.productGroups.push(item);
+                }
+                this.buildTree();
+                if (this.productfinder.searchfocus.type.length == 0) {
+                    this.selectGroup(this.productGroupTree[0]);
+                }
             });
-
-            for (let item of items.list) {
-                item.expanded = false;
-                item.loaded = false;
-                item.type = 'group';
-                item.member_count = parseInt(item.member_count, 10);
-                item.product_count = parseInt(item.product_count, 10);
-                this.productgroups.push(item);
-            }
-            this.buildTree();
-            retSubject.next(true);
-            retSubject.complete();
-        })
-        return retSubject.asObservable();
     }
 
     private getProducts(parentId = '') {
-        let searchfields = {
-            field: 'productgroup_id',
-            operator: '=',
-            value: parentId
-        };
-
         let fields = ['id', 'name', 'summary_text'];
-        this.backend.getRequest('module/Products', {
+        let searchfields = {field: 'productgroup_id', operator: '=', value: parentId};
+        let params = {
             searchfields: JSON.stringify(searchfields),
             fields: JSON.stringify(fields),
             offset: 0,
             limit: 250,
             sortfield: 'name'
-        }).subscribe(items => {
+        };
+
+        this.backend.getRequest('module/Products', params).subscribe(items => {
             for (let item of items.list) {
                 item.expanded = false;
                 item.loaded = false;
-                item.type = 'product';
+                item.type = 'Product';
                 item.parent_productgroup_id = parentId;
-                this.productgroups.push(item);
+                this.productGroups.push(item);
             }
             this.buildTree();
-        })
+        });
     }
 
-    private canexpand(item) {
+    private canExpand(item) {
         return item.member_count > 0 || item.product_count > 0;
     }
 
     private toggle(productgroup) {
-        this.productgroups.some(item => {
+        this.productGroups.some(item => {
                 if (item.id == productgroup.id) {
                     item.expanded = !item.expanded;
                     if (item.expanded) {
@@ -145,17 +129,17 @@ export class ProductBrowserTree {
     }
 
     private buildTree() {
-        this.productgrouptree = [];
+        this.productGroupTree = [];
         this.addTreeNode();
     }
 
     private addTreeNode(parentId = '', level = 1) {
-        for (let productgroup of this.productgroups) {
+        for (let productgroup of this.productGroups) {
             if (productgroup.parent_productgroup_id == parentId) {
                 productgroup.level = level;
-                this.productgrouptree.push(productgroup);
+                this.productGroupTree.push(productgroup);
 
-                if (productgroup.type == 'group' && productgroup.expanded) {
+                if (productgroup.type == 'ProductGroup' && productgroup.expanded) {
                     this.addTreeNode(productgroup.id, level + 1);
                 }
             }
@@ -163,50 +147,29 @@ export class ProductBrowserTree {
     }
 
     private selectGroup(group) {
-        this.productfinder.searchfocus = {
-            type: 'ProductGroup',
-            object: group
-        }
-
-        this.productfinder.getAttributes('productgroups', group.id, true).subscribe(status => {
-            this.productfinder.getProductVariants();
-        })
-
-        this.selectedid = group.id;
-
-        // emit the selecion change
-        this.selectionchanged.emit(this.productfinder.searchfocus);
+        let obj = {type: 'ProductGroup', object: group};
+        this.productfinder.setSearchFocus(obj);
+        this.selectedId = group.id;
+        this.selectionchanged.emit(obj);
     }
 
     private selectProduct(product) {
-        this.productfinder.searchfocus = {
-            type: 'Product',
-            object: product
-        }
-        this.productfinder.getAttributes('products', product.id, true).subscribe(status => {
-            this.productfinder.getProductVariants();
-        })
-        // this.productbrowser.getProductVariants();
-        this.selectedid = product.id;
-
-        // emit the selecion change
-        this.selectionchanged.emit(this.productfinder.searchfocus);
+        let obj = {type: 'Product', object: product};
+        this.productfinder.setSearchFocus(obj);
+        this.selectedId = product.id;
+        this.selectionchanged.emit(obj);
     }
 
     private isSelected(id) {
-        return this.selectedid == id;
+        return this.selectedId == id;
     }
 
     private getAggregateCount(item) {
-        let aggregate = this.productfinder.getAggegateCount(item.type === 'product' ? 'productid' : 'productgroups', item.id);
-        return aggregate ? aggregate : '-';
+        let aggregate = item.type === 'Product' ? 'productid' : 'productgroups';
+        return this.productfinder.getAggregateCount(aggregate, item.id);
     }
 
-    private displayTreeNode(node){
-        if(this.productgrouptreeresultsonly){
-            return this.getAggregateCount(node) !== '-' ? true : false;
-        } else {
-            return true;
-        }
+    private displayTreeNode(node) {
+        return this.productGroupTreeResultsOnly ? this.getAggregateCount(node) !== '-' : true;
     }
 }

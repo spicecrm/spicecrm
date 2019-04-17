@@ -1,8 +1,17 @@
+/**
+ * @module services
+ */
 import {Injectable} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {MathExpressionCompilerService} from "./mathexpressioncompiler";
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
 declare var _: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -54,7 +63,7 @@ export class modelutilities {
             case "date":
                 // return new Date(Date.parse(value));
                 let pDate = moment.utc(value);
-                return pDate;
+                return pDate.isValid() ? pDate : null;
             case "datetime":
             case "datetimecombo":
                 // return new Date(Date.parse(value));
@@ -89,19 +98,17 @@ export class modelutilities {
     }
 
     public spiceModel2backend(module: string, modelData: any) {
+        let retData = {...modelData};
         let moduleFields = this.metadata.getModuleFields(module);
         for (let field in moduleFields) {
-            if (modelData[field]) {
-                modelData[field] = this.spice2backend(module, field, modelData[field]);
+            if (modelData.hasOwnProperty(field)) {
+                retData[field] = this.spice2backend(module, field, modelData[field]);
             }
         }
-        return modelData;
+        return retData;
     }
 
     public spice2backend(module: string, field: string, value: any) {
-        if(!value) {
-            return value;
-        }
 
         let fieldDefs = this.metadata.getFieldDefs(module, field);
         if(!fieldDefs || !fieldDefs.type) {
@@ -110,23 +117,23 @@ export class modelutilities {
 
         switch(fieldDefs.type) {
             case "date":
-                if(value._isAMomentObject) {
+                if ( _.isObject( value ) && value._isAMomentObject ) {
                     if ( !value.isValid() ) { return "";} // quick and dirty workaround, still something todo!
                     return value.format("YYYY-MM-DD");
                 } else {
                     let pDate = new moment.utc(value);
-                    return pDate.format("YYYY-MM-DD");
+                    return pDate.isValid() ? pDate.format("YYYY-MM-DD") : '';
                 }
             case "datetime":
             case "datetimecombo":
                 if ( typeof value === "string" && value.trim() === "" ) { return "";}; // quick and dirty workaround, still something todo!
-                if ( value._isAMomentObject && !value.isValid() ) { return ""; }; // quick and dirty workaround, still something todo!
+                if ( _.isObject( value ) && value._isAMomentObject && !value.isValid() ) { return ""; }; // quick and dirty workaround, still something todo!
                 let pDateTime = new moment(value).tz(moment.tz.guess());
                 pDateTime.subtract(pDateTime.utcOffset(), "m");
                 return pDateTime.format("YYYY-MM-DD HH:mm:ss");
             // return value.getUTCFullYear() + "-" + value.getUTCMonth() + "-" + (value.getUTCDate() < 10 ? "0" + value.getUTCDate() : value.getUTCDate()) + " " + value.getUTCHours() + ":" + value.getUTCMinutes() + ":" + value.getUTCSeconds();
             case "json":
-                return JSON.stringify(value);
+                return !value ? '' : JSON.stringify(value);
             // todo: type mutlienum!
             case "link":
                 if(_.isObject(value) && value.beans && fieldDefs.module) {
@@ -135,6 +142,9 @@ export class modelutilities {
                     }
                 }
                 return value;
+            case "bool":
+            case "boolean":
+                return value && ( value == "1" || value > 0 || value === true) ? '1' : '0';
             default:
                 return value;
         }

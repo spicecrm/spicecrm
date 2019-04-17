@@ -1,56 +1,77 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {
     Component,
     ViewChild,
     ViewContainerRef,
-    ElementRef
+    ElementRef, OnDestroy
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
-
+import {broadcast} from '../../services/broadcast.service';
+import {session} from '../../services/session.service';
 
 @Component({
     selector: '[administration-menu]',
     templateUrl: './src/admincomponents/templates/administrationmenu.html'
 })
-export class AdministrationMenu {
+export class AdministrationMenu implements OnDestroy {
+
     @ViewChild('admincontentcontainer', {read: ViewContainerRef}) private admincontentcontainer: ViewContainerRef;
-    @ViewChild('adminitemscontainer', {read: ViewContainerRef}) private adminitemscontainer: ViewContainerRef;
 
     private admincontentObject: any = null;
     private adminNavigation: any = {};
     private itemfilter: string = '';
-    private opened_item: any = {};
+    private opened_itemid: any = {};
+
+    private broadcastsubscription: any;
 
     constructor(
         private metadata: metadata,
         private language: language,
         private backend: backend,
+        private broadcast: broadcast,
         private navigation: navigation,
-        private elementref: ElementRef
+        private elementref: ElementRef,
+        private session: session
     ) {
+        this.loadNavigation();
+
+        this.navigation.setActiveModule('Administration');
+
+        this.broadcastsubscription = this.broadcast.message$.subscribe(message => {
+            this.handleMessage(message);
+        });
+    }
+
+    public ngOnDestroy() {
+        this.broadcastsubscription.unsubscribe();
+    }
+
+    private handleMessage(message) {
+        switch (message.messagetype) {
+            case 'loader.reloaded':
+                this.loadNavigation();
+                break;
+        }
+    }
+
+    private loadNavigation() {
         this.backend.getRequest('spiceui/admin/navigation').subscribe(
             nav => {
                 this.adminNavigation = nav;
                 // default open version control...
-                this.openContent('Versioning', 'Version Control');
+                // this.openContent('Versioning', 'Version Control');
             }
         );
-
-        this.navigation.setActiveModule('Administration');
-
     }
 
     private getContainerStyle() {
         return {
             height: 'calc(100vh - ' + this.elementref.nativeElement.offsetTop + 'px)'
-        };
-    }
-
-    private getItemsStyle() {
-        return {
-            height: 'calc(100vh - ' + this.adminitemscontainer.element.nativeElement.offsetTop + 'px)'
         };
     }
 
@@ -87,6 +108,7 @@ export class AdministrationMenu {
         let items = [];
 
         for (let item of this.adminNavigation[block]) {
+            if ( item.componentconfig.onlyForDevs && !this.session.isDev ) continue;
             item.name = item.adminaction;
             if (item.admin_label) {
                 item.name = this.language.getLabel(item.admin_label);
@@ -102,11 +124,11 @@ export class AdministrationMenu {
 
     private openContent(block: string, item) {
         // already loaded?
-        if (this.opened_item == item) {
+        if (this.opened_itemid == item.id) {
             return true;
         }
 
-        this.opened_item = item;
+        this.opened_itemid = item.id;
         if (this.admincontentObject) {
             this.admincontentObject.destroy();
         }
@@ -132,4 +154,5 @@ export class AdministrationMenu {
             });
         }
     }
+
 }

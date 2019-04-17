@@ -1,15 +1,8 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    ElementRef
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+/**
+ * @module ModuleHome
+ */
+import {Component,ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {assistant} from '../../../services/assistant.service';
 
@@ -22,6 +15,7 @@ export class HomeAssistant {
     @ViewChild('itemcontainer', {read: ViewContainerRef}) private  itemcontainer: ViewContainerRef;
 
     constructor(private assistant: assistant, private navigation: navigation, private language: language) {
+        this.navigation.setActiveModule('Home');
         this.assistant.initlaize();
     }
 

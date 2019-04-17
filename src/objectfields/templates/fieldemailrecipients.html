@@ -31,7 +31,7 @@
                                   </span>
                             </li>
                             <li class="slds-listbox-item" role="presentation">
-                                <input spoiceui-autofocus *ngIf="isAdding" type="text" style="min-width: 12rem;"
+                                <input spoiceui-autofocus *ngIf="isAdding" type="text" [size]="inputSize"
                                        class="slds-p-horizontal--x-small" [(ngModel)]="addAddress" (blur)="onBlur()"
                                        (keyup)="onKeyUp($event)" [title]="language.getLabel('LBL_ADD_EMAILADDRESS')"
                                        [placeholder]="language.getLabel('LBL_ADD_EMAILADDRESS')"/>

@@ -1,19 +1,17 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
-
-import {configurationService} from './configuration.service';
-import {loader} from './loader.service';
-import {Router}   from '@angular/router';
-
+import {loggerService} from './logger.service';
 
 // Taken from https://github.com/killmenot/webtoolkit.md5
 
 interface authDataIf {
     renewPass: boolean;
     sessionId: string;
-    loaded: boolean,
+    loaded: boolean;
     userId: string;
     userName: string;
     first_name: string;
@@ -22,12 +20,19 @@ interface authDataIf {
     email: string;
     password: string;
     admin: boolean;
+    dev: boolean;
     portalOnly: boolean;
+    googleToken: string;
+    userimage: string;
 }
 
+/**
+ * the session service holds relevant session data and also acts as a session data storage container
+ */
 @Injectable()
 export class session {
-    authData: authDataIf = {
+
+    public authData: authDataIf = {
         sessionId: null,
         loaded: false,
         userId: null,
@@ -38,30 +43,69 @@ export class session {
         email: '',
         password: '',
         admin: false,
+        dev: false,
         renewPass: false,
-        portalOnly: false
+        portalOnly: false,
+        googleToken: '',
+        userimage: ''
     };
 
-    footercontainer: any = null;
+    /**
+     * an object any component can write data into and read data from. Helpful to keep sessiondata
+     */
+    private sessionData: any = {};
+
+
+    // public footercontainer: any = null;
 
     // add an observable for the auth data
-    private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
-    authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
+    // private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
+    // private authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
 
+    constructor(private logger: loggerService) {
+        this.logger.setSession(this);
+    }
+
+    /**
+     * builds the session header for the http requests with the token for the users session on the backend
+     */
     public getSessionHeader(): HttpHeaders {
         let headers = new HttpHeaders();
         headers = headers.set('OAuth-Token', this.authData.sessionId);
         return headers;
     }
 
-    public setSessionData(key, data) {
-        sessionStorage.setItem(
-            window.btoa(key + this.authData.sessionId),
-            window.btoa(encodeURIComponent(JSON.stringify(data)))
-        );
+    /**
+     * stores data for the session
+     *
+     * @param key a key to identify the setting
+     * @param data the data .. any kind of object, string etc
+     * @param persistent a boolen flag to indicate it if also shoudl be stored in the browser or if this is heldp non persistent
+     */
+    public setSessionData(key, data, persistent: boolean = true) {
+
+        this.sessionData[key] = data;
+
+        if (persistent) {
+            sessionStorage.setItem(
+                window.btoa(key + this.authData.sessionId),
+                window.btoa(encodeURIComponent(JSON.stringify(data)))
+            );
+        }
     }
 
-    getSessionData(key, returnEmptyObject = true) {
+    /**
+     * returves the stored object
+     *
+     * @param key the key of the data object to be retrieved
+     * @param returnEmptyObject if set to true returns an empty object when no entry is found, otherwise retuns false
+     */
+    public getSessionData(key, returnEmptyObject = true) {
+
+        // check if we have it in the service
+        if (this.sessionData[key]) return this.sessionData[key];
+
+        // otherwisse go and get it
         try {
             return JSON.parse(
                 decodeURIComponent(
@@ -73,24 +117,29 @@ export class session {
                 )
             );
         } catch (e) {
-            if (returnEmptyObject)
-                return {};
-            else
-                return false
+            if (returnEmptyObject) return {};
+            else return false;
         }
     }
 
-    existsData(key: string) {
+    /**
+     * checks if the data in the session storage in the browser exists
+     */
+    public existsData(key: string) {
         try {
             return (
-            sessionStorage[window.btoa(key + this.authData.sessionId)] &&
-            sessionStorage[window.btoa(key + this.authData.sessionId)].length > 0);
+                sessionStorage[window.btoa(key + this.authData.sessionId)] &&
+                sessionStorage[window.btoa(key + this.authData.sessionId)].length > 0
+            );
         } catch (e) {
             return false;
         }
     }
 
-    endSession() {
+    /**
+     * closes the session and removes all sessiondata
+     */
+    public endSession() {
         this.authData.sessionId = null;
         this.authData.userId = null;
         this.authData.loaded = false;
@@ -99,15 +148,28 @@ export class session {
         this.authData.last_name = '';
         this.authData.display_name = '';
         this.authData.email = '';
+        this.authData.userimage = '';
         this.authData.password = '';
         this.authData.admin = false;
+        this.authData.dev = false;
+
+        this.sessionData = {};
+
         sessionStorage.clear();
     }
 
     /*
-    * getter returs if the logged on user is an admin
+    * getter returns if the logged on user is an admin
      */
-    get isAdmin(){
+    get isAdmin() {
         return this.authData.admin;
     }
+
+    /*
+     * getter returns if the logged on user is a developer
+     */
+    get isDev() {
+        return this.authData.dev;
+    }
+
 }

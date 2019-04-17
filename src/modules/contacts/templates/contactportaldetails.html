@@ -35,7 +35,7 @@
             <div class="slds-form-element" [ngClass]="{'slds-has-error':pwdError}">
                 <label class="slds-form-element__label">
                     <ng-container *ngIf="isNewUser"><abbr class="slds-required" title="required">*  </abbr>{{lang.getLabel('LBL_PASSWORD')}}</ng-container>
-                    <ng-container *ngIf="!isNewUser">{{lang.getLabel('LBL_NEW_PASSWORD')}}?</ng-container>
+                    <ng-container *ngIf="!isNewUser">{{lang.getLabel('LBL_NEW_PWD')}}?</ng-container>
                 </label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="user.password" [ngClass]="{'slds-has-error':pwdError}">

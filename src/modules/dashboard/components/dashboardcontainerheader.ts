@@ -1,23 +1,10 @@
-import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ElementRef,
-    Renderer,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy, OnChanges
-} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
+/**
+ * @module ModuleDashboard
+ */
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
-
+import {userpreferences} from "../../../services/userpreferences.service";
 
 @Component({
     selector: 'dashboard-container-header',
@@ -25,32 +12,33 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 })
 export class DashboardContainerHeader {
 
-    @Input() dashboardid: string = '';
+    @Input() private showdashboardselector: boolean = false;
+    @Output() private showselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private dashboardlayout: dashboardlayout, private language: language, private renderer: Renderer, private elementRef: ElementRef) {
-
+    constructor(private dashboardlayout: dashboardlayout, private language: language, private userpreferences: userpreferences) {
     }
 
-
-
-    toggleEditMode(){
-        this.dashboardlayout.editMode = !this.dashboardlayout.editMode;
-    }
-
-    get editable(){
+    get editable() {
         return this.dashboardlayout.model.checkAccess('edit') && !this.dashboardlayout.editMode;
     }
 
-    get canDelete(){
-        return this.dashboardlayout.model.checkAccess('delete');
+    get isHomeDashboard() {
+        return this.userpreferences.toUse.home_dashboard == this.dashboardlayout.dashboardId;
     }
 
-    edit(){
+    private toggleEditMode() {
+        this.dashboardlayout.editMode = !this.dashboardlayout.editMode;
+    }
+
+    private toggleHomeDashboard() {
+        this.userpreferences.setPreference('home_dashboard', this.isHomeDashboard ? '' : this.dashboardlayout.dashboardId, true);
+    }
+
+    private edit() {
         this.dashboardlayout.model.edit();
     }
 
-    deleteDashlet(){
-        this.dashboardlayout.model.delete();
+    private showpanel() {
+        this.showselect.emit(true);
     }
-
 }

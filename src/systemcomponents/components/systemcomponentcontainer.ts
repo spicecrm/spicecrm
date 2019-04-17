@@ -1,5 +1,7 @@
-import {Component, OnInit,ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} from "@angular/core";
-import {toast} from "../../services/toast.service";
+/**
+ * @module SystemComponents
+ */
+import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} from "@angular/core";
 
 @Component({
     selector: "system-component-container",

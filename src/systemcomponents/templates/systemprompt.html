@@ -7,7 +7,10 @@
             <div *ngIf="text" class="slds-m-vertical_medium">{{text}}</div>
             <div *ngIf="type === 'input'" class="slds-form-element slds-m-vertical_medium">
                 <div class="slds-form-element__control">
-                    <input #inputField class="slds-input" type="text" [(ngModel)]="value" />
+                    <input *ngIf="!options" #inputField class="slds-input" type="text" [(ngModel)]="value" />
+                    <select *ngIf="options" #inputField class="slds-select" [(ngModel)]="value" style="width:inherit;max-width:100%">
+                        <option *ngFor="let option of options;let i=index" [selected]="i==value" [value]="i">{{option}}</option>
+                    </select>
                 </div>
             </div>
         </div>

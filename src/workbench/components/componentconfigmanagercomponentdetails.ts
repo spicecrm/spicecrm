@@ -1,13 +1,13 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
     Component,
     Input,
-    AfterViewInit,
-    OnInit,
     ViewChild,
     ViewContainerRef,
-    OnDestroy, OnChanges, SimpleChanges
+    OnChanges, SimpleChanges
 } from '@angular/core';
-import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {broadcast} from '../../services/broadcast.service';

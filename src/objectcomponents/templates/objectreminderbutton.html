@@ -11,6 +11,6 @@
         </span>
     </a>
     <div class="slds-datepicker slds-dropdown slds-dropdown_right" role="dialog">
-        <system-input-date-picker [setDate]="reminderDate" (datePicked)="setReminder($event)"></system-input-date-picker>
+        <system-input-date-picker *ngIf="showDialog" [setDate]="reminderDate" (datePicked)="setReminder($event)"></system-input-date-picker>
     </div>
 </div>

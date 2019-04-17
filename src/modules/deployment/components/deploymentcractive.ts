@@ -1,3 +1,6 @@
+/**
+ * @module ModuleDeployment
+ */
 import {Component, OnDestroy} from "@angular/core";
 import {Router} from "@angular/router";
 import {language} from "../../../services/language.service";
@@ -67,7 +70,6 @@ export class DeploymentCRActive implements OnDestroy {
 
 
     private getDisplay() {
-
         return this.isAdmin ? "inherit" : "none";
     }
 

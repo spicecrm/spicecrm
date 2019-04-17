@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Injectable} from '@angular/core';
 
 @Injectable()

@@ -1,9 +1,12 @@
+/**
+ * @module ObjectFields
+ */
 import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 
 /**
- * created by Sebastian Franz
+ * display an info icon and then renders a model popover
  */
 @Component({
     selector: 'field-model-info',

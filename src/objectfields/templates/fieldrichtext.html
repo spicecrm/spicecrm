@@ -1,5 +1,5 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    <div class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue" style="white-space: normal; height: 300px; resize: vertical; overflow-y: auto;"></div>
+    <div class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="htmlValue" style="white-space: normal; height: 300px; resize: vertical; overflow-y: auto;"></div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <system-richtext-editor [(ngModel)]="value"></system-richtext-editor>

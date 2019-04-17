@@ -1,4 +1,7 @@
-import { Component, Input, Renderer, ViewChild, AfterViewInit, ViewContainerRef } from '@angular/core';
+/**
+ * @module ModuleMediaFiles
+ */
+import { Component, Renderer, ViewChild, AfterViewInit, ViewContainerRef } from '@angular/core';
 import {mediafiles} from '../../../services/mediafiles.service';
 import { backend } from '../../../services/backend.service';
 import { language } from '../../../services/language.service';
@@ -14,7 +17,6 @@ import {toast} from "../../../services/toast.service";
         ':host >>> div.uploadbar {margin-left:-16px;margin-right:-16px;margin-top:16px;margin-bottom:-16px;width:calc(100% + 32px);height:8px;}',
         ':host >>> div.uploadprogress {width: 90%;height: 100%;background-color: red;}'
     ]
-    //styles: [ 'img.thumb { background-color: #fff; border: 1px solid #d8dde6; padding: 1px; margin-right: 3px; width: 32px; height: 32px; }' ]
 })
 export class MediaFileUploader implements AfterViewInit {
 

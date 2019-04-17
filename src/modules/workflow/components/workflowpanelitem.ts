@@ -1,10 +1,10 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,Input,
-    ElementRef, OnInit, OnDestroy
+    Component,Input, OnInit
 } from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
+
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
@@ -13,7 +13,6 @@ import {broadcast} from '../../../services/broadcast.service';
 @Component({
     selector: 'workflow-panel-item',
     templateUrl: './src/modules/workflow/templates/workflowpanelitem.html',
-    //providers: [model]
 
 })
 export class WorkflowPanelItem implements OnInit{

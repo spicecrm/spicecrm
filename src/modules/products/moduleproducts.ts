@@ -1,10 +1,14 @@
+/**
+ * @module ModuleProducts
+ */
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
+import {DirectivesModule} from "../../directives/directives";
 
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, Subscription} from 'rxjs';
 
 
 import {loginService, loginCheck} from '../../services/login.service';
@@ -38,7 +42,10 @@ import /*embed*/ { productfinder } from './services/productfinder.service';
 
 import /*embed*/ {ProductManager} from './components/productmanager';
 import /*embed*/ {ProductBrowser} from './components/productbrowser';
+import /*embed*/ {ProductGroupManager} from "./components/productgroupmanager";
+import /*embed*/ {ProductGroupManagerDetails} from "./components/productgroupmanagerdetails";
 import /*embed*/ {ProductBrowserTree} from './components/productbrowsertree';
+import /*embed*/ {ProductGroupManagerTree} from './components/productgroupmanagertree';
 import /*embed*/ {ProductBrowserVariants} from './components/productbrowservariants';
 import /*embed*/ {ProductBrowserVariant} from './components/productbrowservariant';
 import /*embed*/ {ProductBrowserAttributes} from './components/productbrowserattributes';
@@ -47,14 +54,22 @@ import /*embed*/ {ProductBrowserAttributeVCSearch} from './components/productbro
 import /*embed*/ {ProductBrowserAttributeDISearch} from './components/productbrowserattributedisearch';
 import /*embed*/ {ProductBrowserAttributeNSearch} from './components/productbrowserattributensearch';
 import /*embed*/ {ProductBrowserAttributeFSearch} from './components/productbrowserattributefsearch';
+import /*embed*/ {ProductBrowserAttributeSSearch} from './components/productbrowserattributessearch';
 import /*embed*/ {ProductVariantsAttributes} from './components/productvariantsattributes';
 import /*embed*/ {ProductVariantsAttributeVC} from './components/productvariantsattributevc';
 import /*embed*/ {ProductVariantsAttributeDI} from './components/productvariantsattributedi';
 import /*embed*/ {ProductVariantsAttributeN} from './components/productvariantsattributen';
 import /*embed*/ {ProductVariantsAttributeF} from './components/productvariantsattributef';
+import /*embed*/ {ProductVariantsAttributeSS} from "./components/productvariantsattributess";
 import /*embed*/ {ProductTextGenerator} from './components/producttextgenerator';
 import /*embed*/ {ProductGroupsContentCodeAssignments} from './components/productgroupscontentcodeassignments';
 import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/productgroupslongtextcodeassignments';
+import /*embed*/ {ProductGroupManagerDetailsAttributesValidationItem} from "./components/productgroupmanagerdetailsattributesvalidationitem";
+import /*embed*/ {ProductGroupManagerDetailsAttributesValidation} from "./components/productgroupmanagerdetailsattributesvalidation";
+import /*embed*/ {ProductGroupManagerDetailsAttributesItem} from "./components/productgroupmanagerdetailsattributesitem";
+import /*embed*/ {ProductGroupManagerDetailsAttributesAddButton} from "./components/productgroupmanagerdetailsattributesaddbutton";
+import /*embed*/ {ProductGroupManagerDetailsAttributes} from './components/productgroupmanagerdetailsattributes';
+import /*embed*/ {ProductUOMConversions} from "./components/productuomconversions";
 
 @NgModule({
     imports: [
@@ -64,32 +79,44 @@ import /*embed*/ {ProductGroupsLongtextCodeAssignments} from './components/produ
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ProductManager,
+        ProductGroupManager,
+        ProductGroupManagerDetails,
+        ProductGroupManagerDetailsAttributesValidationItem,
+        ProductGroupManagerDetailsAttributesValidation,
+        ProductGroupManagerDetailsAttributesAddButton,
+        ProductGroupManagerDetailsAttributesItem,
+        ProductGroupManagerDetailsAttributes,
         ProductBrowser,
         ProductBrowserTree,
+        ProductGroupManagerTree,
         ProductBrowserVariants,
         ProductBrowserVariant,
         ProductBrowserAttributes,
-        ProductVariantsAttributesTable,
         ProductBrowserAttributeVCSearch,
         ProductBrowserAttributeDISearch,
         ProductBrowserAttributeNSearch,
         ProductBrowserAttributeFSearch,
-        ProductVariantsAttributes,
+        ProductBrowserAttributeSSearch,
         ProductVariantsAttributeVC,
         ProductVariantsAttributeDI,
         ProductVariantsAttributeN,
         ProductVariantsAttributeF,
+        ProductVariantsAttributeSS,
+        ProductVariantsAttributesTable,
+        ProductVariantsAttributes,
         ProductTextGenerator,
         ProductGroupsContentCodeAssignments,
-        ProductGroupsLongtextCodeAssignments
+        ProductGroupsLongtextCodeAssignments,
+        ProductUOMConversions,
     ]
 })
 export class ModuleProducts {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+    public readonly version = '1.0';
+    public readonly build_date = '/*build_date*/';
 
     constructor(
         private vms: VersionManagerService,

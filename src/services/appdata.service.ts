@@ -1,7 +1,11 @@
+/**
+ * @module services
+ */
 import {
     Injectable,
 } from '@angular/core';
-import {backend} from "./backend.service";
+
+// import {backend} from "./backend.service";
 
 
 /**
@@ -9,28 +13,36 @@ import {backend} from "./backend.service";
  * author: Sebastian Franz
  */
 @Injectable()
-export class AppDataService
-{
+export class AppDataService {
     private _modules = [];
 
+    private _appData: any = {};
+
     constructor(
-        private backend: backend
+        // private backend: backend
     ) {
-        this.loadModules();
+        // this.loadModules();
     }
 
-    get modules()
-    {
+    /*
+    get modules() {
         return this._modules;
     }
 
-    private loadModules()
-    {
+    private loadModules() {
         this.backend.getRequest('spiceui/admin/modules')
-            .subscribe(modules =>
-            {
+            .subscribe(modules => {
                 this._modules = modules;
             });
+    }
+    */
+
+    public setAppData(key, data) {
+        this._appData[key] = data;
+    }
+
+    public getAppData(key) {
+        return this._appData[key];
     }
 
 }

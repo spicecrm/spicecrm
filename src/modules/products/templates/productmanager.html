@@ -10,10 +10,10 @@
             </div>
         </div>
         <div class="slds-col slds-no-flex slds-grid slds-align-top">
-            <button class="slds-button slds-button_neutral" [disabled]="!canAddVariant" (click)="addVariant()">{{language.getModuleLabel('ProductVariants', 'LBL_NEW_FORM_TITLE')}}</button>
+            <button class="slds-button slds-button_neutral" [disabled]="!canAddVariant" (click)="addVariant()">{{language.getLabel('ProductVariants', 'LBL_NEW_FORM_TITLE')}}</button>
         </div>
     </div>
 </div>
-<div [ngStyle]="getContentStyle()" #productmanagercontent>
+<div tobottom>
     <product-browser (selectionchanged)="selectionChanged($event)"></product-browser>
 </div>

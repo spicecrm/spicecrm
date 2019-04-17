@@ -1,7 +1,9 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
     Input,
-    OnInit,
     OnChanges,
     OnDestroy,
     Renderer2,
@@ -9,13 +11,12 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-integration-tools-button',
@@ -23,18 +24,18 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterIntegrationToolsButton implements OnChanges, OnDestroy {
 
-    @ViewChild('actionitems', {read: ViewContainerRef}) actionitems: ViewContainerRef;
+    @ViewChild('actionitems', {read: ViewContainerRef}) private actionitems: ViewContainerRef;
 
-    @Input() integrationParams: any = {};
+    @Input() private integrationParams: any = {};
 
-    clickListener: any;
-    opened: boolean = false;
-    actionComponents: Array<any> = [];
+    private clickListener: any;
+    private opened: boolean = false;
+    private actionComponents: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private model: model, private footer: footer, private reporterconfig: reporterconfig, private renderer: Renderer2, private elementRef: ElementRef) {
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
                 switch (plugin) {
@@ -48,9 +49,8 @@ export class ReporterIntegrationToolsButton implements OnChanges, OnDestroy {
         }
     }
 
-    ngOnDestroy() {
-        if (this.clickListener)
-            this.clickListener();
+    public ngOnDestroy() {
+        if (this.clickListener) this.clickListener();
     }
 
     get isDisabled() {
@@ -66,13 +66,14 @@ export class ReporterIntegrationToolsButton implements OnChanges, OnDestroy {
         return true;
     }
 
-    toggleOpen() {
+    private toggleOpen() {
         this.opened = !this.opened;
 
         if (this.opened) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener)
+        } else if (this.clickListener) {
             this.clickListener();
+        }
     }
 
 

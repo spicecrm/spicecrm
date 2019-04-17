@@ -1,10 +1,11 @@
-import {Component, AfterViewInit, OnInit, OnDestroy, OnChanges, ViewChild, ViewContainerRef, ElementRef} from '@angular/core';
+/**
+ * @module ModuleLeads
+ */
+import {Component, OnInit,  ViewChild, ViewContainerRef, ElementRef} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'lead-openleads-dashlet',

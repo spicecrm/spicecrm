@@ -1,4 +1,16 @@
-import {AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+/**
+ * @module ModuleDashboard
+ */
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    HostBinding,
+    Input,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {dashboardlayout} from "../services/dashboardlayout.service";
@@ -22,8 +34,11 @@ export class DashboardContainerElement implements AfterViewInit {
     constructor(private dashboardlayout: dashboardlayout,
                 private metadata: metadata,
                 private renderer: Renderer2,
-                private language: language,
-                private elementRef: ElementRef) {
+                private language: language) {
+    }
+
+    get compactView() {
+        return this.dashboardlayout.compactView;
     }
 
     public ngAfterViewInit() {
@@ -36,16 +51,17 @@ export class DashboardContainerElement implements AfterViewInit {
         }
         this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true;
         if (this.item.component && this.isAuthorized) {
-            this.metadata.addComponent(this.item.component, this.containerelement).subscribe(componentRef => {
-                componentRef.instance.dashletconfig = this.item.dashletconfig;
-                componentRef.instance.acl_action = this.item.acl_action;
-                componentRef.instance.icon = this.item.icon;
-                componentRef.instance.dashlet_id = this.item.dashlet_id;
-                componentRef.instance.componentconfig = this.item.componentconfig;
-                componentRef.instance.dashletModule = this.item.module;
-                componentRef.instance.dashletLabel = this.item.label;
-                this.componentRefs.push(componentRef);
-            });
+            this.metadata.addComponent(this.item.component, this.containerelement)
+                .subscribe(componentRef => {
+                    componentRef.instance.dashletconfig = this.item.dashletconfig;
+                    componentRef.instance.acl_action = this.item.acl_action;
+                    componentRef.instance.icon = this.item.icon;
+                    componentRef.instance.dashlet_id = this.item.dashlet_id;
+                    componentRef.instance.componentconfig = this.item.componentconfig;
+                    componentRef.instance.dashletModule = this.item.module;
+                    componentRef.instance.dashletLabel = this.item.label;
+                    this.componentRefs.push(componentRef);
+                });
         }
     }
 
@@ -54,8 +70,9 @@ export class DashboardContainerElement implements AfterViewInit {
     }
 
     private getBoxStyle() {
-        let style = this.dashboardlayout.getElementStyle(this.item.position.top, this.item.position.left, this.item.position.width, this.item.position.height);
-        style = this.applyMove(style);
+        let itemPos = this.item.position;
+        let style = this.dashboardlayout.getElementStyle(itemPos.top, itemPos.left, itemPos.width, itemPos.height);
+        style = this.dashboardlayout.applyMove(style, this.mouseTarget, this.mouseStart, this.mouseLast);
 
         if (this.isEditing()) {
             style.border = "1px dashed #ca1b21";
@@ -65,41 +82,27 @@ export class DashboardContainerElement implements AfterViewInit {
                 style["z-index"] = "9999";
             }
         }
-        return style;
+        return this.dashboardlayout.prepareStyle(style);
     }
 
     private getBoundingBoxStyle(position): any {
-        let rect = this.getBoxStyle();
+        let itemPos = this.item.position;
+        let rect = this.dashboardlayout.getElementStyle(itemPos.top, itemPos.left, itemPos.width, itemPos.height);
+        rect = this.dashboardlayout.applyMove(rect, this.mouseTarget, this.mouseStart, this.mouseLast);
         let style: any = {};
 
         switch (position) {
             case "top":
-                style = {
-                    top: -4,
-                    left: rect.width / 2 - 4,
-                    cursor: "n-resize"
-                };
+                style = {top: -4, left: rect.width / 2 - 4, cursor: "n-resize"};
                 break;
             case "bottom":
-                style = {
-                    top: rect.height - 5,
-                    left: rect.width / 2 - 4,
-                    cursor: "s-resize"
-                };
+                style = {top: rect.height - 5, left: rect.width / 2 - 4, cursor: "s-resize"};
                 break;
             case "left":
-                style = {
-                    top: rect.height / 2 - 4,
-                    left: -4,
-                    cursor: "w-resize"
-                };
+                style = {top: rect.height / 2 - 4, left: '-4px', cursor: "w-resize"};
                 break;
             case "right":
-                style = {
-                    left: rect.width - 5,
-                    top: rect.height / 2 - 4,
-                    cursor: "e-resize"
-                };
+                style = {left: rect.width - 5, top: rect.height / 2 - 4, cursor: "e-resize"};
                 break;
         }
 
@@ -109,85 +112,7 @@ export class DashboardContainerElement implements AfterViewInit {
         style.width = "8px";
         style.height = "8px";
 
-        return style;
-    }
-
-    private applyMove(rect) {
-        let style = rect;
-        let mainContainer: any = this.dashboardlayout.mainContainer;
-        let mainContainerRight: number = mainContainer.right - mainContainer.x - this.dashboardlayout.paddingRight;
-        let margin: number = this.dashboardlayout.boxMargin;
-        let boxWidth: number = this.dashboardlayout.elementWidth - (2 * margin);
-        let boxHeight: number = this.dashboardlayout.elementHeight - (2 * margin);
-        let movex: number;
-        let movey: number;
-
-        if (this.mouseLast && this.mouseStart) {
-            movex = this.mouseLast.pageX - this.mouseStart.pageX;
-            movey = this.mouseLast.pageY - this.mouseStart.pageY;
-        }
-
-        if (this.mouseStart) {
-            switch (this.mouseTarget) {
-                case "content":
-                    style.left = style.left + movex;
-                    style.top = style.top + movey;
-                    if (style.left < margin) {
-                        style.left = margin;
-                    }
-                    if (style.top < margin) {
-                        style.top = margin;
-                    }
-                    if ((style.left + style.width) > mainContainerRight) {
-                        style.left = mainContainerRight - style.width - margin;
-                    }
-                    break;
-                case "right":
-                    style.width = style.width + movex;
-                    if ((style.left + style.width) > mainContainerRight) {
-                        style.width = mainContainerRight - style.left - margin;
-                        style.left = mainContainerRight - style.width - margin;
-                    }
-                    if (style.width < boxWidth) {
-                        style.width = boxWidth;
-                    }
-                    break;
-                case "left":
-                    let elRight = style.width + style.left;
-                    style.width = style.width - movex;
-                    style.left = style.left + movex;
-                    if (style.left < margin) {
-                        style.left = margin;
-                        style.width = elRight - margin;
-                    }
-                    if (style.width < boxWidth) {
-                        style.width = boxWidth;
-                        style.left = elRight - style.width;
-                    }
-                    break;
-                case "bottom":
-                    style.height = style.height + movey;
-                    if (style.height < boxHeight) {
-                        style.height = boxHeight;
-                    }
-                    break;
-                case "top":
-                    let elBottom = style.height + style.top;
-                    style.height = style.height - movey;
-                    style.top = style.top + movey;
-                    if (style.top < margin) {
-                        style.top = margin;
-                        style.height = elBottom - margin;
-                    }
-                    if (style.height < boxHeight) {
-                        style.height = boxHeight;
-                        style.top = elBottom - style.height;
-                    }
-                    break;
-            }
-        }
-
-        return style;
+        return this.dashboardlayout.prepareStyle(style);
     }
 
     private onMousedown(target, e) {
@@ -219,6 +144,7 @@ export class DashboardContainerElement implements AfterViewInit {
         if (this.dashboardlayout.editMode) {
             this.mouseLast = e;
         }
+        this.handleScrolling();
     }
 
     private onMouseUp() {
@@ -232,6 +158,23 @@ export class DashboardContainerElement implements AfterViewInit {
         this.mouseTarget = "";
 
         this.dashboardlayout.isMoving = false;
+    }
+
+    private handleScrolling() {
+        if (!this.dashboardlayout.editMode || !this.dashboardlayout.isMoving) {
+            return;
+        }
+
+        let moveY = this.mouseLast.pageY - this.mouseStart.pageY;
+        let item = this.item.position;
+        item = this.dashboardlayout.getElementStyle(item.top, item.left, item.width, item.height);
+        let itemHeight = this.mouseTarget == 'bottom' ? (item.height + moveY) : item.height;
+        let itemBottom = this.mouseTarget == 'content' ? ((item.top + moveY) + itemHeight) : (item.top + itemHeight);
+        let container = this.dashboardlayout.bodyContainerRef;
+        let containerBottom = container.getBoundingClientRect().bottom - container.offsetTop;
+        if (itemBottom > (containerBottom - 50)) {
+            container.scrollTop += 5;
+        }
     }
 
     private dropItem() {

@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component, ChangeDetectorRef} from "@angular/core";
 import {modelutilities} from "../../services/modelutilities.service";
 import {backend} from "../../services/backend.service";

@@ -1,3 +1,6 @@
+/**
+ * @module services
+ */
 import {Subject, Observable, of} from "rxjs";
 import {
     Injectable,
@@ -15,7 +18,6 @@ import {Router, Route, CanActivate} from "@angular/router";
 // import {loginCheck} from "../services/login.service";
 
 
-
 declare var System: any;
 declare var SystemJS: any;
 declare var SystemDynamicRouteContainer: any;
@@ -24,33 +26,17 @@ declare var _;
 @Injectable()
 export class metadata {
     // modules: Array<any> = [];
-    private moduleDefs: any = {};
-    private moduleDirectory: any = {};
-    private validationRules: any = {};
-    private htmlStyleData: any = {};
-    private componentDirectory: any = {};
+    /**
+     * hols the module defs returned from teh backend. This has all teh necesary info on the module itself
+     */
     private componentFactories: any = {};
-    private componentSets: any = {};
-    private componentDefaultConfigs: any = {};
-    private componentModuleConfigs: any = {};
-    private routes: any = {};
-    private fieldSets: any = {};
-    private actionSets: any = {};
-    private fieldDefs: any = {};
-    private fieldTypeMappings: any = {};
-    private fieldStatusNetworks: any = {};
-    private roles: Array<any> = [];
-    private rolemodules: any = {};
     private role: string = "";
-    private copyrules: any = {};
-    // stores external libraries and their loading state which can be lazyloaded any time via loadLibrary()...
-    private scripts: any = [];
 
     constructor(
         private NgModuleFactoryLoader: NgModuleFactoryLoader,
         private http: HttpClient,
         private session: session,
-        private configurationService: configurationService,
+        private configuration: configurationService,
         private componentFactoryResolver: ComponentFactoryResolver,
         private router: Router,
         private broadcast: broadcast,
@@ -60,234 +46,95 @@ export class metadata {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
     }
 
-    /*
-     message handler for workbench updates
+
+    get actionSets() {
+        return this.configuration.getData('actionsets');
+    }
+
+    get componentDefaultConfigs() {
+        return this.configuration.getData('componentdefaultconfigs');
+    }
+
+    get componentModuleConfigs() {
+        return this.configuration.getData('componentmoduleconfigs');
+    }
+
+    get moduleDirectory() {
+        return this.configuration.getData('modules');
+    }
+
+    get componentDirectory() {
+        return this.configuration.getData('components');
+    }
+
+    get componentSets() {
+        return this.configuration.getData('componentsets');
+    }
+
+    get routes() {
+        return this.configuration.getData('routes');
+    }
+
+    get scripts() {
+        return this.configuration.getData('scripts');
+    }
+
+    get fieldSets() {
+        return this.configuration.getData('fieldsets');
+    }
+
+    get validationRules() {
+        return this.configuration.getData('validationrules');
+    }
+
+    get fieldDefs() {
+        return this.configuration.getData('fielddefs');
+    }
+
+    get fieldTypeMappings() {
+        return this.configuration.getData('fieldtypemappings');
+    }
+
+    get fieldStatusNetworks() {
+        return this.configuration.getData('fieldstatusnetworks');
+    }
+
+    get moduleDefs() {
+        return this.configuration.getData('moduledefs');
+    }
+
+    get moduleFilters() {
+        return this.configuration.getData('modulefilters');
+    }
+
+    get roles() {
+        return this.configuration.getData('roles');
+    }
+
+    get rolemodules() {
+        return this.configuration.getData('rolemodules');
+    }
+
+    get copyrules() {
+        return this.configuration.getData('copyrules');
+    }
+
+    get htmlStyleData() {
+        return this.configuration.getData('htmlstyles');
+    }
+
+    /**
+     * message handler for workbench updates
      */
     private handleMessage(message) {
         switch (message.messagetype) {
-            case "metadata.updatefieldsets":
-                for (let fieldset in message.messagedata.add) {
-                    this.fieldSets[fieldset] = message.messagedata.add[fieldset];
-                }
-                for (let fieldset in message.messagedata.update) {
-                    this.fieldSets[fieldset] = message.messagedata.update[fieldset];
-                }
-                for (let fieldset in message.messagedata.delete) {
-                    delete(this.fieldSets[fieldset]);
-                }
-                break;
-            case "metadata.updatecomponentsets":
-                for (let componentset in message.messagedata.add) {
-                    this.componentSets[componentset] = message.messagedata.add[componentset];
-                }
-                for (let componentset in message.messagedata.update) {
-                    this.componentSets[componentset] = message.messagedata.update[componentset];
-                }
-                for (let componentset in message.messagedata.delete) {
-                    delete(this.componentSets[componentset]);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    /*
-     * LOADER functions
-     */
-
-    public loadComponents(loadhandler: Subject<string>, forceLoading = false ) {
-        if (sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)] &&
-            sessionStorage[window.btoa("metadataComponents" + this.session.authData.sessionId)].length > 0 &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            let response = this.session.getSessionData("metadataComponents");
-            this.moduleDirectory = response.modules;
-            this.componentDirectory = response.components;
-            this.componentSets = response.componentsets;
-            this.actionSets = response.actionsets;
-            this.componentDefaultConfigs = response.componentdefaultconfigs;
-            this.componentModuleConfigs = response.componentmoduleconfigs;
-            this.routes = response.routes;
-            this.scripts = response.scripts;
-
-
-            // set Routes
-            this.addRoutes();
-
-            loadhandler.next("loadComponents");
-        } else {
-            this.http.get(
-                this.configurationService.getBackendUrl() + "/spiceui/core/components",
-                {headers: this.session.getSessionHeader()}
-                ).subscribe(
-                (res: any) => {
-                    let response = res;
-                    this.moduleDirectory = response.modules;
-                    this.componentDirectory = response.components;
-                    this.componentSets = response.componentsets;
-                    this.routes = response.routes;
-                    this.actionSets = response.actionsets;
-                    this.componentDefaultConfigs = response.componentdefaultconfigs;
-                    this.componentModuleConfigs = response.componentmoduleconfigs;
-                    this.scripts = response.scripts;
-
-                    this.session.setSessionData("metadataComponents", {
-                        modules: response.modules,
-                        components: response.components,
-                        componentsets: response.componentsets,
-                        actionsets: response.actionsets,
-                        componentdefaultconfigs: response.componentdefaultconfigs,
-                        componentmoduleconfigs: response.componentmoduleconfigs,
-                        routes: response.routes,
-                        scripts: response.scripts,
-                    });
-
+            case "loader.completed":
+                if (message.messagedata == 'loadRepository') {
                     // set Routes
                     this.addRoutes();
-
-                    loadhandler.next("loadComponents");
                 }
-            );
-        }
-    }
-
-    private moduleLoadHandler = new Subject<any>();
-
-    public loadModules() {
-        let loaderSubject = new Subject<any>();
-
-        // start with the first
-        this.moduleDirectory.some(module => {
-            this.loadModule(module);
-            return true;
-        });
-
-        // subscriber
-        this.moduleLoadHandler.subscribe(next => {
-            let loading = false;
-            this.moduleDirectory.some((module) => {
-                if (!this.componentFactories[module.id]) {
-                    loading = true;
-                    this.loadModule(module);
-                    return true;
-                }
-            });
-
-            if (!loading) {
-                loaderSubject.next(true);
-                loaderSubject.complete();
-            }
-        });
-        return loaderSubject.asObservable();
-    }
-
-    private loadModule(module: any) {
-        System.import(module.path)
-            .then((fileContents: any) => {
-                return fileContents[module.module];
-            })
-            .then((type: any) => {
-                this.componentFactories[module.id] = {};
-                this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                    for (let factory of componentfactory.componentFactories) {
-                        this.componentFactories[module.id][factory.componentType.name] = factory;
-                    }
-                    this.moduleLoadHandler.next();
-                });
-            });
-    }
-
-    public loadFieldSets(loadhandler: Subject<string>, forceLoading = false ) {
-        if (
-            this.session.existsData("metadataFieldSets") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            this.fieldSets = this.session.getSessionData("metadataFieldSets");
-            loadhandler.next("loadFieldSets");
-        } else {
-            this.http.get(
-                this.configurationService.getBackendUrl() + "/spiceui/core/fieldsets",
-                {headers: this.session.getSessionHeader()}
-                ).subscribe(res => {
-                    this.fieldSets = res;
-                    this.session.setSessionData("metadataFieldSets", this.fieldSets);
-                    loadhandler.next("loadFieldSets");
-                });
-        }
-    }
-
-    public loadFieldDefs(loadhandler: Subject<string>, forceLoading = false ) {
-        let modules: Array<String> = [];
-        for (let module in this.moduleDefs) {
-            modules.push(module);
-        }
-
-        if(
-            this.session.existsData("metadataFieldDefs") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            let result = this.session.getSessionData("metadataFieldDefs");
-            this.fieldDefs = result.fielddefs;
-            this.fieldTypeMappings = result.fieldtypemappings;
-            this.fieldStatusNetworks = result.fieldstatusnetworks;
-            loadhandler.next("loadFieldDefs");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/fielddefs", {
-                headers: this.session.getSessionHeader(),
-                params: {modules: JSON.stringify(modules)}
-            })
-                .subscribe((res: any) => {
-                    let result = res;
-                    this.session.setSessionData("metadataFieldDefs", result);
-                    this.fieldDefs = result.fielddefs;
-                    this.fieldTypeMappings = result.fieldtypemappings;
-                    this.fieldStatusNetworks = result.fieldstatusnetworks;
-                    loadhandler.next("loadFieldDefs");
-                });
-        }
-    }
-
-    public loadRoutes(loadhandler: Subject<string>) {
-
-        this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/routes", {headers: this.session.getSessionHeader()})
-            .subscribe(res => {
-                let routerConfig: Route[] = <Route[]>res;
-                this.router.resetConfig(routerConfig);
-                loadhandler.next("loadRoutes");
-            });
-
-    }
-
-    public loadModuleDefinitions(loadhandler: Subject<string>, forceLoading = false ) {
-        if(
-            this.session.existsData("metadataModuleDefinitions") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            let response = this.session.getSessionData("metadataModuleDefinitions");
-            this.moduleDefs = response.modules;
-            this.roles = response.roles;
-            this.roles.some(role => {
-                if (role.defaultrole == 1) {
-                    this.role = role.id;
-                    return true;
-                }
-            });
-            if (this.role === "" && this.roles.length > 0) {
-                this.role = this.roles[0].id;
-            }
-            this.rolemodules = response.rolemodules;
-            this.copyrules = response.copyrules;
-            loadhandler.next("loadModuleDefinitions");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/modules", {headers: this.session.getSessionHeader()})
-                .subscribe((res: any) => {
-                    let response = res;
-                    this.session.setSessionData("metadataModuleDefinitions", response);
-                    this.moduleDefs = response.modules;
-                    this.roles = response.roles;
-                    // todo: integrate validation rules
-                    // set the default role
+                if (message.messagedata == 'loadModules') {
+                    // set Role
                     this.roles.some(role => {
                         if (role.defaultrole == 1) {
                             this.role = role.id;
@@ -298,52 +145,32 @@ export class metadata {
                     if (this.role === "" && this.roles.length > 0) {
                         this.role = this.roles[0].id;
                     }
-
-                    this.rolemodules = response.rolemodules;
-
-                    this.copyrules = response.copyrules;
-
-
-                    loadhandler.next("loadModuleDefinitions");
-                });
-        }
-    }
-
-    public loadValidationRules(loadhandler: Subject<string>, forceLoading = false ): void {
-        if(
-            this.session.existsData("metadataValidationRules") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            this.validationRules = this.session.getSessionData("metadataValidationRules");
-            loadhandler.next("loadValidationRules");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/modelvalidations", {headers: this.session.getSessionHeader()}).subscribe(
-                res => {
-                    let result = res;
-                    this.session.setSessionData("metadataValidationRules", result);
-                    this.validationRules = result;
-                    loadhandler.next("loadValidationRules");
                 }
-            );
-        }
-    }
-
-    public loadHtmlStyling(loadhandler: Subject<string>, forceLoading = false ): void {
-        if(
-            this.session.existsData("metadataHtmlStyleData") &&
-            !forceLoading && !this.configurationService.data.developerMode
-        ) {
-            this.htmlStyleData = this.session.getSessionData("metadataHtmlStyleData");
-            loadhandler.next("loadHtmlStyling");
-        } else {
-            this.http.get(this.configurationService.getBackendUrl() + "/spiceui/core/htmlstyling", {headers: this.session.getSessionHeader()}).subscribe(
-                res => {
-                    let result = res;
-                    this.session.setSessionData("metadataHtmlStyleData", result);
-                    this.htmlStyleData = result;
-                    loadhandler.next("loadHtmlStyling");
+                break;
+            case "metadata.updatefieldsets":
+                for (let fieldset in message.messagedata.add) {
+                    this.fieldSets[fieldset] = message.messagedata.add[fieldset];
                 }
-            );
+                for (let fieldset in message.messagedata.update) {
+                    this.fieldSets[fieldset] = message.messagedata.update[fieldset];
+                }
+                for (let fieldset in message.messagedata.delete) {
+                    delete (this.fieldSets[fieldset]);
+                }
+                break;
+            case "metadata.updatecomponentsets":
+                for (let componentset in message.messagedata.add) {
+                    this.componentSets[componentset] = message.messagedata.add[componentset];
+                }
+                for (let componentset in message.messagedata.update) {
+                    this.componentSets[componentset] = message.messagedata.update[componentset];
+                }
+                for (let componentset in message.messagedata.delete) {
+                    delete (this.componentSets[componentset]);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -382,7 +209,7 @@ export class metadata {
                 this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                     componentfactory.componentFactories.some(factory => {
                         if (factory.componentType.name === "SystemDynamicRouteContainer") {
-                            for(let route of this.routes) {
+                            for (let route of this.routes) {
                                 this.router.config.unshift({
                                     path: route.path,
                                     component: factory.componentType,
@@ -447,7 +274,7 @@ export class metadata {
                                 }
                             });
                         });
-                } catch(e) {
+                } catch (e) {
                     retSubject.error(e);
                     retSubject.complete();
                 }
@@ -573,6 +400,15 @@ export class metadata {
         return this.componentSets[componentSetId];
     }
 
+    public getAllComponentsets() {
+        try {
+            return this.componentSets;
+        } catch (e) {
+            return "";
+        }
+    }
+
+
     public addComponentSet(id, module, name, type = "custom") {
         this.componentSets[id] = {
             name: name,
@@ -587,7 +423,7 @@ export class metadata {
     }
 
     public getComponentSets(module = "") {
-        let retComponentSets: Array<any> = [];
+        let retComponentSets: any[] = [];
 
         for (let componenset in this.componentSets) {
             if (module !== "" && this.componentSets[componenset].module !== module) {
@@ -641,7 +477,7 @@ export class metadata {
     }
 
     public getFieldSets(module: string = "", filter: string = "") {
-        let retFieldsets: Array<any> = [];
+        let retFieldsets: any[] = [];
 
         for (let fieldset in this.fieldSets) {
             if (module !== "" && this.fieldSets[fieldset].module !== module) {
@@ -750,6 +586,11 @@ export class metadata {
         }
     }
 
+    /**
+     * returns the name of a fieldset
+     *
+     * @param fieldset the id of the fieldset
+     */
     public getFieldsetName(fieldset) {
         try {
             return this.fieldSets[fieldset].name;
@@ -758,22 +599,52 @@ export class metadata {
         }
     }
 
-    public getFieldSetFields(_fieldDef) {
-        if (this.fieldSets[_fieldDef]) {
-            return this.fieldSets[_fieldDef].items;
+    /**
+     * flattens out a fieldset and returns all fields. If an item in the fieldset is a fieldset this is recursively flattened out
+     *
+     * @param fieldset the id of the fieldset
+     */
+    public getFieldSetFields(fieldset: string, parents: string = ''): any[] {
+        if (this.fieldSets[fieldset]) {
+
+            let fields = [];
+            for (let fieldsetitem of this.fieldSets[fieldset].items) {
+                if (fieldsetitem.field) {
+                    fields.push(fieldsetitem);
+                } else if (fieldsetitem.fieldset) {
+                    // check for recursion
+                    if (parents.indexOf(fieldset) < 0) {
+                        // resolve feidlset adding the current fieldset to the parents string
+                        fields = fields.concat(this.getFieldSetFields(fieldsetitem.fieldset, parents + ':' + fieldset));
+                    }
+                }
+            }
+            return fields;
+
         } else {
             return [];
         }
     }
 
-    public getFieldSetItems(_fieldDef) {
-        if (this.fieldSets[_fieldDef]) {
-            return this.fieldSets[_fieldDef].items;
+    /**
+     * get the items of a fieldset which is a mix of fieldsets and fields
+     *
+     * @param fieldset the id of the fieldset
+     */
+    public getFieldSetItems(fieldset) {
+        if (this.fieldSets[fieldset]) {
+            return this.fieldSets[fieldset].items;
         } else {
             return [];
         }
     }
 
+    /**
+     * returns the name of the label of a fields. This does not return the translation. For that the language service must be queried resp is there a method on the language service
+     *
+     * @param module the name of the module
+     * @param field the name of the field
+     */
     public getFieldlabel(module, field) {
         try {
             return this.fieldDefs[module][field].vname;
@@ -785,18 +656,28 @@ export class metadata {
     public getAppModules() {
         // convert object to array...
         let ret = [];
-        for(let id in this.moduleDirectory) {
-            if(this.moduleDirectory.hasOwnProperty(id)) {
+        for (let id in this.moduleDirectory) {
+            if (this.moduleDirectory.hasOwnProperty(id)) {
                 ret.push(this.moduleDirectory[id]);
             }
         }
         return ret;
     }
 
+    /**
+     * returns the definition data for thge module
+     *
+     * @param module the name of the module
+     */
     public getModuleDefs(module) {
         return this.moduleDefs[module];
     }
 
+    /**
+     * returns for a given modulename if the duplicate check is active for the module
+     *
+     * @param module the name of the module
+     */
     public getModuleDuplicatecheck(module) {
         try {
             return this.moduleDefs[module].duplicatecheck === "1";
@@ -805,7 +686,12 @@ export class metadata {
         }
     }
 
-    public getModules() {
+    /**
+     * returns a list of all modules defined in teh current config
+     *
+     * @return an array of modulenames
+     */
+    public getModules(): string[] {
         let modules = [];
 
         for (let module in this.moduleDefs) {
@@ -815,6 +701,11 @@ export class metadata {
         return modules;
     }
 
+    /**
+     * returns the name of the icon to be used for the module
+     *
+     * @param module the name of the module
+     */
     public getModuleIcon(module) {
         try {
             return this.moduleDefs[module].icon;
@@ -833,8 +724,8 @@ export class metadata {
 
     public getModuleFromSingular(singular) {
         let module = "";
-        for(let thismodule in this.moduleDefs) {
-            if(this.moduleDefs[thismodule].singular == singular) {
+        for (let thismodule in this.moduleDefs) {
+            if (this.moduleDefs[thismodule].singular == singular) {
                 module = thismodule;
             }
         }
@@ -849,7 +740,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      * to read module field defs
      */
     public getModuleFields(module: string) {
@@ -858,6 +749,20 @@ export class metadata {
         } catch (e) {
             return [];
         }
+    }
+
+    /**
+     * returns all fields that are relevant for a duplicate check for the given module
+     *
+     * @param module the module object that the fields are supposed to be returned for
+     */
+    public getModuleDuplicateCheckFields(module: string): any {
+        let dupfields = [];
+        let fields = this.getModuleFields(module);
+        for (let field in fields) {
+            if (fields[field].duplicatecheck) dupfields.push(field);
+        }
+        return dupfields;
     }
 
     public getModuleValidations(module: string) {
@@ -916,8 +821,8 @@ export class metadata {
     }
 
     public checkStatusManaged(module: string) {
-        for(let field in this.fieldDefs[module]) {
-            if(this.getFieldDefs(module, field).options && this.fieldStatusNetworks[this.getFieldDefs(module, field).options]) {
+        for (let field in this.fieldDefs[module]) {
+            if (this.getFieldDefs(module, field).options && this.fieldStatusNetworks[this.getFieldDefs(module, field).options]) {
                 return {
                     statusField: this.getFieldDefs(module, field).name,
                     statusNetwork: this.fieldStatusNetworks[this.getFieldDefs(module, field).options]
@@ -928,11 +833,31 @@ export class metadata {
         return false;
     }
 
+    /**
+     * returns the type for the field
+     *
+     * @param module the module
+     * @param field the fieldname
+     */
     public getFieldType(module: string, field: string) {
         try {
             return this.fieldDefs[module][field].type;
         } catch (e) {
             return "varchar";
+        }
+    }
+
+    /**
+     * returns the source information for the field (useful to check if field is non-db)
+     *
+     * @param module the module
+     * @param field the fieldname
+     */
+    public getFieldSource(module: string, field: string) {
+        try {
+            return this.fieldDefs[module][field].source;
+        } catch (e) {
+            return "";
         }
     }
 
@@ -952,7 +877,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      get modules from Repository
      */
     public getSystemModules() {
@@ -969,14 +894,14 @@ export class metadata {
         return modArray;
     }
 
-    /*
+    /**
      get components from Repository
      */
-    public getSystemComponents(module = undefined) {
+    public getSystemComponents(module?) {
         let compArray = [];
 
         for (let component in this.componentDirectory) {
-            if(!module || module == this.componentDirectory[component].module) {
+            if (!module || module == this.componentDirectory[component].module) {
                 compArray.push(this.componentDirectory[component]);
             }
         }
@@ -989,7 +914,7 @@ export class metadata {
     }
 
 
-    /*
+    /**
      get a components config option
      */
     public getComponentConfigOptions(component) {
@@ -1000,7 +925,7 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      get all module specific options that are available
      */
     public getComponentConfigurations(module = "*") {
@@ -1011,12 +936,14 @@ export class metadata {
         }
     }
 
-    /*
+    /**
      get the component config
      */
     public getComponentConfig(component: string = "", module: string = "", role = "") {
 
-        if (role === "") { role = this.role ? this.role : "*";};
+        if (role === "") {
+            role = this.role ? this.role : "*";
+        }
 
         if (module != "" && this.componentModuleConfigs[module] && this.componentModuleConfigs[module][component] && this.componentModuleConfigs[module][component][role]) {
             return this.componentModuleConfigs[module][component][role];
@@ -1033,7 +960,7 @@ export class metadata {
 
     public getModuleDefaultComponentConfigByUsage(module: string, usage: string) {
         let component = "";
-        switch(usage) {
+        switch (usage) {
             case "list":
                 component = "ObjectList";
                 break;
@@ -1048,7 +975,7 @@ export class metadata {
      * get the action set
      */
     public getActionSets(module = "") {
-        let retActionSets: Array<any> = [];
+        let retActionSets: any[] = [];
 
         for (let actionset in this.actionSets) {
             if (module !== "" && (this.actionSets[actionset].module !== module && this.actionSets[actionset].module !== "*")) {
@@ -1059,6 +986,7 @@ export class metadata {
                 id: actionset,
                 name: this.actionSets[actionset].name,
                 module: this.actionSets[actionset].module,
+                type: this.actionSets[actionset].type
             });
         }
 
@@ -1082,6 +1010,58 @@ export class metadata {
     }
 
     /*
+     * get all module filters
+     */
+    public getModuleFilters(module = "") {
+        let retModuleFilters = [];
+        for (let ModuleFilter in this.moduleFilters) {
+            if (this.moduleFilters.hasOwnProperty(ModuleFilter)) {
+                if (module !== "" && this.moduleFilters[ModuleFilter].module !== module) {
+                    continue;
+                }
+                retModuleFilters.push(this.moduleFilters[ModuleFilter]);
+            }
+        }
+        retModuleFilters.sort((a, b) => a.name - b.name);
+        return retModuleFilters;
+    }
+
+    /**
+     * @param filterId: string
+     * @returns {any}
+     */
+    public getModuleFilter(filterId) {
+        try {
+            return this.moduleFilters[filterId];
+        } catch (e) {
+            return "";
+        }
+    }
+
+    /**
+     * @param filterId: string
+     * @param name: object
+     * @param module: object
+     * @param type: object
+     */
+    public setModuleFilter(id, name, module, type = 'custom') {
+        if (!this.moduleFilters) this.configuration.setData('moduleFilters', {});
+        this.moduleFilters[id] = {
+            id,
+            name,
+            module,
+            type
+        };
+    }
+
+    /**
+     * @param filterId: string
+     */
+    public removeModuleFilter(filterId) {
+        delete this.moduleFilters[filterId];
+    }
+
+    /*
      get available Roles
      */
     public checkModuleAcl(module, action) {
@@ -1100,12 +1080,14 @@ export class metadata {
     public getActiveRole(): any {
         let currentRole = {};
 
-        this.roles.some(role => {
-            if (this.role == role.id) {
-                currentRole = role;
-                return true;
-            }
-        });
+        if (this.roles) {
+            this.roles.some(role => {
+                if (this.role == role.id) {
+                    currentRole = role;
+                    return true;
+                }
+            });
+        }
 
         return currentRole;
     }
@@ -1136,7 +1118,7 @@ export class metadata {
      for the field typoe handling
      */
     public getFieldTypes() {
-        let fieldTypes: Array<string> = [];
+        let fieldTypes: string[] = [];
 
         for (let fieldType in this.fieldTypeMappings) {
             fieldTypes.push(fieldType);
@@ -1156,23 +1138,23 @@ export class metadata {
     public getRouteComponent(route) {
         let component = "";
         this.routes.some(routeDetails => {
-            if(routeDetails.path == route) {
+            if (routeDetails.path == route) {
                 component = routeDetails.component;
                 return true;
-            } else if(route.split("/").length == routeDetails.path.split("/").length) {
+            } else if (route.split("/").length == routeDetails.path.split("/").length) {
                 let routeArray = route.split("/");
                 let matchArray = routeDetails.path.split("/");
                 let matched = true;
 
                 let i = 0;
-                while(i < routeArray.length && matched) {
-                    if(matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                while (i < routeArray.length && matched) {
+                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
                         matched = false;
                     }
                     i++;
                 }
 
-                if(matched) {
+                if (matched) {
                     component = routeDetails.component;
                     return true;
                 }
@@ -1188,7 +1170,7 @@ export class metadata {
     public checkTagging(module) {
         try {
             return this.moduleDefs[module].tagging ? true : false;
-        } catch(e) {
+        } catch (e) {
             return false;
         }
     }
@@ -1198,13 +1180,14 @@ export class metadata {
      */
 
     public loadLibs(...scripts: string[]): Observable<object> {
-        let observables: Observable<object>[] = [];
-        scripts.forEach((script) => {observables.push(this.loadLib(script));});
+        let observables: Array<Observable<object>> = [];
+        scripts.forEach((script) => {
+            observables.push(this.loadLib(script));
+        });
 
         let sub = new Subject();
         let cnt = 0;
-        for(let o of observables)
-        {
+        for (let o of observables) {
             o.subscribe(
                 (res) => {
                     cnt++;
@@ -1215,7 +1198,7 @@ export class metadata {
                     sub.error(err);
                 },
                 () => {
-                    if( cnt == observables.length ) {
+                    if (cnt == observables.length) {
                         sub.next();
                         sub.complete();
                     }
@@ -1223,7 +1206,7 @@ export class metadata {
             );
         }
         // is needed in case of scripts are already loaded and completed before the subject can be subscribed...
-        if( cnt == observables.length ) {
+        if (cnt == observables.length) {
             return of(sub);
         } else {
             return sub.asObservable();
@@ -1239,14 +1222,13 @@ export class metadata {
         let sub = new Subject<object>();
 
         // error if not found... (but how?)
-        if(!this.scripts[name]) {
+        if (!this.scripts[name]) {
             return of({script: name, loaded: false, status: "Unknown"});
         } else if (this.isLibLoaded(name)) {
             return of({script: name, loaded: true, status: "Already Loaded"});
         } else if (this.isLibLoading(name)) {
-            for(let lib of this.scripts[name])
-            {
-                if(lib.loading) {
+            for (let lib of this.scripts[name]) {
+                if (lib.loading) {
                     lib.loading$.subscribe(
                         (res) => {
                             return this.loadLib(name).subscribe(
@@ -1262,9 +1244,10 @@ export class metadata {
             }
         } else {
             // load script(s)
-            for(let script of this.scripts[name])
-            {
-                if(script.loaded) { continue;}
+            for (let script of this.scripts[name]) {
+                if (script.loaded) {
+                    continue;
+                }
 
                 this.loadScript(script).subscribe(
                     (res) => {
@@ -1291,9 +1274,17 @@ export class metadata {
         script.loading = true;
         script.loading$ = new EventEmitter();
 
-        let element: any = document.createElement("script");
-        element.type = "text/javascript";
-        element.src = script.src;
+        let element: any = {};
+
+        if (script.src.endsWith('.css')) {
+            element = document.createElement("link");
+            element.rel = "stylesheet";
+            element.href = script.src;
+        } else {
+            element = document.createElement("script");
+            element.type = "text/javascript";
+            element.src = script.src;
+        }
         if (element.readyState) {
             // IE
             element.onreadystatechange = () => {
@@ -1316,6 +1307,7 @@ export class metadata {
                 script.loading$.emit("loaded");
             };
         }
+
         element.onerror = (error: any) => {
             script.loading = false;
             sub.error({script: script.src, loaded: false, status: "Failed"});
@@ -1327,10 +1319,9 @@ export class metadata {
     }
 
     public isLibLoaded(name): boolean {
-        if( this.scripts[name]) {
-            for(let lib of this.scripts[name])
-            {
-                if(!lib.loaded) {
+        if (this.scripts[name]) {
+            for (let lib of this.scripts[name]) {
+                if (!lib.loaded) {
                     return false;
                 }
             }
@@ -1341,10 +1332,9 @@ export class metadata {
     }
 
     private isLibLoading(name): boolean {
-        if( this.scripts[name] ) {
-            for(let lib of this.scripts[name])
-            {
-                if(lib.loading) {
+        if (this.scripts[name]) {
+            for (let lib of this.scripts[name]) {
+                if (lib.loading) {
                     return true;
                 }
             }
@@ -1354,33 +1344,33 @@ export class metadata {
         return false;
     }
 
-    public getHtmlStylesheetCode( stylesheetId: string ): String {
-        return _.isObject( this.htmlStyleData.stylesheets[stylesheetId] ) && _.isString( this.htmlStyleData.stylesheets[stylesheetId].csscode ) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
+    public getHtmlStylesheetCode(stylesheetId: string): string {
+        return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
     }
 
-    public getHtmlFormats( stylesheetId: string ): Array<any> {
-        if (!_.isObject( this.htmlStyleData.stylesheets[stylesheetId])) {
+    public getHtmlFormats(stylesheetId: string): any[] {
+        if (!_.isObject(this.htmlStyleData.stylesheets[stylesheetId])) {
             console.log("HTML Styling: Unknown style sheet with ID " + stylesheetId + ".");
             return [];
         }
-        if (!_.isArray( this.htmlStyleData.stylesheets[stylesheetId].formats)) {
+        if (!_.isArray(this.htmlStyleData.stylesheets[stylesheetId].formats)) {
             this.htmlStyleData.stylesheets[stylesheetId].formats = [];
         }
         // Styles are delivered by KREST as string, and must be converted to an array of objects (once). Now? Or has it already been done?
-        if ( !this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded ) {
-            this.htmlStylesToObjects( stylesheetId );
+        if (!this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded) {
+            this.htmlStylesToObjects(stylesheetId);
         }
         return this.htmlStyleData.stylesheets[stylesheetId].formats;
     }
 
-    private htmlStylesToObjects( stylesheetId ) {
-        for ( let format of this.htmlStyleData.stylesheets[stylesheetId].formats ) {
+    private htmlStylesToObjects(stylesheetId) {
+        for (let format of this.htmlStyleData.stylesheets[stylesheetId].formats) {
             let styles;
-            if ( !_.isEmpty( format.styles )) {
+            if (!_.isEmpty(format.styles)) {
                 try {
-                    styles = JSON.parse( format.styles );
-                } catch( e ) {
-                    console.log( "HTML Styling: Malformed style specification in table sysuihtmlformats (format id: " + format.id + ")." );
+                    styles = JSON.parse(format.styles);
+                } catch (e) {
+                    console.log("HTML Styling: Malformed style specification in table sysuihtmlformats (format id: " + format.id + ").");
                     styles = {};
                 }
                 format.styles = styles;
@@ -1391,16 +1381,19 @@ export class metadata {
         this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded = true;
     }
 
-    public getHtmlStylesheetNames(): Array<any> {
+    public getHtmlStylesheetNames(): any[] {
         let stylesheets = [];
-        for ( let sheetId in this.htmlStyleData.stylesheets ) {
-            stylesheets.push ({ id:this.htmlStyleData.stylesheets[sheetId].id, name:this.htmlStyleData.stylesheets[sheetId].name });
+        for (let sheetId in this.htmlStyleData.stylesheets) {
+            stylesheets.push({
+                id: this.htmlStyleData.stylesheets[sheetId].id,
+                name: this.htmlStyleData.stylesheets[sheetId].name
+            });
         }
-        return _.sortBy( stylesheets, "name");
+        return _.sortBy(stylesheets, "name");
     }
 
-    public getHtmlStylesheetToUse( module: string, fieldname: string ) {
-        if ( _.isObject( this.htmlStyleData.stylesheetsToUse[module] ) && this.htmlStyleData.stylesheetsToUse[module][fieldname] ) {
+    public getHtmlStylesheetToUse(module: string, fieldname: string) {
+        if (_.isObject(this.htmlStyleData.stylesheetsToUse[module]) && this.htmlStyleData.stylesheetsToUse[module][fieldname]) {
             return this.htmlStyleData.stylesheetsToUse[module][fieldname];
         } else {
             return "";
@@ -1412,11 +1405,11 @@ export class metadata {
 
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router, private session: session ) {
+    constructor(private metadata: metadata, private router: Router, private session: session) {
     }
 
     public canActivate(route, state) {
-        if ( route.params.module === 'Users' && !this.session.authData.admin ) {
+        if (route.params.module === 'Users' && !this.session.authData.admin) {
             return false;
         } // prevents non-admins from listing the user list
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list

@@ -1,17 +1,20 @@
-import {AfterViewInit, Component, ViewChild, ViewContainerRef} from "@angular/core";
+/**
+ * @module ModuleKnowledge
+ */
+import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {navigation} from "../../../services/navigation.service";
 import {KnowledgeService} from "../services/knowledge.service";
-import {Observable, Subject} from "rxjs";
+import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     templateUrl: "./src/modules/knowledge/templates/knowledgemanager.html",
-    providers: [model, KnowledgeService]
+    providers: [model, KnowledgeService, relatedmodels]
 })
-export class KnowledgeManager implements AfterViewInit {
+export class KnowledgeManager implements AfterViewInit, OnDestroy {
 
     public config: any = {clickable: true, canadd: true, draggable: true};
     public activeTab: string = "tree";
@@ -24,8 +27,10 @@ export class KnowledgeManager implements AfterViewInit {
                 private backend: backend,
                 private metadata: metadata,
                 private navigation: navigation,
+                private relatedmodels: relatedmodels,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeBooks";
+        this.prepareRelatedModel();
     }
 
     get selectedBook() {
@@ -82,8 +87,20 @@ export class KnowledgeManager implements AfterViewInit {
             });
     }
 
+    public ngOnDestroy() {
+        this.relatedmodels.stopSubscriptions();
+    }
+
+    private prepareRelatedModel() {
+        this.relatedmodels.module = "KnowledgeBooks";
+        this.relatedmodels.relatedModule = "KnowledgeDocuments";
+        this.relatedmodels.sort.sortfield = "name";
+        this.relatedmodels.sort.sortdirection = "ASC";
+        this.relatedmodels.loaditems = -1;
+    }
+
     private saveListEdit(toEdit: any) {
-        let data = {parent_id: toEdit.parent_id, parent_name: toEdit.parent_name}
+        let data = {parent_id: toEdit.parent_id, parent_name: toEdit.parent_name};
         this.backend.save("KnowledgeDocuments", toEdit.id, data);
         for (let doc of this.knowledgeService.documents) {
             if (doc.id === toEdit.id) {

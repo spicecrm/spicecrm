@@ -1,0 +1,15 @@
+<div class="slds-app-launcher__tile slds-text-link_reset slds-is-relative">
+    <div class="slds-app-launcher__tile-figure">
+        <span class="slds-avatar slds-avatar--large slds-align--absolute-center {{role.icon}}">{{identifier}}</span>
+    </div>
+    <div class="slds-app-launcher__tile-body">
+        <a href="javascript:void(0);">{{name}}</a>
+        <p>
+            {{description}}
+            <button #morebutton class="slds-button slds-button_reset slds-text-link" [ngClass]="{'slds-hide': !descriptionfull}" [title]="descriptionfull">{{language.getLabel('LBL_MORE')}}</button>
+        </p>
+        <div class="slds-popover slds-popover_tooltip slds-nubbin_top slds-hide" *ngIf="descriptionfull" role="tooltip" style="position:absolute;top:100px;left:165px">
+            <div class="slds-popover__body">{{descriptionfull}}</div>
+        </div>
+    </div>
+</div>

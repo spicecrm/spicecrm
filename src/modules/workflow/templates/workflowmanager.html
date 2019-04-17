@@ -1,3 +1,21 @@
+<div class="slds-p-around--medium slds-theme--shade">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon module="Workflows"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_WORKFLOW_MANAGER')}}</span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-form-element">
         <label class="slds-form-element__label">Module</label>
@@ -5,7 +23,7 @@
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="current_module">
                     <option></option>
-                    <option *ngFor="let m of modules" [value]="m.module">{{m.module}}</option>
+                    <option *ngFor="let m of modules" [value]="m">{{m}}</option>
                 </select>
             </div>
         </div>

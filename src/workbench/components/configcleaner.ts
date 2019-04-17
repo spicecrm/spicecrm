@@ -1,13 +1,13 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    Component, Pipe, PipeTransform,
+    Component
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {toast} from "../../services/toast.service";
-import {footer} from "../../services/footer.service";
-import { modal } from '../../services/modal.service';
 
 @Component({
     selector: 'language-label-manager',

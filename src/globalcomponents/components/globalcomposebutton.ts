@@ -1,5 +1,5 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module GlobalComponents
  */
 import {AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
@@ -11,13 +11,13 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 })
 export class GlobalComposeButton {
 
-    @Input() module: string = '';
+    @Input() private module: string = '';
 
     constructor(private dockedComposer: dockedComposer) {
 
     }
 
-    showComposer(){
+    private showComposer(){
         this.dockedComposer.addComposer(this.module);
     }
 

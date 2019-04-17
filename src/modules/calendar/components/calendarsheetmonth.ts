@@ -1,167 +1,414 @@
+/**
+ * @module ModuleCalendar
+ */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input, Output, EventEmitter,
-    OnInit, OnChanges, SimpleChanges
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Output,
+    Renderer2,
+    SimpleChanges,
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
+import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
+/**
+* @ignore
+*/
+declare var _: any;
 
 @Component({
     selector: 'calendar-sheet-month',
     templateUrl: './src/modules/calendar/templates/calendarsheetmonth.html',
 })
-export class CalendarSheetMonth implements OnChanges {
+export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
-    @ViewChild('calendarsheet', {read: ViewContainerRef}) calendarsheet: ViewContainerRef;
-    @Input() setdate: any = {};
-    @Output() navigateday: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
+    @ViewChild('boxcontainer', {read: ViewContainerRef}) private boxContainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef}) private moreContainer: ViewContainerRef;
+    @Input() private setdate: any = {};
+    @Input('userscalendars') private usersCalendars: any[] = [];
+    @Input('othercalendars') private otherCalendars: any[] = [];
+    @Input('googleisvisible') private googleIsVisible: boolean = true;
+    private currentGrid: any[] = [];
+    private offsetHeight: number = 20;
+    private maxEventsPerBox: number = 1;
+    private resizeHandler: any = {};
+    private ownerEvents: any[] = [];
+    private otherEvents: any[] = [];
+    private userEvents: any[] = [];
+    private googleEvents: any[] = [];
 
-    currentGrid: Array<any> = [];
+    constructor(private language: language,
+                private broadcast: broadcast,
+                private navigation: navigation,
+                private elementRef: ElementRef,
+                private backend: backend,
+                private renderer: Renderer2,
+                private cdr: ChangeDetectorRef,
+                private calendar: calendar) {
+        this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
+    }
 
-    get sheetDays(): Array<any> {
-        let sheetDays = [];
+    get allEvents() {
+        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+    }
 
-        // build the days
-        let i = 0;
-        let days = moment.weekdaysShort();
-        while (i < 7) {
-            sheetDays.push({
-                index: i,
-                text: days[i]
-            });
-            i++;
+    get eventHeight() {
+        return !this.calendar.isMobileView ? 25 : 20;
+    }
+
+    public ngAfterViewInit() {
+        this.setMaxEvents();
+        this.cdr.detectChanges();
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+        this.buildGrid();
+        if (changes.setdate) {
+            this.getEvents();
         }
 
+        if (changes.usersCalendars || changes.setdate) {
+            this.getUsersEvents();
+        }
+        if (changes.otherCalendars || changes.setdate) {
+            this.getOtherEvents();
+        }
+        if (changes.googleIsVisible || changes.setdate) {
+            this.getGoogleEvents();
+        }
+    }
+
+    public ngOnDestroy() {
+        this.cdr.detach();
+        if (this.resizeHandler) {
+            this.resizeHandler();
+        }
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
+    private trackByFnDate(index, item) {
+        return index;
+    }
+
+    private startDate() {
+        return new moment(this.setdate).date(1).hour(0).minute(0).second(0);
+    }
+
+    private endDate() {
+        return new moment(this.startDate()).endOf('month');
+    }
+
+    private setMaxEvents() {
+        let boxContainerHeight = this.boxContainer.element.nativeElement.clientHeight;
+        this.maxEventsPerBox = Math.floor((boxContainerHeight - (this.offsetHeight * 2)) / this.eventHeight);
+    }
+
+    private getSheetDays(): any[] {
+        let sheetDays = [];
+        let i = 0;
+        let dayIndex = this.calendar.weekStartDay;
+        let days = moment.weekdaysShort();
+        while (i < this.calendar.weekDaysCount) {
+            sheetDays.push({index: i, text: days[dayIndex]});
+            i++;
+            dayIndex++;
+            if (dayIndex > 6) {
+                dayIndex = 0;
+            }
+        }
         return sheetDays;
-    };
-
-    sheetTopMargin: number=0;
-
-    calendarevents: Array<any> = [];
-
-    constructor(private language: language, private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private calendar: calendar) {
-        // set theenavigation paradigm
-        this.navigation.setActiveModule('Calendar');
-
     }
 
-    ngOnChanges(changes: SimpleChanges){
-        this.buildGrid();
+    private getEvents() {
+        this.ownerEvents = [];
+        this.arrangeEvents();
 
-        this.calendarevents = [];
-        let startDate = new moment(this.setdate).date(1).hour(0).minute(0).second(0);
-        let endDate = new moment(startDate).add(moment.duration(1, 'M'));
-        this.calendar.loadEvents(startDate, endDate).subscribe(events => {
-            if(events.length > 0)
-                // sort the events
-                events.sort((a, b) => {
-                    if (a.start < b.start)
-                        return -1;
-                    if (a.start === b.start) {
-                        if (a.end > b.end)
-                            return -1;
-                        else
-                            return 1;
+        this.calendar.loadEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                    });
+                    this.ownerEvents = events;
+                    this.arrangeEvents();
+                }
+            });
+    }
+
+    private getGoogleEvents() {
+        this.googleEvents = [];
+        this.arrangeEvents();
+        if (!this.googleIsVisible || this.calendar.isMobileView) {
+            return;
+        }
+
+        this.calendar.loadGoogleEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events = events.map(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                        return event;
+                    });
+                    this.googleEvents = events;
+                    this.arrangeEvents();
+                }
+            });
+    }
+
+    private getUsersEvents() {
+        this.userEvents = [];
+        this.arrangeEvents();
+        if (this.calendar.isMobileView) {
+            return;
+        }
+
+        for (let calendar of this.calendar.usersCalendars) {
+            if (!calendar.visible) {
+                continue;
+            }
+            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id)
+                .subscribe(events => {
+                    if (events.length > 0) {
+                        events.forEach(event => {
+                            event.color = calendar.color;
+                            event.visible = calendar.visible;
+                            event.start = this.resetTime(event.start);
+                            event.end = this.resetTime(event.end);
+                            this.userEvents.push(event);
+                            this.arrangeEvents();
+                        });
                     }
-                    return 1;
                 });
-
-                this.calendarevents = events;
-        });
+        }
     }
 
-    gotoDay(sheetday){
+    private getOtherEvents() {
+        this.otherEvents = [];
+        this.arrangeEvents();
+        if (this.calendar.isMobileView) {
+            return;
+        }
+
+        for (let calendar of this.calendar.otherCalendars) {
+            if (!calendar.visible) {
+                continue;
+            }
+            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true)
+                .subscribe(events => {
+                    if (events.length > 0) {
+                        events.forEach(event => {
+                            event.color = calendar.color;
+                            event.visible = calendar.visible;
+                            event.start = this.resetTime(event.start);
+                            event.end = this.resetTime(event.end);
+                            this.otherEvents.push(event);
+                            this.arrangeEvents();
+                        });
+                    }
+                });
+        }
+    }
+
+    private resetTime(event) {
+        event = moment(event.hour(0).minute(0).second(0)).format('YYYY-MM-DD HH:mm:ss');
+        return moment(event);
+    }
+
+    private arrangeEvents() {
+        for (let w = 0; w < this.currentGrid.length; w++) {
+            this.currentGrid[w].forEach(day => day.items = []);
+            for (let event of this.allEvents) {
+                if (!event.hasOwnProperty("weeksI")) {
+                    event.weeksI = [];
+                }
+                for (let d = 0; d < this.currentGrid[w].length; d++) {
+                    let day = this.currentGrid[w][d];
+                    for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
+                        if (eventDay.date() == day.day && day.month == eventDay.month()) {
+
+                            if (!day.items.some(itemsEvent => itemsEvent.id == event.id)) {
+                                day.items.push(event);
+                            }
+                            if (event.weeksI.indexOf(w) == -1) {
+                                event.weeksI.push(w);
+                            }
+                        }
+                    }
+                    day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
+                    day.items.sort((a, b) => {
+                        if (a.start.isBefore(b.start)) {
+                            return -1;
+                        } else if (a.start.diff(a.end, 'days') < b.start.diff(b.end, 'days')) {
+                            return -1;
+                        }
+                        return 0;
+                    });
+                }
+            }
+            this.allEvents.forEach(event => {
+                let itemIdx = null;
+                this.currentGrid[w].forEach(day => {
+                    day.items.forEach((item, idx) => {
+                        if (item.id == event.id) {
+                            if (itemIdx != null && event.end.diff(event.start, 'days') > 0) {
+                                day.items.splice(idx, 1);
+                                day.items.splice(itemIdx, 0, event);
+                            } else {
+                                itemIdx = idx;
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        return this.allEvents;
+    }
+
+    private gotoDay(sheetday) {
         let navigateDate = moment(this.setdate);
         navigateDate.month(sheetday.month).date(sheetday.day);
         this.navigateday.emit(navigateDate);
     }
 
-    getDayColStyle() {
+    private getDayColStyle(weekdayShort) {
+        let todayDay = new moment();
+        let todayDayShort = todayDay.format('ddd');
+        let calendarDate = this.calendar.calendarDate;
+        let isToday = calendarDate.year() == todayDay.year() && calendarDate.month() == todayDay.month() && todayDayShort == weekdayShort;
         return {
-            width: 'calc(100% / 7)'
-        }
+            width: `calc(100% / ${this.calendar.weekDaysCount})`,
+            color: isToday ? this.calendar.todayColor : 'inherit',
+            'font-weight': isToday ? '600' : 'inherit'
+        };
     }
 
-    getSheetStyle() {
+    private getSheetStyle() {
         return {
-            height: 'calc(100vh - ' + this.calendarsheet.element.nativeElement.offsetTop + 'px)',
-        }
+            height: 'calc(100vh - ' + (this.calendarsheet.element.nativeElement.offsetTop + 20) + 'px)',
+        };
     }
 
-    getDayDividerStyle(day){
+    private getDayDividerStyle(day) {
         return {
-            left: (this.calendarsheet.element.nativeElement.clientWidth / 7 * day) + 'px',
+            left: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * day) + 'px',
             top: '0px',
             height: '100%'
-        }
+        };
     }
 
-    buildGrid(){
+    private buildGrid() {
         this.currentGrid = [];
-        // let fdom = new moment(this.curDate.year() + '-' + (this.curDate.month() + 1) + '-' + '01');
         let fdom = new moment(this.setdate);
-        // move to first day of month
         fdom.date(1);
-        // move to Sunday
-        fdom.day(0);
-
-        // build 6 weeks
-        let j = 0;
-        while (j < 6) {
-            let i = 0;
+        fdom.day(this.calendar.weekStartDay);
+        let w = 0;
+        while (w < 6) {
+            let d = 0;
             let week = [];
-            if((fdom.year() < this.setdate.year()) || (fdom.month() <= this.setdate.month())) {
-                while (i < 7) {
-                    week.push({day: fdom.date(), month: fdom.month()});
-
+            if ((fdom.year() < this.setdate.year()) || (fdom.month() <= this.setdate.month())) {
+                while (d < this.calendar.weekDaysCount) {
+                    week.push({day: fdom.date(), month: fdom.month(), items: []});
+                    let weekDaysOffset = 7 - this.calendar.weekDaysCount;
+                    if (d == (this.calendar.weekDaysCount - 1) && this.calendar.weekDaysCount < 7) {
+                        fdom.add(weekDaysOffset, 'd');
+                    }
                     fdom.add(1, 'd');
-                    i++;
+                    d++;
                 }
                 this.currentGrid.push(week);
             }
-            j++;
+            w++;
         }
     };
 
-    notLastWeek(week){
-        return week  < this.currentGrid.length;
+    private notLastWeek(week) {
+        return week < this.currentGrid.length;
     }
 
-    notThisMonth(month){
+    private notThisMonth(month) {
         return month !== this.setdate.month();
     }
 
-    getWeekDividerStyle(week) {
+    private getWeekDividerStyle(week) {
         return {
-            top: 'calc((100% / ' + this.currentGrid.length +') * '+ week +' )'
-        }
+            top: 'calc((100% / ' + this.currentGrid.length + ') * ' + week + ' )'
+        };
     }
 
-    getBoxStyle(i, j, month){
+    private getBoxStyle(i, j, month) {
         return {
-            left: (this.calendarsheet.element.nativeElement.clientWidth / 7 * j) + 'px',
-            top: 'calc((100% / ' + this.currentGrid.length +') * '+ i +' )',
+            left: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
+            top: 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
             color: this.notThisMonth(month) ? '#9faab5' : 'inherit',
             'background-color': this.notThisMonth(month) ? '#f4f6f9' : 'transparent',
-            width: (this.calendarsheet.element.nativeElement.clientWidth / 7) + 'px',
-            height: 'calc(100% / ' + this.currentGrid.length +')',
-        }
+            width: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
+            height: 'calc(100% / ' + this.currentGrid.length + ')',
+        };
     }
 
-    getCellEvents(i, j){
-        let cellEvents: Array<any> = [];
-        let cellDate = this.currentGrid[i][j];
-        for(let event of this.calendarevents){
-            if(event.start.date() === cellDate.day && event.start.month() === cellDate.month){
-                cellEvents.push(event);
+    private getEventStyle(event, weekI) {
+        let startI = null;
+        let eventI = null;
+        let endI = 0;
+        let eDays = 0;
+        let visible = "block";
+        let sheetContainer = this.calendarsheet.element.nativeElement;
+
+        this.currentGrid[weekI].forEach((day, dIndex) => {
+            if (day.items.indexOf(event) > -1) {
+                eDays++;
+                startI = startI == null ? dIndex : startI;
+                endI = dIndex;
+                eventI = eventI == null ? day.items.indexOf(event) : eventI;
+                visible = eventI >= this.maxEventsPerBox ? "none" : visible;
             }
-        }
-        return cellEvents;
+        });
+
+        return {
+            left: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * startI) + 'px',
+            width: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * eDays) + 'px',
+            top: (this.offsetHeight + ((sheetContainer.clientHeight / this.currentGrid.length) * weekI) + (this.eventHeight * eventI)) + 'px',
+            height: this.eventHeight + 'px',
+            display: visible
+        };
     }
 
+    private isTodayStyle(day, month) {
+        let year = this.calendar.calendarDate.year();
+        let today = new moment();
+        let isToday = year === today.year() && today.month() === month && today.date() == day;
+        return {
+            'border-radius': '50%',
+            'line-height': '1rem',
+            'text-align': 'center',
+            width: '1rem',
+            height: '1rem',
+            display: 'block',
+            color: isToday ? '#fff' : 'inherit',
+            'background-color': isToday ? this.calendar.todayColor : 'inherit',
+        };
+    }
 }

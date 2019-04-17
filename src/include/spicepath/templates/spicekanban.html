@@ -1,0 +1,37 @@
+<div class="slds-m-top--small slds-m-horizontal--small">
+    <div class="slds-tabs--path" role="application">
+        <ul class="slds-tabs--path__nav" role="tablist">
+            <ng-container *ngFor="let stage of stages">
+                <li class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-tabs--path__link" aria-selected="false" role="tab" href="javascript:void(0);"
+                       aria-live="assertive">
+                    <span class="slds-tabs--path__stage">
+                      <system-icon [icon]="'check'" [size]="'x-small'" [sprite]="'utility'"
+                                   [addclasses]="'spicecrm-processicon'"></system-icon>
+                    </span>
+                        <span class="slds-tabs--path__title">{{stage.stagedata.stage_name}} ({{getStageCount(stage.stage)}})</span>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+    <div *ngIf="this.componentconfig.sum" class="slds-grid" style="border-bottom: 1px solid #d8dde6;">
+        <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small"
+             [ngClass]="sizeClass">
+            <div *ngIf="showSum()" class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
+                €{{getStageSum(stage.stage)}}
+            </div>
+        </div>
+    </div>
+    <div tobottom #kanbanContainer class="slds-scrollable--y" (scroll)="onScroll()">
+        <div class="slds-grid">
+            <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass" >
+                <ul class="slds-has-dividers--around-space slds-m-top--x-small">
+                    <!--li spice-kanban-tile *ngFor="let item of getStageItems(stage.stage)" draggable="true" [item]="item" class="slds-item"></li-->
+                    <li spice-kanban-tile *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage" draggable="true" [item]="item" class="slds-item"></li>
+                </ul>
+            </div>
+        </div>
+        <system-spinner *ngIf="modellist.isLoading"></system-spinner>
+    </div>
+</div>

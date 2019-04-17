@@ -1,6 +1,7 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+    "arrow-parens": false,
     "class-name": false,
     "curly": [true, "ignore-same-line"],
     "forin": false,
@@ -28,13 +29,16 @@
       ]
     },
     "no-shadowed-variable": false,
+    "no-unused-expression": false,
     "no-unused-variable": false,
+    "prefer-const": false,
     "quotemark": false,
     "trailing-comma": false,
     "triple-equals": false,
     "switch-default": false,
     "variable-name": false,
-    "whitespace" : false
+    "whitespace" : false,
+    "object-literal-shorthand": ["error","consistent"]
   },
   "jsRules": {
     "max-line-length": {

@@ -1,49 +1,55 @@
+/**
+ * @module ObjectComponents
+ */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Input, OnInit
+    OnInit
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {ActivatedRoute, Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
+
+/**
+* @ignore
+*/
+declare var _: any;
 
 @Component({
     selector: 'object-page-header',
     templateUrl: './src/objectcomponents/templates/objectpageheader.html',
     providers: [view]
 })
-export class ObjectPageHeader implements OnInit{
+export class ObjectPageHeader implements OnInit {
 
-    //fieldSets: any = [];
-    componentconfig: any = {};
-    actionSet: string = '';
-    //topscroll: number = 0;
+    public componentconfig: any = {};
+    private actionSet: string = '';
+    private fieldset: string = '';
+    private fieldsetitems: any[];
 
-    get moduleName(){
+    get moduleName() {
         return this.model.module;
     }
 
-    constructor(private language: language, private elementref: ElementRef, private activatedRoute: ActivatedRoute, private router: Router, private model: model, private metadata: metadata) {
+    constructor(private language: language, private router: Router, private model: model, private metadata: metadata) {
 
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         // get the Componentconfig if not set yet
-        let componentconfig = this.componentconfig && JSON.stringify(this.componentconfig) !== JSON.stringify({}) ? this.componentconfig : this.metadata.getComponentConfig('ObjectPageHeader', this.model.module);
+        let componentconfig = this.componentconfig && !_.isEmpty(this.componentconfig) ? this.componentconfig : this.metadata.getComponentConfig('ObjectPageHeader', this.model.module);
 
+        // set the actionset & fiedset
         this.actionSet = componentconfig.actionset;
+        this.fieldset = componentconfig.fieldset;
+        if (this.fieldset) {
+            this.fieldsetitems = this.metadata.getFieldSetFields(this.fieldset);
+        }
     }
 
-    goToModule(){
-        this.router.navigate(['/module/' + this.moduleName ]);
+    private goToModule() {
+        this.router.navigate(['/module/' + this.moduleName]);
     }
 
 }

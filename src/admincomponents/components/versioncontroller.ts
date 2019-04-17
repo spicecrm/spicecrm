@@ -1,3 +1,6 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {Component} from "@angular/core";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {metadata} from "../../services/metadata.service";

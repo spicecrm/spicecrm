@@ -1,22 +1,19 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
     Input,
     Output,
     EventEmitter,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    OnInit
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
 import {backend} from '../../../services/backend.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-saved-filters',
@@ -24,29 +21,29 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterFilterSavedFilters implements OnInit {
 
-    @Output() filtersaved: EventEmitter<any> = new EventEmitter<any>();
-    @Input() reportid: string = '';
+    @Output() private filtersaved: EventEmitter<any> = new EventEmitter<any>();
+    @Input() private reportid: string = '';
 
-    savedFilters: Array<any> = [];
-    currentSelectedFilter: string = '';
+    private savedFilters: any[] = [];
+    private currentSelectedFilter: string = '';
 
     constructor(private metadata: metadata, private model: model, private language: language, private reporterconfig: reporterconfig, private backend: backend) {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.backend.getRequest('KReporter/' + this.reportid + '/savedfilter/assigneduserid/own').subscribe(filters => {
             this.savedFilters = filters;
         });
     }
 
-    get selectedFilter(){
+    get selectedFilter() {
         return this.currentSelectedFilter;
     }
 
-    set selectedFilter(filterId){
+    set selectedFilter(filterId) {
         this.currentSelectedFilter = filterId;
-        if(this.currentSelectedFilter == ''){
+        if (this.currentSelectedFilter == '') {
             this.reporterconfig.setDefaultUserFilter();
         } else {
             this.savedFilters.some(filter => {
@@ -54,11 +51,11 @@ export class ReporterFilterSavedFilters implements OnInit {
                     this.reporterconfig.setSavedFilter(JSON.parse(filter.selectedfilters));
                     return true;
                 }
-            })
+            });
         }
     }
 
-    get isDisabled(){
+    get isDisabled() {
         return this.savedFilters.length == 0;
     }
 

@@ -1,14 +1,10 @@
+/**
+ * @module ModuleSalesDocs
+ */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef, OnChanges, OnInit, EventEmitter, OnDestroy
+    ElementRef
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';

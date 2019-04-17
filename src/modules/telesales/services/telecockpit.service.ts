@@ -1,73 +1,81 @@
-import {Injectable, EventEmitter} from '@angular/core';
+/**
+ * @module ModuleTeleSales
+ */
+import {Injectable} from '@angular/core';
 import {backend} from '../../../services/backend.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
-
-import {Subject, Observable} from 'rxjs';
-
-declare var moment: any;
+import {Subject} from "rxjs";
 
 @Injectable()
+
 export class telecockpitservice {
 
-    items: Array<any>;
-    currentCampaignTaskId;
-    currentCampaignId;
-    currentCampaignTaskName;
-    isloading: boolean = true;
-    total: number;
-    canLoadMore: boolean = true;
-    selectedLogId: string;
-    selectedItem$: EventEmitter<any> = new EventEmitter<any>();
-    campaignTaskId$: EventEmitter<any> = new EventEmitter<any>();
+    public isloading: boolean = false;
+    public canLoadMore: boolean = true;
+    public listItems: any[] = [];
+    public campaigntasks: any[] = [];
+    public selectedcampaigntask: any = {};
+    public selectedListItem: any;
+    public selectedItemSubject: Subject<any> = new Subject<any>();
+    private renderedMainComponents: any[] = [];
 
     constructor(private backend: backend, private metadata: metadata, private language: language) {
+        this.getCampaignTasks();
     }
 
-    get logId() {
-        return this.selectedLogId;
-    }
-
-    get loadLimit(){
+    get loadLimit() {
         let conf = this.metadata.getComponentConfig('TeleSalesCockpitList');
-        return conf.limit ? conf.limit: 50;
+        return conf && conf.limit ? conf.limit : 50;
     }
 
-    set logId(selectedLogId) {
+    get selectedCampaignTask() {
+        return this.selectedcampaigntask;
+    }
 
-        this.selectedLogId = selectedLogId;
+    set selectedCampaignTask(value) {
+        this.loadData(value.id);
+        this.selectedListItem$ = undefined;
+        this.selectedcampaigntask = value;
+    }
 
-        this.items.some(item => {
-            if (item.id == selectedLogId) {
-                this.selectedItem$.emit(item);
-                return true;
+    get selectedListItem$() {
+        return this.selectedItemSubject.asObservable();
+    }
+
+    set selectedListItem$(value) {
+        this.selectedListItem = value;
+        this.selectedItemSubject.next(value);
+    }
+
+    public getCampaignTasks() {
+        let fields = JSON.stringify(["name", "start_date", "end_date", "status", "campaigntask_type", "campaign_name", "campaign_id"]);
+        let conf = this.metadata.getComponentConfig('TeleSalesCockpit');
+        let modulefilter = conf && conf.modulefilter ? conf.modulefilter : {};
+        let params = {fields, modulefilter};
+        this.backend.getRequest("module/CampaignTasks", params).subscribe(response => {
+            this.campaigntasks = response.list.sort((a, b) => a.name > b.name ? 1 : -1);
+            if (response.list.length > 0) {
+                this.selectedCampaignTask = this.campaigntasks[0];
             }
         });
     }
 
-    get getSelectedLogData() {
-        for(let item of this.items){
-            if (item.id == this.logId) {
-                return item;
-            }
-        }
-        return {};
-    }
-
-
-    loadData(id) {
-
-        this.items = [];
+    public loadData(id) {
+        this.listItems = [];
         this.isloading = true;
         this.canLoadMore = true;
+        if (!id) {
+            return;
+        }
+        let params = {limit: this.loadLimit};
 
-        this.backend.getRequest("module/CampaignTasks/" + id + "/items", {limit: this.loadLimit})
+        this.backend.getRequest("module/CampaignTasks/" + id + "/items", params)
             .subscribe(response => {
                 for (let item of response.items) {
-                    this.items.push({
-                        module: item.campaignlog_target_type,
+                    this.listItems.push({
                         id: item.campaignlog_id,
+                        target_type: item.campaignlog_target_type,
                         hits: item.campaignlog_hits,
                         activity_date: item.campaignlog_activity_date,
                         activity_type: item.campaignlog_activity_type,
@@ -79,49 +87,27 @@ export class telecockpitservice {
 
                 this.isloading = false;
 
-                if (this.items.length < this.loadLimit)
+                if (this.listItems.length < this.loadLimit) {
                     this.canLoadMore = false;
-
+                }
             });
 
     }
 
-    get campaignTaskId() {
-        return this.currentCampaignTaskId;
-    }
+    public loadMoreData() {
 
-    set campaignTaskId(id) {
-
-        this.loadData(id);
-        this.selectedLogId = '';
-        this.currentCampaignTaskId = id;
-        this.campaignTaskId$.emit(id);
-    }
-
-    get campaignTaskName() {
-        return this.currentCampaignTaskName;
-    }
-
-    set CampaignTaskName(currentCampaignTaskName) {
-
-        this.currentCampaignTaskName = currentCampaignTaskName;
-    }
-
-
-    loadMoreData() {
-
-        if (this.isloading || !this.canLoadMore)
+        if (this.isloading || !this.canLoadMore) {
             return false;
-
+        }
         this.isloading = true;
+        let params = {offset: this.listItems.length, limit: this.loadLimit};
 
-        this.backend.getRequest("module/CampaignTasks/" + this.currentCampaignTaskId + "/items",
-            {offset: this.items.length, limit: this.loadLimit})
+        this.backend.getRequest("module/CampaignTasks/" + this.selectedCampaignTask.id + "/items", params)
             .subscribe(response => {
                 for (let item of response.items) {
-                    this.items.push({
-                        module: item.campaignlog_target_type,
+                    this.listItems.push({
                         id: item.campaignlog_id,
+                        target_type: item.campaignlog_target_type,
                         hits: item.campaignlog_hits,
                         activity_date: item.campaignlog_activity_date,
                         activity_type: item.campaignlog_activity_type,
@@ -131,12 +117,34 @@ export class telecockpitservice {
                     });
                 }
 
-                if (response.items.length < this.loadLimit)
+                if (response.items.length < this.loadLimit) {
                     this.canLoadMore = false;
+                }
 
                 this.isloading = false;
             });
     }
 
+    public resetMainView() {
+        this.renderedMainComponents.forEach(component => component.destroy());
+        this.renderedMainComponents = [];
+    }
 
+    public renderMainView(module, mainContainer) {
+        this.resetMainView();
+        if (!module) {
+            return;
+        }
+        let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitMain', module);
+        let componentSet = componentconfig.componentset;
+        if (componentSet) {
+            let components = this.metadata.getComponentSetObjects(componentSet);
+            for (let component of components) {
+                this.metadata.addComponent(component.component, mainContainer).subscribe(componentref => {
+                    this.renderedMainComponents.push(componentref);
+                    componentref.instance.componentconfig = component.componentconfig;
+                });
+            }
+        }
+    }
 }

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleSpiceImports
+ */
 import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';

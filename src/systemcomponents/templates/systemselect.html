@@ -14,7 +14,7 @@
                     />
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
                 </div>
-                <div *ngIf="show_list" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                <div *ngIf="show_list" [ngClass]="getDropdownLength" class="slds-dropdown slds-dropdown_fluid" role="listbox">
                     <ul class="slds-listbox slds-listbox_vertical" role="presentation">
 
                         <ng-container *ngFor="let selectItem of searchList | keyvalue">

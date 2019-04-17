@@ -1,33 +1,23 @@
+/**
+ * @module GlobalComponents
+ */
 import {CommonModule} from "@angular/common";
 import {FormsModule}   from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
-import {AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef, Injectable, Renderer, Renderer2, Input, ElementRef, OnDestroy, OnInit, OnChanges, EventEmitter, Output} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {RouterModule, Routes, Router, ActivationStart, NavigationStart} from "@angular/router";
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import {NgModule} from "@angular/core";
+import {RouterModule,} from "@angular/router";
 
+/**
+* @ignore
+*/
 declare var _: any;
+/**
+ * @ignore
+ */
 declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
-import {session} from "../services/session.service";
-import {language} from "../services/language.service";
-import {configurationService} from "../services/configuration.service";
-import {popup} from "../services/popup.service";
-import {broadcast} from "../services/broadcast.service";
-import {fts} from "../services/fts.service";
-import {model} from "../services/model.service";
-import {modellist} from "../services/modellist.service";
-import {recent} from "../services/recent.service";
-import {favorite} from "../services/favorite.service";
 import {metadata} from "../services/metadata.service";
-import {navigation} from "../services/navigation.service";
-import {dockedComposer} from "../services/dockedcomposer.service";
-import {view} from "../services/view.service";
-import {toast} from "../services/toast.service";
-import {footer} from "../services/footer.service";
-import {cookie} from "../services/cookie.service";
-import { modal } from "../services/modal.service";
 
 import {ObjectFields}      from "../objectfields/objectfields";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
@@ -58,21 +48,26 @@ import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigati
 import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
 import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
 import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
+import /*embed*/ {GlobalNavigationCompact} from "./components/globalnavigationcompact";
 import /*embed*/ {GlobalDockedComposerContainer} from "./components/globaldockedcomposercontainer";
 import /*embed*/ {GlobalDockedComposer} from "./components/globaldockedcomposer";
+import /*embed*/ {GlobalDockedComposerCall} from "./components/globaldockedcomposercall";
 import /*embed*/ {GlobalDockedComposerModal} from "./components/globaldockedcomposermodal";
 import /*embed*/ {GlobalDockedComposerOverflow} from "./components/globaldockedcomposeroverflow";
 import /*embed*/ {GlobalComposeButton} from "./components/globalcomposebutton";
 import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
+import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
 import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
+import /*embed*/ {GlobaUserPanelIcon} from "./components/globauserpanelicon";
 
 import /*embed*/ {GlobalRecentItems} from "./components/globalrecentitems";
 import /*embed*/ {GlobalSearch} from "./components/globalsearch";
 import /*embed*/ {GlobalSearchModule} from "./components/globalsearchmodule";
+import /*embed*/ {GlobalSearchModuleOnly} from "./components/globalsearchmoduleonly";
 import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmoduleitem";
 
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
@@ -81,7 +76,9 @@ import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 
-
+/**
+ * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
+ */
 @NgModule({
     imports: [
         CommonModule,
@@ -90,10 +87,11 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         DirectivesModule,
         SystemComponents,
         RouterModule.forRoot([
-            {path: "login", component: GlobalLogin},
+            // {path: "login", component: GlobalLogin},
             {path: "setup", component: GlobalSetup},
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
+            {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
         ])
     ],
     declarations: [
@@ -119,22 +117,27 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalNavigationMenuItemRoute,
         GlobalNavigationMenuItemIcon,
         GlobalNavigationMenuMore,
+        GlobalNavigationCompact,
         GlobalLogin,
         GlobalSetup,
         GlobalLoginForgotPassword,
         GlobalLoginResetPassword,
         GlobalUser,
         GlobaUserPanel,
+        GlobaUserPanelIcon,
         GlobalAppLauncher,
         GlobalAppLauncherDialog,
+        GlobalAppLauncherDialogRoleTile,
         GlobalDockedComposerContainer,
         GlobalDockedComposer,
+        GlobalDockedComposerCall,
         GlobalDockedComposerModal,
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
         GlobalRecentItems,
         GlobalSearch,
         GlobalSearchModule,
+        GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
         GlobalLoginGoogle
     ],
@@ -159,7 +162,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalDockedComposerContainer,
         GlobalDockedComposer,
         GlobalDockedComposerOverflow,
-        GlobalComposeButton
+        GlobalComposeButton,
     ]
 })
 export class GlobalComponents {

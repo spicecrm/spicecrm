@@ -1,26 +1,4 @@
-<!--div class="slds-form-element slds-p-vertical--x-small">
-    <label class="slds-form-element__label">{{attribute.summary_text}}</label>
-    <div *ngIf="editmode" class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="value">
-    </div>
-    <div *ngIf="!editmode" class="slds-border--bottom">
-        <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-            <div style="line-height: 20px">{{value}}</div>
-            <button *ngIf="editable" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
-                <system-button-icon [icon]="'edit'"></system-button-icon>
-            </button>
-        </div>
-    </div>
-</div-->
 <div *ngIf="editmode" class="slds-form-element__control">
-    <input type="text" class="slds-input" [(ngModel)]="value" [disabled]="attribute.attr_usage == 'none'">
-    <div *ngIf="fieldHasError()" class="slds-form-element__help">{{getFieldError()}}</div>
+    <input type="text" class="slds-input" [(ngModel)]="value" [disabled]="isDisabled">
 </div>
-<div *ngIf="!editmode">
-    <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-        <div style="line-height: 20px">{{value}}</div>
-        <button *ngIf="editable" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
-            <system-button-icon [icon]="'edit'"></system-button-icon>
-        </button>
-    </div>
-</div>
+<field-generic-display *ngIf="!editmode"  [editable]="editable">{{value}}</field-generic-display>

@@ -1,9 +1,8 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
+/**
+ * @module ObjectComponents
+ */
+import { Component} from '@angular/core';
 import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-checklist',

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, Input, Output, EventEmitter, Renderer, ElementRef, OnInit} from '@angular/core';
 import { ActivatedRoute }   from '@angular/router';
 import { modellist } from '../../services/modellist.service';

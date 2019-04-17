@@ -1,13 +1,9 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Component
 } from '@angular/core';
-import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -52,14 +48,14 @@ export class ComponentsetManager {
                 private toast: toast,
                 private modalservice: modal,
                 private view: view,
-                private configurationService: configurationService,) {
+                private configurationService: configurationService) {
 
         this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
             // iniutialize the metadata service
-            this.metadata.loadFieldSets(new Subject<any>());
-            this.metadata.loadComponents(new Subject<any>());
+            // this.metadata.loadFieldSets(new Subject<any>());
+            // this.metadata.loadComponents(new Subject<any>());
         });
         this.checkMode();
     }
@@ -342,4 +338,8 @@ export class ComponentsetManager {
 
         })
     }
+
+
+
+
 }

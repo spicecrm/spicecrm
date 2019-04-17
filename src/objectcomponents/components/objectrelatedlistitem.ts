@@ -1,12 +1,16 @@
+/**
+ * @module ObjectComponents
+ */
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, ActivatedRoute}   from "@angular/router";
+import {Router} from "@angular/router";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
 import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
-import {modellist} from "../../services/modellist.service";
+import {layout} from "../../services/layout.service";
 import {view} from "../../services/view.service";
+import { modal } from '../../services/modal.service';
 
 @Component({
     selector: "[object-related-list-item]",
@@ -14,18 +18,22 @@ import {view} from "../../services/view.service";
     providers: [model, view]
 })
 export class ObjectRelatedListItem implements OnInit {
-    @Input() private listfields: Array<any> = [];
+    @Input() private listfields: any[] = [];
     @Input() private listitem: any = {};
     @Input() private module: string = "";
-    @Input() private editable: boolean = false;private
+    @Input() private editable: boolean = false;
     @Input() private editcomponentset: string = "";
 
-    private customEditActions: Array<any> = [];
-    private customActions: Array<any> = [];
+    /**
+     * set to true to hide the actionset menu item being display
+     */
+    @Input() private hideActions: boolean = false;
 
-    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language) {
+    private customEditActions: any[] = [];
+    private customActions: any[] = [];
+    private expanded: boolean = false;
 
-    }
+    constructor( private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal ) { }
 
     public ngOnInit() {
         this.model.module = this.module;
@@ -33,7 +41,7 @@ export class ObjectRelatedListItem implements OnInit {
         this.model.data = this.listitem;
 
         // set editable if the user is allowed to edit the record
-        if (this.model.data.acl.edit){
+        if (this.model.data.acl.edit) {
             this.view.isEditable = this.editable;
 
             this.customActions.push({action: "edit", name: this.language.getLabel("LBL_EDIT")});
@@ -65,9 +73,9 @@ export class ObjectRelatedListItem implements OnInit {
                     if (this.editcomponentset && this.editcomponentset != "") {
                         editModalRef.instance.componentSet = this.editcomponentset;
                     }
-                   this.model.startEdit();
+                    this.model.startEdit();
                     editModalRef.instance.modalAction$.subscribe(action => {
-                        if(action === false){
+                        if (action === false) {
                             editModalRef.destroy();
                             this.model.cancelEdit();
                         } else {
@@ -75,19 +83,40 @@ export class ObjectRelatedListItem implements OnInit {
                             this.model.endEdit();
                             editModalRef.destroy();
                         }
-                    })
+                    });
                 });
                 break;
             case "remove":
-                this.relatedmodels.deleteItem(this.model.id);
+                this.modalservice.confirm( this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short')).subscribe( (answer) => {
+                    if ( answer ) this.relatedmodels.deleteItem(this.model.id);
+                });
                 break;
             case "saverelated":
                 if (this.model.validate()) {
-                    this.relatedmodels.setItem(this.model.data);
+                    // get changed Data
+                    let changedData: any = this.model.getDirtyFields();
+                    // in any case update date modified and set the id for the PUT
+                    changedData.date_modified = this.model.getField('date_modified');
+                    changedData.id = this.model.id;
+                    // save related model
+                    this.relatedmodels.setItem(changedData);
                     this.model.endEdit();
                     this.view.setViewMode();
                 }
                 break;
         }
+    }
+
+
+    private toggleexpanded() {
+        this.expanded = !this.expanded;
+    }
+
+    get isexpanded() {
+        return this.layout.screenwidth != 'small' || this.expanded;
+    }
+
+    get expandicon() {
+        return this.expanded ? 'chevronup' : 'chevrondown';
     }
 }

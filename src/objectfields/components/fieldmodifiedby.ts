@@ -1,4 +1,7 @@
-import {Component, ElementRef, Input, OnInit, Renderer} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, ElementRef,} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -6,24 +9,22 @@ import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
 import {fieldRelate} from "./fieldrelate";
 import {modal} from "../../services/modal.service";
+import {toast} from "../../services/toast.service";
+import {backend} from "../../services/backend.service";
+import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-generic',
     templateUrl: './src/objectfields/templates/fieldmodifiedby.html'
 })
-export class fieldModifiedBy extends fieldRelate
-{
+export class fieldModifiedBy extends fieldRelate {
 
-
-    dateFormat: string = 'DD.MM.YYYY';
-    timeFormat: string = 'HH:mm';
-
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public renderer: Renderer, public modal: modal) {
-        super(model, view, language, metadata, router, elementRef, renderer, modal);
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public modal: modal, public backend: backend, public toast: toast, private userpreferences: userpreferences) {
+        super(model, view, language, metadata, router, elementRef, modal, backend, toast);
     }
 
-    get datefield(){
-        return this.fieldconfig.field_date ?  this.fieldconfig.field_date : 'date_modified';
+    get datefield() {
+        return this.fieldconfig.field_date ? this.fieldconfig.field_date : 'date_modified';
     }
 
 
@@ -32,14 +33,13 @@ export class fieldModifiedBy extends fieldRelate
             if (this.model.data[this.fieldname]) {
                 let date = this.model.getFieldValue(this.datefield);
                 if (date.isValid()) {
-
-                    return date.format(this.dateFormat);
-                }
-                else
+                    return date.format(this.userpreferences.getDateFormat());
+                } else {
                     return '';
-            }
-            else
+                }
+            } else {
                 return '';
+            }
         } catch (e) {
             return '';
         }
@@ -50,13 +50,13 @@ export class fieldModifiedBy extends fieldRelate
             if (this.model.data[this.fieldname]) {
                 let date = this.model.getFieldValue(this.datefield);
                 if (date.isValid()) {
-                    return date.format(this.timeFormat);
-                }
-                else
+                    return date.format(this.userpreferences.getTimeFormat());
+                } else {
                     return '';
-            }
-            else
+                }
+            } else {
                 return '';
+            }
         } catch (e) {
             return '';
         }

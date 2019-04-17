@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component} from '@angular/core';
 import {fieldGeneric} from './fieldgeneric';
 

@@ -1,4 +1,7 @@
-import {Component, OnInit} from "@angular/core";
+/**
+ * @module ModuleUsers
+ */
+import {Component} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {session} from "../../../services/session.service";
 import {backend} from "../../../services/backend.service";

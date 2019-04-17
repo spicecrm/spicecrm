@@ -1,0 +1,16 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">{{imgname}}</system-modal-header>
+    <system-modal-content margin="none">
+        <div *ngIf="!imgsrc" style="height: 50vh;" class="slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <div *ngIf="imgsrc" style="max-height: 80vh;" class="slds-text-align--center">
+            <img style="max-height: 100%;" [src]="imgsrc"/>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--icon slds-button--icon-border" (click)="download()">
+            <system-button-icon icon="download" size="small"></system-button-icon>
+        </button>
+    </system-modal-footer>
+</system-modal>

@@ -1,8 +1,9 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, Input, OnInit} from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+/**
+ * @module ObjectComponents
+ */
+import { Component, Input, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
 
 @Component({
     selector: 'object-record-fieldset-horizontal-list',

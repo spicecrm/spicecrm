@@ -1,5 +1,5 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
 import {Component, Input, ViewChild, ViewContainerRef,AfterViewInit} from '@angular/core';
 import { model } from '../../services/model.service';

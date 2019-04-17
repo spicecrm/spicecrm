@@ -1,3 +1,6 @@
+/**
+ * @module WorkbenchModule
+ */
 import {Component, ViewChild, ViewContainerRef} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
@@ -120,6 +123,9 @@ export class MailboxesManager {
             this.relatecontainerElement.destroy();
         }
 
+        if (!this.relatecontainer) {
+            return;
+        }
         this.metadata.addComponent(
             "ObjectRelateContainer",
             this.relatecontainer,

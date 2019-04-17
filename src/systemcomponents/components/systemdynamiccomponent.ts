@@ -1,4 +1,7 @@
-import {Component, OnInit,ViewChild, ViewContainerRef, EventEmitter, AfterViewInit, Input, Output} from '@angular/core';
+/**
+ * @module SystemComponents
+ */
+import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit, Input, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 
 @Component({

@@ -4,7 +4,7 @@
     (dragleave)="onDragLeave($event)"
     (drop)="dropItem($event, item.id)"
     (click)="selectItem($event, item.id)">
-    <div class="slds-tree__item slds-is-open slds-grid slds-grid--align-spread slds-grid_vertical-align-center" title="{{'Level ' + item.level}}" [ngClass]="selectedItem == item.id ? 'slds-is-selected': ''">
+    <article class="slds-tree__item slds-is-open slds-grid slds-grid--align-spread slds-grid_vertical-align-center" title="{{'Level ' + item.level}}" [ngClass]="selectedItem == item.id ? 'slds-is-selected': ''">
         <div class="slds-grid slds-grid_vertical-align-center">
             <div style="min-width: 16px">
                 <button *ngIf="item.children.length > 0 && config.collapsible"
@@ -26,7 +26,7 @@
                 <system-button-icon [icon]="'add'" [size]="'xx-small'"></system-button-icon>
             </button>
         </div>
-    </div>
+    </article>
     <ul *ngIf="item.children.length > 0 && item.expanded == true" class="slds-tree" role="tree"
         aria-labelledby="treeheading">
         <system-tree-item

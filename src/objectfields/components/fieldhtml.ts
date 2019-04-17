@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, OnDestroy, Input, NgZone, OnInit, ViewContainerRef, ViewChild} from '@angular/core';
+/**
+ * @module ObjectFields
+ */
+import {Component, NgZone, ViewContainerRef, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
@@ -8,6 +11,9 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
+/**
+ * @ignore
+ */
 declare var _;
 
 @Component({
@@ -18,14 +24,18 @@ export class fieldHtml extends fieldGeneric {
     private stylesheetField: string = '';
     private useStylesheets: boolean;
     private useStylesheetSwitcher: boolean;
-    private stylesheets: Array<any>;
+    private stylesheets: any[];
     private stylesheetToUse: string = '';
-    private _cached_html_value; // the cached sanitized html object to prevent "filckering" of the iframe
-    private _cached_value; // for change detection reasons...
+    private _sanitizedValue;
+    private fullValue_cached: string; // the cached full html code to prevent "flickering" of the iframe (change detection)
+    private fullValue: string = '';
 
-    @ViewChild('printframe', {read: ViewContainerRef}) printframe: ViewContainerRef;
+    @ViewChild('printframe', {read: ViewContainerRef}) private printframe: ViewContainerRef;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private zone: NgZone, public sanitized: DomSanitizer, private modal: modal) {
+    constructor(
+        public model: model,
+        public view: view,
+        public language: language, public metadata: metadata, public router: Router, private zone: NgZone, public sanitized: DomSanitizer, private modal: modal) {
         super(model, view, language, metadata, router);
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
@@ -48,20 +58,32 @@ export class fieldHtml extends fieldGeneric {
         this.useStylesheetSwitcher = this.useStylesheets && _.isEmpty(this.stylesheetToUse);
     }
 
+    get styleTag() {
+        return ( this.useStylesheets && !_.isEmpty( this.model.data[this.stylesheetField] )) ?
+            '<style>' + this.metadata.getHtmlStylesheetCode( this.model.data[this.stylesheetField] ) + '</style>' : '';
+    }
+
     /**
      * get the html representation of the corresponding value
-     * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should be rebuild on change
+     * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should only be rebuild on change
      * @returns {any}
      */
-    get htmlValue() {
-        // if value changed, generate html value
-        if (this.value != this._cached_value) {
-            this._cached_html_value = this.sanitized.bypassSecurityTrustHtml(
-                '<html><head>' + (this.useStylesheets && !_.isEmpty(this.model.data[this.stylesheetField]) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.model.data[this.stylesheetField]) + '</style>' : '') + '</head><body class="spice">' + this.value + '</body></html>'
-            );
-            this._cached_value = this.value;
+    get sanitizedValue()
+    {
+        if(this.value)
+        {
+            if(this.value.includes('</html>'))
+                this.fullValue = this.value;
+            else
+                this.fullValue = `<html><head>${this.styleTag}</head><body class="spice">${this.value}</body></html>`;
         }
-        return this._cached_html_value;
+
+        // if value changed, generate sanitized html value
+        if ( this.fullValue != this.fullValue_cached ) {
+            this._sanitizedValue = this.sanitized.bypassSecurityTrustResourceUrl(this.fullValue ? 'data:text/html;charset=UTF-8,' + encodeURIComponent(this.fullValue) : '');
+            this.fullValue_cached = this.fullValue;
+        }
+        return this._sanitizedValue;
     }
 
     get stylesheetId(): string {
@@ -86,8 +108,7 @@ export class fieldHtml extends fieldGeneric {
         this.value = newVal;
 
         // make sure we propagate the change
-        this.zone.run(() => {
-        });
+        this.zone.run(() => { 1; });
     }
 
     private updateStylesheet(stylesheetId) {
@@ -103,7 +124,7 @@ export class fieldHtml extends fieldGeneric {
             componentRef.instance.stylesheetId = this.stylesheetId;
             componentRef.instance.updateContent.subscribe(update => {
                 this.value = update;
-            })
+            });
         });
     }
 
@@ -117,12 +138,12 @@ export class fieldHtml extends fieldGeneric {
         if (this.fieldconfig.label) {
             if (this.fieldconfig.label.indexOf(':') > 0) {
                 let fielddetails = this.fieldconfig.label.split(':');
-                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels)
+                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels);
             } else {
-                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels)
+                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels);
             }
         } else {
-            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels)
+            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels);
         }
     }
 

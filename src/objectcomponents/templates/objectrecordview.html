@@ -1,6 +1,4 @@
-<div class="spiceHeaderContainer">
-    <div #headercontainer></div>
-</div>
-<div class="slds-theme--default" #main [ngStyle]="getMainStyle()" (scroll)="onScroll($event)">
-    <div #maincontainer></div>
+<system-componentset [componentset]="componentconfig.header"></system-componentset>
+<div class="slds-theme--default" tobottom>
+    <system-componentset [componentset]="componentconfig.main"></system-componentset>
 </div>

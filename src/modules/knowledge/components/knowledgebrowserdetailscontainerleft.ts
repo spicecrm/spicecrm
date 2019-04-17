@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
@@ -32,6 +35,10 @@ export class KnowledgeBrowserDetailsContainerLeft {
 
     private navigateTo(id) {
         this.knowledgeService.selectedId = id;
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 
     private print() {

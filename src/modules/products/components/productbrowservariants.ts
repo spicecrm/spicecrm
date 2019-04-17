@@ -1,82 +1,62 @@
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
+/**
+ * @module ModuleProducts
+ */
+import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
 import {metadata} from '../../../services/metadata.service';
 
 
+/**
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-variants',
-    templateUrl: './src/modules/products/templates/productbrowservariants.html',
-    host:{
-        'style' : '{height: 100%}'
-    }
+    templateUrl: './src/modules/products/templates/productbrowservariants.html'
 })
 export class ProductBrowserVariants {
 
-    @ViewChild('variantsheader', {read: ViewContainerRef}) variantsheader: ViewContainerRef;
-    @ViewChild('variantscontent', {read: ViewContainerRef}) variantscontent: ViewContainerRef;
-
-    @Output() selectionchanged: EventEmitter<any> = new EventEmitter<any>();
-
-    fieldset: string = '';
+    private timeout: any;
+    private fieldset: string = '';
+    @ViewChild('variantscontent', {read: ViewContainerRef}) private variantsContent: ViewContainerRef;
+    @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
         this.fieldset = this.metadata.getComponentConfig('ProductBrowserVariants').fieldset;
     }
 
-    get variantsstyle(){
-        let rect = this.variantsheader.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + rect.height + 'px)'
-        }
+    get productVariants() {
+        return this.productfinder.productVariants;
     }
 
-    get productvariants(){
-        return this.productfinder.productvariants;
-    }
-
-    get loading(){
+    get loading() {
         return this.productfinder.loading;
     }
 
-    search(){
-        this.productfinder.getProductVariants();
+    get searchTerm() {
+        return this.productfinder.searchterm;
     }
 
-    keyUp(_e) {
-
-        // handle the key pressed
-        switch (_e.key) {
-
-            case 'Enter':
-                this.productfinder.getProductVariants();
-                break;
-        }
+    set searchTerm(value) {
+        this.productfinder.searchterm = value;
     }
 
-    onScroll(e) {
-        let element = this.variantscontent.element.nativeElement;
+    private keyUp() {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.productfinder.getProductVariants(), 500);
+    }
+
+    private onScroll(e) {
+        let element = this.variantsContent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.productfinder.getMoreProductVariants();
         }
     }
 
-    handleSelection(data){
+    private handleSelection(data) {
         this.selectionchanged.emit(data);
     }
 }

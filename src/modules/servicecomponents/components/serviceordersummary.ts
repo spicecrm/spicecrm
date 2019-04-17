@@ -1,3 +1,6 @@
+/**
+ * @module ServiceComponentsModule
+ */
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {Component} from "@angular/core";

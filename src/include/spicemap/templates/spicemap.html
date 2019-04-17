@@ -1,0 +1,36 @@
+<article class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <div class="slds-media__body slds-truncate">
+                <h2>
+                    <span class="slds-text-heading--small">{{language.getLabel('LBL_MAP_VIEW')}} ({{surroundingObjects.length}})</span>
+                </h2>
+            </div>
+        </header>
+        <div class="slds-button-group" role="group">
+            <button class="slds-button slds-button--neutral" (click)="reCenter()">{{language.getLabel('LBL_RECENTER')}}</button>
+            <!--button class="slds-button slds-button--neutral" (click)="getSurrounding()">get Surrounding</button-->
+        </div>
+    </div>
+    <div class="slds-card__body slds-p-horizontal--small">
+        <div #mapelement style="width: 100%; height: 400px; border-radius: 4px; overflow: hidden;"></div>
+        <div class="slds-p-top--small">
+            <table class="slds-table slds-table--bordered slds-table--fixed-layout">
+                <thead>
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let item of getListFields()" class="slds-is-sortable" scope="col">
+                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                            <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig)}}</span>
+                        </a>
+                    </th>
+                    <th class="slds-cell-shrink" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr object-related-list-item *ngFor="let surroundingObject of surroundingObjects" [module]="model.module"
+                    [listfields]="getListFields()" [listitem]="surroundingObject" class="slds-hint-parent" (mouseenter)="mouseOver(surroundingObject.id)" (mouseleave)="mouseOut(surroundingObject.id)"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>

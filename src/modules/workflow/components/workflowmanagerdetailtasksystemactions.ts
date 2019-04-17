@@ -1,10 +1,9 @@
+/**
+ * @module ModuleWorkflow
+ */
 import {
-    AfterViewInit,
     Component,
-    Input,
-    OnChanges,
-    ViewChild,
-    ViewContainerRef
+    Input
 } from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
@@ -12,7 +11,6 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {toast} from "../../../services/toast.service";
 import {AppDataService} from "../../../services/appdata.service";
 
 

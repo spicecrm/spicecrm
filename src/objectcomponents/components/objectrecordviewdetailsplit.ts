@@ -1,18 +1,14 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module ObjectComponents
  */
+
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
+    AfterViewInit,  Component,  ViewChild, ViewContainerRef,
     ElementRef, OnInit, OnDestroy
 } from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {broadcast} from '../../services/broadcast.service';
-import {navigation} from '../../services/navigation.service';
 
-//var System = require('../../../../node_modules/systemjs/dist/system.js');
 
 @Component({
     selector: 'object-recordview-detail-split',

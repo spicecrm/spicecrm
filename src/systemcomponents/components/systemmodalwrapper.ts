@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import { ApplicationRef, Component, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { modal } from '../../services/modal.service';
 

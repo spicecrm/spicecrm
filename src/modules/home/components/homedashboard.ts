@@ -1,11 +1,14 @@
+/**
+ * @module ModuleHome
+ */
 import {
     AfterViewInit, Component, ViewChild, ViewContainerRef,
     OnDestroy
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
-import {session} from '../../../services/session.service';
 import {broadcast} from '../../../services/broadcast.service';
-import {navigation} from '../../../services/navigation.service';
+import {userpreferences} from "../../../services/userpreferences.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'home-dashboard',
@@ -15,11 +18,15 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
 
     @ViewChild('dashboardcontainer', {read: ViewContainerRef}) private dashboardcontainer: ViewContainerRef;
 
-    public componentSubscriptions: Array<any> = [];
+    public componentSubscriptions: any[] = [];
     public dashboardid: string = '';
     public dashboardcontainercomponent: any = undefined;
 
-    constructor(private broadcast: broadcast, private navigation: navigation, private metadata: metadata, private session: session) {
+    constructor(
+        private broadcast: broadcast,
+        private metadata: metadata,
+        private language: language,
+        private userpreferences: userpreferences) {
         this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         }));
@@ -37,14 +44,13 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
     }
 
     private loadDashboardConfig() {
-        let componentconfig = this.metadata.getComponentConfig('HomeDashboard', 'Home');
-        if (componentconfig.dashboardid) {
-            this.dashboardid = componentconfig.dashboardid;
+        let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
+        let activeRole = this.metadata.getActiveRole();
+        this.dashboardid = homeDashboard || activeRole.default_dashboard || '';
 
             // set it to the component
-            if (this.dashboardcontainercomponent) {
-                this.dashboardcontainercomponent.instance.dashboardid = this.dashboardid;
-            }
+        if (this.dashboardcontainercomponent) {
+            this.dashboardcontainercomponent.instance.dashboardid = this.dashboardid;
         }
     }
 

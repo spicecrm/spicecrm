@@ -1,20 +1,14 @@
+/**
+ * @module ModuleReports
+ */
 import {
     Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Input
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item',
@@ -22,22 +16,22 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterFilterItem {
 
-    @Input() wherecondition : any = {};
+    @Input() private wherecondition: any = {};
 
     constructor(private language: language, private model: model, private reporterconfig: reporterconfig) {
 
     }
 
-    getOperators(){
+    private getOperators() {
         return this.reporterconfig.operatorTypes[this.reporterconfig.operatorAssignments[this.wherecondition.type]];
     }
 
-    get itemType(){
+    get itemType() {
         let type = 'text';
 
-        switch(this.wherecondition.type){
+        switch (this.wherecondition.type) {
             case 'enum':
-                switch(this.wherecondition.operator){
+                switch (this.wherecondition.operator) {
                     case 'equals':
                     case 'notequal':
                     case 'oneof':
@@ -53,15 +47,15 @@ export class ReporterFilterItem {
 
     }
 
-    get showValue(){
+    get showValue() {
         return this.reporterconfig.operatorCount[this.wherecondition.operator] > 0;
     }
 
-    get showValueTo(){
+    get showValueTo() {
         return this.reporterconfig.operatorCount[this.wherecondition.operator] > 1;
     }
 
-    changeOperator(){
+    private changeOperator() {
         this.wherecondition.value = '';
         this.wherecondition.valuekey = '';
         this.wherecondition.valueto = '';

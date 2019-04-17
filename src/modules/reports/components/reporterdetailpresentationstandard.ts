@@ -1,5 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component, Input, AfterViewInit, OnInit,
+    Component, AfterViewInit, OnInit,
     OnDestroy, ViewChild, ViewContainerRef, Renderer, ElementRef
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
@@ -11,31 +14,34 @@ import {broadcast} from '../../../services/broadcast.service';
 
 import  {reporterconfig} from '../services/reporterconfig';
 
+/**
+ * renders the standard view for a report which is a simple column based view
+ */
 @Component({
     selector: 'reporter-detail-presentation-standard',
     templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html'
 })
-export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
+export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef}) tableheader: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef}) tablefooter: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef}) private tableheader: ViewContainerRef;
+    @ViewChild('tablefooter', {read: ViewContainerRef}) private tablefooter: ViewContainerRef;
 
-    presParams: any = {};
-    presData: any = {};
-    fieldsData: any = {};
-    totalWidth: number = 0;
-    mouseMoveListener: any = undefined;
-    mouseUpListener: any = undefined;
-    mousestart: number = 0;
-    mousemove: number = 0;
-    mousefield: string = '';
-    mousewidth: number;
-    showFooter: boolean = true;
+    private presParams: any = {};
+    private presData: any = {};
+    private fieldsData: any = {};
+    private totalWidth: number = 0;
+    private mouseMoveListener: any = undefined;
+    private mouseUpListener: any = undefined;
+    private mousestart: number = 0;
+    private mousemove: number = 0;
+    private mousefield: string = '';
+    private mousewidth: number;
+    private showFooter: boolean = true;
 
-    currentPage: number = 1;
+    private currentPage: number = 1;
 
-    isLoading: boolean = true;
+    private isLoading: boolean = true;
 
 
     constructor(private renderer: Renderer, private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private elementRef: ElementRef, private reporterconfig: reporterconfig) {
@@ -44,38 +50,34 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         })
     }
 
-    handleMessage(message: any) {
+    private handleMessage(message: any) {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.presParams = JSON.parse(this.model.data.presentation_params);
     }
 
-    ngAfterViewInit() {
-        this.getPresentation()
-    }
-
-    ngOnDestroy() {
-
+    public ngAfterViewInit() {
+        this.getPresentation();
     }
 
     // todo : fix this for scrolling with a fixed table header
-    getContainerStyle(): any {
+    private getContainerStyle(): any {
         let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
         if (this.showFooter) {
             let rectf = this.tablefooter.element.nativeElement.getBoundingClientRect();
             return {
                 height: 'calc(100% - ' + (recth.height + rectf.height) + 'px)'
-            }
+            };
         } else {
             return {
                 height: 'calc(100% - ' + recth.height + 'px)'
-            }
+            };
         }
     }
 
-    onScroll(e) {
+    private onScroll(e) {
 
     }
 
@@ -90,7 +92,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return this.presData.count;
     }
 
-    getPresentation() {
+    private getPresentation() {
         this.isLoading = true;
 
         // build wherecondition
@@ -103,7 +105,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 valuekey: userFilter.valuekey,
                 valueto: userFilter.valueto,
                 valuetokey: userFilter.valuetokey
-            })
+            });
         }
 
         this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
@@ -122,10 +124,10 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             this.presData = presData;
 
             this.isLoading = false;
-        })
+        });
     }
 
-    getFields() {
+    private getFields() {
         try {
             return this.presData.reportmetadata.fields;
         } catch (e) {
@@ -133,7 +135,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         }
     }
 
-    getRecords() {
+    private getRecords() {
         try {
             return this.presData.records;
         } catch (e) {
@@ -141,18 +143,18 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         }
     }
 
-    getFieldWidth(fieldid) {
+    private getFieldWidth(fieldid) {
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
 
-    onMouseDown(fieldid, e) {
+    private onMouseDown(fieldid, e) {
         this.mouseUpListener = this.renderer.listenGlobal('document', 'mouseup', (event) => this.onMouseUp(event));
         this.mouseMoveListener = this.renderer.listenGlobal('document', 'mousemove', (event) => this.onMouseMove(event));
         this.mousestart = e.pageX;
         this.mousefield = fieldid;
     }
 
-    onMouseMove(e) {
+    private onMouseMove(e) {
         this.mousemove = e.pageX - this.mousestart;
     }
 
@@ -172,7 +174,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return this.currentPage <= 1;
     }
 
-    prevPage() {
+    private prevPage() {
         this.currentPage--;
         this.getPresentation();
     }
@@ -181,7 +183,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries >= this.presData.count;
     }
 
-    nextPage() {
+    private nextPage() {
         this.currentPage++;
         this.getPresentation();
     }

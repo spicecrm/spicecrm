@@ -3,7 +3,7 @@
         <system-icon [icon]="'clock'" [sprite]="'utility'" [size]="'small'"></system-icon>
         <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}})</h2>
     </div>
-    <div *ngFor="let reminder of reminders" class="slds-p-around--x-small slds-grid">
+    <div *ngFor="let reminder of reminders; trackBy: trackByFn" class="slds-p-around--x-small slds-grid">
         <div class="slds-media">
             <div class="slds-media__figure ">
                 <system-icon [module]="reminder.module_name" [size]="'small'"></system-icon>

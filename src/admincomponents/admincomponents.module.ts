@@ -1,28 +1,13 @@
+/**
+ * @module AdminComponentsModule
+ */
 import {CommonModule} from '@angular/common';
 import {FormsModule}   from '@angular/forms';
-import {AfterViewInit, OnInit, OnDestroy, ComponentFactoryResolver, Component, NgModule, Injectable, ViewChild, ViewContainerRef, ElementRef, Input, Output, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-
-import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
-
-import {session} from '../services/session.service';
-import {metadata} from '../services/metadata.service';
-import {modal} from '../services/modal.service';
-import {modelutilities} from '../services/modelutilities.service';
-import {backend} from '../services/backend.service';
-import {navigation} from '../services/navigation.service';
-import {language} from '../services/language.service';
-import {configurationService} from '../services/configuration.service';
-import {userpreferences} from '../services/userpreferences.service';
-import {footer} from '../services/footer.service';
-import {toast} from '../services/toast.service';
+import {NgModule, Component} from '@angular/core';
 import {VersionManagerService} from '../services/versionmanager.service';
-
 import { RouterModule, Routes, Router } from '@angular/router';
-import { loginCheck } from '../services/login.service';
 import {DirectivesModule} from "../directives/directives";
-import { SystemComponents } from '../systemcomponents/systemcomponents';
+import {SystemComponents} from '../systemcomponents/systemcomponents';
 
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service'
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service'
@@ -48,6 +33,11 @@ import /*embed*/ { AdministrationSysTrashcanRecover } from './components/adminis
 import /*embed*/ { AdministrationDictRepair } from './components/administrationdictrepair';
 
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
+
+import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
+import /*embed*/ { AdministrationSchedulerJobLog } from './components/administrationschedulerjoblog';
+import /*embed*/ { AdministrationSchedulerRunButton } from './components/administrationschedulerrunbutton';
+import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {VersionControllerComponent} from "./components/versioncontroller";
@@ -90,7 +80,11 @@ export class AdministrationMain {}
         AdministrationSysTrashcanRecover,
         AdministrationDictRepair,
         VersionControllerComponent,
-        AdministrationConfigEditor
+        AdministrationConfigEditor,
+        AdministrationSchedulerJobsEnum,
+        AdministrationSchedulerJobLog,
+        AdministrationSchedulerRunButton,
+        AdministrationSchedulerScheduleButton
     ],
     entryComponents: [
         AdministrationMain,

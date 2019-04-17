@@ -1,60 +1,32 @@
-import {Component, ViewContainerRef, ViewChild} from '@angular/core';
+/**
+ * @module ModuleTeleSales
+ */
+import {Component, Input, OnChanges, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
-import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
-
-import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
-    selector: 'tele_sales_cockpit_module_actions',
+    selector: 'tele-sales-cockpit-module-actions',
     templateUrl: './src/modules/telesales/templates/telesalescockpitmoduleactions.html',
 })
-export class TeleSalesCockpitModuleActions {
+export class TeleSalesCockpitModuleActions implements OnChanges {
 
-    @ViewChild('moduleactionscontainer', {read: ViewContainerRef}) moduleactionscontainer: ViewContainerRef;
+    @ViewChild('moduleactionscontainer', {read: ViewContainerRef}) private moduleactionscontainer: ViewContainerRef;
+    @Input() private module: string;
 
-    componentconfig: any = {};
-    actionsets: any = [];
-    actionitems: any = [];
-    renderedActionset: Array<any> = [];
+    private actionset: string = '';
 
-    constructor(
-        private language: language,
-        private model: model,
-        private telecockpitservice: telecockpitservice,
-        private metadata: metadata,
-    ) {
-        this.telecockpitservice.selectedItem$.subscribe(data => this.renderView(data));
-
+    constructor(private language: language, private metadata: metadata) {
     }
 
-       resetView(){
-        for (let renderedAction of this.renderedActionset){
-            renderedAction.destroy();
-        }
-        this.actionitems = [];
-
-    }
-
-    renderView(modeldata){
-
-        this.resetView();
-
-        let componentconfig = this.metadata.getComponentConfig('TeleSalesCockpitModuleActions', modeldata.module);
-        if(componentconfig && componentconfig.actionset) {
-            this.actionitems = this.metadata.getActionSetItems(componentconfig.actionset);
-            for (let actionitem of this.actionitems) {
-                this.metadata.addComponent(actionitem.component, this.moduleactionscontainer).subscribe(componentref => {
-                    componentref.instance.parent = this.model;
-                    componentref.instance['actionconfig'] = actionitem.actionconfig;
-                    this.renderedActionset.push(componentref);
-                });
-            }
+    public ngOnChanges() {
+        if (this.module) {
+            this.loadActionset(this.module);
         }
     }
 
+    private loadActionset(module) {
+        let conf = this.metadata.getComponentConfig('TeleSalesCockpitModuleActions', module);
+        this.actionset = conf && conf.actionset ? conf.actionset : '';
+    }
 }
-
-

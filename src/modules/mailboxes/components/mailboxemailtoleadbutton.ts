@@ -1,4 +1,7 @@
-import {Component, HostBinding, Input} from "@angular/core";
+/**
+ * @module ModuleMailboxes
+ */
+import {Component} from "@angular/core";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -8,13 +11,6 @@ import {MailboxEmailToLeadModal} from "./mailboxemailtoleadmodal";
 
 @Component({
     selector: "mailbox-email-to-lead-emailbutton",
-    host: {
-        "(click)" : "createLead()",
-        "class": "slds-button slds-button--neutral",
-    },
-    styles: [
-        ":host {cursor:pointer;}",
-    ],
     templateUrl: "./src/modules/mailboxes/templates/mailboxemailtoleadbutton.html",
 })
 export class MailboxEmailToLeadButton {
@@ -27,10 +23,10 @@ export class MailboxEmailToLeadButton {
         private toast: toast,
     ) {}
 
-    public createLead() {
+    public execute() {
         this.modal.openModal("MailboxEmailToLeadModal").
         subscribe(popup => {
-            popup.instance["email"] = this.model;
+            popup.instance.email = this.model;
 
         });
     }

@@ -1,0 +1,27 @@
+<div class="slds-progress-ring" [ngClass]="ringClass">
+    <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="88">
+        <svg viewBox="-1 -1 2 2">
+            <path class="slds-progress-ring__path" [attr.d]="d" />
+        </svg>
+    </div>
+    <div class="slds-progress-ring__content">
+        <span *ngIf="iconstatus=='warning'" class="slds-icon_container slds-icon-utility-warning" title="Warning">
+              <svg class="slds-icon" aria-hidden="true">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="sldassets/icons/utility-sprite/svg/symbols.svg#warning" />
+              </svg>
+          <span class="slds-assistive-text">{{language.getLabel('LBL_WARNING')}}</span>
+        </span>
+        <span *ngIf="iconstatus=='expired'" class="slds-icon_container slds-icon-utility-error" title="Expired">
+          <svg class="slds-icon" aria-hidden="true">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="sldassets/icons/utility-sprite/svg/symbols.svg#error" />
+          </svg>
+          <span class="slds-assistive-text">{{language.getLabel('LBL_EXPIRED')}}</span>
+        </span>
+        <span *ngIf="iconstatus=='complete'" class="slds-icon_container slds-icon-utility-check" title="Complete">
+          <svg class="slds-icon" aria-hidden="true">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="sldassets/icons/utility-sprite/svg/symbols.svg#check" />
+          </svg>
+          <span class="slds-assistive-text">{{language.getLabel('LBL_COMPLETE')}}</span>
+        </span>
+    </div>
+</div>

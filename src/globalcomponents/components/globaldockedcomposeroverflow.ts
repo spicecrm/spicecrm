@@ -1,16 +1,12 @@
+/**
+ * @module GlobalComponents
+ */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
     Renderer2,
     ElementRef,
     OnDestroy
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {dockedComposer} from '../../services/dockedcomposer.service';
 import {language} from '../../services/language.service';
 
@@ -27,11 +23,13 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.clickListener();
+        if (this.clickListener) {
+            this.clickListener();
+        }
     }
 
     get hiddenCount() {
-        return this.dockedComposer.composers.length - this.dockedComposer.maxComposers;
+        return this.dockedComposer.composers.length + this.dockedComposer.calls.length - this.dockedComposer.maxComposers;
     }
 
     private toggleHiddenComoposers() {
@@ -55,11 +53,11 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
 
 
     get overflowComposers() {
-        return this.dockedComposer.composers.slice(this.dockedComposer.maxComposers);
+        return this.dockedComposer.composers.slice(this.dockedComposer.maxComposers - this.dockedComposer.calls.length);
     }
 
     private displayLabel(composer) {
-        // return composer.model.data.name ? composer.model.data.name : this.language.getModuleLabel(composer.module, 'LBL_NEW_FORM_TITLE');
+        // return composer.model.data.name ? composer.model.data.name : this.language.getLabel(composer.module, 'LBL_NEW_FORM_TITLE');
         return composer.model.data.name ? composer.model.data.name : this.language.getModuleName(composer.model.module, true);
     }
 

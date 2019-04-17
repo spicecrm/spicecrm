@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {Component} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 

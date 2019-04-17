@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody *ngIf="!isLoading && mailboxes.length > 0">
-                <tr *ngFor="let mailbox of mailboxes" style="cursor: pointer" (click)="goToRecord(mailbox.id)">
+                <tr *ngFor="let mailbox of mailboxes; trackBy: trackByFn" style="cursor: pointer" (click)="goToRecord(mailbox.id)">
                     <td class="slds-truncate" style="min-width: 120px">
                        {{mailbox.name}}
                     </td>

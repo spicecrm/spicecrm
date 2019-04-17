@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -8,31 +11,7 @@ import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-documents-search",
-    templateUrl: "./src/modules/knowledge/templates/knowledgedocumentssearch.html",
-    styles: [`
-
-        /* Scrollbar */
-
-        /* width */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: #aaa;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: #888;
-        }
-    `]
+    templateUrl: "./src/modules/knowledge/templates/knowledgedocumentssearch.html"
 })
 export class KnowledgeDocumentsSearch {
 
@@ -77,5 +56,9 @@ export class KnowledgeDocumentsSearch {
         this.knowledgeService.selectedId = doc.id;
         this.knowledgeService.selectedBook = {id: doc.knowledgebook_id, name: doc.knowledgebook_name};
         this.knowledgeService.getDocuments(doc.knowledgebook_id);
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 }

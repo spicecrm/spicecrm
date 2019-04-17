@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";

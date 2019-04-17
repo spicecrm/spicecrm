@@ -1,3 +1,6 @@
+/**
+ * @module ModuleEmails
+ */
 import {
     Component,
     Input,

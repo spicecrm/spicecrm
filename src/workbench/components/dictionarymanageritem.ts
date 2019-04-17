@@ -1,15 +1,10 @@
+/**
+ * @module WorkbenchModule
+ */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef, OnInit
+    Input
 } from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {navigation} from '../../services/navigation.service';
-import {backend} from '../../services/backend.service';
 import {view} from '../../services/view.service';
 
 @Component({

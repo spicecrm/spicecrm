@@ -1,3 +1,6 @@
+/**
+ * @module ModuleKnowledge
+ */
 import {Component} from "@angular/core";
 import {favorite} from "../../../services/favorite.service";
 import {language} from "../../../services/language.service";
@@ -26,5 +29,9 @@ export class KnowledgeDocumentFavorites {
     private navigateTo(id) {
         this.knowledgeService.selectedId = id;
         this.location.replaceState("/module/KnowledgeDocuments/" + id);
+    }
+
+    private trackByFn(index, item) {
+        return item.item_id;
     }
 }

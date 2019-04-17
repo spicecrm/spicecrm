@@ -1,4 +1,7 @@
-import {Component, Input, ElementRef, OnInit} from '@angular/core';
+/**
+ * @module ObjectComponents
+ */
+import {Component,OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {relatedmodels} from '../../services/relatedmodels.service';
@@ -8,29 +11,25 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'object-action-select-button',
     templateUrl: './src/objectcomponents/templates/objectactionselectbutton.html',
-    providers: [model],
-    host: {
-        'class': 'slds-button slds-button--neutral'
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ]
+    providers: [model]
 })
 export class ObjectActionSelectButton implements OnInit {
 
-    displayModal: boolean = false;
-    popupSubscribe: any = undefined;
-    actionconfig: any = {};
-    parent: any = {};
+    public actionconfig: any = {};
+    public parent: any = {};
+    public disabled: boolean = true;
 
     constructor(private metadata: metadata, private language: language, private modal: modal, private model: model, private relatedmodels: relatedmodels) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.module = this.relatedmodels.relatedModule;
+        if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "list")) {
+            this.disabled = false;
+        }
     }
 
-    openModal() {
+    public execute() {
         if(this.actionconfig.searchConditions){
             this.modal.openModal('ObjectModalModuleDBLookup').subscribe(selectModal => {
                 selectModal.instance.searchConditions = this.actionconfig.searchConditions;
@@ -51,7 +50,7 @@ export class ObjectActionSelectButton implements OnInit {
         }
     }
 
-    addSelectedItems(event) {
+    private addSelectedItems(event) {
         this.relatedmodels.addItems(event);
     }
 

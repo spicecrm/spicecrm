@@ -1,20 +1,26 @@
+/**
+ * @module services
+ */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
-import {Router}   from '@angular/router';
-import {Observable, Subject, of} from 'rxjs';
+import {Subject, of} from 'rxjs';
 
 @Injectable()
 export class recent {
-    private items: Array<any> = [];
+    // public items: any[] = [];
     public moduleItems: any = {};
 
-    constructor(private backend: backend, private broadcast: broadcast, private configurationService: configurationService, private session: session) {
-        this.broadcast.message$.subscribe(message => this.handleMessage(message))
+    constructor(private backend: backend, private broadcast: broadcast, private configuration: configurationService, private session: session) {
+        this.broadcast.message$.subscribe(message => this.handleMessage(message));
+    }
+
+    get items() {
+        let recentItems = this.configuration.getData('recentitmes')
+        return recentItems ? recentItems : [];
     }
 
     private handleMessage(message: any) {
@@ -22,15 +28,15 @@ export class recent {
 
             case 'model.save':
                 this.items.some((item, index) => {
-                    if(item.module_name === message.messagedata.module && item.item_id == message.messagedata.id){
+                    if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
                         this.items[index].item_summary = message.messagedata.data.summary_text;
                         return true;
                     }
                 });
 
-                if(this.moduleItems[message.messagedata.module]){
+                if (this.moduleItems[message.messagedata.module]) {
                     this.moduleItems[message.messagedata.module].some((item, index) => {
-                        if(item.item_id == message.messagedata.id){
+                        if (item.item_id == message.messagedata.id) {
                             this.moduleItems[message.messagedata.module][index].item_summary = message.messagedata.data.summary_text;
                             return true;
                         }
@@ -40,15 +46,15 @@ export class recent {
                 break;
             case 'model.delete':
                 this.items.some((item, index) => {
-                    if(item.module_name === message.messagedata.module && item.item_id == message.messagedata.id){
+                    if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
                         this.items.splice(index, 1);
                         return true;
                     }
                 });
 
-                if(this.moduleItems[message.messagedata.module]){
+                if (this.moduleItems[message.messagedata.module]) {
                     this.moduleItems[message.messagedata.module].some((item, index) => {
-                        if(item.item_id == message.messagedata.id){
+                        if (item.item_id == message.messagedata.id) {
                             this.items.splice(index, 1);
                             return true;
                         }
@@ -59,76 +65,68 @@ export class recent {
         }
     }
 
-    public trackItem(module: string, item_id: string, item_summary: string) {
+    public trackItem(module_name: string, item_id: string, item_summary: string) {
         // handle the general tracker
         this.items.some((item, index) => {
-            if(item.module_name === module && item.item_id == item_id){
+            if (item.module_name === module_name && item.item_id == item_id) {
                 this.items.splice(index, 1);
                 return true;
             }
         });
 
         this.items.splice(0, 0, {
-            item_id: item_id,
-            module_name: module,
-            item_summary: item_summary
+            item_id,
+            module_name,
+            item_summary
         });
 
-        while(this.items.length > 50) {this.items.pop();}
+        while (this.items.length > 50) {
+            this.items.pop();
+        }
 
         // handle the module specific tracker
-        if(this.moduleItems[module]){
-            this.moduleItems[module].some((item, index) => {
-                if(item.item_id == item_id){
-                    this.moduleItems[module].splice(index, 1);
+        if (this.moduleItems[module_name]) {
+            this.moduleItems[module_name].some((item, index) => {
+                if (item.item_id == item_id) {
+                    this.moduleItems[module_name].splice(index, 1);
                     return true;
                 }
             });
 
-            this.moduleItems[module].splice(0, 0, {
-                item_id: item_id,
-                module_name: module,
-                item_summary: item_summary
+            this.moduleItems[module_name].splice(0, 0, {
+                item_id,
+                module_name,
+                item_summary
             });
 
-            while(this.moduleItems[module].length > 5) {this.moduleItems[module].pop();}
-        }
-    }
-
-    public getRecent(loadhandler: Subject<string>) {
-        if (sessionStorage[window.btoa('recent'+this.session.authData.sessionId)] && sessionStorage[window.btoa('recent'+this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            let response = this.session.getSessionData('recent');
-            for (let item of response) {
-                this.items.push(item);
+            while (this.moduleItems[module_name].length > 5) {
+                this.moduleItems[module_name].pop();
             }
-            loadhandler.next('getRecent');
-        }else {
-            this.backend.getRecent('', 50).subscribe(response => {
-                this.session.setSessionData('recent',response);
-                for (let item of response) {
-                    this.items.push(item);
-                }
-                loadhandler.next('getRecent');
-            });
         }
     }
 
     public getModuleRecent(module: string) {
-        if(this.moduleItems[module]) {
-            return of(this.moduleItems[module]);
+        // special handling for Home
+        if (module == 'Home') {
+            // return 5 items
+            return of(this.items.slice(0, 5));
         } else {
-            let responseSubject = new Subject<Array<any>>();
-            if (!this.moduleItems[module]) {
-                this.backend.getRecent(module, 5) .subscribe(response => {
-                    this.moduleItems[module] = [];
-                    for (let item of response) {
-                        this.moduleItems[module].push(item);
-                    }
-                    responseSubject.next(this.moduleItems[module]);
-                    responseSubject.complete();
-                });
+            if (this.moduleItems[module]) {
+                return of(this.moduleItems[module]);
+            } else {
+                let responseSubject = new Subject<any[]>();
+                if (!this.moduleItems[module]) {
+                    this.backend.getRecent(module, 5).subscribe(response => {
+                        this.moduleItems[module] = [];
+                        for (let item of response) {
+                            this.moduleItems[module].push(item);
+                        }
+                        responseSubject.next(this.moduleItems[module]);
+                        responseSubject.complete();
+                    });
+                }
+                return responseSubject.asObservable();
             }
-            return responseSubject.asObservable();
         }
     }
 }

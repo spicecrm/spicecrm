@@ -1,15 +1,15 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
+    Component
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -18,8 +18,8 @@ declare var moment: any;
 })
 export class ReporterFieldDate {
 
-    record: any = {};
-    field: any = {};
+    private record: any = {};
+    private field: any = {};
 
     constructor(private userpreferences: userpreferences) {
 

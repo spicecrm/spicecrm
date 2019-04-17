@@ -1,3 +1,6 @@
+/**
+ * @module GlobalComponents
+ */
 import {AfterViewInit, Component, ViewChild, ViewContainerRef, Renderer2, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {session} from '../../services/session.service';
@@ -14,11 +17,11 @@ export class GlobalHeaderWorkbench {
 
     }
 
-    isAdmin(){
+    private isAdmin(){
         return this.session.isAdmin;
     }
 
-    goAdmin(){
+    private goAdmin(){
         this.router.navigate(['/admin']);
     }
 

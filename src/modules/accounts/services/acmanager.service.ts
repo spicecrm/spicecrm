@@ -1,3 +1,6 @@
+/**
+ * @module ModuleAccounts
+ */
 import {EventEmitter, Injectable} from "@angular/core";
 
 @Injectable()

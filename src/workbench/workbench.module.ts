@@ -1,36 +1,20 @@
-import {CommonModule, JsonPipe} from "@angular/common";
-import {AfterViewInit,  Component, ElementRef, NgModule, Renderer,  ViewChild, ViewContainerRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Pipe, PipeTransform, ChangeDetectorRef} from "@angular/core";
+/**
+ * @module WorkbenchModule
+ */
+import {CommonModule} from "@angular/common";
+import {NgModule} from "@angular/core";
 import {FormsModule}   from "@angular/forms";
-import {Router, ActivatedRoute} from "@angular/router";
 
-import {Subject} from "rxjs";
-import {Observable} from "rxjs";
 // SERVICEs
-import {metadata} from "../services/metadata.service";
-import {model} from "../services/model.service";
-import {modal} from "../services/modal.service";
-import {language} from "../services/language.service";
-import {broadcast} from "../services/broadcast.service";
-import {backend} from "../services/backend.service";
-import {view} from "../services/view.service";
-import {popup} from "../services/popup.service";
-import {navigation} from "../services/navigation.service";
-import {modelutilities} from "../services/modelutilities.service";
-import {toast} from "../services/toast.service";
-import {AppDataService} from "../services/appdata.service";
 import {VersionManagerService} from "../services/versionmanager.service";
-import {configurationService} from "../services/configuration.service";
-import {footer} from "../services/footer.service";
 
 // MODULEs
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
+import {GlobalComponents} from "../globalcomponents/globalcomponents";
 
 // COMPONENTs
-
-import /*embed*/ {BasicReferenceForm} from "./components/basicreferenceform";
-
 import /*embed*/ {DomainManager} from "./components/domainmanager";
 import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
 
@@ -55,6 +39,7 @@ import /*embed*/ {ComponentConfigManagerComponentDetails} from "./components/com
 import /*embed*/ {ValidationRulesManager, MaybeJsonPipe} from "./components/validationrulesmanager";
 import /*embed*/ {ValidationRulesConditions} from "./components/validationrulesconditions";
 import /*embed*/ {ValidationRulesActions} from "./components/validationrulesactions";
+import /*embed*/ {LanguageTranslationsManager} from "./components/languagetranslationsmanager";
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
@@ -64,34 +49,47 @@ import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesma
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
-import /*embed*/ {LabelSelectorComponent} from "./components/labelselector";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
-import /*embed*/ {LanguageLabelReferenceConfigForm} from "./components/languagelabelreferenceconfigform";
-import /*embed*/ {LanguageLabelReferenceConfigModal} from "./components/languagelabelreferenceconfigmodal";
-import /*embed*/ {ReferenceConfigManager} from "./components/referenceconfigmanager";
-import /*embed*/ {ReferenceConfigForm} from "./components/referenceconfigform";
 import /*embed*/ {MailboxesProcessors} from "./components/mailboxesprocessors";
 import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
 import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
 
-
 import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
+import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
 import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
+import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
-import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipe} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
 import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
 import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
+import /*embed*/ {WorkbenchConfigOptionLabel} from "./components/workbenchconfigoptionlabel";
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
+import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
+import /*embed*/ {CRMLogViewerList} from './components/crmlogviewerlist';
+import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
+import /*embed*/ {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
+import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
+import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
+
+import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
+import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
+import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
+
+import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
+import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
+import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 
 @NgModule({
     imports: [
@@ -99,7 +97,8 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        ObjectFields
+        ObjectFields,
+        GlobalComponents
     ],
     declarations: [
         DomainManager,
@@ -116,13 +115,18 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         FieldsetManagerCopyDialog,
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
+        WorkbenchHeader,
+        WorkbenchConfigLabel,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
-        ComponentsetManagerModulePipe,
+        WorkbenchConfigOptionModulefilter,
+        ComponentsetManagerModulePipeCustom,
+        ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionModule,
         WorkbenchConfigOptionActionset,
         WorkbenchConfigOptionBoolean,
+        WorkbenchConfigOptionLabel,
         ComponentsetManagerAddDialog,
         ComponentsetManagerEditDialog,
         ComponentConfigManager,
@@ -131,10 +135,9 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         ValidationRulesConditions,
         ValidationRulesActions,
         MaybeJsonPipe,
+        LanguageTranslationsManager,
         LanguageLabelManagerComponent,
         LanguageLabelModal,
-        LanguageLabelReferenceConfigForm,
-        LanguageLabelReferenceConfigModal,
         ComponentConfigManagerComponentDetails,
         MailboxesManager,
         LanguageLabelModal,
@@ -146,10 +149,7 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         MailboxesSendgridTrafficManager,
         MailboxesIMAPSMTPSelectFoldersModal,
         SortPipe,
-        LabelSelectorComponent,
         ServiceCategoryManagerComponent,
-        ReferenceConfigManager,
-        ReferenceConfigForm,
         MailboxesProcessors,
         SelectTreeComponent,
         SelectTreeAddDialog,
@@ -161,7 +161,20 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
         ObjectRepositoryManagerAddRepo,
-        ObjectRepositoryManagerAddModule
+        ObjectRepositoryExport,
+        ObjectRepositoryManagerAddModule,
+        CRMLogViewer,
+        CRMLogViewerList,
+        CRMLogViewerModal,
+        CRMLogViewerListModal,
+        KRESTLogViewer,
+        KRESTLogViewerModal,
+        ModuleFilterBuilder,
+        ModuleFilterBuilderFilters,
+        ModuleFilterBuilderFilterDetails,
+        DashletGenerator,
+        DashletGeneratorDashlets,
+        DashletGeneratorDashletDetails,
     ],
     /* no further modules needed */
     entryComponents: [
@@ -169,14 +182,22 @@ import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrep
         DictionaryManager,
         FieldsetManager,
         ComponentsetManager,
+        WorkbenchConfigLabel,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
+        WorkbenchConfigOptionModulefilter,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionActionset,
         ComponentConfigManager,
         ModuleConfigManager,
         WorkbenchConfig,
-        ObjectRepositoryManager
+        ObjectRepositoryManager,
+        CRMLogViewer,
+        CRMLogViewerList,
+        CRMLogViewerModal,
+        CRMLogViewerListModal,
+        KRESTLogViewer,
+        KRESTLogViewerModal
     ],
     exports: [
         SortPipe,

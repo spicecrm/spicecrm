@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProjects
+ */
 import {Component, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
@@ -6,6 +9,9 @@ import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -77,7 +83,8 @@ export class ProjectActivityDashlet implements OnInit {
         });
     }
 
-    private modelchanged(data) {
+    private modelchanged(data)
+    {
         if (this.activityminutes != data.duration_minutes || this.activitiyhours != data.duration_hours){
             // set the new values
             this.activityminutes = data.duration_minutes;
@@ -90,6 +97,9 @@ export class ProjectActivityDashlet implements OnInit {
 
         } else if ( Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) != (this.activitiyhours * 60 + this.activityminutes)){
             // set end date to start date (without setting the time...)
+            if(!this.model.data.activity_start)
+                return false;
+
             this.model.data.activity_end
                 .year(this.model.data.activity_start.get("year"))
                 .month(this.model.data.activity_start.get("month"))
@@ -99,8 +109,15 @@ export class ProjectActivityDashlet implements OnInit {
             let duration = Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes());
 
             // get minutes and hours
-            this.activitiyhours = Math.floor(duration / 60);
-            this.activityminutes = duration - this.activitiyhours * 60;
+            if(duration > 0)
+            {
+                this.activitiyhours = Math.floor(duration / 60);
+                this.activityminutes = duration - (this.activitiyhours * 60);
+            }
+            else{
+                this.activitiyhours = Math.ceil(duration / 60);
+                this.activityminutes = duration + (this.activitiyhours * 60);
+            }
 
             // set the model data
             this.model.data.duration_hours = this.activitiyhours;
@@ -109,18 +126,18 @@ export class ProjectActivityDashlet implements OnInit {
         }
     }
 
-    private validate() {
-        if( !this.selected_wbs ) {
+    private validate()
+    {
+        if( !this.selected_wbs )
             return false;
-        }
 
-        if( this.model.data.duration_hours < 1 && this.model.data.duration_minutes < 1 ) {
+        if( this.model.data.duration_hours < 1 && this.model.data.duration_minutes < 1 )
             return false;
-        }
+        if( this.model.data.duration_hours < 0 || this.model.data.duration_minutes < 0 )
+            return false;
 
-        if( !this.model.data.name ) {
+        if( !this.model.data.name )
             return false;
-        }
 
         return true;
     }
@@ -165,7 +182,7 @@ export class ProjectActivityDashlet implements OnInit {
         this._wbs_search_term = null;
         this.show_wbs_results = false;
 
-        // set the next 15  inute to the end
+        // set to the next 15  minute to the end
         let value = new moment();
         value.minute((Math.floor(value.minute()/15)+1)*15);
         this.model.data.activity_end = value;
@@ -175,8 +192,8 @@ export class ProjectActivityDashlet implements OnInit {
         this.model.data.duration_hours = 0;
         this.model.data.duration_minutes = 15;
 
-        this.activityminutes = 15;
         this.activitiyhours = 0;
+        this.activityminutes = 15;
 
         // set the date start subtracting the duration
         this.model.data.activity_start = new moment(value);

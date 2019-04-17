@@ -1,36 +1,40 @@
-import {Component, Input, HostBinding, ViewContainerRef} from "@angular/core";
-import {Router} from "@angular/router";
+/**
+ * @module ModuleContacts
+ */
+import {Component, ViewContainerRef, OnInit} from "@angular/core";
+
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
-import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "contact-portal-button",
-    templateUrl: "./src/modules/contacts/templates/contactportalbutton.html",
-    host: {
-        "class": "slds-button slds-button--neutral",
-        "[style.display]": "getDisplay()",
-        "(click)" : "showPortalDetails()"
-    },
-    styles: [
-        ":host >>> {cursor:pointer;}"
-    ]
+    templateUrl: "./src/modules/contacts/templates/contactportalbutton.html"
 })
-export class ContactPortalButton {
+export class ContactPortalButton implements OnInit {
 
-    constructor(private language: language, private model: model,  private metadata: metadata, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+    public disabled: boolean = true;
+
+    constructor(private language: language, private model: model, private metadata: metadata, private modal: modal, private viewContainerRef: ViewContainerRef) {
     }
 
-    private getDisplay() {
-        return (!this.model.data.email1 && !this.model.data.email_address_private) || this.model.isEditing || (this.model.data.acl && !this.model.data.acl.edit) ? "none" : "inherit"
-    }
+    public ngOnInit() {
+        this.handleDisabled();
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled();
+        });
 
-    private showPortalDetails() {
-        this.modal.openModal("ContactPortalDetails", true, this.ViewContainerRef.injector).subscribe(popup => {
-
+        this.model.data$.subscribe(data => {
+            this.handleDisabled();
         });
     }
 
+    private handleDisabled() {
+        this.disabled = !((this.model.data.email1 || this.model.data.email_address_private) && !this.model.isEditing && this.model.checkAccess('edit'));
+    }
+
+    private execute() {
+        this.modal.openModal("ContactPortalDetails", true, this.viewContainerRef.injector);
+    }
 }

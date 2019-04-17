@@ -1,19 +1,30 @@
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, OnInit, OnDestroy} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+/**
+ * @module ModuleActivities
+ */
+import {Component, ElementRef, OnDestroy} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 
-
+/**
+ * a separate view on tasks that presents a tasklist and a split view with the tasks for quick task handling for the user
+ */
 @Component({
-    // selector: 'object-home',
+
     templateUrl: './src/modules/activities/templates/tasksmanagerview.html',
 })
 export class TasksManagerView implements OnDestroy{
 
-    modellistsubscribe: any = {};
-    focus: string = null;
+    /**
+     * holds the subscription to the model changes
+     */
+    private modellistsubscribe: any = {};
+
+    /**
+     * identifies the currrent selected task that is focused
+     */
+    private focus: string = null;
 
     constructor(private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private model: model, private modellist: modellist) {
 
@@ -24,18 +35,26 @@ export class TasksManagerView implements OnDestroy{
 
     }
 
-    ngOnDestroy(){
+    public ngOnDestroy(){
         this.modellistsubscribe.unsubscribe();
     }
 
-    loadList(){
+    /**
+     * loads the lost of tasks from the modellist service
+     */
+    private loadList(){
         this.focus = null;
         this.modellist.sortfield = 'date_due';
         this.modellist.sortdirection = 'ASC';
         this.modellist.getListData(['name', 'parent_type', 'parent_name', 'parent_id', 'date_due', 'assigned_user_name', 'assigned_user_id', 'created_by', 'created_by_name']);
     }
 
-    taskSelected(id){
+    /**
+     * sets the selected taks
+     *
+     * @param id the id of the selected task. This is emitted by the underlying component
+     */
+    private taskSelected(id){
         this.focus = id;
     }
 }

@@ -11,7 +11,7 @@
     </li>
     <li *ngFor="let searchterritory of searchterritories" role="presentation" (click)="setTerritory(searchterritory)">
         <span class="slds-lookup__item-action slds-media" role="option">
-              <system-icon module="SpiceACLTerritories" [size]="'small'"></system-icon>
+              <system-icon icon="service_territory" [size]="'small'"></system-icon>
               <div class="slds-media__body">
                 <div class="slds-lookup__result-text">{{searchterritory.name}}</div>
               </div>

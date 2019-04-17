@@ -45,22 +45,22 @@
             </div>
         </div>
         <div class="slds-m-left--xx-small slds-size--1-of-2">
-            <field-label [fieldname]="'name'"></field-label>
-            <field-container [fieldname]="'name'"></field-container>
+            <field-label fieldname="name"></field-label>
+            <field-container fieldname="name"></field-container>
         </div>
     </div>
     <div class="slds-grid slds-m-top--small slds-grid_vertical-align-start">
         <div class="slds-m-left--xx-small  slds-size--2-of-5">
-            <field-label [fieldname]="'activity_start'"></field-label>
-            <field-container [fieldname]="'activity_start'"></field-container>
+            <field-label fieldname="activity_start"></field-label>
+            <field-container fieldname="activity_start"></field-container>
         </div>
         <div class="slds-m-left--xx-small slds-size--1-of-5">
-            <field-label [fieldname]="'activity_end'"></field-label>
-            <field-container [fieldname]="'activity_end'" [fieldconfig]="{fieldtype:'time'}"></field-container>
+            <field-label fieldname="activity_end"></field-label>
+            <field-container fieldname="activity_end" [fieldconfig]="{fieldtype:'time'}"></field-container>
         </div>
         <div class="slds-m-left--xx-small slds-size--1-of-5">
-            <field-label [fieldname]="'duration_hours'"></field-label>
-            <field-container [fieldname]="'activity_end'" [fieldconfig]="{fieldtype:'duration', freeentry: true}"></field-container>
+            <field-label fieldname="duration_hours"></field-label>
+            <field-container fieldname="activity_end" [fieldconfig]="{fieldtype:'duration', freeentry: true}"></field-container>
         </div>
         <div class="slds-size--1-of-5 slds-form-element slds-col--bump-left slds-p-top--small slds-m-top--x-small slds-p-right--small slds-text-align_right">
             <button class="slds-button slds-button--brand slds-m-left--xx-small" [disabled]="!validate()" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
@@ -68,10 +68,10 @@
     </div>
     <!-- last 5 entries here... -->
     <div *ngIf="recent_project_activities.length > 0" class="slds-m-top--small slds-grid_vertical-align-start">
-        <object-table [fieldset_id]="'cd58c77c-899e-8ed9-dd64-539c9b8dfbad'" [objects]="recent_project_activities" [module]="model.module"></object-table>
+        <object-table fieldset_id="cd58c77c-899e-8ed9-dd64-539c9b8dfbad" [objects]="recent_project_activities" module="{{model.module}}"></object-table>
         <footer>
             <div class="slds-text-align_center">
-                <a href="javascript:void(0);" (click)="model.goToListView()">View All</a>
+                <a href="javascript:void(0);" (click)="model.goModule()">View All</a>
             </div>
         </footer>
     </div>

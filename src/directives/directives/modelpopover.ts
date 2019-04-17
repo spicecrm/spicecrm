@@ -1,3 +1,6 @@
+/**
+ * @module directives
+ */
 import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional} from '@angular/core';
 import {Router} from '@angular/router';
 

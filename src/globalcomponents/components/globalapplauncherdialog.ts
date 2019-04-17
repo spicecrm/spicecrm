@@ -1,22 +1,29 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+/**
+ * @module GlobalComponents
+ */
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {broadcast} from '../../services/broadcast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
+/**
+ * the app launcher dialog that renders the users roles and also the users modules. Allows filering and navigating to a specific module/application
+ */
 @Component({
     selector: 'global-app-launcher-dialog',
-    templateUrl: './src/globalcomponents/templates/globalapplauncherdialog.html',
-    host: {
-        'class': 'slds-context-bar__primary slds-context-bar__item--divider-right'
-    }
+    templateUrl: './src/globalcomponents/templates/globalapplauncherdialog.html'
 })
 export class GlobalAppLauncherDialog {
 
-    searchTerm: string = '';
-    self: any = undefined;
-    toggleShowRoles: boolean = true;
-    toggleShowModules: boolean = true;
+    /**
+     * @ignore
+     */
+    private searchTerm: string = '';
+    /**
+     * @ignore
+     */
+    public self: any = undefined;
 
     constructor(
         private metadata: metadata,
@@ -24,78 +31,56 @@ export class GlobalAppLauncherDialog {
         private router: Router,
         private broadcast: broadcast
     ) {
-
     }
 
+    /**
+     * a gett that returns true if the user can choose roles
+     */
     get showRoles() {
         return this.metadata.getRoles().length > 1;
     }
 
-    toggleShow(section) {
-        switch (section){
-            case 'roles':
-                this.toggleShowRoles = !this.toggleShowRoles;
-                break;
-            case 'modules':
-                this.toggleShowModules = !this.toggleShowModules;
-                break;
-        }
-    }
-
-    hideAppLauncher() {
+    /**
+     * closes the modal window and destroys the component
+     */
+    private close() {
         this.self.destroy();
     }
 
-    getRoleName() {
-        return this.metadata.getActiveRole().name;
-    }
 
-    getRoleLabel(roleid, label) {
-        let roles = this.getRoles();
-        let role = undefined;
-        roles.some(thisrole => {
-            if (thisrole.id == roleid) {
-                role = thisrole;
-                return true;
-            }
-        });
-
-        if (role.label && role.label != '') {
-            switch (label) {
-                case 'identifier':
-                    return this.language.getAppLanglabel(role.label, 'short');
-                case 'name':
-                    return this.language.getAppLanglabel(role.label);
-                case 'description':
-                    return this.language.getAppLanglabel(role.label, 'long');
-            }
-        } else {
-            return role[label];
-        }
-    }
-
-    getRoles() {
+    /**
+     * fecthes the available roles for the user
+     */
+    private getRoles() {
         return this.metadata.getRoles();
     }
 
-    setRole(roleid) {
+    /**
+     * set the chosen role and closes the app launcher
+     *
+     * @param roleid the selected roleid
+     */
+    private setRole(roleid) {
         this.metadata.setActiveRole(roleid);
 
         // navigate home and broadcast the message
-        // this.router.navigate(['/module/Home']);
         this.broadcast.broadcastMessage('applauncher.setrole', roleid);
 
         // close the launcher dialog
-        this.hideAppLauncher();
+        this.close();
     }
 
-    getModules() {
+    /**
+     * gets the modules from the metadata service and returns them for rendering in the modal
+     */
+    private getModules() {
         let menuItems = [];
 
         for (let module of this.metadata.getModules()) {
             let moduleData = this.metadata.getModuleDefs(module);
-            if (moduleData.visible && this.metadata.checkModuleAcl(module, 'list') && (this.searchTerm === '' || (this.searchTerm !== '' && this.language.getModuleName(module) && this.language.getModuleName(module).toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0)))
+            if (moduleData.visible && this.metadata.checkModuleAcl(module, 'list') && (this.searchTerm === '' || (this.searchTerm !== '' && this.language.getModuleName(module) && this.language.getModuleName(module).toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0))) {
                 menuItems.push(module);
+            }
         }
 
         menuItems.sort((a, b) => {
@@ -105,8 +90,13 @@ export class GlobalAppLauncherDialog {
         return menuItems;
     }
 
-    gotoModule(module) {
-        this.hideAppLauncher();
+    /**
+     * navigates to the slected module and closes the app launcher dialog
+     *
+     * @param module the module to navigate to
+     */
+    private gotoModule(module) {
         this.router.navigate(['/module/' + module]);
+        this.close();
     }
 }

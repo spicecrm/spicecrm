@@ -1,6 +1,8 @@
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
-import {Router, ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../services/metadata.service';
+/**
+ * @module ObjectComponents
+ */
+import {Component, Input, OnInit} from '@angular/core';
+import {Router}   from '@angular/router';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -18,30 +20,30 @@ import {view} from '../../services/view.service';
 })
 export class ObjectListItem implements OnInit {
 
-    @Input() rowselect: boolean = false;
-    @Input() rowselectdisabled: boolean = false;
-    @Input() listFields: Array<any> = [];
-    @Input() listItem: any = {};
-    @Input() inlineedit: boolean = false;
-    @Input() displaylinks: boolean = true;
+    @Input() private rowselect: boolean = false;
+    @Input() private rowselectdisabled: boolean = false;
+    @Input() private listFields: any[] = [];
+    @Input() private listItem: any = {};
+    @Input() private inlineedit: boolean = false;
+    @Input() private displaylinks: boolean = true;
 
     // input param to determine if theaction menu is shown for the model
-    @Input() showActionMenu: boolean = true;
+    @Input() private showActionMenu: boolean = true;
 
     constructor(private model: model, private modelutilities: modelutilities, private modellist: modellist, private view: view, private router: Router, private language: language) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.module = this.modellist.module;
         this.model.id = this.listItem.id;
         this.model.data = this.modelutilities.backendModel2spice(this.modellist.module, this.listItem);
+        this.model.initializeFieldsStati();
 
-        this.view.isEditable = this.inlineedit && this.model.data.acl.edit;
+        this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
         this.view.displayLinks = this.displaylinks;
     }
 
-    navigateDetail() {
+    private navigateDetail() {
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
     }
-
 }

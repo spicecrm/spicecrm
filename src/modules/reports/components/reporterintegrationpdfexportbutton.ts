@@ -1,5 +1,7 @@
+/**
+ * @module ModuleReports
+ */
 import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { Router } from '@angular/router';
 import { metadata } from '../../../services/metadata.service';
 import { model } from '../../../services/model.service';
 import { footer } from '../../../services/footer.service';
@@ -8,6 +10,9 @@ import { backend } from '../../../services/backend.service';
 
 import  {reporterconfig} from '../services/reporterconfig';
 
+/**
+* @ignore
+*/
 declare var moment: any;
 
 @Component({
@@ -16,17 +21,17 @@ declare var moment: any;
 })
 export class ReporterIntegrationPDFexportButton {
 
-    @ViewChild('downloadlink', {read: ViewContainerRef}) downloadlink: ViewContainerRef;
+    @ViewChild('downloadlink', {read: ViewContainerRef}) private downloadlink: ViewContainerRef;
 
-    loadUrl: any = undefined;
-    fileName: string = undefined;
+    private loadUrl: any = undefined;
+    private fileName: string = undefined;
 
     constructor( private language: language, private metadata: metadata, private backend: backend,  private model: model, private footer: footer, private reporterconfig: reporterconfig) {
     }
 
-    exportPDF(){
+    private exportPDF(){
         // build wherecondition
-        let whereConditions: Array<any> = [];
+        let whereConditions: any[] = [];
         for(let userFilter of this.reporterconfig.userFilters){
             whereConditions.push({
                 fieldid: userFilter.fieldid,
@@ -42,10 +47,7 @@ export class ReporterIntegrationPDFexportButton {
 
         this.metadata.addComponent('ReporterIntegrationExportMask', this.footer.footercontainer).subscribe(loadMask => {
             this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kpdfexport/export', {record: this.model.id, dynamicoptions: JSON.stringify(whereConditions)}).subscribe(url => {
-
                 loadMask.destroy();
-
-                //this.loadUrl = url;
                 this.downloadlink.element.nativeElement.href = url;
                 this.downloadlink.element.nativeElement.click();
             },  error => {

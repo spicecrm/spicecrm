@@ -1,105 +1,67 @@
-import {
-    Component,
-    Input,
-    AfterViewInit,
-    OnInit,
-    ElementRef,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy, OnChanges
-} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
+/**
+ * @module ModuleDashboard
+ */
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-view',
     templateUrl: './src/modules/dashboard/templates/dashboardview.html',
-    providers: [model, modellist]
+    providers: [model, modellist, dashboardlayout]
 })
 export class DashboardView implements OnInit {
 
-    @ViewChild('dashboardcontainer', {read: ViewContainerRef}) dashboardcontainer: ViewContainerRef;
+    private panelwidth = 250;
+    private showpanel: boolean = false;
 
-    currentDashboard: string = '';
-    currentComponent: any = null;
-
-    dashboardFilter: string = '';
-
-    constructor(private metadata: metadata, private userpreferences: userpreferences, private navigation: navigation, private language: language, private renderer: Renderer2, private elementRef: ElementRef, private model: model, private modellist: modellist) {
+    constructor(private navigation: navigation, private language: language, private dashboardlayout: dashboardlayout, private userpreferences: userpreferences, private model: model, private modellist: modellist, private elementRef: ElementRef) {
 
     }
 
-    ngOnInit() {
-        let lastDashboard = this.userpreferences.getPreference('last_dashboard');
-        if (lastDashboard)
-            this.currentDashboard = lastDashboard;
-
-        this.model.module = 'Dashboards';
-        this.modellist.module = 'Dashboards';
-        this.modellist.getListData(['name', 'global']).subscribe(listdata => {
-            if (this.currentDashboard) {
-                this.modellist.listData.list.some(dashboard => {
-                    if (dashboard.id == this.currentDashboard) {
-                        this.metadata.addComponent('DashboardContainer', this.dashboardcontainer).subscribe(component => {
-                            this.currentComponent = component;
-                            component.instance['dashboardid'] = this.currentDashboard;
-                            component.instance['editable'] = true;
-                        })
-                        return true;
-                    }
-                })
-            }
-        });
-
-        this.navigation.setActiveModule('Dashbords');
+    get ismobile() {
+        return window.innerWidth < 1024;
     }
 
-    get dashboards(): Array<any> {
-        let dashboards: Array<any> = [];
-        for (let dashboard of this.modellist.listData.list) {
-            if (dashboard.id == this.currentDashboard || this.dashboardFilter == '' || (this.dashboardFilter != '' && dashboard.name.toLowerCase().indexOf(this.dashboardFilter.toLowerCase()) != -1)) {
-                dashboards.push(dashboard);
-            }
-        }
-        return dashboards;
-    }
-
-    get viewStyle() {
+    get dashboardstyle() {
         return {
-            height: 'calc(100vh - ' + this.elementRef.nativeElement.getBoundingClientRect().top + 'px)'
+            width: 'calc(100% - ' + (this.ismobile ? 0 : this.panelwidth) + 'px)'
         };
     }
 
-    getActiveClass(id) {
-        return id == this.currentDashboard ? 'slds-is-active' : '';
+    get panelstyle() {
+        return {
+            'width': this.panelwidth + 'px',
+            'z-index': 1,
+            'left': this.ismobile && !this.showpanel ? '-250px' : '0px'
+        };
     }
 
-    setDashboard(id) {
-        this.currentDashboard = id;
-
-        // save the preference
-        this.userpreferences.setPreference('last_dashboard', id);
-
-        if (this.currentComponent)
-            this.currentComponent.destroy();
-
-        this.metadata.addComponent('DashboardContainer', this.dashboardcontainer).subscribe(component => {
-            this.currentComponent = component;
-            component.instance['dashboardid'] = id;
-            component.instance['editable'] = true;
-        })
-
-    }
-
-    addDashboard() {
+    public ngOnInit() {
+        // load for the selector
+        let lastDashboard = this.userpreferences.getPreference('last_dashboard');
         this.model.module = 'Dashboards';
-        this.model.addModel();
+        this.modellist.module = 'Dashboards';
+        this.modellist.getListData(['name', 'global'])
+            .subscribe(listdata => {
+                if (lastDashboard) {
+                    this.modellist.listData.list.some(dashboard => {
+                        if (dashboard.id == lastDashboard) {
+                            this.dashboardlayout.loadDashboard(lastDashboard);
+                            return true;
+                        }
+                    });
+                }
+            });
+
+        this.navigation.setActiveModule('Dashboards');
     }
 
+    private tooglepanel() {
+        this.showpanel = !this.showpanel;
+    }
 }

@@ -1,3 +1,6 @@
+/**
+ * @module ObjectFields
+ */
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -5,9 +8,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {Router}   from '@angular/router';
 import {backend} from "../../services/backend.service";
-import {modal} from "../../services/modal.service";
 import {fieldGeneric} from "./fieldgeneric";
-import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
 
 @Component({
     selector: 'field-output-templates',

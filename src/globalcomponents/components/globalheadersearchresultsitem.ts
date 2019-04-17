@@ -1,45 +1,53 @@
 /**
- * Created by christian on 08.11.2016.
+ * @module GlobalComponents
  */
 import {
-    AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef, EventEmitter,
-    OnInit
+    Component, Input, EventEmitter,
+    OnInit, Output
 } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import { fts } from '../../services/fts.service';
-import { model } from '../../services/model.service';
-import { language } from '../../services/language.service';
-import { popup } from '../../services/popup.service';
-import { Router } from '@angular/router';
+import {view} from '../../services/view.service';
+import {model} from '../../services/model.service';
+import {language} from '../../services/language.service';
+import {metadata} from '../../services/metadata.service';
+import {Router} from '@angular/router';
 
 @Component({
     selector: '[global-header-search-results-item]',
     templateUrl: './src/globalcomponents/templates/globalheadersearchresultsitem.html',
-    providers: [model],
+    providers: [model, view],
     host: {
         "(click)": "navigateTo()"
     }
 })
-export class GlobalHeaderSearchResultsItem implements OnInit{
-    @Input() hit: any = {};
+export class GlobalHeaderSearchResultsItem implements OnInit {
+    @Input() private hit: any = {};
+    @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private model: model, private router: Router, private popup: popup, private language : language){
+    private mainfieldsetfields: any[];
+    private subfieldsetfields: any[];
 
-    }
+    constructor(private model: model, private router: Router, private language: language, private metadata: metadata) {}
 
-    navigateTo(){
+    private navigateTo() {
+        this.selected.emit(true);
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
-        this.popup.close();
     }
 
-    gethref(){
+    private gethref() {
         return '#/module/' + this.model.module + '/' + this.model.id;
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         this.model.module = this.hit._type;
         this.model.id = this.hit._id;
-        for(let field in this.hit._source){
+
+        // get the fieldconfig
+        let componentconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
+        if(componentconfig && componentconfig.mainfieldset) this.mainfieldsetfields = this.metadata.getFieldSetItems(componentconfig.mainfieldset);
+        if(componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
+
+        for (let field in this.hit._source) {
             this.model.data[field] = this.hit._source[field];
         }
     }

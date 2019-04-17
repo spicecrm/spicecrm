@@ -1,6 +1,8 @@
+/**
+ * @module ModuleReports
+ */
 import {
-    Component, Input, AfterViewInit, OnInit,
-    OnDestroy, ViewChild, ViewContainerRef
+    Component, Input, AfterViewInit, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
