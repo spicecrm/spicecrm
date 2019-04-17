@@ -4,6 +4,7 @@
 import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {KnowledgeService} from "../services/knowledge.service";
 
 @Component({
@@ -18,6 +19,8 @@ export class KnowledgeBrowserDetailsContainerLeft {
 
     constructor(private language: language,
                 private model: model,
+                private modal: modal,
+                private viewContainerRef: ViewContainerRef,
                 private knowledgeService: KnowledgeService) {
     }
 
@@ -42,19 +45,6 @@ export class KnowledgeBrowserDetailsContainerLeft {
     }
 
     private print() {
-        let printWindow = window.open('', 'PRINT');
-
-        printWindow.document.write(
-            `<html><head><title>${this.model.data.name}</title></head>
-                    <style>@import url('https://fonts.googleapis.com/css?family=Titillium+Web');
-                     * {font-family: 'Titillium Web', sans-serif; font-weight: 300;}</style>
-                    <body>${this.model.data.description}</body></html>`);
-        printWindow.document.close();
-        printWindow.focus();
-
-        printWindow.print();
-        printWindow.close();
-        return true;
+        this.modal.openModal('ObjectActionOutputBeanModal', true, this.viewContainerRef.injector);
     }
-
 }
