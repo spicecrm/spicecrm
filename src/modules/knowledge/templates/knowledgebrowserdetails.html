@@ -3,7 +3,7 @@
         <knowledge-browser-details-container-left [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
     </div>
     <div *ngIf="docId && docId != ''" class="slds-size--1-of-3 slds-theme--default slds-border--left">
-        <knowledge-browser-details-container-right></knowledge-browser-details-container-right>
+        <knowledge-browser-details-container-right [selectedId]="docId"></knowledge-browser-details-container-right>
     </div>
     <div *ngIf="!selectedBook && docId == ''" class="slds-align--absolute-center slds-p-vertical--medium spice-h-full slds-text-heading--medium">
         <span>{{ language.getLabel('LBL_MAKE_SELECTION') }}</span>

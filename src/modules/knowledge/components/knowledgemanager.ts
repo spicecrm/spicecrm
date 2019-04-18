@@ -1,12 +1,11 @@
 /**
  * @module ModuleKnowledge
  */
-import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
+import {AfterViewInit, Component, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
-import {navigation} from "../../../services/navigation.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
@@ -14,7 +13,7 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
     templateUrl: "./src/modules/knowledge/templates/knowledgemanager.html",
     providers: [model, KnowledgeService, relatedmodels]
 })
-export class KnowledgeManager implements AfterViewInit, OnDestroy {
+export class KnowledgeManager implements AfterViewInit {
 
     public config: any = {clickable: true, canadd: true, draggable: true};
     public activeTab: string = "tree";
@@ -26,11 +25,9 @@ export class KnowledgeManager implements AfterViewInit, OnDestroy {
                 private model: model,
                 private backend: backend,
                 private metadata: metadata,
-                private navigation: navigation,
                 private relatedmodels: relatedmodels,
                 private knowledgeService: KnowledgeService) {
-        this.model.module = "KnowledgeBooks";
-        this.prepareRelatedModel();
+        this.model.module = "KnowledgeDocuments";
     }
 
     get selectedBook() {
@@ -60,16 +57,15 @@ export class KnowledgeManager implements AfterViewInit, OnDestroy {
     }
 
     get isLoading() {
-        return this.knowledgeService.isLoading;
+        return this.relatedmodels.isloading;
     }
 
     public ngAfterViewInit() {
-        this.navigation.setActiveModule("KnowledgeBooks");
+        this.knowledgeService.setActiveModule("KnowledgeBooks");
     }
 
     public handleAddEvent(parent) {
-        this.model.reset();
-        this.model.module = "KnowledgeDocuments";
+        this.model.id = '';
         let presets = {
             parent_id: parent !== null ? parent.id : null,
             parent_name: parent !== null ? parent.name : "",
@@ -79,24 +75,14 @@ export class KnowledgeManager implements AfterViewInit, OnDestroy {
         this.model.addModel("", {}, presets)
             .subscribe(item => {
                 if (typeof item === "object") {
-                    this.knowledgeService.documents.push(item);
-                    this.knowledgeService.sortDocuments();
-                    this.knowledgeService.documents = this.knowledgeService.documents.slice();
+                    this.relatedmodels.items.push(item);
                     this.knowledgeService.selectedId = item.id;
                 }
             });
     }
 
-    public ngOnDestroy() {
-        this.relatedmodels.stopSubscriptions();
-    }
-
-    private prepareRelatedModel() {
-        this.relatedmodels.module = "KnowledgeBooks";
-        this.relatedmodels.relatedModule = "KnowledgeDocuments";
-        this.relatedmodels.sort.sortfield = "name";
-        this.relatedmodels.sort.sortdirection = "ASC";
-        this.relatedmodels.loaditems = -1;
+    private setModule() {
+        this.model.module = "KnowledgeDocuments";
     }
 
     private saveListEdit(toEdit: any) {
@@ -108,11 +94,11 @@ export class KnowledgeManager implements AfterViewInit, OnDestroy {
                 doc.parent_name = toEdit.parent_name;
             }
         }
-        this.knowledgeService.documents = this.knowledgeService.documents.slice();
         this.knowledgeService.selectedId = toEdit.id;
     }
 
     private handleSelectedItemEvent(id) {
         this.knowledgeService.selectedId = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }
