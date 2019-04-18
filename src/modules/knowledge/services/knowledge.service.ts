@@ -56,14 +56,19 @@ export class KnowledgeService implements OnDestroy {
 
     set searchTerm(value) {
         this.searchterm = value;
+        this.resultsList = [];
         if (value == "") {
             return;
         }
         let module = "KnowledgeDocuments";
         this.isLoading = true;
-        this.fts.searchByModules(this.searchterm, [module], 5, "", {sortfield: "name"})
+        let sortParams = {sortfield: "name", sortdirection: "ASC"};
+
+        this.fts.searchByModules(this.searchterm, [module], 5, "", sortParams)
             .subscribe(res => {
-                this.resultsList = res[module].hits.map(doc => doc = doc._source);
+                this.resultsList = res[module].hits
+                    .map(doc => doc._source)
+                    .sort((a, b) => a.name - b.name);
                 this.isLoading = false;
             });
     }
