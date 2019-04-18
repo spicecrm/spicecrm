@@ -32,7 +32,8 @@ export class KnowledgeManagerDetails {
             this.view.setViewMode();
             this.resetView();
             this.model.id = this.docId;
-            this.model.getData(true, "", true).subscribe(data => this.buildContainer());
+            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+            this.model.getData(true, "", true).subscribe(data => this.renderView());
         }
     }
 
