@@ -106,12 +106,6 @@ export class SystemCheckbox implements ControlValueAccessor {
     }
 
     public writeValue(obj: any): void {
-        /*
-        if (this.disabled) {
-            return;
-        }
-        */
-
         this._model_value = obj;
         // if checked state and model state are different, model state (model_value) overrules!
         if (this.model_value && !this.checked) {
@@ -120,5 +114,4 @@ export class SystemCheckbox implements ControlValueAccessor {
             this.checked = false;
         }
     }
-
 }
