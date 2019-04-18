@@ -297,7 +297,16 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     private insertUrl() {
         const url = prompt("Insert URL link", 'http:\/\/');
         if (url && url !== '' && url !== 'http://') {
+            this.editorService.selectedText = this.getSelectedText();
             this.editorService.createLink(url);
+        }
+    }
+
+    private getSelectedText() {
+        if (window.getSelection) {
+            return window.getSelection().toString();
+        } else if (this._document.selection && this._document.selection.type != "Control") {
+            return this._document.selection.createRange().text;
         }
     }
 
