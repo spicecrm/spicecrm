@@ -15,6 +15,12 @@ import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
+
+
+// Pipes...
+import /*embed*/ {SystemModuleGlobalPipe} from "./pipes/systemmoduleglobalpipe";
+import /*embed*/ {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
+
 // COMPONENTs...
 import /*embed*/ {SystemIcon} from "./components/systemicon";
 import /*embed*/ {SystemComponentContainer} from "./components/systemcomponentcontainer";
@@ -63,6 +69,9 @@ import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
+import /*embed*/ {SystemInputFieldset} from "./components/systeminputfieldset";
+import /*embed*/ {SystemInputComponentset} from "./components/systeminputcomponentset";
+import /*embed*/ {SystemInputActionset} from "./components/systeminputactionset";
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
@@ -95,6 +104,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         FormsModule
     ],
     declarations: [
+        SystemModuleGlobalPipe,
+        SystemModuleCustomPipe,
         SystemIcon,
         SystemComponentContainer,
         SystemDynamicComponent,
@@ -146,6 +157,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
+        SystemInputFieldset,
+        SystemInputComponentset,
+        SystemInputActionset,
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemComponentSet,
@@ -220,6 +234,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputNumber,
         SystemInputDate,
         SystemInputDatePicker,
+        SystemInputFieldset,
+        SystemInputComponentset,
+        SystemInputActionset,
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemStencil,
