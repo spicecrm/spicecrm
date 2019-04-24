@@ -67,6 +67,7 @@ import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogl
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
+import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
 import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
@@ -150,6 +151,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemGooglePlacesSearch,
         SystemComponentSet,
         SystemProgressRing,
+        SystemProgressBar,
         SystemLoaderProgress,
         SystemUploadImage,
         PackageLoader,
@@ -225,6 +227,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemStencil,
         SystemComponentSet,
         SystemProgressRing,
+        SystemProgressBar,
         SystemLoaderProgress,
         SystemIllustrationNoAccess,
         SystemIllustrationNoTask,
