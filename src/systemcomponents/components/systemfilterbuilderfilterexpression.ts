@@ -24,28 +24,36 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         default: [
             {
                 operator: 'equals',
-                name: 'LBL_EQUALS'
+                name: 'LBL_EQUALS',
+                showvalue: true
             }, {
                 operator: 'starts',
-                name: 'LBL_STARTS'
+                name: 'LBL_STARTS',
+                showvalue: true
             }, {
                 operator: 'contains',
-                name: 'LBL_OP_CONTAINS'
+                name: 'LBL_OP_CONTAINS',
+                showvalue: true
             }, {
                 operator: 'ncontains',
-                name: 'LBL_OP_NOTCONTAINS'
+                name: 'LBL_OP_NOTCONTAINS',
+                showvalue: true
             }, {
                 operator: 'greater',
-                name: 'LBL_OP_GREATER'
+                name: 'LBL_OP_GREATER',
+                showvalue: true
             }, {
                 operator: 'gequal',
-                name: 'LBL_OP_GREATEREQUAL'
+                name: 'LBL_OP_GREATEREQUAL',
+                showvalue: true
             }, {
                 operator: 'less',
-                name: 'LBL_OP_LESS'
+                name: 'LBL_OP_LESS',
+                showvalue: true
             }, {
                 operator: 'lequal',
-                name: 'LBL_OP_LESSEQUAL'
+                name: 'LBL_OP_LESSEQUAL',
+                showvalue: true
             }
         ],
         date: [
@@ -76,6 +84,16 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'nextyear',
                 name: 'LBL_NEXT_YEAR'
+            },
+            {
+                operator: 'inndays',
+                name: 'LBL_IN_N_DAYS',
+                showvalue: true
+            },
+            {
+                operator: 'inlessthanndays',
+                name: 'LBL_IN_LESS_THAN_N_DAYS',
+                showvalue: true
             }
         ],
         bool: [
@@ -91,10 +109,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         enum: [
             {
                 operator: 'equals',
-                name: 'LBL_EQUALS'
+                name: 'LBL_EQUALS',
+                showvalue: true
             }, {
                 operator: 'oneof',
-                name: 'LBL_ONEOF'
+                name: 'LBL_ONEOF',
+                showvalue: true
             }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
@@ -153,7 +173,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
 
     private determineOperatorType(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
-        if (!fieldtype) {return}
+        if (!fieldtype) {
+            return
+        }
         switch (fieldtype.type) {
             case 'date':
             case 'datetime':
@@ -175,7 +197,14 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     }
 
     private showValueField() {
-        return this.operatortype == 'default' || (this.operatortype == 'enum' && this.filterexpression.operator != 'empty');
+
+        for (let thisOperator of this.operators[this.operatortype]) {
+            if (thisOperator.operator == this.filterexpression.operator) {
+                return thisOperator.showvalue;
+            }
+        }
+
+        // return this.operatortype == 'default' || (this.operatortype == 'enum' && this.filterexpression.operator != 'empty');
     }
 
     private enumDisabled() {
@@ -200,7 +229,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             this.fields.push(fields[field]);
         }
 
-        this.fields.sort();
+        this.fields.sort((a, b) => a.name > b.name ? 1 : -1);
 
         // set the initial operatortype
         this.determineOperatorType(this.field);
