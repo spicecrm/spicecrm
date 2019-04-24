@@ -4,7 +4,7 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
@@ -19,8 +19,8 @@ import {language} from './language.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 /**
@@ -163,10 +163,11 @@ export class backend {
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
      * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     * @param progress: A subject where (when given, not null) the upload progress will be reported.
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true): Observable<any> {
+    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: Subject<number> = null ): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -178,14 +179,20 @@ export class backend {
             headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
         }
 
+        let reportProgress = progress !== null;
+        if ( reportProgress ) progress.next(0);
         this.http.post(
             this.configurationService.getBackendUrl() + "/" + encodeURI(route),
             body,
-            {headers: headers, observe: "response", params: this.prepareParams(params)}
+            {headers: headers, observe: reportProgress ? 'events':'response', params: this.prepareParams(params), reportProgress: reportProgress }
         ).subscribe(
-            (res) => {
-                responseSubject.next(res.body);
-                responseSubject.complete();
+            event => {
+                if ( reportProgress && event.type === HttpEventType.UploadProgress) {
+                    progress.next(100 * event.loaded / event.total);
+                } else {
+                    responseSubject.next( event.body );
+                    responseSubject.complete();
+                }
             },
             err => {
                 this.handleError(err, route, 'POST', {getParams: params, body: body}, httpErrorReport);
@@ -519,8 +526,8 @@ export class backend {
     /*
      * Model functions
      */
-    public get(module: string, id: string, trackAction: string = ''): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    public get(module: string, id: string, trackAction: string = ''): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         let params: any = {};
         if (trackAction) {
@@ -569,8 +576,8 @@ export class backend {
      *       }
      * @returns {Observable<Array<any>>}
      */
-    public all(module: string, params: any = {}): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    public all(module: string, params: any = {}): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
         // defaults...
         if (!params.limit) {
             params.limit = -99;
@@ -631,7 +638,7 @@ export class backend {
     }
 
     public getAudit(module: string, id: string, filters: any = {}): Observable<any> {
-        let responseSubject = new Subject<Array<any>>();
+        let responseSubject = new Subject<any[]>();
         this.getRequest("module/" + module + "/" + id + "/auditlog", filters)
             .subscribe(response => {
                     responseSubject.next(response);
@@ -660,10 +667,10 @@ export class backend {
         module: string,
         sortfield: string,
         sortdirection: string,
-        fields: Array<any> = [],
+        fields: any[] = [],
         params: any = {},
-    ): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    ): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         let start: number = params.start ? params.start : 0;
         let limit: number = params.limit ? params.limit : 25;
@@ -709,8 +716,8 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    public save(module: string, id: string, cdata: any): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
         this.postRequest("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata))
             .subscribe(
                 (response: any) => {
@@ -735,8 +742,8 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getRecent(module: string = "", limit: number = 0): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    public getRecent(module: string = "", limit: number = 0): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         let params: any = {};
         if (module) {
@@ -758,8 +765,8 @@ export class backend {
     /*
      handling of listtypes
      */
-    public addListType(module, listdata): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    public addListType(module, listdata): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         this.postRequest(
             "spiceui/core/modules/" + module + "/listtypes",
@@ -772,8 +779,8 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public setListType(id, module, listdata): Observable<Array<any>> {
-        let responseSubject = new Subject<Array<any>>();
+    public setListType(id, module, listdata): Observable<any[]> {
+        let responseSubject = new Subject<any[]>();
 
         this.postRequest(
             "spiceui/core/modules/" + module + "/listtypes/" + id,
