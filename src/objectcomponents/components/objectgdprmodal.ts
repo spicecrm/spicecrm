@@ -77,7 +77,7 @@ export class ObjectGDPRModal implements OnInit {
             module: this.model.module,
             id: this.model.id
         };
-        dataObject[data.field_name] = data.value;
+        dataObject[data.field_name] = this.model.utils.backend2spice(this.model.module, data.field_name, data.value);
 
         return dataObject;
     }
