@@ -65,7 +65,7 @@
                 </tr>
                 </tbody>
             </table>
-            <div *ngIf="gdprRelatedLog.length === 0" class="slds-text-heading--small slds-p-around--medium">
+            <div *ngIf="gdprRelatedLog.length === 0" class="slds-text-heading--small slds-p-around--medium slds-align--absolute-center">
                 {{language.getLabel('MSG_NO_GDPRRECORDS_FOUND')}}
             </div>
         </system-collapsable-tab>
@@ -104,8 +104,8 @@
                     </tr>
                 </tbody>
             </table>
-            <div *ngIf="gdprRelatedLog.length === 0" class="slds-text-heading--small slds-p-around--medium">
-                {{language.getLabel('MSG_NO_GDPRRECORDS_FOUND')}}
+            <div *ngIf="gdprAuditLog.length === 0" class="slds-text-heading--small slds-p-around--medium slds-align--absolute-center">
+                {{language.getLabel('MSG_NO_AUDITRECORDS_FOUND')}}
             </div>
         </system-collapsable-tab>
     </system-modal-content>
