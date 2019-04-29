@@ -4,7 +4,9 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    Component, ElementRef,
+    Component,
+    ElementRef,
+    EventEmitter,
     forwardRef,
     Inject,
     OnDestroy,
@@ -17,6 +19,8 @@ import {DOCUMENT} from "@angular/common";
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
 import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
+import {language} from "../../services/language.service";
+import {take} from "rxjs/operators";
 
 @Component({
     selector: "system-richtext-editor",
@@ -40,11 +44,13 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private isActive: boolean = false;
     private clickListener: any;
-    private modalOpen = false;
+    private modalOpen: boolean = false;
+    public isExpanded: boolean = false;
+    public contract: EventEmitter<string> = new EventEmitter<string>();
 
-    private block = 'default';
-    private fontName = 'Tilium Web';
-    private fontSize = '5';
+    private block: string = 'default';
+    private fontName: string = 'Tilium Web';
+    private fontSize: string = '5';
 
     private tagMap = {
         BLOCKQUOTE: "indent",
@@ -53,13 +59,56 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
-    constructor(private modal: modal, private renderer: Renderer2, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any, private elementRef: ElementRef,) {
+    constructor(private modal: modal,
+                private renderer: Renderer2,
+                private editorService: systemrichtextservice,
+                @Inject(DOCUMENT) private _document: any,
+                private elementRef: ElementRef,
+                private language: language) {
+    }
+
+    get expandIcon() {
+        return this.isExpanded ? 'contract_alt' : 'expand_alt';
+    }
+
+    private getRichTextStyle(container) {
+        return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {};
     }
 
     public ngOnDestroy() {
-        if(this.clickListener) {
+        if (this.clickListener) {
             this.clickListener();
         }
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a change event.
+     *
+     * @param fn a function
+     */
+    public registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a touch event.
+     *
+     * @param fn a function
+     */
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    /**
+     * Write a new value to the element.
+     *
+     * @param value value to be executed when there is a change in contenteditable
+     */
+    public writeValue(value: any): void {
+        this._html = value ? value : '';
+        this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
     }
 
     /**
@@ -124,36 +173,6 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     }
 
     /**
-     * Set the function to be called
-     * when the control receives a change event.
-     *
-     * @param fn a function
-     */
-    public registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    /**
-     * Set the function to be called
-     * when the control receives a touch event.
-     *
-     * @param fn a function
-     */
-    public registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
-
-    /**
-     * Write a new value to the element.
-     *
-     * @param value value to be executed when there is a change in contenteditable
-     */
-    public writeValue(value: any): void {
-        this._html = value ? value : '';
-        this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
-    }
-
-    /**
      * toggles editor buttons when cursor moved or positioning
      *
      * Send a node array from the contentEditable of the editor
@@ -175,23 +194,39 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         this.triggerBlocks(els);
     }
 
+    /** Workflow:
+     * - Toggle the expand variable value.
+     * - If isExpanded is True:
+     *      -- A new instance of this component will be added to the footer through the "SystemRichTextEditorModal" component.
+     *      -- The html value will be passed to the footer instance of this component.
+     *      -- A subscriber subscribe to the emitter (contract) from the new footer instance of this component to get back the html value and set isExpanded to false and destroy the instance in the footer.
+     * - If isExpanded is False:
+     *      -- the emitter (contract) from the new footer instance of this component will emit the html value to set it back to this component.
+     */
     private openEditorModal() {
-        this.modal.openModal('SystemTinyMCEModal').subscribe(componentRef => {
-            /*
-            componentRef.instance.content = this.ngModel;
-            componentRef.instance.updateContent.subscribe(update => {
-                this.fieldvalue = update;
-                this.editor.setContent(update);
-            })
-            */
-        });
+        this.isExpanded = !this.isExpanded;
+        if (this.isExpanded) {
+            this.modal.openModal('SystemRichTextEditorModal').subscribe(componentRef => {
+                componentRef.instance.content = this._html;
+                componentRef.instance.contract
+                    .pipe(take(1))
+                    .subscribe(html => {
+                        this.isExpanded = false;
+                        this.htmlEditor.nativeElement.focus();
+                        this.writeValue(html);
+                    });
+            });
+        } else {
+            this.contract.emit(this._html);
+        }
     }
 
     private openMediaFilePicker() {
         this.modalOpen = true;
         this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
             componentRef.instance.answer.subscribe(image => {
-                if(image && image.upload) {
+                if (!image) {return;}
+                if (image.upload) {
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
@@ -201,7 +236,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                         });
                     });
                 } else {
-                    if (image && image.id) {
+                    if (image.id) {
                         this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
                     }
                     this.modalOpen = false;

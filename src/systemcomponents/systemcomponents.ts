@@ -56,6 +56,7 @@ import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextEditorModal} from "./components/systemrichtexteditormodal";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
@@ -140,6 +141,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemSelect,
         SystemSection,
         SystemRichTextEditor,
+        SystemRichTextEditorModal,
         SystemRichTextSourceModal,
         SystemInputDelayed,
         SystemInputTime,
