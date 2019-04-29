@@ -53,7 +53,7 @@ export class KnowledgeDocumentsSearch {
     }
 
     private selectDocument(doc) {
-        this.knowledgeService.selectedId = doc.id;
+        this.knowledgeService.selectedDoc = doc.id;
         this.knowledgeService.selectedBook = {id: doc.knowledgebook_id, name: doc.knowledgebook_name};
     }
 

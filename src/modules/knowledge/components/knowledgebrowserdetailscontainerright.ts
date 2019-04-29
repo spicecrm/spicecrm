@@ -13,7 +13,7 @@ import {model} from "../../../services/model.service";
 export class KnowledgeBrowserDetailsContainerRight implements OnDestroy {
     public componentconfig: any = {};
     @ViewChild("itemscontainer", {read: ViewContainerRef}) private itemsContainer: ViewContainerRef;
-    @Input("selectedId") private docId: string = "";
+    @Input("selectedDoc") private docId: string = "";
     private renderedComponents: any[] = [];
 
     constructor(private language: language,

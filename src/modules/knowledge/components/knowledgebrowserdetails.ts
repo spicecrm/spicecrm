@@ -17,7 +17,7 @@ export class KnowledgeBrowserDetails implements OnChanges {
     @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
     @ViewChild(KnowledgeBrowserDetailsContainerRight) private rightPanelContainer;
 
-    @Input("selectedId") private docId: string = "";
+    @Input("selectedDoc") private docId: string = "";
 
     constructor(private language: language,
                 private favorite: favorite,

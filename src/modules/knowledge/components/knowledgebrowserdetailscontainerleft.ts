@@ -37,7 +37,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
     }
 
     private navigateTo(id) {
-        this.knowledgeService.selectedId = id;
+        this.knowledgeService.selectedDoc = id;
     }
 
     private trackByFn(index, item) {

@@ -38,8 +38,8 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
         return this.knowledgeService.documents;
     }
 
-    get selectedId() {
-        return this.knowledgeService.selectedId;
+    get selectedDoc() {
+        return this.knowledgeService.selectedDoc;
     }
 
     get treeContainerStyle() {

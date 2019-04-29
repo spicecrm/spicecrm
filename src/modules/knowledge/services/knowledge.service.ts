@@ -20,7 +20,7 @@ import {Location} from "@angular/common";
 
 export class KnowledgeService implements OnDestroy {
     public selectedbook: any;
-    public selectedId: string = "";
+    public selectedDoc: string = "";
     public isLoading: boolean = false;
     public books: any[] = [];
     public searchterm: string = "";
