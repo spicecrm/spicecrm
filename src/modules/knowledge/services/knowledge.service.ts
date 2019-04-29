@@ -10,10 +10,12 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {take} from "rxjs/operators";
 import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {model} from "../../../services/model.service";
 import {navigation} from "../../../services/navigation.service";
 import {Location} from "@angular/common";
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
+import {metadata} from "../../../services/metadata.service";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Injectable()
@@ -25,20 +27,21 @@ export class KnowledgeService implements OnDestroy {
     public books: any[] = [];
     public searchterm: string = "";
     public resultsList: any[] = [];
-    private subscription: Subscription = new Subscription();
+    private subscriptions: Subscription = new Subscription();
 
     @ViewChild("searchcontainer", {read: ViewContainerRef}) private searchContainer: ViewContainerRef;
 
     constructor(private backend: backend,
+                private language: language,
                 private favorite: favorite,
                 private broadcast: broadcast,
                 private relatedmodels: relatedmodels,
-                private model: model,
                 private navigation: navigation,
-                private activatedRoute: ActivatedRoute,
                 public userPreferences: userpreferences,
                 private location: Location,
-                private router: Router,
+                private activatedRoute: ActivatedRoute,
+                private toast: toast,
+                private metadata: metadata,
                 private fts: fts) {
         this.prepareRelatedModel();
         this.loadPreferences();
@@ -84,6 +87,7 @@ export class KnowledgeService implements OnDestroy {
     set selectedBook(book) {
         this.selectedbook = book;
         this.getDocuments(book);
+        if (book) this.favoriteEnable('KnowledgeBooks', book.id);
     }
 
     public setActiveModule(module) {
@@ -113,9 +117,6 @@ export class KnowledgeService implements OnDestroy {
             .subscribe((books: any) => {
                 this.books = books && books.list ? books.list : [];
                 let pref = this.userPreferences.unchangedPreferences;
-                if (pref.KnowledgeBooks && pref.KnowledgeBooks.lastViewedBook && !this.selectedBook) {
-                    this.selectedBook = pref.KnowledgeBooks.lastViewedBook;
-                }
             });
     }
 
@@ -128,7 +129,6 @@ export class KnowledgeService implements OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.subscription.unsubscribe();
         this.relatedmodels.stopSubscriptions();
     }
 
@@ -143,21 +143,22 @@ export class KnowledgeService implements OnDestroy {
     private loadPreferences() {
         this.userPreferences.loadPreferences('KnowledgeBooks')
             .pipe(take(1))
-            .subscribe(res => {
-                if (res && res.lastViewedBook) {
-                    this.selectedBook = res.lastViewedBook;
+            .subscribe(prefs => {
+                if (prefs && prefs.lastViewedBook && !this.selectedBook) {
+                    this.selectedBook = prefs.lastViewedBook;
                 }
             });
     }
 
     private saveSubscriber() {
-        this.subscription = this.broadcast.message$.subscribe(msg => {
+        let subscriber = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
                 let book = msg.messagedata.data;
                 this.books = [...this.books, book];
                 this.selectedBook = book;
             }
         });
+        this.subscriptions.add(subscriber);
     }
 
     private sortDocuments(docs) {
@@ -189,36 +190,29 @@ export class KnowledgeService implements OnDestroy {
         });
     }
 
+
+
     private routerSubscriber() {
-        this.subscription = this.activatedRoute.params.subscribe(params => {
-            if (!params.id || !params.module) {
-                return;
-            }
-
-            if (params.module == "KnowledgeDocuments") {
-                this.model.module = params.module;
-                this.model.id = params.id;
-                this.selectedId = params.id;
-                this.model.getData(true).subscribe(data => {
-                    if (!data) {
-                        return;
+        let subscriber = this.activatedRoute.params.subscribe(params => {
+            if (!params.module) return;
+            if (params.id) {
+                this.backend.get(params.module, params.id).subscribe((item: any) => {
+                    if (!item) return;
+                    switch (params.module) {
+                        case 'KnowledgeBooks':
+                            this.selectedBook = item;
+                            break;
+                        case 'KnowledgeDocuments':
+                            this.selectedDoc = item.id;
+                            this.selectedBook = {
+                                id: item.knowledgebook_id,
+                                name: item.knowledgebook_name
+                            };
+                            break;
                     }
-                    if (!this.model.checkAccess('edit')) {
-                        this.router.navigate(['module/KnowledgeBooks/browser']);
-                    }
-                    this.navigation.setActiveModule("KnowledgeBooks", data.knowledgebook_id, data.knowledgebook_name);
-                    if (!this.selectedBook) {
-                        this.selectedBook = {id: data.knowledgebook_id, name: data.knowledgebook_name};
-                    }
-                });
-            }
-
-            if (params.module == "KnowledgeBooks") {
-                this.backend.get("KnowledgeBooks", params.id, 'details').subscribe((book: any) => {
-                    this.navigation.setActiveModule("KnowledgeBooks", book.id, book.name);
-                    this.selectedBook = book;
                 });
             }
         });
+        this.subscriptions.add(subscriber);
     }
 }

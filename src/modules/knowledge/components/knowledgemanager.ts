@@ -8,8 +8,10 @@ import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {Router} from "@angular/router";
 
 @Component({
+    selector: 'knowledge-manager',
     templateUrl: "./src/modules/knowledge/templates/knowledgemanager.html",
     providers: [model, KnowledgeService, relatedmodels]
 })
@@ -24,10 +26,12 @@ export class KnowledgeManager implements AfterViewInit {
     constructor(private language: language,
                 private model: model,
                 private backend: backend,
+                private router: Router,
                 private metadata: metadata,
                 private relatedmodels: relatedmodels,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
+        this.checkAccess();
     }
 
     get selectedBook() {
@@ -38,8 +42,8 @@ export class KnowledgeManager implements AfterViewInit {
         return this.knowledgeService.documents;
     }
 
-    get selectedId() {
-        return this.knowledgeService.selectedId;
+    get selectedDoc() {
+        return this.knowledgeService.selectedDoc;
     }
 
     get treeContainerStyle() {
@@ -64,6 +68,13 @@ export class KnowledgeManager implements AfterViewInit {
         this.knowledgeService.setActiveModule("KnowledgeBooks");
     }
 
+    private checkAccess() {
+        if (!this.metadata.checkModuleAcl(this.model.module,'edit')) {
+            this.router.navigate(['module/KnowledgeBooks/browser']);
+        }
+        this.config.canadd = this.metadata.checkModuleAcl(this.model.module,'create');
+    }
+
     public handleAddEvent(parent) {
         this.model.id = '';
         let presets = {
@@ -73,16 +84,13 @@ export class KnowledgeManager implements AfterViewInit {
             status: "Draft"
         };
         this.model.addModel("", {}, presets)
-            .subscribe(item => {
-                if (typeof item === "object") {
-                    this.relatedmodels.items.push(item);
-                    this.knowledgeService.selectedId = item.id;
-                }
-            });
-    }
-
-    private setModule() {
-        this.model.module = "KnowledgeDocuments";
+            .subscribe(
+                item => {
+                    if (typeof item === "object") {
+                        this.relatedmodels.items.push(item);
+                        this.knowledgeService.selectedDoc = item.id;
+                    }
+                });
     }
 
     private saveListEdit(toEdit: any) {
@@ -94,11 +102,11 @@ export class KnowledgeManager implements AfterViewInit {
                 doc.parent_name = toEdit.parent_name;
             }
         }
-        this.knowledgeService.selectedId = toEdit.id;
+        this.knowledgeService.selectedDoc = toEdit.id;
     }
 
     private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedId = id;
+        this.knowledgeService.selectedDoc = id;
         this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }

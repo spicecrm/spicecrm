@@ -25,6 +25,8 @@ import /*embed*/ {KnowledgeBrowserDetails} from "./components/knowledgebrowserde
 import /*embed*/ {KnowledgeBrowser} from "./components/knowledgebrowser";
 import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
 import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
+import /*embed*/ {KnowledgeContainer} from "./components/knowledgecontainer";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     imports: [
@@ -34,9 +36,14 @@ import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        AddComponentsModule
+        AddComponentsModule,
+        RouterModule.forRoot([
+            {path: 'KnowledgeBase/browser', component: KnowledgeBrowser},
+            {path: 'KnowledgeBase/browser/:browserModule/:browserModuleId', component: KnowledgeBrowser}
+        ])
     ],
     declarations: [
+        KnowledgeContainer,
         KnowledgeManager,
         KnowledgeManagerDetails,
         KnowledgeBrowser,

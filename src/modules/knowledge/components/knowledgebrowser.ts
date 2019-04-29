@@ -10,6 +10,7 @@ import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
+    selector: 'knowledge-browser',
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
     providers: [KnowledgeService, model, relatedmodels]
 })
@@ -65,7 +66,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     }
 
     private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedId = id;
+        this.knowledgeService.selectedDoc = id;
         this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }
