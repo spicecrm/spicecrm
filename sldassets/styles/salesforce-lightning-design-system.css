@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.8.0 */
+/*! Lightning Design System 2.8.3 */
 @charset "UTF-8";
 /*!
  * Copyright (c) 2015-present, Salesforce.com, Inc. - All rights reserved.
@@ -8490,6 +8490,7 @@ a.slds-button--inverse:focus {
   .slds-form_stacked .slds-form-element_horizontal .slds-radio .slds-form-element__label {
     position: relative;
     float: none;
+    max-width: 100%;
     width: auto; }
   .slds-form-element_horizontal .slds-form-element__row .slds-form-element__label,
   .slds-form-element_horizontal .slds-form-element__row .slds-form-element__control,
@@ -14070,7 +14071,6 @@ a.slds-button--inverse:focus {
     mix-blend-mode: soft-light; } }
 
 .slds-context-bar__item:before {
-  background: #fff;
   bottom: 0;
   content: '';
   height: auto;
@@ -17470,6 +17470,7 @@ a.slds-button--inverse:focus {
 .slds-progress {
   position: relative;
   max-width: 70%;
+  width: 100%;
   -ms-flex: 1 1 auto;
       flex: 1 1 auto;
   margin: auto;
@@ -17522,6 +17523,7 @@ a.slds-button--inverse:focus {
       justify-content: space-between;
   -ms-flex-align: center;
       align-items: center;
+  height: 100%;
   margin: auto;
   position: relative;
   z-index: 1; }
@@ -19240,14 +19242,6 @@ a.slds-button--inverse:focus {
   position: relative;
   padding: 1rem 0; }
 
-@keyframes shadow {
-  0% {
-    box-shadow: inset 0 0 #f4f6fe; }
-  50% {
-    box-shadow: inset 0 -1.875rem rgba(21, 137, 238, 0.4); }
-  100% {
-    box-shadow: inset 0 -2.5rem #f4f6fe; } }
-
 /**
  * @summary Initializes a default tablist
  *
@@ -19335,8 +19329,7 @@ a.slds-button--inverse:focus {
 .slds-tabs_default__item.slds-active, .slds-tabs_default__item.slds-is-active,
 .slds-tabs--default__item.slds-active,
 .slds-tabs--default__item.slds-is-active {
-  color: #080707;
-  animation: shadow 300ms; }
+  color: #080707; }
 
 .slds-tabs_default__item.slds-active:after, .slds-tabs_default__item.slds-is-active:after,
 .slds-tabs--default__item.slds-active:after,
@@ -21491,7 +21484,7 @@ a.slds-button--inverse:focus {
 .slds-file:not(.slds-file_loading) a:focus:before,
 .slds-file:not(.slds-file_loading) a:focus:after {
   position: absolute;
-  z-index: 8000;
+  z-index: 5;
   cursor: pointer;
   content: ''; }
 
@@ -21534,7 +21527,7 @@ a.slds-button--inverse:focus {
 .slds-image:not(.slds-file_loading) a:focus + .slds-file__title,
 .slds-file:not(.slds-file_loading) a:hover + .slds-file__title,
 .slds-file:not(.slds-file_loading) a:focus + .slds-file__title {
-  z-index: 8000; }
+  z-index: 5; }
 
 .slds-image.slds-has-title a:hover:after,
 .slds-image.slds-has-title a:focus:after,
@@ -21629,7 +21622,7 @@ a.slds-button--inverse:focus {
 .slds-file__title {
   display: -ms-flexbox;
   display: flex;
-  z-index: 8000;
+  z-index: 5;
   -ms-flex-align: center;
       align-items: center;
   padding: 0.5rem;
@@ -21719,7 +21712,7 @@ a.slds-button--inverse:focus {
 .slds-image__actions-menu,
 .slds-file__actions-menu {
   position: absolute;
-  z-index: 8000;
+  z-index: 5;
   bottom: 0.5rem;
   right: 0.25rem; }
 
@@ -23760,7 +23753,9 @@ a.slds-button--inverse:focus {
   background-position: bottom center;
   background-repeat: no-repeat;
   background-size: contain;
-  background-color: #cae6f1; }
+  background-color: #cae6f1;
+  -ms-flex-align: center;
+      align-items: center; }
 
 /**
  * @summary Content container for the informational side of the Welcome Mat. Centers in container space.

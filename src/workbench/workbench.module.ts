@@ -64,7 +64,7 @@ import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
-import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionFieldset} from "./components/workbenchconfigoptionfieldset";
 import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
@@ -120,8 +120,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
         WorkbenchConfigOptionModulefilter,
-        ComponentsetManagerModulePipeCustom,
-        ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionModule,
         WorkbenchConfigOptionActionset,
@@ -200,7 +198,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         KRESTLogViewerModal
     ],
     exports: [
-        SortPipe,
+        SortPipe
     ]
 })
 export class WorkbenchModule {
