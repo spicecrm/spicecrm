@@ -163,11 +163,50 @@ export class backend {
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
      * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
-     * @param progress: A subject where (when given, not null) the upload progress will be reported.
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: Subject<number> = null ): Observable<any> {
+    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true): Observable<any> {
+        let responseSubject = new Subject<any>();
+
+        this.resetTimeOut();
+
+        let headers = this.getHeaders();
+        if (body) {
+            headers = headers.set("Content-Type", "application/json");
+        } else {
+            headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
+        }
+
+        this.http.post(
+            this.configurationService.getBackendUrl() + "/" + encodeURI(route),
+            body,
+            {headers: headers, observe: "response", params: this.prepareParams(params)}
+        ).subscribe(
+            (res) => {
+                responseSubject.next(res.body);
+                responseSubject.complete();
+            },
+            err => {
+                this.handleError(err, route, 'POST', {getParams: params, body: body}, httpErrorReport);
+                responseSubject.error(err);
+            }
+        );
+        return responseSubject.asObservable();
+    }
+
+    /**
+     * generic request function for a POST request to the backend, with upload progress reporting
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param body an object being sent as body/payload with the request
+     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     * @param progress: A subject where the upload progress will be reported.
+     *
+     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     */
+    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: Subject<number> = null ): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -181,15 +220,11 @@ export class backend {
 
         let reportProgress = progress !== null;
         if ( reportProgress ) progress.next(0);
-        this.http.post(
-            this.configurationService.getBackendUrl() + "/" + encodeURI(route),
-            body,
-            {headers: headers, observe: reportProgress ? 'events':'response', params: this.prepareParams(params), reportProgress: reportProgress }
-        ).subscribe(
+        this.http.post( this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, { headers: headers, observe: 'events', params: this.prepareParams(params), reportProgress: true }).subscribe(
             event => {
-                if ( reportProgress && event.type === HttpEventType.UploadProgress) {
-                    progress.next(100 * event.loaded / event.total);
-                } else {
+                if ( event.type === HttpEventType.UploadProgress ) {
+                    progress.next( 100 * event.loaded / event.total );
+                } else if ( event.type === HttpEventType.Response ) {
                     responseSubject.next( event.body );
                     responseSubject.complete();
                 }
@@ -238,7 +273,11 @@ export class backend {
             },
             err => {
                 this.handleError(err, route, 'POST', {getParams: params, body: body});
-                responseSubject.error(err);
+                let blobReader = new FileReader();
+                blobReader.readAsText( err.error );
+                blobReader.onloadend = (e) => {
+                    responseSubject.error( JSON.parse( blobReader.result.toString() ));
+                };
             }
         );
 
