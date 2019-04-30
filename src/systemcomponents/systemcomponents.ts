@@ -70,6 +70,7 @@ import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
+import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
@@ -170,6 +171,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemModuleGlobalPipe,
         SystemObjectPreviewModal,
         SystemProgressRing,
+        SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
         SystemRichTextSourceModal,
@@ -242,6 +244,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemModalHeaderRight,
         SystemModalWrapper,
         SystemProgressRing,
+        SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
         SystemSection,
