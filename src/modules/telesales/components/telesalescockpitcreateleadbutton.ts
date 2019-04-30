@@ -1,10 +1,8 @@
 /**
  * @module ModuleTeleSales
  */
-import {Component, Input} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 
 @Component({
@@ -16,12 +14,12 @@ export class TeleSalesCockpitCreateLeadButton {
 
     public parent: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private footer: footer) {
+    constructor(private language: language, private model: model) {
         this.model.module = 'Leads';
     }
 
     public execute() {
-        this.model.id = undefined;
+        this.model.id = '';
         this.model.addModel('', this.parent);
     }
 }
