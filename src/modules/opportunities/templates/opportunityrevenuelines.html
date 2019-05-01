@@ -1,0 +1,30 @@
+<system-collapsable-tab title="LBL_OPPORTUNITYREVENUELINES">
+    <div class="slds-p-around--x-small">
+        <field-container field="opportunityrevenuesplit" [fieldconfig]="{fieldtype: 'enumradio'}"></field-container>
+    </div>
+    <table *ngIf="model.getFieldValue('opportunityrevenuesplit') != 'none'" class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')}}</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'amount')}}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent" *ngFor="let revenueLine of revenueLines" [modelProvider]="{module:'OpportunityRevenueLines' , data:revenueLine}">
+                <td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')">
+                    <field-container field="revenue_date" fielddisplayclass="fielddisplayclass"></field-container>
+                </td>
+                <td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'amount')">
+                    <field-container field="amount" fielddisplayclass="fielddisplayclass"></field-container>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div *ngFor="let fieldMessage of fieldMessages">
+        {{fieldMessage.message}}
+    </div>
+</system-collapsable-tab>
