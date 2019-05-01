@@ -17,12 +17,12 @@ import {Router} from "@angular/router";
 import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 interface fieldstati {
@@ -1088,6 +1088,13 @@ export class model {
         }
         this.messageChange$.emit(true);
         return true;
+    }
+
+    /**
+     * returns the messages collected during the validation process
+     */
+    public getMessages() {
+        return this.messages;
     }
 
     public setFieldMessage(type: "error" | "warning" | "notice", message: string, ref: string, source: string): boolean {
