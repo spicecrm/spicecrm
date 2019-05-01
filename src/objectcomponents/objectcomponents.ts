@@ -100,8 +100,16 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
-import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
+import /*embed*/ {
+    ObjectTabContainerItem,
+    ObjectTabContainer,
+    ObjectTabContainerItemHeader
+} from './components/objecttabcontainer';
+import /*embed*/ {
+    ObjectVerticalTabContainerItem,
+    ObjectVerticalTabContainer,
+    ObjectVerticalTabContainerItemHeader
+} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
 import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
@@ -211,6 +219,8 @@ import /*embed*/ {ObjectTexts} from "./components/objecttexts";
 import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
 import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
+import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
+
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
  */
@@ -227,10 +237,18 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
             {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, aclCheck]},
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
-            {path: 'module/:module/historysummary/:id', component: ObjectActivitiyTimelineSummary, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/historysummary/:id',
+                component: ObjectActivitiyTimelineSummary,
+                canActivate: [loginCheck]
+            },
             {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/:id/:related/:link/:fieldset',
+                component: ObjectRelatedlistAll,
+                canActivate: [loginCheck]
+            },
             // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
             // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
@@ -405,7 +423,8 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectModelPopoverRelatedItem,
         ObjectTexts,
         ObjectTextsAddButton,
-        ObjectTextsAddModal
+        ObjectTextsAddModal,
+        ObjectRecordMessagesBadge
     ],
     exports: [
         ObjectListViewHeader,

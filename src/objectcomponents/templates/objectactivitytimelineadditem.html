@@ -1,7 +1,4 @@
 <div class="">
-    <!--button *ngIf="isExpanded" class="slds-button slds-button_icon slds-button_icon" (click)="expand()">
-        <system-button-icon [icon]="'expand_alt'" [size]="'xx-small'"></system-button-icon>
-    </button-->
     <div class="slds-p-horizontal--xx-small" (click)="onHeaderClick()">
         <object-record-fieldset [fieldset]="headerFieldSet"></object-record-fieldset>
     </div>
@@ -22,7 +19,8 @@
                     <span class="slds-assistive-text">{{language.getLabel('LBL_DOCK')}}</span>
                 </button>
             </div>
-            <div class="slds-col--bump-left">
+            <div class="slds-col--bump-left slds-grid slds-grid--vertical-align-center">
+                <object-record-messages-badge side="right"></object-record-messages-badge>
                 <object-action-container [actionset]="actionset" (actionemitter)="handleaction($event)" ></object-action-container>
             </div>
         </div>
