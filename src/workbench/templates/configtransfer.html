@@ -1,6 +1,6 @@
 <div class="slds-m-horizontal--medium slds-m-top--medium slds-m-bottom--small">
 
-    <h2 class="slds-text-heading--medium">{{lang.getLabel('LBL_CONFIGURATION_TRANSFER')}} (and Backup)</h2>
+    <h2 class="slds-text-heading--medium">{{lang.getLabel('LBL_CONFIGURATION_TRANSFER')}}</h2>
 
     <p>Export and import configuration data from/into database. Also usable for backup.</p>
 
@@ -21,13 +21,13 @@
             <div class="slds-form-element">
                 <span class="slds-form-element__label">{{lang.getLabel('LBL_CONFIGURATION_FILE')}}</span>
                 <div class="slds-form-element__control">
-                    <div class="slds-file-selector slds-file-selector_files" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
-                        <div class="slds-file-selector__dropzone">
+                    <div class="slds-file-selector slds-file-selector_files" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()">
+                        <div class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}">
                             <input #fileupload class="slds-file-selector__input slds-assistive-text" accept=".bz2" type="file" id="config-file-upload-input" (change)="fileSelectionChange()" [disabled]="isUploading" />
                             <label class="slds-file-selector__body" for="config-file-upload-input">
                                 <span class="slds-file-selector__button slds-button slds-button_neutral">
                                         <system-button-icon [icon]="'upload'" [size]="'small'" [addclasses]="'slds-button__icon_left'"></system-button-icon>
-                                        {{lang.getLabel('LBL_SELECT_FILE')}}</span>
+                                    {{lang.getLabel('LBL_SELECT_FILE')}}</span>
                                 <span class="slds-file-selector__text slds-medium-show">{{lang.getLabel('LBL_OR_DROP_FILE_HERE')}}</span>
                             </label>
                         </div>
@@ -43,7 +43,7 @@
                             <input type="checkbox" id="cbDontEmptyTables" [(ngModel)]="dontEmptyTables" [disabled]="isAfterUpload || isUploading" />
                             <label class="slds-checkbox__label" for="cbDontEmptyTables">
                                 <span class="slds-checkbox_faux"></span>
-                                <span class="slds-form-element__label">Do not empty the tables before importing the data. So existing data will be preserved, when not overwritten by the import. The new data will be a mix of the old and the imported data. Only select this option if you know what you want / want to do.</span>
+                                <span class="slds-form-element__label">Preserve existing database data, when not overwritten by the import, so the new data will be a mix of the old and the imported data. Otherwise the affected tables would be emptied before the import.</span>
                             </label>
                         </div>
                     </div>
@@ -62,6 +62,7 @@
 
                 <div *ngIf="importOK===true">
                     <b>Import successful</b>: {{importResponse.numberLinesInserted}} records inserted into {{importResponse.numberAffectedTables}} tables.
+                    <br>Before import a backup of the affected tables has been made to folder &quot;{{importResponse.backupLocation}}&quot;. It will be automatically deleted after {{importResponse.backupPeriod}} days.
                 </div>
                 <div *ngIf="importOK===false">
                     <b>Import failed</b>. No record has been inserted. Reason: {{importErrorMessage}}
