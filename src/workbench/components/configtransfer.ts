@@ -35,7 +35,7 @@ export class ConfigTransfer {
     private exportErrorMessage: string;
     @ViewChild( 'downloadlink', { read: ViewContainerRef } ) private downloadlink: ViewContainerRef;
     private loadUrl: any = undefined;
-    private fileName: string = 'export.bz2';
+    private fileName: string = 'export.gz';
 
     // IMPORT:
 
@@ -87,7 +87,7 @@ export class ConfigTransfer {
         this.selectableTables.forEach( ( table => {
             if ( table.include ) selectedTables.push(table.name);
         }));
-        this.fileName = 'spicecrm.cfg.' + moment().format('YYYYMMDD_HHmm') + '.bz2';
+        this.fileName = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
         this.backend.getDownloadPostRequestFile('configtransfer/data/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables } ).subscribe(
             url => {
                 this.downloadlink.element.nativeElement.href = url;
@@ -191,7 +191,7 @@ export class ConfigTransfer {
                 return;
             }
             const file = event.dataTransfer.items[0].getAsFile();
-            if ( file.name.split('.').pop() !== 'bz2' ) { // We only accept a file with the extension "bz2".
+            if ( file.name.split('.').pop() !== 'gz' ) { // We only accept a file with the extension "gz".
                 this.showDropError();
                 return;
             }
@@ -199,7 +199,7 @@ export class ConfigTransfer {
         } else {
             // Use DataTransfer interface to access the file
             if ( event.dataTransfer.files.length !== 1 ) return; // We only accept one single file.
-            if ( event.dataTransfer.files[0].name.split('.').pop() !== 'bz2' ) { // We only accept a file with the extension "bz2".
+            if ( event.dataTransfer.files[0].name.split('.').pop() !== 'gz' ) { // We only accept a file with the extension "gz".
                 this.showDropError();
                 return;
             }
@@ -211,7 +211,7 @@ export class ConfigTransfer {
 
     private showDropError() {
         if ( this.dropErrorMessageCode ) this.toast.clearToast( this.dropErrorMessageCode );
-        this.dropErrorMessageCode = this.toast.sendToast('You can drop only a file. One file. With the extension "bz2".','error', null, false, this.dropErrorMessageCode );
+        this.dropErrorMessageCode = this.toast.sendToast('You can drop only a file. One file. With the extension "gz".','error', null, false, this.dropErrorMessageCode );
     }
 
     private onDragOver( event: DragEvent ) {
