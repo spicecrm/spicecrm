@@ -11,15 +11,14 @@
     </div>
     <div class="slds-tile__detail" style="margin-left: -2rem;">
         <spice-path-model></spice-path-model>
-        <div class="slds-grid slds-text-body--small">
-            <div class="slds-size--1-of-1 slds-large-size--1-of-2 slds-p-right--small slds-border--right" [viewprovider]="{editable: true}">
+        <div class="slds-text-body--small">
+            <system-componentset *ngIf="componentset" [componentset]="componentset"></system-componentset>
+            <!--div class="slds-size--1-of-1 slds-large-size--1-of-2 slds-p-right--small slds-border--right" [viewprovider]="{editable: true}">
                 <system-componentset *ngIf="componentSetLeft" [componentset]="componentSetLeft"></system-componentset>
-                <!--object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
-                <object-record-details-footer></object-record-details-footer-->
             </div>
             <div class="slds-size--1-of-1 slds-large-size--1-of-2 slds-p-left--small">
                 <system-componentset *ngIf="componentSetRight" [componentset]="componentSetRight"></system-componentset>
-            </div>
+            </div-->
         </div>
     </div>
     <object-action-menu class="slds-hide--medium" [buttonsize]="'x-small'" [addactions]="addActions" (action)="handleAction($event)"></object-action-menu>

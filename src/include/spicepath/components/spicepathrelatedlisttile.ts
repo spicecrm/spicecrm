@@ -19,6 +19,7 @@ export class SpicePathRelatedListTile implements OnInit {
     @Input() private module: string = '';
     @Input() private data: any = {};
     @Input() private fieldset: string = '';
+    @Input() private componentset: string = '';
 
     private componentconfig: any = {};
 
