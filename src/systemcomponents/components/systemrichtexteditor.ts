@@ -11,7 +11,7 @@ import {
     Inject,
     OnDestroy,
     Renderer2,
-    ViewChild
+    ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -21,6 +21,7 @@ import {systemrichtextservice} from "../services/systemrichtext.service";
 import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
 import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-richtext-editor",
@@ -35,7 +36,7 @@ import {take} from "rxjs/operators";
 })
 export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
-    @ViewChild('htmleditor') private htmlEditor: any;
+    @ViewChild('htmleditor', {read: ViewContainerRef}) private htmlEditor: ViewContainerRef;
 
     // for the value accessor
     private onChange: (value: string) => void;
@@ -51,7 +52,6 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     private block: string = 'default';
     private fontName: string = 'Tilium Web';
     private fontSize: string = '5';
-
     private tagMap = {
         BLOCKQUOTE: "indent",
         A: "link"
@@ -61,6 +61,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     constructor(private modal: modal,
                 private renderer: Renderer2,
+                private metadata: metadata,
                 private editorService: systemrichtextservice,
                 @Inject(DOCUMENT) private _document: any,
                 private elementRef: ElementRef,
@@ -108,7 +109,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
      */
     public writeValue(value: any): void {
         this._html = value ? value : '';
-        this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
+        this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
     }
 
     /**
@@ -143,7 +144,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         // check if we are active already
         if (!this.isActive) {
             this.isActive = true;
-            this.htmlEditor.nativeElement.focus();
+            this.htmlEditor.element.nativeElement.focus();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -212,7 +213,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                     .pipe(take(1))
                     .subscribe(html => {
                         this.isExpanded = false;
-                        this.htmlEditor.nativeElement.focus();
+                        this.htmlEditor.element.nativeElement.focus();
                         this.writeValue(html);
                     });
             });
@@ -258,7 +259,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                 }
 
                 // set the value to the editor
-                this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
+                this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
             });
         });
     }
@@ -335,6 +336,26 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
             this.editorService.selectedText = this.getSelectedText();
             this.editorService.createLink(url);
         }
+    }
+
+    private addVideo() {
+        if (!this.isActive) {return;}
+        this.editorService.saveSelection();
+        this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
+            if (!url || url.length == 0) {return;}
+            this.htmlEditor.element.nativeElement.focus();
+            this.editorService.restoreSelection();
+            let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
+            let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+            if (url.match(vimeoReg)) {
+                url = 'https://player.vimeo.com/video/' + url.match(vimeoReg)[3];
+            }
+            if (url.match(youtubeReg)) {
+                url = 'https://www.youtube.com/embed/' + url.match(youtubeReg)[7];
+            }
+            let html = `<iframe src="${url}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>`;
+            this._document.execCommand('insertHTML', false, html);
+        });
     }
 
     private getSelectedText() {
