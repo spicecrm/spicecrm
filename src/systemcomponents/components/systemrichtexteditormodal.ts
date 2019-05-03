@@ -28,7 +28,7 @@ export class SystemRichTextEditorModal implements AfterViewInit {
         this.metadata.addComponent('SystemRichTextEditor', this.modalContainer)
             .subscribe(componentRef => {
                 componentRef.instance.isExpanded = true;
-                componentRef.instance.htmlEditor.nativeElement.focus();
+                componentRef.instance.htmlEditor.element.nativeElement.focus();
                 componentRef.instance.writeValue(this.content);
                 componentRef.instance.contract
                     .pipe(take(1))
