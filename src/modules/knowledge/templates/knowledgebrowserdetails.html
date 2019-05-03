@@ -1,6 +1,6 @@
 <div #detailscontainer class="slds-grid" [ngStyle]="detailsContainerStyle">
     <div *ngIf="docId && docId != ''" class="slds-size--2-of-3">
-        <knowledge-browser-details-container-left [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
+        <knowledge-browser-details-container-left [html]="model?.data?.description" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
     </div>
     <div *ngIf="docId && docId != ''" class="slds-size--1-of-3 slds-theme--default slds-border--left">
         <knowledge-browser-details-container-right [selectedDoc]="docId"></knowledge-browser-details-container-right>

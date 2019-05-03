@@ -16,9 +16,11 @@
     </div>
 </div>
 <div *ngIf="model.id && hasContent" class="slds-grid">
-    <div [innerHTML]="model.data.description" [ngStyle]="iframContainerStyle" class="slds-scrollable--y spicecrm-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
+    <div [innerHTML]="html" [ngStyle]="iframeContainerStyle" class="slds-scrollable--y spicecrm-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
 </div>
-<system-spinner *ngIf="model.isLoading"></system-spinner>
-<div *ngIf="!model.isLoading && !hasContent" class="slds-align--absolute-center slds-text-heading--medium" [ngStyle]="iframContainerStyle">
+<div *ngIf="model.isLoading" class="slds-align--absolute-center" [ngStyle]="iframeContainerStyle">
+    <system-spinner></system-spinner>
+</div>
+<div *ngIf="!model.isLoading && !hasContent" class="slds-align--absolute-center slds-text-heading--medium" [ngStyle]="iframeContainerStyle">
     <span>{{ language.getLabel('MSG_NO_RECORDS_FOUND') }}</span>
 </div>

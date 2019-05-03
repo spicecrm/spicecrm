@@ -4,7 +4,6 @@
 import {Component, Input, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
-import {model} from "../../../services/model.service";
 
 @Component({
     selector: "knowledge-browser-details-container-right",
@@ -17,7 +16,6 @@ export class KnowledgeBrowserDetailsContainerRight implements OnDestroy {
     private renderedComponents: any[] = [];
 
     constructor(private language: language,
-                private model: model,
                 private metadata: metadata) {
     }
 
