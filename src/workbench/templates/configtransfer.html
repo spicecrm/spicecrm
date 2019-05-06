@@ -77,40 +77,46 @@
             <system-spinner *ngIf="isLoadingTablenames" class="slds-m-top--x-large" style="display:block"></system-spinner>
             <div *ngIf="!isLoadingTablenames">
 
-                <div class="slds-button-group slds-m-bottom--medium" role="group">
-                    <button class="slds-button slds-button_neutral" (click)="selectAll(true)">{{lang.getLabel('LBL_SELECT_ALL')}}</button>
-                    <button class="slds-button slds-button_neutral" (click)="selectAll(false)">{{lang.getLabel('LBL_DESELECT_ALL')}}</button>
-                </div>
+                <div *ngIf="!changeExportSettings" class="slds-m-bottom--medium"><button class="slds-button slds-button--neutral" (click)="changeExportSettings=true">change export settings &hellip;</button></div>
 
-                <div style="column-width:270px;column-gap:1em">
+                <div *ngIf="changeExportSettings">
 
-                    <div *ngFor="let table of selectableTables; let i=index" class="slds-form-element">
-                        <div class="slds-form-element__control slds-m-bottom--xxx-small">
-                            <div class="slds-checkbox">
-                                <input type="checkbox" name="selectableTables" id="table{{i}}" [(ngModel)]="table.include" />
-                                <label class="slds-checkbox__label" for="table{{i}}">
-                                    <span class="slds-checkbox_faux"></span>
-                                    <span class="slds-form-element__label">{{table.name}}</span>
-                                </label>
+                    <div class="slds-button-group slds-m-bottom--medium" role="group">
+                        <button class="slds-button slds-button_neutral" (click)="selectAll(true)">{{lang.getLabel('LBL_SELECT_ALL')}}</button>
+                        <button class="slds-button slds-button_neutral" (click)="selectAll(false)">{{lang.getLabel('LBL_DESELECT_ALL')}}</button>
+                    </div>
+
+                    <div style="column-width:270px;column-gap:1em">
+
+                        <div *ngFor="let table of selectableTables; let i=index" class="slds-form-element">
+                            <div class="slds-form-element__control slds-m-bottom--xxx-small">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" name="selectableTables" id="table{{i}}" [(ngModel)]="table.include" />
+                                    <label class="slds-checkbox__label" for="table{{i}}">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">{{table.name}}</span>
+                                    </label>
+                                </div>
                             </div>
+                        </div>
+
+                    </div>
+
+                    <div class="slds-m-vertical--medium">
+                        <div><b>{{blacklistedTables.length}} tables are not listed</b>, because they may not be exported/imported <span *ngIf="blacklistedTables.length"><a href="javascript:void(0)" (click)="showBlacklistedTables=!showBlacklistedTables">[show/hide]</a>. If necessary use the following input field &quot;{{lang.getLabel('LBL_ADDITIONAL_TABLES')}}&quot;.</span></div>
+                        <span *ngIf="showBlacklistedTables">{{blacklistedTables.join(', ')}}</span>
+                    </div>
+
+                    <div class="slds-form-element slds-m-vertical--medium">
+                        <label class="slds-form-element__label" for="additionalTables">{{lang.getLabel('LBL_ADDITIONAL_TABLES')}}</label>
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                            <input id="additionalTables" class="slds-input" type="text" [(ngModel)]="additionalTables" />
+                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear" (click)="additionalTables=''">
+                                <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                            </button>
                         </div>
                     </div>
 
-                </div>
-
-                <div class="slds-m-vertical--medium">
-                    <div><b>{{blacklistedTables.length}} tables are not listed</b>, because they may not be exported/imported <span *ngIf="blacklistedTables.length"><a href="javascript:void(0)" (click)="showBlacklistedTables=!showBlacklistedTables">[show/hide]</a>. If necessary use the following input field &quot;{{lang.getLabel('LBL_ADDITIONAL_TABLES')}}&quot;.</span></div>
-                    <span *ngIf="showBlacklistedTables">{{blacklistedTables.join(', ')}}</span>
-                </div>
-
-                <div class="slds-form-element slds-m-vertical--medium">
-                    <label class="slds-form-element__label" for="additionalTables">{{lang.getLabel('LBL_ADDITIONAL_TABLES')}}</label>
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="additionalTables" class="slds-input" type="text" [(ngModel)]="additionalTables" />
-                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear" (click)="additionalTables=''">
-                            <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
-                        </button>
-                    </div>
                 </div>
 
                 <div><button class="slds-button slds-button--brand" (click)="exportTables()" [disabled]="( numberOfSelectedTables === 0 && additionalTables === '' ) || isDownloading">{{lang.getLabel('LBL_EXPORT')}}</button></div>
