@@ -35,7 +35,7 @@ export class loginService {
         private router: Router,
         private loader: loader,
         private toast: toast,
-        private session: session
+        public session: session
     ) { }
 
     public login(): Observable<boolean> {
