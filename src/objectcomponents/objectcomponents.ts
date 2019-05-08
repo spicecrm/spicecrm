@@ -16,6 +16,7 @@ import {SystemComponents} from '../systemcomponents/systemcomponents';
 
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
+import {canNavigateAway} from '../services/navigation.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
@@ -100,8 +101,16 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
-import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
+import /*embed*/ {
+    ObjectTabContainerItem,
+    ObjectTabContainer,
+    ObjectTabContainerItemHeader
+} from './components/objecttabcontainer';
+import /*embed*/ {
+    ObjectVerticalTabContainerItem,
+    ObjectVerticalTabContainer,
+    ObjectVerticalTabContainerItemHeader
+} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
 import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
@@ -163,6 +172,7 @@ import /*embed*/ {ObjectRecordDetailsTabRow} from './components/objectrecorddeta
 import /*embed*/ {ObjectRecordDetailsTabRowField} from './components/objectrecorddetailstabrowfield';
 import /*embed*/ {ObjectRecordTabbedDetails} from './components/objectrecordtabbeddetails';
 import /*embed*/ {ObjectRecordTabbedDetailsTab} from './components/objectrecordtabbeddetailstab';
+import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectrecorddetailsrelatedlisttab';
 
 import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
@@ -210,6 +220,8 @@ import /*embed*/ {ObjectTexts} from "./components/objecttexts";
 import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
 import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
+import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
+
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
  */
@@ -224,13 +236,22 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         DirectivesModule,
         RouterModule.forRoot([
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
-            {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, aclCheck]},
+            {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, canNavigateAway, aclCheck]},
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
-            {path: 'module/:module/historysummary/:id', component: ObjectActivitiyTimelineSummary, canActivate: [loginCheck]},
-            {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/historysummary/:id',
+                component: ObjectActivitiyTimelineSummary,
+                canActivate: [loginCheck]
+            },
+            {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck, canNavigateAway]},
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
+            {
+                path: 'module/:module/:id/:related/:link/:fieldset',
+                component: ObjectRelatedlistAll,
+                canActivate: [loginCheck]
+            },
+            // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
+            // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
         ObjectIcon,
@@ -359,6 +380,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectRecordChecklistItem,
         ObjectRecordTabbedDetails,
         ObjectRecordTabbedDetailsTab,
+        ObjectRecordDetailsRelatedListTab,
         ObjectModalModuleLookup,
         ObjectSelectButton,
         ObjectReminderButton,
@@ -402,7 +424,8 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectModelPopoverRelatedItem,
         ObjectTexts,
         ObjectTextsAddButton,
-        ObjectTextsAddModal
+        ObjectTextsAddModal,
+        ObjectRecordMessagesBadge
     ],
     exports: [
         ObjectListViewHeader,

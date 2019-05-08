@@ -1,0 +1,32 @@
+<groupware-read-pane-header></groupware-read-pane-header>
+<div class="slds-tabs_default">
+    <span *ngIf="isArchived" class="slds-badge">Archived</span>
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item" title="Search" role="presentation" [ngClass]="{'slds-is-active': activetab=='beans'}">
+            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('beans')">
+                <system-utility-icon icon="user" size="x-small"></system-utility-icon>
+            </a>
+        </li>
+        <li class="slds-tabs_default__item" title="Search" role="presentation" [ngClass]="{'slds-is-active': activetab=='search'}">
+            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('search')">
+                <system-utility-icon icon="search" size="x-small"></system-utility-icon>
+            </a>
+        </li>
+        <li class="slds-tabs_default__item" title="Attachments" role="presentation" [ngClass]="{'slds-is-active': activetab=='attachments'}">
+            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('attachments')">
+                <system-utility-icon icon="attach" size="x-small"></system-utility-icon>
+            </a>
+        </li>
+        <li class="slds-tabs_default__item" title="Attachments" role="presentation" [ngClass]="{'slds-is-active': activetab=='linked'}">
+            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('linked')">
+                <system-utility-icon icon="linked" size="x-small"></system-utility-icon>
+            </a>
+        </li>
+    </ul>
+    <div class="slds-scrollable">
+        <groupware-read-pane-beans [ngClass]="{'slds-hide': activetab!='beans'}"></groupware-read-pane-beans>
+        <groupware-read-pane-search [ngClass]="{'slds-hide': activetab!='search'}"></groupware-read-pane-search>
+        <groupware-read-pane-attachments [ngClass]="{'slds-hide': activetab!='attachments'}"></groupware-read-pane-attachments>
+        <groupware-read-pane-linked [ngClass]="{'slds-hide': activetab!='linked'}"></groupware-read-pane-linked>
+    </div>
+</div>
