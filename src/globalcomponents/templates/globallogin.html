@@ -1,11 +1,11 @@
-<div class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
+<div class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1 slds-theme--default" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
             <!--div class="spiceLoginLogo"-->
             <div class="slds-align--absolute-center slds-p-vertical--medium">
                 <img src="./config/loginimage"/>
             </div>
-            <div class="slds-box--border" *ngIf="!loginService.session.authData.sessionId && promptUser">
+            <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
                     <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">

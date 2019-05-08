@@ -20,7 +20,7 @@ export class ComponentsetManagerAddDialog  {
 
     private component: string = '';
     private systemmodule: string = '';
-    private systemmodules: Array<any> = [];
+    private systemmodules: any[] = [];
     public self;
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
