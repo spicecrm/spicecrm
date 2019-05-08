@@ -6,6 +6,7 @@ import {of, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
+import {navigation} from "./navigation.service";
 import {language} from "./language.service";
 import {modelutilities} from "./modelutilities.service";
 import {toast} from "./toast.service";
@@ -17,12 +18,12 @@ import {Router} from "@angular/router";
 import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 interface fieldstati {
@@ -159,6 +160,7 @@ export class model {
         private toast: toast,
         private language: language,
         private modal: modal,
+        private navigation: navigation,
         private injector: Injector
     ) {
 
@@ -624,13 +626,16 @@ export class model {
         return this._model_stati_tmp.includes(state);
     }
 
-    public startEdit() {
+    public startEdit(withbackup: boolean = true) {
         // shift to backend format .. no objects like date embedded
-        if (!this.duplicate) {
+        if (withbackup && !this.duplicate) {
             this.backupData = {...this.data};
         }
         this.isEditing = true;
         this.mode$.emit('edit');
+
+        // add the model as editing to the navigation service so we can stop the user from navigating away
+        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
     }
 
 
@@ -681,6 +686,8 @@ export class model {
     public cancelEdit() {
         this.isEditing = false;
         this.mode$.emit('display');
+        this.navigation.removeModelEditing(this.module, this.id);
+
         if (this.backupData) {
             this.data = {...this.backupData};
             this.data$.emit(this.data);
@@ -694,6 +701,8 @@ export class model {
         this.backupData = null;
         this.isEditing = false;
         this.mode$.emit('display');
+
+        this.navigation.removeModelEditing(this.module, this.id);
     }
 
     public getDirtyFields() {
@@ -1088,6 +1097,13 @@ export class model {
         }
         this.messageChange$.emit(true);
         return true;
+    }
+
+    /**
+     * returns the messages collected during the validation process
+     */
+    public getMessages() {
+        return this.messages;
     }
 
     public setFieldMessage(type: "error" | "warning" | "notice", message: string, ref: string, source: string): boolean {

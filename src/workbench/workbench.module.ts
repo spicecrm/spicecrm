@@ -56,6 +56,7 @@ import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
 import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
+import /*embed*/ {ConfigTransfer} from './components/configtransfer';
 
 import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
@@ -64,7 +65,7 @@ import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
-import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionFieldset} from "./components/workbenchconfigoptionfieldset";
 import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
@@ -76,10 +77,12 @@ import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
+
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 import /*embed*/ {CRMLogViewerList} from './components/crmlogviewerlist';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 import /*embed*/ {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
+
 import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
 import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
@@ -120,8 +123,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
         WorkbenchConfigOptionModulefilter,
-        ComponentsetManagerModulePipeCustom,
-        ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionModule,
         WorkbenchConfigOptionActionset,
@@ -175,6 +176,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DashletGenerator,
         DashletGeneratorDashlets,
         DashletGeneratorDashletDetails,
+        ConfigTransfer
     ],
     /* no further modules needed */
     entryComponents: [
@@ -197,10 +199,11 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         CRMLogViewerModal,
         CRMLogViewerListModal,
         KRESTLogViewer,
-        KRESTLogViewerModal
+        KRESTLogViewerModal,
+        ConfigTransfer
     ],
     exports: [
-        SortPipe,
+        SortPipe
     ]
 })
 export class WorkbenchModule {

@@ -1,29 +1,5 @@
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <workbench-config-label [option]="option.option" [description]="option.description"></workbench-config-label>
-    <div class="slds-grid">
-        <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
-            <div class="slds-select_container">
-                <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="module">
-                    <option value="*">*</option>
-                    <option *ngFor="let module of modules" [value]="module">{{module}}</option>
-                </select>
-            </div>
-        </div>
-        <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
-            <div class="slds-select_container">
-                <select  [disabled]="!module || !view.isEditMode()" class="slds-select" [(ngModel)]="configValues[option.option]">
-                    <option></option>
-                    <optgroup label="custom" *ngIf="actionsets|componentsetmanagermodulepipecustom:module.length > 0">
-                        <option *ngFor="let actionset of actionsets|componentsetmanagermodulepipecustom:module" [value]="actionset.id">{{actionset.name}}
-                        </option>
-                    </optgroup>
-                    <optgroup label="global" *ngIf="actionsets|componentsetmanagermodulepipeglobal:module.length > 0">
-                        <option *ngFor="let actionset of actionsets|componentsetmanagermodulepipeglobal:module" [value]="actionset.id">{{actionset.name}}
-                        </option>
-                    </optgroup>
-                </select>
-            </div>
-        </div>
-    </div>
+    <system-input-actionset [(ngModel)]="configValues[option.option]" [disabled]="!view.isEditMode()"></system-input-actionset>
 </div>
 
