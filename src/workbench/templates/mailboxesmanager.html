@@ -74,6 +74,10 @@
                     *ngIf="model.data.transport == 'mailgun'"></mailboxes-mailgun-traffic-manager>
             <mailboxes-sendgrid-traffic-manager
                     *ngIf="model.data.transport == 'sendgrid'"></mailboxes-sendgrid-traffic-manager>
+            <mailboxes-twillio-traffic-manager
+                    *ngIf="model.data.transport == 'twillio'"></mailboxes-twillio-traffic-manager>
+            <mailboxes-a1-traffic-manager
+                    *ngIf="model.data.transport == 'a1'"></mailboxes-a1-traffic-manager>
         </div>
     </system-section>
     <system-section titlelabel="LBL_EMAIL" [expanded]="false">
