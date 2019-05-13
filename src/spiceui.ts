@@ -37,7 +37,7 @@ import {loader} from "./services/loader.service";
 import {broadcast} from "./services/broadcast.service";
 import {dockedComposer} from "./services/dockedcomposer.service";
 import {backend} from "./services/backend.service";
-import {navigation} from "./services/navigation.service";
+import {navigation,canNavigateAway} from "./services/navigation.service";
 import {modelutilities} from "./services/modelutilities.service";
 import {toast} from "./services/toast.service";
 import {favorite} from "./services/favorite.service";
@@ -128,6 +128,7 @@ export class SpiceUI {
         broadcast,
         layout,
         navigation,
+        canNavigateAway,
         session,
         metadata,
         AppDataService,

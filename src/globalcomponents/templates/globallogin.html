@@ -7,17 +7,17 @@
             </div>
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
-                    <form *ngIf="!showForgotPass" (submit)="login($event)">
+                    <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1"/>
+                                <input type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1" placeholder="Username" />
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2"/>
+                                <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2" placeholder="Password" />
                             </div>
                         </div>
                         <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
