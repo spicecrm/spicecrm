@@ -6,6 +6,7 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
+import {userpreferences} from '../../../services/userpreferences.service';
 import {telecockpitservice} from '../services/telecockpit.service';
 
 declare var moment;
@@ -25,11 +26,15 @@ export class TeleSalesCockpitListItem implements OnInit {
                 private model: model,
                 private view: view,
                 private metadata: metadata,
-                private telecockpitservice: telecockpitservice) {
+                private telecockpitservice: telecockpitservice,
+                private userpreferences: userpreferences
+    ) {
+
+        this.view.displayLabels = false;
     }
 
     get activityDate() {
-        return moment(this.item.planned_activity_date).format('YYYY-MM-DD HH:mm');
+        return this.userpreferences.formatDateTime(moment(this.item.planned_activity_date))
     }
 
     get hitsStyle() {
