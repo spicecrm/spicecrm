@@ -26,9 +26,13 @@ export class ViewProviderDirective implements AfterViewInit, OnDestroy {
     }
 
     @Input('viewprovider')
-    set viewSettings(viewSettings: { editable: boolean }) {
+    set viewSettings(viewSettings: { editable: boolean, displayLabels: boolean }) {
         if (viewSettings.editable) {
             this.view.isEditable = true;
+        }
+
+        if (viewSettings.displayLabels === false) {
+            this.view.displayLabels = false;
         }
     }
 
