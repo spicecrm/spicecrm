@@ -36,6 +36,7 @@ export class ConfigTransfer {
     @ViewChild( 'downloadlink', { read: ViewContainerRef } ) private downloadlink: ViewContainerRef;
     private loadUrl: any = undefined;
     private fileName: string = 'export.gz';
+    private changeExportSettings = false;
 
     // IMPORT:
 
