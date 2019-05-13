@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div *ngIf="!isEditMode()">
     <field-generic-display *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
         <div class="slds-grid slds-wrap slds-gutters">

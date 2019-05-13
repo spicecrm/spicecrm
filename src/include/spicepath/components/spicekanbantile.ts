@@ -26,6 +26,7 @@ export class SpiceKanbanTile implements OnInit {
 
         // display short labels
         this.view.labels = 'short';
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {

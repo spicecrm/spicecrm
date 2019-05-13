@@ -8,6 +8,9 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {accountHierarchy} from "../services/accounthierarchy.service";
 
+/**
+ * dsiplays a line int he node tree for the account hierarchy
+ */
 @Component({
     selector: "[account-hierarchy-node]",
     templateUrl: "./src/modules/accounts/templates/accounthierarchynode.html",
@@ -17,12 +20,23 @@ import {accountHierarchy} from "../services/accounthierarchy.service";
     }
 })
 export class AccountHierarchyNode implements OnInit {
+    /**
+     * the data for the node that is rendered as model
+     */
     @Input() public nodedata: any = {};
-    @Input() public fields: Array<any> = [];
+
+    /**
+     * the fields to be displayed as per the config and fieldset
+     */
+    @Input() public fields: any[] = [];
+
+    /**
+     * indicator if loading
+     */
     private loading: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private accountHierarchy: accountHierarchy, private model: model) {
-
+    constructor(private view: view, private language: language, private metadata: metadata, private accountHierarchy: accountHierarchy, private model: model) {
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
@@ -39,6 +53,9 @@ export class AccountHierarchyNode implements OnInit {
         this.model.data.acl = this.nodedata.data.acl;
     }
 
+    /**
+     * expands/collapses a node and loads the data
+     */
     private expandNode() {
         if (this.nodedata.expanded) {
             this.accountHierarchy.collapse(this.nodedata.id);
@@ -48,6 +65,9 @@ export class AccountHierarchyNode implements OnInit {
         }
     }
 
+    /**
+     * simple getter for the icons if openeded or closed
+     */
     private getIcon() {
         switch (this.nodedata.expanded) {
             case false:

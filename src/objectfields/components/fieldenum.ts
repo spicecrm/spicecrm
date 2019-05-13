@@ -26,6 +26,8 @@ export class fieldEnum extends fieldGeneric {
     }
 
     public ngOnInit() {
+        super.ngOnInit();
+
         this.getOptions();
     }
 

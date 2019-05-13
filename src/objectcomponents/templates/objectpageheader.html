@@ -10,7 +10,7 @@
                     <div>
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
                             <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
-                            <div *ngIf="fieldset" class="slds-grid">
+                            <div *ngIf="fieldset" class="slds-grid" [viewprovider]="{displayLabels: false}">
                                 <field-container *ngFor="let fieldsetitem of fieldsetitems" [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-p-right--small"></field-container>
                             </div>
                         </h1>
