@@ -66,7 +66,7 @@ export class AccountHierarchyNode implements OnInit {
     }
 
     /**
-     * simple getter for the icosn if openeded or closed
+     * simple getter for the icons if openeded or closed
      */
     private getIcon() {
         switch (this.nodedata.expanded) {
