@@ -27,7 +27,9 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
     private mainfieldsetfields: any[];
     private subfieldsetfields: any[];
 
-    constructor(private model: model, private router: Router, private language: language, private metadata: metadata) {}
+    constructor(private model: model, private view: view, private router: Router, private language: language, private metadata: metadata) {
+        this.view.displayLabels = false;
+    }
 
     private navigateTo() {
         this.selected.emit(true);
