@@ -22,6 +22,7 @@ export class GlobalSearchModuleItem implements OnInit {
 
     constructor(private elementref: ElementRef, private router: Router, private view: view, private model: model, private language: language, private layout: layout) {
         this.view.isEditable = false;
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
