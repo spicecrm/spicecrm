@@ -1,3 +1,6 @@
-<label class="slds-truncate" [ngClass]="addclasses">
+<div style="display: flow-root">
+<label class="slds-truncate slds-float_left" [ngClass]="addclasses">
     <abbr *ngIf="isRequired()" class="slds-required">*</abbr>{{label}}
 </label>
+<system-icon-help-text *ngIf="helpText" [helpText]="helpText" [color]="color" [size]="size" [icon]="icon"></system-icon-help-text>
+</div >
