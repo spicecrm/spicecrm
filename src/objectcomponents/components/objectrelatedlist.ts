@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import { Component, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList, Input } from "@angular/core";
+import { Component, AfterViewInit, OnInit, OnDestroy, Input } from "@angular/core";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
