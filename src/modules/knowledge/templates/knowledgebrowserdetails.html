@@ -1,9 +1,9 @@
 <div #detailscontainer class="slds-grid" [ngStyle]="detailsContainerStyle">
     <div *ngIf="docId && docId != ''" class="slds-size--2-of-3">
-        <knowledge-browser-details-container-left [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
+        <knowledge-browser-details-container-left [html]="model?.data?.description" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
     </div>
     <div *ngIf="docId && docId != ''" class="slds-size--1-of-3 slds-theme--default slds-border--left">
-        <knowledge-browser-details-container-right></knowledge-browser-details-container-right>
+        <knowledge-browser-details-container-right [selectedDoc]="docId"></knowledge-browser-details-container-right>
     </div>
     <div *ngIf="!selectedBook && docId == ''" class="slds-align--absolute-center slds-p-vertical--medium spice-h-full slds-text-heading--medium">
         <span>{{ language.getLabel('LBL_MAKE_SELECTION') }}</span>
@@ -13,8 +13,8 @@
             <strong>{{ language.getLabel('LBL_BOOK_DESCRIPTION') }}</strong>
         </div>
         <div class="slds-p-around--x-small">
-            <div *ngIf="selectedBook.html.length > 0" [innerHTML]="selectedBook.html"></div>
-            <div *ngIf="selectedBook.html.length == 0">{{language.getLabel('LBL_NO_DESCRIPTION_FOUND')}}</div>
+            <div *ngIf="selectedBook?.html?.length > 0" [innerHTML]="selectedBook?.html"></div>
+            <div *ngIf="selectedBook?.html?.length == 0">{{language.getLabel('LBL_NO_DESCRIPTION_FOUND')}}</div>
         </div>
     </div>
 </div>

@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-vertical--xxx-small">
     <span class="slds-badge" [ngStyle]="getDataStyle()" (click)="showDetails()">{{language.getLabel('LBL_DATA')}}</span>
     <span class="slds-badge" [ngStyle]="getMarketingStyle()" (click)="showDetails()">{{language.getLabel('LBL_MARKETING')}}</span>

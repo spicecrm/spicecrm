@@ -1,37 +1,33 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, Input, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
-import {model} from "../../../services/model.service";
 
 @Component({
     selector: "knowledge-browser-details-container-right",
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowserdetailscontainerright.html"
 })
-export class KnowledgeBrowserDetailsContainerRight implements OnInit, OnDestroy {
+export class KnowledgeBrowserDetailsContainerRight implements OnDestroy {
     public componentconfig: any = {};
     @ViewChild("itemscontainer", {read: ViewContainerRef}) private itemsContainer: ViewContainerRef;
+    @Input("selectedDoc") private docId: string = "";
     private renderedComponents: any[] = [];
 
     constructor(private language: language,
-                private model: model,
                 private metadata: metadata) {
     }
 
     public ngOnInit() {
-        this.buildContainer();
+        this.renderView();
     }
 
     public ngOnDestroy() {
-        for (let renderedComponent of this.renderedComponents) {
-            renderedComponent.destroy();
-        }
-        this.renderedComponents = [];
+        this.resetView();
     }
 
-    private buildContainer() {
+    public renderView() {
         let componentconfig = this.metadata.getComponentConfig("KnowledgeBrowserDetailsContainerRight", "KnowledgeDocuments");
         let componentSet = componentconfig.componentset;
 
@@ -44,5 +40,10 @@ export class KnowledgeBrowserDetailsContainerRight implements OnInit, OnDestroy 
                 });
             }
         }
+    }
+
+    public resetView() {
+        this.renderedComponents.forEach(comp => comp.destroy());
+        this.renderedComponents = [];
     }
 }

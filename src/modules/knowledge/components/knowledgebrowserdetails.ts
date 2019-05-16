@@ -6,6 +6,7 @@ import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {favorite} from "../../../services/favorite.service";
 import {KnowledgeService} from "../services/knowledge.service";
+import {KnowledgeBrowserDetailsContainerRight} from "./knowledgebrowserdetailscontainerright";
 
 @Component({
     selector: "knowledge-browser-details",
@@ -14,8 +15,9 @@ import {KnowledgeService} from "../services/knowledge.service";
 export class KnowledgeBrowserDetails implements OnChanges {
 
     @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
+    @ViewChild(KnowledgeBrowserDetailsContainerRight) private rightPanelContainer;
 
-    @Input("selectedId") private docId: string = "";
+    @Input("selectedDoc") private docId: string = "";
 
     constructor(private language: language,
                 private favorite: favorite,
@@ -26,16 +28,16 @@ export class KnowledgeBrowserDetails implements OnChanges {
 
     private _breadcrumbs: any[] = [];
 
-    get selectedBook() {
-        return this.knowledgeService.selectedBook;
-    }
-
     get breadcrumbs() {
         return this._breadcrumbs;
     }
 
     set breadcrumbs(value) {
         this._breadcrumbs = value;
+    }
+
+    get selectedBook() {
+        return this.knowledgeService.selectedBook;
     }
 
     get detailsContainerStyle() {
@@ -47,8 +49,14 @@ export class KnowledgeBrowserDetails implements OnChanges {
     }
 
     public ngOnChanges() {
-        if (this.docId && this.docId !== "") {
+        if (this.rightPanelContainer) {
+            this.rightPanelContainer.resetView();
+        }
+        if (this.docId && this.docId.length > 0) {
             this.model.id = this.docId;
+            if (this.rightPanelContainer) {
+                this.rightPanelContainer.renderView();
+            }
             this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
             this.breadcrumbs = [];
             this.model.getData(true, "", true)
