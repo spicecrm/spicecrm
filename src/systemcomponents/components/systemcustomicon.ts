@@ -38,17 +38,8 @@ export class SystemCustomIcon {
     }
 
     get iconStyle() {
-        if (this.desaturate) {
-            return {
-                filter: 'saturate(0)'
-            };
-        }
-    }
-
-    get iconColor() {
         let iconStyle = {};
         if (this.color) {
-            console.log("WI", this.color);
             iconStyle['color'] = this.color;
         }
 
