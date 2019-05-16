@@ -332,27 +332,27 @@ export class language {
      * @param fieldconfig an optional field config object if set ion the fieldset
      */
     public getFieldHelpText(module: string, fieldname: string, fieldconfig: any = {}) {
-        let helpText = '';
-        if (fieldconfig.helpText) {
-            if (fieldconfig.helpText.indexOf(':') > 0) {
-                let labeldata = fieldconfig.helpText.split(':');
-                helpText = this.getLabel(labeldata[1], labeldata[0], 'default');
+        let popupHelp = '';
+        if (fieldconfig.popupHelp) {
+            if (fieldconfig.popupHelp.indexOf(':') > 0) {
+                let labeldata = fieldconfig.popupHelp.split(':');
+                popupHelp = this.getLabel(labeldata[1], labeldata[0], 'default');
             } else {
-                helpText = this.getLabel(fieldconfig.helpText, module, 'default');
+                popupHelp = this.getLabel(fieldconfig.popupHelp, module, 'default');
             }
         } else {
-            helpText = this.getLabel(this.metadata.getFieldHelpText(module, fieldname), module, 'default');
+            popupHelp = this.getLabel(this.metadata.getFieldHelpText(module, fieldname), module, 'default');
         }
 
         // return the value
-        if (helpText === '') {
-            if (fieldconfig.helpText) {
-                return fieldconfig.helpText;
+        if (popupHelp === '') {
+            if (fieldconfig.popupHelp) {
+                return fieldconfig.popupHelp;
             } else {
                 return fieldname;
             }
         } else {
-            return helpText;
+            return popupHelp;
         }
     }
 
