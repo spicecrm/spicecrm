@@ -14,13 +14,19 @@ export class fieldLabel {
     @Input() private fieldname: string = '';
     @Input() private fieldconfig: any = {};
     @Input() private addclasses: string = 'slds-form-element__label';
+    private showHelp: boolean = false;
+
+    // info icon (helpText)
+    private icon: string = 'info';
+    private color: string = '#eeeeee';
+    private hovercolor: string = '#5B5B5B';
+    private size: string = 'xx-small';
 
     constructor(
         private model: model,
         private view: view,
         private language: language
     ) {
-
     }
 
     get stati() {
@@ -70,11 +76,25 @@ export class fieldLabel {
                 let fielddetails = this.fieldconfig.label.split(':');
                 return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels);
             } else {
-                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels)
+                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels);
             }
         } else {
-            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels)
+            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels);
         }
     }
+
+    get helpText() {
+        if (this.fieldconfig.helpText) {
+            if (this.fieldconfig.helpText.indexOf(':') > 0) {
+                let fielddetails = this.fieldconfig.helpText.split(':');
+                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels);
+            } else {
+                return this.language.getLabel(this.fieldconfig.helpText, this.model.module, this.view.labels);
+            }
+        } else {
+            return this.language.getFieldHelpText(this.model.module, this.fieldname, this.fieldconfig);
+        }
+    }
+
 
 }

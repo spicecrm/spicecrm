@@ -325,6 +325,38 @@ export class language {
     }
 
     /**
+     * returns the helpText of a specifis field in a module in the current language
+     *
+     * @param module the module as deined in sysmodules
+     * @param fieldname the name of the field
+     * @param fieldconfig an optional field config object if set ion the fieldset
+     */
+    public getFieldHelpText(module: string, fieldname: string, fieldconfig: any = {}) {
+        let helpText = '';
+        if (fieldconfig.helpText) {
+            if (fieldconfig.helpText.indexOf(':') > 0) {
+                let labeldata = fieldconfig.helpText.split(':');
+                helpText = this.getLabel(labeldata[1], labeldata[0], 'default');
+            } else {
+                helpText = this.getLabel(fieldconfig.helpText, module, 'default');
+            }
+        } else {
+            helpText = this.getLabel(this.metadata.getFieldHelpText(module, fieldname), module, 'default');
+        }
+
+        // return the value
+        if (helpText === '') {
+            if (fieldconfig.helpText) {
+                return fieldconfig.helpText;
+            } else {
+                return fieldname;
+            }
+        } else {
+            return helpText;
+        }
+    }
+
+    /**
      * returns the options that are possible for fields of type enum
      *
      * @param module the module as deined in sysmodules
