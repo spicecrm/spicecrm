@@ -14,6 +14,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {OpportunityRevenueLines} from "./components/opportunityrevenuelines";
+import /*embed*/ {OpportunityRevenueLineItem} from "./components/opportunityrevenuelineitem";
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import /*embed*/ {OpportunityRevenueLines} from "./components/opportunityrevenue
         DirectivesModule,
     ],
     declarations: [
-        OpportunityRevenueLines
+        OpportunityRevenueLines,
+        OpportunityRevenueLineItem
     ]
 })
 export class ModuleOpportunities {

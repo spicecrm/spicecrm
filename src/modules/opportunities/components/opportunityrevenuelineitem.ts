@@ -1,7 +1,7 @@
 /**
  * @module ModuleOpportunities
  */
-import {Component, AfterViewInit, OnInit, OnDestroy, OnChanges} from "@angular/core";
+import {Component, Input, Output, EventEmitter, OnChanges} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -9,51 +9,27 @@ import {view} from "../../../services/view.service";
 
 
 @Component({
-    templateUrl: "./src/modules/opportunities/templates/opportunityrevenuelineitem.html"
+    selector: '[opportunity-revenue-line-item]',
+    templateUrl: "./src/modules/opportunities/templates/opportunityrevenuelineitem.html",
+    providers: [model]
 })
-export class OpportunityRevenueLineItem implements OnInit {
+export class OpportunityRevenueLineItem implements OnChanges {
 
-    private revenueLines: any[] = [];
+    @Input() private revenueLine: any;
+    @Output() private update: EventEmitter<boolean> = new EventEmitter<boolean>()
 
-    constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
-        this.model.data$.subscribe(data => {
-            this.loadRevenueLines();
-        });
-
-        this.view.mode$.subscribe(changemode => {
-            this.loadRevenueLines();
-        });
+    constructor(private model: model, private view: view, private language: language) {
+        this.model.module = 'OpportunityRevenueLines';
+        this.model.data$.subscribe(data => this.update.emit(true));
     }
 
-    public ngOnInit(): void {
-        this.loadRevenueLines();
+
+    public ngOnChanges(): void {
+        this.model.id = this.revenueLine.id;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.revenueLine);
     }
 
-    private loadRevenueLines() {
-        this.revenueLines = this.model.getRelatedRecords('opportunityrevenuelines');
-
-        if (this.view.isEditMode()) {
-            let oppamount = this.model.getField('amount');
-            let summedamount = 0;
-
-            for (let revenuteLine of this.revenueLines) {
-                summedamount += revenuteLine.amount;
-            }
-
-            if (oppamount != summedamount) {
-                this.model.setFieldMessage('error', 'suem does not match', 'opportunityrevenuelines', 'opportunityrevenuelines');
-            } else {
-                this.model.resetFieldMessages('opportunityrevenuelines');
-            }
-        }
-    }
-
-    get fieldMessages() {
-        if(this.view.isEditMode()){
-            let fieldMessages = this.model.getFieldMessages('opportunityrevenuelines');
-            return fieldMessages ? fieldMessages : [];
-        } else {
-            return [];
-        }
+    get disabled() {
+        return !this.view.isEditMode();
     }
 }
