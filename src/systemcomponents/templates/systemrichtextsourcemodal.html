@@ -6,7 +6,7 @@
                 <div class="slds-box slds-theme--default slds-scrollable_y" [innerHtml]="sanitizedHtml" style="height: 100%;"></div>
             </div>
             <div class="slds-size--1-of-2 slds-p-left--x-small">
-                <div class="slds-box slds-theme--default slds-scrollable_y" #sourceeditor contenteditable (input)="onContentChange($event.target.innerText)" style="height: 100%;white-space: pre-line;"></div>
+                <div class="slds-box slds-theme--default slds-scrollable_y" [attr.contenteditable]="true" #sourceeditor (input)="onContentChange($event.target.innerText)" style="height: 100%;white-space: pre-line;"></div>
             </div>
         </div>
     </system-modal-content>
