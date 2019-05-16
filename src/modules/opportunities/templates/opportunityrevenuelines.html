@@ -1,4 +1,4 @@
-<system-collapsable-tab title="LBL_OPPORTUNITYREVENUELINES">
+<system-collapsable-tab tabtitle="LBL_OPPORTUNITYREVENUELINES">
     <div class="slds-p-around--x-small">
         <field-container field="opportunityrevenuesplit" [fieldconfig]="{fieldtype: 'enumradio'}"></field-container>
     </div>
@@ -11,20 +11,21 @@
                 <th class="" scope="col">
                     <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'amount')}}</div>
                 </th>
+                <th class="slds-cell-shrink" scope="col">
+
+                </th>
             </tr>
         </thead>
         <tbody>
-            <tr class="slds-hint-parent" *ngFor="let revenueLine of revenueLines" [modelProvider]="{module:'OpportunityRevenueLines' , data:revenueLine}">
-                <td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')">
-                    <field-container field="revenue_date" fielddisplayclass="fielddisplayclass"></field-container>
-                </td>
-                <td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'amount')">
-                    <field-container field="amount" fielddisplayclass="fielddisplayclass"></field-container>
-                </td>
-            </tr>
+            <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines" [revenueLine]="revenueLine" (update)="revalidate()"></tr>
         </tbody>
     </table>
     <div *ngFor="let fieldMessage of fieldMessages">
         {{fieldMessage.message}}
+    </div>
+    <div *ngIf="isEditing" class="slds-p-around--small slds-align--absolute-center">
+        <button  class="slds-button slds-button_icon slds-button_icon slds-button--icon-border" (click)="addLine()">
+            <system-button-icon [icon]="'add'"></system-button-icon>
+        </button>
     </div>
 </system-collapsable-tab>
