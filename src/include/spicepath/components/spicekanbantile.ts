@@ -9,7 +9,7 @@ import {modellist} from '../../../services/modellist.service';
 
 @Component({
     selector: '[spice-kanban-tile]',
-    templateUrl: './src//include/spicepath/templates/spicekanbantile.html',
+    templateUrl: './src/include/spicepath/templates/spicekanbantile.html',
     providers: [model, view],
     host: {
         '[class]': "'slds-item'"
