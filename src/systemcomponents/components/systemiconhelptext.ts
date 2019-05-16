@@ -11,11 +11,12 @@ import {metadata} from "../../services/metadata.service";
 export class SystemIconHelpText {
     @Input() private icon: string = 'info';
     @Input() private file: string = './assets/icons/spicecrm.svg';
-    @Input() private size: string = '';
-    @Input() private color: string = '';
-    @Input() private hovercolor: string = '';
+    @Input() private size: string = 'xx-small'; // possible: xx-small, x-small, small, large
+    @Input() private popoverMaxWidth: string = '300px';
+    @Input() private color: string = '#eeeeee';
+    @Input() private hovercolor: string = '#5B5B5B';
     @Input() private desaturate: boolean = false;
-    @Input() private addclasses: string = ''
+    @Input() private addclasses: string = '';
     @Input() private divClass = 'slds-media__figure';
 
     /**
@@ -70,4 +71,38 @@ export class SystemIconHelpText {
             return this.divClass;
         }
     }
+
+    get PopoverMaxWidth() {
+        return this.popoverMaxWidth;
+    }
+
+    /**
+     * it get the correct distance for the icon size
+     */
+    get bottomdistance() {
+        if (this.size == "xx-small" || this.size == "x-small") {
+            return ' 2.5em';
+        }
+        if (this.size == "small") {
+            return ' 2.8em';
+        }
+        if (this.size == "large") {
+            return ' 3.5em';
+        }
+    }
+    get leftdistance() {
+        if (this.size == "xx-small" || this.size == "x-small") {
+            return '-65%';
+        }
+        if (this.size == "small") {
+            return '-30%';
+        }
+        if (this.size == "large") {
+            return '10%';
+        }
+    }
+
+
+
+
 }

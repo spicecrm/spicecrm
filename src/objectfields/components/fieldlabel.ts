@@ -16,12 +16,6 @@ export class fieldLabel {
     @Input() private addclasses: string = 'slds-form-element__label';
     private showHelp: boolean = false;
 
-    // info icon (helpText)
-    private icon: string = 'info';
-    private color: string = '#eeeeee';
-    private hovercolor: string = '#5B5B5B';
-    private size: string = 'xx-small';
-
     constructor(
         private model: model,
         private view: view,
