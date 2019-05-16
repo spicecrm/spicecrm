@@ -20,7 +20,7 @@ declare var moment: any;
     providers: [model, view]
 })
 export class ProjectActivityDashlet implements OnInit {
-    private _wbss: Array<any> = [];
+    private _wbss: any = [];
     private selected_wbs = null;
     private _wbs_search_term = "";
     private show_wbs_results = false;
@@ -36,6 +36,7 @@ export class ProjectActivityDashlet implements OnInit {
         private backend: backend,
         private toast: toast,
     ) {
+        this.view.displayLabels = false;
         this.model.module = "ProjectActivities";
 
         // do a reset and initialize
@@ -57,8 +58,7 @@ export class ProjectActivityDashlet implements OnInit {
         });
     }
 
-    set wbs_search_term(val)
-    {
+    set wbs_search_term(val) {
         this._wbs_search_term = val.toLowerCase();
         if( val || val === "" ) {
             this.show_wbs_results = true;
@@ -67,13 +67,11 @@ export class ProjectActivityDashlet implements OnInit {
         }
     }
 
-    get wbs_search_term()
-    {
+    get wbs_search_term() {
         return this._wbs_search_term;
     }
 
-    get wbss()
-    {
+    get wbss() {
         if( !this._wbs_search_term ) {
             return this._wbss;
         }
@@ -83,8 +81,7 @@ export class ProjectActivityDashlet implements OnInit {
         });
     }
 
-    private modelchanged(data)
-    {
+    private modelchanged(data) {
         if (this.activityminutes != data.duration_minutes || this.activitiyhours != data.duration_hours){
             // set the new values
             this.activityminutes = data.duration_minutes;
@@ -109,12 +106,10 @@ export class ProjectActivityDashlet implements OnInit {
             let duration = Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes());
 
             // get minutes and hours
-            if(duration > 0)
-            {
+            if(duration > 0) {
                 this.activitiyhours = Math.floor(duration / 60);
                 this.activityminutes = duration - (this.activitiyhours * 60);
-            }
-            else{
+            } else {
                 this.activitiyhours = Math.ceil(duration / 60);
                 this.activityminutes = duration + (this.activitiyhours * 60);
             }
@@ -126,18 +121,21 @@ export class ProjectActivityDashlet implements OnInit {
         }
     }
 
-    private validate()
-    {
-        if( !this.selected_wbs )
+    private validate() {
+        if( !this.selected_wbs ) {
             return false;
+        }
 
-        if( this.model.data.duration_hours < 1 && this.model.data.duration_minutes < 1 )
+        if( this.model.data.duration_hours < 1 && this.model.data.duration_minutes < 1 ) {
             return false;
-        if( this.model.data.duration_hours < 0 || this.model.data.duration_minutes < 0 )
+        }
+        if( this.model.data.duration_hours < 0 || this.model.data.duration_minutes < 0 ) {
             return false;
+        }
 
-        if( !this.model.data.name )
+        if( !this.model.data.name ) {
             return false;
+        }
 
         return true;
     }
