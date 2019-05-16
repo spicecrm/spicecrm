@@ -6,7 +6,7 @@
     </a>
     <div *ngIf="showHelp" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" id="help" [ngStyle]="{'bottom': bottomdistance, 'left': leftdistance, 'max-width': PopoverMaxWidth}" style="position: absolute; display: block; z-index: 50; width: max-content;">
         <div class="slds-popover__body" style="width: 100%">
-            <span style="display: block;">{{helpText}}</span>
+            <span style="display: block;white-space:pre-wrap;">{{helpText}}</span>
         </div>
     </div>
 </div >
