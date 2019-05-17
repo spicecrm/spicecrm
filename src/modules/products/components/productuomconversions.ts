@@ -4,8 +4,6 @@ import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
-import {session} from "../../../services/session.service";
-import {Subscription} from "rxjs";
 
 declare var _;
 
@@ -14,26 +12,27 @@ declare var _;
     templateUrl: './src/modules/products/templates/productuomconversions.html',
 })
 
-export class ProductUOMConversions implements OnInit, OnDestroy {
+export class ProductUOMConversions implements OnInit {
     public uomUnits: any[] = [];
-    public baseUom: any;
     public noUnits: boolean = false;
     private fieldBaseUom: string;
     private fieldBaseUomId: string;
     private componentconfig: any = {};
-    private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private metadata: metadata,
                 private model: model,
                 private backend: backend,
-                private session: session,
                 private view: view) {
     }
 
     get uomConversions() {
         let conversions = this.model.getField('uomconversions');
         return conversions && conversions.beans ? _.toArray(conversions.beans).filter(bean => bean.deleted == '0') : [];
+    }
+
+    get baseUom() {
+        return this.uomUnits.find(unit => unit.id == this.model.getField(this.fieldBaseUomId));
     }
 
     get baseUomName() {
@@ -55,18 +54,18 @@ export class ProductUOMConversions implements OnInit, OnDestroy {
     public ngOnInit() {
         this.getUomFieldDefs();
         this.getUomUnits();
-        this.getBaseUom();
-        this.checkBaseUomDisabled();
-        this.modelSubscriber();
     }
 
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
+    private setBaseUom(id) {
+        let unit = this.uomUnits.find(unit => unit.id == id);
+        if (!unit) return;
+        this.model.setFieldValue(this.fieldBaseUom, unit.label);
+        this.model.setFieldValue(this.fieldBaseUomId, unit.id);
     }
 
     private filteredUomUnits(conversion) {
         let filteredUom = this.uomUnits.filter(unit => {
-            let sameBaseUom = (this.baseUom.id == unit.id) || ( (unit.dimensions != 'none') && (this.baseUom.dimensions == unit.dimensions) );
+            let sameBaseUom = this.baseUom && ((this.baseUom.id == unit.id) || ((unit.dimensions != 'none') && (this.baseUom.dimensions == unit.dimensions)));
             let definedInConversions = this.uomConversions
                 .some(c => {
                     if (conversion.id != c.id ) {
@@ -100,31 +99,9 @@ export class ProductUOMConversions implements OnInit, OnDestroy {
             });
     }
 
-    private getBaseUom() {
-        if (!this.fieldBaseUomId) {
-            return;
-        }
-        let baseUomId = this.model.getField(this.fieldBaseUomId);
-        if (baseUomId) {
-            this.backend.get('UOMUnits', baseUomId).subscribe(baseUom => this.baseUom = baseUom);
-        }
-    }
-
-    private checkBaseUomDisabled() {
-        let fieldStati = this.model.getFieldStati(this.fieldBaseUom);
-        fieldStati.disabled = this.uomConversions.length > 0;
-        this.model.setFieldStati(this.fieldBaseUom, fieldStati);
-    }
-
-    private modelSubscriber() {
-        this.subscription = this.model.data$.subscribe(data => {
-            this.getBaseUom();
-        });
-    }
-
     private addConversion() {
+        if (!this.canAdd || !this.model.data.uomconversions || !this.model.data.uomconversions.beans) return;
         this.view.setEditMode();
-        this.model.startEdit();
         let guid = this.model.generateGuid();
         this.model.data.uomconversions.beans[guid] = {
             id: guid,
@@ -133,14 +110,12 @@ export class ProductUOMConversions implements OnInit, OnDestroy {
             uom_unit: '',
             reference_uom_unit: this.baseUom.id,
             deleted: '0',
-            assigned_user_id: this.session.authData.userId
+            assigned_user_id: this.model.getFieldValue('assigned_user_id')
         };
-        this.checkBaseUomDisabled();
     }
 
     private deleteConversion(id) {
         this.model.data.uomconversions.beans[id].deleted = '1';
-        this.checkBaseUomDisabled();
     }
 
     private getConversionUomLabel(conversionUom) {

@@ -2,7 +2,15 @@
     <div class="slds-grid slds-p-vertical--x-small">
         <div class="slds-grid slds-grid--vertical-align-center slds-m-left--small">
             <field-label [fieldname]="fieldBaseUom">:</field-label>
-            <span id="">{{language.getLabel(baseUomName)}}</span>
+            <field-generic-display *ngIf="!editMode || uomConversions.length > 0" [editable]="editable && uomConversions.length == 0">
+                {{language.getLabel(baseUomName)}}
+            </field-generic-display>
+            <select *ngIf="editMode && uomConversions.length == 0" class="slds-select" (ngModelChange)="setBaseUom($event)" [ngModel]="model.data.base_uom_id">
+                <option></option>
+                <option *ngFor="let uomUnit of uomUnits; trackBy: trackByFn" [value]="uomUnit.id">
+                    {{language.getLabel(uomUnit.label)}}
+                </option>
+            </select>
         </div>
         <div class="slds-p-right--small slds-col_bump-left">
             <button class="slds-button slds-button--neutral" title="add item" [disabled]="!canAdd" (click)="addConversion()">
@@ -10,89 +18,92 @@
             </button>
         </div>
     </div>
-    <table *ngIf="uomConversions?.length > 0" class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout slds-m-bottom--small">
+    <table *ngIf="uomConversions?.length > 0 && baseUom" class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout slds-m-bottom--small">
         <thead>
-            <tr class="slds-text-title_caps">
-                <th scope="col">
-                    <div class="slds-truncate">
-                        {{language.getLabel('LBL_QUANTITY')}}
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="slds-truncate">
-                        {{language.getLabel('LBL_UNIT_OF_MEASURE')}}
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="slds-truncate">
-                        {{language.getLabel('LBL_CONVERSION_FACTOR')}}
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="slds-truncate">
-                        {{language.getLabel('LBL_REFERENCE_UNIT_OF_MEASURE')}}
-                    </div>
-                </th>
-                <th class="slds-cell-shrink"></th>
-            </tr>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate">
+                    {{language.getLabel('LBL_QUANTITY')}}
+                </div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">
+                    {{language.getLabel('LBL_UNIT_OF_MEASURE')}}
+                </div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">
+                    {{language.getLabel('LBL_CONVERSION_FACTOR')}}
+                </div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">
+                    {{language.getLabel('LBL_REFERENCE_UNIT_OF_MEASURE')}}
+                </div>
+            </th>
+            <th class="slds-cell-shrink"></th>
+        </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let uomConversion of uomConversions; trackBy: trackByFn">
-                <td>
-                    <div class="slds-truncate">
-                        <field-generic-display *ngIf="!editMode" [editable]="editable">{{uomConversion.quantity}}</field-generic-display>
-                        <system-input-number *ngIf="editMode" [(ngModel)]="uomConversion.quantity"></system-input-number>
-                    </div>
-                </td>
-                <td>
-                    <div class="slds-truncate">
-                        <field-generic-display *ngIf="!editMode" [editable]="editable">{{getConversionUomLabel(uomConversion.uom_unit)}}</field-generic-display>
-                        <div *ngIf="editMode" class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" [(ngModel)]="uomConversion.uom_unit">
-                                        <option></option>
-                                        <option *ngFor="let uomUnit of filteredUomUnits(uomConversion); trackBy: trackByFn" [value]="uomUnit.id">
-                                            {{language.getLabel(uomUnit.label)}}
-                                        </option>
-                                    </select>
-                                </div>
+        <tr *ngFor="let uomConversion of uomConversions; trackBy: trackByFn">
+            <td>
+                <div class="slds-truncate">
+                    <field-generic-display *ngIf="!editMode" [editable]="editable">{{uomConversion.quantity}}</field-generic-display>
+                    <system-input-number *ngIf="editMode" [(ngModel)]="uomConversion.quantity"></system-input-number>
+                </div>
+            </td>
+            <td>
+                <div class="slds-truncate">
+                    <field-generic-display *ngIf="!editMode" [editable]="editable">{{getConversionUomLabel(uomConversion.uom_unit)}}</field-generic-display>
+                    <div *ngIf="editMode" class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="uomConversion.uom_unit">
+                                    <option></option>
+                                    <option *ngFor="let uomUnit of filteredUomUnits(uomConversion); trackBy: trackByFn" [value]="uomUnit.id">
+                                        {{language.getLabel(uomUnit.label)}}
+                                    </option>
+                                </select>
                             </div>
                         </div>
                     </div>
-                </td>
-                <td>
-                    <div class="slds-truncate">
-                        <field-generic-display *ngIf="!editMode" [editable]="editable">{{uomConversion.conversion_factor}}</field-generic-display>
-                        <system-input-number *ngIf="editMode" [(ngModel)]="uomConversion.conversion_factor"></system-input-number>
-                    </div>
-                </td>
-                <td>
-                    <field-generic-display *ngIf="!editMode" [editable]="editable">{{getConversionUomLabel(uomConversion.reference_uom_unit)}}</field-generic-display>
-                    <div *ngIf="editMode" class="slds-truncate">
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" disabled>
-                                        <option [value]="baseUom.id">
-                                            {{language.getLabel(baseUom.label)}}
-                                        </option>
-                                    </select>
-                                </div>
+                </div>
+            </td>
+            <td>
+                <div class="slds-truncate">
+                    <field-generic-display *ngIf="!editMode" [editable]="editable">{{uomConversion.conversion_factor}}</field-generic-display>
+                    <system-input-number *ngIf="editMode" [(ngModel)]="uomConversion.conversion_factor"></system-input-number>
+                </div>
+            </td>
+            <td>
+                <field-generic-display *ngIf="!editMode" [editable]="editable">{{getConversionUomLabel(uomConversion.reference_uom_unit)}}</field-generic-display>
+                <div *ngIf="editMode" class="slds-truncate">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" disabled>
+                                    <option [value]="baseUom.id">
+                                        {{language.getLabel(baseUom.label)}}
+                                    </option>
+                                </select>
                             </div>
                         </div>
                     </div>
-                </td>
-                <td class="slds-shrink">
-                    <button *ngIf="editMode" class="slds-button slds-button--icon" title="delete item" (click)="deleteConversion(uomConversion.id)">
-                        <system-utility-icon icon="delete" size="x-small"></system-utility-icon>
-                    </button>
-                </td>
-            </tr>
+                </div>
+            </td>
+            <td class="slds-shrink">
+                <button *ngIf="editMode" class="slds-button slds-button--icon" title="delete item" (click)="deleteConversion(uomConversion.id)">
+                    <system-utility-icon icon="delete" size="x-small"></system-utility-icon>
+                </button>
+            </td>
+        </tr>
         </tbody>
     </table>
-    <div *ngIf="uomConversions?.length == 0" class="slds-align--absolute-center slds-p-around_medium">
+    <div *ngIf="baseUom && uomConversions?.length == 0" class="slds-align--absolute-center slds-p-around_medium">
         {{ language.getLabel('MSG_NO_RECORDS_FOUND') }}
+    </div>
+    <div *ngIf="!baseUom" class="slds-align--absolute-center slds-p-around_medium">
+        {{ language.getLabel('MSG_SELECT_UOM') }}
     </div>
 </system-section>
 

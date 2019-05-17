@@ -3,8 +3,6 @@
  */
 import {EventEmitter, Injectable} from '@angular/core';
 
-import {model} from './model.service';
-
 @Injectable()
 export class view {
     private mode: string = 'view';
@@ -20,7 +18,7 @@ export class view {
     // set the size
     public size: 'regular' | 'small' = 'regular';
 
-    constructor(private model: model) {
+    constructor() {
 
     }
 
