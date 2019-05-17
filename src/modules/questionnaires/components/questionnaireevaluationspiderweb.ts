@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {metadata} from "../../../services/metadata.service";
@@ -14,13 +14,13 @@ declare var Highcharts: any;
 })
 export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
 
-    values: Array<any>;
-    valuesForChart: Array<any> = [];
-    chartid: string = '';
-    usagePrint = false;
-    _individualHeight: number;
-    defaultHeight = 70;
-    chart: any;
+    @Input() public values: any[];
+    private valuesForChart: any[] = [];
+    private readonly chartid: string = '';
+    @Input() public usagePrint = false;
+    private _individualHeight: number;
+    private defaultHeight = 70;
+    private chart: any;
 
     @Input() set individualHeight(val) {
         let dummy: number;
@@ -40,27 +40,24 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
         this.chartid = this.modelutilities.generateGuid();
     }
 
-    get divid(){
+    get divid() {
         return 'questionnaire-eval-chart' + this.chartid;
     }
 
-    ngOnInit() {
-
-        for ( let i=0; i < this.values.length; i++ )
-            this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
-
+    public ngOnInit() {
+        for ( let i=0; i < this.values.length; i++ ) this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
     }
 
     get chartDivStyles() {
         if ( this.usagePrint ) {
-            return { 'max-width': '650px', margin: 'auto' };
+            return { 'max-width': '650px', 'margin': 'auto' };
         } else return null;
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
 
         this.metadata.loadLibs('highcharts').subscribe(
-            (next) => {
+            () => {
 
                 this.chart = Highcharts.chart(this.divid, {
                     credits: false,
@@ -74,8 +71,8 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
                         type: 'category',
                         labels: {
                             style: {
-                                fontSize: this.usagePrint ? '13px':'12px',
-                                fontFamily: 'Titillium Web, Verdana, sans-serif',
+                                fontSize: this.usagePrint ? '12px':'12px',
+                                fontFamily: '"Libre Franklin", sans-serif',
                                 whiteSpace: 'normal'
                             }
                         }
@@ -85,8 +82,8 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
                         title: {
                             text: this.language.getLabel('LBL_POINTS'),
                             style: {
-                                fontSize: this.usagePrint ? '13px':'12px',
-                                fontFamily: 'Titillium Web, Verdana, sans-serif'
+                                fontSize: this.usagePrint ? '12px':'12px',
+                                fontFamily: '"Libre Franklin", sans-serif'
                             }
                         }
                     },
@@ -109,8 +106,8 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
                         format: '{point.y:.1f}', // one decimal
                         y: 10, // 10 pixels down from the top
                         style: {
-                            fontSize: this.usagePrint ? '13px':'12px',
-                            fontFamily: 'Titillium Web, Verdana, sans-serif',
+                            fontSize: this.usagePrint ? '12px':'12px',
+                            fontFamily: '"Libre Franklin", sans-serif',
                             whiteSpace: 'normal'
                         }
                     }
