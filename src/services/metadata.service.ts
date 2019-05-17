@@ -661,7 +661,7 @@ export class metadata {
      */
     public getFieldHelpText(module, field) {
         try {
-            return this.fieldDefs[module][field].helpText;
+            return this.fieldDefs[module][field].popupHelp;
         } catch (e) {
             return null;
         }
