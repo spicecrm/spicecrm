@@ -17,7 +17,6 @@ import {userpreferences} from '../../services/userpreferences.service';
 })
 export class fieldWeightedAmount extends fieldCurrency {
 
-    public currencies: any[] = [];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router, currency, userpreferences);
@@ -25,16 +24,23 @@ export class fieldWeightedAmount extends fieldCurrency {
         this.currencies = this.currency.getCurrencies();
     }
 
+    /**
+     * a simple getter to get the amount field that is the base for the weighted amount
+     */
     get amountfield() {
         return this.fieldconfig.field_amount ? this.fieldconfig.field_amount : 'amount';
     }
 
+    /**
+     * a simple getter to get the probability field
+     */
     get probabilityfield() {
         return this.fieldconfig.field_probability ? this.fieldconfig.field_probability : 'probability';
     }
 
 
     private getValue() {
+
         try {
             let value = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.amountfield)) : 0;
             let probability = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.probabilityfield)) : 0;
