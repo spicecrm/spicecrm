@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
     <div class="slds-grid slds-grid--vertical-align-center">
         <a href="javascript:void(0);" modelPopOver module="Users" [id]="model.data[relateIdField]">{{value}}</a>

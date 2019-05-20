@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fieldconfig]="fieldconfig" [editable]="isEditable()" [title]="value">
     <div class="slds-grid slds-grid--vertical-align-center">
         <div class="slds-truncate">{{value}}</div>
