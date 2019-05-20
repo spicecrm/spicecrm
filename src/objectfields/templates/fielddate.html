@@ -6,7 +6,7 @@
         <a href="javascript:void(0);" (click)="goRecord()"><span [ngClass]="{'slds-text-color_error' : highlightdate}">{{displayDate}}</span></a>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" [ngClass]="getFieldClass()">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <system-input-date [(ngModel)]="value"></system-input-date>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
