@@ -13,7 +13,9 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
+import /*embed*/ {OpportunityRevenueLinesTab} from "./components/opportunityrevenuelinestab";
 import /*embed*/ {OpportunityRevenueLines} from "./components/opportunityrevenuelines";
+import /*embed*/ {OpportunityRevenueLinesCreator} from "./components/opportunityrevenuelinescreator";
 import /*embed*/ {OpportunityRevenueLineItem} from "./components/opportunityrevenuelineitem";
 
 @NgModule({
@@ -27,7 +29,9 @@ import /*embed*/ {OpportunityRevenueLineItem} from "./components/opportunityreve
         DirectivesModule,
     ],
     declarations: [
+        OpportunityRevenueLinesTab,
         OpportunityRevenueLines,
+        OpportunityRevenueLinesCreator,
         OpportunityRevenueLineItem
     ]
 })
