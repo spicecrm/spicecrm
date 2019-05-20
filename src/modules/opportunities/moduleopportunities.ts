@@ -13,6 +13,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
+import /*embed*/ {OpportunityRevenueLinesActiveLinesPipe} from "./pipes/opportunityrevenuelinesactivelinespipe";
 import /*embed*/ {OpportunityRevenueLinesTab} from "./components/opportunityrevenuelinestab";
 import /*embed*/ {OpportunityRevenueLines} from "./components/opportunityrevenuelines";
 import /*embed*/ {OpportunityRevenueLinesCreator} from "./components/opportunityrevenuelinescreator";
@@ -29,6 +30,7 @@ import /*embed*/ {OpportunityRevenueLineItem} from "./components/opportunityreve
         DirectivesModule,
     ],
     declarations: [
+        OpportunityRevenueLinesActiveLinesPipe,
         OpportunityRevenueLinesTab,
         OpportunityRevenueLines,
         OpportunityRevenueLinesCreator,
