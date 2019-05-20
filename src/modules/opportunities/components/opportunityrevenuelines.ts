@@ -76,6 +76,10 @@ export class OpportunityRevenueLines implements OnInit {
         return this.closeDate && this.totalAmount;
     }
 
+    get hasActiveLines() {
+        return this.revenueLines.filter(record => record.deleted != true).length > 0;
+    }
+
     /**
      * load the revenue line items from the model and validates teh model setting the message on the field
      */
@@ -83,7 +87,7 @@ export class OpportunityRevenueLines implements OnInit {
         this.revenueLines = [];
         let lines = this.model.getRelatedRecords('opportunityrevenuelines');
         for (let line of lines) {
-            if (!line.deleted) this.revenueLines.push(line);
+            this.revenueLines.push(line);
         }
 
         this.sortRevenueLines();
@@ -97,7 +101,9 @@ export class OpportunityRevenueLines implements OnInit {
                     let summedamount = 0;
 
                     for (let revenuteLine of this.revenueLines) {
-                        summedamount += revenuteLine.amount;
+                        if (revenuteLine.deleted != true) {
+                            summedamount += revenuteLine.amount;
+                        }
                     }
 
                     if (oppamount != summedamount) {
@@ -107,7 +113,7 @@ export class OpportunityRevenueLines implements OnInit {
                     }
                     break;
                 case 'rampup':
-                    let lastRow = this.revenueLines.slice(-1).pop();
+                    let lastRow = this.revenueLines.filter(line => line.delete != true).slice(-1).pop();
 
                     if (!lastRow || lastRow.amount != oppamount) {
                         this.model.setFieldMessage('error', 'rampup amount does not match', 'opportunityrevenuelines', 'opportunityrevenuelines');
@@ -130,12 +136,14 @@ export class OpportunityRevenueLines implements OnInit {
      */
     private checkCloseDate() {
         if (this.closeDate) {
-            if (!this.model.getFieldValue('date_closed').isSame(this.closeDate, 'day')) {
+            if (this.model.getFieldValue('opportunityrevenuesplit') != 'none' && !this.model.getFieldValue('date_closed').isSame(this.closeDate, 'day')) {
                 this.modal.confirm(this.language.getLabel('MSG_UPDATE_CHANGED_DATE', null, "long"), this.language.getLabel('MSG_UPDATE_CHANGED_DATE'), 'shade').subscribe(response => {
                     if (response) {
                         let duration = moment.duration(this.model.getFieldValue('date_closed').diff(this.closeDate));
                         for (let revenueLine of this.revenueLines) {
-                            revenueLine.revenue_date.add(duration);
+                            if (revenueLine.deleted != true) {
+                                revenueLine.revenue_date.add(duration);
+                            }
                         }
                         this.changeDetectorRef.detectChanges();
                     }
@@ -154,12 +162,14 @@ export class OpportunityRevenueLines implements OnInit {
      */
     private checkAmount() {
         if (this.totalAmount) {
-            if (this.model.getFieldValue('amount') != this.totalAmount) {
+            if (this.model.getFieldValue('opportunityrevenuesplit') != 'none' && this.model.getFieldValue('amount') != this.totalAmount) {
                 this.modal.confirm(this.language.getLabel('MSG_UPDATE_CHANGED_AMOUNT', null, "long"), this.language.getLabel('MSG_UPDATE_CHANGED_AMOUNT'), 'shade').subscribe(response => {
                     if (response) {
                         let factor = this.model.getFieldValue('amount') / this.totalAmount;
                         for (let revenueLine of this.revenueLines) {
-                            revenueLine.amount = Math.round(revenueLine.amount * factor * 100) / 100;
+                            if (revenueLine.deleted != true) {
+                                revenueLine.amount = Math.round(revenueLine.amount * factor * 100) / 100;
+                            }
                         }
                         this.changeDetectorRef.detectChanges();
                     }
@@ -235,7 +245,8 @@ export class OpportunityRevenueLines implements OnInit {
             id: this.model.utils.generateGuid(),
             amount: 0,
             amount_usdollar: 0,
-            revenue_date: this.closeDate
+            revenue_date: this.closeDate,
+            deleted: false
         };
         this.revenueLines.push(newRecord);
         this.sortRevenueLines();
@@ -257,7 +268,14 @@ export class OpportunityRevenueLines implements OnInit {
             }
             i++;
         });
-        this.loadRevenueLines();
-        this.checkConsistency();
+
+        // if we removed the last one set to none
+        if (this.hasActiveLines) {
+            this.loadRevenueLines();
+            this.checkConsistency();
+        } else {
+            this.model.setField('opportunityrevenuesplit', 'none');
+            this.checkConsistency();
+        }
     }
 }

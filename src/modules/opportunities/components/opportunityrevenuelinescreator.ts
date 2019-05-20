@@ -92,7 +92,8 @@ export class OpportunityRevenueLinesCreator {
             let newRecord = {
                 id: this.model.utils.generateGuid(),
                 amount: amount,
-                revenue_date: new moment(closeDate)
+                revenue_date: new moment(closeDate),
+                deleted: false
             };
             this.revenueLines.push(newRecord);
 
