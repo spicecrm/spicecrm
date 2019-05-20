@@ -24,7 +24,7 @@ export class ObjectModelPopoverRelatedItem {
         public model: model,
         public view: view
     ) {
-
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {

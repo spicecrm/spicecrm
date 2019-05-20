@@ -115,6 +115,9 @@ export class ObjectActivitiyTimelineAddItem implements OnInit, OnDestroy {
         // SPICEUI-2
         this.model.id = this.model.generateGuid();
         this.model.initializeModel(this.activitiyTimeLineService.parent);
+
+        // set start editing here as well so we can block navigating away
+        this.model.startEdit(false);
     }
 
     /**
@@ -146,6 +149,7 @@ export class ObjectActivitiyTimelineAddItem implements OnInit, OnDestroy {
      * cancels and collapses the container
      */
     private cancel() {
+        this.model.cancelEdit();
         this.isExpanded = false;
     }
 
@@ -154,7 +158,7 @@ export class ObjectActivitiyTimelineAddItem implements OnInit, OnDestroy {
      *
      * @param event the event fired from teh custom action
      */
-    handleaction(event) {
+    private handleaction(event) {
         this.initializeModule();
         this.isExpanded = false;
     }
