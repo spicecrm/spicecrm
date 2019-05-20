@@ -8,8 +8,8 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {currency} from '../../services/currency.service';
 import {fieldCurrency} from './fieldcurrency';
-import {Router}   from '@angular/router';
-import { userpreferences } from '../../services/userpreferences.service';
+import {Router} from '@angular/router';
+import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
@@ -17,30 +17,30 @@ import { userpreferences } from '../../services/userpreferences.service';
 })
 export class fieldWeightedAmount extends fieldCurrency {
 
-    currencies: Array<any> = [];
+    public currencies: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences ) {
-        super(model, view, language, metadata, router, currency, userpreferences );
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences) {
+        super(model, view, language, metadata, router, currency, userpreferences);
 
         this.currencies = this.currency.getCurrencies();
     }
 
-    get amountfield(){
-        return this.fieldconfig.field_amount ?  this.fieldconfig.field_amount : 'amount';
-    }
-    get probabilityfield(){
-        return this.fieldconfig.field_probability ?  this.fieldconfig.field_probability : 'probability';
+    get amountfield() {
+        return this.fieldconfig.field_amount ? this.fieldconfig.field_amount : 'amount';
     }
 
+    get probabilityfield() {
+        return this.fieldconfig.field_probability ? this.fieldconfig.field_probability : 'probability';
+    }
 
-    getValue() {
 
-        try{
-            let value = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.amountfield))  : 0;
-            let probability = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.probabilityfield))  : 0;
+    private getValue() {
+        try {
+            let value = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.amountfield)) : 0;
+            let probability = this.model.getFieldValue('amount') ? parseFloat(this.model.getFieldValue(this.probabilityfield)) : 0;
             return this.userpreferences.formatMoney(value * probability / 100);
 
-        } catch(e){
+        } catch (e) {
             return 0;
         }
 

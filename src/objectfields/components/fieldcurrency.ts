@@ -20,7 +20,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
     /**
      * holds an array of currencies
      */
-    private currencies: any[] = [];
+    public currencies: any[] = [];
 
     /**
      * the reference to the field with the currency id
