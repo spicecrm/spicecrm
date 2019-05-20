@@ -1,8 +1,8 @@
 <td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')">
-    <field-container field="revenue_date" fielddisplayclass="fielddisplayclass"></field-container>
+    <field-container field="revenue_date" fielddisplayclass="fielddisplayclass" [fieldconfig]="{hidelabel: true}"></field-container>
 </td>
 <td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'amount')">
-    <field-container field="amount" fielddisplayclass="fielddisplayclass"></field-container>
+    <field-container field="amount" fielddisplayclass="fielddisplayclass" [fieldconfig]="{hidelabel: true}"></field-container>
 </td>
 <td>
     <button class="slds-button slds-button_icon" [disabled]="disabled" (click)="deleteitem()">
