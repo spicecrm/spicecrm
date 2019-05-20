@@ -1,31 +1,34 @@
-<system-collapsable-tab tabtitle="LBL_OPPORTUNITYREVENUELINES">
-    <div class="slds-p-around--x-small">
-        <field-container field="opportunityrevenuesplit" [fieldconfig]="{fieldtype: 'enumradio'}"></field-container>
+<div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+    <div class="slds-size--2-of-3 slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <field-container field="opportunityrevenuesplit" [fieldconfig]="{readonly: true}"></field-container>
+        <field-container field="amount" [fieldconfig]="{readonly: true}"></field-container>
+        <field-container field="date_closed" [fieldconfig]="{readonly: true}"></field-container>
     </div>
-    <table *ngIf="model.getFieldValue('opportunityrevenuesplit') != 'none'" class="slds-table slds-table_cell-buffer slds-table_bordered">
-        <thead>
-            <tr class="slds-line-height_reset">
-                <th class="" scope="col">
-                    <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')}}</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'amount')}}</div>
-                </th>
-                <th class="slds-cell-shrink" scope="col">
+    <div class="slds-size--1-of-3">
+        <field-messages fieldname="opportunityrevenuelines"></field-messages>
+    </div>
+</div>
+<table *ngIf="model.getFieldValue('opportunityrevenuesplit') != 'none'" class="slds-table slds-table_cell-buffer slds-table_bordered">
+    <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+                <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')}}</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'amount')}}</div>
+            </th>
+            <th class="slds-cell-shrink" scope="col">
 
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines" [revenueLine]="revenueLine" (update)="revalidate()"></tr>
-        </tbody>
-    </table>
-    <div *ngFor="let fieldMessage of fieldMessages">
-        {{fieldMessage.message}}
-    </div>
-    <div *ngIf="isEditing" class="slds-p-around--small slds-align--absolute-center">
-        <button  class="slds-button slds-button_icon slds-button_icon slds-button--icon-border" (click)="addLine()">
-            <system-button-icon [icon]="'add'"></system-button-icon>
-        </button>
-    </div>
-</system-collapsable-tab>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines" [revenueLine]="revenueLine" [closeDate]="closeDate" [totalAmount]="totalAmount" (update)="revalidate()" (delete)="deleteLine(revenueLine.id)"></tr>
+    </tbody>
+</table>
+<div *ngIf="isEditing" class="slds-p-around--small slds-align--absolute-center">
+    <button  class="slds-button slds-button_icon slds-button_icon slds-button--icon-border" (click)="addLine()">
+        <system-button-icon [icon]="'add'"></system-button-icon>
+    </button>
+    <button  class="slds-button slds-button--neutral" (click)="initalizeLines()">initialize</button>
+</div>

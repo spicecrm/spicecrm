@@ -7,7 +7,9 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 
-
+/**
+ * a table line that representa a revenue share item
+ */
 @Component({
     selector: '[opportunity-revenue-line-item]',
     templateUrl: "./src/modules/opportunities/templates/opportunityrevenuelineitem.html",
@@ -15,21 +17,58 @@ import {view} from "../../../services/view.service";
 })
 export class OpportunityRevenueLineItem implements OnChanges {
 
+    /**
+     * input for the revenue line itself
+     */
     @Input() private revenueLine: any;
-    @Output() private update: EventEmitter<boolean> = new EventEmitter<boolean>()
+
+    /**
+     * the close date .. not too nice but needed so it can be passed from the parent in case the date is changed so changed etection is triggered when the dates are recalculated
+     */
+    @Input() private closeDate: any;
+
+    /**
+     * the total amount .. not too nice but needed so it can be passed from the parent in case the amount is changed so changed detection is triggered when the dates are recalculated
+     */
+    @Input() private totalAmount: any;
+
+    /**
+     * an event emitter that fires when the line is updated
+     */
+    @Output() private update: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * an event emitter that fires when the line is deleted
+     */
+    @Output() private delete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private model: model, private view: view, private language: language) {
         this.model.module = 'OpportunityRevenueLines';
-        this.model.data$.subscribe(data => this.update.emit(true));
+        this.model.data$.subscribe(data => {
+            this.update.emit(true);
+        });
     }
 
 
+    /**
+     * @ignore
+     */
     public ngOnChanges(): void {
         this.model.id = this.revenueLine.id;
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.revenueLine);
     }
 
+    /**
+     * simple getter to detect if the buttons etc should be disabled
+     */
     get disabled() {
         return !this.view.isEditMode();
+    }
+
+    /**
+     * action to trigger deete of the line
+     */
+    private deleteitem() {
+        this.delete.emit(true);
     }
 }
