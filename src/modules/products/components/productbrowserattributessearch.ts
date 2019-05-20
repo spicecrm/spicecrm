@@ -22,7 +22,8 @@ export class ProductBrowserAttributeSSearch extends ProductBrowserAttributeVCSea
             .map(validation => {
                 validation = validation.value;
                 return validation;
-            }) : [];
+            })
+            .sort((a, b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1): [];
     }
 
     get arrayValue() {
