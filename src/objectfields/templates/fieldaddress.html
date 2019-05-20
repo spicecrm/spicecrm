@@ -1,12 +1,11 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div *ngIf="!isEditMode()">
-    <field-label fieldname="field" [fieldconfig]="fieldconfig"></field-label>
     <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [fieldid]="fieldid">
         {{value}}
     </field-generic-display>
 </div>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <fieldset>
-        <legend class="slds-form-element__label slds-text-title--caps slds-p-bottom--x-small">{{getAddressLabel()}}</legend>
         <div class="slds-form-element__group">
                 <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
                 <div class="slds-form-element slds-size--1-of-1">

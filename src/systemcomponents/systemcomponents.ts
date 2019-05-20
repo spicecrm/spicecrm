@@ -70,8 +70,10 @@ import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
+import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextEditorModal} from "./components/systemrichtexteditormodal";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
@@ -88,6 +90,7 @@ import /*embed*/ {SystemTree} from "./components/systemtree";
 import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
 import /*embed*/ {SystemUtilityIcon} from "./components/systemutilityicon";
 import /*embed*/ {SystemViewContainer} from "./components/systemviewcontainer";
+import /*embed*/ {SystemIconHelpText} from "./components/systemiconhelptext";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -170,8 +173,10 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemModuleGlobalPipe,
         SystemObjectPreviewModal,
         SystemProgressRing,
+        SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
+        SystemRichTextEditorModal,
         SystemRichTextSourceModal,
         SystemSection,
         SystemSelect,
@@ -187,7 +192,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemTreeItem,
         SystemUploadImage,
         SystemUtilityIcon,
-        SystemViewContainer
+        SystemViewContainer,
+        SystemIconHelpText
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -242,6 +248,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemModalHeaderRight,
         SystemModalWrapper,
         SystemProgressRing,
+        SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
         SystemSection,
@@ -257,7 +264,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemTree,
         SystemTreeItem,
         SystemUtilityIcon,
-        SystemViewContainer
+        SystemViewContainer,
+        SystemIconHelpText
     ]
 })
 export class SystemComponents {

@@ -15,16 +15,18 @@ import {AddComponentsModule} from "../../addcomponents/addcomponents.module";
 
 import /*embed*/ {KnowledgeService} from "./services/knowledge.service";
 
-import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
-import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
-import /*embed*/ {KnowledgeBrowser} from "./components/knowledgebrowser";
-import /*embed*/ {KnowledgeBrowserDetails} from "./components/knowledgebrowserdetails";
-import /*embed*/ {KnowledgeBrowserDetailsContainerLeft} from "./components/knowledgebrowserdetailscontainerleft";
-import /*embed*/ {KnowledgeBrowserDetailsContainerRight} from "./components/knowledgebrowserdetailscontainerright";
 import /*embed*/ {KnowledgeBookSelector} from "./components/knowledgebookselector";
 import /*embed*/ {KnowledgeDocumentsSearch} from "./components/knowledgedocumentssearch";
 import /*embed*/ {KnowledgeDocumentRelatedList} from "./components/knowledgedocumentrelatedlist";
 import /*embed*/ {KnowledgeDocumentFavorites} from "./components/knowledgedocumentfavorites";
+import /*embed*/ {KnowledgeBrowserDetailsContainerRight} from "./components/knowledgebrowserdetailscontainerright";
+import /*embed*/ {KnowledgeBrowserDetailsContainerLeft} from "./components/knowledgebrowserdetailscontainerleft";
+import /*embed*/ {KnowledgeBrowserDetails} from "./components/knowledgebrowserdetails";
+import /*embed*/ {KnowledgeBrowser} from "./components/knowledgebrowser";
+import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
+import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
+import /*embed*/ {KnowledgeContainer} from "./components/knowledgecontainer";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     imports: [
@@ -34,9 +36,14 @@ import /*embed*/ {KnowledgeDocumentFavorites} from "./components/knowledgedocume
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        AddComponentsModule
+        AddComponentsModule,
+        RouterModule.forRoot([
+            {path: 'KnowledgeBase/browser', component: KnowledgeBrowser},
+            {path: 'KnowledgeBase/browser/:browserModule/:browserModuleId', component: KnowledgeBrowser}
+        ])
     ],
     declarations: [
+        KnowledgeContainer,
         KnowledgeManager,
         KnowledgeManagerDetails,
         KnowledgeBrowser,

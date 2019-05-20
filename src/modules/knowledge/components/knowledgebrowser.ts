@@ -5,14 +5,12 @@ import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from "
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {navigation} from "../../../services/navigation.service";
 import {KnowledgeService} from "../services/knowledge.service";
-import {ActivatedRoute, Router} from '@angular/router';
-import {Location} from '@angular/common';
 import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
+    selector: 'knowledge-browser',
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
     providers: [KnowledgeService, model, relatedmodels]
 })
@@ -28,15 +26,9 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     constructor(private language: language,
                 private model: model,
                 private metadata: metadata,
-                private navigation: navigation,
-                private router: Router,
-                private location: Location,
                 private relatedmodels: relatedmodels,
-                private activatedRoute: ActivatedRoute,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
-        this.prepareRelatedModel();
-        this.routerSubscriber();
     }
 
     get selectedBook() {
@@ -47,8 +39,8 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
         return this.knowledgeService.documents;
     }
 
-    get selectedId() {
-        return this.knowledgeService.selectedId;
+    get selectedDoc() {
+        return this.knowledgeService.selectedDoc;
     }
 
     get treeContainerStyle() {
@@ -61,11 +53,11 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     }
 
     get isLoading() {
-        return this.knowledgeService.isLoading;
+        return this.relatedmodels.isloading;
     }
 
     public ngAfterViewInit() {
-        this.navigation.setActiveModule("KnowledgeBooks");
+        this.knowledgeService.setActiveModule("KnowledgeBooks");
     }
 
     public ngOnDestroy() {
@@ -73,34 +65,8 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    private prepareRelatedModel() {
-        this.relatedmodels.module = "KnowledgeBooks";
-        this.relatedmodels.relatedModule = "KnowledgeDocuments";
-        this.relatedmodels.sort.sortfield = "name";
-        this.relatedmodels.sort.sortdirection = "ASC";
-        this.relatedmodels.loaditems = -1;
-    }
-
-    private routerSubscriber() {
-        this.subscription = this.activatedRoute.params.subscribe(params => {
-            if (!params.id) {
-                return;
-            }
-            this.model.id = params.id;
-            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
-            this.knowledgeService.selectedId = params.id;
-            this.model.getData(true, 'detailview').subscribe(data => {
-                this.navigation.setActiveModule("KnowledgeBooks", data.knowledgebook_id, data.knowledgebook_name);
-                if (!this.knowledgeService.selectedBook) {
-                    this.knowledgeService.selectedBook = {id: data.knowledgebook_id, name: data.knowledgebook_name};
-                    this.knowledgeService.getDocuments(data.knowledgebook_id);
-                }
-            });
-        });
-    }
-
     private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedId = id;
-        this.location.replaceState("/module/KnowledgeDocuments/" + id);
+        this.knowledgeService.selectedDoc = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }

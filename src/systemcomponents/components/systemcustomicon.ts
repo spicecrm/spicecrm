@@ -9,7 +9,7 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/systemcomponents/templates/systemcustomicon.html'
 })
 export class SystemCustomIcon {
-    @Input() private icon: string = '';
+    @Input() private icon: string = 'info';
     @Input() private file: string = './assets/icons/spicecrm.svg';
     @Input() private size: string = '';
     @Input() private color: string = '';
@@ -25,7 +25,7 @@ export class SystemCustomIcon {
         if (this.size) {
             return 'slds-icon--' + this.size;
         } else {
-            return ''
+            return '';
         }
     }
 
@@ -38,14 +38,6 @@ export class SystemCustomIcon {
     }
 
     get iconStyle() {
-        if (this.desaturate) {
-            return {
-                filter: 'saturate(0)'
-            };
-        }
-    }
-
-    get iconColor() {
         let iconStyle = {};
         if (this.color) {
             iconStyle['color'] = this.color;
