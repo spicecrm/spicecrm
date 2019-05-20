@@ -11,7 +11,6 @@ import {view} from '../../../services/view.service';
 /**
  * @ignore
  */
-declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-vc',
@@ -54,7 +53,7 @@ export class ProductVariantsAttributeVC implements OnInit {
         this.model.data.productattributevalues.beans[guid] = {
             id: guid,
             productattribute_id: this.attribute.id,
-            pratvalue: '',
+            pratvalue: this.model.isNew ? this.attribute.value : '',
             parent_id: this.model.id,
             parent_type: this.model.module
         };

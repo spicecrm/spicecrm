@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -6,6 +6,7 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 
 declare var _;
+declare var moment: any;
 
 @Component({
     selector: 'product-uom-conversions',
@@ -54,6 +55,7 @@ export class ProductUOMConversions implements OnInit {
     public ngOnInit() {
         this.getUomFieldDefs();
         this.getUomUnits();
+        this.cloneParentConversions();
     }
 
     private setBaseUom(id) {
@@ -99,10 +101,25 @@ export class ProductUOMConversions implements OnInit {
             });
     }
 
+    private cloneParentConversions() {
+        if (this.model.isNew && this.uomConversions.length > 0) {
+            let originalConversions = this.model.data.uomconversions.beans;
+            let clonedConversions = {};
+            _.each(originalConversions, conversion => {
+                conversion.id = this.model.generateGuid();
+                clonedConversions[conversion.id] = conversion;
+            });
+            this.model.data.uomconversions.beans = clonedConversions;
+        }
+    }
+
     private addConversion() {
-        if (!this.canAdd || !this.model.data.uomconversions || !this.model.data.uomconversions.beans) return;
+        if (!this.canAdd) return;
         this.view.setEditMode();
         let guid = this.model.generateGuid();
+        if (!this.model.getFieldValue('uomconversion')) {
+            this.model.data.uomconversions = { beans:{} };
+        }
         this.model.data.uomconversions.beans[guid] = {
             id: guid,
             quantity: '1',
