@@ -68,7 +68,7 @@ export class fieldGeneric implements OnInit {
     }
 
     get displayLabel() {
-        return this.view.displayLabels;
+        return this.view.displayLabels && this.fieldconfig.hidelabel !== true;
     }
 
     get css_classes() {
