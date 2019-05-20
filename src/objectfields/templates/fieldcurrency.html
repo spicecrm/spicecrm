@@ -4,7 +4,7 @@
             {{getCurrencySymbol()}}&nbsp;
         </div>
         <div>
-            <span>{{getValAsText()}}</span>
+            <span>{{value}}</span>
         </div>
     </div>
 </field-generic-display>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="slds-form-element slds-grow">
-            <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
+            <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="value" [ngModelOptions]="modelOptions"/>
         </div>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>
