@@ -48,11 +48,11 @@ export class ModuleFilterBuilderFilters {
     }
 
     get modulefilters() {
-        return this.filters.filter(filter => filter.type == 'global');
+        return this.filters.filter(filter => filter.scope == 'global');
     }
 
     get customModulefilters() {
-        return this.filters.filter(filter => filter.type == 'custom');
+        return this.filters.filter(filter => filter.scope == 'custom');
     }
 
     private goDetail(filter) {
@@ -70,14 +70,14 @@ export class ModuleFilterBuilderFilters {
         }
     }
 
-    private add(type) {
+    private add(scope) {
         let filter = {
             id: this.modelutilities.generateGuid(),
             module: this.module,
             filterdefs: null,
             created_by_id: this.session.authData.userId,
             name: 'new filter',
-            type: type,
+            scope: scope,
             package: '',
             version: ''
         };

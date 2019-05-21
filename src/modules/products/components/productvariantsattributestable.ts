@@ -35,6 +35,7 @@ export class ProductVariantsAttributesTable implements OnChanges {
 
     private setDisplayGroups() {
         this.displaygroups = [];
+        if (!this.attributes) return;
         this.attributes.forEach(attr => {
             if (attr.attr_usagegrp && attr.attr_usagegrp != '' && this.displaygroups.indexOf(attr.attr_usagegrp) == -1) {
                 this.displaygroups.push(attr.attr_usagegrp);

@@ -12,7 +12,6 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 /**
  * @ignore
  */
-declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-di',
