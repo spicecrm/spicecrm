@@ -1,0 +1,24 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div class="slds-form-element__control slds-grid" [ngClass]="getFieldClass()">
+        <div class="slds-radio" *ngFor="let o of options">
+            <input disabled type="radio" [id]="fieldid + o.value" name="options" [value]="o.value" [(ngModel)]="value"/>
+            <label class="slds-radio__label" [attr.for]="fieldid + o.value">
+                <span class="slds-radio_faux"></span>
+                <span class="slds-form-element__label">{{o.display}}</span>
+            </label>
+        </div>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control slds-grid" [ngClass]="getFieldClass()">
+        <div class="slds-radio" *ngFor="let o of options">
+            <input type="radio" [id]="fieldid + o.value" name="options" [value]="o.value" [(ngModel)]="value"/>
+            <label class="slds-radio__label" [attr.for]="fieldid + o.value">
+                <span class="slds-radio_faux"></span>
+                <span class="slds-form-element__label">{{o.display}}</span>
+            </label>
+        </div>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</div>
