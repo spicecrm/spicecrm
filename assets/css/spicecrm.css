@@ -1120,3 +1120,17 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
     z-index: 11000!important;
 }
+
+/* sticky headers */
+.spice-table_header-fixed thead th{
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    border-top: 0;
+    border-bottom: 1px solid #dddbda;
+}
+
+.spice-table_header-fixed tbody tr:first-child td,
+.spice-table_header-fixed tbody tr:first-child th {
+    border: 0;
+}
