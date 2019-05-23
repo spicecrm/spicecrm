@@ -39,6 +39,7 @@ export class MailboxesMailgunTrafficManager implements OnInit {
                 imap_pop3_display_name: "",
                 imap_pop3_username: "",
                 reply_to: "",
+                region: "",
             };
         }
     }

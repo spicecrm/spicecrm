@@ -67,6 +67,10 @@ export class fieldGeneric implements OnInit {
         return this.model.getFieldMessages(this.fieldname, 'error');
     }
 
+    get displayLabel() {
+        return this.view.displayLabels && this.fieldconfig.hidelabel !== true;
+    }
+
     get css_classes() {
         if (this.getStati().invalid) {
             this.addCssClass('slds-has-error');
