@@ -60,14 +60,13 @@ export class KnowledgeBookSelector {
 
     private selectBook(book) {
         this.knowledgeService.selectedBook = book;
-        this.knowledgeService.getDocuments(book.id);
         this.knowledgeService.setLastViewedBook();
         this.searchOpen = false;
     }
 
     private deselectBook() {
         this.knowledgeService.selectedBook = undefined;
-        this.knowledgeService.selectedId = "";
+        this.knowledgeService.selectedDoc = "";
         this.knowledgeService.documents = [];
         this.knowledgeService.setLastViewedBook(true);
         this.knowledgeService.favoriteDisable();

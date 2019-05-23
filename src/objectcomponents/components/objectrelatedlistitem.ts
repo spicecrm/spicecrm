@@ -36,6 +36,8 @@ export class ObjectRelatedListItem implements OnInit {
     constructor( private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal ) { }
 
     public ngOnInit() {
+        this.view.displayLabels = false;
+
         this.model.module = this.module;
         this.model.id = this.listitem.id;
         this.model.data = this.listitem;
