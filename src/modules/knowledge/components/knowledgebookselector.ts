@@ -6,6 +6,7 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {navigation} from "../../../services/navigation.service";
 
@@ -22,6 +23,7 @@ export class KnowledgeBookSelector {
 
     constructor(public language: language,
                 public model: model,
+                public modal: modal,
                 public metadata: metadata,
                 public knowledgeService: KnowledgeService,
                 public navigation: navigation,
@@ -68,9 +70,13 @@ export class KnowledgeBookSelector {
 
     private deleteBook(bookId) {
         this.model.id = bookId;
-        this.model.delete().subscribe(res => {
-            this.deselectBook();
-            this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookId);
+        this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('LBL_DELETE')).subscribe(answer => {
+            if (answer) {
+                this.model.delete().subscribe(res => {
+                    this.deselectBook();
+                    this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookId);
+                });
+            }
         });
     }
 
