@@ -34,10 +34,9 @@ export class MailboxesTwillioTrafficManager implements OnInit {
     public ngOnInit() {
         if (this.model.data.settings.length === 0) {
             this.model.data.settings = {
-                api_key: "",
-                imap_pop3_display_name: "",
-                imap_pop3_username: "",
-                reply_to: "",
+                account_sid: "",
+                auth_token: "",
+                phone_number_from: "",
             };
         }
     }
@@ -45,8 +44,8 @@ export class MailboxesTwillioTrafficManager implements OnInit {
     public testConnection() {
         this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector )
             .subscribe((modalRef) => {
-                    console.log("test happened");
-                }
-            );
+                console.log("test happened");
+            }
+        );
     }
 }
