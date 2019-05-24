@@ -34,6 +34,7 @@ import /*embed*/ {fieldEmailTo} from './components/fieldemailto';
 import /*embed*/ {fieldEmailTemplates} from './components/fieldemailtemplates';
 import /*embed*/ {fieldMailRelais} from './components/fieldmailrelais';
 import /*embed*/ {fieldMultienum} from './components/fieldmultienum';
+import /*embed*/ {fieldGroupedEnum} from './components/fieldgroupedenum';
 import /*embed*/ {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
 import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
 import /*embed*/ {fieldEnumRadio} from './components/fieldenumradio';
@@ -142,6 +143,7 @@ declare var _: any;
         fieldEmailTemplates,
         fieldMailRelais,
         fieldMultienum,
+        fieldGroupedEnum,
         fieldMultienumCheckBox,
         fieldEnumAlternate,
         fieldEnumRadio,
