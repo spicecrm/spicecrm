@@ -11,7 +11,8 @@ import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-book-selector",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html"
+    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html",
+    providers: [model]
 })
 export class KnowledgeBookSelector {
 
@@ -25,6 +26,7 @@ export class KnowledgeBookSelector {
                 public knowledgeService: KnowledgeService,
                 public navigation: navigation,
                 public backend: backend) {
+        this.model.module = 'KnowledgeBooks';
         this.knowledgeService.getBooks();
     }
 
@@ -56,6 +58,20 @@ export class KnowledgeBookSelector {
             display: this.searchOpen ? "block" : "none",
             width: this.inputContainer.element.nativeElement.getBoundingClientRect().width + "px",
         };
+    }
+
+    private editBook(bookId) {
+        this.model.id = bookId;
+        this.model.edit(true);
+        this.searchOpen = false;
+    }
+
+    private deleteBook(bookId) {
+        this.model.id = bookId;
+        this.model.delete().subscribe(res => {
+            this.deselectBook();
+            this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookId);
+        });
     }
 
     private selectBook(book) {
