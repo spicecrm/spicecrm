@@ -36,6 +36,7 @@ import /*embed*/ {fieldMailRelais} from './components/fieldmailrelais';
 import /*embed*/ {fieldMultienum} from './components/fieldmultienum';
 import /*embed*/ {fieldGroupedEnum} from './components/fieldgroupedenum';
 import /*embed*/ {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
+import /*embed*/ {fieldMultipleEnumDropdown} from './components/fieldmultipleenumdropdown';
 import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
 import /*embed*/ {fieldEnumRadio} from './components/fieldenumradio';
 import /*embed*/ {fieldBool} from './components/fieldbool';
@@ -145,6 +146,7 @@ declare var _: any;
         fieldMultienum,
         fieldGroupedEnum,
         fieldMultienumCheckBox,
+        fieldMultipleEnumDropdown,
         fieldEnumAlternate,
         fieldEnumRadio,
         fieldBool,
