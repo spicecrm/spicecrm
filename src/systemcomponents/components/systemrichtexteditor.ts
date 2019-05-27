@@ -215,6 +215,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                         this.isExpanded = false;
                         this.htmlEditor.element.nativeElement.focus();
                         this.writeValue(html);
+                        this.onChange(html);
                     });
             });
         } else {
