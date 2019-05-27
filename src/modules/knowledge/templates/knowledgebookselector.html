@@ -7,9 +7,17 @@
                         <system-icon module="KnowledgeBooks" [size]="'small'" [addclasses]="'slds-p-around--xxx-small'"></system-icon>
                     </span>
                     <span class="slds-pill__label slds-p-left--xx-small">{{selectedBook.name}}</span>
-                    <button class="slds-button slds-button--icon slds-pill__remove" (click)="deselectBook()">
-                        <system-button-icon [icon]="'close'"></system-button-icon>
-                    </button>
+                    <span>
+                        <button class="slds-button slds-button--icon" (click)="editBook(selectedBook.id)">
+                            <system-button-icon icon="edit"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon" (click)="deleteBook(selectedBook.id)">
+                            <system-button-icon icon="delete"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-pill__remove" (click)="deselectBook()">
+                            <system-button-icon icon="close"></system-button-icon>
+                        </button>
+                    </span>
                   </span>
             </div>
         </div>
