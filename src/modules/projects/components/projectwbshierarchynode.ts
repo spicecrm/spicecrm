@@ -22,8 +22,8 @@ export class ProjectWBSHierarchyNode implements OnInit {
     @Input() public fields: Array<any> = [];
     private loading: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model) {
-
+    constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private view: view) {
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
