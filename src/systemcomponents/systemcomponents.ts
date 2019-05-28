@@ -91,6 +91,7 @@ import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
 import /*embed*/ {SystemUtilityIcon} from "./components/systemutilityicon";
 import /*embed*/ {SystemViewContainer} from "./components/systemviewcontainer";
 import /*embed*/ {SystemIconHelpText} from "./components/systemiconhelptext";
+import /*embed*/ {SystemMultipleSelect} from "./components/systemmultipleselect";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -193,7 +194,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemUploadImage,
         SystemUtilityIcon,
         SystemViewContainer,
-        SystemIconHelpText
+        SystemIconHelpText,
+        SystemMultipleSelect
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -265,7 +267,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemTreeItem,
         SystemUtilityIcon,
         SystemViewContainer,
-        SystemIconHelpText
+        SystemIconHelpText,
+        SystemMultipleSelect
     ]
 })
 export class SystemComponents {
