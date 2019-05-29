@@ -2,6 +2,7 @@
  * @module SystemComponents
  */
 import {Component, EventEmitter, Input, Output, Renderer2} from "@angular/core";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 @Component({
     selector: "system-tree-item",
@@ -13,6 +14,10 @@ export class SystemTreeItem {
     @Output() public selectedItem$: EventEmitter<any> = new EventEmitter<any>();
     @Output() public treelistChange$: EventEmitter<any> = new EventEmitter<any>();
     @Output() public addItem$: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public changeItemPosition_item$: EventEmitter<any> = new EventEmitter<any>();
+  /*  @Output() public changeItemPosition_item_two$: EventEmitter<any> = new EventEmitter<any>();*/
+
+
     @Input() public selectedItem: string = "";
     @Input() public items: any = [];
     @Input() private config: any = {};
@@ -47,7 +52,7 @@ export class SystemTreeItem {
         this.selectedItem$.emit(id);
     }
 
-    private dragItem(e, id) {
+/*    private dragItem(e, id) {
         if (!this.config.draggable) {
             return;
         }
@@ -96,5 +101,22 @@ export class SystemTreeItem {
 
     private handleDragDropEvent(obj: any) {
         this.treelistChange$.emit(obj);
+    }*/
+
+
+    public drop(event: CdkDragDrop<string[]>) {
+        let new_pos_el = {
+            new_position: event.currentIndex,
+            id: event.item.element.nativeElement.id,
+            parent_id: event.container.data
+        };
+        console.log("HEY1: ", new_pos_el);
+        this.changeItemPosition_item$.emit(new_pos_el);
     }
+
+    public changeItemPosition(el: any) {
+        console.log("HEY3: ", el);
+        this.changeItemPosition_item$.emit(el);
+    }
+
 }
