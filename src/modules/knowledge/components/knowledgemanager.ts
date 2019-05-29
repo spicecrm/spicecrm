@@ -109,4 +109,9 @@ export class KnowledgeManager implements AfterViewInit {
         this.knowledgeService.selectedDoc = id;
         this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
+
+    private changeItemPosition(changeInfo) {
+        
+        console.log("HEYITCHANGED: ", changeInfo);
+    }
 }
