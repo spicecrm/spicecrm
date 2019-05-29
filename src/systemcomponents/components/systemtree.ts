@@ -2,6 +2,7 @@
  * @module SystemComponents
  */
 import {Component, EventEmitter, Input, Output, SimpleChanges} from "@angular/core";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 /**
 * @ignore
@@ -41,6 +42,8 @@ export class SystemTree {
     @Output() public selectedItem$: EventEmitter<any> = new EventEmitter<any>();
     @Output() public treelistChange$: EventEmitter<any> = new EventEmitter<any>();
     @Output() public addItem$: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public changeItemPosition$: EventEmitter<any> = new EventEmitter<any>();
+
     @Input() public treelist: any[] = [];
     @Input() public selectedItem: string = "";
     public tree: Array<any> = [];
@@ -90,6 +93,7 @@ export class SystemTree {
         let tree = [];
         for (let item of treelist) {
             if (item.parent_id === parent) {
+
                 item.expanded = this.config.collapsible ? this.config.expandall : true;
                 item.clickable = this.config.clickable;
                 item.level = level + 1;
@@ -147,5 +151,9 @@ export class SystemTree {
             toEdit.parent_name = this.treelist.find(unit => unit.id === obj.parent).name;
             this.treelistChange$.emit(toEdit);
         }
+    }
+    public changeItemPosition(el: any) {
+        console.log("HEY2: ", el);
+        this.changeItemPosition$.emit(el);
     }
 }
