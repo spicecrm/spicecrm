@@ -24,6 +24,7 @@ import /*embed*/ {KnowledgeBrowserDetailsContainerLeft} from "./components/knowl
 import /*embed*/ {KnowledgeBrowserDetails} from "./components/knowledgebrowserdetails";
 import /*embed*/ {KnowledgeBrowser} from "./components/knowledgebrowser";
 import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerdetails";
+import /*embed*/ {KnowledgeManagerAddModal} from "./components/knowledgemanageraddmodal";
 import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
 import /*embed*/ {KnowledgeContainer} from "./components/knowledgecontainer";
 import {RouterModule} from "@angular/router";
@@ -44,6 +45,7 @@ import {RouterModule} from "@angular/router";
     ],
     declarations: [
         KnowledgeContainer,
+        KnowledgeManagerAddModal,
         KnowledgeManager,
         KnowledgeManagerDetails,
         KnowledgeBrowser,

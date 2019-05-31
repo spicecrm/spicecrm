@@ -9,6 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {Router} from "@angular/router";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'knowledge-manager',
@@ -25,10 +26,12 @@ export class KnowledgeManager implements AfterViewInit {
 
     constructor(private language: language,
                 private model: model,
+                private modal: modal,
                 private backend: backend,
                 private router: Router,
                 private metadata: metadata,
                 private relatedmodels: relatedmodels,
+                private viewContainerRef: ViewContainerRef,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
         this.checkAccess();
@@ -83,14 +86,16 @@ export class KnowledgeManager implements AfterViewInit {
             knowledgebook_id: this.knowledgeService.selectedBook.id,
             status: "Draft"
         };
-        this.model.addModel("", {}, presets)
-            .subscribe(
-                item => {
-                    if (typeof item === "object") {
-                        this.relatedmodels.items.push(item);
-                        this.knowledgeService.selectedDoc = item.id;
+        this.modal.openModal('KnowledgeManagerAddModal', true)
+            .subscribe(modalRef => {
+                modalRef.instance.presets = presets;
+                modalRef.instance.response.subscribe(res => {
+                    if (typeof res === "object") {
+                        this.relatedmodels.items.push(res);
+                        this.knowledgeService.selectedDoc = res.id;
                     }
                 });
+            });
     }
 
     private saveListEdit(toEdit: any) {
