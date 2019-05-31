@@ -1,7 +1,7 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, Input, SimpleChanges, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, HostBinding, Input, SimpleChanges, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
@@ -17,6 +17,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
     @ViewChild('headercontainer', {read: ViewContainerRef}) private headerContainer: ViewContainerRef;
     @Input("breadcrumbs") private breadcrumbs: any[] = [];
     @Input("html") private html: any = '';
+    @HostBinding('style') private height: string = '100%';
 
     constructor(private language: language,
                 private model: model,
