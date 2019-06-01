@@ -19,7 +19,7 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
     private listfields: any[] = [];
     private fieldset: string = "";
     private editcomponentset: string = "";
-    private module: string = "";
+    public module: string = "";
 
     constructor(
         public language: language,

@@ -57,7 +57,6 @@ export class DirectivesModule {
     readonly build_date = '/*build_date*/';
 
     constructor(
-        public metadata: metadata,
         private vms: VersionManagerService,
     ) {
         this.vms.registerModule(this);
