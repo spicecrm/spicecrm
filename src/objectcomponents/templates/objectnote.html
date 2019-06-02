@@ -1,9 +1,10 @@
 <article class="slds-post slds-border--bottom slds-p-top--small">
     <header class="slds-post__header slds-media">
         <div class="slds-media__figure">
-            <span class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
+            <span *ngIf="!note.user_image" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
                 <system-utility-icon [icon]="'user'" [size]="'x-small'" [addclasses]="'slds-icon'" [colorclass]="''"></system-utility-icon>
             </span>
+            <img style="height: 40px; width: 40px" *ngIf="note.user_image" [src]="note.user_image"/>
         </div>
         <div class="slds-media__body">
             <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
