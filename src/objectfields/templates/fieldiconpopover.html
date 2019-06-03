@@ -1,11 +1,5 @@
-<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-
-    <div *ngIf="parentField" class="slds-float_left">
-        <a href="javascript:void(0);"  modelPopOver [module]="'Accounts'" [id]="parentField">
-            <system-custom-icon icon="pawn" size="xx-small"></system-custom-icon>
-        </a>
-    </div>
-    <div *ngIf="memberCount > 0" class="slds-float_left">
-        <system-custom-icon icon="crown" size="xx-small"></system-custom-icon>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
+    <div modelPopOver>
+        <system-utility-icon size="x-small" icon="info"></system-utility-icon>
     </div>
 </field-generic-display>
