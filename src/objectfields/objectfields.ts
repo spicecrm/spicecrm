@@ -101,6 +101,7 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import /*embed*/ {fieldTextID} from "./components/fieldtextid";
+import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
 
 /**
 * @ignore
@@ -209,7 +210,8 @@ declare var _: any;
         fieldPhone,
         fieldCronInterval,
         fieldGooglePlacesSearch,
-        fieldTextID
+        fieldTextID,
+        fieldIconPopover
     ],
     exports: [
         fieldSet,
