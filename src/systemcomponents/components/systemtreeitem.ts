@@ -20,7 +20,7 @@ export class SystemTreeItem {
     constructor(private renderer: Renderer2) {
     }
 
-    public expand(e, item) {
+    public expand(item, e?) {
         if (!item) {
             return;
         }
