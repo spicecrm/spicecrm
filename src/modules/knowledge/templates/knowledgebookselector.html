@@ -21,14 +21,14 @@
                   </span>
             </div>
         </div>
-        <div *ngIf="!selectedBook" class="slds-form-element__control slds-grid slds-box--border slds-m-vertical--xxx-small" style="background-color: #fff">
-            <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
-                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="searchTerm"
+        <div *ngIf="!selectedBook" class="slds-form-element__control slds-m-vertical--xxx-small">
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+                <system-utility-icon *ngIf="!isLoading" icon="search" addclasses="slds-input__icon"></system-utility-icon>
+                <system-spinner *ngIf="isLoading" class="slds-input__icon" size="16"></system-spinner>
+                <input type="search" class="slds-lookup__search-input slds-input" [(ngModel)]="searchTerm"
                        (focus)="searchOpen = true"
                        (blur)="searchOpen = false"
-                       [placeholder]="language.getLabel('MSG_SEARCH_BOOKS')" role="combobox"
-                       [class.slds-theme_shade]="isLoading || books.length == 0"
+                       [placeholder]="placeHolder" role="combobox"
                        [disabled]="isLoading || books.length == 0">
             </div>
         </div>
