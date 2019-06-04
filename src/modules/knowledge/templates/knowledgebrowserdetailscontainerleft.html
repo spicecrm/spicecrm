@@ -16,7 +16,7 @@
     </div>
 </div>
 <div *ngIf="model.id && hasContent" class="slds-grid" style="height: calc(100% - 52px)">
-    <div [innerHTML]="html" style="height: 100%" class="slds-scrollable--y spicecrm-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
+    <div [innerHTML]="html" style="height: 100%; width: 100%;" class="slds-scrollable--y spicecrm-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
 </div>
 <div *ngIf="model.isLoading" class="slds-align--absolute-center" [ngStyle]="iframeContainerStyle">
     <system-spinner></system-spinner>

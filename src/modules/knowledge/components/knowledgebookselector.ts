@@ -34,7 +34,7 @@ export class KnowledgeBookSelector {
     }
 
     get isLoading() {
-        return this.knowledgeService.isLoading;
+        return this.knowledgeService.isBookLoading;
     }
 
     get selectedBook() {
