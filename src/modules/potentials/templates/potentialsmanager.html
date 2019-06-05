@@ -1,0 +1,9 @@
+<div *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <object-related-card-header [componentconfig]="componentconfig"><system-input-companycodes [(ngModel)]="companyCode"></system-input-companycodes></object-related-card-header>
+    <div @displaycard *ngIf="isopen">
+        <div class="slds-card__body slds-size--1-of-1">
+            <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset"></object-relatedlist-table>
+        </div>
+        <object-related-card-footer [componentconfig]="componentconfig"></object-related-card-footer>
+    </div>
+</div>
