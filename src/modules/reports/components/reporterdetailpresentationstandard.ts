@@ -111,7 +111,9 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
             start: (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries,
             limit: this.presParams.pluginData.standardViewProperties.listEntries,
-            whereConditions: JSON.stringify(whereConditions)
+            whereConditions: JSON.stringify(whereConditions),
+            parentbeanId: this.model['parentBeanId'],
+            parentbeanModule: this.model['parentBeanModule']
         }).subscribe((presData: any) => {
 
             // get field width
