@@ -20,7 +20,11 @@ export class DashboardGenericDashletRow implements OnInit {
     @Input() private data: any = {};
 
     constructor(private language: language, private metadata: metadata, private model: model, private view: view, private modelutilities: modelutilities) {
+        // note editable
         this.view.isEditable = false;
+
+        // hide labels
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
