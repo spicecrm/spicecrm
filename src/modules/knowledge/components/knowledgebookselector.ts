@@ -33,8 +33,12 @@ export class KnowledgeBookSelector {
         this.knowledgeService.getBooks();
     }
 
+    get placeHolder() {
+        return !this.isLoading && this.books.length == 0 ? this.language.getLabel('LBL_NO_ENTRIES') : this.language.getLabel('MSG_SEARCH_BOOKS');
+    }
+
     get isLoading() {
-        return this.knowledgeService.isLoading;
+        return this.knowledgeService.isBookLoading;
     }
 
     get selectedBook() {

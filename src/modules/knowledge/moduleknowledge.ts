@@ -27,7 +27,7 @@ import /*embed*/ {KnowledgeManagerDetails} from "./components/knowledgemanagerde
 import /*embed*/ {KnowledgeManagerAddModal} from "./components/knowledgemanageraddmodal";
 import /*embed*/ {KnowledgeManager} from "./components/knowledgemanager";
 import /*embed*/ {KnowledgeContainer} from "./components/knowledgecontainer";
-import {RouterModule} from "@angular/router";
+import /*embed*/ {KnowledgeReleaseAllButton} from "./components/knowledgereleaseallbutton";
 
 @NgModule({
     imports: [
@@ -37,11 +37,7 @@ import {RouterModule} from "@angular/router";
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        AddComponentsModule,
-        RouterModule.forRoot([
-            {path: 'KnowledgeBase/browser', component: KnowledgeBrowser},
-            {path: 'KnowledgeBase/browser/:browserModule/:browserModuleId', component: KnowledgeBrowser}
-        ])
+        AddComponentsModule
     ],
     declarations: [
         KnowledgeContainer,
@@ -55,7 +51,8 @@ import {RouterModule} from "@angular/router";
         KnowledgeBookSelector,
         KnowledgeDocumentsSearch,
         KnowledgeDocumentRelatedList,
-        KnowledgeDocumentFavorites
+        KnowledgeDocumentFavorites,
+        KnowledgeReleaseAllButton
     ],
     providers: [
         KnowledgeService

@@ -41,8 +41,26 @@ export class KnowledgeBrowserDetailsContainerLeft {
 
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.html) {
-            this.html = this.sanitizer.bypassSecurityTrustHtml(this.model.data.description);
+            this.setHtmlValue();
         }
+    }
+
+    private setHtmlValue() {
+        let regexp = /(<code>)(.*?)(<\/code>)/gs;
+        let match = regexp.exec(this.html);
+        while (match != null) {
+            this.html = this.html.replace(match[2], this.encodeHtml(match[2]));
+            match = regexp.exec(this.html);
+        }
+        this.html = this.sanitizer.bypassSecurityTrustHtml(this.html);
+    }
+
+    private encodeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 
     private navigateTo(id) {

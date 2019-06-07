@@ -5,17 +5,13 @@ import {AfterViewInit, Component, ViewChild, ViewContainerRef} from "@angular/co
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {backend} from "../../../services/backend.service";
 import {KnowledgeService} from "../services/knowledge.service";
-import {relatedmodels} from "../../../services/relatedmodels.service";
-import {Router} from "@angular/router";
-import {modal} from "../../../services/modal.service";
-import {Observable, Subject, Subscription} from "rxjs";
+import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: 'knowledge-manager-add-modal',
     templateUrl: "./src/modules/knowledge/templates/knowledgemanageraddmodal.html",
-    providers: [model, KnowledgeService, relatedmodels]
+    providers: [model, KnowledgeService]
 })
 export class KnowledgeManagerAddModal implements AfterViewInit {
 
@@ -34,7 +30,6 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
     constructor(private language: language,
                 private model: model,
                 private metadata: metadata,
-                private relatedmodels: relatedmodels,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
         this.responseSubject = new Subject<object>();
@@ -54,20 +49,11 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
     }
 
     get isLoading() {
-        return this.relatedmodels.isloading;
+        return this.knowledgeService.isDocumentLoading;
     }
 
     public ngAfterViewInit() {
         this.knowledgeService.setActiveModule("KnowledgeBooks");
-    }
-
-    public ngOnDestroy() {
-        this.relatedmodels.stopSubscriptions();
-    }
-
-    private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedDoc = id;
-        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 
     public openNewModal() {
@@ -78,6 +64,11 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
                 this.responseSubject.next(res);
                 this.responseSubject.complete();
             });
+    }
+
+    private handleSelectedItemEvent(id) {
+        this.knowledgeService.selectedDoc = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 
     private confirmCopy() {

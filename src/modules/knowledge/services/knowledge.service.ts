@@ -1,15 +1,15 @@
 /**
  * @module ModuleKnowledge
  */
-import {Injectable, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {take} from "rxjs/operators";
 import {Subscription} from "rxjs";
-import {relatedmodels} from "../../../services/relatedmodels.service";
 import {navigation} from "../../../services/navigation.service";
 import {Location} from "@angular/common";
 import {toast} from "../../../services/toast.service";
@@ -17,16 +17,20 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {ActivatedRoute} from "@angular/router";
 
+declare var _;
 
 @Injectable()
 
-export class KnowledgeService implements OnDestroy {
+export class KnowledgeService {
     public selectedbook: any;
     public selectedDoc: string = "";
-    public isLoading: boolean = false;
+    public isBookLoading: boolean = false;
+    public isDocumentLoading: boolean = false;
     public books: any[] = [];
     public searchterm: string = "";
+    public moduleFilter: string = "";
     public resultsList: any[] = [];
+    public documentsList: any[] = [];
     private subscriptions: Subscription = new Subscription();
 
     @ViewChild("searchcontainer", {read: ViewContainerRef}) private searchContainer: ViewContainerRef;
@@ -35,7 +39,7 @@ export class KnowledgeService implements OnDestroy {
                 private language: language,
                 private favorite: favorite,
                 private broadcast: broadcast,
-                private relatedmodels: relatedmodels,
+                private modelutilities: modelutilities,
                 private navigation: navigation,
                 public userPreferences: userpreferences,
                 private location: Location,
@@ -43,18 +47,17 @@ export class KnowledgeService implements OnDestroy {
                 private toast: toast,
                 private metadata: metadata,
                 private fts: fts) {
-        this.prepareRelatedModel();
         this.loadPreferences();
         this.saveSubscriber();
         this.routerSubscriber();
     }
 
     get documents() {
-        return this.sortDocuments(this.relatedmodels.items);
+        return this.sortDocuments(this.documentsList);
     }
 
     set documents(value: any[]) {
-        this.relatedmodels.items = value;
+        this.documentsList = value;
     }
 
     get searchTerm() {
@@ -68,7 +71,7 @@ export class KnowledgeService implements OnDestroy {
             return;
         }
         let module = "KnowledgeDocuments";
-        this.isLoading = true;
+        this.isDocumentLoading = true;
         let sortParams = {sortfield: "name", sortdirection: "ASC"};
 
         this.fts.searchByModules(this.searchterm, [module], 5, "", sortParams)
@@ -76,7 +79,7 @@ export class KnowledgeService implements OnDestroy {
                 this.resultsList = res[module].hits
                     .map(doc => doc._source)
                     .sort((a, b) => a.name - b.name);
-                this.isLoading = false;
+                this.isDocumentLoading = false;
             });
     }
 
@@ -113,10 +116,11 @@ export class KnowledgeService implements OnDestroy {
     }
 
     public getBooks() {
+        this.isBookLoading = true;
         this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id", "html"], {limit: -1})
             .subscribe((books: any) => {
                 this.books = books && books.list ? books.list : [];
-                let pref = this.userPreferences.unchangedPreferences;
+                this.isBookLoading = false;
             });
     }
 
@@ -124,20 +128,30 @@ export class KnowledgeService implements OnDestroy {
         if (!book || !book.id) {
             return;
         }
-        this.relatedmodels.id = book.id;
-        this.relatedmodels.getData();
-    }
+        this.isDocumentLoading = true;
+        this.documentsList = [];
 
-    public ngOnDestroy() {
-        this.relatedmodels.stopSubscriptions();
-    }
+        if (this.metadata.checkModuleAcl("KnowledgeDocuments", "list") === false) return;
 
-    private prepareRelatedModel() {
-        this.relatedmodels.module = "KnowledgeBooks";
-        this.relatedmodels.relatedModule = "KnowledgeDocuments";
-        this.relatedmodels.sort.sortfield = "name";
-        this.relatedmodels.sort.sortdirection = "ASC";
-        this.relatedmodels.loaditems = -1;
+        let params = {
+            limit: -1,
+            modulefilter: this.moduleFilter,
+            sort: {sortfield: "name", sortdirection: "ASC"}
+        };
+
+        this.backend.getRequest(`module/KnowledgeBooks/${book.id}/related/knowledgedocuments`, params)
+            .subscribe(
+                (response: any) => {
+                    this.documents = this.moduleFilter.length > 0 ? _.toArray(response) : _.toArray(response).map(item => {
+                        return {
+                            id: item.id,
+                            parent_id: item.parent_id,
+                            name: `${item.name} (${item.status})`
+                        };
+                    });
+                    this.isDocumentLoading = false;
+                }
+            );
     }
 
     private loadPreferences() {
@@ -152,10 +166,38 @@ export class KnowledgeService implements OnDestroy {
 
     private saveSubscriber() {
         let subscriber = this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
-                let book = msg.messagedata.data;
-                this.books = [...this.books, book];
-                this.selectedBook = book;
+            if (msg.messagetype == "model.save") {
+                switch (msg.messagedata.module) {
+                    case "KnowledgeBooks":
+                        let book = msg.messagedata.data;
+                        this.books = [...this.books, book];
+                        this.selectedBook = book;
+                        break;
+                    case "KnowledgeDocuments":
+                        let found = this.documents.some(item => {
+                            if (item.id == msg.messagedata.id) {
+                                item.parent_id = msg.messagedata.data.parent_id;
+                                item.name = this.moduleFilter.length > 0 ? item.name : `${msg.messagedata.data.name} (${msg.messagedata.data.status})`;
+                                return true;
+                            }
+                        });
+
+                        if (!found) {
+                            let newItem = {
+                                id: msg.messagedata.data.id,
+                                parent_id: msg.messagedata.data.parent_id,
+                                name: this.moduleFilter.length > 0 ? msg.messagedata.data.name : `${msg.messagedata.data.name} (${msg.messagedata.data.status})`
+                            };
+                            this.documents = [...this.documentsList, newItem];
+                        }
+                        break;
+                }
+            }
+
+            if (msg.messagetype == "model.delete" && msg.messagedata.module == "KnowledgeDocuments") {
+                this.documents = this.documents.filter(item => item.id != msg.messagedata.id);
+                this.selectedDoc = "";
+                this.replaceState("/module/KnowledgeDocuments");
             }
         });
         this.subscriptions.add(subscriber);
