@@ -135,6 +135,16 @@
                     </div>
                 </user-preferences-item-edit>
             </user-preferences-item>
+            <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_HELP_ICON">
+                <user-preferences-item-display>{{preferences.help_icon}}</user-preferences-item-display>
+                <user-preferences-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.help_icon" (change)="change($event,'help_icon')">
+                            <option *ngFor="let option of visibilityOptions" [value]="option">{{option}}</option>
+                        </select>
+                    </div>
+                </user-preferences-item-edit>
+            </user-preferences-item>
         </div>
     </system-section>
 
@@ -204,8 +214,8 @@
                 <user-preferences-item-display>{{preferences.home_assistant}}</user-preferences-item-display>
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" id="home_assistant" (change)="change($event,'home_assistant')">
-                            <option *ngFor="let option of assistantOptions" [value]="option" [selected]="option == preferences.home_assistant || (option == 'visible' && !preferences.home_assistant)">{{option}}</option>
+                        <select class="slds-select" [ngModel]="preferences.home_assistant" (change)="change($event,'home_assistant')">
+                            <option *ngFor="let option of visibilityOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
                 </user-preferences-item-edit>
