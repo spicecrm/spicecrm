@@ -151,6 +151,11 @@
                 </button>
             </li>
             <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_CODE_SNIPPET')" (click)="addCodeSnippet()">
+                    <system-button-icon icon="snippet"></system-button-icon>
+                </button>
+            </li>
+            <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertUrl()" >
                     <system-button-icon icon="link"></system-button-icon>
                 </button>
@@ -183,7 +188,7 @@
     </div>
     <div class="slds-rich-text-editor__textarea slds-grid" #editorWrapper>
         <div #htmlEditorContainer class="slds-rich-text-area__content slds-text-color_weak slds-grow" [ngStyle]="getRichTextStyle(htmlEditorContainer)">
-            <div #htmleditor tabindex="0" [attr.contenteditable]="isActive" style="height: 100%; cursor: text;" (input)="onContentChange($event.target.innerHTML)" (click)="exec()" (keyup)="exec()"></div>
+            <div #htmleditor tabindex="0" [attr.contenteditable]="isActive" style="height: 100%; cursor: text;" (click)="exec()" (keyup)="exec()"  (paste)="onPaste($event)" (input)="onContentChange($event.target.innerHTML)"></div>
         </div>
     </div>
 </div>
