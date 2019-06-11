@@ -5,8 +5,7 @@ import {Component, OnInit, Input } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import { view } from '../../../services/view.service';
-
+import {view} from '../../../services/view.service';
 
 @Component({
     selector: 'questions-manager-edit-rating',
@@ -14,43 +13,49 @@ import { view } from '../../../services/view.service';
 })
 export class QuestionsManagerEditRating implements OnInit {
 
-    @Input() questionset: any = {};
-    @Input() categorypool;
+    @Input() public questionset: any = {};
+    @Input() public categorypool;
 
-    entries: Array<any> = [];
-    options: Array<any> = [];
+    private entries: any[] = [];
+    private options: any[] = [];
 
-    constructor (private language: language, private metadata: metadata, private model: model, private view: view ) {
+    constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         if (this.model.isLoading) {
             this.model.data$.subscribe(data => {
                 this.buildEntries();
             });
-        } else
-            this.buildEntries();
+        } else this.buildEntries();
     }
 
-    buildEntries() {
-        let config = JSON.parse(this.questionset.data.questiontypeparameter);
-        if ( config.rating && config.rating.entries )
-            this.entries = config.rating.entries;
+    private buildEntries(): void {
+
+        let config: any;
+        try {
+            config =  JSON.parse(this.questionset.data.questiontypeparameter);
+        } catch ( e ) {
+            return;
+        }
+        if ( config.rating && config.rating.entries ) this.entries = config.rating.entries;
         for (let entry of this.entries) {
-            let isOptionFound: boolean = false, optionFoundId: string;
+            let isOptionFound: boolean = false;
+            let optionFoundId: string;
             if (this.model.data.questionoptions && this.model.data.questionoptions.beans) {
-                for ( let optionId in this.model.data.questionoptions.beans )
-                    if (this.model.data.questionoptions.beans[optionId].questionset_type_parameter_id === entry.id) {
+                for ( let optionId in this.model.data.questionoptions.beans ) {
+                    if( this.model.data.questionoptions.beans[optionId].questionset_type_parameter_id === entry.id ) {
                         isOptionFound = true;
                         optionFoundId = optionId;
                         continue;
                     }
-            } else
-               this.model.data.questionoptions = {beans:{}};
+                }
+            } else this.model.data.questionoptions = {beans:{}};
+            let newOptionId: string;
             if (!isOptionFound) {
-                var newOptionId: string = this.model.generateGuid();
+                newOptionId = this.model.generateGuid();
                 this.model.data.questionoptions.beans[newOptionId] = {
                     id: newOptionId,
                     question_id: this.model.id,
@@ -64,7 +69,6 @@ export class QuestionsManagerEditRating implements OnInit {
         }
     }
 
-    change() {
-    }
+    private change(): void { null; }
 
 }

@@ -42,6 +42,10 @@ import /*embed*/ {QuestionnaireEvaluationSpiderweb} from './components/questionn
 import /*embed*/ {QuestionnaireInterpretationCategories} from './components/questionnaireinterpretationcategories';
 import /*embed*/ {QuestionnaireInterpretationAssignment} from './components/questionnaireinterpretationassignment';
 import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questionsetrenderbinarysinglemulti';
+import /*emded*/ {QuestionnaireEditor} from './components/questionnaireeditor';
+import /*embed*/ { QuestionnaireEditorQuestionsetAdd } from './components/questionnaireeditorquestionsetadd';
+import /*embed*/ { QuestionsetManager } from './components/questionsetmanager';
+import { DirectivesModule } from '../../directives/directives';
 
 @NgModule({
     imports: [
@@ -51,7 +55,8 @@ import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questio
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        ModuleMediaFiles
+        ModuleMediaFiles,
+        DirectivesModule
     ],
     declarations: [
         QuestionsManager,
@@ -82,6 +87,9 @@ import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questio
         QuestionnaireRender,
         QuestionsetCategoryPool,
         QuestionsManagerEditCategories,
+        QuestionnaireEditor,
+        QuestionnaireEditorQuestionsetAdd,
+        QuestionsetManager,
         QuestionnaireEvaluation,
         QuestionnaireEvaluationDefault,
         QuestionnaireEvaluationBar,

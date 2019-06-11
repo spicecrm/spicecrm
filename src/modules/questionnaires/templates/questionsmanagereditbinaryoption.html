@@ -1,8 +1,8 @@
-<th scope="row">
-    {{side === 'l' ? language.getLabel('LBL_LEFT'):language.getLabel('LBL_RIGHT')}}
-</th>
 <td>
-    <textarea class="slds-textarea" [(ngModel)]="option.text" (change)="change()" rows="5"></textarea>
+    {{side === 'l' ? language.getLabel('LBL_LEFT'):language.getLabel('LBL_RIGHT')}}
+</td>
+<td>
+    <textarea style="display:block" class="slds-textarea slds-m-vertical--x-small" [(ngModel)]="option.text" (change)="change()" rows="5"></textarea>
 </td>
 <td width="4rem">
     <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafile'}" [fielddisplayclass]="''" (change)="change()"></field-container>

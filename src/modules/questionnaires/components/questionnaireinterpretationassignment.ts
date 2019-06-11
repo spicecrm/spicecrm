@@ -19,55 +19,58 @@ import { configurationService } from '../../../services/configuration.service';
         "ul.interpretations > li > div { margin-right: 1rem; }"
     ]
 })
-export class QuestionnaireInterpretationAssignment {
+export class QuestionnaireInterpretationAssignment implements OnInit {
 
-    self: any = null;
+    private self: any = null;
 
-    reference_id: string;
-    reference_module: string;
+    public reference_id: string;
+    public reference_module: string;
 
-    isLoading = true;
-    nrAssignedInterpretationsChanged = 0;
-    suggestedInterpretations = [];
-    meta = {};
-    assignedInterpretations = [];
-    evaluationIsOpen = true;
-    allInterpretations = [];
-    questionnaireId: string;
-    clickListener: any;
-    offeredInterpretationsAreExpanded = false;
-    someExtraTextIsChanged = false;
+    private isLoading = true;
+    private nrAssignedInterpretationsChanged = 0;
+    private suggestedInterpretations = [];
+    private meta = {};
+    private assignedInterpretations = [];
+    private evaluationIsOpen = true;
+    private allInterpretations = [];
+    private questionnaireId: string;
+    private clickListener: any;
+    private offeredInterpretationsAreExpanded = false;
+    private someExtraTextIsChanged = false;
 
-    @ViewChild( 'divOfferedInterpretations', {read: ViewContainerRef}) divOfferedInterpretations: ViewContainerRef;
+    @ViewChild( 'divOfferedInterpretations', {read: ViewContainerRef}) private divOfferedInterpretations: ViewContainerRef;
 
     constructor( private conf: configurationService, private language: language, private backend: backend, private metadata: metadata, public sanitized: DomSanitizer, private toast: toast, private renderer: Renderer2 ) { }
 
-    ngOnInit() {
+    public ngOnInit(): void {
 
         this.backend.getRequest( 'module/Questionnaires/questionnaireid_of_instance/' + this.reference_id ).subscribe(( data: any ) => {
             this.questionnaireId = data.questionnaireId;
             this.backend.getRequest( 'module/Questionnaires/' + this.questionnaireId + '/related/questionnaireinterpretations', {limit: 999} ).subscribe(( data: any ) => {
-                for ( let interpretation in data ) if ( data.hasOwnProperty( interpretation ) )
-                    this.allInterpretations.push( data[interpretation] );
+                for( let interpretation in data ) {
+                    if ( data.hasOwnProperty( interpretation )) this.allInterpretations.push( data[interpretation] );
+                }
                 if ( this.assignedInterpretations ) this.isLoading = false;
             });
         });
 
         this.backend.getRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations', {limit: 999} ).subscribe(( data: any ) => {
-            for ( let prop in data ) if ( data.hasOwnProperty( prop ))
-                this.assign( data[prop], true );
+            for ( let prop in data ) {
+                if ( data.hasOwnProperty( prop )) this.assign( data[prop], true );
+            }
             if ( this.allInterpretations ) this.isLoading = false;
         });
 
     }
 
-    isAssigned( interpretationId: string ) {
+    private isAssigned( interpretationId: string ): boolean {
         return this.meta[interpretationId] && this.meta[interpretationId].assigned === true;
     }
 
-    assign( interpretation: any, initial = false ) {
-        if( !this.meta[interpretation.id] )
+    private assign( interpretation: any, initial = false ): void {
+        if( !this.meta[interpretation.id] ) {
             this.meta[interpretation.id] = { id: interpretation.id, nativelyAssigned: initial, object: interpretation };
+        }
         this.meta[interpretation.id].assigned = true;
         if ( typeof interpretation.text_extra === 'undefined' ) interpretation.text_extra = '';
         this.meta[interpretation.id].nativelyTextExtra = interpretation.text_extra;
@@ -79,11 +82,11 @@ export class QuestionnaireInterpretationAssignment {
         if ( this.meta[interpretation.id].nativelyAssigned === false ) this.nrAssignedInterpretationsChanged++;
     }
 
-    addOffered( interpretation: any ) {
+    private addOffered( interpretation: any ): void {
         if ( !this.isAssigned( interpretation.id )) this.assign( interpretation );
     }
 
-    get offeredInterpretations() {
+    private get offeredInterpretations(): any[] {
         let out = [];
         for ( let interpretation of this.allInterpretations ) {
             if( !this.isAssigned( interpretation.id )) out.push( interpretation );
@@ -91,7 +94,7 @@ export class QuestionnaireInterpretationAssignment {
         return out;
     }
 
-    complementWithSuggestion() {
+    private complementWithSuggestion(): void {
         this.backend.getRequest( 'module/Questionnaires/interpretations_of_instance_suggested/' + this.reference_id ).subscribe(( data: any ) => {
             this.suggestedInterpretations = data;
             if ( this.suggestedInterpretations.length === 0 ) {
@@ -112,7 +115,7 @@ export class QuestionnaireInterpretationAssignment {
         });
     }
 
-    removeSingle( index: number ) {
+    private removeSingle( index: number ): void {
         let interpretation = this.assignedInterpretations[index];
         if ( !this.isAssigned( interpretation.id )) return;
         this.meta[interpretation.id].assigned = false;
@@ -122,43 +125,56 @@ export class QuestionnaireInterpretationAssignment {
         this.assignedInterpretations.splice( index, 1 );
     }
 
-    closeModal() {
-        let toDelete = [], toAdd = [], toUpdateExtraText = [];
-        for ( let prop in this.meta ) if ( this.meta.hasOwnProperty( prop )) {
-            let metaItem = this.meta[prop];
-            let assignmentHasChanged = metaItem.assigned !== metaItem.nativelyAssigned || metaItem.nativelyTextExtra !== metaItem.object.text_extra;
-            let extraTextHasChanged = metaItem.nativelyTextExtra !== metaItem.object.text_extra;
-            if ( assignmentHasChanged ) {
-                if( metaItem.assigned ) toAdd.push( metaItem.object.id );
-                else toDelete.push( metaItem.object.id );
+    private closeModal(): void {
+        let toDelete = [];
+        let toAdd = [];
+        let toUpdateExtraText = [];
+        for ( let prop in this.meta ) {
+            if ( this.meta.hasOwnProperty( prop )) {
+                const metaItem = this.meta[prop];
+                const assignmentHasChanged = metaItem.assigned !== metaItem.nativelyAssigned || metaItem.nativelyTextExtra !== metaItem.object.text_extra;
+                const extraTextHasChanged = metaItem.nativelyTextExtra !== metaItem.object.text_extra;
+                if ( assignmentHasChanged ) {
+                    if( metaItem.assigned ) toAdd.push( metaItem.object.id );
+                    else toDelete.push( metaItem.object.id );
+                }
+                if ( extraTextHasChanged ) toUpdateExtraText.push( metaItem.object.id );
             }
-            if ( extraTextHasChanged ) toUpdateExtraText.push( metaItem.object.id );
         }
-        if ( toDelete.length )
-            this.backend.deleteRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations', { relatedids: JSON.stringify( toDelete )});
-        if ( toAdd.length )
+        if ( toDelete.length ) {
+            this.backend.deleteRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations', { relatedids: JSON.stringify( toDelete ) } );
+        }
+        if ( toAdd.length ) {
             this.backend.postRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations',[], toAdd );
-        if ( toUpdateExtraText.length ) for ( let item of toUpdateExtraText )
-            this.backend.putRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations',[], { id: item, text_extra: this.meta[item].object.text_extra });
+        }
+        if ( toUpdateExtraText.length ) {
+            for ( let item of toUpdateExtraText ) {
+                this.backend.putRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations', [], {
+                    id: item,
+                    text_extra: this.meta[item].object.text_extra
+                } );
+            }
+        }
 
         this.self.destroy();
     }
 
-    cancelModal() {
+    private cancelModal(): void {
         this.self.destroy();
     }
 
-    toggleEvaluation() {
+    private toggleEvaluation(): void {
         this.evaluationIsOpen = !this.evaluationIsOpen;
     }
 
-    getEvaluationStyle() {
-        if ( !this.evaluationIsOpen )
+    private getEvaluationStyle(): object {
+        if ( !this.evaluationIsOpen ) {
             return {
                 height: '0px',
                 transform: 'rotateX(90deg)',
                 display: 'block'
-            }
+            };
+        }
     }
 
     public onClick( event: MouseEvent ): void {
@@ -168,33 +184,34 @@ export class QuestionnaireInterpretationAssignment {
         }
     }
 
-    toggleOfferedInterpretations() {
+    private toggleOfferedInterpretations(): void {
         if ( this.offeredInterpretationsAreExpanded ) this.closeOfferedInterpretations();
         else this.openOfferedInterpretations();
     }
-    openOfferedInterpretations() {
+    private openOfferedInterpretations(): void {
         this.offeredInterpretationsAreExpanded = true;
         this.clickListener = this.renderer.listen('document', 'click', event => this.onClick(event));
     }
-    closeOfferedInterpretations() {
+    private closeOfferedInterpretations(): void {
         this.offeredInterpretationsAreExpanded = false;
         if ( this.clickListener ) this.clickListener();
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy(): void {
         if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
     }
 
-    updateField( index ){
-        if ( this.meta[this.assignedInterpretations[index].id].nativelyTextExtra !== this.assignedInterpretations[index].text_extra )
+    private updateField( index ): void {
+        if ( this.meta[this.assignedInterpretations[index].id].nativelyTextExtra !== this.assignedInterpretations[index].text_extra ) {
             this.someExtraTextIsChanged = true;
+        }
     }
 
-    toggleEditMode( interpretationId: string ) {
+    private toggleEditMode( interpretationId: string ): void {
         this.meta[interpretationId].editMode = !this.meta[interpretationId].editMode;
     }
 
-    closeEditMode( interpretationId: string ) {
+    private closeEditMode( interpretationId: string ): void {
         this.meta[interpretationId].editMode = false;
     }
 

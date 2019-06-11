@@ -5,8 +5,8 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import { view } from '../../../services/view.service';
-import { modal } from '../../../services/modal.service';
+import {view} from '../../../services/view.service';
+import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: '[questions-manager-edit-option-single-multi]',
@@ -15,45 +15,45 @@ import { modal } from '../../../services/modal.service';
 })
 export class QuestionsManagerEditOptionSingleMulti implements OnInit {
 
-    @Input() categorypool;
-    @Output() event: EventEmitter<any> = new EventEmitter<any>();
-    @Input() option: any;
-    @Input() isFirstRow: boolean;
-    @Input() isLastRow: boolean;
-    @Input() hasInfosCorrectness: boolean;
-    @Output() isDirty: boolean;
+    @Input() public categorypool;
+    @Output() public event: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public option: any;
+    @Input() public isFirstRow: boolean;
+    @Input() public isLastRow: boolean;
+    @Input() public hasInfosCorrectness: boolean;
+    @Output() public isDirty: boolean;
 
-    constructor ( private language: language, private metadata: metadata, private model: model, private view: view, private modalservice: modal ) {
+    constructor( private language: language, private metadata: metadata, private model: model, private view: view, private modalservice: modal ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.model.module = 'QuestionOptions';
         this.model.id = this.option.id;
         this.model.data = this.option;
     }
 
-    deleteOption () {
+    private deleteOption(): void {
         this.modalservice.confirm( this.language.getLabelFormatted('QST_DELETE_ANSWER_OPTION_LONG', this.option.name ),
-            this.language.getLabel('QST_DELETE_ANSWER_OPTION')).subscribe( ( answer ) => {
-                if ( answer )
-                    this.event.emit( 'delete');
+            this.language.getLabel('QST_DELETE_ANSWER_OPTION')).subscribe( answer => {
+                if ( answer ) this.event.emit( 'delete');
             });
     }
 
-    onChange_isCorrectOption( event ) {
+    private onChange_isCorrectOption( event ): void {
         this.option.is_correct_option = event.target.checked;
     }
 
-    optionUp() {
+    private optionUp(): void {
         this.event.emit('up');
     }
-    optionDown() {
+    private optionDown(): void {
         this.event.emit( 'down');
     }
 
-    change() {
+    private change(): void {
+        null;
     }
 
 }
