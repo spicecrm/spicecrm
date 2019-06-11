@@ -27,6 +27,7 @@ export class modal {
     constructor(private metadata: metadata, private footer: footer, private toast: toast, private utils: modelutilities) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
+                event.stopImmediatePropagation();
                 let wrapperComponent = this.modalsArray[this.modalsArray.length - 1].wrapper;
                 if (wrapperComponent.instance.escKey && (!wrapperComponent.instance.childComponent.instance.onModalEscX || wrapperComponent.instance.childComponent.instance.onModalEscX() !== false)) {
                     wrapperComponent.destroy();
