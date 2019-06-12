@@ -32,6 +32,7 @@ import /*embed*/ {fieldLanguage} from './components/fieldlanguage';
 import /*embed*/ {fieldMailboxes} from './components/fieldmailboxes';
 import /*embed*/ {fieldEmailTo} from './components/fieldemailto';
 import /*embed*/ {fieldEmailTemplates} from './components/fieldemailtemplates';
+import /*embed*/ {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
 import /*embed*/ {fieldMailRelais} from './components/fieldmailrelais';
 import /*embed*/ {fieldMultienum} from './components/fieldmultienum';
 import /*embed*/ {fieldGroupedEnum} from './components/fieldgroupedenum';
@@ -143,6 +144,7 @@ declare var _: any;
         fieldMailboxes,
         fieldEmailTo,
         fieldEmailTemplates,
+        fieldTextMessageTemplates,
         fieldMailRelais,
         fieldMultienum,
         fieldGroupedEnum,
