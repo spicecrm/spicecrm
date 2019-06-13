@@ -1,0 +1,58 @@
+<system-modal>
+    <system-modal-header (close)="cancel()">{{language.getLabel('LBL_FIND_DUNS_NUMBER')}}</system-modal-header>
+    <system-modal-content style="padding: 0">
+        <div class="slds-p-around--x-small">
+            <div *ngFor="let field of fieldsetFields" class="slds-cell-buffer--left">
+                <div class="slds-truncate">
+                    <span class="slds-text-heading--label">{{language.getFieldDisplayName(model.module, field.field)}} : </span>
+                    <span>{{model.getFieldValue(field.field)}}</span>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout spice-table_header-fixed">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NUMBER')">{{ language.getLabel('LBL_NUMBER') }}</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">{{ language.getLabel('LBL_NAME') }} </div>
+                </th>
+                <th class="slds-cell-shrink" scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let result of results; trackBy: trackByFn" class="slds-hint-parent" [ngClass]="rowClass(result.duns)" (click)="selectItem(result.duns)" style="cursor: pointer">
+                <td>
+                    <div class="slds-truncate" [title]="result.duns">
+                        {{result.duns}}
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-truncate" [title]="result.name">
+                        {{result.name}}
+                    </div>
+                </td>
+                <td class="slds-cell-shrink">
+                    <system-utility-icon *ngIf="selectedItem == result.duns" icon="check" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+                </td>
+            </tr>
+            <tr *ngIf="!isLoading && results?.length == 0">
+                <td colspan="3">
+                    <div class="slds-p-around--small slds-align--absolute-center">{{language.getLabel('LBL_NO_ENTRIES')}}</div>
+                </td>
+            </tr>
+            <tr *ngIf="isLoading">
+                <td colspan="3">
+                    <div class="slds-p-around--small slds-align--absolute-center"><system-spinner></system-spinner></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="notFound()">{{language.getLabel('LBL_NOT_FOUND')}}</button>
+        <button class="slds-button slds-button--brand" (click)="confirm()" [disabled]="!selectedItem">{{language.getLabel('LBL_CONFIRM')}}</button>
+    </system-modal-footer>
+</system-modal>
