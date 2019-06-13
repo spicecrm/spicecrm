@@ -16,13 +16,13 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 
 @Component({
     providers: [model, view],
-    selector: "mailbox-manager-email",
-    templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremail.html",
+    selector: "mailbox-manager-textmessage",
+    templateUrl: "./src/modules/mailboxes/templates/mailboxmanagertextmessage.html",
 })
-export class MailboxManagerEmail implements OnInit {
+export class MailboxManagerTextMessage implements OnInit {
 
-    @Input() private email: any = {};
-    private componentFields: Array<any> = [];
+    @Input() private message: any = {};
+    private componentFields: any[] = [];
 
     constructor(
         private metadata: metadata,
@@ -34,17 +34,15 @@ export class MailboxManagerEmail implements OnInit {
         private modelutilities: modelutilities,
     ) {
         this.view.displayLinks = false;
-
-        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
-        this.model.module = "Emails";
-        this.model.id = this.email.id;
-        this.model.data = this.modelutilities.backendModel2spice("Emails", this.email);
+        this.model.module = "TextMessages";
+        this.model.id = this.message.id;
+        this.model.data = this.modelutilities.backendModel2spice("TextMessages", this.message);
 
         // get the module conf
-        let fieldset = this.metadata.getComponentConfig("MailboxManagerEmail").fieldset;
+        let fieldset = this.metadata.getComponentConfig("MailboxManagerTextMessage").fieldset;
         if (fieldset) {
             this.componentFields = this.metadata.getFieldSetItems(fieldset);
         }
@@ -62,10 +60,10 @@ export class MailboxManagerEmail implements OnInit {
 
     get nameStyle() {
         let style = {};
-        if (this.email.status === 'unread') {
+        if (this.message.status === 'unread') {
             style['font-weight'] = 'bold';
         }
-        switch (this.email.openness) {
+        switch (this.message.openness) {
             case 'user_closed':
             case 'system_closed':
                 style['text-decoration'] = 'line-through';
