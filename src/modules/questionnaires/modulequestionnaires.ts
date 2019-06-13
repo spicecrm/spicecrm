@@ -9,6 +9,7 @@ import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 import {ModuleMediaFiles}      from '../../modules/mediafiles/modulemediafiles';
+import { DirectivesModule } from '../../directives/directives';
 
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
 import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
@@ -42,10 +43,9 @@ import /*embed*/ {QuestionnaireEvaluationSpiderweb} from './components/questionn
 import /*embed*/ {QuestionnaireInterpretationCategories} from './components/questionnaireinterpretationcategories';
 import /*embed*/ {QuestionnaireInterpretationAssignment} from './components/questionnaireinterpretationassignment';
 import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questionsetrenderbinarysinglemulti';
-import /*emded*/ {QuestionnaireEditor} from './components/questionnaireeditor';
-import /*embed*/ { QuestionnaireEditorQuestionsetAdd } from './components/questionnaireeditorquestionsetadd';
-import /*embed*/ { QuestionsetManager } from './components/questionsetmanager';
-import { DirectivesModule } from '../../directives/directives';
+import /*embed*/ {QuestionnaireEditor} from './components/questionnaireeditor';
+import /*embed*/ {QuestionnaireEditorQuestionsetAdd} from './components/questionnaireeditorquestionsetadd';
+import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
 
 @NgModule({
     imports: [
