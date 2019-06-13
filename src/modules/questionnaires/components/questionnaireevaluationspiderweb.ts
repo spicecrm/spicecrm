@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, OnInit } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {metadata} from "../../../services/metadata.service";
@@ -12,7 +12,7 @@ declare var Highcharts: any;
     selector: 'questionnaire-evaluation-spiderweb',
     templateUrl: './src/modules/questionnaires/templates/questionnaireevaluationspiderweb.html',
 })
-export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
+export class QuestionnaireEvaluationSpiderweb implements AfterViewInit, OnInit {
 
     @Input() public values: any[];
     private valuesForChart: any[] = [];
@@ -22,7 +22,11 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
     private defaultHeight = 70;
     private chart: any;
 
-    @Input() set individualHeight(val) {
+    constructor( private language: language , private modelutilities: modelutilities, private metadata: metadata) {
+        this.chartid = this.modelutilities.generateGuid();
+    }
+
+    @Input() public set individualHeight( val: number ) {
         let dummy: number;
         if ( this.usagePrint && !isNaN( val ) && ( dummy = Number(val) ) !== 0 && this.chart && this._individualHeight !== dummy ) {
             this._individualHeight = dummy;
@@ -31,30 +35,26 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
         }
     }
 
-    get height() {
+    private get height(): number {
         if ( this._individualHeight ) return this._individualHeight;
         else return this.defaultHeight;
     }
 
-    constructor( private language: language , private modelutilities: modelutilities, private metadata: metadata) {
-        this.chartid = this.modelutilities.generateGuid();
-    }
-
-    get divid() {
+    private get divid(): string {
         return 'questionnaire-eval-chart' + this.chartid;
     }
 
-    public ngOnInit() {
+    public ngOnInit(): void {
         for ( let i=0; i < this.values.length; i++ ) this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
     }
 
-    get chartDivStyles() {
+    private get chartDivStyles(): object {
         if ( this.usagePrint ) {
             return { 'max-width': '650px', 'margin': 'auto' };
         } else return null;
     }
 
-    public ngAfterViewInit() {
+    public ngAfterViewInit(): void {
 
         this.metadata.loadLibs('highcharts').subscribe(
             () => {

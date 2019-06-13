@@ -10,44 +10,46 @@ import {language} from '../../../services/language.service';
 })
 export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
 
-    @Input() categorypool;
-    @Input() option;
+    @Input() public categorypool;
+    @Input() public option;
 
-    selectedCategories = [];
+    private selectedCategories = [];
 
-    listIsExpanded = false;
-    clickListener: any;
+    private listIsExpanded = false;
+    private clickListener: any;
 
-    names: string = '';
+    private names = '';
 
-    constructor ( private language: language, private renderer: Renderer2, private elementRef: ElementRef ) { }
+    constructor( private language: language, private renderer: Renderer2, private elementRef: ElementRef ) { }
 
-    ngOnChanges() {
+    public ngOnChanges(): void {
         if ( this.categorypool.loaded ) this.doSelectedCategories();
-        else
+        else {
             this.categorypool.event.subscribe( () => {
                 this.doSelectedCategories();
-            });
+            } );
+        }
     }
 
-    doSelectedCategories() {
+    private doSelectedCategories(): void {
         this.selectedCategories.length = 0;
-        for ( let i=0; i<this.categorypool.list.length; i++ )
-            for ( let categoryId of this.option.categories.split(','))
-                if ( this.categorypool.list[i].id === categoryId )
-                    this.selectedCategories.push( this.categorypool.list[i] );
+        for ( let listitem of this.categorypool.list ) {
+            for ( let categoryId of this.option.categories.split( ',' )) {
+                if ( listitem.id === categoryId ) this.selectedCategories.push( listitem );
+            }
+        }
         this.names = this.makeNameString();
     }
 
-    toggleList() {
+    private toggleList() {
         if ( this.listIsExpanded ) this.closeList();
         else this.openList();
     }
-    closeList() {
+    private closeList() {
         this.listIsExpanded = false;
         if ( this.clickListener ) this.clickListener();
     }
-    openList() {
+    private openList() {
         this.listIsExpanded = true;
         this.clickListener = this.renderer.listen( 'document', 'click', event => this.onClick( event ));
     }
@@ -59,27 +61,28 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         }
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy(): void {
         if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
     }
 
-    toggleCategory(i:number) {
+    private toggleCategory( i: number ): void {
         if ( this.hasCategory(i) ) this.removeCategory(this.categorypool.list[i].id);
         else this.addCategory(i);
     }
 
-    addCategory(i:number) {
+    private addCategory( i: number ): void {
         this.selectedCategories.push( this.categorypool.list[i] );
-        this.selectedCategories.sort( function( a:any, b:any ): number {
-            let an = a.name.toLocaleLowerCase(), bn = b.name.toLocaleLowerCase();
+        this.selectedCategories.sort( ( a: any, b: any ): number => {
+            let an = a.name.toLocaleLowerCase();
+            let bn = b.name.toLocaleLowerCase();
             return an > bn ? 1 : ( an === bn ? 0 : -1 );
         });
         this.option.categories = this.makeIdString();
         this.names = this.makeNameString();
     }
 
-    removeCategory(id:string) {
-        this.selectedCategories.some( ( category, i:number ) => {
+    private removeCategory( id: string ): void {
+        this.selectedCategories.some( ( category, i: number ) => {
             if ( id === category.id ) {
                 this.selectedCategories.splice( i, 1 );
                 return true;
@@ -90,22 +93,22 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
         this.names = this.makeNameString();
     }
 
-    hasCategory(i:number) {
+    private hasCategory( i: number ): boolean {
         return this.selectedCategories.indexOf( this.categorypool.list[i] ) !== -1;
     }
 
-    makeIdString():string {
-        let string:string = '';
-        this.selectedCategories.some(( el ) => {
+    private makeIdString(): string {
+        let string = '';
+        this.selectedCategories.some( el => {
             string += ( ( string != '' ) ? ',':'' ) + el.id;
             return false;
         });
         return string;
     }
 
-    makeNameString():string {
-        let string:string = '';
-        this.selectedCategories.some(( el ) => {
+    private makeNameString(): string {
+        let string = '';
+        this.selectedCategories.some( el => {
             string += ( ( string != '' ) ? ', ':'' ) + el.name;
             return false;
         });

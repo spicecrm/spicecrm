@@ -18,13 +18,13 @@
                                                                                [checked]="!previewMode && answers[question.id][0].value"
                                                                                name="question-{{question.id}}"
                                                                                (click)="onClick(question.id,0,$event)"
-                                                                               [disabled]="questionsMeta[question.id].readonly || no_edit">
+                                                                               [disabled]="questionsMeta[question.id].readonly || noEdit">
                     </td>
                     <td class="binary-right-radio"><input type="radio"
                                                           [checked]="!previewMode && answers[question.id][1].value"
                                                           name="question-{{question.id}}"
                                                           (click)="onClick(question.id,1,$event)"
-                                                          [disabled]="questionsMeta[question.id].readonly || no_edit">
+                                                          [disabled]="questionsMeta[question.id].readonly || noEdit">
                     </td>
                     <td width="50%" class="binary-right-text">
                         <ng-container *ngIf="options[question.id][1].image_id">
@@ -52,7 +52,7 @@
                 <div *ngIf="!questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of options[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':options[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="options[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}">
                         <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
-                            <input type="checkbox" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || no_edit">
+                            <input type="checkbox" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || noEdit">
                         </div>
                         <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
                             <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
@@ -67,7 +67,7 @@
                 <div *ngIf="questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of options[question.id];let j=index" class="slds-size--1-of-1 slds-text-align--center slds-p-horizontal--small" [ngClass]="{'slds-border--left':j>0}" [ngStyle]="{'width':100/options[question.id].length+'%'}" style="overflow:hidden">
                         <div class="slds-m-bottom--xxx-small">
-                            <input type="checkbox" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || no_edit">
+                            <input type="checkbox" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || noEdit">
                         </div>
                         <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical--small'" [align]="'center'"></media-file-image>
                         <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
@@ -91,7 +91,7 @@
                 <div *ngIf="!questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of options[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':options[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="options[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}">
                         <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
-                            <input style="margin:auto" type="radio" name="question-{{question.id}}" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || no_edit">
+                            <input style="margin:auto" type="radio" name="question-{{question.id}}" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || noEdit">
                         </div>
                         <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
                             <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':options[question.id].length-1>j,'slds-p-top--small':j>0}">
@@ -106,7 +106,7 @@
                 <div *ngIf="questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of options[question.id];let j=index" class="slds-size--1-of-1 slds-text-align--center slds-p-horizontal--small" [ngClass]="{'slds-border--left':j>0}" [ngStyle]="{'width':100/options[question.id].length+'%'}" style="overflow:hidden">
                         <div class="slds-m-bottom--xxx-small">
-                            <input type="radio" name="question-{{question.id}}" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || no_edit">
+                            <input type="radio" name="question-{{question.id}}" [checked]="!previewMode && answers[question.id][j].value" (click)="onClick(question.id,j,$event)" [disabled]="questionsMeta[question.id].readonly || noEdit">
                         </div>
                         <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical--small'" [align]="'center'"></media-file-image>
                         <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>

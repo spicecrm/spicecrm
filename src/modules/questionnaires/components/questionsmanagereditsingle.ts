@@ -4,7 +4,7 @@
 import {Component, OnInit, Input } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import { view } from '../../../services/view.service';
+import {view} from '../../../services/view.service';
 
 @Component({
     selector: 'questions-manager-edit-single',
@@ -12,29 +12,30 @@ import { view } from '../../../services/view.service';
 })
 export class QuestionsManagerEditSingle implements OnInit {
 
-    @Input() questionset: any = {};
-    @Input() categorypool;
+    @Input() public questionset: any = {};
+    @Input() public categorypool;
 
-    options: Array<any> = [];
-    formatOptionsHorizontal: Boolean;
+    private options: any[] = [];
+    private formatOptionsHorizontal: boolean;
 
-    constructor (private language: language, private model: model, private view: view  ) {
+    constructor( private language: language, private model: model, private view: view  ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    ngOnInit() {
-        if (this.model.isLoading)
-            this.model.data$.subscribe( () => { this.buildEntries(); } );
-        else
-            this.buildEntries();
+    public ngOnInit() {
+        if ( this.model.isLoading ) this.model.data$.subscribe( () => this.buildEntries() );
+        else this.buildEntries();
     }
 
-    buildEntries() {
-        if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans )
+    private buildEntries(): void {
+        if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans ) {
             this.model.data.questionoptions = {beans: {}};
+        }
         let keys = Object.keys( this.model.data.questionoptions.beans );
-        keys.sort( (a,b) => { return this.model.data.questionoptions.beans[a].position - this.model.data.questionoptions.beans[b].position; } );
+        keys.sort( ( a,b ) => {
+            return this.model.data.questionoptions.beans[a].position - this.model.data.questionoptions.beans[b].position;
+        });
         for ( let i in keys ) this.options[i] = this.model.data.questionoptions.beans[keys[i]];
         if ( this.model.data.questionparameter && this.model.data.questionparameter !== '' ) {
             let questionparameter = JSON.parse( this.model.data.questionparameter );
@@ -42,7 +43,7 @@ export class QuestionsManagerEditSingle implements OnInit {
         }
     }
 
-    addOption() {
+    private addOption(): void {
         let newOptionId: string = this.model.generateGuid();
         this.model.data.questionoptions.beans[newOptionId] = {
             id: newOptionId,
@@ -53,18 +54,19 @@ export class QuestionsManagerEditSingle implements OnInit {
             position: this.options.length,
             new_with_id: true
         };
-        this.options.push(this.model.data.questionoptions.beans[newOptionId]);
+        this.options.push( this.model.data.questionoptions.beans[newOptionId] );
     }
 
-    deleteOption(index: number) {
-        if ( this.model.data.questionoptions.beans[ this.options[index].id ].new_with_id )
+    private deleteOption( index: number ): void {
+        if ( this.model.data.questionoptions.beans[ this.options[index].id ].new_with_id ) {
             delete this.model.data.questionoptions.beans[ this.options[index].id ];
-        else
+        } else {
             this.model.data.questionoptions.beans[ this.options[index].id ].deleted = 1;
-        this.options.splice(index, 1);
+        }
+        this.options.splice( index, 1 );
     }
 
-    optionUp(i: number) {
+    private optionUp( i: number ): void {
         if ( i === 0 ) return;
         let posFirstRow = Number( this.options[i-1].position );
         let tmp = this.options[i-1];
@@ -73,7 +75,8 @@ export class QuestionsManagerEditSingle implements OnInit {
         this.options[i-1].position = posFirstRow;
         this.options[i].position = posFirstRow+1;
     }
-    optionDown(i: number) {
+
+    private optionDown( i: number ): void {
         if ( i > this.options.length-1 ) return;
         let posFirstRow = this.options[i].position;
         let tmp = this.options[i+1];
@@ -83,18 +86,19 @@ export class QuestionsManagerEditSingle implements OnInit {
         this.options[i+1].position = posFirstRow+1;
     }
 
-    change() {
+    private change() {
+        null;
     }
 
-    eventHappened( type, index ) {
+    private eventHappened( type, index ): void {
         if ( type === 'delete' ) this.deleteOption( index );
         else if ( type === 'up' ) this.optionUp( index );
         else if ( type === 'down' ) this.optionDown( index );
     }
 
-    clickCheckbox() {
+    private clickCheckbox(): void {
         this.formatOptionsHorizontal = !this.formatOptionsHorizontal;
-        this.model.data.questionparameter = JSON.stringify( { "formatOptionsHorizontal":this.formatOptionsHorizontal} );
+        this.model.data.questionparameter = JSON.stringify({ formatOptionsHorizontal: this.formatOptionsHorizontal });
     }
 
 }

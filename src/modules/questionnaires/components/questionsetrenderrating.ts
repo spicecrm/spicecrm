@@ -18,39 +18,38 @@ import {toast} from "../../../services/toast.service";
 })
 export class QuestionsetRenderRating implements OnInit {
 
-    @Input() answers: any = {};
-    @Input() hideFinishedQuestions: boolean = false;
-    @Input() imageWidthQuestion = 200;
-    @Input() in_modal: boolean = true;
-    @Input() no_edit: boolean = false;
-    @Input() options: any = {};
-    @Input() participation_id: string;
-    @Input() previewMode: boolean;
-    @Input() questions: Array<any> = [];
-    @Input() questionset: any;
-    @Input() questionsMeta = {};
+    @Input() public answers: any = {};
+    @Input() public hideFinishedQuestions = false;
+    @Input() public imageWidthQuestion = 200;
+    @Input() public inModal = true;
+    @Input() public noEdit = false;
+    @Input() public options: any = {};
+    @Input() public participation_id: string;
+    @Input() public previewMode: boolean;
+    @Input() public questions: any[] = [];
+    @Input() public questionset: any;
+    @Input() public questionsMeta = {};
 
-    @Output() numOfFinishedQuestionsChange = new EventEmitter();
-    numOfFinishedQuestionsValue: number = 0;
+    @Output() public numOfFinishedQuestionsChange = new EventEmitter();
+    private numOfFinishedQuestionsValue = 0;
 
-    backupForNetworkError: string;
-    ratingEntries: Array<any> = [];
-    ratingNumEntries: number = 0;
-    ratingValuesHaveAlsoText = false;
+    private backupForNetworkError: string;
+    private ratingEntries: any[] = [];
+    private ratingNumEntries = 0;
+    private ratingValuesHaveAlsoText = false;
 
-    constructor(private language: language, private backend: backend, private session: session, private toast: toast ) { }//private appref: ApplicationRef
+    constructor(private language: language, private backend: backend, private session: session, private toast: toast ) { }
 
-    @Input()
-    get numOfFinishedQuestions() {
+    @Input() public get numOfFinishedQuestions() {
         return this.numOfFinishedQuestionsValue;
     }
 
-    set numOfFinishedQuestions( val ) {
+    public set numOfFinishedQuestions( val ) {
         this.numOfFinishedQuestionsValue = val;
         this.numOfFinishedQuestionsChange.emit( this.numOfFinishedQuestionsValue );
     }
 
-    ngOnInit() {
+    public ngOnInit() {
 
         // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
         // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
@@ -62,7 +61,8 @@ export class QuestionsetRenderRating implements OnInit {
             }
         }
         for (let question of this.questions) {
-            let sortedOptions = [], sortedAnswers = [];
+            let sortedOptions = [];
+            let sortedAnswers = [];
             for (let entry of this.ratingEntries) {
                 let isOptionFound: boolean = false;
                 for (let i = 0; i < this.options[question.id].length; i++) {
@@ -100,18 +100,19 @@ export class QuestionsetRenderRating implements OnInit {
 
     }
 
-    setFieldsOfQuestion(questionId: string, answervalues: any) {
-        for (let answer of this.answers[questionId])
+    private setFieldsOfQuestion( questionId: string, answervalues: any ) {
+        for (let answer of this.answers.questionId) {
             answer.value = ( answervalues[answer.optionId] || false );
+        }
     }
 
-    onClick(questionId: string, answerIndex: number, event: any): boolean {
+    private onClick( questionId: string, answerIndex: number, event: any): boolean {
 
         // If the preview mode is set, a click is allowed but is not to be treated. --> Do nothing and return true.
         if (this.previewMode) return true;
 
         // If the edit mode is not set, a click is not allowed and is not to be treated. --> Do nothing and return false.
-        if (this.no_edit) return false;
+        if (this.noEdit) return false;
 
         // Are the input fields of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input fields are disabled.
@@ -121,37 +122,36 @@ export class QuestionsetRenderRating implements OnInit {
         this.questionsMeta[questionId].readonly = true;
 
         // Radio button already set? --> Nothing to do.
-        if ( this.answers[questionId][answerIndex].value ) {
+        if ( this.answers.questionId[answerIndex].value ) {
             this.questionsMeta[questionId].readonly = false;
             return;
         }
 
-        this.backupForNetworkError = JSON.stringify( this.answers[questionId] );
+        this.backupForNetworkError = JSON.stringify( this.answers.questionId );
 
         // Set the (other) answers to false.
-        for ( let i = 0; i < this.answers[questionId].length; i++ )
-            this.answers[questionId][i].value = false;
+        this.answers.questionId.forEach( ( el, index ) => this.answers.questionId[index].value = false );
 
         // Store the answer (true)
-        this.answers[questionId][answerIndex].value = true;
+        this.answers.questionId[answerIndex].value = true;
 
         // The data for the server request with the answer values (true or false).
-        var requestData = {};
-        for (let i = 0; i < this.answers[questionId].length; i++)
-            requestData[this.options[questionId][i].id] = this.answers[questionId][i].value;
+        let requestData = {};
+        for (let i = 0; i < this.answers.questionId.length; i++) {
+            requestData[this.options[questionId][i].id] = this.answers.questionId[i].value;
+        }
 
         // Do the request to the server to store the current answer state of the whole question.
-        this.backend.postRequest('module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData).subscribe(
+        this.backend.postRequest('module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData ).subscribe(
             data => {
                 this.setFieldsOfQuestion(questionId, data);
-                this.questionsMeta[questionId].readonly = false; //this.appref.tick();
+                this.questionsMeta[questionId].readonly = false;
                 this.determineNumOfFinishedQuestions();
             },
             error => {
                 this.questionsMeta[questionId].readonly = false;
-                console.log('Error:',error);
                 this.toast.sendToast( this.language.getLabel('ERR_NETWORK_SAVING'),'error', error.message+'. '+ ( error.error.error.message ? error.error.error.message:'' ),false );
-                this.answers[questionId] = JSON.parse( this.backupForNetworkError );
+                this.answers.questionId = JSON.parse( this.backupForNetworkError );
             }
         );
 
@@ -159,8 +159,8 @@ export class QuestionsetRenderRating implements OnInit {
 
     }
 
-    determineNumOfFinishedQuestions() {
-        let numberQuestions: number = 0;
+    private determineNumOfFinishedQuestions(): void {
+        let numberQuestions = 0;
         for( let question of this.questions ) {
             for( let answer of this.answers[question.id] ) {
                 if( answer.value ) {

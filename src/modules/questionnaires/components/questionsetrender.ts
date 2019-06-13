@@ -26,47 +26,45 @@ declare var _: any;
 } )
 export class QuestionsetRender implements OnInit {
 
-    @Input() questionsetidorobject: any;
-    @Input() participation_id: string;
-    @Input() no_edit: boolean = false;
-    @Input() in_modal: boolean = true;
-    @Input() timerText: string = null;
-    @Input() timerWarning: boolean = false;
-    @Input() hideFinishedQuestions: boolean = false;
+    @Input() public questionsetidorobject: any;
+    @Input() public participation_id: string;
+    @Input() public noEdit = false;
+    @Input() public inModal = true;
+    @Input() public timerText: string = null;
+    @Input() public timerWarning = false;
+    @Input() public hideFinishedQuestions = false;
 
-    answers = {};
-    imageWidthOption = 200;
-    imageWidthQuestion = 200;
-    isLoading: boolean = true;
-    numOfFinishedQuestionsValue: number = 0;
-    options = {};
-    previewMode: boolean = false;
-    questions: Array<any> = [];
-    questionset: any;
-    questionsMeta = {};
-    textIsCollapsed = false;
+    private answers = {};
+    private imageWidthOption = 200;
+    private imageWidthQuestion = 200;
+    private isLoading = true;
+    private numOfFinishedQuestionsValue = 0;
+    private options = {};
+    private previewMode = false;
+    private questions: any[] = [];
+    private questionset: any;
+    private questionsMeta = {};
+    private textIsCollapsed = false;
 
-    isCompleteChange = new EventEmitter();
+    private isCompleteChange = new EventEmitter();
 
     constructor( private language: language, private backend: backend, private helperservice: helper ) { }
 
-    set numOfFinishedQuestions( val ) {
+    private set numOfFinishedQuestions( val ) {
         this.numOfFinishedQuestionsValue = val;
         this.isCompleteChange.emit( this.questions.length === val );
     }
 
-    get numOfFinishedQuestions() {
+    private get numOfFinishedQuestions(): number {
         return this.numOfFinishedQuestionsValue;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
 
-        if( this.participation_id )
-            this.previewMode = false;
-        else
-            this.previewMode = true;
+        if ( this.participation_id ) this.previewMode = false;
+        else this.previewMode = true;
 
-        if( typeof this.questionsetidorobject === 'string' ) {
+        if ( typeof this.questionsetidorobject === 'string' ) {
             this.backend.getRequest( 'module/QuestionSets/renderer/' + this.questionsetidorobject ).subscribe( ( response: any ) => {
                 this.questionset = response;
                 this.doWhenLoaded();
@@ -78,7 +76,7 @@ export class QuestionsetRender implements OnInit {
 
     }
 
-    doWhenLoaded() {
+    private doWhenLoaded(): void {
 
         if( this.questionset.data ) this.questionset = this.questionset.data;
 
@@ -88,7 +86,8 @@ export class QuestionsetRender implements OnInit {
             let keys = Object.keys( this.questionset.questions.beans );
             if( this.questionset.shuffle == 1 ) {
                 this.helperservice.shuffle( keys );
-            } else keys.sort( ( a, b ) => {
+            } else {
+                keys.sort( ( a, b ) => {
                 let dummy = this.questionset.questions.beans[a].position - this.questionset.questions.beans[b].position;
                 if( dummy !== 0 ) return dummy;
                 else {
@@ -97,11 +96,11 @@ export class QuestionsetRender implements OnInit {
                     return 0;
                 }
             } );
-            for( let key of keys )
-                this.questions.push( this.questionset.questions.beans[key] );
+            }
+            for ( let key of keys ) this.questions.push( this.questionset.questions.beans[key] );
 
             // Build meta data for all questions.
-            for( let question of this.questions ) {
+            for ( let question of this.questions ) {
                 this.questionsMeta[question.id] = {
                     readonly: !this.previewMode,
                     finished: false,
@@ -115,42 +114,35 @@ export class QuestionsetRender implements OnInit {
         for( let question of this.questions ) {
             if( question.questionoptions && question.questionoptions.beans ) {
                 let keys = Object.keys( question.questionoptions.beans );
-                if( this.questionset.questiontype.match( /^binary|single|multi|ist$/ ) ) {
+                if ( this.questionset.questiontype.match( /^binary|single|multi|ist$/ ) ) {
                     // Sort or shuffle the options.
-                    if( this.questionset.shuffle == 1 && this.questionset.questiontype.match( /^binary|single|multi$/ ))
+                    if ( this.questionset.shuffle == 1 && this.questionset.questiontype.match( /^binary|single|multi$/ ) ) {
                         this.helperservice.shuffle( keys );
-                    else keys.sort( ( a, b ) => {
-                        return question.questionoptions.beans[a].position - question.questionoptions.beans[b].position;
-                    } );
+                    } else {
+                        keys.sort( ( a, b ) => {
+                            return question.questionoptions.beans[a].position - question.questionoptions.beans[b].position;
+                        } );
+                    }
                 }
                 this.options[question.id] = [];
-                if( !this.previewMode ) this.answers[question.id] = [];
-                for( let key of keys ) {
+                if ( !this.previewMode ) this.answers[question.id] = [];
+                for ( let key of keys ) {
                     this.options[question.id].push( question.questionoptions.beans[key] );
-                    if( !this.previewMode ) this.answers[question.id].push( {
-                        'optionId': question.questionoptions.beans[key].id,
-                        'value': false
-                    } );
+                    if ( !this.previewMode ) {
+                        this.answers[question.id].push({
+                            optionId: question.questionoptions.beans[key].id,
+                            value: false
+                        });
+                    }
                 }
             }
         }
-
-        /*
-        // needed?
-        let i = 0;
-        for ( let question of this.questions ) {
-            if ( this.options[question.id] )
-                for ( let option of this.options[question.id] ) {
-                    this.indexOfOptions[option.id] = i;
-            }
-        }
-        */
 
         this.isLoading = false;
 
     }
 
-    toggleText() {
+    private toggleText(): void {
         this.textIsCollapsed = !this.textIsCollapsed;
     }
 

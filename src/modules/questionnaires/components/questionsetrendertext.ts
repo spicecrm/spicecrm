@@ -2,9 +2,9 @@
  * @module ModuleQuestionnaires
  */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { language } from '../../../services/language.service';
-import { backend } from "../../../services/backend.service";
-import { session } from '../../../services/session.service';
+import {language} from '../../../services/language.service';
+import {backend} from "../../../services/backend.service";
+import {session} from '../../../services/session.service';
 import {toast} from "../../../services/toast.service";
 
 @Component( {
@@ -18,39 +18,38 @@ import {toast} from "../../../services/toast.service";
 } )
 export class QuestionsetRenderText {
 
-    @Input() answers: any = {};
-    @Input() hideFinishedQuestions: boolean = false;
-    @Input() imageWidthQuestion = 200;
-    @Input() in_modal: boolean = true;
-    @Input() no_edit: boolean = false;
-    @Input() options: any = {};
-    @Input() participation_id: string;
-    @Input() previewMode: boolean;
-    @Input() questions: Array<any> = [];
-    @Input() questionset: any;
-    @Input() questionsMeta = {};
+    @Input() public answers: any = {};
+    @Input() public hideFinishedQuestions = false;
+    @Input() public imageWidthQuestion = 200;
+    @Input() public inModal = true;
+    @Input() public noEdit = false;
+    @Input() public options: any = {};
+    @Input() public participation_id: string;
+    @Input() public previewMode: boolean;
+    @Input() public questions: any[] = [];
+    @Input() public questionset: any;
+    @Input() public questionsMeta = {};
 
-    @Output() numOfFinishedQuestionsChange = new EventEmitter();
-    numOfFinishedQuestionsValue: number = 0;
+    @Output() public numOfFinishedQuestionsChange = new EventEmitter();
+    private numOfFinishedQuestionsValue = 0;
 
-    backupForNetworkError: string;
-    lengthLongestSequence: number = 0;
-    questionNamesSplitted: Array<any> = [];
-    sequenced: boolean = false;
+    private backupForNetworkError: string;
+    private lengthLongestSequence = 0;
+    private questionNamesSplitted: any[] = [];
+    private sequenced = false;
 
     constructor( private language: language, private backend: backend, private session: session, private toast: toast ) { }
 
-    @Input()
-    get numOfFinishedQuestions() {
+    @Input() public get numOfFinishedQuestions(): number {
         return this.numOfFinishedQuestionsValue;
     }
 
-    set numOfFinishedQuestions( val ) {
+    public set numOfFinishedQuestions( val: number ) {
         this.numOfFinishedQuestionsValue = val;
         this.numOfFinishedQuestionsChange.emit( this.numOfFinishedQuestionsValue );
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
 
         if ( this.questionset.questiontypeparameter !== '' ) {
             let config = JSON.parse( this.questionset.questiontypeparameter );
@@ -80,17 +79,17 @@ export class QuestionsetRenderText {
 
     }
 
-    onTextFocus( questionId: string ) {
+    private onTextFocus( questionId: string ): void {
         this.backupForNetworkError = this.answers[questionId].text_input;
     }
 
-    onTextChange( questionId: string ): boolean {
+    private onTextChange( questionId: string ): boolean {
 
         // If the preview mode is set, a text input/change is allowed but is not to be treated. --> Do nothing and return true.
         if ( this.previewMode ) return true;
 
         // If the edit mode is not set, a input/change is not allowed and is not to be treated. --> Do nothing and return false.
-        if ( this.no_edit ) return false;
+        if ( this.noEdit ) return false;
 
         // Is the input field of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input field is disabled.
@@ -99,7 +98,7 @@ export class QuestionsetRenderText {
         // At the beginning disable the input field of the question. It will stay disabled until server response at the end.
         this.questionsMeta[questionId].readonly = true;
         this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participation_id, {},
-            { 'text': this.answers[questionId].text_input } ).subscribe(
+            { text: this.answers[questionId].text_input } ).subscribe(
             data => {
                 this.answers[questionId].text_input = data.text;
                 this.questionsMeta[questionId].readonly = false; // Enable the input field of the question.
@@ -115,23 +114,18 @@ export class QuestionsetRenderText {
         return true;
     }
 
-    //char( n: number ): string {
-    //    return String.fromCharCode( 97 + n );
-    //}
-
-    determineNumOfFinishedQuestions() {
+    private determineNumOfFinishedQuestions(): void {
         let numberQuestions: number = 0;
         for( let question of this.questions ) {
             if( this.answers[question.id].length && this.answers[question.id].text_input && this.answers[question.id].text_input != '' ) {
                 this.questionsMeta[question.id].finished = true;
                 numberQuestions++;
-            } else
-                this.questionsMeta[question.id].finished = false;
+            } else this.questionsMeta[question.id].finished = false;
         }
         this.numOfFinishedQuestions = numberQuestions;
     }
 
-    private forLoopArray( numElements: number ): Array<any> {
+    private forLoopArray( numElements: number ): any[] {
         return new Array(numElements);
     }
 

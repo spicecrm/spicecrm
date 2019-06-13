@@ -8,7 +8,6 @@ import {language} from '../../../services/language.service';
 import {toast} from "../../../services/toast.service";
 import {helper} from "../../../services/helper.service";
 
-
 @Component({
     selector: 'questionset-type-parameters-rating',
     templateUrl: './src/modules/questionnaires/templates/questionsettypeparametersrating.html',
@@ -16,37 +15,36 @@ import {helper} from "../../../services/helper.service";
 })
 export class QuestionsetTypeParametersRating implements OnInit {
 
-    numEntries: number = 5;
-    fieldNumEntries: number;
-    entriesTable: Array<any> = [];
+    private numEntries = 5;
+    private fieldNumEntries: number;
+    private entriesTable: any[] = [];
 
-    constructor(private language: language, private model: model, private view: view, private toast: toast, private helper: helper ) { }
+    constructor( private language: language, private model: model, private view: view, private toast: toast, private helper: helper ) { }
 
-    get editing() {
+    get editing(): boolean {
         return this.view.isEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.parseParams();
-        this.model.data$.subscribe( () => { this.parseParams(); } );
+        this.model.data$.subscribe( () => this.parseParams() );
     }
 
-    parseParams() {
+    private parseParams(): void {
         if ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ) {
             let config = JSON.parse(this.model.data.questiontypeparameter);
             if ( config.rating ) {
                 this.numEntries = config.rating.numEntries;
                 this.entriesTable = config.rating.entries;
             }
-        } else
-            this.buildTable();
+        } else this.buildTable();
         this.fieldNumEntries = this.numEntries;
     }
 
-    setNumEntries(event) {
+    private setNumEntries( event ): void {
 
         if ( this.questionsetHasQuestions() ) {
-            this.toast.sendToast( this.language.getLabel('MSG_CANTCHANGE_QUESTIONSEXISTS'),'error',null,true);
+            this.toast.sendToast( this.language.getLabel('MSG_CANTCHANGE_QUESTIONSEXISTS'),'error',null,true );
             event.target.value = this.numEntries;
             return;
         }
@@ -56,28 +54,25 @@ export class QuestionsetTypeParametersRating implements OnInit {
 
             // In the group of rows to be deleted: Are there any filled/dirty rows?
             let numToDeleteDirtyRows: number = 0;
-            for ( let i = this.numEntries-1; i+1 > event.target.value; i-- )
-                if ( ! ( this.entriesTable[i].value === '' && this.entriesTable[i].text === '' ))
-                    numToDeleteDirtyRows++;
+            for ( let i = this.numEntries-1; i+1 > event.target.value; i-- ) {
+                if ( !(this.entriesTable[i].value === '' && this.entriesTable[i].text === '' )) numToDeleteDirtyRows++;
+            }
 
             // There are allready filled rows, so ask the user.
             if ( numToDeleteDirtyRows ) {
-                this.helper.confirm( this.language.getLabel('QST_DELETE_ENTRIES'), this.language.getLabel( 'QST_DELETE_ENTRIES_LONG' )).subscribe((answer) => {
+                this.helper.confirm( this.language.getLabel('QST_DELETE_ENTRIES'), this.language.getLabel( 'QST_DELETE_ENTRIES_LONG' )).subscribe( answer => {
                     if ( answer ) {
                         this.numEntries = event.target.value;
-                        if (this.numEntries != this.entriesTable.length) {
+                        if ( this.numEntries != this.entriesTable.length ) {
                             this.buildTable();
                             this.writeSettings();
                         }
-                    } else
-                        event.target.value = this.numEntries;
+                    } else event.target.value = this.numEntries;
                 });
-            } else
-                this.numEntries = event.target.value;
+            } else this.numEntries = event.target.value;
 
             // The table should be extended.
-        } else
-            this.numEntries = event.target.value;
+        } else this.numEntries = event.target.value;
 
         // In case of shortening or extension.
         if ( this.numEntries != this.entriesTable.length ) {
@@ -87,14 +82,15 @@ export class QuestionsetTypeParametersRating implements OnInit {
 
     }
 
-    questionsetHasQuestions() {
+    private questionsetHasQuestions(): boolean {
         let questionsExists = false;
-        if ( this.model && this.model.data && this.model.data.questions )
-            questionsExists = (Object.keys(this.model.data.questions.beans).length !== 0);
+        if ( this.model && this.model.data && this.model.data.questions ) {
+            questionsExists = (Object.keys( this.model.data.questions.beans ).length !== 0);
+        }
         return questionsExists;
     }
 
-    buildTable() {
+    private buildTable(): void {
         let i = this.entriesTable.length;
         if ( this.entriesTable.length > this.numEntries ) {
             // The user wants to shorten the table. -> Cut off rows from the end.
@@ -111,7 +107,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
         }
     }
 
-    writeSettings() {
+    private writeSettings(): void {
         let config =  ( this.model.data.questiontypeparameter && this.model.data.questiontypeparameter !== '' ? JSON.parse( this.model.data.questiontypeparameter ):{});
         for ( let entry of this.entriesTable ) {
             entry.value = typeof entry.value === 'string' ? entry.value.trim() : entry.value;
@@ -124,9 +120,10 @@ export class QuestionsetTypeParametersRating implements OnInit {
         this.model.data.questiontypeparameter = JSON.stringify(config);
     }
 
-    fillRange( from: number, to: number )  {
-        for ( let up = from<to, i=0, v=from; ( up && v <= to ) || ( !up && v >= to ); up ? v++:v-- )
+    private fillRange( from: number, to: number ): void {
+        for ( let up = from<to, i=0, v=from; ( up && v <= to ) || ( !up && v >= to ); up ? v++:v-- ) {
             this.entriesTable[i++].value = v;
+        }
         this.writeSettings();
     }
 

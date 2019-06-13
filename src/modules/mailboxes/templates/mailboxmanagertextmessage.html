@@ -1,7 +1,6 @@
-<div class="slds-p-horizontal--small slds-p-vertical--small slds-border--bottom" (click)="selectMail(email)" style="cursor: pointer;" [ngClass]="{'slds-theme_default': isSelected}">
+<div class="slds-p-horizontal--small slds-p-vertical--small slds-border--bottom" (click)="selectMail(message)" style="cursor: pointer;" [ngClass]="{'slds-theme_default': isSelected}">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <div>{{email.sentiment}}/{{email.magnitude}} </div>
-        <div class="slds-text-title_caps slds-truncate" [ngStyle]="nameStyle">{{email.name}}</div>
+        <div class="slds-text-title_caps slds-truncate" [ngStyle]="nameStyle">{{message.description}}</div>
         <div class="slds-col--bump-left slds-p-left--xx-small">
             <field-container field="date_sent" fielddisplayclass="slds-truncate"></field-container>
         </div>

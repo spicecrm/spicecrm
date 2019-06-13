@@ -15,24 +15,24 @@ export class QuestionnaireEvaluation implements OnInit {
     @ViewChild('destination', {read: ViewContainerRef}) private destination: ViewContainerRef;
 
     @Input() public parentdata: any = {};
-    @Input() public reference_id: string = '';
+    @Input() public reference_id = '';
     @Input() public noAnimation = false;
     @Input() public usagePrint = false;
-    @Input() set individualHeight(val) {
+    @Input() public set individualHeight( val: number ) {
         if ( this.component  ) this.component.instance.individualHeight = val;
     }
 
     private component: any;
     private evaluationType: string;
-    private sequenceNr: number = 0;
-    private loading: boolean = true;
+    private sequenceNr = 0;
+    private loading = true;
 
-    private noEvaluationTypeDefined: boolean = false;
-    private noParticipationYet: boolean = false;
+    private noEvaluationTypeDefined = false;
+    private noParticipationYet = false;
 
-    constructor(private language: language, private backend: backend, private metadata: metadata) { }
+    constructor( private language: language, private backend: backend, private metadata: metadata ) { }
 
-    public ngOnInit() {
+    public ngOnInit(): void {
 
         this.backend.getRequest( 'module/Questionnaires/evaluation/' + this.reference_id ).subscribe((data: any) => {
 
