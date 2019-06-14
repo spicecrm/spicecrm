@@ -146,6 +146,7 @@ export class KnowledgeService {
                         return {
                             id: item.id,
                             parent_id: item.parent_id,
+                            parent_sequence: item.parent_sequence,
                             name: `${item.name} (${item.status})`
                         };
                     });
@@ -177,6 +178,7 @@ export class KnowledgeService {
                         let found = this.documents.some(item => {
                             if (item.id == msg.messagedata.id) {
                                 item.parent_id = msg.messagedata.data.parent_id;
+                                item.parent_sequence = msg.messagedata.data.parent_sequence;
                                 item.name = this.moduleFilter.length > 0 ? item.name : `${msg.messagedata.data.name} (${msg.messagedata.data.status})`;
                                 return true;
                             }
@@ -186,9 +188,12 @@ export class KnowledgeService {
                             let newItem = {
                                 id: msg.messagedata.data.id,
                                 parent_id: msg.messagedata.data.parent_id,
+                                parent_sequence: msg.messagedata.data.parent_sequence,
                                 name: this.moduleFilter.length > 0 ? msg.messagedata.data.name : `${msg.messagedata.data.name} (${msg.messagedata.data.status})`
                             };
                             this.documents = [...this.documentsList, newItem];
+                        } else {
+                            this.documents = this.documentsList.slice();
                         }
                         break;
                 }
@@ -204,30 +209,11 @@ export class KnowledgeService {
     }
 
     private sortDocuments(docs) {
-        docs.sort((a, b) => {
-            if (+a.parent_sequence == +b.parent_sequence) {
-                return a.name - b.name;
-            } else {
-                return a.parent_sequence - b.parent_sequence;
-            }
-        });
         return docs.sort((a, b) => {
-            if (+a.parent_sequence == +b.parent_sequence) {
-                let nameA = a.name.toUpperCase();
-                let nameB = b.name.toUpperCase();
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
+            if (+a.parent_sequence != +b.parent_sequence) {
+                return +a.parent_sequence > +b.parent_sequence ? 1 : -1;
             } else {
-                if (+a.parent_sequence < +b.parent_sequence) {
-                    return -1;
-                }
-                if (+a.parent_sequence > +b.parent_sequence) {
-                    return 1;
-                }
+                return a.name > b.name ? 1 : -1;
             }
         });
     }
