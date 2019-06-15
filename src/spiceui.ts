@@ -37,7 +37,7 @@ import {loader} from "./services/loader.service";
 import {broadcast} from "./services/broadcast.service";
 import {dockedComposer} from "./services/dockedcomposer.service";
 import {backend} from "./services/backend.service";
-import {navigation} from "./services/navigation.service";
+import {navigation,canNavigateAway} from "./services/navigation.service";
 import {modelutilities} from "./services/modelutilities.service";
 import {toast} from "./services/toast.service";
 import {favorite} from "./services/favorite.service";
@@ -50,6 +50,7 @@ import {assistant} from "./services/assistant.service";
 import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
+import {GlobalLogin} from "./globalcomponents/components/globallogin";
 
 // declarations for TS
 /**
@@ -112,7 +113,9 @@ export class SpiceUI {
         ObjectComponents,
         RouterModule.forRoot(
             [
+                {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
+                {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
             ]
         )
     ],
@@ -125,6 +128,7 @@ export class SpiceUI {
         broadcast,
         layout,
         navigation,
+        canNavigateAway,
         session,
         metadata,
         AppDataService,

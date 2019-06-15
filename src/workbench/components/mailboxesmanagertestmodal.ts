@@ -22,8 +22,7 @@ export class MailboxesmanagerTestModal {
         private backend: backend,
         private language: language,
         private model: model
-    ) {
-    }
+    ) {}
 
     public testConnection() {
         this.testing = true;

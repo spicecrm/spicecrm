@@ -23,10 +23,19 @@ switch ($_SERVER['REQUEST_METHOD']) {
         switch (end($uri)) {
             case 'stylesheet':
                 header('Content-Type: text/css');
-                echo file_get_contents ( __DIR__.'/../assets/css/spicecrm.css' )."\n\n\n";
+                $genericCss = file_get_contents ( __DIR__.'/../assets/css/spicecrm.css' );
                 $customCss = @file_get_contents ( __DIR__.'/assets/css/spicecrm.css' );
+
+                # @import statements have to be at the beginning of a CSS file. So we collect any @import statements of the custom CSS file to deliver these lines first.
+                $imports = [];
+                $customCss = preg_replace_callback('/^\s*@import\s+.*$/im', function( $matches ) use (&$imports) { $imports[] = $matches[0]; return ''; }, $customCss );
+                echo implode( "\n", $imports );
+
+                echo $genericCss."\n\n\n";
+
                 if ( isset( $customCss{0} )) echo "/***** Custom Stylesheet ***************/\n\n\n".$customCss;
                 else echo "/* NO Custom Stylesheet */\n";
+
                 break;
             case 'loginimage':
                 $filetype = '';
@@ -106,6 +115,23 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 }
 
                 echo json_encode(array('success' => $success, 'message' => $message));
+                break;
+            case 'outlookxml':
+                header('Content-Type: application/xml' );
+
+                // build the serverurl from teh request
+                $serverurl = str_replace('/config/outlookxml', '', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+                // check if we have parameers in the request
+                $parampos = strpos($serverurl,'?');
+                if($parampos !== false){
+                    $serverurl = substr($serverurl, 0, $parampos);
+                }
+
+                // read the template XML and parse it
+                $dir = dirname(__DIR__);
+                $filepath = "$dir/assets/outlook/spicecrmoutlookplugin.xml";
+                $file = file_get_contents($filepath);
+                echo( str_replace('<serverurl>', $serverurl, $file) );
                 break;
         }
         break;
