@@ -107,7 +107,7 @@ export class CRMLogViewerList implements OnInit {
         if ( this.period.type ) {
 
             let begin = moment.tz( this.period.begin.year + '-'
-                + (this.period.begin.month ? this.period.begin.month : '00') + '-'
+                + (this.period.begin.month ? this.period.begin.month : '01') + '-'
                 + (this.period.begin.day ? this.period.begin.day : '01') + ' '
                 + (this.period.begin.hour ? this.period.begin.hour : '00')
                 + ':00', this.prefs.toUse.timezone );

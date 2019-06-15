@@ -56,9 +56,10 @@ export class UserPreferences {
         "calendar_day_end_hour",
         "home_dashboard",
         "home_assistant",
+        "help_icon",
     ];
     private weekDayStartList = ["Sunday", "Monday"];
-    private assistantOptions = ["visible", "hidden"];
+    private visibilityOptions = ["visible", "hidden"];
     private weekDaysCountList = [5,6,7];
     private dayHoursList = [];
 

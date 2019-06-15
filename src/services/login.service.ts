@@ -35,7 +35,7 @@ export class loginService {
         private router: Router,
         private loader: loader,
         private toast: toast,
-        private session: session
+        public session: session
     ) { }
 
     public login(): Observable<boolean> {
@@ -130,7 +130,8 @@ export class loginService {
                 this.router.navigate([this.redirectUrl]);
                 this.redirectUrl = '';
             } else {
-                this.router.navigate(['/module/Home']);
+                // this.router.navigate(['/module/Home']);
+                this.router.navigate(['/']);
             }
         }
     }
@@ -164,7 +165,9 @@ export class loginCheck implements CanActivate {
 
     public canActivate(route, state) {
         if (!this.session || !this.session.authData.sessionId) {
-            this.login.redirectUrl = state.url;
+            if (state.url != '/') {
+                this.login.redirectUrl = state.url;
+            }
             this.router.navigate(['/login']);
             return false;
         } else {

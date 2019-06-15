@@ -21,7 +21,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 })
 export class MailboxManagerEmail implements OnInit {
 
-    @Input() private email: any = {}
+    @Input() private email: any = {};
     private componentFields: Array<any> = [];
 
     constructor(
@@ -34,6 +34,8 @@ export class MailboxManagerEmail implements OnInit {
         private modelutilities: modelutilities,
     ) {
         this.view.displayLinks = false;
+
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
@@ -49,13 +51,13 @@ export class MailboxManagerEmail implements OnInit {
     }
 
     private selectMail(e) {
-        if (!this.mailboxesEmails.activeEmail || e.id != this.mailboxesEmails.activeEmail.id) {
-            this.mailboxesEmails.activeEmail = e;
+        if (!this.mailboxesEmails.activeMessage || e.id != this.mailboxesEmails.activeMessage.id) {
+            this.mailboxesEmails.activeMessage = e;
         }
     }
 
     get isSelected() {
-        return this.mailboxesEmails.activeEmail && this.mailboxesEmails.activeEmail.id == this.model.id;
+        return this.mailboxesEmails.activeMessage && this.mailboxesEmails.activeMessage.id == this.model.id;
     }
 
     get nameStyle() {

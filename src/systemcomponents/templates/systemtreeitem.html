@@ -4,21 +4,20 @@
     (dragleave)="onDragLeave($event)"
     (drop)="dropItem($event, item.id)"
     (click)="selectItem($event, item.id)">
-    <article class="slds-tree__item slds-is-open slds-grid slds-grid--align-spread slds-grid_vertical-align-center" title="{{'Level ' + item.level}}" [ngClass]="selectedItem == item.id ? 'slds-is-selected': ''">
-        <div class="slds-grid slds-grid_vertical-align-center">
+    <article class="slds-tree__item slds-is-open slds-grid slds-grid--align-spread slds-grid_vertical-align-center" [title]="item.name" [ngClass]="selectedItem == item.id ? 'slds-is-selected': ''">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
             <div style="min-width: 16px">
                 <button *ngIf="item.children.length > 0 && config.collapsible"
                         class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
-                        (click)="expand($event, item)">
+                        (click)="expand(item, $event)">
                     <system-button-icon [icon]="item.expanded ? 'chevrondown' : 'chevronright'" [size]="'xx-small'"></system-button-icon>
                 </button>
                 <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" [size]="'xx-small'"
                                      [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
             </div>
-            <div>
+            <div class="slds-truncate">
                 <span *ngIf="item.clickable" class="slds-tree__item-label slds-truncate">{{item.name}}</span>
-                <span *ngIf="!item.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;"
-                      class="slds-tree__item-label slds-truncate">{{item.name}}</span>
+                <span *ngIf="!item.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;" class="slds-tree__item-label slds-truncate">{{item.name}}</span>
             </div>
         </div>
         <div *ngIf="config.canadd && item.id == selectedItem" class="slds-m-right--xx-small">

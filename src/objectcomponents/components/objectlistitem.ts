@@ -31,6 +31,7 @@ export class ObjectListItem implements OnInit {
     @Input() private showActionMenu: boolean = true;
 
     constructor(private model: model, private modelutilities: modelutilities, private modellist: modellist, private view: view, private router: Router, private language: language) {
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {

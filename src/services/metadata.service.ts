@@ -653,6 +653,20 @@ export class metadata {
         }
     }
 
+    /**
+     * returns the helpText of a field. This does not return the translation. For that the language service must be queried resp is there a method on the language service
+     *
+     * @param module the name of the module
+     * @param field the name of the field
+     */
+    public getFieldHelpText(module, field) {
+        try {
+            return this.fieldDefs[module][field].popupHelp;
+        } catch (e) {
+            return null;
+        }
+    }
+
     public getAppModules() {
         // convert object to array...
         let ret = [];
@@ -833,11 +847,31 @@ export class metadata {
         return false;
     }
 
+    /**
+     * returns the type for the field
+     *
+     * @param module the module
+     * @param field the fieldname
+     */
     public getFieldType(module: string, field: string) {
         try {
             return this.fieldDefs[module][field].type;
         } catch (e) {
             return "varchar";
+        }
+    }
+
+    /**
+     * returns the source information for the field (useful to check if field is non-db)
+     *
+     * @param module the module
+     * @param field the fieldname
+     */
+    public getFieldSource(module: string, field: string) {
+        try {
+            return this.fieldDefs[module][field].source;
+        } catch (e) {
+            return "";
         }
     }
 

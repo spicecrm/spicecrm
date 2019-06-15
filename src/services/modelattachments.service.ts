@@ -40,9 +40,9 @@ export class modelattachments {
         this.loading = true;
         this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/ui").subscribe(
             response => {
-                for (let file of response) {
-                    file.date = new moment(file.date);
-                    this.files.push(file);
+                for (let attId in response) {
+                    response[attId].date = new moment(response[attId].date);
+                    this.files.push(response[attId]);
                 }
                 this.loading = false;
                 // this.files = response;
