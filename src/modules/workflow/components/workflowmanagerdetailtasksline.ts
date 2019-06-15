@@ -26,6 +26,9 @@ export class WorkflowManagerDetailTasksLine {
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
         this.model.module = 'WorkflowTaskDefinitions';
+
+        this.view.displayLabels = false;
+
     }
 
     ngOnChanges() {

@@ -18,7 +18,6 @@
 </div>
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-form-element">
-        <label class="slds-form-element__label">Module</label>
         <div class="slds-form-element__control" style="min-width:250px;">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="current_module">
@@ -29,7 +28,6 @@
         </div>
     </div>
     <div *ngIf="workflowdefinitions.length > 0" class="slds-form-element">
-        <label class="slds-form-element__label">Workflow</label>
         <div class="slds-form-element__control" style="min-width:250px;">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="current_workflow">

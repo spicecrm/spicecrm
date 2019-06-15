@@ -25,6 +25,8 @@ export class WorkflowManagerDetailConditions {
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        this.view.displayLabels = false;
     }
 
     /**

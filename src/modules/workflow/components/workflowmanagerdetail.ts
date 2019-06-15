@@ -44,6 +44,7 @@ export class WorkflowManagerDetail implements OnChanges {
 
         this.view.isEditable = true;
         this.view.setEditMode();
+
         let componentconfig = this.metadata.getComponentConfig('WorkflowManagerDetail', 'WorkflowDefinitions');
         if (componentconfig && componentconfig.fieldset) {
             this.fieldset = componentconfig.fieldset;
