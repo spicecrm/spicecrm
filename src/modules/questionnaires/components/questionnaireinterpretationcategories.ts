@@ -14,30 +14,30 @@ import {backend} from "../../../services/backend.service";
 })
 export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy {
 
-    listIsExpanded: boolean = false;
-    sectionIsOpen: boolean = true;
+    private listIsExpanded = false;
+    private sectionIsOpen = true;
 
-    hasFocus: boolean = false;
+    private hasFocus = false;
 
-    allCategories = [];
-    allCategoryNamesUpper = [];
+    private allCategories = [];
+    private allCategoryNamesUpper = [];
 
-    selectedCategories = [];
+    private selectedCategories = [];
 
-    presentedCategories = [];
-    numPresentedCategories = 0;
+    private presentedCategories = [];
+    private numPresentedCategories = 0;
 
-    clickListener: any;
+    private clickListener: any;
 
-    @ViewChild('inputField', {read: ViewContainerRef}) inputField: ViewContainerRef;
+    @ViewChild('inputField', {read: ViewContainerRef}) private inputField: ViewContainerRef;
 
-    constructor(private language: language, private model: model, private view: view, private backend: backend, private renderer: Renderer2 ) { }
+    constructor( private language: language, private model: model, private view: view, private backend: backend, private renderer: Renderer2 ) { }
 
-    get editing() {
+    private get editing(): boolean {
         return this.view.isEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         let params = {
             fields: JSON.stringify( ['id', 'name', 'abbreviation'] ),
             sortfield: 'name',
@@ -45,38 +45,37 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         };
         this.backend.getRequest('module/QuestionOptionCategories', params).subscribe(( response: any ) => {
             this.allCategories = response.list;
-            for ( let i=0; i<this.allCategories.length; i++)
-                this.allCategoryNamesUpper[i] = this.allCategories[i].name.toUpperCase()+' ['+this.allCategories[i].abbreviation.toUpperCase()+']';
+            this.allCategories.forEach( ( category, i ) => {
+                this.allCategoryNamesUpper[i] = category.name.toUpperCase() + ' [' + category.abbreviation.toUpperCase() + ']';
+            });
         });
     }
 
-    get selectedCategories2() {
+    private get selectedCategories2(): any[] {
         this.selectedCategories = [];
         if ( this.model.data.categories && this.model.data.categories != '' ) {
             let categorypool = this.model.data.categories.split(',');
-            for ( let i = 0; i < this.allCategories.length; i++ ) {
+            for ( let category of this.allCategories ) {
                 for ( let categoryId of categorypool ) {
-                    if ( this.allCategories[i].id === categoryId ) {
-                        this.selectedCategories.push( this.allCategories[i] );
-                    }
+                    if ( category.id === categoryId ) this.selectedCategories.push( category );
                 }
             }
         }
         return this.selectedCategories;
     }
 
-    deselectCategory(i:number) {
+    private deselectCategory( i: number ): void {
         this.selectedCategories.splice( i, 1 );
         this.model.data.categories = this.makeCategoryString();
-        return;
     }
 
-    selectCategory(i:number) {
+    private selectCategory( i: number ): void {
         if ( this.selectedCategories.indexOf( this.allCategories[i] ) === -1 ) {
             this.selectedCategories.push( this.allCategories[i] );
             this.model.data.categories = this.makeCategoryString();
-            this.selectedCategories.sort( function ( a:any, b:any ): number {
-                let an = a.name.toLocaleLowerCase(), bn = b.name.toLocaleLowerCase();
+            this.selectedCategories.sort( ( a: any, b: any ): number => {
+                const an = a.name.toLocaleLowerCase();
+                const bn = b.name.toLocaleLowerCase();
                 return an > bn ? 1 : ( an === bn ? 0 : -1 );
             });
             if ( this.presentedCategories[i] === true ) {
@@ -84,11 +83,10 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
                 this.presentedCategories[i] = false;
             }
         }
-        return;
     }
 
-    makeCategoryString():string {
-        let string:string = '';
+    private makeCategoryString(): string {
+        let string = '';
         this.selectedCategories.some(( el ) => {
             string += ( ( string != '' ) ? ',':'' ) + el.id;
             return false;
@@ -96,11 +94,11 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         return string;
     }
 
-    openList() {
+    private openList(): void {
         this.listIsExpanded = true;
         this.clickListener = this.renderer.listen('document', 'click', event => this.onClick(event));
     }
-    closeList() {
+    private closeList(): void {
         this.listIsExpanded = false;
         if ( this.clickListener ) this.clickListener();
     }
@@ -112,11 +110,11 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         }
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
     }
 
-    change( event=null ) {
+    private change( event=null ): void {
         let target = event.target;
         if ( event.keyCode === 38 || event.keyCode === 40 || event.keyCode === 13 ) { // down, up, enter
             target.blur();
@@ -137,27 +135,28 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
         if ( this.listIsExpanded && this.numPresentedCategories === 0 ) this.closeList();
     }
 
-    changeFocus( status: boolean, event = null ) {
+    private changeFocus( status: boolean, event = null ): void {
         if ( status ) this.change(event);
         // else this.listIsExpanded = false; // blur/focusverlust wird leider auch bei click in die liste verursacht
         this.hasFocus = status;
     }
 
-    setEditMode() {
+    private setEditMode(): void {
         this.model.startEdit();
         this.view.setEditMode();
     }
 
-    toggleSection() {
+    private toggleSection(): void {
         this.sectionIsOpen = !this.sectionIsOpen;
     }
 
-    getSectionStyle() {
-        if (!this.sectionIsOpen)
+    private getSectionStyle(): object {
+        if ( !this.sectionIsOpen ) {
             return {
                 height: '0px',
                 transform: 'rotateX(90deg)'
-            }
+            };
+        }
     }
 
 }

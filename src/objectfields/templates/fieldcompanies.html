@@ -1,11 +1,8 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    {{companyName}}
+    <div modelPopOver module="CompanyCodes" [id]="value">{{companyName}}</div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <div class="slds-select_container slds-m-vertical--xx-small">
-        <select class="slds-select" [(ngModel)]="value">
-            <option *ngFor="let company of companies" [value]="company.id">{{company.name}}</option>
-        </select>
-    </div>
+    <system-input-companycodes [(ngModel)]="value"></system-input-companycodes>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

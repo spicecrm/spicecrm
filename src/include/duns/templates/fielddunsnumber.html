@@ -1,0 +1,13 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    {{value}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <div class="slds-grid">
+        <input type="text" class="slds-input" [(ngModel)]="value" [disabled]="true" style="cursor: initial;">
+        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="openDunsModal()">
+            <system-button-icon icon="search"></system-button-icon>
+        </button>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

@@ -41,38 +41,35 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'starts',
                 name: 'LBL_STARTS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'contains',
                 name: 'LBL_OP_CONTAINS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'ncontains',
                 name: 'LBL_OP_NOTCONTAINS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'greater',
                 name: 'LBL_OP_GREATER',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'gequal',
                 name: 'LBL_OP_GREATEREQUAL',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'less',
                 name: 'LBL_OP_LESS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'lequal',
                 name: 'LBL_OP_LESSEQUAL',
-                capturevalue: true
-            }, {
-                operator: 'empty',
-                name: 'LBL_OP_ISEMPTY'
+                showvalue: true
             }
         ],
         date: [
@@ -107,22 +104,22 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'ndaysago',
                 name: 'LBL_N_DAYS_AGO',
-                capturevalue: true
+                showvalue: true
             },
             {
                 operator: 'inlessthandays',
                 name: 'LBL_IN_LESS_THAN_N_DAYS',
-                capturevalue: true
+                showvalue: true
             },
             {
                 operator: 'inmorethandays',
                 name: 'LBL_IN_MORE_THAN_N_DAYS',
-                capturevalue: true
+                showvalue: true
             },
             {
                 operator: 'inndays',
                 name: 'LBL_IN_N_DAYS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
@@ -142,11 +139,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'oneof',
                 name: 'LBL_ONEOF',
-                capturevalue: true
+                showvalue: true
             }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
@@ -233,15 +230,14 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      * determines based on teh operator definition if the value field should be shown or not to allow the user to enter a value
      */
     private showValueField() {
-        let showValueField: boolean = false;
-        this.operators[this.operatortype].some(operator => {
-                if (this.filterexpression.operator == operator.operator) {
-                    showValueField = operator.capturevalue;
-                    return true;
-                }
+
+        for (let thisOperator of this.operators[this.operatortype]) {
+            if (thisOperator.operator == this.filterexpression.operator) {
+                return thisOperator.showvalue;
             }
-        )
-        return showValueField;
+        }
+
+        // return this.operatortype == 'default' || (this.operatortype == 'enum' && this.filterexpression.operator != 'empty');
     }
 
     private enumDisabled() {
@@ -266,10 +262,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             this.fields.push(fields[field]);
         }
 
-        // sort by name
-        this.fields.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
-        });
+        this.fields.sort((a, b) => a.name > b.name ? 1 : -1);
 
         // set the initial operatortype
         this.determineOperatorType(this.field);

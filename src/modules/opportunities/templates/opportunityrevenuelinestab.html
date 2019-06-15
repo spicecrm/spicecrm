@@ -1,0 +1,10 @@
+<system-collapsable-tab tabtitle="LBL_OPPORTUNITYREVENUELINES">
+<div *ngIf="canSplit; else notready">
+    <opportunity-revenue-lines></opportunity-revenue-lines>
+</div>
+<ng-template #notready>
+    <div class="slds-p-around--small slds-align--absolute-center">
+        {{language.getLabel('MSG_ENTERDATEANDAMOUNT')}}
+    </div>
+</ng-template>
+</system-collapsable-tab>

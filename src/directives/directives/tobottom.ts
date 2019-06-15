@@ -20,6 +20,6 @@ export class ToBottomDirective implements DoCheck {
 
     public ngDoCheck() {
         let rect = this.element.nativeElement.getBoundingClientRect();
-        this.renderer.setStyle(this.element.nativeElement, 'height', window.innerHeight - rect.top + 'px');
+        this.renderer.setStyle(this.element.nativeElement, 'height', window.innerHeight - rect.top - parseInt( getComputedStyle(this.element.nativeElement).marginBottom, 10 ) - parseInt( getComputedStyle(this.element.nativeElement).paddingBottom, 10 ) + 'px');
     }
 }

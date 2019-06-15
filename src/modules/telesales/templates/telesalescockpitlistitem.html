@@ -1,10 +1,8 @@
-<div class="slds-tile slds-tile--board slds-m-horizontal_xx-small slds-p-around_xx-small slds-border_bottom" [ngClass]="selectedClass">
+<div class="slds-tile slds-tile--board slds-m-horizontal_xx-small slds-p-around_xx-small slds-border_bottom" [ngClass]="selectedClass" style="cursor: pointer" (click)="setSelectedListItem()">
     <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--small">
         <system-icon [module]="model.module" size="x-small"></system-icon>
         <h3 class="slds-truncate slds-text-heading--small">
-            <a (click)="setSelectedListItem()" href="javascript:void(0);">
-                {{ model.data.name }}
-            </a>
+            <a href="javascript:void(0);">{{ model.data.summary_text }}</a>
         </h3>
         <div class="slds-col--bump-left">
             <system-utility-icon *ngIf="item.related_id" icon="outbound_call" [size]="'x-small'" class="slds-m-right--xx-small"></system-utility-icon>

@@ -11,7 +11,7 @@
                         <div class="slds-form-element slds-p-horizontal--x-small" *ngIf="textitem.type == 'option'">
                             <div class="slds-form-element__control">
                                 <div *ngIf="options[question.id][textitem.index].description && options[question.id][textitem.index].description != ''" class="slds-select_container">
-                                    <select  class="slds-select" [disabled]="questionsMeta[question.id].readonly || no_edit" [value]="getAnswerValue(question.id, textitem.index)" (change)="onChange(question.id, textitem.index, $event)">
+                                    <select  class="slds-select" [disabled]="questionsMeta[question.id].readonly || noEdit" [value]="getAnswerValue(question.id, textitem.index)" (change)="onChange(question.id, textitem.index, $event)">
                                         <option value=""></option>
                                         <option *ngFor="let seloption of options[question.id][textitem.index].description|questiontypeistoptionspipe"
                                                 [ngValue]="seloption">{{seloption}}

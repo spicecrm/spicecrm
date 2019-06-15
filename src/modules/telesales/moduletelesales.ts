@@ -24,6 +24,7 @@ import /*embed*/ {TeleSalesCockpitAddAttemptButton} from './components/telesales
 import /*embed*/ {TeleSalesCockpitAddAttemptModal} from './components/telesalescockpitaddattemptmodal';
 import /*embed*/ {TeleSalesCockpitModuleActions} from './components/telesalescockpitmoduleactions';
 import /*embed*/ {TeleSalesCockpitAddMeetingButton} from './components/telesalescockpitaddmeetingbutton';
+import /*embed*/ {TeleSalesCockpitHeader} from './components/telesalescockpitheader';
 import /*embed*/ {TeleSalesCockpit} from './components/telesalescockpit';
 
 @NgModule({
@@ -37,6 +38,7 @@ import /*embed*/ {TeleSalesCockpit} from './components/telesalescockpit';
     ],
     declarations: [
         TeleSalesCockpit,
+        TeleSalesCockpitHeader,
         TeleSalesCockpitList,
         TeleSalesCockpitMain,
         TeleSalesCockpitListItem,

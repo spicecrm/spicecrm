@@ -1,0 +1,90 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_OPPORTUNITYREVENUELINES')}}</system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <system-collapsable-tab tabtitle="LBL_OPPORTUNITY">
+            <div class="slds-p-around--small">
+                <object-record-fieldset [fieldset]="componentconfig.fieldset"></object-record-fieldset>
+            </div>
+        </system-collapsable-tab>
+        <system-collapsable-tab tabtitle="LBL_GENERATOR">
+            <div class="slds-p-around--small">
+                <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-x-small">
+                    <div>
+                        <field-label fieldname="opportunityrevenuesplit"></field-label>
+                        <div class="slds-col slds-grid slds-grid--vertical-align-center">
+                            <div class="slds-radio">
+                                <input type="radio" id="splittypesplit" value="split" name="splittype" [(ngModel)]="splittype"/>
+                                <label class="slds-radio__label" for="splittypesplit">
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label">{{language.getLabel('LBL_SPLIT')}}</span>
+                                </label>
+                            </div>
+                            <div class="slds-radio">
+                                <input type="radio" id="splittyperampup" value="rampup" name="splittype"  [(ngModel)]="splittype"/>
+                                <label class="slds-radio__label" for="splittyperampup">
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label">{{language.getLabel('LBL_RAMPUP')}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_OPPORTUNITYREVENUELINES')}}</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" [placeholder]="language.getLabel('LBL_OPPORTUNITYREVENUELINES')" class="slds-input" [(ngModel)]="nooflines"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_EVERY')}}</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" [placeholder]="language.getLabel('LBL_EVERY')" class="slds-input" [(ngModel)]="periodcount"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_PERIOD')}}</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="periodtype">
+                                        <option value="M">{{language.getLabel('LBL_MONTH')}}</option>
+                                        <option value="y">{{language.getLabel('LBL_YEAR')}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-p-top--x-small slds-text-align_right">
+                    <button class="slds-button slds-button--brand" [disabled]="!canGenerate" (click)="generate()">{{language.getLabel('LBL_GENERATE')}}</button>
+                </div>
+            </div>
+        </system-collapsable-tab>
+        <system-collapsable-tab tabtitle="LBL_OPPORTUNITYREVENUELINES">
+            <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'revenue_date')}}</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate">{{language.getFieldDisplayName('OpportunityRevenueLines', 'amount')}}</div>
+                        </th>
+                        <th class="slds-cell-shrink" scope="col">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent" opportunity-revenue-line-item *ngFor="let revenueLine of revenueLines" [revenueLine]="revenueLine" [closeDate]="closeDate" [totalAmount]="totalAmount" (delete)="deleteLine(revenueLine.id)"></tr>
+                </tbody>
+            </table>
+        </system-collapsable-tab>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CLOSE')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_OK')}}</button>
+    </system-modal-footer>
+</system-modal>

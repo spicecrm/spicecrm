@@ -24,7 +24,9 @@ import {toast} from "../../../services/toast.service";
 })
 export class MailboxmanagerEmailDetails implements AfterViewInit {
 
-    private containerComponents: Array<any> = [];
+    private containerComponents: any[] = [];
+    private fieldset: string = '';
+    private fieldsetitems: any[];
 
     @ViewChild("detailscontent", {read: ViewContainerRef}) private detailscontent: ViewContainerRef;
 
@@ -37,23 +39,31 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         private elementref: ElementRef,
         private backend: backend,
         private toast: toast,
+        private view: view,
     ) {
-        // set the module to the model
-        this.model.module = 'Emails';
-
-        mailboxesEmails.activeEmail$.subscribe(email => {
+        this.mailboxesEmails.activeMessage$.subscribe(email => {
             this.loadEmail(email);
         });
 
+        this.view.displayLabels = false;
     }
 
     get containerStyle() {
         return {
             height: 'calc(100vh - ' + this.elementref.nativeElement.offsetTop + 'px)'
-        }
+        };
     }
 
-    loadEmail(email) {
+    private loadEmail(email) {
+
+        // set the module to the model
+        if (this.mailboxesEmails.activeMailBox) {
+            if (this.mailboxesEmails.activeMailBox.type == 'sms') {
+                this.model.module = "TextMessages";
+            } else if (this.mailboxesEmails.activeMailBox.type == 'email') {
+                this.model.module = "Emails";
+            }
+        }
 
         // initialize and set the id
         this.model.initialize();
@@ -81,17 +91,15 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         // this.buildContainer();
     }
 
-    destroyContainer() {
+    private destroyContainer() {
         for (let containerComponent of this.containerComponents) {
             containerComponent.destroy();
         }
         this.containerComponents = [];
     }
 
-    handleAction(event)
-    {
-        switch(event)
-        {
+    private handleAction(event) {
+        switch (event) {
             // is needed for the emailtoobject component and its behavior to link a relation after save so it needs to reloaded in order to show new related records...
             case 'save':
                 this.buildContainer();
@@ -99,7 +107,7 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         }
     }
 
-    buildContainer() {
+    private buildContainer() {
 
         this.destroyContainer();
 
@@ -112,6 +120,13 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
                 this.containerComponents.push(componentRef);
             });
         }
+
+        // load the fieldset
+        this.fieldset = componentconfig.fieldset;
+        if (this.fieldset) {
+            this.fieldsetitems = this.metadata.getFieldSetFields(this.fieldset);
+        }
+
     }
 
     get sanitizedEmailHtml() {
@@ -164,10 +179,10 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         // set the model
         this.model.setField('status', status);
         // update the backend
-        this.backend.postRequest('/module/Emails/' + this.model.id + '/setstatus/' + status).subscribe(
+        this.backend.postRequest('/module/' + this.model.module + '/' + this.model.id + '/setstatus/' + status).subscribe(
             (res: any) => {
                 // also set it in the service
-                this.mailboxesEmails.activeEmail.status = status;
+                this.mailboxesEmails.activeMessage.status = status;
             },
             (err: any) => {
                 this.toast.sendAlert('Cannot change status to ' + status);
@@ -179,10 +194,10 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         // set the model
         this.model.setField("openness", openness);
         // update the backend
-        this.backend.postRequest("/module/Emails/" + this.model.id + "/setopenness/" + openness).subscribe(
+        this.backend.postRequest("/module/" + this.model.module + '/' + this.model.id + "/setopenness/" + openness).subscribe(
             (res: any) => {
                 // also set it in the service
-                this.mailboxesEmails.activeEmail.openness = openness;
+                this.mailboxesEmails.activeMessage.openness = openness;
             },
             (err: any) => {
                 this.toast.sendAlert('Cannot change openness to ' + openness);

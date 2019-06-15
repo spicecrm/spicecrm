@@ -2,7 +2,7 @@
 
 <ng-container *ngIf="!isLoading">
 
-    <div class="questionset-render slds-text-heading_small" [ngClass]="{'in-modal':in_modal}">
+    <div class="questionset-render slds-text-heading_small" [ngClass]="{'in-modal':inModal}">
 
         <div class="questionset-render-header">
             <div class="slds-grid slds-grid--vertical-align-center">
@@ -14,7 +14,7 @@
                         <div *ngIf="timerText" class="slds-box_border slds-m-left_medium" [class.slds-theme--warning]="timerWarning">
                             <span class="slds-p-left--xx-small slds-p-right--xx-small">{{timerText}}</span>
                         </div>
-                        <div *ngIf="in_modal" class="slds-col slds-m-left_medium">
+                        <div *ngIf="inModal" class="slds-col slds-m-left_medium">
                             <div class="slds-progress-bar slds-progress-bar_large slds-progress-bar_circular" style="height:1rem">
                                 <span class="slds-progress-bar__value" [style.width]="(numOfFinishedQuestions/questions.length*100)+'%'">
                                     <span class="slds-assistive-text">Progress: {{numOfFinishedQuestions/questions.length*100}}%</span>
@@ -44,7 +44,7 @@
 
         </div>
 
-        <div class="questionset-render-questions slds-m-top--medium" [ngClass]="{'slds-p-right--medium':in_modal}">
+        <div class="questionset-render-questions slds-m-top--medium" [ngClass]="{'slds-p-right--medium':inModal}">
 
             <div *ngIf="questions.length; else noQuestionsTemplate">
 
@@ -53,15 +53,15 @@
                 <ng-container [ngSwitch]="questionset.questiontype">
 
                     <div *ngSwitchCase="'rating'">
-                        <questionset-render-rating [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [no_edit]="no_edit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-rating>
+                        <questionset-render-rating [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-rating>
                     </div>
 
                     <div *ngSwitchCase="'text'">
-                        <questionset-render-text [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [no_edit]="no_edit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-text>
+                        <questionset-render-text [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-text>
                     </div>
 
                     <div *ngSwitchCase="'ist'">
-                        <questionset-render-ist [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [no_edit]="no_edit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-ist>
+                        <questionset-render-ist [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-ist>
                     </div>
 
                 </ng-container>
@@ -69,7 +69,7 @@
                 <questionset-render-binary-single-multi
                         *ngIf="questionset.questiontype === 'binary' || questionset.questiontype === 'single' || questionset.questiontype === 'multi'"
                         [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta"
-                        [options]="options" [answers]="answers" [questionset]="questionset" [no_edit]="no_edit" [participation_id]="participation_id"
+                        [options]="options" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id"
                         [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"
                 ></questionset-render-binary-single-multi>
 
