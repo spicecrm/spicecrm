@@ -4,6 +4,9 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
+import {currency} from "../../../services/currency.service";
+import {backend} from "../../../services/backend.service";
+import {userpreferences} from "../../../services/userpreferences.service";
 import {configurationService} from "../../../services/configuration.service";
 
 import {language} from "../../../services/language.service";
@@ -41,14 +44,34 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
      */
     private _companyCode: string;
 
+    /**
+     * holds the revenues in all productgropups for this accounts and companycode
+     */
+    private cc_revenues: any[] = [];
+
+    /**
+     * an indicator that the revenues are loading
+     */
+    private cc_revenues_loading: boolean = true;
+
+    /**
+     * holds an array of currencies
+     */
+    public currencies: any[] = [];
+
     constructor(
         public language: language,
         public metadata: metadata,
         public relatedmodels: relatedmodels,
         public model: model,
-        private configuration: configurationService
+        private configuration: configurationService,
+        private backend: backend,
+        private currency: currency,
+        private userpreferences: userpreferences
     ) {
         super(language, metadata, relatedmodels, model);
+
+        this.currencies = this.currency.getCurrencies();
 
     }
 
@@ -61,22 +84,48 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
         this._companyCode = companyCode;
         this.relatedmodels.fieldfilters = {companycode_id: this._companyCode};
         this.loadRelated();
+
+        // load the revenues
+        this.getRevenues();
     }
 
 
     public ngOnInit() {
+        // parent constructor
         super.ngOnInit();
+
+        // load more items
+        this.relatedmodels.loaditems = 50;
 
         // get the company codes and set the first by default
         let companyCodes = this.configuration.getData('companycodes');
         if (companyCodes && companyCodes.length > 0) {
             companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
             this._companyCode = companyCodes[0].id;
+
+            // set the related models filter
             this.relatedmodels.fieldfilters = {companycode_id: this._companyCode};
+
+            // load all revenues
+            this.getRevenues();
         }
 
+        // load related items
         this.loadRelated();
     }
+
+    /**
+     * loads the revenues for the companycde
+     */
+    private getRevenues() {
+        this.cc_revenues = [];
+        this.cc_revenues_loading = true;
+        this.backend.getRequest("module/Potentials/uncaptured/" + this._companyCode + '/' + this.model.id).subscribe(revenues => {
+            this.cc_revenues = revenues;
+            this.cc_revenues_loading = false;
+        });
+    }
+
 
     /**
      * a helper function to determine if the card shoudl be hidden based on the modelstate or the ACL check
@@ -131,6 +180,50 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
      */
     public ngAfterViewInit() {
         // this.loadRelated();
+    }
+
+
+    /**
+     * helper to get the currency symbol
+     */
+    get currencySymbol(): string {
+        let currencySymbol: string;
+        let currencyid = -99;
+        this.currencies.some(currency => {
+            if (currency.id == currencyid) {
+                currencySymbol = currency.symbol;
+                return true;
+            }
+        });
+        return currencySymbol;
+    }
+
+    /**
+     * a simpel function to return a aprsed money value
+     */
+    private parseCurrencyValue(fieldval) {
+        if (fieldval === undefined) return '';
+        let val = parseFloat(fieldval);
+        if (isNaN(val)) return '';
+        return this.currencySymbol + ' ' + this.userpreferences.formatMoney(val);
+    }
+
+    /**
+     * checks if a potential exists or can be added
+     *
+     * @param productgroup_id the id of the prodzuctgroup of this record
+     */
+    private canAddPotential(productgroup_id) {
+        // if related models are loading disable buttons
+        if (this.relatedmodels.isloading) return false;
+
+        // otherewise check if we have a record
+        let related = this.relatedmodels.items.find(record => record.productgroup_id == productgroup_id);
+        if (related) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
