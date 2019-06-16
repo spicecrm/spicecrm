@@ -1,5 +1,5 @@
 /**
- * @module AddComponentsModule
+ * @module ModuleSpicePath
  */
 import {Component, Input, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';

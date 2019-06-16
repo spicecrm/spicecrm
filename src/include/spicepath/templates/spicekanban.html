@@ -9,7 +9,7 @@
                       <system-icon [icon]="'check'" [size]="'x-small'" [sprite]="'utility'"
                                    [addclasses]="'spicecrm-processicon'"></system-icon>
                     </span>
-                        <span class="slds-tabs--path__title">{{stage.stagedata.stage_name}} ({{getStageCount(stage.stage)}})</span>
+                        <span class="slds-tabs--path__title">{{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stage)}})</span>
                     </a>
                 </li>
             </ng-container>
