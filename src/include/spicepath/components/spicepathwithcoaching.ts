@@ -124,7 +124,9 @@ export class SpicePathWithCoaching {
         return checks;
     }
 
-    // gets the current stage description
+    /**
+     * gets the current stage description
+     */
     get stageDescription() {
         let stage = this.stages.find(el => el.stage == this.displayStage);
 
