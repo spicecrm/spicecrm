@@ -7,22 +7,39 @@
             <img style="height: 40px; width: 40px" *ngIf="userimage" [src]="userimage"/>
         </div>
         <div class="slds-media__body">
-            <div class="slds-publisher slds-publisher--comment">
-                <textarea class="slds-publisher__input slds-input--bare slds-text-longform"
-                          [placeholder]="language.getLabel('LBL_CREATENOTE')" [(ngModel)]="newNote"></textarea>
-            </div>
-            <div *ngIf="newNote !== ''"
-                 class="slds-m-top--x-small slds-m-bottom--medium slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
-                <button class="slds-button slds-button--icon-border" (click)="togglePrivate()">
-                    <system-utility-icon [icon]="getPrivateIcon()" [size]="'xx-small'"></system-utility-icon>
-                </button>
-                <div>
-                    <button class="slds-button slds-button--neutral" (click)="clearNote()">
-                        {{language.getLabel('LBL_CANCEL')}}
-                    </button>
-                    <button class="slds-button slds-button--brand" (click)="addNote()">
-                        {{language.getLabel('LBL_ADDNOTE')}}
-                    </button>
+            <div class="slds-publisher slds-publisher_comment" [ngClass]="{'slds-is-active':isActive}">
+                <label class="slds-assistive-text">Write a comment</label>
+                <textarea class="slds-publisher__input slds-input_bare slds-text-longform" (focus)="onFocus()" (blur)="onBlur()" [placeholder]="language.getLabel('LBL_CREATENOTE')" [(ngModel)]="newNote"></textarea>
+                <div class="slds-publisher__actions slds-grid slds-grid_align-spread">
+                    <ul class="slds-grid">
+                        <li>
+                            <button class="slds-button slds-button_icon slds-button_icon-container" (click)="togglePrivate()">
+                                <system-utility-icon [icon]="getPrivateIcon()" [size]="'xx-small'"></system-utility-icon>
+                            </button>
+                        </li>
+                        <!--li>
+                            <button disabled class="slds-button slds-button_icon slds-button_icon-container">
+                                <system-button-icon icon="adduser"></system-button-icon>
+                            </button>
+                        </li-->
+                        <!--li>
+                            <button disabled class="slds-button slds-button_icon slds-button_icon-container">
+                                <system-button-icon icon="attach"></system-button-icon>
+                            </button>
+                        </li-->
+                    </ul>
+                    <ul class="slds-grid">
+                        <li>
+                            <button class="slds-button slds-button_icon slds-button_icon-container" (click)="clearNote()">
+                                <system-button-icon sprite="utility" icon="clear"></system-button-icon>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="slds-button slds-button_icon slds-button_icon-container" (click)="addNote()">
+                                <system-button-icon sprite="utility" icon="check"></system-button-icon>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

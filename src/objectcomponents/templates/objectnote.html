@@ -16,7 +16,7 @@
             <p class="slds-text-body--small"><a href="javascript:void(0);" class="slds-text-link--reset">{{getNoteTimeFromNow()}}</a></p>
         </div>
     </header>
-    <div>
-        <p>{{note.text}}</p>
+    <div [innerHTML]="htmlValue">
+        <!--p>{{note.text}}</p-->
     </div>
 </article>
