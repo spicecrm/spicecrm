@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div *ngIf="questionset.textbefore" class="slds-grid slds-m-top_medium slds-box slds-theme_shade questionset-render-text" [class.collapsed]="textIsCollapsed" [class.slds-p-bottom--medium]="!textIsCollapsed" [class.slds-p-bottom--none]="textIsCollapsed">
+            <div *ngIf="questionset.textbefore && inModal" class="slds-grid slds-m-top_medium slds-box slds-theme_shade questionset-render-text" [class.collapsed]="textIsCollapsed" [class.slds-p-bottom--medium]="!textIsCollapsed" [class.slds-p-bottom--none]="textIsCollapsed">
                 <div class="slds-col_bump-right">
                     <div [innerHTML]="questionset.textbefore" class="slds-p-right_medium html-text"></div>
                     <div *ngIf="textIsCollapsed" class="questionset-render-transition"></div>
@@ -41,6 +41,7 @@
                     </button>
                 </div>
             </div>
+            <div *ngIf="questionset.textbefore && !inModal" [innerHTML]="questionset.textbefore" class="slds-m-vertical--medium"></div>
 
         </div>
 
