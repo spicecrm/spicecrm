@@ -4,6 +4,8 @@
 import {CommonModule} from '@angular/common';
 import {FormsModule}   from '@angular/forms';
 import {NgModule, Component} from '@angular/core';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 import {VersionManagerService} from '../services/versionmanager.service';
 import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
@@ -55,9 +57,7 @@ export class AdministrationMain {}
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        RouterModule.forChild([
-            { path: '', component: AdministrationMain}
-        ])
+        DragDropModule
     ],
     declarations: [
         AdministrationMain,
