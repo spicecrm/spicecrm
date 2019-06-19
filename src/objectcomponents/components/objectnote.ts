@@ -2,9 +2,10 @@
  * @module ObjectComponents
  */
 import {
-    Component, OnInit, Input
+    Component, OnInit, Input, NgZone
 } from '@angular/core';
 import {objectnote} from '../services/objectnote.service';
+import {DomSanitizer} from "@angular/platform-browser";
 
 /**
  * @ignore
@@ -30,7 +31,7 @@ export class ObjectNote {
      *
      * @param objectnote
      */
-    constructor(private objectnote: objectnote) {
+    constructor(private objectnote: objectnote, public sanitized: DomSanitizer) {
 
     }
 
@@ -46,5 +47,12 @@ export class ObjectNote {
      */
     private deleteNote() {
         this.objectnote.deleteNote(this.note.id);
+    }
+
+    /**
+     * sanitizes the value and passes it to the template
+     */
+    get htmlValue()    {
+        return this.sanitized.bypassSecurityTrustHtml(this.note.text);
     }
 }

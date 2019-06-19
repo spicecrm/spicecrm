@@ -102,6 +102,9 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import /*embed*/ {fieldTextID} from "./components/fieldtextid";
+import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
+import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
+import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
 import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
 
 /**
@@ -213,6 +216,9 @@ declare var _: any;
         fieldCronInterval,
         fieldGooglePlacesSearch,
         fieldTextID,
+        fieldBackendMethod,
+        fieldSystemLabel,
+        fieldTimeDifference,
         fieldIconPopover
     ],
     exports: [

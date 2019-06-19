@@ -1,0 +1,19 @@
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    {{value}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
+    <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+        <input #focus type="number" class="slds-col slds-size--1-of-2 slds-input slds-text-align--right" [(ngModel)]="timedifferencespan" [maxlength]="fieldlength" [ngModelOptions]="modelOptions" />
+        <div class="slds-col slds-size--1-of-2 slds-select_container slds-m-vertical--xx-small">
+            <select [disabled]="!timedifferencespan" class="slds-select " [(ngModel)]="timedifferenceunit">
+                <option value="i">{{language.getLabel('LBL_MINUTES')}}</option>
+                <option value="h">{{language.getLabel('LBL_HOURS')}}</option>
+                <option value="d">{{language.getLabel('LBL_DAYS')}}</option>
+                <option value="w">{{language.getLabel('LBL_WEEKS')}}</option>
+                <option value="M">{{language.getLabel('LBL_MONTHS')}}</option>
+                <option value="y">{{language.getLabel('LBL_YEARS')}}</option>
+            </select>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
