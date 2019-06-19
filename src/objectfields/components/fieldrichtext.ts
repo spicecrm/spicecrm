@@ -104,10 +104,13 @@ export class fieldRichText extends fieldGeneric implements OnDestroy {
     }
 
     private setHtmlValue() {
-        let regexp = /(<code>)(.*?)(<\/code>)/gs;
+        let regexp = /<code>[\s\S]*?<\/code>/g;
         let match = regexp.exec(this.value);
         while (match != null) {
-            this.value = this.value.replace(match[2], this.encodeHtml(match[2]));
+            this.value = this.value
+                .replace(match, this.encodeHtml(match))
+                .replace('&lt;code&gt;', '<code>')
+                .replace('&lt;/code&gt;', '</code>');
             match = regexp.exec(this.value);
         }
     }
