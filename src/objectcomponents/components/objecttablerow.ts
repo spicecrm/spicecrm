@@ -37,6 +37,9 @@ export class ObjectTableRow
         private view: view,
     ) {
         this.view.isEditable = false;
+
+        // hide labels
+        this.view.displayLabels = false;
     }
 
     public ngOnInit()

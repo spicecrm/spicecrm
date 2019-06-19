@@ -3,14 +3,14 @@
     <div role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('undo')" [disabled]="htmlMode">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
                     <system-button-icon icon="undo"></system-button-icon>
                     <span class="slds-assistive-text">undo</span>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('redo')"  >
-                    <system-button-icon icon="redo" title="redo"></system-button-icon>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REDO')" (click)="executeCommand('redo')"  >
+                    <system-button-icon icon="redo"></system-button-icon>
                     <span class="slds-assistive-text">redo</span>
                 </button>
             </li>
@@ -73,112 +73,122 @@
         </div>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('bold')" [ngClass]="{'slds-active': commandIsActive('bold')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_BOLD')" (click)="executeCommand('bold')" [ngClass]="{'slds-active': commandIsActive('bold')}" >
                     <system-button-icon icon="bold"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('italic')" [ngClass]="{'slds-active': commandIsActive('italic')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ITALIC')" (click)="executeCommand('italic')" [ngClass]="{'slds-active': commandIsActive('italic')}" >
                     <system-button-icon icon="italic"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('underline')" [ngClass]="{'slds-active': commandIsActive('underline')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_UNDERLINE')" (click)="executeCommand('underline')" [ngClass]="{'slds-active': commandIsActive('underline')}" >
                     <system-button-icon icon="underline"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('strikethrough')" [ngClass]="{'slds-active': commandIsActive('strikethrough')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_STRIKETHROUGH')" (click)="executeCommand('strikethrough')" [ngClass]="{'slds-active': commandIsActive('strikethrough')}" >
                     <system-button-icon icon="strikethrough"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('insertUnorderedList')" [ngClass]="{'slds-active': commandIsActive('insertUnorderedList')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_BULLETED_LIST')" (click)="executeCommand('insertUnorderedList')" [ngClass]="{'slds-active': commandIsActive('insertUnorderedList')}" >
                     <system-button-icon icon="richtextbulletedlist"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('insertOrderedList')" [ngClass]="{'slds-active': commandIsActive('insertOrderedList')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NUMBERED_LIST')" (click)="executeCommand('insertOrderedList')" [ngClass]="{'slds-active': commandIsActive('insertOrderedList')}" >
                     <system-button-icon icon="richtextnumberedlist"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('indent')" [ngClass]="{'slds-active': commandIsActive('indent')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_TEXT_INDENT')" (click)="executeCommand('indent')" [ngClass]="{'slds-active': commandIsActive('indent')}" >
                     <system-button-icon icon="richtextindent"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('outdent')" [ngClass]="{'slds-active': commandIsActive('otdent')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_TEXT_OUTDENT')" (click)="executeCommand('outdent')" [ngClass]="{'slds-active': commandIsActive('otdent')}" >
                     <system-button-icon icon="richtextoutdent"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('justifyLeft')" [ngClass]="{'slds-active': commandIsActive('justifyLeft')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LEFT_ALIGN')" (click)="executeCommand('justifyLeft')" [ngClass]="{'slds-active': commandIsActive('justifyLeft')}" >
                     <system-button-icon icon="left_align_text"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('justifyCenter')" [ngClass]="{'slds-active': commandIsActive('justifyCenter')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_CENTER_ALIGN')" (click)="executeCommand('justifyCenter')" [ngClass]="{'slds-active': commandIsActive('justifyCenter')}" >
                     <system-button-icon icon="center_align_text"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('justifyRight')" [ngClass]="{'slds-active': commandIsActive('justifyRight')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_RIGHT_ALIGN')" (click)="executeCommand('justifyRight')" [ngClass]="{'slds-active': commandIsActive('justifyRight')}" >
                     <system-button-icon icon="right_align_text"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('justifyFull')" [ngClass]="{'slds-active': commandIsActive('justifyFull')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ALIGN_TEXT')" (click)="executeCommand('justifyFull')" [ngClass]="{'slds-active': commandIsActive('justifyFull')}" >
                     <system-button-icon icon="justify_text"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('openMediaFilePicker')">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="executeCommand('openMediaFilePicker')">
                     <system-button-icon icon="image"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="insertUrl()" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_VIDEO')" (click)="addVideo()">
+                    <system-button-icon icon="video"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_CODE_SNIPPET')" (click)="addCodeSnippet()">
+                    <system-button-icon icon="snippet"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertUrl()" >
                     <system-button-icon icon="link"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('unlink')" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_LINK')" (click)="executeCommand('unlink')" >
                     <system-button-icon icon="remove_link"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('removeFormat')" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_FORMATTING')" (click)="executeCommand('removeFormat')" >
                     <system-button-icon icon="remove_formatting"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" (click)="executeCommand('openSourceEditor')">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_SOURCE_EDITOR')" (click)="executeCommand('openSourceEditor')">
                     <system-button-icon icon="insert_tag_field"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" disabled (click)="executeCommand('openEditorModal')">
-                    <system-button-icon icon="expand_alt"></system-button-icon>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_EXPAND')" (click)="executeCommand('openEditorModal')">
+                    <system-button-icon [icon]="expandIcon"></system-button-icon>
                 </button>
             </li>
         </ul>
     </div>
     <div class="slds-rich-text-editor__textarea slds-grid" #editorWrapper>
-        <div class="slds-rich-text-area__content slds-text-color_weak slds-grow">
-            <div #htmleditor tabindex="0" [attr.contenteditable]="isActive" style="height: 100%; cursor: text;" (input)="onContentChange($event.target.innerHTML)" (click)="exec()" (keyup)="exec()"></div>
+        <div #htmlEditorContainer class="slds-rich-text-area__content slds-text-color_weak slds-grow" [ngStyle]="getRichTextStyle(htmlEditorContainer)">
+            <div #htmleditor tabindex="0" [attr.contenteditable]="isActive" style="height: 100%; cursor: text;" (click)="exec()" (keyup)="exec()"  (paste)="onPaste($event)" (input)="onContentChange($event.target.innerHTML)"></div>
         </div>
     </div>
 </div>

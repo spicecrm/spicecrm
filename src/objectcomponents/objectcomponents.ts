@@ -101,16 +101,8 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {
-    ObjectTabContainerItem,
-    ObjectTabContainer,
-    ObjectTabContainerItemHeader
-} from './components/objecttabcontainer';
-import /*embed*/ {
-    ObjectVerticalTabContainerItem,
-    ObjectVerticalTabContainer,
-    ObjectVerticalTabContainerItemHeader
-} from './components/objectverticaltabcontainer';
+import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
+import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
 import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
@@ -236,14 +228,22 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         DirectivesModule,
         RouterModule.forRoot([
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
-            {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, canNavigateAway, aclCheck]},
+            {
+                path: 'module/:module',
+                component: ObjectListViewContainer,
+                canActivate: [loginCheck, canNavigateAway, aclCheck]
+            },
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
             {
                 path: 'module/:module/historysummary/:id',
                 component: ObjectActivitiyTimelineSummary,
                 canActivate: [loginCheck]
             },
-            {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck, canNavigateAway]},
+            {
+                path: 'module/:module/:id',
+                component: ObjectRecordViewContainer,
+                canActivate: [loginCheck, canNavigateAway]
+            },
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {
                 path: 'module/:module/:id/:related/:link/:fieldset',
@@ -439,6 +439,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionsetMenu,
         ObjectSelectButton,
         ObjectRelatedList,
+        ObjectRelatedlistTable,
         ObjectRelatedListItem,
         ObjectPopoverHeader,
         ObjectPopoverBodyItem,
@@ -452,8 +453,11 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineStencil,
         ObjectRelatedCard,
+        ObjectRelatedCardHeader,
+        ObjectRelatedCardFooter,
         ObjectRecordDetails,
-        ObjectRecordDetailsFooter
+        ObjectRecordDetailsFooter,
+        ObjectEditModalDialogContainer
     ]
 })
 export class ObjectComponents {
