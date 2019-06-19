@@ -7,46 +7,79 @@
             <h2 class="slds-text-heading--medium">Add Field</h2>
         </div>
         <div class="slds-modal__content" style="height: 80%">
-            <div class="slds-grid">
-                <div class="slds-size--1-of-3 slds-scrollable" style="height: 100%;">
-                    <nav class="slds-p-around--small" role="navigation">
+            <div class="slds-grid slds-height_full">
+
+                <div class="slds-size--1-of-3 slds-grid--vertical" style="height: 100%;">
+                    <div class="slds-scrollable--y slds-border--bottom" style="height: 50%;">
+                        <system-module-tree [module]="ftsconfiguration.module" (itemSelected)="itemSelected($event)"></system-module-tree>
+                    </div>
+                    <div class="slds-scrollable" style="height: 50%;">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                            <tr class="slds-line-height_reset">
+                                <th width="2.75em"></th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Opportunity Name">field</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Account Name">name</div>
+                                </th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="slds-hint-parent" *ngFor="let nodefield of nodefields">
+                                <td scope="row">
+                                    <system-utility-icon icon="add" size="x-small"></system-utility-icon>
+                                </td>
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate">{{nodefield.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{language.getLabel(nodefield.label)}}</div>
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--nav class="slds-p-around--small" role="navigation">
                         <ol class="slds-breadcrumb slds-list--horizontal">
                             <li class="slds-breadcrumb__item slds-text-title--caps" *ngFor="let item of path; let i = index"><a href="javascript:void(0);" (click)="chooseBreadcrumb(i)">{{item.module}}</a></li>
                         </ol>
                     </nav>
                     <ul class="slds-p-horizontal--small">
                         <li class="slds-item slds-p-vertical--xxx-small" *ngFor="let link of links"><a href="javascript:void(0)" (click)="setLink(link)">{{link.module}}</a></li>
-                    </ul>
+                    </ul-->
                 </div>
                 <div class="slds-size--2-of-3 slds-border--left slds-scrollable" style="height: 100%;">
                     <table class="slds-table slds-table--cell-buffer">
                         <thead>
-                        <tr class="slds-text-title--caps slds-theme--shade">
-                            <th>
-                                Add
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate">Fieldname</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate">Fieldlabel</div>
-                            </th>
-                        </tr>
+                            <tr class="slds-text-title--caps slds-theme--shade">
+                                <th>
+                                    <div class="slds-truncate">Path</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate">Fieldname</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate">Fieldlabel</div>
+                                </th>
+                            </tr>
                         </thead>
-                        <tbody>
-                        <tr class="slds-border--bottom" *ngFor="let field of fields">
-                            <td>
-                                <button class="slds-button slds-button--icon-border" [disabled]="field.exists" [ngClass]="{'slds-is-selected': fieldSelected(field.name)}" (click)="selectField(field)">
-                                    <system-button-icon [icon]="field.exists || fieldSelected(field.fieldname) ? 'check' : 'add'"></system-button-icon>
-                                </button>
-                            </td>
-                            <td data-label="Account Name">
-                                <div class="slds-truncate">{{field.name}}</div>
-                            </td>
-                            <td data-label="Account Name">
-                                <div class="slds-truncate">{{getFieldLabel(field.name)}}</div>
-                            </td>
-                        </tr>
+                        <tbody >
+                            <tr class="slds-border--bottom" *ngFor="let field of ftsconfiguration.moduleFtsFields" >
+                                <td>
+                                    <div class="slds-truncate">{{field.path}}</div>
+                                </td>
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate">{{field.indexfieldname}}</div>
+                                </td>
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate">{{field.fieldname}}</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -107,6 +107,9 @@ import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 
+import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
+import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -205,7 +208,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemUtilityIcon,
         SystemViewContainer,
         SystemIconHelpText,
-        SystemMultipleSelect
+        SystemMultipleSelect,
+        SystemModuleTree,
+        SystemModuleTreeItem
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -283,7 +288,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
-        SystemFilterBuilderFilterExpression
+        SystemFilterBuilderFilterExpression,
+        SystemModuleTree
     ]
 })
 export class SystemComponents {
