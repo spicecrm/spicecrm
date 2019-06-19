@@ -1,0 +1,13 @@
+<div class="slds-p-horizontal--small slds-p-vertical--small slds-border--bottom" (click)="selectMail(message)" style="cursor: pointer;" [ngClass]="{'slds-theme_default': isSelected}">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-text-title_caps slds-truncate" [ngStyle]="nameStyle">{{message.description}}</div>
+        <div class="slds-col--bump-left slds-p-left--xx-small">
+            <field-container field="date_sent" fielddisplayclass="slds-truncate"></field-container>
+        </div>
+    </div>
+    <div *ngIf="componentFields.length > 0">
+        <div class="slds-grid slds-grid--vertical-align-center" *ngFor="let componentField of componentFields">
+            <field-container class="slds-col--bump-left slds-truncate" [field]="componentField.field" [fieldconfig]="componentField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+        </div>
+    </div>
+</div>

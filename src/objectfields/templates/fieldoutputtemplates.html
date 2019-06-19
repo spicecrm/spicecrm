@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <ng-container *ngIf="selected_item">{{selected_item.name}} ({{selected_item.language}})</ng-container>
 </field-generic-display>

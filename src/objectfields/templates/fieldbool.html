@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <system-checkbox disabled [(ngModel)]="value"></system-checkbox>
 </field-generic-display>

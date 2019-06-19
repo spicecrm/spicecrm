@@ -8,7 +8,6 @@
     </div>
     <div *ngIf="componentFields.length > 0">
         <div class="slds-grid slds-grid--vertical-align-center" *ngFor="let componentField of componentFields">
-            <field-label class="slds-truncate"  [fieldname]="componentField.field" [fieldconfig]="componentField.fieldconfig"></field-label>
             <field-container class="slds-col--bump-left slds-truncate" [field]="componentField.field" [fieldconfig]="componentField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
         </div>
     </div>
