@@ -14,7 +14,7 @@
         <div *ngIf="searchTerm != ''" class="slds-theme--shade slds-p-vertical--xx-small slds-p-horizontal--small slds-text-body--small slds-border--bottom">
             {{resultsList.length}} {{language.getLabel('MSG_DOCUMENTS_FOUND')}}
         </div>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout">
             <thead>
             <tr class="slds-line-height_reset">
                 <th class="slds-text-title_caps" scope="col">

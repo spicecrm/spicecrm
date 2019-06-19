@@ -153,15 +153,15 @@ export class model implements OnDestroy {
     private modelRegisterId: number;
 
     constructor(
-        private backend: backend,
+        public backend: backend,
         private broadcast: broadcast,
-        private metadata: metadata,
+        public metadata: metadata,
         public utils: modelutilities,
         private session: session,
         private recent: recent,
         private router: Router,
         private toast: toast,
-        private language: language,
+        public language: language,
         private modal: modal,
         private navigation: navigation,
         private injector: Injector,

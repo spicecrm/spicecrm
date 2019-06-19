@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Input, OnChanges, SimpleChanges
+    Component, Input, OnChanges, SimpleChanges, EventEmitter, Output
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
@@ -17,6 +17,8 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
     @Input() private module: string;
     @Input() private filtergroup: any;
     @Input() private candelete: boolean = false;
+
+    @Output() private expressionChanged: EventEmitter<any> = new EventEmitter<any>();
 
     private expressions: any[] = [];
     private groups: any[] = [];
@@ -49,6 +51,8 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
         };
         this.filtergroup.conditions.push(expression);
         this.expressions.push(expression);
+
+        this.expressionChanged.emit(true);
     }
 
     private addGroup() {
@@ -64,6 +68,22 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
 
     private delete() {
         this.filtergroup.deleted = true;
+        this.expressionChanged.emit(true);
+    }
+
+    private filterchanged(){
+        this.cleanDeleted();
+        this.expressionChanged.emit(true);
+    }
+
+    private cleanDeleted() {
+        let newFilterGroupCondition = [];
+        for (let filterGroupCondition of this.filtergroup.conditions) {
+            if (filterGroupCondition.deleted !== true) {
+                newFilterGroupCondition.push(filterGroupCondition);
+            }
+        }
+        this.filtergroup.conditions = newFilterGroupCondition;
     }
 
 }

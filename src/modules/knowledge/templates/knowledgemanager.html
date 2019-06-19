@@ -21,10 +21,15 @@
                             *ngIf="selectedBook && !isLoading"
                             [config]="config"
                             [treelist]="documents"
-                            [selectedItem]="selectedId"
+                            [selectedItem]="selectedDoc"
                             (addItem$)="handleAddEvent($event)"
                             (selectedItem$)="handleSelectedItemEvent($event)"
                             (treelistChange$)="saveListEdit($event)">
+                        <div class="slds-m-right--xx-small">
+                            <button class="slds-button slds-button_icon slds-m-top--none">
+                                <system-button-icon [icon]="'edit'" [size]="'xx-small'"></system-button-icon>
+                            </button>
+                        </div>
                     </system-tree>
                     <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
                         <system-spinner></system-spinner>
@@ -38,7 +43,7 @@
     </div>
     <div class="slds-size--3-of-4">
         <div [ngStyle]="detailsContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
-            <knowledge-manager-details [selectedId]="selectedId"></knowledge-manager-details>
+            <knowledge-manager-details [selectedDoc]="selectedDoc"></knowledge-manager-details>
         </div>
     </div>
 </div>

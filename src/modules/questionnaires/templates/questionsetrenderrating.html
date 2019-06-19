@@ -25,7 +25,7 @@
                         title="{{ratingEntries[j].text}}" type="radio"
                         [checked]="!previewMode && answers[question.id][j].value" name="{{question.id}}"
                         (click)="onClick(question.id,j,$event)"
-                        [disabled]="questionsMeta[question.id].readonly || no_edit"></td>
+                        [disabled]="questionsMeta[question.id].readonly || noEdit"></td>
             </tr>
         </ng-container>
     </tbody>

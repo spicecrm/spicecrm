@@ -6,54 +6,63 @@ import {
     Input,
     OnChanges
 } from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
-import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {AppDataService} from "../../../services/appdata.service";
 
-
+/**
+ * renders the task details view in the workflow manager
+ */
 @Component({
     selector: 'workflow-manager-detail-tasks',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasks.html',
 })
 export class WorkflowManagerDetailTasks implements OnChanges {
 
-    @Input() tasks: Array<any> = [];
-    fields: Array<any> = [];
-    selectedTask: string = '';
+    /**
+     * the tasks for the selected workflow
+     */
+    @Input() private tasks: any[] = [];
 
-    constructor(private appdata: AppDataService, private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
-        /*
-        let componentconfig = this.metadata.getComponentConfig('WorkflowManagerDetailTasks', 'WorkflowTaskDefinitions');
-        if (componentconfig && componentconfig.fieldset) {
-            this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
-        }
-        */
+    /**
+     * the curently selectd task
+     */
+    private selectedTask: string = '';
+
+    constructor(private model: model, private view: view, private language: language) {
     }
 
-    ngOnChanges() {
+    /**
+     * in case of input changes (other workflow selected) this selects the first task if the workflow has any tasks
+     */
+    public ngOnChanges() {
         this.sortTasksBySequence();
 
         // select the first task
-        if(this.tasks.length > 0)
+        if (this.tasks.length > 0) {
             this.selectedTask = this.tasks[0].id;
-        else
+        } else {
             this.selectedTask = '';
+        }
 
     }
 
-    sortTasksBySequence() {
-        if (this.tasks)
+    /**
+     * sorts the tasks by the sequence
+     */
+    private sortTasksBySequence() {
+        if (this.tasks) {
             this.tasks.sort((a, b) => {
                 return a.sequence > b.sequence ? 1 : -1;
-            })
+            });
+        }
     }
 
-    addTask(){
-        let newGuid = this.modelutilities.generateGuid();
+    /**
+     * adds a task
+     */
+    private addTask() {
+        let newGuid = this.model.utils.generateGuid();
         this.tasks.push({
             id: newGuid,
             workflowdefinition_id: this.model.id,
@@ -68,16 +77,19 @@ export class WorkflowManagerDetailTasks implements OnChanges {
         this.selectedTask = newGuid;
     }
 
-    getNextSequence(){
+    /**
+     * helper function that loops over the tasks and gets the next available sequence number in an incremtne of 10
+     */
+    private getNextSequence() {
         let highestSequence = 0;
 
-        for(let task of this.tasks){
-            if(task.deleted != 1 && parseInt(task.sequence) > highestSequence){
-                highestSequence = parseInt(task.sequence);
+        for (let task of this.tasks) {
+            if (task.deleted != 1 && parseInt(task.sequence, 10) > highestSequence) {
+                highestSequence = parseInt(task.sequence, 10);
             }
         }
 
-        return highestSequence + ( 10 - highestSequence % 10);
+        return highestSequence + (10 - highestSequence % 10);
     }
 
 }

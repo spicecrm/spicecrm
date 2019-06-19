@@ -1,13 +1,13 @@
 /**
  * @module ModuleQuestionnaires
  */
-import {Component, OnInit } from '@angular/core';
+import { Component, ContentChild, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import { modal } from '../../../services/modal.service';
 import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
-
+import { modellist } from '../../../services/modellist.service';
 
 @Component({
     selector: 'questions-manager',
@@ -15,50 +15,56 @@ import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
 })
 export class QuestionsManager implements OnInit {
 
-    questions: Array<any> = [];
-    questionsBackup: Array<any> = [];
-    currentQuestionId: string = '';
-    changeOrderMode: boolean = false;
+    @Input() public noTitle = false;
+    @Input() public showQuestionsetButtons = false;
+    @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
+
+    private questions: any[] = [];
+    private questionsBackup: any[] = [];
+    private currentQuestionId = '';
+    private changeOrderMode = false;
+    private isLoading = true;
 
     constructor( private language: language, private model: model, private backend: backend, private modalservice: modal ) { }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         let params = {
             searchfields: {
                 field: 'questionset_id',
                 operator: '=',
                 value: this.model.id
             },
-            fields: ['id', 'name', 'position'], //JSON.stringify(['id', 'name', 'position']),
+            fields: ['id', 'name', 'position'],
             sortfield: 'position,date_entered',
             limit: -99
         };
         this.backend.getRequest('module/Questions', params ).subscribe( (response: any) => {
             this.questions = response.list;
+            this.isLoading = false;
         });
     }
 
-    addQuestion() {
+    private addQuestion(): void {
         this.currentQuestionId = '';
         this.openForm();
     }
 
-    editQuestion(questionId) {
+    private editQuestion(questionId): void {
         this.currentQuestionId = questionId;
         this.openForm();
     }
 
-    openForm() {
+    private openForm(): void {
         this.modalservice.openModal('QuestionsManagerAddModal' ).subscribe( form => {
-            form.instance['questionset'] = this.model;
-            form.instance['questionid'] = this.currentQuestionId;
-            form.instance['response'].subscribe( response => {
+            form.instance.questionset = this.model;
+            form.instance.questionid = this.currentQuestionId;
+            form.instance.response.subscribe( response => {
                 this.handleFormResponse( response );
             });
         });
     }
 
-    getIndexOfQuestion(questionId:string) : number {
+    private getIndexOfQuestion( questionId: string ): number {
         let indexOfQuestion: number;
         this.questions.some((question, index) => {
             if (question.id === questionId) {
@@ -69,7 +75,7 @@ export class QuestionsManager implements OnInit {
         return indexOfQuestion;
     }
 
-    deleteQuestion(questionId) {
+    private deleteQuestion( questionId ): void {
         // First get the index position of the question. Because we only know the id of the question.
         let indexOfQuestion: number = this.getIndexOfQuestion(questionId);
         this.modalservice.confirm(
@@ -82,11 +88,11 @@ export class QuestionsManager implements OnInit {
         });
     }
 
-    handleFormResponse( event) {
+    private handleFormResponse( event ): void {
         if (event !== false) {
-            if ( this.currentQuestionId === '' )
-                this.questions.push(event)
-            else {
+            if ( this.currentQuestionId === '' ) {
+                this.questions.push( event )
+            } else {
                 this.questions.some( question => {
                    if ( question.id == event.id ) {
                        question.name = event.name;
@@ -97,29 +103,41 @@ export class QuestionsManager implements OnInit {
         }
     }
 
-    changeOrderStart() {
+    private changeOrderStart(): void {
+
         this.questionsBackup = this.questions.slice(0); // clone the questions array (for canceling)
         this.changeOrderMode = true;
+
+        // Changing the order should be also cancelable by esc key:
+        const this2 = this; // we need 'this' in the anonymous function 'handler'
+        window.addEventListener('keyup', function handler(event) {
+            if ( event.keyCode === 27 ) {
+                event.stopImmediatePropagation();
+                this2.changeOrderCancel();
+                this.removeEventListener ('click', handler );
+            }
+        });
     }
-    changeOrderCancel() {
+
+    private changeOrderCancel(): void {
         this.questions = this.questionsBackup;
         this.questionDown(5);
         this.changeOrderMode = false;
     }
-    changeOrderSave() {
+    private changeOrderSave(): void {
         for ( let i in this.questions ) {
             this.questions[i].position = i;
             this.backend.postRequest('module/Questions/'+this.questions[i].id, null, '{"position":'+i+'}');
         }
         this.changeOrderMode = false;
     }
-    questionUp(i) {
+    private questionUp( i ): void {
         if ( i === 0 ) return;
         let tmp = this.questions[i-1];
         this.questions[i-1] = this.questions[i];
         this.questions[i] = tmp;
     }
-    questionDown(i) {
+    private questionDown( i ): void {
         if ( i > this.questions.length-1 ) return;
         let tmp = this.questions[i+1];
         this.questions[i+1] = this.questions[i];

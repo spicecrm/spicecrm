@@ -30,16 +30,16 @@ declare var _;
 })
 export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnInit {
 
-    @Input() fieldvalue: string = '';
-    @Input() fieldid: string = '';
-    @Input() fieldconfig: any = {};
-    @Input() useStylesheetSwitcher: boolean;
-    @Input() useStylesheets: boolean;
-    editor: any = null;
-    stylesheets: Array<any>;
-    stylesheetIdValue: string = '';
+    @Input() public fieldvalue: string = '';
+    @Input() public fieldid: string = '';
+    @Input() public fieldconfig: any = {};
+    @Input() public useStylesheetSwitcher: boolean;
+    @Input() public useStylesheets: boolean;
+    public editor: any = null;
+    public stylesheets: any = [];
+    public stylesheetIdValue: string = '';
 
-    tinymceConfig = <any>{
+    public tinymceConfig: any = {
         remove_script_host: true,
         relative_urls: false,
         menubar: false,
@@ -59,8 +59,9 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
                 this.content = content;
             });
             editor.on("init", () => {
-                    if (this.fieldvalue)
+                    if (this.fieldvalue) {
                         this.editor.setContent(this.fieldvalue);
+                    }
                 }
             );
         },
@@ -123,21 +124,21 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
         return this.stylesheetIdValue;
     }
 
-    oldStylesheetId: string = '';
+    public oldStylesheetId: string = '';
 
-    @Output() contentchange: EventEmitter<any> = new EventEmitter<any>();
-    @Output() stylesheetIdChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public contentchange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public stylesheetIdChange: EventEmitter<any> = new EventEmitter<any>();
 
     constructor( private metadata: metadata, private footer: footer, private configurationService: configurationService, private modal: modal ) {
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.tinymceConfig.selector = '#' + this.fieldid;
         this.tinymceConfig.document_base_url = this.configurationService.getFrontendUrl();
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.metadata.loadLibs('tinymce').subscribe(
             (next) => {
                 let addButtons = '';
@@ -147,13 +148,13 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
         );
     }
 
-    changeStylesheet() {
+    public changeStylesheet() {
         if ( this.editor ) tinymce.remove( this.editor );
         this.setStylesheet();
         tinymce.init( this.tinymceConfig );
     }
 
-    setStylesheet() {
+    public setStylesheet() {
         let formats = [];
         this.oldStylesheetId = this.stylesheetId;
         if ( !_.isEmpty( this.stylesheetId )) {
@@ -189,8 +190,9 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
                         });
                     }
                 }
-                if ( this.tinymceConfig.style_formats[2].items.length === 0 )
+                if ( this.tinymceConfig.style_formats[2].items.length === 0 ) {
                     this.tinymceConfig.style_formats.splice(2, 1);
+                }
             }
             this.tinymceConfig.content_style = this.metadata.getHtmlStylesheetCode( this.stylesheetId );
         } else {
@@ -198,24 +200,27 @@ export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnI
         }
     }
 
-    fullScreen() {
+    public fullScreen() {
         this.modal.openModal('SystemTinyMCEModal').subscribe(componentRef => {
             componentRef.instance.content = this.fieldvalue;
             componentRef.instance.updateContent.subscribe(update => {
                 this.fieldvalue = update;
                 this.editor.setContent(update);
-            })
+            });
         });
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         tinymce.remove(this.editor);
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         // our own little change detection
-        if ( this.editor && this.fieldvalue && this.editor.getContent() !== this.fieldvalue )
+        if ( this.editor && this.fieldvalue && this.editor.getContent() !== this.fieldvalue ) {
             this.editor.setContent(this.fieldvalue);
-        if ( this.oldStylesheetId.length && this.oldStylesheetId != this.stylesheetId ) this.changeStylesheet();
+        }
+        if ( this.oldStylesheetId.length && this.oldStylesheetId != this.stylesheetId ) {
+            this.changeStylesheet();
+        }
     }
 }

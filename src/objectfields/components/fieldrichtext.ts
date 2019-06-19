@@ -1,15 +1,16 @@
 /**
  * @module ObjectFields
  */
-import { Component,  NgZone, ViewContainerRef, ViewChild} from '@angular/core';
+import {Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
-import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
+import {broadcast} from "../../services/broadcast.service";
+import {Subscription} from "rxjs";
 
 declare var _;
 
@@ -17,40 +18,26 @@ declare var _;
     selector: 'field-richtext',
     templateUrl: './src/objectfields/templates/fieldrichtext.html',
 })
-export class fieldRichText extends fieldGeneric {
+export class fieldRichText extends fieldGeneric implements OnDestroy {
     private stylesheetField: string = '';
     private useStylesheets: boolean;
     private useStylesheetSwitcher: boolean;
     private stylesheets: any[];
     private stylesheetToUse: string = '';
-    private _cached_html_value; // the cached sanitized html object to prevent "filckering" of the iframe
-    private _cached_value; // for change detection reasons...
+    private subscription: Subscription = new Subscription();
 
     @ViewChild('printframe', {read: ViewContainerRef}) private printframe: ViewContainerRef;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private zone: NgZone, public sanitized: DomSanitizer, private modal: modal) {
+    constructor(public model: model,
+                public view: view,
+                public language: language,
+                public metadata: metadata,
+                public router: Router,
+                public broadcast: broadcast,
+                public sanitized: DomSanitizer) {
         super(model, view, language, metadata, router);
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
-    }
-
-    public ngOnInit() {
-        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
-            this.stylesheetField = fieldDefs.stylesheet_id_field;
-        }
-
-        this.useStylesheets = !_.isEmpty(this.stylesheetField) && !_.isEmpty(this.stylesheets);
-
-        if (this.useStylesheets) {
-            if (this.stylesheets.length === 1) {
-                this.stylesheetToUse = this.stylesheets[0].id;
-            } else if (!_.isEmpty(this.fieldconfig.stylesheetId)) {
-                this.stylesheetToUse = this.fieldconfig.stylesheetId;
-            } else {
-                this.stylesheetToUse = this.metadata.getHtmlStylesheetToUse(this.model.module, this.fieldname);
-            }
-        }
-        this.useStylesheetSwitcher = this.useStylesheets && _.isEmpty(this.stylesheetToUse);
+        this.modelChangesSubscriber();
     }
 
     /**
@@ -75,23 +62,70 @@ export class fieldRichText extends fieldGeneric {
         }
     }
 
-    private updateStylesheet(stylesheetId) {
-        if (!_.isEmpty(this.stylesheetField) && _.isString(stylesheetId)) {
-            this.model.setField(this.stylesheetField, stylesheetId);
+    public ngOnInit() {
+        this.setStylesheetField();
+        this.setStylesheetsToUse();
+        this.setHtmlValue();
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    private modelChangesSubscriber() {
+        this.broadcast.message$.subscribe(msg => {
+            switch (msg.messagetype) {
+                case 'model.save':
+                case 'model.loaded':
+                    this.setHtmlValue();
+            }
+        });
+    }
+
+    private setStylesheetField() {
+        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
+            this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }
 
-    // Code from fieldlabel.ts
-    private getLabel() {
-        if (this.fieldconfig.label) {
-            if (this.fieldconfig.label.indexOf(':') > 0) {
-                let fielddetails = this.fieldconfig.label.split(':');
-                return this.language.getLabel(fielddetails[1], fielddetails[0], this.view.labels)
+    private setStylesheetsToUse() {
+        this.useStylesheets = !_.isEmpty(this.stylesheetField) && !_.isEmpty(this.stylesheets);
+        if (this.useStylesheets) {
+            if (this.stylesheets.length === 1) {
+                this.stylesheetToUse = this.stylesheets[0].id;
+            } else if (!_.isEmpty(this.fieldconfig.stylesheetId)) {
+                this.stylesheetToUse = this.fieldconfig.stylesheetId;
             } else {
-                return this.language.getLabel(this.fieldconfig.label, this.model.module, this.view.labels)
+                this.stylesheetToUse = this.metadata.getHtmlStylesheetToUse(this.model.module, this.fieldname);
             }
-        } else {
-            return this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig, this.view.labels)
+        }
+        this.useStylesheetSwitcher = this.useStylesheets && _.isEmpty(this.stylesheetToUse);
+    }
+
+    private setHtmlValue() {
+        let regexp = /<code>[\s\S]*?<\/code>/g;
+        let match = regexp.exec(this.value);
+        while (match != null) {
+            this.value = this.value
+                .replace(match, this.encodeHtml(match))
+                .replace('&lt;code&gt;', '<code>')
+                .replace('&lt;/code&gt;', '</code>');
+            match = regexp.exec(this.value);
+        }
+    }
+
+    private encodeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    private updateStylesheet(stylesheetId) {
+        if (!_.isEmpty(this.stylesheetField) && _.isString(stylesheetId)) {
+            this.model.setField(this.stylesheetField, stylesheetId);
         }
     }
 }

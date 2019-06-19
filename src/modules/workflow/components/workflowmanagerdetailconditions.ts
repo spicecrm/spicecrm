@@ -10,6 +10,11 @@ import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 
+declare var _: any;
+
+/**
+ * renders the conditions panel for a given workflow
+ */
 @Component({
     selector: 'workflow-manager-detail-conditions',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailconditions.html',
@@ -17,32 +22,49 @@ import {language} from '../../../services/language.service';
 })
 export class WorkflowManagerDetailConditions {
 
-    @Input() private filter: any;
-    private primaryGroup: any = {
-        logicaloperator: 'and',
-        groupscope: 'all',
-        conditions: []
-    }
-
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        this.view.displayLabels = false;
     }
 
+    /**
+     * getter for teh conditions stored on the workflow definition
+     */
+    get conditions() {
+        // get from the model
+        return this.model.getField('conditions');
+    }
 
-    get module(){
+    /**
+     * simple setter for the conditions
+     *
+     * @param conditions
+     */
+    set conditions(conditions) {
+        this.model.setField('conditions', conditions);
+    }
+
+    /**
+     * getter for the conditions to end the workflow stored on the workflow definition
+     */
+    get conditions_end() {
+        return this.model.getField('conditions_end');
+    }
+
+    /**
+     * simple setter for eht conditions to end the workflow
+     * @param conditions
+     */
+    set conditions_end(conditions) {
+        this.model.setField('conditions_end', conditions);
+    }
+
+    /**
+     * a simple getter for the module
+     */
+    get module() {
         return this.model.getField('workflowdefinition_module');
     }
-
-    private addCondition(){
-        let newGuid = this.modelutilities.generateGuid();
-        this.model.data.conditions.push({
-            id: newGuid,
-            workflowdefinition_id: this.model.id,
-            deleted: 0,
-        });
-
-    }
-
-
 }

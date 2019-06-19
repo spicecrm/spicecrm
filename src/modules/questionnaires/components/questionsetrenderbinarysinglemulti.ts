@@ -18,67 +18,68 @@ import {toast} from "../../../services/toast.service";
 })
 export class QuestionsetRenderBinarySingleMulti implements OnInit {
 
-    @Input() answers: any = {};
-    @Input() hideFinishedQuestions: boolean = false;
-    @Input() imageWidthOption = 200;
-    @Input() imageWidthQuestion = 200;
-    @Input() in_modal: boolean = true;
-    @Input() no_edit: boolean = false;
-    @Input() options: any = {};
-    @Input() participation_id: string;
-    @Input() previewMode: boolean;
-    @Input() questions: Array<any> = [];
-    @Input() questionset: any;
-    @Input() questionsMeta = {};
+    @Input() public answers: any = {};
+    @Input() public hideFinishedQuestions = false;
+    @Input() public imageWidthOption = 200;
+    @Input() public imageWidthQuestion = 200;
+    @Input() public inModal = true;
+    @Input() public noEdit = false;
+    @Input() public options: any = {};
+    @Input() public participation_id: string;
+    @Input() public previewMode: boolean;
+    @Input() public questions: any[] = [];
+    @Input() public questionset: any;
+    @Input() public questionsMeta = {};
 
-    @Output() numOfFinishedQuestionsChange = new EventEmitter();
-    numOfFinishedQuestionsValue: number = 0;
+    @Output() public numOfFinishedQuestionsChange = new EventEmitter();
+    private numOfFinishedQuestionsValue = 0;
 
-    backupForNetworkError: string;
+    private backupForNetworkError: string;
 
     constructor( private language: language, private backend: backend, private session: session, private toast: toast ) { }
 
-    @Input()
-    get numOfFinishedQuestions() {
+    @Input() public get numOfFinishedQuestions(): number {
         return this.numOfFinishedQuestionsValue;
     }
 
-    set numOfFinishedQuestions( val ) {
+    public set numOfFinishedQuestions( val ) {
         this.numOfFinishedQuestionsValue = val;
         this.numOfFinishedQuestionsChange.emit( this.numOfFinishedQuestionsValue );
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
 
         // Maybe some questions have specific parameters stored.
         // So we parse the question parameters (stored as json string) and put it to questionsMeta.
-        for ( let question of this.questions )
-            if ( question.questionparameter ) this.questionsMeta[question.id].parameter = JSON.parse( question.questionparameter );
+        for ( let question of this.questions ) {
+            if( question.questionparameter ) this.questionsMeta[question.id].parameter = JSON.parse( question.questionparameter );
+        }
 
         if ( !this.previewMode ) {
             this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
-                data => {
-                    for( let question of this.questions ) {
-                        if( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
-                        this.questionsMeta[question.id].readonly = false;
-                    }
-                    this.determineNumOfFinishedQuestions();
-                } );
+        data => {
+                for ( let question of this.questions ) {
+                    if ( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
+                    this.questionsMeta[question.id].readonly = false;
+                }
+                this.determineNumOfFinishedQuestions();
+            });
         }
     }
 
-    setFieldsOfQuestion( questionId: string, answervalues: any ) {
-        for ( let answer of this.answers[questionId] )
+    private setFieldsOfQuestion( questionId: string, answervalues: any ): void {
+        for ( let answer of this.answers[questionId] ) {
             answer.value = ( answervalues[answer.optionId] || false );
+        }
     }
 
-    onClick( questionId: string, answerIndex: number, event: any ): boolean {
+    private onClick( questionId: string, answerIndex: number, event: any ): boolean {
 
         // If the preview mode is set, a click is allowed but is not to be treated. --> Do nothing and return true.
         if ( this.previewMode ) return true;
 
         // If the edit mode is not set, a click is not allowed and is not to be treated. --> Do nothing and return false.
-        if ( this.no_edit ) return false;
+        if ( this.noEdit ) return false;
 
         // Are the input fields of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input fields are disabled.
@@ -99,7 +100,7 @@ export class QuestionsetRenderBinarySingleMulti implements OnInit {
             this.backupForNetworkError = JSON.stringify( this.answers[questionId] );
 
             // Set the (other) answers to false, the selected to true
-            for( let i = 0; i < this.answers[questionId].length; i++ ) this.answers[questionId][i].value = false;
+            this.answers[questionId].forEach( ( el, i ) => this.answers[questionId][i].value = false );
             this.answers[questionId][answerIndex].value = true;
 
         } else { // questiontype is 'multi'
@@ -124,9 +125,10 @@ export class QuestionsetRenderBinarySingleMulti implements OnInit {
         }
 
         // The data for the server request with the answer values (true or false).
-        var requestData = {};
-        for ( let i = 0; i < this.answers[questionId].length; i++ )
+        let requestData = {};
+        for ( let i = 0; i < this.answers[questionId].length; i++ ) {
             requestData[this.options[questionId][i].id] = this.answers[questionId][i].value;
+        }
 
         // Do the request to the server to store the current answer state of the whole question.
         this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData ).subscribe(
@@ -146,9 +148,10 @@ export class QuestionsetRenderBinarySingleMulti implements OnInit {
 
     }
 
-    determineNumOfFinishedQuestions() {
-        let numberQuestions: number = 0;
-        let numberAnswers: number, answeredOK: boolean;
+    private determineNumOfFinishedQuestions(): void {
+        let numberQuestions = 0;
+        let numberAnswers: number;
+        let answeredOK: boolean;
         for( let question of this.questions ) {
             numberAnswers = 0;
             answeredOK = false;

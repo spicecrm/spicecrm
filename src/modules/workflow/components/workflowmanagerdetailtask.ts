@@ -29,6 +29,8 @@ export class WorkflowManagerDetailTask implements OnChanges{
         this.model.module = 'WorkflowTaskDefinitions';
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        this.view.displayLabels = false;
     }
 
     ngOnChanges() {
