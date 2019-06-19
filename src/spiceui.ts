@@ -24,6 +24,7 @@ import {ObjectComponents} from "./objectcomponents/objectcomponents";
 // various services we need on global app level
 import {loggerService} from './services/logger.service';
 import {configurationService} from "./services/configuration.service";
+import {helper} from "./services/helper.service";
 import {loginService, loginCheck} from "./services/login.service";
 import {session} from "./services/session.service";
 import {metadata, aclCheck} from "./services/metadata.service";
@@ -51,6 +52,7 @@ import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
+import {modelregister} from './services/modelregister.service';
 
 // declarations for TS
 /**
@@ -134,6 +136,7 @@ export class SpiceUI {
         AppDataService,
         aclCheck,
         loginCheck,
+        helper,
         loginService,
         loader,
         configurationService,
@@ -156,7 +159,8 @@ export class SpiceUI {
         VersionManagerService,
         modal,
         Title,
-        loggerService
+        loggerService,
+        modelregister
     ]
 })
 export class SpiceUIModule {
