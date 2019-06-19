@@ -14,6 +14,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {PotentialsManager} from "./components/potentialsmanager";
+import /*embed*/ {PotentialsManagerAddButton} from "./components/potentialsmanageraddbutton";
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import /*embed*/ {PotentialsManager} from "./components/potentialsmanager";
         DirectivesModule,
     ],
     declarations: [
-        PotentialsManager
+        PotentialsManager,
+        PotentialsManagerAddButton
     ]
 })
 export class ModulePotentials {

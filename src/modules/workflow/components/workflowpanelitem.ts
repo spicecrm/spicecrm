@@ -2,7 +2,7 @@
  * @module ModuleWorkflow
  */
 import {
-    Component,Input, OnInit
+    Component, Input, OnInit
 } from '@angular/core';
 
 import {model} from '../../../services/model.service';
@@ -15,25 +15,20 @@ import {broadcast} from '../../../services/broadcast.service';
     templateUrl: './src/modules/workflow/templates/workflowpanelitem.html',
 
 })
-export class WorkflowPanelItem implements OnInit{
+export class WorkflowPanelItem {
 
-    @Input() workflow: any = {};
+    @Input() private workflow: any = {};
 
-    hidebody : boolean = false
+    private hidebody: boolean = false
 
-    constructor(private model: model, private workflowservice: workflow, private language: language, private broadcast: broadcast) {
-        //this.model.module = 'Workflows';
+    constructor(private model: model, private language: language, private broadcast: broadcast) {
     }
 
-    ngOnInit(){
-       // this.model.id = this.workflow.id;
-    }
-
-    toggleHidden(){
+    private toggleHidden() {
         this.hidebody = !this.hidebody;
     }
 
-    get toggleicon(){
+    get toggleicon() {
         return this.hidebody ? 'chevrondown' : 'chevronup';
     }
 

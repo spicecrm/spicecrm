@@ -16,6 +16,6 @@
     </div>
     <div class="slds-card__body" [ngClass]="{'slds-hide': hidebody}">
         <workflow-panel-tasks [workflowtasks]="workflow.worflowtasks"></workflow-panel-tasks>
-        <workflow-panel-task *ngFor="let workflowtask of workflow.worflowtasks|myopentasks" [workflowtask]="workflowtask" [workflow]="workflow"></workflow-panel-task>
+        <workflow-panel-task *ngFor="let workflowtask of workflow.worflowtasks|workflowmyopentaskspipe" [workflowtask]="workflowtask" [workflow]="workflow"></workflow-panel-task>
     </div>
 </article>

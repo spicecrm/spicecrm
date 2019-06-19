@@ -1,4 +1,4 @@
-<workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|openworkflows" [workflow]="thisworkflow"></workflow-panel-item>
+<workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
 <div *ngIf="workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium">
     No Active Workflows
 </div>

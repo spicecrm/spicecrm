@@ -3,7 +3,48 @@
     <div @displaycard *ngIf="isopen">
         <div class="slds-card__body slds-size--1-of-1">
             <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset"></object-relatedlist-table>
+            <div class="slds-p-vertical--x-small">
+                <div class="slds-p-around--medium slds-grid slds-grid--vertical-align-center">
+                    <object-icon module="SalesDocs" size="small"></object-icon>
+                    <h2 class="slds-text-heading--small">{{language.getLabel('LBL_REVENUES')}}</h2>
+                </div>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-text-title--caps">
+                            <th class="" scope="col">
+                                <div class="slds-truncate">{{language.getLabel('LBL_PRODUCTGROUP')}}</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate">{{language.getLabel('LBL_REVENUE')}}</div>
+                            </th>
+                            <!--th class="" scope="col">
+                                <div class="slds-truncate">{{language.getLabel('LBL_LINEITEMS')}}</div>
+                            </th-->
+                            <th class="" scope="col" style="width:9rem">
+                                <div class="slds-truncate slds-assistive-text"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let revenue of cc_revenues">
+                            <td>
+                                <div class="slds-truncate">{{revenue.productgroup_name}}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate slds-text-align--right">{{parseCurrencyValue(revenue.productgroup_revenue)}}</div>
+                            </td>
+                            <!--td>
+                                <div class="slds-truncate slds-text-align--right">{{revenue.productgroup_itemcount}}</div>
+                            </td-->
+                            <td>
+                                <potentials-manager-add-button [parentModel]="model" [productgroup_id]="revenue.productgroup_id" [productgroup_name]="revenue.productgroup_name"></potentials-manager-add-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody system-table-stencils *ngIf="cc_revenues_loading" [columns]="2" [select]="false" [tools]="true"></tbody>
+                </table>
+            </div>
         </div>
-        <object-related-card-footer [componentconfig]="componentconfig"></object-related-card-footer>
+        <!--object-related-card-footer [componentconfig]="componentconfig"></object-related-card-footer-->
     </div>
 </div>
