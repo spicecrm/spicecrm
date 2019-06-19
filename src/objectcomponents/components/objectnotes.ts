@@ -27,6 +27,11 @@ export class ObjectNotes implements OnInit {
     private newNote: string = '';
 
     /**
+     * keep track if the textarea is active (focused)
+     */
+    private _active = false;
+
+    /**
      * indicator that the new note is considered private and not global so only visible to the user who created it or admins
      */
     private isPrivate: boolean = false;
@@ -82,6 +87,27 @@ export class ObjectNotes implements OnInit {
      */
     get userimage() {
         return this.session.authData.userimage;
+    }
+
+    /**
+     * determine if the publisher is active or not
+     */
+    get isActive() {
+        return this._active || this.newNote !== '';
+    }
+
+    /**
+     * triggered when the textarea gets the focus
+     */
+    private onFocus() {
+        this._active = true;
+    }
+
+    /**
+     * triggered when the textarea has a blur event
+     */
+    private onBlur() {
+        this._active = false;
     }
 
 }

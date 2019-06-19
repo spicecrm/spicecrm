@@ -31,11 +31,11 @@
             <!--li class="slds-expression__row slds-expression__row_group" *ngFor="let expression of expressions"-->
             <li class="slds-expression__row_group" *ngFor="let expression of expressions">
                 <fieldset *ngIf="!expression.deleted">
-                    <system-filter-builder-expression [module]="module" [filterexpression]="expression"></system-filter-builder-expression>
+                    <system-filter-builder-expression [module]="module" [filterexpression]="expression" (expressionDeleted)="filterchanged()" ></system-filter-builder-expression>
                 </fieldset>
             </li>
             <ng-container *ngFor="let group of groups">
-            <system-filter-builder-expression-group *ngIf="!group.deleted" [module]="module" [filtergroup]="group" [candelete]="true"></system-filter-builder-expression-group>
+                <system-filter-builder-expression-group *ngIf="!group.deleted" [module]="module" [filtergroup]="group" [candelete]="true" (expressionChanged)="filterchanged()" ></system-filter-builder-expression-group>
             </ng-container>
         </ul>
         <div class="slds-expression__buttons">
