@@ -35,14 +35,29 @@ export class AdministrationFTSManagerFieldsAdd {
     fields: Array<any> = [];
     selectedFields: any = {};
 
+    /**
+     * holds the path to the current selected tree node
+     */
+    private nodepath: string = '';
+
+    /**
+     * array with the fields for the module of the current selected node
+     */
+    private nodefields: any[] = [];
+
     constructor(private metadata: metadata, private language: language, private ftsconfiguration: ftsconfiguration, private backend: backend, private modelutilities: modelutilities) {
+        /*
         this.path.push({
             type: 'root',
             module: this.ftsconfiguration.module,
             path: 'root:' + this.ftsconfiguration.module
         });
-        this.getLinks();
-        this.getFields();
+        */
+        // this.getLinks();
+
+        this.getModuleFields(this.ftsconfiguration.module);
+
+        // this.getFields();
     }
 
     chooseBreadcrumb(i) {
@@ -95,12 +110,12 @@ export class AdministrationFTSManagerFieldsAdd {
     }
 
     selectField(field) {
-        if (this.selectedFields[this.buildNodeid() + '::field:' + field.name])
-            delete(this.selectedFields[this.buildNodeid() + '::field:' + field.name]);
-        else {
+        if (this.selectedFields[this.buildNodeid() + '::field:' + field.name]) {
+            delete (this.selectedFields[this.buildNodeid() + '::field:' + field.name]);
+        } else {
             let displaypath = '';
-            for(let path of this.path){
-                if(displaypath != '') displaypath += '->';
+            for (let path of this.path) {
+                if (displaypath != '') displaypath += '->';
                 displaypath += path.module;
             }
             field.displaypath = displaypath;
@@ -116,28 +131,34 @@ export class AdministrationFTSManagerFieldsAdd {
     }
 
 
-    canSave(){
+    canSave() {
         let itemcount = 0;
-        for(let field in this.selectedFields){
+        for (let field in this.selectedFields) {
             itemcount++;
         }
         return itemcount > 0 ? true : false;
     }
 
 
-    close() {
+    /**
+     * close the modal
+     */
+    private close() {
         this.closeModal.emit(false);
     }
 
-    save(){
-        for(let field in this.selectedFields){
+    /**
+     * save the settings
+     */
+    private save() {
+        for (let field in this.selectedFields) {
             let fieldid = this.modelutilities.generateGuid();
 
             let fieldpath = '';
             let fieldpathitems = field.split('::');
-            for(let fieldpathitem of fieldpathitems){
+            for (let fieldpathitem of fieldpathitems) {
                 let fieldpathitemelements = fieldpathitem.split(':');
-                if(fieldpathitemelements && fieldpathitemelements.length === 3){
+                if (fieldpathitemelements && fieldpathitemelements.length === 3) {
                     fieldpath += fieldpathitemelements[2] + '->'
                 }
             }
@@ -153,9 +174,47 @@ export class AdministrationFTSManagerFieldsAdd {
                 search: true,
                 indextype: 'string',
                 index: 'analyzed'
-            })
+            });
         }
         this.closeModal.emit(true)
+    }
+
+    /**
+     * triggered when an item in the tree is selected
+     *
+     * @param eventData
+     */
+    private itemSelected(eventData) {
+        console.log(eventData);
+        this.nodepath = eventData.path;
+        this.getModuleFields(eventData.module);
+    }
+
+    /**
+     * loads the fields for a given module
+     *
+     * @param module the module
+     */
+    private getModuleFields(module) {
+        this.nodefields = [];
+
+        this.backend.getRequest('/dictionary/browser/' + module + '/fields').subscribe(items => {
+            this.nodefields = items;
+        });
+    }
+
+
+    private drop(event) {
+        console.log(event);
+    }
+
+
+    private dragStarted(e) {
+        e.source.element.nativeElement.classList.add('slds-is-selected');
+    }
+
+    private dragEnded(e) {
+        e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 }
 
