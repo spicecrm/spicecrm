@@ -40,20 +40,23 @@ export class KnowledgeBrowserDetailsContainerLeft {
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.html) {
+        if (changes.html && this.html) {
             this.setHtmlValue();
         }
     }
 
     private setHtmlValue() {
-        let regexp = /(<code>)(.*?)(<\/code>)/gs;
-        let match = regexp.exec(this.html);
-        while (match != null) {
-            this.html = this.html.replace(match[2], this.encodeHtml(match[2]));
-            match = regexp.exec(this.html);
-        }
-        this.html = this.sanitizer.bypassSecurityTrustHtml(this.html);
+    let regexp = /<code>[\s\S]*?<\/code>/g;
+    let match = regexp.exec(this.html);
+    while (match != null) {
+        this.html = this.html
+            .replace(match, this.encodeHtml(match))
+            .replace('&lt;code&gt;', '<code>')
+            .replace('&lt;/code&gt;', '</code>');
+        match = regexp.exec(this.html);
     }
+    this.html = this.sanitizer.bypassSecurityTrustHtml(this.html);
+}
 
     private encodeHtml(value) {
         return String(value)
