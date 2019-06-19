@@ -19,7 +19,7 @@
         <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small"
              [ngClass]="sizeClass">
             <div *ngIf="showSum()" class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
-                €{{getStageSum(stage.stage)}}
+                {{getCurrencySymbol()}}{{getStageSum(stage.stage)}}
             </div>
         </div>
     </div>
