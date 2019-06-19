@@ -3,6 +3,7 @@ node_modules
 .idea
 src/**/*.js.map
 src/**/*.js
+src/custom
 config.json
 /config/sites
 /dist
