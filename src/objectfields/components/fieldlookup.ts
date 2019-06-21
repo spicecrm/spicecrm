@@ -187,7 +187,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
     private searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
-            selectModal.instance.module = this.lookupTypeName;
+            selectModal.instance.module = this.lookuplinks[this.lookupType].module;
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe((items) => {
                 this.addItem({id: items[0].id, text: items[0].summary_text, data: items[0]});
