@@ -15,7 +15,7 @@ import {broadcast} from '../../services/broadcast.service';
     providers: [MenuService]
 })
 export class GlobalNavigation{
-    @ViewChild('menucontainer', {read: ViewContainerRef}) private menucontainer: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: false}) private menucontainer: ViewContainerRef;
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
     private resizeTimeOut: any = undefined;

@@ -14,7 +14,7 @@
             <div class="slds-filters__body">
                 <object-listview-filter-panel-filter-myitems></object-listview-filter-panel-filter-myitems>
                 <ng-container *ngIf="listfilters.filters.length > 0">
-                <p class="slds-text-body--small slds-m-vertical--x-small">Matching all these filters</p>
+                <p class="slds-text-body--small slds-m-vertical--x-small">{{language.getLabel('MSG_MATCHING_ALL_THESE_FILTERS')}}</p>
                 <ol class="slds-list--vertical slds-list--vertical-space">
                     <li class="slds-item slds-hint-parent" object-listview-filter-panel-filter-item *ngFor="let filter of listfilters.filters" [filter]="filter"></li>
                 </ol>

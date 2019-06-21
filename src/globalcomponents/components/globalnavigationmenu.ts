@@ -19,8 +19,8 @@ import {navigation} from '../../services/navigation.service';
     }
 })
 export class GlobalNavigationMenu implements AfterViewInit {
-    @ViewChild('menucontainer', {read: ViewContainerRef}) private menucontainer: ViewContainerRef;
-    @ViewChild('morecontainer', {read: ViewContainerRef}) private morecontainer: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: false}) private menucontainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef, static: false}) private morecontainer: ViewContainerRef;
     private moreComponentRef: any = undefined;
     private menuItems: any[] = [];
 

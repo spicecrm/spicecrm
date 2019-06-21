@@ -27,7 +27,7 @@ export class ObjectActivitiyTimelineSummary implements OnDestroy {
     /**
      * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
      */
-    @ViewChild('listContainer', {read: ViewContainerRef}) private listContainer: ViewContainerRef;
+    @ViewChild('listContainer', {read: ViewContainerRef, static: false}) private listContainer: ViewContainerRef;
 
     /**
      * the module of the selcted activitis

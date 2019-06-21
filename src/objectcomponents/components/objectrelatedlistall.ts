@@ -27,7 +27,7 @@ export class ObjectRelatedlistAll implements OnInit {
     /**
      * the content container required to load more when scrolled
      */
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: false}) private tablecontent: ViewContainerRef;
 
     /**
      * the module

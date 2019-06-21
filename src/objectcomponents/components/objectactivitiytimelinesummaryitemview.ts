@@ -17,7 +17,7 @@ import {activitiyTimeLineService} from '../../services/activitiytimeline.service
     providers: [model]
 })
 export class ObjectActivitiyTimelineSummaryItemView implements OnChanges{
-    @ViewChild('detailContainer', {read: ViewContainerRef}) private detailContainer: ViewContainerRef;
+    @ViewChild('detailContainer', {read: ViewContainerRef, static: false}) private detailContainer: ViewContainerRef;
 
     @Input() private module: '';
     @Input() private id: '';

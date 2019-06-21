@@ -30,7 +30,7 @@ export class fieldHtml extends fieldGeneric {
     private fullValue_cached: string; // the cached full html code to prevent "flickering" of the iframe (change detection)
     private fullValue: string = '';
 
-    @ViewChild('printframe', {read: ViewContainerRef}) private printframe: ViewContainerRef;
+    @ViewChild('printframe', {read: ViewContainerRef, static: false}) private printframe: ViewContainerRef;
 
     constructor(
         public model: model,

@@ -12,7 +12,7 @@ import {assistant} from '../../../services/assistant.service';
 })
 export class HomeAssistant {
 
-    @ViewChild('itemcontainer', {read: ViewContainerRef}) private  itemcontainer: ViewContainerRef;
+    @ViewChild('itemcontainer', {read: ViewContainerRef, static: false}) private  itemcontainer: ViewContainerRef;
 
     constructor(private assistant: assistant, private navigation: navigation, private language: language) {
         this.navigation.setActiveModule('Home');

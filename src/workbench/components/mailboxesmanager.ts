@@ -18,7 +18,7 @@ import {view} from "../../services/view.service";
 })
 export class MailboxesManager {
 
-    @ViewChild("relatecontainer", {read: ViewContainerRef}) private relatecontainer: ViewContainerRef;
+    @ViewChild("relatecontainer", {read: ViewContainerRef, static: false}) private relatecontainer: ViewContainerRef;
     private relatecontainerElement: any = undefined;
 
     public mailboxes: any[];

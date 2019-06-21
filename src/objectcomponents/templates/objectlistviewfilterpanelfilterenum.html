@@ -1,5 +1,5 @@
 <div class="slds-form-element">
-    <label class="slds-form-element__label">Operator</label>
+    <label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR')}}</label>
     <div class="slds-form-element__control">
         <div class="slds-select_container">
             <select class="slds-select" [(ngModel)]="filter.operator" [disabled]="operatorDisabled()">
@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="slds-form-element">
-    <label class="slds-form-element__label">Value</label>
+    <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
     <div class="slds-form-element__control">
         <select class="slds-select " [(ngModel)]="filter.filtervalue" [disabled]="valueDisabled()" [multiple]="multiple">
             <option *ngFor="let option of options" [value]="option.value">{{option.display}}</option>

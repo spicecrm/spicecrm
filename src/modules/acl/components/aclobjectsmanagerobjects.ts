@@ -22,7 +22,7 @@ import {backend} from '../../../services/backend.service';
 })
 export class ACLObjectsManagerObjects {
 
-    @ViewChild('header', {read: ViewContainerRef}) header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: false}) header: ViewContainerRef;
 
     loading: boolean = false;
 

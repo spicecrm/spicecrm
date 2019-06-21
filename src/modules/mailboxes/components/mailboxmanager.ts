@@ -13,7 +13,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
     templateUrl: './src/modules/mailboxes/templates/mailboxmanager.html',
 })
 export class MailboxManager {
-    @ViewChild('mailboxdetail', {read: ViewContainerRef}) private mailboxdetail: ViewContainerRef;
+    @ViewChild('mailboxdetail', {read: ViewContainerRef, static: false}) private mailboxdetail: ViewContainerRef;
 
     @Input() private email: any = {};
 

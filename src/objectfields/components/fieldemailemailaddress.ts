@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
     templateUrl: './src/objectfields/templates/fieldemailemailaddress.html'
 })
 export class fieldEmailEmailAddress  {
-    @ViewChild('inputText') private inputText: ElementRef;
+    @ViewChild('inputText', {static: false}) private inputText: ElementRef;
 
     @Input() private emailaddress: any = {};
     @Output() public primaryaddress: EventEmitter<boolean> = new EventEmitter<boolean>();
