@@ -29,7 +29,7 @@ declare var _: any;
     ]
 })
 export class ObjectImport implements AfterViewInit {
-    @ViewChild('contentcontainer', {read: ViewContainerRef}) contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: false}) contentcontainer: ViewContainerRef;
 
     currentImportStep: number = 0;
     importSteps: Array<any> = ['select', 'map', 'fixed', 'check', 'result'];

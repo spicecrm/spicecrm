@@ -11,7 +11,7 @@ import {metadata} from '../../services/metadata.service';
 })
 export class ObjectActivitiyTimelineItemContainer implements OnInit {
 
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: false}) private container: ViewContainerRef;
 
     @Input() private activity: any = {};
 

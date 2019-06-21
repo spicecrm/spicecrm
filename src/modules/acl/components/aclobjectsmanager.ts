@@ -10,7 +10,7 @@ import {modellist} from "../../../services/modellist.service";
 })
 export class ACLObjectsManager {
 
-    @ViewChild("managercontent", {read: ViewContainerRef}) elementmanagercontent: ViewContainerRef;
+    @ViewChild("managercontent", {read: ViewContainerRef, static: false}) elementmanagercontent: ViewContainerRef;
 
     private activeobjectid: string = "";
     private activetypeid: string = "";

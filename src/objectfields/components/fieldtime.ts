@@ -24,7 +24,7 @@ declare var moment: any;
     providers: [popup]
 })
 export class fieldTime extends fieldGeneric {
-    @ViewChild('timefield', {read: ViewContainerRef}) timefield: ViewContainerRef;
+    @ViewChild('timefield', {read: ViewContainerRef, static: false}) timefield: ViewContainerRef;
 
     public showDatePicker: boolean = false;
     public showTimePicker: boolean = false;

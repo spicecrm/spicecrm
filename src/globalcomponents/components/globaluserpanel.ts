@@ -19,7 +19,7 @@ import {cookie} from "../../services/cookie.service";
 })
 export class GlobaUserPanel {
 
-    @ViewChild("imgupload", {read: ViewContainerRef}) public imgupload: ViewContainerRef;
+    @ViewChild("imgupload", {read: ViewContainerRef, static: false}) public imgupload: ViewContainerRef;
 
     constructor(
         private rendered: Renderer,

@@ -57,7 +57,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     /**
      * the fileupload elelent
      */
-    @ViewChild("fileupload", {read: ViewContainerRef}) private fileupload: ViewContainerRef;
+    @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
 
     /**
      * @ignore

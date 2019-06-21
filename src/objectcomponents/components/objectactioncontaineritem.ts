@@ -26,7 +26,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
     /**
      * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
      */
-    @ViewChild("actioncontainer", {read: ViewContainerRef}) private actioncontainer: ViewContainerRef;
+    @ViewChild("actioncontainer", {read: ViewContainerRef, static: false}) private actioncontainer: ViewContainerRef;
 
     /**
      * an Input parameter with the action item from the actionset items defined in the metadata

@@ -26,9 +26,9 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {
 
-    @ViewChild('presentationcontainer', {read: ViewContainerRef}) presentationcontainer: ViewContainerRef;
-    @ViewChild('presentationview', {read: ViewContainerRef}) presentationview: ViewContainerRef;
-    @ViewChild('pageheader', {read: ViewContainerRef}) pageheader: ViewContainerRef;
+    @ViewChild('presentationcontainer', {read: ViewContainerRef, static: false}) presentationcontainer: ViewContainerRef;
+    @ViewChild('presentationview', {read: ViewContainerRef, static: false}) presentationview: ViewContainerRef;
+    @ViewChild('pageheader', {read: ViewContainerRef, static: false}) pageheader: ViewContainerRef;
 
 
 

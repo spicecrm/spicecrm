@@ -15,7 +15,7 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class TasksManager {
 
-    @ViewChild('tasksmanagercontent', {read: ViewContainerRef}) tasksmanagercontent: ViewContainerRef;
+    @ViewChild('tasksmanagercontent', {read: ViewContainerRef, static: false}) tasksmanagercontent: ViewContainerRef;
 
     constructor(private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private model: model, private modellist: modellist) {
         // set theenavigation paradigm

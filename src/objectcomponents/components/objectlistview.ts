@@ -22,7 +22,7 @@ export class ObjectListView implements OnInit, AfterViewInit {
     /**
      * an elament ref to the container to render the compoonentsets
      */
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: false}) private container: ViewContainerRef;
 
     /**
      * the name of the module
