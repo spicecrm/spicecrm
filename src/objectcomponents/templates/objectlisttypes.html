@@ -11,7 +11,7 @@
     <div class="slds-dropdown slds-dropdown--left slds-dropdown--medium">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header" role="separator">
-                <span class="slds-text-title--caps">List Types</span>
+                <span class="slds-text-title--caps">{{language.getLabel('LBL_LIST_TYPES')}}</span>
             </li>
             <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'all'}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('all')">
