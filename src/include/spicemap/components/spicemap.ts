@@ -25,7 +25,7 @@ declare var google: any;
     templateUrl: './src/include/spicemap//templates/spicemap.html'
 })
 export class SpiceMap implements AfterViewInit {
-    @ViewChild('mapelement', {read: ViewContainerRef}) private mapelement: ViewContainerRef;
+    @ViewChild('mapelement', {read: ViewContainerRef, static: false}) private mapelement: ViewContainerRef;
 
     private componentconfig: any = {};
     private map: any = {};

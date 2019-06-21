@@ -18,7 +18,7 @@ declare var moment: any;
 })
 export class ProductBrowserAttributes {
 
-    @ViewChild('attributesheader', {read: ViewContainerRef}) private attributesheader: ViewContainerRef;
+    @ViewChild('attributesheader', {read: ViewContainerRef, static: false}) private attributesheader: ViewContainerRef;
     private attributeFilter: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {

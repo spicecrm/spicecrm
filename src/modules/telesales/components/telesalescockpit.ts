@@ -21,8 +21,8 @@ import {TeleSalesCockpitList} from "./telesalescockpitlist";
 
 export class TeleSalesCockpit implements OnDestroy {
 
-    @ViewChild(TeleSalesCockpitMain) private mainComponent: TeleSalesCockpitMain;
-    @ViewChild(TeleSalesCockpitList) private listComponent: TeleSalesCockpitList;
+    @ViewChild(TeleSalesCockpitMain, {static: false}) private mainComponent: TeleSalesCockpitMain;
+    @ViewChild(TeleSalesCockpitList, {static: false}) private listComponent: TeleSalesCockpitList;
 
     private subscription: Subscription = new Subscription();
 

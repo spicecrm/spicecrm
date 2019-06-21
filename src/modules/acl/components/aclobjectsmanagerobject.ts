@@ -32,7 +32,7 @@ export class ACLObjectsManagerObject implements OnChanges {
     ];
     private activeTab: string = '';
 
-    @ViewChild('header', {read: ViewContainerRef}) private header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: false}) private header: ViewContainerRef;
 
     constructor(private metadata: metadata, private backend: backend, private model: model, private language: language) {
         this.model.module = 'SpiceACLObjects';

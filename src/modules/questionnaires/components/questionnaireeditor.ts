@@ -23,7 +23,7 @@ export class QuestionnaireEditor implements OnInit {
 
     private isLoadingQuestionsets = true;
 
-    @ViewChild(QuestionnaireRender) public questionnaireRender;
+    @ViewChild(QuestionnaireRender, {static: false}) public questionnaireRender;
 
     constructor( private lang: language, private model: model, private backend: backend, private xquestionsets: relatedmodels, private modalservice: modal ) { }
 

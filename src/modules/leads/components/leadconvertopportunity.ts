@@ -5,6 +5,7 @@ import {Component, Input, Output, EventEmitter, AfterViewInit, ViewChild, ViewCo
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
+import { language } from '../../../services/language.service';
 
 @Component({
     selector: 'lead-convert-opportunity',
@@ -12,7 +13,7 @@ import {view} from '../../../services/view.service';
     providers: [view, model]
 })
 export class LeadConvertOpportunity implements AfterViewInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: false}) detailcontainer: ViewContainerRef;
 
     @Input() lead: model = undefined;
 
@@ -37,7 +38,7 @@ export class LeadConvertOpportunity implements AfterViewInit {
         this.createopportunity.emit(value);
     }
 
-    constructor(private view: view, private metadata: metadata, private model: model) {
+    constructor(private view: view, private metadata: metadata, private model: model, private language: language) {
         this.model.module = 'Opportunities';
         this.model.initializeModel();
         this.view.isEditable = true;

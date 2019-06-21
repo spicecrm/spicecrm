@@ -17,7 +17,7 @@ export class KnowledgeDocumentsSearch {
 
     public isLoading: boolean = false;
     public interval: any = undefined;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: false}) private inputContainer: ViewContainerRef;
 
     constructor(public language: language,
                 public model: model,

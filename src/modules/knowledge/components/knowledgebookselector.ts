@@ -19,7 +19,7 @@ export class KnowledgeBookSelector {
 
     public searchTerm: string = "";
     public searchOpen: boolean = false;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: false}) private inputContainer: ViewContainerRef;
     @Input() private editable: boolean = true;
 
     constructor(public language: language,

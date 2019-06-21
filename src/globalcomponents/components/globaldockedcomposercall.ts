@@ -21,7 +21,7 @@ import {modal} from '../../services/modal.service';
 })
 export class GlobalDockedComposerCall implements OnInit {
 
-    @ViewChild('containercontent', {read: ViewContainerRef}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: false}) private containercontent: ViewContainerRef;
 
     @Input() public calldata: any = {};
 

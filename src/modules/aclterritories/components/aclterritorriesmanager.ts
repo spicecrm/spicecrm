@@ -15,7 +15,7 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ACLTerritorriesManager {
 
-    @ViewChild('managercontent', {read: ViewContainerRef}) elementmanagercontent: ViewContainerRef;
+    @ViewChild('managercontent', {read: ViewContainerRef, static: false}) elementmanagercontent: ViewContainerRef;
 
     activeTerritoryId: string = '';
     activeTerritoryData: any = {};

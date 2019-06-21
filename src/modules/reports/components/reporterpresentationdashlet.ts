@@ -23,7 +23,7 @@ import {reporterconfig} from '../services/reporterconfig';
     ]
 })
 export class ReporterPresentationDashlet implements OnInit, AfterViewInit {
-    @ViewChild('presentationcontainer', {read: ViewContainerRef}) private presentationcontainer: ViewContainerRef;
+    @ViewChild('presentationcontainer', {read: ViewContainerRef, static: false}) private presentationcontainer: ViewContainerRef;
     @Input() private id: string = '';
     @Input() private config: any = undefined;
 

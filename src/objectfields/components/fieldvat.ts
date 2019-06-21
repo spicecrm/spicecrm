@@ -34,11 +34,11 @@ export class fieldVat extends fieldGeneric
         this.backend.getRequest('module/Accounts/VIES/' + this.model.data[this.fieldname]).subscribe((response: any) => {
             if (response.status == 'success') {
                 if (response.data.valid !== true) {
-                    this.toast.sendToast('VAT ID is not valid', 'error');
+                    this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
                 }
                 this.model.data.vat_details = JSON.stringify(response.data);
             } else {
-                this.toast.sendToast('Error checking VAT', 'error');
+                this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');
             }
             this.isvalidating = false;
         })
