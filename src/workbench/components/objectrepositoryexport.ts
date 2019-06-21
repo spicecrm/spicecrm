@@ -15,7 +15,7 @@ export class ObjectRepositoryExport {
     private self;
     private isLoading = false;
     private repostring: string;
-    @ViewChild('inputField') private inputField: ElementRef;
+    @ViewChild('inputField', {static: false}) private inputField: ElementRef;
 
     constructor( private lang: language, private backend: backend, private toast: toast ) { }
 

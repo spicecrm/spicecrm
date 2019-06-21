@@ -58,7 +58,7 @@ export class KRESTLogViewer {
     private isLoading = false;
     private isLoaded = false;
 
-    @ViewChild('tbody') private tbody: ElementRef; // Reference to the tbody dom element of the data table.
+    @ViewChild('tbody', {static: false}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 

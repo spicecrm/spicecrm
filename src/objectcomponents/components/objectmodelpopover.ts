@@ -19,8 +19,8 @@ export class ObjectModelPopover implements OnInit {
 
     private hidePopoverTimeout: any = {};
 
-    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
-    @ViewChild('relatedcontainer', {read: ViewContainerRef}) private relatedContainer: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: false}) private popover: ViewContainerRef;
+    @ViewChild('relatedcontainer', {read: ViewContainerRef, static: false}) private relatedContainer: ViewContainerRef;
 
     public parentElementRef: any = null;
     public self: any = null;

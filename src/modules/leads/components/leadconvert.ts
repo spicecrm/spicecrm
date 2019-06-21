@@ -24,7 +24,7 @@ import {Subject, Observable} from 'rxjs';
 })
 export class LeadConvert implements AfterViewInit {
 
-    @ViewChild('contentcontainer', {read: ViewContainerRef}) contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: false}) contentcontainer: ViewContainerRef;
 
     moduleName = 'Leads';
     headerFieldSets: Array<any> = [];

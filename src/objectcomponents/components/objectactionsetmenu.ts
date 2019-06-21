@@ -18,7 +18,7 @@ import {helper} from '../../services/helper.service';
 })
 export class ObjectActionsetMenu implements  OnDestroy {
 
-    @ViewChild('acionsetcontainer', {read: ViewContainerRef}) acionsetcontainer: ViewContainerRef;
+    @ViewChild('acionsetcontainer', {read: ViewContainerRef, static: false}) acionsetcontainer: ViewContainerRef;
 
     @Input() actionset: string = '';
     @Input() buttonsize: string = '';
