@@ -23,9 +23,9 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef}) private tableheader: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef}) private tablefooter: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: false}) private tablecontent: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef, static: false}) private tableheader: ViewContainerRef;
+    @ViewChild('tablefooter', {read: ViewContainerRef, static: false}) private tablefooter: ViewContainerRef;
 
     private presParams: any = {};
     private presData: any = {};

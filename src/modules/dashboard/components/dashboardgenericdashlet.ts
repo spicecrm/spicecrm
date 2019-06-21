@@ -25,8 +25,8 @@ export class DashboardGenericDashlet implements OnInit {
     private canLoadMore: boolean = true;
     private loadLimit: number = 20;
 
-    @ViewChild("tablecontainer", {read: ViewContainerRef}) private tablecontainer: ViewContainerRef;
-    @ViewChild("headercontainer", {read: ViewContainerRef}) private headercontainer: ViewContainerRef;
+    @ViewChild("tablecontainer", {read: ViewContainerRef, static: false}) private tablecontainer: ViewContainerRef;
+    @ViewChild("headercontainer", {read: ViewContainerRef, static: false}) private headercontainer: ViewContainerRef;
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 

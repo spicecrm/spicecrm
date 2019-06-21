@@ -9,7 +9,7 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/systemcomponents/templates/systemcomponentset.html'
 })
 export class SystemComponentSet implements AfterViewInit, OnChanges {
-    @ViewChild('componentcontainer', {read: ViewContainerRef}) private componentcontainer: ViewContainerRef;
+    @ViewChild('componentcontainer', {read: ViewContainerRef, static: false}) private componentcontainer: ViewContainerRef;
     @Input() private componentset: string = '';
     @Input() private forceReloadOnChange: boolean = false;
 

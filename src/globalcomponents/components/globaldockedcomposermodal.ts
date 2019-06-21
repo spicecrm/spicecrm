@@ -24,7 +24,7 @@ import {metadata} from '../../services/metadata.service';
 })
 export class GlobalDockedComposerModal implements OnInit {
 
-    @ViewChild('containercontent', {read: ViewContainerRef}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: false}) private containercontent: ViewContainerRef;
 
     private self: any = {};
     private isClosed: boolean = false;

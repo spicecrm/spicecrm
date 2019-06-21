@@ -14,9 +14,9 @@ import {modal} from '../../services/modal.service';
 })
 export class GlobalFooter implements AfterViewInit {
 
-    @ViewChild('footercontainer', {read: ViewContainerRef}) private footercontainer: ViewContainerRef;
-    @ViewChild('modalcontainer', {read: ViewContainerRef}) private modalcontainer: ViewContainerRef;
-    @ViewChild('modalbackdrop', {read: ViewContainerRef}) private modalbackdrop: ViewContainerRef;
+    @ViewChild('footercontainer', {read: ViewContainerRef, static: false}) private footercontainer: ViewContainerRef;
+    @ViewChild('modalcontainer', {read: ViewContainerRef, static: false}) private modalcontainer: ViewContainerRef;
+    @ViewChild('modalbackdrop', {read: ViewContainerRef, static: false}) private modalbackdrop: ViewContainerRef;
 
     constructor(private session: session, private footer: footer, private modalservice: modal) {
     }

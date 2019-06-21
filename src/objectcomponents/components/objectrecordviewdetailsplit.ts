@@ -16,8 +16,8 @@ import {model} from '../../services/model.service';
 
 })
 export class ObjectRecordViewDetailsplit implements AfterViewInit, OnInit, OnDestroy {
-    @ViewChild('leftcontainer', {read: ViewContainerRef}) leftcontainer: ViewContainerRef;
-    @ViewChild('rightcontainer', {read: ViewContainerRef}) rightcontainer: ViewContainerRef;
+    @ViewChild('leftcontainer', {read: ViewContainerRef, static: false}) leftcontainer: ViewContainerRef;
+    @ViewChild('rightcontainer', {read: ViewContainerRef, static: false}) rightcontainer: ViewContainerRef;
     initialized: boolean = false;
     componentRefs: any = [];
     componentSubscriptions: Array<any> = [];

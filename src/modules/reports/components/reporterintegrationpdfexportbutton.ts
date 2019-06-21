@@ -21,7 +21,7 @@ declare var moment: any;
 })
 export class ReporterIntegrationPDFexportButton {
 
-    @ViewChild('downloadlink', {read: ViewContainerRef}) private downloadlink: ViewContainerRef;
+    @ViewChild('downloadlink', {read: ViewContainerRef, static: false}) private downloadlink: ViewContainerRef;
 
     private loadUrl: any = undefined;
     private fileName: string = undefined;

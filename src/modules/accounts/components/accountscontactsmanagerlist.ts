@@ -15,7 +15,7 @@ import {view} from '../../../services/view.service';
 })
 export class AccountsContactsManagerList {
 
-    @ViewChild('tableContainer', {read: ViewContainerRef}) tableContainer: ViewContainerRef;
+    @ViewChild('tableContainer', {read: ViewContainerRef, static: false}) tableContainer: ViewContainerRef;
 
     listfields: Array<any> = [];
     @Input() fieldset: string = '';
