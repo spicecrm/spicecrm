@@ -33,7 +33,7 @@ export class KnowledgeService {
     public documentsList: any[] = [];
     private subscriptions: Subscription = new Subscription();
 
-    @ViewChild("searchcontainer", {read: ViewContainerRef}) private searchContainer: ViewContainerRef;
+    @ViewChild("searchcontainer", {read: ViewContainerRef, static: false}) private searchContainer: ViewContainerRef;
 
     constructor(private backend: backend,
                 private language: language,

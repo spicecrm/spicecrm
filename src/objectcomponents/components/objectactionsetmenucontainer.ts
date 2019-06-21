@@ -18,7 +18,7 @@ import {helper} from '../../services/helper.service';
 })
 export class ObjectActionsetMenuContainer implements AfterViewInit {
 
-    @ViewChild('acionsetcontainer', {read: ViewContainerRef}) acionsetcontainer: ViewContainerRef;
+    @ViewChild('acionsetcontainer', {read: ViewContainerRef, static: false}) acionsetcontainer: ViewContainerRef;
 
     @Input() actionset: string = '';
     @Output() action: EventEmitter<string> = new EventEmitter<string>();

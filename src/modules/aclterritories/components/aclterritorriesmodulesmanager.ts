@@ -15,7 +15,7 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ACLTerritorriesModulessmanager {
 
-    @ViewChild('modulesmanagercontent', {read: ViewContainerRef}) elementmanagercontent: ViewContainerRef;
+    @ViewChild('modulesmanagercontent', {read: ViewContainerRef, static: false}) elementmanagercontent: ViewContainerRef;
 
     activeType: string = '';
 

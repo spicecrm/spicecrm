@@ -15,7 +15,7 @@ import {language} from "../../../services/language.service";
 })
 export class EmailToLeadModal implements OnInit, AfterViewInit {
 
-    @ViewChild("detailcontainer", {read: ViewContainerRef}) private  detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: false}) private  detailcontainer: ViewContainerRef;
 
     private email: any = null;
     private self: any = null;

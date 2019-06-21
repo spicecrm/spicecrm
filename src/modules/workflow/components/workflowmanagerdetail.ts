@@ -25,7 +25,7 @@ import {AppDataService} from "../../../services/appdata.service";
 })
 export class WorkflowManagerDetail implements OnChanges {
 
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: false}) private container: ViewContainerRef;
 
     @Input() private modeldata: any = {};
 

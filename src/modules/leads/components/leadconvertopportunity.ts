@@ -12,7 +12,7 @@ import {view} from '../../../services/view.service';
     providers: [view, model]
 })
 export class LeadConvertOpportunity implements AfterViewInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: false}) detailcontainer: ViewContainerRef;
 
     @Input() lead: model = undefined;
 

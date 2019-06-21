@@ -21,7 +21,7 @@ export class ProductBrowserVariants {
 
     private timeout: any;
     private fieldset: string = '';
-    @ViewChild('variantscontent', {read: ViewContainerRef}) private variantsContent: ViewContainerRef;
+    @ViewChild('variantscontent', {read: ViewContainerRef, static: false}) private variantsContent: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {

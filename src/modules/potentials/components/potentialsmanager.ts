@@ -37,7 +37,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader) private cardheaders: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheaders: ObjectRelatedCardHeader;
 
     /**
      * holds the curent compüanycode as filter criteria for the list

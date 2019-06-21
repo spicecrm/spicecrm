@@ -26,7 +26,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 })
 export class ACLProfilesManagerAddObjectModal {
 
-    @ViewChild('header', {read: ViewContainerRef}) header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: false}) header: ViewContainerRef;
 
     self: any = {};
     acltypes: Array<any> = [];

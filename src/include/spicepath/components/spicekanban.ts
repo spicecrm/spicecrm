@@ -22,7 +22,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
     templateUrl: './src/include/spicepath/templates/spicekanban.html'
 })
 export class SpiceKanban implements OnDestroy {
-    @ViewChild('kanbanContainer', {read: ViewContainerRef}) private kanbanContainer: ViewContainerRef;
+    @ViewChild('kanbanContainer', {read: ViewContainerRef, static: false}) private kanbanContainer: ViewContainerRef;
 
     private componentconfig: any = {};
     private modellistsubscribe: any = undefined;

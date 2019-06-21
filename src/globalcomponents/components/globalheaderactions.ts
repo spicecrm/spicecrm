@@ -12,7 +12,7 @@ import {metadata} from '../../services/metadata.service';
 })
 export class GlobalHeaderActions implements AfterViewInit {
 
-    @ViewChild('actioncontainerheader', {read: ViewContainerRef}) private actioncontainerheader: ViewContainerRef;
+    @ViewChild('actioncontainerheader', {read: ViewContainerRef, static: false}) private actioncontainerheader: ViewContainerRef;
 
     private isOpen: boolean = false;
     private clickListener: any;

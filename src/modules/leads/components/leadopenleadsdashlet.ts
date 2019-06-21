@@ -16,8 +16,8 @@ export class LeadOpenLeadsDashlet implements OnInit {
     myLeads: Array<any> = [];
     myLeadsCount: number = 0;
 
-    @ViewChild('tableheader', {read: ViewContainerRef}) tableheader: ViewContainerRef;
-    @ViewChild('dashletcontainer', {read: ViewContainerRef}) dashletcontainer: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef, static: false}) tableheader: ViewContainerRef;
+    @ViewChild('dashletcontainer', {read: ViewContainerRef, static: false}) dashletcontainer: ViewContainerRef;
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 

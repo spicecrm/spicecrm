@@ -14,7 +14,7 @@ import {modellist} from '../../services/modellist.service';
 })
 export class ObjectList implements OnDestroy {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: false}) private tablecontent: ViewContainerRef;
 
     private allFields: any[] = [];
     private listFields: any[] = [];

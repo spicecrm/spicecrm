@@ -25,7 +25,7 @@ export class ObjectTabContainerItemHeader implements AfterViewInit {
     /**
      * the reference to the header where the compponent is placed in
      */
-    @ViewChild('headercontainer', {read: ViewContainerRef}) private headercontainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: false}) private headercontainer: ViewContainerRef;
 
     /**
      * the inpout from teh tab embedding the header
@@ -83,7 +83,7 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
     /**
      * component reference to the container itself
      */
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: false}) private container: ViewContainerRef;
 
     /**
      * an array with componentrefs to be used when the component is dexytoryed to also ensure all dynamic components are destroyed

@@ -9,7 +9,7 @@ import {metadata} from '../../../services/metadata.service';
     templateUrl: "./src/modules/dashboard/templates/dashboardcomponentset.html",
 })
 export class DashboardComponentset implements AfterViewInit, OnDestroy {
-    @ViewChild('componentcontainer', {read: ViewContainerRef}) private componentcontainer: ViewContainerRef;
+    @ViewChild('componentcontainer', {read: ViewContainerRef, static: false}) private componentcontainer: ViewContainerRef;
     private dashletconfig: any;
     private componentRefs: Array<any> = [];
 

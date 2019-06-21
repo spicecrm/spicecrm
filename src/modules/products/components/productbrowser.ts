@@ -19,7 +19,7 @@ declare var moment: any;
 })
 export class ProductBrowser {
 
-    @ViewChild('productbrowsercontent', {read: ViewContainerRef}) private productbrowsercontent: ViewContainerRef;
+    @ViewChild('productbrowsercontent', {read: ViewContainerRef, static: false}) private productbrowsercontent: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private language: language) {

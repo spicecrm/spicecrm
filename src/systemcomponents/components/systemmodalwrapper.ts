@@ -17,7 +17,7 @@ export class SystemModalWrapper implements OnDestroy {
 
     escKey: boolean = true;
 
-    @ViewChild('target', {read: ViewContainerRef}) target: ViewContainerRef;
+    @ViewChild('target', {read: ViewContainerRef, static: false}) target: ViewContainerRef;
 
     constructor( private modalservice: modal, private application: ApplicationRef ) { }
 

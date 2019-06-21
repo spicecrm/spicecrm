@@ -14,7 +14,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 })
 export class KnowledgeBrowserDetailsContainerLeft {
 
-    @ViewChild('headercontainer', {read: ViewContainerRef}) private headerContainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: false}) private headerContainer: ViewContainerRef;
     @Input("breadcrumbs") private breadcrumbs: any[] = [];
     @Input("html") private html: any = '';
     @HostBinding('style') private height: string = '100%';
