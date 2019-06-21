@@ -36,8 +36,8 @@
         </tbody>
     </table>
     <div *ngIf="noneUserRoles.length > 0 && session.authData.admin" class="slds-p-around--small slds-align--absolute-center">
-        <button #deletebtn class="slds-button slds-button--brand slds-button-space-left" (click)="addNew($event)">
-            {{language.getLabel('LBL_NEW_ROLE')}}
+        <button class="slds-button slds-button--brand slds-button-space-left" (click)="addNew($event)">
+            {{language.getLabel('LBL_ASSIGN_ROLE')}}
         </button>
     </div>
 </div>
