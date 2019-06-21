@@ -11,23 +11,24 @@
         <tbody>
         <tr *ngFor="let role of userRoles; let roleIndex = index" class="slds-hint-parent">
             <ng-container>
-                <td style="padding-left: 1rem; width: 1.5rem">
-                <span class="slds-avatar slds-avatar--small slds-align--absolute-center {{role.icon}}" style="margin: 0">
-                    {{(role.label) ? language.getAppLanglabel(role.label, 'short') : role.name.substring(0, 2) | uppercase}}
-                </span>
+                <td style="padding-left: 1rem; padding-right: 0; width: 1.5rem">
+                    <span class="slds-avatar slds-avatar--small slds-align--absolute-center {{role.icon}}" style="margin: 0">
+                        {{ role.label ? language.getAppLanglabel(role.label, 'short') : role.name.substring(0, 2) | uppercase }}
+                    </span>
                 </td>
-                <td style="padding: .75rem 1rem">{{ language.getAppLanglabel(role.label) || role.name }}</td>
+                <td style="padding: .75rem 1rem">
+                    <system-custom-icon *ngIf="role.custom" icon="custom" size="x-small" title="{{language.getLabel('LBL_CUSTOM_ROLE')}}" style="display:inline-block"></system-custom-icon>
+                    {{ language.getAppLanglabel(role.label) || role.name }}</td>
                 <td class="slds-text-align_center" style="width: 5rem">
-                <span class="slds-checkbox">
-                      <input type="checkbox" [disabled]="!session.authData.admin" [id]="role.name" [ngModel]="(role.defaultrole == '1') ? true: false"
-                             (change)="setDefaultRole(role.id)" (click)="$event.srcElement.checked = true"/>
-                      <label class="slds-checkbox__label" [for]="role.name" style="cursor: pointer">
-                            <span class="slds-checkbox_faux"></span>
+                <span class="slds-radio">
+                      <input type="radio" [name]="componentId+'-radio-default-role'" id="{{componentId}}-{{role.id}}" [disabled]="!session.authData.admin" [checked]="role.defaultrole == '1'" (change)="setDefaultRole(role.id)" />
+                      <label class="slds-radio__label" for="{{componentId}}-{{role.id}}">
+                            <span class="slds-radio_faux"></span>
                       </label>
                 </span>
                 </td>
                 <td *ngIf="session.authData.admin" style="padding-right: 1rem;width: 35px">
-                <button [disabled]="role.defaultrole == '1'" class="slds-button slds-button--icon" (click)="delete(roleIndex, role.id, (role.defaultrole == '1'))">
+                    <button [disabled]="role.defaultrole == '1'" class="slds-button slds-button--icon" (click)="deleteRole(roleIndex, role.id, (role.defaultrole == '1'))">
                         <system-button-icon [icon]="'delete'"></system-button-icon>
                     </button>
                 </td>
@@ -36,8 +37,8 @@
         </tbody>
     </table>
     <div *ngIf="noneUserRoles.length > 0 && session.authData.admin" class="slds-p-around--small slds-align--absolute-center">
-        <button class="slds-button slds-button--brand slds-button-space-left" (click)="addNew($event)">
-            {{language.getLabel('LBL_ASSIGN_ROLE')}}
+        <button class="slds-button slds-button--brand slds-button-space-left" (click)="addRole($event)">
+            {{language.getLabel('LBL_ASSIGN_ROLE')}} &hellip;
         </button>
     </div>
 </div>

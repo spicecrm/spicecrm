@@ -9,10 +9,18 @@
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" (change)="setRole($event.srcElement.value)">
-                            <option value="">&mdash; select role &mdash;</option>
-                            <option *ngFor="let role of noneUserRoles" [value]="role.id">
-                                {{ ( (role.label) ? language.getAppLanglabel(role.label, 'short') : role.name.substring(0, 2) | uppercase ) +' '+ role.name }}
-                            </option>
+                            <option value="">{{language.getLabel('LBL_SELECT')}} &hellip;</option>
+                            <ng-container *ngIf="nonUserGlobalRoles.length">
+                                <option *ngFor="let role of nonUserGlobalRoles" [value]="role.id">
+                                    {{ ( role.label ? language.getAppLanglabel(role.label, 'short') : role.name.substring(0, 2) | uppercase ) +' '+ language.getLabel(role.label) }}
+                                </option>
+                            </ng-container>
+                            <optgroup *ngIf="nonUserCustomRoles.length" label="{{language.getLabel('LBL_CUSTOM_ROLES')}}">
+                                <option *ngFor="let role of nonUserCustomRoles" [value]="role.id">
+                                    {{ ( role.label ? language.getAppLanglabel(role.label, 'short') : role.name.substring(0, 2) | uppercase ) +' '+ language.getLabel(role.label) }} ({{language.getLabel('LBL_CUSTOM')}})
+                                </option>
+                            </optgroup>
+
                         </select>
                     </div>
                 </div>
@@ -20,7 +28,7 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ASSIGN')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="add()" [disabled]="!canSubmit()">{{language.getLabel('LBL_ASSIGN')}}</button>
     </system-modal-footer>
 </system-modal>
