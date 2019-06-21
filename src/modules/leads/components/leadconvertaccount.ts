@@ -10,6 +10,7 @@ import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {fts} from "../../../services/fts.service";
 import {view} from "../../../services/view.service";
+import { language } from '../../../services/language.service';
 
 @Component({
     selector: "lead-convert-account",
@@ -46,7 +47,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     }
 
 
-    constructor(private view: view, private metadata: metadata, private model: model, private modelutilities: modelutilities, private fts: fts) {
+    constructor(private view: view, private metadata: metadata, private model: model, private modelutilities: modelutilities, private fts: fts, private language: language) {
 
         // initialize the model
         this.model.module = "Accounts";
