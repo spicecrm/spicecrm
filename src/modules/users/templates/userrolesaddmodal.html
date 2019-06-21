@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="cancel()">
-        {{language.getLabel('LBL_NEW_ROLE') }}
+        {{language.getLabel('LBL_ASSIGN_ROLE') }}
     </system-modal-header>
     <system-modal-content>
         <div class="slds-grid--pull-padded">
@@ -21,6 +21,6 @@
     </system-modal-content>
     <system-modal-footer>
             <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+            <button class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ASSIGN')}}</button>
     </system-modal-footer>
 </system-modal>
