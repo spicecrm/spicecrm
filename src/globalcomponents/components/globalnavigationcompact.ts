@@ -28,9 +28,9 @@ import {take} from "rxjs/operators";
 export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
-    @ViewChild('containermiddle', {read: ViewContainerRef, static: false}) private containermiddle: ViewContainerRef;
-    @ViewChild('containerbottom', {read: ViewContainerRef, static: false}) private containerbottom: ViewContainerRef;
-    @ViewChild('menucontainer', {read: ViewContainerRef, static: false}) private menucontainer: ViewContainerRef;
+    @ViewChild('containermiddle', {read: ViewContainerRef, static: true}) private containermiddle: ViewContainerRef;
+    @ViewChild('containerbottom', {read: ViewContainerRef, static: true}) private containerbottom: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
 
     private showmenu: boolean = false;
     public menuitems: any[] = [];

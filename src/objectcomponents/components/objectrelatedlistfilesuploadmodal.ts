@@ -26,7 +26,7 @@ import { modal } from "../../services/modal.service";
 })
 export class ObjectRelatedlistFilesUploadModal implements AfterViewInit {
 
-    @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
+    @ViewChild("fileupload", {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
 
     private componentconfig: any = {};
     private displayitems: number = 5;

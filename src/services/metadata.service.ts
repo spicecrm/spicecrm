@@ -309,6 +309,12 @@ export class metadata {
      */
     public addComponent(component: string, viewChild: any, injector?: Injector): Observable<any> {
         let retSubject = new Subject();
+
+        if (viewChild == undefined) {
+            console.log('viewchild not defined');
+            return;
+        }
+
         // if the component is missing...
         if (!this.componentDirectory[component]) {
             SystemJS.import("app/systemcomponents/systemcomponents")
@@ -337,6 +343,7 @@ export class metadata {
                 .then((type: any) => {
                     this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                         let cmp_factory = componentfactory.componentFactories.find((e) => e.componentType.name === "SystemComponentContainer");
+
                         let componentRef = viewChild.createComponent(cmp_factory, undefined, injector);
 
                         // add the info ybout the component being added

@@ -22,7 +22,7 @@ import {Subject} from 'rxjs';
 })
 export class ComponentConfigManagerComponentDetails implements OnChanges {
 
-    @ViewChild('optionscontainer', {read: ViewContainerRef, static: false}) optionscontainer: ViewContainerRef;
+    @ViewChild('optionscontainer', {read: ViewContainerRef, static: true}) optionscontainer: ViewContainerRef;
 
     @Input() component: any = {};
     configOptions: Array<any> = [];
