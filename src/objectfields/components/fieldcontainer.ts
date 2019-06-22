@@ -12,7 +12,7 @@ import {view} from '../../services/view.service';
     templateUrl: './src/objectfields/templates/fieldcontainer.html'
 })
 export class fieldContainer implements AfterViewInit {
-    @ViewChild('fieldcontainer', {read: ViewContainerRef, static: false}) private fieldcontainer: ViewContainerRef;
+    @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) private fieldcontainer: ViewContainerRef;
 
     @Input() private field: string;
     @Input() private fieldconfig: any = {};

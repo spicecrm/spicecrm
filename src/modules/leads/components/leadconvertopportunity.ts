@@ -13,7 +13,7 @@ import { language } from '../../../services/language.service';
     providers: [view, model]
 })
 export class LeadConvertOpportunity implements AfterViewInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: false}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) detailcontainer: ViewContainerRef;
 
     @Input() lead: model = undefined;
 

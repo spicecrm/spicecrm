@@ -24,7 +24,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
     searchResultsLoading: boolean = false;
     clickListener: any;
 
-    @ViewChild('addAddressInput', {read: ViewContainerRef, static: false}) addAddressInput: ViewContainerRef;
+    @ViewChild('addAddressInput', {read: ViewContainerRef, static: true}) addAddressInput: ViewContainerRef;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private renderer: Renderer2, private elementRef: ElementRef) {
         super(model, view, language, metadata, router);

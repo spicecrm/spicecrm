@@ -16,7 +16,7 @@ import {broadcast} from '../../../services/broadcast.service';
     templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html'
 })
 export class ReporterDetailVisualization implements AfterViewInit {
-    @ViewChild('vizcontainer', {read: ViewContainerRef, static: false}) private vizcontainer: ViewContainerRef;
+    @ViewChild('vizcontainer', {read: ViewContainerRef, static: true}) private vizcontainer: ViewContainerRef;
 
     @Input() private parentModule: string = '';
     @Input() private parentId: string = '';

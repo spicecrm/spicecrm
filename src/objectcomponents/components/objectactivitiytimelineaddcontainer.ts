@@ -25,7 +25,7 @@ export class ObjectActivitiyTimelineAddContainer implements OnInit, AfterViewIni
 
     @ViewChildren('maintabs', {read: ViewContainerRef}) private maintabs: QueryList<any>;
     @ViewChildren('moretabs', {read: ViewContainerRef}) private moretabs: QueryList<any>;
-    @ViewChild('moretab', {read: ViewContainerRef, static: false}) private moretab: ViewContainerRef;
+    @ViewChild('moretab', {read: ViewContainerRef, static: true}) private moretab: ViewContainerRef;
 
     private currenttab: string = '';
     private tabs: any[] = [];

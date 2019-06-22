@@ -34,9 +34,9 @@ declare var moment: any;
 export class CalendarSheetDay implements OnChanges, AfterViewInit {
 
     @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('calendarsheet', {read: ViewContainerRef, static: false}) private calendarsheet: ViewContainerRef;
-    @ViewChild('multieventscontainer', {read: ViewContainerRef, static: false}) private multiEventsContainer: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: false}) private headerContainer: ViewContainerRef;
+    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
+    @ViewChild('multieventscontainer', {read: ViewContainerRef, static: true}) private multiEventsContainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
