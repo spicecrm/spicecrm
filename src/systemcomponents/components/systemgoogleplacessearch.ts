@@ -31,7 +31,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     }
 })
 export class SystemGooglePlacesSearch implements ControlValueAccessor {
-    @ViewChild('inputfield', {read: ViewContainerRef, static: false}) public inputfield: ViewContainerRef;
+    @ViewChild('inputfield', {read: ViewContainerRef, static: true}) public inputfield: ViewContainerRef;
     @Output() private details: EventEmitter<any> = new EventEmitter<any>();
 
     private onChange: (value: string) => void;

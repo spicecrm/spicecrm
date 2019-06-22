@@ -20,7 +20,7 @@ declare var moment: any;
     providers: [model]
 })
 export class ContactCCDetailsTab {
-    @ViewChild('ccdetailscontainer', {read: ViewContainerRef, static: false}) ccdetailscontainer: ViewContainerRef;
+    @ViewChild('ccdetailscontainer', {read: ViewContainerRef, static: true}) ccdetailscontainer: ViewContainerRef;
     @Input() data: any = undefined;
     @Input('contactid') contactId: string = undefined;
     @Input('ccid') ccId: string = undefined;

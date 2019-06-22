@@ -33,9 +33,9 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     public sheetDays: any[] = [];
-    @ViewChild('calendarsheet', {read: ViewContainerRef, static: false}) private calendarsheet: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: false}) private headerContainer: ViewContainerRef;
-    @ViewChild('scrollcontainer', {read: ViewContainerRef, static: false}) private scrollContainer: ViewContainerRef;
+    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
+    @ViewChild('scrollcontainer', {read: ViewContainerRef, static: true}) private scrollContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];

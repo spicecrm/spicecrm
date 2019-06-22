@@ -20,8 +20,8 @@ export class KnowledgeManager implements AfterViewInit {
     public config: any = {clickable: true, canadd: true, draggable: true};
     public activeTab: string = "tree";
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: false}) private maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: false}) private tabsHeaderContainer: ViewContainerRef;
+    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
+    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) private tabsHeaderContainer: ViewContainerRef;
 
     constructor(private language: language,
                 private model: model,

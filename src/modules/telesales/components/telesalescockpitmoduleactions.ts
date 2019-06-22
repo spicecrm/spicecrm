@@ -11,7 +11,7 @@ import {language} from '../../../services/language.service';
 })
 export class TeleSalesCockpitModuleActions implements OnChanges {
 
-    @ViewChild('moduleactionscontainer', {read: ViewContainerRef, static: false}) private moduleactionscontainer: ViewContainerRef;
+    @ViewChild('moduleactionscontainer', {read: ViewContainerRef, static: true}) private moduleactionscontainer: ViewContainerRef;
     @Input() private module: string;
 
     private actionset: string = '';

@@ -15,7 +15,7 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ACLTerritorriesTypesmanager {
 
-    @ViewChild('typemanagercontent', {read: ViewContainerRef, static: false}) elementmanagercontent: ViewContainerRef;
+    @ViewChild('typemanagercontent', {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
 
     activeType: string = '';
 

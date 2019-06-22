@@ -20,7 +20,7 @@ declare var _;
     providers: [view]
 })
 export class ContactCCDetails implements OnInit {
-    @ViewChild('detailscontainer', {read: ViewContainerRef, static: false}) detailscontainer: ViewContainerRef;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) detailscontainer: ViewContainerRef;
     tabs: any[] = [];
     companyCodes: any[] = [];
     activatedTabs: any[] = [];

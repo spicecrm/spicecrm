@@ -15,7 +15,7 @@ import {KnowledgeService} from "../services/knowledge.service";
 })
 export class KnowledgeManagerDetails implements OnDestroy {
 
-    @ViewChild("detailscontent", {read: ViewContainerRef, static: false}) private detailsContent: ViewContainerRef;
+    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailsContent: ViewContainerRef;
     @Input("selectedDoc") private docId: string = "";
     private renderedComponents: any[] = [];
 

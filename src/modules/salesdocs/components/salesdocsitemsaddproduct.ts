@@ -21,7 +21,7 @@ import {modal} from '../../../services/modal.service';
 })
 export class SalesDocsItemsAddProduct implements AfterViewInit {
 
-    @ViewChild('productselector', {read: ViewContainerRef, static: false}) productselector: ViewContainerRef;
+    @ViewChild('productselector', {read: ViewContainerRef, static: true}) productselector: ViewContainerRef;
     @Output() addproduct: EventEmitter<any> = new EventEmitter<any>();
     @Input() items: Array<any> = [];
 
