@@ -14,8 +14,8 @@ import {KnowledgeBrowserDetailsContainerRight} from "./knowledgebrowserdetailsco
 })
 export class KnowledgeBrowserDetails implements OnChanges {
 
-    @ViewChild('detailscontainer', {read: ViewContainerRef, static: false}) private detailsContainer: ViewContainerRef;
-    @ViewChild(KnowledgeBrowserDetailsContainerRight, {static: false}) private rightPanelContainer;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) private detailsContainer: ViewContainerRef;
+    @ViewChild(KnowledgeBrowserDetailsContainerRight, {static: true}) private rightPanelContainer;
 
     @Input("selectedDoc") private docId: string = "";
     @Input() private inAddModal: boolean = false;

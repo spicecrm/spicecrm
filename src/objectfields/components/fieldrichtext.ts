@@ -26,7 +26,7 @@ export class fieldRichText extends fieldGeneric implements OnDestroy {
     private stylesheetToUse: string = '';
     private subscription: Subscription = new Subscription();
 
-    @ViewChild('printframe', {read: ViewContainerRef, static: false}) private printframe: ViewContainerRef;
+    @ViewChild('printframe', {read: ViewContainerRef, static: true}) private printframe: ViewContainerRef;
 
     constructor(public model: model,
                 public view: view,

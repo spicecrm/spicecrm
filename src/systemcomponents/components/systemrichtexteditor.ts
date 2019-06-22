@@ -37,7 +37,7 @@ import {metadata} from "../../services/metadata.service";
 })
 export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
-    @ViewChild('htmleditor', {read: ViewContainerRef, static: false}) private htmlEditor: ViewContainerRef;
+    @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) private htmlEditor: ViewContainerRef;
 
     // for the value accessor
     private onChange: (value: string) => void;

@@ -19,8 +19,8 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     public activeTab: string = "tree";
     private subscription: Subscription = new Subscription();
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: false}) private maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: false}) private tabsHeaderContainer: ViewContainerRef;
+    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
+    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) private tabsHeaderContainer: ViewContainerRef;
 
     constructor(private language: language,
                 private model: model,

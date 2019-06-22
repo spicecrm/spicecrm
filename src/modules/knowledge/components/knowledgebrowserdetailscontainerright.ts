@@ -11,7 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 })
 export class KnowledgeBrowserDetailsContainerRight implements OnDestroy {
     public componentconfig: any = {};
-    @ViewChild("itemscontainer", {read: ViewContainerRef, static: false}) private itemsContainer: ViewContainerRef;
+    @ViewChild("itemscontainer", {read: ViewContainerRef, static: true}) private itemsContainer: ViewContainerRef;
     @Input("selectedDoc") private docId: string = "";
     private renderedComponents: any[] = [];
 

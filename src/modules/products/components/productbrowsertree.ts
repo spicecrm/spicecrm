@@ -17,7 +17,7 @@ declare var moment: any;
 })
 export class ProductBrowserTree {
 
-    @ViewChild('treeheader', {read: ViewContainerRef, static: false}) private treeheader: ViewContainerRef;
+    @ViewChild('treeheader', {read: ViewContainerRef, static: true}) private treeheader: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
     private productGroups: any[] = [];

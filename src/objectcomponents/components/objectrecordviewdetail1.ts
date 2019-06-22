@@ -14,7 +14,7 @@ import {model} from '../../services/model.service';
 
 })
 export class ObjectRecordViewDetail1 implements OnInit {
-    @ViewChild('contentcontainer', {read: ViewContainerRef, static: false}) private contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) private contentcontainer: ViewContainerRef;
     private initialized: boolean = false;
     private componentconfig: any = {};
 
