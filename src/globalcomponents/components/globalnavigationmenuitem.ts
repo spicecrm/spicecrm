@@ -32,8 +32,8 @@ interface menuItem {
 export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestroy {
 
 
-    @ViewChild('menulist', {read: ViewContainerRef, static: false}) private menulist: ViewContainerRef;
-    @ViewChild('menucontainer', {read: ViewContainerRef, static: false}) private menucontainer: ViewContainerRef;
+    @ViewChild('menulist', {read: ViewContainerRef, static: true}) private menulist: ViewContainerRef;
+    @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
 
     private clickListener: any;
     @Input() private itemtext: string = 'test';

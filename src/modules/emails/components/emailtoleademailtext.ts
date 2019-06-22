@@ -20,7 +20,7 @@ import {language} from "../../../services/language.service";
 })
 export class EmailToLeadEmailText implements OnDestroy {
 
-    @ViewChild("contextMenu", {read: ViewContainerRef, static: false}) public contextMenu: ViewContainerRef;
+    @ViewChild("contextMenu", {read: ViewContainerRef, static: true}) public contextMenu: ViewContainerRef;
 
     @Input() private emailtext: string = "";
     @Input() private emailhtml: string = "";

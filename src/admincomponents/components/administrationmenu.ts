@@ -21,7 +21,7 @@ import {session} from '../../services/session.service';
 })
 export class AdministrationMenu implements OnDestroy {
 
-    @ViewChild('admincontentcontainer', {read: ViewContainerRef, static: false}) private admincontentcontainer: ViewContainerRef;
+    @ViewChild('admincontentcontainer', {read: ViewContainerRef, static: true}) private admincontentcontainer: ViewContainerRef;
 
     private admincontentObject: any = null;
     private adminNavigation: any = {};

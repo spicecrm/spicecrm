@@ -10,8 +10,8 @@ import {backend} from '../../services/backend.service';
 })
 export class SystemCaptureImage implements AfterViewInit{
 
-    @ViewChild('video', {read: ViewContainerRef, static: false}) video: ViewContainerRef;
-    @ViewChild('canvas', {read: ViewContainerRef, static: false}) canvas: ViewContainerRef;
+    @ViewChild('video', {read: ViewContainerRef, static: true}) video: ViewContainerRef;
+    @ViewChild('canvas', {read: ViewContainerRef, static: true}) canvas: ViewContainerRef;
 
     self: any = {};
     model: any = {};

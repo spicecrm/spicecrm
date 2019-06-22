@@ -18,7 +18,7 @@ export class SystemRichTextSourceModal implements OnInit {
     private currentIndex: number = -1;
     private html: EventEmitter<string> = new EventEmitter<string>();
 
-    @ViewChild('sourceeditor', {static: false}) private sourceEditor: any;
+    @ViewChild('sourceeditor', {static: true}) private sourceEditor: any;
 
     constructor(private language: language, private renderer: Renderer2, public sanitized: DomSanitizer) {
     }
