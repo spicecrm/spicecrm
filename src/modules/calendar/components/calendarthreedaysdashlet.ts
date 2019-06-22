@@ -17,7 +17,7 @@ declare var moment: any;
 })
 
 export class CalendarThreeDaysDashlet {
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: false}) private calendarContent: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarContent: ViewContainerRef;
     private titleUntilDate: any = {};
 
     constructor(private language: language,

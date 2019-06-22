@@ -27,9 +27,9 @@ export class Calendar implements AfterViewInit, OnDestroy {
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public googleIsVisible: boolean = true;
-    @ViewChild('calendarcontainer', {read: ViewContainerRef, static: false}) private calendarContainer: ViewContainerRef;
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: false}) private calendarcontent: ViewContainerRef;
-    @ViewChild(CalendarHeader, {static: false}) private calendarHeader: CalendarHeader;
+    @ViewChild('calendarcontainer', {read: ViewContainerRef, static: true}) private calendarContainer: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarcontent: ViewContainerRef;
+    @ViewChild(CalendarHeader, {static: true}) private calendarHeader: CalendarHeader;
     private subscriptions: Subscription = new Subscription();
     private touchStartListener: any;
     private touchMoveListener: any;

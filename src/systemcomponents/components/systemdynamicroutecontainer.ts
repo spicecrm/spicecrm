@@ -12,7 +12,7 @@ import {metadata} from '../../services/metadata.service';
 })
 export class SystemDynamicRouteContainer implements AfterViewInit{
 
-    @ViewChild('componentcontainer', {read: ViewContainerRef, static: false}) componentcontainer: ViewContainerRef;
+    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) componentcontainer: ViewContainerRef;
 
     routercomponent: any = null;
 

@@ -22,7 +22,7 @@ import {modal} from '../../services/modal.service';
 })
 export class GlobalDockedComposer implements OnInit {
 
-    @ViewChild('containercontent', {read: ViewContainerRef, static: false}) private containercontent: ViewContainerRef;
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
     @Input() public composerdata: any = {};
     @Input() public composerindex: number;
