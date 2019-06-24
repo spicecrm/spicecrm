@@ -24,7 +24,9 @@ import /*embed*/ {MailboxmanagerEmailDetails} from "./components/mailboxmanagere
 import /*embed*/ {MailboxEmailToLeadButton} from "./components/mailboxemailtoleadbutton";
 import /*embed*/ {MailboxEmailToLeadModal} from "./components/mailboxemailtoleadmodal";
 import /*embed*/ {MailboxEmailToLeadEmailText} from "./components/mailboxemailtoleademailtext";
-import /*embed*/ { MailboxesDashlet } from "./components/mailboxesdashlet"
+import /*embed*/ { MailboxesDashlet } from "./components/mailboxesdashlet";
+import /*embed*/ {MailboxManagerTextMessages} from "./components/mailboxmanagertextmessages";
+import {MailboxManagerTextMessage} from "./components/mailboxmanagertextmessage";
 
 @NgModule({
     declarations: [
@@ -33,10 +35,12 @@ import /*embed*/ { MailboxesDashlet } from "./components/mailboxesdashlet"
         MailboxManagerEmails,
         MailboxManagerEmail,
         MailboxmanagerEmailDetails,
+        MailboxManagerTextMessage,
+        MailboxManagerTextMessages,
         MailboxEmailToLeadButton,
         MailboxEmailToLeadModal,
         MailboxEmailToLeadEmailText,
-        MailboxesDashlet
+        MailboxesDashlet,
     ],
     imports: [
         CommonModule,

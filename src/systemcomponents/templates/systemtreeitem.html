@@ -2,7 +2,7 @@
     <li *ngFor="let item of items; trackBy: trackByFn; let first = first" [id]="item.id" role="treeitem" [attr.aria-level]="item.level" (click)="selectItem($event, item.id)">
         <article cdkDrag [cdkDragData]="item" [title]="item.name" cdkDragBoundary=".tree-list-drag-boundary" [cdkDragDisabled]="!config.draggable" [class.slds-is-selected]="selectedItem == item.id"
                  class="slds-tree__item slds-is-open slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-drag--preview">
-            <div class="slds-grid slds-grid_vertical-align-center">
+            <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
                 <div style="min-width: 16px">
                     <button *ngIf="item.children.length > 0 && config.collapsible"
                             class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
@@ -12,7 +12,7 @@
                     <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
                                          [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
                 </div>
-                <div>
+                <div class="slds-truncate">
                     <span *ngIf="item.clickable" class="slds-tree__item-label slds-truncate">{{item.name}}</span>
                     <span *ngIf="!item.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;"
                           class="slds-tree__item-label slds-truncate">{{item.name}}</span>
