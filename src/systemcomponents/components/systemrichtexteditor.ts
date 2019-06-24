@@ -11,7 +11,8 @@ import {
     Inject,
     OnDestroy,
     Renderer2,
-    ViewChild, ViewContainerRef
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -284,7 +285,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         let found = false;
         this.select.forEach(y => {
             const node = nodes.find(x => x.nodeName === y);
-            if (node !== undefined && y === node.nodeName) {
+            if (node !== undefined && (y === node.nodeName || node.nodeName == 'code')) {
                 if (found === false) {
                     this.block = node.nodeName.toLowerCase();
                     found = true;
@@ -295,37 +296,6 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         });
 
         found = false;
-        /*
-        if (this.customClasses) {
-            this.customClasses.forEach((y, index) => {
-                const node = nodes.find(x => {
-                    if (x instanceof Element) {
-                        return x.className === y.class;
-                    }
-                });
-                if (node !== undefined) {
-                    if (found === false) {
-                        this.customClassId = index;
-                        found = true;
-                    }
-                } else if (found === false) {
-                    this.customClassId = -1;
-                }
-            });
-        }
-        */
-
-        /*
-        Object.keys(this.tagMap).map(e => {
-            const elementById = this._document.getElementById(this.tagMap[e] + '-' + this.id);
-            const node = nodes.find(x => x.nodeName === e);
-            if (node !== undefined && e === node.nodeName) {
-                this._renderer.addClass(elementById, "active");
-            } else {
-                this._renderer.removeClass(elementById, "active");
-            }
-        });
-        */
     }
 
     /**
@@ -343,7 +313,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         if (!this.isActive) {return;}
         this.editorService.saveSelection();
         this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
-            if (!url || url.length == 0) {return;}
+            if (!url || url.length == 0) return;
             this.htmlEditor.element.nativeElement.focus();
             this.editorService.restoreSelection();
             let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
@@ -359,7 +329,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         });
     }
 
-    private getSelectedText() {
+    private getSelectedText(): string {
         if (window.getSelection) {
             return window.getSelection().toString();
         } else if (this._document.selection && this._document.selection.type != "Control") {
@@ -400,5 +370,31 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private setCustomClass(classId: number) {
         // this.editorService.createCustomClass(this.customClasses[classId]);
+    }
+
+    private encodeHtml(value: string): string {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    private addCodeSnippet(): void {
+        if (!this.isActive) {return;}
+        let value = this.encodeHtml(this.getSelectedText()) || '&nbsp;';
+        let html = `<br><pre style="background-color: #eee;border-radius: .2rem; border:1px solid #ccc; padding: .5rem"><code>${value}</code></pre><br>`;
+        this._document.execCommand('insertHTML', false, html);
+    }
+
+    /**
+     * paste a plain text when the caret is in a code tag.
+     */
+    private onPaste(e) {
+        if (e.target.nodeName == 'CODE') {
+            e.preventDefault();
+            let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            document.execCommand("insertHTML", false, this.encodeHtml(text));
+        }
     }
 }

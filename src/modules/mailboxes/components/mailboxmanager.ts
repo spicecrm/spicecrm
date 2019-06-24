@@ -33,4 +33,10 @@ export class MailboxManager {
         this.navigation.setActiveModule('Mailboxes');
     }
 
+    get isEmailMailbox() {
+        if (this.mailboxesEmails.activeMailBox && this.mailboxesEmails.activeMailBox.type=='email') {
+            return true;
+        }
+        return false;
+    }
 }
