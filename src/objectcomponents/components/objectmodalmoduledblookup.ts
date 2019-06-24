@@ -22,8 +22,8 @@ import {metadata} from '../../services/metadata.service';
 })
 export class ObjectModalModuleDBLookup implements OnInit {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: false}) tablecontent: ViewContainerRef;
-    @ViewChild('modalcontent', {read: ViewContainerRef, static: false}) modalcontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) tablecontent: ViewContainerRef;
+    @ViewChild('modalcontent', {read: ViewContainerRef, static: true}) modalcontent: ViewContainerRef;
 
     displayFields: Array<any> = [];
     listFields: Array<string> = [];

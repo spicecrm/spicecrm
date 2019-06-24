@@ -37,7 +37,7 @@ import {objectimport} from '../services/objectimport.service';
 
 
 export class ObjectImportSelect {
-    @ViewChild('fileupload', {read: ViewContainerRef, static: false}) fileupload: ViewContainerRef;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) fileupload: ViewContainerRef;
 
     showUploadModal: boolean = false;
     theProgress: number = 0;

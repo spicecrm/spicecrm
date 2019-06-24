@@ -1,6 +1,8 @@
-<header #header *ngIf="session.authData.sessionId && session.authData.loaded === true" class="slds-global-header_container">
-    <global-header-top></global-header-top>
-    <global-navigation *ngIf="!issmall"></global-navigation>
-    <!-- for the mobile view a border bar-->
-    <div class="slds-hide--medium slds-context-bar" style="height: 0px;"></div>
+<header #header  class="slds-global-header_container">
+    <div *ngIf="session.authData.sessionId && session.authData.loaded === true">
+        <global-header-top></global-header-top>
+        <global-navigation *ngIf="!issmall"></global-navigation>
+        <!-- for the mobile view a border bar-->
+        <div class="slds-hide--medium slds-context-bar" style="height: 0px;"></div>
+    </div>
 </header>

@@ -12,7 +12,7 @@ import {model} from '../../services/model.service';
     templateUrl: './src/objectcomponents/templates/objectrecorddetailstabrow.html'
 })
 export class ObjectRecordDetailsTabRow implements OnInit {
-    // @ViewChild('fieldsetcontainer', {read: ViewContainerRef, static: false}) fieldsetcontainer: ViewContainerRef;
+    // @ViewChild('fieldsetcontainer', {read: ViewContainerRef, static: true}) fieldsetcontainer: ViewContainerRef;
 
     initialized: boolean = false;
     componentconfig: any = {}

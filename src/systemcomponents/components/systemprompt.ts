@@ -62,17 +62,17 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * reference to the cancel button .. allows focussing when the modal is rendered
      */
-    @ViewChild('cancelButton', {static: false}) private cancelButton;
+    @ViewChild('cancelButton', {static: true}) private cancelButton;
 
     /**
      * reference to the ok button .. allows focussing when the modal is rendered
      */
-    @ViewChild('okButton', {static: false}) private okButton;
+    @ViewChild('okButton', {static: true}) private okButton;
 
     /**
      * reference to the input field .. allows focussing when the modal is rendered
      */
-    @ViewChild('inputField', {static: false}) private inputField;
+    @ViewChild('inputField', {static: true}) private inputField;
 
     constructor( private language: language ) {
         this.answerSubject = new Subject<any>();

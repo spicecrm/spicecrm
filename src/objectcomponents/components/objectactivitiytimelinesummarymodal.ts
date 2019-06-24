@@ -20,8 +20,8 @@ declare var moment: any;
     providers: [activitiyTimeLineService, model]
 })
 export class ObjectActivitiyTimelineSummaryModal implements OnInit {
-    @ViewChild('listContainer', {read: ViewContainerRef, static: false}) listContainer: ViewContainerRef;
-    @ViewChild('detailContainer', {read: ViewContainerRef, static: false}) detailContainer: ViewContainerRef;
+    @ViewChild('listContainer', {read: ViewContainerRef, static: true}) listContainer: ViewContainerRef;
+    @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) detailContainer: ViewContainerRef;
 
     @Input() parent: any = {};
 
