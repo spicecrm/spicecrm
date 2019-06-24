@@ -18,7 +18,7 @@ import {metadata} from '../../services/metadata.service';
     providers: [model, view]
 })
 export class ObjectEditModalWReference {
-    @ViewChild('modalContent', {read: ViewContainerRef}) modalContent: ViewContainerRef;
+    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) modalContent: ViewContainerRef;
     componentRefs: Array<any> = [];
     componentSet: String = '';
     module: String = '';

@@ -33,7 +33,7 @@ export class ConfigTransfer {
     private isDownloading = false;
     private exportErrorID: string;
     private exportErrorMessage: string;
-    @ViewChild( 'downloadlink', { read: ViewContainerRef } ) private downloadlink: ViewContainerRef;
+    @ViewChild( 'downloadlink', {read: ViewContainerRef, static: true} ) private downloadlink: ViewContainerRef;
     private loadUrl: any = undefined;
     private fileName: string = 'export.gz';
     private changeExportSettings = false;
@@ -51,7 +51,7 @@ export class ConfigTransfer {
     private importErrorMessage: string;
     private importErrorID: string;
     private dontEmptyTables = false;
-    @ViewChild('fileupload', {read: ViewContainerRef}) private fileupload: ViewContainerRef;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
     private isDragOver = false;
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) { }

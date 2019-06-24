@@ -13,7 +13,7 @@ import {productfinder} from "../services/productfinder.service";
 })
 export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit {
     public detailsItems: any[] = [];
-    @ViewChild('detailscontainer', {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) private detailsContainer: ViewContainerRef;
     @Input() private attribute: any;
     private isOpen: boolean = false;
 

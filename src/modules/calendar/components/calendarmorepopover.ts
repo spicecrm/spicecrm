@@ -25,7 +25,7 @@ export class CalendarMorePopover implements OnInit {
     public parentElementRef: any = null;
     public self: any = null;
     private hidePopoverTimeout: any = {};
-    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
     private heightcorrection = 30;
     private widthcorrection = 30;
 

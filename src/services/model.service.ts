@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter, Injector} from "@angular/core";
+import { Injectable, EventEmitter, Injector, OnDestroy } from "@angular/core";
 import {of, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
@@ -16,6 +16,7 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
 import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
+import {modelregister} from './modelregister.service';
 
 /**
  * @ignore
@@ -40,7 +41,7 @@ interface fieldstati {
  * a generic service that handles the model instance. This is one of the most central items in SpiceUI as this is the instance of an object (record) in the backend. The service provides all relevant getters and setters for the data handling, it validates etc.
  */
 @Injectable()
-export class model {
+export class model implements OnDestroy {
     /**
      * @ignore
      */
@@ -149,6 +150,8 @@ export class model {
      */
     public duplicates: any[] = [];
 
+    private modelRegisterId: number;
+
     constructor(
         public backend: backend,
         private broadcast: broadcast,
@@ -161,9 +164,10 @@ export class model {
         public language: language,
         private modal: modal,
         private navigation: navigation,
-        private injector: Injector
+        private injector: Injector,
+        private modelregister: modelregister
     ) {
-
+        this.modelRegisterId = this.modelregister.registerModel( this );
     }
 
     get messages(): any[] {
@@ -708,7 +712,7 @@ export class model {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (_.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -1246,6 +1250,10 @@ export class model {
             this.data[relation_link_name].beans[record.id] = record;
         }
         return true;
+    }
+
+    public ngOnDestroy(): void {
+        this.modelregister.unregisterModel( this.modelRegisterId );
     }
 
 }

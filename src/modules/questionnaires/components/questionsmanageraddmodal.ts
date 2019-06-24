@@ -34,7 +34,7 @@ export class QuestionsManagerAddModal implements OnInit {
 
     private self: any;
 
-    @ViewChild(QuestionsManagerEditMulti) private refQuestionsManagerEditMulti;
+    @ViewChild(QuestionsManagerEditMulti, {static: true}) private refQuestionsManagerEditMulti;
 
     constructor( private language: language, private model: model, private toast: toast, private backend: backend, private view: view ) {
         this.responseSubject = new Subject<object>();

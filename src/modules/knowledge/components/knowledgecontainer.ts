@@ -20,7 +20,7 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
     private module: string;
     private viewInitialized: boolean = false;
     private subscription: Subscription = new Subscription();
-    @ViewChild('knowledgeContainer',{read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('knowledgeContainer',{read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
 
     constructor(private activatedRoute: ActivatedRoute,

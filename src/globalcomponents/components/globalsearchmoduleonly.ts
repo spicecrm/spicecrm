@@ -19,7 +19,7 @@ declare var _;
     templateUrl: './src/globalcomponents/templates/globalsearchmoduleonly.html'
 })
 export class GlobalSearchModuleOnly implements OnChanges {
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
     @Input() private module: string = '';
     private listfields: any[] = [];
 

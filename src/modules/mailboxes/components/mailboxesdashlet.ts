@@ -21,8 +21,8 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     private loadLimit: number = 20;
     private getMailBoxesInterval: any = undefined;
 
-    @ViewChild('tablecontainer', {read: ViewContainerRef}) private tablecontainer: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef}) private headercontainer: ViewContainerRef;
+    @ViewChild('tablecontainer', {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
 
     constructor(private language: language,
                 private metadata: metadata,

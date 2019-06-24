@@ -19,7 +19,7 @@ import {objectimport} from '../services/objectimport.service';
     ]
 })
 export class ObjectImportResult {
-    @ViewChild('fileupload', {read: ViewContainerRef}) fileupload: ViewContainerRef;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) fileupload: ViewContainerRef;
 
     showErrorModal: boolean = false;
     theProgress: number = 0;

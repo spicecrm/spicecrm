@@ -10,7 +10,7 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {configurationService} from "../../../services/configuration.service";
 
 import {language} from "../../../services/language.service";
-import {ObjectRelatedList} from '../../../ObjectComponents/components/objectrelatedlist';
+import {ObjectRelatedList} from '../../../objectcomponents/components/objectrelatedlist';
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ObjectRelatedCardHeader} from "../../../objectcomponents/components/objectrelatedcardheader";
@@ -37,7 +37,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader) private cardheaders: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: true}) private cardheaders: ObjectRelatedCardHeader;
 
     /**
      * holds the curent compüanycode as filter criteria for the list

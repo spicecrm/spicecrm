@@ -38,7 +38,7 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
     private offeredInterpretationsAreExpanded = false;
     private someExtraTextIsChanged = false;
 
-    @ViewChild( 'divOfferedInterpretations', {read: ViewContainerRef}) private divOfferedInterpretations: ViewContainerRef;
+    @ViewChild( 'divOfferedInterpretations', {read: ViewContainerRef, static: true}) private divOfferedInterpretations: ViewContainerRef;
 
     constructor( private conf: configurationService, private language: language, private backend: backend, private metadata: metadata, public sanitized: DomSanitizer, private toast: toast, private renderer: Renderer2 ) { }
 

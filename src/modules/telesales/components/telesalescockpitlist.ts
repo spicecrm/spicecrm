@@ -16,8 +16,8 @@ import {TeleSalesCockpitListItem} from "./telesalescockpitlistitem";
 })
 export class TeleSalesCockpitList {
 
-    @ViewChild('listcontainer', {read: ViewContainerRef}) private listcontainer: ViewContainerRef;
-    @ViewChild('itemscontainer', {read: ViewContainerRef}) private itemscontainer: ViewContainerRef;
+    @ViewChild('listcontainer', {read: ViewContainerRef, static: true}) private listcontainer: ViewContainerRef;
+    @ViewChild('itemscontainer', {read: ViewContainerRef, static: true}) private itemscontainer: ViewContainerRef;
     @ViewChildren(TeleSalesCockpitListItem) private itemsComponents: QueryList<TeleSalesCockpitListItem>;
     @Input() private selectedListItemId: string;
 

@@ -28,7 +28,7 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
     private fieldset: string = '';
     private fieldsetitems: any[];
 
-    @ViewChild("detailscontent", {read: ViewContainerRef}) private detailscontent: ViewContainerRef;
+    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
 
     constructor(
         private language: language,

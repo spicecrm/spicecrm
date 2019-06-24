@@ -12,7 +12,7 @@ import {backend} from '../../../services/backend.service';
 })
 export class QuestionnaireEvaluation implements OnInit {
 
-    @ViewChild('destination', {read: ViewContainerRef}) private destination: ViewContainerRef;
+    @ViewChild('destination', {read: ViewContainerRef, static: true}) private destination: ViewContainerRef;
 
     @Input() public parentdata: any = {};
     @Input() public reference_id = '';

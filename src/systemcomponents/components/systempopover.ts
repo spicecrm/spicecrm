@@ -16,8 +16,8 @@ export class SystemPopover implements OnInit {
 
     private hidePopoverTimeout: any = {};
 
-    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
-    @ViewChild('popoverbody', {read: ViewContainerRef}) private popoverbody: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    @ViewChild('popoverbody', {read: ViewContainerRef, static: true}) private popoverbody: ViewContainerRef;
 
     public parentElementRef: any = null;
     public self: any = null;

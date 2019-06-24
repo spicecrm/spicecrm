@@ -12,7 +12,7 @@ import {calendar} from '../services/calendar.service';
 })
 
 export class CalendarDayDashlet {
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) private calendarContent: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarContent: ViewContainerRef;
 
     private dashletconfig: any = null;
     private dashletLabel: any = null;

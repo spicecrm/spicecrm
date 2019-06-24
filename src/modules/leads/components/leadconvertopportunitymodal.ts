@@ -24,7 +24,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 })
 export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
 
-    @ViewChild('detailcontainer', {read: ViewContainerRef}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) detailcontainer: ViewContainerRef;
 
     self: any = {};
     lead: model;

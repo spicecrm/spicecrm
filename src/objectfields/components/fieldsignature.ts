@@ -21,7 +21,7 @@ declare var SignaturePad: any;
 })
 export class FieldSignatureComponent extends fieldGeneric
 {
-    @ViewChild('canvas') canvas:ElementRef;
+    @ViewChild('canvas', {static: true}) canvas:ElementRef;
     pad:any;
 
     display_name_field:string;
