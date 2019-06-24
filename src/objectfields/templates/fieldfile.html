@@ -4,7 +4,7 @@
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center">
             <system-icon [icon]="determineFileIcon()" divClass="slds-p-right--xx-small" sprite="doctype"  size="x-small"></system-icon>
-            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="downloadAttachment()">{{value}}</a></div>
+            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="previewFile()">{{value}}</a></div>
             <button *ngIf="isEditable()" style="float: right"
                     class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
                 <system-button-icon icon="edit"></system-button-icon>
