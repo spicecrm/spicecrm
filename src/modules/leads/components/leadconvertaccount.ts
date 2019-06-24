@@ -18,7 +18,7 @@ import { language } from '../../../services/language.service';
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
-    @ViewChild("detailcontainer", {read: ViewContainerRef, static: false}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
     @Input() private  lead: any = {};
 

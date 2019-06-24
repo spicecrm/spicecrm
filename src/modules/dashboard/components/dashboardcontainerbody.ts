@@ -20,7 +20,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
     ]
 })
 export class DashboardContainerBody implements OnDestroy {
-    @ViewChild('bodycontainer', {read: ViewContainerRef, static: false}) private bodycontainer: ViewContainerRef;
+    @ViewChild('bodycontainer', {read: ViewContainerRef, static: true}) private bodycontainer: ViewContainerRef;
     private resizeListener: any;
 
     constructor(private dashboardlayout: dashboardlayout, private language: language, private renderer: Renderer2) {

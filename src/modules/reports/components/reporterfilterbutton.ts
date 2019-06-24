@@ -12,7 +12,7 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterFilterButton implements OnChanges, OnDestroy{
 
-    @ViewChild('actionitems', {read: ViewContainerRef, static: false}) actionitems: ViewContainerRef;
+    @ViewChild('actionitems', {read: ViewContainerRef, static: true}) actionitems: ViewContainerRef;
 
     @Input() whereConditions: any = {};
     hasUserFilters: boolean = false;
