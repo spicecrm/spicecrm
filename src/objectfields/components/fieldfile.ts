@@ -43,7 +43,7 @@ export class fieldFile extends fieldGeneric {
     }
 
     /**
-     * returns the hguman readable file size
+     * returns the human readable file size
      *
      * @param filesize
      */
