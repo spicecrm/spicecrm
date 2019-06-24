@@ -26,7 +26,7 @@
                     <!--li class="slds-has-divider--top-space" role="separator"></li-->
                     <li *ngFor="let addaction of addactions" class="slds-dropdown__item" role="presentation" (click)="doCustomAction(addaction.action)">
                         <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                            <span class="slds-truncate">{{addaction.name}}</span>
+                            <span class="slds-truncate">{{addaction.label ? language.getLabel(addaction.label) : addaction.name}}</span>
                         </a>
                     </li>
                 </ng-container>
@@ -48,7 +48,7 @@
                     <!--li class="slds-has-divider--top-space" role="separator"></li-->
                     <li *ngFor="let addaction of addeditactions" class="slds-dropdown__item" role="presentation" (click)="doCustomAction(addaction.action)">
                         <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                            <span class="slds-truncate">{{addaction.name}}</span>
+                            <span class="slds-truncate">{{addaction.label ? language.getLabel(addaction.label) : addaction.name}}</span>
                         </a>
                     </li>
                 </ng-container>
