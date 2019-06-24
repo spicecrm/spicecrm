@@ -14,7 +14,7 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ACLTypesManager {
 
-    @ViewChild('managercontent', {read: ViewContainerRef}) elementmanagercontent: ViewContainerRef;
+    @ViewChild('managercontent', {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
     activeType: any = {
         authtypeid: '',
         authtypemodule: '',

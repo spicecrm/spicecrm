@@ -20,7 +20,7 @@ import {backend} from "../../services/backend.service";
 
 export class WorkbenchConfig implements OnChanges {
 
-    @ViewChild('optionscontainer', {read: ViewContainerRef}) public optionscontainer: ViewContainerRef;
+    @ViewChild('optionscontainer', {read: ViewContainerRef, static: true}) public optionscontainer: ViewContainerRef;
 
     @Input() public component: string = "";
     @Input() public configValues: any = {};

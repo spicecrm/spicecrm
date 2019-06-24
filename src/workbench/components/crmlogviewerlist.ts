@@ -58,7 +58,7 @@ export class CRMLogViewerList implements OnInit {
     private isLoaded = false;
     private isBuildingLocalTextfilter = false;
 
-    @ViewChild('tbody') private tbody: ElementRef; // Reference to the tbody dom element of the data table.
+    @ViewChild('tbody', {static: true}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 

@@ -36,7 +36,7 @@ export class CalendarSheetSchedule implements OnChanges {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @Output() public untildate$: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('calendarsheet', {read: ViewContainerRef}) private calendarsheet: ViewContainerRef;
+    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];

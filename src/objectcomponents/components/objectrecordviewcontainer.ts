@@ -17,7 +17,7 @@ import {navigation} from '../../services/navigation.service';
     providers: [model]
 })
 export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
     private module: string = '';
     private id: string = '';
     private initialized: boolean = false;

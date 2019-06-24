@@ -24,7 +24,7 @@ import {Subject, Observable} from 'rxjs';
 })
 export class LeadConvert implements AfterViewInit {
 
-    @ViewChild('contentcontainer', {read: ViewContainerRef}) contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) contentcontainer: ViewContainerRef;
 
     moduleName = 'Leads';
     headerFieldSets: Array<any> = [];
@@ -185,7 +185,7 @@ export class LeadConvert implements AfterViewInit {
         this.processConvert().subscribe(() => {
             this.showSaveModal = false;
             // send a toast
-            this.toast.sendToast('Lead ' + this.model.data.summary_text + ' converted', 'success', '', 30 );
+            this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30 );
             // go back to the lead
             this.gotoLead();
         })

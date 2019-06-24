@@ -31,7 +31,7 @@ import {broadcast} from '../../../services/broadcast.service';
 })
 export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
 
-    @ViewChild('detailscontent', {read: ViewContainerRef}) private detailscontent: ViewContainerRef;
+    @ViewChild('detailscontent', {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
 
     /**
      * to set the focus

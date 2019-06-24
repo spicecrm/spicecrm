@@ -3,6 +3,8 @@
  */
 import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
+import {modal} from '../../services/modal.service';
+import {backend} from '../../services/backend.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -20,15 +22,31 @@ import {Subject, Observable} from 'rxjs';
 })
 export class fieldFile extends fieldGeneric {
 
-    @ViewChild('fileupload', {read: ViewContainerRef}) private fileupload: ViewContainerRef;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
     private showUploadModal: boolean = false;
     private theFile: string = '';
     private theProgress: number = 0;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configurationService: configurationService, private session: session, private toast: toast) {
+    constructor(
+        public model: model,
+        public view: view,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        private configurationService: configurationService,
+        private session: session,
+        private toast: toast,
+        private modal: modal,
+        private backend: backend
+    ) {
         super(model, view, language, metadata, router);
     }
 
+    /**
+     * returns the human readable file size
+     *
+     * @param filesize
+     */
     public humanFileSize(filesize) {
         let thresh = 1024;
         let bytes: number = filesize;
@@ -44,11 +62,18 @@ export class fieldFile extends fieldGeneric {
         return bytes.toFixed(1) + " " + units[u];
     }
 
+    /**
+     * handles the upload of the file
+     */
     private uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         this.doupload(files);
     }
 
+    /**
+     *
+     * @param files
+     */
     private doupload(files) {
         this.showUploadModal = true;
         this.theFile = files[0].name;
@@ -75,45 +100,11 @@ export class fieldFile extends fieldGeneric {
         this.showUploadModal = false;
     }
 
-    /*
-    private uploadAttachments(files): Observable<any> {
-        if (files.length === 0){
-            return;}
-
-        let retSub = new Subject<any>();
-
-
-        let data = new FormData();
-        data.append('file', files[0], files[0].name);
-
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = function (scope: any = this) {
-            if (request.readyState == 4) {
-                try {
-                    retSub.next({complete: true});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: 'error',
-                        data: 'Unknown error occurred: [' + request.responseText + ']'
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener('progress', function (e: any) {
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        request.open('POST', this.configurationService.getBackendUrl() + '/module/' + this.model.module + '/' + this.model.id + '/noteattachment', true);
-        request.setRequestHeader('OAuth-Token', this.session.authData.sessionId);
-        request.send(data);
-
-        return retSub.asObservable();
-    }
-    */
-
+    /**
+     * uploads the attachment to the server
+     *
+     * @param files
+     */
     public uploadAttachmentsBase64(files): Observable<any> {
         if (files.length === 0) {
             return;
@@ -170,6 +161,11 @@ export class fieldFile extends fieldGeneric {
         return retSub.asObservable();
     }
 
+    /**
+     * the html5 file reader for the drop or upload action
+     *
+     * @param file
+     */
     private readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader = new FileReader();
@@ -193,15 +189,110 @@ export class fieldFile extends fieldGeneric {
         };
     }
 
-    private downloadAttachment(id) {
-        let params: string[] = [];
-        params.push('sessionid=' + this.session.authData.sessionId);
-        window.open(
-            this.configurationService.getBackendUrl() + '/module/' + this.model.module + '/' + this.model.id + '/noteattachment/download?' + params.join('&'),
-            '_blank' // <- open in a new window
-        );
+    /**
+     * helper function to convert Base64 String to BLOB for the download
+     *
+     * @param b64Data
+     * @param contentType
+     * @param sliceSize
+     */
+    private b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+
+        let byteCharacters = atob(b64Data);
+        let byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            let slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            let byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            let byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        let blob = new Blob(byteArrays, {type: contentType});
+        return blob;
     }
 
+    /**
+     * doanloads the attachment via ajax request
+     */
+    private downloadAttachment() {
+        this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(fileData => {
+            let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
+            let blobUrl = URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            document.body.appendChild(a);
+            a.href = blobUrl;
+            a.download = fileData.filename;
+            a.type = fileData.file_mime_type;
+            a.click();
+            a.remove();
+        });
+    }
+
+    /**
+     * a preview window for the file. if there is not a file type that can be previewed the file is downloaded
+     */
+    private previewFile() {
+
+        if (this.model.getFieldValue('file_mime_type')) {
+            let fileTypeArray = this.model.getFieldValue('file_mime_type').split("/");
+            // check the application
+            switch (fileTypeArray[0]) {
+                case "image":
+                    this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
+                        modalref.instance.imgname = this.value;
+                        modalref.instance.imgtype = this.model.getFieldValue('file_mime_type');
+                        this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
+                            modalref.instance.imgsrc = 'data:' + this.model.getFieldValue('file_mime_type') + ';base64,' + file.file;
+                        });
+                    });
+                    break;
+                case 'text':
+                case 'audio':
+                case 'video':
+                    this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                        modalref.instance.name = this.value;
+                        modalref.instance.type = this.model.getFieldValue('file_mime_type');
+                        this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
+                            modalref.instance.data = atob(file.file);
+                        });
+
+                    });
+                    break;
+                case "application":
+                    switch (fileTypeArray[1]) {
+                        case 'pdf':
+                            this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                                modalref.instance.name = this.value;
+                                modalref.instance.type = this.model.getFieldValue('file_mime_type');
+                                this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
+                                    modalref.instance.data = atob(file.file);
+                                });
+                            });
+                            break;
+                        default:
+                            this.downloadAttachment();
+                            break;
+                    }
+                    break;
+                default:
+                    this.downloadAttachment();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * stop default propagation for the event
+     *
+     * @param event
+     */
     private preventdefault(event: any) {
         if ((event.dataTransfer.items.length == 1 && event.dataTransfer.items[0].kind === 'file') || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
@@ -209,6 +300,11 @@ export class fieldFile extends fieldGeneric {
         }
     }
 
+    /**
+     * handle the drop event when a file is dropped
+     *
+     * @param event
+     */
     private onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
@@ -218,6 +314,9 @@ export class fieldFile extends fieldGeneric {
     }
 
 
+    /**
+     * try to determine the proper file icon
+     */
     private determineFileIcon() {
         let filetype = this.model.getField('file_mime_type');
         if (filetype) {

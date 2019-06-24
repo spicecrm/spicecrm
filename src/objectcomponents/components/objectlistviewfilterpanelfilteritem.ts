@@ -24,7 +24,7 @@ import {listfilters} from '../services/listfilters.service';
     templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanelfilteritem.html'
 })
 export class ObjectListViewFilterPanelFilterItem implements OnInit, OnDestroy {
-    @ViewChild('popover', {read: ViewContainerRef}) private popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
 
     /**
      * boolean if the popover is open
