@@ -24,8 +24,8 @@ declare var _: any;
 export class CalendarScheduleDashlet {
 
     public scheduleUntilDate: any = {};
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: false}) private calendarcontent: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: false}) private headerContainer: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarcontent: ViewContainerRef;
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
 
     constructor(private language: language,
                 private navigation: navigation,

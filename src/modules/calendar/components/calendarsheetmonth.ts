@@ -38,9 +38,9 @@ declare var _: any;
 export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('calendarsheet', {read: ViewContainerRef, static: false}) private calendarsheet: ViewContainerRef;
-    @ViewChild('boxcontainer', {read: ViewContainerRef, static: false}) private boxContainer: ViewContainerRef;
-    @ViewChild('morecontainer', {read: ViewContainerRef, static: false}) private moreContainer: ViewContainerRef;
+    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
+    @ViewChild('boxcontainer', {read: ViewContainerRef, static: true}) private boxContainer: ViewContainerRef;
+    @ViewChild('morecontainer', {read: ViewContainerRef, static: true}) private moreContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];

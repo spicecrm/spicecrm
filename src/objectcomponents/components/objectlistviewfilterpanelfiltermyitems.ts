@@ -20,7 +20,7 @@ import {listfilters} from '../services/listfilters.service';
     }
 })
 export class ObjectListViewFilterPanelFilterMyItems {
-    @ViewChild('popover', {read: ViewContainerRef, static: false}) popover: ViewContainerRef;
+    @ViewChild('popover', {read: ViewContainerRef, static: true}) popover: ViewContainerRef;
     showPopover: boolean = false;
     filterValue: string = 'all';
 

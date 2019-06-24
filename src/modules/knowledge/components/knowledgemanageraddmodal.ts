@@ -23,9 +23,9 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
     private response: Observable<object> = null;
     private responseSubject: Subject<any> = null;
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: false}) private maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: false}) private tabsHeaderContainer: ViewContainerRef;
-    @ViewChild("footerContainer", {read: ViewContainerRef, static: false}) private footerContainer: ViewContainerRef;
+    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
+    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) private tabsHeaderContainer: ViewContainerRef;
+    @ViewChild("footerContainer", {read: ViewContainerRef, static: true}) private footerContainer: ViewContainerRef;
 
     constructor(private language: language,
                 private model: model,

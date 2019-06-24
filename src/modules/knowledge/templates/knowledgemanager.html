@@ -24,12 +24,7 @@
                             [selectedItem]="selectedDoc"
                             (addItem$)="handleAddEvent($event)"
                             (selectedItem$)="handleSelectedItemEvent($event)"
-                            (treelistChange$)="saveListEdit($event)">
-                        <div class="slds-m-right--xx-small">
-                            <button class="slds-button slds-button_icon slds-m-top--none">
-                                <system-button-icon [icon]="'edit'" [size]="'xx-small'"></system-button-icon>
-                            </button>
-                        </div>
+                            (itemPosition$)="changeItemPosition($event)">
                     </system-tree>
                     <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
                         <system-spinner></system-spinner>

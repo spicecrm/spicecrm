@@ -1,19 +1,18 @@
-<div role="listbox">
-    <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
+<div role="listbox" class="tree-list-drag-boundary">
+    <ul  class="slds-tree" role="tree" aria-labelledby="treeheading">
         <system-tree-item
-                [items]="tree"
-                [config]="config"
-                [selectedItem]="selectedItem"
-                (addItem$)="handleAddEvent($event)"
-                (treelistChange$)="handleDragDropEvent($event)"
-                (selectedItem$)="handleSelectItemEvent($event)"></system-tree-item>
+                    [items]="tree"
+                    [dropListIds]="dropListIds"
+                    [config]="config"
+                    [selectedItem]="selectedItem"
+                    (addItem$)="addItem$.emit($event)"
+                    (selectedItem$)="selectedItem$.emit($event)"
+                    (dropListId$)="handleDropListId($event)"
+                    (itemPosition$)="handleDrop($event)"></system-tree-item>
     </ul>
 </div>
 <div *ngIf="config.canadd" class="slds-grid slds-align-content-center slds-border--top slds-m-top--x-small slds-p-top--x-small">
-    <button class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small" (click)="handleAddEvent(null)">
+    <button class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small" (click)="addItem$.emit(null)">
         <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
     </button>
 </div>
-
-
-

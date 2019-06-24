@@ -15,7 +15,7 @@ export class SystemRichTextEditorModal implements AfterViewInit {
     public self: any;
     public content: any = '';
     public contract: EventEmitter<string> = new EventEmitter<string>();
-    @ViewChild('modalContainer', {read: ViewContainerRef, static: false}) private modalContainer: ViewContainerRef;
+    @ViewChild('modalContainer', {read: ViewContainerRef, static: true}) private modalContainer: ViewContainerRef;
 
     constructor(private metadata: metadata) {
     }

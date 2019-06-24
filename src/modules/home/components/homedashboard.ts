@@ -16,7 +16,7 @@ import {language} from "../../../services/language.service";
 })
 export class HomeDashboard implements AfterViewInit, OnDestroy {
 
-    @ViewChild('dashboardcontainer', {read: ViewContainerRef, static: false}) private dashboardcontainer: ViewContainerRef;
+    @ViewChild('dashboardcontainer', {read: ViewContainerRef, static: true}) private dashboardcontainer: ViewContainerRef;
 
     public componentSubscriptions: any[] = [];
     public dashboardid: string = '';

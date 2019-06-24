@@ -19,8 +19,8 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     public fields: any[] = [];
     public attributes: any[] = [];
     public filterKeyword: string = '';
-    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: false}) private buttonContainer: ViewContainerRef;
-    @ViewChild('itemcontainer', {read: ViewContainerRef, static: false}) private itemContainer: ViewContainerRef;
+    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) private buttonContainer: ViewContainerRef;
+    @ViewChild('itemcontainer', {read: ViewContainerRef, static: true}) private itemContainer: ViewContainerRef;
     @ViewChildren(ProductGroupManagerDetailsAttributesItem) private attributeItems;
     private allExpanded: boolean = false;
     private isLoading: boolean = true;

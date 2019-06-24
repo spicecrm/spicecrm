@@ -10,7 +10,7 @@ import {metadata} from '../../services/metadata.service';
 })
 export class SystemDynamicComponent implements AfterViewInit{
 
-    @ViewChild('container', {read: ViewContainerRef, static: false}) container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
     @Input() component: string = '';
     @Output() componentref: EventEmitter<any> = new EventEmitter<any>();
 
