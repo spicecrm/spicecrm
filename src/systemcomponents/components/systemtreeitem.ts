@@ -18,7 +18,7 @@ export class SystemTreeItem implements AfterViewInit, OnDestroy {
     @Input() private dropListIds: any = [];
     @Input() private config: any = {};
     @Input() private hasChildren: boolean = false;
-    @ViewChild('dropList') private dropList;
+    @ViewChild('dropList', {static: false} ) private dropList;
 
     get connectionList() {
         return (this.dropList && this.hasChildren) ? this.dropListIds.filter(i => i != this.dropList.id) : this.dropListIds;
