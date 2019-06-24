@@ -10,12 +10,12 @@ import {language} from '../../../services/language.service';
 })
 export class QuestionsetPreview {
 
-    questionsetidorobject: any;
-    self: any = null;
+    public questionsetidorobject: any;
+    private self: any = null;
 
     constructor( private language: language ) {}
 
-    closePopup() {
+    private closePopup() {
         this.self.destroy();
     }
 

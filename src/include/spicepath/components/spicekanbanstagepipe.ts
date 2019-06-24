@@ -1,5 +1,5 @@
 /**
- * @module AddComponentsModule
+ * @module ModuleSpicePath
  */
 import {
     Pipe

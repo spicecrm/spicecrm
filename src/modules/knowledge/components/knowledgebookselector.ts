@@ -1,7 +1,7 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
@@ -20,6 +20,7 @@ export class KnowledgeBookSelector {
     public searchTerm: string = "";
     public searchOpen: boolean = false;
     @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @Input() private editable: boolean = true;
 
     constructor(public language: language,
                 public model: model,
@@ -32,8 +33,12 @@ export class KnowledgeBookSelector {
         this.knowledgeService.getBooks();
     }
 
+    get placeHolder() {
+        return !this.isLoading && this.books.length == 0 ? this.language.getLabel('LBL_NO_ENTRIES') : this.language.getLabel('MSG_SEARCH_BOOKS');
+    }
+
     get isLoading() {
-        return this.knowledgeService.isLoading;
+        return this.knowledgeService.isBookLoading;
     }
 
     get selectedBook() {

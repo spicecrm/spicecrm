@@ -11,8 +11,8 @@
                     <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;"
                            *ngIf="!previewMode" [(ngModel)]="answers[question.id].text_input"
                            (focus)="onTextFocus(question.id)"
-                           (change)="onTextChange(question.id,$event)"
-                           [disabled]="questionsMeta[question.id].readonly || no_edit">
+                           (change)="onTextChange(question.id)"
+                           [disabled]="questionsMeta[question.id].readonly || noEdit">
                 </div>
             </div>
         </div>
@@ -32,8 +32,8 @@
                     <input type="text" *ngIf="!previewMode"
                            [(ngModel)]="answers[question.id].text_input"
                            (focus)="onTextFocus(question.id)"
-                           (change)="onTextChange(question.id,$event)"
-                           [disabled]="questionsMeta[question.id].readonly || no_edit" size="5">
+                           (change)="onTextChange(question.id)"
+                           [disabled]="questionsMeta[question.id].readonly || noEdit" size="5">
                 </td>
             </tr>
         </ng-container>

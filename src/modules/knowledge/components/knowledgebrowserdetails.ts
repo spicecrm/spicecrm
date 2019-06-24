@@ -18,6 +18,8 @@ export class KnowledgeBrowserDetails implements OnChanges {
     @ViewChild(KnowledgeBrowserDetailsContainerRight) private rightPanelContainer;
 
     @Input("selectedDoc") private docId: string = "";
+    @Input() private inAddModal: boolean = false;
+    @Input() private footerContainer: any;
 
     constructor(private language: language,
                 private favorite: favorite,
@@ -27,6 +29,10 @@ export class KnowledgeBrowserDetails implements OnChanges {
     }
 
     private _breadcrumbs: any[] = [];
+
+    get containerLeftClass() {
+        return this.inAddModal ? 'slds-size--1-of-1' : 'slds-size--2-of-3';
+    }
 
     get breadcrumbs() {
         return this._breadcrumbs;
@@ -41,11 +47,16 @@ export class KnowledgeBrowserDetails implements OnChanges {
     }
 
     get detailsContainerStyle() {
-        if (this.detailsContainer) {
-            let rect = this.detailsContainer.element.nativeElement;
-            return {height: `calc(100vh - ${rect.offsetTop}px)`};
+        if (!this.detailsContainer) return {};
+        let rect = this.detailsContainer.element.nativeElement;
+
+        if (this.footerContainer && this.inAddModal) {
+            let footerTop = this.footerContainer.parentElement.offsetTop;
+            return {
+                height: (footerTop - rect.offsetTop) + 'px',
+            };
         }
-        return {};
+        return {height: `calc(100vh - ${rect.offsetTop}px)`};
     }
 
     public ngOnChanges() {

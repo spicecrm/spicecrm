@@ -7,12 +7,11 @@ import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {Subscription} from "rxjs";
-import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'knowledge-browser',
     templateUrl: "./src/modules/knowledge/templates/knowledgebrowser.html",
-    providers: [KnowledgeService, model, relatedmodels]
+    providers: [KnowledgeService, model]
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
@@ -26,9 +25,9 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     constructor(private language: language,
                 private model: model,
                 private metadata: metadata,
-                private relatedmodels: relatedmodels,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
+        this.loadReleasedFilter();
     }
 
     get selectedBook() {
@@ -53,7 +52,12 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     }
 
     get isLoading() {
-        return this.relatedmodels.isloading;
+        return this.knowledgeService.isDocumentLoading;
+    }
+
+    private loadReleasedFilter() {
+        let conf = this.metadata.getComponentConfig("KnowledgeBrowser", this.model.module);
+        this.knowledgeService.moduleFilter = conf.modulefilter || "";
     }
 
     public ngAfterViewInit() {
@@ -61,7 +65,6 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.relatedmodels.stopSubscriptions();
         this.subscription.unsubscribe();
     }
 

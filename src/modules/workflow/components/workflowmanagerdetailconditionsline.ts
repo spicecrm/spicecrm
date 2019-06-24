@@ -30,6 +30,8 @@ export class WorkflowManagerDetailConditionsLine {
         // set the view to edit mode
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        this.view.displayLabels = false;
     }
 
     ngOnChanges() {

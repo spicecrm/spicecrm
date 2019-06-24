@@ -1,8 +1,8 @@
 <div #detailscontainer class="slds-grid" [ngStyle]="detailsContainerStyle">
-    <div *ngIf="docId && docId != ''" class="slds-size--2-of-3">
+    <div *ngIf="docId && docId != ''" [ngClass]="containerLeftClass" style="height: 100%">
         <knowledge-browser-details-container-left [html]="model?.data?.description" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
     </div>
-    <div *ngIf="docId && docId != ''" class="slds-size--1-of-3 slds-theme--default slds-border--left">
+    <div *ngIf="docId && docId != '' && !inAddModal" class="slds-size--1-of-3 slds-theme--default slds-border--left">
         <knowledge-browser-details-container-right [selectedDoc]="docId"></knowledge-browser-details-container-right>
     </div>
     <div *ngIf="!selectedBook && docId == ''" class="slds-align--absolute-center slds-p-vertical--medium spice-h-full slds-text-heading--medium">

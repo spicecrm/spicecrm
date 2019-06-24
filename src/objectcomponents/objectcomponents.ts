@@ -439,6 +439,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionsetMenu,
         ObjectSelectButton,
         ObjectRelatedList,
+        ObjectRelatedlistTable,
         ObjectRelatedListItem,
         ObjectPopoverHeader,
         ObjectPopoverBodyItem,
@@ -452,8 +453,11 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineStencil,
         ObjectRelatedCard,
+        ObjectRelatedCardHeader,
+        ObjectRelatedCardFooter,
         ObjectRecordDetails,
-        ObjectRecordDetailsFooter
+        ObjectRecordDetailsFooter,
+        ObjectEditModalDialogContainer
     ]
 })
 export class ObjectComponents {

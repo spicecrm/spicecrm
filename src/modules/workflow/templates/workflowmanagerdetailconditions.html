@@ -1,65 +1,42 @@
-<div class="slds-p-around--x-small">
-    <!--div tobottom class="slds-expression">
-        <ul>
-            <system-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="module"></system-filter-builder-expression-group>
-        </ul>
-    </div-->
-    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
-        <thead>
-        <tr class="slds-text-title_caps">
-            <th scope="col">
-                <div class="slds-truncate"><field-label [fieldname]="'object_field'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_FIELD'}"></field-label></div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate"><field-label [fieldname]="'object_operator'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_OPERATOR'}"></field-label></div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate"><field-label [fieldname]="'object_value'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_VALUE'}"></field-label></div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate"><field-label [fieldname]="'on_change'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_ON_CHANGE'}"></field-label></div>
-            </th>
-            <th class="slds-cell-shrink"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td *ngIf="model.data.conditions.length == 0" colspan="5">
-                <div class="slds-align--absolute-center slds-p-around--small">{{language.getLabel('MSG_NO_CONDITIONS_DEFINED')}}</div>
-            </td>
-        </tr>
-        <tr *ngFor="let condition of model.data.conditions|notdeleted" workflow-manager-detail-conditions-line [condition]="condition" [conditions]="model.data.conditions" [module]="model.data.workflowdefinition_module"></tr>
-        </tbody>
-        <tfoot class="slds-border--top slds-theme--shade">
-        <tr>
-            <td align="center" colspan="5">
-                <div class="slds-align--absolute-center slds-p-around--xx-small">
-                    <button class="slds-button slds-button_icon" (click)="addCondition()">
-                        <system-button-icon [icon]="'add'"></system-button-icon>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-</div>
-<div class="slds-p-around--x-small">
-    <system-section titlelabel="LBL_SYSTEM_CONDITION">
-        <div>
-            <field-label [fieldname]="'condfile'"></field-label>
-            <field-container [field]="'condfile'"></field-container>
+<system-collapsable-tab title="LBL_CONDITION_START" >
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h3>
+        <div class="slds-expression">
+            <ul>
+                <system-filter-builder [(ngModel)]="conditions" [module]="module"></system-filter-builder>
+            </ul>
         </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_SYSTEM_CONDITION')}}</h3>
         <div>
             <field-label [fieldname]="'condclass'"></field-label>
             <field-container [field]="'condclass'"></field-container>
         </div>
         <div>
-            <field-label [fieldname]="'condmethod'"></field-label>
-            <field-container [field]="'condmethod'"></field-container>
-        </div>
-        <div>
             <field-label [fieldname]="'condparams'"></field-label>
             <field-container [field]="'condparams'"></field-container>
         </div>
-    </system-section>
-</div>
+    </div>
+</system-collapsable-tab>
+<system-collapsable-tab title="LBL_CONDITION_END" >
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h3>
+        <div class="slds-expression">
+            <ul>
+                <system-filter-builder [(ngModel)]="conditions_end" [module]="module"></system-filter-builder>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_SYSTEM_CONDITION')}}</h3>
+        <div>
+            <field-label [fieldname]="'condclass'"></field-label>
+            <field-container [field]="'condclass_end'"></field-container>
+        </div>
+        <div>
+            <field-label [fieldname]="'condparams'"></field-label>
+            <field-container [field]="'condparams_end'"></field-container>
+        </div>
+    </div>
+</system-collapsable-tab>

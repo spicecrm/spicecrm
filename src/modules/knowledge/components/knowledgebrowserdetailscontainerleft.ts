@@ -1,7 +1,7 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, Input, SimpleChanges, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, HostBinding, Input, SimpleChanges, ViewChild, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
@@ -17,6 +17,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
     @ViewChild('headercontainer', {read: ViewContainerRef}) private headerContainer: ViewContainerRef;
     @Input("breadcrumbs") private breadcrumbs: any[] = [];
     @Input("html") private html: any = '';
+    @HostBinding('style') private height: string = '100%';
 
     constructor(private language: language,
                 private model: model,
@@ -39,9 +40,30 @@ export class KnowledgeBrowserDetailsContainerLeft {
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.html) {
-            this.html = this.sanitizer.bypassSecurityTrustHtml(this.model.data.description);
+        if (changes.html && this.html) {
+            this.setHtmlValue();
         }
+    }
+
+    private setHtmlValue() {
+    let regexp = /<code>[\s\S]*?<\/code>/g;
+    let match = regexp.exec(this.html);
+    while (match != null) {
+        this.html = this.html
+            .replace(match, this.encodeHtml(match))
+            .replace('&lt;code&gt;', '<code>')
+            .replace('&lt;/code&gt;', '</code>');
+        match = regexp.exec(this.html);
+    }
+    this.html = this.sanitizer.bypassSecurityTrustHtml(this.html);
+}
+
+    private encodeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 
     private navigateTo(id) {

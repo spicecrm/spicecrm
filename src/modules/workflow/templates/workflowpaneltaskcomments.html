@@ -1,20 +1,8 @@
-<div *ngIf="comments.length > 0">
-    <div (click)="showComments = !showComments">
-        <system-utility-icon [icon]="'quick_text'" [size]="'x-small'"></system-utility-icon>
+<div class="slds-m-bottom--x-small" *ngFor="let comment of comments">
+    <h3 class="slds-theme--shade slds-m-bottom--xx-small slds-p-around--x-small">
+        <div class="slds-text-title_caps">created by {{comment.created_by_name}}</div>
+    </h3>
+    <div class="slds-p-horizontal--x-small" style="white-space: normal;">
+        {{comment.description}}
     </div>
-    <section *ngIf="showComments" class="slds-popover slds-is-absolute slds-nubbin_right-top" role="dialog" style="right: 54px; top:-11px;">
-        <!--button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon" (click)="showComments = false">
-            <system-button-icon [icon]="'close'" [size]="'small'"></system-button-icon>
-        </button-->
-        <div class="slds-popover__body" >
-            <div class="slds-m-bottom--x-small" *ngFor="let comment of comments">
-                <h3 class="slds-theme--shade slds-m-bottom--xx-small slds-p-around--x-small">
-                    <div class="slds-text-title_caps">{{comment.created_by_name}}</div>
-                </h3>
-                <div class="slds-p-horizontal--x-small" style="white-space: normal;">
-                    {{comment.description}}
-                </div>
-            </div>
-        </div>
-    </section>
 </div>
