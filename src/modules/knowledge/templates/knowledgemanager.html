@@ -24,8 +24,7 @@
                             [selectedItem]="selectedDoc"
                             (addItem$)="handleAddEvent($event)"
                             (selectedItem$)="handleSelectedItemEvent($event)"
-                            (treelistChange$)="saveListEdit($event)"
-                            (changeItemPosition$)="changeItemPosition($event)">
+                            (itemPosition$)="changeItemPosition($event)">
                     </system-tree>
                     <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
                         <system-spinner></system-spinner>
