@@ -20,7 +20,7 @@ export class ObjectRelatedCardTile {
     @Input() private module: string = '';
     @Input() private data: any = {};
     @Input() private fieldset: string = '';
-    private addActions = [{action: 'remove', name: 'Remove'}];
+    private addActions = [{action: 'remove', label: 'LBL_UNLINK'}];
 
     constructor(private model: model, private relatedmodels: relatedmodels, private view: view, private language: language, private metadata: metadata, private router: Router) {
         this.view.displayLabels = false;
