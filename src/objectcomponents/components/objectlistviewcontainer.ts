@@ -14,7 +14,7 @@ import {broadcast} from '../../services/broadcast.service';
     templateUrl: './src/objectcomponents/templates/objectlistviewcontainer.html'
 })
 export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
     moduleName: any = '';
     initialized: boolean = false;
     componentRefs: any = [];

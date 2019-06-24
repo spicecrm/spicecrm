@@ -24,7 +24,7 @@ export class CalendarOtherCalendarsMonitor {
     public recentUsers: any[] = [];
     public timeout: any = undefined;
     public isLoading: boolean = false;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
     private googleIsVisible: boolean = true;

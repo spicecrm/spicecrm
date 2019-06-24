@@ -50,8 +50,8 @@ export class ModuleConfigManager {
 
     private initialized: boolean = false;
 
-    @ViewChild("treecontainer", {read: ViewContainerRef}) private treecontainer: ViewContainerRef;
-    @ViewChild("addconfigcontainer", {read: ViewContainerRef}) private addconfigcontainer: ViewContainerRef;
+    @ViewChild("treecontainer", {read: ViewContainerRef, static: true}) private treecontainer: ViewContainerRef;
+    @ViewChild("addconfigcontainer", {read: ViewContainerRef, static: true}) private addconfigcontainer: ViewContainerRef;
 
     constructor(
         private backend: backend,

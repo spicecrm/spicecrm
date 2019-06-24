@@ -26,4 +26,8 @@ export class LeadConvertModal {
     itemBorder(index){
         return index < this.saveactions.length - 1;
     }
+    
+    getStatusLabel(status){
+        return this.language.getLabel('LBL_LEADCONVERT_' + status.toUpperCase());
+    }
 }

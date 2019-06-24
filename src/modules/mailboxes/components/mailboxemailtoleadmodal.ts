@@ -13,7 +13,7 @@ import {view} from "../../../services/view.service";
 })
 export class MailboxEmailToLeadModal implements OnInit, AfterViewInit {
 
-    @ViewChild("detailcontainer", {read: ViewContainerRef}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
     private email: any = null;
     private self: any = null;
