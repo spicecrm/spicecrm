@@ -11,6 +11,8 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {broadcast} from "../../services/broadcast.service";
 import {Subscription} from "rxjs";
+import {backend} from "../../services/backend.service";
+import {toast} from "../../services/toast.service";
 
 declare var _;
 
@@ -32,6 +34,8 @@ export class fieldRichText extends fieldGeneric implements OnDestroy {
                 public view: view,
                 public language: language,
                 public metadata: metadata,
+                public backend: backend,
+                public toast: toast,
                 public router: Router,
                 public broadcast: broadcast,
                 public sanitized: DomSanitizer) {
@@ -127,5 +131,23 @@ export class fieldRichText extends fieldGeneric implements OnDestroy {
         if (!_.isEmpty(this.stylesheetField) && _.isString(stylesheetId)) {
             this.model.setField(this.stylesheetField, stylesheetId);
         }
+    }
+
+    private save(content) {
+        let toSave = {
+            date_modified: this.model.data.date_modified,
+            [this.fieldname]: content
+        };
+        this.backend.save(this.model.module, this.model.id, toSave)
+            .subscribe(
+                (res: any) => {
+                    this.model.endEdit();
+                    this.model.data.date_modified = res.date_modified;
+                    this.value = res[this.fieldname];
+                    this.model.startEdit();
+                    this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
+                } ,
+                error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
+            );
     }
 }
