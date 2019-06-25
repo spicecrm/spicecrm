@@ -18,7 +18,7 @@
             </div>
         </ng-container>
         <ng-template #validating>
-            <input #focus class="slds-input slds-size--1-of-1" type="text" value="validating" disabled>
+            <input #focus class="slds-input slds-size--1-of-1" type="text" value="{{language.getLabel('LBL_VALIDATING')}}" disabled>
         </ng-template>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>
