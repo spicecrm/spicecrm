@@ -9,7 +9,7 @@ import {
     EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy,
+    OnDestroy, Output,
     Renderer2,
     ViewChild,
     ViewContainerRef
@@ -49,6 +49,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     private modalOpen: boolean = false;
     public isExpanded: boolean = false;
     public contract: EventEmitter<string> = new EventEmitter<string>();
+    public editorModalSaveSubscriber: any;
 
     private block: string = 'default';
     private fontName: string = 'Tilium Web';
@@ -57,6 +58,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         BLOCKQUOTE: "indent",
         A: "link"
     };
+
+    @Output() private save$: EventEmitter<string> = new EventEmitter<string>();
 
     private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
@@ -209,6 +212,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         this.isExpanded = !this.isExpanded;
         if (this.isExpanded) {
             this.modal.openModal('SystemRichTextEditorModal').subscribe(componentRef => {
+                this.editorModalSaveSubscriber = componentRef.instance.save$
+                    .subscribe(content => this.save$.emit(content));
                 componentRef.instance.content = this._html;
                 componentRef.instance.contract
                     .pipe(take(1))
@@ -217,6 +222,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                         this.htmlEditor.element.nativeElement.focus();
                         this.writeValue(html);
                         this.onChange(html);
+                        if (this.editorModalSaveSubscriber) this.editorModalSaveSubscriber.unsubscribe();
                     });
             });
         } else {
