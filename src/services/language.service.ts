@@ -14,8 +14,8 @@ import {Observable} from 'rxjs';
 import {cookie} from './cookie.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 /**
@@ -288,6 +288,18 @@ export class language {
             return this.languagedata.applist.moduleList[module];
         } catch (e) {
             return module;
+        }
+    }
+
+    /**
+     * public function that checks if for the module a LBL_SEARCH_{MODULE} LABEL is defined .. if not concatenates LBL_SEARCH and the module name
+     * @param module
+     */
+    public getModuleCombinedLabel(label, module) {
+        if (this.languagedata.applang[label + '_' + module.toUpperCase()]) {
+            return this.getLabel(label + '_' + module.toUpperCase());
+        } else {
+            return this.getLabel(label) + ' ' + this.getModuleName(module);
         }
     }
 

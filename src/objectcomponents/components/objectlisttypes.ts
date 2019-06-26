@@ -20,16 +20,6 @@ export class ObjectListTypes{
         return this.modellist.getListTypes(false);
     }
 
-    get myLabel(){
-        return this.language.getLabel('LBL_MY') + ' ' + this.language.getModuleName(this.modellist.module);
-    }
-
-
-    get allLabel(){
-        return this.language.getLabel('LBL_ALL') + ' ' + this.language.getModuleName(this.modellist.module);
-    }
-
-
     toggleTypes(){
         this.showMenu = !this.showMenu;
 
