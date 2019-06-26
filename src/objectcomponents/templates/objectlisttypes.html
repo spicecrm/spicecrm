@@ -17,14 +17,14 @@
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('all')">
                       <span class="slds-truncate">
                           <system-utility-icon [icon]="'check'" [addclasses]="'slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small'"></system-utility-icon>
-                          {{allLabel}}</span>
+                          {{language.getModuleCombinedLabel('LBL_ALL', modellist.module)}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'owner'}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('owner')">
                       <span class="slds-truncate">
                           <system-utility-icon [icon]="'check'" [addclasses]="'slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small'"></system-utility-icon>
-                            {{myLabel}}</span>
+                          {{language.getModuleCombinedLabel('LBL_MY', modellist.module)}}</span>
                 </a>
             </li>
             <ng-container *ngFor="let listtype of listtypes">
