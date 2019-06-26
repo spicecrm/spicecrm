@@ -4,6 +4,7 @@
 import {
     NgModule
 } from "@angular/core";
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
@@ -111,7 +112,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
     imports: [
         DirectivesModule,
         CommonModule,
-        FormsModule
+        FormsModule,
+        DragDropModule
     ],
     declarations: [
         PackageLoader,

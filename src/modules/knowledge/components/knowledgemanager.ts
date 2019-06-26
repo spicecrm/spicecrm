@@ -95,15 +95,19 @@ export class KnowledgeManager implements AfterViewInit {
             });
     }
 
-    private saveListEdit(toEdit: any) {
-        let data = {parent_id: toEdit.parent_id, parent_name: toEdit.parent_name};
+    private changeItemPosition(toEdit: any) {
+        let data = {
+            parent_id: toEdit.parent_id,
+            parent_sequence: toEdit.parent_sequence
+        };
         this.backend.save("KnowledgeDocuments", toEdit.id, data);
-        for (let doc of this.knowledgeService.documents) {
+        this.knowledgeService.documents.some(doc => {
             if (doc.id === toEdit.id) {
                 doc.parent_id = toEdit.parent_id;
-                doc.parent_name = toEdit.parent_name;
+                doc.parent_sequence = toEdit.parent_sequence;
+                return true;
             }
-        }
+        });
         this.knowledgeService.selectedDoc = toEdit.id;
     }
 

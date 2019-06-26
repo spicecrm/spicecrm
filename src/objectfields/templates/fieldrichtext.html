@@ -3,6 +3,6 @@
     <div class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="htmlValue" style="white-space: normal; height: 300px; resize: vertical; overflow-y: auto;"></div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor [(ngModel)]="value"></system-richtext-editor>
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)"></system-richtext-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
