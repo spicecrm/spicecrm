@@ -22,7 +22,7 @@ import {Subject, Observable} from 'rxjs';
 })
 export class fieldFile extends fieldGeneric {
 
-    @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
+    @ViewChild('fileupload', {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
     private showUploadModal: boolean = false;
     private theFile: string = '';
     private theProgress: number = 0;
