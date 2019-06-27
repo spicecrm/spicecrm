@@ -1,0 +1,8 @@
+<div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+    <input #focus type="text" class="slds-col slds-size--2-of-3 slds-input" [disabled]="disabled" [(ngModel)]="classname" [ngModelOptions]="modelOptions" />
+    <div class="slds-col slds-size--1-of-3 slds-select_container">
+        <select class="slds-select" [disabled]="!_classexists || _methods.length == 0 || disabled" [(ngModel)]="methodname">
+            <option *ngFor="let o of _methods" [value]="o">{{o}}</option>
+        </select>
+    </div>
+</div>
