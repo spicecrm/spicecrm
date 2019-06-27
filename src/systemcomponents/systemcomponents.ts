@@ -61,6 +61,7 @@ import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
+import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
@@ -168,6 +169,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
+        SystemInputBackendMethod,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -254,6 +256,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
+        SystemInputBackendMethod,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,
