@@ -46,6 +46,7 @@ import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questio
 import /*embed*/ {QuestionnaireEditor} from './components/questionnaireeditor';
 import /*embed*/ {QuestionnaireEditorQuestionsetAdd} from './components/questionnaireeditorquestionsetadd';
 import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
+import /*embed*/ { QuestionnaireResults } from './components/questionnaireresults';
 
 @NgModule({
     imports: [
@@ -95,7 +96,8 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
         QuestionnaireEvaluationBar,
         QuestionnaireEvaluationSpiderweb,
         QuestionnaireInterpretationCategories,
-        QuestionnaireInterpretationAssignment
+        QuestionnaireInterpretationAssignment,
+        QuestionnaireResults
     ]
 })
 export class ModuleQuestionnaires {}
