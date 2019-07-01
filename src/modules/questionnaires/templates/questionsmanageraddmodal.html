@@ -15,6 +15,7 @@
                 <questions-manager-edit-multi *ngSwitchCase="'multi'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-multi>
                 <questions-manager-edit-text *ngSwitchCase="'text'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-text>
                 <questions-manager-edit-ist *ngSwitchCase="'ist'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-ist>
+                <questions-manager-edit-nps *ngSwitchCase="'nps'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-nps>
                 <div *ngSwitchDefault>{{language.getLabel('MSG_NO_QUESTIONTYPE_NO_QUESTION')}}</div>
             </div>
         </div>

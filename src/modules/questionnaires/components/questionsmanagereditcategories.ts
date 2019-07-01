@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, OnChanges, Input, Renderer2, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnChanges, Input, Renderer2, ElementRef, OnDestroy, EventEmitter, Output } from '@angular/core';
 import {language} from '../../../services/language.service';
 
 @Component({
@@ -11,7 +11,8 @@ import {language} from '../../../services/language.service';
 export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
 
     @Input() public categorypool;
-    @Input() public option;
+    @Input() public option: any; // {}
+    @Output() public change = new EventEmitter();
 
     private selectedCategories = [];
 
@@ -78,6 +79,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
             return an > bn ? 1 : ( an === bn ? 0 : -1 );
         });
         this.option.categories = this.makeIdString();
+        this.change.emit();
         this.names = this.makeNameString();
     }
 
@@ -90,6 +92,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
             return false;
         });
         this.option.categories = this.makeIdString();
+        this.change.emit();
         this.names = this.makeNameString();
     }
 

@@ -59,6 +59,7 @@ export class QuestionsetRenderBinarySingleMulti implements OnInit {
             this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
         data => {
                 for ( let question of this.questions ) {
+                    if ( !this.answers[question.id] ) this.answers[question.id] = [];
                     if ( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
                     this.questionsMeta[question.id].readonly = false;
                 }
@@ -69,7 +70,7 @@ export class QuestionsetRenderBinarySingleMulti implements OnInit {
 
     private setFieldsOfQuestion( questionId: string, answervalues: any ): void {
         for ( let answer of this.answers[questionId] ) {
-            answer.value = ( answervalues[answer.optionId] || false );
+            answer.value = (answervalues[answer.optionId] || false);
         }
     }
 

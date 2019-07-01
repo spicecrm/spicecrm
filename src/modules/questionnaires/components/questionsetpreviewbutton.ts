@@ -18,7 +18,7 @@ export class QuestionsetPreviewButton {
    constructor( private language: language, private model: model, private modalservice: modal ) { }
 
     public execute(): void {
-        this.modalservice.openModal( 'QuestionsetPreview' ).subscribe( modal => modal.instance.questionsetidorobject = this.model.id );
+        this.modalservice.openModal( 'QuestionsetPreview' ).subscribe( modal => modal.instance.questionsetIdOrObject = this.model.id );
     }
 
 }

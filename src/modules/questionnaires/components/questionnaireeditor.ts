@@ -25,7 +25,7 @@ export class QuestionnaireEditor implements OnInit {
 
     @ViewChild(QuestionnaireRender, {static: true}) public questionnaireRender;
 
-    constructor( private lang: language, private model: model, private backend: backend, private xquestionsets: relatedmodels, private modalservice: modal ) { }
+    constructor( private lang: language, private model: model, private backend: backend ) { }
 
     public ngOnInit(): void {
         if ( this.model.id ) this.loadQuestionsets();

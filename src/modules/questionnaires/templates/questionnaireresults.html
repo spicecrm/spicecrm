@@ -7,7 +7,7 @@
 
 <div *ngIf="!isLoading" class="slds-p-bottom--medium">
     <div *ngFor="let questionset of questionsets; first as isFirst" [class.slds-p-top--medium]="!isFirst">
-        <questionset-render [questionsetidorobject] = "questionset.id" [participation_id] = "questionset.participationId" [noEdit] = "true" [inModal] = "false"></questionset-render>
+        <questionset-render [questionsetIdOrObject] = "questionset.id" [participation_id] = "questionset.participationId" [noEdit] = "true" [inModal] = "false"></questionset-render>
     </div>
 </div>
 

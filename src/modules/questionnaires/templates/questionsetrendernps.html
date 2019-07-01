@@ -2,13 +2,12 @@
     <thead >
     <tr class="slds-text-title_caps" >
         <th width="100%" class="slds-text-align_center" scope="col"></th>
-        <th *ngFor="let entry of ratingEntries" class="slds-text-align_center" scope="col">
-            <div *ngIf="ratingValuesHaveAlsoText" class="slds-border--bottom slds-p-bottom--xx-small slds-m-bottom--xx-small">
-                <ng-container *ngIf="entry.text !== ''; else nbsp">{{entry.text}}</ng-container>
-                <ng-template #nbsp>&nbsp;</ng-template>
-            </div>
-            {{entry.value}}
-        </th>
+        <th *ngFor="let score of [0,1,2,3,4,5,6,7,8,9,10]" class="slds-text-align_center" scope="col">{{score}}</th>
+    </tr>
+    <tr *ngIf="textForScore0 || textForScore10">
+        <th style="border-top:none"></th>
+        <th colspan="6" style="border-right:none;border-top:none;white-space:normal">{{textForScore0}}</th>
+        <th colspan="5" class="slds-text-align--right" style="border-top:none;padding-left:0;border-left:none;white-space:normal">{{textForScore10}}</th>
     </tr>
     </thead>
     <tbody>
@@ -20,12 +19,11 @@
                     </ng-container>
                     <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.name}}</div>
                 </td>
-                <td class="slds-text-align_center"
-                    *ngFor="let option of options[question.id]; let j = index;"><input
-                        title="{{ratingEntries[j].text}}" type="radio"
-                        [checked]="!previewMode && answers[question.id][j].value" name="{{question.id}}"
-                        (click)="onClick(question.id,j,$event)"
-                        [disabled]="questionsMeta[question.id].tempReadonly || noEdit"></td>
+                <td class="slds-text-align_center" *ngFor="let score of [0,1,2,3,4,5,6,7,8,9,10]"><input
+                        title="{{score}}" type="radio"
+                        [checked]="!previewMode && answers[question.id] && answers[question.id] == score" name="{{question.id}}"
+                        (click)="onClick(question.id,score,$event)"
+                        [disabled]="questionsMeta[question.id].readonly || noEdit"></td>
             </tr>
         </ng-container>
     </tbody>

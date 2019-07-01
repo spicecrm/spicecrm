@@ -14,6 +14,7 @@ export class QuestionnaireRender implements OnInit {
     @Input() public questionnaire: any;
     @Input() public inModal: true;
     @Input() public showQuestionnaireTitle = true;
+    @Input() public previewMode = false;
 
     private questionsets: any[] = [];
     private isLoading = true;

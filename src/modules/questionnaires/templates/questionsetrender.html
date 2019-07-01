@@ -58,11 +58,15 @@
                     </div>
 
                     <div *ngSwitchCase="'text'">
-                        <questionset-render-text [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-text>
+                        <questionset-render-text [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-text>
                     </div>
 
                     <div *ngSwitchCase="'ist'">
                         <questionset-render-ist [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [options]="options" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-ist>
+                    </div>
+
+                    <div *ngSwitchCase="'nps'">
+                        <questionset-render-nps [questions]="questions" [(numOfFinishedQuestions)]="numOfFinishedQuestions" [questionsMeta]="questionsMeta" [answers]="answers" [questionset]="questionset" [noEdit]="noEdit" [participation_id]="participation_id" [previewMode]="previewMode" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-nps>
                     </div>
 
                 </ng-container>

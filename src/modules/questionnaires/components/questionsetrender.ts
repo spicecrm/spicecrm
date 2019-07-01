@@ -26,13 +26,14 @@ declare var _: any;
 } )
 export class QuestionsetRender implements OnInit {
 
-    @Input() public questionsetidorobject: any;
+    @Input() public questionsetIdOrObject: any;
     @Input() public participation_id: string;
     @Input() public noEdit = false;
     @Input() public inModal = true;
     @Input() public timerText: string = null;
     @Input() public timerWarning = false;
     @Input() public hideFinishedQuestions = false;
+    @Input() public previewMode = false;
 
     private answers = {};
     private imageWidthOption = 200;
@@ -40,7 +41,6 @@ export class QuestionsetRender implements OnInit {
     private isLoading = true;
     private numOfFinishedQuestionsValue = 0;
     private options = {};
-    private previewMode = false;
     private questions: any[] = [];
     private questionset: any;
     private questionsMeta = {};
@@ -61,16 +61,16 @@ export class QuestionsetRender implements OnInit {
 
     public ngOnInit(): void {
 
-        if ( this.participation_id ) this.previewMode = false;
-        else this.previewMode = true;
+        // if ( this.participation_id ) this.previewMode = false;
+        // else this.previewMode = true;
 
-        if ( typeof this.questionsetidorobject === 'string' ) {
-            this.backend.getRequest( 'module/QuestionSets/renderer/' + this.questionsetidorobject ).subscribe( ( response: any ) => {
+        if ( typeof this.questionsetIdOrObject === 'string' ) {
+            this.backend.getRequest( 'module/QuestionSets/renderer/' + this.questionsetIdOrObject ).subscribe( ( response: any ) => {
                 this.questionset = response;
                 this.doWhenLoaded();
             } );
         } else {
-            this.questionset = this.questionsetidorobject;
+            this.questionset = this.questionsetIdOrObject;
             this.doWhenLoaded();
         }
 

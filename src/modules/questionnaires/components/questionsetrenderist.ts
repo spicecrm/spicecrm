@@ -106,6 +106,7 @@ export class QuestionsetRenderIST {
             this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
                 data => {
                     for( let question of this.questions ) {
+                        if ( !this.answers[question.id] ) this.answers[question.id] = [];
                         if( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
                         this.questionsMeta[question.id].readonly = false;
                     }
