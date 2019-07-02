@@ -69,7 +69,10 @@ export class modelregister {
      */
     private anyDirtyModel(): boolean {
         if ( this.register.some( model => {
-           if ( model.model.isEditing && _.values( model.model.getDirtyFields() ).length ) return true;
+           if ( model.model.isEditing && _.values( model.model.getDirtyFields() ).length ) {
+               console.info('Warning to prevent closing of window/tab. Dirty Model: ' + model.model.module + ', ' + model.model.id );
+               return true;
+           }
         })) {
             return true;
         }
