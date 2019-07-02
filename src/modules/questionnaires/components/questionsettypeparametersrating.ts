@@ -44,7 +44,7 @@ export class QuestionsetTypeParametersRating implements OnInit {
     private setNumEntries( event ): void {
 
         if ( this.questionsetHasQuestions() ) {
-            this.toast.sendToast( this.language.getLabel('MSG_CANTCHANGE_QUESTIONSEXISTS'),'error',null,true );
+            this.toast.sendToast( this.language.getLabel('MSG_CANTCHANGE_QUESTIONSEXISTS'),'warning',null,true );
             event.target.value = this.numEntries;
             return;
         }
