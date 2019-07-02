@@ -19,7 +19,7 @@ import {Subject} from 'rxjs';
     templateUrl: './src/workbench/templates/fieldsetmanagerfieldsetdetails.html',
     providers: [view]
 })
-export class FieldsetManagerFieldsetDetails implements OnChanges{
+export class FieldsetManagerFieldsetDetails implements OnChanges {
 
     @Input() fieldset: any = {};
 
@@ -42,6 +42,7 @@ export class FieldsetManagerFieldsetDetails implements OnChanges{
             this.metadata.getFieldSetItems(this.fieldset.fieldset).some(item => {
                 if(item.id == this.fieldset.id){
                     this.currentFieldSet = this.metadata.getFieldset(item.fieldset);
+                    // this.currentFieldSet.id = item.id;
                     this.currentFieldSetConfig = item.fieldconfig;
                     return true;
                 }
@@ -50,6 +51,8 @@ export class FieldsetManagerFieldsetDetails implements OnChanges{
         } catch(e){
             this.currentFieldSet = {};
         }
+        console.log('fieldset',this.fieldset);
+        console.log('currentFieldset',this.currentFieldSet);
     }
 
     get fieldsetname(){
