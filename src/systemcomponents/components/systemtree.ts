@@ -158,9 +158,9 @@ export class SystemTree implements OnChanges {
 
     private handleDropListId(obj) {
         if (obj.action == 'add') {
-            this.dropListIds.push(obj.id);
+            this.droplistids.push(obj.id);
         } else {
-            this.dropListIds = this.dropListIds.filter(id => id != obj.id);
+            this.droplistids = this.droplistids.filter(id => id != obj.id);
         }
     }
 }
