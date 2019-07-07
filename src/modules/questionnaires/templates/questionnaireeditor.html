@@ -1,8 +1,8 @@
 <div class="slds-grid">
 
     <div tobottom class="slds-size--1-of-2 slds-p-horizontal--medium slds-m-bottom--medium">
-        <div *ngFor="let questionset of questionsets; let i=index; trackBy: trackBy" class="slds-m-bottom--medium">
-            <questionset-manager [questionset]="questionset" (positionChanged)="sortQuestionsets()" (deleted)="removeQuestionset(i)"></questionset-manager>
+        <div *ngFor="let questionset of questionsets; let i=index; trackBy: trackBy" class="slds-m-bottom--medium"><!--; -->
+            <questionset-manager [questionset]="questionset" (changed)="changeQuestionset($event,i)" (deleted)="removeQuestionset(i)"></questionset-manager>
         </div>
         <div class="">
             <questionnaire-editor-questionset-add [questionnaire]="this.model" (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add>

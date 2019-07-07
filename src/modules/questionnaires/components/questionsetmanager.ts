@@ -14,7 +14,7 @@ import { modal } from '../../../services/modal.service';
 export class QuestionsetManager implements OnInit {
 
     @Input() public questionset: any;
-    @Output() public newPosition = new EventEmitter();
+    @Output() public changed = new EventEmitter();
     @Output() public deleted = new EventEmitter();
 
     private currentPosition: number;
@@ -27,7 +27,7 @@ export class QuestionsetManager implements OnInit {
         this.model.data = this.questionset;
         this.currentPosition = this.questionset.position;
         this.model.data$.subscribe( () => {
-           if ( this.currentPosition !== this.model.data.position ) this.newPosition.emit( this.model.data.position );
+            this.changed.emit( this.model.data );
         });
     }
 

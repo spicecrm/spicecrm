@@ -12,7 +12,6 @@ import {QuestionnaireRender} from '../components/questionnairerender';
 @Component({
     selector: 'questionnaire-editor',
     templateUrl: "./src/modules/questionnaires/templates/questionnaireeditor.html",
-    providers: [relatedmodels],
     styles: [
         'slds-tabs_default__content'
     ]
@@ -41,7 +40,10 @@ export class QuestionnaireEditor implements OnInit {
     }
 
     private addQuestionset( newQuestionset ) {
-        if ( newQuestionset ) this.questionsets.push( newQuestionset );
+        if ( newQuestionset ) {
+            this.questionsets.push( newQuestionset );
+            this.sortQuestionsets();
+        }
     }
 
     private reloadPreview(): void {
@@ -60,7 +62,7 @@ export class QuestionnaireEditor implements OnInit {
 
     private sortQuestionsets(): void {
         this.questionsets.sort((a, b) => {
-            return a.position - b.position;
+            return parseInt(a.position, 10 ) - parseInt( b.position, 10 );
         });
     }
 
@@ -70,6 +72,11 @@ export class QuestionnaireEditor implements OnInit {
 
     private trackBy( index: number, item: any ): string {
         return item.id;
+    }
+
+    private changeQuestionset( questionset: any, i: number ) {
+        this.questionsets[i] = questionset;
+        this.sortQuestionsets();
     }
 
 }
