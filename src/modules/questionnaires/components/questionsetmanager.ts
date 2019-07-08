@@ -18,6 +18,7 @@ export class QuestionsetManager implements OnInit {
     @Output() public deleted = new EventEmitter();
 
     private currentPosition: number;
+    @Input() public disabled: false;
 
     constructor( private model: model, private lang: language, private modalservice: modal ) { }
 

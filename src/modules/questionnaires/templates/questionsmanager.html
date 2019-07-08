@@ -5,12 +5,12 @@
             <div #ref><ng-content></ng-content></div>
         </div>
         <div *ngIf="!isLoading">
-            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" *ngIf="showQuestionsetButtons" (click)="questionsetAction.emit('edit')" [disabled]="changeOrderMode"><system-button-icon [icon]="'edit'" title="{{language.getLabel('LBL_EDIT')}}"></system-button-icon></button>
-            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled slds-m-right--small" *ngIf="showQuestionsetButtons" (click)="questionsetAction.emit('delete')" [disabled]="changeOrderMode"><system-button-icon [icon]="'delete'" title="{{language.getLabel('LBL_DELETE')}}"></system-button-icon></button>
+            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" *ngIf="showQuestionsetButtons" (click)="questionsetAction.emit('edit')" [disabled]="changeOrderMode || componentDisabled"><system-button-icon [icon]="'edit'" title="{{language.getLabel('LBL_EDIT')}}"></system-button-icon></button>
+            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled slds-m-right--small" *ngIf="showQuestionsetButtons" (click)="questionsetAction.emit('delete')" [disabled]="changeOrderMode || componentDisabled"><system-button-icon [icon]="'delete'" title="{{language.getLabel('LBL_DELETE')}}"></system-button-icon></button>
             <button class="slds-button slds-button--neutral slds-button--brand" *ngIf="changeOrderMode" (click)="changeOrderSave()">{{language.getLabel('LBL_SAVE_ORDER')}}</button>
             <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" *ngIf="changeOrderMode" (click)="changeOrderCancel()" title="{{language.getLabel('LBL_CANCEL')}}"><system-button-icon [icon]="'close'" title="{{language.getLabel('LBL_CANCEL')}}"></system-button-icon></button>
-            <button class="slds-button slds-button--neutral" *ngIf="!changeOrderMode && questions.length" (click)="changeOrderStart()" [disabled]="questions.length < 2">{{language.getLabel('LBL_CHANGE_ORDER')}}</button>
-            <button class="slds-button slds-button--neutral" (click)="addQuestion()" [disabled]="changeOrderMode"><system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_QUESTION')}}</button>
+            <button class="slds-button slds-button--neutral" *ngIf="!changeOrderMode && questions.length" (click)="changeOrderStart()" [disabled]="questions.length < 2 || componentDisabled">{{language.getLabel('LBL_CHANGE_ORDER')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="addQuestion()" [disabled]="changeOrderMode || componentDisabled"><system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_QUESTION')}}</button>
         </div>
     </div>
     <ng-container *ngIf="!isLoading">
@@ -28,8 +28,8 @@
                 </div>
                 <p class="slds-truncate slds-p-left_x-small">{{question.name}}</p>
                 <div class="slds-col_bump-left" style="white-space:nowrap">
-                    <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="editQuestion(question.id)" [disabled]="changeOrderMode"><system-button-icon [icon]="'edit'" title="{{language.getLabel('LBL_EDIT')}}"></system-button-icon></button>
-                    <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="deleteQuestion(question.id)" [disabled]="changeOrderMode"><system-button-icon [icon]="'delete'" title="{{language.getLabel('LBL_DELETE')}}"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="editQuestion(question.id)" [disabled]="changeOrderMode || componentDisabled"><system-button-icon [icon]="'edit'" title="{{language.getLabel('LBL_EDIT')}}"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="deleteQuestion(question.id)" [disabled]="changeOrderMode || componentDisabled"><system-button-icon [icon]="'delete'" title="{{language.getLabel('LBL_DELETE')}}"></system-button-icon></button>
                 </div>
             </div>
         </div>
