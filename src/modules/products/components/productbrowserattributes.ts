@@ -46,7 +46,7 @@ export class ProductBrowserAttributes {
                 attributes.push(attribute);
             }
         }
-        return attributes;
+        return attributes.sort((a,b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
     }
 
     private clearFilters() {
