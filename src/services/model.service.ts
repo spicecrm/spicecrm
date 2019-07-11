@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import { Injectable, EventEmitter, Injector, OnDestroy } from "@angular/core";
+import { Injectable, EventEmitter, Injector, OnDestroy, Optional } from "@angular/core";
 import {of, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
@@ -16,7 +16,8 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
 import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
-import {modelregister} from './modelregister.service';
+import {GlobalHeader} from '../globalcomponents/components/globalheader';
+import {GlobalFooter} from '../globalcomponents/components/globalfooter';
 
 /**
  * @ignore
@@ -164,10 +165,11 @@ export class model implements OnDestroy {
         public language: language,
         private modal: modal,
         private navigation: navigation,
-        private injector: Injector,
-        private modelregister: modelregister
+        public injector: Injector,
+        @Optional() private gh: GlobalHeader,
+        @Optional() private gf: GlobalFooter
     ) {
-        this.modelRegisterId = this.modelregister.registerModel( this );
+        this.modelRegisterId = this.navigation.registerModel( this );
     }
 
     get messages(): any[] {
@@ -873,6 +875,11 @@ export class model implements OnDestroy {
         this.evaluateValidationRules(null, "init");
     }
 
+    public isOutsideRouterOutlet(): boolean {
+        if ( this.gh || this.gf ) return true;
+        else return false;
+    }
+
     public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
 
         // a response subject to return if the model has been saved
@@ -1253,7 +1260,12 @@ export class model implements OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        this.modelregister.unregisterModel( this.modelRegisterId );
+        this.navigation.unregisterModel( this.modelRegisterId );
+    }
+
+    public isLeaveable(): boolean {
+        console.log('isEditing in isLeaveable()',this.isEditing);
+        return !( this.isEditing && _.values( this.getDirtyFields() ).length );
     }
 
 }
