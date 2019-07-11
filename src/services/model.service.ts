@@ -16,8 +16,8 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
 import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
-import {GlobalHeader} from '../globalcomponents/components/globalheader';
-import {GlobalFooter} from '../globalcomponents/components/globalfooter';
+// import {GlobalHeader} from '../globalcomponents/components/globalheader';
+// import {GlobalFooter} from '../globalcomponents/components/globalfooter';
 
 /**
  * @ignore
@@ -166,8 +166,8 @@ export class model implements OnDestroy {
         private modal: modal,
         private navigation: navigation,
         public injector: Injector,
-        @Optional() private gh: GlobalHeader,
-        @Optional() private gf: GlobalFooter
+        // @Optional() private globalHeader: GlobalHeader,
+        // @Optional() private globalFooter: GlobalFooter
     ) {
         this.modelRegisterId = this.navigation.registerModel( this );
     }
@@ -876,8 +876,14 @@ export class model implements OnDestroy {
     }
 
     public isOutsideRouterOutlet(): boolean {
-        if ( this.gh || this.gf ) return true;
-        else return false;
+
+        return true;
+
+        // if ( this.globalHeader || this.globalFooter ) return true;
+        // else return false;
+
+        // alternative:
+        // return !( this.injector.get( GlobalHeader ) || this.injector.get( GlobalFooter ) );
     }
 
     public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
@@ -1264,7 +1270,6 @@ export class model implements OnDestroy {
     }
 
     public isLeaveable(): boolean {
-        console.log('isEditing in isLeaveable()',this.isEditing);
         return !( this.isEditing && _.values( this.getDirtyFields() ).length );
     }
 
