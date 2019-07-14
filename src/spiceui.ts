@@ -52,7 +52,6 @@ import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
-import {modelregister} from "./services/modelregister.service";
 
 // declarations for TS
 /**
@@ -159,8 +158,7 @@ export class SpiceUI {
         VersionManagerService,
         modal,
         Title,
-        loggerService,
-        modelregister
+        loggerService
     ]
 })
 export class SpiceUIModule {

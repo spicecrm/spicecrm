@@ -32,6 +32,7 @@ export class GlobalDockedComposer implements OnInit {
     constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, private model: model, private view: view, private modal: modal, private ViewContainerRef: ViewContainerRef) {
         this.view.isEditable = true;
         this.view.setEditMode();
+        this.model.isEditing = true;
     }
 
     public ngOnInit() {
@@ -40,7 +41,7 @@ export class GlobalDockedComposer implements OnInit {
         this.model.id = this.composerdata.id;
 
         if (this.composerdata.model.data) {
-            this.model.data = this.composerdata.model.data
+            this.model.data = this.composerdata.model.data;
         } else {
             this.model.initializeModel();
         }
