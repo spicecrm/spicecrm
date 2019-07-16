@@ -46,7 +46,9 @@ export class SystemInputCompanycodes implements ControlValueAccessor {
         private configuration: configurationService
     ) {
         this._companycodes = this.configuration.getData('companycodes');
-        this._companycodes.sort((a, b) => a.name > b.name ? -1 : 1);
+        if(typeof this._companycodes === 'object') {
+            this._companycodes.sort((a, b) => a.name > b.name ? -1 : 1);
+        }
     }
 
     /**

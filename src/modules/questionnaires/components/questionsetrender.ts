@@ -61,8 +61,7 @@ export class QuestionsetRender implements OnInit {
 
     public ngOnInit(): void {
 
-        // if ( this.participation_id ) this.previewMode = false;
-        // else this.previewMode = true;
+        if ( !this.participation_id ) this.previewMode = true;
 
         if ( typeof this.questionsetIdOrObject === 'string' ) {
             this.backend.getRequest( 'module/QuestionSets/renderer/' + this.questionsetIdOrObject ).subscribe( ( response: any ) => {

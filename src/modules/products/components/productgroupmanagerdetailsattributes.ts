@@ -64,7 +64,7 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
 
     private sortAttributes(array) {
         return array.sort((a, b) => {
-            return a.sort_sequence > b.sort_sequence ? 1 : -1;
+            return +a.sort_sequence > +b.sort_sequence ? 1 : -1;
         });
     }
 
