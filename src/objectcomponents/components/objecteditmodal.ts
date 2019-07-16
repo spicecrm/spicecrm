@@ -80,6 +80,7 @@ export class ObjectEditModal implements OnInit {
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
+        this.model.isEditing = true;
 
         this.action$ = this.actionSubject.asObservable();
     }
@@ -162,6 +163,7 @@ export class ObjectEditModal implements OnInit {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
             this.model.save(true).subscribe(status => {
+                    this.model.isEditing = false;
                     if (status) {
                         // emit that we saved;
                         this.actionSubject.next(this.model.data);
