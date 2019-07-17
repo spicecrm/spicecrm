@@ -25,7 +25,10 @@
     <div class="slds-docked-composer__body slds-theme--default slds-scrollable" style="height: 380px;">
         <div #containercontent></div>
     </div>
-    <footer class="slds-docked-composer__footer slds-shrink-none">
+    <footer class="slds-docked-composer__footer slds-shrink-none slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-col">
+            <global-docked-composer-messages-badge></global-docked-composer-messages-badge>
+        </div>
         <div class="slds-col_bump-left slds-text-align_right">
             <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
             <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
