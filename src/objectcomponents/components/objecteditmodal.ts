@@ -114,6 +114,13 @@ export class ObjectEditModal implements OnInit {
     }
 
     /**
+     * returns the grow entry from teh componentconfig
+     */
+    get grow() {
+        return this.componentconfig.grow;
+    }
+
+    /**
      * saves the data and if not done before does a duplicate check before saving
      *
      * @param goDetail if set to true the system will naviaget to the detail fo teh record after saving
