@@ -94,7 +94,7 @@ export class QuestionsetRenderIST {
 
     private getAnswerValue( questionId: string, answerIndex: number ): string {
         try {
-            return this.answers.questionId[answerIndex].value;
+            return this.answers[questionId][answerIndex].value;
         } catch(e) {
             return '';
         }
@@ -103,13 +103,15 @@ export class QuestionsetRenderIST {
     public ngOnInit(): void {
 
         if ( !this.previewMode ) {
+
+            for ( let question of this.questions ) this.questionsMeta[question.id] = { tempReadonly: true };
             this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
                 data => {
                     for( let question of this.questions ) {
                         if ( !this.answers[question.id] ) this.answers[question.id] = [];
                         if( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
-                        this.questionsMeta[question.id].readonly = false;
                     }
+                    for ( let question of this.questions ) this.questionsMeta[question.id].tempReadonly = false;
                     this.determineNumOfFinishedQuestions();
                 });
         }
@@ -125,33 +127,33 @@ export class QuestionsetRenderIST {
 
         // Are the input fields of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input fields are disabled.
-        if ( this.questionsMeta[questionId].readonly ) return false;
+        if ( this.questionsMeta[questionId].tempReadonly ) return false;
 
         // At the beginning disable the input field(s) of the question. They will stay disabled until server response at the end.
-        this.questionsMeta[questionId].readonly = true;
+        this.questionsMeta[questionId].tempReadonly = true;
 
-        this.backupForNetworkError = JSON.stringify( this.answers.questionId );
+        this.backupForNetworkError = JSON.stringify( this.answers[questionId] );
 
         // Get the answer from the input field and store it.
-        this.answers.questionId[answerIndex].value = event.target.value;
+        this.answers[questionId][answerIndex].value = event.target.value;
 
         // The data for the server request with the answer values (true or false).
         let requestData = {};
-        for ( let i = 0; i < this.answers.questionId.length; i++ ) {
-            if ( this.answers.questionId[i].value === '' ) this.answers.questionId[i].value = false;
-            requestData[this.options[questionId][i].id] = this.answers.questionId[i].value;
+        for ( let i = 0; i < this.answers[questionId].length; i++ ) {
+            if ( this.answers[questionId][i].value === '' ) this.answers[questionId][i].value = false;
+            requestData[this.options[questionId][i].id] = this.answers[questionId][i].value;
         }
 
         // Do the request to the server to store the current answer state of the whole question.
         this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData ).subscribe(
             data => {
-                this.questionsMeta[questionId].readonly = false;
+                this.questionsMeta[questionId].tempReadonly = false;
                 this.determineNumOfFinishedQuestions();
             },
             error => {
-                this.questionsMeta[questionId].readonly = false;
+                this.questionsMeta[questionId].tempReadonly = false;
                 this.toast.sendToast( this.language.getLabel('ERR_NETWORK_SAVING'),'error', error.message,false );
-                this.answers.questionId = JSON.parse( this.backupForNetworkError );
+                this.answers[questionId] = JSON.parse( this.backupForNetworkError );
             }
         );
 
@@ -160,7 +162,7 @@ export class QuestionsetRenderIST {
     }
 
     private setFieldsOfQuestion( questionId: string, answervalues: any ): void {
-        for ( let answer of this.answers.questionId ) {
+        for ( let answer of this.answers[questionId] ) {
             answer.value = (answervalues[answer.optionId] || false);
         }
     }
