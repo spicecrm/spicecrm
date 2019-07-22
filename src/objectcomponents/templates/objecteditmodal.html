@@ -7,7 +7,7 @@
             </button>
         </system-modal-header-right>
     </system-modal-header>
-    <system-modal-content margin="none" #modalContent viewprovider>
+    <system-modal-content [grow]="grow" margin="none" #modalContent viewprovider>
         <object-edit-modal-dialog-duplicates class="slds-theme--shade" *ngIf="showDuplicatesTable" [duplicates]="model.duplicates"></object-edit-modal-dialog-duplicates>
         <div *ngIf="!showDuplicatesTable"  class="slds-grid">
             <div class="slds-grid--vertical slds-grow">

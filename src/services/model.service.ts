@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import { Injectable, EventEmitter, Injector, OnDestroy, Optional } from "@angular/core";
+import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
 import {of, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
@@ -169,7 +169,7 @@ export class model implements OnDestroy {
         // @Optional() private globalHeader: GlobalHeader,
         // @Optional() private globalFooter: GlobalFooter
     ) {
-        this.modelRegisterId = this.navigation.registerModel( this );
+        this.modelRegisterId = this.navigation.registerModel(this);
     }
 
     get messages(): any[] {
@@ -320,6 +320,10 @@ export class model implements OnDestroy {
     public validate(event?: string) {
         this.resetMessages();
         this.isValid = true;
+
+        // run evaluation rules again
+        this.evaluateValidationRules(null, "change");
+
         for (let field in this.fields) {
             // check required
             if (
@@ -1266,11 +1270,11 @@ export class model implements OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        this.navigation.unregisterModel( this.modelRegisterId );
+        this.navigation.unregisterModel(this.modelRegisterId);
     }
 
     public isLeaveable(): boolean {
-        return !( this.isEditing && _.values( this.getDirtyFields() ).length );
+        return !(this.isEditing && _.values(this.getDirtyFields()).length);
     }
 
 }
