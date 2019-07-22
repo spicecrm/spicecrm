@@ -15,7 +15,7 @@ import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
-import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
+
 // import {GlobalHeader} from '../globalcomponents/components/globalheader';
 // import {GlobalFooter} from '../globalcomponents/components/globalfooter';
 
