@@ -9,10 +9,10 @@
                 <div class="slds-col slds-p-left--large">
                     <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;" *ngIf="previewMode" class="slds-input">
                     <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;" class="slds-input"
-                           *ngIf="!previewMode" [(ngModel)]="answers[question.id].optionlessAnswerValue"
+                           *ngIf="!previewMode" [(ngModel)]="answers[question.id]"
                            (focus)="onTextFocus(question.id)"
                            (change)="onTextChange(question.id)"
-                           [attr.disabled]="true || questionsMeta[question.id].tempReadonly || noEdit ? '':null">
+                           [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null">
                 </div>
             </div>
         </div>
@@ -30,10 +30,10 @@
                 <td class="slds-text-align--right slds-p-vertical--small">
                     <input type="text" *ngIf="previewMode" size="5" class="slds-input">
                     <input type="text" *ngIf="!previewMode"
-                           [(ngModel)]="answers[question.id].optionlessAnswerValue"
+                           [(ngModel)]="answers[question.id]"
                            (focus)="onTextFocus(question.id)"
                            (change)="onTextChange(question.id)"
-                           [attr.disabled]="true || questionsMeta[question.id].tempReadonly || noEdit ? '':null" size="5"
+                           [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null" size="5"
                            class="slds-input">
                 </td>
             </tr>
