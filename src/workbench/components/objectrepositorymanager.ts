@@ -419,12 +419,18 @@ export class ObjectRepositoryManager {
     }
 
     public updateField(event) {
-        console.log("event", event);
         this.currentObjRepo.description = event;
     }
 
     private exportRepoList() {
         this.modalservice.openModal('ObjectRepositoryExport');
+    }
+
+    private getDeprecatedBool(dep) {
+        return dep == '1' ? true : false;
+    }
+    public updateDeprecated() {
+        this.currentObjRepo.deprecated = (this.currentObjRepo.deprecated == '1') ? '0' : '1';
     }
 
 }
