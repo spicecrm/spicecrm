@@ -26,14 +26,14 @@
                 <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right--large slds-p-vertical--small slds-text-align--right slds-text-heading--small">
                     {{questionNamesSplitted[i][j]}}
                 </td>
-                <td width="100%"></td>
-                <td class="slds-text-align--right slds-p-vertical--small">
+                <td class="slds-text-align--right slds-p-vertical--small" width="100%">
                     <input type="text" *ngIf="previewMode" size="5" class="slds-input">
                     <input type="text" *ngIf="!previewMode"
                            [(ngModel)]="answers[question.id].optionlessAnswerValue"
                            (focus)="onTextFocus(question.id)"
                            (change)="onTextChange(question.id)"
-                           [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null" size="5"
+                           [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null"
+                           size="5" style="width:auto"
                            class="slds-input">
                 </td>
             </tr>
