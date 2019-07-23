@@ -665,7 +665,6 @@ export class model implements OnDestroy {
 
     public setFieldValue(field, value) {
         if (!field) return false;
-        if (_.isString(value)) value = value.trim();
         this.data[field] = value;
         this.data$.emit(this.data);
         this.evaluateValidationRules(field, "change");
@@ -727,6 +726,11 @@ export class model implements OnDestroy {
 
     public save(notify: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
+
+        // Clean strings of leading and ending white spaces:
+        for ( let property in this.data ) {
+            if ( _.isString( this.data[property] )) this.data[property] = this.data[property].trim();
+        }
 
         // determine changed fields
         let changedData: any = {};
