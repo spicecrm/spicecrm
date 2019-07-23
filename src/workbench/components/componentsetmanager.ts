@@ -61,7 +61,7 @@ export class ComponentsetManager {
     }
 
 
-    checkMode(){
+    checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
@@ -138,12 +138,20 @@ export class ComponentsetManager {
         let componentset = this.metadata.getComponentSet(this.currentComponentSet);
         componentset.package = newPackage;
     }
-    get currentComponentSetName(){
+    get currentComponentSetName() {
         return this.metadata.getComponentSet(this.currentComponentSet).name;
     }
     set currentComponentSetName(newName){
         let componentset = this.metadata.getComponentSet(this.currentComponentSet);
         componentset.name = newName;
+    }
+    private componentDeprecated(component) {
+        let object = this.metadata.getSystemComponents(component.module).find(x => x.component === component.component);
+        if(object.deprecated == '1') {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     getComponentSetItemName(componentsetItem){
@@ -172,7 +180,6 @@ export class ComponentsetManager {
             return retArray;
         }
     }
-
     getComponentSetItems() {
         return this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : [];
     }
