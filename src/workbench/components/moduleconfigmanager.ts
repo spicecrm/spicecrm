@@ -292,14 +292,12 @@ export class ModuleConfigManager {
     private buildTreeList(data) {
 
         let components = [];
-
         for (let entry of data) {
             if (entry.module == this.currentModule || this.currentModule == "*") {
                 this.componentModuleList.push(entry);
 
                 // Check if role name is available
                 let role_name = this.checkRoleName(entry.role_id);
-
 
                 let comp: any = {};
 
@@ -328,11 +326,20 @@ export class ModuleConfigManager {
                 }
 
                 if (check == 0) {
+
+                    // Check if it is a deprecated object
+                    let compName = entry.component;
+                    if(this.metadata.getSystemComponents().length > 0 && this.metadata.getSystemComponents().find(x => x.component === entry.component)) {
+                        if(this.metadata.getSystemComponents().find(x => x.component === entry.component).deprecated == "1") {
+                            compName = compName + " | dep.";
+                        }
+                    }
+
                     components.push({
                         id: entry.component,
                         parent_id: null,
                         clickable: false,
-                        name: entry.component
+                        name: compName
                     });
                 }
             }
