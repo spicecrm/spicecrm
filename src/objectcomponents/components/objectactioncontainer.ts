@@ -65,7 +65,7 @@ export class ObjectActionContainer implements OnChanges {
         let initial = true;
 
         for (let actionitem of actionitems) {
-            if (initial) {
+            if (initial || actionitem.singlebutton == '1') {
                 this.mainactionitems.push({
                     disabled: true,
                     id: actionitem.id,
