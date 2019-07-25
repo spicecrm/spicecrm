@@ -84,6 +84,14 @@ export class ObjectActionContainerItem implements AfterViewInit {
         }
     }
 
+    get hidden() {
+        if (this.stable && this.componentref) {
+            return this.componentref.instance.hidden ? true : false;
+        } else {
+            return true;
+        }
+    }
+
     public ngAfterViewInit() {
         this.metadata.addComponent(this.actionitem.action ? this.standardActions[this.actionitem.action] : this.actionitem.component, this.actioncontainer).subscribe(componentref => {
             componentref.instance.parent = this.model;
