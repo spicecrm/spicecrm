@@ -106,6 +106,7 @@ import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
 import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
 import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
 import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
+import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
 
 /**
 * @ignore
@@ -219,7 +220,8 @@ declare var _: any;
         fieldBackendMethod,
         fieldSystemLabel,
         fieldTimeDifference,
-        fieldIconPopover
+        fieldIconPopover,
+        fieldStylesheetID
     ],
     exports: [
         fieldSet,

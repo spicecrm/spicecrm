@@ -5,9 +5,6 @@
             <div class="slds-truncate slds-text-align_center">#</div>
         </th>
         <th scope="col">
-            <div class="slds-truncate slds-text-align_center">sub</div>
-        </th>
-        <th scope="col">
             <div class="slds-truncate">{{language.getLabel('LBL_PRODUCT', 'SalesDocItems')}}</div>
         </th>
         <th scope="col">
@@ -33,10 +30,8 @@
             <div class="slds-truncate slds-text-align_center">{{item.itemnr}}</div>
         </td>
         <td>
-            <div class="slds-truncate slds-text-align_center">{{getParentItemNr(item.parentitem_id)}}</div>
-        </td>
-        <td>
             <div class="slds-grid">
+                <system-icon module="Products" size="x-small"></system-icon>
                 <div class="slds-truncate" style="max-width: 300px;">{{item.productvariant_name}}</div>
                 <system-tooltip *ngIf="item.description" class="slds-col_bump-left" [tooltiptext]="item.description"></system-tooltip>
             </div>
@@ -58,7 +53,7 @@
         </td>
     </tr>
     <tr>
-        <td colspan="5">
+        <td colspan="4">
             <div class="slds-truncate slds-text-align_right"></div>
         </td>
         <td>
