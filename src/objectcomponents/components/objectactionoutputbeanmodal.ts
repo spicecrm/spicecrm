@@ -3,12 +3,14 @@
  */
 import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
+import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from "../../services/modal.service";
 import {view} from "../../services/view.service";
 import {backend} from "../../services/backend.service";
 import {DomSanitizer} from '@angular/platform-browser';
 import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
+import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'object-action-output-bean-modal',
@@ -17,13 +19,34 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 })
 export class ObjectActionOutputBeanModal {
 
+    /**
+     * the window itsel .. resp the containing modal container
+     */
     public self: any = undefined;
+
+    /**
+     * the list of templates
+     */
     private templates = [];
 
+    /**
+     * the selected template
+     */
     private _selected_template = null;
+
+    /**
+     * the selcted output format
+     */
     private _selected_format: 'html' | 'pdf' = 'pdf';
 
+    /**
+     * the response of the compiler
+     */
     private compiled_selected_template: string = '';
+
+    /**
+     * flag is the oputput is loading
+     */
     private loading_output: boolean = false;
 
 
@@ -35,6 +58,7 @@ export class ObjectActionOutputBeanModal {
     constructor(
         private language: language,
         private model: model,
+        private metadata: metadata,
         private modal: modal,
         private view: view,
         private backend: backend,
@@ -44,21 +68,21 @@ export class ObjectActionOutputBeanModal {
     }
 
     public ngOnInit() {
-        let params = {
-            searchfields:
-                {
-                    join: 'AND',
-                    conditions: [
-                        {field: 'module_name', operator: '=', value: this.model.module}
-                    ]
-                }
-        };
 
-        this.backend.all('OutputTemplates', params).subscribe(
-            (data: any) => {
-                this.templates = data;
+        // see if we have a relate to an output template
+        let fields = this.metadata.getModuleFields(this.model.module);
+        for (let field in fields) {
+            if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
+                this.selected_template = this.templates.find(template => template.id == this.model.getFieldValue(fields[field].id_name));
+                break;
             }
-        );
+        }
+
+        // if no template is set and we only have one select this
+        if (!this.selected_template && this.templates.length == 1) {
+            this.selected_template = this.templates[0];
+            this.rendertemplate();
+        }
     }
 
     set selected_template(val) {
@@ -115,6 +139,13 @@ export class ObjectActionOutputBeanModal {
                 );
                 break;
         }
+    }
+
+    /**
+     * called from reload button to re render the template
+     */
+    private reload() {
+        this.rendertemplate();
     }
 
     private close() {
