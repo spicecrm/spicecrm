@@ -31,8 +31,13 @@
                 </div>
             </div>
         </div>
-        <div class="slds-modal__footer">
-            <div class="slds-col">
+        <div class="slds-modal__footer slds-grid slds-grid--align-end">
+            <div class="slds-p-horizontal--xxx-small-small">
+                <ng-container *ngIf="!is_downloading_template">
+                    <button [disabled]="!selected_template" class="slds-button slds-button--neutral" (click)="reload()">{{language.getLabel('LBL_RELOAD')}}</button>
+                </ng-container>
+            </div>
+            <div class="slds-p-horizontal--xxx-small">
                 <ng-container *ngIf="!is_downloading_template">
                     <button [disabled]="!selected_template" class="slds-button slds-button--brand" (click)="download()">{{language.getLabel('LBL_DOWNLOAD')}}</button>
                 </ng-container>
