@@ -2,7 +2,7 @@
  * @module ModuleSalesDocs
  */
 import {
-Component,
+    Component,
     ElementRef
 } from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -11,7 +11,7 @@ import {language} from '../../../services/language.service';
 import {configurationService} from '../../../services/configuration.service';
 import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';
-import { userpreferences } from '../../../services/userpreferences.service';
+import {userpreferences} from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'salesdocs-items-edit',
@@ -19,11 +19,11 @@ import { userpreferences } from '../../../services/userpreferences.service';
 })
 export class SalesDocsItemsEdit {
 
-    items: Array<any> = [];
-    itemSubscription: any = undefined;
-    taxcategories: Array<any> = [];
-    voucher_code: any = '';
-    voucher: any = {};
+    private items: any[] = [];
+    private itemSubscription: any = undefined;
+    private taxcategories: any[] = [];
+    private voucher_code: any = '';
+    private voucher: any = {};
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configurationService: configurationService, private modal: modal) {
         try {
@@ -32,7 +32,7 @@ export class SalesDocsItemsEdit {
             this.itemSubscription = this.model.data$.subscribe(data => {
                 this.buildItems();
                 this.itemSubscription.unsubscribe();
-            })
+            });
         }
 
         let taxcategories = this.configurationService.getData('taxcategories');
@@ -40,7 +40,7 @@ export class SalesDocsItemsEdit {
             this.backend.getRequest('SalesDocs/taxcategories').subscribe((taxcategories: any) => {
                 this.configurationService.setData('taxcategories', taxcategories);
                 this.taxcategories = taxcategories;
-            })
+            });
         } else {
             this.taxcategories = taxcategories;
         }
@@ -95,7 +95,20 @@ export class SalesDocsItemsEdit {
         return ret;
     }
 
-    buildItems() {
+    /**
+     * returns the proper display name for the line from the item. Differentiating between product and product variant
+     *
+     * @param item
+     */
+    private displayname(item) {
+        if (item.product_id) {
+            return item.product_name;
+        } else {
+            return item.productvariant_name
+        }
+    }
+
+    private buildItems() {
 
         this.items = [];
 
@@ -117,12 +130,12 @@ export class SalesDocsItemsEdit {
         }
     }
 
-    getTaxPercentage(taxcategory) {
+    private getTaxPercentage(taxcategory) {
         let taxpercentage = 0;
 
         this.taxcategories.some(record => {
             if (record.taxcategoryid == taxcategory) {
-                taxpercentage = parseInt(record.taxpercentage);
+                taxpercentage = parseInt(record.taxpercentage, 10);
                 return true;
             }
         });
@@ -130,7 +143,7 @@ export class SalesDocsItemsEdit {
         return taxpercentage;
     }
 
-    recalculate() {
+    private recalculate() {
         for (let item of this.items) {
             if (parseFloat(item.quantity) && parseFloat(item.amount_net_per_uom)) {
                 item.amount_net = parseFloat(item.quantity) * parseFloat(item.amount_net_per_uom);
@@ -148,12 +161,12 @@ export class SalesDocsItemsEdit {
         }
     }
 
-    formatNumber(number) {
+    private formatNumber(number) {
         return this.userpreferences.formatMoney(parseFloat(number));
     }
 
-    deleteItem(itemid) {
-        delete(this.model.data.salesdocitems.beans[itemid]);
+    private deleteItem(itemid) {
+        delete (this.model.data.salesdocitems.beans[itemid]);
         this.items.some((item, index) => {
             if (item.id == itemid) {
                 this.items.splice(index, 1);
@@ -162,33 +175,44 @@ export class SalesDocsItemsEdit {
         })
     }
 
-    addProduct() {
+    private addProduct() {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = 'Products';
+            selectModal.instance.multiselect = true;
+            selectModal.instance.selectedItems.subscribe(items => {
+                this.handleAddProducts(items);
+            });
+        });
+    }
+
+    private addProductVariant() {
         this.modal.openModal('SalesDocsItemsAddProduct').subscribe(addProductModal => {
             addProductModal.instance.items = this.items;
-            addProductModal.instance.addproduct.subscribe(event => {
-                    this.handleAddProduct(event)
+            addProductModal.instance.addproduct.subscribe(variants => {
+                    this.handleAddProductVariant(variants);
                 }
             );
         })
     }
 
-    getNextItemNr() {
+    private getNextItemNr() {
         let lastitemnr = 0;
         for (let item of this.items) {
-            let thisitemNr = parseInt(item.itemnr);
-            if (thisitemNr > lastitemnr)
+            let thisitemNr = parseInt(item.itemnr, 10);
+            if (thisitemNr > lastitemnr) {
                 lastitemnr = thisitemNr;
+            }
         }
 
         return lastitemnr + 10;
     }
 
-    handleAddProduct(eventData) {
-        if (eventData !== false) {
-            let data = eventData.product;
+    private handleAddProductVariant(variants) {
+        if (variants !== false) {
+            let data = variants.product;
             let newItem = {
                 id: this.model.generateGuid(),
-                parentitem_id: eventData.parentitem_id,
+                parentitem_id: variants.parentitem_id,
                 productvariant_id: data.object.id,
                 productvariant_name: data.object.data.name,
                 name: data.object.data.name,
@@ -197,7 +221,7 @@ export class SalesDocsItemsEdit {
                 tax_category: 'V2',
                 quantity: 1,
                 itemnr: this.getNextItemNr(),
-                uom: data.object.data.base_uom,
+                uom_id: data.object.data.base_uom_id,
                 amount_net_per_uom: data.object.data.std_price,
                 purchase_price: data.object.data.purchase_price,
             };
@@ -208,7 +232,7 @@ export class SalesDocsItemsEdit {
             if (!this.model.data.salesdocitems) {
                 this.model.data.salesdocitems = {
                     beans: {}
-                }
+                };
             }
 
             this.model.data.salesdocitems.beans[newItem.id] = newItem;
@@ -219,11 +243,42 @@ export class SalesDocsItemsEdit {
         this.recalculate();
     }
 
-    toggleIcon(expanded) {
+    private handleAddProducts(products) {
+        if (!this.model.data.salesdocitems) {
+            this.model.data.salesdocitems = {
+                beans: {}
+            };
+        }
+
+        for (let product of products) {
+            let newItem = {
+                id: this.model.generateGuid(),
+                product_id: product.id,
+                product_name: product.name,
+                name: product.name,
+                deleted: 0,
+                salesdoc_id: this.model.id,
+                tax_category: 'V20',
+                quantity: 1,
+                itemnr: this.getNextItemNr(),
+                uom_id: product.base_uom_id,
+                amount_net_per_uom: product.std_price,
+                purchase_price: product.purchase_price,
+            };
+
+            this.model.data.salesdocitems.beans[newItem.id] = newItem;
+        }
+
+        this.buildItems();
+
+        this.recalculate();
+    }
+
+    private toggleIcon(expanded) {
         return expanded ? 'chevronup' : 'chevrondown';
     }
 
-    toggleText(id) {
+    private toggleText(id) {
         this.items.some(item => {
             if (item.id == id) {
                 item.expanded = !item.expanded;
@@ -232,7 +287,7 @@ export class SalesDocsItemsEdit {
         })
     }
 
-    checkVoucherCode() {
+    private checkVoucherCode() {
         if (this.voucher_code.length > 0) {
             let params = {
                 fields: JSON.stringify([
