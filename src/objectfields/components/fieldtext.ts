@@ -19,7 +19,7 @@ declare const window: any;
 export class fieldText extends fieldGeneric implements OnInit {
 
     private speechRecognition = false;
-    @ViewChild('textField', {read: ViewContainerRef}) private textField: ViewContainerRef;
+    @ViewChild('textField', {read: ViewContainerRef, static: false}) private textField: ViewContainerRef;
     private browserIsChrome: boolean;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modalservice: modal ) {
