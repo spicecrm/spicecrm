@@ -9,6 +9,6 @@
         <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
     </td>
     <td *ngIf="!hideActions" role="gridcell" class="slds-cell-shrink">
-        <object-action-menu [buttonsize]="'x-small'" [standardactions]="false" [addactions]="customActions" [standardeditactions]="false" [addeditactions]="customEditActions" (action)="handleAction($event)"></object-action-menu>
+        <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset" ></object-action-menu>
     </td>
 </ng-container>
