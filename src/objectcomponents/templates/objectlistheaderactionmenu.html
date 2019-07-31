@@ -4,28 +4,11 @@
     </button>
     <div class="slds-dropdown slds-dropdown--left">
         <ul class="slds-dropdown__list" role="menu">
-            <li *ngIf="hasSelection" class="slds-dropdown__item slds-has-divider--bottom-space" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" (click)="setAllUnselected()">
-                    <span class="slds-truncate">Select None</span>
-                </a>
-            </li>
-            <object-list-header-actions-export-csv-button></object-list-header-actions-export-csv-button>
-            <object-list-header-actions-export-targetlist-button></object-list-header-actions-export-targetlist-button>
-            <!--li *ngIf="!selectAll" class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" (click)="setAllSelected()">
-                    <span class="slds-truncate">Select All</span>
-                </a>
-            </li-->
-            <ng-container *ngIf="hasSelection && actionset">
-                <li class="slds-has-divider--top-space" role="separator"></li>
-                <li class="slds-dropdown__item" role="presentation">
-                    <a href="javascript:void(0);" role="menuitem">
-                        <span class="slds-truncate">Add to target List</span>
-                    </a>
-                </li>
-                <li class="slds-dropdown__item" role="presentation">
-                    <a href="javascript:void(0);" role="menuitem">
-                        <span class="slds-truncate">Merge Duplicates</span>
+            <ng-container *ngIf="actionitems.length > 0">
+                <!--li class="slds-has-divider--top-space" role="separator"></li-->
+                <li *ngFor="let actionitem of actionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
                     </a>
                 </li>
             </ng-container>
