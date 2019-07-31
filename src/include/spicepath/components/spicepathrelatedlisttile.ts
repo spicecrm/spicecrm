@@ -23,10 +23,7 @@ export class SpicePathRelatedListTile implements OnInit {
 
     private componentconfig: any = {};
 
-    private addActions = [{action: 'remove', label: 'LBL_UNLINK'}];
-
     constructor(private model: model, private relatedmodels: relatedmodels, private view: view, private language: language, private metadata: metadata) {
-
     }
 
     public ngOnInit() {
@@ -35,6 +32,10 @@ export class SpicePathRelatedListTile implements OnInit {
         this.model.data = this.data;
 
         this.componentconfig = this.metadata.getComponentConfig('SpicePathRelatedListTile', this.module);
+    }
+
+    get actionset() {
+        return this.componentconfig.actionset;
     }
 
     get componentSetLeft() {
@@ -51,13 +52,5 @@ export class SpicePathRelatedListTile implements OnInit {
 
     private navgiateDetail() {
         this.model.goDetail();
-    }
-
-    private handleAction(event) {
-        switch (event) {
-            case 'remove':
-                this.relatedmodels.deleteItem(this.model.id);
-                break;
-        }
     }
 }
