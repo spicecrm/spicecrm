@@ -33,7 +33,7 @@ export class ObjectActionContainer implements OnChanges {
     /**
      * the id of the actionset to be rendered
      */
-    @Input() private actionset: string = "";
+    @Input() public actionset: string = "";
 
     /**
      * an array with the main action items. Allothers are rendered in the overflow
@@ -55,7 +55,7 @@ export class ObjectActionContainer implements OnChanges {
      */
     private isOpen: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private changeDetectorRef: ChangeDetectorRef) {
+    constructor(public language: language, public metadata: metadata, public model: model, public changeDetectorRef: ChangeDetectorRef) {
     }
 
     public ngOnChanges() {
