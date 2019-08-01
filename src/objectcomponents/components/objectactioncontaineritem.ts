@@ -56,9 +56,11 @@ export class ObjectActionContainerItem implements AfterViewInit {
         IMPORT: "ObjectActionImportButton",
         MAIL: "ObjectActionBeanToMailButton",
         PRINT: "ObjectActionOutputBeanButton",
-        SELECT: "ObjectActionSelectButton"
-    }
-
+        SELECT: "ObjectActionSelectButton",
+        OPEN: "ObjectActionOpenButton",
+        CANCEL: "ObjectActionCancelButton",
+        SAVE: "ObjectActionSaveButton"
+    };
     /**
      * @ignore
      */
