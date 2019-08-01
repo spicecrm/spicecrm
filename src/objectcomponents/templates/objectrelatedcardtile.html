@@ -5,7 +5,7 @@
             <a href="javascript:void(0);">{{data.summary_text}}</a>
         </h3>
         <div class="slds-shrink-none slds-show--medium">
-            <object-action-menu [buttonsize]="'x-small'" [addactions]="addActions" (action)="handleAction($event)"></object-action-menu>
+            <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
         </div>
     </div>
     <div class="slds-tile__detail slds-text-body--small">
@@ -20,5 +20,5 @@
             </ng-container>
         </dl>
     </div>
-    <object-action-menu class="slds-hide--medium" [buttonsize]="'x-small'" [addactions]="addActions" (action)="handleAction($event)"></object-action-menu>
+    <object-action-menu class="slds-hide--medium" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
 </div>
