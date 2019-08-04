@@ -36,7 +36,20 @@ export class SalesDocsItemsDisplay {
         }
     }
 
-    buildItems() {
+    /**
+     * returns the proper display name for the line from the item. Differentiating between product and product variant
+     *
+     * @param item
+     */
+    private displayname(item) {
+        if (item.product_id) {
+            return item.product_name;
+        } else {
+            return item.productvariant_name
+        }
+    }
+
+    private buildItems() {
         this.items = [];
         for (let itemid in this.model.data.salesdocitems.beans) {
             this.items.push(this.model.data.salesdocitems.beans[itemid]);

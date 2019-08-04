@@ -26,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-        <ng-container *ngFor="let item of items">
+        <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
             <tr>
                 <td class="slds-cell-shrink">
                     <button class="slds-button slds-button_icon" (click)="deleteItem(item.id)"><system-button-icon [icon]="'close'"></system-button-icon></button>
@@ -51,7 +51,7 @@
                             <input type="number" class="slds-input slds-text-align_right" [(ngModel)]="item.quantity" (keyup)="recalculate()">
                         </div>
                         <div class="slds-size--1-of-4 slds-text-align_right slds-p-left--xx-small">
-                            <input type="text" disabled class="slds-input slds-text-align_right" [ngModel]="item.uom_id">
+                            <div class="slds-truncate slds-text-align_right">{{getUOMLabel(item)}}</div>
                         </div>
                     </div>
                 </td>

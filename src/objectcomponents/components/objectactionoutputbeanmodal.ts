@@ -73,7 +73,10 @@ export class ObjectActionOutputBeanModal {
         let fields = this.metadata.getModuleFields(this.model.module);
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
-                this.selected_template = this.templates.find(template => template.id == this.model.getFieldValue(fields[field].id_name));
+                let template = this.templates.find(template => template.id == this.model.getFieldValue(fields[field].id_name));
+                if(template) {
+                    this.selected_template = template;
+                }
                 break;
             }
         }

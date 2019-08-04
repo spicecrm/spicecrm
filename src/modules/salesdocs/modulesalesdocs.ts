@@ -17,6 +17,8 @@ import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdispla
 import /*embed*/ {SalesDocsItemsEdit} from './components/salesdocsitemsedit';
 import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
 import /*embed*/ {SalesDocsPrintButton} from './components/salesdocsprintbutton';
+import /*embed*/ {fieldSalesdocTypes} from './components/fieldsalesdoctypes';
+import /*embed*/ {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
 import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from './components/salesdocsitemsparentselector';
 
 
@@ -36,7 +38,10 @@ import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from '
         SalesDocsItemsAddProduct,
         SalesDocsPrintButton,
         SalesDocsItemsParentSelector,
-        SalesDocsItemsParentPipe
+        SalesDocsItemsParentPipe,
+        fieldSalesdocTypes,
+        SalesDocsItemsDeletedPipe
+
     ]
 })
 export class ModuleSalesDocs {

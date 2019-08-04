@@ -21,7 +21,7 @@ export class SalesDocsItemsEdit {
 
     private items: any[] = [];
     private itemSubscription: any = undefined;
-    private taxcategories: any[] = [];
+    // private taxcategories: any[] = [];
     private voucher_code: any = '';
     private voucher: any = {};
 
@@ -35,15 +35,21 @@ export class SalesDocsItemsEdit {
             });
         }
 
+        /*
         let taxcategories = this.configurationService.getData('taxcategories');
         if (taxcategories === false) {
             this.backend.getRequest('SalesDocs/taxcategories').subscribe((taxcategories: any) => {
-                this.configurationService.setData('taxcategories', taxcategories);
+                this.configurationService.setData('salesdoctaxcategories', taxcategories);
                 this.taxcategories = taxcategories;
             });
         } else {
             this.taxcategories = taxcategories;
         }
+        */
+    }
+
+    get taxcategories() {
+        return this.configurationService.getData('salesdoctaxcategories');
     }
 
     get totalnet() {
@@ -108,6 +114,16 @@ export class SalesDocsItemsEdit {
         }
     }
 
+    private getUOMLabel(item) {
+        let uoms = this.configurationService.getData('uomunits');
+        let unit = uoms.find(uom => uom.id == item.uom_id);
+        if (unit) {
+            return this.language.getLabel(unit.label);
+        } else {
+            return item.uom_id;
+        }
+    }
+
     private buildItems() {
 
         this.items = [];
@@ -166,13 +182,8 @@ export class SalesDocsItemsEdit {
     }
 
     private deleteItem(itemid) {
-        delete (this.model.data.salesdocitems.beans[itemid]);
-        this.items.some((item, index) => {
-            if (item.id == itemid) {
-                this.items.splice(index, 1);
-                return true;
-            }
-        })
+        // delete (this.model.data.salesdocitems.beans[itemid]);
+        this.items.find(item => item.id == itemid).deleted = 1;
     }
 
     private addProduct() {
@@ -250,6 +261,8 @@ export class SalesDocsItemsEdit {
             };
         }
 
+        let nextItemNr = this.getNextItemNr();
+
         for (let product of products) {
             let newItem = {
                 id: this.model.generateGuid(),
@@ -260,13 +273,16 @@ export class SalesDocsItemsEdit {
                 salesdoc_id: this.model.id,
                 tax_category: 'V20',
                 quantity: 1,
-                itemnr: this.getNextItemNr(),
+                itemnr: nextItemNr,
                 uom_id: product.base_uom_id,
                 amount_net_per_uom: product.std_price,
                 purchase_price: product.purchase_price,
             };
 
             this.model.data.salesdocitems.beans[newItem.id] = newItem;
+
+            // add 10 to te item number
+            nextItemNr = nextItemNr + 10;
         }
 
         this.buildItems();
