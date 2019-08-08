@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ViewContainerRef} from '@angular/core';
+import { Component, EventEmitter, ViewContainerRef } from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {modal} from "../../services/modal.service";
@@ -15,14 +15,19 @@ import {configurationService} from "../../services/configuration.service";
 export class ObjectActionOutputBeanButton {
 
     private templates: any[] = [];
+    public forcedFormat: 'html'|'pdf';
+    public modalTitle: string;
+    public noDownload: boolean;
+    public handBack: EventEmitter<string>;
+    public buttonText: string;
 
     constructor(
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private backend: backend,
-        private configuration: configurationService,
-        private viewContainerRef: ViewContainerRef
+        protected language: language,
+        protected model: model,
+        protected modal: modal,
+        protected backend: backend,
+        protected configuration: configurationService,
+        protected viewContainerRef: ViewContainerRef
     ) {
 
     }
@@ -83,6 +88,10 @@ export class ObjectActionOutputBeanButton {
         if (this.templates.length > 0) {
             this.modal.openModal('ObjectActionOutputBeanModal', true, this.viewContainerRef.injector).subscribe(outputModal => {
                 outputModal.instance.templates = this.templates;
+                outputModal.instance.modalTitle = this.modalTitle;
+                outputModal.instance.noDownload = this.noDownload;
+                outputModal.instance.handBack = this.handBack;
+                outputModal.instance.buttonText = this.buttonText;
             });
         } else {
             this.modal.info('No Templates Found', 'there are no Output templates defined for the Module');
