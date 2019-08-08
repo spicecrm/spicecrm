@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component} from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -19,6 +19,12 @@ import {field} from "../../objectfields/components/field";
 })
 export class ObjectActionOutputBeanModal {
 
+    public modalTitle: string;
+    public forcedFormat: 'html'|'pdf';
+    public noDownload = false;
+    public handBack: EventEmitter<any>;
+    public buttonText: string;
+
     /**
      * the window itsel .. resp the containing modal container
      */
@@ -35,7 +41,7 @@ export class ObjectActionOutputBeanModal {
     private _selected_template = null;
 
     /**
-     * the selcted output format
+     * the selected output format
      */
     private _selected_format: 'html' | 'pdf' = 'pdf';
 
@@ -68,6 +74,15 @@ export class ObjectActionOutputBeanModal {
     }
 
     public ngOnInit() {
+
+        // If there is no modal window title given from outside, use the default title:
+        if ( !this.modalTitle ) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
+
+        // If there is no button text given from outside, use the default text:
+        if ( !this.buttonText ) this.buttonText = this.language.getLabel( this.noDownload  ? 'LBL_OK':'LBL_DOWNLOAD' );
+
+        // Set the output format in case it is given from outside:
+        if ( this.forcedFormat ) this._selected_format = this.forcedFormat;
 
         // see if we have a relate to an output template
         let fields = this.metadata.getModuleFields(this.model.module);
@@ -152,17 +167,19 @@ export class ObjectActionOutputBeanModal {
         this.self.destroy();
     }
 
-    private download() {
+    private create() {
         let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
         this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
             loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
             this.backend.downloadFile(
                 {
                     route: `OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
-                }, fileName, 'application/pdf'
+                }, fileName, 'application/pdf', this.handBack && true
             ).subscribe(
                 next => {
+                    this.handBack.emit( { name: this.selected_template.name, contentObjectUrl: next });
                     loadingCompRef.instance.self.destroy();
+                    this.close();
                 },
                 err => {
                     loadingCompRef.instance.self.destroy();
