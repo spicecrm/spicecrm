@@ -178,6 +178,20 @@
                 </div>
             </div>
             <div class="slds-form-element">
+                <label class="slds-form-element__label">Activity Type</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="fieldDetails.activitytype">
+                            <option value='activityparentid'>activityparentid</option>
+                            <option value='activitydate'>activitydate</option>
+                            <option value='activityenddate'>activityenddate</option>
+                            <option value='activityenddate'>activityparticipant</option>
+                            <option value='activityenddate'>activitystatus</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">
                 <label class="slds-form-element__label">Analyzer</label>
                 <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ANALYZER') +
                 '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
