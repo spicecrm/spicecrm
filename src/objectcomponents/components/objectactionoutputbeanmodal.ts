@@ -24,6 +24,7 @@ export class ObjectActionOutputBeanModal {
     public noDownload = false;
     public handBack: EventEmitter<any>;
     public buttonText: string;
+    private contentForHandBack: string;
 
     /**
      * the window itsel .. resp the containing modal container
@@ -132,8 +133,9 @@ export class ObjectActionOutputBeanModal {
             case 'pdf':
                 this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob(atob(pdf.content));
-                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                        let blob = this.datatoBlob( atob( pdf.content ) );
+                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
+                        if ( this.handBack ) this.contentForHandBack = pdf.content;
                         this.loading_output = false;
                     },
                     err => {
@@ -146,6 +148,7 @@ export class ObjectActionOutputBeanModal {
                 this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
+                        if ( this.handBack ) this.contentForHandBack = res.content;
                         this.loading_output = false;
                     },
                     err => {
@@ -168,24 +171,26 @@ export class ObjectActionOutputBeanModal {
     }
 
     private create() {
-        let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
-        this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
-            loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
-            this.backend.downloadFile(
-                {
-                    route: `OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
-                }, fileName, 'application/pdf', this.handBack && true
-            ).subscribe(
-                next => {
-                    this.handBack.emit( { name: this.selected_template.name, contentObjectUrl: next });
-                    loadingCompRef.instance.self.destroy();
-                    this.close();
-                },
-                err => {
-                    loadingCompRef.instance.self.destroy();
-                }
-            );
-        });
+        if ( this.handBack ) this.handBack.emit( { name: this.selected_template.name, content: this.contentForHandBack });
+        if ( this.noDownload ) this.close();
+        else {
+            let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
+            this.modal.openModal( 'SystemLoadingModal' ).subscribe( loadingCompRef => {
+                loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
+                this.backend.downloadFile(
+                    {
+                        route: `OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
+                    }, fileName, 'application/pdf' ).subscribe(
+                    next => {
+                        loadingCompRef.instance.self.destroy();
+                        this.close();
+                    },
+                    err => {
+                        loadingCompRef.instance.self.destroy();
+                    }
+                );
+            } );
+        }
     }
 
     /**

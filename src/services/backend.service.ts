@@ -3,7 +3,7 @@
  *
  * @module services
  */
-import { EventEmitter, Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
 import {Subject, Observable} from 'rxjs';
@@ -370,8 +370,7 @@ export class backend {
     public downloadFile(
         request_params: backendRequestParams,
         file_name: string = null,
-        file_type: string = null,
-        onlyHandBack = false
+        file_type: string = null
     ): Observable<any> {
         let sub = new Subject<any>();
 
@@ -383,18 +382,17 @@ export class backend {
             request_params.headers
         ).subscribe(
             (res) => {
-                if ( !onlyHandBack ) {
-                    let downloadUrl = res;
-                    let a = document.createElement( "a" );
-                    document.body.appendChild( a );
-                    a.href = downloadUrl;
-                    if( file_type ) a.type = file_type;
-                    a.download = file_name;
-                    // start download
-                    a.click();
-                    a.remove();
-                }
-                sub.next( res );
+                let downloadUrl = res;
+                // window.open(downloadUrl);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = downloadUrl;
+                if(file_type) a.type = file_type;
+                a.download = file_name;
+                // start download
+                a.click();
+                a.remove();
+                sub.next();
                 sub.complete();
             }
         );
