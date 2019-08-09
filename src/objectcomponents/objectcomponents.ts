@@ -16,6 +16,7 @@ import {SystemComponents} from '../systemcomponents/systemcomponents';
 
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
+import {canNavigateAway} from '../services/navigation.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
@@ -33,6 +34,9 @@ import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheade
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
+import /*embed*/ {ObjectListHeaderActionsSelectAllButton} from "./components/objectlistheaderactionsselectallbutton";
+import /*embed*/ {ObjectListHeaderActionsUnselectAllButton} from "./components/objectlistheaderactionsunselectallbutton";
+
 import /*embed*/ {ObjectListItem} from './components/objectlistitem';
 import /*embed*/ {ObjectListItemField} from './components/objectlistitemfield';
 import /*embed*/ {ObjectActionMenu} from './components/objectactionmenu';
@@ -47,6 +51,9 @@ import /*embed*/ {ObjectActionContainer} from './components/objectactioncontaine
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
+import /*embed*/ {ObjectActionOpenButton} from './components/objectactionopenbutton';
+import /*embed*/ {ObjectActionCancelButton} from './components/objectactioncancelbutton';
+import /*embed*/ {ObjectActionRemoveButton} from "./components/objectactionremovebutton";
 import /*embed*/ {ObjectActionAuditlogModal} from './components/objectactionauditlogmodal';
 import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutton';
 import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactionduplicatebutton';
@@ -211,6 +218,9 @@ import /*embed*/ {ObjectTexts} from "./components/objecttexts";
 import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
 import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
+import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
+
+
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
  */
@@ -225,12 +235,28 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         DirectivesModule,
         RouterModule.forRoot([
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
-            {path: 'module/:module', component: ObjectListViewContainer, canActivate: [loginCheck, aclCheck]},
+            {
+                path: 'module/:module',
+                component: ObjectListViewContainer,
+                canActivate: [loginCheck, canNavigateAway, aclCheck]
+            },
             {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
-            {path: 'module/:module/historysummary/:id', component: ObjectActivitiyTimelineSummary, canActivate: [loginCheck]},
-            {path: 'module/:module/:id', component: ObjectRecordViewContainer, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/historysummary/:id',
+                component: ObjectActivitiyTimelineSummary,
+                canActivate: [loginCheck]
+            },
+            {
+                path: 'module/:module/:id',
+                component: ObjectRecordViewContainer,
+                canActivate: [loginCheck, canNavigateAway]
+            },
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {path: 'module/:module/:id/:related/:link/:fieldset', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/:id/:related/:link/:fieldset',
+                component: ObjectRelatedlistAll,
+                canActivate: [loginCheck]
+            },
             // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
             // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
@@ -247,6 +273,8 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectListHeaderActionsExportCSVButton,
         ObjectListHeaderActionsExportTargetlistButton,
         ObjectListHeaderActionsExportTargetlistModal,
+        ObjectListHeaderActionsSelectAllButton,
+        ObjectListHeaderActionsUnselectAllButton,
         ObjectListItem,
         ObjectListItemField,
         ObjectActionMenu,
@@ -279,6 +307,9 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActionSaveButton,
         ObjectActionDeleteButton,
         ObjectActionAuditlogButton,
+        ObjectActionOpenButton,
+        ObjectActionCancelButton,
+        ObjectActionRemoveButton,
         ObjectActionAuditlogModal,
         ObjectGDPRModal,
         ObjectActionNewButton,
@@ -405,7 +436,8 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectModelPopoverRelatedItem,
         ObjectTexts,
         ObjectTextsAddButton,
-        ObjectTextsAddModal
+        ObjectTextsAddModal,
+        ObjectRecordMessagesBadge
     ],
     exports: [
         ObjectListViewHeader,
@@ -419,6 +451,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActionsetMenu,
         ObjectSelectButton,
         ObjectRelatedList,
+        ObjectRelatedlistTable,
         ObjectRelatedListItem,
         ObjectPopoverHeader,
         ObjectPopoverBodyItem,
@@ -432,8 +465,11 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineStencil,
         ObjectRelatedCard,
+        ObjectRelatedCardHeader,
+        ObjectRelatedCardFooter,
         ObjectRecordDetails,
-        ObjectRecordDetailsFooter
+        ObjectRecordDetailsFooter,
+        ObjectEditModalDialogContainer
     ]
 })
 export class ObjectComponents {

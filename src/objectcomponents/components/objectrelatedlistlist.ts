@@ -13,4 +13,16 @@ import {ObjectRelatedList} from './objectrelatedlist';
     templateUrl: "./src/objectcomponents/templates/objectrelatedlistlist.html",
     providers: [relatedmodels]
 })
-export class ObjectRelatedlistList extends ObjectRelatedList {}
+export class ObjectRelatedlistList extends ObjectRelatedList {
+
+    /**
+     * a getter for the Title to be displayed. This either translates a tilte if set int he config or it renders the module name
+     */
+    get panelTitle() {
+        if ( this.componentconfig.title ) return this.language.getLabel( this.componentconfig.title );
+        if ( this.relatedmodels._linkName && this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName] && this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname ) {
+            return this.language.getLabel( this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname );
+        }
+        return this.language.getModuleName( this.module );
+    }
+}

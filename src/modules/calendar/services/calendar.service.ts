@@ -173,6 +173,8 @@ export class calendar implements OnDestroy {
                         if (event.module == 'UserAbsences') {
                             if (event.type == 'other') {
                                 event.data.summary_text = event.data.user_name;
+                                event.id = event.id + "-other";
+                                event.data.id = event.data.id + "-other";
                             }
                             if (this.absenceExists(event)) {
                                 continue;
@@ -203,9 +205,9 @@ export class calendar implements OnDestroy {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
-            this.calendars["google"] = [];
-            this.currentEnd["google"] = endDate;
-            this.currentStart["google"] = startDate;
+            this.calendars.google = [];
+            this.currentEnd.google = endDate;
+            this.currentStart.google = startDate;
 
             this.backend.getRequest("google/calendar/getgoogleevents", params)
                 .subscribe(res => {
@@ -221,16 +223,16 @@ export class calendar implements OnDestroy {
                             event.data.assigned_user_id = null;
                             event.color = this.googleColor;
 
-                            this.calendars["google"].push(event);
+                            this.calendars.google.push(event);
                         }
                     }
-                    responseSubject.next(this.calendars["google"]);
+                    responseSubject.next(this.calendars.google);
                     responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries = [];
-            for (let event of this.calendars["google"]) {
+            for (let event of this.calendars.google) {
                 if (event.start < endDate && event.end > startDate) {
                     filteredEntries.push(event);
                 }
@@ -445,14 +447,14 @@ export class calendar implements OnDestroy {
 
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
 
     private absenceExists(event) {
         let found = false;
         for (let prop in this.calendars) {
-            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id)) {
+            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id == event.id && cEvent.type == event.type)) {
                 found = true;
                 break;
             }

@@ -14,7 +14,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
     templateUrl: './src/modules/spiceimports/templates/spiceimportslogs.html',
 })
 export class Spiceimportslogs {
-    @ViewChild('logscontainer', {read: ViewContainerRef}) logscontainer: ViewContainerRef;
+    @ViewChild('logscontainer', {read: ViewContainerRef, static: true}) logscontainer: ViewContainerRef;
 
     itemHeader: Array<any> = undefined;
     activeLogId: string = undefined;

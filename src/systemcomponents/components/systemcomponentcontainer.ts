@@ -7,9 +7,9 @@ import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} fro
     selector: "system-component-container",
     templateUrl: "./src/systemcomponents/templates/systemcomponentcontainer.html"
 })
-export class SystemComponentContainer implements AfterViewInit{
+export class SystemComponentContainer implements AfterViewInit {
 
-    @ViewChild("container", {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild("container", {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
     private containerRef: EventEmitter<any> = new EventEmitter<any>()
 
     private loaded: false;

@@ -24,7 +24,7 @@ import {Subject, Observable} from 'rxjs';
 })
 export class LeadConvert implements AfterViewInit {
 
-    @ViewChild('contentcontainer', {read: ViewContainerRef}) contentcontainer: ViewContainerRef;
+    @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) contentcontainer: ViewContainerRef;
 
     moduleName = 'Leads';
     headerFieldSets: Array<any> = [];
@@ -40,7 +40,7 @@ export class LeadConvert implements AfterViewInit {
     showSaveModal: boolean = false;
 
     currentConvertStep: number = 0;
-    convertSteps: Array<any> = ['Contact', 'Account', 'Opportunity'];
+    convertSteps: Array<any> = ['Account','Contact', 'Opportunity'];
 
     constructor(
         private language: language,
@@ -107,16 +107,28 @@ export class LeadConvert implements AfterViewInit {
 
     nextStep() {
         switch (this.currentConvertStep) {
+           
             case 0:
-                if (this.contact.validate())
-                    this.currentConvertStep++;
-                break;
-            case 1:
                 if (this.createAccount && this.account.validate()) {
                     this.currentConvertStep++;
                 } else if (!this.createAccount) {
                     this.currentConvertStep++;
                 }
+                if(this.createAccount){
+                    this.contact.data.account_id = this.account.id;
+                    this.contact.data.account_name = this.account.data.name;
+                    this.opportunity.data.account_id = this.account.id;
+                    this.opportunity.data.account_name = this.account.data.name;
+                } else if(this.selectedaccount){
+                    this.contact.data.account_id = this.selectedaccount.id;
+                    this.contact.data.account_name = this.selectedaccount.name;
+                    this.opportunity.data.account_id = this.selectedaccount.id;
+                    this.opportunity.data.account_name = this.selectedaccount.name;
+                }
+                break;
+            case 1:
+                if (this.contact.validate())
+                    this.currentConvertStep++;
                 break;
             case 2:
                 if (this.createOpportunity && this.opportunity.validate()) {
@@ -185,7 +197,7 @@ export class LeadConvert implements AfterViewInit {
         this.processConvert().subscribe(() => {
             this.showSaveModal = false;
             // send a toast
-            this.toast.sendToast('Lead ' + this.model.data.summary_text + ' converted', 'success', '', 30 );
+            this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30 );
             // go back to the lead
             this.gotoLead();
         })
@@ -251,6 +263,9 @@ export class LeadConvert implements AfterViewInit {
                     this.model.data.account_id = this.account.id;
                 } else if(this.selectedaccount){
                     this.model.data.account_id = this.selectedaccount.id;
+                }
+                if(this.createOpportunity){
+                    this.model.data.opportunity_id = this.opportunity.id;
                 }
                 this.model.data.contact_id = this.contact.id;
                 this.model.data.status = 'Converted';

@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component,  OnInit, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
@@ -21,6 +21,11 @@ export class ObjectActionAuditlogButton implements OnInit {
      */
     public disabled: boolean = true;
 
+    /**
+     * defautls to true and is set in ngOnInit checking if the module is audit enabled
+     */
+    public hidden: boolean = true;
+
     constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private ViewContainerRef: ViewContainerRef) {
     }
 
@@ -30,6 +35,7 @@ export class ObjectActionAuditlogButton implements OnInit {
     public ngOnInit() {
         if (this.metadata.getModuleDefs(this.model.module).audited) {
             this.disabled = false;
+            this.hidden = false;
         }
     }
 

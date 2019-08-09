@@ -13,7 +13,7 @@ import {model} from '../../../services/model.service';
     providers: [view]
 })
 export class AccountCCDetails implements OnInit {
-    @ViewChild('detailscontainer', {read: ViewContainerRef}) detailscontainer: ViewContainerRef;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) detailscontainer: ViewContainerRef;
     tabs: any[] = [];
     companyCodes: any[] = [];
     activatedTabs: any[] = [];

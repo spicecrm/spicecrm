@@ -2,14 +2,10 @@
  * @module ModuleReports
  */
 import {
-    Component, AfterViewInit,  OnInit,
-    OnDestroy, ElementRef, Renderer
+    Component, AfterViewInit, OnInit,
+    OnDestroy, ElementRef, Renderer2
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {model} from '../../../services/model.service';
-import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
+import {metadata} from '../../../services/metadata.service';
 
 /**
  * @ignore
@@ -18,50 +14,49 @@ declare var google: any;
 
 @Component({
     selector: 'reporter-detail-visualization-googlecharts',
-    templateUrl: './src/modules/reports/templates/reporterdetailvisualizationgooglecharts.html',
-    providers: [model]
+    templateUrl: './src/modules/reports/templates/reporterdetailvisualizationgooglecharts.html'
 })
-export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, OnInit, OnDestroy {
+export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, OnDestroy {
 
-    vizdata: any = {};
-    wrapper: any = undefined;
-    resizseHandler: any = {};
+    private vizdata: any = {};
+    private wrapper: any = undefined;
+    private resizseHandler: any = {};
 
-    constructor(private renderer: Renderer, private broadcast: broadcast, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private elementRef: ElementRef) {
-        this.resizseHandler = this.renderer.listenGlobal('window', 'resize', () => this.onResize())
+    constructor(private renderer: Renderer2, private elementRef: ElementRef, private metadata: metadata) {
+        this.resizseHandler = this.renderer.listen('window', 'resize', () => this.onResize());
     }
 
-    handleMessage(message: any) {
 
-    }
+    public ngAfterViewInit() {
 
-    ngOnInit() {
-
-    }
-
-    ngAfterViewInit() {
-
-        if (!this.vizdata.data.options.height)
+        if (!this.vizdata.data.options.height) {
             this.vizdata.data.options.height = this.elementRef.nativeElement.height;
-
-        //this.chart = new Highcharts.Chart(this.vizdata.data);
-        if (google.visualization) {
-            this.wrapper = new google.visualization.ChartWrapper(this.vizdata.data);
-            this.wrapper.draw();
         }
+
+        this.metadata.loadLibs('googlecharts').subscribe((next) => {
+            google.charts.load('current', {packages: ['corechart']});
+            google.charts.setOnLoadCallback(() => {
+                this.drawchart();
+            });
+        });
     }
 
-    ngOnDestroy() {
+    private drawchart() {
+        this.wrapper = new google.visualization.ChartWrapper(this.vizdata.data);
+        this.wrapper.draw();
+    }
+
+    public ngOnDestroy() {
         this.resizseHandler();
     }
 
-    getVizStyle() {
-        return this.vizdata['layout'];
+    private getVizStyle() {
+        return this.vizdata.layout;
     }
 
-    onResize() {
-        if (this.wrapper)
+    private onResize() {
+        if (this.wrapper) {
             this.wrapper.draw();
+        }
     }
-
 }

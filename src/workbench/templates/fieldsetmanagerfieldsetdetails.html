@@ -5,9 +5,21 @@
     </div>
 </div>
 <div class="slds-form-element slds-m-bottom--x-small">
-    <label class="slds-form-element__label" >ID</label>
+    <label class="slds-form-element__label" >ID of Parent Fieldset</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="fieldset.fieldset" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID of Parent Fieldset Element</label>
     <div class="slds-form-element__control">
         <input type="text" class="slds-input" [ngModel]="fieldset.id" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID of Fieldset</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="currentFieldSet.fid" disabled/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--x-small">

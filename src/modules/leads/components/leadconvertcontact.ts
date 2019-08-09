@@ -15,7 +15,7 @@ import {view} from '../../../services/view.service';
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) detailcontainer: ViewContainerRef;
 
     @Input() lead: model = undefined;
     @Output() contact: EventEmitter<model> = new EventEmitter<model>();

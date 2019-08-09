@@ -33,7 +33,7 @@ export class MediaFileUploader implements AfterViewInit {
 
     self: any;
 
-    @ViewChild( 'fileupload', { read: ViewContainerRef }) fileupload: ViewContainerRef;
+    @ViewChild( 'fileupload', {read: ViewContainerRef, static: true}) fileupload: ViewContainerRef;
 
     constructor ( private mediafiles: mediafiles, private backend: backend, private language: language, private toast:toast, private renderer: Renderer ) {
         this.answerSubject = new Subject<boolean>();

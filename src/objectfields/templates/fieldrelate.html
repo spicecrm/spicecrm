@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <a href="javascript:void(0);" modelPopOver [module]="relateType" [id]="model.data[relateIdField]">{{value}}</a>
 </field-generic-display>
@@ -20,7 +21,7 @@
                 </div>
                 <div *ngIf="!model.data[relateIdField]" class="slds-form-element__control slds-grid slds-box--border" [ngClass]="getFieldClass()">
                     <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <input #focus type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="language.getLabel('LBL_SEARCH') + ' ' + language.getModuleName(relateType)" role="combobox"/>
+                        <input #focus type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', relateType)" role="combobox"/>
                         <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                 </div>

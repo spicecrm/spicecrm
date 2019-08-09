@@ -58,7 +58,7 @@ export class KRESTLogViewer {
     private isLoading = false;
     private isLoaded = false;
 
-    @ViewChild('tbody') private tbody: ElementRef; // Reference to the tbody dom element of the data table.
+    @ViewChild('tbody', {static: true}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 
@@ -100,7 +100,7 @@ export class KRESTLogViewer {
         if ( this.period.type ) {
 
             let begin = moment.tz( this.period.begin.year + '-'
-                + (this.period.begin.month ? this.period.begin.month : '00') + '-'
+                + (this.period.begin.month ? this.period.begin.month : '01') + '-'
                 + (this.period.begin.day ? this.period.begin.day : '01') + ' '
                 + (this.period.begin.hour ? this.period.begin.hour : '00')
                 + ':00', this.prefs.toUse.timezone );
@@ -297,12 +297,7 @@ export class KRESTLogViewer {
     }
 
     private get durationLabel() {
-        let labels = {
-            'year': 'LBL_YEARS',
-            'month': 'LBL_MONTHS',
-            'day': 'LBL_DAYS',
-            'hour': 'LBL_HOURS'
-        };
+        let labels = { year: 'LBL_YEARS', month: 'LBL_MONTHS', day: 'LBL_DAYS', hour: 'LBL_HOURS' };
         return this.period.type ? labels[this.period.type] : '';
     }
 

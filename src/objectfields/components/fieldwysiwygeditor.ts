@@ -11,7 +11,7 @@ import {language} from '../../services/language.service';
     templateUrl: './src/objectfields/templates/fieldwysiwygeditor.html',
 })
 export class fieldWYSIWYGEditor implements AfterViewInit{
-    @ViewChild('editor', {read: ViewContainerRef}) editor: ViewContainerRef;
+    @ViewChild('editor', {read: ViewContainerRef, static: true}) editor: ViewContainerRef;
     @Input() fieldname: string = '';
     fieldSelection: any = undefined;
 

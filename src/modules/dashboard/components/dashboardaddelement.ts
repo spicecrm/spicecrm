@@ -3,47 +3,40 @@
  */
 import {Component, EventEmitter} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {model} from '../../../services/model.service';
-import {recent} from '../../../services/recent.service';
 import {backend} from '../../../services/backend.service';
-import {fts} from '../../../services/fts.service';
 import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'dashboard-add-element',
-    templateUrl: './src/modules/dashboard/templates/dashboardaddelement.html',
-    providers: [model]
+    templateUrl: './src/modules/dashboard/templates/dashboardaddelement.html'
 })
 export class DashboardAddElement {
 
     public self: any = {};
-    private dashboardDashlets: Array<any> = [];
-    private kreports: Array<any> = [];
+    public kreports: any[] = [];
+    private dashboarddashlets: any[] = [];
     private dashletName: string = '';
-    private dashletComponent: string = '';
-    private reportFilterKey: string = '';
+    private searchKey: string = '';
     private dashlettype: string = 'Generic';
-    private dashletmodule: string = '*';
+    private dashletModule: string = '*';
     private isLoading: boolean = false;
+    private canLoadMore: boolean = true;
+    private loadLimit: number = 40;
     private addDashlet: EventEmitter<any> = new EventEmitter<any>();
+    private searchTimeout: any;
 
-    constructor(
-        private language: language,
-        private fts: fts,
-        private model: model,
-        private recent: recent,
-        private metadata: metadata,
-        private backend: backend
-    ) {
+    constructor(private language: language, private metadata: metadata, private backend: backend) {
     }
 
-    get noData() {
-        let noData = false;
-        if (this.getType() == 'Generic' && this.dashboardDashletsFiltered.length == 0)
-            noData = true;
-        if (this.getType() == 'Reporter' && this.kreportsFiltered.length == 0)
-            noData = true;
-        return noData;
+    get kReports() {
+        return (this.dashletModule == '*') ? this.kreports : this.kreports
+            .filter(report => report.report_module == this.dashletModule);
+    }
+
+    get dashboardDashlets() {
+        return this.dashboarddashlets
+            .filter(dashlet => (this.dashletModule == '*' || dashlet.module == this.dashletModule) &&
+                (this.searchKey.length == 0 || this.language.getLabel(dashlet.label).toLowerCase().indexOf(this.searchKey.toLowerCase()) > -1));
     }
 
     get dashletType() {
@@ -51,109 +44,76 @@ export class DashboardAddElement {
     }
 
     set dashletType(value) {
-        this.dashletModule = '*';
-        this.reportFilterKey = '';
         this.dashlettype = value;
-        if (this.getType() == 'Reporter' && this.noData) this.getKreports();
-        if (this.getType() == 'Generic' && this.noData) this.getDashlets();
-    }
-
-    get dashboardDashletsFiltered(): any[] {
-        let filteredDashlets = this.dashboardDashlets;
-        if (this.dashletModule != '*')
-            filteredDashlets = filteredDashlets.filter(dashlet => dashlet.module == this.dashletModule);
-
-        if (this.reportFilterKey.length > 0) {
-            filteredDashlets = filteredDashlets.filter(dashlet => dashlet.label
-                .replace(/_/gi, ' ')
-                .toLowerCase()
-                .indexOf(this.reportFilterKey.toLowerCase()) !== -1);
+        this.resetValues();
+        if (value === 'Generic') {
+            this.getDashlets();
+        } else {
+            this.getKReports();
         }
-        return filteredDashlets;
-    }
-
-    get kreportsFiltered(): any[] {
-        let filteredKreports;
-        switch (this.dashletType) {
-            case 'ReporterVisualizationDashlet':
-                filteredKreports = this.filterReportsType('ReporterVisualizationDashlet');
-                break;
-            case 'ReporterPresentationDashlet':
-                filteredKreports = this.filterReportsType('ReporterPresentationDashlet');
-                break;
-        }
-
-        if (this.dashletModule != '*')
-            filteredKreports = filteredKreports.filter(report => report.report_module == this.dashletModule);
-
-        if (this.reportFilterKey.length > 0) {
-            filteredKreports = filteredKreports.filter(kreport => {
-                return kreport.name.toLowerCase().indexOf(this.reportFilterKey.toLowerCase()) !== -1 ||
-                    kreport.description.toLowerCase().indexOf(this.reportFilterKey.toLowerCase()) !== -1;
-            });
-        }
-
-        return filteredKreports;
     }
 
     get modules() {
-        let modules;
-        if (this.getType() == 'Generic')
-            modules = this.metadata.getModules().filter(module => this.dashboardDashlets.some(dashlet => dashlet.module == module));
-        switch (this.dashletType) {
-            case 'ReporterVisualizationDashlet':
-                modules = this.metadata.getModules().filter(module => this.filterReportsType('ReporterVisualizationDashlet').some(kreport => kreport.report_module == module));
-                break;
-            case 'ReporterPresentationDashlet':
-                modules = this.metadata.getModules().filter(module => this.filterReportsType('ReporterPresentationDashlet').some(kreport => kreport.report_module == module));
-                break;
-        }
-        return modules;
-    }
-
-    get dashletModule() {
-        return this.dashletmodule;
-    }
-
-    set dashletModule(value) {
-        this.dashletmodule = value;
+        return this.metadata.getModules();
     }
 
     public ngOnInit() {
-        switch (this.getType()) {
-            case 'Reporter':
-                this.dashletType = this.dashletComponent;
-                this.getKreports();
-                break;
-            case 'Generic':
-                this.getDashlets();
-                break;
+        this.getDashlets();
+    }
+
+    private resetValues() {
+        this.dashletModule = '*';
+        this.searchKey = '';
+        this.canLoadMore = true;
+    }
+
+    private search() {
+        if (this.dashletType !== 'Generic') {
+            if (this.searchTimeout) window.clearTimeout(this.searchTimeout);
+            this.searchTimeout = window.setTimeout(() => this.getKReports(), 600);
         }
     }
 
     private trackByFn(index, item) {
-        return item.id;
-    }
-
-    private trackByFnModule(index, item) {
         return index;
     }
 
     private getDashlets() {
         this.isLoading = true;
+        this.dashboarddashlets = [];
         this.backend.getRequest('dashboards/dashlets')
             .subscribe((dashboardDashlets: any) => {
-                this.dashboardDashlets = dashboardDashlets;
+                this.dashboarddashlets = dashboardDashlets;
                 this.isLoading = false;
             });
     }
 
-    private getKreports() {
+    private getKReports() {
         this.isLoading = true;
-        let fields = ["id", "name", "description", "report_module", "integration_params"];
-        this.backend.getRequest('module/KReports', {fields: fields})
+        this.kreports = [];
+        let params = {
+            offset: 0,
+            limit: this.loadLimit,
+            searchKey: this.searchKey
+        };
+        this.backend.getRequest('module/KReports/published/' + this.dashletType, params)
             .subscribe((kreports: any) => {
-                this.kreports = kreports.list;
+                this.kreports = kreports;
+                this.isLoading = false;
+            });
+    }
+
+    private getMoreKReports() {
+        if (!this.canLoadMore || this.isLoading) return;
+        this.isLoading = true;
+        let params = {
+            offset: this.kReports.length,
+            limit: this.loadLimit
+        };
+        this.backend.getRequest('module/KReports/published/' + this.dashletType, params)
+            .subscribe((kreports: any) => {
+                this.kreports = this.kReports.concat(kreports);
+                this.canLoadMore = kreports.length == this.loadLimit;
                 this.isLoading = false;
             });
     }
@@ -166,64 +126,36 @@ export class DashboardAddElement {
         return (icon && icon.split(':')[1]) ? icon.split(':')[0] : 'standard';
     }
 
-    private filterReportsType(type) {
-        let filteredKreports;
-        switch (type) {
-            case 'ReporterVisualizationDashlet':
-                filteredKreports = this.filteredKreports('dashletVisualization');
-                break;
-            case 'ReporterPresentationDashlet':
-                filteredKreports = this.filteredKreports('dashletPresentation');
-                break;
+    private onScroll(scrollElement) {
+        if (scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight) {
+            this.getMoreKReports();
         }
-        return filteredKreports;
     }
 
-    private filteredKreports(property) {
-        let filteredKreports;
-        filteredKreports = this.kreports.filter(kreport => {
-            if (kreport.integration_params) {
-                let integrationParams = JSON.parse(kreport.integration_params);
-                if (integrationParams.hasOwnProperty('kpublishing'))
-                    if (integrationParams.kpublishing.hasOwnProperty(property))
-                        return integrationParams.kpublishing[property] == 'on';
-            }
-        });
-
-        return filteredKreports;
-    }
-
-    private getType() {
-        return this.dashletType ? this.dashletType.indexOf('Reporter') === 0 ? 'Reporter' : 'Generic' : '';
-    }
-
-    private close() {
-        this.addDashlet.emit(false);
-        this.self.destroy();
-
-    }
-
-    private save(id) {
-
-        if (!id) return false;
+    private add(dashlet) {
+        if (!dashlet) return;
+        let name = this.dashletName;
         let component = '';
-        let componentconfig: any = {},
-            dashletconfig: any = {},
-            module: string = '',
-            icon: string = '',
-            acl_action: string = '',
-            dashlet_id: string = '',
-            label: string = '';
+        let componentconfig: any = {};
+        let dashletconfig: any = {};
+        let module: string = '';
+        let icon: string = '';
+        let acl_action: string = '';
+        let dashlet_id: string = '';
+        let label: string = '';
 
         switch (this.dashletType) {
-            case 'ReporterVisualizationDashlet':
-            case 'ReporterPresentationDashlet':
-                component = this.dashletType;
-                componentconfig = {reportid: id};
+            case 'dashletVisualization':
+                component = 'ReporterVisualizationDashlet';
+                componentconfig = {reportid: dashlet.id};
+                module = 'KReports';
+                break;
+            case 'dashletPresentation':
+                component = 'ReporterPresentationDashlet';
+                componentconfig = {reportid: dashlet.id};
                 module = 'KReports';
                 break;
             case 'Generic':
-                let dashlet: any = this.dashboardDashlets.filter((dashlet) => dashlet.id == id)[0];
                 component = dashlet.component;
                 dashlet_id = dashlet.id;
                 dashletconfig = dashlet.componentconfig ? JSON.parse(dashlet.componentconfig) : '';
@@ -235,18 +167,22 @@ export class DashboardAddElement {
         }
 
         this.addDashlet.emit({
-            'name': this.dashletName,
-            'component': component,
-            'componentconfig': componentconfig,
-            'dashletconfig': dashletconfig,
-            'module': module,
-            'label': label,
-            'icon': icon,
-            'acl_action': acl_action,
-            'dashlet_id': dashlet_id
+            name,
+            label,
+            module,
+            component,
+            componentconfig,
+            dashletconfig,
+            icon,
+            acl_action,
+            dashlet_id
         });
 
         this.self.destroy();
     }
 
+    private close() {
+        this.addDashlet.emit(false);
+        this.self.destroy();
+    }
 }

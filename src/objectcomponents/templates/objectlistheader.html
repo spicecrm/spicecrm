@@ -7,7 +7,7 @@
         <th *ngFor="let item of listfields" [ngClass]="{'slds-is-sortable' : isSortable(item)}" scope="col">
             <ng-container *ngIf="isSortable(item); else nosort">
                 <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
-                    <field-label addclasses="slds-truncate" [fieldname]="item.field" [fieldconfig]="item.fieldconfig"></field-label>
+                    <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="item.field" [fieldconfig]="item.fieldconfig"></field-label>
                     <system-utility-icon [icon]="getSortIcon()" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
                 </a>
             </ng-container>

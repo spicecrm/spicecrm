@@ -309,6 +309,12 @@ export class metadata {
      */
     public addComponent(component: string, viewChild: any, injector?: Injector): Observable<any> {
         let retSubject = new Subject();
+
+        if (viewChild == undefined) {
+            console.log('viewchild not defined');
+            return;
+        }
+
         // if the component is missing...
         if (!this.componentDirectory[component]) {
             SystemJS.import("app/systemcomponents/systemcomponents")
@@ -337,6 +343,7 @@ export class metadata {
                 .then((type: any) => {
                     this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                         let cmp_factory = componentfactory.componentFactories.find((e) => e.componentType.name === "SystemComponentContainer");
+
                         let componentRef = viewChild.createComponent(cmp_factory, undefined, injector);
 
                         // add the info ybout the component being added
@@ -650,6 +657,20 @@ export class metadata {
             return this.fieldDefs[module][field].vname;
         } catch (e) {
             return field;
+        }
+    }
+
+    /**
+     * returns the helpText of a field. This does not return the translation. For that the language service must be queried resp is there a method on the language service
+     *
+     * @param module the name of the module
+     * @param field the name of the field
+     */
+    public getFieldHelpText(module, field) {
+        try {
+            return this.fieldDefs[module][field].popupHelp;
+        } catch (e) {
+            return null;
         }
     }
 

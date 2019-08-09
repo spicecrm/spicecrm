@@ -23,7 +23,7 @@ import {ObjectActionContainerItem} from "../../objectcomponents/components/objec
 })
 export class GlobalHeader implements DoCheck {
 
-    @ViewChild('header', {read: ViewContainerRef}) private header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: false}) private header: ViewContainerRef;
 
     constructor(private session: session, private router: Router, private toast: toast, private elementRef: ElementRef, private layout: layout) {
 
