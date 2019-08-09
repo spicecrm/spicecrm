@@ -21,7 +21,7 @@ import {metadata} from "../../../services/metadata.service";
 })
 export class EmailToObjectEmailText implements OnDestroy, OnInit {
 
-    @ViewChild("contextMenu", {read: ViewContainerRef}) public contextMenu: ViewContainerRef;
+    @ViewChild("contextMenu", {read: ViewContainerRef, static: true}) public contextMenu: ViewContainerRef;
 
     @Input() public text: string = "";
     @Input() public html: string = "";

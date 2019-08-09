@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div *ngIf="!isEditMode()">
     <field-generic-display *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
         <div class="slds-grid slds-wrap slds-gutters">
@@ -16,7 +17,7 @@
                           <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="emailaddress.primary_address == '1'" disabled>
                           <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
                             <span class="slds-radio--faux"></span>
-                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">primary</span>
+                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">{{language.getLabel('LBL_EMAILADDRESS_FIELD_PRIMARY')}}</span>
                           </label>
                         </span>
                     </div>
@@ -25,7 +26,7 @@
                           <input type="checkbox" [id]="emailaddress.id + 'optout'" [checked]="emailaddress.opt_out == '1'" disabled>
                           <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
                             <span class="slds-checkbox--faux"></span>
-                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">opt out</span>
+                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">{{language.getLabel('LBL_EMAILADDRESS_FIELD_OPT_OUT')}}</span>
                           </label>
                         </span>
                     </div>
@@ -34,7 +35,7 @@
                           <input type="checkbox" [id]="emailaddress.id + 'invalid'" [checked]="emailaddress.invalid_email == '1'" disabled>
                           <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
                             <span class="slds-checkbox--faux"></span>
-                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">invalid</span>
+                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">{{language.getLabel('LBL_EMAILADDRESS_FIELD_INVALID')}}</span>
                           </label>
                         </span>
                     </div>

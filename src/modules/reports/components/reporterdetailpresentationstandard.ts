@@ -23,9 +23,9 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef}) private tableheader: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef}) private tablefooter: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
+    @ViewChild('tablefooter', {read: ViewContainerRef, static: true}) private tablefooter: ViewContainerRef;
 
     private presParams: any = {};
     private presData: any = {};
@@ -111,7 +111,9 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
             start: (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries,
             limit: this.presParams.pluginData.standardViewProperties.listEntries,
-            whereConditions: JSON.stringify(whereConditions)
+            whereConditions: JSON.stringify(whereConditions),
+            parentbeanId: this.model['parentBeanId'],
+            parentbeanModule: this.model['parentBeanModule']
         }).subscribe((presData: any) => {
 
             // get field width

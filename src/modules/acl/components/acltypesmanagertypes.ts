@@ -25,7 +25,7 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class ACLTypesManagerTypes {
 
-    @ViewChild('header', {read: ViewContainerRef}) header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: true}) header: ViewContainerRef;
 
     loading: boolean = true;
 

@@ -20,7 +20,7 @@ import {dashboardlayout} from "../services/dashboardlayout.service";
     templateUrl: "./src/modules/dashboard/templates/dashboardcontainerelement.html"
 })
 export class DashboardContainerElement implements AfterViewInit {
-    @ViewChild("containerelement", {read: ViewContainerRef}) private containerelement: ViewContainerRef;
+    @ViewChild("containerelement", {read: ViewContainerRef, static: false}) private containerelement: ViewContainerRef;
 
     private componentRefs: Array<any> = [];
     private isAuthorized: boolean = true;

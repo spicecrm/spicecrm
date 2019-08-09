@@ -1,42 +1,37 @@
-<div role="dialog" class="slds-modal slds-fade-in-open slds-modal_large">
-    <div class="slds-modal__container">
-        <div class="slds-modal__header slds-theme--default">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="close()">
-                <system-button-icon [icon]="'close'" [size]="'large'" [inverse]="true"></system-button-icon>
-            </button>
-            <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_OUTPUT_TEMPLATE')}}</h2>
-        </div>
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{modalTitle}}</system-modal-header>
+    <system-modal-content>
         <div class="slds-modal__content slds-theme--default slds-p-around--medium slds-p-bottom--xx-small">
             <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
                 <label class="slds-col slds-form-element__label">{{language.getLabel('LBL_TEMPLATE')}}</label>
                 <select class="slds-col slds-select slds-grow" [(ngModel)]="selected_template" [disabled]="templates.length == 0">
                     <option *ngFor="let templ of templates" [ngValue]="templ">{{templ.name}} ({{templ.language}})</option>
                 </select>
-                <label class="slds-p-left--small slds-col slds-form-element__label">{{language.getLabel('LBL_DISPLAY')}}</label>
-                <select class="slds-col slds-select slds-size--1-of-4" [(ngModel)]="selected_format" [disabled]="templates.length == 0">
-                    <option value="html">HTML</option>
-                    <option value="pdf">PDF</option>
-                </select>
+                <ng-container *ngIf="forcedFormat">
+                    <label class="slds-p-left--small slds-col slds-form-element__label">{{language.getLabel('LBL_DISPLAY')}}</label>
+                    <select class="slds-col slds-select slds-size--1-of-4" [(ngModel)]="selected_format" [disabled]="templates.length == 0">
+                        <option value="html">HTML</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </ng-container>
             </div>
             <div class="slds-m-top--small slds-border--top slds-border--right slds-border--left slds-border--bottom" style="height: calc(100vh - 300px);">
-                <iframe *ngIf="selected_format == 'html' && !loading_output && selected_template" frameBorder="0" style="width: 100%;height: 100%;" [srcdoc]="sanitizedTemplated"></iframe>
-                <object *ngIf="selected_format == 'pdf' && !loading_output && blobUrl" [data]="blobUrl" type="application/pdf" width="100%" height="100%"></object>
+                <iframe *ngIf="selected_format === 'html' && !loading_output && selected_template" frameBorder="0" style="width: 100%;height: 100%;" [srcdoc]="sanitizedTemplated"></iframe>
+                <object *ngIf="selected_format === 'pdf' && !loading_output && blobUrl" [data]="blobUrl" type="application/pdf" width="100%" height="100%"></object>
                 <!-- a spinner when the template is loading-->
                 <div *ngIf="loading_output" class="slds-align--absolute-center" style="height: 100%;">
                     <system-spinner></system-spinner>
                 </div>
-                <!-- display label to prompt the user to select a template-->
+                <!-- display label to prompt the user to select a template -->
                 <div *ngIf="!selected_template && !loading_output" class="slds-align--absolute-center" style="height: 100%;">
                     {{language.getLabel('LBL_SELECT_TEMPLATE')}}
                 </div>
             </div>
         </div>
-        <div class="slds-modal__footer">
-            <div class="slds-col">
-                <ng-container *ngIf="!is_downloading_template">
-                    <button [disabled]="!selected_template" class="slds-button slds-button--brand" (click)="download()">{{language.getLabel('LBL_DOWNLOAD')}}</button>
-                </ng-container>
-            </div>
-        </div>
-    </div>
-</div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button [disabled]="!selected_template || loading_output" class="slds-button slds-button--neutral" (click)="reload()">{{language.getLabel('LBL_RELOAD')}}</button>
+        <button [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="create()">{{buttonText}}</button>
+    </system-modal-footer>
+</system-modal>

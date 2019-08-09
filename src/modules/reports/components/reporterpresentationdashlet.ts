@@ -23,9 +23,14 @@ import {reporterconfig} from '../services/reporterconfig';
     ]
 })
 export class ReporterPresentationDashlet implements OnInit, AfterViewInit {
-    @ViewChild('presentationcontainer', {read: ViewContainerRef}) private presentationcontainer: ViewContainerRef;
+    @ViewChild('presentationcontainer', {read: ViewContainerRef, static: true}) private presentationcontainer: ViewContainerRef;
     @Input() private id: string = '';
     @Input() private config: any = undefined;
+
+    @Input() private parentModule: string = '';
+    @Input() private parentId: string = '';
+    @Input() private displayheader: boolean = true;
+
     private componentconfig: any = {};
     private presComponent: any = undefined;
 
@@ -43,9 +48,9 @@ export class ReporterPresentationDashlet implements OnInit, AfterViewInit {
         if (this.componentconfig.reportid !== '') {
             this.model.module = 'KReports';
             this.model.id = this.componentconfig.reportid;
-            if (this.componentconfig.parentBeanId && this.componentconfig.parentBeanModule) {
-                this.model['parentBeanId'] = this.componentconfig.parentBeanId;
-                this.model['parentBeanModule'] = this.componentconfig.parentBeanModule;
+            if (this.parentId && this.parentModule) {
+                this.model['parentBeanId'] = this.parentId;
+                this.model['parentBeanModule'] = this.parentModule;
             }
             this.model.getData().subscribe(data => {
                 this.renderPresentation();

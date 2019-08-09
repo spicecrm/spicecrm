@@ -23,7 +23,7 @@ declare var moment: any;
 
 export class CalendarMorePopoverEvent implements OnInit, OnDestroy {
 
-    @ViewChild('calendarcontent', {read: ViewContainerRef}) calendarcontent: ViewContainerRef;
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) calendarcontent: ViewContainerRef;
     @Input() public event: any = {};
     @Output() public action$: EventEmitter<any> = new EventEmitter<any>();
     private modeSubscriber: Subscription = new Subscription();

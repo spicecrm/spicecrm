@@ -1,11 +1,12 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter, Injector} from "@angular/core";
+import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
 import {of, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
+import {navigation} from "./navigation.service";
 import {language} from "./language.service";
 import {modelutilities} from "./modelutilities.service";
 import {toast} from "./toast.service";
@@ -14,15 +15,17 @@ import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
-import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
+
+// import {GlobalHeader} from '../globalcomponents/components/globalheader';
+// import {GlobalFooter} from '../globalcomponents/components/globalfooter';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 interface fieldstati {
@@ -39,7 +42,7 @@ interface fieldstati {
  * a generic service that handles the model instance. This is one of the most central items in SpiceUI as this is the instance of an object (record) in the backend. The service provides all relevant getters and setters for the data handling, it validates etc.
  */
 @Injectable()
-export class model {
+export class model implements OnDestroy {
     /**
      * @ignore
      */
@@ -148,20 +151,25 @@ export class model {
      */
     public duplicates: any[] = [];
 
+    private modelRegisterId: number;
+
     constructor(
-        private backend: backend,
+        public backend: backend,
         private broadcast: broadcast,
-        private metadata: metadata,
+        public metadata: metadata,
         public utils: modelutilities,
         private session: session,
         private recent: recent,
         private router: Router,
         private toast: toast,
-        private language: language,
+        public language: language,
         private modal: modal,
-        private injector: Injector
+        private navigation: navigation,
+        public injector: Injector,
+        // @Optional() private globalHeader: GlobalHeader,
+        // @Optional() private globalFooter: GlobalFooter
     ) {
-
+        this.modelRegisterId = this.navigation.registerModel(this);
     }
 
     get messages(): any[] {
@@ -312,6 +320,10 @@ export class model {
     public validate(event?: string) {
         this.resetMessages();
         this.isValid = true;
+
+        // run evaluation rules again
+        this.evaluateValidationRules(null, "change");
+
         for (let field in this.fields) {
             // check required
             if (
@@ -624,13 +636,16 @@ export class model {
         return this._model_stati_tmp.includes(state);
     }
 
-    public startEdit() {
+    public startEdit(withbackup: boolean = true) {
         // shift to backend format .. no objects like date embedded
-        if (!this.duplicate) {
+        if (withbackup && !this.duplicate) {
             this.backupData = {...this.data};
         }
         this.isEditing = true;
         this.mode$.emit('edit');
+
+        // add the model as editing to the navigation service so we can stop the user from navigating away
+        this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
     }
 
 
@@ -650,7 +665,6 @@ export class model {
 
     public setFieldValue(field, value) {
         if (!field) return false;
-        if (_.isString(value)) value = value.trim();
         this.data[field] = value;
         this.data$.emit(this.data);
         this.evaluateValidationRules(field, "change");
@@ -681,6 +695,8 @@ export class model {
     public cancelEdit() {
         this.isEditing = false;
         this.mode$.emit('display');
+        this.navigation.removeModelEditing(this.module, this.id);
+
         if (this.backupData) {
             this.data = {...this.backupData};
             this.data$.emit(this.data);
@@ -694,12 +710,14 @@ export class model {
         this.backupData = null;
         this.isEditing = false;
         this.mode$.emit('display');
+
+        this.navigation.removeModelEditing(this.module, this.id);
     }
 
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (_.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -708,6 +726,11 @@ export class model {
 
     public save(notify: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
+
+        // Clean strings of leading and ending white spaces:
+        for ( let property in this.data ) {
+            if ( _.isString( this.data[property] )) this.data[property] = this.data[property].trim();
+        }
 
         // determine changed fields
         let changedData: any = {};
@@ -858,6 +881,17 @@ export class model {
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
         this.evaluateValidationRules(null, "init");
+    }
+
+    public isOutsideRouterOutlet(): boolean {
+
+        return true;
+
+        // if ( this.globalHeader || this.globalFooter ) return true;
+        // else return false;
+
+        // alternative:
+        // return !( this.injector.get( GlobalHeader ) || this.injector.get( GlobalFooter ) );
     }
 
     public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
@@ -1090,6 +1124,13 @@ export class model {
         return true;
     }
 
+    /**
+     * returns the messages collected during the validation process
+     */
+    public getMessages() {
+        return this.messages;
+    }
+
     public setFieldMessage(type: "error" | "warning" | "notice", message: string, ref: string, source: string): boolean {
         this.resetFieldMessages(ref, type, source);
         if (type == "error") {
@@ -1230,6 +1271,14 @@ export class model {
             this.data[relation_link_name].beans[record.id] = record;
         }
         return true;
+    }
+
+    public ngOnDestroy(): void {
+        this.navigation.unregisterModel(this.modelRegisterId);
+    }
+
+    public isLeaveable(): boolean {
+        return !(this.isEditing && _.values(this.getDirtyFields()).length);
     }
 
 }

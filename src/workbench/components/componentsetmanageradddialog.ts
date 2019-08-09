@@ -20,7 +20,8 @@ export class ComponentsetManagerAddDialog  {
 
     private component: string = '';
     private systemmodule: string = '';
-    private systemmodules: Array<any> = [];
+    private systemmodules: any[] = [];
+    private showDeprecatedWarning: boolean = false;
     public self;
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
@@ -29,6 +30,18 @@ export class ComponentsetManagerAddDialog  {
 
     get components() {
         return this.metadata.getSystemComponents(this.systemmodule);
+    }
+
+    private componentName(component) {
+        if(component) {
+            if(component.deprecated == '1') {
+                return component.component + ' | dep.';
+            } else {
+                return component.component;
+            }
+        }
+        return '';
+
     }
 
     private cancelDialog() {
@@ -44,4 +57,12 @@ export class ComponentsetManagerAddDialog  {
         this.self.destroy();
     }
 
+    private checkDep(event) {
+        let object = this.components.find(x => x.component === event);
+        if(object.deprecated == '1') {
+            this.showDeprecatedWarning = true;
+        } else {
+            this.showDeprecatedWarning = false;
+        }
+    }
 }

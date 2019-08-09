@@ -1,0 +1,5 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <span>{{viewModeValue}}</span>
+</field-generic-display>
+<system-multiple-select *ngIf="isEditMode()" [ngModel]="fieldValueArray" (ngModelChange)="setFieldValue($event)" [listItems]="listItems" [grouped]="true" [showPills]="true"></system-multiple-select>

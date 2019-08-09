@@ -19,7 +19,7 @@ import {Subject} from 'rxjs';
     templateUrl: './src/workbench/templates/fieldsetmanagerfieldsetdetails.html',
     providers: [view]
 })
-export class FieldsetManagerFieldsetDetails implements OnChanges{
+export class FieldsetManagerFieldsetDetails implements OnChanges {
 
     @Input() fieldset: any = {};
 

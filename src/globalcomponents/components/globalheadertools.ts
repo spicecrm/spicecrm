@@ -14,7 +14,7 @@ import {broadcast} from '../../services/broadcast.service';
 })
 export class GlobalHeaderTools implements AfterViewInit {
 
-    @ViewChild('toolcontainer', {read: ViewContainerRef}) private toolcontainer: ViewContainerRef;
+    @ViewChild('toolcontainer', {read: ViewContainerRef, static: true}) private toolcontainer: ViewContainerRef;
     private containerItems: any[] = [];
 
     constructor(private session: session, private metadata: metadata, private router: Router, private language: language, private broadcast: broadcast) {

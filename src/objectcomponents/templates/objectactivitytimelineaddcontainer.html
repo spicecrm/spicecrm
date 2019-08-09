@@ -1,4 +1,4 @@
-<div *ngIf="tabs.length > 0; else notabs" class="slds-tabs--scoped">
+<div class="slds-tabs--scoped" [ngClass]="{'slds-hide': tabs.length == 0}">
     <ul class="slds-tabs--scoped__nav" role="tablist">
         <li #maintabs *ngFor="let tab of tabs" class="slds-tabs--scoped__item" [ngClass]="{'slds-active': checkTab(tab.module)}" role="presentation" [attr.data-module]="tab.module">
             <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" (click)="setTab(tab.module)">{{language.getModuleName(tab.module, true)}}</a>
@@ -22,6 +22,6 @@
        <object-activitiytimeline-add-tabcontainer [tabcomponent]="tab.component" [componentconfig]="tab.componentconfig"></object-activitiytimeline-add-tabcontainer>
     </div>
 </div>
-<ng-template #notabs>
+<ng-template *ngIf="tabs.length == 0" >
     <div class="slds-box slds-theme--shade slds-align--absolute-center">no actions configured</div>
 </ng-template>

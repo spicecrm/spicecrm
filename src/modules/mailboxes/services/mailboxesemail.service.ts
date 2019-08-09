@@ -21,11 +21,11 @@ export class mailboxesEmails {
     private limit = 30;
 
     public mailboxes: any[] = [];
-    public emails: Array<any> = [];
+    public emails: any[] = [];
 
     private _activeMailBox: any;
-    private _activeEmail: any;
-    public activeEmail$: EventEmitter<any> = new EventEmitter<any>();
+    private _activeMessage: any;
+    public activeMessage$: EventEmitter<any> = new EventEmitter<any>();
     public unreadonly: boolean = true;
     public openonly: boolean = true;
     public isLoading: boolean = false;
@@ -39,13 +39,13 @@ export class mailboxesEmails {
         this.getMailboxes();
     }
 
-    get activeEmail() {
-        return this._activeEmail;
+    get activeMessage() {
+        return this._activeMessage;
     }
 
-    set activeEmail(email) {
-        this._activeEmail = email;
-        this.activeEmail$.emit(email);
+    set activeMessage(email) {
+        this._activeMessage = email;
+        this.activeMessage$.emit(email);
     }
 
     get activeMailBox() {
@@ -66,6 +66,7 @@ export class mailboxesEmails {
                         actionset: mailbox.actionset,
                         id: mailbox.value,
                         name: mailbox.display,
+                        type: mailbox.type,
                     });
                 }
                 // send an event here and catch it in mailboxmanagerheader
@@ -82,7 +83,7 @@ export class mailboxesEmails {
             // todo a spinner or sth similar while waiting for the response
             (response: any) => {
                 if (response.new_mail_count > 0) {
-                    this.loadMails();
+                    this.loadMessages();
                 }
                 responseSubject.next(response);
                 responseSubject.complete();
@@ -90,50 +91,72 @@ export class mailboxesEmails {
         );
     }
 
-    public loadMails() {
+    public loadMessages() {
         if (!this.activeMailBox) {
             return false;
         }
 
-        this.activeEmail = undefined;
+        this.activeMessage = undefined;
 
         // reset the emails
         this.emails = [];
 
+        let krestRoute = 'module/Emails';
         let conditions = [
             {field: "mailbox_id", operator: "=", value: this.activeMailBox.id},
-            {field: "type", value: "inbound", operator: "="},
         ];
-        if (this.emailopenness) {
-            conditions.push({
-                field: "openness",
-                value: this.emailopenness,
-                operator: "="
-            });
-        }
-        if (this.unreadonly) {
-            conditions.push({
-                field: "status",
-                value: "unread",
-                operator: "="
-            });
-        }
+
         let parameters = {
-            fields: JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness",
-                "sentiment", "magnitude"]),
             searchfields: JSON.stringify({
                 conditions: conditions,
                 join: "and",
             }),
             sortdirection: "DESC",
             sortfield: "date_sent",
+            fields: '',
         };
+
+        if (this.activeMailBox.type == 'sms') {
+            krestRoute = 'module/TextMessages';
+            conditions.push({
+                field: "direction",
+                value: 'i',
+                operator: "="
+            });
+
+            parameters.fields = JSON.stringify(["name", "id", "msisdn_e164", "date_sent", "description"]);
+        } else {
+            conditions.push({
+                field: "type",
+                value: "inbound",
+                operator: "="
+            });
+
+            if (this.emailopenness) {
+                conditions.push({
+                    field: "openness",
+                    value: this.emailopenness,
+                    operator: "="
+                });
+            }
+            if (this.unreadonly) {
+                conditions.push({
+                    field: "status",
+                    value: "unread",
+                    operator: "="
+                });
+            }
+
+            parameters.fields = JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness",
+                    "sentiment", "magnitude"]);
+        }
+
 
         this.isLoading = true;
 
-        this.backend.getRequest("module/Emails", parameters).subscribe((res: any) => {
+        this.backend.getRequest(krestRoute, parameters).subscribe((res: any) => {
             this.emails = res.list;
-            //this.loadedMailbox = this.activeMailBox.id;
+            // this.loadedMailbox = this.activeMailBox.id;
             this.isLoading = false;
         });
     }

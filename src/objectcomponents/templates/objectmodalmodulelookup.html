@@ -68,7 +68,7 @@
     </div>
 </div-->
 <system-modal size="large">
-    <system-modal-header (close)="closePopup()">{{language.getLabel('LBL_SEARCH')}}: {{language.getModuleName(model.module, true)}}</system-modal-header>
+    <system-modal-header (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', model.module)}}</system-modal-header>
     <system-modal-content #modalcontent margin="none">
         <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
             <div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small">
@@ -80,8 +80,8 @@
                 </div>
             </div>
             <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
-                {{modellist.listData.totalcount}} Results, sorted by
-                {{language.getFieldDisplayName(modellist.module, modellist.sortfield)}}, selected
+                {{modellist.listData.totalcount}} {{language.getLabel('LBL_ITEMS')}}, {{language.getLabel('LBL_SORTEDBY')}}
+                {{language.getFieldDisplayName(modellist.module, modellist.sortfield)}}, {{language.getLabel('LBL_SELECTED')}}
                 {{modellist.getSelectedCount()}}
             </div>
             <div style="height:75vh; overflow-y: auto;"  #tablecontent (scroll)="onScroll($event)" [ngStyle]="contentStyle()">

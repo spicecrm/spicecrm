@@ -31,9 +31,14 @@
             <ul>
                 <system-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="filter.module"></system-filter-builder-expression-group>
             </ul>
+            <h2 class="slds-expression__title">{{language.getLabel('LBL_METHOD')}}</h2>
+            <div class="slds-p-around--xx-small">
+                <system-input-backend-method [(ngModel)]="filter.filtermethod"></system-input-backend-method>
+            </div>
             <div class="slds-expression__buttons">
                 <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
             </div>
         </div>
     </div>
+
 </div>

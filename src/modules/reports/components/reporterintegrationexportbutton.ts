@@ -25,7 +25,7 @@ import {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
 
-    @ViewChild('actionitems', {read: ViewContainerRef}) private actionitems: ViewContainerRef;
+    @ViewChild('actionitems', {read: ViewContainerRef, static: true}) private actionitems: ViewContainerRef;
 
     @Input() private integrationParams: any = {};
 

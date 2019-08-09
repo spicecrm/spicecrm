@@ -1,12 +1,27 @@
 <system-modal size="large" >
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_HTMLSOURCE')}}</system-modal-header>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_SOURCE_EDITOR')}}</system-modal-header>
     <system-modal-content>
         <div class="slds-grid" style="height: 70vh;">
             <div class="slds-size--1-of-2 slds-p-right--xx-small" >
-                <div class="slds-box slds-theme--default slds-scrollable_y" [innerHtml]="sanitizedHtml" style="height: 100%;"></div>
+                <div class="slds-box slds-theme--default slds-scrollable_y slds-rich-text-editor__output" [innerHtml]="sanitizedHtml" style="height: 100%;"></div>
             </div>
             <div class="slds-size--1-of-2 slds-p-left--x-small">
-                <div class="slds-box slds-theme--default slds-scrollable_y" #sourceeditor contenteditable (input)="onContentChange($event.target.innerText)" style="height: 100%;white-space: pre-line;"></div>
+                <div style="height: 36px">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right slds-global-search__form-element" role="none">
+                        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                        <input (keyup)="keyUp($event)" type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="searchText">
+                        <div *ngIf="foundIndices.length > 1" class="slds-grid slds-grid--align-spread slds-input__icon_right slds-is-absolute__top" style="height: 100%">
+                            <button (click)="nextResult()" [disabled]="nextDisabled" class="slds-button slds-button_icon slds-input__icon" style="position:relative;" [title]="language.getLabel('LBL_NEXT')">
+                                <system-button-icon icon="arrowdown"></system-button-icon>
+                            </button>
+                            <button (click)="previewResult()" [disabled]="previewDisabled" class="slds-button slds-button_icon slds-input__icon" style="position:relative;" [title]="language.getLabel('LBL_PREVIEW')">
+                                <system-button-icon icon="arrowup"></system-button-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div #sourceeditor [attr.contenteditable]="true" (input)="onContentChange($event.target['innerText'])"
+                     style="height: calc(100% - 36px);white-space: pre-line;"  class="slds-box slds-theme--default slds-scrollable_y"></div>
             </div>
         </div>
     </system-modal-content>
