@@ -22,7 +22,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 })
 export class WorkflowTasksDashlet {
 
-    @ViewChild('itemcontainer', {read: ViewContainerRef}) itemcontainer: ViewContainerRef;
+    @ViewChild('itemcontainer', {read: ViewContainerRef, static: true}) itemcontainer: ViewContainerRef;
 
     workflowtasks: Array<any> = [];
 

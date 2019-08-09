@@ -9,6 +9,7 @@ export class view {
     public mode$ = new EventEmitter();
     public isEditable: boolean = false;
     public displayLinks: boolean = true;
+    public displayLabels: boolean = true;
     public editfieldid: string = '';
 
     // defines the labele .. can be value none, default, long or short
@@ -16,6 +17,10 @@ export class view {
 
     // set the size
     public size: 'regular' | 'small' = 'regular';
+
+    constructor() {
+
+    }
 
     public isEditMode() {
         if (this.mode === 'edit') {

@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, OnInit } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {metadata} from "../../../services/metadata.service";
@@ -12,17 +12,21 @@ declare var Highcharts: any;
     selector: 'questionnaire-evaluation-spiderweb',
     templateUrl: './src/modules/questionnaires/templates/questionnaireevaluationspiderweb.html',
 })
-export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
+export class QuestionnaireEvaluationSpiderweb implements AfterViewInit, OnInit {
 
-    values: Array<any>;
-    valuesForChart: Array<any> = [];
-    chartid: string = '';
-    usagePrint = false;
-    _individualHeight: number;
-    defaultHeight = 70;
-    chart: any;
+    @Input() public values: any[];
+    private valuesForChart: any[] = [];
+    private readonly chartid: string = '';
+    @Input() public usagePrint = false;
+    private _individualHeight: number;
+    private defaultHeight = 70;
+    private chart: any;
 
-    @Input() set individualHeight(val) {
+    constructor( private language: language , private modelutilities: modelutilities, private metadata: metadata) {
+        this.chartid = this.modelutilities.generateGuid();
+    }
+
+    @Input() public set individualHeight( val: number ) {
         let dummy: number;
         if ( this.usagePrint && !isNaN( val ) && ( dummy = Number(val) ) !== 0 && this.chart && this._individualHeight !== dummy ) {
             this._individualHeight = dummy;
@@ -31,36 +35,29 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
         }
     }
 
-    get height() {
+    private get height(): number {
         if ( this._individualHeight ) return this._individualHeight;
         else return this.defaultHeight;
     }
 
-    constructor( private language: language , private modelutilities: modelutilities, private metadata: metadata) {
-        this.chartid = this.modelutilities.generateGuid();
-    }
-
-    get divid(){
+    private get divid(): string {
         return 'questionnaire-eval-chart' + this.chartid;
     }
 
-    ngOnInit() {
-
-        for ( let i=0; i < this.values.length; i++ )
-            this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
-
+    public ngOnInit(): void {
+        for ( let i=0; i < this.values.length; i++ ) this.valuesForChart[i] = [ this.values[i].name, this.values[i].points ];
     }
 
-    get chartDivStyles() {
+    private get chartDivStyles(): object {
         if ( this.usagePrint ) {
-            return { 'max-width': '650px', margin: 'auto' };
+            return { 'max-width': '650px', 'margin': 'auto' };
         } else return null;
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit(): void {
 
         this.metadata.loadLibs('highcharts').subscribe(
-            (next) => {
+            () => {
 
                 this.chart = Highcharts.chart(this.divid, {
                     credits: false,
@@ -74,8 +71,8 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
                         type: 'category',
                         labels: {
                             style: {
-                                fontSize: this.usagePrint ? '13px':'12px',
-                                fontFamily: 'Titillium Web, Verdana, sans-serif',
+                                fontSize: this.usagePrint ? '12px':'12px',
+                                fontFamily: '"Libre Franklin", sans-serif',
                                 whiteSpace: 'normal'
                             }
                         }
@@ -85,8 +82,8 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
                         title: {
                             text: this.language.getLabel('LBL_POINTS'),
                             style: {
-                                fontSize: this.usagePrint ? '13px':'12px',
-                                fontFamily: 'Titillium Web, Verdana, sans-serif'
+                                fontSize: this.usagePrint ? '12px':'12px',
+                                fontFamily: '"Libre Franklin", sans-serif'
                             }
                         }
                     },
@@ -109,8 +106,8 @@ export class QuestionnaireEvaluationSpiderweb implements AfterViewInit {
                         format: '{point.y:.1f}', // one decimal
                         y: 10, // 10 pixels down from the top
                         style: {
-                            fontSize: this.usagePrint ? '13px':'12px',
-                            fontFamily: 'Titillium Web, Verdana, sans-serif',
+                            fontSize: this.usagePrint ? '12px':'12px',
+                            fontFamily: '"Libre Franklin", sans-serif',
                             whiteSpace: 'normal'
                         }
                     }

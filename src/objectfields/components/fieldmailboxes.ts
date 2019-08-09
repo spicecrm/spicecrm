@@ -14,10 +14,10 @@ import {fieldGeneric} from "./fieldgeneric";
     selector: 'field-mailboxes',
     templateUrl: './src/objectfields/templates/fieldmailboxes.html'
 })
-export class fieldMailboxes extends fieldGeneric{
-    options: Array<any> = [];
-    loadingOptions: boolean = false;
-    loaded: boolean = false;
+export class fieldMailboxes extends fieldGeneric {
+    public options: any[] = [];
+    public loadingOptions: boolean = false;
+    public loaded: boolean = false;
 
     constructor(
         public model: model,
@@ -30,15 +30,15 @@ export class fieldMailboxes extends fieldGeneric{
         super(model, view, language, metadata, router);
     }
 
-    get scope(){
+    get scope() {
         return this.fieldconfig.scope ? this.fieldconfig.scope : 'outboundsingle';
     }
 
-    get isDisabled(){
+    get isDisabled() {
         return this.options.length == 0;
     }
 
-    getValue(){
+    public getValue() {
         let optionsArray = this.getOptions();
 
         for (var i = 0; i < this.options.length; i++) {
@@ -48,13 +48,14 @@ export class fieldMailboxes extends fieldGeneric{
         }
     }
 
-    getOptions(): Array<any>{
+    public getOptions(): any[] {
         if(!this.loadingOptions) {
             if (this.loaded) {
                 return this.options;
             } else {
                 this.loadingOptions = true;
-                this.backend.getRequest("mailboxes/getmailboxes", {scope: this.scope}).subscribe((results: any) => {
+                this.backend.getRequest("mailboxes/getmailboxes", {scope: this.scope}).subscribe(
+                    (results: any) => {
                     this.options = results;
                     this.loadingOptions = false;
 
@@ -68,7 +69,7 @@ export class fieldMailboxes extends fieldGeneric{
         }
     }
 
-    get value(){
+    get value() {
         return this.getValue();
     }
 

@@ -24,7 +24,7 @@ import {backend} from "../../../services/backend.service";
 })
 export class EmailToObjectModal implements OnInit, AfterViewInit {
 
-    @ViewChild("detailcontainer", {read: ViewContainerRef}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
     private email_model: any = null;
     private self: any = null;

@@ -17,7 +17,7 @@ export class KnowledgeDocumentsSearch {
 
     public isLoading: boolean = false;
     public interval: any = undefined;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
 
     constructor(public language: language,
                 public model: model,
@@ -53,9 +53,8 @@ export class KnowledgeDocumentsSearch {
     }
 
     private selectDocument(doc) {
-        this.knowledgeService.selectedId = doc.id;
+        this.knowledgeService.selectedDoc = doc.id;
         this.knowledgeService.selectedBook = {id: doc.knowledgebook_id, name: doc.knowledgebook_name};
-        this.knowledgeService.getDocuments(doc.knowledgebook_id);
     }
 
     private trackByFn(index, item) {

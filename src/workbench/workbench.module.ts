@@ -47,6 +47,8 @@ import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanager
 import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
+import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
+import /*embed*/ {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
@@ -56,6 +58,7 @@ import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
 import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
+import /*embed*/ {ConfigTransfer} from './components/configtransfer';
 
 import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
@@ -64,7 +67,7 @@ import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
 import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
-import /*embed*/ {WorkbenchConfigOptionFieldset, ComponentsetManagerModulePipeGlobal, ComponentsetManagerModulePipeCustom} from "./components/workbenchconfigoptionfieldset";
+import /*embed*/ {WorkbenchConfigOptionFieldset} from "./components/workbenchconfigoptionfieldset";
 import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
 import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
 import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
@@ -72,14 +75,17 @@ import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenc
 import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
 import /*embed*/ {WorkbenchConfigOptionLabel} from "./components/workbenchconfigoptionlabel";
+import /*embed*/ {WorkbenchConfigOptionMethod} from "./components/workbenchconfigoptionmethod";
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
 import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
+
 import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
 import /*embed*/ {CRMLogViewerList} from './components/crmlogviewerlist';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 import /*embed*/ {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
+
 import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
 import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
 
@@ -120,13 +126,12 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
         WorkbenchConfigOptionModulefilter,
-        ComponentsetManagerModulePipeCustom,
-        ComponentsetManagerModulePipeGlobal,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionModule,
         WorkbenchConfigOptionActionset,
         WorkbenchConfigOptionBoolean,
         WorkbenchConfigOptionLabel,
+        WorkbenchConfigOptionMethod,
         ComponentsetManagerAddDialog,
         ComponentsetManagerEditDialog,
         ComponentConfigManager,
@@ -147,6 +152,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesImapSmtpTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
+        MailboxesTwillioTrafficManager,
+        MailboxesA1TrafficManager,
         MailboxesIMAPSMTPSelectFoldersModal,
         SortPipe,
         ServiceCategoryManagerComponent,
@@ -175,6 +182,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DashletGenerator,
         DashletGeneratorDashlets,
         DashletGeneratorDashletDetails,
+        ConfigTransfer
     ],
     /* no further modules needed */
     entryComponents: [
@@ -197,10 +205,11 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         CRMLogViewerModal,
         CRMLogViewerListModal,
         KRESTLogViewer,
-        KRESTLogViewerModal
+        KRESTLogViewerModal,
+        ConfigTransfer
     ],
     exports: [
-        SortPipe,
+        SortPipe
     ]
 })
 export class WorkbenchModule {

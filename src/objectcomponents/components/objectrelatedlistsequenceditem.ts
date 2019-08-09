@@ -22,6 +22,7 @@ export class ObjectRelatedListSequencedItem implements OnInit {
     }
 
     public ngOnInit() {
+        this.view.displayLabels = false;
         this.model.module = this.module;
         this.model.id = this.listitem.id;
         this.model.data = this.listitem;

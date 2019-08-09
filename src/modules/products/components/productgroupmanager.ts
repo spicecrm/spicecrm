@@ -12,7 +12,7 @@ import {model} from "../../../services/model.service";
 
 export class ProductGroupManager {
 
-    @ViewChild("actionSetContainer", {read: ViewContainerRef}) private actionSetContainer: ViewContainerRef;
+    @ViewChild("actionSetContainer", {read: ViewContainerRef, static: true}) private actionSetContainer: ViewContainerRef;
 
     private selectedGroupId: string;
     private actionSet: string = '';

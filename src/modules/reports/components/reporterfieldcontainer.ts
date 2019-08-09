@@ -21,7 +21,7 @@ import {footer} from '../../../services/footer.service';
 })
 export class ReporterFieldContainer implements OnInit{
 
-    @ViewChild('reportFieldContainer', {read: ViewContainerRef}) reportFieldContainer: ViewContainerRef;
+    @ViewChild('reportFieldContainer', {read: ViewContainerRef, static: true}) reportFieldContainer: ViewContainerRef;
 
     @Input() record: any = {};
     @Input() field: any = {};

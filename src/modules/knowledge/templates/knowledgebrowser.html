@@ -18,7 +18,7 @@
                             *ngIf="selectedBook && documents.length > 0 && !isLoading"
                             [config]="config"
                             [treelist]="documents"
-                            [selectedItem]="selectedId"
+                            [selectedItem]="selectedDoc"
                             (selectedItem$)="handleSelectedItemEvent($event)">
 
                     </system-tree>
@@ -36,6 +36,6 @@
         </div>
     </div>
     <div class="slds-size--3-of-4">
-        <knowledge-browser-details [selectedId]="selectedId"></knowledge-browser-details>
+        <knowledge-browser-details [selectedDoc]="selectedDoc"></knowledge-browser-details>
     </div>
 </div>

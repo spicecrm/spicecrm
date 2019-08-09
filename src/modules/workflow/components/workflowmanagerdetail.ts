@@ -25,7 +25,7 @@ import {AppDataService} from "../../../services/appdata.service";
 })
 export class WorkflowManagerDetail implements OnChanges {
 
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
     @Input() private modeldata: any = {};
 
@@ -44,6 +44,7 @@ export class WorkflowManagerDetail implements OnChanges {
 
         this.view.isEditable = true;
         this.view.setEditMode();
+
         let componentconfig = this.metadata.getComponentConfig('WorkflowManagerDetail', 'WorkflowDefinitions');
         if (componentconfig && componentconfig.fieldset) {
             this.fieldset = componentconfig.fieldset;

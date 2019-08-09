@@ -1,7 +1,7 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, Input, OnDestroy, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
@@ -11,12 +11,12 @@ import {KnowledgeService} from "../services/knowledge.service";
 @Component({
     selector: "knowledge-manager-details",
     templateUrl: "./src/modules/knowledge/templates/knowledgemanagerdetails.html",
-    providers: [view]
+    providers: [model, view]
 })
-export class KnowledgeManagerDetails {
+export class KnowledgeManagerDetails implements OnDestroy {
 
-    @ViewChild("detailscontent", {read: ViewContainerRef}) private detailsContent: ViewContainerRef;
-    @Input("selectedId") private docId: string = "";
+    @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailsContent: ViewContainerRef;
+    @Input("selectedDoc") private docId: string = "";
     private renderedComponents: any[] = [];
 
     constructor(private language: language,
@@ -27,17 +27,22 @@ export class KnowledgeManagerDetails {
         this.model.module = "KnowledgeDocuments";
     }
 
-    private ngOnChanges() {
+    get selectedBook() {
+        return this.knowledgeService.selectedBook;
+    }
+
+    public ngOnChanges() {
+        this.resetView();
         if (this.docId && this.docId !== "") {
             this.view.setViewMode();
-            this.resetView();
             this.model.id = this.docId;
-            this.model.getData(true, "", true).subscribe(data => this.buildContainer());
+            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+            this.model.getData(true, "", true).subscribe(data => this.renderView());
         }
     }
 
-    get selectedBook() {
-        return this.knowledgeService.selectedBook;
+    public ngOnDestroy() {
+        this.resetView();
     }
 
     private resetView() {
@@ -47,7 +52,7 @@ export class KnowledgeManagerDetails {
         this.renderedComponents = [];
     }
 
-    private buildContainer() {
+    private renderView() {
         let componentconfig = this.metadata.getComponentConfig("KnowledgeManagerDetails", "KnowledgeDocuments");
         let componentSet = componentconfig.componentset;
 

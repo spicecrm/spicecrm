@@ -1,7 +1,7 @@
 <section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open slds-modal_large">
     <div class="slds-modal__container">
         <header class="slds-modal__header slds-theme_shade">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{{language.getLabel('LBL_CLOSE')}}" (click)="closeModal()">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" title="{{language.getLabel('LBL_CLOSE')}}" (click)="closeModal()">
                 <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
             </button>
             <h2 *ngIf="!questionid" class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_ADD_QUESTION')}}</h2>
@@ -15,6 +15,7 @@
                 <questions-manager-edit-multi *ngSwitchCase="'multi'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-multi>
                 <questions-manager-edit-text *ngSwitchCase="'text'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-text>
                 <questions-manager-edit-ist *ngSwitchCase="'ist'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-ist>
+                <questions-manager-edit-nps *ngSwitchCase="'nps'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-nps>
                 <div *ngSwitchDefault>{{language.getLabel('MSG_NO_QUESTIONTYPE_NO_QUESTION')}}</div>
             </div>
         </div>

@@ -12,22 +12,13 @@ import { modal } from '../../../services/modal.service';
 @Component({
     selector: 'questionset-preview-button',
     templateUrl: './src/modules/questionnaires/templates/questionsetpreviewbutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ]
 })
 export class QuestionsetPreviewButton {
 
-   constructor( private language: language, private metadata: metadata, private model: model, private router: Router, private footer: footer, private modalservice: modal ) {
-    }
+   constructor( private language: language, private model: model, private modalservice: modal ) { }
 
-    preview() {
-        this.modalservice.openModal('QuestionsetPreview').subscribe(comp => {
-            comp.instance['questionsetidorobject'] = this.model.id;
-        });
+    public execute(): void {
+        this.modalservice.openModal( 'QuestionsetPreview' ).subscribe( modal => modal.instance.questionsetIdOrObject = this.model.id );
     }
 
 }

@@ -18,7 +18,7 @@ declare var moment: any;
 })
 export class ProductBrowserAttributes {
 
-    @ViewChild('attributesheader', {read: ViewContainerRef}) private attributesheader: ViewContainerRef;
+    @ViewChild('attributesheader', {read: ViewContainerRef, static: true}) private attributesheader: ViewContainerRef;
     private attributeFilter: string = '';
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
@@ -46,7 +46,7 @@ export class ProductBrowserAttributes {
                 attributes.push(attribute);
             }
         }
-        return attributes;
+        return attributes.sort((a,b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
     }
 
     private clearFilters() {

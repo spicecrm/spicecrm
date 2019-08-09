@@ -12,7 +12,7 @@ import {language} from '../../../services/language.service';
     templateUrl: './src/modules/activities/templates/tasksmanagertasks.html',
 })
 export class TasksManagerTasks {
-    @ViewChild('taskscontent', {read: ViewContainerRef}) taskscontent: ViewContainerRef;
+    @ViewChild('taskscontent', {read: ViewContainerRef, static: true}) taskscontent: ViewContainerRef;
     @Output() taskselected: EventEmitter<string> = new EventEmitter<string>();
     focus: string = '';
 

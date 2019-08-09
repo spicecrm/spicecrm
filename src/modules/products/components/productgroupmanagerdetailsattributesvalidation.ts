@@ -11,7 +11,7 @@ import {model} from "../../../services/model.service";
     providers: [model]
 })
 export class ProductGroupManagerDetailsAttributesValidation implements OnInit, OnDestroy {
-    @ViewChild('buttoncontainer', {read: ViewContainerRef}) private buttonContainer: ViewContainerRef;
+    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) private buttonContainer: ViewContainerRef;
     @Input() private parent: any = {};
     public listFields: any[] = [];
 

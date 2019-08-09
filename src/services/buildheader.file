@@ -1,9 +1,10 @@
 /**
 * @module services
 */
-import {Injectable, Inject, Injector, NgZone, EventEmitter,  isDevMode,  ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy} from '@angular/core';
+import {Injectable, Inject, Injector, NgZone, EventEmitter,  isDevMode,  ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy, ApplicationRef, Optional} from '@angular/core';
 import {Title, DomSanitizer} from '@angular/platform-browser';
 import {CanActivate}    from '@angular/router';
+// import {GlobalHeader,GlobalFooter} from '../globalcomponents/globalcomponents';
 /**
 * @ignore
 */
@@ -15,4 +16,4 @@ declare var SystemJS: any;
 declare var _: any ;
 
 //import { Http, Request, RequestOptionsArgs, Response, XHRBackend, RequestOptions, ConnectionBackend, Headers, ResponseContentType, RequestMethod} from '@angular/http';
-import {HttpClient, HttpHeaders, HttpResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse, HttpParams, HttpEventType} from "@angular/common/http";

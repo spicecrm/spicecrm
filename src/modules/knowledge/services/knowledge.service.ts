@@ -1,53 +1,63 @@
 /**
  * @module ModuleKnowledge
  */
-import {Injectable, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {take} from "rxjs/operators";
 import {Subscription} from "rxjs";
-import {relatedmodels} from "../../../services/relatedmodels.service";
+import {navigation} from "../../../services/navigation.service";
+import {Location} from "@angular/common";
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
+import {metadata} from "../../../services/metadata.service";
+import {ActivatedRoute} from "@angular/router";
 
+declare var _;
 
 @Injectable()
 
-export class KnowledgeService implements OnDestroy {
-    public selectedBook: any;
-    public documents: any[] = [];
-    public selectedId: string = "";
-    public isLoading: boolean = false;
+export class KnowledgeService {
+    public selectedbook: any;
+    public selectedDoc: string = "";
+    public isBookLoading: boolean = false;
+    public isDocumentLoading: boolean = false;
     public books: any[] = [];
     public searchterm: string = "";
+    public moduleFilter: string = "";
     public resultsList: any[] = [];
-    private subscription: Subscription = new Subscription();
+    public documentsList: any[] = [];
+    private subscriptions: Subscription = new Subscription();
 
-    @ViewChild("searchcontainer", {read: ViewContainerRef}) private searchContainer: ViewContainerRef;
+    @ViewChild("searchcontainer", {read: ViewContainerRef, static: true}) private searchContainer: ViewContainerRef;
 
     constructor(private backend: backend,
+                private language: language,
                 private favorite: favorite,
                 private broadcast: broadcast,
-                private relatedmodels: relatedmodels,
+                private modelutilities: modelutilities,
+                private navigation: navigation,
                 public userPreferences: userpreferences,
+                private location: Location,
+                private activatedRoute: ActivatedRoute,
+                private toast: toast,
+                private metadata: metadata,
                 private fts: fts) {
-        this.userPreferences.loadPreferences('KnowledgeBooks')
-            .pipe(take(1))
-            .subscribe(res => {
-                if (res && res['lastViewedBook']) {
-                    this.selectedBook = res['lastViewedBook'];
-                    this.getDocuments(this.selectedBook.id);
-                }
-            });
-        this.subscription = this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype == "model.save" && msg.messagedata.module == "KnowledgeBooks") {
-                let book = msg.messagedata.data;
-                this.books = [...this.books, book];
-                this.selectedBook = book;
-                this.getDocuments(book.id);
-            }
-        });
+        this.loadPreferences();
+        this.saveSubscriber();
+        this.routerSubscriber();
+    }
+
+    get documents() {
+        return this.sortDocuments(this.documentsList);
+    }
+
+    set documents(value: any[]) {
+        this.documentsList = value;
     }
 
     get searchTerm() {
@@ -56,21 +66,44 @@ export class KnowledgeService implements OnDestroy {
 
     set searchTerm(value) {
         this.searchterm = value;
+        this.resultsList = [];
         if (value == "") {
             return;
         }
         let module = "KnowledgeDocuments";
-        this.isLoading = true;
-        this.fts.searchByModules(this.searchterm, [module], 5, "", {sortfield: "name"})
+        this.isDocumentLoading = true;
+        let sortParams = {sortfield: "name", sortdirection: "ASC"};
+
+        this.fts.searchByModules(this.searchterm, [module], 5, "", sortParams)
             .subscribe(res => {
-                this.resultsList = res[module].hits.map(doc => doc = doc._source);
-                this.isLoading = false;
+                this.resultsList = res[module].hits
+                    .map(doc => doc._source)
+                    .sort((a, b) => a.name - b.name);
+                this.isDocumentLoading = false;
             });
     }
 
+    get selectedBook() {
+        return this.selectedbook;
+    }
+
+    set selectedBook(book) {
+        this.selectedbook = book;
+        this.getDocuments(book);
+        if (book) this.favoriteEnable('KnowledgeBooks', book.id);
+    }
+
+    public setActiveModule(module) {
+        this.navigation.setActiveModule(module);
+    }
+
     public setLastViewedBook(none = false) {
-        let value = none ? null : this.selectedBook;
-        this.userPreferences.setPreference("lastViewedBook", value, true, "KnowledgeBooks");
+        let book = !none && this.selectedBook ? this.selectedBook : null;
+        this.userPreferences.setPreference("lastViewedBook", book, true, "KnowledgeBooks");
+    }
+
+    public replaceState(state) {
+        this.location.replaceState(state);
     }
 
     public favoriteEnable(module, id) {
@@ -83,61 +116,131 @@ export class KnowledgeService implements OnDestroy {
     }
 
     public getBooks() {
+        this.isBookLoading = true;
         this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id", "html"], {limit: -1})
             .subscribe((books: any) => {
                 this.books = books && books.list ? books.list : [];
-                let pref = this.userPreferences.unchangedPreferences;
-                if (pref['KnowledgeBooks'] && pref['KnowledgeBooks']['lastViewedBook'] && !this.selectedBook) {
-                    let lastViewedBook = pref['KnowledgeBooks']['lastViewedBook'];
-                    this.selectedBook = lastViewedBook;
-                    this.getDocuments(lastViewedBook);
-                }
+                this.isBookLoading = false;
             });
     }
 
-    public getDocuments(bookId) {
-        this.isLoading = true;
-        this.relatedmodels.id = bookId;
-        this.relatedmodels.items$
+    public getDocuments(book) {
+        if (!book || !book.id) {
+            return;
+        }
+        this.isDocumentLoading = true;
+        this.documentsList = [];
+
+        if (this.metadata.checkModuleAcl("KnowledgeDocuments", "list") === false) return;
+
+        let params = {
+            limit: -1,
+            modulefilter: this.moduleFilter,
+            sort: {sortfield: "name", sortdirection: "ASC"}
+        };
+
+        this.backend.getRequest(`module/KnowledgeBooks/${book.id}/related/knowledgedocuments`, params)
+            .subscribe(
+                (response: any) => {
+                    this.documents = this.moduleFilter.length > 0 ? _.toArray(response) : _.toArray(response).map(item => {
+                        return {
+                            id: item.id,
+                            parent_id: item.parent_id,
+                            parent_sequence: item.parent_sequence,
+                            name: `${item.name} (${item.status})`
+                        };
+                    });
+                    this.isDocumentLoading = false;
+                }
+            );
+    }
+
+    private loadPreferences() {
+        this.userPreferences.loadPreferences('KnowledgeBooks')
             .pipe(take(1))
-            .subscribe((docs: any[]) => {
-                this.documents = docs;
-                this.sortDocuments();
-                this.isLoading = false;
+            .subscribe(prefs => {
+                if (prefs && prefs.lastViewedBook && !this.selectedBook) {
+                    this.selectedBook = prefs.lastViewedBook;
+                }
             });
-        this.relatedmodels.getData();
     }
 
-    public sortDocuments() {
-        this.documents.sort((a, b) => {
-            if (+a.parent_sequence == +b.parent_sequence) {
-                return a.name - b.name;
-            } else {
-                return a.parent_sequence - b.parent_sequence;
+    private saveSubscriber() {
+        let subscriber = this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype == "model.save") {
+                switch (msg.messagedata.module) {
+                    case "KnowledgeBooks":
+                        let book = msg.messagedata.data;
+                        this.books = [...this.books, book];
+                        this.selectedBook = book;
+                        break;
+                    case "KnowledgeDocuments":
+                        let found = this.documents.some(item => {
+                            if (item.id == msg.messagedata.id) {
+                                item.parent_id = msg.messagedata.data.parent_id;
+                                item.parent_sequence = msg.messagedata.data.parent_sequence;
+                                item.name = this.moduleFilter.length > 0 ? item.name : `${msg.messagedata.data.name} (${msg.messagedata.data.status})`;
+                                return true;
+                            }
+                        });
+
+                        if (!found) {
+                            let newItem = {
+                                id: msg.messagedata.data.id,
+                                parent_id: msg.messagedata.data.parent_id,
+                                parent_sequence: msg.messagedata.data.parent_sequence,
+                                name: this.moduleFilter.length > 0 ? msg.messagedata.data.name : `${msg.messagedata.data.name} (${msg.messagedata.data.status})`
+                            };
+                            this.documents = [...this.documentsList, newItem];
+                        } else {
+                            this.documents = this.documentsList.slice();
+                        }
+                        break;
+                }
+            }
+
+            if (msg.messagetype == "model.delete" && msg.messagedata.module == "KnowledgeDocuments") {
+                this.documents = this.documents.filter(item => item.id != msg.messagedata.id);
+                this.selectedDoc = "";
+                this.replaceState("/module/KnowledgeDocuments");
             }
         });
-        return this.documents.sort(function (a, b) {
-            if (+a.parent_sequence == +b.parent_sequence) {
-                var nameA = a.name.toUpperCase();
-                var nameB = b.name.toUpperCase();
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
+        this.subscriptions.add(subscriber);
+    }
+
+    private sortDocuments(docs) {
+        return docs.sort((a, b) => {
+            if (+a.parent_sequence != +b.parent_sequence) {
+                return +a.parent_sequence > +b.parent_sequence ? 1 : -1;
             } else {
-                if (+a.parent_sequence < +b.parent_sequence) {
-                    return -1;
-                }
-                if (+a.parent_sequence > +b.parent_sequence) {
-                    return 1;
-                }
+                return a.name > b.name ? 1 : -1;
             }
         });
     }
 
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
+
+
+    private routerSubscriber() {
+        let subscriber = this.activatedRoute.params.subscribe(params => {
+            if (!params.module) return;
+            if (params.id) {
+                this.backend.get(params.module, params.id).subscribe((item: any) => {
+                    if (!item) return;
+                    switch (params.module) {
+                        case 'KnowledgeBooks':
+                            this.selectedBook = item;
+                            break;
+                        case 'KnowledgeDocuments':
+                            this.selectedDoc = item.id;
+                            this.selectedBook = {
+                                id: item.knowledgebook_id,
+                                name: item.knowledgebook_name
+                            };
+                            break;
+                    }
+                });
+            }
+        });
+        this.subscriptions.add(subscriber);
     }
 }

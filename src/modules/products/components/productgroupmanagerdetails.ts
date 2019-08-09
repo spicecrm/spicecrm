@@ -9,7 +9,7 @@ import {metadata} from "../../../services/metadata.service";
     providers: [model]
 })
 export class ProductGroupManagerDetails implements OnChanges, OnDestroy {
-    @ViewChild("detailscontainer", {read: ViewContainerRef}) private detailsContainer: ViewContainerRef;
+    @ViewChild("detailscontainer", {read: ViewContainerRef, static: true}) private detailsContainer: ViewContainerRef;
 
     @Input('groupid') private groupId: string;
     private renderedComponents: any[] = [];

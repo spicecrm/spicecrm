@@ -4,6 +4,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {KnowledgeService} from "../services/knowledge.service";
@@ -13,7 +14,7 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: "Knowledge-document-related-list",
-    templateUrl: "./src/modules/knowledge/templates/Knowledgedocumentrelatedlist.html",
+    templateUrl: "./src/modules/knowledge/templates/knowledgedocumentrelatedlist.html",
     providers: [relatedmodels]
 })
 export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
@@ -28,6 +29,7 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
         private location: Location,
         private router: Router,
         private model: model,
+        private modal: modal,
     ) {
         this.relatedmodels.module = "KnowledgeDocuments";
         this.relatedmodels.relatedModule = "KnowledgeDocuments";
@@ -41,7 +43,11 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
     }
 
     get panelTitle() {
-        return this.componentconfig.title ? this.language.getLabel(this.componentconfig.title) : "Related Documents";
+        return this.componentconfig.title ? this.componentconfig.title : "Related Documents";
+    }
+
+    get canEdit() {
+        return this.componentconfig.editable == true && this.model.checkAccess('edit');
     }
 
     public ngOnInit() {
@@ -59,8 +65,18 @@ export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
+    public openSelectModal() {
+        if(!this.canEdit) {return;}
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = this.model.module;
+            selectModal.instance.multiselect = true;
+            selectModal.instance.selectedItems
+                .subscribe(items => this.relatedmodels.addItems(items));
+        });
+    }
+
     private navigateTo(id) {
-        this.knowledgeService.selectedId = id;
+        this.knowledgeService.selectedDoc = id;
         this.location.replaceState("/module/KnowledgeDocuments/" + id);
     }
 

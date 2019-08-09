@@ -49,7 +49,7 @@ export class ObjectVerticalTabContainerItemHeader {
     providers: [fielderrorgrouping]
 })
 export class ObjectVerticalTabContainerItem implements AfterViewInit, OnDestroy {
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
 
     componentRefs: any = [];
     initialized: boolean = false;
@@ -108,7 +108,7 @@ export class ObjectVerticalTabContainerItem implements AfterViewInit, OnDestroy 
 })
 export class ObjectVerticalTabContainer implements OnInit {
 
-    @ViewChild('tabscontainer', {read: ViewContainerRef}) tabscontainer: ViewContainerRef;
+    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) tabscontainer: ViewContainerRef;
     activeTab: number = 0
     activatedTabs: Array<number> = [0];
     componentconfig: any = [];

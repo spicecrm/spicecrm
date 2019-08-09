@@ -13,7 +13,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
     templateUrl: './src/modules/mailboxes/templates/mailboxmanager.html',
 })
 export class MailboxManager {
-    @ViewChild('mailboxdetail', {read: ViewContainerRef}) private mailboxdetail: ViewContainerRef;
+    @ViewChild('mailboxdetail', {read: ViewContainerRef, static: true}) private mailboxdetail: ViewContainerRef;
 
     @Input() private email: any = {};
 
@@ -33,4 +33,10 @@ export class MailboxManager {
         this.navigation.setActiveModule('Mailboxes');
     }
 
+    get isEmailMailbox() {
+        if (this.mailboxesEmails.activeMailBox && this.mailboxesEmails.activeMailBox.type=='email') {
+            return true;
+        }
+        return false;
+    }
 }
