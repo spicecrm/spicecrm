@@ -88,12 +88,7 @@ export class OutlookLoginPane implements OnInit {
             this.password = this.outlookConfiguration.password;
             this.login();
         } else {
-            this.promptUser = true;
-
-            this.selectedsite = this.cookie.getValue('spiceuibackend');
-            if (this.selectedsite) {
-                this.configuration.setSiteID(this.selectedsite);
-            }
+            this.goToSettings();
         }
 
         // check the last selected language from the Cookie
@@ -112,7 +107,7 @@ export class OutlookLoginPane implements OnInit {
      * triggers the actual login itself
      */
     private login() {
-        console.log('Loggin in from Outlook add-in');
+        console.log('Logging in from Outlook add-in');
         if (this.username.length > 0 && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
@@ -124,8 +119,18 @@ export class OutlookLoginPane implements OnInit {
                 },
                 (err) => {
                     console.log(err);
+                    this.goToSettings();
                 }
             );
+        }
+    }
+
+    private goToSettings() {
+        this.promptUser = true;
+
+        this.selectedsite = this.cookie.getValue('spiceuibackend');
+        if (this.selectedsite) {
+            this.configuration.setSiteID(this.selectedsite);
         }
     }
 }
