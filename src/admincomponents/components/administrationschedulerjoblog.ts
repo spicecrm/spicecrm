@@ -50,6 +50,10 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
 
     public getData() {
         let params = {
+            sort: {
+                sortfield: 'execute_time',
+                sortdirection: 'DESC'
+            },
             start: 0,
             limit: 10
         };
@@ -58,15 +62,16 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
             .subscribe(
                 (response: any) => {
                     this.schedulerLogs = _.values(response);
-                    this.schedulerLogs.sort((a, b) => {
-                        return a.execute_time > b.execute_time ? -1 : 0;
-                    });
                     this.isLoading = false;
                 }, err => this.isLoading = false);
     }
 
     public getMoreData() {
         let params = {
+            sort: {
+                sortfield: 'execute_time',
+                sortdirection: 'DESC'
+            },
             start: this.schedulerLogs.length,
             limit: 10
         };
@@ -75,9 +80,6 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
             .subscribe(
                 (response: any) => {
                     this.schedulerLogs = [...this.schedulerLogs, ..._.values(response)];
-                    this.schedulerLogs.sort((a, b) => {
-                        return a.execute_time > b.execute_time ? -1 : 0;
-                    });
                     this.isLoading = false;
                 }, err => this.isLoading = false);
     }

@@ -29,11 +29,16 @@ import /*embed*/ {ObjectListViewHeaderListSelector} from './components/objectlis
 import /*embed*/ {ObjectList} from './components/objectlist';
 import /*embed*/ {ObjectListViewContainer} from './components/objectlistviewcontainer';
 import /*embed*/ {ObjectListView} from './components/objectlistview';
+import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
+import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
+import /*embed*/ {ObjectListHeaderActionsSelectAllButton} from "./components/objectlistheaderactionsselectallbutton";
+import /*embed*/ {ObjectListHeaderActionsUnselectAllButton} from "./components/objectlistheaderactionsunselectallbutton";
+
 import /*embed*/ {ObjectListItem} from './components/objectlistitem';
 import /*embed*/ {ObjectListItemField} from './components/objectlistitemfield';
 import /*embed*/ {ObjectActionMenu} from './components/objectactionmenu';
@@ -43,11 +48,12 @@ import /*embed*/ {ObjectActionsetMenuContainerEdit} from './components/objectact
 import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objectactionsetmenucontainerdelete';
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
-import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
-import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
+import /*embed*/ {ObjectActionOpenButton} from './components/objectactionopenbutton';
+import /*embed*/ {ObjectActionCancelButton} from './components/objectactioncancelbutton';
+import /*embed*/ {ObjectActionRemoveButton} from "./components/objectactionremovebutton";
 import /*embed*/ {ObjectActionAuditlogModal} from './components/objectactionauditlogmodal';
 import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutton';
 import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactionduplicatebutton';
@@ -214,6 +220,7 @@ import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 
+
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
  */
@@ -266,6 +273,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectListHeaderActionsExportCSVButton,
         ObjectListHeaderActionsExportTargetlistButton,
         ObjectListHeaderActionsExportTargetlistModal,
+        ObjectListHeaderActionsSelectAllButton,
+        ObjectListHeaderActionsUnselectAllButton,
         ObjectListItem,
         ObjectListItemField,
         ObjectActionMenu,
@@ -298,6 +307,9 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionSaveButton,
         ObjectActionDeleteButton,
         ObjectActionAuditlogButton,
+        ObjectActionOpenButton,
+        ObjectActionCancelButton,
+        ObjectActionRemoveButton,
         ObjectActionAuditlogModal,
         ObjectGDPRModal,
         ObjectActionNewButton,
