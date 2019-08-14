@@ -2,16 +2,17 @@
  * @module ObjectComponents
  */
 
+/**
+ * @ignore
+ */
+declare var moment: any;
 
-import {
-    Component, Injector
-} from '@angular/core';
+import {Component, OnInit, Injector} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
-import {modal} from '../../services/modal.service';
-import {backend} from '../../services/backend.service';
+import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
+import {modal} from '../../services/modal.service';
 
 /**
  * renders in the list header action menu and offers the user the option to export the list to a targetlist
@@ -22,13 +23,24 @@ import {modellist} from '../../services/modellist.service';
 })
 export class ObjectListHeaderActionsExportTargetlistButton {
 
-    constructor(private injector: Injector, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private modal: modal, private backend: backend) {
-    }
+    /**
+     * only "hidden" is used
+     */
+    public disabled: boolean = false;
+
+    constructor(
+        private language: language,
+        private metadata: metadata,
+        private model: model,
+        private modellist: modellist,
+        private modal: modal,
+        private injector: Injector
+    ) {}
 
     /**
      * cheks the acl rights for the user to export
      */
-    get exportdisabled() {
+    get hidden() {
         // check if the user can create a prospetlist
         if (!this.metadata.checkModuleAcl('ProspectLists', 'create')) return true;
 
@@ -56,10 +68,7 @@ export class ObjectListHeaderActionsExportTargetlistButton {
         return selectedCount ? selectedCount : this.modellist.listData.totalcount;
     }
 
-    /**
-     * opens a modal to enter the targetlist name
-     */
-    private export() {
+    public execute() {
         this.modal.openModal('ObjectListHeaderActionsExportTargetlistModal', true, this.injector);
     }
 }

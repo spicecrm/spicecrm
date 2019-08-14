@@ -578,6 +578,14 @@ field-generic-display .slds-button--icon {
     color: #eeeeee;
 }
 
+.spice-hover-button.slds-button--icon {
+    color: #eeeeee;
+}
+
+.spice-hover-button.slds-button--icon:hover {
+    color: #5B5B5B;
+}
+
 /*
 .slds-button:not([disabled]):focus, .slds-button:not([disabled]):hover {
     color: #CA1B21;
