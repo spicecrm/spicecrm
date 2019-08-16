@@ -45,7 +45,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
-    private resizeHandler: any = {};
     private ownerEvents: any[] = [];
     private otherEvents: any[] = [];
     private userEvents: any[] = [];
@@ -97,9 +96,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.cdr.detach();
-        if (this.resizeHandler) {
-            this.resizeHandler();
-        }
     }
 
     private trackByFn(index, item) {
@@ -117,7 +113,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private endDate() {
         return new moment(this.startDate()).endOf('month');
     }
-
     private getSheetDays(): any[] {
         let sheetDays = [];
         let i = 0;
