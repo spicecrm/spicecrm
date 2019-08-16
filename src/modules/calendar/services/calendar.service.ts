@@ -10,22 +10,21 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
-import {take} from "rxjs/operators";
+import {map, take} from "rxjs/operators";
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 @Injectable()
 export class calendar implements OnDestroy {
-
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
@@ -136,14 +135,29 @@ export class calendar implements OnDestroy {
         return noRecords || dateChanged;
     }
 
-    public loadEvents(start, end, calendar = this.owner, isOther = false) {
-        if (this.doReload(start, end, calendar)) {
+    public loadUsersEvents(startDate, endDate) {
+        let usersObject = _.object(this.usersCalendars.map(c => c.id), this.usersCalendars);
+        return this.loadEvents(startDate, endDate, this.owner, false, this.usersCalendars.map(c => c.id))
+            .pipe(
+                map((events: any) => {
+                    return events
+                        .filter(e => usersObject[e.data.assigned_user_id] && usersObject[e.data.assigned_user_id].visible)
+                        .map(event => {
+                            event.color = usersObject[event.data.assigned_user_id].color;
+                            return event;
+                        });
+                })
+            );
+    }
+
+    public loadEvents(start, end, calendar = this.owner, isOther = false, users = []) {
+        if (this.doReload(start, end, users.length > 0 ? 'users' : calendar)) {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {start: start.format(format), end: end.format(format)};
-            let endPoint = !isOther ? 'calendar/' : 'calendar/other/';
-            this.currentEnd[calendar] = end;
-            this.currentStart[calendar] = start;
+            let params = {start: start.format(format), end: end.format(format), users};
+            let endPoint = isOther ? 'calendar/other/' : users.length > 0 ? 'calendar/users/' : 'calendar/';
+            this.currentEnd[users.length > 0 ? 'users' : calendar] = end;
+            this.currentStart[users.length > 0 ? 'users' : calendar] = start;
 
             this.backend.getRequest(endPoint + calendar, params)
                 .subscribe(events => {
@@ -188,7 +202,7 @@ export class calendar implements OnDestroy {
             return responseSubject.asObservable();
         } else {
             let filteredEntries: any[] = [];
-            for (let event of this.calendars[calendar]) {
+            for (let event of this.calendars[users.length > 0 ? 'users' : calendar]) {
                 if (event.start < end && event.end > start) {
                     filteredEntries.push(event);
                 }
