@@ -23,6 +23,11 @@ import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttilecl
 
 import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
 
+import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
+import /*embed*/ {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
+import /*embed*/ {ActivityCloseModal} from "./components/activityclosemodal";
+import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
+
 
 @NgModule({
     imports: [
@@ -41,7 +46,11 @@ import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
         TasksManagerTask,
         TasksManagerTaskDetails,
         TasksAssitantTileClose,
-        EmailsPopoverBody
+        EmailsPopoverBody,
+        ActionActivityCloseButton,
+        ActionActivityCloseCreateButton,
+        ActivityCloseModal,
+        ActivityCloseCreateModal
     ]
 })
 export class ModuleActivities {
