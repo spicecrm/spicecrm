@@ -894,6 +894,9 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 }
 
 .slds-button span {
+    display: inline-block;
+}
+.slds-button span::first-letter {
     text-transform: capitalize;
 }
 
