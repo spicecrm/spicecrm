@@ -69,6 +69,8 @@ export class DashboardGenericDashlet implements OnInit {
             if (this.dashletconfig.modulefilter) {
                 params.modulefilter = this.dashletconfig.modulefilter;
             }
+            params.sortfield = this.dashletconfig.sortfield;
+            params.sortdirection = this.dashletconfig.sortdirection ? this.dashletconfig.sortdirection : 'ASC';
         }
         params.limit = this.loadLimit;
 

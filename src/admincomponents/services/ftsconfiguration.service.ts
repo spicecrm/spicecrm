@@ -14,10 +14,10 @@ import {backend} from '../../services/backend.service';
 
 @Injectable()
 export class ftsconfiguration {
-    module: string = '';
-    moduleFtsFields: Array<any> = [];
-    moduleFtsSettings: any = {};
-    indexing: boolean = false;
+    public module: string = '';
+    public moduleFtsFields: any = [];
+    public moduleFtsSettings: any = {};
+    public indexing: boolean = false;
 
     constructor(
         private backend: backend,
@@ -26,27 +26,27 @@ export class ftsconfiguration {
         private toast: toast
     ) {}
 
-    setModule(module) {
+    public setModule(module) {
         this.module = module;
         this.getModuleFtsFields();
         this.getModuleSettings();
     }
 
-    getModuleFtsFields() {
+    public getModuleFtsFields() {
         this.moduleFtsFields = [];
         this.backend.getRequest('ftsmanager/' + this.module + '/fields').subscribe(fields => {
             this.moduleFtsFields = fields;
         });
     }
 
-    getModuleSettings() {
+    public getModuleSettings() {
         this.moduleFtsFields = [];
         this.backend.getRequest('ftsmanager/' + this.module + '/settings').subscribe(settings => {
             this.moduleFtsSettings = settings;
         });
     }
 
-    getFieldDetails(id) {
+    public getFieldDetails(id) {
         let fieldDetails: any = {};
 
         this.moduleFtsFields.some(field => {
@@ -59,20 +59,21 @@ export class ftsconfiguration {
         return fieldDetails;
     }
 
-    save() {
+    public save() {
         let postData = {
             fields: this.moduleFtsFields,
             settings: this.moduleFtsSettings
         };
         this.backend.postRequest('ftsmanager/' + this.module, {}, postData).subscribe(response => {
-            if (response)
+            if (response) {
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
-            else
+            } else {
                 this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+            }
         });
     }
 
-    searchPath(path) {
+    public searchPath(path) {
         let pathFound = false;
         this.moduleFtsFields.some(field => {
             if (field.path === path) {
@@ -83,7 +84,7 @@ export class ftsconfiguration {
         return pathFound;
     }
 
-    putMapping() {
+    public putMapping() {
         this.indexing = true;
         this.backend.deleteRequest('ftsmanager/' + this.module).subscribe(result => {
             this.backend.postRequest('ftsmanager/' + this.module + '/map').subscribe(
@@ -91,10 +92,10 @@ export class ftsconfiguration {
                     this.indexing = false;
                 }
             );
-        })
+        });
     }
 
-    indexModule() {
+    public indexModule() {
         this.indexing = true;
         this.backend.postRequest('ftsmanager/' + this.module + '/index').subscribe(
             result => {
@@ -103,10 +104,25 @@ export class ftsconfiguration {
             error => {
                 this.indexing = false;
             }
-        )
+        );
     }
 
-    initialize() {
+    /**
+     * CR1000257
+     */
+    public indexModuleBulk() {
+        this.indexing = true;
+        this.backend.postRequest('ftsmanager/' + this.module + '/index', { bulk: true },).subscribe(
+            result => {
+                this.indexing = false;
+            },
+            error => {
+                this.indexing = false;
+            }
+        );
+    }
+
+    public initialize() {
         this.indexing = true;
         this.backend.postRequest('ftsmanager/core/initialize').subscribe(
             result => {
@@ -115,11 +131,11 @@ export class ftsconfiguration {
             error => {
                 this.indexing = false;
             }
-        )
+        );
     }
 
 
-    resetModule() {
+    public resetModule() {
         this.indexing = true;
         this.backend.postRequest('ftsmanager/' + this.module + '/resetindex').subscribe(
             result => {
@@ -128,7 +144,7 @@ export class ftsconfiguration {
             error => {
                 this.indexing = false;
             }
-        )
+        );
     }
 
 }
