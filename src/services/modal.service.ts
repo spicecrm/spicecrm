@@ -186,8 +186,8 @@ export class modal {
      * @param defaultvalue
      * @param theme
      */
-    public input(text: string, headertext: string = null, defaultvalue: string = null, theme: string = null): Observable<any> {
-        return this.prompt('input', text, headertext, defaultvalue, theme);
+    public input(text: string, headertext: string = null, theme: string = null, defaultvalue: string = null ): Observable<any> {
+        return this.prompt('input', text, headertext, theme, defaultvalue );
     }
 
     /**
