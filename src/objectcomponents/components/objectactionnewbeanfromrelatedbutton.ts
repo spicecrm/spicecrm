@@ -1,14 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit} from "@angular/core";
+import {Component, Inject, OnInit} from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
 
 @Component({
     selector: "object-action-new-bean-from-related-button",
-    templateUrl: "./src/objectcomponents/templates/objectactionnewbeanfromrelatedbutton.html"
+    templateUrl: "./src/objectcomponents/templates/objectactionnewbeanfromrelatedbutton.html",
+    providers: [{provide: 'modelnew', useClass: model}]
 })
 export class ObjectActionNewBeanFromRelatedButton implements OnInit {
 
@@ -16,7 +17,7 @@ export class ObjectActionNewBeanFromRelatedButton implements OnInit {
     public disabled: boolean = false;
     public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(private language: language, private metadata: metadata, private model: model, private modelnew: model) {
 
     }
 
@@ -32,10 +33,15 @@ export class ObjectActionNewBeanFromRelatedButton implements OnInit {
 
     public execute() {
 
+    this.modelnew.module = this.actionconfig.module;
+    this.modelnew.addModel("", this.model);
 
 
-        console.log("this.model_", this.model);
-        console.log("this.actionconfig.module_", this.actionconfig.module);
+    console.log("this.model_", this.model);
+    console.log("this.actionconfig.module", this.actionconfig.module);
+    console.log("parent", parent);
+
+
 
         // if (!this.parent.data.id) {
         //     this.parent.data.id = this.parent.id;
@@ -51,5 +57,4 @@ export class ObjectActionNewBeanFromRelatedButton implements OnInit {
         //     }
         // });
     }
-
 }

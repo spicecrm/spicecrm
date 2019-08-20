@@ -1,4 +1,4 @@
-/**
+ /**
  * @module ModuleKnowledge
  */
 import {AfterViewInit, Component, ViewChild, ViewContainerRef} from "@angular/core";
