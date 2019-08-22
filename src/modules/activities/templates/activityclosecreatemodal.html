@@ -1,0 +1,34 @@
+<system-modal size="x-small">
+    <system-modal-header (close)="closeModal()">
+        {{language.getLabel('LBL_CLOSE_AND_CREATE')}}
+    </system-modal-header>
+    <system-modal-content margin="none" #modalContent viewprovider>
+
+        <div class="slds-m-left_x-small slds-m-vertical_large">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-radio slds-m-vertical_small" *ngFor="let o of newBeanModules">
+                        <input type="radio" [id]="fieldid + o.singular" name="options" [value]="o.module" [(ngModel)]="value"/>
+                        <label class="slds-radio__label" [attr.for]="fieldid + o.singular">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label">{{language.getLabel(o.singular_label)}}</span>
+                        </label>
+                    </div>
+                    <field-messages [fieldname]="fieldname"></field-messages>
+                </div>
+            </div>
+        </div>
+
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div class="slds-col">
+                <!--<object-record-messages-badge></object-record-messages-badge>-->
+            </div>
+            <div class="slds-col">
+                <button class="slds-button slds-button--brand" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+                <button class="slds-button slds-button--brand" (click)="create()">{{language.getLabel('LBL_CREATE')}}</button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>
