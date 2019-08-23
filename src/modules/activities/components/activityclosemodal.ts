@@ -30,7 +30,7 @@ export class ActivityCloseModal implements OnInit {
     /**
      * a reference to the modal content to have a reference to scrolling
      */
-    @ViewChild('modalContent', {read: ViewContainerRef}) private modalContent: ViewContainerRef;
+    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) private modalContent: ViewContainerRef;
     /**
      * the componentconfig that gets passed in when the modal is created
      */
