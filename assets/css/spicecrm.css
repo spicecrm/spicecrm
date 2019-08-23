@@ -1,7 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web');
 
+/*
 body, .x-body {
     font-family: 'Titillium Web', sans-serif;
+}
+*/
+
+html {
+    font-family: 'Titillium Web', sans-serif;
+    background: #fafaf9;
 }
 
 /* hide spin buttons in number fields */
