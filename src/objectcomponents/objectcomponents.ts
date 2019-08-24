@@ -108,7 +108,9 @@ import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderde
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
 import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
-import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
+import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
+import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
+import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
 import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';

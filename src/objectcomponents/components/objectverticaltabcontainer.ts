@@ -2,93 +2,17 @@
  * @module ObjectComponents
  */
 import {
-    AfterViewInit,
     Component,
-    EventEmitter,
-    Input,
-    OnDestroy,
     OnInit,
-    Output,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
-
-@Component({
-    selector: 'object-vertical-tab-container-item-header',
-    templateUrl: './src/objectcomponents/templates/objectverticaltabcontaineritemheader.html'
-})
-export class ObjectVerticalTabContainerItemHeader {
-
-    @Input() tab: any = [];
-
-    constructor(private metadata: metadata, private language: language) {
-
-    }
-
-    get displayName() {
-        return this.tab.name && this.tab.name != '';
-    }
-
-    getTabLabel(label) {
-        if (label.indexOf(':') > 0) {
-            let arr = label.split(':');
-            return this.language.getLabel(arr[0], arr[1])
-        } else
-            return this.language.getLabel(label)
-    }
-}
-
-
-@Component({
-    selector: 'object-vertical-tab-container-item',
-    templateUrl: './src/objectcomponents/templates/objectverticaltabcontaineritem.html',
-    providers: [fielderrorgrouping]
-})
-export class ObjectVerticalTabContainerItem implements AfterViewInit, OnDestroy {
-    @ViewChild('container', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
-
-    componentRefs: any = [];
-    initialized: boolean = false;
-    @Input() componentset: any = [];
-    @Output() taberrors = new EventEmitter();
-
-    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping ) {
-    }
-
-    ngOnInit() {
-        this.fielderrorgroup.change$.subscribe( (nr) => {
-            this.taberrors.emit( nr );
-        });
-    }
-
-    ngAfterViewInit() {
-        this.initialized = true;
-        this.buildContainer();
-
-    }
-
-    ngOnDestroy() {
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-        this.componentRefs = [];
-    }
-
-    buildContainer() {
-        for (let component of this.metadata.getComponentSetObjects(this.componentset)) {
-            this.metadata.addComponent(component.component, this.container).subscribe(componentRef => {
-                this.componentRefs.push(componentRef);
-                componentRef.instance['componentconfig'] = component.componentconfig;
-            })
-        }
-    }
-
-}
-
+/**
+ * renders a vertical tab container
+ */
 @Component({
     selector: 'object-vertical-tab-container',
     templateUrl: './src/objectcomponents/templates/objectverticaltabcontainer.html',
@@ -103,20 +27,39 @@ export class ObjectVerticalTabContainerItem implements AfterViewInit, OnDestroy 
         .slds-is-active a {
             text-decoration: none !important
         }`,
-            '.slds-badge { font-weight: bold; background-color: #c00; color: #fff; padding: .125rem .4rem; }'
+        '.slds-badge { font-weight: bold; background-color: #c00; color: #fff; padding: .125rem .4rem; }'
     ]
 })
 export class ObjectVerticalTabContainer implements OnInit {
 
-    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) tabscontainer: ViewContainerRef;
-    activeTab: number = 0
-    activatedTabs: Array<number> = [0];
-    componentconfig: any = [];
+    /**
+     * the reference to the container
+     */
+    @ViewChild('tabscontainer', {read: ViewContainerRef, static: true}) private tabscontainer: ViewContainerRef;
+
+    /**
+     * the number of the active tab
+     */
+    private activeTab: number = 0
+
+    /**
+     * holds which tabs have been activated already. Since tabs are only rendered when selected
+     * for performance reasons this is the array to hold which have been rendered already
+     */
+    private activatedTabs: number[] = [0];
+
+    /**
+     * the component config
+     */
+    private componentconfig: any = [];
 
     constructor(private language: language, private metadata: metadata) {
     }
 
-    ngOnInit() {
+    /**
+     * loads the componentconfig if not passed in
+     */
+    public ngOnInit() {
         if (this.componentconfig && this.componentconfig.componentset) {
             let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
             this.componentconfig = [];
@@ -126,7 +69,10 @@ export class ObjectVerticalTabContainer implements OnInit {
         }
     }
 
-    getTabs() {
+    /**
+     * a simple getter to see if the tabs are defined
+     */
+    private getTabs() {
         try {
             return this.componentconfig ? this.componentconfig : [];
         } catch (e) {
@@ -134,47 +80,67 @@ export class ObjectVerticalTabContainer implements OnInit {
         }
     }
 
-    getTabLabel(label) {
-        if (label.indexOf(':') > 0) {
-            let arr = label.split(':');
-            return this.language.getLabel(arr[0], arr[1])
-        } else
-            return this.language.getLabel(label)
-    }
-
-    setActiveTab(index) {
+    /**
+     * sets the index passed in as active tab
+     *
+     * @param index
+     */
+    private setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
     }
 
-    checkRenderTab(tabindex) {
+    /**
+     * checks if the tab with the given index is rendered already
+     *
+     * @param tabindex
+     */
+    private checkRenderTab(tabindex) {
         return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.componentconfig && this.componentconfig[tabindex].forcerender);
     }
 
-    getDisplay(tabindex) {
+    /**
+     * gets the style display property for the tab
+     * @param tabindex
+     */
+    private getDisplay(tabindex) {
         let rect = this.tabscontainer.element.nativeElement.getBoundingClientRect();
 
-        if (tabindex !== this.activeTab)
+        if (tabindex !== this.activeTab) {
             return {
                 display: 'none'
             };
-        return {
-            'height': 'calc(99.9vh - ' + (rect.top) + 'px)',
-            'overflow': 'auto',
         }
 
+        return {
+            height: 'calc(99.9vh - ' + (rect.top) + 'px)',
+            overflow: 'auto',
+        };
     }
 
-    getTabsStyle() {
+    /**
+     * retruns a specific sylte for the tab header
+     *
+     * ToDo: check if we still need this
+     */
+    private getTabsStyle() {
         let rect = this.tabscontainer.element.nativeElement.getBoundingClientRect();
         return {
             'height': 'calc(99.9vh - ' + (rect.top) + 'px)',
             'overflow': 'auto',
             'overflow-x': 'hidden'
-        }
+        };
     }
 
-    showErrorsOnTab( tabindex, nrErrors ) {
+    /**
+     * passes in if there are errors on the tab
+     *
+     * ToDo: check if we still need this
+     *
+     * @param tabindex
+     * @param nrErrors
+     */
+    private showErrorsOnTab(tabindex, nrErrors) {
         this.componentconfig[tabindex].hasErrors = nrErrors;
     }
 
