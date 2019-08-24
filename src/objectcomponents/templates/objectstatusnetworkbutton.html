@@ -9,7 +9,7 @@
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
             <ul class="slds-dropdown__list" role="menu">
                 <li class="slds-dropdown__item" *ngFor="let secondaryItem of secondaryItems" role="presentation" (click)="closeDropdown()">
-                    <a href="javascript:void(0);" role="menuitem">
+                    <a class="slds-truncate" href="javascript:void(0);" role="menuitem">
                         <object-status-network-button-item [item]="secondaryItem" (status)="setStatus($event)"></object-status-network-button-item>
                     </a>
                 </li>
