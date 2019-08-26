@@ -596,4 +596,36 @@ export class language {
             short: tshort
         };
     }
+
+    /**
+     * Compares two strings, case-insensitive, using the current language selected by the user
+     *
+     * @param a The first string.
+     * @param b The second string.
+     */
+    public compareStrings( a: string, b: string ): number {
+        return a.localeCompare( b, this._currentlanguage.slice( 0, 2 ));
+    }
+
+    /**
+     * Sorts an array of strings.
+     * It compares case-insensitive, using the current language selected by the user.
+     *
+     * @param array The array of strings to sort.
+     */
+    public sortArray( array: string[] ): void {
+        array.sort( ( a, b ) => this.compareStrings( a, b ));
+    }
+
+    /**
+     * Sorts an array of objects, by the given property.
+     * It compares case-insensitive, using the current language selected by the user.
+     *
+     * @param array The array of objects to sort.
+     * @param property The property to be used for sorting.
+     */
+    public sortObjects( array: object[], property ): void {
+        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ));
+    }
+
 }
