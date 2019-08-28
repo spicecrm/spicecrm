@@ -58,6 +58,7 @@ import /*embed*/ {ObjectActionAuditlogModal} from './components/objectactionaudi
 import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutton';
 import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactionduplicatebutton';
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
+import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
@@ -108,7 +109,9 @@ import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderde
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
 import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
-import /*embed*/ {ObjectVerticalTabContainerItem, ObjectVerticalTabContainer, ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontainer';
+import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
+import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
+import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
 import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
@@ -305,6 +308,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionContainerItem,
         ObjectActionEditButton,
         ObjectActionSaveButton,
+        ObjectActionSaveRelatedButton,
         ObjectActionDeleteButton,
         ObjectActionAuditlogButton,
         ObjectActionOpenButton,
