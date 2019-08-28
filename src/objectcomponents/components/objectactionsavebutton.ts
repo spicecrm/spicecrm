@@ -35,6 +35,8 @@ export class ObjectActionSaveButton {
             this.saving = true;
             this.model.save().subscribe(saved => {
                 this.actionemitter.emit(true);
+                this.model.endEdit();
+                this.view.setViewMode();
             });
         }
     }
