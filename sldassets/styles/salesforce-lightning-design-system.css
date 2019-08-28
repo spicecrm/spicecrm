@@ -1,45 +1,44 @@
-/*! Lightning Design System 2.8.3 */
+/*! Lightning Design System 2.9.4 */
 @charset "UTF-8";
-/*!
- * Copyright (c) 2015-present, Salesforce.com, Inc. - All rights reserved.
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- * - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- * - Neither the name of the Salesforce.com nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+/* stylelint-disable declaration-no-important */
 @font-face {
   font-family: 'Salesforce Sans';
   src: url("../fonts/webfonts/SalesforceSans-Light.woff2") format("woff2"), url("../fonts/webfonts/SalesforceSans-Light.woff") format("woff");
-  font-weight: 300; }
+  font-weight: 300;
+  font-display: swap; }
 
 @font-face {
   font-family: 'Salesforce Sans';
   src: url("../fonts/webfonts/SalesforceSans-LightItalic.woff2") format("woff2"), url("../fonts/webfonts/SalesforceSans-LightItalic.woff") format("woff");
   font-style: italic;
-  font-weight: 300; }
+  font-weight: 300;
+  font-display: swap; }
 
 @font-face {
   font-family: 'Salesforce Sans';
   src: url("../fonts/webfonts/SalesforceSans-Regular.woff2") format("woff2"), url("../fonts/webfonts/SalesforceSans-Regular.woff") format("woff");
-  font-weight: 400; }
+  font-weight: 400;
+  font-display: swap; }
 
 @font-face {
   font-family: 'Salesforce Sans';
   src: url("../fonts/webfonts/SalesforceSans-Italic.woff2") format("woff2"), url("../fonts/webfonts/SalesforceSans-Italic.woff") format("woff");
   font-style: italic;
-  font-weight: 400; }
+  font-weight: 400;
+  font-display: swap; }
 
 @font-face {
   font-family: 'Salesforce Sans';
   src: url("../fonts/webfonts/SalesforceSans-Bold.woff2") format("woff2"), url("../fonts/webfonts/SalesforceSans-Bold.woff") format("woff");
-  font-weight: 700; }
+  font-weight: 700;
+  font-display: swap; }
 
 @font-face {
   font-family: 'Salesforce Sans';
   src: url("../fonts/webfonts/SalesforceSans-BoldItalic.woff2") format("woff2"), url("../fonts/webfonts/SalesforceSans-BoldItalic.woff") format("woff");
   font-style: italic;
-  font-weight: 700; }
+  font-weight: 700;
+  font-display: swap; }
 
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html {
@@ -250,13 +249,17 @@ html {
   font-family: "Salesforce Sans", Arial, sans-serif;
   font-size: 100%;
   line-height: 1.5;
-  background: #fafaf9;
+  background: #b0c4df;
   color: #080707;
   -webkit-tap-highlight-color: transparent; }
 
 body {
   font-size: 0.8125rem;
   background: transparent; }
+
+@media (pointer: coarse) and (hover: none) {
+  body {
+    font-size: 1rem; } }
 
 h1,
 h2,
@@ -445,8 +448,8 @@ img {
 .slds-timeline__media,
 .slds-media_timeline,
 .slds-media--timeline {
-  position: relative;
-  padding-bottom: 1.5rem; }
+  padding-bottom: 1.5rem;
+  position: relative; }
 
 .slds-timeline__media:before,
 .slds-media_timeline:before,
@@ -457,16 +460,10 @@ img {
   width: 2px;
   position: absolute;
   left: 0.75rem;
-  top: 0;
+  top: 2px;
   bottom: 0;
-  margin-left: -1px;
-  z-index: -1; }
-
-.slds-timeline__media:before,
-.slds-media_timeline:before,
-.slds-media--timeline:before {
   margin-left: 1px;
-  top: 2px; }
+  z-index: -1; }
 
 /**
  * @selector .slds-timeline__title
@@ -815,8 +812,7 @@ img {
    */ }
 
 .slds-breadcrumb .slds-list__item, .slds-breadcrumb__item {
-  position: relative;
-  font-weight: 700; }
+  position: relative; }
 
 .slds-breadcrumb .slds-list__item:before, .slds-breadcrumb__item:before {
   content: '\003E';
@@ -1050,6 +1046,7 @@ a.slds-button--inverse:focus {
  * @name reset
  * @summary Resets attributes of .slds-button back to the browser default
  * @selector .slds-button_reset
+ * @restrict button, a, span
  * @modifier
  * @group theme
  */
@@ -2173,7 +2170,7 @@ a.slds-button--inverse:focus {
  * @summary Input field for summary UI
  *
  * @selector .slds-color-picker__summary-input
- * @restrict .slds-color-picker__summary > div
+ * @restrict .slds-color-picker__summary div
  */
 .slds-color-picker__summary-input {
   display: inline-block; }
@@ -2520,6 +2517,14 @@ a.slds-button--inverse:focus {
 .slds-icon__container--circle {
   padding: 0.5rem;
   border-radius: 50%; }
+
+/**
+* @summary Horizontally flip icons
+* @selector .slds-icon_flip
+* @ restrict .slds-icon_container
+*/
+[dir="rtl"] .slds-icon_flip {
+  transform: scaleX(-1); }
 
 [class*='slds-icon-action-'] {
   padding: 0.5rem;
@@ -3717,6 +3722,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-output {
   background-color: #439cba; }
 
+.slds-icon-standard-store-group {
+  background-color: #3c97dd; }
+
 .slds-icon-standard-all {
   background-color: #54698d; }
 
@@ -3737,6 +3745,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-lead-list {
   background-color: #f88962; }
+
+.slds-icon-standard-shift {
+  background-color: #eb7092; }
 
 .slds-icon-standard-product-item-transaction {
   background-color: #f88962; }
@@ -3780,6 +3791,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-iot-orchestrations {
   background-color: #2a739e; }
 
+.slds-icon-standard-visualforce-page {
+  background-color: #fcb95b; }
+
 .slds-icon-standard-person-account {
   background-color: #7f8de1; }
 
@@ -3818,6 +3832,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-multi-picklist {
   background-color: #969492; }
+
+.slds-icon-standard-visit-templates {
+  background-color: #3c97dd; }
 
 .slds-icon-standard-task {
   background-color: #4bc076; }
@@ -3863,6 +3880,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-channel-program-levels {
   background-color: #0eb58a; }
+
+.slds-icon-standard-letterhead {
+  background-color: #3c97dd; }
 
 .slds-icon-standard-email-chatter {
   background-color: #f2cf5b; }
@@ -4077,6 +4097,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-people {
   background-color: #34becd; }
 
+.slds-icon-standard-javascript-buttons {
+  background-color: #fcb95b; }
+
 .slds-icon-standard-reward {
   background-color: #e9696e; }
 
@@ -4148,6 +4171,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-sobject {
   background-color: #969492; }
+
+.slds-icon-standard-sales-cadence-target {
+  background-color: #54698d; }
 
 .slds-icon-standard-photo {
   background-color: #d7d1d1; }
@@ -4248,13 +4274,22 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-article {
   background-color: #f2cf5b; }
 
+.slds-icon-standard-invocable-action {
+  background-color: #54698d; }
+
 .slds-icon-standard-proposition {
   background-color: #3c97dd; }
 
 .slds-icon-standard-customer-portal-users {
   background-color: #3c97db; }
 
+.slds-icon-standard-actions-and-buttons {
+  background-color: #fcb95b; }
+
 .slds-icon-standard-record-update {
+  background-color: #eb7092; }
+
+.slds-icon-standard-shift-type {
   background-color: #eb7092; }
 
 .slds-icon-standard-log-a-call {
@@ -4320,6 +4355,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-date-input {
   background-color: #969492; }
 
+.slds-icon-standard-catalog {
+  background-color: #027e46; }
+
 .slds-icon-standard-template {
   background-color: #3c97dd; }
 
@@ -4358,6 +4396,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-product-transfer {
   background-color: #f88962; }
+
+.slds-icon-standard-instore-locations {
+  background-color: #54698d; }
 
 .slds-icon-standard-recent {
   background-color: #6ca1e9; }
@@ -4430,6 +4471,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-date-time {
   background-color: #969492; }
+
+.slds-icon-standard-category {
+  background-color: #027e46; }
 
 .slds-icon-standard-textbox {
   background-color: #969492; }
@@ -4627,6 +4671,15 @@ a.slds-button--inverse:focus {
  */
 .slds-current-color .slds-icon {
   fill: currentColor; }
+
+/**
+ * The icon container of icon in a disabled element
+ *
+ * @selector .slds-icon_disabled
+ * @restrict .slds-icon_container
+ */
+.slds-icon_disabled {
+  background-color: currentColor; }
 
 /**
  * @summary Initializes an accordion list with more than one section that will have its display toggled by invoking an interaction on the summary title
@@ -5706,6 +5759,7 @@ a.slds-button--inverse:focus {
  * @restrict .slds-card div
  */
 .slds-card__body {
+  margin-top: 0.75rem;
   margin-bottom: 0.75rem; }
 
 .slds-card__body:empty,
@@ -6947,6 +7001,8 @@ a.slds-button--inverse:focus {
   content: '';
   position: absolute;
   top: 50%;
+  /* stylelint-disable comment-empty-line-before */
+  /*! @noflip */
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   border-radius: 50%;
@@ -7343,9 +7399,12 @@ a.slds-button--inverse:focus {
   width: 0.5rem;
   position: absolute;
   top: 50%;
+  /* stylelint-disable comment-empty-line-before */
+  /*! @noflip */
   left: 50%;
   transform: translate3d(-50%, -50%, 0) rotate(-45deg);
   border-bottom: 2px solid #0070d2;
+  /*! @noflip */
   border-left: 2px solid #0070d2; }
 
 .slds-checkbox [type="checkbox"]:focus + .slds-checkbox_faux,
@@ -7377,6 +7436,7 @@ a.slds-button--inverse:focus {
   display: block;
   position: absolute;
   top: 50%;
+  /*! @noflip */
   left: 50%;
   width: 0.5rem;
   height: 2px;
@@ -7672,6 +7732,8 @@ a.slds-button--inverse:focus {
   height: 0.7rem;
   width: 0.45rem;
   border-bottom: 2px solid white;
+  /* stylelint-disable comment-empty-line-before */
+  /*! @noflip */
   border-right: 2px solid white;
   border-radius: 0;
   background-color: transparent;
@@ -8204,7 +8266,8 @@ a.slds-button--inverse:focus {
   width: 0;
   height: 0;
   border-left: 3px solid transparent;
-  border-right: 3px solid transparent; }
+  border-right: 3px solid transparent;
+  pointer-events: none; }
 
 .slds-select_container:before {
   border-bottom: 5px solid #061c3f;
@@ -8616,13 +8679,6 @@ a.slds-button--inverse:focus {
   right: 0; }
 
 /**
- * The popover should be positioned with JavaScript.
- *
- * When errors are found within a form, the user will be notified with a popover
- * with the page-level errors listed out. Please provide a contextually specific
- * title for the dialog with the aria-label attribute. e.g. "Acme Global edit
- * form errors"
- *
  * @summary Creates a docked form footer
  *
  * @name base
@@ -8632,18 +8688,18 @@ a.slds-button--inverse:focus {
  * @variant
  */
 .slds-docked-form-footer {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  padding: 0.5rem 0;
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background: #f3f2f2;
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.16);
-  z-index: 8000;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
-      justify-content: center;
-  padding: 0.5rem 0; }
+  z-index: 8000; }
 
 /**
  * @summary Initializes slider component
@@ -9100,8 +9156,6 @@ a.slds-button--inverse:focus {
   margin-top: 0.75rem; }
 
 /**
- * The page header is a masthead that contains the Title of the page, and supporting details. For large form factors, it may include actions.
- *
  * @summary Initializes page header
  *
  * @variant
@@ -9316,31 +9370,6 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem; }
 
 /**
- * Page header record home contains up to four
- * compact layout fields. They're contained in the `.slds-page-header__detail-row` div.
- * That div contains the top and bottom spacing needed for this version of the page header.
- *
- * When text is truncated, the full text should be placed in
- * a tooltip on hover (currently shown in the title
- * attribute). One line truncation is created by using the
- * `.slds-truncate` class. Two line truncation must be achieved
- * using JavaScript.
- *
- * The page header is located at the top of every record home. It includes the record title and compact layout for a record. Excluding the title, the page header displays 4 compact layout fields. Similar data types can be rolled up and be displayed as a single field.
- *
- * **Record Title**
- *
- * - Display Record Type icon to the left of the title
- * - Record Type is displayed above the title
- * - When required, follow action is displayed to the right of the record title
- * - Display one line of text, truncate when the length conflicts with the page level actions
- *
- * As shown in Field 3, web addresses and email addresses should be parsed and displayed as hyperlinks linking to the appropriate mailto: or web url. Do not modify the user's input, display as intended.
- *
- * When text is truncated, display full field text in browser tooltip on hover.
- *
- * Display addresses in two lines. Street address on first line, City, State and Postal Code on line 2. For lengthy addresses, truncate each line individually based on the available width of the area using the `.slds-truncate` class. Display the full address via browser tooltip.
- *
  * @summary Bottom section containing record details
  *
  * @variant
@@ -9383,9 +9412,6 @@ a.slds-button--inverse:focus {
   padding-right: 0; }
 
 /**
- * Vertical page header record home contains up to seven compact layout fields. They're contained in the `.slds-page-header__detail-row` div.
- * The heading does not truncate. This is typically used in more compact layouts where more vertical space is desired.
- *
  * @summary Initializes vertical page header
  *
  * @variant
@@ -9431,15 +9457,6 @@ a.slds-button--inverse:focus {
   width: 50%; }
 
 /**
- * The title for the Object Home page header is sorting component.
- * The `.slds-text-focus` class is placed on the media object that
- * contains the title and down icon to simulate a hover and
- * focus state of a link.
- *
- * This component is created entirely of existing components
- * like grids, buttons, button groups, and
- * icons.
- *
  * @summary Initializes object home page header
  *
  * @variant
@@ -9533,7 +9550,7 @@ a.slds-button--inverse:focus {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url("/assets/images/themes/oneSalesforce/banner-brand-default.png"), linear-gradient(to top, rgba(221, 219, 218, 0) 0, #e8e8e8);
+  background-image: url("/assets/images/themes/oneSalesforce/banner-brand-default.png"), linear-gradient(to top, rgba(25, 85, 148, 0) 0, #195594);
   background-repeat: repeat-x;
   background-position: top left; }
 
@@ -9547,7 +9564,7 @@ a.slds-button--inverse:focus {
   top: 0;
   width: 100%;
   height: 3.125rem;
-  background-image: linear-gradient(to bottom, rgba(250, 250, 249, 0) 60%, #fafaf9); }
+  background-image: linear-gradient(to bottom, rgba(176, 196, 223, 0) 60%, #b0c4df); }
 
 .slds-brand-band.slds-brand-band_cover:before {
   background-repeat: no-repeat;
@@ -11355,17 +11372,17 @@ a.slds-button--inverse:focus {
 
 .slds-dropdown_length-5, .slds-dropdown--length-5 {
   -webkit-overflow-scrolling: touch;
-  max-height: calc(((0.8125rem * 1.5) + 1rem) * 5);
+  max-height: calc(((1rem * 1.5) + 1rem) * 5);
   overflow-y: auto; }
 
 .slds-dropdown_length-7, .slds-dropdown--length-7 {
   -webkit-overflow-scrolling: touch;
-  max-height: calc(((0.8125rem * 1.5) + 1rem) * 7);
+  max-height: calc(((1rem * 1.5) + 1rem) * 7);
   overflow-y: auto; }
 
 .slds-dropdown_length-10, .slds-dropdown--length-10 {
   -webkit-overflow-scrolling: touch;
-  max-height: calc(((0.8125rem * 1.5) + 1rem) * 10);
+  max-height: calc(((1rem * 1.5) + 1rem) * 10);
   overflow-y: auto; }
 
 .slds-dropdown_length-with-icon-5, .slds-dropdown--length-with-icon-5 {
@@ -11524,6 +11541,12 @@ a.slds-button--inverse:focus {
 
 .slds-dropdown__item.slds-has-notification .slds-indicator_unsaved {
   top: -0.375rem; }
+
+[dir="rtl"] .slds-dropdown_center, [dir="rtl"]
+.slds-dropdown--center {
+  left: auto;
+  right: auto;
+  transform: translateX(calc(50% - (0.875rem / 2))); }
 
 .slds-dropdown_actions a,
 .slds-dropdown--actions a {
@@ -11964,6 +11987,9 @@ a.slds-button--inverse:focus {
   display: inline-block;
   vertical-align: middle; }
 
+.slds-listbox__option[aria-disabled="true"] {
+  color: #dddbda; }
+
 /**
  * @summary Header for choosable option within listbox
  * @selector .slds-listbox__option-header
@@ -11989,6 +12015,9 @@ a.slds-button--inverse:focus {
   -ms-flex-pack: center;
       justify-content: center;
   color: #706e6b; }
+
+.slds-listbox__option[aria-disabled="true"] .slds-listbox__option-icon {
+  color: currentColor; }
 
 /**
  * Creates a vertical listbox
@@ -12034,7 +12063,9 @@ a.slds-button--inverse:focus {
   background-color: #f3f2f2;
   text-decoration: none; }
 
+.slds-listbox_vertical .slds-listbox__option[aria-disabled="true"],
 .slds-listbox_vertical .slds-listbox__option[role="presentation"]:hover,
+.slds-listbox--vertical .slds-listbox__option[aria-disabled="true"],
 .slds-listbox--vertical .slds-listbox__option[role="presentation"]:hover {
   background-color: transparent;
   cursor: default; }
@@ -12151,11 +12182,13 @@ a.slds-button--inverse:focus {
  * @selector .slds-listbox__option-meta
  * @restrict .slds-listbox__option span
  */
-.slds-listbox__option-meta,
 .slds-listbox__option-meta {
   display: block;
   margin-top: -0.25rem;
   color: #3e3e3c; }
+
+.slds-listbox__option[aria-disabled="true"] .slds-listbox__option-meta {
+  color: currentColor; }
 
 .slds-listbox_object-switcher,
 .slds-listbox--object-switcher {
@@ -12474,7 +12507,7 @@ a.slds-button--inverse:focus {
 
 .slds-dueling-list__column_responsive .slds-dueling-list__options {
   width: auto;
-  max-width: 15rem; }
+  max-width: 100%; }
 
 /**
  * @summary Bounding visual container for listbox of options
@@ -13006,8 +13039,10 @@ a.slds-button--inverse:focus {
   top: 50%;
   transform: translateY(-50%); }
 
-.slds-email-composer__combobox .slds-combobox_container {
-  border: 0; }
+.slds-email-composer__combobox .slds-combobox_container,
+.slds-email-composer__combobox .slds-input[value] {
+  border: 0;
+  box-shadow: none; }
 
 /**
  * @summary Provides styles for recipient labels inside of email composer
@@ -13910,43 +13945,6 @@ a.slds-button--inverse:focus {
    * @restrict .slds-context-bar div
    */
   /**
-   *
-   * #### Accessibility
-   *
-   * **Communicating Status to Screen Readers**
-   *
-   * When communitcatin tab status updates to the user, unread, warning, error and success notifications should  all employ the same technique to communicate that update to users of assistive technology, who would be otherwise unaware of that status change.
-   *
-   * You should use a single hidden ARIA live region for the entire sub tabs block, the contents of which gets updated each time a sub tab changes its status. The contents should contain a description of the status level and the name of the tab the status change event occured in. The markup would look something like:
-   *
-   * `<div className="slds-assistive-text" aria-live="polite">...</div>`
-   *
-   * Upon clearing the status on a given tab, you should clear the message from the live region.
-
-   * **Unread status**
-   *
-   * In order to inform screen readers of new activity in a tab, 2 things should occur.
-   *
-   * 1. The `title` attribute and `aria-label` on the element that displays the red dot should read **"New Activity"**. This will update the text content of the tab to include the "New Activity" text: "New Activity Chat - Customer".
-   *
-   * 2. The hidden live region as described above, should have its content updated to **"New Activity in Tab: [Tab Name Here]"** to alert the user of new activity in that particular sub tab.
-   *
-   * `<span aria-label="New Activity" className="slds-indicator_unread" title="New Activity"></span>`
-   *
-   * `<div className="slds-assistive-text" aria-live="polite">New activity in Tab: Chat - Customer</div>`
-   *
-   * **Warning, Error and Success Tabs**
-   *
-   * When you wish to draw attention to a particular tab because something has occurred in that tab that corresponds to an alert level, you can use the `slds-has-warning`, `slds-has-error` or `slds-has-success` class to change the background color and introduce a short pulsing animation to draw attention from the user.
-   *
-   * The icon is updated to match the corresponding alert level, to give an extra way to communicate the level of the status without relying on the use of color alone.
-   *
-   * In this example we show that something inside the tab is about to break a service level agreement in 30 seconds, and we wish to draw the users attention to it to take action.
-   *
-   * Update the hidden live region with a message that informs the user of the status level, the message and the offending sub tab **[level]: [message] in tab: [tab_name]**.
-   *
-   * `<div className="slds-assistive-text" aria-live="polite">Warning: SLA agreement in 30 seconds in tab: Chat - Customer</div>`
-   *
    * @summary Tab modifier when using a tabset
    *
    * @name navigation-tab-bar
@@ -14845,23 +14843,6 @@ a.slds-button--inverse:focus {
   margin-left: 0.25rem; }
 
 /**
- * The discussion feed publisher is found at the top of a feed stream. It contains
- * basic and advanced publishing capibilities.
- *
- * The discussion feed is in a collapsed state by default. There are 3 states
- * of the discussion feed that provide different feedback to the user. First,
- * the collapsed state, this indicates the user has not interacted with the
- * discussion feed publisher. When the user initiates an interaction with the
- * publisher, by either focusing of the textara or clicking the "Share" button,
- * through javascript the class of `slds-is-active` should be applied to the
- * `slds-publisher` div. This class will expand the publisher box and display
- * additional publisher actions.
- *
- * During the active state, before the user has begun typing or attaching
- * additional content, the "Share" button should be disabled by applying the
- * `disabled` attribute to the `<textarea>`. When the user begins typing, the
- * `disabled` attribute should be toggled off.
- *
  * @summary Initializes a publisher
  *
  * @name base
@@ -14935,30 +14916,6 @@ a.slds-button--inverse:focus {
   width: 0; }
 
 /**
- * The comment publisher is found at the bottom of a discussion feed comment
- * thread. It contains basic publishing capibilities.
- *
- * The comment publisher is in a collapsed state by default. There are 4 states
- * of the discussion feed that provide different feedback to the user. First,
- * the collapsed state, this indicates the user has not interacted with the
- * comment publisher. When the user initiates an interaction with the publisher,
- * by either focusing of the textara or clicking the "Comment" button, through
- * javascript the class of `slds-is-active` should be applied to the
- * `slds-publisher` element. This class will expand the publisher box and
- * display additional publisher actions.
- *
- * Due to the implementation of the comment publisher design, we used a faux
- * textarea container and we'll need to apply the our focus state to that custom
- * container. Using javascript, the class `slds-has-focus` should be applied to
- * the `slds-publisher` element when the user interacts with `<textarea>`. When
- * the user loses focus on the `<textarea>`, the class `slds-has-focus` should
- * be toggled off from the `slds-publisher` element.
- *
- * During the active state, before the user has begun typing or attaching
- * additional content, the "Comment" button should be disabled by applying the
- * `disabled` attribute to the `<textarea>`. When the user begins typing, the
- * `disabled` attribute should be toggled off.
- *
  * @summary Initiates publisher that is specific to commenting in threads
  *
  * @name comment
@@ -15059,9 +15016,9 @@ a.slds-button--inverse:focus {
   content: none; }
 
 .slds-comment__replies .slds-comment {
-  position: relative;
   margin-bottom: 0;
-  padding-bottom: 1rem; }
+  padding-bottom: 1rem;
+  position: relative; }
 
 .slds-comment__replies .slds-comment:before {
   content: '';
@@ -15072,7 +15029,7 @@ a.slds-button--inverse:focus {
   left: 1.125rem;
   top: 0;
   bottom: 0;
-  margin-left: -0.5px;
+  margin-left: -1.125rem;
   z-index: -1; }
 
 .slds-comment__replies .slds-avatar {
@@ -16648,7 +16605,8 @@ a.slds-button--inverse:focus {
   left: 0.5rem;
   width: 100%;
   margin-top: -0.5rem;
-  transform: rotateX(-180deg); }
+  transform: rotateX(-180deg);
+  line-height: 1; }
 
 .slds-tabs_path__link,
 .slds-tabs--path__link {
@@ -16715,6 +16673,7 @@ a.slds-button--inverse:focus {
  * @restrict div
  * @variant
  * @support dev-ready
+ * @layout responsive
  * @s1 false
  */
 .slds-path {
@@ -16736,16 +16695,23 @@ a.slds-button--inverse:focus {
  * @restrict .slds-path div
  */
 .slds-path__track {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-align: start;
+      align-items: flex-start;
   /**
    * Indicates the scroller is in the overflow state
    *
    * @selector .slds-has-overflow
    * @restrict .slds-path__track
    */ }
+
+@media (min-width: 64em) {
+  .slds-path__track {
+    -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+    -ms-flex-align: stretch;
+        align-items: stretch; } }
 
 .slds-path__track.slds-has-overflow {
   /**
@@ -16762,15 +16728,16 @@ a.slds-button--inverse:focus {
   width: 100%;
   overflow: hidden; }
 
-.slds-path__track.slds-has-overflow .slds-path__scroller-container {
-  overflow: hidden; }
-
 .slds-path__track.slds-has-overflow .slds-path__scroll-controls {
   display: -ms-inline-flexbox;
   display: inline-flex;
   -ms-flex-negative: 0;
       flex-shrink: 0;
   padding-left: 0.5rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__track.slds-has-overflow .slds-path__scroll-controls {
+    display: none; } }
 
 /**
  * @summary Creates the scrolling container for tab overflow
@@ -16802,7 +16769,17 @@ a.slds-button--inverse:focus {
  *
  */
 .slds-path__stage-name {
-  display: none; }
+  display: block;
+  font-weight: 700;
+  margin: 0.75rem 0; }
+
+@media (min-width: 48em) {
+  .slds-path__stage-name {
+    margin: 0; } }
+
+@media (min-width: 64em) {
+  .slds-path__stage-name {
+    display: none; } }
 
 /**
  * @summary Creates the container for toggle button and path
@@ -16812,7 +16789,23 @@ a.slds-button--inverse:focus {
  */
 .slds-path__scroller-container {
   -ms-flex: 1;
-      flex: 1; }
+      flex: 1;
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+  overflow: hidden; }
+
+@media (min-width: 64em) {
+  .slds-path__scroller-container {
+    -ms-flex-preferred-size: auto;
+        flex-basis: auto; } }
+
+@media (min-width: 48em) {
+  .slds-path_has-coaching .slds-path__action {
+    padding-left: 2.75rem; } }
+
+@media (min-width: 64em) {
+  .slds-path_has-coaching .slds-path__action {
+    padding-left: 0; } }
 
 /**
  * @summary Container for path actions
@@ -16821,9 +16814,37 @@ a.slds-button--inverse:focus {
  * @restrict .slds-path div
  */
 .slds-path__action {
-  margin-left: 1.5rem;
+  -ms-flex-positive: 1;
+      flex-grow: 1;
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+  margin-left: 0;
+  -ms-flex-align: center;
+      align-items: center;
   -ms-flex-negative: 0;
-      flex-shrink: 0; }
+      flex-shrink: 0;
+  -ms-flex-direction: column;
+      flex-direction: column; }
+
+@media (min-width: 48em) {
+  .slds-path__action {
+    max-width: 100%;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+    margin-top: 1rem;
+    -ms-flex-direction: row;
+        flex-direction: row; } }
+
+@media (min-width: 64em) {
+  .slds-path__action {
+    -ms-flex-preferred-size: auto;
+        flex-basis: auto;
+    -ms-flex-positive: 0;
+        flex-grow: 0;
+    -ms-flex-align: normal;
+        align-items: normal;
+    margin-top: 0;
+    margin-left: 1.5rem; } }
 
 /**
  * @summary Horizontal list of stages in path component
@@ -17081,6 +17102,12 @@ a.slds-button--inverse:focus {
 .slds-path__item:last-child:before, .slds-path__item:last-child:after {
   right: 0.625rem; }
 
+[dir="rtl"] .slds-path__item:before {
+  transform: skew(-30deg) translate3d(0, 0, 0); }
+
+[dir="rtl"] .slds-path__item:after {
+  transform: skew(28deg) translate3d(0, 0, 0); }
+
 /**
  * @summary Contains the name of the stage
  *
@@ -17102,6 +17129,8 @@ a.slds-button--inverse:focus {
 .slds-path__stage {
   position: absolute;
   top: 50%;
+  /* stylelint-disable comment-empty-line-before */
+  /*! @noflip */
   left: 50%;
   transform: translate(-50%, -50%) rotateX(-180deg); }
 
@@ -17144,10 +17173,14 @@ a.slds-button--inverse:focus {
  * @selector .slds-path__trigger
  * @restrict .slds-path button
  */
-.slds-path__trigger {
+.slds-path .slds-path__trigger {
   margin-right: 0.75rem;
-  border-radius: 50%;
-  transition: 0.4s transform ease-in-out; }
+  transition: 0.4s transform ease-in-out;
+  display: none; }
+
+@media (min-width: 48em) {
+  .slds-path .slds-path__trigger {
+    display: block; } }
 
 .slds-flip_vertical,
 .slds-flip--vertical {
@@ -17160,15 +17193,23 @@ a.slds-button--inverse:focus {
 .slds-path__trigger_open {
   transform: rotate(90deg); }
 
+[dir="rtl"] .slds-path__trigger_open {
+  transform: rotate(-90deg); }
+
 /**
  * @summary Actionable button that invokes a completion of the path
  *
  * @selector .slds-path__mark-complete
  * @restrict .slds-path button
  */
-.slds-path__mark-complete {
-  border-radius: 15rem;
-  min-width: 13rem; }
+.slds-path .slds-path__mark-complete {
+  width: 100%;
+  min-width: 13rem;
+  margin-right: 0; }
+
+@media (min-width: 48em) {
+  .slds-path .slds-path__mark-complete {
+    width: auto; } }
 
 /**
  * @summary Actionable button that invokes a current stage of the path
@@ -17190,15 +17231,6 @@ a.slds-button--inverse:focus {
  * @restrict .slds-path div
  */
 /**
- * @summary Key field section of expanded tabpanel
- *
- * @selector .slds-path__keys
- * @restrict .slds-path__content div
- */
-.slds-path__keys {
-  padding-left: 0.75rem; }
-
-/**
  * @summary Guidance section of expanded tabpanel
  *
  * @selector .slds-path__guidance
@@ -17206,16 +17238,55 @@ a.slds-button--inverse:focus {
  */
 .slds-path__guidance {
   margin-right: 0.5rem;
-  padding-left: 0.75rem;
   padding-bottom: 0.25rem;
   background-color: white; }
 
+@media (min-width: 48em) {
+  .slds-path__guidance {
+    margin-top: 0; } }
+
 .slds-path__keys,
 .slds-path__guidance {
-  -ms-flex: 1 1 50%;
-      flex: 1 1 50%;
+  -ms-flex: 1 1 100%;
+      flex: 1 1 100%;
   margin-top: 1rem;
-  padding-right: 0.75rem; }
+  padding-left: 0;
+  padding-right: 0; }
+
+@media (min-width: 48em) {
+  .slds-path__keys,
+  .slds-path__guidance {
+    -ms-flex-preferred-size: 50%;
+        flex-basis: 50%; } }
+
+/**
+ * @summary Key field section of expanded tabpanel
+ *
+ * @selector .slds-path__keys
+ * @restrict .slds-path__content div
+ */
+@media (min-width: 48em) {
+  .slds-path__keys {
+    padding-right: 0.75rem; } }
+
+/**
+ * @summary This creates the layout block for the coaching area
+ *
+ * @selector .slds-path__coach
+ * @restrict .slds-path__content div
+ */
+.slds-path__coach {
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-align: start;
+      align-items: flex-start; }
+
+@media (min-width: 48em) {
+  .slds-path__coach {
+    -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+    -ms-flex-align: stretch;
+        align-items: stretch; } }
 
 /**
  * @summary This creates the underlined titles in the coaching area
@@ -17227,7 +17298,6 @@ a.slds-button--inverse:focus {
   font-size: 0.875rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  border-bottom: #dddbda 1px solid;
   padding-bottom: 0.5rem;
   line-height: 1.125; }
 
@@ -17250,6 +17320,23 @@ a.slds-button--inverse:focus {
  */
 .slds-path__guidance-content {
   padding-top: 0.25rem; }
+
+/**
+ * @summary This class is used to create a full width coaching toggle in small regions
+ *
+ * @selector .slds-path__trigger-coaching-content
+ * @restrict .slds-path__action button
+ */
+.slds-path__trigger-coaching-content {
+  width: 100%;
+  margin-top: 0.75rem; }
+
+@media (min-width: 48em) {
+  .slds-path__trigger-coaching-content {
+    display: none; } }
+
+.slds-path .slds-path__trigger-coaching-content {
+  margin-left: 0; }
 
 /**
  * @summary This class should be placed on a containing div when the Path container is between 565px and 1280px
@@ -17275,26 +17362,49 @@ a.slds-button--inverse:focus {
       flex-grow: 1;
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%;
+  margin-left: 0;
+  -ms-flex-align: center;
+      align-items: center;
   max-width: 100%;
   -ms-flex-pack: justify;
       justify-content: space-between;
-  -ms-flex-align: center;
-      align-items: center;
   margin-top: 1rem;
-  margin-left: 0; }
+  -ms-flex-direction: row;
+      flex-direction: row; }
 
-.slds-region_medium .slds-path__stage-name {
+.slds-region_medium .slds-path__stage-name,
+.slds-region_medium .slds-path__trigger {
   display: block; }
 
-.slds-region_medium .slds-path__content:not(.slds-is-collapsed) {
-  border-top: 1px solid #dddbda; }
+.slds-region_medium .slds-path__stage-name {
+  margin: 0; }
+
+.slds-region_medium .slds-path__trigger-coaching-content {
+  display: none; }
+
+.slds-region_medium .slds-path__mark-complete {
+  width: auto; }
+
+.slds-region_medium .slds-path__coach {
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  -ms-flex-align: stretch;
+      align-items: stretch; }
+
+.slds-region_medium .slds-path__keys,
+.slds-region_medium .slds-path__guidance {
+  -ms-flex-preferred-size: 50%;
+      flex-basis: 50%; }
+
+.slds-region_medium .slds-path__keys {
+  padding-right: 0.75rem; }
 
 /**
- * @summary This class should be placed on a containing div when the Path container is between 360px and 564px
- *
- * @selector .slds-region_medium
- * @restrict div
- */
+* @summary This class should be placed on a containing div when the Path container is between 360px and 564px
+*
+* @selector .slds-region_medium
+* @restrict div
+*/
 .slds-region_small .slds-path__scroller-container {
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%; }
@@ -17306,26 +17416,27 @@ a.slds-button--inverse:focus {
   -ms-flex-align: start;
       align-items: flex-start; }
 
-.slds-region_small .slds-path__coach {
-  padding: 0 0.75rem; }
-
 .slds-region_small .slds-path__stage-name {
   display: block;
-  margin: 1rem 0; }
+  margin: 0.75rem 0; }
 
 .slds-region_small .slds-path__action {
   -ms-flex-positive: 1;
       flex-grow: 1;
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%;
-  -ms-flex-direction: column;
-      flex-direction: column;
   margin-left: 0;
   -ms-flex-align: center;
-      align-items: center; }
+      align-items: center;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  margin-top: 0; }
+
+.slds-region_small .slds-path_has-coaching .slds-path__action {
+  padding-left: 0; }
 
 .slds-region_small .slds-path__mark-complete {
-  margin-right: 0; }
+  width: 100%; }
 
 .slds-region_small .slds-path__keys,
 .slds-region_small .slds-path__guidance {
@@ -17336,6 +17447,12 @@ a.slds-button--inverse:focus {
 
 .slds-region_small .slds-path__guidance {
   margin-top: 1rem; }
+
+.slds-region_small .slds-path__trigger {
+  display: none; }
+
+.slds-region_small .slds-path__trigger-coaching-content {
+  display: inline-block; }
 
 /**
  * @name base
@@ -18502,10 +18619,17 @@ a.slds-button--inverse:focus {
 .slds-spinner {
   position: absolute;
   top: 50%;
+  /*! @noflip */
   left: 50%;
   z-index: 9051;
   transform: translate(-50%, -50%) rotate(90deg); }
 
+/**
+ * @summary Returns the spinner back into the document flow
+ * @selector .slds-spinner_inline
+ * @restrict .slds-spinner
+ * @modifier
+ */
 .slds-spinner_inline {
   position: relative;
   top: auto;
@@ -18628,6 +18752,7 @@ a.slds-button--inverse:focus {
  *
  * @selector .slds-spinner_inverse
  * @restrict .slds-spinner
+ * @modifier
  */
 .slds-spinner_inverse.slds-spinner:before, .slds-spinner_inverse.slds-spinner:after,
 .slds-spinner_inverse .slds-spinner__dot-a:before,
@@ -19751,7 +19876,7 @@ a.slds-button--inverse:focus {
   display: flex;
   -ms-flex-align: start;
       align-items: flex-start;
-  background-color: #f3f2f2;
+  background-color: #fafaf9;
   border: 1px solid #dddbda;
   border-radius: 0.25rem 0.25rem 0 0; }
 
@@ -20262,7 +20387,7 @@ a.slds-button--inverse:focus {
   content: ''; }
 
 .slds-nav-vertical__item:hover:before, .slds-nav-vertical__item.slds-is-active:before {
-  background: #d8edff; }
+  background: rgba(21, 137, 238, 0.1); }
 
 /**
  * @summary Actionable element inside of vertical navigation list item
@@ -22385,7 +22510,16 @@ a.slds-button--inverse:focus {
     letter-spacing: 0.0625rem;
     display: block;
     padding-bottom: 0.25rem;
-    content: attr(data-label); }
+    content: attr(data-label); } }
+
+@media (max-width: 48em) and (pointer: coarse) and (hover: none) {
+  .slds-max-medium-table_stacked th:before,
+  .slds-max-medium-table_stacked td:before,
+  .slds-max-medium-table--stacked th:before,
+  .slds-max-medium-table--stacked td:before {
+    font-size: 0.875rem; } }
+
+@media (max-width: 48em) {
   .slds-max-medium-table_stacked tr > td:first-child,
   .slds-max-medium-table_stacked tr > td:last-child,
   .slds-max-medium-table--stacked tr > td:first-child,
@@ -22475,7 +22609,16 @@ a.slds-button--inverse:focus {
     letter-spacing: 0.0625rem;
     display: block;
     padding-bottom: 0.25rem;
-    content: attr(data-label); }
+    content: attr(data-label); } }
+
+@media (max-width: 48em) and (pointer: coarse) and (hover: none) {
+  .slds-max-medium-table_stacked-horizontal th:before,
+  .slds-max-medium-table_stacked-horizontal td:before,
+  .slds-max-medium-table--stacked-horizontal th:before,
+  .slds-max-medium-table--stacked-horizontal td:before {
+    font-size: 0.875rem; } }
+
+@media (max-width: 48em) {
   .slds-max-medium-table_stacked-horizontal tr > td:first-child,
   .slds-max-medium-table_stacked-horizontal tr > td:last-child,
   .slds-max-medium-table--stacked-horizontal tr > td:first-child,
@@ -22899,61 +23042,6 @@ a.slds-button--inverse:focus {
   transform: rotate(90deg); }
 
 /**
- * A tree is composed of two core elements `.slds-tree` and `.slds-tree__item`. The tree wrapper, the outer most parent `ul`, will receive the class `.slds-tree`. This class will be used for scoping a tree, which allows for particular styling based on states in which the tree may enter.
- *
- * A tree will need helper classes added and removed to help structure the layout. Each child node list item needs an `aria-level` attribute with its value being the number of levels deep it is nested to indicate the distinct grouping is nested within.
- *
- * Whenever the tree has a nested group, the nested `ul` element should receive the ARIA role `group`. The parent `li[role="treeitem"]` requires the `aria-expanded` attribute to be applied. Toggling `aria-expanded` to `true` or `false` will show or hide the child `group`. The parent `li[role="treeitem"]` also requires `aria-label` to be applied and set to the tree items text value, this ensures child groups are't announced to screen readers as you interact with that branch.
- *
- * When ever a `role="treeitem"` node is selected, `aria-selected="true"` needs to be applied to display the selected styles.
- *
- * In our example, we are using a chevron icon on tree branches to help indicate to the user what action clicking the tree branch will perform, whether opening or closing it. The effect of rotating the icon 90° to indicate open/closed status is achieved by applying the ARIA attribute `aria-expanded` to the `treeitem`. `aria-hidden="true"` and `tabindex="-1"` must be placed on the toggle button.
- *
- * Tree items can only contain text values, no actionable elements, apart from our toggle button, can be placed inside a Tree item.
- *
- * Trees can only contain a single focusable tree item and `tabindex="0"` must be placed on the `li[role="treeitem]` that takes current focus. Every other actionable and non-actionable element must be made unfocusable by adding `tabindex="-1"` or removing `tabindex`, respectively.
- *
- * When implementing collapsed rows, we suggest showing the content DOM nodes within each collapsed row only once the row is expanded for performance reasons. You can additionally toggle the hidden row with `slds-show` and `slds-hide` if you intend to keep all of the content in the DOM.
- *
- * You can add metatext (see: metatext state) to any tree item, which adds a smaller, second line of text below tree node labels to provide supplemental information (to provide users with added context, aid with identification/disambiguation). To add metatext, include an additional `span` within the treeitem with the class `slds-tree__item-meta`. We've added an additional parent span around the label/title and metatext to ensure the spacing works properly when metatext is included. If adding metatext to a tree item with child nodes (i.e. a branch), be sure to update the `aria-label` to include the metatext. For example: `aria-label="Tree Branch Label: Tree Branch Metatext"`
- *
- * #### Accessibility
- *
- * **Interaction requirements**
- *
- * - Only a single action per tree item
- * - Only 1 focusabled item per Tree
- * - Actionable elements in a tree item are mouse only and should not be focusable, they should be presentational and should be hidden from screen readers and keyboard users
- * - Focus is placed on the entire `li[role="treeitem"]`. If that item has child items, focus must include those as well.
- *
- * **Notable attributes**
- *
- * - `role="tree"` is placed on the `ul`
- * - `role="tree"` element also has `aria-labelledby` applied which points to the trees heading element
- * - `role="treeitem"` is placed on the tree `li` elements
- * - `aria-level` is applied to `treeitem` elements to indicate their nesting depth
- * - `aria-expanded` is applied to `treeitem` elements that have child tree nodes. It is set to `true` or `false`
- * - `aria-label` is applied to `treeitem` elements that have child tree nodes. Be sure to add any metatext to the label, if applicable
- * - `aria-selected="true"` is applied to `treeitem` elements that are selected
- * - `tabindex="0"` is applied to the `treeitem` that is in focus
- * - `role="group"` is applied to child tree node containers, `ul`
- *
- * **Keyboard navigation**
- *
- * - Clicking on a tree item creates a selection
- * - `Up` and `Down` arrow keys move `:focus` **and** `aria-selected`. Previous selections are cleared
- * - `Right` arrow key to expand collapsed node.
- * - `Left` arrow key to collapse expanded node.
- * - `Left` arrow key on an end child node, collapses the group and moves `:focus` and `aria-selected` to the parent `treeitem`
- * - `Enter` performs the default action on an end tree item (if there is one).
- * - `Ctrl` + `Up` and `Ctrl` + `Down` moves focus. Current selection is maintained
- * - `Ctrl` + `Space` will add or remove the currently focused tree item to the selection
- *
- * #### Filtering
- *
- * When filtering a tree you should couple the tree with a search input. The search input will control the contents of the tree and as such should the attribute `aria-controls` added to it. The value of the `aria-controls` attribute should be the ID of the tree it controls. The search input should also be of type `search`.
- *
- * Upon typing in the input the tree should start filtering immediately, expanding all nodes that have matching tree items to display, and highlighting the search term in each of the matching items. The highlight is provided by wrapping the term in `<mark />` elements.
  *
  * @summary A tree is visualization of a structure hierarchy. A branch can be expanded or collapsed.
  *
@@ -23141,54 +23229,6 @@ a.slds-button--inverse:focus {
   font-weight: 700; }
 
 /**
- * A tree grid is additional semantics that are laid on top of a grid based component via ARIA attributes, to enable hierarchically structured tabular data.
- * The tree grid comes with a very specific keyboard interaction model which **must** be implemented for the component to be screen reader accessible.
- *
- * #### Accessibility
- *
- * **Notable attributes**
- *
- * - `role="treegrid"` should be applied to the `table` element
- * - `aria-readonly="true"` should be applied to the `table` element
- * - `aria-level="n"` where `n` represents the nesting level of a particular grid row, should be applied to the `tr` element
- * - `aria-setsize="n"` where `n` is the number of items for that specific `aria-level` should be applied to the `tr` element
- * - `aria-posinset="n"` where `n` represents the position in the `aria-level` set the row is placed at, should be applied to the `tr` element
- * - `aria-expanded="false"` should be placed on rows that are collapsed and have child rows
- * - `aria-expanded="true"` should be placed on rows that are expanded and have child rows
- * - `tabindex="0"` should be placed on the first `tr` in the grid on load, to make the row focusable
- * - Every actionable element in the grid should have `tabindex="-1" applied to make them not focusable in the grids navigation mode
- *
- * **Multi select tree grid**
- *
- * - `aria-multiselectable="true"` should be placed on the `table` element
- * - `aria-selected="false"` should be set by default on all `tr` elements that aren't selected
- * _ `aria-selected="true"` should be set only on the `tr` elements that are selected
- *
- * **Single Select tree grid**
- *
- * - `aria-selected="true"` should be applied to the `tr` that is selected in the tree grid
- *
- *
- * **Keyboard interaction**
- *
- * - Overall keyboard interaction should follow the same keyboard modal as the [Advanced and Inline Edit Data Table](/components/data-tables) with some additions
- *   - Navigation mode is the default mode. The grid only has a single focusable element at any time and it is either the `tr` or the `td`
- *   - Actionable mode is enabled when the user presses the `Enter` key, where actionable elements become focusable in the cell
- *   - Actionable mode is exited when the user presses the `Escape` key, and the user is placed back into Navigation Mode on the last cell they were in
- * - User focus is initially placed on the first row in the tree grid
- * - `Down` arrow key moves the user down one row and moves `tabindex="0"` with it
- * - `Up` arrow key moves the user up one row and moves `tabindex="0"` with it
- * - `Space` key when focused on a row should select that row by setting `aria-selected="true` on the `tr` element
- * - `Right` arrow key on a collapsed row, will expand it and update `aria-expanded`
- * - `Right` arrow key on an expanded or end row will move the user to the first cell in the row and move `tabindex="0"` with it
- * - `Right` arrow key on a cell will move the user to the next cell in the row and move `tabindex="0"` with it
- * - `Left` arrow key on a collapsed or end row will move the user to it's parent row and collapse it, if it has one
- * - `Left` arrow key on an expanded row will collapse it and update `aria-expanded`
- * - `Left` arrow key on a cell will move the user to the previous cell in the row and moves `tabindex="0"` with it
- * - `Left` arrow key on the first cell of a row will move the user back to the row  and moves `tabindex="0"` with it
- *
- * @summary A tree grid is a way to structure tabular data that has a hierarchical structure. A tree grid row can be expanded or collapsed.
- *
  * @name base
  * @selector .slds-table_tree
  * @restrict table
@@ -23461,6 +23501,11 @@ a.slds-button--inverse:focus {
   letter-spacing: 0.0625rem;
   padding: 0.5rem 1rem;
   background: #f3f2f2; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-section-title_divider,
+  .slds-section-title--divider {
+    font-size: 0.875rem; } }
 
 /**
  *
@@ -27573,6 +27618,11 @@ a.slds-button--inverse:focus {
 .slds-text-body--regular {
   font-size: 0.8125rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-body_regular,
+  .slds-text-body--regular {
+    font-size: 1rem; } }
+
 /**
  * @summary Creates a more pale-colored 12px copy
  *
@@ -27582,6 +27632,11 @@ a.slds-button--inverse:focus {
 .slds-text-body_small,
 .slds-text-body--small {
   font-size: 0.75rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-body_small,
+  .slds-text-body--small {
+    font-size: 0.875rem; } }
 
 /**
  * @summary Very large 28px heading
@@ -27595,6 +27650,11 @@ a.slds-button--inverse:focus {
   font-size: 1.75rem;
   line-height: 1.25; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-heading_large,
+  .slds-text-heading--large {
+    font-size: 2rem; } }
+
 /**
  * @summary Large 20px heading
  *
@@ -27607,6 +27667,11 @@ a.slds-button--inverse:focus {
   font-size: 1.25rem;
   line-height: 1.25; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-heading_medium,
+  .slds-text-heading--medium {
+    font-size: 1.5rem; } }
+
 /**
  * @summary Smaller 16px heading
  *
@@ -27618,6 +27683,11 @@ a.slds-button--inverse:focus {
   font-size: 1rem;
   line-height: 1.25; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-heading_small,
+  .slds-text-heading--small {
+    font-size: 1.25rem; } }
+
 .slds-text-heading_label,
 .slds-text-heading--label {
   font-size: 0.75rem;
@@ -27627,11 +27697,21 @@ a.slds-button--inverse:focus {
   letter-spacing: 0.0625rem;
   font-weight: 400; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-heading_label,
+  .slds-text-heading--label {
+    font-size: 0.875rem; } }
+
 .slds-text-heading_label-normal,
 .slds-text-heading--label-normal {
   font-size: 0.75rem;
   line-height: 1.25;
   color: #3e3e3c; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-heading_label-normal,
+  .slds-text-heading--label-normal {
+    font-size: 0.875rem; } }
 
 /**
  * @summary 12px heading that is not all caps
@@ -27644,6 +27724,10 @@ a.slds-button--inverse:focus {
   font-size: 0.75rem;
   line-height: 1.25;
   color: #3e3e3c; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-title {
+    font-size: 0.875rem; } }
 
 /**
  * @summary All caps 12px heading
@@ -27660,6 +27744,11 @@ a.slds-button--inverse:focus {
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.0625rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-text-title_caps,
+  .slds-text-title--caps {
+    font-size: 0.875rem; } }
 
 /**
  * @summary Bold 14px heading
@@ -30522,6 +30611,17 @@ a.slds-button--inverse:focus {
  */
 .slds-is-absolute {
   position: absolute; }
+
+/**
+ * @summary Hides an element only when printing.
+ *
+ * @selector .slds-no-print
+ * @notes Use on each element that should be ommited from printing.
+ * @modifier
+ */
+@media print {
+  .slds-no-print {
+    display: none; } }
 
 .slds-collapsed {
   height: 0;
