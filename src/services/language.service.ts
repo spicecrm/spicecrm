@@ -144,7 +144,7 @@ export class language {
      * ```
      *
      */
-    public getLabel(label: string, module: string = '', length: 'default' | 'long' | 'short' = 'default') {
+    public getLabel(label: string, module: string = '', length: 'default' | 'long' | 'short' = 'default'): string {
         try {
             if (module != '') {
                 if (typeof (this.languagedata.mod) != "undefined" && this.languagedata.mod[module] != undefined && this.languagedata.mod[module][label]) {
@@ -626,6 +626,24 @@ export class language {
      */
     public sortObjects( array: object[], property ): void {
         array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ));
+    }
+
+    /**
+     * Capitalize the first letter in a string.
+     *
+     * @param string The string.
+     */
+    public ucFirst( string ): string {
+        return string.charAt(0).toLocaleUpperCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    }
+
+    /**
+     * Uncapitalize the first letter in a string.
+     *
+     * @param string The string.
+     */
+    public lcFirst( string ): string {
+        return string.charAt(0).toLocaleLowerCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
     }
 
 }
