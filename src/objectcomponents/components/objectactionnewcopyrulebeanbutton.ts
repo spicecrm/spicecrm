@@ -1,36 +1,36 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Directive, Inject, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, Directive, Inject, OnInit, ViewChild} from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
-import {modal} from "../../services/modal.service";
 import {language} from "../../services/language.service";
 
 
 @Directive({
-    selector: "object-action-new-bean-from-related-button-model-helper",
+    selector: "object-action-new-copy-rule-bean-button-model-helper",
     providers: [model]
 })
-export class ObjectActionNewBeanFromRelatedButtonModelHelper {
+export class ObjectActionNewCopyRuleBeanButtonModelHelper {
     constructor(public model: model) {}
 }
 
 
 @Component({
-    selector: "object-action-new-bean-from-related-button",
-    templateUrl: "./src/objectcomponents/templates/objectactionnewbeanfromrelatedbutton.html",
+    selector: "object-action-new-copy-rule-bean-button",
+    templateUrl: "./src/objectcomponents/templates/objectactionnewcopyrulebeanbutton.html",
 })
-export class ObjectActionNewBeanFromRelatedButton implements OnInit {
+// actionconfig required! Example: '{ "module": "Calls", "label": "LBL_ADD_CALL" }'
+export class ObjectActionNewCopyRuleBeanButton implements OnInit {
 
     // To provide a new model, we need a child component!
-    @ViewChild(ObjectActionNewBeanFromRelatedButtonModelHelper, {static: true}) private child;
+    @ViewChild(ObjectActionNewCopyRuleBeanButtonModelHelper, {static: true}) private child;
 
     public parent: any = {};
     public disabled: boolean = true;
     public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal) {
+    constructor(private language: language, private metadata: metadata, private model: model) {
 
     }
 
