@@ -84,7 +84,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
                 territories.splice(index, 1);
                 return true;
             }
-        })
+        });
         this.territories = territories;
 
     }

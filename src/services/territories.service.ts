@@ -42,7 +42,7 @@ export class territories {
      */
     public getRecentTerritories(module, count = 5, action?) {
         let territorries = this.userTerritories;
-        if (action) {
+        if (action  && !this.session.isAdmin) {
             let actionTerritories = territorries[module] && territorries[module].length > 0 ? territorries[module].filter(a =>  a.actions.indexOf(action) != -1) : [];
             return actionTerritories && actionTerritories.length > 0 ? actionTerritories.slice(0, count) : [];
         } else {
@@ -66,7 +66,7 @@ export class territories {
         let retArray = [];
 
         for (let territory of this.userTerritories[module]) {
-            if (territory.name.toLowerCase().indexOf(searchterm.toLowerCase()) >= 0 && activeterritories.indexOf(territory.id) < 0 && (!action || action && territory.actions.indexOf(action) != -1)) {
+            if (territory.name.toLowerCase().indexOf(searchterm.toLowerCase()) >= 0 && activeterritories.indexOf(territory.id) < 0 && (this.session.isAdmin || !action || action && territory.actions.indexOf(action) != -1)) {
                 retArray.push(territory);
             }
 

@@ -19,9 +19,9 @@
                                             <system-icon icon="service_territory" size="x-small" divClass="slds-p-right--x-small"></system-icon>
                                         </span>
                                         <span class="slds-pill__label">{{territory.name}}</span>
-                                        <span class="slds-icon_container slds-pill__remove">
-                                          <system-button-icon [icon]="'close'" (click)="removeTerritory($event, territory.id)"></system-button-icon>
-                                        </span>
+                                        <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeTerritory($event, territory.id)">
+                                          <system-button-icon [icon]="'close'"></system-button-icon>
+                                        </button>
                                   </span>
                             </li>
                             <li class="slds-listbox-item" role="presentation">
