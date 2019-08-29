@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <ul class="slds-list_horizontal slds-has-dividers_left">
         <li *ngFor="let territory of territories|fieldterritorysecondarypipe:primary_territory_id" class="slds-item">{{territory.name}}</li>

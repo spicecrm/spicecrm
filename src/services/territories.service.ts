@@ -2,7 +2,6 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
@@ -12,44 +11,38 @@ import {backend} from './backend.service';
 @Injectable()
 export class territories {
 
-    public userTerritories: any = {};
     private addTerritories: any = {};
 
     constructor(private backend: backend, private metadata: metadata, private configurationService: configurationService, private session: session) {
 
     }
 
-    public getTerritories(loadhandler: Subject<string>) {
-        if (sessionStorage[window.btoa('territorries' + this.session.authData.sessionId)] && sessionStorage[window.btoa('territorries' + this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            this.userTerritories = this.session.getSessionData('territorries');
-            loadhandler.next('getTerritorries');
+    /**
+     * checks if a module is territory managed
+     * @param module
+     */
+    public checkModuleManaged(module) {
+        let types = this.configurationService.getData('aclterritorymoduletypes');
+        let moduelType = types.find(typeRecord => typeRecord.module == module);
+        if (moduelType) {
+            return true;
         } else {
-            this.loadTerritories().subscribe(() => {
-                loadhandler.next('getTerritorries');
-            });
+            return false;
         }
     }
 
-    public loadTerritories() {
-        let retSubject = new Subject();
+    get userTerritories() {
+        return this.configurationService.getData('aclterritoryuserterritories');
+    }
 
-        let modules: string[] = [];
-        for (let module of this.metadata.getModules()) {
-            if (module !== 'Home') {
-                modules.push(module);
-            }
-        }
-
-        this.backend.getRequest('territories')
-            .subscribe(response => {
-                this.session.setSessionData('territorries', response);
-                this.userTerritories = response;
-
-                retSubject.next(true);
-                retSubject.complete();
-            });
-
-        return retSubject.asObservable();
+    /**
+     * returns a list of reent used territories (if there are any. Otherwise the first n entries from the user territories
+     *
+     * @param count the number of records to be returned
+     */
+    public getRecentTerritories(module, count = 5) {
+        let territorries = this.userTerritories;
+        return territorries[module] && territorries[module].length > 0 ? territorries[module].slice(0, count) : [];
     }
 
     public loadTerritoryName(territory) {

@@ -2,21 +2,21 @@
  * @module ObjectFields
  */
 import {Component,  Input, Output, EventEmitter} from '@angular/core';
-import {model} from '../../services/model.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {fts} from '../../services/fts.service';
-import {modal} from '../../services/modal.service';
-import {territories} from '../../services/territories.service';
+import {model} from '../../../services/model.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {fts} from '../../../services/fts.service';
+import {modal} from '../../../services/modal.service';
+import {territories} from '../../../services/territories.service';
 
 @Component({
     selector: 'field-territory-search',
-    templateUrl: './src/objectfields/templates/fieldterritorysearch.html'
+    templateUrl: './src/modules/aclterritories/templates/fieldterritorysearch.html'
 })
 export class fieldTerritorySearch {
     private searchTerm: string = '';
     private searchTimeout: any = {};
-    private searchterritories: Array<any> = [];
+    private searchterritories: any[] = [];
 
     @Output() private selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
 
