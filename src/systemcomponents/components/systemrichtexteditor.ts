@@ -9,7 +9,7 @@ import {
     EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy, Output,
+    OnDestroy, OnInit, Output,
     Renderer2,
     ViewChild,
     ViewContainerRef
@@ -35,7 +35,7 @@ import {metadata} from "../../services/metadata.service";
         }, systemrichtextservice
     ]
 })
-export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
+export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAccessor {
 
     @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) private htmlEditor: ViewContainerRef;
 
@@ -46,6 +46,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private isActive: boolean = false;
     private clickListener: any;
+    private keydownListener: any;
     private modalOpen: boolean = false;
     public isExpanded: boolean = false;
     public contract: EventEmitter<string> = new EventEmitter<string>();
@@ -80,9 +81,16 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {};
     }
 
+    public ngOnInit() {
+        this.handleKeyboardShortcuts();
+    }
+
     public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
+        }
+        if (this.keydownListener) {
+            this.keydownListener();
         }
     }
 
@@ -402,5 +410,14 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
             let text = (e.originalEvent || e).clipboardData.getData('text/plain');
             document.execCommand("insertHTML", false, this.encodeHtml(text));
         }
+    }
+
+    private handleKeyboardShortcuts() {
+        this.keydownListener = this.renderer.listen('document', 'keydown', (e) => {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() == 's') {
+                e.preventDefault();
+                this.save$.emit(this._html);
+            }
+        });
     }
 }
