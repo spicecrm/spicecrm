@@ -2,14 +2,14 @@
  * @module ObjectFields
  */
 import {Component, Renderer2, ElementRef, Pipe} from '@angular/core';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {territories} from '../../services/territories.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
-import {backend} from '../../services/backend.service';
-import {fieldGeneric} from './fieldgeneric';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {territories} from '../../../services/territories.service';
+import {language} from '../../../services/language.service';
+import {metadata} from '../../../services/metadata.service';
+import {backend} from '../../../services/backend.service';
 import {Router} from '@angular/router';
+import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Pipe({
     name: 'fieldterritorysecondarypipe',
@@ -30,7 +30,7 @@ export class fieldTerritorySecondaryPipe {
 
 
 @Component({
-    templateUrl: './src/objectfields/templates/fieldterritorysecondary.html',
+    templateUrl: './src/modules/aclterritories/templates/fieldterritorysecondary.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldTerritorySecondary extends fieldGeneric {

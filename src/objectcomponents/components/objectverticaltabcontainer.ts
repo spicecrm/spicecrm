@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {session} from '../../services/session.service';
 
 /**
  * renders a vertical tab container
@@ -51,9 +52,9 @@ export class ObjectVerticalTabContainer implements OnInit {
     /**
      * the component config
      */
-    private componentconfig: any = [];
+    public componentconfig: any = [];
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(private language: language, public metadata: metadata, private session: session) {
     }
 
     /**
@@ -64,6 +65,10 @@ export class ObjectVerticalTabContainer implements OnInit {
             let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
             this.componentconfig = [];
             for (let item of items) {
+                // check if the tab is admin access only
+                if (item.componentconfig.adminonly && !this.session.isAdmin) continue;
+
+                // else add the tab
                 this.componentconfig.push(item.componentconfig);
             }
         }

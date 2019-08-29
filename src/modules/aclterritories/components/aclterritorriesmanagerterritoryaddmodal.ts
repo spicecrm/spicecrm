@@ -38,6 +38,7 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
 
         // set the view
         this.view.isEditable = true;
+        this.view.displayLabels = false;
         this.view.setEditMode();
     }
 
