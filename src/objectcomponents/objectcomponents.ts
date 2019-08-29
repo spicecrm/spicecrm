@@ -59,7 +59,7 @@ import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutto
 import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactionduplicatebutton';
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
-import /*embed*/ {ObjectActionNewBeanFromRelatedButton} from './components/objectactionnewbeanfromrelatedbutton';
+import /*embed*/ {ObjectActionNewBeanFromRelatedButton, ObjectActionNewBeanFromRelatedButtonModelHelper} from './components/objectactionnewbeanfromrelatedbutton';
 import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
@@ -317,6 +317,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionDuplicateButton,
         ObjectActionNewrelatedButton,
         ObjectActionNewBeanFromRelatedButton,
+        ObjectActionNewBeanFromRelatedButtonModelHelper,
         ObjectActionImportButton,
         ObjectActionSelectButton,
         ObjectEditModal,
