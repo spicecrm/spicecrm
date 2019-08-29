@@ -46,16 +46,29 @@ export class ObjectRelatedlistTable implements OnInit {
      */
     @Input() private hideActions: boolean = false;
 
+    /**
+     * set if no access to the related odule is allowed
+     */
+    private noAccess: boolean = false;
+
     private nowDragging = false;
     private isSequenced = false;
 
-    constructor( public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend, private logger: loggerService ) { }
+    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend, private logger: loggerService) {
+    }
 
     public ngOnInit() {
-        if ( !this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] ) {
-            this.logger.error('Missing link or wrong link name ("'+this.relatedmodels._linkName+'")!');
+
+        // check access
+        if (!(this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, 'listrelated') || this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, 'list'))) {
+            this.noAccess = true;
+            return;
+        }
+
+        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName]) {
+            this.logger.error('Missing link or wrong link name ("' + this.relatedmodels._linkName + '")!');
         } else {
-            if( !this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field ) {
+            if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field) {
                 this.sequencefield = this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field;
             }
         }
@@ -75,20 +88,20 @@ export class ObjectRelatedlistTable implements OnInit {
     }
 
     private isSortable(field): boolean {
-        if ( this.relatedmodels.sortBySequencefield ) return false;
+        if (this.relatedmodels.sortBySequencefield) return false;
         return field.fieldconfig.sortable === true;
     }
 
     private setSortField(field): void {
-        if ( this.relatedmodels.sortBySequencefield ) return;
+        if (this.relatedmodels.sortBySequencefield) return;
         if (this.isSortable(field)) {
             this.relatedmodels.sortfield = field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field;
         }
     }
 
     private getSortIcon(field): string {
-        if ( this.relatedmodels.sortfield == ( field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field )) {
-            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown':'arrowup';
+        if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
+            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown' : 'arrowup';
         }
         return '';
     }
