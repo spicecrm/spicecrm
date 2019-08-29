@@ -60,7 +60,7 @@ import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactiondu
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
-import /*embed*/ {ObjectActionNewBeanFromRelatedButton, ObjectActionNewBeanFromRelatedButtonModelHelper} from './components/objectactionnewbeanfromrelatedbutton';
+import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
 import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
@@ -320,8 +320,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionNewButton,
         ObjectActionDuplicateButton,
         ObjectActionNewrelatedButton,
-        ObjectActionNewBeanFromRelatedButton,
-        ObjectActionNewBeanFromRelatedButtonModelHelper,
+        ObjectActionNewCopyRuleBeanButton,
+        ObjectActionNewCopyRuleBeanButtonModelHelper,
         ObjectActionImportButton,
         ObjectActionSelectButton,
         ObjectEditModal,
