@@ -34,6 +34,9 @@ export class SpiceKanbanTile implements OnInit {
         this.model.module = this.modellist.module;
         this.model.id = this.item.id;
         this.model.data = this.model.utils.backendModel2spice(this.modellist.module, this.item);
+
+        // initialize the field statis
+        this.model.initializeFieldsStati();
     }
 
     private goDetail() {
