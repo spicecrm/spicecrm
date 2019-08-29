@@ -1,4 +1,4 @@
-<table class="slds-table slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
+<table *ngIf="!noAccess;else noaccess" class="slds-table slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
     <thead>
         <tr class="slds-text-title--caps">
             <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
@@ -30,3 +30,6 @@
     </ng-container>
     <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="!hideActions"></tbody>
 </table>
+<ng-template #noaccess>
+    <system-illustration-no-access></system-illustration-no-access>
+</ng-template>
