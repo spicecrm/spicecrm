@@ -47,7 +47,7 @@ export class ACLProfilesManagerProfiles {
         this.activeProfileId = '';
         this.profileselected.emit(this.activeProfileId);
 
-        let params = {fields: ['id', 'name', 'description', 'status'], searchterm: this.searchterm};
+        let params = {fields: ['id', 'name', 'description', 'status'], searchterm: this.searchterm, limit: '-99'};
 
         this.backend.getRequest('module/SpiceACLProfiles', params).subscribe(aclprofiles => {
             this.aclprofiles = aclprofiles.list;
