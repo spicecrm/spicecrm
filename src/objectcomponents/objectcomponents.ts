@@ -60,6 +60,7 @@ import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactiondu
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
+import /*embed*/ {ObjectActionNewBeanFromRelatedButton, ObjectActionNewBeanFromRelatedButtonModelHelper} from './components/objectactionnewbeanfromrelatedbutton';
 import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
@@ -272,6 +273,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectListViewHeaderListSelector,
         ObjectList,
         ObjectListHeader,
+        ObjectActionContainer,
+        ObjectActionContainerItem,
         ObjectListHeaderActionMenu,
         ObjectListHeaderActionsExportCSVButton,
         ObjectListHeaderActionsExportTargetlistButton,
@@ -304,8 +307,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectListViewSettingsAddlistModal,
         ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
-        ObjectActionContainer,
-        ObjectActionContainerItem,
         ObjectActionEditButton,
         ObjectActionSaveButton,
         ObjectActionSaveRelatedButton,
@@ -319,6 +320,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionNewButton,
         ObjectActionDuplicateButton,
         ObjectActionNewrelatedButton,
+        ObjectActionNewBeanFromRelatedButton,
+        ObjectActionNewBeanFromRelatedButtonModelHelper,
         ObjectActionImportButton,
         ObjectActionSelectButton,
         ObjectEditModal,
@@ -451,6 +454,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectPageHeader,
         ObjectPageHeaderDetails,
         ObjectPageHeaderDetailRow,
+        ObjectActionContainer,
         ObjectActionMenu,
         ObjectActionsetMenu,
         ObjectSelectButton,
@@ -459,7 +463,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectRelatedListItem,
         ObjectPopoverHeader,
         ObjectPopoverBodyItem,
-        ObjectActionContainer,
         ObjectRecordFieldset,
         ObjectRecordFieldsetHorizontalList,
         ObjectRowItemComponent,
