@@ -38,7 +38,7 @@ export class fieldTerritorySearch {
             activeTerritories.push(territory.id);
         }
 
-        this.searchterritories = this.territories.searchTerritories(this.model.module, this.searchTerm, 5, activeTerritories);
+        this.searchterritories = this.territories.searchTerritories(this.model.module, this.searchTerm, 5, activeTerritories, this.model.isNew ? 'create': 'edit');
     }
 
     private setTerritory(territory) {

@@ -40,9 +40,14 @@ export class territories {
      *
      * @param count the number of records to be returned
      */
-    public getRecentTerritories(module, count = 5) {
+    public getRecentTerritories(module, count = 5, action?) {
         let territorries = this.userTerritories;
-        return territorries[module] && territorries[module].length > 0 ? territorries[module].slice(0, count) : [];
+        if (action) {
+            let actionTerritories = territorries[module] && territorries[module].length > 0 ? territorries[module].filter(a =>  a.actions.indexOf(action) != -1) : [];
+            return actionTerritories && actionTerritories.length > 0 ? actionTerritories.slice(0, count) : [];
+        } else {
+            return territorries[module] && territorries[module].length > 0 ? territorries[module].slice(0, count) : [];
+        }
     }
 
     public loadTerritoryName(territory) {
@@ -57,11 +62,11 @@ export class territories {
             });
     }
 
-    public searchTerritories(module, searchterm, items = 5, activeterritories = []) {
+    public searchTerritories(module, searchterm, items = 5, activeterritories = [], action?) {
         let retArray = [];
 
         for (let territory of this.userTerritories[module]) {
-            if (territory.name.toLowerCase().indexOf(searchterm.toLowerCase()) >= 0 && activeterritories.indexOf(territory.id) < 0) {
+            if (territory.name.toLowerCase().indexOf(searchterm.toLowerCase()) >= 0 && activeterritories.indexOf(territory.id) < 0 && (!action || action && territory.actions.indexOf(action) != -1)) {
                 retArray.push(territory);
             }
 

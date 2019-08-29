@@ -44,7 +44,7 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
 
     ngOnInit() {
         // set type
-        this.model.data.territortype_id = this.territorytype;
+        this.model.data.territorytype_id = this.territorytype;
 
         // load type
         this.backend.getRequest('spiceaclterritories/core/orgobjecttypes/' + this.territorytype).subscribe(territorrytypedetails => {
