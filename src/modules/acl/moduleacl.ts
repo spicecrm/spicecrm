@@ -32,6 +32,7 @@ import /*embed*/ {ACLProfilesManagerProfile} from "./components/aclprofilesmanag
 import /*embed*/ {ACLProfilesManagerProfiles} from "./components/aclprofilesmanagerprofiles";
 import /*embed*/ {ACLProfilesManagerAddObjectModal} from "./components/aclprofilesmanageraddobjectmodal";
 import /*embed*/ {ACLProfilesManagerAddProfileModal} from "./components/aclprofilesmanageraddprofilemodal";
+import /*embed*/ {ACLUserProfiles} from "./components/acluserprofiles";
 
 @NgModule({
     imports: [
@@ -61,7 +62,8 @@ import /*embed*/ {ACLProfilesManagerAddProfileModal} from "./components/aclprofi
         ACLProfilesManagerProfiles,
         ACLProfilesManagerProfile,
         ACLProfilesManagerAddProfileModal,
-        ACLProfilesManagerAddObjectModal
+        ACLProfilesManagerAddObjectModal,
+        ACLUserProfiles
     ]
 })
 export class ModuleACL {
