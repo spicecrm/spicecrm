@@ -19,13 +19,15 @@ import {view} from "../../services/view.service";
 })
 export class ObjectActionOpenButton {
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view) {}
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view) {
+    }
 
     get disabled() {
-        return this.view.isEditMode();
+        return !this.model.checkAccess('detail') ? true : this.view.isEditMode();
     }
 
     public execute() {
         this.model.goDetail();
     }
+
 }

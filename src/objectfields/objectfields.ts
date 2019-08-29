@@ -86,12 +86,9 @@ import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules
 import /*embed*/ {FieldEnumOutputTemplates} from "./components/fieldenumoutputtemplates";
 import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
 import /*embed*/ {fieldServiceQueue} from "./components/fieldservicequeue";
-import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
-import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
 import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
 import /*embed*/ {fieldSelectTreeSearch} from "./components/fieldselecttreesearch";
 import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
-import /*embed*/ {fieldTerritorySecondary, fieldTerritorySecondaryPipe} from "./components/fieldterritorysecondary";
 import /*embed*/ {fieldColorEnum} from "./components/fieldcolorenum";
 import /*embed*/ {fieldBase64} from "./components/fieldbase64";
 import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
@@ -201,10 +198,6 @@ declare var _: any;
         FieldModelInfoComponent,
         fieldGDPR,
         fieldServiceQueue,
-        fieldTerritory,
-        fieldTerritorySearch,
-        fieldTerritorySecondary,
-        fieldTerritorySecondaryPipe,
         fieldSelectTree,
         fieldSelectTreeSearch,
         fieldSelectTreeTree,
