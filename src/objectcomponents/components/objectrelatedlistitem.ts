@@ -42,7 +42,7 @@ export class ObjectRelatedListItem implements OnInit {
         this.model.module = this.module;
         this.model.id = this.listitem.id;
         this.model.data = this.listitem;
-
+        this.view.isEditable = this.editable;
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListItem', this.model.module);
     }
 
