@@ -6,12 +6,12 @@ import {metadata} from "./metadata.service";
 import {MathExpressionCompilerService} from "./mathexpressioncompiler";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -55,17 +55,23 @@ export class modelutilities {
 
     public backend2spice(module: string, field: string, value: any) {
         let fieldDefs = this.metadata.getFieldDefs(module, field);
-        if(!fieldDefs || !fieldDefs.type) {
+        if (!fieldDefs || !fieldDefs.type) {
             return value;
         }
 
         switch (fieldDefs.type) {
             case "date":
+                // check if the object is a moment object
+                if (moment.isMoment(value)) return value;
+
                 // return new Date(Date.parse(value));
                 let pDate = moment.utc(value);
                 return pDate.isValid() ? pDate : null;
             case "datetime":
             case "datetimecombo":
+                // check if the object is a moment object
+                if (moment.isMoment(value)) return value;
+
                 // return new Date(Date.parse(value));
                 let pDateTime = moment(value).tz(moment.tz.guess());
                 pDateTime.add(pDateTime.utcOffset(), "m");
@@ -81,13 +87,13 @@ export class modelutilities {
             case "json":
                 try {
                     return value ? JSON.parse(value) : {};
-                } catch(e) {
+                } catch (e) {
                     return {};
                 }
             // todo: type mutlienum!
             case "link":
-                if(_.isObject(value) && value.beans && fieldDefs.module) {
-                    for(let beanId in value.beans) {
+                if (_.isObject(value) && value.beans && fieldDefs.module) {
+                    for (let beanId in value.beans) {
                         value.beans[beanId] = this.backendModel2spice(fieldDefs.module, value.beans[beanId]);
                     }
                 }
@@ -111,14 +117,16 @@ export class modelutilities {
     public spice2backend(module: string, field: string, value: any) {
 
         let fieldDefs = this.metadata.getFieldDefs(module, field);
-        if(!fieldDefs || !fieldDefs.type) {
+        if (!fieldDefs || !fieldDefs.type) {
             return value;
         }
 
-        switch(fieldDefs.type) {
+        switch (fieldDefs.type) {
             case "date":
-                if ( _.isObject( value ) && value._isAMomentObject ) {
-                    if ( !value.isValid() ) { return "";} // quick and dirty workaround, still something todo!
+                if (_.isObject(value) && value._isAMomentObject) {
+                    if (!value.isValid()) {
+                        return "";
+                    } // quick and dirty workaround, still something todo!
                     return value.format("YYYY-MM-DD");
                 } else {
                     let pDate = new moment.utc(value);
@@ -126,8 +134,14 @@ export class modelutilities {
                 }
             case "datetime":
             case "datetimecombo":
-                if ( typeof value === "string" && value.trim() === "" ) { return "";}; // quick and dirty workaround, still something todo!
-                if ( _.isObject( value ) && value._isAMomentObject && !value.isValid() ) { return ""; }; // quick and dirty workaround, still something todo!
+                if (typeof value === "string" && value.trim() === "") {
+                    return "";
+                }
+                ; // quick and dirty workaround, still something todo!
+                if (_.isObject(value) && value._isAMomentObject && !value.isValid()) {
+                    return "";
+                }
+                ; // quick and dirty workaround, still something todo!
                 let pDateTime = new moment(value).tz(moment.tz.guess());
                 pDateTime.subtract(pDateTime.utcOffset(), "m");
                 return pDateTime.format("YYYY-MM-DD HH:mm:ss");
@@ -136,15 +150,15 @@ export class modelutilities {
                 return !value ? '' : JSON.stringify(value);
             // todo: type mutlienum!
             case "link":
-                if(_.isObject(value) && value.beans && fieldDefs.module) {
-                    for(let beanId in value.beans) {
+                if (_.isObject(value) && value.beans && fieldDefs.module) {
+                    for (let beanId in value.beans) {
                         value.beans[beanId] = this.spiceModel2backend(fieldDefs.module, value.beans[beanId]);
                     }
                 }
                 return value;
             case "bool":
             case "boolean":
-                return value && ( value == "1" || value > 0 || value === true) ? '1' : '0';
+                return value && (value == "1" || value > 0 || value === true) ? '1' : '0';
             default:
                 return value;
         }
@@ -157,6 +171,7 @@ export class modelutilities {
     /*
      * a method to normilzae and clean an account name
      */
+
     // todo this needs to be moved
     public cleanAccountName(name) {
         let companyNames = ["ag", "gmbh", "gesmbh", "corp", "inc"];
@@ -179,10 +194,8 @@ export class modelutilities {
      * @param val2
      * @returns {boolean}
      */
-    static compare(val1, comparator:string, val2):boolean
-    {
-        switch(comparator)
-        {
+    static compare(val1, comparator: string, val2): boolean {
+        switch (comparator) {
             case "in":
                 // do something
                 break;
@@ -213,14 +226,18 @@ export class modelutilities {
      * @param {string} str
      * @returns {boolean}
      */
-    public static strtobool(str: string): boolean
-    {
-        if(typeof str != "string") {
+    public static strtobool(str: string): boolean {
+        if (typeof str != "string") {
             return false;
         }
-        switch(str.toLowerCase().trim()) {
-            case "false": case "no": case "0": case "": return false;
-            default: return true;
+        switch (str.toLowerCase().trim()) {
+            case "false":
+            case "no":
+            case "0":
+            case "":
+                return false;
+            default:
+                return true;
         }
     }
 
@@ -230,9 +247,8 @@ export class modelutilities {
      * @param   {number}    now     the timestamp which is used as a base for the calculation of relative dates.
      * @returns {moment}
      */
-    public static strtomoment(text: string, now?: number)
-    {
-        return moment(modelutilities.strtotime(text,now),"X");
+    public static strtomoment(text: string, now?: number) {
+        return moment(modelutilities.strtotime(text, now), "X");
     }
 
     /**
@@ -427,7 +443,8 @@ export class modelutilities {
             "min": "Minutes",
             "sec": "Seconds"
         };
-        function lastNext (type, range, modifier) {
+
+        function lastNext(type, range, modifier) {
             let diff;
             let day = days[range];
             if (typeof day !== "undefined") {
@@ -442,7 +459,8 @@ export class modelutilities {
                 date.setDate(date.getDate() + diff)
             }
         }
-        function process (val) {
+
+        function process(val) {
             // @todo: Reconcile this with regex using \s, taking into account
             // browser issues with split and regexes
             let splt = val.split(" ");
@@ -467,6 +485,7 @@ export class modelutilities {
             }
             return true
         }
+
         times = "(years?|months?|weeks?|days?|hours?|minutes?|min|seconds?|sec" +
             "|sunday|sun\\.?|monday|mon\\.?|tuesday|tue\\.?|wednesday|wed\\.?" +
             "|thursday|thu\\.?|friday|fri\\.?|saturday|sat\\.?)";
@@ -537,11 +556,11 @@ export class modelutilities {
         return tmp.join(argSeparator);
     }
 
-    compileMathExpression(code){
+    compileMathExpression(code) {
         //console.log("compiling: "+code+" ...");
         try {
             return this.mathcomp.do(code);
-        } catch(e) {
+        } catch (e) {
             console.warn(e);
             return false;
         }
