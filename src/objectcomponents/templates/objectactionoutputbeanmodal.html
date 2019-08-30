@@ -7,7 +7,7 @@
                 <select class="slds-col slds-select slds-grow" [(ngModel)]="selected_template" [disabled]="templates.length == 0">
                     <option *ngFor="let templ of templates" [ngValue]="templ">{{templ.name}} ({{templ.language}})</option>
                 </select>
-                <ng-container *ngIf="forcedFormat">
+                <ng-container *ngIf="!forcedFormat">
                     <label class="slds-p-left--small slds-col slds-form-element__label">{{language.getLabel('LBL_DISPLAY')}}</label>
                     <select class="slds-col slds-select slds-size--1-of-4" [(ngModel)]="selected_format" [disabled]="templates.length == 0">
                         <option value="html">HTML</option>
