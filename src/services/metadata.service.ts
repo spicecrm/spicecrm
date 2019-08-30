@@ -1122,7 +1122,7 @@ export class metadata {
 
         if (this.rolemodules[this.role]) {
             for (let rolemodule of this.rolemodules[this.role]) {
-                if ((menu === false || rolemodule.sequence !== null) && this.moduleDefs[rolemodule.module] && this.moduleDefs[rolemodule.module].visible && this.moduleDefs[rolemodule.module].acl.list) {
+                if ((menu === false || rolemodule.sequence !== null) && this.moduleDefs[rolemodule.module] && this.moduleDefs[rolemodule.module].visible && (!this.moduleDefs[rolemodule.module].visibleaclaction || (this.moduleDefs[rolemodule.module].visibleaclaction && this.checkModuleAcl(rolemodule.module, this.moduleDefs[rolemodule.module].visibleaclaction))) && this.moduleDefs[rolemodule.module].acl.list) {
                     modules.push(rolemodule.module);
                 }
             }
