@@ -62,7 +62,7 @@ export class ACLObjectsManagerObjects {
         this.aclobjects = [];
 
         let params = {
-            spiceacltype_id: this.activeTypeId,
+            sysmodule_id: this.activeTypeId,
             searchterm: this.searchterm
         }
 
@@ -100,7 +100,7 @@ export class ACLObjectsManagerObjects {
 
     private addObject() {
         this.modal.openModal('ACLObjectsManagerAddObjectModal').subscribe(modalRef => {
-            modalRef.instance.spiceacltype_id = this.activeTypeId;
+            modalRef.instance.sysmodule_id = this.activeTypeId;
             modalRef.instance.newObjectData.subscribe(modelData => {
                 if (modelData) {
                     this.aclobjects.push(modelData);
