@@ -36,7 +36,7 @@ export class ACLObjectsManagerObjectFieldvalues {
     }
 
     private handleType() {
-        let aclTypeId = this.model.getFieldValue('spiceacltype_id');
+        let aclTypeId = this.model.getFieldValue('sysmodule_id');
         if (aclTypeId && this.loadedtype != aclTypeId) {
             this.loadedtype = aclTypeId;
             // get the fields
@@ -50,7 +50,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {
             for (let fieldvalue of fieldValues) {
-                if (fieldvalue.spiceacltypefield_id == valueid) {
+                if (fieldvalue.spiceaclmodulefield_id == valueid) {
                     return fieldvalue[field];
                 }
             }
@@ -64,7 +64,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {
             for (let fieldvalue of fieldValues) {
-                if (fieldvalue.spiceacltypefield_id == valueid) {
+                if (fieldvalue.spiceaclmodulefield_id == valueid) {
                     fieldvalue[field] = event.currentTarget.value;
                     return;
                 }
@@ -74,7 +74,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         // not found .. add new object entry
         let newObject = {
             spiceaclobject_id: this.model.id,
-            spiceacltypefield_id: valueid,
+            spiceaclmodulefield_id: valueid,
             operator: '',
             value1: '',
             value2: ''
@@ -88,7 +88,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {
             for (let fieldvalue of fieldValues) {
-                if (fieldvalue.spiceacltypefield_id == valueid) {
+                if (fieldvalue.spiceaclmodulefield_id == valueid) {
                     fieldValues.splice(i, 1);
                     return;
                 }

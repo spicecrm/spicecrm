@@ -61,7 +61,7 @@ export class ACLProfilesManagerAddObjectModal {
         this.aclobjects = [];
 
         let params = {
-            spiceacltype_id: this.activeTypeId,
+            sysmodule_id: this.activeTypeId,
             searchterm: this.searchterm
         }
 
