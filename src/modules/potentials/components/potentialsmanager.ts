@@ -1,5 +1,5 @@
 /**
- * @module ModuleEmails
+ * @module ModulePotentials
  */
 import {Component, OnInit, ViewChild} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";

@@ -15,6 +15,10 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {PotentialsManager} from "./components/potentialsmanager";
 import /*embed*/ {PotentialsManagerAddButton} from "./components/potentialsmanageraddbutton";
+import /*embed*/ {PotentialsOpportunityAllocationTab} from "./components/potentialsopportunityallocationtab";
+import /*embed*/ {PotentialsOpportunityAllocationLines} from "./components/potentialsopportunityallocationlines";
+import /*embed*/ {PotentialsOpportunityAllocationLineItem} from "./components/potentialsopportunityallocationlineitem";
+import /*embed*/ {PotentialsOpportunityAllocationsCCFilterPipe} from "./pipes/potentialsopportunityallocationsccfilterpipe";
 
 @NgModule({
     imports: [
@@ -28,7 +32,11 @@ import /*embed*/ {PotentialsManagerAddButton} from "./components/potentialsmanag
     ],
     declarations: [
         PotentialsManager,
-        PotentialsManagerAddButton
+        PotentialsManagerAddButton,
+        PotentialsOpportunityAllocationTab,
+        PotentialsOpportunityAllocationLines,
+        PotentialsOpportunityAllocationLineItem,
+        PotentialsOpportunityAllocationsCCFilterPipe
     ]
 })
 export class ModulePotentials {
