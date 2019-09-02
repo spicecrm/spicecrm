@@ -30,7 +30,10 @@ import /*embed*/ {SystemButtonCustomIcon} from "./components/systembuttoncustomi
 import /*embed*/ {SystemButtonGroup} from "./components/systembuttongroup";
 import /*embed*/ {SystemButtonIcon} from "./components/systembuttonicon";
 import /*embed*/ {SystemCaptureImage} from "./components/systemcaptureimage";
-import /*embed*/ {SystemCard, SystemCardBody, SystemCardFooter, SystemCardHeaderTitle} from "./components/card";
+import /*embed*/ {SystemCard} from "./components/systemcard";
+import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
+import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
+import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
@@ -134,7 +137,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
-        SystemCardHeaderTitle,
+        SystemCardHeader,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -225,7 +228,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
-        SystemCardHeaderTitle,
+        SystemCardHeader,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
