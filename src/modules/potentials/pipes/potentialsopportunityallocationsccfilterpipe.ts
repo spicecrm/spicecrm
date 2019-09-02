@@ -1,13 +1,13 @@
 /**
  * @module ModulePotentials
  */
-import {Pipe} from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-    name: 'potentialsopportunityallocationsccfilterpipe',
+    name: 'potentialsopportunityallocationsccfilter',
     pure: false
 })
-export class PotentialsOpportunityAllocationsCCFilterPipe {
+export class PotentialsOpportunityAllocationsCCFilterPipe implements PipeTransform {
 
     public transform(values, companycode) {
         let retValues = [];

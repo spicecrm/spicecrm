@@ -22,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="slds-hint-parent" potentials-opportunity-allocation-line-item [potential]="account_potential" [opportunity]="model" *ngFor="let account_potential of account_potentials | potentialsopportunityallocationsccfilterpipe: companyCode; trackBy: trackItemFn"></tr>
+            <tr class="slds-hint-parent" potentials-opportunity-allocation-line-item [potential]="account_potential" [opportunity]="model" *ngFor="let account_potential of account_potentials | potentialsopportunityallocationsccfilter: companyCode; trackBy: trackItemFn"></tr>
         </tbody>
         <tbody system-table-stencils *ngIf="isLoading" [columns]="4" [select]="false" [tools]="false"></tbody>
     </table>
