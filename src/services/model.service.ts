@@ -2,7 +2,7 @@
  * @module services
  */
 import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
-import {of, Subject, Observable} from "rxjs";
+import {of, BehaviorSubject, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
@@ -80,9 +80,9 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public data$ = new EventEmitter();
+    public data$: BehaviorSubject<any>;
     /**
-     * an event emitter that fires when te mode of the model changes between display and editing. Components can subscribe to this to get notified when the mode is triggerd by the application or by the user
+     * an behaviour Subject that fires when te mode of the model changes between display and editing. Components can subscribe to this to get notified when the mode is triggerd by the application or by the user
      *
      * ```typescript
      * constructor(private model: model) {
@@ -170,6 +170,8 @@ export class model implements OnDestroy {
         // @Optional() private globalFooter: GlobalFooter
     ) {
         this.modelRegisterId = this.navigation.registerModel(this);
+
+        this.data$ = new BehaviorSubject(this.data);
     }
 
     get messages(): any[] {
@@ -289,7 +291,7 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
                 this.data = res;
-                this.data$.emit(res);
+                this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -666,7 +668,7 @@ export class model implements OnDestroy {
     public setFieldValue(field, value) {
         if (!field) return false;
         this.data[field] = value;
-        this.data$.emit(this.data);
+        this.data$.next(this.data);
         this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
@@ -685,7 +687,7 @@ export class model implements OnDestroy {
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
-        this.data$.emit(this.data);
+        this.data$.next(this.data);
         this.evaluateValidationRules(null, "change");
 
         // run the duplicate check
@@ -699,7 +701,7 @@ export class model implements OnDestroy {
 
         if (this.backupData) {
             this.data = {...this.backupData};
-            this.data$.emit(this.data);
+            this.data$.next(this.data);
             this.backupData = null;
             // todo: evaluate all fields because they have changed back???
             this.resetMessages();
@@ -750,7 +752,7 @@ export class model implements OnDestroy {
                 res => {
                     this.data = res;
                     this.isNew = false;
-                    this.data$.emit(res);
+                    this.data$.next(res);
                     this.broadcast.broadcastMessage("model.save", {
                         id: this.id,
                         reference: this.reference,
