@@ -199,18 +199,35 @@
 
     <system-section titlelabel="LBL_HOME_PREFERENCES">
         <div class="slds-grid">
-            <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_HOME_DASHBOARD">
-                <user-preferences-item-display>{{homeDashboardName}}</user-preferences-item-display>
+            <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
+                <user-preferences-item-display *ngIf="!preferences.home_dashboard; else homeDashboardContainer"></user-preferences-item-display>
+                <ng-template #homeDashboardContainer>
+                    <field-container [modelProvider]="{module: 'Dashboards', id: preferences.home_dashboard, data: getDashboardData(preferences.home_dashboard)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                </ng-template>
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
                         <select class="slds-select" (change)="change($event,'home_dashboard')">
-                            <option value="-" [selected]="!preferences.home_dashboard">-- Default Dashboard --</option>
+                            <option value="" [selected]="!preferences.home_dashboard">-- Default Dashboard --</option>
                             <option *ngFor="let dashboard of dashboards" [value]="dashboard.id" [selected]="dashboard.id == preferences.home_dashboard">{{dashboard.name}}</option>
                         </select>
                     </div>
                 </user-preferences-item-edit>
             </user-preferences-item>
-            <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_HOME_ASSISTANT">
+            <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
+                <user-preferences-item-display *ngIf="!preferences.home_dashboardset; else homeDashboardSetContainer"></user-preferences-item-display>
+                <ng-template #homeDashboardSetContainer>
+                    <field-container [modelProvider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: getDashboardSetData(preferences.home_dashboardset)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                </ng-template>
+                <user-preferences-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.home_dashboardset" (change)="change($event,'home_dashboardset')">
+                            <option value="" [selected]="!preferences.home_dashboardset">-- select --</option>
+                            <option *ngFor="let option of dashboardSets" [value]="option.id">{{option.name}}</option>
+                        </select>
+                    </div>
+                </user-preferences-item-edit>
+            </user-preferences-item>
+            <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
                 <user-preferences-item-display>{{preferences.home_assistant}}</user-preferences-item-display>
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
