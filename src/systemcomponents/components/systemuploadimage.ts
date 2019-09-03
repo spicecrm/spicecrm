@@ -22,7 +22,7 @@ export class SystemUploadImage implements OnDestroy {
     /**
      * a reference to the image container
      */
-    @ViewChild("imgupload", {read: ViewContainerRef, static: true}) public imgupload: ViewContainerRef;
+    @ViewChild("imgupload", {read: ViewContainerRef, static: false}) public imgupload: ViewContainerRef;
 
     /**
      * the height of a crop area in pixel
