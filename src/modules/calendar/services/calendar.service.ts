@@ -61,6 +61,13 @@ export class calendar implements OnDestroy {
         Month: 'M',
         Schedule: 'M',
     };
+    public colorPalette: any[] = [
+        'e3abec', 'c2dbf7', '9fd6ff', '9de7da', '9df0c0', 'fff099', 'fed49a',
+        'd073e0', '86baf3', '5ebbff', '44d8be', '3be282', 'ffe654', 'ffb758',
+        'bd35bd', '5779c1', '5ebbff', '00aea9', '3cba4c', 'f5bc25', 'f99221',
+        '580d8c', '001970', '0a2399', '0b7477', '0b6b50', 'b67e11', 'b85d0d',
+    ];
+
     private subscriptions: Subscription = new Subscription();
 
     constructor(private backend: backend,
@@ -297,7 +304,7 @@ export class calendar implements OnDestroy {
             return;
         }
         let usersCalendars = this.usersCalendars;
-        let color = '#' + (Math.random() * 0xFFF << 0).toString(16).toLowerCase() == "fff" ? "eee" : (Math.random() * 0xFFF << 0).toString(16);
+        let color = '#' + this.colorPalette[Math.floor(this.colorPalette.length * Math.random())];
 
         usersCalendars.push({id: id, name: name, visible: true, color: color});
         this.setUserCalendars(usersCalendars.slice());
