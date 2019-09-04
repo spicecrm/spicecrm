@@ -3,7 +3,7 @@
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center">
-            <system-icon [icon]="determineFileIcon()" divClass="slds-p-right--xx-small" sprite="doctype"  size="x-small"></system-icon>
+            <system-icon *ngIf="value" [icon]="helper.determineFileIcon(model.getField('file_mime_type'))" divClass="slds-p-right--xx-small" sprite="doctype"  size="x-small"></system-icon>
             <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="previewFile()">{{value}}</a></div>
             <button *ngIf="isEditable()" style="float: right"
                     class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
@@ -17,7 +17,7 @@
     <div *ngIf="value" class="slds-pill slds-pill_link slds-size--1-of-1">
         <span class="slds-pill__icon_container">
             <span class="slds-icon_container slds-icon-standard-account" title="Account">
-                <system-icon [icon]="determineFileIcon()" divClass="" sprite="doctype"  size="x-small"></system-icon>
+                <system-icon [icon]="helper.determineFileIcon(model.getField('file_mime_type'))" divClass="" sprite="doctype"  size="x-small"></system-icon>
             </span>
         </span>
         <a href="javascript:void(0);" class="slds-pill__action">
