@@ -44,6 +44,7 @@ import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
+import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemIcon} from "./components/systemicon";
@@ -149,6 +150,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemCustomIcon,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
+        SystemDynamicRouteInterceptor,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionGroup,
         SystemGooglePlacesAutocomplete,
