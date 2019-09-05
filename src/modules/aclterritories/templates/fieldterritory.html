@@ -25,7 +25,7 @@
                         <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="territorySearchTerm" (focus)="onFocus()" [placeholder]="'Search Territories'" role="combobox"/>
                     </div>
                 </div>
-                <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                <div class="slds-dropdown slds-dropdown--length-5 slds-dropdown_fluid" role="listbox">
                     <field-territory-recent *ngIf="!territorySearchTerm" (selectedTerritory)="setTerritory($event)"></field-territory-recent>
                     <field-territory-search *ngIf="territorySearchTerm" [searchterm]="territorySearchTerm" (selectedTerritory)="setTerritory($event)"></field-territory-search>
                 </div>

@@ -25,7 +25,7 @@ export class fieldTerritoryRecent {
     @Output() private selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private metadata: metadata, public model: model, public fts: fts, public language: language, private modal: modal, private territories: territories) {
-        this.recentterritories = this.territories.getRecentTerritories(this.model.module, 5, this.model.isNew ? 'create': 'edit');
+        this.recentterritories = this.territories.getRecentTerritories(this.model.module, 50, this.model.isNew ? 'create': 'edit');
     }
 
     /**
