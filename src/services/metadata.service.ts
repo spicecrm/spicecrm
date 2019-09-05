@@ -1082,18 +1082,29 @@ export class metadata {
         delete this.moduleFilters[filterId];
     }
 
-    /*
-     get available Roles
+
+    /**
+     * checkl if teh user has access to the module.
+     *
+     * @param module the name of the module
+     * @param action a specific action. if not specified checks if the module exists for the user
      */
-    public checkModuleAcl(module, action) {
+    public checkModuleAcl(module, action?) {
         try {
-            return this.moduleDefs[module].acl[action];
+            if(action){
+                return this.moduleDefs[module].acl[action];
+            } else {
+                return !!this.moduleDefs[module];
+            }
         } catch (e) {
             return false;
         }
 
     }
 
+    /**
+     * get available roles
+     */
     public getRoles() {
         return this.roles;
     }
@@ -1430,11 +1441,18 @@ export class aclCheck implements CanActivate {
     }
 
     public canActivate(route, state) {
+
+        // if no session leave the redirect to the login handler
+        if (!this.session || !this.session.authData.sessionId) {
+            return false;
+        }
+
+        // otherwise check here
         if (route.params.module === 'Users' && !this.session.authData.admin) {
             return false;
         } // prevents non-admins from listing the user list
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
-        if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, "list")) {
+        if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, route.data.aclaction)) {
             this.router.navigate(["/modules/Home"]);
             return false;
         } else {

@@ -242,24 +242,33 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
             {
                 path: 'module/:module',
                 component: ObjectListViewContainer,
-                canActivate: [loginCheck, canNavigateAway, aclCheck]
+                canActivate: [loginCheck, canNavigateAway, aclCheck],
+                data: {aclaction: 'list'}
             },
-            {path: 'module/:module/import', component: ObjectImport, canActivate: [loginCheck]},
+            {
+                path: 'module/:module/import',
+                component: ObjectImport,
+                canActivate: [loginCheck, aclCheck],
+                data: {aclaction: 'import'}
+            },
             {
                 path: 'module/:module/historysummary/:id',
                 component: ObjectActivitiyTimelineSummary,
-                canActivate: [loginCheck]
+                canActivate: [loginCheck, aclCheck],
+                data: {aclaction: 'view'}
             },
             {
                 path: 'module/:module/:id',
                 component: ObjectRecordViewContainer,
-                canActivate: [loginCheck, canNavigateAway]
+                canActivate: [loginCheck, canNavigateAway, aclCheck],
+                data: {aclaction: 'view'}
             },
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {
                 path: 'module/:module/:id/:related/:link/:fieldset',
                 component: ObjectRelatedlistAll,
-                canActivate: [loginCheck]
+                canActivate: [loginCheck, aclCheck],
+                data: {aclaction: 'view'}
             },
             // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
             // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
