@@ -1,0 +1,10 @@
+<div class="slds-form-element slds-p-vertical--xx-small">
+    <label class="slds-form-element__label" [attr.for]="element.id">{{element.name}}</label>
+    <div class="slds-form-element__control">
+        <div class="slds-select_container">
+            <select class="slds-select" [disabled]="!editing" [id]="element.id" [(ngModel)]="elementValue">
+                <option *ngFor="let elementValue of elementValues" [value]="elementValue.elementvalue">{{elementValue.elementdescription}}</option>
+            </select>
+        </div>
+    </div>
+</div>

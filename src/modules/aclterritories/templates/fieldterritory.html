@@ -21,8 +21,8 @@
                 </div>
                 <div *ngIf="!value" class="slds-form-element__control slds-grid slds-box--border" [ngClass]="getFieldClass()">
                     <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'" (click)="openSearchModal()"></system-utility-icon>
                         <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="territorySearchTerm" (focus)="onFocus()" [placeholder]="'Search Territories'" role="combobox"/>
+                        <button (click)="openSearchModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                 </div>
                 <div class="slds-dropdown slds-dropdown--length-5 slds-dropdown_fluid" role="listbox">
