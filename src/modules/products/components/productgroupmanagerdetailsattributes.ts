@@ -5,7 +5,6 @@ import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
-import {ProductGroupManagerDetailsAttributesItem} from "./productgroupmanagerdetailsattributesitem";
 import {broadcast} from "../../../services/broadcast.service";
 import {productfinder} from "../services/productfinder.service";
 
@@ -21,7 +20,6 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     public filterKeyword: string = '';
     @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) private buttonContainer: ViewContainerRef;
     @ViewChild('itemcontainer', {read: ViewContainerRef, static: true}) private itemContainer: ViewContainerRef;
-    @ViewChildren(ProductGroupManagerDetailsAttributesItem) private attributeItems;
     private allExpanded: boolean = false;
     private isLoading: boolean = true;
     private modelSubscription: Subscription = new Subscription();
@@ -76,11 +74,6 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
                 this.attributes = this.sortAttributes(this.attributes);
             }
         });
-    }
-
-    private toggleCollapse() {
-        this.allExpanded = !this.allExpanded;
-        this.attributeItems._results.forEach(item => item.expand(this.allExpanded));
     }
 
     private handleAddEvent(item) {
