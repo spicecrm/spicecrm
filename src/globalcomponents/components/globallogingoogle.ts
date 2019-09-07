@@ -7,21 +7,34 @@ import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
+import {libloader} from "../../services/libloader.service";
+import {Observable, Subject} from "rxjs";
 
 /**
  * @ignore
  */
 declare var gapi: any;
 
+/**
+ * a login button that triggers the authentication via Google if that is enabled for the system
+ */
 @Component({
     selector: "global-login-google",
     templateUrl: "./src/globalcomponents/templates/globallogingoogle.html"
 })
 export class GlobalLoginGoogle {
 
-    private clientId: string = "";
+    // private clientId: string = "";
 
+    /**
+     * determines if the buitton is rendered or not
+     */
     private visible: boolean = false;
+
+    /**
+     * if the button is disabled .. while the libraries are loading
+     */
+    private disabled: boolean = true;
 
     private scope = [
         "profile",
@@ -40,8 +53,10 @@ export class GlobalLoginGoogle {
         private configuration: configurationService,
         private http: HttpClient,
         private loginService: loginService,
-        private session: session
+        private session: session,
+        private libloader: libloader
     ) {
+        // listen to config changes and trigger the initialization
         this.configuration.loaded$.subscribe((loaded) => {
             this.googleInit();
         });
@@ -50,25 +65,36 @@ export class GlobalLoginGoogle {
     public googleInit() {
         if (this.configuration.data.backendextensions.hasOwnProperty("google_oauth") &&
             this.configuration.data.backendextensions.google_oauth.config != null) {
+            this.visible = true;
+            this.libloader.loadFromSource(["https://apis.google.com/js/api.js", "https://apis.google.com/js/platform.js"]).subscribe(
+                success => {
+                    // load the google API
+                    gapi.load("auth2", () => {
+                        let calendar_config = JSON.parse(
+                            this.configuration.data.backendextensions.google_oauth.config.calendarconfig
+                        );
+                        // this.clientId = calendar_config.web.client_id;
+                        this.auth2 = gapi.auth2.init({
+                            client_id: calendar_config.web.client_id,
+                            cookiepolicy: "single_host_origin",
+                            scope: this.scope
+                        });
 
-            // load the google API
-            gapi.load("auth2", () => {
-                let calendar_config = JSON.parse(
-                    this.configuration.data.backendextensions.google_oauth.config.calendarconfig
-                );
-                this.clientId = calendar_config.web.client_id;
-                this.auth2 = gapi.auth2.init({
-                    client_id: this.clientId,
-                    cookiepolicy: "single_host_origin",
-                    scope: this.scope
+                        this.disabled = false;
+                    });
+                },
+                error => {
+                    this.disabled = true;
+                    console.log('Error loading Google Libs');
                 });
-
-                this.visible = true;
-            });
+        } else {
+            this.visible = false;
         }
     }
 
-    public signInClick() {
+    public signInClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
         Promise.resolve(this.auth2.signIn())
             .then((googleUser) => {
                 let user_token = googleUser.getAuthResponse().id_token;
