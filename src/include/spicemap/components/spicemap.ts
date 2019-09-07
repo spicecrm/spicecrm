@@ -13,6 +13,7 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
+import {libloader} from '../../../services/libloader.service';
 import {Router} from '@angular/router';
 
 /**
@@ -45,6 +46,7 @@ export class SpiceMap implements AfterViewInit {
         private backend: backend,
         private router: Router,
         private metadata: metadata,
+        private libloader: libloader
         // private libloader: libloader
     ) {
 
@@ -55,7 +57,7 @@ export class SpiceMap implements AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.metadata.loadLibs('maps.googleapis').subscribe(
+        this.libloader.loadLib('maps.googleapis').subscribe(
             (next) => {
                 this.renderMap();
             }

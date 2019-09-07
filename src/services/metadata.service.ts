@@ -1208,6 +1208,8 @@ export class metadata {
     }
 
     /**
+     * @deprecated shuld be replaced with libloader service
+     *
      * Lib Loading
      */
 

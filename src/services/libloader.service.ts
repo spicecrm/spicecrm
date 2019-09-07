@@ -1,9 +1,9 @@
 /**
  * @module services
  */
+import {EventEmitter, Injectable} from "@angular/core";
 import {Subject, Observable, of} from "rxjs";
-import {Injectable} from "@angular/core";
-import {backend} from "./backend.service";
+import {configurationService} from "./configuration.service";
 
 /**
  * a service class to dynamically load external libraries/scripts
@@ -11,29 +11,52 @@ import {backend} from "./backend.service";
  * created and adapted by Sebastian Franz
  */
 
+interface lib {
+    name: string;
+    status: 'loaded' | 'loading' | 'error';
+}
+
 @Injectable()
 export class libloader {
 
-    private scripts = [];
+    /**
+     * holds the packages as defined in the database are loaded
+     */
+    private loadedLibs: lib[] = [];
 
-    private is_ready = false;
+    /**
+     * ToDo: implement the handler here
+     *
+     * an event emitter for the libs .. emits when a specific lib has been loaded
+     * this is useful if the same li b is loading twice
+     */
+    private loadedLibs$: EventEmitter<object> = new EventEmitter<object>();
 
     /**
      * holds all scripts thar are loaded riect alreads
      */
     private loadedDirect: string[] = [];
 
-    constructor() {
-        // load available libraries into this.scripts...
+    constructor(private configuration: configurationService) {
     }
 
-    public load(...scripts: string[]): Observable<object> {
-        if (!this.is_ready) {
-            this.load();
-        }
+    /**
+     * loads the scripts from the config manager
+     */
+    get scripts() {
+        return this.configuration.getData('scripts');
+    }
+
+    /**
+     * loads an array of libraries with all scroipts per libray
+     *
+     * @param scripts
+     */
+    public loadLibs(...libs: string[]): Observable<object> {
+
         let observables: Array<Observable<object>> = [];
-        scripts.forEach((script) => {
-            observables.push(this.loadScript(script));
+        libs.forEach((lib) => {
+            observables.push(this.loadLib(lib));
         });
 
         let sub = new Subject();
@@ -64,46 +87,74 @@ export class libloader {
         }
     }
 
-    private loadScript(name: string): Observable<object> {
-        let sub = new Subject<object>();
-
+    /**
+     * loads a single library by the name
+     *
+     * @param name the name of the library
+     */
+    public loadLib(name: string): Observable<object> {
         // error if not found... (but how?)
         if (!this.scripts[name]) {
             return of({script: name, loaded: false, status: "Unknown"});
         } else if (this.isLibLoaded(name)) {
             return of({script: name, loaded: true, status: "Already Loaded"});
+            /* }  else if (this.isLibLoading(name)) {
+                let sub = new Subject<object>();
+                let subscription = this.loadedLibs$.subscribe(
+                    loadedname => {
+                        if (loadedname.name == name) {
+                            sub.next(loadedname);
+                            sub.complete();
+                            subscription.unsubscribe();
+                        }
+                    },
+                    error => {
+                        if (error.name == name) {
+                            sub.error(error);
+                            sub.complete();
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+                return sub.asObservable(); */
         } else {
+            this.loadedLibs.push({name: name, status: 'loading'});
+            let sub = new Subject<object>();
             // load script(s)
             let script: any = document.createElement("script");
+            let loadedcount = 0;
             for (let lib of this.scripts[name]) {
-                script.type = "text/javascript";
-                script.src = lib.src;
-                if (script.readyState) {  // IE
-                    script.onreadystatechange = () => {
-                        if (script.readyState === "loaded" || script.readyState === "complete") {
-                            script.onreadystatechange = null;
-                            lib.loaded = true;
-                            sub.next({script: lib.src, loaded: true, status: "Loaded"});
+                this.loadScriptDirect(lib.src).subscribe(
+                    success => {
+                        loadedcount++;
+                        if (loadedcount == this.scripts[name].length) {
+                            sub.next({script: name, loaded: true, status: "Loaded"});
                             sub.complete();
-                        }
-                    };
-                } else {  // Others
-                    script.onload = () => {
-                        lib.loaded = true;
-                        sub.next({script: lib.src, loaded: true, status: "Loaded"});
-                        sub.complete();
-                    };
-                }
-                script.onerror = (error: any) => {
-                    sub.error({script: lib.src, loaded: false, status: "Failed"});
-                };
-                document.getElementsByTagName("head")[0].appendChild(script);
-            }
-        }
 
-        return sub.asObservable();
+                            // set and emit internally
+                            this.loadedLibs.find(lib => lib.name == name).status = 'loaded';
+                            this.loadedLibs$.emit({script: name, loaded: true, status: "Loaded"});
+                        }
+                    },
+                    error => {
+                        sub.error({script: name, loaded: false, status: "error"});
+                        sub.complete();
+
+                        // emit the error internally if somebody else is waiting
+                        this.loadedLibs.find(lib => lib.name == name).status = 'error';
+                        this.loadedLibs$.emit({script: name, loaded: true, status: "error"});
+                    }
+                );
+            }
+            return sub.asObservable();
+        }
     }
 
+    /**
+     * loads a set of libraries from the source definitions
+     *
+     * @param sources an array of fully qualified sources
+     */
     public loadFromSource(sources: string[]): Observable<boolean> {
         let sub = new Subject<boolean>();
         let resolved = 0;
@@ -126,50 +177,66 @@ export class libloader {
     }
 
     /**
-     * loads a cript direct form the source specified
+     * loads a script direct form the source specified
      *
      * @param src the source to be loaded
      */
-    public loadScriptDirect(src: string): Observable<boolean> {
+    private loadScriptDirect(src: string): Observable<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
             return of(true);
         } else {
             let sub = new Subject<boolean>();
-            let script: any = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = src;
-            if (script.readyState) {  // IE
-                script.onreadystatechange = () => {
-                    if (script.readyState === "loaded" || script.readyState === "complete") {
-                        script.onreadystatechange = null;
+
+            // create the elemnt as script or stylesheet
+            let element: any = {};
+            if (src.endsWith('.css')) {
+                element = document.createElement("link");
+                element.rel = "stylesheet";
+                element.href = src;
+            } else {
+                element = document.createElement("script");
+                element.type = "text/javascript";
+                element.src = src;
+            }
+
+            if (element.readyState) {  // IE
+                element.onreadystatechange = () => {
+                    if (element.readyState === "loaded" || element.readyState === "complete") {
+                        element.onreadystatechange = null;
                         sub.next(true);
                         sub.complete();
                     }
                 };
             } else {  // Others
-                script.onload = () => {
+                element.onload = () => {
                     sub.next(true);
                     sub.complete();
                 };
             }
-            script.onerror = (error: any) => {
+            element.onerror = (error: any) => {
                 sub.error(false);
                 sub.complete();
             };
-            document.getElementsByTagName("head")[0].appendChild(script);
+            document.getElementsByTagName("head")[0].appendChild(element);
             return sub.asObservable();
         }
     }
 
-    public isLibLoaded(name): boolean {
-        if (this.scripts[name]) {
-            for (let lib of this.scripts[name]) {
-                if (!lib.loaded) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+    /**
+     * check if a specific lib is loaded already
+     *
+     * @param name the name of the lib package
+     */
+    private isLibLoaded(name): boolean {
+        return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loaded') ? true : false;
+    }
+
+    /**
+     * check if a specific lib is loaded already
+     *
+     * @param name the name of the lib package
+     */
+    private isLibLoading(name): boolean {
+        return this.loadedLibs.find(lib => lib.name == name && lib.status == 'loading') ? true : false;
     }
 }

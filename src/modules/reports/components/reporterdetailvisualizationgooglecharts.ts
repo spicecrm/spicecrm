@@ -6,6 +6,7 @@ import {
     OnDestroy, ElementRef, Renderer2
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
+import {libloader} from '../../../services/libloader.service';
 
 /**
  * @ignore
@@ -22,7 +23,7 @@ export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, O
     private wrapper: any = undefined;
     private resizseHandler: any = {};
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private metadata: metadata) {
+    constructor(private renderer: Renderer2, private elementRef: ElementRef, private metadata: metadata, private libloader: libloader) {
         this.resizseHandler = this.renderer.listen('window', 'resize', () => this.onResize());
     }
 
@@ -33,7 +34,7 @@ export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, O
             this.vizdata.data.options.height = this.elementRef.nativeElement.height;
         }
 
-        this.metadata.loadLibs('googlecharts').subscribe((next) => {
+        this.libloader.loadLib('googlecharts').subscribe((next) => {
             google.charts.load('current', {packages: ['corechart']});
             google.charts.setOnLoadCallback(() => {
                 this.drawchart();
