@@ -3,14 +3,15 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {VersionManagerService} from '../../services/versionmanager.service';
 
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
+import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
 import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdisplay';
@@ -19,8 +20,11 @@ import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsadd
 import /*embed*/ {SalesDocsPrintButton} from './components/salesdocsprintbutton';
 import /*embed*/ {fieldSalesdocTypes} from './components/fieldsalesdoctypes';
 import /*embed*/ {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
-import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from './components/salesdocsitemsparentselector';
-
+import /*embed*/ {SalesDocsItemsParentSelector} from './components/salesdocsitemsparentselector';
+import /*embed*/ {SalesdocsNewButton} from "./components/salesdocsnewbutton";
+import /*embed*/ {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
+import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
+import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
 
 @NgModule({
     imports: [
@@ -40,8 +44,11 @@ import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from '
         SalesDocsItemsParentSelector,
         SalesDocsItemsParentPipe,
         fieldSalesdocTypes,
-        SalesDocsItemsDeletedPipe
-
+        SalesDocsItemsDeletedPipe,
+        SalesdocsNewButton,
+        SalesDocsAddBasics,
+        SalesDocsAddMain,
+        SalesDocsRecordView
     ]
 })
 export class ModuleSalesDocs {
