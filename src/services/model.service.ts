@@ -877,6 +877,7 @@ export class model implements OnDestroy {
 
         // set default acl to allow editing
         this.data.acl = {
+            create: true,
             edit: true
         };
 
