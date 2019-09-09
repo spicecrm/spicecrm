@@ -139,6 +139,7 @@ import /*embed*/ {ObjectStatusNetworkButtonItem} from './components/objectstatus
 import /*embed*/ {ObjectRecordFieldset} from './components/objectrecordfieldset';
 import /*embed*/ {ObjectRecordFieldsetField} from './components/objectrecordfieldsetfield';
 import /*embed*/ {ObjectRecordFieldsetHorizontalList} from './components/objectrecordfieldsethorizontallist';
+import /*embed*/ {ObjectRecordFieldsetContainer} from './components/objectrecordfieldsetcontainer';
 
 import /*embed*/ {ObjectRecordChecklist} from './components/objectrecordchecklist';
 import /*embed*/ {ObjectRecordChecklistItem} from './components/objectrecordchecklistitem';
@@ -437,6 +438,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,
         ObjectRecordFieldsetHorizontalList,
+        ObjectRecordFieldsetContainer,
         ObjectRowItemComponent,
         ObjectModalModuleDBLookup,
         ObjectActionOutputBeanModal,
