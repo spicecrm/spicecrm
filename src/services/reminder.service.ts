@@ -30,6 +30,9 @@ export class reminder {
         switch (message.messagetype) {
             case "loader.completed":
                 if (message.messagedata == 'loadUserDataStep2') {
+                    // reset the reminders we have
+                    this.reminders = [];
+                    // load from the configuration data service
                     for (let reminder of this.configuration.getData('reminders')) {
                         reminder.reminder_date = moment.utc(reminder.reminder_date);
                         this.reminders.push(reminder);
