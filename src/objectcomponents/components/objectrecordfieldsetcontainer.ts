@@ -18,7 +18,7 @@ import {view} from '../../services/view.service';
 @Component({
     templateUrl: './src/objectcomponents/templates/objectrecordfieldsetcontainer.html'
 })
-export class ObjectRecordFieldsetContainer{
+export class ObjectRecordFieldsetContainer {
 
     /**
      * the id of the fieldset to be rendered
