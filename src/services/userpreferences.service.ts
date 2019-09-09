@@ -123,7 +123,8 @@ export class userpreferences {
         if (save) {
             let prefs = {};
             prefs[name] = value;
-            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe((prefstatus) => {
+            const saved = new Subject();
+            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(response => {
 
                 // set the preference
                 if (!this.preferences[category]) this.preferences[category] = {};
@@ -134,11 +135,16 @@ export class userpreferences {
                 this.unchangedPreferences[category][name] = value;
 
                 this.completePreferencesWithDefaults();
+                saved.next( response );
+            }, error => {
+                saved.error( error );
             });
+            return saved;
         } else {
             if(!this.preferences[category]) this.preferences[category] = {};
             this.preferences[category][name] = value;
             this.completePreferencesWithDefaults();
+            return null;
         }
     }
 
@@ -238,7 +244,9 @@ export class userpreferences {
      */
     public formatMoney(i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
         let re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')';
+        /* tslint:disable:no-bitwise */
         let num = i.toFixed(Math.max(0, ~~n));
+        /* tslint:enable:no-bitwise */
         return num.replace('.', decSep).replace(new RegExp(re, 'g'), '$&' + grpSep);
     }
 
