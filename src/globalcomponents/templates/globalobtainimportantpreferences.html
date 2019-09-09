@@ -1,0 +1,97 @@
+<system-modal>
+    <system-modal-header hiddenCloseButton="true">
+        Important User Settings
+    </system-modal-header>
+    <system-modal-content>
+        <div *ngIf="namesOfMissingPrefs.length" class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Some settings are missing &hellip;</span>
+            </h3>
+            <div class="slds-section__content">
+                <p class="slds-p-horizontal--medium slds-p-vertical--x-small">You have not (yet) configured some important user settings. Please do it now:</p>
+                <div class="slds-grid slds-p-horizontal--x-small">
+                    <div *ngIf="isPrefMissing('timezone')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
+                        <label class="slds-form-element__label">{{ lang.getLabel('LBL_TIMEZONE') }}</label>
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" (change)="change($event,'timezone')">
+                                <option *ngIf="!preferences.timezone" value="-" [selected]="!preferences.timezone"></option>
+                                <option *ngFor="let key of timezoneKeys" value="{{key}}" [selected]="guessedTimezone === key">{{timezones[key]}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div *ngIf="isPrefMissing('datef')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
+                        <label class="slds-form-element__label">{{ lang.getLabel('LBL_DATE_FORMAT') }}</label>
+                        <div class="slds-select_container">
+                            <select class="slds-select" (change)="change($event,'datef')">
+                                <option *ngIf="!preferences.datef" value="-" [selected]="!preferences.datef"></option>
+                                <option *ngFor="let item of dateFormatList" [value]="item.value" [selected]="preferences.datef == item.value">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div *ngIf="isPrefMissing('timef')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
+                        <label class="slds-form-element__label">{{ lang.getLabel('LBL_TIME_FORMAT') }}</label>
+                        <div class="slds-select_container">
+                            <select class="slds-select" (change)="change($event,'timef')">
+                                <option *ngIf="!preferences.timef" value="-" [selected]="!preferences.timef"></option>
+                                <option *ngFor="let item of timeFormatList" [value]="item.value" [selected]="preferences.timef == item.value">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="timeshift" class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Time Shift</span>
+            </h3>
+            <div class="slds-section__content">
+                <p class="slds-p-horizontal--medium slds-p-vertical--x-small slds-m-bottom--x-small">It seems there is a time difference to the time zone in which you are currently located ({{timeshift}} hours). Please confirm your configured user timezone or change it:</p>
+                <div class="slds-grid slds-p-horizontal--medium slds-grid--vertical-align-center">
+                    <span class="slds-radio">
+                      <input type="radio" id="{{componentId}}-timeshift-radio-2" checked="true" name="timeshift" [(ngModel)]="timeshiftAction" value="takeSelected"/>
+                      <label class="slds-radio__label" for="{{componentId}}-timeshift-radio-2">
+                        <span class="slds-radio_faux"></span>
+                      </label>
+                    </span>
+                    <div class="slds-form-element">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" [(ngModel)]="selectedTimezone" (change)="this.timeshiftAction = 'takeSelected'">
+                                <option *ngFor="let key of timezoneKeys" value="{{key}}" >{{timezones[key]}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="slds-radio  slds-m-left--medium">
+                      <input type="radio" id="{{componentId}}-timeshift-radio-1" name="timeshift" [(ngModel)]="timeshiftAction" value="takeGuessed"/>
+                      <label class="slds-radio__label" for="{{componentId}}-timeshift-radio-1">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label">{{guessedTimezone}} (GMT{{guessedTimezoneGmtDiff}})</span>
+                      </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--align-spread slds-grid--align-center slds-grid--align-end">
+            <div *ngIf="namesOfMissingPrefs.length" class="slds-form-element slds-p-horizontal--medium slds-p-vertical--x-small">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox">
+                        <input type="checkbox" id="ask-userprefs-navigate" [(ngModel)]="navigateToUserPrefs" />
+                        <label class="slds-checkbox__label" for="ask-userprefs-navigate">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">After saving: Navigate to the user settings page to review further user settings.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave()">
+                <ng-container *ngIf="!timeshift">{{lang.getLabel('LBL_SAVE')}}</ng-container>
+                <ng-container *ngIf="timeshift">{{lang.getLabel('LBL_OK')}}</ng-container>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

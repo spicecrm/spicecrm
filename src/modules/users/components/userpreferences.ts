@@ -13,12 +13,12 @@ import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -72,29 +72,10 @@ export class UserPreferences {
         "ISO-8859-14", "ISO-8859-15", "KOI8-R", "KOI8-U", "SJIS", "UTF-8"];
     private currencySignificantDigitsList: string[] = ["1", "2", "3", "4", "5", "6"];
     private thousandDelimiterList: string[] = [",", "."];
-    private dateFormatList = [
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y-m-d")), value: "Y-m-d"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m-d-Y")), value: "m-d-Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d-m-Y")), value: "d-m-Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y/m/d")), value: "Y/m/d"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m/d/Y")), value: "m/d/Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d/m/Y")), value: "d/m/Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y.m.d")), value: "Y.m.d"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d.m.Y")), value: "d.m.Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m.d.Y")), value: "m.d.Y"}
-    ];
-    private timeFormatList = [
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("H:i")), value: "H:i"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:ia")), value: "h:ia"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:iA")), value: "h:iA"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:i a")), value: "h:i a"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:i A")), value: "h:i A"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("H.i")), value: "H.i"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.ia")), value: "h.ia"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.iA")), value: "h.iA"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i a")), value: "h.i a"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i A")), value: "h.i A"}
-    ];
+
+    private dateFormatList: object[];
+    private timeFormatList: object[];
+
     private currencyList: any[] = [];
     private formattingsOfNumbers = [
         {
@@ -127,6 +108,9 @@ export class UserPreferences {
         private model: model ) {
 
         this.view.isEditable = true;
+
+        this.dateFormatList = this.prefservice.getPossibleDateFormats();
+        this.timeFormatList = this.prefservice.getPossibleDateFormats();
 
         this.canPrefs = this.session.authData.userId === this.model.data.id; // only the user himself can view/edit the preferences
         if ( this.canPrefs ) {

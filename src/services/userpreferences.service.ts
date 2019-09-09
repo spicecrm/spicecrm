@@ -9,6 +9,7 @@ import {toast} from './toast.service';
 import {language} from './language.service';
 import {broadcast} from './broadcast.service';
 import {configurationService} from './configuration.service';
+import {modal} from './modal.service';
 
 /**
  * @ignore
@@ -52,7 +53,7 @@ export class userpreferences {
 
     public formats = {nameFormats: [], loaded: false};
 
-    constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast) {
+    constructor( private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal ) {
         this.toUse = this.preferences.global;
         this.retrievePrefsFromConfigService();
         this.broadcast.message$.subscribe(msg => {
@@ -64,6 +65,7 @@ export class userpreferences {
         let prefs = this.configuration.getData('globaluserpreferences');
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
+        this.askForMissingPreferences();
         this.completePreferencesWithDefaults();
     }
 
@@ -123,7 +125,8 @@ export class userpreferences {
         if (save) {
             let prefs = {};
             prefs[name] = value;
-            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe((prefstatus) => {
+            const saved = new Subject();
+            this.backend.postRequest('user/preferences/' + category, {}, prefs).subscribe(response => {
 
                 // set the preference
                 if (!this.preferences[category]) this.preferences[category] = {};
@@ -134,12 +137,17 @@ export class userpreferences {
                 this.unchangedPreferences[category][name] = value;
 
                 this.completePreferencesWithDefaults();
+                saved.next( response );
+            }, error => {
+                saved.error( error );
             });
+            return saved;
         } else {
             if(!this.preferences[category]) this.preferences[category] = {};
             this.preferences[category][name] = value;
             this.completePreferencesWithDefaults();
         }
+        return null;
     }
 
     public setPreferences(prefs, category = 'global') {
@@ -238,7 +246,9 @@ export class userpreferences {
      */
     public formatMoney(i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
         let re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')';
+        /* tslint:disable:no-bitwise */
         let num = i.toFixed(Math.max(0, ~~n));
+        /* tslint:enable:no-bitwise */
         return num.replace('.', decSep).replace(new RegExp(re, 'g'), '$&' + grpSep);
     }
 
@@ -248,6 +258,68 @@ export class userpreferences {
 
     public formatDateTime(d) {
         return moment(d).format(this.getDateFormat()) + ' ' + moment(d).format('HH:mm:ss');
+    }
+
+    private askForMissingPreferences() {
+
+        // Which important user preferences are not set?
+        let namesOfMissingPrefs = this.getNamesOfMissingImportantPrefs();
+
+        // Is there a timeshift between the configured user timezone and the timezone of the currently used client computer system?
+        let timeshift = 0;
+        if ( this.unchangedPreferences.global && this.unchangedPreferences.global.timezone ) {
+            let a = moment.tz( moment.tz.guess() ).utcOffset();
+            let b = moment.tz( this.unchangedPreferences.global.timezone ).utcOffset();
+            if ( a !== b ) {
+                timeshift = ( a * b < 0 ? Math.abs( a ) + Math.abs( b ) : Math.abs( a - b )) / 60;
+            }
+        }
+
+        // No user preferences missing and no timeshift? Nothing to do!
+        if ( namesOfMissingPrefs.length === 0 && timeshift === 0 ) return;
+
+        // Otherwise open the modal window to obtain preferences:
+        this.modalservice.openModal('GlobalObtainImportantPreferences').subscribe(modal => {
+            modal.instance.namesOfMissingPrefs = namesOfMissingPrefs;
+            modal.instance.timeshift = timeshift;
+        });
+    }
+
+    private getNamesOfMissingImportantPrefs(): string[] {
+        let missing = [];
+        for ( let name of ['timezone','datef','timef']) {
+            if ( !this.unchangedPreferences.global[name] ) missing.push( name );
+        }
+        return missing;
+    }
+
+    public getPossibleDateFormats(): object[] {
+        return [
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "Y-m-d" ) ), value: "Y-m-d" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "m-d-Y" ) ), value: "m-d-Y" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "d-m-Y" ) ), value: "d-m-Y" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "Y/m/d" ) ), value: "Y/m/d" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "m/d/Y" ) ), value: "m/d/Y" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "d/m/Y" ) ), value: "d/m/Y" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "Y.m.d" ) ), value: "Y.m.d" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "d.m.Y" ) ), value: "d.m.Y" },
+            { name: moment().format( this.jsDateFormat2momentDateFormat( "m.d.Y" ) ), value: "m.d.Y" }
+        ];
+    }
+
+    public getPossibleTimeFormats(): object[] {
+        return [
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "H:i" ) ), value: "H:i" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h:ia" ) ), value: "h:ia" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h:iA" ) ), value: "h:iA" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h:i a" ) ), value: "h:i a" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h:i A" ) ), value: "h:i A" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "H.i" ) ), value: "H.i" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h.ia" ) ), value: "h.ia" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h.iA" ) ), value: "h.iA" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h.i a" ) ), value: "h.i a" },
+            { name: moment().format( this.jsTimeFormat2momentTimeFormat( "h.i A" ) ), value: "h.i A" }
+        ];
     }
 
 }

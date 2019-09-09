@@ -33,7 +33,9 @@ export class modelutilities {
     }
 
     private S4() {
+        /* tslint:disable:no-bitwise */
         return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
+        /* tslint:enable:no-bitwise */
     }
 
     public generateGuid() {
@@ -137,11 +139,11 @@ export class modelutilities {
                 if (typeof value === "string" && value.trim() === "") {
                     return "";
                 }
-                ; // quick and dirty workaround, still something todo!
+                // quick and dirty workaround, still something todo!
                 if (_.isObject(value) && value._isAMomentObject && !value.isValid()) {
                     return "";
                 }
-                ; // quick and dirty workaround, still something todo!
+                // quick and dirty workaround, still something todo!
                 let pDateTime = new moment(value).tz(moment.tz.guess());
                 pDateTime.subtract(pDateTime.utcOffset(), "m");
                 return pDateTime.format("YYYY-MM-DD HH:mm:ss");
@@ -164,9 +166,9 @@ export class modelutilities {
         }
     }
 
-    private formatDate = function (d) {
+    private formatDate(d) {
         return moment(d).format("YYYY-MM-DD");
-    };
+    }
 
     /*
      * a method to normilzae and clean an account name
@@ -194,7 +196,7 @@ export class modelutilities {
      * @param val2
      * @returns {boolean}
      */
-    static compare(val1, comparator: string, val2): boolean {
+    public static compare(val1, comparator: string, val2): boolean {
         switch (comparator) {
             case "in":
                 // do something
@@ -302,7 +304,7 @@ export class modelutilities {
                     case "-":
                         // YYYY-M-D
                         if (match[3] > 12 || match[5] > 31) {
-                            return fail
+                            return fail;
                         }
                         return new Date(match[1], parseInt(match[3], 10) - 1, match[5],
                             match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0).getTime() / 1000;
@@ -312,7 +314,7 @@ export class modelutilities {
                     case "/":
                         // YYYY/M/D
                         if (match[3] > 12 || match[5] > 31) {
-                            return fail
+                            return fail;
                         }
                         return new Date(match[1], parseInt(match[3], 10) - 1, match[5],
                             match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0).getTime() / 1000;
@@ -393,12 +395,16 @@ export class modelutilities {
         }
         // other formats and "now" should be parsed by Date.parse()
         if (text === "now") {
+            /* tslint:disable:no-bitwise */
             return now === null || isNaN(now)
                 ? new Date().getTime() / 1000 | 0
-                : now | 0
+                : now | 0;
+            /* tslint:enable:no-bitwise */
         }
         if (!isNaN(parsed = Date.parse(text))) {
-            return parsed / 1000 | 0
+            /* tslint:disable:no-bitwise */
+            return parsed / 1000 | 0;
+            /* tslint:enable:no-bitwise */
         }
         // Browsers !== Chrome have problems parsing ISO 8601 date strings, as they do
         // not accept lower case characters, space, or shortened time zones.
@@ -417,31 +423,33 @@ export class modelutilities {
         if (match) {
             // @todo: time zone information
             if (match[4] === "z") {
-                match[4] = "Z"
+                match[4] = "Z";
             } else if (match[4].match(/^([+-][0-9]{2})$/)) {
-                match[4] = match[4] + ":00"
+                match[4] = match[4] + ":00";
             }
             if (!isNaN(parsed = Date.parse(match[1] + "T" + match[2] + match[4]))) {
-                return parsed / 1000 | 0
+                /* tslint:disable:no-bitwise */
+                return parsed / 1000 | 0;
+                /* tslint:enable:no-bitwise */
             }
         }
         date = now ? new Date(now * 1000) : new Date();
         days = {
-            "sun": 0,
-            "mon": 1,
-            "tue": 2,
-            "wed": 3,
-            "thu": 4,
-            "fri": 5,
-            "sat": 6
+            sun: 0,
+            mon: 1,
+            tue: 2,
+            wed: 3,
+            thu: 4,
+            fri: 5,
+            sat: 6
         };
         ranges = {
-            "yea": "FullYear",
-            "mon": "Month",
-            "day": "Date",
-            "hou": "Hours",
-            "min": "Minutes",
-            "sec": "Seconds"
+            yea: "FullYear",
+            mon: "Month",
+            day: "Date",
+            hou: "Hours",
+            min: "Minutes",
+            sec: "Seconds"
         };
 
         function lastNext(type, range, modifier) {
@@ -450,13 +458,13 @@ export class modelutilities {
             if (typeof day !== "undefined") {
                 diff = day - date.getDay();
                 if (diff === 0) {
-                    diff = 7 * modifier
+                    diff = 7 * modifier;
                 } else if (diff > 0 && type === "last") {
-                    diff -= 7
+                    diff -= 7;
                 } else if (diff < 0 && type === "next") {
-                    diff += 7
+                    diff += 7;
                 }
-                date.setDate(date.getDate() + diff)
+                date.setDate(date.getDate() + diff);
             }
         }
 
@@ -470,20 +478,20 @@ export class modelutilities {
             let ago = splt[2] === "ago";
             let num = (type === "last" ? -1 : 1) * (ago ? -1 : 1);
             if (typeIsNumber) {
-                num *= parseInt(type, 10)
+                num *= parseInt(type, 10);
             }
             if (ranges.hasOwnProperty(range) && !splt[1].match(/^mon(day|\.)?$/i)) {
-                return date["set" + ranges[range]](date["get" + ranges[range]]() + num)
+                return date["set" + ranges[range]](date["get" + ranges[range]]() + num);
             }
             if (range === "wee") {
-                return date.setDate(date.getDate() + (num * 7))
+                return date.setDate(date.getDate() + (num * 7));
             }
             if (type === "next" || type === "last") {
-                lastNext(type, range, num)
+                lastNext(type, range, num);
             } else if (!typeIsNumber) {
-                return false
+                return false;
             }
-            return true
+            return true;
         }
 
         times = "(years?|months?|weeks?|days?|hours?|minutes?|min|seconds?|sec" +
@@ -492,14 +500,14 @@ export class modelutilities {
         regex = "([+-]?\\d+\\s" + times + "|" + "(last|next)\\s" + times + ")(\\sago)?";
         match = text.match(new RegExp(regex, "gi"));
         if (!match) {
-            return fail
+            return fail;
         }
         for (i = 0, len = match.length; i < len; i++) {
             if (!process(match[i])) {
-                return fail
+                return fail;
             }
         }
-        return (date.getTime() / 1000)
+        return (date.getTime() / 1000);
     }
 
     /**
@@ -510,18 +518,18 @@ export class modelutilities {
      * @param argSeparator is a string used to seperate the arguments, by default it is "&"
      * @returns {string}
      */
-    http_build_query(formdata, numericPrefix: string = "", argSeparator: string = "&"): string {
-        //let urlencode = require("../url/urlencode");
+    public http_build_query(formdata, numericPrefix: string = "", argSeparator: string = "&"): string {
+        // let urlencode = require("../url/urlencode");
         let value;
         let key;
         let tmp = [];
-        let _httpBuildQueryHelper = function (key, val, argSeparator) {
+        let _httpBuildQueryHelper = (key, val, argSeparator) => {
             let k;
             let tmp = [];
             if (val === true) {
-                val = "1"
+                val = "1";
             } else if (val === false) {
-                val = "0"
+                val = "0";
             }
             if (val !== null) {
                 if (typeof val === "object") {
@@ -537,7 +545,7 @@ export class modelutilities {
                     throw new Error("There was an error processing for http_build_query().");
                 }
             } else {
-                return ""
+                return "";
             }
         };
         if (!argSeparator) {
@@ -556,8 +564,8 @@ export class modelutilities {
         return tmp.join(argSeparator);
     }
 
-    compileMathExpression(code) {
-        //console.log("compiling: "+code+" ...");
+    private compileMathExpression(code) {
+        // console.log("compiling: "+code+" ...");
         try {
             return this.mathcomp.do(code);
         } catch (e) {
@@ -565,4 +573,5 @@ export class modelutilities {
             return false;
         }
     }
+
 }
