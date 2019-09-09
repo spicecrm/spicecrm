@@ -12,12 +12,12 @@ import {userpreferences} from "../../services/userpreferences.service";
 import {Subscription} from "rxjs";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment;
 
 @Component({
@@ -136,7 +136,7 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
         if (!date) {
             return '';
         }
-        date = moment(date).tz(moment.tz.guess());
+        date = moment(date).tz( this.userpreferences.toUse.timezone );
         date.add(date.utcOffset(), "m");
         return date.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
     }
