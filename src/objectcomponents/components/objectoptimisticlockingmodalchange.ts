@@ -12,8 +12,8 @@ import {view} from '../../services/view.service';
 import {userpreferences} from '../../services/userpreferences.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -30,7 +30,7 @@ export class ObjectOptimisticLockingModalChange {
 
     get changeDate() {
         // return timestamp.fromNow();
-        let timestamp = moment(this.change.date_created).tz(moment.tz.guess());
+        let timestamp = moment(this.change.date_created).tz( this.userpreferences.toUse.timezone );
         timestamp.add(timestamp.utcOffset(), "m");
         return timestamp.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
     }
