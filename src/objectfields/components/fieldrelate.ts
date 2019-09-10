@@ -46,10 +46,23 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.relateType = fieldDefs.module;
     }
 
+    /**
+     * returns if an icon shoudl be displayed
+     */
+    get displayicon(){
+        return this.fieldconfig.displayicon ? true : false;
+    }
+
+    /**
+     * retuns if add is disabled for the relate dorpdown
+     */
     get disableadd() {
         return this.fieldconfig.disableadd;
     }
 
+    /**
+     * closes all dropdowns that might be oipen and clears the searchterm
+     */
     private closePopups() {
         if (this.model.getField(this.relateIdField)) {
             this.relateSearchTerm = '';
@@ -57,15 +70,27 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.relateSearchOpen = false;
     }
 
+
+    /**
+     * resets the field on the  model
+     */
     private clearField() {
         this.model.setField(this.relateNameField, '') ;
         this.model.setField(this.relateIdField, '');
     }
 
+    /**
+     * open the recent items when the feld recievs the focus
+     */
     private onFocus() {
         this.relateSearchOpen = true;
     }
 
+    /**
+     * set the related item
+     *
+     * @param related the related record
+     */
     private setRelated(related) {
         this.model.setField(this.relateIdField, related.id);
         this.model.setField(this.relateNameField, related.text) ;
@@ -77,6 +102,11 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.closePopups();
     }
 
+    /**
+     * if config is set the copy rules are evaluated and data from the related record is copied to the current one
+     *
+     * @param idRelated the related id
+     */
     private executeCopyRules(idRelated) {
         let awaitStopper = this.modal.await('LBL_LOADING');
         this.backend.get(this.relateType, idRelated).subscribe(
@@ -95,11 +125,17 @@ export class fieldRelate extends fieldGeneric implements OnInit {
             });
     }
 
+    /**
+     * navigates to the related record
+     */
     private goRelated() {
         // go to the record
         this.router.navigate(['/module/' + this.relateType + '/' + this.model.getField(this.relateIdField)]);
     }
 
+    /**
+     * opens a search modal
+     */
     private searchWithModal() {
         this.relateSearchOpen = false;
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
