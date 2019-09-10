@@ -29,6 +29,8 @@ import /*embed*/ {FieldsetManagerFieldDetails} from "./components/fieldsetmanage
 import /*embed*/ {FieldsetManagerAddDialog} from "./components/fieldsetmanageradddialog";
 import /*embed*/ {FieldsetManagerEditDialog} from "./components/fieldsetmanagereditdialog";
 
+import /*embed*/ {ActionsetManager} from "./components/actionsetmanager";
+
 import /*embed*/ {ComponentsetManager} from "./components/componentsetmanager";
 import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
 
@@ -119,6 +121,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         FieldsetManagerAddDialog,
         FieldsetManagerEditDialog,
         FieldsetManagerCopyDialog,
+        ActionsetManager,
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
         WorkbenchHeader,
