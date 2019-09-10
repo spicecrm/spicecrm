@@ -112,6 +112,7 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
+import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 
 @NgModule({
     imports: [
@@ -214,7 +215,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemUtilityIcon,
         SystemViewContainer,
         SystemIconHelpText,
-        SystemMultipleSelect
+        SystemMultipleSelect,
+        SystemSelectUOM
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -293,7 +295,8 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
-        SystemFilterBuilderFilterExpression
+        SystemFilterBuilderFilterExpression,
+        SystemSelectUOM
     ]
 })
 export class SystemComponents {
