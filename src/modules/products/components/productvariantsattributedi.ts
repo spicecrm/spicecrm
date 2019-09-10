@@ -29,7 +29,7 @@ export class ProductVariantsAttributeDI extends ProductVariantsAttributeVC {
 
         if (this.attribute.validations) {
             for (let validation of this.attribute.validations) {
-                if (validation.value && validation.value != '') {
+                if (validation.value) {
                     retArray.push(validation.value);
                 }
             }

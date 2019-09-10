@@ -564,7 +564,7 @@ export class modelutilities {
         return tmp.join(argSeparator);
     }
 
-    private compileMathExpression(code) {
+    public compileMathExpression(code) {
         // console.log("compiling: "+code+" ...");
         try {
             return this.mathcomp.do(code);
