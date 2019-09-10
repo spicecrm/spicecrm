@@ -110,7 +110,7 @@ export class UserPreferences {
         this.view.isEditable = true;
 
         this.dateFormatList = this.prefservice.getPossibleDateFormats();
-        this.timeFormatList = this.prefservice.getPossibleDateFormats();
+        this.timeFormatList = this.prefservice.getPossibleTimeFormats();
 
         this.canPrefs = this.session.authData.userId === this.model.data.id; // only the user himself can view/edit the preferences
         if ( this.canPrefs ) {

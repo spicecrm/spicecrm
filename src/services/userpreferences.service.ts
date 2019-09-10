@@ -39,7 +39,7 @@ export class userpreferences {
 
     public preferencesComplete = true; // When false, indicates the need to ask the user for the preferences.
 
-    private defaults = {
+    public defaults = {
         currency: -99,
         datef: 'd.m.Y',
         dec_sep: ',',
@@ -65,6 +65,7 @@ export class userpreferences {
         let prefs = this.configuration.getData('globaluserpreferences');
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
+        this.defaults = _.extendOwn( this.defaults, this.configuration.getData('defaultuserpreferences'));
         this.askForMissingPreferences();
         this.completePreferencesWithDefaults();
     }

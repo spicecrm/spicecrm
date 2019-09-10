@@ -77,7 +77,7 @@ import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
-import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences.component';
+import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
