@@ -7,6 +7,7 @@ import {
     Input, OnInit, Output
 } from '@angular/core';
 import {model} from '../../../services/model.service';
+import {metadata} from '../../../services/metadata.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
@@ -41,11 +42,16 @@ export class SalesDocsItemContainer implements OnInit {
     @Output() private recalculated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
+     * the columns to be displayed
+     */
+    private fieldsetItems: any[] = [];
+
+    /**
      * if the item type has a details view
      */
     private hasDetailsView: boolean = false;
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configuration: configurationService) {
+    constructor(private metadata: metadata, private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configuration: configurationService) {
         this.view.displayLabels = false;
 
         // check if the model has changed and recalculate
@@ -81,9 +87,10 @@ export class SalesDocsItemContainer implements OnInit {
 
             // process the mode change
             if (mode == 'edit') {
+                // start editing the Salesdoc
+                this.salesdoc.startEdit();
+                // set the view to edit mode
                 this.parentview.setEditMode();
-            } else {
-                this.parentview.setViewMode();
             }
         });
 
@@ -98,6 +105,16 @@ export class SalesDocsItemContainer implements OnInit {
                 this.model.setField('currency_id', this.salesdoc.getField('currency_id'));
             }
         });
+
+        // determine the list fieldset
+        if (itemTypeDetails && itemTypeDetails.itemfieldset) {
+            this.fieldsetItems = this.metadata.getFieldSetFields(itemTypeDetails.itemfieldset);
+        } else {
+            let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
+            if (config.fieldset) {
+                this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
+            }
+        }
     }
 
     get editing() {

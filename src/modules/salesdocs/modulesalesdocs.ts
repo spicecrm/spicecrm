@@ -13,6 +13,7 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
+import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
 import /*embed*/ {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
 import /*embed*/ {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
 import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdisplay';
@@ -31,6 +32,7 @@ import /*embed*/ {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
 import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
 import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
 import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
+import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({
     imports: [
@@ -40,9 +42,11 @@ import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsite
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
     ],
     declarations: [
         SalesDocsItemsContainer,
+        SalesDocsItemHeader,
         SalesDocsItemContainer,
         SalesDocsItemDetailsContainer,
         SalesDocsItemsDisplay,

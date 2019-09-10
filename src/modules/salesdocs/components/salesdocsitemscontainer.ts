@@ -7,6 +7,7 @@ import {
     Injector
 } from '@angular/core';
 import {model} from '../../../services/model.service';
+import {metadata} from '../../../services/metadata.service';
 import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
@@ -21,9 +22,20 @@ import {userpreferences} from '../../../services/userpreferences.service';
 })
 export class SalesDocsItemsContainer {
 
+    /**
+     * the items on the sales Document
+     */
     private items: any[] = [];
-    private itemSubscription: any = undefined;
+
+    /**
+     * for the voucher handling
+     */
     private voucher: any = {};
+
+    /**
+     * the columns to be displayed
+     */
+    private fieldsetItems: any[] = [];
 
     constructor(
         private userpreferences: userpreferences,
@@ -35,19 +47,31 @@ export class SalesDocsItemsContainer {
         private modal: modal,
         private view: view,
         private configuration: configurationService,
-        private currency: currency
+        private metadata: metadata
     ) {
-        this.itemSubscription = this.model.data$.subscribe(data => {
+        let itemSubscription = this.model.data$.subscribe(data => {
             if (this.buildItems()) {
-                if (this.itemSubscription) this.itemSubscription.unsubscribe();
+                if (itemSubscription) itemSubscription.unsubscribe();
             }
         });
+
+        // determine the list fieldset
+        let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
+        if (config.fieldset) {
+            this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
+        }
     }
 
+    /**
+     * simple helper to get if the view is editing
+     */
     get editing() {
         return this.view.isEditMode();
     }
 
+    /**
+     * getter for total net value
+     */
     get totalnet() {
         let total = 0;
         for (let item of this.items) {
@@ -56,6 +80,9 @@ export class SalesDocsItemsContainer {
         return total;
     }
 
+    /**
+     * getter for total gross value
+     */
     get totalgross() {
         let total = 0;
         for (let item of this.items) {
