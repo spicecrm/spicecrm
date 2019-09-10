@@ -1030,6 +1030,34 @@ export class metadata {
         }
     }
 
+
+    public setActionset(actionset_id, params) {
+        this.actionSets[actionset_id].name = params.name;
+        this.actionSets[actionset_id].package = params.package;
+    }
+
+    public removeActionsetItem(parent, item) {
+        let remIndex = false;
+        this.actionSets[parent].items.some((curitem, curindex) => {
+            if (curitem.id == item.id) {
+                remIndex = curindex;
+                return true;
+            }
+        });
+
+        if (remIndex !== false) {
+            this.actionSets[parent].items.splice(remIndex, 1);
+            let i = 0;
+            for (let thisitem of this.actionSets[parent].items) {
+                thisitem.sequence = i;
+                i++;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /*
      * get all module filters
      */
