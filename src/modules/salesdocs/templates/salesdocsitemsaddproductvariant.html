@@ -1,17 +1,9 @@
-<section role="dialog" tabindex="-1"  class="slds-modal slds-modal_large slds-fade-in-open">
-    <div class="slds-modal__container">
-        <header class="slds-modal__header">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" (click)="close()">
-                <system-button-icon size="large" icon="close"></system-button-icon>
-            </button>
-            <h2 class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_ADD')}} {{language.getLabel('LBL_PRODUCTVARIANT')}}</h2>
-        </header>
-        <div class="slds-modal__content" style="height:80%;">
-            <div #productselector></div>
-        </div>
-        <footer class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        </footer>
-    </div>
-</section>
-<div class="slds-backdrop slds-backdrop_open"></div>
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_ADD')}} {{language.getLabel('LBL_PRODUCTVARIANT')}}</system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div #productselector></div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+    </system-modal-footer>
+</system-modal>

@@ -1,19 +1,3 @@
-<!--div class="slds-section" [ngClass]="{'slds-is-open': expanded}">
-    <h3 class="slds-section__title">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-            <span class="slds-truncate" title="Section Title">{{language.getLabel('LBL_ITEMS', 'SalesDocItems')}}</span>
-        </button>
-    </h3>
-    <div>
-        <salesdocs-items-display *ngIf="!editing"></salesdocs-items-display>
-        <salesdocs-items-edit *ngIf="editing"></salesdocs-items-edit>
-    </div>
-</div-->
-<!--system-collapsable-tab tabtitle="LBL_ITEMS">
-    <salesdocs-items-display *ngIf="!editing"></salesdocs-items-display>
-    <salesdocs-items-edit *ngIf="editing"></salesdocs-items-edit>
-</system-collapsable-tab-->
-
 <system-collapsable-tab tabtitle="LBL_ITEMS">
     <table class="slds-table slds-table_bordered">
         <thead>

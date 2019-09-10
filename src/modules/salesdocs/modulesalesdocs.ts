@@ -21,6 +21,7 @@ import /*embed*/ {SalesDocsItemsEdit} from './components/salesdocsitemsedit';
 import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
 import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
 import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
+import /*embed*/ {SalesDocsItemsAddText} from "./components/salesdocsitemsaddtext";
 import /*embed*/ {SalesDocsPrintButton} from './components/salesdocsprintbutton';
 import /*embed*/ {fieldSalesdocTypes} from './components/fieldsalesdoctypes';
 import /*embed*/ {fieldSalesdocItemTypes} from './components/fieldsalesdocitemtypes';
@@ -54,6 +55,7 @@ import {DirectivesModule} from "../../directives/directives";
         SalesDocsItemsAddProduct,
         SalesDocsItemsAddProductGroup,
         SalesDocsItemsAddProductVariant,
+        SalesDocsItemsAddText,
         SalesDocsPrintButton,
         SalesDocsItemsParentSelector,
         SalesDocsItemsParentPipe,
