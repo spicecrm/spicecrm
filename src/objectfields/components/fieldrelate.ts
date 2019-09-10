@@ -49,7 +49,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
     /**
      * returns if an icon shoudl be displayed
      */
-    get displayicon(){
+    get displayicon() {
         return this.fieldconfig.displayicon ? true : false;
     }
 
@@ -75,7 +75,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
      * resets the field on the  model
      */
     private clearField() {
-        this.model.setField(this.relateNameField, '') ;
+        this.model.setField(this.relateNameField, '');
         this.model.setField(this.relateIdField, '');
     }
 
@@ -93,7 +93,7 @@ export class fieldRelate extends fieldGeneric implements OnInit {
      */
     private setRelated(related) {
         this.model.setField(this.relateIdField, related.id);
-        this.model.setField(this.relateNameField, related.text) ;
+        this.model.setField(this.relateNameField, related.text);
         if (this.fieldconfig.executeCopyRules == 2) {
             this.executeCopyRules(related.id);
         } else if (this.fieldconfig.executeCopyRules == 1) {
