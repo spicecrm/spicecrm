@@ -2,6 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 
 @Injectable()
 export class view {
@@ -13,7 +14,7 @@ export class view {
     /**
      * an event emitter that fires when the mode changes
      */
-    public mode$ = new EventEmitter();
+    public mode$: BehaviorSubject<string>;
 
     /**
      * defines if the view can be set to edit mode or not
@@ -43,6 +44,10 @@ export class view {
     // set the size
     public size: 'regular' | 'small' = 'regular';
 
+    constructor() {
+        this.mode$ = new BehaviorSubject<string>(this.mode);
+    }
+
     /**
      * allows qeurying the current mode
      */
@@ -69,7 +74,7 @@ export class view {
     public setEditMode(fieldid = '') {
         this.mode = 'edit';
         this.editfieldid = fieldid;
-        this.mode$.emit(this.mode);
+        this.mode$.next(this.mode);
     }
 
     /**
@@ -77,6 +82,6 @@ export class view {
      */
     public setViewMode() {
         this.mode = 'view';
-        this.mode$.emit(this.mode);
+        this.mode$.next(this.mode);
     }
 }
