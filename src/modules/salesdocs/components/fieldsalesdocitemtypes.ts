@@ -12,10 +12,10 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'field-salesdoc-types',
-    templateUrl: './src/modules/salesdocs/templates/fieldsalesdoctypes.html'
+    selector: 'field-salesdoc-item-types',
+    templateUrl: './src/modules/salesdocs/templates/fieldsalesdocitemtypes.html'
 })
-export class fieldSalesdocTypes extends fieldGeneric {
+export class fieldSalesdocItemTypes extends fieldGeneric {
 
     public options: any[] = [];
 
@@ -45,7 +45,10 @@ export class fieldSalesdocTypes extends fieldGeneric {
         }
     }
 
+    /**
+     * load the options from teh configuration
+     */
     public getOptions() {
-        this.options = this.configuration.getData('salesdoctypes');
+        this.options = this.configuration.getData('salesdocitemtypes');
     }
 }

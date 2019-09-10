@@ -13,9 +13,9 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-salesdoc-types',
-    templateUrl: './src/modules/salesdocs/templates/fieldsalesdoctypes.html'
+    templateUrl: './src/modules/salesdocs/templates/fieldsalesdoctaxcategories.html'
 })
-export class fieldSalesdocTypes extends fieldGeneric {
+export class fieldSalesdocTaxCategories extends fieldGeneric {
 
     public options: any[] = [];
 
@@ -34,9 +34,9 @@ export class fieldSalesdocTypes extends fieldGeneric {
             if (!this.value) return '';
 
             // find the option and try to translate the table
-            let thisOption = this.options.find(itemtype => itemtype.name == this.value);
-            if (thisOption && thisOption.vname) {
-                return this.language.getLabel(thisOption.vname);
+            let thisOption = this.options.find(itemtype => itemtype.taxcategoryid == this.value);
+            if (thisOption) {
+                return thisOption.taxcategoryname;
             } else {
                 return this.value;
             }
@@ -46,6 +46,6 @@ export class fieldSalesdocTypes extends fieldGeneric {
     }
 
     public getOptions() {
-        this.options = this.configuration.getData('salesdoctypes');
+        this.options = this.configuration.getData('salesdoctaxcategories');
     }
 }

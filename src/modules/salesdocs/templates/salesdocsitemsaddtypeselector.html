@@ -1,0 +1,20 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">Select Item Type</system-modal-header>
+    <system-modal-content>
+        <fieldset class="slds-form-element">
+            <div *ngFor="let itemtype of availableItemTypes" class="slds-form-element__control">
+                <div class="slds-radio">
+                    <input type="radio" [id]="itemtype.id" [value]="itemtype.name" name="itemType" [(ngModel)]="itemType" />
+                    <label class="slds-radio__label" [attr.for]="itemtype.id">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel(itemtype.vname)}}</span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" [disabled]="!itemType" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+    </system-modal-footer>
+</system-modal>

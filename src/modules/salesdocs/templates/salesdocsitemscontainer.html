@@ -1,7 +1,6 @@
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded}">
+<!--div class="slds-section" [ngClass]="{'slds-is-open': expanded}">
     <h3 class="slds-section__title">
         <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-            <!--global-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon-->
             <span class="slds-truncate" title="Section Title">{{language.getLabel('LBL_ITEMS', 'SalesDocItems')}}</span>
         </button>
     </h3>
@@ -9,4 +8,69 @@
         <salesdocs-items-display *ngIf="!editing"></salesdocs-items-display>
         <salesdocs-items-edit *ngIf="editing"></salesdocs-items-edit>
     </div>
-</div>
+</div-->
+<!--system-collapsable-tab tabtitle="LBL_ITEMS">
+    <salesdocs-items-display *ngIf="!editing"></salesdocs-items-display>
+    <salesdocs-items-edit *ngIf="editing"></salesdocs-items-edit>
+</system-collapsable-tab-->
+
+<system-collapsable-tab tabtitle="LBL_ITEMS">
+    <table class="slds-table slds-table_bordered">
+        <thead>
+        <tr>
+            <th class="slds-cell-shrink"></th>
+            <th scope="col" style="width: 60px;">
+                <div class="slds-truncate slds-text-align_center">#</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_PRODUCT', 'SalesDocItems')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_QUANTITY', 'SalesDocItems')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_PRICEPERUNIT', 'SalesDocItems')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_AMOUNT_NET', 'SalesDocItems')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_AMOUNT_GROSS', 'SalesDocItems')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">tc</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
+            <tr salesdocs-item-container [item]="item" [parentview]="view" [salesdoc]="model" (recalculated)="recalculate()"></tr>
+            <tr *ngIf="item.expanded">
+                <td colspan="1" class="slds-cell-shrink">
+                <td colspan="7">
+                    <salesdocs-item-details-container [item]="item" ></salesdocs-item-details-container>
+                </td>
+            </tr>
+        </ng-container>
+        <tr>
+            <td colspan="5">
+                <button [disabled]="!editing" class="slds-button slds-button_neutral" (click)="addItem()">
+                    <div class="slds-grid">
+                        <span>{{language.getLabel('LBL_ADD_ITEM')}}</span>
+                    </div>
+                </button>
+            </td>
+            <td>
+                <!--div class="slds-truncate slds-text-align_right">{{salesdocCurrencySymbol}}&nbsp;{{formatNumber(totalnet)}}</div-->
+                <field-container fieldname="amount_net" [fieldconfig]="{readonly:true, hidelabel: true}" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+            </td>
+            <td>
+                <!--div class="slds-truncate slds-text-align_right">{{salesdocCurrencySymbol}}&nbsp;{{formatNumber(totalgross)}}</div-->
+                <field-container fieldname="amount_gross" [fieldconfig]="{readonly:true, hidelabel: true}" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+            </td>
+            <td></td>
+        </tr>
+
+        </tbody>
+    </table>
+</system-collapsable-tab>

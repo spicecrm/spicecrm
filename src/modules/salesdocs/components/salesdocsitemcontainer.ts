@@ -1,0 +1,191 @@
+/**
+ * @module ModuleSalesDocs
+ */
+import {
+    Component,
+    ElementRef, EventEmitter,
+    Input, OnInit, Output
+} from '@angular/core';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {language} from '../../../services/language.service';
+import {backend} from '../../../services/backend.service';
+import {configurationService} from '../../../services/configuration.service';
+import {userpreferences} from '../../../services/userpreferences.service';
+
+@Component({
+    selector: '[salesdocs-item-container]',
+    templateUrl: './src/modules/salesdocs/templates/salesdocsitemcontainer.html',
+    providers: [model, view]
+})
+export class SalesDocsItemContainer implements OnInit {
+
+    /**
+     * the item to be displayed
+     */
+    @Input() private item: any = {};
+
+    /**
+     * the view fromt eh parent .. to link the two
+     */
+    @Input() private parentview: view;
+
+    /**
+     * the salesdoc model
+     */
+    @Input() private salesdoc: any;
+
+    /**
+     * emit when the item has been recalculated
+     */
+    @Output() private recalculated: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * if the item type has a details view
+     */
+    private hasDetailsView: boolean = false;
+
+    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configuration: configurationService) {
+        this.view.displayLabels = false;
+
+        // check if the model has changed and recalculate
+        this.model.data$.subscribe(data => {
+            this.recalculate();
+        });
+
+
+    }
+
+    public ngOnInit(): void {
+        this.model.module = 'SalesDocItems';
+        this.model.id = this.item.id;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
+
+        // link the two views
+        this.view.isEditable = this.parentview.isEditable;
+        this.parentview.mode$.subscribe(mode => {
+            // check if we are in the same mode already
+            if (this.view.getMode() == mode) return;
+
+            // process the mode change
+            if (mode == 'edit') {
+                this.view.setEditMode();
+            } else {
+                this.view.setViewMode();
+            }
+        });
+
+        this.view.mode$.subscribe(mode => {
+            // check if we are in the same mode already
+            if (this.parentview.getMode() == mode) return;
+
+            // process the mode change
+            if (mode == 'edit') {
+                this.parentview.setEditMode();
+            } else {
+                this.parentview.setViewMode();
+            }
+        });
+
+        // determine if we can open details
+        let itemTypes = this.configuration.getData('salesdocitemtypes');
+        let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
+        if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
+
+        // subscribe to document to listen to relevant changes (currency ... etc)
+        this.salesdoc.data$.subscribe(data => {
+            if (this.salesdoc.getField('currency_id') != this.model.getField('currency_id')) {
+                this.model.setField('currency_id', this.salesdoc.getField('currency_id'));
+            }
+        });
+    }
+
+    get editing() {
+        return this.view.isEditMode();
+    }
+
+    get taxcategories(): any[] {
+        return this.configuration.getData('salesdoctaxcategories');
+    }
+
+    /**
+     * returns a formatted number
+     *
+     * @param number
+     */
+    private formatNumber(number) {
+        return this.userpreferences.formatMoney(parseFloat(number));
+    }
+
+    private getUOMLabel(item) {
+        let uoms = this.configuration.getData('uomunits');
+        let unit = uoms.find(uom => uom.id == item.uom_id);
+        if (unit) {
+            return this.language.getLabel(unit.label);
+        } else {
+            return item.uom_id;
+        }
+    }
+
+    /**
+     * marks the item as deleted
+     */
+    private deleteItem() {
+        this.item.deleted = 1;
+    }
+
+    /**
+     * getter for the icon of the exoanded section
+     *
+     * ToDo: change to animation
+     */
+    get toggleIcon() {
+        return this.item.expanded ? 'chevronup' : 'chevrondown';
+    }
+
+    /**
+     * toggels the expanded flag and shows the details or hides them
+     */
+    private toggleDetails() {
+        this.item.expanded = !this.item.expanded;
+    }
+
+    /**
+     * triggered when a recalculate of the complete salesdoc is required
+     */
+    private recalculate() {
+        if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
+            this.item.amount_net = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
+
+            let taxpercentage = this.getTaxPercentage(this.item.tax_category);
+
+            this.item.amount_gross = this.item.amount_net * (100 + taxpercentage) / 100;
+            this.item.tax_amount = this.item.amount_net * taxpercentage / 100;
+        } else {
+            this.item.amount_net = 0;
+            this.item.amount_gross = 0;
+            this.item.tax_amount = 0;
+        }
+
+        this.recalculated.emit(true);
+    }
+
+    /**
+     * gets the tax percentage for a given category
+     * @param taxcategory
+     */
+    private getTaxPercentage(taxcategory) {
+        let taxpercentage = 0;
+
+        this.taxcategories.some(record => {
+            if (record.taxcategoryid == taxcategory) {
+                taxpercentage = parseInt(record.taxpercentage, 10);
+                return true;
+            }
+        });
+
+        return taxpercentage;
+    }
+
+
+}

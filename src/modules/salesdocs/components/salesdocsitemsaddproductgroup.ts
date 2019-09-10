@@ -27,7 +27,7 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
         '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
     ]
 })
-export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
+export class SalesDocsItemsAddProductGroup extends ObjectModalModuleLookup {
 
     @Output() private additem: EventEmitter<any> = new EventEmitter<any>();
 
@@ -35,39 +35,25 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
         super(language, model, modellist, metadata);
 
         // set module to Products
-        this.module = 'Products';
-    }
-
-
-    public selectItems() {
-        // this.selectedItems.emit(this.modellist.getSelectedItems());
-
-        this.self.destroy();
+        this.module = 'ProductGroups';
     }
 
     public clickRow(event, item) {
         this.productSelected(item);
-
         this.self.destroy();
     }
 
-    private productSelected(product) {
-
+    private productSelected(productgroup) {
 
         // compose the items to be added
         let itemData = {
-            parent_type: 'Products',
-            parent_id: product.id,
-            product_id: product.id,
-            productgroup_id: product.productgroup_id,
-            parent_name: product.name,
-            product_name: product.name,
-            productgroup_name: product.productgroup_name,
-            name: product.name,
-            uom_id: product.base_uom_id,
-            amount_net_per_uom: product.std_price,
-            purchase_price: product.purchase_price
-        }
+            parent_type: 'ProductGroups',
+            parent_id: productgroup.id,
+            productgroup_id: productgroup.id,
+            parent_name: productgroup.name,
+            productgroup_name: productgroup.name,
+            name: productgroup.name,
+        };
 
         this.additem.emit(itemData);
 

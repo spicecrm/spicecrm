@@ -9,7 +9,7 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import { userpreferences } from '../../../services/userpreferences.service';
+import {userpreferences} from '../../../services/userpreferences.service';
 
 @Component({
     selector: 'salesdocs-items-display',
@@ -22,18 +22,11 @@ export class SalesDocsItemsDisplay {
     voucher: any = {};
 
     constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view) {
-        try {
-            this.buildItems();
-            this.itemSubscription = this.model.data$.subscribe(data => {
-                this.buildItems();
+        this.itemSubscription = this.model.data$.subscribe(data => {
+            if(this.buildItems()){
                 this.itemSubscription.unsubscribe();
-            })
-        } catch (e) {
-            this.itemSubscription = this.model.data$.subscribe(data => {
-                this.buildItems();
-                this.itemSubscription.unsubscribe();
-            })
-        }
+            }
+        });
     }
 
     /**
@@ -49,7 +42,9 @@ export class SalesDocsItemsDisplay {
         }
     }
 
-    private buildItems() {
+    private buildItems(): boolean {
+        if(!this.model.data.salesdocitems) return false;
+
         this.items = [];
         for (let itemid in this.model.data.salesdocitems.beans) {
             this.items.push(this.model.data.salesdocitems.beans[itemid]);
@@ -59,11 +54,12 @@ export class SalesDocsItemsDisplay {
             return a.itemnr > b.itemnr ? 1 : -1;
         });
 
-        if(this.model.data.salesvouchers) {
+        if (this.model.data.salesvouchers) {
             for (let voucherid in this.model.data.salesvouchers.beans) {
                 this.voucher = this.model.data.salesvouchers.beans[voucherid];
             }
         }
+        return true;
     }
 
     get totalnet() {
@@ -87,41 +83,42 @@ export class SalesDocsItemsDisplay {
         for (let item of this.items) {
             total += parseFloat(item.amount_gross);
         }
-        if(this.voucher.voucher_type == 'amount'){
+        if (this.voucher.voucher_type == 'amount') {
             total -= parseFloat(this.voucher.voucher_value);
         }
-        if(this.voucher.voucher_type == 'percentage'){
+        if (this.voucher.voucher_type == 'percentage') {
             total -= (total / 100 * parseFloat(this.voucher.voucher_value));
         }
         return total;
     }
 
-    get voucher_value(){
+    get voucher_value() {
         let ret = '';
-        if(this.voucher.voucher_type == 'percentage'){
-            ret = this.voucher.voucher_value +'%';
+        if (this.voucher.voucher_type == 'percentage') {
+            ret = this.voucher.voucher_value + '%';
         }
         return ret;
     }
-    get voucher_sum(){
+
+    get voucher_sum() {
         let ret = '';
-        if(this.voucher.voucher_type == 'amount'){
+        if (this.voucher.voucher_type == 'amount') {
             ret = this.formatNumber(parseFloat(this.voucher.voucher_value));
         }
-        if(this.voucher.voucher_type == 'percentage'){
+        if (this.voucher.voucher_type == 'percentage') {
             ret = this.formatNumber(this.totalgross / 100 * parseFloat(this.voucher.voucher_value));
         }
         return ret;
     }
 
-    formatNumber(number) {
+    private formatNumber(number) {
         return this.userpreferences.formatMoney(parseFloat(number));
     }
 
-    getParentItemNr(parentitemid){
-        if(parentitemid) {
+    private getParentItemNr(parentitemid) {
+        if (parentitemid) {
             for (let item of this.items) {
-                if (item.id = parentitemid) {
+                if (item.id == parentitemid) {
                     return item.itemnr;
                 }
             }
