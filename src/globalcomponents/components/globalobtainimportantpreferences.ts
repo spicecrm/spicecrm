@@ -30,7 +30,7 @@ export class GlobalObtainImportantPreferences implements OnInit {
     @Input() public namesOfMissingPrefs: string[] = [];
     @Input() public timeshift = 0;
 
-    private preferences = {};
+    private preferences: any = {};
     private timezones: object;
     private timezoneKeys: string[];
     private navigateToUserPrefs = false;
@@ -65,16 +65,12 @@ export class GlobalObtainImportantPreferences implements OnInit {
         {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i A")), value: "h.i A"}
     ];
 
-    constructor( private backend: backend, private lang: language, private prefservice: userpreferences, private session: session, private router: Router, private toastservice: toast ) {
-        this.getTimezones();
-    }
+    constructor( private backend: backend, private lang: language, private prefservice: userpreferences, private session: session, private router: Router, private toastservice: toast ) { }
 
     public ngOnInit() {
         if ( this.timeshift ) this.selectedTimezone = this.configuredTimezone = this.prefservice.unchangedPreferences.global.timezone;
-    }
-
-    private change( event, pref ) {
-        this.preferences[pref] = ( event.srcElement.value === '-' ? null : event.srcElement.value );
+        if ( this.isPrefMissing('timezone') || this.timeshift ) this.getTimezones();
+        for ( let name of this.namesOfMissingPrefs ) this.preferences[name] = this.prefservice.defaults[name];
     }
 
     private save() {
@@ -93,9 +89,7 @@ export class GlobalObtainImportantPreferences implements OnInit {
 
     private canSave() {
         if ( this.namesOfMissingPrefs ) {
-            for ( let pref of this.namesOfMissingPrefs ) {
-                if ( !this.preferences[pref] ) return false;
-            }
+            for ( let pref of this.namesOfMissingPrefs ) if ( !this.preferences[pref] ) return false;
         }
         return true;
     }
