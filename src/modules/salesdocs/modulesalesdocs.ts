@@ -9,6 +9,7 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
@@ -33,7 +34,7 @@ import /*embed*/ {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
 import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
 import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
 import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
-import {DirectivesModule} from "../../directives/directives";
+import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components/salesdocsglobalnavigationmenuitemactionnew";
 
 @NgModule({
     imports: [
@@ -67,7 +68,8 @@ import {DirectivesModule} from "../../directives/directives";
         SalesDocsAddBasics,
         SalesDocsAddMain,
         SalesDocsRecordView,
-        SalesDocsItemsAddTypeSelector
+        SalesDocsItemsAddTypeSelector,
+        SalesDocsGlobalNavigationMenuItemActionNew
     ]
 })
 export class ModuleSalesDocs {
