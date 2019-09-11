@@ -44,8 +44,8 @@ import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgo
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
 import /*embed*/ {GlobalNavigation} from "./components/globalnavigation";
 import /*embed*/ {GlobalNavigationMenu} from "./components/globalnavigationmenu";
-import /*embed*/ {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
 import /*embed*/ {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
+import /*embed*/ {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
 import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigationmenuitemnew";
 import /*embed*/ {GlobalNavigationMenuItemActionNew} from "./components/globalnavigationmenuitemactionnew";
 import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
