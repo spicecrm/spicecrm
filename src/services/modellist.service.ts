@@ -165,6 +165,13 @@ export class modellist implements OnDestroy {
         }
     }
 
+    public setSortDirection(direction: string) {
+        this.sortdirection = direction;
+    }
+    public setSortFieldWithoutReload(field: string) {
+        this.sortfield = field;
+    }
+
     public setSortField(field: string) {
         if (this.sortfield == field) {
             this.sortdirection = this.sortdirection == 'ASC' ? 'DESC' : 'ASC';
