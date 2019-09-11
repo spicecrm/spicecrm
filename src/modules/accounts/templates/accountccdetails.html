@@ -13,7 +13,7 @@
         <ng-container *ngFor="let CCode of companyCodes let tabindex = index">
             <div class="slds-tabs--default__content slds-show" role="tabpanel"
                  [ngStyle]="getContentContainerStyle(tabindex)">
-                <account-cc-details-tab [ccid]="CCode.id" [ccname]="CCode.companycode" [contactid]="model.id" [data]="getCCDetailsData(CCode)">
+                <account-cc-details-tab [ccid]="CCode.id" [ccname]="CCode.companycode" [accountid]="model.id" [data]="getCCDetailsData(CCode)">
                 </account-cc-details-tab>
             </div>
     </ng-container>

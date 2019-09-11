@@ -21,12 +21,12 @@ declare var moment: any;
 })
 
 export class AccountCCDetailsTab {
-    @ViewChild('ccdetailscontainer', {read: ViewContainerRef, static: true}) ccdetailscontainer: ViewContainerRef;
+    @ViewChild('ccdetailscontainer', {read: ViewContainerRef, static: true}) private ccdetailscontainer: ViewContainerRef;
 
-    @Input() data: any = undefined;
-    @Input('contactid') contactId: string = undefined;
-    @Input('ccid') ccId: string = undefined;
-    @Input('ccname') ccName: string = undefined;
+    @Input() private data: any = undefined;
+    @Input('accountid') private accountid: string = undefined;
+    @Input('ccid') private ccId: string = undefined;
+    @Input('ccname') private ccName: string = undefined;
 
     constructor(private language: language,
                 private metadata: metadata,
@@ -36,7 +36,7 @@ export class AccountCCDetailsTab {
                 private model: model) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.module = 'AccountCCDetails';
 
         if (this.data) {
@@ -47,19 +47,19 @@ export class AccountCCDetailsTab {
             this.model.data = {
                 id: this.model.id,
                 name: this.ccName,
-                contact_id: this.contactId,
+                account_id: this.accountid,
                 companycode_id: this.ccId,
                 date_entered: new moment(),
                 date_modified: new moment(),
-            }
+            };
         }
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.buildContainer();
     }
 
-    buildContainer() {
+    private buildContainer() {
         let componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
         let componentSet = componentconfig.componentset;
         if (componentSet) {
