@@ -4,14 +4,11 @@
 import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
-import {toast} from '../../../services/toast.service';
-import {backend} from '../../../services/backend.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -21,7 +18,10 @@ declare var moment: any;
 })
 
 export class AccountCCDetailsTab {
-    @ViewChild('ccdetailscontainer', {read: ViewContainerRef, static: true}) private ccdetailscontainer: ViewContainerRef;
+    @ViewChild('ccdetailscontainer', {
+        read: ViewContainerRef,
+        static: true
+    }) private ccdetailscontainer: ViewContainerRef;
 
     @Input() private data: any = undefined;
     @Input('accountid') private accountid: string = undefined;
@@ -30,13 +30,22 @@ export class AccountCCDetailsTab {
 
     constructor(private language: language,
                 private metadata: metadata,
-                private view: view,
-                private toast: toast,
-                private backend: backend,
                 private model: model) {
     }
 
     public ngOnInit() {
+        this.setModelData();
+    }
+
+    public ngAfterViewInit() {
+        this.renderView();
+    }
+
+    /*
+    * Set the model data
+    * @return void
+    * */
+    private setModelData() {
         this.model.module = 'AccountCCDetails';
 
         if (this.data) {
@@ -55,11 +64,11 @@ export class AccountCCDetailsTab {
         }
     }
 
-    public ngAfterViewInit() {
-        this.buildContainer();
-    }
-
-    private buildContainer() {
+    /*
+    * Render the configured component set
+    * @return void
+    * */
+    private renderView() {
         let componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
         let componentSet = componentconfig.componentset;
         if (componentSet) {
