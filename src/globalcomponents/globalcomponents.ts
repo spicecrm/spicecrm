@@ -45,8 +45,11 @@ import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetp
 import /*embed*/ {GlobalNavigation} from "./components/globalnavigation";
 import /*embed*/ {GlobalNavigationMenu} from "./components/globalnavigationmenu";
 import /*embed*/ {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
+import /*embed*/ {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
 import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigationmenuitemnew";
+import /*embed*/ {GlobalNavigationMenuItemActionNew} from "./components/globalnavigationmenuitemactionnew";
 import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
+import /*embed*/ {GlobalNavigationMenuItemActionRoute} from "./components/globalnavigationmenuitemactionroute";
 import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
 import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
 import /*embed*/ {GlobalNavigationCompact} from "./components/globalnavigationcompact";
@@ -117,8 +120,11 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
         GlobalNavigation,
         GlobalNavigationMenu,
         GlobalNavigationMenuItem,
+        GlobalNavigationMenuItemActionContainer,
         GlobalNavigationMenuItemNew,
+        GlobalNavigationMenuItemActionNew,
         GlobalNavigationMenuItemRoute,
+        GlobalNavigationMenuItemActionRoute,
         GlobalNavigationMenuItemIcon,
         GlobalNavigationMenuMore,
         GlobalNavigationCompact,
