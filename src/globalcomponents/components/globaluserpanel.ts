@@ -124,6 +124,7 @@ export class GlobaUserPanel {
         }, error => {
             this.toastservice.sendToast('Error setting timezone.', 'error' );
         });
+        this.session.setTimezone( value ); // Let the UI together with all the models and components know about the new configured timezone.
         this.popup.close();
     }
 

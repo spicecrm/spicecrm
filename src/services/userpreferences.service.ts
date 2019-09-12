@@ -10,6 +10,7 @@ import {language} from './language.service';
 import {broadcast} from './broadcast.service';
 import {configurationService} from './configuration.service';
 import {modal} from './modal.service';
+import {session} from './session.service';
 
 /**
  * @ignore
@@ -53,7 +54,7 @@ export class userpreferences {
 
     public formats = {nameFormats: [], loaded: false};
 
-    constructor( private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal ) {
+    constructor( private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session ) {
         this.toUse = this.preferences.global;
         this.retrievePrefsFromConfigService();
         this.broadcast.message$.subscribe(msg => {
@@ -68,6 +69,7 @@ export class userpreferences {
         this.defaults = _.extendOwn( this.defaults, this.configuration.getData('defaultuserpreferences'));
         this.askForMissingPreferences();
         this.completePreferencesWithDefaults();
+        this.session.setTimezone( this.toUse.timezone ); // Tell the UI the current time zone.
     }
 
     public getPreferences(loadhandler: Subject<string>) {
@@ -84,6 +86,7 @@ export class userpreferences {
             if (category === 'global') {
                 this.unchangedPreferences.global = _.clone(prefs);
                 this.completePreferencesWithDefaults();
+                this.session.setTimezone( this.toUse.timezone ); // Tell the UI the current time zone.
             } else {
                 this.unchangedPreferences[category] = _.clone(prefs);
             }
@@ -138,6 +141,7 @@ export class userpreferences {
                 this.unchangedPreferences[category][name] = value;
 
                 this.completePreferencesWithDefaults();
+                if ( category === 'global' && name === 'timezone' ) this.session.setTimezone( this.toUse.timezone ); // Tell the UI the current time zone.
                 saved.next( response );
             }, error => {
                 saved.error( error );
@@ -147,6 +151,7 @@ export class userpreferences {
             if(!this.preferences[category]) this.preferences[category] = {};
             this.preferences[category][name] = value;
             this.completePreferencesWithDefaults();
+            if ( category === 'global' && name === 'timezone' ) this.session.setTimezone( this.toUse.timezone ); // Tell the UI the current time zone.
         }
         return null;
     }
@@ -161,6 +166,7 @@ export class userpreferences {
                 }
                 this.unchangedPreferences[category] = savedprefs;
                 this.completePreferencesWithDefaults();
+                this.session.setTimezone( this.toUse.timezone ); // Tell the UI the current time zone. It might got changed.
                 saved.next(true);
             },
             (error) => {

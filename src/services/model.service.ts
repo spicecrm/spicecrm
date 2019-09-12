@@ -172,6 +172,12 @@ export class model implements OnDestroy {
         this.modelRegisterId = this.navigation.registerModel(this);
 
         this.data$ = new BehaviorSubject(this.data);
+        this.broadcast.message$.subscribe( data => {
+            if ( data.messagetype === 'timezone.changed' ) {
+                this.utils.timezoneChanged( this.data, data.messagedata );
+                this.utils.timezoneChanged( this.backupData, data.messagedata );
+            }
+        });
     }
 
     get messages(): any[] {
