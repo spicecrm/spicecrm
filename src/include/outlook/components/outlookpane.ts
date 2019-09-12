@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {GroupwareService} from "../../groupware/services/groupware.service";
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
 
 declare var Office: any;
