@@ -736,7 +736,7 @@ export class model implements OnDestroy {
 
         // determine changed fields
         let changedData: any = {};
-        if (this.isEditing) {
+        if (this.isEditing && !this.isNew) {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
@@ -858,6 +858,7 @@ export class model implements OnDestroy {
     public initializeModel(parent: any = null) {
         if (!this.id) {
             this.id = this.generateGuid();
+            this.isNew = true;
         }
 
         // reset the duplicates
