@@ -10,7 +10,7 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {GroupwareService} from '../groupware/services/groupware.service';
+import /*embed*/ {GroupwareService} from './services/groupware.service';
 
 import /*embed*/ {GroupwarePaneBean} from './components/groupwarepanebean';
 import /*embed*/ {GroupwarePaneAttachment} from './components/groupwarepaneattachment';
