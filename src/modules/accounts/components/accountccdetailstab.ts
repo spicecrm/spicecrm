@@ -10,6 +10,7 @@ import {language} from '../../../services/language.service';
  * @ignore
  */
 declare var moment: any;
+declare var _: any;
 
 @Component({
     selector: 'account-cc-details-tab',
@@ -24,13 +25,18 @@ export class AccountCCDetailsTab {
     }) private ccdetailscontainer: ViewContainerRef;
 
     @Input() private data: any = undefined;
-    @Input('accountid') private accountid: string = undefined;
-    @Input('ccid') private ccId: string = undefined;
-    @Input('ccname') private ccName: string = undefined;
+    @Input() private componentconfig: any = {};
+
+    @Input() private parent: model;
+
+    @Input() private ccode: any = {};
 
     constructor(private language: language,
                 private metadata: metadata,
                 private model: model) {
+
+        // set the model
+        this.model.module = 'AccountCCDetails';
     }
 
     public ngOnInit() {
@@ -46,21 +52,23 @@ export class AccountCCDetailsTab {
     * @return void
     * */
     private setModelData() {
-        this.model.module = 'AccountCCDetails';
-
         if (this.data) {
             this.model.id = this.data.id;
-            this.model.data = this.data;
+            this.model.data = this.model.utils.backendModel2spice(this.model.module, this.data);
         } else {
-            this.model.id = this.model.generateGuid();
-            this.model.data = {
-                id: this.model.id,
-                name: this.ccName,
-                account_id: this.accountid,
-                companycode_id: this.ccId,
-                date_entered: new moment(),
-                date_modified: new moment(),
-            };
+            this.model.initialize(this.parent);
+            this.model.setFields({
+                name: this.ccode.name,
+                companycode_id: this.ccode.id
+            });
+
+            // if not set by copy rules .. just to ensure we do not get zombie entries
+            if (!this.model.getField('account_id')) {
+                this.model.setFields({
+                    account_id: this.parent.id,
+                    account_name: this.parent.getField('name')
+                });
+            }
         }
     }
 
@@ -69,8 +77,19 @@ export class AccountCCDetailsTab {
     * @return void
     * */
     private renderView() {
-        let componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
-        let componentSet = componentconfig.componentset;
+
+        if (_.isEmpty(this.componentconfig)) {
+            // check to get the config
+            this.componentconfig = this.metadata.getComponentConfig('AccountCCDetails', 'AccountCCDetails');
+
+            // fallback to check with Accounts
+            if (_.isEmpty(this.componentconfig)) {
+                this.componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
+            }
+        }
+
+        // get the componentset
+        let componentSet = this.componentconfig.componentset;
         if (componentSet) {
             let components = this.metadata.getComponentSetObjects(componentSet);
             for (let component of components) {
