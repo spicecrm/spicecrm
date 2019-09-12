@@ -25,12 +25,24 @@ export class territories {
         return this.getModuleParamaters(module) ? true : false;
     }
 
+    /**
+     * checks if there are paramaters for the module
+     *
+     * @param module the name of the module
+     */
     public getModuleParamaters(module) {
         let types = this.configurationService.getData('aclterritorymoduletypes');
-        let moduelType = types.find(typeRecord => typeRecord.module == module);
-        return moduelType;
+        if (types) {
+            let moduelType = types.find(typeRecord => typeRecord.module == module);
+            return moduelType;
+        } else {
+            return false;
+        }
     }
 
+    /**
+     * returns the user territories as they are retrived from the backend
+     */
     get userTerritories() {
         return this.configurationService.getData('aclterritoryuserterritories');
     }
