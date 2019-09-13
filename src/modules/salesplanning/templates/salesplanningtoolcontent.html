@@ -1,0 +1,32 @@
+<div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
+    <div class="slds-p-horizontal--medium slds-p-vertical--small slds-border--bottom slds-scrollable--x" style="min-height: 20px">
+        {{nodeItemName}}
+    </div>
+    <div class="slds-grow slds-scrollable--y">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout spice-table_header-fixed">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate">columns</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="slds-truncate">
+                        content
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div *ngIf="!isLoading && !node" class="slds-p-around--small slds-align--absolute-center" style="height: 100%">
+    {{language.getLabel('LBL_MAKE_SELECTION')}}
+</div>
+<div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium">
+    <system-spinner></system-spinner>
+</div>
+
