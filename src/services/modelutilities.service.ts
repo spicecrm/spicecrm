@@ -125,7 +125,7 @@ export class modelutilities {
                 if ( typeof value === 'string' ) { // A date field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
                     let pDate = moment(value); // We create a moment object from the string (without a specific time zone, because it´s only a date) ...
                     return pDate.isValid() ? pDate.format('YYYY-MM-DD') : ''; // ... to validate it and to format it.
-                } else if ( value._isAMomentObject ) { // It is a moment object (the usual case).
+                } else if (value &&  value._isAMomentObject ) { // It is a moment object (the usual case).
                     return value.isValid() ? value.format('YYYY-MM-DD') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
                 }
                 return '';
@@ -136,7 +136,7 @@ export class modelutilities {
                 if ( typeof value === 'string' ) { // A datetime field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
                     let pDateTime = moment.tz( value, this.session.getSessionData('timezone'));  // We create a moment object from the string (with the configured time zone of the user) ...
                     return pDateTime.isValid() ? pDateTime.utc().format('YYYY-MM-DD HH:mm:ss') :''; // ... to validate is and to format it.
-                } else if ( value._isAMomentObject ) { // It is a moment object (the usual case).
+                } else if (value && value._isAMomentObject ) { // It is a moment object (the usual case).
                     return value.isValid() ? moment(value).utc().format('YYYY-MM-DD HH:mm:ss') : ''; // Validate it and format it for the backend, in UTC.
                 }
                 return '';
@@ -576,7 +576,7 @@ export class modelutilities {
     public timezoneChanged( modelData: object, timezone: string ): void {
         for ( let fieldname in modelData ) {
             if ( _.isObject( modelData[fieldname] )) {
-                if ( modelData[fieldname]._isAMomentObject ) {
+                if ( modelData[fieldname] && modelData[fieldname]._isAMomentObject ) {
                     if ( modelData[fieldname]._isUTC ) { // _isUTC seems to indicate that this is not a simple date but a datetime. Don´t touch a date field!
                         modelData[fieldname].tz( timezone );
                     }
