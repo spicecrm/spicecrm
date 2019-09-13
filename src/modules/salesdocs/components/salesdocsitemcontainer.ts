@@ -94,11 +94,6 @@ export class SalesDocsItemContainer implements OnInit {
             }
         });
 
-        // determine if we can open details
-        let itemTypes = this.configuration.getData('salesdocitemtypes');
-        let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
-        if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
-
         // subscribe to document to listen to relevant changes (currency ... etc)
         this.salesdoc.data$.subscribe(data => {
             if (this.salesdoc.getField('currency_id') != this.model.getField('currency_id')) {
@@ -106,13 +101,20 @@ export class SalesDocsItemContainer implements OnInit {
             }
         });
 
-        // determine the list fieldset
-        if (itemTypeDetails && itemTypeDetails.itemfieldset) {
-            this.fieldsetItems = this.metadata.getFieldSetFields(itemTypeDetails.itemfieldset);
-        } else {
-            let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
-            if (config.fieldset) {
-                this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
+        // determine if we can open details
+        let itemTypes = this.configuration.getData('salesdocitemtypes');
+        if(itemTypes){
+            let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
+            if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
+
+            // determine the list fieldset
+            if (itemTypeDetails && itemTypeDetails.itemfieldset) {
+                this.fieldsetItems = this.metadata.getFieldSetFields(itemTypeDetails.itemfieldset);
+            } else {
+                let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
+                if (config.fieldset) {
+                    this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
+                }
             }
         }
     }
