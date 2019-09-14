@@ -93,7 +93,12 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
 
 
     public ngOnInit() {
-        this.itemMenu = this.metadata.getModuleMenu(this.item.module);
+        let componentconfig = this.metadata.getComponentConfig('GlobalNavigationMenuItem', this.item.module);
+        if(componentconfig.actionset){
+            this.itemMenu = this.metadata.getActionSetItems(componentconfig.actionset);
+        } else {
+            this.itemMenu = this.metadata.getModuleMenu(this.item.module);
+        }
         this.model.module = this.item.module;
     }
 
