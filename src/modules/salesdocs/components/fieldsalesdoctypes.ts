@@ -45,7 +45,18 @@ export class fieldSalesdocTypes extends fieldGeneric {
         }
     }
 
+    /**
+     * loads the salesdoc types from the config
+     *
+     * if config setting without display only is set filter the document out that are display ony .. this is required for the creation of sales documents
+     */
     public getOptions() {
-        this.options = this.configuration.getData('salesdoctypes');
+        let salesdocTypes = this.configuration.getData('salesdoctypes');
+
+        if(this.fieldconfig.withoutdisplayonly){
+            this.options = salesdocTypes.filter(salesdocType => salesdocType.displayonly != 0);
+        } else {
+            this.options = salesdocTypes;
+        }
     }
 }

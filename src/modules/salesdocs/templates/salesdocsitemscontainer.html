@@ -3,7 +3,7 @@
         <thead>
             <tr salesdocs-item-header></tr>
         </thead>
-        <tbody>
+        <tbody *ngIf="itemcount > 0">
             <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
                 <tr salesdocs-item-container [item]="item" [parentview]="view" [salesdoc]="model" (recalculated)="recalculate()"></tr>
                 <tr *ngIf="item.expanded">
@@ -13,22 +13,20 @@
                     </td>
                 </tr>
             </ng-container>
-            <tr>
-                <td colspan="5">
+        </tbody>
+        <tbody *ngIf="itemcount == 0">
+            <td [attr.colspan]="2 + fieldsetItems.length">
+                <div class="slds-p-around--medium slds-align--absolute-center">
                     <button [disabled]="!editing" class="slds-button slds-button_neutral" (click)="addItem()">
                         <div class="slds-grid">
                             <span>{{language.getLabel('LBL_ADD_ITEM')}}</span>
                         </div>
                     </button>
-                </td>
-                <td>
-                    <field-container fieldname="amount_net" [fieldconfig]="{readonly:true, hidelabel: true}" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
-                </td>
-                <td>
-                    <field-container fieldname="amount_gross" [fieldconfig]="{readonly:true, hidelabel: true}" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
-                </td>
-                <td></td>
-            </tr>
+                </div>
+            </td>
         </tbody>
+        <tfoot *ngIf="itemcount > 0">
+            <tr salesdocs-item-footer [editing]="editing" (addItem)="addItem()"></tr>
+        </tfoot>
     </table>
 </system-collapsable-tab>

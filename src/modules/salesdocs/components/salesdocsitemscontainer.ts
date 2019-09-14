@@ -75,7 +75,7 @@ export class SalesDocsItemsContainer {
     get totalnet() {
         let total = 0;
         for (let item of this.items) {
-            total += parseFloat(item.amount_net);
+            if (item.deleted != 1) total += parseFloat(item.amount_net);
         }
         return total;
     }
@@ -86,11 +86,17 @@ export class SalesDocsItemsContainer {
     get totalgross() {
         let total = 0;
         for (let item of this.items) {
-            total += parseFloat(item.amount_gross);
+            if (item.deleted != 1)  total += parseFloat(item.amount_gross);
         }
         return total;
     }
 
+    /**
+     * returns the number of not deleted items
+     */
+    get itemcount(){
+        return this.items.filter(item => item.deleted != 1).length;
+    }
     /**
      * recacluates the total document
      */
@@ -186,6 +192,5 @@ export class SalesDocsItemsContainer {
 
         this.buildItems();
 
-        // this.recalculate();
     }
 }

@@ -76,8 +76,10 @@ export class SalesDocsItemContainer implements OnInit {
             // process the mode change
             if (mode == 'edit') {
                 this.view.setEditMode();
+                this.view.displayLinks = false;
             } else {
                 this.view.setViewMode();
+                this.view.displayLinks = true;
             }
         });
 
@@ -91,6 +93,9 @@ export class SalesDocsItemContainer implements OnInit {
                 this.salesdoc.startEdit();
                 // set the view to edit mode
                 this.parentview.setEditMode();
+
+                // do not display links
+                this.view.displayLinks = false;
             }
         });
 
