@@ -1113,6 +1113,10 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     display: none;
 }
 
+.slds-modal__footer .slds-button-group .slds-button+.slds-button{
+    margin-left: 0px;
+}
+
 .cdk-drop-list-dragging .cdk-drag {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
