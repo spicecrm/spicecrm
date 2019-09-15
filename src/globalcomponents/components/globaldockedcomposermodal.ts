@@ -74,14 +74,22 @@ export class GlobalDockedComposerModal implements OnInit {
         this.self.destroy();
     }
 
-    private saveComposer() {
-        this.model.save().subscribe(result => {
-            for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
-                if (this.dockedComposer.composers[i].id === this.model.id) {
-                    this.dockedComposer.composers.splice(i, 1);
+    private saveComposer(goto = false) {
+        if (this.model.validate()) {
+            this.model.save().subscribe(result => {
+                // navigate to the record
+                if (goto) this.model.goDetail();
+
+                // remove the docked composer
+                for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
+                    if (this.dockedComposer.composers[i].id === this.model.id) {
+                        this.dockedComposer.composers.splice(i, 1);
+                    }
                 }
-            }
-            this.self.destroy();
-        });
+
+                // destroy the modal
+                this.self.destroy();
+            });
+        }
     }
 }
