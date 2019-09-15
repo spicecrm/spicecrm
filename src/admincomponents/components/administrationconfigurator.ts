@@ -43,6 +43,10 @@ export class AdministrationConfigurator implements OnInit {
         return this.administrationconfigurator.entries.length;
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
+
     getEntries() {
         let entries = [];
         for (let entry of this.administrationconfigurator.entries) {
