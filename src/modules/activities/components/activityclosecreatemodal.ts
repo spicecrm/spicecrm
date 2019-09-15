@@ -3,44 +3,26 @@
  */
 import {
     Component, Input, OnInit,
-    ViewChild,
-    ViewContainerRef,
 } from '@angular/core';
-import {Router} from '@angular/router';
-import {Subject, Observable} from 'rxjs';
 
 import {model} from '../../../services/model.service';
-import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
-import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
-import {toast} from "../../../services/toast.service";
 
-declare var _: any;
 
 /**
  * renders a modal window to show all possible modules(beans) which can be created after closing an activity
  */
 @Component({
     templateUrl: './src/modules/activities/templates/activityclosecreatemodal.html',
-    providers: [view, model]
+    providers: [model]
 })
 export class ActivityCloseCreateModal implements OnInit {
-    /**
-     * a reference to the modal content to have a reference to scrolling
-     */
-    @ViewChild('modalContent', {read: ViewContainerRef, static: true}) private modalContent: ViewContainerRef;
+
     /**
      * the componentconfig that gets passed in when the modal is created
      */
     private componentconfig: any = {};
-    /**
-     * the actionset items to be rendered in the modal
-     */
-    private actionSetItems: any = [];
-
-
-    private disabled: boolean = true;
 
     /**
      * all modules where its possible to create new bean | STRING with ',' Seperator
@@ -48,13 +30,8 @@ export class ActivityCloseCreateModal implements OnInit {
     private newBeanModules: any = [];
 
     /**
-     * ToDo: add documentation what we need this for
+     * the parent bean we are cloning from
      */
-    private actionSubject: Subject<any> = new Subject<any>();
-    private action$: Observable<any> = new Observable<any>();
-
-    @Input() public preventGoingToRecord = false;
-
     @Input() public parent: any = {};
 
     /**
@@ -64,18 +41,11 @@ export class ActivityCloseCreateModal implements OnInit {
     private value: string = "";
 
     constructor(
-        private router: Router,
         private language: language,
         private model: model,
-        private view: view,
-        private metadata: metadata,
-        private modal: modal,
-        private toast: toast
+        private metadata: metadata
     ) {
-        this.view.isEditable = true;
-        this.view.setEditMode();
 
-        this.action$ = this.actionSubject.asObservable();
     }
 
     /**
@@ -83,14 +53,16 @@ export class ActivityCloseCreateModal implements OnInit {
      */
     public ngOnInit() {
         this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.parent.module);
-        this.actionSetItems = this.metadata.getActionSetItems(this.componentconfig.actionset);
 
         let newBeanModulesString = this.componentconfig.newBeanModules;
         if(newBeanModulesString) {
             let newBeanModulesArray = newBeanModulesString.split(",");
 
             for (let item of newBeanModulesArray) {
-                this.newBeanModules.push(this.metadata.getModuleDefs(item));
+                // check if the user can create
+                if(this.metadata.checkModuleAcl(item, 'create')){
+                    this.newBeanModules.push(this.metadata.getModuleDefs(item));
+                }
             }
         }
     }
@@ -110,7 +82,4 @@ export class ActivityCloseCreateModal implements OnInit {
         this.model.addModel("", this.parent);
         this.self.destroy();
     }
-
-
-
 }
