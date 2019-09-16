@@ -6,16 +6,23 @@ import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {ActivatedRoute} from "@angular/router";
 import {SalesPlanningService} from "../services/salesplanning.service";
+import {model} from "../../../services/model.service";
 
 @Component({
     templateUrl: './src/modules/salesplanning/templates/salesplanningtool.html',
-    providers: [SalesPlanningService]
+    providers: [SalesPlanningService, model]
 })
 
 export class SalesPlanningTool implements OnInit {
 
     private isLoading: boolean = false;
-    constructor(private language: language, private backend: backend, private activatedRoute: ActivatedRoute, private planningService: SalesPlanningService) {
+
+    constructor(private language: language,
+                private backend: backend,
+                private activatedRoute: ActivatedRoute,
+                private model: model,
+                private planningService: SalesPlanningService) {
+        model.module = 'SalesPlanningVersions';
     }
 
     get selectedNode() {
@@ -29,11 +36,14 @@ export class SalesPlanningTool implements OnInit {
     public ngOnInit() {
         this.activatedRoute.params.subscribe(params => {
             this.planningService.versionId = params.versionId;
+            this.model.id = params.versionId;
+            this.model.getData();
             this.getCharacteristicList();
         });
     }
 
     private getCharacteristicList() {
+        this.planningService.characteristics = [];
         this.isLoading = true;
         this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/CharacteristicList`)
             .subscribe(char => {

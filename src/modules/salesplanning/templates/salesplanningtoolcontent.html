@@ -1,32 +1,72 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div class="slds-p-horizontal--medium slds-p-vertical--small slds-border--bottom slds-scrollable--x" style="min-height: 20px">
-        {{nodeItemName}}
+    <div class="slds-border--bottom slds-grid" style="min-height: 20px">
+        <div class="slds-grow slds-p-horizontal--medium slds-p-vertical--small slds-scrollable--x slds-text-heading--small">
+            {{nodeItemName}}
+        </div>
+        <div *ngIf="!isEditMode && nodeContentArray.length > 0" class="slds-m-vertical--xx-small slds-m-horizontal--small">
+            <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="setEditMode()">
+                {{language.getLabel('LBL_EDIT')}}
+            </button>
+        </div>
+        <div *ngIf="isEditMode" class="slds-m-vertical--xx-small slds-m-horizontal--small">
+            <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="cancel()">
+                {{language.getLabel('LBL_CANCEL')}}
+            </button>
+            <button class="slds-button slds-button--brand slds-m-left--xx-small" (click)="save()">
+                {{language.getLabel('LBL_SAVE')}}
+            </button>
+        </div>
     </div>
     <div class="slds-grow slds-scrollable--y">
-        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout spice-table_header-fixed">
+        <table *ngIf="nodeContentArray.length > 0" class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout spice-table_header-fixed">
             <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col">
-                    <div class="slds-truncate">columns</div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_PLAN_CODE')">
+                        {{language.getLabel('LBL_PLAN_CODE')}}
+                    </div>
+                </th>
+                <th *ngFor="let period of periods; trackBy: trackByFn" scope="col" [title]="period?.name">
+                    <div class="slds-truncate">
+                        {{period?.name}}
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_SUM_PERIODS')">
+                        {{language.getLabel('LBL_SUM_PERIODS')}}
+                    </div>
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr *ngFor="let field of nodeContentArray; trackBy: trackByFn">
                 <td>
-                    <div class="slds-truncate">
-                        content
+                    <div class="slds-truncate" [title]="field.description">
+                        {{field.description}}
+                    </div>
+                </td>
+                <td *ngFor="let period of periods; trackBy: trackByFn" [title]="field[period?.key]">
+                    <div *ngIf="!isEditMode" class="slds-truncate">
+                        {{field[period?.key]}}
+                    </div>
+                    <div *ngIf="isEditMode" class="slds-form-element__control slds-m-vertical--xx-small">
+                        <input type="text" class="slds-input" [(ngModel)]="field[period?.key]">
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-truncate" [title]="field.sum">
+                        {{field.sum}}
                     </div>
                 </td>
             </tr>
             </tbody>
         </table>
+        <div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium" style="height: inherit">
+            <system-spinner></system-spinner>
+        </div>
     </div>
 </div>
-<div *ngIf="!isLoading && !node" class="slds-p-around--small slds-align--absolute-center" style="height: 100%">
+<div *ngIf="!isLoading && !node" class="slds-p-around--small slds-align--absolute-center" style="height: inherit">
     {{language.getLabel('LBL_MAKE_SELECTION')}}
-</div>
-<div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium">
-    <system-spinner></system-spinner>
 </div>
 
