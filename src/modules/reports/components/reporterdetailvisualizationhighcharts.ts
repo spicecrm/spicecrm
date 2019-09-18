@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import {ActivatedRoute}   from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
+import {libloader} from '../../../services/libloader.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
@@ -40,6 +41,7 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
         private navigation: navigation,
         private elementRef: ElementRef,
         private utils: modelutilities,
+        private libloader: libloader
     ) {
         // don't use the vizdata.uid in case the same report is rendered multiple times...
         this.chart_element_id = 'high-charts-'+this.utils.generateGuid();
@@ -51,7 +53,7 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
             this.vizdata.data.chart.height = this.elementRef.nativeElement.height;
         }
 
-        this.metadata.loadLibs('highcharts').subscribe(
+        this.libloader.loadLib('highcharts').subscribe(
             (next) => {
                 if (Highcharts.chart) {
 

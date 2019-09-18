@@ -1,5 +1,5 @@
 /**
- * @module ObjectFields
+ * @module ModuleSalesDocs
  */
 import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -12,10 +12,10 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'field-enum',
-    templateUrl: './src/modules/salesdocs/templates/fieldSalesdocTypes.html'
+    selector: 'field-salesdoc-item-types',
+    templateUrl: './src/modules/salesdocs/templates/fieldsalesdocitemtypes.html'
 })
-export class fieldSalesdocTypes extends fieldGeneric  {
+export class fieldSalesdocItemTypes extends fieldGeneric {
 
     public options: any[] = [];
 
@@ -30,10 +30,25 @@ export class fieldSalesdocTypes extends fieldGeneric  {
     }
 
     public getValue(): string {
-        return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, this.value);
+        try {
+            if (!this.value) return '';
+
+            // find the option and try to translate the table
+            let thisOption = this.options.find(itemtype => itemtype.name == this.value);
+            if (thisOption && thisOption.vname) {
+                return this.language.getLabel(thisOption.vname);
+            } else {
+                return this.value;
+            }
+        } catch (e) {
+            return this.value;
+        }
     }
 
+    /**
+     * load the options from teh configuration
+     */
     public getOptions() {
-        this.options = this.configuration.getData('salesdoctypes');
+        this.options = this.configuration.getData('salesdocitemtypes');
     }
 }

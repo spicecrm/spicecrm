@@ -22,15 +22,27 @@ export class territories {
      * @param module
      */
     public checkModuleManaged(module) {
+        return this.getModuleParamaters(module) ? true : false;
+    }
+
+    /**
+     * checks if there are paramaters for the module
+     *
+     * @param module the name of the module
+     */
+    public getModuleParamaters(module) {
         let types = this.configurationService.getData('aclterritorymoduletypes');
-        let moduelType = types.find(typeRecord => typeRecord.module == module);
-        if (moduelType) {
-            return true;
+        if (types) {
+            let moduelType = types.find(typeRecord => typeRecord.module == module);
+            return moduelType;
         } else {
             return false;
         }
     }
 
+    /**
+     * returns the user territories as they are retrived from the backend
+     */
     get userTerritories() {
         return this.configurationService.getData('aclterritoryuserterritories');
     }
@@ -42,8 +54,8 @@ export class territories {
      */
     public getRecentTerritories(module, count = 5, action?) {
         let territorries = this.userTerritories;
-        if (action  && !this.session.isAdmin) {
-            let actionTerritories = territorries[module] && territorries[module].length > 0 ? territorries[module].filter(a =>  a.actions.indexOf(action) != -1) : [];
+        if (action && !this.session.isAdmin) {
+            let actionTerritories = territorries[module] && territorries[module].length > 0 ? territorries[module].filter(a => a.actions.indexOf(action) != -1) : [];
             return actionTerritories && actionTerritories.length > 0 ? actionTerritories.slice(0, count) : [];
         } else {
             return territorries[module] && territorries[module].length > 0 ? territorries[module].slice(0, count) : [];

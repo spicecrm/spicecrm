@@ -3,7 +3,8 @@
  */
 import {
     Component,
-    ElementRef
+    ElementRef,
+    Injector
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -25,7 +26,7 @@ export class SalesDocsItemsEdit {
     private voucher_code: any = '';
     private voucher: any = {};
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configurationService: configurationService, private modal: modal) {
+    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private model: model, private userpreferences: userpreferences, private view: view, private configuration: configurationService, private modal: modal, private injector: Injector) {
         try {
             this.buildItems();
         } catch (e) {
@@ -49,7 +50,7 @@ export class SalesDocsItemsEdit {
     }
 
     get taxcategories() {
-        return this.configurationService.getData('salesdoctaxcategories');
+        return this.configuration.getData('salesdoctaxcategories');
     }
 
     get totalnet() {
@@ -110,12 +111,12 @@ export class SalesDocsItemsEdit {
         if (item.product_id) {
             return item.product_name;
         } else {
-            return item.productvariant_name
+            return item.productvariant_name;
         }
     }
 
     private getUOMLabel(item) {
-        let uoms = this.configurationService.getData('uomunits');
+        let uoms = this.configuration.getData('uomunits');
         let unit = uoms.find(uom => uom.id == item.uom_id);
         if (unit) {
             return this.language.getLabel(unit.label);
@@ -164,7 +165,7 @@ export class SalesDocsItemsEdit {
             if (parseFloat(item.quantity) && parseFloat(item.amount_net_per_uom)) {
                 item.amount_net = parseFloat(item.quantity) * parseFloat(item.amount_net_per_uom);
 
-                let taxpercentage = this.getTaxPercentage(item.tax_category)
+                let taxpercentage = this.getTaxPercentage(item.tax_category);
 
                 item.amount_gross = item.amount_net * (100 + taxpercentage) / 100;
                 item.tax_amount = item.amount_net * taxpercentage / 100;
@@ -203,7 +204,7 @@ export class SalesDocsItemsEdit {
                     this.handleAddProductVariant(variants);
                 }
             );
-        })
+        });
     }
 
     private getNextItemNr() {
@@ -300,7 +301,7 @@ export class SalesDocsItemsEdit {
                 item.expanded = !item.expanded;
                 return true;
             }
-        })
+        });
     }
 
     private checkVoucherCode() {
@@ -344,4 +345,62 @@ export class SalesDocsItemsEdit {
             });
         }
     }
+
+    /**
+     * called to add an Item
+     */
+    private addItem() {
+        this.modal.openModal('SalesDocsItemsAddTypeSelector', true, this.injector).subscribe(addItemModal => {
+            addItemModal.instance.itemTypeSelected.subscribe(itemType => {
+                if (itemType) {
+                    // get the item type data
+                    let itemTypes = this.configuration.getData('salesdocitemtypes');
+                    let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == itemType);
+                    if (itemTypeDetails) {
+                        this.modal.openModal(itemTypeDetails.addmodalcomponent, true, this.injector).subscribe(addModal => {
+                            addModal.instance.additem.subscribe(item => {
+                                // add the item
+                                this.handleAddItem(item);
+                            });
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    private handleAddItem(itemData) {
+
+        let newItem = {
+            id: this.model.generateGuid(),
+            deleted: 0,
+            salesdoc_id: this.model.id,
+            tax_category: 'V2',
+            quantity: 1,
+            itemnr: this.getNextItemNr(),
+        };
+
+        itemData.id = this.model.generateGuid();
+        itemData.deleted = 0;
+        itemData.salesdoc_id = this.model.id;
+        itemData.tax_category = 'V20';
+        itemData.quantity = 1;
+        itemData.itemnr = this.getNextItemNr();
+
+        // this.items.push(newItem);
+
+        // add to the bean as well
+        if (!this.model.data.salesdocitems) {
+            this.model.data.salesdocitems = {
+                beans: {}
+            };
+        }
+
+        this.model.data.salesdocitems.beans[itemData.id] = itemData;
+
+        this.buildItems();
+
+        this.recalculate();
+    }
+
 }

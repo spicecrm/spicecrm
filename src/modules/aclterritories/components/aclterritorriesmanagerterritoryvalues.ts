@@ -18,24 +18,31 @@ import {modelutilities} from '../../../services/modelutilities.service';
     selector: 'aclterritorries-manager-territory-values',
     templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanagerterritoryvalues.html'
 })
-export class ACLTerritorriesManagerTerritoryValues{
+export class ACLTerritorriesManagerTerritoryValues implements OnChanges{
 
-    @Input() territorrytypedetails: any = {};
-    @Input() editable: boolean = true;
+    @Input() private territorrytypedetails: any = {};
+    @Input() private editable: boolean = true;
 
     constructor(private backend: backend, private modal: modal, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
     }
 
-    elementValues(elementId){
+    public ngOnChanges(): void {
+        for(let element of this.territorrytypedetails.elements){
+            if(!this.model.data.elementvalues[element.id]) this.model.data.elementvalues[element.id] = '';
+        }
+    }
+
+    private elementValues(elementId) {
         let retValues = [];
-        for(let elementvalue of this.territorrytypedetails.elementvalues){
-            if(elementvalue.spiceaclterritoryelement_id == elementId)
+        for (let elementvalue of this.territorrytypedetails.elementvalues) {
+            if (elementvalue.spiceaclterritoryelement_id == elementId) {
                 retValues.push(elementvalue);
+            }
         }
         return retValues;
     }
 
-    get editing(){
+    get editing() {
         return this.view.isEditMode() && this.editable;
     }
 }

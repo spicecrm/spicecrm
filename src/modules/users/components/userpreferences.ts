@@ -13,12 +13,12 @@ import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -55,6 +55,7 @@ export class UserPreferences {
         "calendar_day_start_hour",
         "calendar_day_end_hour",
         "home_dashboard",
+        "home_dashboardset",
         "home_assistant",
         "help_icon",
     ];
@@ -72,30 +73,12 @@ export class UserPreferences {
         "ISO-8859-14", "ISO-8859-15", "KOI8-R", "KOI8-U", "SJIS", "UTF-8"];
     private currencySignificantDigitsList: string[] = ["1", "2", "3", "4", "5", "6"];
     private thousandDelimiterList: string[] = [",", "."];
-    private dateFormatList = [
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y-m-d")), value: "Y-m-d"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m-d-Y")), value: "m-d-Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d-m-Y")), value: "d-m-Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y/m/d")), value: "Y/m/d"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m/d/Y")), value: "m/d/Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d/m/Y")), value: "d/m/Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("Y.m.d")), value: "Y.m.d"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("d.m.Y")), value: "d.m.Y"},
-        {name: moment().format(this.prefservice.jsDateFormat2momentDateFormat("m.d.Y")), value: "m.d.Y"}
-    ];
-    private timeFormatList = [
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("H:i")), value: "H:i"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:ia")), value: "h:ia"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:iA")), value: "h:iA"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:i a")), value: "h:i a"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h:i A")), value: "h:i A"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("H.i")), value: "H.i"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.ia")), value: "h.ia"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.iA")), value: "h.iA"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i a")), value: "h.i a"},
-        {name: moment().format(this.prefservice.jsTimeFormat2momentTimeFormat("h.i A")), value: "h.i A"}
-    ];
+
+    private dateFormatList: object[];
+    private timeFormatList: object[];
+
     private currencyList: any[] = [];
+    private dashboardSets: any[] = [];
     private formattingsOfNumbers = [
         {
             show: "1.000.000,00",
@@ -128,6 +111,9 @@ export class UserPreferences {
 
         this.view.isEditable = true;
 
+        this.dateFormatList = this.prefservice.getPossibleDateFormats();
+        this.timeFormatList = this.prefservice.getPossibleTimeFormats();
+
         this.canPrefs = this.session.authData.userId === this.model.data.id; // only the user himself can view/edit the preferences
         if ( this.canPrefs ) {
 
@@ -143,7 +129,6 @@ export class UserPreferences {
                 this.timezoneKeys = Object.keys( this.timezones );
             } );
             this.currencyList = this.currency.getCurrencies();
-
         }
 
         for (let i = 0; i < 24; i++) {
@@ -154,6 +139,11 @@ export class UserPreferences {
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
             });
+
+        this.backend.getList("DashboardSets", "name", "DESC", ["name", "id"], {limit: -1})
+            .subscribe((dashboardSets: any) => {
+                this.dashboardSets = dashboardSets.list;
+            });
     }
 
     get datef() {
@@ -162,11 +152,6 @@ export class UserPreferences {
 
     get timef() {
         return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
-    }
-
-    get homeDashboardName() {
-        let dashboard = this.dashboards.find(dashboard => dashboard.id == this.preferences.home_dashboard);
-        return dashboard ? dashboard.name : '-- Default Dashboard --';
     }
 
     get formattingOfNumbers(): string {
@@ -230,4 +215,11 @@ export class UserPreferences {
         this.preferences[pref] = ( event.srcElement.value === '-' ? null : event.srcElement.value );
     }
 
+    private getDashboardSetData(id) {
+        return this.dashboardSets.find(dashboardSet => dashboardSet.id == id);
+    }
+
+    private getDashboardData(id) {
+        return this.dashboards.find(dashboard => dashboard.id == id);
+    }
 }

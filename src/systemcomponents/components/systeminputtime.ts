@@ -40,11 +40,11 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         offset: 0,
         valid: true
     };
-    private dropdownValues: Array<any> = [];
+    private dropdownValues: any[] = [];
 
     // for the dropdown
     private isOpen: boolean = false;
-    //private clickListener: any;
+    // private clickListener: any;
     private readonly minutes_interval = 30;
 
     constructor(

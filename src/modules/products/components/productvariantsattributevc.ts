@@ -29,7 +29,15 @@ export class ProductVariantsAttributeVC implements OnInit {
     }
 
     set value(value) {
-        this.attrbutevalueset.pratvalue = value;
+        let attrValues = this.model.getField('productattributevalues');
+        for (let id in attrValues.beans) {
+            if (attrValues.beans.hasOwnProperty(id) && attrValues.beans[id].productattribute_id === this.attribute.id) {
+                attrValues.beans[id].pratvalue = value;
+                this.attrbutevalueset.pratvalue = value;
+                break;
+            }
+        }
+        this.model.setField('productattributevalues', attrValues);
     }
 
     get isDisabled() {
@@ -66,6 +74,7 @@ export class ProductVariantsAttributeVC implements OnInit {
             for (let id in attrValues.beans) {
                 if (attrValues.beans.hasOwnProperty(id) && attrValues.beans[id].productattribute_id === this.attribute.id) {
                     this.attrbutevalueset = attrValues.beans[id];
+                    break;
                 }
             }
             if (!this.attrbutevalueset) {

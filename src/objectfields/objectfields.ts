@@ -104,6 +104,8 @@ import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
 import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
 import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
 import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
+import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
+import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
 
 /**
 * @ignore
@@ -214,7 +216,9 @@ declare var _: any;
         fieldSystemLabel,
         fieldTimeDifference,
         fieldIconPopover,
-        fieldStylesheetID
+        fieldStylesheetID,
+        fieldUnitsOfMeasure,
+        fieldQuantity
     ],
     exports: [
         fieldSet,
