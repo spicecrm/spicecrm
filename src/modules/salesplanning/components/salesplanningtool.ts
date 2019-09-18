@@ -8,6 +8,8 @@ import {ActivatedRoute} from "@angular/router";
 import {SalesPlanningService} from "../services/salesplanning.service";
 import {model} from "../../../services/model.service";
 
+declare var _;
+
 @Component({
     templateUrl: './src/modules/salesplanning/templates/salesplanningtool.html',
     providers: [SalesPlanningService, model]
@@ -37,7 +39,8 @@ export class SalesPlanningTool implements OnInit {
         this.activatedRoute.params.subscribe(params => {
             this.planningService.versionId = params.versionId;
             this.model.id = params.versionId;
-            this.model.getData();
+            this.model.getData()
+                .subscribe(item => this.setContentClassifications(item));
             this.getCharacteristicList();
         });
     }
@@ -52,5 +55,12 @@ export class SalesPlanningTool implements OnInit {
                     this.isLoading = false;
                 }
             });
+    }
+
+    private setContentClassifications(parent) {
+        if (!parent || !parent.salesplanningcontents) return;
+        let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
+        if (!content || !content.salesplanningcontentfields) return;
+        this.planningService.contentClassifications = _.toArray(content.salesplanningcontentfields.beans);
     }
 }

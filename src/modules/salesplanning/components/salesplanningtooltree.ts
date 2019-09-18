@@ -109,6 +109,7 @@ export class SalesPlanningToolTree implements OnInit {
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
                 this.planningService.selectedNode = item;
+                this.planningService.selectedNodes = this.getNodes(item);
                 return true;
             }
         });
