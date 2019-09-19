@@ -74,8 +74,13 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
         // reset the company code id
         this.companyCode = undefined;
 
+        let params = {
+            offset: 0,
+            limit: 99
+        };
+
         // load from backend
-        this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials').subscribe(accountpotentials => {
+        this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials', params).subscribe(accountpotentials => {
             this.account_potentials = [];
             for (let id in accountpotentials) {
                 this.account_potentials.push(this.model.utils.backendModel2spice('Potentials', accountpotentials[id]));
