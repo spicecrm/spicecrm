@@ -3,7 +3,7 @@
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-            <div *ngIf="!displayLink()" class="slds-truncate"><system-utility-icon [icon]="ratingIcon" [size]="'x-small'"></system-utility-icon><span *ngIf="value">&nbsp;({{value}})</span></div>
+            <div *ngIf="!displayLink()" class="slds-truncate"><system-utility-icon *ngIf="value" [icon]="ratingIcon" [size]="'x-small'"></system-utility-icon><span *ngIf="value">&nbsp;({{value}})</span></div>
             <div *ngIf="displayLink()" class="slds-truncate"><a href="javascript:void(0);" (click)="goRecord()"><system-utility-icon [icon]="ratingIcon" [size]="'x-small'"></system-utility-icon><span *ngIf="value">&nbsp;({{value}})</span></a></div>
             <button *ngIf="isEditable()" style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
                 <system-button-icon [icon]="'edit'"></system-button-icon>
