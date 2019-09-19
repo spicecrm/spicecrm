@@ -75,8 +75,8 @@ export class GlobalObtainImportantPreferences implements OnInit {
 
     private save() {
         if ( this.timeshift ) {
-            if ( this.timeshiftAction === 'takeSelected' && this.configuredTimezone !== this.selectedTimezone ) this.preferences = { timezone: this.selectedTimezone };
-            if ( this.timeshiftAction === 'takeGuessed' ) this.preferences = { timezone: this.guessedTimezone };
+            if ( this.timeshiftAction === 'takeSelected' && this.configuredTimezone !== this.selectedTimezone ) this.preferences.timezone = this.selectedTimezone;
+            if ( this.timeshiftAction === 'takeGuessed' ) this.preferences.timezone = this.guessedTimezone;
         }
         if ( !_.isEmpty( this.preferences )) {
             this.prefservice.setPreferences( this.preferences ).subscribe( () => {
