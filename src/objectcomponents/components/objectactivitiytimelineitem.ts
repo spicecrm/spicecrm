@@ -43,7 +43,7 @@ export class ObjectActivitiyTimelineItem implements OnInit {
      * gets the activity time and returns it formatted
      */
     get starttime() {
-        let startdate = new moment(this.activity.date_activitiy);
+        let startdate = new moment(this.activity.date_activity);
         return startdate ? startdate.format(this.userpreferences.getTimeFormat()) : '';
     }
 
@@ -51,7 +51,7 @@ export class ObjectActivitiyTimelineItem implements OnInit {
      * gets the activity date and returns it formatted
      */
     get startdate() {
-        let startdate = new moment(this.activity.date_activitiy);
+        let startdate = new moment(this.activity.date_activity);
         return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
     }
 
