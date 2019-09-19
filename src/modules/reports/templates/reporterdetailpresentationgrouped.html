@@ -12,20 +12,54 @@
         <div *ngIf="isLoading" class="slds-align--absolute-center" style="height: 100%;">
             <system-spinner></system-spinner>
         </div>
-        <table *ngIf="!isLoading"
-               class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
-            <tbody>
-            <tr *ngFor="let record of getRecords()">
-                <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
-                    <!--div class="slds-truncate">{{record[field.fieldid]}}</div-->
-                    <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <ng-container *ngFor="let groupByValue of groupByValues">
+            <table *ngIf="!isLoading"  class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
+                <tbody>
+                    <tr>
+                        <td [attr.colspan]="getFields().length" class="slds-theme--shade slds-text-title_bold">
+                            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+                                <label>{{groupByValue.value}}</label>
+                                <label>{{groupByValue.count}} {{language.getLabel('LBL_RECORDS')}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let record of getRecords(groupByValue.value)">
+                        <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
+                            <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)" class="slds-text-title_bold">
+                            <reporter-field-container [field]="field" [record]="groupByValue.totalRecord"></reporter-field-container>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-container>
     </div>
+    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout slds-no-row-hover">
+        <tbody>
+        <tr class="slds-theme--info">
+            <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)"  class="slds-text-title_bold">
+                <reporter-field-container [field]="field" [record]="getRecordTotals()"></reporter-field-container>
+            </td>
+        </tr>
+        </tbody>
+    </table>
     <div #tablefooter>
-        <div *ngIf="showFooter" class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+        <div class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+            <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPDBY')}}</label>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="groupById">
+                                <option *ngFor="let reportField of reportFields" [value]="reportField.fieldid">{{reportField.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="slds-p-horizontal--medium">
                 {{totalRecords}}
             </div>

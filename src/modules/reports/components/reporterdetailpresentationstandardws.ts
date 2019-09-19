@@ -32,12 +32,6 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
     private presData: any = {};
     private fieldsData: any = {};
     private totalWidth: number = 0;
-    private mouseMoveListener: any = undefined;
-    private mouseUpListener: any = undefined;
-    private mousestart: number = 0;
-    private mousemove: number = 0;
-    private mousefield: string = '';
-    private mousewidth: number;
     private showFooter: boolean = true;
 
     private currentPage: number = 1;
@@ -157,29 +151,6 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
 
     private getFieldWidth(fieldid) {
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
-    }
-
-    private onMouseDown(fieldid, e) {
-        this.mouseUpListener = this.renderer.listenGlobal('document', 'mouseup', (event) => this.onMouseUp(event));
-        this.mouseMoveListener = this.renderer.listenGlobal('document', 'mousemove', (event) => this.onMouseMove(event));
-        this.mousestart = e.pageX;
-        this.mousefield = fieldid;
-    }
-
-    private onMouseMove(e) {
-        this.mousemove = e.pageX - this.mousestart;
-    }
-
-    onMouseUp(e) {
-        console.log('mouseup ' + this.mousefield);
-        this.mouseUpListener();
-        this.mouseMoveListener();
-
-        // calculate the current column width
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        let actWidth = rect.width / this.totalWidth * this.fieldsData[this.mousefield].width;
-
-        this.fieldsData[this.mousefield].width = Math.round(this.fieldsData[this.mousefield].width * (actWidth + e.pageX - this.mousestart) / actWidth);
     }
 
     get prevDisbaled() {
