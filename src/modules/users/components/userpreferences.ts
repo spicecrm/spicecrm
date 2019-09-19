@@ -55,6 +55,7 @@ export class UserPreferences {
         "calendar_day_start_hour",
         "calendar_day_end_hour",
         "home_dashboard",
+        "home_dashboardset",
         "home_assistant",
         "help_icon",
     ];
@@ -77,6 +78,7 @@ export class UserPreferences {
     private timeFormatList: object[];
 
     private currencyList: any[] = [];
+    private dashboardSets: any[] = [];
     private formattingsOfNumbers = [
         {
             show: "1.000.000,00",
@@ -127,7 +129,6 @@ export class UserPreferences {
                 this.timezoneKeys = Object.keys( this.timezones );
             } );
             this.currencyList = this.currency.getCurrencies();
-
         }
 
         for (let i = 0; i < 24; i++) {
@@ -138,6 +139,11 @@ export class UserPreferences {
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
             });
+
+        this.backend.getList("DashboardSets", "name", "DESC", ["name", "id"], {limit: -1})
+            .subscribe((dashboardSets: any) => {
+                this.dashboardSets = dashboardSets.list;
+            });
     }
 
     get datef() {
@@ -146,11 +152,6 @@ export class UserPreferences {
 
     get timef() {
         return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
-    }
-
-    get homeDashboardName() {
-        let dashboard = this.dashboards.find(dashboard => dashboard.id == this.preferences.home_dashboard);
-        return dashboard ? dashboard.name : '-- Default Dashboard --';
     }
 
     get formattingOfNumbers(): string {
@@ -214,4 +215,11 @@ export class UserPreferences {
         this.preferences[pref] = ( event.srcElement.value === '-' ? null : event.srcElement.value );
     }
 
+    private getDashboardSetData(id) {
+        return this.dashboardSets.find(dashboardSet => dashboardSet.id == id);
+    }
+
+    private getDashboardData(id) {
+        return this.dashboards.find(dashboard => dashboard.id == id);
+    }
 }
