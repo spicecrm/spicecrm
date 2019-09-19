@@ -207,7 +207,7 @@
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
                         <select class="slds-select" (change)="change($event,'home_dashboard')">
-                            <option value="" [selected]="!preferences.home_dashboard">-- Default Dashboard --</option>
+                            <option value="-" [selected]="!preferences.home_dashboard">-- Default Dashboard --</option>
                             <option *ngFor="let dashboard of dashboards" [value]="dashboard.id" [selected]="dashboard.id == preferences.home_dashboard">{{dashboard.name}}</option>
                         </select>
                     </div>
@@ -221,7 +221,7 @@
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
                         <select class="slds-select" [ngModel]="preferences.home_dashboardset" (change)="change($event,'home_dashboardset')">
-                            <option value="" [selected]="!preferences.home_dashboardset">-- select --</option>
+                            <option value="-" [selected]="!preferences.home_dashboardset">-- select --</option>
                             <option *ngFor="let option of dashboardSets" [value]="option.id">{{option.name}}</option>
                         </select>
                     </div>
