@@ -15,15 +15,23 @@
         <table *ngIf="!isLoading"
                class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
             <tbody>
-            <tr *ngFor="let record of getRecords()">
-                <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
-                    <!--div class="slds-truncate">{{record[field.fieldid]}}</div-->
-                    <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
-                </td>
-            </tr>
+                <tr *ngFor="let record of getRecords()">
+                    <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
+                        <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
+    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout">
+        <tbody>
+        <tr>
+            <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
+                <reporter-field-container [field]="field" [record]="getRecordTotals()"></reporter-field-container>
+            </td>
+        </tr>
+        </tbody>
+    </table>
     <div #tablefooter>
         <div *ngIf="showFooter" class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
             <div class="slds-p-horizontal--medium">
