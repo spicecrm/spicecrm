@@ -23,10 +23,10 @@
             </tbody>
         </table>
     </div>
-    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout">
+    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout slds-no-row-hover">
         <tbody>
-        <tr>
-            <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
+        <tr class="slds-theme--info">
+            <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)"  class="slds-text-title_bold">
                 <reporter-field-container [field]="field" [record]="getRecordTotals()"></reporter-field-container>
             </td>
         </tr>
