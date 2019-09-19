@@ -7,6 +7,7 @@ import {FormsModule}   from '@angular/forms';
 import {ObjectFields}      from '../../objectfields/objectfields';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
@@ -18,6 +19,8 @@ import /*embed*/ {ReporterFilterItem} from "./components/reporterfilteritem";
 import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemtext";
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
+import /*embed*/ {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
+import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
 import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
@@ -46,6 +49,8 @@ import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterint
 import /*embed*/ {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
 import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
 
+
+
 /**
 * @ignore
 */
@@ -57,7 +62,8 @@ declare var moment: any;
         FormsModule,
         ObjectFields,
         ObjectComponents,
-        SystemComponents
+        SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ReporterDetailView,
@@ -68,6 +74,8 @@ declare var moment: any;
         ReporterFilterItemText,
         ReporterFilterItemEnum,
         ReporterDetailPresentationStandard,
+        ReporterDetailPresentationStandardWS,
+        ReporterDetailPresentationGrouped,
         ReporterDetailVisualization,
         ReporterDetailVisualizationHighcharts,
         ReporterDetailVisualizationGooglecharts,

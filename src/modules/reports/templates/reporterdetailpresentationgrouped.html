@@ -8,7 +8,7 @@
             </tr>
         </thead>
     </table>
-    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()" (scroll)="onScroll($event)">
+    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
         <div *ngIf="isLoading" class="slds-align--absolute-center" style="height: 100%;">
             <system-spinner></system-spinner>
         </div>
@@ -27,15 +27,7 @@
     <div #tablefooter>
         <div *ngIf="showFooter" class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
             <div class="slds-p-horizontal--medium">
-                {{displayRecords}} of {{totalRecords}}
-            </div>
-            <div class="slds-p-horizontal--medium">
-                <button class="slds-button slds-button_icon" (click)="prevPage()" [disabled]="prevDisbaled">
-                    <system-button-icon [icon]="'chevronleft'"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button_icon" (click)="nextPage()" [disabled]="nextDisabled">
-                    <system-button-icon [icon]="'chevronright'"></system-button-icon>
-                </button>
+                {{totalRecords}}
             </div>
         </div>
     </div>
