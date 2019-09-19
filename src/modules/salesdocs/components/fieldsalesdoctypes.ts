@@ -54,7 +54,7 @@ export class fieldSalesdocTypes extends fieldGeneric {
         let salesdocTypes = this.configuration.getData('salesdoctypes');
 
         if(this.fieldconfig.withoutdisplayonly){
-            this.options = salesdocTypes.filter(salesdocType => salesdocType.displayonly != 0);
+            this.options = salesdocTypes.filter(salesdocType => salesdocType.displayonly == 0);
         } else {
             this.options = salesdocTypes;
         }
