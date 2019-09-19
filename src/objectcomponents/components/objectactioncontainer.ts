@@ -30,6 +30,8 @@ export class ObjectActionContainer implements OnChanges {
      */
     @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>;
 
+    @Input() private containerclass: string = 'slds-button-group';
+
     /**
      * the id of the actionset to be rendered
      */

@@ -22,6 +22,9 @@ import {modal} from '../../services/modal.service';
 })
 export class GlobalDockedComposer implements OnInit {
 
+    /**
+     * refernce to the container content
+     */
     @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
     @Input() public composerdata: any = {};
@@ -29,9 +32,14 @@ export class GlobalDockedComposer implements OnInit {
 
     private isClosed: boolean = false;
 
+    private actionset: string;
+
     constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, private model: model, private view: view, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+        // set the view to editable and to editmode
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        // set the model to editing
         this.model.isEditing = true;
     }
 
@@ -63,6 +71,9 @@ export class GlobalDockedComposer implements OnInit {
                 componentRef.instance.fieldset = componentconfig.fieldset;
             });
         }
+
+        // set the actionset
+        this.actionset = componentconfig.actionset;
     }
 
     get displayLabel() {
@@ -80,6 +91,13 @@ export class GlobalDockedComposer implements OnInit {
     private expand() {
         this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
 
+    }
+
+    private handleaction(action){
+        switch(action){
+            default:
+                this.closeComposer();
+        }
     }
 
     private closeComposer() {
