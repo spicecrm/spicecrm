@@ -7,6 +7,9 @@ import {DirectivesModule} from "../directives/directives";
 import {NgModule} from "@angular/core";
 import {RouterModule,} from "@angular/router";
 
+import {ObjectFields}      from "../objectfields/objectfields";
+import {SystemComponents}      from "../systemcomponents/systemcomponents";
+
 /**
  * @ignore
  */
@@ -18,9 +21,7 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
-
-import {ObjectFields}      from "../objectfields/objectfields";
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {MenuService} from "./services/menu.service";
 
@@ -77,10 +78,11 @@ import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmodulei
 
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
 import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
-import {VersionManagerService} from "../services/versionmanager.service";
+
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
+
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components

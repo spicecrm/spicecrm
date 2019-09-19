@@ -15,6 +15,7 @@ import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpi
 
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
 import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
+import /*embed*/ {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
 import /*embed*/ {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
 import /*embed*/ {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
 import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdisplay';
@@ -49,6 +50,7 @@ import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components
     declarations: [
         SalesDocsItemsContainer,
         SalesDocsItemHeader,
+        SalesDocsItemFooter,
         SalesDocsItemContainer,
         SalesDocsItemDetailsContainer,
         SalesDocsItemsDisplay,

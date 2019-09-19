@@ -41,17 +41,19 @@ export class FieldDunsNumber extends fieldGeneric {
 
     private getResults(modalRef) {
         let params = {
-            name: this.model.data.summary_text,
-            street: this.model.data.billing_address_street + ' ' + this.model.data.billing_address_hsnm,
-            city: this.model.data.billing_address_city,
-            postalcode: this.model.data.billing_address_postalcode,
-            country: this.model.data.billing_address_country
+            name: this.model.data.name,
+            street: (this.model.data.billing_address_street ? this.model.data.billing_address_street + (this.model.data.billing_address_hsnm ? ' ' + this.model.data.billing_address_hsnm : '') : '' ),
+            city: (this.model.data.billing_address_city ? this.model.data.billing_address_city :''),
+            postalcode: (this.model.data.billing_address_postalcode ? this.model.data.billing_address_postalcode : ''),
+            country: (this.model.data.billing_address_country ? this.model.data.billing_address_country : '')
         };
         modalRef.instance.isLoading = true;
         this.backend.getRequest('/SpiceDuns', params).subscribe(res => {
-            if (res && res.length) {
-                modalRef.instance.results = res;
+            if (res) {
                 modalRef.instance.isLoading = false;
+                if(res.length) {
+                    modalRef.instance.results = res;
+                }
             }
         });
     }

@@ -76,8 +76,10 @@ export class SalesDocsItemContainer implements OnInit {
             // process the mode change
             if (mode == 'edit') {
                 this.view.setEditMode();
+                this.view.displayLinks = false;
             } else {
                 this.view.setViewMode();
+                this.view.displayLinks = true;
             }
         });
 
@@ -91,13 +93,11 @@ export class SalesDocsItemContainer implements OnInit {
                 this.salesdoc.startEdit();
                 // set the view to edit mode
                 this.parentview.setEditMode();
+
+                // do not display links
+                this.view.displayLinks = false;
             }
         });
-
-        // determine if we can open details
-        let itemTypes = this.configuration.getData('salesdocitemtypes');
-        let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
-        if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
 
         // subscribe to document to listen to relevant changes (currency ... etc)
         this.salesdoc.data$.subscribe(data => {
@@ -106,13 +106,20 @@ export class SalesDocsItemContainer implements OnInit {
             }
         });
 
-        // determine the list fieldset
-        if (itemTypeDetails && itemTypeDetails.itemfieldset) {
-            this.fieldsetItems = this.metadata.getFieldSetFields(itemTypeDetails.itemfieldset);
-        } else {
-            let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
-            if (config.fieldset) {
-                this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
+        // determine if we can open details
+        let itemTypes = this.configuration.getData('salesdocitemtypes');
+        if(itemTypes){
+            let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
+            if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
+
+            // determine the list fieldset
+            if (itemTypeDetails && itemTypeDetails.itemfieldset) {
+                this.fieldsetItems = this.metadata.getFieldSetFields(itemTypeDetails.itemfieldset);
+            } else {
+                let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
+                if (config.fieldset) {
+                    this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
+                }
             }
         }
     }

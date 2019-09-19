@@ -27,6 +27,8 @@ interface menuItem {
     host: {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()',
+        '[class.slds-has-sub-tabs]': 'isActive() && hasSubTabs()',
+        '[class.slds-context-bar__item_tab]': 'isActive() && hasSubTabs()',
     },
     providers: [model]
 })
@@ -93,7 +95,12 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
 
 
     public ngOnInit() {
-        this.itemMenu = this.metadata.getModuleMenu(this.item.module);
+        let componentconfig = this.metadata.getComponentConfig('GlobalNavigationMenuItem', this.item.module);
+        if(componentconfig.actionset){
+            this.itemMenu = this.metadata.getActionSetItems(componentconfig.actionset);
+        } else {
+            this.itemMenu = this.metadata.getModuleMenu(this.item.module);
+        }
         this.model.module = this.item.module;
     }
 
@@ -151,6 +158,10 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         } else {
             return false;
         }
+    }
+
+    private hasSubTabs(): boolean {
+        return this.isActive() && this.navigation.hasSubTabs == this.navigation.activeModule;
     }
 
     public ngAfterViewInit() {
