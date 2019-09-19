@@ -22,7 +22,7 @@ export class fieldRating extends fieldGeneric {
     }
 
     private setRatingValue( value ) {
-        if ( this.value === value ) this.value = '';
+        if ( this.value == value ) this.value = '';
         else this.value = value;
     }
 
