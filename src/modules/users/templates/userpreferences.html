@@ -1,4 +1,4 @@
-<div *ngIf="!canPrefs; else prefs" class="slds-text-align--center slds-m-top--x-large">The preferences of the user are only viewable/editable by himself.</div>
+<div *ngIf="cannotPrefs; else prefs" class="slds-text-align--center slds-m-top--x-large">The preferences of the user are only viewable/editable by himself.</div>
 
 <ng-template #prefs>
     <system-section titlelabel="LBL_LOCALE_PREFERENCES">
