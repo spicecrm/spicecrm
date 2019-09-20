@@ -1,13 +1,7 @@
 /**
  * @module ModuleDashboard
  */
-import {
-    Component,
-    Input,
-    OnInit,
-    OnChanges,
-    SimpleChanges
-} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
@@ -20,8 +14,8 @@ import {Router} from "@angular/router";
 })
 export class DashboardContainer implements OnChanges, OnInit {
 
-    @Input() dashboardid: string = '';
-    @Input() context: string = 'Dashboard';
+    @Input() private dashboardid: string = '';
+    @Input() private context: string = 'Dashboard';
 
     constructor(private dashboardlayout: dashboardlayout, private language: language, private router: Router) {
     }
@@ -30,11 +24,11 @@ export class DashboardContainer implements OnChanges, OnInit {
         this.dashboardlayout.loadDashboard(this.dashboardid);
     }
 
-    private navigate() {
-        this.router.navigate(['/module/Dashboards']);
-    }
-
     public ngOnChanges(changes: SimpleChanges): void {
         this.dashboardlayout.loadDashboard(this.dashboardid);
+    }
+
+    private navigate() {
+        this.router.navigate(['/module/Dashboards']);
     }
 }
