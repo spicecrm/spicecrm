@@ -19,38 +19,36 @@ import {configurationService} from "../../services/configuration.service";
     selector: 'select-tree',
     templateUrl: './src/objectfields/templates/fieldselecttree.html'
 })
-export class fieldSelectTree extends fieldGeneric
-{
-    fields = [];
+export class fieldSelectTree extends fieldGeneric {
+    private fields = [];
 
-    show_tree:boolean = false;
-    show_search:boolean = false;
-    search:string;
-    sel_fields = [];
+    private show_tree: boolean = false;
+    private show_search: boolean = false;
+    private search: string;
+    private sel_fields = [];
 
-    clickListener: any;
+    private clickListener: any;
 
 
     constructor(
-        public model:model,
-        public view:view,
-        public language:language,
-        public metadata:metadata,
-        public router:Router,
-        private backend:backend,
-        private config:configurationService,
+        public model: model,
+        public view: view,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        private backend: backend,
+        private config: configurationService,
         private elementRef: ElementRef,
         public renderer: Renderer
-    )
-    {
+    ) {
         super(model, view, language, metadata, router);
 
 
     }
 
-    ngOnInit(){
+    public ngOnInit() {
 
-        if(this.fields.length < 1){
+        if(this.fields.length < 1) {
             this.fields.push(this.fieldconfig.value1);
             this.fields.push(this.fieldconfig.value2);
             this.fields.push(this.fieldconfig.value3);
@@ -66,16 +64,13 @@ export class fieldSelectTree extends fieldGeneric
                     this.config.setData('select_tree', res);
                 }
             );
-        }
-        else {
+        } else {
             this.sel_fields = this.config.getData('select_tree');
         }
     }
 
 
-    get display_value()
-    {
-
+    get display_value() {
         let txt = '';
         for(let field_name of this.fields) {
 
@@ -92,19 +87,16 @@ export class fieldSelectTree extends fieldGeneric
         return txt;
     }
 
-    get maxlevels(){
+    get maxlevels() {
         return this.fieldconfig.maxlevels ? this.fieldconfig.maxlevels : 4;
     }
 
-    checkUserAction(e)
-    {
+    public checkUserAction(e) {
 
-        if( !this.search )
-        {
+        if( !this.search ) {
             this.show_tree = true;
             this.show_search = false;
-        }
-        else {
+        } else {
             this.show_tree = false;
             this.show_search = true;
         }
@@ -115,28 +107,26 @@ export class fieldSelectTree extends fieldGeneric
      * it also looks for the last category with a corresponding queue to set this too
      * @param select_fields = array of category objects, all lvls from top to lowest
      */
-    chooseSelField(sel_fields)
-    {
+    public chooseSelField(sel_fields) {
 
         this.show_search = false;
         this.show_tree = false;
         // setting model.data values
-        for(let i = 0; i < this.fields.length; i++)
-        {
-            if( sel_fields[i] )
-                this.model.setFieldValue(this.fields[i], sel_fields[i].name);
-            else
+        for(let i = 0; i < this.fields.length; i++) {
+            if( sel_fields[i] ) {
+                let value = sel_fields[i].keyname != "" ? sel_fields[i].keyname : sel_fields[i].name;
+                this.model.setFieldValue(this.fields[i], value);
+            } else {
                 this.model.setFieldValue(this.fields[i], '');
+            }
         }
         this.search = null;
 
     }
 
-    unchooseSelField()
-    {
+    public unchooseSelField() {
 
-        for(let i = 0; i < this.fields.length; i++)
-        {
+        for(let i = 0; i < this.fields.length; i++) {
             this.model.data[this.fields[i]] = '';
         }
     }
@@ -147,9 +137,8 @@ export class fieldSelectTree extends fieldGeneric
             this.show_tree = false;
         }
     }
-    onFocus() {
+    public onFocus() {
         this.show_tree = true;
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
-
 }
