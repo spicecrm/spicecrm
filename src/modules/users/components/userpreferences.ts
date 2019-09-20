@@ -11,6 +11,7 @@ import {currency} from '../../../services/currency.service';
 import {Subject} from "rxjs";
 import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
+import { configurationService } from '../../../services/configuration.service';
 
 /**
  * @ignore
@@ -108,7 +109,8 @@ export class UserPreferences {
         private language: language,
         private prefservice: userpreferences,
         private session: session,
-        private model: model ) {
+        private model: model,
+        private configurationService: configurationService ) {
 
         this.view.isEditable = true;
 
@@ -116,7 +118,9 @@ export class UserPreferences {
         this.timeFormatList = this.prefservice.getPossibleTimeFormats();
 
         this.handlingWithForeignPrefs = this.session.authData.userId !== this.model.data.id;
-        this.cannotPrefs = this.handlingWithForeignPrefs && !this.session.isAdmin; // only the user himself can view/edit the preferences, or the admin
+
+        // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
+        this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.data.enableSettingUserPrefsByAdmin );
 
         if ( !this.handlingWithForeignPrefs ) {
 
@@ -136,9 +140,13 @@ export class UserPreferences {
         } else {
 
             if ( !this.cannotPrefs ) {
-                this.backend.getRequest( 'user/' + this.model.data.id + '/preferences/global', {} ).subscribe( ( prefs ) => {
+                this.backend.getRequest( 'user/' + this.model.data.id + '/preferences/global', {} ).subscribe( prefs => {
                     this.preferences = prefs;
-                } );
+                },
+                    error => {
+                        this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                        if ( error.status === 403 ) this.cannotPrefs = true; // Error should not happen, but in case it does ...
+                    });
             }
 
         }
@@ -193,12 +201,12 @@ export class UserPreferences {
 
         if ( this.handlingWithForeignPrefs ) {
             this.backend.postRequest('user/'+this.model.data.id+'/preferences/global', {}, this.preferences).subscribe(
-                (savedprefs) => {
+                savedprefs => {
                     this.preferences = savedprefs;
-                    console.log('retour',savedprefs);
                     this.view.setViewMode();
                 },
-                (error) => {
+                error => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
                 }
             );
         } else {
