@@ -3,8 +3,8 @@
  */
 import {Injectable} from '@angular/core';
 import {HttpHeaders} from "@angular/common/http";
-import {Subject, Observable} from 'rxjs';
 import {loggerService} from './logger.service';
+import {broadcast} from './broadcast.service';
 
 // Taken from https://github.com/killmenot/webtoolkit.md5
 
@@ -62,7 +62,7 @@ export class session {
     // private authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
     // private authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
 
-    constructor(private logger: loggerService) {
+    constructor( private logger: loggerService, private broadcast: broadcast ) {
         this.logger.setSession(this);
     }
 
@@ -170,6 +170,19 @@ export class session {
      */
     get isDev() {
         return this.authData.dev;
+    }
+
+    /**
+     * The time zone in which all datetime fields should be shown is held in the session object (with the key 'timezone').
+     * setTimezone() makes the entry to the session object and informs all broadcast subscribers about the new timezone setting.
+     * So they can react, for example changing moment objects.
+     *
+     * @param timezone Time zone string, for example 'Europe/Vienna'.
+     */
+    public setTimezone( timezone: string ): void {
+        if ( this.getSessionData('timezone') === timezone ) return; // Timezone did not change, nothing to do.
+        this.setSessionData('timezone', timezone, false ); // Set timezone ...
+        this.broadcast.broadcastMessage('timezone.changed', timezone ); // ... and tell about the changement.
     }
 
 }
