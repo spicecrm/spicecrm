@@ -5,14 +5,14 @@ import {
     Component, AfterViewInit, OnInit,
     OnDestroy, ViewChild, ViewContainerRef, Renderer, ElementRef
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -32,12 +32,6 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
     private presData: any = {};
     private fieldsData: any = {};
     private totalWidth: number = 0;
-    private mouseMoveListener: any = undefined;
-    private mouseUpListener: any = undefined;
-    private mousestart: number = 0;
-    private mousemove: number = 0;
-    private mousefield: string = '';
-    private mousewidth: number;
     private showFooter: boolean = true;
 
     private currentPage: number = 1;
@@ -53,6 +47,14 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
 
     private handleMessage(message: any) {
 
+    }
+
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(fieldid): string {
+        return 'arrowdown';
+        //    return 'arrowup';
     }
 
     public ngOnInit() {
@@ -87,7 +89,7 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         let startRecords = (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries + 1;
         let endRecords = this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries;
 
-        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords );
+        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
     }
 
     get totalRecords() {
@@ -157,29 +159,6 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
 
     private getFieldWidth(fieldid) {
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
-    }
-
-    private onMouseDown(fieldid, e) {
-        this.mouseUpListener = this.renderer.listenGlobal('document', 'mouseup', (event) => this.onMouseUp(event));
-        this.mouseMoveListener = this.renderer.listenGlobal('document', 'mousemove', (event) => this.onMouseMove(event));
-        this.mousestart = e.pageX;
-        this.mousefield = fieldid;
-    }
-
-    private onMouseMove(e) {
-        this.mousemove = e.pageX - this.mousestart;
-    }
-
-    onMouseUp(e) {
-        console.log('mouseup ' + this.mousefield);
-        this.mouseUpListener();
-        this.mouseMoveListener();
-
-        // calculate the current column width
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        let actWidth = rect.width / this.totalWidth * this.fieldsData[this.mousefield].width;
-
-        this.fieldsData[this.mousefield].width = Math.round(this.fieldsData[this.mousefield].width * (actWidth + e.pageX - this.mousestart) / actWidth);
     }
 
     get prevDisbaled() {
