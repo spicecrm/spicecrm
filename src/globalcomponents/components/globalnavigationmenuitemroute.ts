@@ -29,7 +29,9 @@ interface menuItem {
     name: string
 }
 
-
+/**
+ * @deprecated
+ */
 @Component({
     selector: 'global-navigation-menu-item-route',
     templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemroute.html'

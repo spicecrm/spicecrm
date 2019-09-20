@@ -56,7 +56,7 @@ export class ObjectModalModuleDBLookup implements OnInit {
     public self: any = {};
     public multiselect: boolean = false;
     public module: string = '';
-    @Output() public  selectedItems: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
     public searchConditions = [];
 
     constructor(
@@ -154,7 +154,9 @@ export class ObjectModalModuleDBLookup implements OnInit {
     }
 
     public clickRow(event, item) {
-        this.selectedItems.emit([item]);
-        this.self.destroy();
+        if (!this.multiselect) {
+            this.selectedItems.emit([item]);
+            this.self.destroy();
+        }
     }
 }

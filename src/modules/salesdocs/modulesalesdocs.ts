@@ -9,15 +9,15 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
 import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
+import /*embed*/ {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
 import /*embed*/ {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
 import /*embed*/ {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
-import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdisplay';
-import /*embed*/ {SalesDocsItemsEdit} from './components/salesdocsitemsedit';
 import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
 import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
 import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
@@ -33,7 +33,7 @@ import /*embed*/ {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
 import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
 import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
 import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
-import {DirectivesModule} from "../../directives/directives";
+import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components/salesdocsglobalnavigationmenuitemactionnew";
 
 @NgModule({
     imports: [
@@ -48,10 +48,9 @@ import {DirectivesModule} from "../../directives/directives";
     declarations: [
         SalesDocsItemsContainer,
         SalesDocsItemHeader,
+        SalesDocsItemFooter,
         SalesDocsItemContainer,
         SalesDocsItemDetailsContainer,
-        SalesDocsItemsDisplay,
-        SalesDocsItemsEdit,
         SalesDocsItemsAddProduct,
         SalesDocsItemsAddProductGroup,
         SalesDocsItemsAddProductVariant,
@@ -67,7 +66,8 @@ import {DirectivesModule} from "../../directives/directives";
         SalesDocsAddBasics,
         SalesDocsAddMain,
         SalesDocsRecordView,
-        SalesDocsItemsAddTypeSelector
+        SalesDocsItemsAddTypeSelector,
+        SalesDocsGlobalNavigationMenuItemActionNew
     ]
 })
 export class ModuleSalesDocs {

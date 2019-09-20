@@ -14,13 +14,14 @@ import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
 import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
+import {modalwindow} from "../../services/modalwindow.service";
 
 /**
  * renders a modal window to add or edit an object record
  */
 @Component({
     templateUrl: './src/objectcomponents/templates/objecteditmodal.html',
-    providers: [view]
+    providers: [view, modalwindow]
 })
 export class ObjectEditModal implements OnInit {
     /**
@@ -76,7 +77,8 @@ export class ObjectEditModal implements OnInit {
         private model: model,
         private view: view,
         private metadata: metadata,
-        private modal: modal
+        private modal: modal,
+        private modalwindow: modalwindow
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -88,6 +90,13 @@ export class ObjectEditModal implements OnInit {
     public ngOnInit() {
         this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.model.module);
         this.actionSetItems = this.metadata.getActionSetItems(this.componentconfig.actionset);
+
+        // pass the self object to the modalwindow service for the actionsets
+        this.modalwindow.self = this.self;
+    }
+
+    get actionset(){
+        return this.componentconfig.actionset;
     }
 
     private closeModal() {
@@ -106,11 +115,7 @@ export class ObjectEditModal implements OnInit {
      * a getter for the modal header which text shoudl be displayed
      */
     get modalHeader() {
-        if (this.showDuplicatesTable) {
-            return this.language.getLabel('LBL_DUPLICATES_FOUND');
-        } else {
-            return this.model.module != '' ? this.language.getModuleName(this.model.module, true) : '';
-        }
+        return this.model.module != '' ? this.language.getModuleName(this.model.module, true) : '';
     }
 
     /**
@@ -144,7 +149,6 @@ export class ObjectEditModal implements OnInit {
         } else {
             console.warn(this.model.messages);
         }
-
     }
 
     /**
@@ -152,13 +156,6 @@ export class ObjectEditModal implements OnInit {
      */
     get duplicateCheckEnabled() {
         return this.metadata.getModuleDuplicatecheck(this.model.module);
-    }
-
-    /**
-     * cancels the save process and goes back to editing in case a duplicate was found
-     */
-    private editDuplicate() {
-        this.showDuplicatesTable = false;
     }
 
     /**

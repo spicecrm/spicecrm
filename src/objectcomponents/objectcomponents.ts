@@ -53,6 +53,7 @@ import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondelet
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
 import /*embed*/ {ObjectActionOpenButton} from './components/objectactionopenbutton';
 import /*embed*/ {ObjectActionCancelButton} from './components/objectactioncancelbutton';
+import /*embed*/ {ObjectActionModalSaveButton} from './components/objectactionmodalsavebutton';
 import /*embed*/ {ObjectActionRemoveButton} from "./components/objectactionremovebutton";
 import /*embed*/ {ObjectActionAuditlogModal} from './components/objectactionauditlogmodal';
 import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutton';
@@ -324,6 +325,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionAuditlogButton,
         ObjectActionOpenButton,
         ObjectActionCancelButton,
+        ObjectActionModalSaveButton,
         ObjectActionRemoveButton,
         ObjectActionAuditlogModal,
         ObjectGDPRModal,

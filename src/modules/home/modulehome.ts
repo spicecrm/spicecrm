@@ -19,6 +19,7 @@ import /*embed*/ {HomeAssistant} from './components/homeassistant';
 import /*embed*/ {HomeAssistantTile} from './components/homeassistanttile';
 import /*embed*/ {HomeAssistantFilter} from './components/homeassistantfilter';
 import /*embed*/ {HomeDashboard} from './components/homedashboard';
+import /*embed*/ {HomeDashboardSetContainer} from './components/homedashboardsetcontainer';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import /*embed*/ {HomeDashboard} from './components/homedashboard';
         HomeAssistant,
         HomeAssistantTile,
         HomeAssistantFilter,
-        HomeDashboard
+        HomeDashboard,
+        HomeDashboardSetContainer
     ]
 })
 export class ModuleHome {

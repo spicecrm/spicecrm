@@ -25,7 +25,7 @@ export class fieldEmail extends fieldGeneric {
         super(model, view, language, metadata, router);
         this.mark = this.model.generateGuid();
         this.model.data$.subscribe(modeldata => {
-            if((!this.value || (this.value && this.value != modeldata.email1.toLowerCase())) && modeldata.email1) {
+            if((!this.value || (this.value && modeldata.email1 && this.value != modeldata.email1.toLowerCase())) && modeldata.email1) {
                 this.value = modeldata.email1;
             }
         });

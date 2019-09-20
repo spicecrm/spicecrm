@@ -38,13 +38,13 @@ import {broadcast} from "../../../services/broadcast.service";
             state('open', style({transform: 'rotate(90deg)'})),
             state('closed', style({transform: 'rotate(0deg)'})),
             transition('open => closed', [
-                animate('.5s'),
+                animate('.5s')
             ]),
             transition('closed => open', [
-                animate('.5s'),
+                animate('.5s')
             ])
         ])
-    ],
+    ]
 })
 export class SpicePathWithCoaching {
 
@@ -137,5 +137,16 @@ export class SpicePathWithCoaching {
         } else {
             return stage.stagedata.stage_description;
         }
+    }
+
+    /**
+     * gets the current stage description
+     */
+    get stageComponentset() {
+        let stage = this.stages.find(el => el.stage == this.displayStage);
+
+        if (!stage) return '';
+
+        return stage.stagedata.stage_componentset;
     }
 }
