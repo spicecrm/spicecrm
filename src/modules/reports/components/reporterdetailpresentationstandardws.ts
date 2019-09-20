@@ -5,14 +5,14 @@ import {
     Component, AfterViewInit, OnInit,
     OnDestroy, ViewChild, ViewContainerRef, Renderer, ElementRef
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -49,6 +49,14 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
 
     }
 
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(fieldid): string {
+        return 'arrowdown';
+        //    return 'arrowup';
+    }
+
     public ngOnInit() {
         this.presParams = JSON.parse(this.model.data.presentation_params);
     }
@@ -81,7 +89,7 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         let startRecords = (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries + 1;
         let endRecords = this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries;
 
-        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords );
+        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
     }
 
     get totalRecords() {
