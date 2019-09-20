@@ -149,6 +149,14 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
 
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(fieldid): string {
+            return 'arrowdown';
+        //    return 'arrowup';
+    }
+
     private onMouseDown(fieldid, e) {
         this.mouseUpListener = this.renderer.listenGlobal('document', 'mouseup', (event) => this.onMouseUp(event));
         this.mouseMoveListener = this.renderer.listenGlobal('document', 'mousemove', (event) => this.onMouseMove(event));

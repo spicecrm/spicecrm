@@ -24,7 +24,7 @@ export class Home {
     }
 
     get displayHomeAssistant() {
-        let hidden = !this.userpreferences.toUse.home_assistant && this.userpreferences.toUse.home_assistant == 'hidden';
+        let hidden = !this.userpreferences.toUse.home_assistant || this.userpreferences.toUse.home_assistant == 'hidden';
         return window.innerWidth > 1024 && !hidden;
     }
 }
