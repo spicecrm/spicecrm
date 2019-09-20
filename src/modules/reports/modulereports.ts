@@ -11,6 +11,8 @@ import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
+import /*embed*/ {ReportsGroupedRecordsPipe} from "./pipes/reportsgroupedrecordspipe";
+
 import /*embed*/ {ReporterDetailView} from "./components/reporterdetailview";
 import /*embed*/ {ReporterFilterButton} from "./components/reporterfilterbutton";
 import /*embed*/ {ReporterFilterPanel} from "./components/reporterfilterpanel";
@@ -49,8 +51,6 @@ import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterint
 import /*embed*/ {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
 import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
 
-
-
 /**
 * @ignore
 */
@@ -75,6 +75,7 @@ declare var moment: any;
         ReporterFilterItemEnum,
         ReporterDetailPresentationStandard,
         ReporterDetailPresentationStandardWS,
+        ReportsGroupedRecordsPipe,
         ReporterDetailPresentationGrouped,
         ReporterDetailVisualization,
         ReporterDetailVisualizationHighcharts,
