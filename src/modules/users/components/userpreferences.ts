@@ -11,6 +11,7 @@ import {currency} from '../../../services/currency.service';
 import {Subject} from "rxjs";
 import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
+import { configurationService } from '../../../services/configuration.service';
 
 /**
  * @ignore
@@ -55,6 +56,7 @@ export class UserPreferences {
         "calendar_day_start_hour",
         "calendar_day_end_hour",
         "home_dashboard",
+        "home_dashboardset",
         "home_assistant",
         "help_icon",
     ];
@@ -77,6 +79,7 @@ export class UserPreferences {
     private timeFormatList: object[];
 
     private currencyList: any[] = [];
+    private dashboardSets: any[] = [];
     private formattingsOfNumbers = [
         {
             show: "1.000.000,00",
@@ -95,7 +98,8 @@ export class UserPreferences {
     private timezones: object;
     private timezoneKeys: string[];
 
-    private canPrefs: boolean;
+    private cannotPrefs: boolean;
+    private handlingWithForeignPrefs: boolean;
 
     constructor(
         private backend: backend,
@@ -105,15 +109,20 @@ export class UserPreferences {
         private language: language,
         private prefservice: userpreferences,
         private session: session,
-        private model: model ) {
+        private model: model,
+        private configurationService: configurationService ) {
 
         this.view.isEditable = true;
 
         this.dateFormatList = this.prefservice.getPossibleDateFormats();
         this.timeFormatList = this.prefservice.getPossibleTimeFormats();
 
-        this.canPrefs = this.session.authData.userId === this.model.data.id; // only the user himself can view/edit the preferences
-        if ( this.canPrefs ) {
+        this.handlingWithForeignPrefs = this.session.authData.userId !== this.model.data.id;
+
+        // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
+        this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.data.enableSettingUserPrefsByAdmin );
+
+        if ( !this.handlingWithForeignPrefs ) {
 
             this.prefsLoaded.subscribe( () => {
                 this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
@@ -128,6 +137,18 @@ export class UserPreferences {
             } );
             this.currencyList = this.currency.getCurrencies();
 
+        } else {
+
+            if ( !this.cannotPrefs ) {
+                this.backend.getRequest( 'user/' + this.model.data.id + '/preferences/global', {} ).subscribe( prefs => {
+                    this.preferences = prefs;
+                },
+                    error => {
+                        this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                        if ( error.status === 403 ) this.cannotPrefs = true; // Error should not happen, but in case it does ...
+                    });
+            }
+
         }
 
         for (let i = 0; i < 24; i++) {
@@ -138,6 +159,11 @@ export class UserPreferences {
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
             });
+
+        this.backend.getList("DashboardSets", "name", "DESC", ["name", "id"], {limit: -1})
+            .subscribe((dashboardSets: any) => {
+                this.dashboardSets = dashboardSets.list;
+            });
     }
 
     get datef() {
@@ -146,11 +172,6 @@ export class UserPreferences {
 
     get timef() {
         return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
-    }
-
-    get homeDashboardName() {
-        let dashboard = this.dashboards.find(dashboard => dashboard.id == this.preferences.home_dashboard);
-        return dashboard ? dashboard.name : '-- Default Dashboard --';
     }
 
     get formattingOfNumbers(): string {
@@ -177,11 +198,25 @@ export class UserPreferences {
     }
 
     private save() {
-        this.prefservice.setPreferences( this.preferences ).subscribe(() => {
-            this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
-            this.preferences = _.pick(this.prefservice.unchangedPreferences.global, this.names);
-        });
-        this.view.setViewMode();
+
+        if ( this.handlingWithForeignPrefs ) {
+            this.backend.postRequest('user/'+this.model.data.id+'/preferences/global', {}, this.preferences).subscribe(
+                savedprefs => {
+                    this.preferences = savedprefs;
+                    this.view.setViewMode();
+                },
+                error => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                }
+            );
+        } else {
+            this.prefservice.setPreferences( this.preferences ).subscribe( () => {
+                this.toast.sendToast( this.language.getLabel( "LBL_DATA_SAVED" ), "success" );
+                this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+            });
+            this.view.setViewMode();
+        }
+
     }
 
     private togglePanel(panel) {
@@ -214,4 +249,11 @@ export class UserPreferences {
         this.preferences[pref] = ( event.srcElement.value === '-' ? null : event.srcElement.value );
     }
 
+    private getDashboardSetData(id) {
+        return this.dashboardSets.find(dashboardSet => dashboardSet.id == id);
+    }
+
+    private getDashboardData(id) {
+        return this.dashboards.find(dashboard => dashboard.id == id);
+    }
 }

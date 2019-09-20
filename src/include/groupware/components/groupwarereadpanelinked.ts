@@ -1,7 +1,7 @@
 import {Component, ChangeDetectorRef} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
 import {language} from '../../../services/language.service';
 

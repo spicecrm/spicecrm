@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {model} from '../../../services/model.service';
 import {Router} from "@angular/router";
 import {view} from "../../../services/view.service";

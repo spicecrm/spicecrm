@@ -24,29 +24,27 @@ import  {reporterconfig} from '../services/reporterconfig';
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
     providers: [model, reporterconfig]
 })
-export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {
+export class ReporterDetailView implements OnDestroy {
 
-    @ViewChild('presentationcontainer', {read: ViewContainerRef, static: true}) presentationcontainer: ViewContainerRef;
-    @ViewChild('presentationview', {read: ViewContainerRef, static: true}) presentationview: ViewContainerRef;
-    @ViewChild('pageheader', {read: ViewContainerRef, static: true}) pageheader: ViewContainerRef;
+    @ViewChild('presentationcontainer', {read: ViewContainerRef, static: true}) private presentationcontainer: ViewContainerRef;
+    @ViewChild('presentationview', {read: ViewContainerRef, static: true}) private presentationview: ViewContainerRef;
+    @ViewChild('pageheader', {read: ViewContainerRef, static: true}) private pageheader: ViewContainerRef;
 
 
 
-    componentconfig: any = {};
-    routeSubscribe: any = {}
-    id: string = '';
-    vizData: any = {};
-    presComponent: any = undefined;
-    hasVisualization: boolean = false;
-    hasUserFilters: boolean = false;
-    whereConditions: any = {};
-    integrationParams: any = {};
+    private routeSubscribe: any = {}
+    private id: string = '';
+    private vizData: any = {};
+    private presComponent: any = undefined;
+    private hasVisualization: boolean = false;
+    private whereConditions: any = {};
+    private integrationParams: any = {};
 
-    showFilters: boolean = false;
+    private showFilters: boolean = false;
 
     constructor(private broadcast: broadcast, private language: language, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private reporterconfig: reporterconfig) {
         this.routeSubscribe = this.activatedRoute.params.subscribe(params => {
-            this.id = params['id'];
+            this.id = params.id;
             this.model.module = 'KReports';
             this.model.id = this.id;
             this.model.getData(true, 'detailview').subscribe(data => {
@@ -70,20 +68,8 @@ export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {
         });
     }
 
-    handleMessage(message: any) {
 
-    }
-
-    ngOnInit() {
-
-    }
-
-    ngAfterViewInit() {
-        // render action buttons
-
-    }
-
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.routeSubscribe.unsubscribe();
     }
 
@@ -101,14 +87,14 @@ export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {
         return this.integrationParams.activePlugins && this.integrationParams.activePlugins[plugin];
     }
 
-    getVisualization() {
+    private getVisualization() {
 
         this.backend.getRequest('KReporter/' + this.id + '/visualization').subscribe(vizData => {
             this.vizData = vizData;
         })
     }
 
-    renderPresentation() {
+    private renderPresentation() {
         if (this.presComponent) {
             this.presComponent.destroy();
             this.presComponent = undefined;
@@ -120,6 +106,12 @@ export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {
         switch (presentationParams.plugin) {
             case 'standard':
                 presentationComponent = 'ReporterDetailPresentationStandard';
+                break;
+            case 'grouped':
+                presentationComponent = 'ReporterDetailPresentationGrouped';
+                break;
+            case 'standardws':
+                presentationComponent = 'ReporterDetailPresentationStandardWS';
                 break;
 
         }
@@ -134,7 +126,7 @@ export class ReporterDetailView implements AfterViewInit, OnInit, OnDestroy {
     /*
      * for the filter pnale handling
      */
-    toggleFilters(event) {
+    private toggleFilters(event) {
         this.showFilters = event;
     }
 

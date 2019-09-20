@@ -129,9 +129,11 @@ export class ObjectModalModuleLookup implements OnInit {
     }
 
     public clickRow(event, item) {
-        this.selectedItems.emit([item]);
-        this.usedSearchTerm.emit(this.searchTerm);
-        this.self.destroy();
+        if (!this.multiselect) {
+            this.selectedItems.emit([item]);
+            this.usedSearchTerm.emit(this.searchTerm);
+            this.self.destroy();
+        }
     }
 
     private onModalEscX() {

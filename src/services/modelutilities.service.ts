@@ -4,6 +4,7 @@
 import {Injectable} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {MathExpressionCompilerService} from "./mathexpressioncompiler";
+import {session} from './session.service';
 
 /**
  * @ignore
@@ -20,7 +21,8 @@ export class modelutilities {
 
     constructor(
         private metadata: metadata,
-        private mathcomp: MathExpressionCompilerService
+        private mathcomp: MathExpressionCompilerService,
+        private session: session
     ) {
 
     }
@@ -63,21 +65,16 @@ export class modelutilities {
 
         switch (fieldDefs.type) {
             case "date":
-                // check if the object is a moment object
-                if (moment.isMoment(value)) return value;
-
-                // return new Date(Date.parse(value));
-                let pDate = moment.utc(value);
+                if ( moment.isMoment(value) ) return value; // check if the object is already a moment object
+                let pDate = moment(value); // without a specific time zone, because it´s only a date (without time)
                 return pDate.isValid() ? pDate : null;
             case "datetime":
             case "datetimecombo":
-                // check if the object is a moment object
-                if (moment.isMoment(value)) return value;
-
-                // return new Date(Date.parse(value));
-                let pDateTime = moment(value).tz(moment.tz.guess());
-                pDateTime.add(pDateTime.utcOffset(), "m");
-                return pDateTime;
+                if ( moment.isMoment(value) ) return value; // check if the object is already a moment object
+                // The value from the backend is always in UTC.
+                // Then we set the time zone by the required time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
+                let pDateTime = moment.tz( value, 'UTC' ).tz( this.session.getSessionData('timezone') );
+                return pDateTime.isValid() ? pDateTime : null;
             case "double":
             case "currency":
                 return value ? parseFloat(value) : 0;
@@ -125,29 +122,24 @@ export class modelutilities {
 
         switch (fieldDefs.type) {
             case "date":
-                if (_.isObject(value) && value._isAMomentObject) {
-                    if (!value.isValid()) {
-                        return "";
-                    } // quick and dirty workaround, still something todo!
-                    return value.format("YYYY-MM-DD");
-                } else {
-                    let pDate = new moment.utc(value);
-                    return pDate.isValid() ? pDate.format("YYYY-MM-DD") : '';
+                if ( typeof value === 'string' ) { // A date field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
+                    let pDate = moment(value); // We create a moment object from the string (without a specific time zone, because it´s only a date) ...
+                    return pDate.isValid() ? pDate.format('YYYY-MM-DD') : ''; // ... to validate it and to format it.
+                } else if (value &&  value._isAMomentObject ) { // It is a moment object (the usual case).
+                    return value.isValid() ? value.format('YYYY-MM-DD') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
                 }
+                return '';
             case "datetime":
             case "datetimecombo":
-                if (typeof value === "string" && value.trim() === "") {
-                    return "";
+                // The value from the backend is always in UTC.
+                // Then we set the time zone by the configured time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
+                if ( typeof value === 'string' ) { // A datetime field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
+                    let pDateTime = moment.tz( value, this.session.getSessionData('timezone'));  // We create a moment object from the string (with the configured time zone of the user) ...
+                    return pDateTime.isValid() ? pDateTime.utc().format('YYYY-MM-DD HH:mm:ss') :''; // ... to validate is and to format it.
+                } else if (value && value._isAMomentObject ) { // It is a moment object (the usual case).
+                    return value.isValid() ? moment(value).utc().format('YYYY-MM-DD HH:mm:ss') : ''; // Validate it and format it for the backend, in UTC.
                 }
-                // quick and dirty workaround, still something todo!
-                if (_.isObject(value) && value._isAMomentObject && !value.isValid()) {
-                    return "";
-                }
-                // quick and dirty workaround, still something todo!
-                let pDateTime = new moment(value).tz(moment.tz.guess());
-                pDateTime.subtract(pDateTime.utcOffset(), "m");
-                return pDateTime.format("YYYY-MM-DD HH:mm:ss");
-            // return value.getUTCFullYear() + "-" + value.getUTCMonth() + "-" + (value.getUTCDate() < 10 ? "0" + value.getUTCDate() : value.getUTCDate()) + " " + value.getUTCHours() + ":" + value.getUTCMinutes() + ":" + value.getUTCSeconds();
+                return '';
             case "json":
                 return !value ? '' : JSON.stringify(value);
             // todo: type mutlienum!
@@ -571,6 +563,31 @@ export class modelutilities {
         } catch (e) {
             console.warn(e);
             return false;
+        }
+    }
+
+    /**
+     * If a user has changed his time zone, all the moment objects in all the models have to be adapted to the new time zone.
+     * timezoneChanged() iterates over a model data object (and its sub data objects) to change the time zone of the moment objects.
+     *
+     * @param modelData The data object of the model.
+     * @param timezone The time zone a string, for example 'Europe/Vienna'.
+     */
+    public timezoneChanged( modelData: object, timezone: string ): void {
+        for ( let fieldname in modelData ) {
+            if ( _.isObject( modelData[fieldname] )) {
+                if ( modelData[fieldname] && modelData[fieldname]._isAMomentObject ) {
+                    if ( modelData[fieldname]._isUTC ) { // _isUTC seems to indicate that this is not a simple date but a datetime. Don´t touch a date field!
+                        modelData[fieldname].tz( timezone );
+                    }
+                } else {
+                    if ( modelData[fieldname].beans && _.isObject( modelData[fieldname].beans )) {
+                        for ( let beanId in modelData[fieldname].beans ) {
+                            this.timezoneChanged( modelData[fieldname].beans[beanId], timezone );
+                        }
+                    }
+                }
+            }
         }
     }
 

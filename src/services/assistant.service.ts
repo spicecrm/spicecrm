@@ -15,7 +15,7 @@ export class assistant {
 
     assitantItems: Array<any> = [];
     assistantFilters: any = {
-        objectfilters:[],
+        objectfilters: [],
         timefilter: 'all'
     };
     initialized: boolean = false;
@@ -37,7 +37,7 @@ export class assistant {
             case 'model.delete':
             case 'assistant.complete':
                 this.assitantItems.some(item => {
-                    if(item.id == message.messagedata.id){
+                    if (item.id == message.messagedata.id) {
                         this.assitantItems.splice(itemIndex, 1);
                         return true;
                     }
@@ -46,9 +46,9 @@ export class assistant {
                 break;
             case 'model.save':
                 this.assitantItems.some(item => {
-                    if(item.id == message.messagedata.id){
+                    if (item.id == message.messagedata.id) {
                         // check if the item is completed
-                        if(message.messagedata.data.status && this.completeStatuses.indexOf(message.messagedata.data.status) >= 0){
+                        if (message.messagedata.data.status && this.completeStatuses.indexOf(message.messagedata.data.status) >= 0) {
                             this.assitantItems.splice(itemIndex, 1);
                         } else {
                             item.data = message.messagedata.data;
@@ -63,14 +63,14 @@ export class assistant {
     }
 
 
-    initlaize(){
-        if(!this.initialized){
+    initlaize() {
+        if (!this.initialized) {
             this.loadItems();
             this.initialized = true;
         }
     }
 
-    loadItems(): Observable<any>{
+    loadItems(): Observable<any> {
 
         this.loading = true;
 
@@ -84,7 +84,7 @@ export class assistant {
         };
 
         this.backend.getRequest('assistant/list', reqParams).subscribe(retData => {
-            for(let retItem of retData){
+            for (let retItem of retData) {
                 let transverseddata = [];
                 for (let fieldName in retItem.data) {
                     transverseddata[fieldName] = this.modelutilities.backend2spice(retItem.module, fieldName, retItem.data[fieldName]);
@@ -93,6 +93,7 @@ export class assistant {
                 this.assitantItems.push({
                     id: retItem.id,
                     module: retItem.module,
+                    date_activity: retItem.date_activity,
                     data: transverseddata
                 })
             }
