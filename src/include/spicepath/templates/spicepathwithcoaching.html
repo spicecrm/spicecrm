@@ -18,13 +18,9 @@
             </dl>
         </div>
         <div class="slds-col slds-size--1-of-2">
-            <ng-container *ngIf="stageComponentset; else stagedescription">
                 <h2 class="slds-text-title--caps slds-p-bottom--small slds-has-divider--bottom">{{language.getLabel('LBL_DETAILS')}}</h2>
-                <system-componentset [componentset]="stageComponentset"></system-componentset>
-            </ng-container>
-            <ng-template #stagedescription>
-                <div [innerHtml]="stageDescription"></div>
-            </ng-template>
+                <div class="slds-has-divider--bottom-space" [innerHtml]="stageDescription"></div>
+                <system-componentset *ngIf="stageComponentset" [componentset]="stageComponentset"></system-componentset>
         </div>
     </div>
 </div>
