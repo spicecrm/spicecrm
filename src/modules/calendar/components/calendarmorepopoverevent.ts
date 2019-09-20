@@ -8,10 +8,11 @@ import {session} from '../../../services/session.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
+import {calendar} from "../services/calendar.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -23,12 +24,12 @@ declare var moment: any;
 
 export class CalendarMorePopoverEvent implements OnInit, OnDestroy {
 
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) calendarcontent: ViewContainerRef;
     @Input() public event: any = {};
     @Output() public action$: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarcontent: ViewContainerRef;
     private modeSubscriber: Subscription = new Subscription();
 
-    constructor(private model: model, private session: session, private userpreferences: userpreferences, private router: Router) {
+    constructor(private model: model, private session: session, private userpreferences: userpreferences, private router: Router, private calendar: calendar) {
         this.modeSubscriber = this.model.mode$.subscribe(mode => this.action$.emit(mode));
     }
 
@@ -42,17 +43,30 @@ export class CalendarMorePopoverEvent implements OnInit, OnDestroy {
         this.modeSubscriber.unsubscribe();
     }
 
+    /*
+    * @param id
+    * @param module
+    * @return void
+    */
     private goDetails(id, module) {
         this.router.navigate([`/module/${module}/${id}`]);
         this.action$.emit(true);
     }
 
+    /*
+    * @param id
+    * @return boolean
+    */
     private canEdit(id) {
         return this.session.authData.userId == id;
     }
 
+    /*
+    * @param event
+    * @return hour
+    */
     private getStartHour(event) {
-        return event.data.date_start ? moment(event.data.date_start).tz(moment.tz.guess())
+        return event.data.date_start ? moment(event.data.date_start).tz(this.calendar.timeZone)
             .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : "00:00";
     }
 }

@@ -53,9 +53,33 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
 
     private productSelected(product) {
 
+        let itemData = {};
 
-        // compose the items to be added
-        let itemData = {
+        // get generic copy rules
+        let copyrules = this.metadata.getCopyRules("*", this.module);
+        for (let copyrule of copyrules) {
+            if (copyrule.tofield && copyrule.fixedvalue) {
+                itemData[copyrule.tofield] = copyrule.fixedvalue;
+            } else if (copyrule.tofield && copyrule.calculatedvalue) {
+                itemData[copyrule.tofield] = this.model.getCalculatdValue(copyrule.calculatedvalue);
+            }
+        }
+
+        // apply parent specific copy rules
+        copyrules = this.metadata.getCopyRules('Products', 'SalesDocItems');
+        for (let copyrule of copyrules) {
+            if (copyrule.fromfield && copyrule.tofield) {
+                itemData[copyrule.tofield] = product[copyrule.fromfield];
+            } else if (copyrule.tofield && copyrule.calculatedvalue) {
+                itemData[copyrule.tofield] = this.model.getCalculatdValue(copyrule.calculatedvalue);
+            } else if (copyrule.tofield && copyrule.fixedvalue) {
+                itemData[copyrule.tofield] = copyrule.fixedvalue;
+            }
+        }
+
+        // ompose the items to be added
+        /*
+        itemData = {
             parent_type: 'Products',
             parent_id: product.id,
             product_id: product.id,
@@ -68,6 +92,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
             amount_net_per_uom: product.std_price,
             purchase_price: product.purchase_price
         }
+         */
 
         this.additem.emit(itemData);
 

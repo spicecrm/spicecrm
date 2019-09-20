@@ -17,6 +17,14 @@ import {modal} from "../../../services/modal.service";
 })
 export class FieldDunsNumber extends fieldGeneric {
 
+    public componentconfig: any = {};
+    private fieldStreet: string = 'billing_address_street';
+    private fieldCity: string = 'billing_address_city';
+    private fieldPostalCode: string = 'billing_address_postalcode';
+    private fieldCountry: string = 'billing_address_country';
+    private fieldHouseNumber: string = 'billing_address_hsnm';
+    private neverOverwriteAddress: boolean = false;
+
     constructor(public model: model,
                 public view: view,
                 public language: language,
@@ -29,32 +37,81 @@ export class FieldDunsNumber extends fieldGeneric {
         super(model, view, language, metadata, router);
     }
 
+    public ngOnInit() {
+        super.ngOnInit();
+        this.loadComponentConfig();
+    }
+
+    /*
+    * @return void
+    */
+    private loadComponentConfig() {
+        if (this.fieldconfig.never_overwrite_address) this.neverOverwriteAddress = true;
+        if (!this.fieldconfig.address_type || this.fieldconfig.address_type.length == 0) return;
+        this.fieldStreet = this.fieldconfig.address_type + '_address_street';
+        this.fieldCity = this.fieldconfig.address_type + '_address_city';
+        this.fieldPostalCode = this.fieldconfig.address_type + '_address_postalcode';
+        this.fieldCountry = this.fieldconfig.address_type + '_address_country';
+        this.fieldHouseNumber = this.fieldconfig.address_type + '_address_hsnm';
+    }
+
+    /*
+    * open a modal and pass a list of duns
+    * @return void
+    */
     private openDunsModal() {
         this.modal.openModal('DunsNumberModal', true, this.ViewContainerRef.injector)
             .subscribe(modalRef => {
                 this.getResults(modalRef);
                 modalRef.instance.response.subscribe(res => {
-                    if (res) this.value = res;
+                    if (res) {
+                        this.value = res.duns;
+                        this.setAddressFields(res);
+                    }
                 });
             });
     }
 
+    /*
+    * write the field value and address values from duns modal response
+    * @param modalRef
+    * @return void
+    */
     private getResults(modalRef) {
         let params = {
             name: this.model.data.name,
-            street: (this.model.data.billing_address_street ? this.model.data.billing_address_street + (this.model.data.billing_address_hsnm ? ' ' + this.model.data.billing_address_hsnm : '') : '' ),
-            city: (this.model.data.billing_address_city ? this.model.data.billing_address_city :''),
-            postalcode: (this.model.data.billing_address_postalcode ? this.model.data.billing_address_postalcode : ''),
-            country: (this.model.data.billing_address_country ? this.model.data.billing_address_country : '')
+            street: (this.model.getField(this.fieldStreet) ? this.model.getField(this.fieldStreet) + (this.model.getField(this.fieldHouseNumber) ? ' ' + this.model.getField(this.fieldHouseNumber) : '') : ''),
+            city: (this.model.getField(this.fieldCity) ? this.model.getField(this.fieldCity) : ''),
+            postalcode: (this.model.getField(this.fieldPostalCode) ? this.model.getField(this.fieldPostalCode) : ''),
+            country: (this.model.getField(this.fieldCountry) ? this.model.getField(this.fieldCountry) : '')
         };
         modalRef.instance.isLoading = true;
         this.backend.getRequest('/SpiceDuns', params).subscribe(res => {
             if (res) {
                 modalRef.instance.isLoading = false;
-                if(res.length) {
+                if (res.length) {
                     modalRef.instance.results = res;
                 }
             }
         });
+    }
+
+    /*
+    * @param res
+    * @return void
+    */
+    private setAddressFields(res) {
+        if (!this.model.getField(this.fieldStreet) || this.model.getField(this.fieldStreet).length == 0 || !this.neverOverwriteAddress) {
+            this.model.setField(this.fieldStreet, res.street || '');
+        }
+        if (!this.model.getField(this.fieldCity) || this.model.getField(this.fieldCity).length == 0 || !this.neverOverwriteAddress) {
+            this.model.setField(this.fieldCity, res.city || '');
+        }
+        if (!this.model.getField(this.fieldPostalCode) || this.model.getField(this.fieldPostalCode).length == 0 || !this.neverOverwriteAddress) {
+            this.model.setField(this.fieldPostalCode, res.postalcode || '');
+        }
+        if (!this.model.getField(this.fieldCountry) || this.model.getField(this.fieldCountry).length == 0 || !this.neverOverwriteAddress) {
+            this.model.setField(this.fieldCountry, res.country || '');
+        }
     }
 }

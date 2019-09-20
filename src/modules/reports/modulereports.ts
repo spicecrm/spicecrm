@@ -7,8 +7,11 @@ import {FormsModule}   from '@angular/forms';
 import {ObjectFields}      from '../../objectfields/objectfields';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
+
+import /*embed*/ {ReportsGroupedRecordsPipe} from "./pipes/reportsgroupedrecordspipe";
 
 import /*embed*/ {ReporterDetailView} from "./components/reporterdetailview";
 import /*embed*/ {ReporterFilterButton} from "./components/reporterfilterbutton";
@@ -18,6 +21,8 @@ import /*embed*/ {ReporterFilterItem} from "./components/reporterfilteritem";
 import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemtext";
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
+import /*embed*/ {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
+import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
 import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
@@ -57,7 +62,8 @@ declare var moment: any;
         FormsModule,
         ObjectFields,
         ObjectComponents,
-        SystemComponents
+        SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ReporterDetailView,
@@ -68,6 +74,9 @@ declare var moment: any;
         ReporterFilterItemText,
         ReporterFilterItemEnum,
         ReporterDetailPresentationStandard,
+        ReporterDetailPresentationStandardWS,
+        ReportsGroupedRecordsPipe,
+        ReporterDetailPresentationGrouped,
         ReporterDetailVisualization,
         ReporterDetailVisualizationHighcharts,
         ReporterDetailVisualizationGooglecharts,
