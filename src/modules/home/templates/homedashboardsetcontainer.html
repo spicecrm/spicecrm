@@ -7,6 +7,20 @@
                     <span class="slds-truncate">{{dashboard.name}}</span>
                 </a>
             </li>
+            <ng-container *ngIf="isLoading">
+                <li class="slds-p-around--xx-small" style="line-height: 2rem">
+                    <system-stencil></system-stencil>
+                </li>
+                <li class="slds-p-vertical--xx-small slds-p-right--xx-small" style="line-height: 2rem">
+                    <system-stencil></system-stencil>
+                </li>
+                <li class="slds-p-vertical--xx-small slds-p-right--xx-small" style="line-height: 2rem">
+                    <system-stencil></system-stencil>
+                </li>
+                <li class="slds-p-vertical--xx-small" style="line-height: 2rem">
+                    <system-stencil></system-stencil>
+                </li>
+            </ng-container>
             <li #moretab class="slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger--hover slds-hidden" aria-haspopup="true">
                 <a href="javascript:void(0);" class="slds-context-bar__label-action slds-tabs--default__link">
                     <span class="slds-truncate">{{language.getLabel('LBL_MORE')}}</span>

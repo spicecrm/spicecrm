@@ -32,7 +32,12 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     public dashboardcontainercomponent: any = undefined;
     public dashboardsList: any[] = [];
     public moreDashboardsList: any[] = [];
-    @ViewChild('allDashboardsContainer', {read: ViewContainerRef,static: true}) private allDashboardsContainer: ViewContainerRef;
+    public isLoading: boolean = false;
+
+    @ViewChild('allDashboardsContainer', {
+        read: ViewContainerRef,
+        static: true
+    }) private allDashboardsContainer: ViewContainerRef;
     @ViewChildren('maintabs', {read: ViewContainerRef}) private maintabs: QueryList<any>;
     @ViewChildren('moretabs', {read: ViewContainerRef}) private moretabs: QueryList<any>;
     @ViewChild('moretab', {read: ViewContainerRef, static: false}) private moretab: ViewContainerRef;
@@ -77,7 +82,9 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     private loadDashboards() {
+        this.isLoading = true;
         this.loadDashboardSetDashboards().subscribe(res => {
+            this.isLoading = false;
             this.dashboardsList = _.toArray(res);
             this.renderView();
             window.setTimeout(() => this.handleOverflow());
@@ -141,7 +148,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     * @returns observable
     */
     private loadDashboardSetDashboards() {
-        let dashboardSetId = this.userpreferences.unchangedPreferences.global.home_dashboardset;
+        let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
         let config = this.metadata.getComponentConfig('HomeDashboardSetContainer', 'Home');
         let params = {
             limit: -1,
