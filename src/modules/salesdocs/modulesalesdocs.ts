@@ -18,8 +18,6 @@ import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
 import /*embed*/ {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
 import /*embed*/ {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
 import /*embed*/ {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
-import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdisplay';
-import /*embed*/ {SalesDocsItemsEdit} from './components/salesdocsitemsedit';
 import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
 import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
 import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
@@ -53,8 +51,6 @@ import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components
         SalesDocsItemFooter,
         SalesDocsItemContainer,
         SalesDocsItemDetailsContainer,
-        SalesDocsItemsDisplay,
-        SalesDocsItemsEdit,
         SalesDocsItemsAddProduct,
         SalesDocsItemsAddProductGroup,
         SalesDocsItemsAddProductVariant,

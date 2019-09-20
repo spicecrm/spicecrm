@@ -5,9 +5,9 @@
         </button>
         <spice-path-track class="slds-grow" (activeStage$)="setActiveStage($event)" ></spice-path-track>
     </div>
-    <div @displaycoaching *ngIf="coachingVisible" class="slds-grid slds-grid--align-spread slds-gutters_direct-xxx-small slds-p-top--medium slds-p-horizontal--xxx-small">
+    <div @displaycoaching *ngIf="coachingVisible" class="slds-grid slds-grid--align-spread slds-gutters_direct-xx-small slds-p-top--medium slds-p-horizontal--xxx-small">
         <div class="slds-col slds-size--1-of-2">
-            <h2 class="slds-text-title--caps slds-p-bottom--small slds-has-divider--bottom">{{language.getLabel('LBL_CHECKS')}}</h2>
+            <h2 class="slds-text-title--caps slds-p-bottom--small">{{language.getLabel('LBL_CHECKS')}}</h2>
             <dl class="slds-dl--horizontal">
                 <ng-container *ngFor="let check of checks">
                     <dt class="slds-coach__item slds-dl--horizontal__label">
@@ -17,6 +17,14 @@
                 </ng-container>
             </dl>
         </div>
-        <div class="slds-col slds-size--1-of-2" [innerHtml]="stageDescription"></div>
+        <div class="slds-col slds-size--1-of-2">
+            <ng-container *ngIf="stageComponentset; else stagedescription">
+                <h2 class="slds-text-title--caps slds-p-bottom--small slds-has-divider--bottom">{{language.getLabel('LBL_DETAILS')}}</h2>
+                <system-componentset [componentset]="stageComponentset"></system-componentset>
+            </ng-container>
+            <ng-template #stagedescription>
+                <div [innerHtml]="stageDescription"></div>
+            </ng-template>
+        </div>
     </div>
 </div>
