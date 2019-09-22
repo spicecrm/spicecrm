@@ -30,6 +30,8 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
 
     private pivotArray: any[] = [];
     private rowValues: any[] = [];
+    private rowValueColumns: any = {};
+
 
     constructor(private language: language, private model: model, private backend: backend, private reporterconfig: reporterconfig) {
         // subscribe to the refresh .. hapens when e.g. the filters are applied and the report items shoudl reload themselves
@@ -150,6 +152,12 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
             // check if we have the colValue
             if (this.rowValues.indexOf(record[this.presParams.pluginData.rowData]) == -1) this.rowValues.push(record[this.presParams.pluginData.rowData]);
         }
+
+        for (let rowValue of this.rowValues) {
+            this.rowValueColumns[rowValue] = this.getValues(rowValue);
+        }
+
+        console.log(this.rowValueColumns);
     }
 
     /**
@@ -169,6 +177,11 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
             totalColumns += this.getColumns(itemData);
         }
         return totalColumns;
+    }
+
+    get totalCountArray() {
+        console.log(Array(this.totalColumnCount).fill('data'));
+        return Array(this.totalColumnCount).fill('data');
     }
 
     /**
