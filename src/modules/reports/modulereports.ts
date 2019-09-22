@@ -25,6 +25,7 @@ import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporte
 import /*embed*/ {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
 import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
 import /*embed*/ {ReporterDetailPresentationTree} from "./components/reporterdetailpresentationtree";
+import /*embed*/ {ReporterDetailPresentationPivot} from "./components/reporterdetailpresentationpivot";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
 import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
@@ -81,6 +82,7 @@ declare var moment: any;
         ReportsGroupedRecordsPipe,
         ReporterDetailPresentationGrouped,
         ReporterDetailPresentationTree,
+        ReporterDetailPresentationPivot,
         ReporterDetailVisualization,
         ReporterDetailVisualizationHighcharts,
         ReporterDetailVisualizationGooglecharts,

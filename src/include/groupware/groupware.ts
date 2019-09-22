@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 import {NgModule} from '@angular/core';
 import {BrowserModule, Title} from '@angular/platform-browser';
 import {HttpClientModule} from "@angular/common/http";

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {Component} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {productfinder} from '../services/productfinder.service';

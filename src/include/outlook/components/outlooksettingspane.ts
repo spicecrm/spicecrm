@@ -1,3 +1,6 @@
+/**
+ * @module Outlook
+ */
 import {Component} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';

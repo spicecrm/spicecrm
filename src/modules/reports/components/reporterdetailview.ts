@@ -158,7 +158,9 @@ export class ReporterDetailView implements OnInit {
             case 'tree':
                 presentationComponent = 'ReporterDetailPresentationTree';
                 break;
-
+            case 'pivot':
+                presentationComponent = 'ReporterDetailPresentationPivot';
+                break;
         }
 
         if (presentationComponent != '') {

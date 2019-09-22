@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';

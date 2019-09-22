@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, ChangeDetectorRef} from '@angular/core';
 // import AsyncResultStatus = Office.AsyncResultStatus;
 import {Subject, Observable} from 'rxjs';

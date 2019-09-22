@@ -1,3 +1,6 @@
+/**
+ * @module Outlook
+ */
 import {
     Component, OnInit,
     // ChangeDetectorRef, Renderer2

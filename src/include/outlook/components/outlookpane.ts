@@ -1,3 +1,6 @@
+/**
+ * @module Outlook
+ */
 import {Component, OnInit} from '@angular/core';
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
