@@ -9,7 +9,7 @@ import {
     ViewContainerRef,
     OnDestroy
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -17,23 +17,38 @@ import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'reporter-detilview',
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
-    providers: [model, reporterconfig]
+    providers: [model, reporterconfig],
+    animations: [
+        trigger('displayfilter', [
+            transition(':enter', [
+                style({width: '0px', overflow: 'hidden'}),
+                animate('.5s', style({width: '*'})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({width: '0px'}))
+            ])
+        ])
+    ]
 })
-export class ReporterDetailView implements OnDestroy {
+export class ReporterDetailView implements OnInit {
 
-    @ViewChild('presentationcontainer', {read: ViewContainerRef, static: true}) private presentationcontainer: ViewContainerRef;
+    @ViewChild('presentationcontainer', {
+        read: ViewContainerRef,
+        static: true
+    }) private presentationcontainer: ViewContainerRef;
     @ViewChild('presentationview', {read: ViewContainerRef, static: true}) private presentationview: ViewContainerRef;
     @ViewChild('pageheader', {read: ViewContainerRef, static: true}) private pageheader: ViewContainerRef;
 
 
-
-    private routeSubscribe: any = {}
-    private id: string = '';
+    private routeSubscribe: any = {};
     private vizData: any = {};
     private presComponent: any = undefined;
     private hasVisualization: boolean = false;
@@ -43,6 +58,7 @@ export class ReporterDetailView implements OnDestroy {
     private showFilters: boolean = false;
 
     constructor(private broadcast: broadcast, private language: language, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private reporterconfig: reporterconfig) {
+        /*
         this.routeSubscribe = this.activatedRoute.params.subscribe(params => {
             this.id = params.id;
             this.model.module = 'KReports';
@@ -66,11 +82,37 @@ export class ReporterDetailView implements OnDestroy {
 
             });
         });
+         */
     }
 
+    public ngOnInit(): void {
 
-    public ngOnDestroy() {
-        this.routeSubscribe.unsubscribe();
+        // set theenavigation paradigm
+        this.navigation.setActiveModule('KReports');
+
+        // get the bean details
+        this.model.module = this.activatedRoute.snapshot.params.module;
+        this.model.id = this.activatedRoute.snapshot.params.id;
+
+
+        this.model.getData(true, 'detailview', true, true).subscribe(data => {
+            this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
+            if (data.visualization_params != '') {
+                this.hasVisualization = true;
+            }
+
+            // load the where conditions
+            this.reporterconfig.resetUserFilters();
+            this.whereConditions = JSON.parse(data.whereconditions);
+
+            // render the presentation
+            this.renderPresentation();
+
+            // handle plugins
+            if (data.integration_params != '') {
+                this.integrationParams = JSON.parse(data.integration_params);
+            }
+        });
     }
 
     get presentationStyle() {
@@ -79,19 +121,19 @@ export class ReporterDetailView implements OnDestroy {
             return {
                 height: 'calc(100vh - ' + rect.top + 'px)',
                 overflow: 'hidden'
-            }
+            };
         }
     }
 
-    showPlugin(plugin) {
+    private showPlugin(plugin) {
         return this.integrationParams.activePlugins && this.integrationParams.activePlugins[plugin];
     }
 
     private getVisualization() {
 
-        this.backend.getRequest('KReporter/' + this.id + '/visualization').subscribe(vizData => {
+        this.backend.getRequest('KReporter/' + this.model.id + '/visualization').subscribe(vizData => {
             this.vizData = vizData;
-        })
+        });
     }
 
     private renderPresentation() {
@@ -100,7 +142,7 @@ export class ReporterDetailView implements OnDestroy {
             this.presComponent = undefined;
         }
 
-        let presentationParams = JSON.parse(this.model.data.presentation_params);
+        let presentationParams = this.model.data.presentation_params;
 
         let presentationComponent = '';
         switch (presentationParams.plugin) {
@@ -112,6 +154,9 @@ export class ReporterDetailView implements OnDestroy {
                 break;
             case 'standardws':
                 presentationComponent = 'ReporterDetailPresentationStandardWS';
+                break;
+            case 'tree':
+                presentationComponent = 'ReporterDetailPresentationTree';
                 break;
 
         }
@@ -130,13 +175,19 @@ export class ReporterDetailView implements OnDestroy {
         this.showFilters = event;
     }
 
+    /**
+     * when the filters are saved .. hide the panel
+     */
+    private filtersaved() {
+        this.showFilters = false;
+    }
+
     get filterPanelStyle() {
         let rect = this.pageheader.element.nativeElement.getBoundingClientRect();
         return {
             right: '0px',
             top: rect.bottom + 'px',
             height: 'calc(100vh - ' + rect.bottom + 'px)'
-        }
+        };
     }
-
 }
