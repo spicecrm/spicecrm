@@ -15,6 +15,7 @@ import {model} from "../../services/model.service";
 export class ModelPopOverDirective implements OnInit, OnDestroy {
     @Input() private module: string;
     @Input() private id: string;
+    @Input() private modelPopOver: boolean = true;
     private popoverCmp = null;
     private self: any = null;
     private showPopover: boolean = false;
@@ -33,7 +34,9 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
 
     @HostListener('mouseenter')
     private onMouseOver() {
-        this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
+        if (this.modelPopOver !== false) {
+            this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
+        }
     }
 
     @HostListener('mouseleave')
@@ -49,6 +52,8 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
 
     @HostListener('click')
     private goRelated() {
+        if (this.modelPopOver === false) return false;
+
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
         }
