@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 interface GroupwareEmail {
     body: string;
     cc: string;

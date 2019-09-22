@@ -1,3 +1,6 @@
+/**
+ * @module ModuleReports
+ */
 import {Pipe, PipeTransform} from '@angular/core';
 
 /**

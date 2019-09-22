@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, OnInit} from '@angular/core';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {model} from "../../../services/model.service";

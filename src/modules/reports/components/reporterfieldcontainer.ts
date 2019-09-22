@@ -15,6 +15,8 @@ import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {footer} from '../../../services/footer.service';
 
+declare var _: any;
+
 @Component({
     selector: 'reporter-field-container',
     templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html'
@@ -27,6 +29,7 @@ export class ReporterFieldContainer implements OnInit {
     }) private reportFieldContainer: ViewContainerRef;
 
     @Input() private record: any = {};
+    @Input() private value: any = {};
     @Input() private field: any = {};
 
     private showPopoverTimeout: any = {};
@@ -37,6 +40,13 @@ export class ReporterFieldContainer implements OnInit {
 
     public ngOnInit() {
         let fieldType = 'ReporterFieldStandard';
+
+        // if we have a value an no record ... create the record
+        if (this.value && _.isEmpty(this.record)) {
+            this.record = {};
+            this.record[this.field.fieldid] = this.value;
+            this.record[this.field.fieldid + '_val'] = this.value;
+        }
 
         if (this.field.component) {
             fieldType = this.field.component;
