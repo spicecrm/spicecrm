@@ -58,11 +58,30 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
     }
 
     public ngOnInit() {
-        this.presParams = JSON.parse(this.model.data.presentation_params);
+        this.presParams = this.model.getField('presentation_params');
     }
 
     public ngAfterViewInit() {
         this.getPresentation();
+    }
+
+
+    private displayClasses(field) {
+        let classes = [];
+
+        if (field.sortable) classes.push('slds-is-sortable');
+
+        switch (field.type) {
+            case 'currency':
+            case 'currencyint':
+                classes.push('slds-grid--align-end')
+                break;
+            case 'enum':
+                classes.push('slds-grid--align-center')
+                break;
+        }
+
+        return classes.join(' ');
     }
 
     // todo : fix this for scrolling with a fixed table header
