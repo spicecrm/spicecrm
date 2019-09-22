@@ -6,14 +6,10 @@ import {
     Input,
     OnInit,
     ViewChild,
-    ViewContainerRef,
-    ElementRef
+    ViewContainerRef
 } from '@angular/core';
 
-import {Router} from '@angular/router';
-
 import {metadata} from '../../../services/metadata.service';
-import {footer} from '../../../services/footer.service';
 
 declare var _: any;
 
@@ -32,9 +28,7 @@ export class ReporterFieldContainer implements OnInit {
     @Input() private value: any = {};
     @Input() private field: any = {};
 
-    private showPopoverTimeout: any = {};
-
-    constructor(private metadata: metadata, private router: Router, private footer: footer, private elementRef: ElementRef) {
+    constructor(private metadata: metadata) {
 
     }
 
@@ -70,7 +64,7 @@ export class ReporterFieldContainer implements OnInit {
             }
         }
 
-        this.metadata.addComponent(fieldType, this.reportFieldContainer).subscribe(componentRef => {
+        this.metadata.addComponentDirect(fieldType, this.reportFieldContainer).subscribe(componentRef => {
             componentRef.instance.record = this.record;
             componentRef.instance.field = this.field;
         });
@@ -104,17 +98,6 @@ export class ReporterFieldContainer implements OnInit {
             }
         } else {
             return '';
-        }
-    }
-
-    private followLink() {
-        if (this.hasLink) {
-            // route to the proper module
-            if (this.field.linkinfo && this.field.linkinfo.root) {
-                this.router.navigate(['/module/' + this.field.linkinfo.root.module + '/' + this.record[this.field.linkinfo.root.idfield]]);
-            } else {
-                this.router.navigate(['/module/' + this.record.sugarRecordModule + '/' + this.record.sugarRecordId]);
-            }
         }
     }
 }
