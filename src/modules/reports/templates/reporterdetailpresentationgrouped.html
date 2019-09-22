@@ -1,11 +1,14 @@
 <div tobottom>
     <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout">
         <thead>
-            <tr class="slds-text-title--caps">
-                <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
-                    <div class="slds-truncate slds-p-vertical--xx-small">{{field.name}}</div>
-                </th>
-            </tr>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
+                <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
+                    <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
+                    <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                </a>
+            </th>
+        </tr>
         </thead>
     </table>
     <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
@@ -13,22 +16,29 @@
             <system-spinner></system-spinner>
         </div>
         <ng-container *ngFor="let groupByValue of groupByValues">
-            <table *ngIf="!isLoading"  class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
+            <table *ngIf="!isLoading"  class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout slds-m-bottom--medium">
                 <tbody>
                     <tr>
                         <td [attr.colspan]="getFields().length" class="slds-theme--shade slds-text-title_bold">
                             <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
-                                <label>{{groupByValue.value}}</label>
+                                <div>
+                                    <button class="slds-button slds-button_icon slds-button_icon-x-small slds-m-right_x-small" (click)="groupByValue.expanded = !groupByValue.expanded">
+                                        <system-button-icon [icon]="groupByValue.expanded ? 'chevrondown' : 'chevronright'"></system-button-icon>
+                                    </button>
+                                    <label>{{groupByValue.value}}</label>
+                                </div>
                                 <label>{{groupByValue.count}} {{language.getLabel('LBL_RECORDS')}}</label>
                             </div>
                         </td>
                     </tr>
-                    <tr *ngFor="let record of getRecords(groupByValue.value)">
-                        <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
-                            <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
-                        </td>
-                    </tr>
-                    <tr>
+                    <ng-container *ngIf="groupByValue.expanded">
+                        <tr *ngFor="let record of getRecords(groupByValue.value)">
+                            <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
+                                <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr class="slds-theme--shade">
                         <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)" class="slds-text-title_bold">
                             <reporter-field-container [field]="field" [record]="groupByValue.totalRecord"></reporter-field-container>
                         </td>
@@ -54,7 +64,7 @@
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="groupById">
-                                <option *ngFor="let reportField of reportFields" [value]="reportField.fieldid">{{reportField.name}}</option>
+                                <option *ngFor="let reportField of reportFields" [value]="reportField.fieldid">{{language.getLabel(reportField.name)}}</option>
                             </select>
                         </div>
                     </div>

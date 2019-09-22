@@ -2,8 +2,8 @@
     <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout">
         <thead>
             <tr class="slds-text-title--caps">
-                <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)" class="slds-is-sortable">
-                    <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
+                    <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
                         <div class="slds-truncate slds-p-vertical--xx-small">{{field.name}}</div>
                         <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
                     </a>

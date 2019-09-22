@@ -18,11 +18,6 @@
             <reporter-integration-export-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-export-button>
             <reporter-integration-tools-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-tools-button>
             <reporter-filter-button [whereConditions]="whereConditions" (filter)="toggleFilters($event)"></reporter-filter-button>
-            <!--div class="slds-button-group slds-p-horizontal--small" role="group">
-                <button class="slds-button slds-button_icon slds-button_icon-border" *ngIf="showPlugin('kqueryanalizer')">
-                    <system-button-icon [icon]="'question'"></system-button-icon>
-                </button>
-            </div-->
         </div>
     </div>
 </div>
@@ -32,4 +27,4 @@
 <div #presentationcontainer [ngStyle]="presentationStyle">
     <div #presentationview></div>
 </div>
-<reporter-filter-panel *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams"></reporter-filter-panel>
+<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>

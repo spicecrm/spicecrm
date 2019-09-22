@@ -8,8 +8,8 @@ import {model} from '../../../services/model.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -29,15 +29,16 @@ export class ReporterFieldDate {
         try {
             if (this.record[this.field.fieldid]) {
                 let date = new moment(this.record[this.field.fieldid]);
-                if (date.isValid())
+                if (date.isValid()) {
                     return date.format(this.userpreferences.getDateFormat());
-                else return '';
-            }
-            else
+                } else {
+                    return '';
+                }
+            } else {
                 return '';
+            }
         } catch (e) {
             return '';
         }
     }
-
 }

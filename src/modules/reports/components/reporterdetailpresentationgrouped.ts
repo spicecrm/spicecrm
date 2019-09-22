@@ -52,31 +52,56 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
         if (value != this._groupById) {
             this._groupById = value;
 
-            // determine values
-            this.groupByValues = [];
-            let groupByValues = {};
-            for (let record of this.presData.records) {
-                if (!groupByValues[record[value]]) groupByValues[record[value]] = 0;
-                groupByValues[record[value]]++;
-            }
+            // rebuild the groups
+            this.rebuildGroups();
+        }
+    }
 
-            for (let groupByValue in groupByValues) {
-                this.groupByValues.push({
-                    value: groupByValue,
-                    count: groupByValues[groupByValue],
-                    totalRecord: this.buildSummary(this.getRecords(groupByValue))
-                });
-            }
+    private rebuildGroups() {
+        // determine values
+        this.groupByValues = [];
+        let groupByValues = {};
+        for (let record of this.presData.records) {
+            if (!groupByValues[record[this._groupById]]) groupByValues[record[this._groupById]] = 0;
+            groupByValues[record[this._groupById]]++;
+        }
+
+        for (let groupByValue in groupByValues) {
+            this.groupByValues.push({
+                value: groupByValue,
+                expanded: true,
+                count: groupByValues[groupByValue],
+                totalRecord: this.buildSummary(this.getRecords(groupByValue))
+            });
         }
     }
 
     public ngOnInit() {
-        this.presParams = JSON.parse(this.model.data.presentation_params);
+        this.presParams = this.model.getField('presentation_params');
     }
 
     public ngAfterViewInit() {
         this.getPresentation();
     }
+
+    private displayClasses(field) {
+        let classes = [];
+
+        if (field.sortable) classes.push('slds-is-sortable');
+
+        switch (field.type) {
+            case 'currency':
+            case 'currencyint':
+                classes.push('slds-grid--align-end')
+                break;
+            case 'enum':
+                classes.push('slds-grid--align-center')
+                break;
+        }
+
+        return classes.join(' ');
+    }
+
 
     // todo : fix this for scrolling with a fixed table header
     private getContainerStyle(): any {
@@ -137,8 +162,11 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
             // set the pres data
             this.presData = presData;
 
-            // set the group by id
-            this.groupById = presData.reportmetadata.presentation_params.pluginData.groupedViewProperties.groupById;
+            // set the group by id if it is not set already
+            if (!this._groupById) this._groupById = presData.reportmetadata.presentation_params.pluginData.groupedViewProperties.groupById;
+
+            // rebuild the grouped sums and count
+            this.rebuildGroups();
 
             this.totalRecord = this.buildSummary(this.presData.records);
 
@@ -183,10 +211,18 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
         }
 
         let retRecord = {};
-        for (let dataIndex in summaryrecord){
+        for (let dataIndex in summaryrecord) {
             retRecord[dataIndex] = summaryrecord[dataIndex].value;
         }
         return retRecord;
+    }
+
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(fieldid): string {
+        return 'arrowdown';
+        //    return 'arrowup';
     }
 
     private getRecords(groupvalue): any[] {

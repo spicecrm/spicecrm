@@ -20,9 +20,11 @@ import /*embed*/ {ReporterFilterSavedFilters} from "./components/reporterfilters
 import /*embed*/ {ReporterFilterItem} from "./components/reporterfilteritem";
 import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemtext";
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
+import /*embed*/ {ReporterFilterItemDate} from "./components/reporterfilteritemdate";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
 import /*embed*/ {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
 import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
+import /*embed*/ {ReporterDetailPresentationTree} from "./components/reporterdetailpresentationtree";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
 import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
@@ -73,10 +75,12 @@ declare var moment: any;
         ReporterFilterItem,
         ReporterFilterItemText,
         ReporterFilterItemEnum,
+        ReporterFilterItemDate,
         ReporterDetailPresentationStandard,
         ReporterDetailPresentationStandardWS,
         ReportsGroupedRecordsPipe,
         ReporterDetailPresentationGrouped,
+        ReporterDetailPresentationTree,
         ReporterDetailVisualization,
         ReporterDetailVisualizationHighcharts,
         ReporterDetailVisualizationGooglecharts,
