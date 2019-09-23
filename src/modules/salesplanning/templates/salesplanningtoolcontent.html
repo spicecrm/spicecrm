@@ -45,17 +45,17 @@
                         {{field.description}}
                     </div>
                 </td>
-                <td *ngFor="let period of periods; trackBy: trackByFn" [title]="field[period?.key]">
-                    <div *ngIf="!isEditMode" class="slds-truncate">
-                        {{field[period?.key]}}
+                <td *ngFor="let period of periods; trackBy: trackByFn" [title]="formattedValue(field[period?.key])">
+                    <div *ngIf="!isEditMode|| !isEditable(field.field_id)" class="slds-truncate">
+                        {{formattedValue(field[period?.key])}}
                     </div>
-                    <div *ngIf="isEditMode" class="slds-form-element__control slds-m-vertical--xx-small">
-                        <input type="text" class="slds-input" [(ngModel)]="field[period?.key]">
+                    <div *ngIf="isEditMode && isEditable(field.field_id)" class="slds-form-element__control slds-m-vertical--xx-small">
+                        <input type="text" class="slds-input" [ngModel]="field[period?.key]" [ngModelOptions]="modelOptions" (ngModelChange)="setPeriodValues($event, field, period?.key)" style="min-height: 20px !important; line-height: 20px;">
                     </div>
                 </td>
                 <td>
-                    <div class="slds-truncate" [title]="field.sum">
-                        {{field.sum}}
+                    <div class="slds-truncate" [title]="getFieldSum(field)">
+                        {{getFieldSum(field)}}
                     </div>
                 </td>
             </tr>

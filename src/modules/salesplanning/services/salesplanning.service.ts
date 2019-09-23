@@ -10,7 +10,7 @@ export class SalesPlanningService {
     public characteristicTerritory: string = '_territories';
     public characteristics: any[] = [];
     public selectedCharacteristics: any[] = [];
-    public contentClassifications: any[] = [];
+    public contentClassifications: any = {};
     public selectedNode: any;
     public selectedNodes: any[] = [];
 }

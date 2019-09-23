@@ -9,8 +9,16 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from "../../../services/view.service";
 import {toast} from "../../../services/toast.service";
+import {userpreferences} from "../../../services/userpreferences.service";
 
+/**
+ * @ignore
+ */
 declare var moment: any;
+/**
+ * @ignore
+ */
+declare var _: any;
 
 @Component({
     selector: 'sales-planning-tool-content',
@@ -21,6 +29,7 @@ declare var moment: any;
 export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     public nodeContentArray: any[] = [];
+    public nodeContentArrayBackup: any[] = [];
     public periods: any[] = [];
     public languageSubscriber: any = {};
     public units: any = {
@@ -41,17 +50,17 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 private view: view,
                 private toast: toast,
                 private metadata: metadata,
+                private userPrefs: userpreferences,
                 private planningService: SalesPlanningService) {
         this.subscribeToLanguage();
     }
 
-    get isEditMode() {
-        return this.view.isEditMode();
+    get modelOptions(): any {
+        return {updateOn: 'blur'};
     }
 
-
-    get editable() {
-        return true || this.metadata.checkModuleAcl('SalesPlanningContentFields', 'edit');
+    get isEditMode() {
+        return this.view.isEditMode();
     }
 
     public ngOnChanges() {
@@ -62,6 +71,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     public ngOnDestroy() {
         this.languageSubscriber.unsubscribe();
+    }
+
+    private isEditable(fieldId) {
+        let fieldClassifications = this.planningService.contentClassifications[fieldId];
+        return fieldClassifications && fieldClassifications.editable && fieldClassifications.editable == 1;
     }
 
     private subscribeToLanguage() {
@@ -126,20 +140,16 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         };
         this.backend.getRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.planningNodeId}/Content`, params)
             .subscribe(nodeContent => {
-                if (nodeContent && nodeContent.data) {
+                if (nodeContent && nodeContent.data && nodeContent.data.length) {
                     this.nodeContentArray = nodeContent.data;
-                    if (!this.nodeContentArray[0].hasOwnProperty('sum')) {
-                        this.nodeContentArray = this.nodeContentArray.map(item => {
-                            item.sum = 0;
-                            return item;
-                        });
-                    }
                     this.isLoading = false;
                 }
             });
     }
 
     private setEditMode() {
+        this.nodeContentArrayBackup = [];
+        this.nodeContentArray.forEach(field => this.nodeContentArrayBackup.push(_.clone(field)));
         this.view.setEditMode();
     }
 
@@ -159,10 +169,97 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private cancel() {
+        this.nodeContentArray = [];
+        this.nodeContentArray = this.nodeContentArrayBackup;
         this.setViewMode();
     }
 
     private trackByFn(index, item) {
         return item.id;
+    }
+
+    private setPeriodValues(value, field, periodKey) {
+        field[periodKey] = value;
+        this.nodeContentArray = this.nodeContentArray.map(field => {
+            field[periodKey] = this.getFieldValue(field, periodKey);
+            return field;
+        });
+    }
+
+    private getFieldSum(field) {
+        let result = 0;
+        this.periods.forEach(period => result += +field[period.key]);
+        let fieldClassifications = this.planningService.contentClassifications[field.field_id];
+        if (!fieldClassifications.formula_sum || fieldClassifications.formula_sum.length == 0) {
+            return this.formattedValue(result);
+        }
+
+        let ids = fieldClassifications.formula_sum.match(/\[.*?]/g);
+        let formulaSum = fieldClassifications.formula_sum;
+        let formulaValues = this.replaceIdsWithValues(ids, formulaSum, field.field_id, false, true);
+        let canExecute = !!formulaValues
+            .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
+        if (canExecute) result = this.evaluateFormula(formulaValues);
+        return this.formattedValue(result);
+    }
+
+    private getFieldValue(field, periodKey) {
+        let result = field[periodKey];
+        let fieldClassifications = this.planningService.contentClassifications[field.field_id];
+        if (!fieldClassifications.formula || fieldClassifications.formula.length == 0) return result;
+
+        let ids = fieldClassifications.formula.match(/\[.*?]/g);
+        let formula = fieldClassifications.formula;
+        let formulaValues = this.replaceIdsWithValues(ids, formula, field.field_id, periodKey);
+        let canExecute = !!formulaValues
+            .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
+        if (canExecute) result = this.evaluateFormula(formulaValues);
+        return result;
+    }
+
+    private replaceIdsWithValues(ids, formula, fieldId, periodKey?, isSumFormula = false) {
+        ids.forEach(id => {
+            let idField = this.nodeContentArray.find(contentField => contentField.field_id == id.replace(/[\[\]]/g, ''));
+            if (idField && periodKey && idField[periodKey]) {
+                idField[periodKey] = idField[periodKey]
+                    .replace(this.userPrefs.toUse.num_grp_sep, '')
+                    .replace(this.userPrefs.toUse.dec_sep, '.');
+                formula = formula.replace(id, idField[periodKey]);
+            } else if (idField && isSumFormula && formula.indexOf(fieldId) == -1) {
+                formula = formula.replace(id, this.getFieldSum(idField).toString()
+                    .replace(this.userPrefs.toUse.num_grp_sep, '')
+                    .replace(this.userPrefs.toUse.dec_sep, '.')
+                );
+            }
+        });
+        return formula;
+    }
+
+    private evaluateFormula(formulaValues) {
+        let operatorCheck = item => item == '+' || item == '-' || item == '*' || item == '/' || item == '%';
+        formulaValues = formulaValues.split(' ');
+        let operators = formulaValues.filter(value => operatorCheck(value));
+        let numbers = formulaValues.filter(value => !isNaN(value));
+        return numbers.reduce((acc, curr) => {
+            let operator = operators.shift();
+            switch (operator) {
+                case '+':
+                    return +acc + +curr;
+                case '-':
+                    return +acc - +curr;
+                case '*':
+                    return +acc * +curr;
+                case '/':
+                    return +acc / +curr;
+                case '%':
+                    return +acc % +curr;
+                default:
+                    return +acc + +curr;
+            }
+        }) || 0;
+    }
+
+    private formattedValue(value) {
+        return !isNaN(+value) && value != 0 ? this.userPrefs.formatMoney(+value) : '';
     }
 }

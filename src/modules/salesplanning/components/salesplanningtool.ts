@@ -61,6 +61,6 @@ export class SalesPlanningTool implements OnInit {
         if (!parent || !parent.salesplanningcontents) return;
         let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
         if (!content || !content.salesplanningcontentfields) return;
-        this.planningService.contentClassifications = _.toArray(content.salesplanningcontentfields.beans);
+        this.planningService.contentClassifications = content.salesplanningcontentfields.beans;
     }
 }
