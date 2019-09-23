@@ -1,6 +1,7 @@
 <li class="slds-dropdown__item" role="presentation" >
     <a href="javascript:void(0);" role="menuitem" tabindex="0" (click)="exportPDF()">
-        <span class="slds-truncate">{{language.getLabel('LBL_PDF_EXPORT')}}</span>
+        <system-icon sprite="doctype" icon="pdf" size="x-small"></system-icon>
+        <span class="slds-truncate">{{language.getLabel('LBL_PDF')}}</span>
     </a>
     <a #downloadlink style="display:none" [href]="loadUrl" [download]="fileName"></a>
 </li>
