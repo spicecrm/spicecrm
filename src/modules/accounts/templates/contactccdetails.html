@@ -1,7 +1,7 @@
-<div class="slds-grid  slds-p-around--xxx-small" [ngStyle]="containerStyle">
+<div class="slds-grid slds-m-top--x-small slds-p-around--xxx-small" style="border-radius: .25rem; border: 1px solid #dddbda">
     <div *ngIf="!isLoading && companyCodes.length > 0" class="slds-tabs--default">
         <ul class="slds-tabs--default__nav" role="tablist">
-            <li *ngFor="let CCode of companyCodes; let tabindex = index"
+            <li *ngFor="let CCode of companyCodes; let tabindex = index; trackBy: trackByFn"
                 class="slds-tabs--default__item slds-text-title--caps"
                 [ngClass]="{'slds-active': tabindex === activeTab}"
                 role="presentation" (click)="setActiveTab(tabindex)">
@@ -10,19 +10,16 @@
                 </a>
             </li>
         </ul>
-        <ng-container *ngFor="let CCode of companyCodes let tabindex = index">
-            <div class="slds-tabs--default__content slds-show" role="tabpanel"
+        <ng-container *ngFor="let CCode of companyCodes let tabindex = index; trackBy: trackByFn">
+            <div class="slds-tabs--default__content slds-p-around--xx-small slds-show" role="tabpanel"
                  [ngStyle]="getContentContainerStyle(tabindex)">
-                <contact-cc-details-tab [ccid]="CCode.id"
-                                        [ccname]="CCode.companycode"
-                                        [contactid]="model.id"
-                                        [data]="getCCDetailsData(CCode)">
+                <contact-cc-details-tab [ccid]="CCode.id" [ccname]="CCode.companycode" [contactid]="model.id" [data]="getCCDetailsData(CCode)">
                 </contact-cc-details-tab>
             </div>
         </ng-container>
     </div>
     <system-spinner *ngIf="isLoading"></system-spinner>
-    <div *ngIf="!isLoading && companyCodes.length == 0" class="slds-align_absolute-center slds-p-vertical--medium">
-        <span> No Company Codes found </span>
+    <div *ngIf="!isLoading && companyCodes.length == 0" class="slds-align_absolute-center slds-p-around--small">
+        {{language.getLabel('LBL_NO_ENTRIES')}}
     </div>
 </div>

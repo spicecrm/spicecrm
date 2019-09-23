@@ -37,6 +37,12 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      */
     public ngOnInit() {
         this.currencyidfield = this.fieldconfig.field_currencyid;
+
+        // if not check if the modl has a currncy_id field
+        if (!this.currencyidfield) {
+            let modelFields = this.metadata.getModuleFields(this.model.module);
+            if (modelFields.currency_id) this.currencyidfield = 'currency_id';
+        }
     }
 
     /**

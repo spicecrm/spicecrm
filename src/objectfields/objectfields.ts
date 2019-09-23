@@ -86,12 +86,9 @@ import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules
 import /*embed*/ {FieldEnumOutputTemplates} from "./components/fieldenumoutputtemplates";
 import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
 import /*embed*/ {fieldServiceQueue} from "./components/fieldservicequeue";
-import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
-import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
 import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
 import /*embed*/ {fieldSelectTreeSearch} from "./components/fieldselecttreesearch";
 import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
-import /*embed*/ {fieldTerritorySecondary, fieldTerritorySecondaryPipe} from "./components/fieldterritorysecondary";
 import /*embed*/ {fieldColorEnum} from "./components/fieldcolorenum";
 import /*embed*/ {fieldBase64} from "./components/fieldbase64";
 import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
@@ -106,6 +103,9 @@ import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
 import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
 import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
 import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
+import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
+import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
+import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
 
 /**
 * @ignore
@@ -200,10 +200,6 @@ declare var _: any;
         FieldModelInfoComponent,
         fieldGDPR,
         fieldServiceQueue,
-        fieldTerritory,
-        fieldTerritorySearch,
-        fieldTerritorySecondary,
-        fieldTerritorySecondaryPipe,
         fieldSelectTree,
         fieldSelectTreeSearch,
         fieldSelectTreeTree,
@@ -219,7 +215,10 @@ declare var _: any;
         fieldBackendMethod,
         fieldSystemLabel,
         fieldTimeDifference,
-        fieldIconPopover
+        fieldIconPopover,
+        fieldStylesheetID,
+        fieldUnitsOfMeasure,
+        fieldQuantity
     ],
     exports: [
         fieldSet,

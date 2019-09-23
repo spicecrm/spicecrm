@@ -1,5 +1,8 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, Input} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
 @Component({
     selector: 'groupware-pane-attachment',

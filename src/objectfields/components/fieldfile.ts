@@ -11,9 +11,9 @@ import {metadata} from '../../services/metadata.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
 import {toast} from '../../services/toast.service';
+import {helper} from '../../services/helper.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
-
 import {Subject, Observable} from 'rxjs';
 
 @Component({
@@ -37,13 +37,14 @@ export class fieldFile extends fieldGeneric {
         private session: session,
         private toast: toast,
         private modal: modal,
-        private backend: backend
+        private backend: backend,
+        private helper: helper
     ) {
         super(model, view, language, metadata, router);
     }
 
     /**
-     * returns the hguman readable file size
+     * returns the human readable file size
      *
      * @param filesize
      */
@@ -79,7 +80,7 @@ export class fieldFile extends fieldGeneric {
         this.theFile = files[0].name;
         this.uploadAttachmentsBase64(files).subscribe((retVal: any) => {
             if (retVal.progress) {
-                this.theProgress = retVal.progress.loaded / retVal.progress.total * 100
+                this.theProgress = retVal.progress.loaded / retVal.progress.total * 100;
             } else if (retVal.complete) {
                 this.value = retVal.filename ? retVal.filename : this.theFile;
                 // set the filetype
@@ -169,12 +170,15 @@ export class fieldFile extends fieldGeneric {
     private readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader = new FileReader();
+        /* tslint:disable:no-string-literal */
         reader['file'] = file;
+        /* tslint:enable:no-string-literal */
         reader.onloadend = (e) => {
             let filecontent = reader.result.toString();
             filecontent = filecontent.substring(filecontent.indexOf('base64,') + 7);
-
+            /* tslint:disable:no-string-literal */
             let file = reader['file'];
+            /* tslint:enable:no-string-literal */
             file.filecontent = filecontent;
             responseSubject.next(file);
             responseSubject.complete();
@@ -313,57 +317,4 @@ export class fieldFile extends fieldGeneric {
         }
     }
 
-
-    /**
-     * try to determine the proper file icon
-     */
-    private determineFileIcon() {
-        let filetype = this.model.getField('file_mime_type');
-        if (filetype) {
-            let fileTypeArray = filetype.split("/");
-            // check the application
-            switch (fileTypeArray[0]) {
-                case "image":
-                    return "image";
-                case "text":
-                    switch (fileTypeArray[1]) {
-                        case 'html':
-                            return 'html';
-                        default:
-                            return "txt";
-                    }
-                case "audio":
-                    return "audio";
-                case "video":
-                    return "video";
-                default:
-                    break;
-            }
-
-            // check the type
-            switch (fileTypeArray[1]) {
-                case "xml":
-                    return "xml";
-                case "pdf":
-                    return "pdf";
-                case "vnd.ms-excel":
-                case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                    return "excel";
-                case "vnd.openxmlformats-officedocument.wordprocessingml.document":
-                case "vnd.oasis.opendocument.text":
-                    return "word";
-                case "vnd.oasis.opendocument.presentation":
-                case "vnd.openxmlformats-officedocument.presentationml.presentation":
-                    return "ppt";
-                case "x-zip-compressed":
-                    return "zip";
-                case "x-msdownload":
-                    return "exe";
-                default:
-                    break;
-            }
-        }
-
-        return "unknown";
-    }
 }

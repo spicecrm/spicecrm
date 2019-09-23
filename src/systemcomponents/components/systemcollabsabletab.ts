@@ -37,6 +37,7 @@ export class SystemCollabsableTab {
 
     @Input() private expanded: boolean = true;
     @Input() private title: string = '';
+    @Input() private moduleicon: string = '';
     @Input() private tabtitle: string = '';
 
     constructor(private language: language) {

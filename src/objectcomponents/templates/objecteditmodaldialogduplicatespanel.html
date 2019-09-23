@@ -1,11 +1,5 @@
-<!--div class="slds-card">
-    <ul class="slds-accordion">
-        <object-edit-modal-dialog-duplicates-panel-item *ngFor="let duplicate of model.duplicates" [modelProvider]="{module:model.module, data:duplicate}" [fieldset]="fieldset"></object-edit-modal-dialog-duplicates-panel-item>
-    </ul>
-</div-->
-
 <div class="slds-card">
-    <div class="slds-card__header slds-p-around--small slds-theme--warning slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
+    <div class="slds-card__header slds-p-around--small slds-theme--info slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
         <h2 class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{model.duplicates.length}})</h2>
         <button class="slds-button slds-button--icon slds-button--icon-border-filled" (click)="hidePanel()"><system-button-icon icon="close"></system-button-icon></button>
     </div>

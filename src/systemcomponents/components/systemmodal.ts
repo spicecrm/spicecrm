@@ -45,7 +45,7 @@ export class SystemModal {
     /**
      * the size of the modal tobe rendered
      */
-    @Input() private size: 'small'|'medium'|'large' = 'medium';
+    @Input() private size: 'prompt'|'small'|'medium'|'large' = 'medium';
 
     /**
      * additonal classes that are put in and are rendered with the modal

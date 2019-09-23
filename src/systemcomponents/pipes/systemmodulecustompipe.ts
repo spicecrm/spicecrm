@@ -3,7 +3,10 @@
  */
 import {Pipe} from '@angular/core';
 
-@Pipe({name: 'systemmodulecustompipe'})
+@Pipe({
+    name: 'systemmodulecustompipe',
+    pure: false
+})
 export class SystemModuleCustomPipe {
     public transform(values, module) {
         let retValues = [];

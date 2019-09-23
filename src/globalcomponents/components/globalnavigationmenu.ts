@@ -2,10 +2,8 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef
+    AfterViewInit, Component, ViewChild, ViewContainerRef, ElementRef
 } from '@angular/core';
-import {MenuService} from '../services/menu.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {navigation} from '../../services/navigation.service';
@@ -13,30 +11,58 @@ import {navigation} from '../../services/navigation.service';
 @Component({
     selector: 'global-navigation-menu',
     templateUrl: './src/globalcomponents/templates/globalnavigationmenu.html',
-    providers: [MenuService],
     host: {
         '(window:resize)': 'handleResize()'
     }
 })
 export class GlobalNavigationMenu implements AfterViewInit {
+    /**
+     * a reference to the container with the menu items
+     */
     @ViewChild('menucontainer', {read: ViewContainerRef, static: true}) private menucontainer: ViewContainerRef;
+
+    /**
+     * a referenmce to the container with the m,ore items
+     */
     @ViewChild('morecontainer', {read: ViewContainerRef, static: true}) private morecontainer: ViewContainerRef;
+
+    /**
+     * the refgerence to the more item once the more component has been rendered
+     */
     private moreComponentRef: any = undefined;
+
+    /**
+     * the menu items derived from the role
+     */
     private menuItems: any[] = [];
 
+    /**
+     * the rendered menu items
+     */
     private renderedItems: any[] = [];
+
+    /**
+     * the rendered more items
+     */
     private moreItems: any[] = [];
 
+    /**
+     * inidcvates that an item is moved to the active state
+     */
     private movingActive: boolean = false;
+
+    /**
+     * indicates that we are in teh rendering and calculation process
+     */
     private rendering: boolean = false;
 
 
-    // timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
+    /**
+     * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
+     */
     private resizeTimeOut: any = undefined;
 
-    constructor(private menuService: MenuService, private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
-        // menuService.loadModules();
-
+    constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -132,7 +158,7 @@ export class GlobalNavigationMenu implements AfterViewInit {
             this.renderedItems.push({
                 module,
                 componentRef
-            })
+            });
         });
     }
 

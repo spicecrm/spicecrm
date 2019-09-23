@@ -9,7 +9,7 @@ import {
     EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy,
+    OnDestroy, OnInit, Output,
     Renderer2,
     ViewChild,
     ViewContainerRef
@@ -35,7 +35,7 @@ import {metadata} from "../../services/metadata.service";
         }, systemrichtextservice
     ]
 })
-export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
+export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAccessor {
 
     @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) private htmlEditor: ViewContainerRef;
 
@@ -46,9 +46,11 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private isActive: boolean = false;
     private clickListener: any;
+    private keydownListener: any;
     private modalOpen: boolean = false;
     public isExpanded: boolean = false;
     public contract: EventEmitter<string> = new EventEmitter<string>();
+    public editorModalSaveSubscriber: any;
 
     private block: string = 'default';
     private fontName: string = 'Tilium Web';
@@ -57,6 +59,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         BLOCKQUOTE: "indent",
         A: "link"
     };
+
+    @Output() private save$: EventEmitter<string> = new EventEmitter<string>();
 
     private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
@@ -77,9 +81,16 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {};
     }
 
+    public ngOnInit() {
+        this.handleKeyboardShortcuts();
+    }
+
     public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
+        }
+        if (this.keydownListener) {
+            this.keydownListener();
         }
     }
 
@@ -209,6 +220,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         this.isExpanded = !this.isExpanded;
         if (this.isExpanded) {
             this.modal.openModal('SystemRichTextEditorModal').subscribe(componentRef => {
+                this.editorModalSaveSubscriber = componentRef.instance.save$
+                    .subscribe(content => this.save$.emit(content));
                 componentRef.instance.content = this._html;
                 componentRef.instance.contract
                     .pipe(take(1))
@@ -217,6 +230,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                         this.htmlEditor.element.nativeElement.focus();
                         this.writeValue(html);
                         this.onChange(html);
+                        if (this.editorModalSaveSubscriber) this.editorModalSaveSubscriber.unsubscribe();
                     });
             });
         } else {
@@ -396,5 +410,14 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
             let text = (e.originalEvent || e).clipboardData.getData('text/plain');
             document.execCommand("insertHTML", false, this.encodeHtml(text));
         }
+    }
+
+    private handleKeyboardShortcuts() {
+        this.keydownListener = this.renderer.listen('document', 'keydown', (e) => {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() == 's') {
+                e.preventDefault();
+                this.save$.emit(this._html);
+            }
+        });
     }
 }

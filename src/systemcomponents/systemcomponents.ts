@@ -4,6 +4,7 @@
 import {
     NgModule
 } from "@angular/core";
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
@@ -29,7 +30,10 @@ import /*embed*/ {SystemButtonCustomIcon} from "./components/systembuttoncustomi
 import /*embed*/ {SystemButtonGroup} from "./components/systembuttongroup";
 import /*embed*/ {SystemButtonIcon} from "./components/systembuttonicon";
 import /*embed*/ {SystemCaptureImage} from "./components/systemcaptureimage";
-import /*embed*/ {SystemCard, SystemCardBody, SystemCardFooter, SystemCardHeaderTitle} from "./components/card";
+import /*embed*/ {SystemCard} from "./components/systemcard";
+import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
+import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
+import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
@@ -40,6 +44,7 @@ import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
+import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemIcon} from "./components/systemicon";
@@ -60,6 +65,7 @@ import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
+import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
@@ -106,15 +112,14 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
-
-import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
-import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
+import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 
 @NgModule({
     imports: [
         DirectivesModule,
         CommonModule,
-        FormsModule
+        FormsModule,
+        DragDropModule
     ],
     declarations: [
         PackageLoader,
@@ -134,7 +139,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
-        SystemCardHeaderTitle,
+        SystemCardHeader,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -146,6 +151,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemCustomIcon,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
+        SystemDynamicRouteInterceptor,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionGroup,
         SystemGooglePlacesAutocomplete,
@@ -169,6 +175,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
+        SystemInputBackendMethod,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -209,8 +216,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemViewContainer,
         SystemIconHelpText,
         SystemMultipleSelect,
-        SystemModuleTree,
-        SystemModuleTreeItem
+        SystemSelectUOM
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -226,7 +232,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
-        SystemCardHeaderTitle,
+        SystemCardHeader,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -257,6 +263,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
+        SystemInputBackendMethod,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,
@@ -289,7 +296,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression,
-        SystemModuleTree
+        SystemSelectUOM
     ]
 })
 export class SystemComponents {
