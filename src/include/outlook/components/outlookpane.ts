@@ -9,6 +9,9 @@ import {session} from "../../../services/session.service";
 
 declare var Office: any;
 
+/**
+ * Main container for the SpiceCRM Outlook add-in.
+ */
 @Component({
     selector: 'outlook-pane',
     templateUrl: './src/include/outlook/templates/outlookpane.html'
@@ -19,9 +22,11 @@ export class OutlookPane implements OnInit {
         private configuration: OutlookConfiguration,
         private groupware: GroupwareService,
         private session: session
-    ) {
-    }
+    ) {}
 
+    /**
+     * Sets the ID of the currently selected email.
+     */
     public ngOnInit(): void {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
     }
