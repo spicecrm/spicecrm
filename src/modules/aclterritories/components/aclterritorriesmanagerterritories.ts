@@ -53,7 +53,7 @@ export class ACLTerritorriesManagerTerritories {
 
         this.backend.getRequest('spiceaclterritories/core/territories', {
             searchterm: this.searchterm,
-            territortype_id: this.activeType
+            territorytype_id: this.activeType
         }).subscribe(territories => {
             this.territorieslist = territories;
             this.loading = false;

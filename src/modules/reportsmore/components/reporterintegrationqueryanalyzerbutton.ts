@@ -1,0 +1,39 @@
+/**
+ * @module ModuleReportsMore
+ */
+import {Component} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
+import {language} from '../../../services/language.service';
+
+import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
+
+@Component({
+    selector: 'reporter-integration-queryanalyzer-button',
+    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzerbutton.html'
+})
+export class ReporterIntegrationQueryanalyzerButton {
+
+    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private reporterconfig: reporterconfig) {
+    }
+
+    private showModal() {
+
+        let whereConditions: any[] = [];
+        for (let userFilter of this.reporterconfig.userFilters) {
+            whereConditions.push({
+                fieldid: userFilter.fieldid,
+                operator: userFilter.operator,
+                value: userFilter.value,
+                valuekey: userFilter.valuekey,
+                valueto: userFilter.valueto,
+                valuetokey: userFilter.valuetokey
+            })
+        }
+        this.modal.openModal('ReporterIntegrationQueryanalyzerModal').subscribe(popup => {
+            popup.instance.model = this.model;
+            popup.instance.whereConditions = whereConditions;
+        })
+    }
+}

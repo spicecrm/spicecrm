@@ -6,7 +6,6 @@ import {metadata} from "./metadata.service";
 import {Observable, Subject, of} from "rxjs";
 import {footer} from "./footer.service";
 import {toast} from "./toast.service";
-import {modelutilities} from "./modelutilities.service";
 
 /**
  * handles the modals in the system
@@ -24,7 +23,7 @@ export class modal {
      */
     private modalsObject = {};
 
-    constructor(private metadata: metadata, private footer: footer, private toast: toast, private utils: modelutilities) {
+    constructor( private metadata: metadata, private footer: footer, private toast: toast ) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
                 event.stopImmediatePropagation();
@@ -44,7 +43,7 @@ export class modal {
         if (this.metadata.checkComponent(componentName)) {
             let retSubjectXY = new Subject<any>();
             this.metadata.addComponentDirect("SystemModalWrapper", this.footer.modalcontainer).subscribe(wrapperComponent => {
-                let newModal = <any> {};
+                let newModal: any = {};
                 newModal.wrapper = wrapperComponent;
                 wrapperComponent.instance.escKey = escKey;
                 this.modalsArray.push(newModal);
@@ -186,8 +185,8 @@ export class modal {
      * @param defaultvalue
      * @param theme
      */
-    public input(text: string, headertext: string = null, defaultvalue: string = null, theme: string = null): Observable<any> {
-        return this.prompt('input', text, headertext, defaultvalue, theme);
+    public input(text: string, headertext: string = null, theme: string = null, defaultvalue: string = null ): Observable<any> {
+        return this.prompt('input', text, headertext, theme, defaultvalue );
     }
 
     /**

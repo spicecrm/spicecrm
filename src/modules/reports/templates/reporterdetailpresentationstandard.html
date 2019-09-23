@@ -1,17 +1,12 @@
-<div style="width: 100%;height: 100%;">
+<div tobottom>
     <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout">
         <thead>
         <tr class="slds-text-title--caps">
             <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
-                <div class="slds-truncate slds-p-vertical--xx-small">{{field.name}}</div>
-                <div class="slds-resizable" (mousedown)="onMouseDown(field.fieldid, $event)">
-                    <label class="slds-assistive-text">Name column width</label>
-                    <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text"
-                           tabindex="0"/>
-                    <span class="slds-resizable__handle">
-                        <span class="slds-resizable__divider"></span>
-                      </span>
-                </div>
+                <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
+                    <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
+                    <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                </a>
             </th>
         </tr>
         </thead>
@@ -25,7 +20,6 @@
             <tbody>
             <tr *ngFor="let record of getRecords()">
                 <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
-                    <!--div class="slds-truncate">{{record[field.fieldid]}}</div-->
                     <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
                 </td>
             </tr>
@@ -33,8 +27,7 @@
         </table>
     </div>
     <div #tablefooter>
-        <div *ngIf="showFooter"
-             class="slds-docked-form-footer slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+        <div *ngIf="showFooter" class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
             <div class="slds-p-horizontal--medium">
                 {{displayRecords}} of {{totalRecords}}
             </div>

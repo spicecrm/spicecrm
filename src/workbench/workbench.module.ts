@@ -75,6 +75,7 @@ import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenc
 import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
 import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
 import /*embed*/ {WorkbenchConfigOptionLabel} from "./components/workbenchconfigoptionlabel";
+import /*embed*/ {WorkbenchConfigOptionMethod} from "./components/workbenchconfigoptionmethod";
 import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
 import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
 import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
@@ -130,6 +131,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionActionset,
         WorkbenchConfigOptionBoolean,
         WorkbenchConfigOptionLabel,
+        WorkbenchConfigOptionMethod,
         ComponentsetManagerAddDialog,
         ComponentsetManagerEditDialog,
         ComponentConfigManager,

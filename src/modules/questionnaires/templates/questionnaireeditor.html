@@ -1,12 +1,33 @@
 <div class="slds-grid">
 
-    <div tobottom class="slds-size--1-of-2 slds-p-horizontal--medium slds-m-bottom--medium">
-        <div *ngFor="let questionset of questionsets; let i=index; trackBy: trackBy" class="slds-m-bottom--medium">
-            <questionset-manager [questionset]="questionset" (positionChanged)="sortQuestionsets()" (deleted)="removeQuestionset(i)"></questionset-manager>
+    <div class="slds-size--1-of-2 slds-m-left--x-small">
+
+        <div class="slds-grid slds-grid--align-spread slds-m-bottom--medium">
+            <questionnaire-editor-questionset-add [disabled]="changeOrderMode" [questionnaire]="this.model" (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add>
+            <button class="slds-button slds-button--neutral slds-button--brand slds-col--bump-left" *ngIf="changeOrderMode" (click)="changeOrderSave()">{{lang.getLabel('LBL_SAVE_ORDER')}}</button>
+            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" *ngIf="changeOrderMode" (click)="changeOrderCancel()" title="{{lang.getLabel('LBL_CANCEL')}}"><system-button-icon [icon]="'close'" title="{{lang.getLabel('LBL_CANCEL')}}"></system-button-icon></button>
+            <button class="slds-button slds-button--neutral" *ngIf="!changeOrderMode && questionsets.length" (click)="changeOrderStart()" [disabled]="questionsets.length < 2">{{lang.getLabel('LBL_CHANGE_ORDER')}}</button>
         </div>
-        <div class="">
-            <questionnaire-editor-questionset-add [questionnaire]="this.model" (newQuestionset)="addQuestionset($event)"></questionnaire-editor-questionset-add>
+
+        <div tobottom class="slds-p-right--medium slds-m-bottom--medium">
+            <div *ngFor="let questionset of questionsets; let i=index; trackBy:trackBy; let isLast = last" [class.slds-m-bottom--medium]="!isLast" class="slds-grid">
+
+                <questionset-manager [questionset]="questionset" (changed)="changeQuestionset($event,i)" (deleted)="removeQuestionset(i)" [disabled]="changeOrderMode" style="width:100%"></questionset-manager>
+
+                <div *ngIf="changeOrderMode" class="slds-p-left--xx-small" style="white-space:nowrap">
+                    <button class="slds-button slds-button_icon slds-button_icon-border slds-button--icon-border-filled" (click)="questionsetUp(i)" title="{{lang.getLabel('LBL_HOCH')}}" [disabled]="i == 0">
+                        <system-button-icon [icon]="'arrowup'"></system-button-icon>
+                        <span class="slds-assistive-text">{{lang.getLabel('LBL_UP')}}</span>
+                    </button>
+                    <button class="slds-button slds-button_icon slds-button_icon-border slds-button--icon-border-filled" (click)="questionsetDown(i)" title="{{lang.getLabel('LBL_DOWN')}}" [disabled]="i >= questionsets.length-1">
+                        <system-button-icon [icon]="'arrowdown'"></system-button-icon>
+                        <span class="slds-assistive-text">{{lang.getLabel('LBL_DOWN')}}</span>
+                    </button>
+                </div>
+
+            </div>
         </div>
+
     </div>
 
     <div class="slds-size--1-of-2 slds-p-horizontal--medium">
@@ -15,7 +36,7 @@
             <div><button class="slds-button slds-button_icon" (click)="reloadPreview()"><system-button-icon [icon]="'refresh'"></system-button-icon></button></div>
         </div>
         <div tobottom class="slds-m-bottom--medium">
-            <questionnaire-render *ngIf="!isLoading" [questionnaire]="this.model.data" [inModal]="false" [showQuestionnaireTitle]="false" class="slds-p-right--medium" style="display:block"></questionnaire-render>
+            <questionnaire-render *ngIf="!isLoading" [questionnaire]="this.model.data" [inModal]="false" [showQuestionnaireTitle]="false" [previewMode]="true" class="slds-p-right--medium" style="display:block"></questionnaire-render>
         </div>
     </div>
 

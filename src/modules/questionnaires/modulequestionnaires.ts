@@ -16,8 +16,10 @@ import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanager
 import /*embed*/ {QuestionsManagerAddModal} from './components/questionsmanageraddmodal';
 import /*embed*/ {QuestionsetTypeParameters} from './components/questionsettypeparameters';
 import /*embed*/ {QuestionsetTypeParametersRating} from './components/questionsettypeparametersrating';
+import /*embed*/ {QuestionsetTypeParametersNPS} from './components/questionsettypeparametersnps';
 import /*embed*/ {QuestionsetTypeParametersText} from './components/questionsettypeparameterstext';
 import /*embed*/ {QuestionsManagerEditRating} from './components/questionsmanagereditrating';
+import /*embed*/ {QuestionsManagerEditNPS} from './components/questionsmanagereditnps';
 import /*embed*/ {QuestionsManagerEditBinary} from "./components/questionsmanagereditbinary";
 import /*embed*/ {QuestionsManagerEditBinaryOption} from "./components/questionsmanagereditbinaryoption";
 import /*embed*/ {QuestionsManagerEditSingle} from "./components/questionsmanagereditsingle";
@@ -32,6 +34,7 @@ import /*embed*/ {QuestionsetPreviewButton} from './components/questionsetprevie
 import /*embed*/ {QuestionsetPreview} from './components/questionsetpreview';
 import /*embed*/ {QuestionsetRender} from './components/questionsetrender';
 import /*embed*/ {QuestionsetRenderRating} from './components/questionsetrenderrating';
+import /*embed*/ {QuestionsetRenderNPS} from './components/questionsetrendernps';
 import /*embed*/ {QuestionsetRenderText} from './components/questionsetrendertext';
 import /*embed*/ {QuestionsetRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOptionsPipe} from './components/questionsetrenderist';
 import /*embed*/ {QuestionsetCategoryPool} from './components/questionsetcategorypool';
@@ -46,6 +49,7 @@ import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questio
 import /*embed*/ {QuestionnaireEditor} from './components/questionnaireeditor';
 import /*embed*/ {QuestionnaireEditorQuestionsetAdd} from './components/questionnaireeditorquestionsetadd';
 import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
+import /*embed*/ { QuestionnaireResults } from './components/questionnaireresults';
 
 @NgModule({
     imports: [
@@ -63,8 +67,10 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
         QuestionsManagerAddModal,
         QuestionsetTypeParameters,
         QuestionsetTypeParametersRating,
+        QuestionsetTypeParametersNPS,
         QuestionsetTypeParametersText,
         QuestionsManagerEditRating,
+        QuestionsManagerEditNPS,
         QuestionsManagerEditBinary,
         QuestionsManagerEditBinaryOption,
         QuestionsManagerEditSingle,
@@ -78,6 +84,7 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
         QuestionsetRender,
         QuestionsetRenderIST,
         QuestionsetRenderRating,
+        QuestionsetRenderNPS,
         QuestionsetRenderText,
         QuestionsetRenderBinarySingleMulti,
         QuestionTypeISTTextPipe,
@@ -95,7 +102,8 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
         QuestionnaireEvaluationBar,
         QuestionnaireEvaluationSpiderweb,
         QuestionnaireInterpretationCategories,
-        QuestionnaireInterpretationAssignment
+        QuestionnaireInterpretationAssignment,
+        QuestionnaireResults
     ]
 })
 export class ModuleQuestionnaires {}

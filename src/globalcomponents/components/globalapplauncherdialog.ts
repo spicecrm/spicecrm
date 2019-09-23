@@ -78,7 +78,7 @@ export class GlobalAppLauncherDialog {
 
         for (let module of this.metadata.getModules()) {
             let moduleData = this.metadata.getModuleDefs(module);
-            if (moduleData.visible && this.metadata.checkModuleAcl(module, 'list') && (this.searchTerm === '' || (this.searchTerm !== '' && this.language.getModuleName(module) && this.language.getModuleName(module).toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0))) {
+            if (moduleData.visible && (!moduleData.visibleaclaction || (moduleData.visibleaclaction && this.metadata.checkModuleAcl(module, moduleData.visibleaclaction))) && this.metadata.checkModuleAcl(module, 'list') && (this.searchTerm === '' || (this.searchTerm !== '' && this.language.getModuleName(module) && this.language.getModuleName(module).toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0))) {
                 menuItems.push(module);
             }
         }

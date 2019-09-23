@@ -26,7 +26,7 @@ import /*embed*/ {MailboxEmailToLeadModal} from "./components/mailboxemailtolead
 import /*embed*/ {MailboxEmailToLeadEmailText} from "./components/mailboxemailtoleademailtext";
 import /*embed*/ { MailboxesDashlet } from "./components/mailboxesdashlet";
 import /*embed*/ {MailboxManagerTextMessages} from "./components/mailboxmanagertextmessages";
-import {MailboxManagerTextMessage} from "./components/mailboxmanagertextmessage";
+import /*embed*/  {MailboxManagerTextMessage} from "./components/mailboxmanagertextmessage";
 
 @NgModule({
     declarations: [

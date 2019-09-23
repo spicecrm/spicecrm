@@ -18,6 +18,7 @@ export class QuestionsManager implements OnInit {
     @Input() public noTitle = false;
     @Input() public showQuestionsetButtons = false;
     @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
+    @Input('disabled') public componentDisabled = false;
 
     private questions: any[] = [];
     private questionsBackup: any[] = [];
@@ -91,7 +92,7 @@ export class QuestionsManager implements OnInit {
     private handleFormResponse( event ): void {
         if (event !== false) {
             if ( this.currentQuestionId === '' ) {
-                this.questions.push( event )
+                this.questions.push( event );
             } else {
                 this.questions.some( question => {
                    if ( question.id == event.id ) {
@@ -111,7 +112,7 @@ export class QuestionsManager implements OnInit {
         // Changing the order should be also cancelable by esc key:
         const this2 = this; // we need 'this' in the anonymous function 'handler'
         window.addEventListener('keyup', function handler(event) {
-            if ( event.keyCode === 27 ) {
+            if ( this2.changeOrderMode && event.keyCode === 27 ) {
                 event.stopImmediatePropagation();
                 this2.changeOrderCancel();
                 this.removeEventListener ('click', handler );
@@ -121,7 +122,6 @@ export class QuestionsManager implements OnInit {
 
     private changeOrderCancel(): void {
         this.questions = this.questionsBackup;
-        this.questionDown(5);
         this.changeOrderMode = false;
     }
     private changeOrderSave(): void {

@@ -1,15 +1,16 @@
 /**
 * @module services
 */
-import {Injectable, Inject, Injector, NgZone, EventEmitter,  isDevMode,  ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy} from '@angular/core';
+import {Injectable, Inject, Injector, NgZone, EventEmitter,  isDevMode,  ComponentFactoryResolver, NgModuleFactoryLoader, SystemJsNgModuleLoader, Compiler, OnDestroy, ApplicationRef, Optional} from '@angular/core';
 import {Title, DomSanitizer} from '@angular/platform-browser';
 import {CanActivate}    from '@angular/router';
+// import {GlobalHeader,GlobalFooter} from '../globalcomponents/globalcomponents';
 /**
 * @ignore
 */
 declare var moment: any;
 import {Router, Route} from '@angular/router';
-import {Subject, Observable, of} from 'rxjs';
+import {Subject, BehaviorSubject, Observable, of} from 'rxjs';
 declare var System: any;
 declare var SystemJS: any;
 declare var _: any ;

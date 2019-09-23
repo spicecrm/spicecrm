@@ -25,7 +25,7 @@ export class ProductVariantsAttributesTable implements OnChanges {
         return this.attributes
             .filter(attr => this.displayAttribute(attr) && (this.displaygroup == 'all' || (this.displaygroup != 'all' && attr.attr_usagegrp == this.displaygroup)))
             .sort((a, b) => {
-                return a.sort_sequence > b.sort_sequence ? 1 : -1;
+                return +a.sort_sequence > +b.sort_sequence ? 1 : -1;
             });
     }
 

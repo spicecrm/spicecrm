@@ -1,0 +1,17 @@
+<div class="slds-card__header slds-grid">
+    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__figure">
+            <system-icon [module]="module" [icon]="icon"></system-icon>
+        </div>
+        <div class="slds-media__body">
+            <h2 class="slds-card__header-title">
+                <span class="slds-text-heading_small">
+                    {{cardtitel}}
+                </span>
+            </h2>
+        </div>
+        <div class="slds-no-flex">
+            <ng-content></ng-content>
+        </div>
+    </header>
+</div>

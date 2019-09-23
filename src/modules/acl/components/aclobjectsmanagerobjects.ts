@@ -49,7 +49,7 @@ export class ACLObjectsManagerObjects {
 
     }
 
-    keyUp(_e) {
+    private keyUp(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.getObjects();
@@ -57,12 +57,12 @@ export class ACLObjectsManagerObjects {
         }
     }
 
-    getObjects() {
+    private getObjects() {
         this.loading = true;
         this.aclobjects = [];
-        
+
         let params = {
-            spiceacltype_id: this.activeTypeId,
+            sysmodule_id: this.activeTypeId,
             searchterm: this.searchterm
         }
 
@@ -83,11 +83,11 @@ export class ACLObjectsManagerObjects {
         }
     }
 
-    getType(type){
+    private getType(type) {
         return this.language.getFieldDisplayOptionValue('SpiceACLObjects', 'spiceaclobjecttype', type);
     }
 
-    selectType(event) {
+    private selectType(event) {
         this.getObjects();
 
         // reset the selected object
@@ -98,28 +98,28 @@ export class ACLObjectsManagerObjects {
         this.typeselected.emit(this.activeTypeId);
     }
 
-    addObject(){
+    private addObject() {
         this.modal.openModal('ACLObjectsManagerAddObjectModal').subscribe(modalRef => {
-            modalRef.instance.spiceacltype_id = this.activeTypeId;
+            modalRef.instance.sysmodule_id = this.activeTypeId;
             modalRef.instance.newObjectData.subscribe(modelData => {
-                if(modelData){
+                if (modelData) {
                     this.aclobjects.push(modelData);
                     this.selectObject(modelData);
                 }
-            })
-        })
+            });
+        });
     }
 
-    selectObject(aclobject) {
+    private selectObject(aclobject) {
         this.activeObjectId = aclobject.id;
 
         this.objectselected.emit(this.activeObjectId);
     }
 
-    activateObject(objectid){
-        this.backend.postRequest('spiceaclobjects/activation/'+objectid).subscribe(response => {
+    private activateObject(objectid) {
+        this.backend.postRequest('spiceaclobjects/activation/' + objectid).subscribe(response => {
             this.aclobjects.some(object => {
-                if(object.id == objectid){
+                if (object.id == objectid) {
                     object.status = 'r';
                     return true;
                 }
@@ -127,10 +127,10 @@ export class ACLObjectsManagerObjects {
         })
     }
 
-    deactivateObject(objectid){
-        this.backend.deleteRequest('spiceaclobjects/activation/'+objectid).subscribe(response => {
+    private deactivateObject(objectid) {
+        this.backend.deleteRequest('spiceaclobjects/activation/' + objectid).subscribe(response => {
             this.aclobjects.some(object => {
-                if(object.id == objectid){
+                if (object.id == objectid) {
                     object.status = 'd';
                     return true;
                 }

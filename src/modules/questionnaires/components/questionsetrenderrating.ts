@@ -50,7 +50,6 @@ export class QuestionsetRenderRating implements OnInit {
     }
 
     public ngOnInit() {
-
         // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
         // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
         if (this.questionset.questiontypeparameter !== '') {
@@ -90,8 +89,9 @@ export class QuestionsetRenderRating implements OnInit {
             this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
                 data => {
                     for( let question of this.questions ) {
+                        if ( !this.answers[question.id] ) this.answers[question.id] = [];
                         if( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
-                        this.questionsMeta[question.id].readonly = false;
+                        this.questionsMeta[question.id].tempReadonly = false;
                     }
                     this.determineNumOfFinishedQuestions();
                 } );
@@ -100,9 +100,9 @@ export class QuestionsetRenderRating implements OnInit {
 
     }
 
-    private setFieldsOfQuestion( questionId: string, answervalues: any ) {
-        for (let answer of this.answers.questionId) {
-            answer.value = ( answervalues[answer.optionId] || false );
+    private setFieldsOfQuestion( questionId: string, answerValues: any ): void {
+        for (let answer of this.answers[questionId]) {
+            answer.value = ( answerValues[answer.optionId] || false );
         }
     }
 
@@ -116,42 +116,42 @@ export class QuestionsetRenderRating implements OnInit {
 
         // Are the input fields of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input fields are disabled.
-        if ( this.questionsMeta[questionId].readonly ) return false;
+        if ( this.questionsMeta[questionId].tempReadonly ) return false;
 
         // At the beginning disable the input field(s) of the question. They will stay disabled until server response at the end.
-        this.questionsMeta[questionId].readonly = true;
+        this.questionsMeta[questionId].tempReadonly = true;
 
         // Radio button already set? --> Nothing to do.
-        if ( this.answers.questionId[answerIndex].value ) {
-            this.questionsMeta[questionId].readonly = false;
+        if ( this.answers[questionId][answerIndex].value ) {
+            this.questionsMeta[questionId].tempReadonly = false;
             return;
         }
 
-        this.backupForNetworkError = JSON.stringify( this.answers.questionId );
+        this.backupForNetworkError = JSON.stringify( this.answers[questionId] );
 
         // Set the (other) answers to false.
-        this.answers.questionId.forEach( ( el, index ) => this.answers.questionId[index].value = false );
+        this.answers[questionId].forEach( ( el, index ) => this.answers[questionId][index].value = false );
 
         // Store the answer (true)
-        this.answers.questionId[answerIndex].value = true;
+        this.answers[questionId][answerIndex].value = true;
 
         // The data for the server request with the answer values (true or false).
         let requestData = {};
-        for (let i = 0; i < this.answers.questionId.length; i++) {
-            requestData[this.options[questionId][i].id] = this.answers.questionId[i].value;
+        for (let i = 0; i < this.answers[questionId].length; i++) {
+            requestData[this.options[questionId][i].id] = this.answers[questionId][i].value;
         }
 
         // Do the request to the server to store the current answer state of the whole question.
         this.backend.postRequest('module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData ).subscribe(
             data => {
                 this.setFieldsOfQuestion(questionId, data);
-                this.questionsMeta[questionId].readonly = false;
+                this.questionsMeta[questionId].tempReadonly = false;
                 this.determineNumOfFinishedQuestions();
             },
             error => {
-                this.questionsMeta[questionId].readonly = false;
+                this.questionsMeta[questionId].tempReadonly = false;
                 this.toast.sendToast( this.language.getLabel('ERR_NETWORK_SAVING'),'error', error.message+'. '+ ( error.error.error.message ? error.error.error.message:'' ),false );
-                this.answers.questionId = JSON.parse( this.backupForNetworkError );
+                this.answers[questionId] = JSON.parse( this.backupForNetworkError );
             }
         );
 

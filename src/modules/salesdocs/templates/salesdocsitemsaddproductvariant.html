@@ -1,0 +1,9 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_ADD')}} {{language.getLabel('LBL_PRODUCTVARIANT')}}</system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div #productselector></div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+    </system-modal-footer>
+</system-modal>

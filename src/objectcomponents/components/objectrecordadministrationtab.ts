@@ -7,6 +7,7 @@ import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
+import {territories} from '../../services/territories.service';
 
 @Component({
     selector: 'object-record-details-tab',
@@ -16,7 +17,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
 
     private componentconfig: any = {};
     private expanded: boolean = true;
-    private territorymanaged: boolean = false;
+    // private territorymanaged: boolean = false;
 
     private fields: any = {
         spiceacl_primary_territory: {
@@ -41,7 +42,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
         }
     };
 
-    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language) {
+    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language, private territories: territories) {
     }
 
     public ngOnInit() {
@@ -49,14 +50,22 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.expanded = false;
         }
 
+        /*
         let fields = this.metadata.getModuleFields(this.model.module)
         {
-            if (fields.spiceacl_primary_territory){
+            if (fields.spiceacl_primary_territory) {
                 this.territorymanaged = true;
             }
         }
+        */
     }
 
+    /**
+     * a simple getter that returns true if the module is territory managed
+     */
+    get territorymanaged() {
+        return this.territories.checkModuleManaged(this.model.module);
+    }
 
     get hidden() {
         return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));

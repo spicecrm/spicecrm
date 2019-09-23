@@ -28,7 +28,7 @@ export class QuestionsManagerEditIst implements OnInit {
 
     public ngOnInit(): void {
         if (this.model.isLoading) {
-            this.model.data$.subscribe((data,data2) => this.buildEntries() );
+            this.model.data$.subscribe((data) => this.buildEntries() );
         } else this.buildEntries();
     }
 

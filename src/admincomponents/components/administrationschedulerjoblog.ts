@@ -12,12 +12,12 @@ import {userpreferences} from "../../services/userpreferences.service";
 import {Subscription} from "rxjs";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment;
 
 @Component({
@@ -26,9 +26,13 @@ declare var moment;
     providers: [relatedmodels]
 })
 export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
+
     public schedulerLogs: any[] = [];
-    private isLoading: boolean = false;
+    private isLoading = false;
+    private isReLoading = false;
     private subscription: Subscription = new Subscription();
+    private totalLimit: number;
+    private totalLines: number;
 
     constructor(public model: model,
                 public language: language,
@@ -39,47 +43,78 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
                 public backend: backend) {
         this.subscription = this.broadcast.message$.subscribe(res => {
             if (res.messagetype == 'scheduler.run') {
-                this.getData();
+                this.reloadData();
             }
         });
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.getData();
     }
 
-    public getData() {
+    private getData() {
         let params = {
-            start: 0,
-            limit: 10
+            sort: {
+                sortfield: 'execute_time',
+                sortdirection: 'DESC'
+            },
+            offset: 0,
+            limit: 10,
+            getcount: true
         };
+        this.totalLimit = 10;
         this.isLoading = true;
         this.backend.getRequest("module/Schedulers/" + this.model.id + "/related/schedulers_times", params)
             .subscribe(
                 (response: any) => {
-                    this.schedulerLogs = _.values(response);
-                    this.schedulerLogs.sort((a, b) => {
-                        return a.execute_time > b.execute_time ? -1 : 0;
-                    });
+                    this.schedulerLogs = _.values(response.list);
+                    this.sortList();
+                    this.totalLines = response.count;
                     this.isLoading = false;
                 }, err => this.isLoading = false);
     }
 
-    public getMoreData() {
+    private getMoreData() {
         let params = {
-            start: this.schedulerLogs.length,
-            limit: 10
+            sort: {
+                sortfield: 'execute_time',
+                sortdirection: 'DESC'
+            },
+            offset: this.schedulerLogs.length,
+            limit: 10,
+            getcount: true
         };
+        this.totalLimit += 10;
         this.isLoading = true;
         this.backend.getRequest("module/Schedulers/" + this.model.id + "/related/schedulers_times", params)
             .subscribe(
                 (response: any) => {
-                    this.schedulerLogs = [...this.schedulerLogs, ..._.values(response)];
-                    this.schedulerLogs.sort((a, b) => {
-                        return a.execute_time > b.execute_time ? -1 : 0;
-                    });
+                    this.schedulerLogs = [...this.schedulerLogs, ..._.values(response.list)];
+                    this.sortList();
+                    this.totalLines = response.count;
                     this.isLoading = false;
                 }, err => this.isLoading = false);
+    }
+
+    private reloadData() {
+        let params = {
+            sort: {
+                sortfield: 'execute_time',
+                sortdirection: 'DESC'
+            },
+            offset: 0,
+            limit: this.totalLimit,
+            getcount: true
+        };
+        this.isLoading = this.isReLoading = true;
+        this.backend.getRequest("module/Schedulers/" + this.model.id + "/related/schedulers_times", params)
+            .subscribe(
+                (response: any) => {
+                    this.schedulerLogs = _.values(response.list);
+                    this.sortList();
+                    this.totalLines = response.count;
+                    this.isLoading = this.isReLoading = false;
+                }, err => this.isLoading = this.isReLoading = false);
     }
 
     public ngOnDestroy() {
@@ -101,7 +136,7 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
         if (!date) {
             return '';
         }
-        date = moment(date).tz(moment.tz.guess());
+        date = moment(date).tz( this.userpreferences.toUse.timezone );
         date.add(date.utcOffset(), "m");
         return date.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
     }
@@ -109,4 +144,9 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
     private trackByFn(index, item) {
         return item.id;
     }
+
+    private sortList() {
+        this.schedulerLogs.sort( ( a, b ) => a.execute_time < b.execute_time ? 1 : a.execute_time > b.execute_time ? -1 : 0 );
+    }
+
 }

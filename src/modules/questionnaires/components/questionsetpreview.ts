@@ -10,7 +10,7 @@ import {language} from '../../../services/language.service';
 })
 export class QuestionsetPreview {
 
-    public questionsetidorobject: any;
+    public questionsetIdOrObject: any;
     private self: any = null;
 
     constructor( private language: language ) {}

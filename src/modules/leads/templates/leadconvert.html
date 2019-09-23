@@ -42,8 +42,8 @@
         <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="nextStep()">{{language.getLabel('LBL_SAVE')}}</button>
 </div>
 <div #contentcontainer class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
-    <lead-convert-contact [lead]="model" [hidden]="currentConvertStep!==0" (contact)="setContact($event)"></lead-convert-contact>
-    <lead-convert-account [lead]="model" [hidden]="currentConvertStep!==1" (account)="setAccount($event)" (selectedaccount)="setSelectedAccount($event)" (createaccount)="setCreateAccount($event)"></lead-convert-account>
+    <lead-convert-account [lead]="model" [hidden]="currentConvertStep!==0" (account)="setAccount($event)" (selectedaccount)="setSelectedAccount($event)" (createaccount)="setCreateAccount($event)"></lead-convert-account>
+    <lead-convert-contact [lead]="model" [hidden]="currentConvertStep!==1" (contact)="setContact($event)"></lead-convert-contact>
     <lead-convert-opportunity [lead]="model" [hidden]="currentConvertStep!==2" (opportunity)="setOpportunity($event)" (createopportunity)="setCreateOpportunity($event)"></lead-convert-opportunity>
 </div>
 <lead-convert-modal *ngIf="showSaveModal" [saveactions]="createSaveActions" (closemodal)="showSaveModal=false"></lead-convert-modal>

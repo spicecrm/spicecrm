@@ -14,8 +14,8 @@ import {Observable} from 'rxjs';
 import {cookie} from './cookie.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 /**
@@ -144,7 +144,7 @@ export class language {
      * ```
      *
      */
-    public getLabel(label: string, module: string = '', length: 'default' | 'long' | 'short' = 'default') {
+    public getLabel(label: string, module: string = '', length: 'default' | 'long' | 'short' = 'default'): string {
         try {
             if (module != '') {
                 if (typeof (this.languagedata.mod) != "undefined" && this.languagedata.mod[module] != undefined && this.languagedata.mod[module][label]) {
@@ -288,6 +288,18 @@ export class language {
             return this.languagedata.applist.moduleList[module];
         } catch (e) {
             return module;
+        }
+    }
+
+    /**
+     * public function that checks if for the module a LBL_SEARCH_{MODULE} LABEL is defined .. if not concatenates LBL_SEARCH and the module name
+     * @param module
+     */
+    public getModuleCombinedLabel(label, module) {
+        if (this.languagedata.applang[label + '_' + module.toUpperCase()]) {
+            return this.getLabel(label + '_' + module.toUpperCase());
+        } else {
+            return this.getLabel(label) + ' ' + this.getModuleName(module);
         }
     }
 
@@ -584,4 +596,54 @@ export class language {
             short: tshort
         };
     }
+
+    /**
+     * Compares two strings, case-insensitive, using the current language selected by the user
+     *
+     * @param a The first string.
+     * @param b The second string.
+     */
+    public compareStrings( a: string, b: string ): number {
+        return a.localeCompare( b, this._currentlanguage.slice( 0, 2 ));
+    }
+
+    /**
+     * Sorts an array of strings.
+     * It compares case-insensitive, using the current language selected by the user.
+     *
+     * @param array The array of strings to sort.
+     */
+    public sortArray( array: string[] ): void {
+        array.sort( ( a, b ) => this.compareStrings( a, b ));
+    }
+
+    /**
+     * Sorts an array of objects, by the given property.
+     * It compares case-insensitive, using the current language selected by the user.
+     *
+     * @param array The array of objects to sort.
+     * @param property The property to be used for sorting.
+     */
+    public sortObjects( array: object[], property ): void {
+        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ));
+    }
+
+    /**
+     * Capitalize the first letter in a string.
+     *
+     * @param string The string.
+     */
+    public ucFirst( string ): string {
+        return string.charAt(0).toLocaleUpperCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    }
+
+    /**
+     * Uncapitalize the first letter in a string.
+     *
+     * @param string The string.
+     */
+    public lcFirst( string ): string {
+        return string.charAt(0).toLocaleLowerCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    }
+
 }

@@ -3,22 +3,37 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
-import {VersionManagerService} from '../../services/versionmanager.service';
+import {FormsModule} from '@angular/forms';
 
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
+import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
-import /*embed*/ {SalesDocsItemsDisplay} from './components/salesdocsitemsdisplay';
-import /*embed*/ {SalesDocsItemsEdit} from './components/salesdocsitemsedit';
+import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
+import /*embed*/ {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
+import /*embed*/ {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
+import /*embed*/ {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
 import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
+import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
+import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
+import /*embed*/ {SalesDocsItemsAddText} from "./components/salesdocsitemsaddtext";
 import /*embed*/ {SalesDocsPrintButton} from './components/salesdocsprintbutton';
-import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from './components/salesdocsitemsparentselector';
-
+import /*embed*/ {fieldSalesdocTypes} from './components/fieldsalesdoctypes';
+import /*embed*/ {fieldSalesdocItemTypes} from './components/fieldsalesdocitemtypes';
+import /*embed*/ {fieldSalesdocTaxCategories} from './components/fieldsalesdoctaxcategories';
+import /*embed*/ {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
+import /*embed*/ {SalesDocsItemsParentSelector} from './components/salesdocsitemsparentselector';
+import /*embed*/ {SalesdocsNewButton} from "./components/salesdocsnewbutton";
+import /*embed*/ {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
+import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
+import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
+import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
+import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components/salesdocsglobalnavigationmenuitemactionnew";
 
 @NgModule({
     imports: [
@@ -28,24 +43,32 @@ import /*embed*/ {SalesDocsItemsParentSelector, SalesDocsItemsParentPipe} from '
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
     ],
     declarations: [
         SalesDocsItemsContainer,
-        SalesDocsItemsDisplay,
-        SalesDocsItemsEdit,
+        SalesDocsItemHeader,
+        SalesDocsItemFooter,
+        SalesDocsItemContainer,
+        SalesDocsItemDetailsContainer,
         SalesDocsItemsAddProduct,
+        SalesDocsItemsAddProductGroup,
+        SalesDocsItemsAddProductVariant,
+        SalesDocsItemsAddText,
         SalesDocsPrintButton,
         SalesDocsItemsParentSelector,
-        SalesDocsItemsParentPipe
+        SalesDocsItemsParentPipe,
+        fieldSalesdocTypes,
+        fieldSalesdocItemTypes,
+        fieldSalesdocTaxCategories,
+        SalesDocsItemsDeletedPipe,
+        SalesdocsNewButton,
+        SalesDocsAddBasics,
+        SalesDocsAddMain,
+        SalesDocsRecordView,
+        SalesDocsItemsAddTypeSelector,
+        SalesDocsGlobalNavigationMenuItemActionNew
     ]
 })
 export class ModuleSalesDocs {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
 }

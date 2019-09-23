@@ -2,10 +2,13 @@
     <h3 *ngIf="_title != ''" class="slds-section__title">
         <button aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">
             <system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
-            <span class="slds-truncate" title="Section Title">{{language.getLabel(_title)}}</span>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-icon *ngIf="moduleicon" [module]="moduleicon" size="x-small"></system-icon>
+                <span class="slds-truncate">{{language.getLabel(_title)}}</span>
+            </div>
         </button>
     </h3>
-    <div [@tabanimation]="expanded">
+    <div [@tabanimation]="expanded" [style.display]="!expanded ? 'none': 'block'">
         <ng-content></ng-content>
     </div>
 </div>

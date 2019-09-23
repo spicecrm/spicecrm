@@ -13,6 +13,7 @@ import { language } from '../../../services/language.service';
 export class QuestionnaireEditorQuestionsetAdd {
 
     @Input() public questionnaire: model;
+    @Input() public disabled = false;
     @Output() public newQuestionset: EventEmitter<any> = new EventEmitter();
 
     constructor( private model: model, private lang: language ) {

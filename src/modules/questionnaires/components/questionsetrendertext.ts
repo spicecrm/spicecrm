@@ -23,7 +23,6 @@ export class QuestionsetRenderText {
     @Input() public imageWidthQuestion = 200;
     @Input() public inModal = true;
     @Input() public noEdit = false;
-    @Input() public options: any = {};
     @Input() public participation_id: string;
     @Input() public previewMode: boolean;
     @Input() public questions: any[] = [];
@@ -65,13 +64,14 @@ export class QuestionsetRenderText {
         }
 
         if ( !this.previewMode ) {
+            for ( let question of this.questions ) this.questionsMeta[question.id] = { tempReadonly: true };
             this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
                 data => {
                     for( let question of this.questions ) {
-                        if( data[question.id] ) this.answers[question.id].text_input = data[question.id].text;
-                        this.questionsMeta[question.id].readonly = false;
+                        if ( data[question.id] ) this.answers[question.id].optionlessAnswerValue = data[question.id].optionlessAnswerValue;
                         this.questionsMeta[question.id].finished = true;
                     }
+                    for ( let question of this.questions ) this.questionsMeta[question.id].tempReadonly = false;
                     this.determineNumOfFinishedQuestions();
                 });
 
@@ -80,7 +80,7 @@ export class QuestionsetRenderText {
     }
 
     private onTextFocus( questionId: string ): void {
-        this.backupForNetworkError = this.answers[questionId].text_input;
+        this.backupForNetworkError = this.answers[questionId].optionlessAnswerValue;
     }
 
     private onTextChange( questionId: string ): boolean {
@@ -93,21 +93,21 @@ export class QuestionsetRenderText {
 
         // Is the input field of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input field is disabled.
-        if ( this.questionsMeta[questionId].readonly ) return false;
+        if ( this.questionsMeta[questionId].tempReadonly ) return false;
 
         // At the beginning disable the input field of the question. It will stay disabled until server response at the end.
-        this.questionsMeta[questionId].readonly = true;
+        this.questionsMeta[questionId].tempReadonly = true;
         this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participation_id, {},
-            { text: this.answers[questionId].text_input } ).subscribe(
+            { optionlessAnswerValue: this.answers[questionId].optionlessAnswerValue } ).subscribe(
             data => {
-                this.answers[questionId].text_input = data.text;
-                this.questionsMeta[questionId].readonly = false; // Enable the input field of the question.
+                this.answers[questionId].optionlessAnswerValue = data.optionlessAnswerValue;
+                this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
                 this.determineNumOfFinishedQuestions();
             },
             error => {
-                this.questionsMeta[questionId].readonly = false;
+                this.questionsMeta[questionId].tempReadonly = false;
                 this.toast.sendToast( this.language.getLabel('ERR_NETWORK_SAVING'),'error', error.message,false );
-                this.answers[questionId].text_input = this.backupForNetworkError;
+                this.answers[questionId] = this.backupForNetworkError;
             }
         );
 
@@ -117,7 +117,7 @@ export class QuestionsetRenderText {
     private determineNumOfFinishedQuestions(): void {
         let numberQuestions: number = 0;
         for( let question of this.questions ) {
-            if( this.answers[question.id].length && this.answers[question.id].text_input && this.answers[question.id].text_input != '' ) {
+            if( this.answers[question.id].length && this.answers[question.id].optionlessAnswerValue && this.answers[question.id].optionlessAnswerValue != '' ) {
                 this.questionsMeta[question.id].finished = true;
                 numberQuestions++;
             } else this.questionsMeta[question.id].finished = false;

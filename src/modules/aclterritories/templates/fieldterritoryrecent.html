@@ -1,0 +1,10 @@
+<ul class="slds-lookup__list" role="listbox">
+    <li *ngFor="let recentterritoriy of recentterritories" role="presentation" (click)="setTerritory(recentterritoriy)">
+        <span class="slds-p-horizontal--small slds-p-vertical--xx-small slds-media" role="option">
+              <system-icon icon="service_territory" size="x-small"></system-icon>
+              <div class="slds-media__body">
+                <div class="slds-lookup__result-text">{{recentterritoriy.name}}</div>
+              </div>
+        </span>
+    </li>
+</ul>

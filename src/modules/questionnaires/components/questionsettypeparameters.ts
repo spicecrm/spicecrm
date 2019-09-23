@@ -39,7 +39,7 @@ export class QuestionsetTypeParameters implements OnInit {
             return {
                 height: '0px',
                 transform: 'rotateX(90deg)'
-            }
+            };
         }
     }
 

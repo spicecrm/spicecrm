@@ -1,0 +1,49 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_SEARCH_TERRITORY')}}</system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <table class="slds-table slds-table_bordered slds-theme--default">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_SPICEACLTERRITORY')">{{language.getLabel('LBL_SPICEACLTERRITORY')}}</div>
+                    </th>
+                    <th *ngFor="let moduleElement of moduleElements" scope="col">
+                        <div class="slds-truncate" [title]="language.getLabel(moduleElement.name)">{{language.getLabel(moduleElement.name)}}</div>
+                    </th>
+                </tr>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" [(ngModel)]="searchTerm" />
+                        </div>
+                    </th>
+                    <th *ngFor="let moduleElement of moduleElements" scope="col">
+                        <!--div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="select-01">
+                                    <option value="">{{language.getLabel('LBL_SELECT_FILTER')}}</option>
+                                    <option *ngFor="let moduleElementsValue of moduleElementsValues[moduleElement.id]" [value]="moduleElementsValue.elementvalue">{{moduleElementsValue.elementdescription}}</option>
+                                </select>
+                            </div>
+                        </div-->
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-hint-parent" *ngFor="let searchterritory of searchterritories | aclterritoriesnamepipe: searchTerm">
+                    <td [attr.data-label]="language.getLabel('LBL_SPICEACLTERRITORY')" (click)="selectTerritory(searchterritory)">
+                        <div class="slds-truncate">
+                            <a href="javascript:void(0);" class="slds-text-link_reset">{{searchterritory.name}}</a>
+                        </div>
+                    </td>
+                    <td *ngFor="let moduleElement of moduleElements" [attr.data-label]="language.getLabel(moduleElement.name)">
+                        <div class="slds-truncate">{{getElementValue(searchterritory, moduleElement.id)}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+    </system-modal-footer>
+</system-modal>
