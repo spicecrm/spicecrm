@@ -3,15 +3,13 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {FormsModule} from '@angular/forms';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
-
-import /*embed*/ {ReportsGroupedRecordsPipe} from "./pipes/reportsgroupedrecordspipe";
 
 import /*embed*/ {ReporterDetailView} from "./components/reporterdetailview";
 import /*embed*/ {ReporterFilterButton} from "./components/reporterfilterbutton";
@@ -22,12 +20,7 @@ import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemt
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
 import /*embed*/ {ReporterFilterItemDate} from "./components/reporterfilteritemdate";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
-import /*embed*/ {ReporterDetailPresentationStandardWS} from "./components/reporterdetailpresentationstandardws";
-import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporterdetailpresentationgrouped";
-import /*embed*/ {ReporterDetailPresentationTree} from "./components/reporterdetailpresentationtree";
-import /*embed*/ {ReporterDetailPresentationPivot} from "./components/reporterdetailpresentationpivot";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
-import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
 import /*embed*/ {ReporterVisualizationDashlet} from "./components/reportervisualizationdashlet";
 import /*embed*/ {ReporterVisualizationContainer} from "./components/reportervisualizationcontainer";
@@ -47,16 +40,12 @@ import /*embed*/ {ReporterIntegrationTargetlistexportButton} from "./components/
 import /*embed*/ {ReporterIntegrationExportMask} from "./components/reporterintegrationexportmask";
 import /*embed*/ {ReporterIntegrationTargetlistexportModal} from "./components/reporterintegrationtargetlistexportmodal";
 import /*embed*/ {ReporterIntegrationCSVexportButton} from "./components/reporterintegrationcsvexportbutton";
-import /*embed*/ {ReporterIntegrationXLSexportButton} from "./components/reporterintegrationxlsexportbutton";
-import /*embed*/ {ReporterIntegrationPDFexportButton} from "./components/reporterintegrationpdfexportbutton";
 
 import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterintegrationtoolsbutton";
-import /*embed*/ {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
-import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @NgModule({
@@ -78,13 +67,7 @@ declare var moment: any;
         ReporterFilterItemEnum,
         ReporterFilterItemDate,
         ReporterDetailPresentationStandard,
-        ReporterDetailPresentationStandardWS,
-        ReportsGroupedRecordsPipe,
-        ReporterDetailPresentationGrouped,
-        ReporterDetailPresentationTree,
-        ReporterDetailPresentationPivot,
         ReporterDetailVisualization,
-        ReporterDetailVisualizationHighcharts,
         ReporterDetailVisualizationGooglecharts,
         ReporterVisualizationDashlet,
         ReporterVisualizationContainer,
@@ -103,26 +86,10 @@ declare var moment: any;
         ReporterIntegrationTargetlistexportButton,
         ReporterIntegrationTargetlistexportModal,
         ReporterIntegrationCSVexportButton,
-        ReporterIntegrationXLSexportButton,
-        ReporterIntegrationPDFexportButton,
         ReporterIntegrationToolsButton,
-        ReporterIntegrationQueryanalyzerButton,
-        ReporterIntegrationQueryanalyzerModal
-    ],
-    entryComponents: [
-        ReporterDetailView,
-        ReporterDetailPresentationStandard,
-        ReporterDetailVisualizationHighcharts,
-        ReporterDetailVisualizationGooglecharts,
-        ReporterVisualizationDashlet,
-        ReporterPresentationDashlet,
-        ReporterVisualizationContainer,
-        ReporterCockpit
     ],
     exports: [
-        ReporterDetailView,
-        ReporterVisualizationDashlet,
-        ReporterPresentationDashlet
+        ReporterFieldContainer
     ]
 })
 export class ModuleReports {

@@ -1,5 +1,5 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {
     Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
@@ -8,14 +8,14 @@ import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 
-import {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 /**
  * renders the standard view for a report which is a simple column based view
  */
 @Component({
     selector: 'reporter-detail-presentation-tree',
-    templateUrl: './src/modules/reports/templates/reporterdetailpresentationtree.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationtree.html'
 })
 export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
 

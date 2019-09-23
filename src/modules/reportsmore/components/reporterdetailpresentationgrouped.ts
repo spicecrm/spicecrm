@@ -1,27 +1,24 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {
-    Component, AfterViewInit, OnInit,
-    OnDestroy, ViewChild, ViewContainerRef, Renderer, ElementRef
+    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
+import {language} from '../../../services/language.service';
 
-import {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 /**
  * renders the standard view for a report which is a simple column based view
  */
 @Component({
-    selector: 'reporter-detail-presentation-standardws',
-    templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandardws.html'
+    selector: 'reporter-detail-presentation-grouped',
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationgrouped.html'
 })
-export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnInit {
+export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit {
 
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
     @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
@@ -33,28 +30,50 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
     private fieldsData: any = {};
     private totalWidth: number = 0;
     private showFooter: boolean = true;
-
     private currentPage: number = 1;
-
     private isLoading: boolean = true;
 
+    private _groupById: string = '';
+    private groupByValues: any[] = [];
+    private totalRecord: {};
+    private reportFields: any[] = [];
 
-    constructor(private renderer: Renderer, private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private elementRef: ElementRef, private reporterconfig: reporterconfig) {
+    constructor(private metadata: metadata, private model: model, private backend: backend, private reporterconfig: reporterconfig, private language: language) {
         this.reporterconfig.refresh$.subscribe(event => {
             this.getPresentation();
-        })
+        });
     }
 
-    private handleMessage(message: any) {
-
+    get groupById() {
+        return this._groupById;
     }
 
-    /**
-     * a helper function to determine the sort icon based on the set sort criteria
-     */
-    private getSortIcon(fieldid): string {
-        return 'arrowdown';
-        //    return 'arrowup';
+    set groupById(value) {
+        if (value != this._groupById) {
+            this._groupById = value;
+
+            // rebuild the groups
+            this.rebuildGroups();
+        }
+    }
+
+    private rebuildGroups() {
+        // determine values
+        this.groupByValues = [];
+        let groupByValues = {};
+        for (let record of this.presData.records) {
+            if (!groupByValues[record[this._groupById]]) groupByValues[record[this._groupById]] = 0;
+            groupByValues[record[this._groupById]]++;
+        }
+
+        for (let groupByValue in groupByValues) {
+            this.groupByValues.push({
+                value: groupByValue,
+                expanded: true,
+                count: groupByValues[groupByValue],
+                totalRecord: this.buildSummary(this.getRecords(groupByValue))
+            });
+        }
     }
 
     public ngOnInit() {
@@ -64,7 +83,6 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
     public ngAfterViewInit() {
         this.getPresentation();
     }
-
 
     private displayClasses(field) {
         let classes = [];
@@ -84,6 +102,7 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         return classes.join(' ');
     }
 
+
     // todo : fix this for scrolling with a fixed table header
     private getContainerStyle(): any {
         let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
@@ -100,17 +119,6 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         }
     }
 
-    private onScroll(e) {
-
-    }
-
-    get displayRecords() {
-        let startRecords = (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries + 1;
-        let endRecords = this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries;
-
-        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
-    }
-
     get totalRecords() {
         return this.presData.count;
     }
@@ -119,7 +127,7 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         this.isLoading = true;
 
         // build wherecondition
-        let whereConditions: Array<any> = [];
+        let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
                 fieldid: userFilter.fieldid,
@@ -132,21 +140,35 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         }
 
         this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
-            start: (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries,
-            limit: this.presParams.pluginData.standardViewProperties.listEntries,
             whereConditions: JSON.stringify(whereConditions),
-            parentbeanId: this.model['parentBeanId'],
-            parentbeanModule: this.model['parentBeanModule']
+            parentbeanId: this.model.getField('parentBeanId'),
+            parentbeanModule: this.model.getField('parentBeanModule')
         }).subscribe((presData: any) => {
 
             // get field width
             this.totalWidth = 0;
+            this.reportFields = [];
             for (let field of presData.reportmetadata.fields) {
                 this.fieldsData[field.fieldid] = field;
                 this.totalWidth += field.width;
+
+                // set teh reporter fields for the select
+                this.reportFields.push({
+                    fieldid: field.fieldid,
+                    name: field.name,
+                });
             }
 
+            // set the pres data
             this.presData = presData;
+
+            // set the group by id if it is not set already
+            if (!this._groupById) this._groupById = presData.reportmetadata.presentation_params.pluginData.groupedViewProperties.groupById;
+
+            // rebuild the grouped sums and count
+            this.rebuildGroups();
+
+            this.totalRecord = this.buildSummary(this.presData.records);
 
             this.isLoading = false;
         });
@@ -160,9 +182,52 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         }
     }
 
-    private getRecords() {
+    private buildSummary(records) {
+        let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
+        if (fields.length < 1) return [];
+
+        let summaryrecord = {};
+        for (let field of fields) {
+            summaryrecord[field.dataIndex] = {
+                value: 0,
+                count: 0,
+                function: field.summaryType
+            };
+        }
+
+        for (let record of records) {
+            for (let dataIndex in summaryrecord) {
+                switch (summaryrecord[dataIndex].function) {
+                    case 'sum':
+                        summaryrecord[dataIndex].value += parseFloat(record[dataIndex]);
+                        summaryrecord[dataIndex].count++;
+                        break;
+                    case 'count':
+                        summaryrecord[dataIndex].value++;
+                        summaryrecord[dataIndex].count++;
+                        break;
+                }
+            }
+        }
+
+        let retRecord = {};
+        for (let dataIndex in summaryrecord) {
+            retRecord[dataIndex] = summaryrecord[dataIndex].value;
+        }
+        return retRecord;
+    }
+
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(fieldid): string {
+        return 'arrowdown';
+        //    return 'arrowup';
+    }
+
+    private getRecords(groupvalue): any[] {
         try {
-            return this.presData.records;
+            return this.presData.records.filter(record => record[this._groupById] == groupvalue);
         } catch (e) {
             return [];
         }
@@ -180,21 +245,4 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
 
-    get prevDisbaled() {
-        return this.currentPage <= 1;
-    }
-
-    private prevPage() {
-        this.currentPage--;
-        this.getPresentation();
-    }
-
-    get nextDisabled() {
-        return this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries >= this.presData.count;
-    }
-
-    private nextPage() {
-        this.currentPage++;
-        this.getPresentation();
-    }
 }

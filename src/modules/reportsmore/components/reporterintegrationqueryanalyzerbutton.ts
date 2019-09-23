@@ -1,5 +1,5 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
@@ -7,11 +7,11 @@ import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 
-import {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 @Component({
     selector: 'reporter-integration-queryanalyzer-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationqueryanalyzerbutton.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzerbutton.html'
 })
 export class ReporterIntegrationQueryanalyzerButton {
 

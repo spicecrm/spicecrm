@@ -1,5 +1,5 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
@@ -9,7 +9,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'reporter-integration-queryanalyzer-modal',
-    templateUrl: './src/modules/reports/templates/reporterintegrationqueryanalyzermodal.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzermodal.html'
 })
 export class ReporterIntegrationQueryanalyzerModal implements OnInit {
 

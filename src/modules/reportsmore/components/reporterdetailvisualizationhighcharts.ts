@@ -1,5 +1,5 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {
     Component, AfterViewInit,
@@ -22,7 +22,7 @@ declare var Highcharts: any;
 
 @Component({
     selector: 'reporter-detail-visualization-highcharts',
-    templateUrl: './src/modules/reports/templates/reporterdetailvisualizationhighcharts.html',
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailvisualizationhighcharts.html',
 })
 export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
 

@@ -2,6 +2,7 @@
  * @module ModuleReports
  */
 import {
+    AfterViewInit,
     Component,
     Input,
     OnInit,
@@ -17,11 +18,11 @@ declare var _: any;
     selector: 'reporter-field-container',
     templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html'
 })
-export class ReporterFieldContainer implements OnInit {
+export class ReporterFieldContainer implements AfterViewInit {
 
     @ViewChild('reportFieldContainer', {
         read: ViewContainerRef,
-        static: true
+        static: false
     }) private reportFieldContainer: ViewContainerRef;
 
     @Input() private record: any = {};
@@ -32,7 +33,7 @@ export class ReporterFieldContainer implements OnInit {
 
     }
 
-    public ngOnInit() {
+    public ngAfterViewInit() {
         let fieldType = 'ReporterFieldStandard';
 
         // if we have a value an no record ... create the record
@@ -70,6 +71,7 @@ export class ReporterFieldContainer implements OnInit {
         });
 
     }
+
 
     get hasLink() {
         return this.field.link == 'yes';

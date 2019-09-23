@@ -1,5 +1,5 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
@@ -8,7 +8,7 @@ import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
-import {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 /**
 * @ignore
@@ -17,7 +17,7 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-integration-xlsexport-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationxlsexportbutton.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterintegrationxlsexportbutton.html'
 })
 export class ReporterIntegrationXLSexportButton {
 

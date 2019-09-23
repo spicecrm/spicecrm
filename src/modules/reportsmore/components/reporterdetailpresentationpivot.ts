@@ -1,5 +1,5 @@
 /**
- * @module ModuleReports
+ * @module ModuleReportsMore
  */
 import {
     Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
@@ -7,14 +7,14 @@ import {
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
-import {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 /**
  * renders the standard view for a report which is a simple column based view
  */
 @Component({
     selector: 'reporter-detail-presentation-pivot',
-    templateUrl: './src/modules/reports/templates/reporterdetailpresentationpivot.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationpivot.html'
 })
 export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
 
@@ -143,6 +143,19 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
 
                 // execute the function
                 switch (value.pivotfunction) {
+                    case 'COUNT':
+                        headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid] = headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid] + 1;
+                        break;
+                    case 'MAX':
+                        if (parseFloat(record[value.fieldid]) > headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid]) {
+                            headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid] = parseFloat(record[value.fieldid]);
+                        }
+                        break;
+                    case 'MIN':
+                        if (parseFloat(record[value.fieldid]) < headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid]) {
+                            headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid] = parseFloat(record[value.fieldid]);
+                        }
+                        break;
                     default:
                         headObject.values[record[this.presParams.pluginData.rowData]][value.fieldid] += parseFloat(record[value.fieldid]);
                         break;
@@ -157,7 +170,6 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
             this.rowValueColumns[rowValue] = this.getValues(rowValue);
         }
 
-        console.log(this.rowValueColumns);
     }
 
     /**
@@ -180,7 +192,6 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
     }
 
     get totalCountArray() {
-        console.log(Array(this.totalColumnCount).fill('data'));
         return Array(this.totalColumnCount).fill('data');
     }
 
@@ -257,6 +268,9 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
                 let valuesArray = [];
                 for (let value of this.presParams.pluginData.valueData) {
                     let field = this.presData.reportmetadata.fields.find(record => record.fieldid == value.fieldid);
+
+                    // if a specific renderer is set use it
+                    if (value.pivotrenderer) field.type = value.pivotrenderer;
 
                     if (column.values[valuekey] && column.values[valuekey][value.fieldid]) {
                         valuesArray.push({
