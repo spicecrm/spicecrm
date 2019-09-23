@@ -192,4 +192,11 @@ export class ReporterDetailView implements OnInit {
             height: 'calc(100vh - ' + rect.bottom + 'px)'
         };
     }
+
+    /**
+     * trigger reload of the report
+     */
+    private refresh() {
+        this.reporterconfig.refresh();
+    }
 }
