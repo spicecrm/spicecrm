@@ -17,7 +17,6 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
 
-
 // Pipes...
 import /*embed*/ {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
 import /*embed*/ {SystemModuleGlobalPipe} from "./pipes/systemmoduleglobalpipe";
@@ -113,6 +112,9 @@ import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
+
+import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
+import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 
 @NgModule({
     imports: [
@@ -216,7 +218,9 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemViewContainer,
         SystemIconHelpText,
         SystemMultipleSelect,
-        SystemSelectUOM
+        SystemSelectUOM,
+        SystemModuleTree,
+        SystemModuleTreeItem
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -296,7 +300,9 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression,
-        SystemSelectUOM
+        SystemSelectUOM,
+        SystemModuleTree,
+        SystemModuleTreeItem
     ]
 })
 export class SystemComponents {
