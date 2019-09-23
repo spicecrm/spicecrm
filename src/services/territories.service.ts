@@ -2,7 +2,6 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
@@ -12,44 +11,55 @@ import {backend} from './backend.service';
 @Injectable()
 export class territories {
 
-    public userTerritories: any = {};
     private addTerritories: any = {};
 
     constructor(private backend: backend, private metadata: metadata, private configurationService: configurationService, private session: session) {
 
     }
 
-    public getTerritories(loadhandler: Subject<string>) {
-        if (sessionStorage[window.btoa('territorries' + this.session.authData.sessionId)] && sessionStorage[window.btoa('territorries' + this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            this.userTerritories = this.session.getSessionData('territorries');
-            loadhandler.next('getTerritorries');
+    /**
+     * checks if a module is territory managed
+     * @param module
+     */
+    public checkModuleManaged(module) {
+        return this.getModuleParamaters(module) ? true : false;
+    }
+
+    /**
+     * checks if there are paramaters for the module
+     *
+     * @param module the name of the module
+     */
+    public getModuleParamaters(module) {
+        let types = this.configurationService.getData('aclterritorymoduletypes');
+        if (types) {
+            let moduelType = types.find(typeRecord => typeRecord.module == module);
+            return moduelType;
         } else {
-            this.loadTerritories().subscribe(() => {
-                loadhandler.next('getTerritorries');
-            });
+            return false;
         }
     }
 
-    public loadTerritories() {
-        let retSubject = new Subject();
+    /**
+     * returns the user territories as they are retrived from the backend
+     */
+    get userTerritories() {
+        return this.configurationService.getData('aclterritoryuserterritories');
+    }
 
-        let modules: string[] = [];
-        for (let module of this.metadata.getModules()) {
-            if (module !== 'Home') {
-                modules.push(module);
-            }
+    /**
+     * returns a list of reent used territories (if there are any. Otherwise the first n entries from the user territories
+     *
+     * @param count the number of records to be returned
+     */
+    public getRecentTerritories(module, count = 5, action?) {
+        let territorries = this.userTerritories;
+        if (action && !this.session.isAdmin) {
+            let actionTerritories = territorries[module] && territorries[module].length > 0 ? territorries[module].filter(a => a.actions.indexOf(action) != -1) : [];
+            return actionTerritories && actionTerritories.length > 0 ? actionTerritories.slice(0, count) : [];
+        } else {
+            return territorries[module] && territorries[module].length > 0 ? territorries[module].slice(0, count) : [];
         }
-
-        this.backend.getRequest('territories')
-            .subscribe(response => {
-                this.session.setSessionData('territorries', response);
-                this.userTerritories = response;
-
-                retSubject.next(true);
-                retSubject.complete();
-            });
-
-        return retSubject.asObservable();
     }
 
     public loadTerritoryName(territory) {
@@ -64,11 +74,11 @@ export class territories {
             });
     }
 
-    public searchTerritories(module, searchterm, items = 5, activeterritories = []) {
+    public searchTerritories(module, searchterm, items = 5, activeterritories = [], action?) {
         let retArray = [];
 
         for (let territory of this.userTerritories[module]) {
-            if (territory.name.toLowerCase().indexOf(searchterm.toLowerCase()) >= 0 && activeterritories.indexOf(territory.id) < 0) {
+            if (territory.name.toLowerCase().indexOf(searchterm.toLowerCase()) >= 0 && activeterritories.indexOf(territory.id) < 0 && (this.session.isAdmin || !action || action && territory.actions.indexOf(action) != -1)) {
                 retArray.push(territory);
             }
 

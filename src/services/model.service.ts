@@ -1,8 +1,8 @@
 /**
  * @module services
  */
-import { Injectable, EventEmitter, Injector, OnDestroy } from "@angular/core";
-import {of, Subject, Observable} from "rxjs";
+import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
+import {of, BehaviorSubject, Subject, Observable} from "rxjs";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
@@ -15,8 +15,9 @@ import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {Router} from "@angular/router";
-import {ObjectOptimisticLockingModal} from "../objectcomponents/components/objectoptimisticlockingmodal";
-import {modelregister} from './modelregister.service';
+
+// import {GlobalHeader} from '../globalcomponents/components/globalheader';
+// import {GlobalFooter} from '../globalcomponents/components/globalfooter';
 
 /**
  * @ignore
@@ -79,9 +80,9 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public data$ = new EventEmitter();
+    public data$: BehaviorSubject<any>;
     /**
-     * an event emitter that fires when te mode of the model changes between display and editing. Components can subscribe to this to get notified when the mode is triggerd by the application or by the user
+     * an behaviour Subject that fires when te mode of the model changes between display and editing. Components can subscribe to this to get notified when the mode is triggerd by the application or by the user
      *
      * ```typescript
      * constructor(private model: model) {
@@ -164,10 +165,19 @@ export class model implements OnDestroy {
         public language: language,
         private modal: modal,
         private navigation: navigation,
-        private injector: Injector,
-        private modelregister: modelregister
+        public injector: Injector,
+        // @Optional() private globalHeader: GlobalHeader,
+        // @Optional() private globalFooter: GlobalFooter
     ) {
-        this.modelRegisterId = this.modelregister.registerModel( this );
+        this.modelRegisterId = this.navigation.registerModel(this);
+
+        this.data$ = new BehaviorSubject(this.data);
+        this.broadcast.message$.subscribe( data => {
+            if ( data.messagetype === 'timezone.changed' ) {
+                this.utils.timezoneChanged( this.data, data.messagedata );
+                this.utils.timezoneChanged( this.backupData, data.messagedata );
+            }
+        });
     }
 
     get messages(): any[] {
@@ -287,7 +297,7 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
                 this.data = res;
-                this.data$.emit(res);
+                this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -318,6 +328,10 @@ export class model implements OnDestroy {
     public validate(event?: string) {
         this.resetMessages();
         this.isValid = true;
+
+        // run evaluation rules again
+        this.evaluateValidationRules(null, "change");
+
         for (let field in this.fields) {
             // check required
             if (
@@ -659,9 +673,8 @@ export class model implements OnDestroy {
 
     public setFieldValue(field, value) {
         if (!field) return false;
-        if (_.isString(value)) value = value.trim();
         this.data[field] = value;
-        this.data$.emit(this.data);
+        this.data$.next(this.data);
         this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
@@ -680,7 +693,7 @@ export class model implements OnDestroy {
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
-        this.data$.emit(this.data);
+        this.data$.next(this.data);
         this.evaluateValidationRules(null, "change");
 
         // run the duplicate check
@@ -694,7 +707,7 @@ export class model implements OnDestroy {
 
         if (this.backupData) {
             this.data = {...this.backupData};
-            this.data$.emit(this.data);
+            this.data$.next(this.data);
             this.backupData = null;
             // todo: evaluate all fields because they have changed back???
             this.resetMessages();
@@ -722,9 +735,14 @@ export class model implements OnDestroy {
     public save(notify: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
+        // Clean strings of leading and ending white spaces:
+        for ( let property in this.data ) {
+            if ( _.isString( this.data[property] )) this.data[property] = this.data[property].trim();
+        }
+
         // determine changed fields
         let changedData: any = {};
-        if (this.isEditing) {
+        if (this.isEditing && !this.isNew) {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
@@ -740,7 +758,7 @@ export class model implements OnDestroy {
                 res => {
                     this.data = res;
                     this.isNew = false;
-                    this.data$.emit(res);
+                    this.data$.next(res);
                     this.broadcast.broadcastMessage("model.save", {
                         id: this.id,
                         reference: this.reference,
@@ -846,6 +864,7 @@ export class model implements OnDestroy {
     public initializeModel(parent: any = null) {
         if (!this.id) {
             this.id = this.generateGuid();
+            this.isNew = true;
         }
 
         // reset the duplicates
@@ -865,12 +884,24 @@ export class model implements OnDestroy {
 
         // set default acl to allow editing
         this.data.acl = {
+            create: true,
             edit: true
         };
 
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
         this.evaluateValidationRules(null, "init");
+    }
+
+    public isOutsideRouterOutlet(): boolean {
+
+        return true;
+
+        // if ( this.globalHeader || this.globalFooter ) return true;
+        // else return false;
+
+        // alternative:
+        // return !( this.injector.get( GlobalHeader ) || this.injector.get( GlobalFooter ) );
     }
 
     public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
@@ -1253,7 +1284,11 @@ export class model implements OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        this.modelregister.unregisterModel( this.modelRegisterId );
+        this.navigation.unregisterModel(this.modelRegisterId);
+    }
+
+    public isLeaveable(): boolean {
+        return !(this.isEditing && _.values(this.getDirtyFields()).length);
     }
 
 }

@@ -1,6 +1,9 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component} from '@angular/core';
 
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from "../../../services/language.service";
 
 @Component({

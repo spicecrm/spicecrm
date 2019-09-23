@@ -82,7 +82,18 @@
                      class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center"
                      (click)="selectItem(currentComponentSetItem)"
                      [ngClass]="{'slds-theme--shade' : isSelected(currentComponentSetItem.id)}">
-                    <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}</a>
+
+                    <a  *ngIf="!componentDeprecated(currentComponentSetItem)" href="javascript:void(0);" role="presentation" class="slds-truncate">
+                        {{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}
+                    </a>
+
+                    <div *ngIf="componentDeprecated(currentComponentSetItem)" class="slds-clearfix">
+                        <a   href="javascript:void(0);" role="presentation" class="slds-truncate">
+                            <system-icon [icon]="'warning'" [sprite]="'utility'" [size]="'x-small'" class="slds-float_left" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
+                            <del class="slds-float_left">{{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}</del>
+                        </a>
+                    </div>
+
                     <div class="slds-col--bump-left">
                         <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="unlink item" (click)="deleteComponent(currentComponentSetItem)">
                             <system-button-icon [icon]="'delete'"></system-button-icon>

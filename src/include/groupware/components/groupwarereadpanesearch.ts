@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component} from '@angular/core';
 
 import {backend} from "../../../services/backend.service";

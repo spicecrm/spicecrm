@@ -73,7 +73,7 @@ export class fieldAddress extends fieldGeneric {
      * getter for the field label if the form is rendered as subform
      */
     private getAddressLabel() {
-        return this.language.getLabel(this.model.module, this.fieldconfig.label);
+        return this.language.getLabel(this.fieldconfig.label);
     }
 
     /**

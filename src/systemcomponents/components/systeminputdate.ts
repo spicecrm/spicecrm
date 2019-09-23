@@ -16,8 +16,8 @@ import {userpreferences} from "../../services/userpreferences.service";
 import {modal} from "../../services/modal.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -133,6 +133,17 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         }
     }
 
+    /**
+     * determines the side (left or right) for the dropdown depending how much space is left for the element
+     */
+    get dropdownside() {
+        let erect = this.elementref.nativeElement.getBoundingClientRect();
+        if (window.innerWidth - erect.left < 280) {
+            return 'slds-dropdown_right';
+        } else {
+            return 'slds-dropdown_left';
+        }
+    }
 
     private onDocumentClick(event: MouseEvent) {
         if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {

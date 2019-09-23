@@ -9,7 +9,8 @@ import {
     AfterViewInit,
     ViewChild,
     ViewContainerRef,
-    NgZone
+    NgZone,
+    Injector
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -56,9 +57,12 @@ export class ObjectActionContainerItem implements AfterViewInit {
         IMPORT: "ObjectActionImportButton",
         MAIL: "ObjectActionBeanToMailButton",
         PRINT: "ObjectActionOutputBeanButton",
-        SELECT: "ObjectActionSelectButton"
-    }
-
+        SELECT: "ObjectActionSelectButton",
+        OPEN: "ObjectActionOpenButton",
+        CANCEL: "ObjectActionCancelButton",
+        SAVE: "ObjectActionSaveButton",
+        SAVERELATED: "ObjectActionSaveRelatedButton"
+    };
     /**
      * @ignore
      */
@@ -69,7 +73,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
      */
     private stableSub: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone) {
+    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private injector: Injector) {
     }
 
     get id() {
@@ -84,8 +88,16 @@ export class ObjectActionContainerItem implements AfterViewInit {
         }
     }
 
+    get hidden() {
+        if (this.stable && this.componentref) {
+            return this.componentref.instance.hidden ? true : false;
+        } else {
+            return true;
+        }
+    }
+
     public ngAfterViewInit() {
-        this.metadata.addComponent(this.actionitem.action ? this.standardActions[this.actionitem.action] : this.actionitem.component, this.actioncontainer).subscribe(componentref => {
+        this.metadata.addComponent(this.actionitem.action ? this.standardActions[this.actionitem.action] : this.actionitem.component, this.actioncontainer, this.injector).subscribe(componentref => {
             componentref.instance.parent = this.model;
             componentref.instance.actionconfig = this.actionitem.actionconfig;
             if (componentref.instance.actionemitter) {

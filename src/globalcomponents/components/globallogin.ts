@@ -9,13 +9,13 @@ import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
 import {cookie} from '../../services/cookie.service';
 import {language} from '../../services/language.service';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 /**
@@ -31,13 +31,45 @@ declare var _: any;
 export class GlobalLogin {
     private promptUser: boolean = false;
 
+    /**
+     * the username
+     */
     private username: string = '';
+
+    /**
+     * the password
+     */
     private password: string = '';
+
+    /**
+     * variable for the selected language
+     */
     private _selectedlanguage: string = '';
+
+    /**
+     * the selected site if multiple sites are available
+     */
     private selectedsite: string = '';
+
+    // the last selected language .. loaded from the cookie
+    // ToDo: should be changed to local store
     private lastSelectedLanguage: string = null;
+
+    /**
+     * determine if the forgotten password is open or not
+     */
     private showForgotPass: boolean = false;
+
+    /**
+     * variable to hold if per config the extenral side bar shoudl be shown
+     * ToDo: move to separate component
+     */
     private externalSidebarUrl: SafeResourceUrl = null;
+
+    /**
+     * holds if the user is just trying to log in
+     */
+    private loggingIn: boolean = false;
 
     constructor(private loginService: loginService,
                 private http: HttpClient,
@@ -113,10 +145,18 @@ export class GlobalLogin {
      * triggers the actual login itself
      */
     private login() {
+        this.loggingIn = true;
         if (this.username.length > 0 && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
-            this.loginService.login();
+            this.loginService.login().subscribe(
+                success => {
+                    this.loggingIn = false;
+                },
+                error => {
+                    this.loggingIn = false;
+                }
+        );
         }
     }
 

@@ -16,8 +16,8 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 })
 export class AdministrationFTSManager {
 
-    activeTab: string = 'fields';
-    selected_module;
+    public activeTab: string = 'fields';
+    public selected_module;
 
     constructor(
         private metadata: metadata,
@@ -39,26 +39,29 @@ export class AdministrationFTSManager {
         this.ftsconfiguration.setModule(module);
     }
 
-    setActiveTab(tab){
+    public setActiveTab(tab){
         this.activeTab = tab;
     }
 
-    save(){
+    public save() {
         this.ftsconfiguration.save();
     }
 
-    putIndex(){
+    public putIndex() {
         this.ftsconfiguration.putMapping();
     }
 
-    indexModule(){
+    public indexModule() {
         this.ftsconfiguration.indexModule();
     }
-    resetModule(){
+    public  indexModuleBulk() { // CR1000257
+        this.ftsconfiguration.indexModuleBulk();
+    }
+    public resetModule() {
         this.ftsconfiguration.resetModule();
     }
 
-    initialize(){
+    public initialize() {
         if(confirm("Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!")) {
             this.ftsconfiguration.initialize();
         }

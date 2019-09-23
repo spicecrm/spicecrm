@@ -7,9 +7,12 @@ import {DirectivesModule} from "../directives/directives";
 import {NgModule} from "@angular/core";
 import {RouterModule,} from "@angular/router";
 
+import {ObjectFields}      from "../objectfields/objectfields";
+import {SystemComponents}      from "../systemcomponents/systemcomponents";
+
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 /**
  * @ignore
@@ -18,9 +21,7 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
-
-import {ObjectFields}      from "../objectfields/objectfields";
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {MenuService} from "./services/menu.service";
 
@@ -36,6 +37,7 @@ import /*embed*/ {GlobalHeaderActions} from "./components/globalheaderactions";
 import /*embed*/ {GlobalHeaderActionItem} from "./components/globalheaderactionitem";
 import /*embed*/ {GlobalHeaderFavorite} from "./components/globalheaderfavorite";
 import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbench";
+import /*embed*/ {GlobalHeaderReload} from "./components/globalheaderreload";
 import /*embed*/ {GlobalFooter} from "./components/globalfooter";
 import /*embed*/ {GlobalLogin} from "./components/globallogin";
 import /*embed*/ {GlobalSetup} from "./components/globalsetup";
@@ -43,9 +45,12 @@ import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgo
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
 import /*embed*/ {GlobalNavigation} from "./components/globalnavigation";
 import /*embed*/ {GlobalNavigationMenu} from "./components/globalnavigationmenu";
+import /*embed*/ {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
 import /*embed*/ {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
 import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigationmenuitemnew";
+import /*embed*/ {GlobalNavigationMenuItemActionNew} from "./components/globalnavigationmenuitemactionnew";
 import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
+import /*embed*/ {GlobalNavigationMenuItemActionRoute} from "./components/globalnavigationmenuitemactionroute";
 import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
 import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
 import /*embed*/ {GlobalNavigationCompact} from "./components/globalnavigationcompact";
@@ -54,6 +59,7 @@ import /*embed*/ {GlobalDockedComposer} from "./components/globaldockedcomposer"
 import /*embed*/ {GlobalDockedComposerCall} from "./components/globaldockedcomposercall";
 import /*embed*/ {GlobalDockedComposerModal} from "./components/globaldockedcomposermodal";
 import /*embed*/ {GlobalDockedComposerOverflow} from "./components/globaldockedcomposeroverflow";
+import /*embed*/ {GlobalDockedComposerMessagesBadge} from "./components/globaldockedcomposermessagesbadge";
 import /*embed*/ {GlobalComposeButton} from "./components/globalcomposebutton";
 import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
@@ -72,9 +78,11 @@ import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmodulei
 
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
 import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
-import {VersionManagerService} from "../services/versionmanager.service";
+
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
+import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
+
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -109,12 +117,16 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalHeaderActionItem,
         GlobalHeaderFavorite,
         GlobalHeaderWorkbench,
+        GlobalHeaderReload,
         GlobalFooter,
         GlobalNavigation,
         GlobalNavigationMenu,
         GlobalNavigationMenuItem,
+        GlobalNavigationMenuItemActionContainer,
         GlobalNavigationMenuItemNew,
+        GlobalNavigationMenuItemActionNew,
         GlobalNavigationMenuItemRoute,
+        GlobalNavigationMenuItemActionRoute,
         GlobalNavigationMenuItemIcon,
         GlobalNavigationMenuMore,
         GlobalNavigationCompact,
@@ -133,13 +145,15 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalDockedComposerCall,
         GlobalDockedComposerModal,
         GlobalDockedComposerOverflow,
+        GlobalDockedComposerMessagesBadge,
         GlobalComposeButton,
         GlobalRecentItems,
         GlobalSearch,
         GlobalSearchModule,
         GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
-        GlobalLoginGoogle
+        GlobalLoginGoogle,
+        GlobalObtainImportantPreferences
     ],
     entryComponents: [
         GlobalHeader,

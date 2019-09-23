@@ -4,14 +4,15 @@
 import {Injectable} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {MathExpressionCompilerService} from "./mathexpressioncompiler";
+import {session} from './session.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -20,7 +21,8 @@ export class modelutilities {
 
     constructor(
         private metadata: metadata,
-        private mathcomp: MathExpressionCompilerService
+        private mathcomp: MathExpressionCompilerService,
+        private session: session
     ) {
 
     }
@@ -33,7 +35,9 @@ export class modelutilities {
     }
 
     private S4() {
+        /* tslint:disable:no-bitwise */
         return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
+        /* tslint:enable:no-bitwise */
     }
 
     public generateGuid() {
@@ -55,21 +59,22 @@ export class modelutilities {
 
     public backend2spice(module: string, field: string, value: any) {
         let fieldDefs = this.metadata.getFieldDefs(module, field);
-        if(!fieldDefs || !fieldDefs.type) {
+        if (!fieldDefs || !fieldDefs.type) {
             return value;
         }
 
         switch (fieldDefs.type) {
             case "date":
-                // return new Date(Date.parse(value));
-                let pDate = moment.utc(value);
+                if ( moment.isMoment(value) ) return value; // check if the object is already a moment object
+                let pDate = moment(value); // without a specific time zone, because it´s only a date (without time)
                 return pDate.isValid() ? pDate : null;
             case "datetime":
             case "datetimecombo":
-                // return new Date(Date.parse(value));
-                let pDateTime = moment(value).tz(moment.tz.guess());
-                pDateTime.add(pDateTime.utcOffset(), "m");
-                return pDateTime;
+                if ( moment.isMoment(value) ) return value; // check if the object is already a moment object
+                // The value from the backend is always in UTC.
+                // Then we set the time zone by the required time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
+                let pDateTime = moment.tz( value, 'UTC' ).tz( this.session.getSessionData('timezone') );
+                return pDateTime.isValid() ? pDateTime : null;
             case "double":
             case "currency":
                 return value ? parseFloat(value) : 0;
@@ -81,13 +86,13 @@ export class modelutilities {
             case "json":
                 try {
                     return value ? JSON.parse(value) : {};
-                } catch(e) {
+                } catch (e) {
                     return {};
                 }
             // todo: type mutlienum!
             case "link":
-                if(_.isObject(value) && value.beans && fieldDefs.module) {
-                    for(let beanId in value.beans) {
+                if (_.isObject(value) && value.beans && fieldDefs.module) {
+                    for (let beanId in value.beans) {
                         value.beans[beanId] = this.backendModel2spice(fieldDefs.module, value.beans[beanId]);
                     }
                 }
@@ -111,52 +116,56 @@ export class modelutilities {
     public spice2backend(module: string, field: string, value: any) {
 
         let fieldDefs = this.metadata.getFieldDefs(module, field);
-        if(!fieldDefs || !fieldDefs.type) {
+        if (!fieldDefs || !fieldDefs.type) {
             return value;
         }
 
-        switch(fieldDefs.type) {
+        switch (fieldDefs.type) {
             case "date":
-                if ( _.isObject( value ) && value._isAMomentObject ) {
-                    if ( !value.isValid() ) { return "";} // quick and dirty workaround, still something todo!
-                    return value.format("YYYY-MM-DD");
-                } else {
-                    let pDate = new moment.utc(value);
-                    return pDate.isValid() ? pDate.format("YYYY-MM-DD") : '';
+                if ( typeof value === 'string' ) { // A date field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
+                    let pDate = moment(value); // We create a moment object from the string (without a specific time zone, because it´s only a date) ...
+                    return pDate.isValid() ? pDate.format('YYYY-MM-DD') : ''; // ... to validate it and to format it.
+                } else if (value &&  value._isAMomentObject ) { // It is a moment object (the usual case).
+                    return value.isValid() ? value.format('YYYY-MM-DD') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
                 }
+                return '';
             case "datetime":
             case "datetimecombo":
-                if ( typeof value === "string" && value.trim() === "" ) { return "";}; // quick and dirty workaround, still something todo!
-                if ( _.isObject( value ) && value._isAMomentObject && !value.isValid() ) { return ""; }; // quick and dirty workaround, still something todo!
-                let pDateTime = new moment(value).tz(moment.tz.guess());
-                pDateTime.subtract(pDateTime.utcOffset(), "m");
-                return pDateTime.format("YYYY-MM-DD HH:mm:ss");
-            // return value.getUTCFullYear() + "-" + value.getUTCMonth() + "-" + (value.getUTCDate() < 10 ? "0" + value.getUTCDate() : value.getUTCDate()) + " " + value.getUTCHours() + ":" + value.getUTCMinutes() + ":" + value.getUTCSeconds();
+                // The value from the backend is always in UTC.
+                // Then we set the time zone by the configured time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
+                if ( typeof value === 'string' ) { // A datetime field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
+                    let pDateTime = moment.tz( value, this.session.getSessionData('timezone'));  // We create a moment object from the string (with the configured time zone of the user) ...
+                    return pDateTime.isValid() ? pDateTime.utc().format('YYYY-MM-DD HH:mm:ss') :''; // ... to validate is and to format it.
+                } else if (value && value._isAMomentObject ) { // It is a moment object (the usual case).
+                    return value.isValid() ? moment(value).utc().format('YYYY-MM-DD HH:mm:ss') : ''; // Validate it and format it for the backend, in UTC.
+                }
+                return '';
             case "json":
                 return !value ? '' : JSON.stringify(value);
             // todo: type mutlienum!
             case "link":
-                if(_.isObject(value) && value.beans && fieldDefs.module) {
-                    for(let beanId in value.beans) {
+                if (_.isObject(value) && value.beans && fieldDefs.module) {
+                    for (let beanId in value.beans) {
                         value.beans[beanId] = this.spiceModel2backend(fieldDefs.module, value.beans[beanId]);
                     }
                 }
                 return value;
             case "bool":
             case "boolean":
-                return value && ( value == "1" || value > 0 || value === true) ? '1' : '0';
+                return value && (value == "1" || value > 0 || value === true) ? '1' : '0';
             default:
                 return value;
         }
     }
 
-    private formatDate = function (d) {
+    private formatDate(d) {
         return moment(d).format("YYYY-MM-DD");
-    };
+    }
 
     /*
      * a method to normilzae and clean an account name
      */
+
     // todo this needs to be moved
     public cleanAccountName(name) {
         let companyNames = ["ag", "gmbh", "gesmbh", "corp", "inc"];
@@ -179,10 +188,8 @@ export class modelutilities {
      * @param val2
      * @returns {boolean}
      */
-    static compare(val1, comparator:string, val2):boolean
-    {
-        switch(comparator)
-        {
+    public static compare(val1, comparator: string, val2): boolean {
+        switch (comparator) {
             case "in":
                 // do something
                 break;
@@ -213,14 +220,18 @@ export class modelutilities {
      * @param {string} str
      * @returns {boolean}
      */
-    public static strtobool(str: string): boolean
-    {
-        if(typeof str != "string") {
+    public static strtobool(str: string): boolean {
+        if (typeof str != "string") {
             return false;
         }
-        switch(str.toLowerCase().trim()) {
-            case "false": case "no": case "0": case "": return false;
-            default: return true;
+        switch (str.toLowerCase().trim()) {
+            case "false":
+            case "no":
+            case "0":
+            case "":
+                return false;
+            default:
+                return true;
         }
     }
 
@@ -230,9 +241,8 @@ export class modelutilities {
      * @param   {number}    now     the timestamp which is used as a base for the calculation of relative dates.
      * @returns {moment}
      */
-    public static strtomoment(text: string, now?: number)
-    {
-        return moment(modelutilities.strtotime(text,now),"X");
+    public static strtomoment(text: string, now?: number) {
+        return moment(modelutilities.strtotime(text, now), "X");
     }
 
     /**
@@ -286,7 +296,7 @@ export class modelutilities {
                     case "-":
                         // YYYY-M-D
                         if (match[3] > 12 || match[5] > 31) {
-                            return fail
+                            return fail;
                         }
                         return new Date(match[1], parseInt(match[3], 10) - 1, match[5],
                             match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0).getTime() / 1000;
@@ -296,7 +306,7 @@ export class modelutilities {
                     case "/":
                         // YYYY/M/D
                         if (match[3] > 12 || match[5] > 31) {
-                            return fail
+                            return fail;
                         }
                         return new Date(match[1], parseInt(match[3], 10) - 1, match[5],
                             match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0).getTime() / 1000;
@@ -377,12 +387,16 @@ export class modelutilities {
         }
         // other formats and "now" should be parsed by Date.parse()
         if (text === "now") {
+            /* tslint:disable:no-bitwise */
             return now === null || isNaN(now)
                 ? new Date().getTime() / 1000 | 0
-                : now | 0
+                : now | 0;
+            /* tslint:enable:no-bitwise */
         }
         if (!isNaN(parsed = Date.parse(text))) {
-            return parsed / 1000 | 0
+            /* tslint:disable:no-bitwise */
+            return parsed / 1000 | 0;
+            /* tslint:enable:no-bitwise */
         }
         // Browsers !== Chrome have problems parsing ISO 8601 date strings, as they do
         // not accept lower case characters, space, or shortened time zones.
@@ -401,48 +415,52 @@ export class modelutilities {
         if (match) {
             // @todo: time zone information
             if (match[4] === "z") {
-                match[4] = "Z"
+                match[4] = "Z";
             } else if (match[4].match(/^([+-][0-9]{2})$/)) {
-                match[4] = match[4] + ":00"
+                match[4] = match[4] + ":00";
             }
             if (!isNaN(parsed = Date.parse(match[1] + "T" + match[2] + match[4]))) {
-                return parsed / 1000 | 0
+                /* tslint:disable:no-bitwise */
+                return parsed / 1000 | 0;
+                /* tslint:enable:no-bitwise */
             }
         }
         date = now ? new Date(now * 1000) : new Date();
         days = {
-            "sun": 0,
-            "mon": 1,
-            "tue": 2,
-            "wed": 3,
-            "thu": 4,
-            "fri": 5,
-            "sat": 6
+            sun: 0,
+            mon: 1,
+            tue: 2,
+            wed: 3,
+            thu: 4,
+            fri: 5,
+            sat: 6
         };
         ranges = {
-            "yea": "FullYear",
-            "mon": "Month",
-            "day": "Date",
-            "hou": "Hours",
-            "min": "Minutes",
-            "sec": "Seconds"
+            yea: "FullYear",
+            mon: "Month",
+            day: "Date",
+            hou: "Hours",
+            min: "Minutes",
+            sec: "Seconds"
         };
-        function lastNext (type, range, modifier) {
+
+        function lastNext(type, range, modifier) {
             let diff;
             let day = days[range];
             if (typeof day !== "undefined") {
                 diff = day - date.getDay();
                 if (diff === 0) {
-                    diff = 7 * modifier
+                    diff = 7 * modifier;
                 } else if (diff > 0 && type === "last") {
-                    diff -= 7
+                    diff -= 7;
                 } else if (diff < 0 && type === "next") {
-                    diff += 7
+                    diff += 7;
                 }
-                date.setDate(date.getDate() + diff)
+                date.setDate(date.getDate() + diff);
             }
         }
-        function process (val) {
+
+        function process(val) {
             // @todo: Reconcile this with regex using \s, taking into account
             // browser issues with split and regexes
             let splt = val.split(" ");
@@ -452,35 +470,36 @@ export class modelutilities {
             let ago = splt[2] === "ago";
             let num = (type === "last" ? -1 : 1) * (ago ? -1 : 1);
             if (typeIsNumber) {
-                num *= parseInt(type, 10)
+                num *= parseInt(type, 10);
             }
             if (ranges.hasOwnProperty(range) && !splt[1].match(/^mon(day|\.)?$/i)) {
-                return date["set" + ranges[range]](date["get" + ranges[range]]() + num)
+                return date["set" + ranges[range]](date["get" + ranges[range]]() + num);
             }
             if (range === "wee") {
-                return date.setDate(date.getDate() + (num * 7))
+                return date.setDate(date.getDate() + (num * 7));
             }
             if (type === "next" || type === "last") {
-                lastNext(type, range, num)
+                lastNext(type, range, num);
             } else if (!typeIsNumber) {
-                return false
+                return false;
             }
-            return true
+            return true;
         }
+
         times = "(years?|months?|weeks?|days?|hours?|minutes?|min|seconds?|sec" +
             "|sunday|sun\\.?|monday|mon\\.?|tuesday|tue\\.?|wednesday|wed\\.?" +
             "|thursday|thu\\.?|friday|fri\\.?|saturday|sat\\.?)";
         regex = "([+-]?\\d+\\s" + times + "|" + "(last|next)\\s" + times + ")(\\sago)?";
         match = text.match(new RegExp(regex, "gi"));
         if (!match) {
-            return fail
+            return fail;
         }
         for (i = 0, len = match.length; i < len; i++) {
             if (!process(match[i])) {
-                return fail
+                return fail;
             }
         }
-        return (date.getTime() / 1000)
+        return (date.getTime() / 1000);
     }
 
     /**
@@ -491,18 +510,18 @@ export class modelutilities {
      * @param argSeparator is a string used to seperate the arguments, by default it is "&"
      * @returns {string}
      */
-    http_build_query(formdata, numericPrefix: string = "", argSeparator: string = "&"): string {
-        //let urlencode = require("../url/urlencode");
+    public http_build_query(formdata, numericPrefix: string = "", argSeparator: string = "&"): string {
+        // let urlencode = require("../url/urlencode");
         let value;
         let key;
         let tmp = [];
-        let _httpBuildQueryHelper = function (key, val, argSeparator) {
+        let _httpBuildQueryHelper = (key, val, argSeparator) => {
             let k;
             let tmp = [];
             if (val === true) {
-                val = "1"
+                val = "1";
             } else if (val === false) {
-                val = "0"
+                val = "0";
             }
             if (val !== null) {
                 if (typeof val === "object") {
@@ -518,7 +537,7 @@ export class modelutilities {
                     throw new Error("There was an error processing for http_build_query().");
                 }
             } else {
-                return ""
+                return "";
             }
         };
         if (!argSeparator) {
@@ -537,13 +556,39 @@ export class modelutilities {
         return tmp.join(argSeparator);
     }
 
-    compileMathExpression(code){
-        //console.log("compiling: "+code+" ...");
+    public compileMathExpression(code) {
+        // console.log("compiling: "+code+" ...");
         try {
             return this.mathcomp.do(code);
-        } catch(e) {
+        } catch (e) {
             console.warn(e);
             return false;
         }
     }
+
+    /**
+     * If a user has changed his time zone, all the moment objects in all the models have to be adapted to the new time zone.
+     * timezoneChanged() iterates over a model data object (and its sub data objects) to change the time zone of the moment objects.
+     *
+     * @param modelData The data object of the model.
+     * @param timezone The time zone a string, for example 'Europe/Vienna'.
+     */
+    public timezoneChanged( modelData: object, timezone: string ): void {
+        for ( let fieldname in modelData ) {
+            if ( _.isObject( modelData[fieldname] )) {
+                if ( modelData[fieldname] && modelData[fieldname]._isAMomentObject ) {
+                    if ( modelData[fieldname]._isUTC ) { // _isUTC seems to indicate that this is not a simple date but a datetime. Don´t touch a date field!
+                        modelData[fieldname].tz( timezone );
+                    }
+                } else {
+                    if ( modelData[fieldname].beans && _.isObject( modelData[fieldname].beans )) {
+                        for ( let beanId in modelData[fieldname].beans ) {
+                            this.timezoneChanged( modelData[fieldname].beans[beanId], timezone );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
