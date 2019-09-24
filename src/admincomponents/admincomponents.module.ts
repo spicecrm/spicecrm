@@ -11,9 +11,9 @@ import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
-import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service'
-import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service'
-import /*embed*/ {dictionary} from './services/dictionary.service'
+import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service';
+import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
+import /*embed*/ {dictionary} from './services/dictionary.service';
 
 import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
 import /*embed*/ { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
@@ -100,13 +100,12 @@ export class AdministrationMain {}
     exports: [],
 
 })
-export class AdminComponentsModule
-{
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+export class AdminComponentsModule {
+    public readonly version = '1.0';
+    public readonly build_date = '/*build_date*/';
 
     constructor(
-        private vms:VersionManagerService,
+        private vms: VersionManagerService,
     ) {
         vms.registerModule(this);
     }
