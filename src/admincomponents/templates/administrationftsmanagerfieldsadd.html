@@ -19,8 +19,8 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody cdkDropList [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="ConnectedToDropLists" (cdkDropListDropped)="leftDrop($event)" id="administration-fts-manager-field-add-drag-table">
-                        <tr  cdkDrag [cdkDragData]="nodefield" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview" *ngFor="let nodefield of nodefields; trackBy: trackByFn">
+                        <tbody cdkDropList (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="ConnectedToDropLists" id="administration-fts-manager-field-add-drag-table">
+                        <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of nodefields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
                             <td>
                                 <system-utility-icon cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
                             </td>
