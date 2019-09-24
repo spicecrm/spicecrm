@@ -9,6 +9,9 @@ import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 
+/**
+ * The detailed view of a bean.
+ */
 @Component({
     selector: 'groupware-detail-pane-bean',
     templateUrl: './src/include/groupware/templates/groupwaredetailpanebean.html',
@@ -16,6 +19,9 @@ import {metadata} from "../../../services/metadata.service";
 })
 export class GroupwareDetailPaneBean implements OnInit {
 
+    /**
+     * Current bean.
+     */
     @Input() private bean: any;
     @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 

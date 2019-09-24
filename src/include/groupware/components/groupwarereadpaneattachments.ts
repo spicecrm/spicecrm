@@ -2,12 +2,13 @@
  * @module ModuleGroupware
  */
 import {Component, ChangeDetectorRef} from '@angular/core';
-// import AsyncResultStatus = Office.AsyncResultStatus;
 import {Subject, Observable} from 'rxjs';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
-
 import {language} from '../../../services/language.service';
 
+/**
+ * A list of attachments for the current email.
+ */
 @Component({
     selector: 'groupware-read-pane-attachments',
     templateUrl: './src/include/groupware/templates/groupwarereadpaneattachments.html'
@@ -22,10 +23,16 @@ export class GroupwareReadPaneAttachments {
         this.loadAttachments();
     }
 
+    /**
+     * List of attachments.
+     */
     get attachments() {
         return this.groupware.outlookAttachments.attachments;
     }
 
+    /**
+     * Loads a list of the attachments.
+     */
     public loadAttachments() {
         this.groupware.getAttachments().subscribe(
             (res: any) => {
