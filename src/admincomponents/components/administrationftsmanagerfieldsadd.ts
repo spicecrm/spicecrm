@@ -1,25 +1,14 @@
 /**
  * @module AdminComponentsModule
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy,
-    Output,
-    EventEmitter
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component} from '@angular/core';
 
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 
 @Component({
@@ -28,22 +17,21 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 })
 export class AdministrationFTSManagerFieldsAdd {
 
-    @Output() closeModal: EventEmitter<any> = new EventEmitter<any>();
-
-    path: Array<any> = [];
-    links: Array<any> = [];
-    fields: Array<any> = [];
-    selectedFields: any = {};
-
+    public links: any[] = [];
+    public self: any = {};
+    public fields: any[] = [];
+    public ConnectedToDragLists: any[] = ['administration-fts-manager-field-add-drag-table'];
+    public ConnectedToDropLists: any[] = ['administration-fts-manager-field-add-drop-table'];
+    /**
+     * array with the fields for the module of the current selected node
+     */
+    public nodefields: any[] = [];
+    private path: any[] = [];
+    private selectedFields: any = {};
     /**
      * holds the path to the current selected tree node
      */
     private nodepath: string = '';
-
-    /**
-     * array with the fields for the module of the current selected node
-     */
-    private nodefields: any[] = [];
 
     constructor(private metadata: metadata, private language: language, private ftsconfiguration: ftsconfiguration, private backend: backend, private modelutilities: modelutilities) {
         /*
@@ -60,13 +48,13 @@ export class AdministrationFTSManagerFieldsAdd {
         // this.getFields();
     }
 
-    chooseBreadcrumb(i) {
+    private chooseBreadcrumb(i) {
         this.path = this.path.slice(0, i + 1);
         this.getLinks();
         this.getFields();
     }
 
-    getLinks() {
+    private getLinks() {
         this.links = [];
         this.backend.getRequest('ftsmanager/core/nodes', {
             node: 'root',
@@ -76,13 +64,13 @@ export class AdministrationFTSManagerFieldsAdd {
         });
     }
 
-    setLink(link) {
+    private setLink(link) {
         this.path.push(link);
         this.getLinks();
         this.getFields();
     }
 
-    getFields() {
+    private getFields() {
         this.fields = [];
         this.backend.getRequest('ftsmanager/core/fields', {nodeid: this.buildNodeid()}).subscribe(fields => {
             let nodeid = this.buildNodeid();
@@ -96,7 +84,7 @@ export class AdministrationFTSManagerFieldsAdd {
         });
     }
 
-    buildNodeid() {
+    private buildNodeid() {
         let nodeArray = [];
         for (let path of this.path) {
             nodeArray.push(path.path);
@@ -104,12 +92,12 @@ export class AdministrationFTSManagerFieldsAdd {
         return nodeArray.join('::');
     }
 
-    getFieldLabel(field) {
+    private getFieldLabel(field) {
         let path = this.path[this.path.length - 1].path.split(':');
         return this.language.getFieldDisplayName(path[1], field);
     }
 
-    selectField(field) {
+    private selectField(field) {
         if (this.selectedFields[this.buildNodeid() + '::field:' + field.name]) {
             delete (this.selectedFields[this.buildNodeid() + '::field:' + field.name]);
         } else {
@@ -126,17 +114,17 @@ export class AdministrationFTSManagerFieldsAdd {
         }
     }
 
-    fieldSelected(fieldname) {
-        return this.selectedFields[this.buildNodeid() + '::field:' + fieldname] ? true : false;
+    private fieldSelected(fieldname) {
+        return !!this.selectedFields[this.buildNodeid() + '::field:' + fieldname];
     }
 
 
-    canSave() {
+    private canSave() {
         let itemcount = 0;
         for (let field in this.selectedFields) {
             itemcount++;
         }
-        return itemcount > 0 ? true : false;
+        return itemcount > 0;
     }
 
 
@@ -144,7 +132,7 @@ export class AdministrationFTSManagerFieldsAdd {
      * close the modal
      */
     private close() {
-        this.closeModal.emit(false);
+        this.self.destroy();
     }
 
     /**
@@ -152,6 +140,7 @@ export class AdministrationFTSManagerFieldsAdd {
      */
     private save() {
         for (let field in this.selectedFields) {
+            if (!this.selectedFields.hasOwnProperty(field)) continue;
             let fieldid = this.modelutilities.generateGuid();
 
             let fieldpath = '';
@@ -159,7 +148,7 @@ export class AdministrationFTSManagerFieldsAdd {
             for (let fieldpathitem of fieldpathitems) {
                 let fieldpathitemelements = fieldpathitem.split(':');
                 if (fieldpathitemelements && fieldpathitemelements.length === 3) {
-                    fieldpath += fieldpathitemelements[2] + '->'
+                    fieldpath += fieldpathitemelements[2] + '->';
                 }
             }
 
@@ -176,7 +165,7 @@ export class AdministrationFTSManagerFieldsAdd {
                 index: 'analyzed'
             });
         }
-        this.closeModal.emit(true)
+        this.self.destroy();
     }
 
     /**
@@ -204,17 +193,33 @@ export class AdministrationFTSManagerFieldsAdd {
     }
 
 
-    private drop(event) {
-        console.log(event);
+    private rightDrop(dragEvent: CdkDragDrop<any>) {
+        if (dragEvent.previousContainer === dragEvent.container) {
+            moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
+        } else {
+            let targetArray = [];
+
+            /*
+            * this will handle removing the item from the left list and put it in the temporary targetArray
+            * we do this because the dragged item does not have the same structure as the items in the drop list
+            */
+            transferArrayItem(dragEvent.previousContainer.data,
+                targetArray,
+                dragEvent.previousIndex,
+                dragEvent.currentIndex);
+            console.log(this.nodefields);
+            console.log(targetArray);
+            let dropItem = targetArray[0];
+            // ToDo: Push the dropItem to the right List
+        }
     }
 
-
-    private dragStarted(e) {
-        e.source.element.nativeElement.classList.add('slds-is-selected');
+    private leftDrop(dragEvent: CdkDragDrop<any>) {
+        moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
     }
 
-    private dragEnded(e) {
-        e.source.element.nativeElement.classList.remove('slds-is-selected');
+    private trackByFn(i, item) {
+        return item.id;
     }
 }
 

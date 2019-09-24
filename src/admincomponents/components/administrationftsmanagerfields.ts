@@ -1,22 +1,12 @@
 /**
  * @module AdminComponentsModule
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, Injector} from '@angular/core';
 
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {backend} from '../../services/backend.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
+import {modal} from "../../services/modal.service";
 
 
 @Component({
@@ -28,13 +18,13 @@ export class AdministrationFTSManagerFields {
     public currentfield: string = '';
     public fieldDetails: any = {};
     public displayAddFieldModal: boolean = false;
-    constructor(private metadata: metadata, private language: language, private ftsconfiguration: ftsconfiguration) {
 
-    }
+    constructor(private metadata: metadata,
+                private language: language,
+                private modal: modal,
+                private injector: Injector,
+                private ftsconfiguration: ftsconfiguration) {
 
-    public selectField(id) {
-        this.currentfield = id;
-        this.fieldDetails = this.ftsconfiguration.getFieldDetails(id);
     }
 
     get moduleFtsFields() {
@@ -44,12 +34,18 @@ export class AdministrationFTSManagerFields {
     get aggregateaddparams() {
         return this.fieldDetails.aggregateaddparams ? atob(this.fieldDetails.aggregateaddparams) : '';
     }
+
     set aggregateaddparams(value) {
         this.fieldDetails.aggregateaddparams = value ? btoa(value) : '';
     }
 
+    public selectField(id) {
+        this.currentfield = id;
+        this.fieldDetails = this.ftsconfiguration.getFieldDetails(id);
+    }
+
     public showAddFields() {
-        this.displayAddFieldModal = true;
+        this.modal.openModal('AdministrationFTSManagerFieldsAdd', true, this.injector);
     }
 
     public closeAddFields(event) {
