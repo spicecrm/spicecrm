@@ -8,7 +8,7 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 
 @Component({
@@ -20,6 +20,7 @@ export class AdministrationFTSManagerFieldsAdd {
     public links: any[] = [];
     public self: any = {};
     public fields: any[] = [];
+    public dragPlaceHolderNode: Node;
     public ConnectedToDragLists: any[] = ['administration-fts-manager-field-add-drag-table'];
     public ConnectedToDropLists: any[] = ['administration-fts-manager-field-add-drop-table'];
     /**
@@ -33,7 +34,11 @@ export class AdministrationFTSManagerFieldsAdd {
      */
     private nodepath: string = '';
 
-    constructor(private metadata: metadata, private language: language, private ftsconfiguration: ftsconfiguration, private backend: backend, private modelutilities: modelutilities) {
+    constructor(private metadata: metadata,
+                private language: language,
+                private ftsconfiguration: ftsconfiguration,
+                private backend: backend,
+                private modelutilities: modelutilities) {
         /*
         this.path.push({
             type: 'root',
@@ -194,28 +199,40 @@ export class AdministrationFTSManagerFieldsAdd {
 
 
     private rightDrop(dragEvent: CdkDragDrop<any>) {
+        this.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
         if (dragEvent.previousContainer === dragEvent.container) {
             moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         } else {
-            let targetArray = [];
-
-            /*
-            * this will handle removing the item from the left list and put it in the temporary targetArray
-            * we do this because the dragged item does not have the same structure as the items in the drop list
-            */
-            transferArrayItem(dragEvent.previousContainer.data,
-                targetArray,
-                dragEvent.previousIndex,
-                dragEvent.currentIndex);
-            console.log(this.nodefields);
-            console.log(targetArray);
-            let dropItem = targetArray[0];
-            // ToDo: Push the dropItem to the right List
+            let field = dragEvent.item.data;
+            this.ftsconfiguration.moduleFtsFields.push({
+                path: field.name
+            });
         }
     }
 
-    private leftDrop(dragEvent: CdkDragDrop<any>) {
-        moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
+    private dropExited(e) {
+        let tr = document.createElement('tr');
+        let td = document.createElement('td');
+        td.colSpan = 10;
+        td.innerHTML = '&nbsp;';
+        td.style.background = '#fff';
+        tr.appendChild(td);
+        this.dragPlaceHolderNode = tr;
+        let index = e.container.data.findIndex(item => item.id == e.item.data.id);
+        if (index > -1) {
+            e.container.element.nativeElement.insertBefore(tr, e.container.element.nativeElement.children[index]);
+        }
+    }
+
+    private dropEntered(e) {
+        this.removePlaceHolderElement(e.container.element.nativeElement);
+    }
+
+    private removePlaceHolderElement(containerElement) {
+        if (this.dragPlaceHolderNode) {
+            containerElement.removeChild(this.dragPlaceHolderNode);
+            this.dragPlaceHolderNode = undefined;
+        }
     }
 
     private trackByFn(i, item) {
