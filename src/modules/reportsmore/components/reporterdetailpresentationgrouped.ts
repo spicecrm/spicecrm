@@ -107,16 +107,10 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
     private getContainerStyle(): any {
         let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
         let rects = this.tablesummary.element.nativeElement.getBoundingClientRect();
-        if (this.showFooter) {
-            let rectf = this.tablefooter.element.nativeElement.getBoundingClientRect();
-            return {
-                height: 'calc(100% - ' + (rects.height + recth.height + rectf.height) + 'px)'
-            };
-        } else {
-            return {
-                height: 'calc(100% - ' + (rects.height + recth.height) + 'px)'
-            };
-        }
+        let rectf = this.tablefooter.element.nativeElement.getBoundingClientRect();
+        return {
+            height: 'calc(100% - ' + (rects.height + recth.height + rectf.height) + 'px)'
+        };
     }
 
     get totalRecords() {
