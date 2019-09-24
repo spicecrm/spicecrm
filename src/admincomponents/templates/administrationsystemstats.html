@@ -1,6 +1,11 @@
 <ng-container *ngIf="loaded; else loading">
-    <h2 class="slds-text-heading_medium slds-p-around--small">System and Storage Statistics Summary</h2>
-    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-vertical--medium">
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
+        <h2 class="slds-text-heading_medium">System and Storage Statistics Summary</h2>
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="refresh()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--medium">
         <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col">
@@ -63,7 +68,7 @@
             </tr>
         </tfoot>
     </table>
-    <h2 class="slds-text-heading_medium slds-p-around--small">System and Storage Statistics Details</h2>
+    <h2 class="slds-p-around--small">System and Storage Statistics Details</h2>
     <div tobottom>
         <table class="slds-table slds-table_bordered slds-table_cell-buffer">
             <thead>
@@ -100,7 +105,7 @@
                         <div class="slds-truncate" >{{ftsDocumentCount(table.name)}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate" >{{humanReadableSize(ftsIndexSize(table.name))}}</div>
+                        <div class="slds-truncate" >{{ftsIndexSize(table.name)}}</div>
                     </td>
                 </tr>
             </tbody>
