@@ -66,7 +66,6 @@ export class CalendarMorePopoverEvent implements OnInit, OnDestroy {
     * @return hour
     */
     private getStartHour(event) {
-        return event.data.date_start ? moment(event.data.date_start).tz(this.calendar.timeZone)
-            .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : "00:00";
+        return event.data.date_start ? moment(event.data.date_start).tz(this.calendar.timeZone).format(this.userpreferences.getTimeFormat()) : "00:00";
     }
 }

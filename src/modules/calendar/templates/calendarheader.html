@@ -5,7 +5,12 @@
                 <object-icon [module]="'Calendar'"></object-icon>
                 <div class="slds-media__body">
                     <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('Calendar')}}</p>
-                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{getCalendarHeader()}}</h1>
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                        {{getCalendarHeader()}}
+                        <span *ngIf="calendar.sheetType == 'Week'" class="slds-p-horizontal--x-small slds-p-vertical--xx-small slds-pill slds-text-body--small">
+                            {{getWeekNumberDisplay()}}
+                        </span>
+                    </h1>
                 </div>
             </div>
         </div>
