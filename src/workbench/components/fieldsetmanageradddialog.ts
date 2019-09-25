@@ -22,7 +22,6 @@ export class FieldsetManagerAddDialog implements OnInit {
     @Output() private closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Input() private module: string = '*';
     @Input() private parent: string = '';
-    @Input() private metadata: any = {};
     @Input() private edit_mode: string = '';
 
 
@@ -31,7 +30,7 @@ export class FieldsetManagerAddDialog implements OnInit {
     private addFieldset: string = '';
     private fieldsettype: string = 'custom';
     private moduleFields: any[] = [];
-    private self: any
+    private self: any;
 
     constructor(private backend: backend, private language: language, private modelutilities: modelutilities, private metadata: metadata) {
 
