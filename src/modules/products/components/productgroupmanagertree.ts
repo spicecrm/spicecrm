@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {
     Component,
     ElementRef,

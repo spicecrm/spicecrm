@@ -36,5 +36,5 @@
         </div>
     </div>
 </div>
-<object-listview-filter-panel [ngStyle]="getFilterPanelStyle()"></object-listview-filter-panel>
-<object-listview-aggregates-panel [ngStyle]="getAggregatesPanelStyle()"></object-listview-aggregates-panel>
+<object-listview-filter-panel @animatepanel *ngIf="panelButtonState === 'filter'"></object-listview-filter-panel>
+<object-listview-aggregates-panel @animatepanel *ngIf="panelButtonState === 'aggregates'"></object-listview-aggregates-panel>

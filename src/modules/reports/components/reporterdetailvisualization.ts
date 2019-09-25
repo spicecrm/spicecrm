@@ -4,12 +4,13 @@
 import {
     Component, Input, AfterViewInit, ViewChild, ViewContainerRef
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
+import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-detail-visualization',
@@ -25,8 +26,10 @@ export class ReporterDetailVisualization implements AfterViewInit {
     private vizData: any = {};
     private chartComponent: any;
 
-    constructor(private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation) {
-
+    constructor(private reporterconfig: reporterconfig, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation) {
+        this.reporterconfig.refresh$.subscribe(event => {
+            this.getVisualization();
+        });
     }
 
     public ngAfterViewInit() {
@@ -34,12 +37,25 @@ export class ReporterDetailVisualization implements AfterViewInit {
     }
 
     private getVisualization() {
-
         let params: any = {};
         if (this.parentModule && this.parentId) {
             params.parentbeanId = this.parentId;
             params.parentbeanModule = this.parentModule;
         }
+
+        // build wherecondition
+        let whereConditions: any[] = [];
+        for (let userFilter of this.reporterconfig.userFilters) {
+            whereConditions.push({
+                fieldid: userFilter.fieldid,
+                operator: userFilter.operator,
+                value: userFilter.value,
+                valuekey: userFilter.valuekey,
+                valueto: userFilter.valueto,
+                valuetokey: userFilter.valuetokey
+            });
+        }
+        params.whereConditions = JSON.stringify(whereConditions);
 
         this.backend.getRequest('KReporter/' + this.model.id + '/visualization', params).subscribe(vizData => {
             this.vizData = vizData;

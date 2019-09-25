@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, OnInit} from '@angular/core';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {model} from "../../../services/model.service";
@@ -32,8 +35,7 @@ export class GroupwareDetailPane implements OnInit {
         private model: model,
         private metadata: metadata,
         private language: language
-    ) {
-    }
+    ) {}
 
     /**
      * triggers the loader and if one record is found opens that one

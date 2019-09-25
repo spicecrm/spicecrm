@@ -63,7 +63,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
         this.lead.data$.subscribe(data => {
             if (data.account_name !== "") {
 
-                this.fts.searchByModules(this.modelutilities.cleanAccountName(data.account_name), ["Accounts"]).subscribe(res => {
+                this.fts.searchByModules({searchterm: this.modelutilities.cleanAccountName(data.account_name), modules: ["Accounts"]}).subscribe(res => {
                     this.matchedAccounts = res.Accounts.hits;
                     if (this.matchedAccounts.length === 0) {
                         this.create = true;
