@@ -194,7 +194,9 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 this._date.moment = new moment();
             }
 
-            this._date.moment = value;
+            this._date.moment.set('year', value.year());
+            this._date.moment.set('month', value.month());
+            this._date.moment.set('date', value.date());
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
 
