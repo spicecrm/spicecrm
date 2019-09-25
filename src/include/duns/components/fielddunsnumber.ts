@@ -18,6 +18,7 @@ import {modal} from "../../../services/modal.service";
 export class FieldDunsNumber extends fieldGeneric {
 
     public componentconfig: any = {};
+    private fieldName: string = 'name';
     private fieldStreet: string = 'billing_address_street';
     private fieldCity: string = 'billing_address_city';
     private fieldPostalCode: string = 'billing_address_postalcode';
@@ -49,6 +50,7 @@ export class FieldDunsNumber extends fieldGeneric {
     private loadComponentConfig() {
         if (this.fieldconfig.never_overwrite_address) this.neverOverwriteAddress = true;
         if (this.fieldconfig.guess_house_number) this.guessHouseNumber = true;
+        if (this.fieldconfig.field_name) this.fieldName =  this.fieldconfig.field_name;
         if (!this.fieldconfig.address_type || this.fieldconfig.address_type.length == 0) return;
         this.fieldStreet = this.fieldconfig.address_type + '_address_street';
         this.fieldCity = this.fieldconfig.address_type + '_address_city';
@@ -107,6 +109,13 @@ export class FieldDunsNumber extends fieldGeneric {
      * @return void
      */
     private setAddressFields(res) {
+
+        if (!this.model.getField(this.fieldName) || this.model.getField(this.fieldName).length == 0 || !this.neverOverwriteAddress) {
+            if(res.name.length > 0) {
+                this.model.setField(this.fieldName, res.name || '');
+            }
+        }
+
         if (!this.model.getField(this.fieldStreet) || this.model.getField(this.fieldStreet).length == 0 || !this.neverOverwriteAddress) {
             if(res.street.length > 0) {
                 this.model.setField(this.fieldStreet, res.street || '');
