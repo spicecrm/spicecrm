@@ -112,7 +112,8 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
                     this._time.moment = new moment();
                 }
 
-                this._time.moment.hour(newDate.hour()).minutes(newDate.minutes());
+                this._time.moment.set('hour', newDate.hour());
+                this._time.moment.set('minute', newDate.minute());
                 this._time.valid = true;
                 this._time.offset = this.calculateOffset(this._time.moment);
                 this._time.display = value;
