@@ -37,7 +37,7 @@ export class calendar implements OnDestroy {
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
-    public sidebarwidth: number = 300;
+    public sidebarwidth: number = 350;
     public sheetTimeWidth: number = 50;
     public sheetHourHeight: number = 80;
     public weekstartday: number = 0;
