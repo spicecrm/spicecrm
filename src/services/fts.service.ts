@@ -9,6 +9,17 @@ import {backend} from './backend.service';
 import {metadata} from './metadata.service';
 import {Subject} from 'rxjs';
 
+interface ftsSearchParameters {
+    searchterm?: string;
+    modules?: string[];
+    size?: number;
+    aggregates?: any;
+    sortparams?: any;
+    owner?: boolean;
+    modulefilter?: any;
+    bucketed?: any;
+}
+
 @Injectable()
 export class fts {
 
@@ -84,22 +95,23 @@ export class fts {
         });
     }
 
-    public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
+    // public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
+    public searchByModules(parameters: ftsSearchParameters) {
         let retSubject = new Subject<any>();
         // if no module is passed .. search all modules
-        if (modules.length === 0) {
-            modules = this.loadedSearchModules;
+        if (!parameters.modules || parameters.modules.length === 0) {
+            parameters.modules = this.loadedSearchModules;
         }
 
-        if (searchterm.indexOf('%') != -1) {
-            searchterm = searchterm.replace(/%/g, '*');
+        if (parameters.searchterm && parameters.searchterm.indexOf('%') != -1) {
+            parameters.searchterm = parameters.searchterm.replace(/%/g, '*');
         }
-        searchterm = searchterm.trim();
+        parameters.searchterm = parameters.searchterm.trim();
         // set the searchterm
-        this.searchTerm = searchterm;
-        this.searchAggregates = aggregates;
-        this.searchSort = sortparams;
-        this.modulefilter = modulefilter;
+        this.searchTerm = parameters.searchterm;
+        this.searchAggregates = parameters.aggregates;
+        this.searchSort = parameters.sortparams;
+        this.modulefilter = parameters.modulefilter;
 
 
         // todo: check if same search is done .. and then do nothing .. avoid too many calls
@@ -110,13 +122,13 @@ export class fts {
         }
 
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
-            modules: modules.length > 0 ? modules.join(',') : '',
-            searchterm,
-            records: size,
-            owner,
+            modules: parameters.modules.length > 0 ? parameters.modules.join(',') : '',
+            searchterm: parameters.searchterm,
+            records: parameters.size,
+            owner: parameters.owner,
             aggregates: this.searchAggregates,
             sort: this.searchSort,
-            modulefilter
+            modulefilter: parameters.modulefilter
         }).subscribe(response => {
             // var response = res.json();
             this.moduleSearchresults = [];
@@ -137,14 +149,11 @@ export class fts {
             // sort by releveance
             this.moduleSearchresults.sort((x, y) => {
                 return y.data.max_score - x.data.max_score;
-            })
+            });
 
             // set the last parameters
-            this.lastSearchParams = {
-                modules,
-                searchterm,
-                size
-            };
+            this.lastSearchParams = parameters;
+
             this.runningmodulesearch = undefined;
 
             retSubject.next(response);
