@@ -74,7 +74,7 @@ export class KnowledgeService {
         this.isDocumentLoading = true;
         let sortParams = {sortfield: "name", sortdirection: "ASC"};
 
-        this.fts.searchByModules(this.searchterm, [module], 5, "", sortParams)
+        this.fts.searchByModules({searchterm: this.searchterm, modules: [module], size: 5, sortparams: sortParams})
             .subscribe(res => {
                 this.resultsList = res[module].hits
                     .map(doc => doc._source)
