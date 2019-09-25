@@ -220,8 +220,8 @@ export class calendar implements OnDestroy {
             let filteredEntries: any[] = [];
             for (let event of this.calendars[calendar]) {
                 if (event.start < end && event.end > start) {
-                    event.start = moment(event.start).tz(this.timeZone).add(moment().utcOffset(), 'm');
-                    event.end = moment(event.end).tz(this.timeZone).add(moment().utcOffset(), 'm');
+                    event.start = moment(event.start).tz(this.timeZone);
+                    event.end = moment(event.end).tz(this.timeZone);
                     filteredEntries.push(event);
                 }
             }
@@ -568,7 +568,7 @@ export class calendar implements OnDestroy {
             let data = message.messagedata.data;
             if (message.messagetype == 'timezone.changed') {
                 this.timeZone = message.messagedata;
-                this.calendarDate = this.calendardate;
+                this.calendarDate = moment(this.calendarDate);
             }
             if (module == 'Meetings' || module == 'Calls') {
                 switch (message.messagetype) {
@@ -585,6 +585,7 @@ export class calendar implements OnDestroy {
                                     type: 'event',
                                     start: data.date_start,
                                     end: data.date_end,
+                                    isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
                                     data: data
                                 });
                                 this.calendarDate = moment(this.calendarDate);
@@ -625,6 +626,7 @@ export class calendar implements OnDestroy {
                 event.data = data;
                 event.start = data.date_start;
                 event.end = data.date_end;
+                event.isMulti = +data.date_end.diff(data.date_start, 'days') > 0;
                 this.calendarDate = moment(this.calendarDate);
                 return true;
             }
