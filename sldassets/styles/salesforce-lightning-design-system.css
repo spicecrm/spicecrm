@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.9.4 */
+/*! Lightning Design System 2.10.0 */
 @charset "UTF-8";
 /* stylelint-disable declaration-no-important */
 @font-face {
@@ -227,13 +227,11 @@ th {
 
 :-ms-input-placeholder {
   color: #3e3e3c;
-  font-weight: 400;
-  font-size: 0.8125rem; }
+  font-weight: 400; }
 
 ::placeholder {
   color: #3e3e3c;
-  font-weight: 400;
-  font-size: 0.8125rem; }
+  font-weight: 400; }
 
 ::-moz-selection {
   background: #d8edff;
@@ -254,7 +252,7 @@ html {
   -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   background: transparent; }
 
 @media (pointer: coarse) and (hover: none) {
@@ -417,7 +415,7 @@ img {
 
 .slds-action-overflow_touch__content,
 .slds-action-overflow--touch__content {
-  padding-top: 33.33333333333333%;
+  padding-top: 33.333%;
   overflow: hidden;
   overflow-y: auto; }
 
@@ -980,7 +978,10 @@ img {
  */
 .slds-button {
   position: relative;
-  display: inline-block;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+      align-items: center;
   padding: 0;
   background: transparent;
   background-clip: border-box;
@@ -995,6 +996,11 @@ img {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-button {
+    line-height: 2.65rem;
+    font-weight: 700; } }
 
 .slds-button:hover, .slds-button:focus, .slds-button:active, .slds-button:visited {
   text-decoration: none; }
@@ -1074,6 +1080,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   border-color: #dddbda;
@@ -1108,6 +1116,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   background-color: #0070d2;
@@ -1152,6 +1162,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   border-color: #dddbda;
@@ -1183,10 +1195,17 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   background-color: transparent;
   border-color: #dddbda; }
+
+.slds-button_inverse:hover, .slds-button_inverse:focus,
+.slds-button--inverse:hover,
+.slds-button--inverse:focus {
+  background-color: #f4f6f9; }
 
 .slds-button_inverse[disabled], .slds-button_inverse:disabled,
 .slds-button--inverse[disabled],
@@ -1249,6 +1268,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   background-color: #c23934;
@@ -1292,6 +1313,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   border-color: #dddbda;
@@ -1325,6 +1348,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   background-color: #4bca81;
@@ -1368,6 +1393,11 @@ a.slds-button--inverse:focus {
   width: 0.875rem;
   height: 0.875rem;
   fill: currentColor; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-button__icon {
+    width: 1rem;
+    height: 1rem; } }
 
 /**
  * @name large
@@ -1455,13 +1485,15 @@ a.slds-button--inverse:focus {
   box-shadow: none; }
 
 /**
- * @summary Creates a button style for 100% width that maintains current styling
+ * @summary Creates a button style for 100% width with centered text that maintains current styling
  * @selector .slds-button_stretch
  * @restrict .slds-button
  * @modifier
  * @group size
  */
 .slds-button_stretch {
+  -ms-flex-pack: center;
+      justify-content: center;
   width: 100%; }
 
 /**
@@ -1502,6 +1534,12 @@ a.slds-button--inverse:focus {
 .slds-button--inverse.slds-is-selected {
   border-color: transparent; }
 
+.slds-button_stateful .slds-text-selected,
+.slds-button_stateful .slds-text-selected-focus,
+.slds-button_stateful .slds-text-not-selected {
+  -ms-flex-align: center;
+      align-items: center; }
+
 /**
  * Default state of a stateful button
  *
@@ -1535,7 +1573,8 @@ a.slds-button--inverse:focus {
   display: none; }
 
 .slds-not-selected .slds-text-not-selected {
-  display: block; }
+  display: -ms-inline-flexbox;
+  display: inline-flex; }
 
 /**
  * @summary When button is selected and still has focus from click
@@ -1549,7 +1588,8 @@ a.slds-button--inverse:focus {
 .slds-is-selected[disabled] .slds-text-selected,
 .slds-is-selected[disabled]:hover .slds-text-selected,
 .slds-is-selected[disabled]:focus .slds-text-selected {
-  display: block; }
+  display: -ms-inline-flexbox;
+  display: inline-flex; }
 
 .slds-is-selected-clicked .slds-text-selected-focus,
 .slds-is-selected[disabled] .slds-text-selected-focus,
@@ -1575,7 +1615,8 @@ a.slds-button--inverse:focus {
   display: none; }
 
 .slds-is-selected .slds-text-selected {
-  display: block; }
+  display: -ms-inline-flexbox;
+  display: inline-flex; }
 
 .slds-is-selected .slds-text-selected-focus {
   display: none; }
@@ -1587,7 +1628,8 @@ a.slds-button--inverse:focus {
   display: none; }
 
 .slds-is-selected:hover .slds-text-selected-focus, .slds-is-selected:focus .slds-text-selected-focus {
-  display: block; }
+  display: -ms-inline-flexbox;
+  display: inline-flex; }
 
 /**
  * @summary Initiates a dual stateful button
@@ -1628,6 +1670,8 @@ a.slds-button--inverse:focus {
   padding-right: 1rem;
   text-align: center;
   vertical-align: middle;
+  -ms-flex-pack: center;
+      justify-content: center;
   border: 1px solid #dddbda;
   transition: border 0.15s linear;
   background-color: #0070d2;
@@ -1690,7 +1734,31 @@ a.slds-button--inverse:focus {
 .slds-button--icon-error {
   line-height: 1;
   vertical-align: middle;
-  color: #706e6b; }
+  -ms-flex-pack: center;
+      justify-content: center;
+  color: #706e6b;
+  -ms-flex-negative: 0;
+      flex-shrink: 0; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-button_icon,
+  .slds-button--icon,
+  .slds-button_icon-inverse,
+  .slds-button--icon-inverse,
+  .slds-button_icon-container,
+  .slds-button--icon-container,
+  .slds-button_icon-border,
+  .slds-button--icon-border,
+  .slds-button_icon-border-filled,
+  .slds-button--icon-border-filled,
+  .slds-button_icon-border-inverse,
+  .slds-button--icon-border-inverse,
+  .slds-button_icon-more,
+  .slds-button--icon-more,
+  .slds-button_icon-error,
+  .slds-button--icon-error {
+    width: 2.75rem;
+    height: 2.75rem; } }
 
 /**
  * @summary Default width + height for button icon with containers
@@ -1712,6 +1780,23 @@ a.slds-button--inverse:focus {
 .slds-button--icon-container-more {
   width: 2rem;
   height: 2rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-button_icon-container,
+  .slds-button--icon-container,
+  .slds-button_icon-border,
+  .slds-button--icon-border,
+  .slds-button_icon-border-filled,
+  .slds-button--icon-border-filled,
+  .slds-button_icon-border-inverse,
+  .slds-button--icon-border-inverse,
+  .slds-button_icon-brand,
+  .slds-button_icon-more,
+  .slds-button--icon-more,
+  .slds-button_icon-container-more,
+  .slds-button--icon-container-more {
+    width: 2.75rem;
+    height: 2.75rem; } }
 
 /**
  * @summary Transparent themed button icon - Button icon has a border with a transparent background
@@ -1871,6 +1956,12 @@ a.slds-button--inverse:focus {
   width: 1.5rem;
   height: 1.5rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-button_icon-small,
+  .slds-button--icon-small {
+    width: 2.75rem;
+    height: 2.75rem; } }
+
 /**
  * @summary Changes a button icon container to be 20x20px
  * @name x-small
@@ -1883,6 +1974,12 @@ a.slds-button--inverse:focus {
   width: 1.25rem;
   height: 1.25rem;
   line-height: 1; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-button_icon-x-small,
+  .slds-button--icon-x-small {
+    width: 2.75rem;
+    height: 2.75rem; } }
 
 .slds-button_icon-x-small .slds-button__icon,
 .slds-button--icon-x-small .slds-button__icon {
@@ -1902,6 +1999,12 @@ a.slds-button--inverse:focus {
   height: 1rem;
   line-height: 1; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-button_icon-xx-small,
+  .slds-button--icon-xx-small {
+    width: 2.75rem;
+    height: 2.75rem; } }
+
 .slds-button_icon-xx-small .slds-button__icon,
 .slds-button--icon-xx-small .slds-button__icon {
   width: 0.5rem;
@@ -1920,6 +2023,12 @@ a.slds-button--inverse:focus {
   background-color: white;
   border-color: #dddbda;
   color: #706e6b; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-button_icon-more,
+  .slds-button--icon-more {
+    width: 2.75rem;
+    height: 2.75rem; } }
 
 .slds-button_icon-more:hover .slds-button__icon, .slds-button_icon-more:focus .slds-button__icon,
 .slds-button--icon-more:hover .slds-button__icon,
@@ -2192,10 +2301,6 @@ a.slds-button--inverse:focus {
 
 .slds-color-picker__selector .slds-popover__footer {
   background: #f3f2f2; }
-
-.slds-color-picker__selector .slds-tabs_default__item {
-  text-transform: uppercase;
-  letter-spacing: 0.05rem; }
 
 .slds-color-picker__selector .slds-tabs_default__content {
   padding: 0.5rem 0 0.25rem; }
@@ -2649,6 +2754,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-action-new-person-account {
   background-color: #7f8de1; }
+
+.slds-icon-action-bug {
+  background-color: #ef6e5d; }
 
 .slds-icon-action-apex {
   background-color: #696e71; }
@@ -3719,6 +3827,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-investment-account {
   background-color: #4bc076; }
 
+.slds-icon-standard-store {
+  background-color: #04844b; }
+
 .slds-icon-standard-output {
   background-color: #439cba; }
 
@@ -3734,6 +3845,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-choice {
   background-color: #54698d; }
 
+.slds-icon-standard-app {
+  background-color: #fcb95b; }
+
 .slds-icon-standard-default {
   background-color: #8199af; }
 
@@ -3742,6 +3856,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-today {
   background-color: #ef7ead; }
+
+.slds-icon-standard-buyer-account {
+  background-color: #04844b; }
 
 .slds-icon-standard-lead-list {
   background-color: #f88962; }
@@ -3757,6 +3874,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-answer-private {
   background-color: #f2cf5b; }
+
+.slds-icon-standard-opportunity-contact-role {
+  background-color: #7e8be4; }
 
 .slds-icon-standard-retail-banking-console {
   background-color: #00afa0; }
@@ -3802,6 +3922,12 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-service-territory-location {
   background-color: #7e8be4; }
+
+.slds-icon-standard-entitlement-policy {
+  background-color: #04844b; }
+
+.slds-icon-standard-order-item {
+  background-color: #769ed3; }
 
 .slds-icon-standard-read-receipts {
   background-color: #4bc076; }
@@ -3896,11 +4022,20 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-macros {
   background-color: #47cfd2; }
 
+.slds-icon-standard-dashboard-ea {
+  background-color: #7e8be4; }
+
+.slds-icon-standard-job-profile {
+  background-color: #eb7092; }
+
 .slds-icon-standard-steps {
   background-color: #54698d; }
 
 .slds-icon-standard-asset-relationship {
   background-color: #fa975c; }
+
+.slds-icon-standard-high-velocity-sales {
+  background-color: #47cfc9; }
 
 .slds-icon-standard-brand {
   background-color: #7e8be4; }
@@ -3925,6 +4060,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-work-type-group {
   background-color: #0079bc; }
+
+.slds-icon-standard-education {
+  background-color: #3c97dd; }
 
 .slds-icon-standard-work-type {
   background-color: #54698d; }
@@ -4022,6 +4160,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-first-non-empty {
   background-color: #e9696e; }
 
+.slds-icon-standard-customer-360 {
+  background-color: #032e61; }
+
 .slds-icon-standard-resource-absence {
   background-color: #45c173; }
 
@@ -4042,6 +4183,12 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-text {
   background-color: #969492; }
+
+.slds-icon-standard-delegated-account {
+  background-color: #04844b; }
+
+.slds-icon-standard-fulfillment-order {
+  background-color: #b9ac91; }
 
 .slds-icon-standard-case-email {
   background-color: #f2cf5b; }
@@ -4108,6 +4255,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-case-comment {
   background-color: #f2cf5b; }
+
+.slds-icon-standard-sales-channel {
+  background-color: #2a739e; }
 
 .slds-icon-standard-apex-plugin {
   background-color: #54698d; }
@@ -4202,6 +4352,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-note {
   background-color: #e6d478; }
 
+.slds-icon-standard-buyer-group {
+  background-color: #04844b; }
+
 .slds-icon-standard-opportunity {
   background-color: #fcb95b; }
 
@@ -4244,6 +4397,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-customers {
   background-color: #0eb58a; }
 
+.slds-icon-standard-story {
+  background-color: #54698d; }
+
 .slds-icon-standard-service-appointment {
   background-color: #7e8be4; }
 
@@ -4280,6 +4436,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-proposition {
   background-color: #3c97dd; }
 
+.slds-icon-standard-snippets {
+  background-color: #0eb58a; }
+
 .slds-icon-standard-customer-portal-users {
   background-color: #3c97db; }
 
@@ -4307,6 +4466,9 @@ a.slds-button--inverse:focus {
 .slds-icon-standard-merge {
   background-color: #f2cf5b; }
 
+.slds-icon-standard-dataset {
+  background-color: #b070e6; }
+
 .slds-icon-standard-product-consumed {
   background-color: #55bc9c; }
 
@@ -4327,6 +4489,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-sales-path {
   background-color: #2a739e; }
+
+.slds-icon-standard-events {
+  background-color: #3c97db; }
 
 .slds-icon-standard-sms {
   background-color: #88c651; }
@@ -4390,6 +4555,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-list-email {
   background-color: #8baeb5; }
+
+.slds-icon-standard-recycle-bin {
+  background-color: #1589e4; }
 
 .slds-icon-standard-document {
   background-color: #baac93; }
@@ -4516,6 +4684,9 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-return-order-line-item {
   background-color: #009688; }
+
+.slds-icon-standard-chart {
+  background-color: #1fcaa0; }
 
 .slds-icon-standard-quick-text {
   background-color: #62b7e5; }
@@ -4754,6 +4925,9 @@ a.slds-button--inverse:focus {
       flex-shrink: 0;
   transform: rotate(-90deg); }
 
+[dir="rtl"] .slds-accordion__summary-action-icon {
+  transform: rotate(90deg); }
+
 /**
  * @summary Each expandable panel inside of an accordion
  * @selector .slds-accordion__section
@@ -4960,7 +5134,7 @@ a.slds-button--inverse:focus {
 .slds-icon-eq.slds-is-animated .slds-icon-eq__bar {
   animation: slds-icon-eq 0.25s ease-in-out infinite alternate;
   will-change: transform;
-  height: 0.1875rem; }
+  height: 0.188rem; }
 
 .slds-icon-eq.slds-is-animated .slds-icon-eq__bar:nth-of-type(2) {
   animation-duration: 0.65s; }
@@ -4979,7 +5153,7 @@ a.slds-button--inverse:focus {
   bottom: 0;
   left: 0;
   width: calc(4rem / 16);
-  height: 0.5625rem;
+  height: 0.562rem;
   background: #0070d2;
   transform: scaleY(1);
   transform-origin: bottom; }
@@ -4994,7 +5168,7 @@ a.slds-button--inverse:focus {
 
 @keyframes slds-icon-eq {
   to {
-    transform: scaleY(4.66667); } }
+    transform: scaleY(4.667); } }
 
 /**
  * @summary Initializes score icon
@@ -5007,8 +5181,8 @@ a.slds-button--inverse:focus {
  */
 .slds-icon-score {
   display: inline-block;
-  width: 0.3125rem;
-  height: 0.3125rem;
+  width: 0.312rem;
+  height: 0.312rem;
   position: relative; }
 
 [class*="slds-icon-score__"] {
@@ -5212,7 +5386,7 @@ a.slds-button--inverse:focus {
  * @restrict .slds-icon-trend circle
  */
 .slds-icon-trend__circle {
-  stroke-dasharray: 42.3385px, 46.3385px; }
+  stroke-dasharray: 42.339px, 46.339px; }
 
 @keyframes slds-icon-trend-arrow {
   from {
@@ -5220,7 +5394,7 @@ a.slds-button--inverse:focus {
 
 @keyframes slds-icon-trend-circle {
   from {
-    stroke-dasharray: 0.1px, 46.3385px; } }
+    stroke-dasharray: 0.1px, 46.339px; } }
 
 /**
  * @summary Containing actionable element that holds the waffle icon
@@ -5290,15 +5464,15 @@ a.slds-button--inverse:focus {
  * @restrict .slds-icon-waffle_container > span
  */
 .slds-icon-waffle {
-  width: 1.3125rem;
-  height: 1.3125rem;
+  width: 1.312rem;
+  height: 1.312rem;
   position: relative;
   display: block;
   cursor: pointer; }
 
 .slds-icon-waffle [class*="slds-r"] {
-  width: 0.3125rem;
-  height: 0.3125rem;
+  width: 0.312rem;
+  height: 0.312rem;
   background-color: #706e6b;
   display: inline-block;
   position: absolute;
@@ -5714,6 +5888,11 @@ a.slds-button--inverse:focus {
   background-clip: padding-box;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1); }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-card {
+    border-color: transparent;
+    border-radius: 0; } }
+
 .slds-card + .slds-card {
   margin-top: 1rem; }
 
@@ -5743,6 +5922,11 @@ a.slds-button--inverse:focus {
 .slds-card__header-title {
   font-size: 1rem;
   line-height: 1.25; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-card__header-title {
+    font-size: 1.125rem;
+    font-weight: 700; } }
 
 /**
  * @summary Actionable element within the card header title
@@ -5775,7 +5959,7 @@ a.slds-button--inverse:focus {
   padding: 0.75rem 1rem;
   margin-top: 0.75rem;
   text-align: center;
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   border-top: 1px solid #dddbda; }
 
 /**
@@ -6001,7 +6185,9 @@ a.slds-button--inverse:focus {
  * @restrict .slds-chat-listitem
  */
 .slds-chat-listitem_bookend {
-  margin: 1rem 0; }
+  margin: 1rem 0;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem; }
 
 .slds-chat-listitem_bookend + .slds-chat-listitem_bookend {
   margin-top: 3rem; }
@@ -6021,9 +6207,6 @@ a.slds-button--inverse:focus {
  */
 .slds-chat-icon {
   margin-right: 0.5rem; }
-
-.slds-chat-icon .slds-icon {
-  fill: #3e3e3c; }
 
 /**
  * Chat logs are mainly made up of chat messages between an agent and a customer
@@ -6096,7 +6279,7 @@ a.slds-button--inverse:focus {
   word-wrap: break-word;
   word-break: break-word;
   display: inline-block;
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   max-width: 26.25rem;
   white-space: pre-line; }
 
@@ -6308,7 +6491,7 @@ a.slds-button--inverse:focus {
       flex-wrap: wrap;
   -ms-flex-pack: center;
       justify-content: center;
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   text-align: center;
   width: 100%;
   /**
@@ -6330,10 +6513,11 @@ a.slds-button--inverse:focus {
   * @summary Used to style the horizontal rules on an event
   * @selector .slds-chat-event__rule
   * @restrict .slds-chat-event div
+  * @deprecated
   */
 .slds-chat-event__rule {
   border-top: 1px #dddbda solid;
-  height: 0.0625rem;
+  height: 0.062rem;
   -ms-flex-positive: 1;
       flex-grow: 1; }
 
@@ -6377,10 +6561,10 @@ a.slds-button--inverse:focus {
   color: #3e3e3c;
   display: -ms-flexbox;
   display: flex;
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   -ms-flex-pack: center;
       justify-content: center;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
   width: 100%; }
 
 /**
@@ -6444,8 +6628,23 @@ a.slds-button--inverse:focus {
   padding-top: 0.25rem;
   margin-bottom: 0.125rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element__label {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-align: center;
+        align-items: center;
+    min-height: 2rem;
+    padding-top: 0;
+    margin-bottom: 0;
+    font-size: 0.875rem; } }
+
 .slds-form-element__label:empty {
   margin: 0; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element__label + .slds-form-element__icon .slds-button_icon {
+    height: 2rem; } }
 
 /**
  * @summary Wrapper to any form display element
@@ -6473,6 +6672,10 @@ a.slds-button--inverse:focus {
   line-height: 1;
   z-index: 1; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element__icon {
+    padding-top: 0; } }
+
 .slds-form-element__icon .slds-button_icon {
   position: relative; }
 
@@ -6496,6 +6699,11 @@ a.slds-button--inverse:focus {
 .slds-form-element--edit .slds-form-element__static {
   width: calc(100% - 1.5rem); }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element_edit .slds-form-element__static,
+  .slds-form-element--edit .slds-form-element__static {
+    width: calc(100% - 2.75rem); } }
+
 /**
  * @summary When a form element is in view mode, we modify some styling
  * @selector .slds-form-element_readonly
@@ -6513,6 +6721,11 @@ a.slds-button--inverse:focus {
 
 .slds-form-element_readonly .slds-form-element__label {
   margin-bottom: 0; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element_readonly .slds-icon {
+    width: 1.5rem;
+    height: 1.5rem; } }
 
 /**
  * @summary The form element label when applied to a legend element
@@ -6556,6 +6769,10 @@ a.slds-button--inverse:focus {
    * @restrict .slds-form-element__static
    * @deprecated
    */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element__static {
+    font-size: 1rem; } }
 
 .slds-form-element__static.slds-text-longform *:last-child {
   margin-bottom: 0; }
@@ -6605,6 +6822,7 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem;
   width: 100%;
   transition: border 0.1s linear, background-color 0.1s linear;
+  -webkit-appearance: none;
   display: inline-block;
   padding: 0 1rem 0 0.75rem;
   line-height: 1.875rem;
@@ -6614,17 +6832,13 @@ a.slds-button--inverse:focus {
    * @restrict .slds-input
    */
   /**
+   * Prevents certain input types from switching to RTL layout.
+   */
+  /**
    * Removes aesthetic nature from an input
    *
    * @selector .slds-input_bare
    * @restrict .slds-input, input, textarea
-   * @modifier
-   */
-  /**
-   * @summary Modifier for number input with increment and decrement buttons
-   *
-   * @selector .slds-input_counter
-   * @restrict .slds-input, input
    * @modifier
    */
   /**
@@ -6656,6 +6870,10 @@ a.slds-button--inverse:focus {
 .slds-input[disabled]:focus, .slds-input[disabled]:active, .slds-input.slds-is-disabled:focus, .slds-input.slds-is-disabled:active {
   box-shadow: none; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-input {
+    line-height: calc(2.75rem - 0.125rem); } }
+
 .slds-input[readonly] {
   padding-left: 0;
   border-color: transparent;
@@ -6663,10 +6881,18 @@ a.slds-button--inverse:focus {
   font-size: 0.875rem;
   font-weight: 400; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-input[readonly] {
+    font-size: 1rem; } }
+
 .slds-input[type="search"]::-ms-clear {
   display: none;
   width: 0;
   height: 0; }
+
+.slds-input[type="url"], .slds-input[type="tel"], .slds-input[type="email"] {
+  direction: ltr;
+  text-align: left; }
 
 .slds-input_bare, .slds-input--bare {
   background-color: transparent;
@@ -6680,20 +6906,6 @@ a.slds-button--inverse:focus {
 .slds-input_bare:focus, .slds-input_bare:active, .slds-input--bare:focus, .slds-input--bare:active {
   outline: 0;
   box-shadow: none; }
-
-.slds-input_counter {
-  text-align: center;
-  padding: 0 3rem; }
-
-.slds-input_counter[type='number'] {
-  -webkit-appearance: textfield;
-     -moz-appearance: textfield;
-          appearance: textfield; }
-
-.slds-input_counter::-webkit-outer-spin-button, .slds-input_counter::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-          appearance: none;
-  margin: 0; }
 
 .slds-input_height, .slds-input--height {
   min-height: calc(1.875rem + (1px * 2)); }
@@ -6746,18 +6958,28 @@ a.slds-button--inverse:focus {
   height: 0.875rem;
   position: absolute;
   top: 50%;
-  margin-top: -0.4375rem;
+  margin-top: -0.438rem;
   line-height: 1;
   border: 0;
   z-index: 2;
   /* @Todo - we need to be sure this is deprecated since the color sems to be the correct gray I see in specs */
   fill: #b0adab; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-input-has-icon .slds-input__icon {
+    width: 1rem;
+    height: 1rem;
+    margin-top: -0.5rem; } }
+
 .slds-input-has-icon .slds-input__icon:not(button) {
   pointer-events: none; }
 
 .slds-input-has-icon_left .slds-input__icon, .slds-input-has-icon--left .slds-input__icon {
   left: 0.75rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-input-has-icon_left .slds-input__icon, .slds-input-has-icon--left .slds-input__icon {
+    left: 0.5rem; } }
 
 .slds-input-has-icon_left .slds-input,
 .slds-input-has-icon_left .slds-input_bare,
@@ -6768,6 +6990,10 @@ a.slds-button--inverse:focus {
 
 .slds-input-has-icon_right .slds-input__icon, .slds-input-has-icon--right .slds-input__icon {
   right: 0.75rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-input-has-icon_right .slds-input__icon, .slds-input-has-icon--right .slds-input__icon {
+    right: 0.5rem; } }
 
 .slds-input-has-icon_right .slds-input,
 .slds-input-has-icon_right .slds-input_bare,
@@ -6795,10 +7021,22 @@ a.slds-button--inverse:focus {
 .slds-input-has-icon--left-right .slds-input__icon--left {
   left: 0.75rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-input-has-icon_left-right .slds-input__icon_left,
+  .slds-input-has-icon_left-right .slds-input__icon--left, .slds-input-has-icon--left-right .slds-input__icon_left,
+  .slds-input-has-icon--left-right .slds-input__icon--left {
+    left: 0.5rem; } }
+
 .slds-input-has-icon_left-right .slds-input__icon_right,
 .slds-input-has-icon_left-right .slds-input__icon--right, .slds-input-has-icon--left-right .slds-input__icon_right,
 .slds-input-has-icon--left-right .slds-input__icon--right {
   right: 0.75rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-input-has-icon_left-right .slds-input__icon_right,
+  .slds-input-has-icon_left-right .slds-input__icon--right, .slds-input-has-icon--left-right .slds-input__icon_right,
+  .slds-input-has-icon--left-right .slds-input__icon--right {
+    right: 0.5rem; } }
 
 .slds-input-has-icon_left-right .slds-input,
 .slds-input-has-icon_left-right .slds-input_bare,
@@ -6810,7 +7048,7 @@ a.slds-button--inverse:focus {
 .slds-input-has-icon_group-right .slds-input,
 .slds-input-has-icon_group-right .slds-input_bare,
 .slds-input-has-icon_group-right .slds-input--bare {
-  padding-right: 3.25rem; }
+  padding-right: 3.5rem; }
 
 /**
  * @summary Positions two items (icons and/or spinners) on one side or the other of the input
@@ -6841,6 +7079,10 @@ a.slds-button--inverse:focus {
   right: 1.5rem;
   left: auto; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-input__icon-group_right .slds-input__spinner {
+    right: calc(1.5rem + 0.25rem); } }
+
 /**
  * @summary Use on input container to let it know there is fixed text to the left or right of the input
  *
@@ -6868,25 +7110,47 @@ a.slds-button--inverse:focus {
   color: #c23934; }
 
 /**
+  * @summary Variant for number input with increment and decrement buttons
+  *
+  * @name base
+  * @selector .slds-input_counter
+  * @restrict .slds-input
+  * @variant
+*/
+.slds-input_counter {
+  text-align: center;
+  padding: 0 3rem; }
+
+.slds-input_counter[type='number'] {
+  -moz-appearance: textfield; }
+
+.slds-input_counter::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+          appearance: none;
+  margin: 0; }
+
+/**
  * @summary Positions decrement button within counter input field
  *
  * @selector .slds-input__button_decrement
- * @restrict button
+ * @restrict  .slds-button
  */
 .slds-input__button_decrement {
   position: absolute;
-  bottom: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
   left: 0.75rem; }
 
 /**
  * @summary Positions increment button within counter input field
  *
  * @selector .slds-input__button_increment
- * @restrict button
+ * @restrict .slds-button
  */
 .slds-input__button_increment {
   position: absolute;
-  bottom: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
   right: 0.75rem; }
 
 /**
@@ -6904,6 +7168,7 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem;
   width: 100%;
   transition: border 0.1s linear, background-color 0.1s linear;
+  -webkit-appearance: none;
   resize: vertical;
   padding: 0.5rem 0.75rem; }
 
@@ -6949,11 +7214,24 @@ a.slds-button--inverse:focus {
 .slds-radio {
   display: inline-block;
   /**
+   * @summary Label container of the text and faux radio
+   * @selector .slds-radio__label
+   * @restrict .slds-radio label
+   */
+  /**
    * Creates a custom styled radio button
    *
    * @selector .slds-radio_faux
    * @restrict [class*='slds-radio'] span
    */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-radio .slds-radio__label {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    min-height: 2.75rem; } }
 
 .slds-radio .slds-radio_faux,
 .slds-radio .slds-radio--faux {
@@ -6967,10 +7245,22 @@ a.slds-button--inverse:focus {
   background: white;
   transition: border 0.1s linear, background-color 0.1s linear; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-radio .slds-radio_faux,
+  .slds-radio .slds-radio--faux {
+    width: 1.5rem;
+    height: 1.5rem; } }
+
 .slds-radio .slds-form-element__label {
   display: inline;
   vertical-align: middle;
-  font-size: 0.8125rem; }
+  font-size: 0.812rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-radio .slds-form-element__label {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    font-size: 1rem; } }
 
 .slds-radio [type="radio"] {
   width: 1px;
@@ -7103,6 +7393,11 @@ a.slds-button--inverse:focus {
    * @selector .slds-radio_faux
    * @restrict .slds-radio_button span
    */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-radio_button,
+  .slds-radio--button {
+    line-height: 2.69rem; } }
 
 .slds-radio_button .slds-radio_faux,
 .slds-radio_button .slds-radio--faux,
@@ -7320,6 +7615,16 @@ a.slds-button--inverse:focus {
   display: inline-block;
   position: relative;
   /**
+   * @summary Creates a custom styled checkbox
+   * @selector .slds-checkbox_faux
+   * @restrict .slds-checkbox span
+   */
+  /**
+   * @summary Container for faux checkbox, text, and slds-form-element__label
+   * @selector .slds-checkbox__label
+   * @restrict .slds-checkbox label
+   */
+  /**
    * @name stacked
    * @summary stacks label over checkbox
    * @selector .slds-checkbox_stacked
@@ -7327,37 +7632,7 @@ a.slds-button--inverse:focus {
    * @modifier
    * @group layout
    * @deprecated
-   */
-  /**
-   * @summary Creates a custom styled checkbox
-   * @selector .slds-checkbox_faux
-   * @restrict .slds-checkbox span
    */ }
-
-.slds-checkbox.slds-checkbox_stacked {
-  /**
-     * @summary Container for faux checkbox element
-     * @selector .slds-checkbox__label
-     * @restrict .slds-checkbox label
-     */ }
-
-.slds-checkbox.slds-checkbox_stacked .slds-checkbox__label {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-      flex-direction: column; }
-
-.slds-checkbox.slds-checkbox_stacked .slds-form-element__label {
-  margin-bottom: 0.25rem;
-  font-size: 0.75rem; }
-
-.slds-checkbox.slds-checkbox_stacked .slds-checkbox_faux {
-  -ms-flex-order: 1;
-      order: 1;
-  margin-bottom: 1px; }
-
-.slds-checkbox.slds-checkbox_stacked .slds-required {
-  float: left; }
 
 .slds-checkbox .slds-checkbox_faux,
 .slds-checkbox .slds-checkbox--faux {
@@ -7371,10 +7646,33 @@ a.slds-button--inverse:focus {
   background: white;
   transition: border 0.1s linear, background-color 0.1s linear; }
 
-.slds-checkbox .slds-form-element__label {
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox .slds-checkbox_faux,
+  .slds-checkbox .slds-checkbox--faux {
+    width: 1.5rem;
+    height: 1.5rem;
+    -ms-flex-negative: 0;
+        flex-shrink: 0; } }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox .slds-checkbox__label {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-align: center;
+        align-items: center;
+    vertical-align: middle;
+    min-height: 2.75rem; } }
+
+.slds-checkbox .slds-checkbox__label .slds-form-element__label {
   display: inline;
   vertical-align: middle;
-  font-size: 0.8125rem; }
+  font-size: 0.812rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox .slds-checkbox__label .slds-form-element__label {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    font-size: 1rem; } }
 
 .slds-checkbox [type="checkbox"] {
   width: 1px;
@@ -7406,6 +7704,17 @@ a.slds-button--inverse:focus {
   border-bottom: 2px solid #0070d2;
   /*! @noflip */
   border-left: 2px solid #0070d2; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox [type="checkbox"]:checked + .slds-checkbox_faux:after,
+  .slds-checkbox [type="checkbox"]:checked + .slds-checkbox--faux:after,
+  .slds-checkbox [type="checkbox"]:checked ~ .slds-checkbox_faux:after,
+  .slds-checkbox [type="checkbox"]:checked ~ .slds-checkbox--faux:after,
+  .slds-checkbox [type="checkbox"]:checked + .slds-checkbox__label .slds-checkbox_faux:after,
+  .slds-checkbox [type="checkbox"]:checked + .slds-checkbox__label .slds-checkbox--faux:after {
+    height: 0.375rem;
+    width: 0.75rem;
+    margin-top: -1px; } }
 
 .slds-checkbox [type="checkbox"]:focus + .slds-checkbox_faux,
 .slds-checkbox [type="checkbox"]:focus + .slds-checkbox--faux,
@@ -7444,6 +7753,15 @@ a.slds-button--inverse:focus {
   border: 0;
   transform: translate3d(-50%, -50%, 0); }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox [type="checkbox"]:indeterminate + .slds-checkbox_faux:after,
+  .slds-checkbox [type="checkbox"]:indeterminate + .slds-checkbox--faux:after,
+  .slds-checkbox [type="checkbox"]:indeterminate ~ .slds-checkbox_faux:after,
+  .slds-checkbox [type="checkbox"]:indeterminate ~ .slds-checkbox--faux:after,
+  .slds-checkbox [type="checkbox"]:indeterminate + .slds-checkbox__label .slds-checkbox_faux:after,
+  .slds-checkbox [type="checkbox"]:indeterminate + .slds-checkbox__label .slds-checkbox--faux:after {
+    width: 0.75rem; } }
+
 .slds-checkbox [type="checkbox"][disabled] + .slds-checkbox_faux,
 .slds-checkbox [type="checkbox"][disabled] + .slds-checkbox--faux,
 .slds-checkbox [type="checkbox"][disabled] ~ .slds-checkbox_faux,
@@ -7460,6 +7778,29 @@ a.slds-button--inverse:focus {
 .slds-checkbox [type="checkbox"][disabled] + .slds-checkbox__label .slds-checkbox_faux:after,
 .slds-checkbox [type="checkbox"][disabled] + .slds-checkbox__label .slds-checkbox--faux:after {
   border-color: #969492; }
+
+.slds-checkbox.slds-checkbox_stacked .slds-checkbox__label {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: start;
+      align-items: flex-start; }
+
+.slds-checkbox.slds-checkbox_stacked .slds-form-element__label {
+  font-size: 0.75rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox.slds-checkbox_stacked .slds-form-element__label {
+    font-size: 0.875rem; } }
+
+.slds-checkbox.slds-checkbox_stacked .slds-checkbox_faux {
+  -ms-flex-order: 1;
+      order: 1;
+  margin-bottom: 1px; }
+
+.slds-checkbox.slds-checkbox_stacked .slds-required {
+  float: left; }
 
 .slds-has-error .slds-checkbox [type="checkbox"] + .slds-checkbox_faux,
 .slds-has-error .slds-checkbox [type="checkbox"] + .slds-checkbox--faux,
@@ -7496,7 +7837,7 @@ a.slds-button--inverse:focus {
   margin-right: 0.5rem; }
 
 /**
- * @summary
+ * @summary Checkbox with top-level label and value != label
  * @name form-element
  * @selector .slds-checkbox_standalone
  * @restrict .slds-checkbox
@@ -7506,14 +7847,33 @@ a.slds-button--inverse:focus {
 .slds-checkbox_standalone {
   pointer-events: none; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_standalone {
+    min-height: 2.75rem; } }
+
 .slds-checkbox_standalone [type="checkbox"] {
   width: 1rem;
   height: 1rem;
   margin: 0;
-  clip: auto; }
+  clip: auto;
+  opacity: 0; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_standalone [type="checkbox"] {
+    width: 2.75rem;
+    height: 2.75rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); } }
 
 .slds-checkbox_standalone .slds-checkbox_faux {
   display: block; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_standalone .slds-checkbox_faux {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); } }
 
 /**
  * @summary Initializes checkbox toggle
@@ -7532,6 +7892,18 @@ a.slds-button--inverse:focus {
    * @selector .slds-checkbox_faux
    * @restrict .slds-checkbox_toggle span
    */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_toggle,
+  .slds-checkbox--toggle {
+    padding: 0.125rem 0; } }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_toggle .slds-form-element__label,
+  .slds-checkbox--toggle .slds-form-element__label {
+    -ms-flex-align: start;
+        align-items: flex-start;
+    font-size: 1rem; } }
 
 .slds-checkbox_toggle .slds-checkbox_faux,
 .slds-checkbox_toggle .slds-checkbox--faux,
@@ -7602,6 +7974,13 @@ a.slds-button--inverse:focus {
        * @selector .slds-checkbox_off
        * @restrict .slds-checkbox_faux_container span
        */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_toggle [type="checkbox"] + .slds-checkbox_faux_container,
+  .slds-checkbox_toggle [type="checkbox"] + .slds-checkbox--faux_container,
+  .slds-checkbox--toggle [type="checkbox"] + .slds-checkbox_faux_container,
+  .slds-checkbox--toggle [type="checkbox"] + .slds-checkbox--faux_container {
+    font-size: 0.75rem; } }
 
 .slds-checkbox_toggle [type="checkbox"] + .slds-checkbox_faux_container .slds-checkbox_off,
 .slds-checkbox_toggle [type="checkbox"] + .slds-checkbox_faux_container .slds-checkbox--off,
@@ -7837,6 +8216,18 @@ a.slds-button--inverse:focus {
    * @restrict .slds-checkbox_add-button label
    */ }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_add-button,
+  .slds-checkbox--add-button {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -ms-flex-pack: center;
+        justify-content: center; } }
+
 .slds-checkbox_add-button .slds-checkbox_faux,
 .slds-checkbox_add-button .slds-checkbox--faux,
 .slds-checkbox--add-button .slds-checkbox_faux,
@@ -7849,6 +8240,14 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem;
   background-color: white;
   cursor: pointer; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_add-button .slds-checkbox_faux,
+  .slds-checkbox_add-button .slds-checkbox--faux,
+  .slds-checkbox--add-button .slds-checkbox_faux,
+  .slds-checkbox--add-button .slds-checkbox--faux {
+    width: 2rem;
+    height: 2rem; } }
 
 .slds-checkbox_add-button .slds-checkbox_faux:before, .slds-checkbox_add-button .slds-checkbox_faux:after,
 .slds-checkbox_add-button .slds-checkbox--faux:before,
@@ -7927,7 +8326,7 @@ a.slds-button--inverse:focus {
 .slds-checkbox--add-button [type="checkbox"]:checked ~ .slds-checkbox--faux:before,
 .slds-checkbox--add-button [type="checkbox"]:checked + .slds-checkbox_faux:before,
 .slds-checkbox--add-button [type="checkbox"]:checked + .slds-checkbox--faux:before {
-  left: 0.3125rem;
+  left: 0.312rem;
   width: 0.125rem;
   height: 1rem;
   transform: rotate(40deg); }
@@ -7940,9 +8339,9 @@ a.slds-button--inverse:focus {
 .slds-checkbox--add-button [type="checkbox"]:checked ~ .slds-checkbox--faux:after,
 .slds-checkbox--add-button [type="checkbox"]:checked + .slds-checkbox_faux:after,
 .slds-checkbox--add-button [type="checkbox"]:checked + .slds-checkbox--faux:after {
-  top: 0.3125rem;
+  top: 0.312rem;
   left: -0.625rem;
-  width: 0.5625rem;
+  width: 0.562rem;
   height: 0.125rem;
   transform: rotate(40deg); }
 
@@ -8033,6 +8432,11 @@ a.slds-button--inverse:focus {
    * @selector .slds-checkbox_button__label
    * @restrict .slds-checkbox_button label
    */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-checkbox_button,
+  .slds-checkbox--button {
+    line-height: calc(2.75rem - 0.125rem); } }
 
 .slds-checkbox_button .slds-checkbox_faux,
 .slds-checkbox_button .slds-checkbox--faux,
@@ -8465,6 +8869,12 @@ a.slds-button--inverse:focus {
   float: none;
   padding-top: 0.25rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element_stacked .slds-form-element__icon,
+  .slds-form_stacked .slds-form-element .slds-form-element__icon,
+  .slds-form_horizontal .slds-form-element_stacked .slds-form-element__icon {
+    padding-top: 0; } }
+
 /**
  * @summary Horizontal form elements with label left-aligned to the control
  * @name horizontal
@@ -8526,12 +8936,33 @@ a.slds-button--inverse:focus {
         flex-basis: calc(33% - 1.25rem);
     margin-bottom: 0;
     position: relative;
-    z-index: 1; }
+    z-index: 1; } }
+
+@media (min-width: 48em) and (pointer: coarse) and (hover: none) {
+  .slds-form-element_horizontal .slds-form-element__label,
+  .slds-form_horizontal .slds-form-element .slds-form-element__label,
+  .slds-form_stacked .slds-form-element_horizontal .slds-form-element__label {
+    display: block;
+    max-width: calc(33% - 2.75rem);
+    -ms-flex-preferred-size: calc(33% - 2.75rem);
+        flex-basis: calc(33% - 2.75rem);
+    padding-top: 0.25rem; } }
+
+@media (min-width: 48em) {
   .slds-form-element_horizontal .slds-form-element__control,
   .slds-form_horizontal .slds-form-element .slds-form-element__control,
   .slds-form_stacked .slds-form-element_horizontal .slds-form-element__control {
     padding-left: 33%;
-    clear: none; }
+    clear: none; } }
+
+@media (min-width: 48em) and (pointer: coarse) and (hover: none) {
+  .slds-form-element_horizontal .slds-form-element__control,
+  .slds-form_horizontal .slds-form-element .slds-form-element__control,
+  .slds-form_stacked .slds-form-element_horizontal .slds-form-element__control {
+    display: block;
+    min-height: 0; } }
+
+@media (min-width: 48em) {
   .slds-form-element_horizontal .slds-form-element__control .slds-form-element__control,
   .slds-form_horizontal .slds-form-element .slds-form-element__control .slds-form-element__control,
   .slds-form_stacked .slds-form-element_horizontal .slds-form-element__control .slds-form-element__control {
@@ -8540,11 +8971,27 @@ a.slds-button--inverse:focus {
   .slds-form_horizontal .slds-form-element .slds-form-element__icon,
   .slds-form_stacked .slds-form-element_horizontal .slds-form-element__icon {
     float: left;
-    padding-top: 0.25rem; }
+    padding-top: 0.25rem; } }
+
+@media (min-width: 48em) and (pointer: coarse) and (hover: none) {
+  .slds-form-element_horizontal .slds-form-element__icon,
+  .slds-form_horizontal .slds-form-element .slds-form-element__icon,
+  .slds-form_stacked .slds-form-element_horizontal .slds-form-element__icon {
+    padding-top: 0; } }
+
+@media (min-width: 48em) {
   .slds-form-element_horizontal .slds-checkbox_standalone,
   .slds-form_horizontal .slds-form-element .slds-checkbox_standalone,
   .slds-form_stacked .slds-form-element_horizontal .slds-checkbox_standalone {
-    padding: 0.25rem 0; }
+    padding: 0.25rem 0; } }
+
+@media (min-width: 48em) and (pointer: coarse) and (hover: none) {
+  .slds-form-element_horizontal .slds-checkbox__label,
+  .slds-form_horizontal .slds-form-element .slds-checkbox__label,
+  .slds-form_stacked .slds-form-element_horizontal .slds-checkbox__label {
+    display: block; } }
+
+@media (min-width: 48em) {
   .slds-form-element_horizontal .slds-checkbox:not(.slds-checkbox_stacked) .slds-form-element__label,
   .slds-form-element_horizontal .slds-radio .slds-form-element__label,
   .slds-form_horizontal .slds-form-element .slds-checkbox:not(.slds-checkbox_stacked) .slds-form-element__label,
@@ -8584,6 +9031,12 @@ a.slds-button--inverse:focus {
   .slds-form_horizontal .slds-form-element .slds-input-has-icon_left-right .slds-input__icon_left,
   .slds-form_stacked .slds-form-element_horizontal .slds-input-has-icon_left-right .slds-input__icon_left {
     left: calc(33% + 0.75rem); } }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-form-element_horizontal .slds-button_icon,
+  .slds-form_horizontal .slds-form-element .slds-button_icon,
+  .slds-form_stacked .slds-form-element_horizontal .slds-button_icon {
+    vertical-align: top; } }
 
 /**
  * @summary Creates a form that consists of multiple form groups
@@ -8993,11 +9446,6 @@ a.slds-button--inverse:focus {
   display: flex;
   -ms-flex-align: center;
       align-items: center; }
-
-.slds-file-selector_files .slds-file-selector__button,
-.slds-file-selector--files .slds-file-selector__button {
-  max-height: 1.625rem;
-  line-height: 1.625rem; }
 
 .slds-file-selector_files .slds-file-selector__text,
 .slds-file-selector--files .slds-file-selector__text {
@@ -10137,6 +10585,7 @@ a.slds-button--inverse:focus {
 .slds-nubbin--top-left:after,
 .slds-nubbin_top-left-corner:before,
 .slds-nubbin_top-left-corner:after {
+  /*! @noflip */
   left: 1.5rem;
   top: -0.5rem; }
 
@@ -10183,9 +10632,12 @@ a.slds-button--inverse:focus {
 .slds-nubbin--top-right:after,
 .slds-nubbin_top-right-corner:before,
 .slds-nubbin_top-right-corner:after {
+  /*! @noflip */
   left: auto;
+  /*! @noflip */
   right: 1.5rem;
   top: -0.5rem;
+  /*! @noflip */
   margin-right: -0.5rem; }
 
 /**
@@ -10266,6 +10718,7 @@ a.slds-button--inverse:focus {
 .slds-nubbin--bottom-left:after,
 .slds-nubbin_bottom-left-corner:before,
 .slds-nubbin_bottom-left-corner:after {
+  /*! @noflip */
   left: 1.5rem;
   top: 100%;
   margin-top: -0.5rem; }
@@ -10313,10 +10766,13 @@ a.slds-button--inverse:focus {
 .slds-nubbin--bottom-right:after,
 .slds-nubbin_bottom-right-corner:before,
 .slds-nubbin_bottom-right-corner:after {
+  /*! @noflip */
   left: auto;
+  /*! @noflip */
   right: 1.5rem;
   top: 100%;
   margin-top: -0.5rem;
+  /*! @noflip */
   margin-right: -0.5rem; }
 
 /**
@@ -10903,6 +11359,123 @@ a.slds-button--inverse:focus {
 .slds-popover_warning.slds-nubbin_top:before, .slds-popover_warning.slds-nubbin--top:before, .slds-popover_warning.slds-nubbin_top-left:before, .slds-popover_warning.slds-nubbin--top-left:before, .slds-popover_warning.slds-nubbin_top-right:before, .slds-popover_warning.slds-nubbin--top-right:before, .slds-popover_warning.slds-nubbin_left-top:before, .slds-popover_warning.slds-nubbin--left-top:before, .slds-popover_warning.slds-nubbin_right-top:before, .slds-popover_warning.slds-nubbin--right-top:before {
   background-color: #ffb75d; }
 
+/**
+ * Prompt components are used to provide an interactive custom message.
+ *
+ * @summary Initializes a prompt non-modal dialog
+ *
+ * @name prompt
+ * @selector .slds-popover_prompt
+ * @restrict .slds-popover
+ * @support dev-ready
+ * @variant
+ */
+.slds-popover_prompt {
+  width: 25rem;
+  /**
+    * @summary Applies styles for footer area of popover
+    * @selector .slds-popover__footer
+    * @restrict .slds-popover footer
+    */ }
+
+.slds-popover_prompt .slds-popover__body {
+  padding: 1rem; }
+
+.slds-popover_prompt .slds-popover__footer {
+  border-top: 2px solid #182337; }
+
+/**
+  * @summary Applies styles for heading text of prompt
+  * @selector .slds-popover_prompt__heading
+  * @restrict .slds-popover_prompt .slds-media__body > h2
+  */
+.slds-popover_prompt__heading {
+  font-size: 1rem;
+  line-height: 1.25;
+  font-weight: 700; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-popover_prompt__heading {
+    font-size: 1.25rem; } }
+
+/**
+  * @summary Applies styles for the optional action link in the footer of prompt
+  * @selector .slds-popover_prompt__action-link
+  * @restrict .slds-popover_prompt .slds-popover__footer span
+  */
+.slds-popover_prompt__action-link {
+  margin-right: 1rem; }
+
+/**
+ * Position
+ */
+/**
+  * @summary Position Prompt top left
+  * @selector .slds-popover_prompt_top-left
+  * @restrict .slds-popover_prompt
+  * @modifier
+  */
+/**
+  * @summary Position Prompt top center
+  * @selector .slds-popover_prompt_top
+  * @restrict .slds-popover_prompt
+  * @modifier
+  */
+/**
+  * @summary Position Prompt top right
+  * @selector .slds-popover_prompt_top-right
+  * @restrict .slds-popover_prompt
+  * @modifier
+  */
+/**
+  * @summary Position Prompt bottom left
+  * @selector .slds-popover_prompt_bottom-left
+  * @restrict .slds-popover_prompt
+  * @modifier
+  */
+/**
+  * @summary Position Prompt bottom center
+  * @selector .slds-popover_prompt_bottom
+  * @restrict .slds-popover_prompt
+  * @modifier
+  */
+/**
+  * @summary Position Prompt bottom right
+  * @selector .slds-popover_prompt_bottom-right
+  * @restrict .slds-popover_prompt
+  * @modifier
+  */
+.slds-popover_prompt_top,
+.slds-popover_prompt_top-right,
+.slds-popover_prompt_top-left,
+.slds-popover_prompt_bottom,
+.slds-popover_prompt_bottom-right,
+.slds-popover_prompt_bottom-left {
+  position: absolute; }
+
+.slds-popover_prompt_top,
+.slds-popover_prompt_top-right,
+.slds-popover_prompt_top-left {
+  top: 0.5rem; }
+
+.slds-popover_prompt_bottom,
+.slds-popover_prompt_bottom-right,
+.slds-popover_prompt_bottom-left {
+  bottom: 0.5rem; }
+
+.slds-popover_prompt_top,
+.slds-popover_prompt_bottom {
+  left: 50%;
+  margin-left: -12.5rem; }
+
+.slds-popover_prompt_top-right,
+.slds-popover_prompt_bottom-right {
+  right: 0.5rem; }
+
+.slds-popover_prompt_top-left,
+.slds-popover_prompt_bottom-left {
+  left: 0.5rem; }
+
 .slds-tooltip {
   position: relative;
   border-radius: 0.25rem;
@@ -11270,7 +11843,7 @@ a.slds-button--inverse:focus {
    * @group width
    */
   /**
-   * @summary Sets min-width of 25rem/400px
+   * @summary Sets width equal to input
    * @selector .slds-dropdown_large
    * @restrict .slds-dropdown
    * @modifier
@@ -11337,8 +11910,14 @@ a.slds-button--inverse:focus {
    * @required
    */ }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-dropdown {
+    padding: 0;
+    font-size: 1rem; } }
+
 .slds-dropdown_left, .slds-dropdown--left {
   left: 0;
+  right: auto;
   transform: translateX(0); }
 
 .slds-dropdown_right, .slds-dropdown--right {
@@ -11366,7 +11945,7 @@ a.slds-button--inverse:focus {
   max-width: 512px; }
 
 .slds-dropdown_fluid, .slds-dropdown--fluid {
-  min-width: auto;
+  min-width: 12rem;
   max-width: 100%;
   width: 100%; }
 
@@ -11438,6 +12017,10 @@ a.slds-button--inverse:focus {
   font-weight: 700;
   padding: 0.5rem 0.75rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-dropdown__header {
+    font-size: 1rem; } }
+
 .slds-dropdown__item {
   line-height: 1.5;
   font-weight: 400;
@@ -11489,6 +12072,11 @@ a.slds-button--inverse:focus {
        * @modifier
        * @group notification
        */ }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-dropdown__item > a {
+    line-height: calc(2.75rem - 0rem);
+    padding: 0 0.75rem; } }
 
 .slds-dropdown__item > a:hover, .slds-dropdown__item > a:focus {
   outline: 0;
@@ -11817,8 +12405,6 @@ a.slds-button--inverse:focus {
  * @scroller
  */
 /**
- * @summary Container that manages layout when a listbox of pill options sit next to a combobox search input
- *
  * @name base
  * @selector .slds-combobox_container
  * @restrict div
@@ -11914,9 +12500,6 @@ a.slds-button--inverse:focus {
  * @support dev-ready
  * @variant
  */
-.slds-listbox {
-  font-size: 0.8125rem; }
-
 /**
  * Inline listbox
  *
@@ -11971,6 +12554,11 @@ a.slds-button--inverse:focus {
 .slds-listbox--horizontal li + li {
   padding-left: 0.125rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox_horizontal li + li,
+  .slds-listbox--horizontal li + li {
+    padding-left: 0.25rem; } }
+
 /**
  * Choosable option within listbox
  *
@@ -11998,6 +12586,10 @@ a.slds-button--inverse:focus {
 .slds-listbox__option-header {
   font-size: 0.875rem;
   font-weight: 700; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox__option-header {
+    font-size: 1rem; } }
 
 /**
  * @summary Container for listbox option icon
@@ -12087,6 +12679,22 @@ a.slds-button--inverse:focus {
 .slds-listbox--vertical .slds-listbox__option_plain,
 .slds-listbox--vertical .slds-listbox__option--plain {
   padding: 0.5rem 0.75rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox_vertical .slds-listbox__option_plain,
+  .slds-listbox_vertical .slds-listbox__option--plain,
+  .slds-listbox--vertical .slds-listbox__option_plain,
+  .slds-listbox--vertical .slds-listbox__option--plain {
+    line-height: calc(2.75rem - 0rem);
+    padding-top: 0;
+    padding-bottom: 0;
+    -ms-flex-align: center;
+        align-items: center; }
+  .slds-listbox_vertical .slds-listbox__option_plain .slds-media__figure,
+  .slds-listbox_vertical .slds-listbox__option--plain .slds-media__figure,
+  .slds-listbox--vertical .slds-listbox__option_plain .slds-media__figure,
+  .slds-listbox--vertical .slds-listbox__option--plain .slds-media__figure {
+    margin-right: 0.5rem; } }
 
 .slds-listbox_vertical .slds-listbox__option_term,
 .slds-listbox--vertical .slds-listbox__option_term {
@@ -12196,6 +12804,11 @@ a.slds-button--inverse:focus {
       flex-shrink: 0;
   padding: 0.125rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox_object-switcher,
+  .slds-listbox--object-switcher {
+    padding: 0; } }
+
 /**
  * @summary Modifier that identifies the combobox as the object switcher, applies specific interactions for its context
  * @selector .slds-combobox_object-switcher
@@ -12211,12 +12824,12 @@ a.slds-button--inverse:focus {
   font-size: 0.75rem;
   color: #3e3e3c; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-combobox_object-switcher .slds-combobox__input {
+    font-size: 1rem; } }
+
 .slds-combobox_object-switcher .slds-combobox__input:focus, .slds-combobox_object-switcher .slds-combobox__input.slds-has-focus {
   width: 10rem; }
-
-.slds-combobox_object-switcher .slds-icon {
-  width: 0.75rem;
-  height: 0.75rem; }
 
 /**
  * @summary Input field within a combobox
@@ -12282,6 +12895,7 @@ a.slds-button--inverse:focus {
   display: -ms-flexbox;
   display: flex;
   position: relative;
+  background: white;
   border: 1px solid #dddbda;
   border-top: 0;
   border-bottom-left-radius: 0.25rem;
@@ -12300,7 +12914,7 @@ a.slds-button--inverse:focus {
   position: relative;
   padding: 0;
   padding-right: 3.75rem;
-  height: calc(1.875rem + 1px);
+  height: 1.875rem;
   overflow: hidden;
   /**
    * @summary Expanded state of a selection group
@@ -12313,18 +12927,33 @@ a.slds-button--inverse:focus {
    * @restrict .slds-listbox_selection-group > span
    */ }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox_selection-group {
+    height: 2.75rem; } }
+
 .slds-listbox_selection-group.slds-is-expanded {
   height: auto;
   padding: 0; }
 
+.slds-listbox_selection-group .slds-listbox {
+  padding: 0 0 0.125rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox_selection-group .slds-listbox {
+    padding: 0 0.25rem 0.375rem; } }
+
 .slds-listbox_selection-group .slds-listbox-item {
-  padding: 0.125rem;
-  line-height: 1; }
+  padding: 0.125rem 0.125rem 0; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-listbox_selection-group .slds-listbox-item {
+    padding: 0.375rem 0.125rem 0; } }
 
 .slds-listbox_selection-group .slds-listbox-toggle {
   position: absolute;
-  right: 0.5rem;
-  top: 0.5rem; }
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0.5rem; }
 
 .slds-listbox_selection-group .slds-listbox-toggle .slds-button {
   line-height: 1; }
@@ -12372,13 +13001,26 @@ a.slds-button--inverse:focus {
    * @restrict .slds-combobox
    */ }
 
+.slds-has-inline-listbox .slds-combobox,
+.slds-has-object-switcher .slds-combobox {
+  -ms-flex-preferred-size: 50%;
+      flex-basis: 50%;
+  -ms-flex-negative: 0;
+      flex-shrink: 0; }
+
 .slds-has-inline-listbox .slds-combobox__input,
 .slds-has-object-switcher .slds-combobox__input {
-  min-height: 1.625rem;
-  line-height: 1.625rem;
+  min-height: 100%;
+  line-height: calc(1.875rem - 2px);
   border: 0;
   padding-top: 0.125rem;
   padding-bottom: 0.125rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-has-inline-listbox .slds-combobox__input,
+  .slds-has-object-switcher .slds-combobox__input {
+    line-height: calc(2.75rem - 0.25rem);
+    min-height: 2.75rem; } }
 
 .slds-has-inline-listbox .slds-combobox__input:focus, .slds-has-inline-listbox .slds-combobox__input:active,
 .slds-has-object-switcher .slds-combobox__input:focus,
@@ -12418,9 +13060,12 @@ a.slds-button--inverse:focus {
 .slds-has-inline-listbox [role="listbox"] {
   display: -ms-inline-flexbox;
   display: inline-flex;
-  padding: 0; }
+  padding: 0 0.125rem; }
 
-.slds-has-inline-listbox .slds-combobox__input[value],
+@media (pointer: coarse) and (hover: none) {
+  .slds-has-inline-listbox [role="listbox"] {
+    padding: 0 0.375rem; } }
+
 .slds-has-inline-listbox .slds-combobox__input-value {
   box-shadow: 0 0 0 2px #fff inset, 0 0 0 3px #dddbda inset; }
 
@@ -13852,7 +14497,7 @@ a.slds-button--inverse:focus {
   animation: ding 0.8s ease-out;
   opacity: 1;
   transition-delay: 0.5s;
-  transform-origin: 1.1875rem 0; }
+  transform-origin: 1.188rem 0; }
 
 @keyframes ding {
   75% {
@@ -14258,7 +14903,7 @@ a.slds-button--inverse:focus {
   border-radius: 0;
   min-width: 0%;
   color: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   z-index: 1; }
 
 .slds-context-bar__label-action:focus, .slds-context-bar__label-action:focus:hover {
@@ -15293,6 +15938,12 @@ a.slds-button--inverse:focus {
    * @restrict .slds-modal__header
    */
   /**
+    * Modal title (optional)
+    *
+    * @selector .slds-modal__title
+    * @restrict .slds-modal__header h2
+    */
+  /**
    * Creates the scrollable content area for the modal.
    *
    * @selector .slds-modal__content
@@ -15374,6 +16025,15 @@ a.slds-button--inverse:focus {
   border-top-right-radius: 0.25rem;
   border-top-left-radius: 0.25rem; }
 
+.slds-modal .slds-modal__title {
+  font-weight: 300;
+  font-size: 1.25rem;
+  line-height: 1.25; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-modal .slds-modal__title {
+    font-weight: 700; } }
+
 .slds-modal__content {
   overflow: hidden;
   overflow-y: auto; }
@@ -15426,6 +16086,13 @@ a.slds-button--inverse:focus {
   top: -2.5rem;
   right: -0.5rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-modal__close {
+    width: 2.75rem;
+    height: 2.75rem;
+    top: -2.75rem;
+    right: 0; } }
+
 /**
  * @summary Widens the modal to take more horizontal space than default
  * @name small
@@ -15436,8 +16103,9 @@ a.slds-button--inverse:focus {
  */
 @media (min-width: 48em) {
   .slds-modal_small .slds-modal__container {
-    width: 52.0625rem;
-    max-width: none; } }
+    width: 60%;
+    max-width: 52.0625rem;
+    min-width: 40rem; } }
 
 /**
  * @summary Widens the modal to take more horizontal space than small
@@ -15581,6 +16249,10 @@ a.slds-button--inverse:focus {
   -ms-flex: 3 1 auto;
       flex: 3 1 auto; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-map_container {
+    padding: 1rem 1rem 0; } }
+
 /**
  * @summary 3rd party map element found inside of the map container
  * @selector .slds-map
@@ -15591,6 +16263,10 @@ a.slds-button--inverse:focus {
   min-width: 23.75rem;
   width: 100%;
   max-height: 100%; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-map {
+    min-width: 21.75rem; } }
 
 .slds-map:before {
   content: '';
@@ -15621,6 +16297,10 @@ a.slds-button--inverse:focus {
   max-height: 41.25rem;
   background: white; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-has-coordinates {
+    max-height: none; } }
+
 .slds-has-coordinates .slds-map:before {
   padding-top: 75%; }
 
@@ -15650,6 +16330,10 @@ a.slds-button--inverse:focus {
 .slds-coordinates__title {
   font-size: 1rem;
   font-weight: 700; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-coordinates__title {
+    font-size: 1.125rem; } }
 
 /**
  * @summary Actionable items inside of the coordinates list
@@ -15782,9 +16466,9 @@ a.slds-button--inverse:focus {
    * @group interactions
    */ }
 
-.slds-app-launcher__tile:hover, .slds-app-launcher__tile:focus {
+.slds-app-launcher__tile:hover, .slds-app-launcher__tile:focus, .slds-app-launcher__tile:active {
   outline: 0;
-  border-color: #1589ee; }
+  border-color: #005fb2; }
 
 .slds-app-launcher__tile.slds-is-draggable .slds-app-launcher__tile-figure {
   padding-bottom: 0.25rem; }
@@ -16032,7 +16716,7 @@ a.slds-button--inverse:focus {
  */
 .slds-visual-picker__text-check {
   position: absolute;
-  top: -0.0625rem;
+  top: -0.062rem;
   right: 0.625rem;
   width: 0.5rem;
   height: 0.5rem; }
@@ -16134,8 +16818,17 @@ a.slds-button--inverse:focus {
    * @restrict .slds-pill button, .slds-pill span
    */ }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill {
+    line-height: calc(2rem - 0.125rem);
+    padding: 0 0.75rem; } }
+
 .slds-pill + .slds-pill {
   margin-left: 0.125rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill + .slds-pill {
+    margin-left: 0.25rem; } }
 
 .slds-pill:hover {
   background-color: #f4f6f9; }
@@ -16165,6 +16858,10 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem;
   background-color: white; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill__container, .slds-pill-container, .slds-pill_container {
+    padding: 0.25rem; } }
+
 .slds-pill__container .slds-listbox_inline, .slds-pill-container .slds-listbox_inline, .slds-pill_container .slds-listbox_inline {
   margin-left: 0;
   margin-right: 0; }
@@ -16181,6 +16878,10 @@ a.slds-button--inverse:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill__label {
+    font-size: 0.875rem; } }
 
 .slds-pill__label:focus {
   outline: 0;
@@ -16202,6 +16903,10 @@ a.slds-button--inverse:focus {
 
 .slds-pill__icon ~ .slds-pill__action, .slds-pill__icon_container ~ .slds-pill__action {
   padding-left: calc(1.25rem + 0.25rem + 2px); }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill__icon ~ .slds-pill__action, .slds-pill__icon_container ~ .slds-pill__action {
+    padding-left: calc(1.25rem + 0.75rem + 0.25rem); } }
 
 .slds-pill__remove {
   width: 1rem;
@@ -16238,12 +16943,22 @@ a.slds-button--inverse:focus {
   left: 0.125rem;
   transform: translateY(-50%); }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill_link .slds-pill__icon_container,
+  .slds-pill--link .slds-pill__icon_container {
+    left: 0.75rem; } }
+
 .slds-pill_link .slds-pill__remove,
 .slds-pill--link .slds-pill__remove {
   position: absolute;
   top: 50%;
   right: 0.125rem;
   transform: translateY(-50%); }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill_link .slds-pill__remove,
+  .slds-pill--link .slds-pill__remove {
+    right: 0.75rem; } }
 
 /**
  * Actionable element inside of pill with hyperlink
@@ -16261,6 +16976,12 @@ a.slds-button--inverse:focus {
   text-overflow: ellipsis;
   -ms-flex-positive: 1;
       flex-grow: 1; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-pill__action {
+    padding: 0;
+    padding-left: 0.75rem;
+    padding-right: calc(1rem + 0.75rem + 2px); } }
 
 .slds-pill__action:focus {
   outline: 0;
@@ -16977,6 +17698,10 @@ a.slds-button--inverse:focus {
 .slds-path__nav .slds-is-current:first-child .slds-path__link {
   height: calc(2rem - 0.25rem); }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__nav .slds-is-current:first-child .slds-path__link {
+    height: calc(2.75rem - 0.25rem); } }
+
 .slds-path__nav .slds-is-current .slds-path__link {
   color: #005fb2; }
 
@@ -17006,6 +17731,10 @@ a.slds-button--inverse:focus {
 
 .slds-path__nav .slds-is-active:first-child .slds-path__link {
   height: 2rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__nav .slds-is-active:first-child .slds-path__link {
+    height: 2.75rem; } }
 
 .slds-path__nav .slds-is-active .slds-path__stage {
   transform: translateY(-50%) rotateX(-180deg); }
@@ -17060,26 +17789,44 @@ a.slds-button--inverse:focus {
   -ms-flex: 1;
       flex: 1;
   margin-left: 0.375rem;
-  margin-right: 0.4375rem;
+  margin-right: 0.438rem;
   min-width: 5rem;
   text-align: center; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__item {
+    margin-left: 0.5rem;
+    margin-right: 0.562rem; } }
 
 .slds-path__item:before, .slds-path__item:after {
   content: '';
   position: absolute;
   left: -0.25rem;
-  right: -0.3125rem;
+  right: -0.312rem;
   cursor: pointer; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__item:before, .slds-path__item:after {
+    left: -0.312rem;
+    right: -0.375rem; } }
 
 .slds-path__item:before {
   top: 0;
   height: calc((2rem / 2) + 0.0625rem);
   transform: skew(28deg) translate3d(0, 0, 0); }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__item:before {
+    height: calc((2.75rem / 2) + 0.0625rem); } }
+
 .slds-path__item:after {
   bottom: 0;
   height: 1rem;
   transform: skew(-30deg) translate3d(0, 0, 0); }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__item:after {
+    height: 1.375rem; } }
 
 .slds-path__item:first-child {
   margin-left: 0;
@@ -17089,6 +17836,10 @@ a.slds-button--inverse:focus {
 
 .slds-path__item:first-child:before, .slds-path__item:first-child:after {
   left: 1.125rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__item:first-child:before, .slds-path__item:first-child:after {
+    left: 1.625rem; } }
 
 .slds-path__item:last-child {
   margin-right: 0;
@@ -17101,6 +17852,10 @@ a.slds-button--inverse:focus {
 
 .slds-path__item:last-child:before, .slds-path__item:last-child:after {
   right: 0.625rem; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__item:last-child:before, .slds-path__item:last-child:after {
+    right: 1.125rem; } }
 
 [dir="rtl"] .slds-path__item:before {
   transform: skew(-30deg) translate3d(0, 0, 0); }
@@ -17118,7 +17873,8 @@ a.slds-button--inverse:focus {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; }
+  white-space: nowrap;
+  transform: translate3d(0, 0, 0); }
 
 /**
  * @summary Contains the check mark when the stage is completed
@@ -17159,6 +17915,10 @@ a.slds-button--inverse:focus {
 
 .slds-path__link:focus {
   outline: 0; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-path__link {
+    height: 2.75rem; } }
 
 .slds-path__title,
 .slds-path__stage {
@@ -17624,7 +18384,7 @@ a.slds-button--inverse:focus {
 .slds-progress .slds-progress-bar {
   position: absolute;
   top: 50%;
-  margin-top: -0.0625rem; }
+  margin-top: -0.062rem; }
 
 /**
  * An ordered list containing steps of a process
@@ -17686,6 +18446,20 @@ a.slds-button--inverse:focus {
    * @modifier
    */ }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-progress__item {
+    position: relative;
+    -ms-flex-align: center;
+        align-items: center;
+    min-height: 2.75rem; } }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-progress__item .slds-button:before {
+    content: '';
+    position: absolute;
+    height: 2.75rem;
+    width: calc(100% + 8px); } }
+
 .slds-progress__item.slds-is-completed .slds-progress__marker,
 .slds-progress__item.slds-is-active .slds-progress__marker {
   background: white;
@@ -17737,9 +18511,23 @@ a.slds-button--inverse:focus {
    * @required
    */ }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-progress__marker {
+    width: 1.25rem;
+    height: 1.25rem;
+    -ms-flex-pack: center;
+        justify-content: center; } }
+
 .slds-progress__marker_icon, .slds-progress__marker--icon {
   width: auto;
   height: auto; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-progress__marker_icon .slds-button__icon,
+  .slds-progress__marker_icon .slds-icon, .slds-progress__marker--icon .slds-button__icon,
+  .slds-progress__marker--icon .slds-icon {
+    width: 1.25rem;
+    height: 1.25rem; } }
 
 /**
  * @name vertical
@@ -17785,9 +18573,13 @@ a.slds-button--inverse:focus {
 .slds-progress_vertical .slds-progress__item:before, .slds-progress_vertical .slds-progress__item:after {
   content: '';
   position: absolute;
-  left: 7px;
+  left: calc((1rem / 2) - 1px);
   width: 2px;
   background-color: #dddbda; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-progress_vertical .slds-progress__item:before, .slds-progress_vertical .slds-progress__item:after {
+    left: calc((1.25rem / 2) - 1px); } }
 
 .slds-progress_vertical .slds-progress__item:before {
   top: 0;
@@ -17811,10 +18603,18 @@ a.slds-button--inverse:focus {
   margin-top: 0.75rem;
   padding-bottom: 0.75rem; }
 
+@media (pointer: coarse) and (hover: none) {
+  .slds-progress_vertical .slds-progress__item_content {
+    font-size: 0.875rem; } }
+
 .slds-progress_vertical .slds-progress__list-bordered .slds-progress__item:not(:last-child) .slds-progress__item_content {
   border-bottom: 1px #dddbda solid; }
 
 .slds-progress_vertical .slds-progress__marker {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
   margin-right: 1rem;
   min-width: 1rem;
   z-index: 5; }
@@ -17823,17 +18623,11 @@ a.slds-button--inverse:focus {
   border-right: 0;
   border-left: 0; }
 
-.slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon {
-  margin-left: 1px; }
-
 .slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon svg {
   fill: #5eb4ff; }
 
 .slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon-success svg {
   fill: #4bca81; }
-
-.slds-progress_vertical .slds-progress__item.slds-has-error .slds-progress__marker_icon {
-  margin-left: 1px; }
 
 .slds-progress_vertical .slds-progress__item.slds-has-error .slds-progress__marker_icon svg {
   fill: #c23934; }
@@ -17896,10 +18690,10 @@ a.slds-button--inverse:focus {
  */
 .slds-progress-ring__content {
   position: absolute;
-  top: 0.1875rem;
-  right: 0.1875rem;
-  bottom: 0.1875rem;
-  left: 0.1875rem;
+  top: 0.188rem;
+  right: 0.188rem;
+  bottom: 0.188rem;
+  left: 0.188rem;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: center;
@@ -17999,6 +18793,16 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem; }
 
 /**
+ * Rich text editor container for when toolbar is detached from Textarea.
+ *
+ * @selector .slds-rich-text-editor_toolbar-only
+ * @restrict .slds-rich-text-editor
+ */
+.slds-rich-text-editor_toolbar-only {
+  border: 0;
+  border-radius: 0; }
+
+/**
  * Container for Rich Text Editor Toolbar
  *
  * @selector .slds-rich-text-editor__toolbar
@@ -18052,6 +18856,17 @@ a.slds-button--inverse:focus {
   border-top: 1px solid #dddbda;
   border-bottom: 0; }
 
+/**
+ * Container for Rich Text Editor Toolbar when detached from Textarea
+ *
+ * @selector .slds-rich-text-editor__toolbar_detached
+ * @restrict .slds-rich-text-editor_toolbar-only .slds-rich-text-editor__toolbar
+ */
+.slds-rich-text-editor__toolbar_detached {
+  border-radius: 0;
+  border-top: 0;
+  border-bottom: 0; }
+
 .slds-rich-text-editor .slds-button-group-list {
   margin-right: 0.25rem;
   margin-bottom: 0.25rem;
@@ -18069,6 +18884,26 @@ a.slds-button--inverse:focus {
 .slds-rich-text-editor__select {
   margin-right: 0.25rem;
   margin-bottom: 0.25rem; }
+
+/**
+ * Container X-Small Size for Rich Text Editor Combobox
+ *
+ * @selector .slds-rich-text-editor__select_x-small
+ * @restrict .slds-rich-text-editor__select .slds-combobox
+ */
+.slds-rich-text-editor__select_x-small {
+  max-width: 12rem;
+  width: auto; }
+
+/**
+ * Container XX-Small Size for Rich Text Editor Combobox
+ *
+ * @selector .slds-rich-text-editor__select_xx-small
+ * @restrict .slds-rich-text-editor__select .slds-combobox
+ */
+.slds-rich-text-editor__select_xx-small {
+  max-width: 6rem;
+  width: auto; }
 
 .slds-region_narrow .slds-combobox {
   max-width: 11rem; }
@@ -18420,6 +19255,16 @@ a.slds-button--inverse:focus {
 .slds-rich-text-editor__output blockquote {
   margin: 2rem 1.5rem; }
 
+.slds-rich-text-editor__textarea ins,
+.slds-rich-text-editor__output ins {
+  color: #027e46;
+  text-decoration: underline; }
+
+.slds-rich-text-editor__textarea del,
+.slds-rich-text-editor__output del {
+  color: #c23934;
+  text-decoration: line-through; }
+
 .slds-rich-text-editor__textarea ul,
 .slds-rich-text-editor__output ul {
   margin-left: 1.5rem;
@@ -18670,18 +19515,20 @@ a.slds-button--inverse:focus {
 .slds-spinner__dot-b:before,
 .slds-spinner__dot-a:after,
 .slds-spinner__dot-b:after {
-  position: absolute;
   content: '';
+  position: absolute;
   background: #b0adab;
   border-radius: 50%;
   animation-duration: 1000ms;
-  animation-iteration-count: infinite; }
+  animation-iteration-count: infinite;
+  transform: translate3d(0, 0, 0);
+  will-change: transform; }
 
 .slds-spinner__dot-a {
-  transform: rotate(60deg) translateY(0); }
+  transform: rotate(60deg); }
 
 .slds-spinner__dot-b {
-  transform: rotate(120deg) translateY(0); }
+  transform: rotate(120deg); }
 
 .slds-spinner:before {
   animation-delay: -83.33333ms; }
@@ -18818,24 +19665,28 @@ a.slds-button--inverse:focus {
   animation-name: dotsBounceAfter-extraExtraSmall; }
 
 @keyframes dotsBounceBefore-extraExtraSmall {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    transform: translateX(0);
-    animation-timing-function: cubic-bezier(0.275, 0.0425, 0.34, 0.265); }
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.275, 0.043, 0.34, 0.265); }
   80% {
-    animation-timing-function: cubic-bezier(0, 0.555, 0.35, 0.715);
-    transform: translateX(-0.125rem); }
+    transform: translate3d(-0.125rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 0.555, 0.35, 0.715); }
   100% {
-    transform: translateX(0); } }
+    transform: translate3d(0, 0, 0); } }
 
 @keyframes dotsBounceAfter-extraExtraSmall {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    animation-timing-function: cubic-bezier(0.275, 0.0425, 0.34, 0.265);
-    transform: translateX(0); }
+    animation-timing-function: cubic-bezier(0.275, 0.043, 0.34, 0.265);
+    transform: translate3d(0, 0, 0); }
   80% {
     animation-timing-function: cubic-bezier(0, 0.555, 0.35, 0.715);
-    transform: translateX(0.125rem); }
+    transform: translate3d(0.125rem, 0, 0); }
   100% {
-    transform: translateX(0); } }
+    transform: translate3d(0, 0, 0); } }
 
 /**
  * This is the extra small spinner
@@ -18888,24 +19739,28 @@ a.slds-button--inverse:focus {
   animation-name: dotsBounceAfter-extraSmall; }
 
 @keyframes dotsBounceBefore-extraSmall {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(-0.25rem); }
+    transform: translate3d(-0.25rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
-    transform: translateX(0); } }
+    transform: translate3d(0, 0, 0); } }
 
 @keyframes dotsBounceAfter-extraSmall {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-    transform: translateX(0); }
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(0.25rem); }
+    transform: translate3d(0.25rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
-    transform: translateX(0); } }
+    transform: translate3d(0, 0, 0); } }
 
 /**
  * This is the small spinner
@@ -18958,22 +19813,26 @@ a.slds-button--inverse:focus {
   animation-name: dotsBounceAfter-small; }
 
 @keyframes dotsBounceBefore-small {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(-0.375rem); }
+    transform: translate3d(-0.375rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
-    transform: translateX(0); } }
+    transform: translate3d(0, 0, 0); } }
 
 @keyframes dotsBounceAfter-small {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-    transform: translateX(0); }
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(0.375rem); }
+    transform: translate3d(0.375rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
     transform: translateX(0); } }
 
@@ -19028,22 +19887,26 @@ a.slds-button--inverse:focus {
   right: -0.25rem; }
 
 @keyframes dotsBounceBefore-medium {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(-0.5rem); }
+    transform: translate3d(-0.5rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
-    transform: translateX(0); } }
+    transform: translate3d(0, 0, 0); } }
 
 @keyframes dotsBounceAfter-medium {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-    transform: translateX(0); }
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(0.5rem); }
+    transform: translate3d(0.5rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
     transform: translateX(0); } }
 
@@ -19098,22 +19961,26 @@ a.slds-button--inverse:focus {
   right: -0.3125rem; }
 
 @keyframes dotsBounceBefore-large {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(-0.75rem); }
+    transform: translate3d(-0.75rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
     transform: translateX(0); } }
 
 @keyframes dotsBounceAfter-large {
+  0% {
+    transform: translate3d(0, 0, 0); }
   60% {
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-    transform: translateX(0); }
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53); }
   80% {
-    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43);
-    transform: translateX(0.75rem); }
+    transform: translate3d(0.75rem, 0, 0);
+    animation-timing-function: cubic-bezier(0, 1.11, 0.7, 1.43); }
   100% {
     transform: translateX(0); } }
 
@@ -19460,7 +20327,7 @@ a.slds-button--inverse:focus {
 .slds-tabs--default__item.slds-active:after,
 .slds-tabs--default__item.slds-is-active:after {
   background-color: #1589ee;
-  height: 0.1875rem; }
+  height: 0.188rem; }
 
 .slds-tabs_default__item.slds-active .slds-tabs_default__link,
 .slds-tabs_default__item.slds-active .slds-tabs--default__link, .slds-tabs_default__item.slds-is-active .slds-tabs_default__link,
@@ -19650,7 +20517,7 @@ a.slds-button--inverse:focus {
 .slds-tabs_mobile__title {
   width: 100%;
   height: 100%;
-  color: #16325c;
+  color: #2b2826;
   font-size: 1rem;
   padding: 0 1rem; }
 
@@ -19765,7 +20632,7 @@ a.slds-button--inverse:focus {
   height: 2.75rem;
   -ms-flex-align: stretch;
       align-items: stretch;
-  color: #16325c;
+  color: #2b2826;
   font-size: 1rem;
   padding: 0 0.75rem; }
 
@@ -19774,6 +20641,10 @@ a.slds-button--inverse:focus {
 
 .slds-tabs-mobile__item:last-child {
   border-bottom: 1px solid #dddbda; }
+
+@media (pointer: coarse) and (hover: none) {
+  .slds-tabs-mobile__item .slds-button:active {
+    color: currentColor; } }
 
 /**
  * @summary Wrapper for adjacent mobile tab sets
@@ -20416,6 +21287,9 @@ a.slds-button--inverse:focus {
   text-decoration: none;
   box-shadow: inset 0.125rem 0 0 #1589ee; }
 
+[dir="rtl"] .slds-nav-vertical__action:hover {
+  box-shadow: inset -0.125rem 0 0 #1589ee; }
+
 .slds-nav-vertical__action:focus {
   outline: 0;
   text-decoration: underline; }
@@ -20431,6 +21305,9 @@ a.slds-button--inverse:focus {
 .slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action {
   font-weight: bold;
   box-shadow: inset 0.25rem 0 0 #1589ee; }
+
+[dir="rtl"] .slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action {
+  box-shadow: inset -0.25rem 0 0 #1589ee; }
 
 /**
  * @name radio-group
@@ -20484,6 +21361,9 @@ a.slds-button--inverse:focus {
 
 .slds-nav-vertical__action_overflow[aria-expanded="true"] .slds-button__icon {
   transform: rotate(90deg); }
+
+[dir="rtl"] .slds-nav-vertical__action_overflow[aria-expanded="true"] .slds-button__icon {
+  transform: rotate(-90deg); }
 
 /**
  * Text inside of actionable element that toggles visibility of overflown list items
@@ -20932,7 +21812,7 @@ a.slds-button--inverse:focus {
      */ }
 
 .slds-lookup__list {
-  max-height: calc((((1.5 * 0.8125rem) + (1.5 * 0.75rem) - 0.25rem) + (0.25rem * 2)) * 8);
+  max-height: calc((((1.5 * 0.812rem) + (1.5 * 0.75rem) - 0.25rem) + (0.25rem * 2)) * 8);
   overflow-y: auto; }
 
 .slds-lookup__menu {
@@ -20981,7 +21861,7 @@ a.slds-button--inverse:focus {
   padding: 0.5rem 1rem; }
 
 .slds-lookup__item-action {
-  font-size: 0.8125rem;
+  font-size: 0.812rem;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: center;
@@ -21353,7 +22233,7 @@ a.slds-button--inverse:focus {
   */ }
 
 .slds-avatar-grouped__primary .slds-avatar-grouped__initials {
-  transform: scale(0.64286); }
+  transform: scale(0.643); }
 
 /**
 * @summary Modifier for the secondary Avatar in an Avatar Group
@@ -21411,14 +22291,14 @@ a.slds-button--inverse:focus {
     */ }
 
 .slds-avatar-group_x-small .slds-avatar-grouped__primary .slds-avatar-grouped__initials {
-  transform: scale(0.35714); }
+  transform: scale(0.357); }
 
 .slds-avatar-group_x-small .slds-avatar-grouped__secondary {
   width: 0.75rem;
   height: 0.75rem; }
 
 .slds-avatar-group_x-small .slds-avatar-grouped__secondary .slds-avatar-grouped__initials {
-  transform: scale(0.21429); }
+  transform: scale(0.214); }
 
 /**
 * @summary Creates a small Avatar Group
@@ -21437,14 +22317,14 @@ a.slds-button--inverse:focus {
   height: 1.25rem; }
 
 .slds-avatar-group_small .slds-avatar-grouped__primary .slds-avatar-grouped__initials {
-  transform: scale(0.47143); }
+  transform: scale(0.471); }
 
 .slds-avatar-group_small .slds-avatar-grouped__secondary {
   width: 1rem;
   height: 1rem; }
 
 .slds-avatar-group_small .slds-avatar-grouped__secondary .slds-avatar-grouped__initials {
-  transform: scale(0.35714); }
+  transform: scale(0.357); }
 
 /**
 * @summary Creates a medium Avatar Group
@@ -21463,7 +22343,7 @@ a.slds-button--inverse:focus {
   height: 1.5rem; }
 
 .slds-avatar-group_medium .slds-avatar-grouped__primary .slds-avatar-grouped__initials {
-  transform: scale(0.64286); }
+  transform: scale(0.643); }
 
 .slds-avatar-group_medium .slds-avatar-grouped__secondary {
   width: 1.25rem;
@@ -21496,7 +22376,7 @@ a.slds-button--inverse:focus {
   height: 1.5rem; }
 
 .slds-avatar-group_large .slds-avatar-grouped__secondary .slds-avatar-grouped__initials {
-  transform: scale(0.57143); }
+  transform: scale(0.571); }
 
 /**
  * A figure component is a self-contained unit of content, such as an image with an optional caption. The figure component should NOT be used with icons or logos. A figure can optionally be cropped to a specific ratio such as 16x9, 4x3 and 1x1 with the use of `.slds-image__crop` and passing in a ratio class such as `.slds-image__crop_16-by-9`.
@@ -21513,6 +22393,12 @@ a.slds-button--inverse:focus {
 .slds-file {
   display: block;
   position: relative;
+  /**
+   * Text title for file name
+   *
+   * @selector .slds-file__text
+   * @restrict .slds-file__title span
+   */
   /**
    * A decorator class that prevents hover styles from being applied to Files in loading state
    *
@@ -21600,64 +22486,100 @@ a.slds-button--inverse:focus {
    * @restrict .slds-file
    */ }
 
-.slds-image:not(.slds-file_loading) a:hover:before,
-.slds-image:not(.slds-file_loading) a:hover:after,
-.slds-image:not(.slds-file_loading) a:focus:before,
-.slds-image:not(.slds-file_loading) a:focus:after,
-.slds-file:not(.slds-file_loading) a:hover:before,
-.slds-file:not(.slds-file_loading) a:hover:after,
-.slds-file:not(.slds-file_loading) a:focus:before,
-.slds-file:not(.slds-file_loading) a:focus:after {
+.slds-image .slds-file__text,
+.slds-file .slds-file__text {
+  display: block; }
+
+.slds-image:not(.slds-file_loading) .slds-file__figure:hover:before,
+.slds-image:not(.slds-file_loading) .slds-file__figure:hover:after,
+.slds-image:not(.slds-file_loading) .slds-file__figure:focus:before,
+.slds-image:not(.slds-file_loading) .slds-file__figure:focus:after,
+.slds-image:not(.slds-file_loading) .slds-file__crop:hover:before,
+.slds-image:not(.slds-file_loading) .slds-file__crop:hover:after,
+.slds-image:not(.slds-file_loading) .slds-file__crop:focus:before,
+.slds-image:not(.slds-file_loading) .slds-file__crop:focus:after,
+.slds-file:not(.slds-file_loading) .slds-file__figure:hover:before,
+.slds-file:not(.slds-file_loading) .slds-file__figure:hover:after,
+.slds-file:not(.slds-file_loading) .slds-file__figure:focus:before,
+.slds-file:not(.slds-file_loading) .slds-file__figure:focus:after,
+.slds-file:not(.slds-file_loading) .slds-file__crop:hover:before,
+.slds-file:not(.slds-file_loading) .slds-file__crop:hover:after,
+.slds-file:not(.slds-file_loading) .slds-file__crop:focus:before,
+.slds-file:not(.slds-file_loading) .slds-file__crop:focus:after {
   position: absolute;
   z-index: 5;
   cursor: pointer;
   content: ''; }
 
-.slds-image:not(.slds-file_loading) a:hover:before,
-.slds-image:not(.slds-file_loading) a:focus:before,
-.slds-file:not(.slds-file_loading) a:hover:before,
-.slds-file:not(.slds-file_loading) a:focus:before {
+.slds-image:not(.slds-file_loading) .slds-file__figure:hover:before,
+.slds-image:not(.slds-file_loading) .slds-file__figure:focus:before,
+.slds-image:not(.slds-file_loading) .slds-file__crop:hover:before,
+.slds-image:not(.slds-file_loading) .slds-file__crop:focus:before,
+.slds-file:not(.slds-file_loading) .slds-file__figure:hover:before,
+.slds-file:not(.slds-file_loading) .slds-file__figure:focus:before,
+.slds-file:not(.slds-file_loading) .slds-file__crop:hover:before,
+.slds-file:not(.slds-file_loading) .slds-file__crop:focus:before {
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.6); }
 
-.slds-image:not(.slds-file_loading) a:hover:after,
-.slds-image:not(.slds-file_loading) a:focus:after,
-.slds-file:not(.slds-file_loading) a:hover:after,
-.slds-file:not(.slds-file_loading) a:focus:after {
+.slds-image:not(.slds-file_loading) .slds-file__figure:hover:after,
+.slds-image:not(.slds-file_loading) .slds-file__figure:focus:after,
+.slds-image:not(.slds-file_loading) .slds-file__crop:hover:after,
+.slds-image:not(.slds-file_loading) .slds-file__crop:focus:after,
+.slds-file:not(.slds-file_loading) .slds-file__figure:hover:after,
+.slds-file:not(.slds-file_loading) .slds-file__figure:focus:after,
+.slds-file:not(.slds-file_loading) .slds-file__crop:hover:after,
+.slds-file:not(.slds-file_loading) .slds-file__crop:focus:after {
   top: 50%;
   left: 50%;
   width: 2rem;
   height: 2rem;
   /* stylelint-disable scss/operator-no-unspaced */
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSI1MiIgdmlld0JveD0iMCAwIDUyIDUyIj48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJtNTEuOCAyNS4xYy00LjctOS41LTE0LjUtMTYuMS0yNS44LTE2LjFzLTIxLjEgNi42LTI1LjggMTYuMWMtMC4zIDAuNi0wLjMgMS4zIDAgMS44IDQuNyA5LjUgMTQuNSAxNi4xIDI1LjggMTYuMXMyMS4xLTYuNiAyNS44LTE2LjFjMC4zLTAuNiAwLjMtMS4yIDAtMS44eiBtLTI1LjggMTEuOWMtNi4xIDAtMTEtNC45LTExLTExczQuOS0xMSAxMS0xMSAxMSA0LjkgMTEgMTEtNC45IDExLTExIDExeiBtMC0xOGMtMy45IDAtNyAzLjEtNyA3czMuMSA3IDcgNyA3LTMuMSA3LTctMy4xLTctNy03eiI+PC9wYXRoPjwvZz48L3N2Zz4=);
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSI1MiI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTUxLjggMjVBMjkgMjkgMCAwIDAgMjYgOSAyOSAyOSAwIDAgMCAuMiAyNWEyIDIgMCAwIDAgMCAxLjhDNSAzNi40IDE0LjcgNDMgMjYgNDNhMjkgMjkgMCAwIDAgMjUuOC0xNiAyIDIgMCAwIDAgMC0xLjh6TTI2IDM3YTExIDExIDAgMSAxIDAtMjIgMTEgMTEgMCAxIDEgMCAyMnptMC0xOGMtNCAwLTcgMy03IDdzMyA3IDcgNyA3LTMgNy03LTMtNy03LTd6Ii8+PC9zdmc+);
   /* stylelint-enable scss/operator-no-unspaced */
   background-size: contain;
   transform: translate(-50%, -50%); }
 
 @media (any-hover: none) {
-  .slds-image:not(.slds-file_loading) a:hover:before,
-  .slds-image:not(.slds-file_loading) a:hover:after,
-  .slds-image:not(.slds-file_loading) a:focus:before,
-  .slds-image:not(.slds-file_loading) a:focus:after,
-  .slds-file:not(.slds-file_loading) a:hover:before,
-  .slds-file:not(.slds-file_loading) a:hover:after,
-  .slds-file:not(.slds-file_loading) a:focus:before,
-  .slds-file:not(.slds-file_loading) a:focus:after {
+  .slds-image:not(.slds-file_loading) .slds-file__figure:hover:before,
+  .slds-image:not(.slds-file_loading) .slds-file__figure:hover:after,
+  .slds-image:not(.slds-file_loading) .slds-file__figure:focus:before,
+  .slds-image:not(.slds-file_loading) .slds-file__figure:focus:after,
+  .slds-image:not(.slds-file_loading) .slds-file__crop:hover:before,
+  .slds-image:not(.slds-file_loading) .slds-file__crop:hover:after,
+  .slds-image:not(.slds-file_loading) .slds-file__crop:focus:before,
+  .slds-image:not(.slds-file_loading) .slds-file__crop:focus:after,
+  .slds-file:not(.slds-file_loading) .slds-file__figure:hover:before,
+  .slds-file:not(.slds-file_loading) .slds-file__figure:hover:after,
+  .slds-file:not(.slds-file_loading) .slds-file__figure:focus:before,
+  .slds-file:not(.slds-file_loading) .slds-file__figure:focus:after,
+  .slds-file:not(.slds-file_loading) .slds-file__crop:hover:before,
+  .slds-file:not(.slds-file_loading) .slds-file__crop:hover:after,
+  .slds-file:not(.slds-file_loading) .slds-file__crop:focus:before,
+  .slds-file:not(.slds-file_loading) .slds-file__crop:focus:after {
     display: none; } }
 
-.slds-image:not(.slds-file_loading) a:hover + .slds-file__title,
-.slds-image:not(.slds-file_loading) a:focus + .slds-file__title,
-.slds-file:not(.slds-file_loading) a:hover + .slds-file__title,
-.slds-file:not(.slds-file_loading) a:focus + .slds-file__title {
+.slds-image:not(.slds-file_loading) .slds-file__figure:hover + .slds-file__title,
+.slds-image:not(.slds-file_loading) .slds-file__figure:focus + .slds-file__title,
+.slds-image:not(.slds-file_loading) .slds-file__crop:hover + .slds-file__title,
+.slds-image:not(.slds-file_loading) .slds-file__crop:focus + .slds-file__title,
+.slds-file:not(.slds-file_loading) .slds-file__figure:hover + .slds-file__title,
+.slds-file:not(.slds-file_loading) .slds-file__figure:focus + .slds-file__title,
+.slds-file:not(.slds-file_loading) .slds-file__crop:hover + .slds-file__title,
+.slds-file:not(.slds-file_loading) .slds-file__crop:focus + .slds-file__title {
   z-index: 5; }
 
-.slds-image.slds-has-title a:hover:after,
-.slds-image.slds-has-title a:focus:after,
-.slds-file.slds-has-title a:hover:after,
-.slds-file.slds-has-title a:focus:after {
+.slds-image.slds-has-title .slds-file__figure:hover:after,
+.slds-image.slds-has-title .slds-file__figure:focus:after,
+.slds-image.slds-has-title .slds-file__crop:hover:after,
+.slds-image.slds-has-title .slds-file__crop:focus:after,
+.slds-file.slds-has-title .slds-file__figure:hover:after,
+.slds-file.slds-has-title .slds-file__figure:focus:after,
+.slds-file.slds-has-title .slds-file__crop:hover:after,
+.slds-file.slds-has-title .slds-file__crop:focus:after {
   transform: translate(-50%, calc(-50% - (2rem / 2))); }
 
 .slds-image:focus,
@@ -21751,6 +22673,7 @@ a.slds-button--inverse:focus {
   -ms-flex-align: center;
       align-items: center;
   padding: 0.5rem;
+  overflow: hidden;
   /**
      * Adds overlay to file
      *
@@ -21769,6 +22692,10 @@ a.slds-button--inverse:focus {
      * @selector .slds-file__title_scrim
      * @restrict .slds-file__title
      */ }
+
+.slds-image__title .slds-media,
+.slds-file__title .slds-media {
+  overflow: hidden; }
 
 .slds-image__title_overlay, .slds-image__title--overlay,
 .slds-file__title_overlay,
@@ -22031,14 +22958,14 @@ a.slds-button--inverse:focus {
 .slds-table--bordered tbody th {
   border-top: 1px solid #dddbda; }
 
-.slds-table_bordered:not(.slds-no-row-hover) tbody tr:hover > td:not(.slds-is-selected),
-.slds-table_bordered:not(.slds-no-row-hover) tbody tr:hover > th:not(.slds-is-selected),
-.slds-table_bordered:not(.slds-no-row-hover) tbody tr:focus > td:not(.slds-is-selected),
-.slds-table_bordered:not(.slds-no-row-hover) tbody tr:focus > th:not(.slds-is-selected),
-.slds-table--bordered:not(.slds-no-row-hover) tbody tr:hover > td:not(.slds-is-selected),
-.slds-table--bordered:not(.slds-no-row-hover) tbody tr:hover > th:not(.slds-is-selected),
-.slds-table--bordered:not(.slds-no-row-hover) tbody tr:focus > td:not(.slds-is-selected),
-.slds-table--bordered:not(.slds-no-row-hover) tbody tr:focus > th:not(.slds-is-selected) {
+.slds-table_bordered:not(.slds-no-row-hover) tbody tr:hover > td:not(.slds-has-focus),
+.slds-table_bordered:not(.slds-no-row-hover) tbody tr:hover > th:not(.slds-has-focus),
+.slds-table_bordered:not(.slds-no-row-hover) tbody tr:focus > td:not(.slds-has-focus),
+.slds-table_bordered:not(.slds-no-row-hover) tbody tr:focus > th:not(.slds-has-focus),
+.slds-table--bordered:not(.slds-no-row-hover) tbody tr:hover > td:not(.slds-has-focus),
+.slds-table--bordered:not(.slds-no-row-hover) tbody tr:hover > th:not(.slds-has-focus),
+.slds-table--bordered:not(.slds-no-row-hover) tbody tr:focus > td:not(.slds-has-focus),
+.slds-table--bordered:not(.slds-no-row-hover) tbody tr:focus > th:not(.slds-has-focus) {
   box-shadow: #dddbda 0 -1px 0 inset, #dddbda 0 1px 0 inset; }
 
 /**
@@ -22174,7 +23101,7 @@ a.slds-button--inverse:focus {
   position: absolute;
   top: 50%;
   right: 0.25rem;
-  transform: translateY(-50%); }
+  margin-top: -0.5rem; }
 
 /**
  * If the column header has a menu button, then let's add right padding to the
@@ -23120,6 +24047,9 @@ a.slds-button--inverse:focus {
   background: rgba(21, 137, 238, 0.1);
   box-shadow: #1589ee 4px 0 0 inset; }
 
+[dir="rtl"] .slds-tree [role="treeitem"][aria-selected="true"] > .slds-tree__item {
+  box-shadow: #1589ee -4px 0 0 inset; }
+
 .slds-tree [role="treeitem"] > [role="group"] {
   display: none; }
 
@@ -23133,6 +24063,9 @@ a.slds-button--inverse:focus {
 [aria-expanded="true"] > .slds-tree__item .slds-button__icon {
   transition: 0.2s transform ease-in-out;
   transform: rotate(90deg); }
+
+[dir="rtl"] [aria-expanded="true"] > .slds-tree__item .slds-button__icon {
+  transform: rotate(-90deg); }
 
 [aria-level="1"] > .slds-tree__item {
   padding-left: 1rem; }
@@ -23260,7 +24193,10 @@ a.slds-button--inverse:focus {
 .slds-table--tree .slds-button {
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
-      align-self: center;
+      align-self: center; }
+
+.slds-table_tree .slds-button:not(.slds-th__action-button),
+.slds-table--tree .slds-button:not(.slds-th__action-button) {
   margin-top: 0; }
 
 .slds-table_tree [aria-level="1"] > .slds-tree__item,
@@ -23746,7 +24682,7 @@ a.slds-button--inverse:focus {
       */ }
 
 .slds-welcome-mat .slds-modal__container {
-  width: 52.0625rem;
+  width: 52.062rem;
   max-width: none; }
 
 /**
@@ -27616,7 +28552,7 @@ a.slds-button--inverse:focus {
  */
 .slds-text-body_regular,
 .slds-text-body--regular {
-  font-size: 0.8125rem; }
+  font-size: 0.812rem; }
 
 @media (pointer: coarse) and (hover: none) {
   .slds-text-body_regular,
@@ -28507,11 +29443,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_1-of-3,
 .slds-size--1-of-3 {
-  width: 33.3333333333%; }
+  width: 33.333%; }
 
 .slds-size_2-of-3,
 .slds-size--2-of-3 {
-  width: 66.6666666667%; }
+  width: 66.667%; }
 
 .slds-size_3-of-3,
 .slds-size--3-of-3 {
@@ -28555,11 +29491,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_1-of-6,
 .slds-size--1-of-6 {
-  width: 16.6666666667%; }
+  width: 16.667%; }
 
 .slds-size_2-of-6,
 .slds-size--2-of-6 {
-  width: 33.3333333333%; }
+  width: 33.333%; }
 
 .slds-size_3-of-6,
 .slds-size--3-of-6 {
@@ -28567,11 +29503,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_4-of-6,
 .slds-size--4-of-6 {
-  width: 66.6666666667%; }
+  width: 66.667%; }
 
 .slds-size_5-of-6,
 .slds-size--5-of-6 {
-  width: 83.3333333333%; }
+  width: 83.333%; }
 
 .slds-size_6-of-6,
 .slds-size--6-of-6 {
@@ -28579,27 +29515,27 @@ a.slds-button--inverse:focus {
 
 .slds-size_1-of-7,
 .slds-size--1-of-7 {
-  width: 14.2857142857%; }
+  width: 14.286%; }
 
 .slds-size_2-of-7,
 .slds-size--2-of-7 {
-  width: 28.5714285714%; }
+  width: 28.571%; }
 
 .slds-size_3-of-7,
 .slds-size--3-of-7 {
-  width: 42.8571428571%; }
+  width: 42.857%; }
 
 .slds-size_4-of-7,
 .slds-size--4-of-7 {
-  width: 57.1428571429%; }
+  width: 57.143%; }
 
 .slds-size_5-of-7,
 .slds-size--5-of-7 {
-  width: 71.4285714286%; }
+  width: 71.429%; }
 
 .slds-size_6-of-7,
 .slds-size--6-of-7 {
-  width: 85.7142857143%; }
+  width: 85.714%; }
 
 .slds-size_7-of-7,
 .slds-size--7-of-7 {
@@ -28639,11 +29575,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_1-of-12,
 .slds-size--1-of-12 {
-  width: 8.3333333333%; }
+  width: 8.333%; }
 
 .slds-size_2-of-12,
 .slds-size--2-of-12 {
-  width: 16.6666666667%; }
+  width: 16.667%; }
 
 .slds-size_3-of-12,
 .slds-size--3-of-12 {
@@ -28651,11 +29587,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_4-of-12,
 .slds-size--4-of-12 {
-  width: 33.3333333333%; }
+  width: 33.333%; }
 
 .slds-size_5-of-12,
 .slds-size--5-of-12 {
-  width: 41.6666666667%; }
+  width: 41.667%; }
 
 .slds-size_6-of-12,
 .slds-size--6-of-12 {
@@ -28663,11 +29599,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_7-of-12,
 .slds-size--7-of-12 {
-  width: 58.3333333333%; }
+  width: 58.333%; }
 
 .slds-size_8-of-12,
 .slds-size--8-of-12 {
-  width: 66.6666666667%; }
+  width: 66.667%; }
 
 .slds-size_9-of-12,
 .slds-size--9-of-12 {
@@ -28675,11 +29611,11 @@ a.slds-button--inverse:focus {
 
 .slds-size_10-of-12,
 .slds-size--10-of-12 {
-  width: 83.3333333333%; }
+  width: 83.333%; }
 
 .slds-size_11-of-12,
 .slds-size--11-of-12 {
-  width: 91.6666666667%; }
+  width: 91.667%; }
 
 .slds-size_12-of-12,
 .slds-size--12-of-12 {
@@ -28785,10 +29721,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-x-small-size_1-of-3,
   .slds-x-small-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-x-small-size_2-of-3,
   .slds-x-small-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-x-small-size_3-of-3,
   .slds-x-small-size--3-of-3 {
     width: 100%; }
@@ -28821,40 +29757,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-x-small-size_1-of-6,
   .slds-x-small-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-x-small-size_2-of-6,
   .slds-x-small-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-x-small-size_3-of-6,
   .slds-x-small-size--3-of-6 {
     width: 50%; }
   .slds-x-small-size_4-of-6,
   .slds-x-small-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-x-small-size_5-of-6,
   .slds-x-small-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-x-small-size_6-of-6,
   .slds-x-small-size--6-of-6 {
     width: 100%; }
   .slds-x-small-size_1-of-7,
   .slds-x-small-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-x-small-size_2-of-7,
   .slds-x-small-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-x-small-size_3-of-7,
   .slds-x-small-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-x-small-size_4-of-7,
   .slds-x-small-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-x-small-size_5-of-7,
   .slds-x-small-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-x-small-size_6-of-7,
   .slds-x-small-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-x-small-size_7-of-7,
   .slds-x-small-size--7-of-7 {
     width: 100%; }
@@ -28884,37 +29820,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-x-small-size_1-of-12,
   .slds-x-small-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-x-small-size_2-of-12,
   .slds-x-small-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-x-small-size_3-of-12,
   .slds-x-small-size--3-of-12 {
     width: 25%; }
   .slds-x-small-size_4-of-12,
   .slds-x-small-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-x-small-size_5-of-12,
   .slds-x-small-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-x-small-size_6-of-12,
   .slds-x-small-size--6-of-12 {
     width: 50%; }
   .slds-x-small-size_7-of-12,
   .slds-x-small-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-x-small-size_8-of-12,
   .slds-x-small-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-x-small-size_9-of-12,
   .slds-x-small-size--9-of-12 {
     width: 75%; }
   .slds-x-small-size_10-of-12,
   .slds-x-small-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-x-small-size_11-of-12,
   .slds-x-small-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-x-small-size_12-of-12,
   .slds-x-small-size--12-of-12 {
     width: 100%; }
@@ -29007,10 +29943,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-x-small-size_1-of-3,
   .slds-max-x-small-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-x-small-size_2-of-3,
   .slds-max-x-small-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-x-small-size_3-of-3,
   .slds-max-x-small-size--3-of-3 {
     width: 100%; }
@@ -29043,40 +29979,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-x-small-size_1-of-6,
   .slds-max-x-small-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-x-small-size_2-of-6,
   .slds-max-x-small-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-x-small-size_3-of-6,
   .slds-max-x-small-size--3-of-6 {
     width: 50%; }
   .slds-max-x-small-size_4-of-6,
   .slds-max-x-small-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-x-small-size_5-of-6,
   .slds-max-x-small-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-x-small-size_6-of-6,
   .slds-max-x-small-size--6-of-6 {
     width: 100%; }
   .slds-max-x-small-size_1-of-7,
   .slds-max-x-small-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-max-x-small-size_2-of-7,
   .slds-max-x-small-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-max-x-small-size_3-of-7,
   .slds-max-x-small-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-max-x-small-size_4-of-7,
   .slds-max-x-small-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-max-x-small-size_5-of-7,
   .slds-max-x-small-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-max-x-small-size_6-of-7,
   .slds-max-x-small-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-max-x-small-size_7-of-7,
   .slds-max-x-small-size--7-of-7 {
     width: 100%; }
@@ -29106,37 +30042,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-x-small-size_1-of-12,
   .slds-max-x-small-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-max-x-small-size_2-of-12,
   .slds-max-x-small-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-x-small-size_3-of-12,
   .slds-max-x-small-size--3-of-12 {
     width: 25%; }
   .slds-max-x-small-size_4-of-12,
   .slds-max-x-small-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-x-small-size_5-of-12,
   .slds-max-x-small-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-max-x-small-size_6-of-12,
   .slds-max-x-small-size--6-of-12 {
     width: 50%; }
   .slds-max-x-small-size_7-of-12,
   .slds-max-x-small-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-max-x-small-size_8-of-12,
   .slds-max-x-small-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-x-small-size_9-of-12,
   .slds-max-x-small-size--9-of-12 {
     width: 75%; }
   .slds-max-x-small-size_10-of-12,
   .slds-max-x-small-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-x-small-size_11-of-12,
   .slds-max-x-small-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-max-x-small-size_12-of-12,
   .slds-max-x-small-size--12-of-12 {
     width: 100%; }
@@ -29229,10 +30165,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-small-size_1-of-3,
   .slds-small-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-small-size_2-of-3,
   .slds-small-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-small-size_3-of-3,
   .slds-small-size--3-of-3 {
     width: 100%; }
@@ -29265,40 +30201,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-small-size_1-of-6,
   .slds-small-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-small-size_2-of-6,
   .slds-small-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-small-size_3-of-6,
   .slds-small-size--3-of-6 {
     width: 50%; }
   .slds-small-size_4-of-6,
   .slds-small-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-small-size_5-of-6,
   .slds-small-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-small-size_6-of-6,
   .slds-small-size--6-of-6 {
     width: 100%; }
   .slds-small-size_1-of-7,
   .slds-small-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-small-size_2-of-7,
   .slds-small-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-small-size_3-of-7,
   .slds-small-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-small-size_4-of-7,
   .slds-small-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-small-size_5-of-7,
   .slds-small-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-small-size_6-of-7,
   .slds-small-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-small-size_7-of-7,
   .slds-small-size--7-of-7 {
     width: 100%; }
@@ -29328,37 +30264,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-small-size_1-of-12,
   .slds-small-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-small-size_2-of-12,
   .slds-small-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-small-size_3-of-12,
   .slds-small-size--3-of-12 {
     width: 25%; }
   .slds-small-size_4-of-12,
   .slds-small-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-small-size_5-of-12,
   .slds-small-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-small-size_6-of-12,
   .slds-small-size--6-of-12 {
     width: 50%; }
   .slds-small-size_7-of-12,
   .slds-small-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-small-size_8-of-12,
   .slds-small-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-small-size_9-of-12,
   .slds-small-size--9-of-12 {
     width: 75%; }
   .slds-small-size_10-of-12,
   .slds-small-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-small-size_11-of-12,
   .slds-small-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-small-size_12-of-12,
   .slds-small-size--12-of-12 {
     width: 100%; }
@@ -29451,10 +30387,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-small-size_1-of-3,
   .slds-max-small-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-small-size_2-of-3,
   .slds-max-small-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-small-size_3-of-3,
   .slds-max-small-size--3-of-3 {
     width: 100%; }
@@ -29487,40 +30423,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-small-size_1-of-6,
   .slds-max-small-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-small-size_2-of-6,
   .slds-max-small-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-small-size_3-of-6,
   .slds-max-small-size--3-of-6 {
     width: 50%; }
   .slds-max-small-size_4-of-6,
   .slds-max-small-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-small-size_5-of-6,
   .slds-max-small-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-small-size_6-of-6,
   .slds-max-small-size--6-of-6 {
     width: 100%; }
   .slds-max-small-size_1-of-7,
   .slds-max-small-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-max-small-size_2-of-7,
   .slds-max-small-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-max-small-size_3-of-7,
   .slds-max-small-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-max-small-size_4-of-7,
   .slds-max-small-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-max-small-size_5-of-7,
   .slds-max-small-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-max-small-size_6-of-7,
   .slds-max-small-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-max-small-size_7-of-7,
   .slds-max-small-size--7-of-7 {
     width: 100%; }
@@ -29550,37 +30486,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-small-size_1-of-12,
   .slds-max-small-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-max-small-size_2-of-12,
   .slds-max-small-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-small-size_3-of-12,
   .slds-max-small-size--3-of-12 {
     width: 25%; }
   .slds-max-small-size_4-of-12,
   .slds-max-small-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-small-size_5-of-12,
   .slds-max-small-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-max-small-size_6-of-12,
   .slds-max-small-size--6-of-12 {
     width: 50%; }
   .slds-max-small-size_7-of-12,
   .slds-max-small-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-max-small-size_8-of-12,
   .slds-max-small-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-small-size_9-of-12,
   .slds-max-small-size--9-of-12 {
     width: 75%; }
   .slds-max-small-size_10-of-12,
   .slds-max-small-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-small-size_11-of-12,
   .slds-max-small-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-max-small-size_12-of-12,
   .slds-max-small-size--12-of-12 {
     width: 100%; }
@@ -29673,10 +30609,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-medium-size_1-of-3,
   .slds-medium-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-medium-size_2-of-3,
   .slds-medium-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-medium-size_3-of-3,
   .slds-medium-size--3-of-3 {
     width: 100%; }
@@ -29709,40 +30645,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-medium-size_1-of-6,
   .slds-medium-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-medium-size_2-of-6,
   .slds-medium-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-medium-size_3-of-6,
   .slds-medium-size--3-of-6 {
     width: 50%; }
   .slds-medium-size_4-of-6,
   .slds-medium-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-medium-size_5-of-6,
   .slds-medium-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-medium-size_6-of-6,
   .slds-medium-size--6-of-6 {
     width: 100%; }
   .slds-medium-size_1-of-7,
   .slds-medium-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-medium-size_2-of-7,
   .slds-medium-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-medium-size_3-of-7,
   .slds-medium-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-medium-size_4-of-7,
   .slds-medium-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-medium-size_5-of-7,
   .slds-medium-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-medium-size_6-of-7,
   .slds-medium-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-medium-size_7-of-7,
   .slds-medium-size--7-of-7 {
     width: 100%; }
@@ -29772,37 +30708,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-medium-size_1-of-12,
   .slds-medium-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-medium-size_2-of-12,
   .slds-medium-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-medium-size_3-of-12,
   .slds-medium-size--3-of-12 {
     width: 25%; }
   .slds-medium-size_4-of-12,
   .slds-medium-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-medium-size_5-of-12,
   .slds-medium-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-medium-size_6-of-12,
   .slds-medium-size--6-of-12 {
     width: 50%; }
   .slds-medium-size_7-of-12,
   .slds-medium-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-medium-size_8-of-12,
   .slds-medium-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-medium-size_9-of-12,
   .slds-medium-size--9-of-12 {
     width: 75%; }
   .slds-medium-size_10-of-12,
   .slds-medium-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-medium-size_11-of-12,
   .slds-medium-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-medium-size_12-of-12,
   .slds-medium-size--12-of-12 {
     width: 100%; }
@@ -29895,10 +30831,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-medium-size_1-of-3,
   .slds-max-medium-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-medium-size_2-of-3,
   .slds-max-medium-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-medium-size_3-of-3,
   .slds-max-medium-size--3-of-3 {
     width: 100%; }
@@ -29931,40 +30867,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-medium-size_1-of-6,
   .slds-max-medium-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-medium-size_2-of-6,
   .slds-max-medium-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-medium-size_3-of-6,
   .slds-max-medium-size--3-of-6 {
     width: 50%; }
   .slds-max-medium-size_4-of-6,
   .slds-max-medium-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-medium-size_5-of-6,
   .slds-max-medium-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-medium-size_6-of-6,
   .slds-max-medium-size--6-of-6 {
     width: 100%; }
   .slds-max-medium-size_1-of-7,
   .slds-max-medium-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-max-medium-size_2-of-7,
   .slds-max-medium-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-max-medium-size_3-of-7,
   .slds-max-medium-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-max-medium-size_4-of-7,
   .slds-max-medium-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-max-medium-size_5-of-7,
   .slds-max-medium-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-max-medium-size_6-of-7,
   .slds-max-medium-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-max-medium-size_7-of-7,
   .slds-max-medium-size--7-of-7 {
     width: 100%; }
@@ -29994,37 +30930,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-medium-size_1-of-12,
   .slds-max-medium-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-max-medium-size_2-of-12,
   .slds-max-medium-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-medium-size_3-of-12,
   .slds-max-medium-size--3-of-12 {
     width: 25%; }
   .slds-max-medium-size_4-of-12,
   .slds-max-medium-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-medium-size_5-of-12,
   .slds-max-medium-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-max-medium-size_6-of-12,
   .slds-max-medium-size--6-of-12 {
     width: 50%; }
   .slds-max-medium-size_7-of-12,
   .slds-max-medium-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-max-medium-size_8-of-12,
   .slds-max-medium-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-medium-size_9-of-12,
   .slds-max-medium-size--9-of-12 {
     width: 75%; }
   .slds-max-medium-size_10-of-12,
   .slds-max-medium-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-medium-size_11-of-12,
   .slds-max-medium-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-max-medium-size_12-of-12,
   .slds-max-medium-size--12-of-12 {
     width: 100%; }
@@ -30117,10 +31053,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-large-size_1-of-3,
   .slds-large-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-large-size_2-of-3,
   .slds-large-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-large-size_3-of-3,
   .slds-large-size--3-of-3 {
     width: 100%; }
@@ -30153,40 +31089,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-large-size_1-of-6,
   .slds-large-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-large-size_2-of-6,
   .slds-large-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-large-size_3-of-6,
   .slds-large-size--3-of-6 {
     width: 50%; }
   .slds-large-size_4-of-6,
   .slds-large-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-large-size_5-of-6,
   .slds-large-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-large-size_6-of-6,
   .slds-large-size--6-of-6 {
     width: 100%; }
   .slds-large-size_1-of-7,
   .slds-large-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-large-size_2-of-7,
   .slds-large-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-large-size_3-of-7,
   .slds-large-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-large-size_4-of-7,
   .slds-large-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-large-size_5-of-7,
   .slds-large-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-large-size_6-of-7,
   .slds-large-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-large-size_7-of-7,
   .slds-large-size--7-of-7 {
     width: 100%; }
@@ -30216,37 +31152,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-large-size_1-of-12,
   .slds-large-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-large-size_2-of-12,
   .slds-large-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-large-size_3-of-12,
   .slds-large-size--3-of-12 {
     width: 25%; }
   .slds-large-size_4-of-12,
   .slds-large-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-large-size_5-of-12,
   .slds-large-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-large-size_6-of-12,
   .slds-large-size--6-of-12 {
     width: 50%; }
   .slds-large-size_7-of-12,
   .slds-large-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-large-size_8-of-12,
   .slds-large-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-large-size_9-of-12,
   .slds-large-size--9-of-12 {
     width: 75%; }
   .slds-large-size_10-of-12,
   .slds-large-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-large-size_11-of-12,
   .slds-large-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-large-size_12-of-12,
   .slds-large-size--12-of-12 {
     width: 100%; }
@@ -30339,10 +31275,10 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-large-size_1-of-3,
   .slds-max-large-size--1-of-3 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-large-size_2-of-3,
   .slds-max-large-size--2-of-3 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-large-size_3-of-3,
   .slds-max-large-size--3-of-3 {
     width: 100%; }
@@ -30375,40 +31311,40 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-large-size_1-of-6,
   .slds-max-large-size--1-of-6 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-large-size_2-of-6,
   .slds-max-large-size--2-of-6 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-large-size_3-of-6,
   .slds-max-large-size--3-of-6 {
     width: 50%; }
   .slds-max-large-size_4-of-6,
   .slds-max-large-size--4-of-6 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-large-size_5-of-6,
   .slds-max-large-size--5-of-6 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-large-size_6-of-6,
   .slds-max-large-size--6-of-6 {
     width: 100%; }
   .slds-max-large-size_1-of-7,
   .slds-max-large-size--1-of-7 {
-    width: 14.2857142857%; }
+    width: 14.286%; }
   .slds-max-large-size_2-of-7,
   .slds-max-large-size--2-of-7 {
-    width: 28.5714285714%; }
+    width: 28.571%; }
   .slds-max-large-size_3-of-7,
   .slds-max-large-size--3-of-7 {
-    width: 42.8571428571%; }
+    width: 42.857%; }
   .slds-max-large-size_4-of-7,
   .slds-max-large-size--4-of-7 {
-    width: 57.1428571429%; }
+    width: 57.143%; }
   .slds-max-large-size_5-of-7,
   .slds-max-large-size--5-of-7 {
-    width: 71.4285714286%; }
+    width: 71.429%; }
   .slds-max-large-size_6-of-7,
   .slds-max-large-size--6-of-7 {
-    width: 85.7142857143%; }
+    width: 85.714%; }
   .slds-max-large-size_7-of-7,
   .slds-max-large-size--7-of-7 {
     width: 100%; }
@@ -30438,37 +31374,37 @@ a.slds-button--inverse:focus {
     width: 100%; }
   .slds-max-large-size_1-of-12,
   .slds-max-large-size--1-of-12 {
-    width: 8.3333333333%; }
+    width: 8.333%; }
   .slds-max-large-size_2-of-12,
   .slds-max-large-size--2-of-12 {
-    width: 16.6666666667%; }
+    width: 16.667%; }
   .slds-max-large-size_3-of-12,
   .slds-max-large-size--3-of-12 {
     width: 25%; }
   .slds-max-large-size_4-of-12,
   .slds-max-large-size--4-of-12 {
-    width: 33.3333333333%; }
+    width: 33.333%; }
   .slds-max-large-size_5-of-12,
   .slds-max-large-size--5-of-12 {
-    width: 41.6666666667%; }
+    width: 41.667%; }
   .slds-max-large-size_6-of-12,
   .slds-max-large-size--6-of-12 {
     width: 50%; }
   .slds-max-large-size_7-of-12,
   .slds-max-large-size--7-of-12 {
-    width: 58.3333333333%; }
+    width: 58.333%; }
   .slds-max-large-size_8-of-12,
   .slds-max-large-size--8-of-12 {
-    width: 66.6666666667%; }
+    width: 66.667%; }
   .slds-max-large-size_9-of-12,
   .slds-max-large-size--9-of-12 {
     width: 75%; }
   .slds-max-large-size_10-of-12,
   .slds-max-large-size--10-of-12 {
-    width: 83.3333333333%; }
+    width: 83.333%; }
   .slds-max-large-size_11-of-12,
   .slds-max-large-size--11-of-12 {
-    width: 91.6666666667%; }
+    width: 91.667%; }
   .slds-max-large-size_12-of-12,
   .slds-max-large-size--12-of-12 {
     width: 100%; }

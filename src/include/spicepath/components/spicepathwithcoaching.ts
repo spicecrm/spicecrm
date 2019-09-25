@@ -13,6 +13,7 @@ import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {backend} from "../../../services/backend.service";
 
 /**
  * renders a path with coaching in the context of a model
@@ -57,12 +58,25 @@ export class SpicePathWithCoaching {
      * holds the current active stage if the user clicks on another stage
      */
     private activeStage: string;
+    /**
+     * holds current results for the checks
+     */
+    private beanStagesChecksResults: any[];
 
-    constructor(private configuration: configurationService, private model: model, private language: language) {
+    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend) {
     }
 
     /**
-     * gets the icon style for the coaching checvron and roitates it by 90degress if open (animated)
+     * retrieve results for checks on load
+     */
+    public ngOnInit() {
+        this.backend.getRequest("spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
+            this.beanStagesChecksResults = stages;
+        });
+    }
+
+    /**
+     * gets the icon style for the coaching checvron and rotates it by 90degress if open (animated)
      */
     get coachingIconStyle() {
         if (this.coachingVisible) {
@@ -111,11 +125,11 @@ export class SpicePathWithCoaching {
     }
 
     /**
-     * retrieves the checks for the curretn stage
+     * retrieves the checks for the current stage
      */
     get checks() {
         let checks = []
-        this.stages.some(stage => {
+        this.beanStagesChecksResults.some(stage => {
             if (stage.stage === this.displayStage) {
                 checks = stage.stagedata.checks
                 return true;

@@ -7,10 +7,24 @@ import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'object-listview-header',
-    templateUrl: './src/objectcomponents/templates/objectlistviewheader.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewheader.html',
+    animations: [
+        trigger('animatepanel', [
+            transition(':enter', [
+                style({right: '-320px', overflow: 'hidden'}),
+                animate('.5s', style({right: '0px'})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({right: '-320px'}))
+            ])
+        ])
+    ]
 })
 export class ObjectListViewHeader implements OnDestroy {
     @Input() private parentconfig: any = [];
