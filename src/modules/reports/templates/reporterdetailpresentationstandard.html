@@ -1,12 +1,14 @@
-<div tobottom>
+<div class="slds-height_full">
     <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout">
         <thead>
-            <tr class="slds-text-title--caps">
-                <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)" [ngClass]="{'slds-is-sortable' : field.sortable == 'true'}">
-                    <div class="slds-truncate slds-p-vertical--xx-small">{{field.name}}</div>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
+                <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
+                    <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
                     <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
-                </th>
-            </tr>
+                </a>
+            </th>
+        </tr>
         </thead>
     </table>
     <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()" (scroll)="onScroll($event)">
@@ -18,7 +20,6 @@
             <tbody>
             <tr *ngFor="let record of getRecords()">
                 <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
-                    <!--div class="slds-truncate">{{record[field.fieldid]}}</div-->
                     <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
                 </td>
             </tr>

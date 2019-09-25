@@ -1,35 +1,37 @@
 /**
  * @module ObjectComponents
  */
-import { Component, ElementRef, Renderer2} from '@angular/core';
-import { modellist } from '../../services/modellist.service';
-import { language } from '../../services/language.service';
+import {Component, ElementRef, Renderer2} from '@angular/core';
+import {modellist} from '../../services/modellist.service';
+import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-list-types',
     templateUrl: './src/objectcomponents/templates/objectlisttypes.html'
 })
-export class ObjectListTypes{
+export class ObjectListTypes {
 
-    constructor(private modellist: modellist, private elementRef: ElementRef, private renderer: Renderer2, private language: language){}
+    constructor(private modellist: modellist, private elementRef: ElementRef, private renderer: Renderer2, private language: language) {
+    }
 
-    showMenu: boolean = false;
-    clickListener: any;
+    private showMenu: boolean = false;
+    private clickListener: any;
 
     get listtypes() {
         return this.modellist.getListTypes(false);
     }
 
-    toggleTypes(){
+    private toggleTypes() {
         this.showMenu = !this.showMenu;
 
         if (this.showMenu) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener)
+        } else if (this.clickListener) {
             this.clickListener();
+        }
     }
 
-    setListType(id = 'all'){
+    private setListType(id = 'all') {
         this.modellist.setListType(id);
         this.showMenu = false;
     }

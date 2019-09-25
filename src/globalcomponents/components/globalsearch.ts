@@ -72,9 +72,9 @@ export class GlobalSearch implements OnDestroy {
 
     private doSearch(): void {
         if (this.searchScope === '*') {
-            this.fts.searchByModules(this.searchTerm);
+            this.fts.searchByModules({searchterm: this.searchTerm});
         } else {
-            this.fts.searchByModules(this.searchTerm, [this.searchScope], 50);
+            this.fts.searchByModules({searchterm: this.searchTerm, modules: [this.searchScope], size: 50});
         }
     }
 

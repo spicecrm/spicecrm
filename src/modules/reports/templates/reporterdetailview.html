@@ -18,18 +18,16 @@
             <reporter-integration-export-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-export-button>
             <reporter-integration-tools-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-tools-button>
             <reporter-filter-button [whereConditions]="whereConditions" (filter)="toggleFilters($event)"></reporter-filter-button>
-            <!--div class="slds-button-group slds-p-horizontal--small" role="group">
-                <button class="slds-button slds-button_icon slds-button_icon-border" *ngIf="showPlugin('kqueryanalizer')">
-                    <system-button-icon [icon]="'question'"></system-button-icon>
-                </button>
-            </div-->
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-horizontal--x-small" [title]="language.getLabel('LBL_REFRESH')" (click)="refresh()">
+                <system-button-icon icon="refresh"></system-button-icon>
+            </button>
         </div>
     </div>
 </div>
 <div *ngIf="hasVisualization" style="width:100%;height:400px;">
     <reporter-detail-visualization></reporter-detail-visualization>
 </div>
-<div #presentationcontainer [ngStyle]="presentationStyle">
+<div #presentationcontainer [ngStyle]="presentationStyle" tobottom>
     <div #presentationview></div>
 </div>
-<reporter-filter-panel *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams"></reporter-filter-panel>
+<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>

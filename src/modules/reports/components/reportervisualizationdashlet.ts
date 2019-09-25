@@ -8,11 +8,13 @@ import {
     OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
+import {reporterconfig} from '../services/reporterconfig';
+
 
 @Component({
     selector: 'reporter-visualization-dashlet',
     templateUrl: './src/modules/reports/templates/reportervisualizationdashlet.html',
-    providers: [model]
+    providers: [model, reporterconfig]
 })
 export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
 
@@ -24,7 +26,7 @@ export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
     private hasVisualization: boolean = false;
     private vizData: any = {};
 
-    constructor(private model: model) {
+    constructor(private model: model, private reporterconfig: reporterconfig) {
     }
 
     public ngOnInit() {
