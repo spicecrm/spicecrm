@@ -12,50 +12,46 @@ import {
 import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
+import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'fieldsetmanager-add-dialog',
     templateUrl: './src/workbench/templates/fieldsetmanageradddialog.html'
 })
 export class FieldsetManagerAddDialog implements OnInit {
-    @Output() closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Input() module: string = '*';
-    @Input() parent: string = '';
-    @Input() metadata: any = {};
-    @Input() edit_mode: string = '';
+    @Output() private closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() private module: string = '*';
+    @Input() private parent: string = '';
+    @Input() private metadata: any = {};
+    @Input() private edit_mode: string = '';
 
 
-    addType: string = 'fieldsetadd';
-    addName: string = '';
-    addFieldset: string = '';
-    fieldsettype: string = 'custom';
-    moduleFields: Array<any> = [];
-    self;
+    private addType: string = 'fieldsetadd';
+    private addName: string = '';
+    private addFieldset: string = '';
+    private fieldsettype: string = 'custom';
+    private moduleFields: any[] = [];
+    private self: any
 
-    constructor(private backend: backend, private language: language, private modelutilities: modelutilities) {
+    constructor(private backend: backend, private language: language, private modelutilities: modelutilities, private metadata: metadata) {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         if (this.module && this.module != '*') {
-            let params: any = {
-                modules: JSON.stringify([this.module])
-            };
-            this.backend.getRequest('spiceui/core/fielddefs', params).subscribe((res: any) => {
-                this.moduleFields = res.fielddefs[this.module];
-            });
+            this.moduleFields = this.metadata.getModuleFields(this.module);
         }
     }
 
-    closeDialog() {
+    private closeDialog() {
         this.self.destroy();
     }
 
-    onModalEscX() {
+    private onModalEscX() {
         this.closeDialog();
     }
 
-    add() {
+    private add() {
         switch (this.addType) {
             case 'fieldsetadd':
                 let fieldsetid = this.modelutilities.generateGuid();
@@ -74,18 +70,19 @@ export class FieldsetManagerAddDialog implements OnInit {
         this.self.destroy();
     }
 
-    getFieldNames(){
+    private getFieldNames() {
         let fieldnames = [];
 
-        for(let fieldname in this.moduleFields)
-            fieldnames.push(fieldname)
+        for (let fieldname in this.moduleFields) {
+            fieldnames.push(fieldname);
+        }
 
         fieldnames.sort();
 
         return fieldnames;
     }
 
-    get fieldsets(){
+    get fieldsets() {
         return this.metadata.getFieldSets();
     }
 
