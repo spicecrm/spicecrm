@@ -1160,3 +1160,8 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open {
     background: rgba(155, 155, 155, .1) !important;
 }
+
+::placeholder {
+    font-style: italic;
+    opacity: 1; /* Firefox */
+}
