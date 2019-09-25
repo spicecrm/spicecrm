@@ -69,7 +69,7 @@ export class GlobalHeaderSearch {
         if (this.showModuleSelector && this._searchmodule != 'all') searchmodules.push(this._searchmodule);
 
         this.searchresults = [];
-        this.fts.searchByModules(this.searchTerm, searchmodules, 10).subscribe(rsults => {
+        this.fts.searchByModules({searchterm: this.searchTerm, modules: searchmodules, size: 10}).subscribe(rsults => {
             let hits = [];
             for (let moduleSearchresult of this.fts.moduleSearchresults) {
                 hits = hits.concat(moduleSearchresult.data.hits);
