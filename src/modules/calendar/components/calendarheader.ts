@@ -7,12 +7,12 @@ import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 @Component({
@@ -120,7 +120,7 @@ export class CalendarHeader implements OnDestroy {
         const focDate = new moment(this.calendarDate);
         switch (this.calendar.sheetType) {
             case 'Week':
-                return this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
+                return `${this.getFirstDayOfWeek()} - ${this.getLastDayOfWeek()}`;
             case 'Month':
                 return focDate.format('MMMM YYYY');
             case 'Day':
@@ -135,6 +135,11 @@ export class CalendarHeader implements OnDestroy {
     private getCompactCalendarHeader() {
         const focDate = new moment(this.calendarDate);
         return focDate.format('MMM, YYYY');
+    }
+
+    private getWeekNumberDisplay() {
+        let focDate = new moment(this.calendarDate);
+        return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('w')}`;
     }
 
     private getFirstDayOfWeek() {
