@@ -120,7 +120,14 @@ export class UserPreferences {
         this.handlingWithForeignPrefs = this.session.authData.userId !== this.model.data.id;
 
         // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
-        this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.data.enableSettingUserPrefsByAdmin );
+        this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.getSystemParamater('enableSettingUserPrefsByAdmin'));
+
+        this.prefservice.needFormats();
+        this.backend.getRequest('/timezones').subscribe( response => {
+            this.timezones = response;
+            this.timezoneKeys = Object.keys( this.timezones );
+        } );
+        this.currencyList = this.currency.getCurrencies();
 
         if ( !this.handlingWithForeignPrefs ) {
 
@@ -128,14 +135,6 @@ export class UserPreferences {
                 this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
             } );
             this.prefservice.getPreferences( this.prefsLoaded );
-
-            this.prefservice.needFormats();
-
-            this.backend.getRequest( "/timezones" ).subscribe( response => {
-                this.timezones = response;
-                this.timezoneKeys = Object.keys( this.timezones );
-            } );
-            this.currencyList = this.currency.getCurrencies();
 
         } else {
 
