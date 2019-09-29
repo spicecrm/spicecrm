@@ -73,7 +73,8 @@ export class modelutilities {
                 if ( moment.isMoment(value) ) return value; // check if the object is already a moment object
                 // The value from the backend is always in UTC.
                 // Then we set the time zone by the required time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
-                let pDateTime = moment.tz( value, 'UTC' ).tz( this.session.getSessionData('timezone') );
+                let timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
+                let pDateTime = moment(value).tz(timeZone).add(moment().utcOffset(), 'm');
                 return pDateTime.isValid() ? pDateTime : null;
             case "double":
             case "currency":
@@ -134,7 +135,8 @@ export class modelutilities {
                 // The value from the backend is always in UTC.
                 // Then we set the time zone by the configured time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
                 if ( typeof value === 'string' ) { // A datetime field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
-                    let pDateTime = moment.tz( value, this.session.getSessionData('timezone'));  // We create a moment object from the string (with the configured time zone of the user) ...
+                    let timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
+                    let pDateTime = moment(value).tz(timeZone);  // We create a moment object from the string (with the configured time zone of the user) ...
                     return pDateTime.isValid() ? pDateTime.utc().format('YYYY-MM-DD HH:mm:ss') :''; // ... to validate is and to format it.
                 } else if (value && value._isAMomentObject ) { // It is a moment object (the usual case).
                     return value.isValid() ? moment(value).utc().format('YYYY-MM-DD HH:mm:ss') : ''; // Validate it and format it for the backend, in UTC.

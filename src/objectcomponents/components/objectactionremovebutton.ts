@@ -43,7 +43,11 @@ export class ObjectActionRemoveButton {
 
     get canDelete() {
         try {
-            return this.model.checkAccess('delete');
+            let access = this.model.checkAccess('deleterelated');
+            if(!access) {
+                access = this.model.checkAccess('delete');
+            }
+            return access;
         } catch (e) {
             return false;
         }
