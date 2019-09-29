@@ -5,7 +5,8 @@ import {
     Component,
     Input,
     AfterViewInit,
-    OnInit,
+    Output,
+    EventEmitter,
     ViewChild,
     ViewContainerRef,
     ElementRef
@@ -37,6 +38,12 @@ export class ReporterPresentationDashlet implements AfterViewInit {
     @Input() private displayheader: boolean = true;
 
     @Input() private componentconfig: any = {};
+
+    /**
+     * emites the title after the report is loaded
+     */
+    @Output() private dashletTitle: EventEmitter<string> = new EventEmitter<string>();
+
     private presComponent: any = undefined;
 
     constructor(private model: model, private metadata: metadata, private elementRef: ElementRef) {
@@ -51,6 +58,10 @@ export class ReporterPresentationDashlet implements AfterViewInit {
                 this.model['parentBeanModule'] = this.parentModule;
             }
             this.model.getData().subscribe(data => {
+                // emit the title
+                this.dashletTitle.emit(this.model.getField('name'));
+
+                // render the report
                 this.renderPresentation();
             });
         }
