@@ -25,8 +25,7 @@ export class CalendarEventSummary {
     }
 
     get startHour() {
-        return this.model.data.date_start ? moment(this.model.data.date_start).tz(this.calendar.timeZone)
-            .add(moment().utcOffset(), 'm').format(this.userpreferences.getTimeFormat()) : undefined;
+        return this.model.data.date_start ? moment(this.model.data.date_start).tz(this.calendar.timeZone).format(this.userpreferences.getTimeFormat()) : undefined;
     }
 
     /*

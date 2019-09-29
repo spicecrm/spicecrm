@@ -314,6 +314,7 @@ export class model implements OnDestroy {
                     this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_RECORD"), "error");
                     this.router.navigate(["/module/" + this.module]);
                 }
+                responseSubject.error(err);
             }
         );
         return responseSubject.asObservable();
