@@ -1,6 +1,6 @@
 <system-modal size="large">
     <system-modal-header (close)="close()">Add Field</system-modal-header>
-    <system-modal-content style="padding: 0">
+    <system-modal-content margin="none" [grow]="true">
         <div class="slds-grid administration-fts-manager-field-add-modal" style="height: 100%">
             <div class="slds-size--1-of-3 slds-grid--vertical" style="height: 100%;">
                 <div class="slds-scrollable--y slds-border--bottom" style="height: 50%;">
@@ -9,60 +9,53 @@
                 <div class="slds-scrollable" style="height: 50%;">
                     <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                         <thead>
-                        <tr class="slds-line-height_reset">
-                            <th style="width: 2.75em"></th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Opportunity Name">field</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Account Name">name</div>
-                            </th>
-                        </tr>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-cell-shrink"></th>
+                                <th scope="col">
+                                    <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody cdkDropList (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="ConnectedToDropLists" id="administration-fts-manager-field-add-drag-table">
-                        <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of nodefields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
-                            <td>
-                                <system-utility-icon cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
-                            </td>
-                            <td data-label="Account Name">
-                                <div class="slds-truncate">{{nodefield.name}}</div>
-                            </td>
-                            <td>
-                                <div class="slds-truncate">{{language.getLabel(nodefield.label)}}</div>
-                            </td>
-                        </tr>
+                            <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of nodefields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
+                                <td class="slds-p-around--none">
+                                    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                </td>
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate">{{nodefield.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{language.getLabel(nodefield.label)}}</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <!--nav class="slds-p-around--small" role="navigation">
-                    <ol class="slds-breadcrumb slds-list--horizontal">
-                        <li class="slds-breadcrumb__item slds-text-title--caps" *ngFor="let item of path; let i = index"><a href="javascript:void(0);" (click)="chooseBreadcrumb(i)">{{item.module}}</a></li>
-                    </ol>
-                </nav>
-                <ul class="slds-p-horizontal--small">
-                    <li class="slds-item slds-p-vertical--xxx-small" *ngFor="let link of links"><a href="javascript:void(0)" (click)="setLink(link)">{{link.module}}</a></li>
-                </ul-->
             </div>
             <div cdkDropList [cdkDropListData]="ftsconfiguration.moduleFtsFields" [cdkDropListConnectedTo]="ConnectedToDragLists" (cdkDropListDropped)="rightDrop($event)" id="administration-fts-manager-field-add-drop-table" class="slds-size--2-of-3 slds-border--left slds-scrollable" style="height: 100%;">
                 <table class="slds-table slds-table--cell-buffer">
                     <thead>
-                    <tr class="slds-text-title--caps slds-theme--shade">
-                        <th style="width: 2.75em"></th>
-                        <th>
-                            <div class="slds-truncate">Path</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate">Fieldname</div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate">Fieldlabel</div>
-                        </th>
-                    </tr>
+                        <tr class="slds-text-title--caps slds-theme--shade">
+                            <th class="slds-cell-shrink"></th>
+                            <th>
+                                <div class="slds-truncate">{{language.getLabel('LBL_PATH')}}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">{{language.getLabel('LBL_FIELDNAME')}}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate">{{language.getLabel('LBL_FIELDLABEL')}}</div>
+                            </th>
+                            <th class="slds-cell-shrink"></th>
+                        </tr>
                     </thead>
                     <tbody>
                     <tr cdkDrag [cdkDragData]="field" cdkDragBoundary="#administration-fts-manager-field-add-drop-table" class="slds-border--bottom slds-drag--preview" *ngFor="let field of ftsconfiguration.moduleFtsFields" >
-                        <td>
-                            <system-utility-icon cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                        <td class="slds-p-around--none">
+                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
                         </td>
                         <td>
                             <div class="slds-truncate">{{field.path}}</div>
@@ -72,6 +65,9 @@
                         </td>
                         <td data-label="Account Name">
                             <div class="slds-truncate">{{field.fieldname}}</div>
+                        </td>
+                        <td class="slds-cell-shrink">
+                            <system-utility-icon icon="close" size="x-small"></system-utility-icon>
                         </td>
                     </tr>
                     </tbody>
