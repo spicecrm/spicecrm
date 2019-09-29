@@ -3,12 +3,7 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {
-    Component, ElementRef,
-    forwardRef,
-    OnDestroy,
-    Renderer2,
-} from '@angular/core';
+import {Component, ElementRef, forwardRef, OnDestroy, Renderer2,} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
@@ -55,12 +50,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 private language: language) {
     }
 
-    public ngOnDestroy() {
-        if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
     get isValid() {
         return this._date.valid;
     }
@@ -101,38 +90,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         return !!this._date.display;
     }
 
-    private clear(notify = true) {
-        this._date.moment = null;
-        this._date.display = '';
-        this._date.valid = true;
-
-        // emit the value to the ngModel directive
-        if (typeof this.onChange === 'function' && notify) {
-            this.onChange(this._date.moment);
-        }
-    }
-
-    /**
-     *  focus the text area when the editor is focussed
-     */
-    private toggleOpen() {
-
-        this.isOpen = !this.isOpen;
-        // check if we are active already
-        if (this.isOpen) {
-            // listen to the click event if it is ousoide of the current elements scope
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
-        }
-    }
-
-    private toggleClosed() {
-        // close the dropdown
-        this.isOpen = false;
-        if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
     /**
      * determines the side (left or right) for the dropdown depending how much space is left for the element
      */
@@ -145,13 +102,11 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private onDocumentClick(event: MouseEvent) {
-        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
-            this.isOpen = false;
+    public ngOnDestroy() {
+        if (this.clickListener) {
             this.clickListener();
         }
     }
-
 
     /**
      * Set the function to be called
@@ -188,13 +143,55 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         }
     }
 
+    private clear(notify = true) {
+        this._date.moment = null;
+        this._date.display = '';
+        this._date.valid = true;
+
+        // emit the value to the ngModel directive
+        if (typeof this.onChange === 'function' && notify) {
+            this.onChange(this._date.moment);
+        }
+    }
+
+    /**
+     *  focus the text area when the editor is focussed
+     */
+    private toggleOpen() {
+
+        this.isOpen = !this.isOpen;
+        // check if we are active already
+        if (this.isOpen) {
+            // listen to the click event if it is ousoide of the current elements scope
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+        }
+    }
+
+    private toggleClosed() {
+        // close the dropdown
+        this.isOpen = false;
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+    private onDocumentClick(event: MouseEvent) {
+        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
+            this.isOpen = false;
+            this.clickListener();
+        }
+    }
+
     private datePicked(value) {
         if (value) {
             if (!this._date.moment) {
                 this._date.moment = new moment();
             }
+            if (!moment.isMoment(value)) value = moment(value);
 
-            this._date.moment = value;
+            this._date.moment.set('year', value.year());
+            this._date.moment.set('month', value.month());
+            this._date.moment.set('date', value.date());
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
 
