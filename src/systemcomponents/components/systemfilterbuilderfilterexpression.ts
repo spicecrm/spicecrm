@@ -17,7 +17,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     /**
      * the module we are attaching this filter to
      */
-    @Input() private module: string;
+    @Input() public module: string;
 
     /**
      * the durrect set filter expression
@@ -29,14 +29,14 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     /**
      * the selected operator type .. this is determined by the field definitions
      */
-    private operatortype = 'default';
+    public operatortype = 'default';
 
     @Output() private expressionDeleted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the operators available also grouped by type
      */
-    private operators = {
+    public operators = {
         default: [
             {
                 operator: 'equals',
@@ -152,9 +152,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     }
 
     constructor(
-        private backend: backend,
-        private language: language,
-        private metadata: metadata,
+        public backend: backend,
+        public language: language,
+        public metadata: metadata,
     ) {
 
     }

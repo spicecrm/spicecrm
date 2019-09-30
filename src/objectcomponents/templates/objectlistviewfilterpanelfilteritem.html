@@ -1,7 +1,7 @@
-<div class="slds-filters__item slds-grid slds-grid--vertical-align-center">
+<div class="slds-filters__item slds-m-vertical--xx-small slds-grid slds-grid--vertical-align-center">
     <a href="javascript:void(0);" class="slds-grow slds-has-blur-focus" (click)="onClick()" (focus)="onFocus($event)">
         <p class="slds-text-body--small">{{getDisplayName()}}</p>
-        <p>{{operator}} {{filter.filtervalue}}</p>
+        <p>{{language.getLabel(operatorLabel)}} {{filterexpression.filtervalue}}</p>
     </a>
     <div class="slds-form-element">
         <div class="slds-form-element__control">
@@ -16,32 +16,60 @@
     </button>
 </div>
 <div #popover [ngStyle]="getPopoverStyle()">
-    <div *ngIf="showPopover" class="slds-popover slds-nubbin--right" role="dialog">
+    <div *ngIf="showPopover" @animatepopover class="slds-popover slds-nubbin--right" role="dialog">
         <div class="slds-popover__body">
             <fieldset class="slds-form--stacked">
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_FIELD')}}</label>
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="filter.field" (change)="fieldChanged()">
-                                <ng-container *ngFor="let o of listFields">
-                                    <option [value]="o.field">{{o.displayName}}</option>
-                                </ng-container>
+                            <select class="slds-select" [(ngModel)]="field">
+                                <option *ngFor="let f of fields" [value]="f.name">{{f.name}}</option>
                             </select>
                         </div>
                     </div>
                 </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
+                                <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator">{{language.getLabel(operator.name)}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="showValueField()" class="slds-form-element">
+                    <label *ngIf="operatortype != 'enum' || (operatortype == 'enum' && filterexpression.operator.length > 0)" class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
+                    <div class="slds-form-element__control">
+                        <input *ngIf="operatortype != 'enum'" type="text" [disabled]="!filterexpression.operator" class="slds-input" [(ngModel)]="filterexpression.filtervalue" />
+                        <ng-container *ngIf="operatortype == 'enum'">
+                            <div *ngIf="filterexpression.operator == 'equals'" class="slds-select_container">
+                                <select class="slds-select" [disabled]="enumDisabled()" [(ngModel)]="filterexpression.filtervalue">
+                                    <option *ngFor="let option of getFieldDisplayOptions()" [value]="option.value">{{option.display}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="filterexpression.operator == 'oneof'">
+                                <system-checkbox-group [(ngModel)]="enumValue" class="slds-grid slds-wrap">
+                                    <div *ngFor="let option of getFieldDisplayOptions(); trackBy: trackByFn" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+                                        <system-checkbox-group-checkbox [value]="option.value"> {{option.display}}</system-checkbox-group-checkbox>
+                                    </div>
+                                </system-checkbox-group>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
                 <!-- switch the entry data type field-->
-                <ng-container  [ngSwitch]="currentFieldType">
+                <!--ng-container  [ngSwitch]="currentFieldType">
                     <object-listview-filter-panel-filter-enum *ngSwitchCase="'enum'" [filter]="filter"></object-listview-filter-panel-filter-enum>
                     <object-listview-filter-panel-filter-bool *ngSwitchCase="'bool'" [filter]="filter"></object-listview-filter-panel-filter-bool>
                     <object-listview-filter-panel-filter-date *ngSwitchCase="'date'" [filter]="filter"></object-listview-filter-panel-filter-date>
                     <object-listview-filter-panel-filter-text *ngSwitchDefault [filter]="filter"></object-listview-filter-panel-filter-text>
-                </ng-container>
+                </ng-container-->
             </fieldset>
             <div class="spicecrm-popup-buttoncontainer">
-                <button type="button" class="slds-button slds-button--neutral slds-button-space-left"
-                        (click)="closePopover()">{{language.getLabel('LBL_DONE')}}
+                <button type="button" class="slds-button slds-button--brand slds-button-space-left"
+                        (click)="closePopover()">{{language.getLabel('LBL_OK')}}
                 </button>
             </div>
         </div>

@@ -1,28 +1,46 @@
-<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters" [ngStyle]="getPanelStyle()">
+<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters" tobottom>
     <div class="slds-form--stacked slds-grow slds-scrollable--y slds-grid slds-grid--vertical">
         <div class="slds-filters">
-            <div *ngIf="!isChanged()" class="slds-filters__header slds-grid slds-has-divider--bottom-space">
-                <h4 class="slds-align-middle slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h4>
-                <!--object-listview-filter-panel-export-button class="slds-col--bump-left"></object-listview-filter-panel-export-button-->
-            </div>
-            <div *ngIf="isChanged()"
-                 class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
-                <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-                <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}
-                </button>
-            </div>
-            <div class="slds-filters__body">
-                <object-listview-filter-panel-filter-myitems></object-listview-filter-panel-filter-myitems>
-                <ng-container *ngIf="listfilters.filters.length > 0">
-                <p class="slds-text-body--small slds-m-vertical--x-small">{{language.getLabel('MSG_MATCHING_ALL_THESE_FILTERS')}}</p>
-                <ol class="slds-list--vertical slds-list--vertical-space">
-                    <li class="slds-item slds-hint-parent" object-listview-filter-panel-filter-item *ngFor="let filter of listfilters.filters" [filter]="filter"></li>
-                </ol>
+            <ng-container *ngIf="!isChanged; else unchanged">
+                <div  class="slds-filters__header slds-grid slds-has-divider--bottom-space">
+                    <h4 class="slds-align-middle slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h4>
+                </div>
+            </ng-container>
+            <div class="slds-p-around--xx-small">
+                <ng-template #unchanged>
+                    <div class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
+                        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+                        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}
+                        </button>
+                    </div>
+                </ng-template>
+                <object-listview-filter-panel-filter-myitems [(ngModel)]="filter.groupscope"></object-listview-filter-panel-filter-myitems>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_MATCHING')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="filter.logicaloperator">
+                                <option value="and">{{language.getLabel('LBL_AND')}}</option>
+                                <option value="or">{{language.getLabel('LBL_OR')}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngIf="filter.conditions.length > 0; else nofilter">
+                    <p class="slds-text-body--small slds-m-vertical--x-small">{{language.getLabel('MSG_MATCHING_ALL_THESE_FILTERS')}}</p>
+                    <div class="slds-grid_vertical">
+                        <object-listview-filter-panel-filter-item *ngFor="let condition of filter.conditions; let i = index" [module]="module" [filterexpression]="condition" (deleteItem)="deleteItem(i)"></object-listview-filter-panel-filter-item>
+                    </div>
+                    <div class="slds-filters__footer slds-grid slds-shrink-none">
+                        <a href="javascript:void(0);" (click)="addExpression()">{{language.getLabel('LBL_ADDFILTER')}}</a>
+                        <a href="javascript:void(0);" class="slds-col--bump-left" (click)="removeAllFilters()">{{language.getLabel('LBL_REMOVEALL')}}</a>
+                    </div>
                 </ng-container>
-            </div>
-            <div class="slds-filters__footer slds-grid slds-shrink-none">
-                <a href="javascript:void(0);" (click)="addFilter()">{{language.getLabel('LBL_ADDFILTER')}}</a>
-                <a href="javascript:void(0);" class="slds-col--bump-left" (click)="removeAllFilters()">{{language.getLabel('LBL_REMOVEALL')}}</a>
+                <ng-template #nofilter>
+                    <div class="slds-p-around--small slds-align--absolute-center">
+                        <a href="javascript:void(0);" (click)="addExpression()">{{language.getLabel('LBL_ADDFILTER')}}</a>
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>
