@@ -394,7 +394,8 @@ export class backend {
                 a.remove();
                 sub.next();
                 sub.complete();
-            }
+            },
+            error => sub.error(error)
         );
 
         return sub.asObservable();
