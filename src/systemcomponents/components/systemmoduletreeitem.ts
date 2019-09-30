@@ -92,7 +92,7 @@ export class SystemModuleTreeItem {
                 item.displayname = this.language.getLabel(item.label);
                 this.nodeitems.push(item);
             }
-            this.nodeitems.sort((a, b) => a.displayname.toLowerCase() > b.displayname.toLowerCase() ? 1 : -1);
+            this.nodeitems.sort((a, b) => this.language.getLabel(a.label).toLowerCase() > this.language.getLabel(b.label).toLowerCase() ? 1 : -1);
 
             this.isLoading = false;
             this.isLoaded = true;
@@ -128,6 +128,10 @@ export class SystemModuleTreeItem {
     }
 
     private emitSelected(data) {
+        // enrich the path
+        data.path = this.path + '::' + data.path;
+
+        // emit the path
         this.itemSelected.emit(data);
     }
 
