@@ -7,17 +7,17 @@
             <thead>
                 <tr class="slds-text-title--caps slds-theme--shade slds-border--bottom">
                     <th scope="col">
-                        <div class="slds-truncate">Field</div>
+                        <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">Name</div>
+                        <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="slds-border--bottom" *ngFor="let moduleFtsField of moduleFtsFields" (click)="selectField(moduleFtsField.id)" [ngClass]="{'slds-theme--shade': moduleFtsField.id == currentfield}">
                     <td>
-                        <div class="slds-truncate">{{moduleFtsField.displaypath}}->{{moduleFtsField.fieldname}}</div>
+                        <div class="slds-truncate">{{moduleFtsField.path}}</div>
                     </td>
                     <td>
                         <div class="slds-truncate">{{moduleFtsField.name}}</div>
@@ -35,8 +35,15 @@
                 {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
             <div class="slds-form-element">
                 <label class="slds-form-element__label">Name</label>
-                <div class="slds-form-element__control">
+                <system-input-label [(ngModel)]="fieldDetails.name"></system-input-label>
+                <!--div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="fieldDetails.name"/>
+                </div-->
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">Indexed Name</label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.indexfieldname"/>
                 </div>
             </div>
             <div class="slds-form-element">
