@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, Output, SimpleChanges} from "@angular/core";
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from "@angular/core";
 import {language} from "../../services/language.service";
 
 /**
@@ -15,10 +15,12 @@ declare var _: any;
     templateUrl: "./src/systemcomponents/templates/systemmoduletree.html"
 })
 
-export class SystemModuleTree {
+export class SystemModuleTree implements AfterViewInit {
 
+    /**
+     * the module to start from
+     */
     @Input() public module: string;
-
 
     /**
      * event emitter when an item is selected
@@ -27,6 +29,13 @@ export class SystemModuleTree {
 
     constructor(private language: language) {
 
+    }
+
+    /**
+     * emit the root path
+     */
+    public ngAfterViewInit(): void {
+        this.itemSelected.emit({path: 'root::' + this.module, module: this.module});
     }
 
     private emitSelected(data) {
