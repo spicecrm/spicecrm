@@ -23,6 +23,11 @@ export class SystemSection {
      */
     @Input() private expanded: boolean = true;
 
+    /**
+     * set if the panel should be always expanded (not shrinkable)
+     */
+    @Input() private alwaysExpanded = false;
+
     constructor(private language: language) {
 
     }
