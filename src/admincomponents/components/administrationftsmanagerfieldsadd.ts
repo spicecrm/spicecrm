@@ -204,9 +204,9 @@ export class AdministrationFTSManagerFieldsAdd {
             moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         } else {
             let field = dragEvent.item.data;
-            this.ftsconfiguration.moduleFtsFields.push({
+            this.ftsconfiguration.moduleFtsFields[dragEvent.currentIndex] = {
                 path: field.name
-            });
+            };
         }
     }
 
