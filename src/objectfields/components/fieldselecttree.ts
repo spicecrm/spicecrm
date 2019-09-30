@@ -72,20 +72,24 @@ export class fieldSelectTree extends fieldGeneric {
 
     get display_value() {
         let txt = '';
-        for(let field_name of this.fields) {
-
-            if (this.model.data[field_name]) {
-
-                txt += this.language.getLabel(this.model.data[field_name]) + ' \\ ';
+        for(let field_keyname of this.fields) {
+            if (this.model.data[field_keyname]) {
+                let field_name = "";
+                for(let key in this.sel_fields) {
+                    if(this.sel_fields[key].keyname === this.model.data[field_keyname]) {
+                        field_name = this.sel_fields[key].name;
+                    }
+                }
+                txt += this.language.getLabel(field_name) + ' \\ ';
             } else {
                 break;
             }
         }
         // remove the last slash...
         txt = txt.substring(0,txt.length -2);
-
         return txt;
     }
+
 
     get maxlevels() {
         return this.fieldconfig.maxlevels ? this.fieldconfig.maxlevels : 4;
