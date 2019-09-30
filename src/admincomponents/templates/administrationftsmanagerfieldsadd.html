@@ -44,16 +44,16 @@
                                 <div class="slds-truncate">{{language.getLabel('LBL_PATH')}}</div>
                             </th>
                             <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_FIELDNAME')}}</div>
+                                <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
                             </th>
                             <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_FIELDLABEL')}}</div>
+                                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
                             </th>
                             <th class="slds-cell-shrink"></th>
                         </tr>
                     </thead>
                     <tbody>
-                    <tr cdkDrag [cdkDragData]="field" cdkDragBoundary="#administration-fts-manager-field-add-drop-table" class="slds-border--bottom slds-drag--preview" *ngFor="let field of ftsconfiguration.moduleFtsFields" >
+                    <tr cdkDrag [cdkDragData]="field" cdkDragBoundary="#administration-fts-manager-field-add-drop-table" class="slds-border--bottom slds-drag--preview" *ngFor="let field of ftsconfiguration.moduleFtsFields; let i = index" >
                         <td class="slds-p-around--none">
                             <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
                         </td>
@@ -61,13 +61,15 @@
                             <div class="slds-truncate">{{field.path}}</div>
                         </td>
                         <td data-label="Account Name">
-                            <div class="slds-truncate">{{field.indexfieldname}}</div>
-                        </td>
-                        <td data-label="Account Name">
                             <div class="slds-truncate">{{field.fieldname}}</div>
                         </td>
+                        <td data-label="Account Name">
+                            <div class="slds-truncate">{{language.getLabel(field.name)}}</div>
+                        </td>
                         <td class="slds-cell-shrink">
-                            <system-utility-icon icon="close" size="x-small"></system-utility-icon>
+                            <button class="slds-button slds-button--icon" (click)="deleteField(i)">
+                            <system-button-icon icon="close"></system-button-icon>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
@@ -76,7 +78,6 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--brand" (click)="close()">{{language.getLabel('LBL_OK')}}</button>
     </system-modal-footer>
 </system-modal>
