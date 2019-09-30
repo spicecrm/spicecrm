@@ -33,7 +33,7 @@ export class ConfigTransfer {
     private isDownloading = false;
     private exportErrorID: string;
     private exportErrorMessage: string;
-    @ViewChild( 'downloadlink', {read: ViewContainerRef, static: false } ) private downloadlink: ViewContainerRef;
+    @ViewChild( 'downloadlink', {read: ViewContainerRef, static: true } ) private downloadlink: ViewContainerRef;
     private loadUrl: any = undefined;
     private fileName: string = 'export.gz';
     private changeExportSettings = false;

@@ -3,15 +3,9 @@
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <object-icon module="KReports" [size]="'small'"></object-icon>
             <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
-                <h2>
-                    <a href="javascript:void(0);" class="slds-text-link--reset">
-                    <span class="slds-text-heading--small">
-                        {{title}}
-                    </span>
-                    </a>
-                </h2>
+                <h2 class="slds-text-heading--small">{{title}}</h2>
             </div>
         </header>
     </div>
-    <reporter-presentation-dashlet [componentconfig]="componentconfig" [parentModule]="model.module" [parentId]="model.id" [displayheader]="false"></reporter-presentation-dashlet>
+    <reporter-presentation-dashlet [componentconfig]="componentconfig" [parentModule]="model.module" [parentId]="model.id" [displayheader]="false" (dashletTitle)="dashletTitle = $event"></reporter-presentation-dashlet>
 </div>

@@ -9,6 +9,14 @@ import {backend} from './backend.service';
 import {metadata} from './metadata.service';
 import {Subject} from 'rxjs';
 
+
+interface ftsSearchBuckets {
+    bucketfield: string;
+    bucketitems: any[];
+    aggregatefield?: string;
+    aggregatefunction?: 'SUM' | 'COUNT';
+}
+
 interface ftsSearchParameters {
     searchterm?: string;
     modules?: string[];
@@ -17,7 +25,7 @@ interface ftsSearchParameters {
     sortparams?: any;
     owner?: boolean;
     modulefilter?: any;
-    bucketed?: any;
+    buckets?: ftsSearchBuckets;
 }
 
 @Injectable()
@@ -32,6 +40,12 @@ export class fts {
     public searchAggregates: any = {};
     public searchModules: any[] = [];
     public modulefilter: string = '';
+
+    /**
+     * bucket paramater for the search with buckets
+     */
+    public buckets: any = {};
+
     public moduleSearchresults: any[] = [];
     private lastSearchParams: any = {};
 
@@ -112,6 +126,7 @@ export class fts {
         this.searchAggregates = parameters.aggregates;
         this.searchSort = parameters.sortparams;
         this.modulefilter = parameters.modulefilter;
+        this.buckets = parameters.buckets;
 
 
         // todo: check if same search is done .. and then do nothing .. avoid too many calls
@@ -128,7 +143,8 @@ export class fts {
             owner: parameters.owner,
             aggregates: this.searchAggregates,
             sort: this.searchSort,
-            modulefilter: parameters.modulefilter
+            modulefilter: parameters.modulefilter,
+            buckets: parameters.buckets
         }).subscribe(response => {
             // var response = res.json();
             this.moduleSearchresults = [];
@@ -193,16 +209,28 @@ export class fts {
         return retSubject.asObservable();
     }
 
-    public loadMore() {
+    public loadMore(buckets?) {
         let retSubject = new Subject<any>();
         // if we are in a serch ... do nothing
         if (this.runningmodulesearch) {
             return;
         }
 
-        if (this.moduleSearchresults[0].data.hits.length >= this.moduleSearchresults[0].data.total) {
-            return;
+        if (buckets) {
+            // check per bucket
+            let canLoadMore = false;
+            for(let bucketitem of buckets.bucketitems){
+                if(!bucketitem.total || bucketitem.total > bucketitem.items){
+                    canLoadMore = true;
+                }
+            }
+            if(!canLoadMore) return;
+        } else {
+            if (this.moduleSearchresults[0].data.hits.length >= this.moduleSearchresults[0].data.total) {
+                return;
+            }
         }
+
 
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
             modules: this.lastSearchParams.modules.length > 0 ? this.lastSearchParams.modules.join(',') : '',
@@ -211,7 +239,8 @@ export class fts {
             sort: this.searchSort,
             records: this.lastSearchParams.size,
             start: this.moduleSearchresults[0].data.hits.length,
-            modulefilter: this.modulefilter
+            modulefilter: this.modulefilter,
+            buckets: buckets
         }).subscribe(response => {
             // var response = res.json();
             for (let module of this.lastSearchParams.modules) {
