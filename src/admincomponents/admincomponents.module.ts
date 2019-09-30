@@ -29,6 +29,8 @@ import /*embed*/ { AdministrationFTSManagerDetails } from './components/administ
 import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
 import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
 
+import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
+
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import /*embed*/ { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
 
@@ -84,7 +86,8 @@ export class AdministrationMain {}
         AdministrationSchedulerJobsEnum,
         AdministrationSchedulerJobLog,
         AdministrationSchedulerRunButton,
-        AdministrationSchedulerScheduleButton
+        AdministrationSchedulerScheduleButton,
+        AdministrationSystemStats
     ],
     entryComponents: [
         AdministrationMain,

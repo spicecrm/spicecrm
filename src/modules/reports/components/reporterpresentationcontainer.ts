@@ -13,13 +13,23 @@ import {language} from '../../../services/language.service';
 })
 export class ReporterPresentationContainer {
 
+    /**
+     * the componentconfig
+     */
     public componentconfig: any = {};
+
+    /**
+     * holds the title as emitted fromt eh container
+     */
+    private dashletTitle: string;
 
     constructor(private model: model, private language: language) {
     }
 
+    /**
+     * a simple getter that either returns the module name or the name of the report once emited from the container
+     */
     get title() {
-        return this.componentconfig.title ? this.language.getLabel(this.componentconfig.title) : this.language.getModuleName('KReports');
+        return this.dashletTitle ? this.dashletTitle : this.language.getModuleName('KReports');
     }
-
 }

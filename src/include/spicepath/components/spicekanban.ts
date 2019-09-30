@@ -6,7 +6,8 @@ import {
     Pipe,
     ViewChild,
     ViewContainerRef,
-    OnDestroy
+    OnDestroy,
+    OnInit
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -21,7 +22,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
     selector: 'spice-kanban',
     templateUrl: './src/include/spicepath/templates/spicekanban.html'
 })
-export class SpiceKanban implements OnDestroy {
+export class SpiceKanban implements OnInit, OnDestroy {
     @ViewChild('kanbanContainer', {read: ViewContainerRef, static: true}) private kanbanContainer: ViewContainerRef;
 
     private componentconfig: any = {};
@@ -40,15 +41,44 @@ export class SpiceKanban implements OnDestroy {
         // subscribe to changes of the listtype
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
 
-        this.requestedFields = ['name', 'account_name', 'account_id', 'sales_stage', 'amount_usdollar', 'amount'];
-        this.modellist.getListData(this.requestedFields);
-
         this.currencies = this.currency.getCurrencies();
 
     }
 
+    public ngOnInit() {
+        let confData = this.configuration.getData('spicebeanguides')[this.model.module];
+        let stages = confData.stages;
+
+        let bucketitems = [];
+        for (let stage of stages) {
+            bucketitems.push({
+                bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
+                value: 0,
+                items: 0
+            });
+        }
+
+        this.requestedFields = ['name', 'account_name', 'account_id', 'sales_stage', 'amount_usdollar', 'amount'];
+
+        this.modellist.buckets = {
+            bucketfield: confData.statusfield,
+            bucketitems: bucketitems
+        }
+
+        // set limit to 10 .. since this is retrieved bper stage
+        this.modellist.loadlimit = 10;
+
+        this.modellist.getListData(this.requestedFields, false);
+    }
+
+    public ngOnDestroy() {
+        this.modellistsubscribe.unsubscribe();
+
+        this.modellist.buckets = {};
+    }
+
     /**
-     * returns teh stages for the module from teh configuration service
+     * returns the stages for the module from teh configuration service
      */
     get stages() {
         try {
@@ -57,6 +87,7 @@ export class SpiceKanban implements OnDestroy {
             return [];
         }
     }
+
 
     private getStageData(stage): any {
         let stagedata = [];
@@ -69,9 +100,6 @@ export class SpiceKanban implements OnDestroy {
         return stagedata;
     }
 
-    public ngOnDestroy() {
-        this.modellistsubscribe.unsubscribe();
-    }
 
     private switchListtype() {
         let requestedFields = [];
@@ -86,25 +114,17 @@ export class SpiceKanban implements OnDestroy {
         return 'slds-size--1-of-' + this.stages.length;
     }
 
-    private getStageCount(stage) {
-        let stageData = this.getStageData(stage);
-        let count = 0;
-        for (let item of this.modellist.listData.list) {
-            if (item[stageData.statusfield] && item[stageData.statusfield].indexOf(stage) == 0)
-                count++;
-        }
-        return count;
+    private getStageCount(stagedata) {
+        let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
+        let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
+        return item ? item.total : 0;
     }
 
-    private getStageSum(stage) {
-        let stageData = this.getStageData(stage);
-        let sum = 0;
-        for (let item of this.modellist.listData.list) {
-            if (item[stageData.statusfield] && item[stageData.statusfield].indexOf(stage) == 0) {
-                sum += parseFloat(item[this.componentconfig.sum]);
-            }
-        }
-        return this.userpreferences.formatMoney(sum, 0);
+    private getStageSum(stagedata) {
+        let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
+        let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
+
+        return item && item.value ? this.userpreferences.formatMoney(item.value, 0) : 0;
     }
 
     private getStageItems(stage) {

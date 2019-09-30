@@ -39,6 +39,10 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
     public ngOnChanges() {
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
+
+                // check if the plugin is active
+                if (this.integrationParams.activePlugins[plugin] != 1) break;
+
                 switch (plugin) {
                     case 'ktargetlistexport':
                         this.metadata.addComponent('ReporterIntegrationTargetlistexportButton', this.actionitems).subscribe(object => {
@@ -74,6 +78,10 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
     get isDisabled() {
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
+
+                // check if the plugin is active
+                if (this.integrationParams.activePlugins[plugin] != 1) break;
+
                 switch (plugin) {
                     case 'ktargetlistexport':
                     case 'kcsvexport':
