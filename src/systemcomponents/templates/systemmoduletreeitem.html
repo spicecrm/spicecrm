@@ -8,6 +8,6 @@
     </span>
     </div>
     <ul role="group">
-        <system-module-tree-item *ngFor="let nodeitem of nodeitems" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="path + '::' + nodeitem.type + ':' + module + ':' + nodeitem.name" (itemSelected)="emitSelected($event)"></system-module-tree-item>
+        <system-module-tree-item *ngFor="let nodeitem of nodeitems" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="nodeitem.path" (itemSelected)="emitSelected($event)"></system-module-tree-item>
     </ul>
 </li>
