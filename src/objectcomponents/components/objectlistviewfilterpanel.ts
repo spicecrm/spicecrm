@@ -10,6 +10,7 @@ import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {listfilters} from '../services/listfilters.service';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'object-listview-filter-panel',
@@ -18,12 +19,22 @@ import {listfilters} from '../services/listfilters.service';
 })
 export class ObjectListViewFilterPanel {
 
+    private filter = {
+        logicaloperator: 'and',
+        groupscope: 'all',
+        conditions: []
+    };
+
     constructor(private elementRef: ElementRef, private listfilters: listfilters, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
         this.setBaseFilter();
         this.modellist.listtype$.subscribe(newlist => this.setBaseFilter());
     }
 
-    setBaseFilter() {
+    get module() {
+        return this.modellist.module;
+    }
+
+    private setBaseFilter() {
         this.listfilters.basefilter = this.modellist.getBaseFilter();
         this.listfilters.loadedBasefilter = this.modellist.getBaseFilter();
 
@@ -31,11 +42,11 @@ export class ObjectListViewFilterPanel {
         this.listfilters.loadedFilters = this.modellist.getFilterDefs();
     }
 
-    isChanged() {
+    get isChanged() {
         return this.listfilters.isDirty();
     }
 
-    save() {
+    private save() {
         this.modellist.updateListType({
             basefilter: this.listfilters.basefilter,
             filterdefs: btoa(JSON.stringify(this.listfilters.filters))
@@ -45,28 +56,40 @@ export class ObjectListViewFilterPanel {
         });
     }
 
-    cancel() {
+    private cancel() {
         this.listfilters.basefilter = this.modellist.getBaseFilter();
         this.listfilters.filters = this.modellist.getFilterDefs();
     }
 
-    addFilter() {
-        this.listfilters.filters.push({
-            id: this.model.generateGuid(),
-            field: '',
-            operator: '',
-            filtervalue: ''
-        })
+    /**
+     * remove all Filters
+     */
+    private removeAllFilters() {
+        this.filter.conditions = [];
     }
 
-    removeAllFilters() {
-        this.listfilters.filters = [];
-    }
-
-    getPanelStyle() {
+    private getPanelStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         return {
             height: 'calc(100vh - ' + rect.top + 'px)'
-        }
+        };
+    }
+
+    private addExpression() {
+        let expression = {
+            field: '',
+            operator: '',
+            filtervalue: ''
+        };
+        this.filter.conditions.push(expression);
+    }
+
+    /**
+     * delete a filter item
+     *
+     * @param index index of the filter item
+     */
+    private deleteItem(index) {
+        this.filter.conditions.splice(index, 1);
     }
 }
