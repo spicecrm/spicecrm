@@ -39,18 +39,7 @@ export class AdministrationFTSManagerFieldsAdd {
                 private ftsconfiguration: ftsconfiguration,
                 private backend: backend,
                 private modelutilities: modelutilities) {
-        /*
-        this.path.push({
-            type: 'root',
-            module: this.ftsconfiguration.module,
-            path: 'root:' + this.ftsconfiguration.module
-        });
-        */
-        // this.getLinks();
-
-        this.getModuleFields(this.ftsconfiguration.module);
-
-        // this.getFields();
+        // this.getModuleFields(this.ftsconfiguration.module);
     }
 
     private chooseBreadcrumb(i) {
@@ -179,7 +168,6 @@ export class AdministrationFTSManagerFieldsAdd {
      * @param eventData
      */
     private itemSelected(eventData) {
-        console.log(eventData);
         this.nodepath = eventData.path;
         this.getModuleFields(eventData.module);
     }
@@ -204,9 +192,17 @@ export class AdministrationFTSManagerFieldsAdd {
             moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         } else {
             let field = dragEvent.item.data;
-            this.ftsconfiguration.moduleFtsFields[dragEvent.currentIndex] = {
-                path: field.name
+            let id = this.modelutilities.generateGuid();
+            let newItem = {
+                id: id,
+                fieldid: id,
+                fieldname: field.name,
+                indexfieldname: field.name,
+                name: field.label,
+                path: this.nodepath + '::' + field.id
             };
+
+            this.ftsconfiguration.moduleFtsFields.splice(dragEvent.currentIndex, 0, newItem);
         }
     }
 
@@ -235,8 +231,23 @@ export class AdministrationFTSManagerFieldsAdd {
         }
     }
 
+    /**
+     * track by function for the list for performance
+     *
+     * @param i
+     * @param item
+     */
     private trackByFn(i, item) {
         return item.id;
+    }
+
+    /**
+     * deletes the record with the given index
+     *
+     * @param index index of the row
+     */
+    private deleteField(index) {
+        this.ftsconfiguration.moduleFtsFields.splice(index, 1);
     }
 }
 
