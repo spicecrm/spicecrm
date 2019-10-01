@@ -1446,7 +1446,7 @@ export class aclCheck implements CanActivate {
         }
 
         // otherwise check here
-        if (route.params.module === 'Users' && !route.params.id && !this.session.authData.admin) {
+        if (route.params.module === 'Users' && (!route.params.id || route.params.id != this.session.authData.userId) && !this.session.authData.admin) {
             return false;
         } // prevents non-admins from listing the user list
 
