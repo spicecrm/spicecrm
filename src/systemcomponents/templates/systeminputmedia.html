@@ -1,0 +1,65 @@
+<div #area_metadata1 class="slds-p-horizontal--xx-small">
+    <div *ngIf="!mediaMetaData.mimetype">&nbsp;</div>
+    <div *ngIf="mediaMetaData.mimetype">
+        <div *ngIf="!isResized">{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px&nbsp;</div>
+        <div *ngIf="isResized" class="slds-grid slds-grid--align-spread">
+            <div>Original: {{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px&nbsp;</div>
+            <div>&#8594; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</div>
+        </div>
+    </div>
+</div>
+<div #area_media [ngStyle]="{height:areaMediaHeight}" style="position:relative">
+
+    <div (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" style="height:100%">
+        <div style="height:100%;width:100%;display:table">
+            <div  class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}" style="display:table-cell;vertical-align:middle;position: absolute;top:0;bottom:0;right:0;left:0">
+                <div class="chessbg" style="height:100%;">
+                    <img #imgelement *ngIf="mediaBase64" [src]="mediaBase64" (load)="imageLoaded($event)" style="max-height:100%"/>
+                </div>
+                <!--
+                <div id="video-demo-container">
+                    <video id="video-element" controls [src]="mediaBase64">
+                        <source type="video/mp4">
+                    </video>
+                    <canvas id="{{componentInstanceId}}_video_canvas" style="display:none"></canvas>
+                    <div id="thumbnail-container">
+                        Seek to <select id="set-video-seconds"></select> seconds <a id="download-link" href="#">Download Thumbnail</a>
+                    </div>
+                </div>
+                -->
+
+            </div>
+        </div>
+    </div>
+
+    <system-spinner *ngIf="isLoading" style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);"></system-spinner>
+
+</div>
+<div #area_metadata2><span *ngIf="mediaMetaData.fileformat">{{this.mediaMetaData.fileformat.toUpperCase()}}</span>&nbsp;</div>
+<div #area_controls style="position:absolute;left:0;bottom:0;right:0">
+    <div class="slds-grid slds-grid--vertical-align-end">
+        <div>
+            <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{lang.getLabel('LBL_SELECT_FILE')}}&nbsp;&hellip;</button>
+        </div>
+        <div *ngIf="canCrop" class="slds-col_bump-right slds-m-left--small">
+            <button class="slds-button slds-button--neutral" (click)="removeCropping()" [disabled]="!isCropped">clear</button>
+        </div>
+        <div *ngIf="canResize" class="slds-grid slds-grid--vertical-align-end">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox">
+                        <input type="checkbox" name="options" id="{{componentInstanceId}}_cbDoResize" [(ngModel)]="doResize" (change)="calcTargetSize()"/>
+                        <label class="slds-checkbox__label" for="{{componentInstanceId}}_cbDoResize">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">Downsize to max.&nbsp;&hellip;</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="slds-form-element__control slds-text-align--right slds-p-top--xxx-small">
+                    <input trim type="text" class="slds-input" style="width:auto" size="4" placeholder="Width" [(ngModel)]="maxWidthInput" [disabled]="!doResize" (change)="maxWidthChanged()">&nbsp;&times;&nbsp;<input trim type="text" class="slds-input" style="width:auto" size="4" placeholder="Height" [(ngModel)]="maxHeightInput" [disabled]="!doResize" (change)="maxHeightChanged()">&nbsp;px
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input #fileselector style="display:none" type="file" accept="image/*" (change)="fileSelectionChange()"/><!-- accept="video/mp4"-->
