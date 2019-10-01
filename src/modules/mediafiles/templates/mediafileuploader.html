@@ -1,68 +1,66 @@
-<div tabindex="-1" class="slds-modal slds-fade-in-open">
+<div tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
     <div class="slds-modal__container">
         <system-modal-header (close)="cancel()">
             {{language.getLabel('LBL_NEW_IMAGE')}}
         </system-modal-header>
-        <input #fileupload style="display:none" type="file" (change)="fileSelected()" />
-        <div class="slds-modal__content slds-p-around--medium slds-wrap">
+        <div class="slds-modal__content slds-p-around--medium slds-grid" style="height:100%">
 
-            <ng-container *ngIf="fileIsSelected">
+            <div class="slds-box slds-box_x-small slds-size--5-of-12">
+                <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" (mediaReady)="mediaReady=$event" style="height:100%"></system-input-media><!-- (mediaMetaData)="mediaMetaData"-->
+            </div>
 
-                <div class="slds-progress-bar slds-progress-bar_medium slds-progress-bar_circular" role="progressbar" [class.finished]="uploadFinished">
-                    <span class="slds-progress-bar__value" [ngStyle]="getBarStyle()"></span>
-                </div>
-                <div class="slds-m-top--x-small" style="text-align: center">{{statustext}}</div>
+            <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--7-of-12">
 
-                <div *ngIf="uploadFinished && !noMetaData" class="slds-m-top--medium" style="display:table;width:100%">
-
-                    <div class="slds-box slds-box_x-small" style="display:table-cell;width:40%;vertical-align:middle;background-color:#fff;">
-                        <media-file-image [media_id]="filedata.id" [variant]="'mwh'"></media-file-image>
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-p-right--x-small">
+                        <field-label fieldname="name"></field-label>
+                        <field-container field="name"></field-container>
                     </div>
-
-                    <div class="slds-p-left--medium" style="display:table-cell;width:60%">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_IMAGENAME')}}</label>
-                        <div class="slds-form-element__control">
-                            <input [(ngModel)]="filedata.name" type="text" class="slds-input">
-                        </div>
-                        <label class="slds-form-element__label slds-m-top--medium" for="select-mediacategory">{{language.getLabel('LBL_CATEGORY')}}</label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" id="select-mediacategory" [(ngModel)]="filedata.category"><!-- (change)="onChangeCategory($event)" -->
-                                    <option value="" style="font-style: italic">&mdash;</option>
-                                    <option *ngFor="let category of mediafiles.categoriesSorted" value="{{category.id}}">{{category.fullName}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <label class="slds-form-element__label slds-m-top--medium">{{language.getLabel('LBL_ALTTEXT')}}</label>
-                        <div class="slds-form-element__control">
-                            <input [(ngModel)]="filedata.alttext" type="text" class="slds-input">
-                        </div>
-                        <label class="slds-form-element__label slds-m-top--medium">{{language.getLabel('LBL_COPYRIGHT_OWNER')}}</label>
-                        <div class="slds-form-element__control">
-                            <input [(ngModel)]="filedata.copyright_owner" type="text" class="slds-input">
-                        </div>
-                        <label class="slds-form-element__label slds-m-top--medium">{{language.getLabel('LBL_COPYRIGHT_LICENSE')}}</label>
-                        <div class="slds-form-element__control">
-                            <input [(ngModel)]="filedata.copyright_license" type="text" class="slds-input">
-                        </div>
+                    <div class="slds-size--1-of-2 slds-p-left--x-small">
+                        <field-label fieldname="mediacategory_name"></field-label>
+                        <field-container field="mediacategory_name"></field-container>
                     </div>
-
                 </div>
 
-            </ng-container>
+                <div class="slds-m-vertical--x-small">
+                    <field-label fieldname="alttext"></field-label>
+                    <field-container field="alttext"></field-container>
+                </div>
 
-            <div *ngIf="!fileIsSelected">
-                {{language.getLabel('LBL_WAITING_FILE_SELECTION')}} …
+                <div class="slds-grid slds-m-vertical--x-small">
+                    <div class="slds-size--1-of-2 slds-p-right--x-small">
+                        <field-label fieldname="copyright_owner"></field-label>
+                        <field-container field="copyright_owner"></field-container>
+                    </div>
+                    <div class="slds-size--1-of-2 slds-p-left--x-small">
+                        <field-label fieldname="copyright_license"></field-label>
+                        <field-container field="copyright_license"></field-container>
+                    </div>
+                </div>
+
+                <div>
+                    <field-label fieldname="description"></field-label>
+                    <field-container field="description"></field-container>
+                </div>
+
+                <label class="slds-form-element__label slds-truncate" for="tags">Schlagworte
+                <system-input-tags-2 [(ngModel)]="tags" maxNumber="10" id="tags"></system-input-tags-2>
+                </label>
+
+                <div class="slds-m-top--large">                <button (click)="tagsEditing = !tagsEditing">edit</button></div>
+
             </div>
 
         </div>
 
         <div class="slds-modal__footer">
-            <ng-container *ngIf="!noMetaData">
-                <button *ngIf="fileIsSelected" class="slds-button slds-button--brand" (click)="finishDataInput()">{{language.getLabel('LBL_SAVE')}}</button>
-            </ng-container>
-            <button *ngIf="!fileIsSelected" class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{language.getLabel('LBL_SELECT_FILE')}} …</button>
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <div *ngIf="!isSaving">
+                <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{language.getLabel('LBL_SAVE')}}</button>
+                <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            </div>
+            <div *ngIf="isSaving">
+                <system-progress-bar [progress]="theProgress">Saving media file &hellip;</system-progress-bar>
+            </div>
         </div>
 
     </div>

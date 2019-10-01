@@ -2,7 +2,7 @@
  * @module services
  */
 import {Injectable, EventEmitter, Injector} from "@angular/core";
-import {of, Subject, Observable} from "rxjs";
+import { of, Subject, Observable, BehaviorSubject } from "rxjs";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
@@ -149,6 +149,8 @@ export class model {
      */
     public duplicates: any[] = [];
 
+    public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
+
     constructor(
         private backend: backend,
         private broadcast: broadcast,
@@ -166,7 +168,7 @@ export class model {
 
     }
 
-    get messages(): any[] {
+    get messages(): any[] { this.savingProgress.subscribe( asdf => { 1; });
         return this._messages;
     }
 
@@ -731,7 +733,7 @@ export class model {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress )
             .subscribe(
                 res => {
                     this.data = res;
