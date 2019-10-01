@@ -1,5 +1,5 @@
 <div class="slds-lookup__item--label slds-text-body--small">
-    {{language.getLabel('LBL_RECENTLYVIEWED')}} {{language.getModuleName(module)}}
+    {{language.getModuleCombinedLabel('LBL_RECENTLYVIEWED', module)}}
 </div>
 <ul class="slds-lookup__list" role="listbox">
     <li *ngFor="let recentItem of recentItems" role="presentation" (mousedown)="setParent($event, recentItem.item_id, recentItem.item_summary)">

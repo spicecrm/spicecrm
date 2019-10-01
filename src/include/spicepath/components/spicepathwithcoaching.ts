@@ -10,8 +10,10 @@ import {
     transition
 } from '@angular/animations';
 import {model} from "../../../services/model.service";
+import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {backend} from "../../../services/backend.service";
 
 /**
  * renders a path with coaching in the context of a model
@@ -24,26 +26,26 @@ import {broadcast} from "../../../services/broadcast.service";
     animations: [
         trigger('displaycoaching', [
             transition(':enter', [
-                style({ opacity: 0 , height: '0px',overflow: 'hidden'}),
-                animate('.5s', style({ height: '*', opacity: 1 })),
-                style({ overflow: 'unset'})
+                style({opacity: 0, height: '0px', overflow: 'hidden'}),
+                animate('.5s', style({height: '*', opacity: 1})),
+                style({overflow: 'unset'})
             ]),
             transition(':leave', [
-                style({ overflow: 'hidden'}),
-                animate('.5s', style({ height: '0px', opacity: 0 }))
+                style({overflow: 'hidden'}),
+                animate('.5s', style({height: '0px', opacity: 0}))
             ])
         ]),
         trigger('coachingicon', [
-            state('open', style({ transform: 'rotate(90deg)'})),
-            state('closed', style({ transform: 'rotate(0deg)'})),
+            state('open', style({transform: 'rotate(90deg)'})),
+            state('closed', style({transform: 'rotate(0deg)'})),
             transition('open => closed', [
-                animate('.5s'),
+                animate('.5s')
             ]),
             transition('closed => open', [
-                animate('.5s'),
+                animate('.5s')
             ])
         ])
-    ],
+    ]
 })
 export class SpicePathWithCoaching {
 
@@ -56,12 +58,25 @@ export class SpicePathWithCoaching {
      * holds the current active stage if the user clicks on another stage
      */
     private activeStage: string;
+    /**
+     * holds current results for the checks
+     */
+    private beanStagesChecksResults: any[];
 
-    constructor(private configuration: configurationService, private model: model) {
+    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend) {
     }
 
     /**
-     * gets the icon style for the coaching checvron and roitates it by 90degress if open (animated)
+     * retrieve results for checks on load
+     */
+    public ngOnInit() {
+        this.backend.getRequest("spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
+            this.beanStagesChecksResults = stages;
+        });
+    }
+
+    /**
+     * gets the icon style for the coaching checvron and rotates it by 90degress if open (animated)
      */
     get coachingIconStyle() {
         if (this.coachingVisible) {
@@ -110,11 +125,11 @@ export class SpicePathWithCoaching {
     }
 
     /**
-     * retrieves the checks for the curretn stage
+     * retrieves the checks for the current stage
      */
     get checks() {
         let checks = []
-        this.stages.some(stage => {
+        this.beanStagesChecksResults.some(stage => {
             if (stage.stage === this.displayStage) {
                 checks = stage.stagedata.checks
                 return true;
@@ -123,15 +138,29 @@ export class SpicePathWithCoaching {
         return checks;
     }
 
-    // gets the current stage description
+    /**
+     * gets the current stage description
+     */
     get stageDescription() {
-        let stagetext: string = "";
-        this.stages.some(stage => {
-            if (this.displayStage === stage.stage) {
-                stagetext = stage.stagedata.stage_description;
-                return true;
-            }
-        });
-        return stagetext;
+        let stage = this.stages.find(el => el.stage == this.displayStage);
+
+        if (!stage) return '';
+
+        if (stage.stagedata.stage_label) {
+            return this.language.getLabel(stage.stagedata.stage_label, '', 'long');
+        } else {
+            return stage.stagedata.stage_description;
+        }
+    }
+
+    /**
+     * gets the current stage description
+     */
+    get stageComponentset() {
+        let stage = this.stages.find(el => el.stage == this.displayStage);
+
+        if (!stage) return '';
+
+        return stage.stagedata.stage_componentset;
     }
 }

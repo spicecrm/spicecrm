@@ -1,43 +1,40 @@
 <div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open': showMenu}">
-    <p class="slds-text-title--caps slds-line-height--reset">{{moduleName}}</p>
     <button class="slds-button slds-type-focus slds-m-right--small slds-grid slds-truncate" aria-haspopup="true"
             (click)="toggleTypes()" >
         <div class="slds-grid slds-grid--vertical-align-center slds-truncate">
             <h1 class="slds-page-header__title slds-truncate slds-show--medium">{{modellist.getListTypeName()}}</h1>
             <system-button-icon icon="down"></system-button-icon>
-            <span class="slds-assistive-text">Show List Options</span>
         </div>
     </button>
     <div class="slds-dropdown slds-dropdown--left slds-dropdown--medium">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header" role="separator">
-                <span class="slds-text-title--caps">List Types</span>
+                <span class="slds-text-title--caps">{{language.getLabel('LBL_LIST_TYPES')}}</span>
             </li>
             <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'all'}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('all')">
                       <span class="slds-truncate">
-                          <system-utility-icon [icon]="'check'" [addclasses]="'slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small'"></system-utility-icon>
-                          {{allLabel}}</span>
+                          <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
+                          {{language.getModuleCombinedLabel('LBL_ALL', modellist.module)}}
+                      </span>
                 </a>
             </li>
             <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'owner'}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('owner')">
                       <span class="slds-truncate">
-                          <system-utility-icon [icon]="'check'" [addclasses]="'slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small'"></system-utility-icon>
-                            {{myLabel}}</span>
+                          <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
+                          {{language.getModuleCombinedLabel('LBL_MY', modellist.module)}}
+                      </span>
                 </a>
             </li>
-            <ng-container *ngFor="let listtype of listtypes">
-                <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id === modellist.listtype}" role="presentation" >
-                    <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType(listtype.id)">
-                      <span class="slds-truncate">
-                          <system-utility-icon [icon]="'check'" [addclasses]="'slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small'"></system-utility-icon>
-                        <!--svg aria-hidden="true" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small">
-                          <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#check"></use>
-                        </svg-->{{listtype.name}}</span>
-                    </a>
-                </li>
-            </ng-container>
+            <li *ngFor="let listtype of listtypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id === modellist.listtype}" role="presentation" >
+                <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType(listtype.id)">
+                  <span class="slds-truncate">
+                      <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
+                        {{listtype.name}}
+                  </span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

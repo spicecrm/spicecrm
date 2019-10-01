@@ -18,14 +18,6 @@ import {model} from "../../services/model.service";
     providers: [model]
 })
 export class ModelProviderDirective {
-    /*
-    @Input('modelProvider') provided_model:{
-        module:string,
-        id:string,
-        data:any,
-    };
-    */
-
     constructor(
         private model: model
     ) {
@@ -35,6 +27,13 @@ export class ModelProviderDirective {
 
     /**
      * as part of the attribute the model paramaters can be passed in
+     *
+     * @Input('modelProvider') provided_model:{
+     *   module:string,
+     *   id:string,
+     *   data:any,
+     *   };
+     *
      * @param provided_model
      */
     @Input('modelProvider')
@@ -49,7 +48,7 @@ export class ModelProviderDirective {
         if (provided_model.data) {
             this.model.data = provided_model.data;
             this.model.isLoading = false;
-            this.model.data$.emit();
+            this.model.data$.next(this.model.data);
 
             if (provided_model.data.acl) {
                 // has to be called again after the data is set because of the missing acl before...

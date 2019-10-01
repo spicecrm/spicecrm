@@ -21,7 +21,7 @@ declare var moment: any;
     providers: [model, view]
 })
 export class UserAddModal implements OnInit {
-    @ViewChild("addcontainer", {read: ViewContainerRef}) public addcontainer: ViewContainerRef;
+    @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;
     public self: any;
     public informationFieldset: any[] = [];
     public profileFieldset: any[] = [];

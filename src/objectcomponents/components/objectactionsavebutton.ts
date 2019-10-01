@@ -5,6 +5,7 @@ import {Component,  EventEmitter, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
+import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-action-save-button',
@@ -19,8 +20,12 @@ export class ObjectActionSaveButton {
 
     private saving: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
 
+    }
+
+    get hidden() {
+        return !this.view.isEditMode();
     }
 
     public execute() {
@@ -29,7 +34,9 @@ export class ObjectActionSaveButton {
         if(this.model.validate()) {
             this.saving = true;
             this.model.save().subscribe(saved => {
-                this.actionemitter.emit(true);
+                this.actionemitter.emit('save');
+                this.model.endEdit();
+                this.view.setViewMode();
             });
         }
     }

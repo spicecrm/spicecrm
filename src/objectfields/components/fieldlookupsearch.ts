@@ -41,7 +41,7 @@ export class fieldLookupSearch {
 
     private doSearch() {
         if (this.searchTerm !== '' && this.searchTerm !== this.fts.searchTerm) {
-            this.fts.searchByModules(this.searchTerm, [this.module], 10, {}, {}, false, this.modulefilter);
+            this.fts.searchByModules({searchterm: this.searchTerm, modules: [this.module],modulefilter: this.modulefilter});
         }
     }
 

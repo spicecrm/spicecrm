@@ -19,8 +19,12 @@ export class Home {
         this.navigation.setActiveModule('Home');
     }
 
+    get hasDashboardSet() {
+        return this.userpreferences.toUse.home_dashboardset && this.userpreferences.toUse.home_dashboardset.length > 0;
+    }
+
     get displayHomeAssistant() {
-        let hidden = this.userpreferences.unchangedPreferences.global.home_assistant == 'hidden';
+        let hidden = !this.userpreferences.toUse.home_assistant || this.userpreferences.toUse.home_assistant == 'hidden';
         return window.innerWidth > 1024 && !hidden;
     }
 }

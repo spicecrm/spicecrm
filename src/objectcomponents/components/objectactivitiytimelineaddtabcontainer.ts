@@ -16,7 +16,7 @@ export class ObjectActivitiyTimelineAddTabContainer implements OnInit {
     /**
      * the ref to the container wher the items are added
      */
-    @ViewChild('container', {read: ViewContainerRef}) private container: ViewContainerRef;
+    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
     /**
      * the component to be added

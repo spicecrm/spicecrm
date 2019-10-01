@@ -51,7 +51,7 @@ export class systemrichtextservice {
      * @param command string from triggerCommand
      */
     public executeCommand(command: string) {
-        if (command === 'h1' || command === 'h2' || command === 'h3' || command === 'h4' || command === 'h5' || command === 'h6' || command === 'p' || command === 'pre') {
+        if (command === 'h1' || command === 'h2' || command === 'h3' || command === 'h4' || command === 'h5' || command === 'h6' || command === 'p' || command === 'pre' || command === 'div') {
             this._document.execCommand('formatBlock', false, command);
         }
 

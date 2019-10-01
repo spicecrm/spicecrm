@@ -18,7 +18,7 @@ import { modal } from '../../services/modal.service';
 export class fieldBase64 extends fieldGeneric{
 
     speechRecognition: boolean = false;
-    @ViewChild('textField', {read: ViewContainerRef}) textField: ViewContainerRef;
+    @ViewChild('textField', {read: ViewContainerRef, static: true}) textField: ViewContainerRef;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public footer: footer, private modalservice: modal ) {
         super(model, view, language, metadata, router);

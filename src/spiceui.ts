@@ -24,6 +24,7 @@ import {ObjectComponents} from "./objectcomponents/objectcomponents";
 // various services we need on global app level
 import {loggerService} from './services/logger.service';
 import {configurationService} from "./services/configuration.service";
+import {helper} from "./services/helper.service";
 import {loginService, loginCheck} from "./services/login.service";
 import {session} from "./services/session.service";
 import {metadata, aclCheck} from "./services/metadata.service";
@@ -50,7 +51,10 @@ import {assistant} from "./services/assistant.service";
 import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
+import {libloader} from "./services/libloader.service";
+
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
+import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 
 // declarations for TS
 /**
@@ -115,7 +119,8 @@ export class SpiceUI {
             [
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
+                // {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
             ]
         )
     ],
@@ -134,6 +139,7 @@ export class SpiceUI {
         AppDataService,
         aclCheck,
         loginCheck,
+        helper,
         loginService,
         loader,
         configurationService,
@@ -156,7 +162,8 @@ export class SpiceUI {
         VersionManagerService,
         modal,
         Title,
-        loggerService
+        loggerService,
+        libloader
     ]
 })
 export class SpiceUIModule {

@@ -26,7 +26,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 })
 export class ACLProfilesManagerAddObjectModal {
 
-    @ViewChild('header', {read: ViewContainerRef}) header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: true}) header: ViewContainerRef;
 
     self: any = {};
     acltypes: Array<any> = [];
@@ -61,7 +61,7 @@ export class ACLProfilesManagerAddObjectModal {
         this.aclobjects = [];
 
         let params = {
-            spiceacltype_id: this.activeTypeId,
+            sysmodule_id: this.activeTypeId,
             searchterm: this.searchterm
         }
 

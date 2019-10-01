@@ -10,6 +10,7 @@ import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {fts} from "../../../services/fts.service";
 import {view} from "../../../services/view.service";
+import { language } from '../../../services/language.service';
 
 @Component({
     selector: "lead-convert-account",
@@ -17,7 +18,7 @@ import {view} from "../../../services/view.service";
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
-    @ViewChild("detailcontainer", {read: ViewContainerRef}) private detailcontainer: ViewContainerRef;
+    @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
     @Input() private  lead: any = {};
 
@@ -46,7 +47,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     }
 
 
-    constructor(private view: view, private metadata: metadata, private model: model, private modelutilities: modelutilities, private fts: fts) {
+    constructor(private view: view, private metadata: metadata, private model: model, private modelutilities: modelutilities, private fts: fts, private language: language) {
 
         // initialize the model
         this.model.module = "Accounts";
@@ -62,7 +63,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
         this.lead.data$.subscribe(data => {
             if (data.account_name !== "") {
 
-                this.fts.searchByModules(this.modelutilities.cleanAccountName(data.account_name), ["Accounts"]).subscribe(res => {
+                this.fts.searchByModules({searchterm: this.modelutilities.cleanAccountName(data.account_name), modules: ["Accounts"]}).subscribe(res => {
                     this.matchedAccounts = res.Accounts.hits;
                     if (this.matchedAccounts.length === 0) {
                         this.create = true;

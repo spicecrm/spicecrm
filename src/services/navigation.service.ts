@@ -6,9 +6,7 @@ import {Title} from "@angular/platform-browser";
 import {Observable, Subject, of} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
-import {CanActivate, CanDeactivate, Router} from "@angular/router";
-import {session} from "./session.service";
-import {metadata} from "./metadata.service";
+import {CanActivate} from "@angular/router";
 import {modal} from "./modal.service";
 import {language} from "./language.service";
 
@@ -18,15 +16,38 @@ export class navigation {
     public activeModule$: EventEmitter<string>;
 
     public activeModule: string = "Home";
+    public hasSubTabs: string;
     private activeId: string = "";
 
     private modelsEditing: any[] = [];
+
+    /**
+     * The array where all existing models are registered.
+     */
+    public modelregister: any[] = [];
+
+    /**
+     * A counter to give every registered model a unique id.
+     * This id is needed to unregister a model.
+     */
+    private modelregisterCounter = 0;
 
     constructor(private title: Title, private broadcast: broadcast, private configurationService: configurationService) {
         this.activeModule$ = new EventEmitter<string>();
 
         // subscribe to the save event .. so when the title for the current displayed bean changes update the browser title
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
+
+        // setTimeout is a workaround, in simple js applications without angular it works without it.
+        window.setTimeout( () => {
+            addEventListener( 'beforeunload', ( e: BeforeUnloadEvent ) => {
+                if ( this.anyDirtyModel() ) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            } );
+        }, 1 );
+
     }
 
     public setActiveModule(activemodule: string, id: string = "", summaryText: string = ""): void {
@@ -76,6 +97,44 @@ export class navigation {
         this.modelsEditing = [];
     }
 
+    /**
+     * Register a model.
+     * @param model The model.
+     * @return Model id.
+     */
+    public registerModel( model ): number {
+        let id = ++this.modelregisterCounter;
+        this.modelregister.push({ id: id, model: model });
+        return id;
+    }
+
+    /**
+     * Unregister a model.
+     * @param id The model id.
+     */
+    public unregisterModel( id: number ): void {
+        this.modelregister.some( ( model, i ) => {
+            if ( model.id === id ) {
+                this.modelregister.splice( i, 1 );
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Checks if there is any model with dirty fields (unsaved).
+     */
+    public anyDirtyModel(): boolean {
+        if ( this.modelregister.some( model => {
+            if ( !model.model.isLeaveable() ) {
+                console.info('Warning to prevent closing of window/tab. Dirty Model: ' + model.model.module + ', ' + model.model.id );
+                return true;
+            }
+        })) {
+            return true;
+        } else return false;
+    }
+
 }
 
 @Injectable()
@@ -84,13 +143,22 @@ export class canNavigateAway implements CanActivate {
     }
 
     public canActivate(route, state): Observable<boolean> {
-        if (this.navigation.editing) {
+
+        let isToWarn = false;
+        for ( let model of this.navigation.modelregister ) {
+            if ( !model.model.isOutsideRouterOutlet() && !model.model.isLeaveable() ) {
+                isToWarn = true;
+                break;
+            }
+        }
+
+        if ( isToWarn ) {
             let retSubject = new Subject<boolean>();
             this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP','', 'long'), this.language.getLabel('MSG_NAVIGATIONSTOP')).subscribe(retval => {
                 if (retval) {
                     this.navigation.discardAllChanges();
                 }
-                retSubject.next(retval)
+                retSubject.next(retval);
                 retSubject.complete();
             });
             return retSubject.asObservable();

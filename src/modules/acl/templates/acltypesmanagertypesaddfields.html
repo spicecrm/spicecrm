@@ -9,7 +9,7 @@
                     <input type="radio" [id]="'id'+thisfield" [value]="thisfield" [(ngModel)]="field"  name="availablefields" />
                     <label class="slds-radio__label" [attr.for]="'id'+thisfield">
                     <span class="slds-radio_faux"></span>
-                    <span class="slds-form-element__label">{{thisfield}}</span>
+                    <span class="slds-form-element__label">{{getFieldDisplayName(thisfield)}}&nbsp;/&nbsp;{{thisfield}}</span>
                     </label>
                 </span>
             </div>

@@ -22,16 +22,25 @@ import {modal} from '../../services/modal.service';
 })
 export class GlobalDockedComposer implements OnInit {
 
-    @ViewChild('containercontent', {read: ViewContainerRef}) private containercontent: ViewContainerRef;
+    /**
+     * refernce to the container content
+     */
+    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
     @Input() public composerdata: any = {};
     @Input() public composerindex: number;
 
     private isClosed: boolean = false;
 
+    private actionset: string;
+
     constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, private model: model, private view: view, private modal: modal, private ViewContainerRef: ViewContainerRef) {
+        // set the view to editable and to editmode
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        // set the model to editing
+        this.model.isEditing = true;
     }
 
     public ngOnInit() {
@@ -40,7 +49,7 @@ export class GlobalDockedComposer implements OnInit {
         this.model.id = this.composerdata.id;
 
         if (this.composerdata.model.data) {
-            this.model.data = this.composerdata.model.data
+            this.model.data = this.composerdata.model.data;
         } else {
             this.model.initializeModel();
         }
@@ -62,6 +71,9 @@ export class GlobalDockedComposer implements OnInit {
                 componentRef.instance.fieldset = componentconfig.fieldset;
             });
         }
+
+        // set the actionset
+        this.actionset = componentconfig.actionset;
     }
 
     get displayLabel() {
@@ -81,6 +93,13 @@ export class GlobalDockedComposer implements OnInit {
 
     }
 
+    private handleaction(action){
+        switch(action){
+            default:
+                this.closeComposer();
+        }
+    }
+
     private closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
             if (this.dockedComposer.composers[i].id === this.composerdata.id) {
@@ -90,16 +109,18 @@ export class GlobalDockedComposer implements OnInit {
     }
 
     private saveComposer(goto = false) {
-        this.model.save().subscribe((result) => {
-            // navigate to the record
-            if (goto) this.model.goDetail();
+        if (this.model.validate()) {
+            this.model.save().subscribe((result) => {
+                // navigate to the record
+                if (goto) this.model.goDetail();
 
-            // remove the composer
-            for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
-                if (this.dockedComposer.composers[i].id === this.composerdata.id) {
-                    this.dockedComposer.composers.splice(i, 1);
+                // remove the composer
+                for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
+                    if (this.dockedComposer.composers[i].id === this.composerdata.id) {
+                        this.dockedComposer.composers.splice(i, 1);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

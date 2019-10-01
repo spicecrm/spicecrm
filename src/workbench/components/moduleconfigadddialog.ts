@@ -42,6 +42,7 @@ export class ModuleConfigAddDialog implements OnInit {
     private addType: string = 'fieldset';
     private addName: string = '';
     private fieldsettype: string = 'custom';
+    private showDeprecatedWarning: boolean = false;
     private self;
 
     private types = [
@@ -142,7 +143,7 @@ export class ModuleConfigAddDialog implements OnInit {
         this.backend.getRequest('configurator/entries/sysuiobjectrepository').subscribe(data => {
 
             for(let comp of data){
-                this.compSelectList.push({"id": comp.id, "name": comp.object, "group": "global"});
+                this.compSelectList.push({"id": comp.id, "name": comp.object, "deprecated": comp.deprecated, "group": "global"});
 
                 if(this.mode == "copy") {
                     this.compDisabled = true;
@@ -154,7 +155,7 @@ export class ModuleConfigAddDialog implements OnInit {
         });
         this.backend.getRequest('configurator/entries/sysuicustomobjectrepository').subscribe(data => {
             for(let comp of data){
-                this.compSelectList.push({"id": comp.id, "name": comp.object, "group": "custom"});
+                this.compSelectList.push({"id": comp.id, "name": comp.object, "deprecated": comp.deprecated, "group": "custom"});
 
                 if(this.mode == "copy") {
                     this.compDisabled = true;
@@ -288,6 +289,14 @@ export class ModuleConfigAddDialog implements OnInit {
 
     private selectedOutputItemComp(event) {
         this.compSelectedItem = event;
+
+        // Show warning if the component is deprecated
+        this.showDeprecatedWarning = true;
+        if(event.deprecated == '1') {
+            this.showDeprecatedWarning = true;
+        } else {
+            this.showDeprecatedWarning = false;
+        }
     }
 
     private selectedOutputItemModule(event) {

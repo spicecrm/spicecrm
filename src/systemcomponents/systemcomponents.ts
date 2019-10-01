@@ -4,6 +4,7 @@
 import {
     NgModule
 } from "@angular/core";
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // MODULEs
 import {CommonModule} from "@angular/common";
@@ -29,7 +30,10 @@ import /*embed*/ {SystemButtonCustomIcon} from "./components/systembuttoncustomi
 import /*embed*/ {SystemButtonGroup} from "./components/systembuttongroup";
 import /*embed*/ {SystemButtonIcon} from "./components/systembuttonicon";
 import /*embed*/ {SystemCaptureImage} from "./components/systemcaptureimage";
-import /*embed*/ {SystemCard, SystemCardBody, SystemCardFooter, SystemCardHeaderTitle} from "./components/card";
+import /*embed*/ {SystemCard} from "./components/systemcard";
+import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
+import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
+import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
 import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
@@ -40,6 +44,7 @@ import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
+import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemIcon} from "./components/systemicon";
@@ -59,6 +64,8 @@ import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulef
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
+import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
+import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
@@ -73,6 +80,7 @@ import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
+import /*embed*/ {SystemRichTextEditorModal} from "./components/systemrichtexteditormodal";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
@@ -87,8 +95,11 @@ import /*embed*/ {SystemTooltip} from "./components/systemtooltip";
 import /*embed*/ {SystemTreeItem} from "./components/systemtreeitem";
 import /*embed*/ {SystemTree} from "./components/systemtree";
 import /*embed*/ {SystemUploadImage} from "./components/systemuploadimage";
+import /*embed*/ {SystemPopover} from "./components/systempopover";
 import /*embed*/ {SystemUtilityIcon} from "./components/systemutilityicon";
 import /*embed*/ {SystemViewContainer} from "./components/systemviewcontainer";
+import /*embed*/ {SystemIconHelpText} from "./components/systemiconhelptext";
+import /*embed*/ {SystemMultipleSelect} from "./components/systemmultipleselect";
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -97,8 +108,11 @@ import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage"
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
+
+import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
+import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
 
@@ -106,7 +120,8 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
     imports: [
         DirectivesModule,
         CommonModule,
-        FormsModule
+        FormsModule,
+        DragDropModule
     ],
     declarations: [
         PackageLoader,
@@ -126,7 +141,7 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
-        SystemCardHeaderTitle,
+        SystemCardHeader,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -138,6 +153,7 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemCustomIcon,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
+        SystemDynamicRouteInterceptor,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionGroup,
         SystemGooglePlacesAutocomplete,
@@ -160,6 +176,8 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemInputRadio,
         SystemInputTags,
         SystemInputTime,
+        SystemInputCompanycodes,
+        SystemInputBackendMethod,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -172,10 +190,16 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
         SystemObjectPreviewModal,
+        SystemInputModuleFilter,
+        SystemFilterBuilder,
+        SystemFilterBuilderFilterExpressionGroup,
+        SystemFilterBuilderFilterExpression,
+        SystemPopover,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
+        SystemRichTextEditorModal,
         SystemRichTextSourceModal,
         SystemSection,
         SystemSelect,
@@ -191,6 +215,10 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemTreeItem,
         SystemUploadImage,
         SystemUtilityIcon,
+        SystemViewContainer,
+        SystemIconHelpText,
+        SystemMultipleSelect,
+        SystemSelectUOM
         SystemViewContainer,
         SystemInputMedia,
         SystemInputTags2
@@ -209,7 +237,7 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
-        SystemCardHeaderTitle,
+        SystemCardHeader,
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
@@ -239,6 +267,8 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemInputRadio,
         SystemInputTags,
         SystemInputTime,
+        SystemInputCompanycodes,
+        SystemInputBackendMethod,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,
@@ -264,6 +294,14 @@ import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
         SystemTree,
         SystemTreeItem,
         SystemUtilityIcon,
+        SystemViewContainer,
+        SystemIconHelpText,
+        SystemMultipleSelect,
+        SystemInputModuleFilter,
+        SystemFilterBuilder,
+        SystemFilterBuilderFilterExpressionGroup,
+        SystemFilterBuilderFilterExpression,
+        SystemSelectUOM
         SystemViewContainer,
         SystemInputMedia,
         SystemInputTags2

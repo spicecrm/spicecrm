@@ -42,7 +42,14 @@ export class SystemInputModuleFilter implements ControlValueAccessor {
         private metadata: metadata
     ) {
         this._modulefilters = this.metadata.getModuleFilters();
-        this.modules = this.metadata.getModules().sort();
+
+        for (let moduleFilter of this._modulefilters) {
+            if (!this.modules.find(item => item == moduleFilter.module)) {
+                this.modules.push(moduleFilter.module);
+            }
+        }
+
+        this.modules.sort();
     }
 
     get modulefilter() {

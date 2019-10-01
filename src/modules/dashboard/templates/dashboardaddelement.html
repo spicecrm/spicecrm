@@ -2,17 +2,21 @@
     <system-modal-header (close)="close()">
         {{language.getLabel('LBL_ADD_DASHLET')}}
     </system-modal-header>
-    <system-modal-content [grow]="true">
-        <div class="slds-grid slds-m-bottom--small">
+    <system-modal-content [grow]="true" style="overflow-y: hidden">
+        <div class="slds-grid" style="height: 80px">
             <div class="slds-form-element slds-size--1-of-3">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_TYPE')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="dashletType">
-                            <option value="Generic">{{language.getLabel('LBL_DASHLET')}}</option>
-                            <option value="ReporterVisualizationDashlet">{{language.getLabel('LBL_REPORT_CHART')}}
+                            <option value="Generic">
+                                {{language.getLabel('LBL_DASHLET')}}
                             </option>
-                            <option value="ReporterPresentationDashlet">{{language.getLabel('LBL_REPORT_LIST')}}
+                            <option value="dashletVisualization">
+                                {{language.getLabel('LBL_REPORT_CHART')}}
+                            </option>
+                            <option value="dashletPresentation">
+                                {{language.getLabel('LBL_REPORT_LIST')}}
                             </option>
                         </select>
                     </div>
@@ -22,9 +26,11 @@
                 <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="dashletModule" [disabled]="noData">
+                        <select class="slds-select" [(ngModel)]="dashletModule">
                             <option value="*">All</option>
-                            <option *ngFor="let module of modules; trackBy: trackByFnModule" [value]="module">{{module}}</option>
+                            <option *ngFor="let module of modules" [value]="module">
+                                {{module}}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -33,69 +39,59 @@
                 <label class="slds-form-element__label">{{language.getLabel('LBL_SEARCH')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <input type="text" class="slds-lookup__search-input slds-input" [disabled]="noData" [(ngModel)]="reportFilterKey">
-                        <system-utility-icon *ngIf="this.reportFilterKey.length == 0" [icon]="'search'"
-                                             [addclasses]="'slds-input__icon'"></system-utility-icon>
-                        <div *ngIf="this.reportFilterKey.length > 0"
-                             class="slds-input__icon-group slds-input__icon-group_right">
-                            <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"
-                                    (click)="reportFilterKey = ''">
-                                <system-button-icon [icon]="'clear'"></system-button-icon>
-                            </button>
-                        </div>
+                        <input type="text" class="slds-lookup__search-input slds-input" [(ngModel)]="searchKey" (keyup)="search()">
+                        <system-utility-icon *ngIf="searchKey.length == 0" icon="search" addclasses="slds-input__icon"></system-utility-icon>
+                        <button *ngIf="searchKey.length > 0" class="slds-button slds-input__icon slds-input__icon_right" (click)="searchKey = ''">
+                            <system-button-icon icon="clear"></system-button-icon>
+                        </button>
                     </div>
-                </div>
-                <div class="slds-size--1-of-3 slds-grid slds-grid_vertical-align-end slds-m-top--xx-small slds-text-color--error"
-                     style="height: 20px">
-                         <span *ngIf="this.reportFilterKey.length > 0">
-                            {{(dashletType == 'Generic') ? language.getLabel('LBL_DASHLET') : language.getLabel('LBL_KREPORT')}}(s) found: {{(getType() === 'Generic') ? dashboardDashletsFiltered.length : kreportsFiltered.length}}
-                         </span>
                 </div>
             </div>
         </div>
         <!--row 2-->
-        <div class="slds-scrollable--y" style="height: 70%">
-            <div *ngIf="getType() === 'Generic'" class="slds-form-element">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_DASHLET')}}</label>
-                <system-spinner *ngIf="isLoading && noData"></system-spinner>
-                <div class="slds-grid slds-wrap">
-                    <div *ngFor="let dashlet of dashboardDashletsFiltered; trackBy: trackByFn"
-                         class="slds-size--1-of-3 slds-p-around--xx-small ">
-                        <a href="javascript:void(0);" (click)="save(dashlet.id)" class="slds-box slds-box_link slds-box_x-small slds-media">
-                            <system-icon [icon]="getIcon(dashlet.icon)" [sprite]="getSprite(dashlet.icon)" [module]="!dashlet.module ? 'Dashboards': dashlet.module" [size]="'large'"
-                                         class="slds-align_absolute-center"></system-icon>
-                            <div class="slds-media__body slds-border_left slds-p-around_small">
-                                <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="dashlet.label">
-                                    {{language.getLabel(dashlet.label)}}</h2>
-                                <p class="slds-m-top_small slds-truncate">{{language.getLabel(dashlet.label, '',
-                                    'long')}}</p>
-                            </div>
-                        </a>
+        <div style="height: calc(100% - 80px)">
+            <div #scrollElement class="slds-scrollable--y" style="height: 100%" (scroll)="onScroll(scrollElement)">
+                <div *ngIf="dashletType === 'Generic'" class="slds-form-element">
+                    <div class="slds-grid slds-wrap">
+                        <div *ngFor="let dashlet of dashboardDashlets; trackBy: trackByFn" class="slds-size--1-of-3 slds-p-around--xx-small ">
+                            <a href="javascript:void(0);" (click)="add(dashlet)" class="slds-box slds-box_link slds-box_x-small slds-media">
+                                <system-icon [icon]="getIcon(dashlet.icon)" [sprite]="getSprite(dashlet.icon)"
+                                             [module]="!dashlet.module ? 'Dashboards': dashlet.module" size="large" class="slds-align_absolute-center"></system-icon>
+                                <div class="slds-media__body slds-border_left slds-p-around_small">
+                                    <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="dashlet.label">
+                                        {{language.getLabel(dashlet.label)}}
+                                    </h2>
+                                    <p class="slds-m-top_small slds-truncate">
+                                        {{language.getLabel(dashlet.label, '','long')}}
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div *ngIf="getType() === 'Reporter'" #lookupfield class="slds-form-element slds-lookup">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_KREPORT')}}</label>
-                <div class="slds-grid slds-wrap">
-                    <div *ngFor="let kreport of kreportsFiltered; trackBy: trackByFn" class="slds-size--1-of-3 slds-p-around--xx-small">
-                        <a href="javascript:void(0);" (click)="save(kreport.id)"
-                           class="slds-box slds-box_link slds-box_x-small slds-media">
-                            <system-icon [module]="kreport.report_module" [size]="'large'"
-                                         class="slds-align_absolute-center"></system-icon>
-                            <div class="slds-media__body slds-border_left slds-p-around_small">
-                                <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="kreport.name">
-                                    {{kreport.name}}</h2>
-                                <p class="slds-m-top_small slds-truncate">{{kreport.description}}</p>
-                            </div>
-                        </a>
+                <div *ngIf="dashletType !== 'Generic'" class="slds-form-element slds-lookup">
+                    <div class="slds-grid slds-wrap">
+                        <div *ngFor="let kReport of kReports; trackBy: trackByFn" class="slds-size--1-of-3 slds-p-around--xx-small">
+                            <a href="javascript:void(0);" (click)="add(kReport)"
+                               class="slds-box slds-box_link slds-box_x-small slds-media">
+                                <system-icon [module]="kReport.report_module" size="large" class="slds-align_absolute-center"></system-icon>
+                                <div class="slds-media__body slds-border_left slds-p-around_small">
+                                    <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="kReport.name">
+                                        {{kReport.name}}
+                                    </h2>
+                                    <p class="slds-m-top_small slds-truncate">
+                                        {{kReport.description}}
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
+                <system-spinner *ngIf="isLoading"></system-spinner>
             </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">
-            {{language.getLabel('LBL_CANCEL')}}
-        </button>
+        <button class="slds-button slds-button--neutral" (click)="close()"> {{language.getLabel('LBL_CANCEL')}} </button>
     </system-modal-footer>
 </system-modal>
