@@ -116,9 +116,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param event
      */
     private preventdefault(event: any) {
-        if ((event.dataTransfer.items.length >= 1 && this.allItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
+        if ((event.dataTransfer.items.length >= 1 && this.hasOneItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
+
+            // ensure we are copying the element
+            event.dataTransfer.dropEffect = 'copy';
         }
     }
 
@@ -127,14 +130,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param items the items from the event
      */
-    private allItemsFile(items) {
+    private hasOneItemsFile(items) {
         for (let item of items) {
-            if (item.kind != 'file') {
-                return false;
+            if (item.kind == 'file') {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
