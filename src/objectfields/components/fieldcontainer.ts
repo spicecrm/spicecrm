@@ -5,13 +5,14 @@ import {Component, Input, ViewChild, ViewContainerRef, AfterViewInit} from '@ang
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {view} from '../../services/view.service';
 
 @Component({
     selector: 'field-container',
     templateUrl: './src/objectfields/templates/fieldcontainer.html'
 })
 export class fieldContainer implements AfterViewInit {
-    @ViewChild('fieldcontainer', {read: ViewContainerRef}) private fieldcontainer: ViewContainerRef;
+    @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) private fieldcontainer: ViewContainerRef;
 
     @Input() private field: string;
     @Input() private fieldconfig: any = {};
@@ -20,7 +21,8 @@ export class fieldContainer implements AfterViewInit {
     constructor(
         protected model: model,
         private language: language,
-        private metadata: metadata
+        private metadata: metadata,
+        private view: view
     ) {
 
     }
@@ -68,5 +70,4 @@ export class fieldContainer implements AfterViewInit {
         return fieldtypeComponent ? fieldtypeComponent : 'fieldGeneric';
 
     }
-
 }

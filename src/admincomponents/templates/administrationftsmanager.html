@@ -15,6 +15,7 @@
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="putIndex()">Put Mapping</button>
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="resetModule()">Reset</button>
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModule()">Index</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModuleBulk()">Index Bulk</button>
             <button type="button" class="slds-button slds-button--brand" [disabled]="!module" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
         <ng-template #indexing>

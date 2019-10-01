@@ -30,10 +30,12 @@ export class ObjectActionContainer implements OnChanges {
      */
     @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>;
 
+    @Input() private containerclass: string = 'slds-button-group';
+
     /**
      * the id of the actionset to be rendered
      */
-    @Input() private actionset: string = "";
+    @Input() public actionset: string = "";
 
     /**
      * an array with the main action items. Allothers are rendered in the overflow
@@ -55,7 +57,7 @@ export class ObjectActionContainer implements OnChanges {
      */
     private isOpen: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private changeDetectorRef: ChangeDetectorRef) {
+    constructor(public language: language, public metadata: metadata, public model: model, public changeDetectorRef: ChangeDetectorRef) {
     }
 
     public ngOnChanges() {
@@ -65,7 +67,7 @@ export class ObjectActionContainer implements OnChanges {
         let initial = true;
 
         for (let actionitem of actionitems) {
-            if (initial) {
+            if (initial || actionitem.singlebutton == '1') {
                 this.mainactionitems.push({
                     disabled: true,
                     id: actionitem.id,
@@ -125,6 +127,12 @@ export class ObjectActionContainer implements OnChanges {
         });
     }
 
+
+    /**
+     * determines based on the action ID if the component embedded in the container item is disabled
+     *
+     * @param actionid the action id
+     */
     private isDisabled(actionid) {
         let disabled = true;
         if (this.actionitemlist) {
@@ -136,6 +144,24 @@ export class ObjectActionContainer implements OnChanges {
             });
         }
         return disabled;
+    }
+
+    /**
+     * determines based on the action ID if the component embedded in the container item is hidden
+     *
+     * @param actionid the action id
+     */
+    private isHidden(actionid) {
+        let hidden = false;
+        if (this.actionitemlist) {
+            this.actionitemlist.some((actionitem: any) => {
+                if (actionitem.id == actionid) {
+                    hidden = actionitem.hidden;
+                    return true;
+                }
+            });
+        }
+        return hidden;
     }
 
     private propagateclick(actionid) {

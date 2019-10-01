@@ -23,6 +23,15 @@
         </div>
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_REGION')}}</label>
+            <select type="text"
+                    [(ngModel)]="model.data.settings.region"
+                    class="slds-select ng-pristine ng-valid">
+                <option value="eu">{{language.getLabel('LBL_EU')}}</option>
+                <option value="us">{{language.getLabel('LBL_US')}}</option>
+            </select>
+        </div>
         <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_REPLY_TO')}}</label>
             <input type="text" [(ngModel)]="model.data.settings.reply_to" class="slds-input ng-pristine ng-valid"/>

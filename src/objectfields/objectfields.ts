@@ -32,10 +32,14 @@ import /*embed*/ {fieldLanguage} from './components/fieldlanguage';
 import /*embed*/ {fieldMailboxes} from './components/fieldmailboxes';
 import /*embed*/ {fieldEmailTo} from './components/fieldemailto';
 import /*embed*/ {fieldEmailTemplates} from './components/fieldemailtemplates';
+import /*embed*/ {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
 import /*embed*/ {fieldMailRelais} from './components/fieldmailrelais';
 import /*embed*/ {fieldMultienum} from './components/fieldmultienum';
+import /*embed*/ {fieldGroupedEnum} from './components/fieldgroupedenum';
 import /*embed*/ {fieldMultienumCheckBox} from './components/fieldmultienumcheckbox';
+import /*embed*/ {fieldMultipleEnumDropdown} from './components/fieldmultipleenumdropdown';
 import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
+import /*embed*/ {fieldEnumRadio} from './components/fieldenumradio';
 import /*embed*/ {fieldBool} from './components/fieldbool';
 import /*embed*/ {fieldParent} from './components/fieldparent';
 import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
@@ -82,12 +86,9 @@ import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules
 import /*embed*/ {FieldEnumOutputTemplates} from "./components/fieldenumoutputtemplates";
 import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
 import /*embed*/ {fieldServiceQueue} from "./components/fieldservicequeue";
-import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
-import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
 import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
 import /*embed*/ {fieldSelectTreeSearch} from "./components/fieldselecttreesearch";
 import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
-import /*embed*/ {fieldTerritorySecondary, fieldTerritorySecondaryPipe} from "./components/fieldterritorysecondary";
 import /*embed*/ {fieldColorEnum} from "./components/fieldcolorenum";
 import /*embed*/ {fieldBase64} from "./components/fieldbase64";
 import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
@@ -98,6 +99,13 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import /*embed*/ {fieldTextID} from "./components/fieldtextid";
+import /*embed*/ {fieldBackendMethod} from "./components/fieldbackendmethod";
+import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
+import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
+import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
+import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
+import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
+import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
 
 /**
 * @ignore
@@ -139,10 +147,14 @@ declare var _: any;
         fieldMailboxes,
         fieldEmailTo,
         fieldEmailTemplates,
+        fieldTextMessageTemplates,
         fieldMailRelais,
         fieldMultienum,
+        fieldGroupedEnum,
         fieldMultienumCheckBox,
+        fieldMultipleEnumDropdown,
         fieldEnumAlternate,
+        fieldEnumRadio,
         fieldBool,
         fieldDate,
         fieldTime,
@@ -188,10 +200,6 @@ declare var _: any;
         FieldModelInfoComponent,
         fieldGDPR,
         fieldServiceQueue,
-        fieldTerritory,
-        fieldTerritorySearch,
-        fieldTerritorySecondary,
-        fieldTerritorySecondaryPipe,
         fieldSelectTree,
         fieldSelectTreeSearch,
         fieldSelectTreeTree,
@@ -203,7 +211,14 @@ declare var _: any;
         fieldPhone,
         fieldCronInterval,
         fieldGooglePlacesSearch,
-        fieldTextID
+        fieldTextID,
+        fieldBackendMethod,
+        fieldSystemLabel,
+        fieldTimeDifference,
+        fieldIconPopover,
+        fieldStylesheetID,
+        fieldUnitsOfMeasure,
+        fieldQuantity
     ],
     exports: [
         fieldSet,

@@ -21,6 +21,7 @@ export class dashboardlayout {
     public editing: string = '';
     public isMoving: boolean = false;
     public isloading: boolean = false;
+    public dashboardNotFound: boolean = false;
     public bodycontainerref: ViewContainerRef;
 
     constructor(private backend: backend, public model: model, private modal: modal) {
@@ -371,10 +372,10 @@ export class dashboardlayout {
         if (id != this.dashboardId) {
             this.editMode = false;
             this.isloading = true;
+            this.dashboardNotFound = false;
             this.dashboardId = id;
             this.model.module = 'Dashboards';
             this.model.id = id;
-            this.dashboardElements = [];
 
             if (name) {
                 this.model.setField('name', name);
@@ -389,6 +390,9 @@ export class dashboardlayout {
                     this.sortElements();
 
                     this.isloading = false;
+                }, err => {
+                    this.isloading = false;
+                    if (err.status == 404) this.dashboardNotFound = true;
                 });
         }
     }

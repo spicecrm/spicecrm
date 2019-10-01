@@ -1,5 +1,5 @@
 <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
-    <system-icon *ngIf="!file.thumbnail" [icon]="determineFileIcon()" divClass="" sprite="doctype"  size="'small'"></system-icon>
+    <system-icon *ngIf="!file.thumbnail" [icon]="helper.determineFileIcon(file.file_mime_type)" divClass="" sprite="doctype"  size="'small'"></system-icon>
     <div *ngIf="file.thumbnail">
         <img [src]="'data:image/jpg;base64,' + file.thumbnail"/>
     </div>

@@ -32,26 +32,22 @@ export class ObjectRelatedListItem implements OnInit {
     private customEditActions: any[] = [];
     private customActions: any[] = [];
     private expanded: boolean = false;
+    public componentconfig: any = {};
 
     constructor( private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal ) { }
 
     public ngOnInit() {
+        this.view.displayLabels = false;
+
         this.model.module = this.module;
         this.model.id = this.listitem.id;
         this.model.data = this.listitem;
+        this.view.isEditable = this.editable;
+        this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListItem', this.model.module);
+    }
 
-        // set editable if the user is allowed to edit the record
-        if (this.model.data.acl.edit) {
-            this.view.isEditable = this.editable;
-
-            this.customActions.push({action: "edit", name: this.language.getLabel("LBL_EDIT")});
-            this.customActions.push({action: "remove", name: this.language.getLabel("LBL_REMOVE")});
-        }
-
-        if (this.editable) {
-            this.customEditActions.push({action: "canceledit", name: this.language.getLabel("LBL_CANCEL")});
-            this.customEditActions.push({action: "saverelated", name: this.language.getLabel("LBL_SAVE")});
-        }
+    get actionset() {
+        return this.componentconfig.actionset;
     }
 
     private navigateDetail() {
@@ -106,7 +102,6 @@ export class ObjectRelatedListItem implements OnInit {
                 break;
         }
     }
-
 
     private toggleexpanded() {
         this.expanded = !this.expanded;

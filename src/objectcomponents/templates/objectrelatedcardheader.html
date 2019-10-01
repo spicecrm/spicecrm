@@ -1,4 +1,4 @@
-<div class="slds-card__header slds-grid">
+<div class="slds-card__header slds-grid slds-grid--vertical-align-center">
     <header class="slds-media slds-media--center slds-has-flexi-truncate">
         <object-icon [module]="module" [size]="'small'"></object-icon>
         <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
@@ -12,5 +12,14 @@
             <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="relatedmodels.count > 0" icon="up" size="x-small" (click)="toggleOpen()" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
         </div>
     </header>
-    <object-action-container *ngIf="actionset" [actionset]="actionset"></object-action-container>
+    <!-- additional header eleents go here-->
+    <div #ngContent [ngClass]="{'slds-m-left--x-small':ngContent.innerHTML}">
+        <ng-content></ng-content>
+    </div>
+    <object-action-container *ngIf="actionset" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>
+    <div *ngIf="!relatedmodels.isloading && relatedmodels.count === 0" class="slds-m-left--x-small">
+        <button class="slds-button slds-button_icon x-slds-m-right--medium" (click)="reload()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
 </div>

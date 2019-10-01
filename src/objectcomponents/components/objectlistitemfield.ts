@@ -11,7 +11,7 @@ import { language } from '../../services/language.service';
     templateUrl: './src/objectcomponents/templates/objectlistitemfield.html'
 })
 export class ObjectListItemField implements AfterViewInit{
-    @ViewChild('fieldcontainer', {read: ViewContainerRef}) fieldcontainer: ViewContainerRef;
+    @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) fieldcontainer: ViewContainerRef;
 
     @Input() field: string = '';
 

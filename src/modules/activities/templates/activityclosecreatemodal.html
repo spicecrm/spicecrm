@@ -1,0 +1,18 @@
+<system-modal size="x-small">
+    <system-modal-header (close)="closeModal()">
+        {{language.getLabel('LBL_CREATE')}}
+    </system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-m-left_x-small slds-m-vertical_large">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <system-input-radio *ngFor="let o of newBeanModules" name="module" [value]="o.module" [(ngModel)]="value">{{language.getLabel(o.singular_label)}}</system-input-radio>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="create()">{{language.getLabel('LBL_CREATE')}}</button>
+    </system-modal-footer>
+</system-modal>

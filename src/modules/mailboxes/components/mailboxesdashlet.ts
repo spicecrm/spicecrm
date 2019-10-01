@@ -21,8 +21,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     private loadLimit: number = 20;
     private getMailBoxesInterval: any = undefined;
 
-    @ViewChild('tablecontainer', {read: ViewContainerRef}) private tablecontainer: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef}) private headercontainer: ViewContainerRef;
+    @ViewChild('tablecontainer', {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
 
     constructor(private language: language,
                 private metadata: metadata,
@@ -30,12 +29,6 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
                 private model: model,
                 private router: Router,
                 private elementRef: ElementRef) {
-
-    }
-
-    get tablestyle() {
-        let element = this.headercontainer.element.nativeElement;
-        return {height: `calc(98% - ${element.clientHeight}px`};
 
     }
 

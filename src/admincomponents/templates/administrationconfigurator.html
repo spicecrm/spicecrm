@@ -43,7 +43,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr style="vertical-align: middle" class="slds-align-top" administration-configurator-item *ngFor="let entry of getEntries()" [entry]="entry" [fields]="getFields()">
+        <tr style="vertical-align: middle" class="slds-align-top" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [entry]="entry" [fields]="getFields()">
         </tr>
     </tbody>
 </table>

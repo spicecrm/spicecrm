@@ -59,8 +59,8 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
 
     height: string = '';
 
-    @ViewChild('buttonToEnlargement') buttonToEnlargement: ElementRef;
-    @ViewChild('buttonToPicker') buttonToPicker: ElementRef;
+    @ViewChild('buttonToEnlargement', {static: true}) buttonToEnlargement: ElementRef;
+    @ViewChild('buttonToPicker', {static: true}) buttonToPicker: ElementRef;
 
     size1rem: number;
     widthOfParent: number;

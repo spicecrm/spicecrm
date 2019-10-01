@@ -16,11 +16,11 @@ export class ObjectActionNewButton implements OnInit {
     public module: string = "";
     public disabled: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model) {
 
     }
 
-    private execute() {
+    public execute() {
         // make sure we have no idea so a new on gets issues
         this.model.id = "";
         this.model.addModel("", this.parent);

@@ -14,7 +14,7 @@ import {modellist} from '../../services/modellist.service';
 })
 export class ObjectList implements OnDestroy {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
 
     private allFields: any[] = [];
     private listFields: any[] = [];
@@ -54,6 +54,14 @@ export class ObjectList implements OnDestroy {
 
     get issmall() {
         return this.layout.screenwidth == 'small';
+    }
+
+    get sortfield() {
+        return this.componentconfig.sortfield;
+    }
+
+    get sortdirection() {
+        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
     }
 
     public ngOnDestroy() {
@@ -97,9 +105,11 @@ export class ObjectList implements OnDestroy {
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
+        this.modellist.setSortDirection(this.sortdirection);
+        this.modellist.setSortFieldWithoutReload(this.sortfield);
         this.modellist.getListData(requestedFields, loadfromcache);
     }
-
+//
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {

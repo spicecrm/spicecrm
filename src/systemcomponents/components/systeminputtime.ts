@@ -40,11 +40,11 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         offset: 0,
         valid: true
     };
-    private dropdownValues: Array<any> = [];
+    private dropdownValues: any[] = [];
 
     // for the dropdown
     private isOpen: boolean = false;
-    //private clickListener: any;
+    // private clickListener: any;
     private readonly minutes_interval = 30;
 
     constructor(
@@ -112,7 +112,8 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
                     this._time.moment = new moment();
                 }
 
-                this._time.moment.hour(newDate.hour()).minutes(newDate.minutes());
+                this._time.moment.set('hour', newDate.hour());
+                this._time.moment.set('minute', newDate.minute());
                 this._time.valid = true;
                 this._time.offset = this.calculateOffset(this._time.moment);
                 this._time.display = value;

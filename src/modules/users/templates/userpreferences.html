@@ -1,4 +1,4 @@
-<div *ngIf="!canPrefs; else prefs" class="slds-text-align--center slds-m-top--x-large">The preferences of the user are only viewable/editable by himself.</div>
+<div *ngIf="cannotPrefs; else prefs" class="slds-text-align--center slds-m-top--x-large">The preferences of the user are only viewable/editable by himself.</div>
 
 <ng-template #prefs>
     <system-section titlelabel="LBL_LOCALE_PREFERENCES">
@@ -135,6 +135,16 @@
                     </div>
                 </user-preferences-item-edit>
             </user-preferences-item>
+            <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_HELP_ICON">
+                <user-preferences-item-display>{{preferences.help_icon}}</user-preferences-item-display>
+                <user-preferences-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.help_icon" (change)="change($event,'help_icon')">
+                            <option *ngFor="let option of visibilityOptions" [value]="option">{{option}}</option>
+                        </select>
+                    </div>
+                </user-preferences-item-edit>
+            </user-preferences-item>
         </div>
     </system-section>
 
@@ -189,8 +199,11 @@
 
     <system-section titlelabel="LBL_HOME_PREFERENCES">
         <div class="slds-grid">
-            <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_HOME_DASHBOARD">
-                <user-preferences-item-display>{{homeDashboardName}}</user-preferences-item-display>
+            <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
+                <user-preferences-item-display *ngIf="!preferences.home_dashboard; else homeDashboardContainer"></user-preferences-item-display>
+                <ng-template #homeDashboardContainer>
+                    <field-container [modelProvider]="{module: 'Dashboards', id: preferences.home_dashboard, data: getDashboardData(preferences.home_dashboard)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                </ng-template>
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
                         <select class="slds-select" (change)="change($event,'home_dashboard')">
@@ -200,12 +213,26 @@
                     </div>
                 </user-preferences-item-edit>
             </user-preferences-item>
-            <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_HOME_ASSISTANT">
+            <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
+                <user-preferences-item-display *ngIf="!preferences.home_dashboardset; else homeDashboardSetContainer"></user-preferences-item-display>
+                <ng-template #homeDashboardSetContainer>
+                    <field-container [modelProvider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: getDashboardSetData(preferences.home_dashboardset)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                </ng-template>
+                <user-preferences-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.home_dashboardset" (change)="change($event,'home_dashboardset')">
+                            <option value="-" [selected]="!preferences.home_dashboardset">-- select --</option>
+                            <option *ngFor="let option of dashboardSets" [value]="option.id">{{option.name}}</option>
+                        </select>
+                    </div>
+                </user-preferences-item-edit>
+            </user-preferences-item>
+            <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
                 <user-preferences-item-display>{{preferences.home_assistant}}</user-preferences-item-display>
                 <user-preferences-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" id="home_assistant" (change)="change($event,'home_assistant')">
-                            <option *ngFor="let option of assistantOptions" [value]="option" [selected]="option == preferences.home_assistant || (option == 'visible' && !preferences.home_assistant)">{{option}}</option>
+                        <select class="slds-select" [ngModel]="preferences.home_assistant" (change)="change($event,'home_assistant')">
+                            <option *ngFor="let option of visibilityOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
                 </user-preferences-item-edit>

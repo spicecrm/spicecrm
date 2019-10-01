@@ -13,82 +13,143 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
+/**
+ * renders the tab header. Depending on the configuration this is either a simple label or can be a component that is rendered.
+ * The component can render information on the tab itself
+ */
 @Component({
     selector: 'object-tab-container-item-header',
     templateUrl: './src/objectcomponents/templates/objecttabcontaineritemheader.html'
 })
 export class ObjectTabContainerItemHeader implements AfterViewInit {
-    @ViewChild('headercontainer', {read: ViewContainerRef}) headercontainer: ViewContainerRef;
+    /**
+     * the reference to the header where the compponent is placed in
+     */
+    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
 
-    @Input() tab: any = [];
+    /**
+     * the inpout from teh tab embedding the header
+     */
+    @Input() private tab: any = [];
 
     constructor(private metadata: metadata, private language: language) {
 
     }
 
+    /**
+     * returns the name for the tab if no component is rendered
+     */
     get displayName() {
         return !this.tab.headercomponent && this.tab.name && this.tab.name != '';
     }
 
-    ngAfterViewInit() {
+    /**
+     * after view init renders the component if one is set in teh componentconfig
+     */
+    public ngAfterViewInit() {
         if (this.tab.headercomponent) {
             this.metadata.addComponent(this.tab.headercomponent, this.headercontainer);
         }
     }
 
-    getTabLabel(label) {
+
+    /**
+     * @deprecated
+     *
+     * ToDo remove
+     *
+     * @param label
+     */
+    private getTabLabel(label) {
         if (label.indexOf(':') > 0) {
             let arr = label.split(':');
             return this.language.getLabel(arr[0], arr[1])
-        } else
-            return this.language.getLabel(label)
+        } else {
+            return this.language.getLabel(label);
+        }
     }
 }
 
 
+/**
+ * the item itself rendering the tab
+ */
 @Component({
     selector: 'object-tab-container-item',
     templateUrl: './src/objectcomponents/templates/objecttabcontaineritem.html',
     providers: [fielderrorgrouping]
 })
 export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
-    @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+    /**
+     * component reference to the container itself
+     */
+    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
-    componentRefs: any = [];
-    initialized: boolean = false;
-    @Input() componentset: any = [];
-    @Output() taberrors = new EventEmitter();
+    /**
+     * an array with componentrefs to be used when the component is dexytoryed to also ensure all dynamic components are destroyed
+     */
+    private componentRefs: any = [];
+
+    /**
+     * internal variable to check if the component is initialized. Tabs are not initialized by default but only once the user selects a tab. This improves the load performance since related records e.g. are not yet loaded
+     */
+    private initialized: boolean = false;
+
+    /**
+     * the componetnset to be rendered
+     */
+    @Input() private componentset: any = [];
+
+    /**
+     * in case errors are renderd from a fieldgroup on the tab this is emitted on the tab level to guide the user in multi tabbed scenarios on the detail view
+     */
+    @Output() private taberrors = new EventEmitter();
 
     constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping) {
     }
 
-    ngOnInit() {
+    /**
+     * link to the fieldgrou if there is one in the tab. If fields are int eh tabe they will link themselves to a fieldgroup
+     */
+    public ngOnInit() {
         this.fielderrorgroup.change$.subscribe((nr) => {
             this.taberrors.emit(nr);
         });
     }
 
-    ngAfterViewInit() {
+    /**
+     * initialize itself
+     */
+    public ngAfterViewInit() {
         this.initialized = true;
         this.buildContainer();
     }
 
-    ngOnDestroy() {
+    /**
+     * cleanup after destroy
+     */
+    public ngOnDestroy() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
     }
 
-    buildContainer() {
+    /**
+     * renders the contaioner and the componentsets
+     */
+    private buildContainer() {
         for (let component of this.metadata.getComponentSetObjects(this.componentset)) {
             this.metadata.addComponent(component.component, this.container).subscribe(componentRef => {
                 this.componentRefs.push(componentRef);
-                componentRef.instance['componentconfig'] = component.componentconfig;
+                componentRef.instance.componentconfig = component.componentconfig;
             });
         }
     }
 }
 
+/**
+ * renders a tabcontainer with separate tabs
+ */
 @Component({
     selector: 'object-tab-container',
     templateUrl: './src/objectcomponents/templates/objecttabcontainer.html'
@@ -107,7 +168,7 @@ export class ObjectTabContainer implements OnInit {
     /**
      * the componentconfig
      */
-    private componentconfig: any ;
+    private componentconfig: any;
 
     /**
      * the tabs to be rendered

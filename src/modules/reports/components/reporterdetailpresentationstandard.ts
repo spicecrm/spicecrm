@@ -2,17 +2,12 @@
  * @module ModuleReports
  */
 import {
-    Component, AfterViewInit, OnInit,
-    OnDestroy, ViewChild, ViewContainerRef, Renderer, ElementRef
+    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
-import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
-
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -23,43 +18,52 @@ import  {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef}) private tableheader: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef}) private tablefooter: ViewContainerRef;
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
+    @ViewChild('tablefooter', {read: ViewContainerRef, static: true}) private tablefooter: ViewContainerRef;
 
     private presParams: any = {};
     private presData: any = {};
     private fieldsData: any = {};
     private totalWidth: number = 0;
-    private mouseMoveListener: any = undefined;
-    private mouseUpListener: any = undefined;
-    private mousestart: number = 0;
-    private mousemove: number = 0;
-    private mousefield: string = '';
-    private mousewidth: number;
     private showFooter: boolean = true;
 
     private currentPage: number = 1;
 
     private isLoading: boolean = true;
 
-
-    constructor(private renderer: Renderer, private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private elementRef: ElementRef, private reporterconfig: reporterconfig) {
+    constructor(private language: language, private model: model, private backend: backend,  private reporterconfig: reporterconfig) {
         this.reporterconfig.refresh$.subscribe(event => {
             this.getPresentation();
-        })
+        });
     }
 
-    private handleMessage(message: any) {
-
-    }
 
     public ngOnInit() {
-        this.presParams = JSON.parse(this.model.data.presentation_params);
+        this.presParams = this.model.getField('presentation_params');
     }
 
     public ngAfterViewInit() {
         this.getPresentation();
+    }
+
+
+    private displayClasses(field) {
+        let classes = [];
+
+        if (field.sortable) classes.push('slds-is-sortable');
+
+        switch (field.type) {
+            case 'currency':
+            case 'currencyint':
+                classes.push('slds-grid--align-end')
+                break;
+            case 'enum':
+                classes.push('slds-grid--align-center')
+                break;
+        }
+
+        return classes.join(' ');
     }
 
     // todo : fix this for scrolling with a fixed table header
@@ -85,7 +89,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         let startRecords = (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries + 1;
         let endRecords = this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries;
 
-        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords );
+        return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
     }
 
     get totalRecords() {
@@ -96,7 +100,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         this.isLoading = true;
 
         // build wherecondition
-        let whereConditions: Array<any> = [];
+        let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
                 fieldid: userFilter.fieldid,
@@ -111,7 +115,9 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
             start: (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries,
             limit: this.presParams.pluginData.standardViewProperties.listEntries,
-            whereConditions: JSON.stringify(whereConditions)
+            whereConditions: JSON.stringify(whereConditions),
+            parentbeanId: this.model.getField('parentBeanId'),
+            parentbeanModule: this.model.getField('parentBeanModule')
         }).subscribe((presData: any) => {
 
             // get field width
@@ -147,27 +153,12 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
 
-    private onMouseDown(fieldid, e) {
-        this.mouseUpListener = this.renderer.listenGlobal('document', 'mouseup', (event) => this.onMouseUp(event));
-        this.mouseMoveListener = this.renderer.listenGlobal('document', 'mousemove', (event) => this.onMouseMove(event));
-        this.mousestart = e.pageX;
-        this.mousefield = fieldid;
-    }
-
-    private onMouseMove(e) {
-        this.mousemove = e.pageX - this.mousestart;
-    }
-
-    onMouseUp(e) {
-        console.log('mouseup ' + this.mousefield);
-        this.mouseUpListener();
-        this.mouseMoveListener();
-
-        // calculate the current column width
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        let actWidth = rect.width / this.totalWidth * this.fieldsData[this.mousefield].width;
-
-        this.fieldsData[this.mousefield].width = Math.round(this.fieldsData[this.mousefield].width * (actWidth + e.pageX - this.mousestart) / actWidth);
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(fieldid): string {
+        return 'arrowdown';
+        //    return 'arrowup';
     }
 
     get prevDisbaled() {

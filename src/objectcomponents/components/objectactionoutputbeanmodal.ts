@@ -1,14 +1,16 @@
 /**
  * @module ObjectComponents
  */
-import {Component} from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import {model} from '../../services/model.service';
+import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from "../../services/modal.service";
 import {view} from "../../services/view.service";
 import {backend} from "../../services/backend.service";
 import {DomSanitizer} from '@angular/platform-browser';
 import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
+import {field} from "../../objectfields/components/field";
 
 @Component({
     selector: 'object-action-output-bean-modal',
@@ -17,13 +19,41 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 })
 export class ObjectActionOutputBeanModal {
 
+    public modalTitle: string;
+    public forcedFormat: 'html'|'pdf';
+    public noDownload = false;
+    public handBack: EventEmitter<any>;
+    public buttonText: string;
+    private contentForHandBack: string;
+
+    /**
+     * the window itsel .. resp the containing modal container
+     */
     public self: any = undefined;
+
+    /**
+     * the list of templates
+     */
     private templates = [];
 
+    /**
+     * the selected template
+     */
     private _selected_template = null;
+
+    /**
+     * the selected output format
+     */
     private _selected_format: 'html' | 'pdf' = 'pdf';
 
+    /**
+     * the response of the compiler
+     */
     private compiled_selected_template: string = '';
+
+    /**
+     * flag is the oputput is loading
+     */
     private loading_output: boolean = false;
 
 
@@ -35,6 +65,7 @@ export class ObjectActionOutputBeanModal {
     constructor(
         private language: language,
         private model: model,
+        private metadata: metadata,
         private modal: modal,
         private view: view,
         private backend: backend,
@@ -44,21 +75,33 @@ export class ObjectActionOutputBeanModal {
     }
 
     public ngOnInit() {
-        let params = {
-            searchfields:
-                {
-                    join: 'AND',
-                    conditions: [
-                        {field: 'module_name', operator: '=', value: this.model.module}
-                    ]
-                }
-        };
 
-        this.backend.all('OutputTemplates', params).subscribe(
-            (data: any) => {
-                this.templates = data;
+        // If there is no modal window title given from outside, use the default title:
+        if ( !this.modalTitle ) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
+
+        // If there is no button text given from outside, use the default text:
+        if ( !this.buttonText ) this.buttonText = this.language.getLabel( this.noDownload  ? 'LBL_OK':'LBL_DOWNLOAD' );
+
+        // Set the output format in case it is given from outside:
+        if ( this.forcedFormat ) this._selected_format = this.forcedFormat;
+
+        // see if we have a relate to an output template
+        let fields = this.metadata.getModuleFields(this.model.module);
+        for (let field in fields) {
+            if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
+                let template = this.templates.find(template => template.id == this.model.getFieldValue(fields[field].id_name));
+                if(template) {
+                    this.selected_template = template;
+                }
+                break;
             }
-        );
+        }
+
+        // if no template is set and we only have one select this
+        if (!this.selected_template && this.templates.length == 1) {
+            this.selected_template = this.templates[0];
+            this.rendertemplate();
+        }
     }
 
     set selected_template(val) {
@@ -93,8 +136,9 @@ export class ObjectActionOutputBeanModal {
             case 'pdf':
                 this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob(atob(pdf.content));
-                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                        let blob = this.datatoBlob( atob( pdf.content ) );
+                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
+                        if ( this.handBack ) this.contentForHandBack = pdf.content;
                         this.loading_output = false;
                     },
                     err => {
@@ -107,6 +151,7 @@ export class ObjectActionOutputBeanModal {
                 this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
+                        if ( this.handBack ) this.contentForHandBack = res.content;
                         this.loading_output = false;
                     },
                     err => {
@@ -117,27 +162,38 @@ export class ObjectActionOutputBeanModal {
         }
     }
 
+    /**
+     * called from reload button to re render the template
+     */
+    private reload() {
+        this.rendertemplate();
+    }
+
     private close() {
         this.self.destroy();
     }
 
-    private download() {
-        let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
-        this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
-            loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
-            this.backend.downloadFile(
-                {
-                    route: `OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
-                }, fileName, 'application/pdf'
-            ).subscribe(
-                next => {
-                    loadingCompRef.instance.self.destroy();
-                },
-                err => {
-                    loadingCompRef.instance.self.destroy();
-                }
-            );
-        });
+    private create() {
+        if ( this.handBack ) this.handBack.emit( { name: this.selected_template.name, content: this.contentForHandBack });
+        if ( this.noDownload ) this.close();
+        else {
+            let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
+            this.modal.openModal( 'SystemLoadingModal' ).subscribe( loadingCompRef => {
+                loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
+                this.backend.downloadFile(
+                    {
+                        route: `OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
+                    }, fileName, 'application/pdf' ).subscribe(
+                    next => {
+                        loadingCompRef.instance.self.destroy();
+                        this.close();
+                    },
+                    err => {
+                        loadingCompRef.instance.self.destroy();
+                    }
+                );
+            } );
+        }
     }
 
     /**

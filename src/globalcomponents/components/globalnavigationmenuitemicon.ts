@@ -3,6 +3,9 @@
  */
 import {Component, Input} from '@angular/core';
 
+/**
+ * @deprecated
+ */
 @Component({
     selector: 'global-nevigation-menu-item-icon',
     templateUrl: './src/globalcomponents/templates/globalnavigationmenuitemicon.html'

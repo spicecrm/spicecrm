@@ -34,15 +34,23 @@ export class fieldAddress extends fieldGeneric {
      */
     private buildAddress() {
         let address = '';
+        let address_arr = [];
+        if (this.model.data[this.addresskey + 'address_attn']) {
+            address_arr.push(this.model.data[this.addresskey + 'address_attn']);
+        }
         if (this.model.data[this.addresskey + 'address_street']) {
-            address += this.model.data[this.addresskey + 'address_street'];
+            address_arr.push(this.model.data[this.addresskey + 'address_street']);
         }
         if (this.model.data[this.addresskey + 'address_postalcode']) {
-            address += ', ' + this.model.data[this.addresskey + 'address_postalcode'] + ' ' + this.model.data[this.addresskey + 'address_city'];
+            address_arr.push(this.model.data[this.addresskey + 'address_postalcode'] + ' ' + this.model.data[this.addresskey + 'address_city']);
+        }
+        if (this.model.data[this.addresskey + 'address_state']) {
+            address_arr.push(this.model.data[this.addresskey + 'address_state']);
         }
         if (this.model.data[this.addresskey + 'address_country']) {
-            address += ', ' + this.model.data[this.addresskey + 'address_country'];
+            address_arr.push(this.model.data[this.addresskey + 'address_country']);
         }
+        address = address_arr.join(', ');
         return address;
     }
 
@@ -65,7 +73,7 @@ export class fieldAddress extends fieldGeneric {
      * getter for the field label if the form is rendered as subform
      */
     private getAddressLabel() {
-        return this.language.getLabel(this.model.module, this.fieldconfig.label);
+        return this.language.getLabel(this.fieldconfig.label);
     }
 
     /**

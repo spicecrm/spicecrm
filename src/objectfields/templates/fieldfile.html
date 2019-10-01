@@ -1,10 +1,10 @@
-<script src="../components/fieldduration.ts"></script>
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center">
-            <system-icon [icon]="determineFileIcon()" divClass="slds-p-right--xx-small" sprite="doctype"  size="x-small"></system-icon>
-            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="downloadAttachment()">{{value}}</a></div>
+            <system-icon *ngIf="value" [icon]="helper.determineFileIcon(model.getField('file_mime_type'))" divClass="slds-p-right--xx-small" sprite="doctype"  size="x-small"></system-icon>
+            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="previewFile()">{{value}}</a></div>
             <button *ngIf="isEditable()" style="float: right"
                     class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditMode()">
                 <system-button-icon icon="edit"></system-button-icon>
@@ -17,7 +17,7 @@
     <div *ngIf="value" class="slds-pill slds-pill_link slds-size--1-of-1">
         <span class="slds-pill__icon_container">
             <span class="slds-icon_container slds-icon-standard-account" title="Account">
-                <system-icon [icon]="determineFileIcon()" divClass="" sprite="doctype"  size="x-small"></system-icon>
+                <system-icon [icon]="helper.determineFileIcon(model.getField('file_mime_type'))" divClass="" sprite="doctype"  size="x-small"></system-icon>
             </span>
         </span>
         <a href="javascript:void(0);" class="slds-pill__action">
@@ -33,8 +33,8 @@
                    (change)="uploadFile()">
             <label class="slds-file-selector__body" [attr.for]="fieldid">
             <span class="slds-file-selector__button slds-button slds-button_neutral">
-            <system-button-icon [icon]="'upload'"></system-button-icon>Upload Files</span>
-                <span class="slds-file-selector__text slds-medium-show">or Drop Files</span>
+            <system-button-icon [icon]="'upload'"></system-button-icon>{{language.getLabel('LBL_UPLOAD_FILES')}}</span>
+                <span class="slds-file-selector__text slds-medium-show">{{language.getLabel('LBL_OR')}} {{language.getLabel('LBL_DROP_FILES')}}</span>
             </label>
         </div>
     </div>
