@@ -1446,9 +1446,10 @@ export class aclCheck implements CanActivate {
         }
 
         // otherwise check here
-        if (route.params.module === 'Users' && !this.session.authData.admin) {
+        if (route.params.module === 'Users' && !route.params.id && !this.session.authData.admin) {
             return false;
         } // prevents non-admins from listing the user list
+
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
         if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, route.data.aclaction)) {
             this.router.navigate(["/modules/Home"]);
