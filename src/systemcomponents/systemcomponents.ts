@@ -99,6 +99,8 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
+import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
+import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
 
 @NgModule({
     imports: [
@@ -189,7 +191,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemTreeItem,
         SystemUploadImage,
         SystemUtilityIcon,
-        SystemViewContainer
+        SystemViewContainer,
+        SystemInputMedia,
+        SystemInputTags2
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -260,7 +264,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemTree,
         SystemTreeItem,
         SystemUtilityIcon,
-        SystemViewContainer
+        SystemViewContainer,
+        SystemInputMedia,
+        SystemInputTags2
     ]
 })
 export class SystemComponents {

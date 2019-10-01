@@ -7,6 +7,9 @@ import { backend } from '../../../services/backend.service';
 import { language } from '../../../services/language.service';
 import {Subject, Observable} from 'rxjs';
 import { toast } from '../../../services/toast.service';
+import { DomSanitizer } from '@angular/platform-browser';
+
+declare var _: any;
 
 @Component({
     selector: 'media-file-picker',
@@ -22,33 +25,47 @@ import { toast } from '../../../services/toast.service';
 })
 export class MediaFilePicker implements OnInit {
 
-    pickerIsLoading = true;
-    files: Array<any> = [];
+    private pickerIsLoading = true;
+    private files: any[] = [];
 
-    selectedCategoryID: string = '';
-    selectedCategory: object;
+    private selectedCategoryID = '';
+    private selectedCategory: object;
 
-    dropdownUnused = true;
+    private dropdownUnused = true;
 
-    categoriesLoaded = false;
-    filesLoaded = false;
+    private categoriesLoaded = false;
+    private filesLoaded = false;
 
-    mediatype: number = 1;
-    filetype: string = '';
+    private mediatype = 1;
+    private filetype = '';
 
-    answer: Observable<object> = null;
-    answerSubject: Subject<object> = null;
+    private answer: Observable<object> = null;
+    private answerSubject: Subject<object> = null;
 
-    uploadAllowed = false;
+    private uploadAllowed = false;
 
-    self: any;
+    private self: any;
 
-    constructor ( private mediafiles: mediafiles, private backend: backend, private language: language, private toast: toast ) {
+    private fileformats = {
+        gif: { name: 'GIF', format: 'gif', checked: true },
+        jpeg: { name: 'JPEG', format: 'png', checked: true },
+        png: { name: 'PNG', format: 'jpeg', checked: true },
+    };
+    private fileformatList: any[];
+
+    private componentInstanceId: string;
+
+    private _sortBy = 'name';
+    private _sortDirection = 'a';
+
+    constructor( private mediafiles: mediafiles, private backend: backend, private language: language, private toast: toast, private sanitizer: DomSanitizer ) {
         this.answerSubject = new Subject<object>();
         this.answer = this.answerSubject.asObservable();
+        this.componentInstanceId = _.uniqueId();
+        this.fileformatList =  _.values( this.fileformats );
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
 
         this.mediafiles.loadCategories().subscribe( () => {
             this.categoriesLoaded = true;
@@ -56,19 +73,19 @@ export class MediaFilePicker implements OnInit {
         });
 
         let paramsFiles = {
-            fields: [ 'id', 'name', 'category' ],
+            fields: [ 'id', 'name', 'mediacategory_id', 'thumbnail', 'filetype', 'filesize', 'date_entered' ],
             searchfields: { join: 'AND',
                 conditions:[
-                    { field: 'mediatype', operator: '=', value: this.mediatype },
-                    { field: 'upload_completed', operator: '=', value: 1 }
+                    { field: 'mediatype', operator: '=', value: this.mediatype }
                 ]
             },
             sortfield: 'name',
             limit: -99
         };
 
-        this.backend.getRequest( '/module/MediaFiles', paramsFiles ).subscribe( ( response: any ) => {
+        this.backend.getRequest( 'module/MediaFiles', paramsFiles ).subscribe( ( response: any ) => {
                 this.files = response.list;
+                this.sortList();
                 this.filesLoaded = true;
                 if ( this.categoriesLoaded ) this.pickerIsLoading = false;
             },
@@ -79,29 +96,55 @@ export class MediaFilePicker implements OnInit {
 
     }
 
-    pick( index: number ) {
+    set sortBy( byField: string ) {
+        console.log('sort by', byField );
+        if ( this._sortBy !== byField ) this.sortList( byField );
+        this._sortBy = byField;
+    }
+
+    get sortBy(): string {
+        return this._sortBy;
+    }
+
+    get sortDirection(): string {
+        return this._sortDirection;
+    }
+
+    set sortDirection( direction: string ) {
+        if ( this._sortDirection !== direction ) this.sortList( this._sortBy, direction );
+    }
+
+    private sortList( byField: string = 'name', direction: string = 'a' ): void {
+        this.files.sort( ( a, b ) => {
+            switch( byField ) {
+                case 'name': return a.name.toLowerCase() > b.name.toLowerCase() ? ( direction === 'a' ? 1:-1 ) : ( direction === 'a' ? -1:1 );
+            }
+        });
+    }
+
+    private pick( index: number ): void {
         this.answerSubject.next( { id: this.files[index].id } );
         this.answerSubject.complete();
         this.self.destroy();
     }
 
-    cancel() {
+    private cancel(): void {
         this.answerSubject.next( {} );
         this.answerSubject.complete();
         this.self.destroy();
     }
 
-    onModalEscX() {
+    public onModalEscX(): void {
         this.cancel();
     }
 
-    changeToUploadDialog() {
-        this.answerSubject.next( { 'upload': true } );
+    private changeToUploadDialog(): void {
+        this.answerSubject.next( { upload: true } );
         this.answerSubject.complete();
         this.self.destroy();
     }
 
-    onChangeCategory( event: any ) {
+    private onChangeCategory( event: any ): void {
         this.selectedCategoryID = event.target.value;
         this.selectedCategory = this.mediafiles.categories[this.selectedCategoryID];
         this.dropdownUnused = false;
