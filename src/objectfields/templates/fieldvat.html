@@ -1,3 +1,4 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center">
         <div class="slds-truncate">{{value}}</div>
@@ -13,11 +14,11 @@
             <input #focus class="slds-input" type="text" [(ngModel)]="value"/>
             <div class="slds-col_bump-left slds-grid slds-grid--vertical-align-center">
                 <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
-                <button class="slds-button slds-button--neutral slds-m-left--x-small" [disabled]="!cancheck" (click)="validate()">check</button>
+                <button class="slds-button slds-button--neutral slds-m-left--x-small" [disabled]="!cancheck" (click)="validate()">{{language.getLabel('LBL_CHECK')}}</button>
             </div>
         </ng-container>
         <ng-template #validating>
-            <input #focus class="slds-input slds-size--1-of-1" type="text" value="validating" disabled>
+            <input #focus class="slds-input slds-size--1-of-1" type="text" value="{{language.getLabel('LBL_VALIDATING')}}" disabled>
         </ng-template>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>

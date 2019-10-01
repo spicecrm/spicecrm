@@ -27,7 +27,7 @@ export class KnowledgeDocumentFavorites {
     }
 
     private navigateTo(id) {
-        this.knowledgeService.selectedId = id;
+        this.knowledgeService.selectedDoc = id;
         this.location.replaceState("/module/KnowledgeDocuments/" + id);
     }
 

@@ -1,12 +1,9 @@
-<table class="slds-table slds-table_bordered slds-table_cell-buffer">
+<table class="slds-table slds-table_bordered">
     <thead>
         <tr>
-            <th class="slds-cell-shrink" style="width: 3.25rem;"></th>
+            <th class="slds-cell-shrink"></th>
             <th scope="col">
                 <div class="slds-truncate slds-text-align_center">#</div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate slds-text-align_center">sub</div>
             </th>
             <th scope="col">
                 <div class="slds-truncate">{{language.getLabel('LBL_PRODUCT', 'SalesDocItems')}}</div>
@@ -29,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-        <ng-container *ngFor="let item of items">
+        <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
             <tr>
                 <td class="slds-cell-shrink">
                     <button class="slds-button slds-button_icon" (click)="deleteItem(item.id)"><system-button-icon [icon]="'close'"></system-button-icon></button>
@@ -40,13 +37,9 @@
                     </div>
                 </td>
                 <td>
-                    <div class="slds-truncate slds-text-align_center">
-                        <salesdocs-items-parent-selector [item]="item" [items]="items"></salesdocs-items-parent-selector>
-                    </div>
-                </td>
-                <td>
-                    <div class="slds-grid">
-                        <div class="slds-truncate" style="max-width: 300px;" [title]="item.productvariant_name">{{item.productvariant_name}}</div>
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <system-icon module="Products" size="small"></system-icon>
+                        <div class="slds-truncate slds-p-right--x-small" style="max-width: 300px;">{{item.name}}</div>
                         <button class="slds-button slds-button--icon slds-col_bump-left" (click)="toggleText(item.id)">
                             <system-button-icon [icon]="toggleIcon(item.expanded)"></system-button-icon>
                         </button>
@@ -58,7 +51,7 @@
                             <input type="number" class="slds-input slds-text-align_right" [(ngModel)]="item.quantity" (keyup)="recalculate()">
                         </div>
                         <div class="slds-size--1-of-4 slds-text-align_right slds-p-left--xx-small">
-                            <input type="text" disabled class="slds-input slds-text-align_right" [ngModel]="item.uom">
+                            <div class="slds-truncate slds-text-align_right">{{getUOMLabel(item)}}</div>
                         </div>
                     </div>
                 </td>
@@ -86,7 +79,7 @@
                 </td>
             </tr>
             <tr *ngIf="item.expanded">
-                <td colspan="3" class="slds-cell-shrink">
+                <td colspan="2" class="slds-cell-shrink">
                 <td colspan="6">
                     <div class="slds-form-element">
                         <label class="slds-form-element__label">Shorttext</label>
@@ -104,11 +97,24 @@
             </tr>
         </ng-container>
         <tr>
-            <td>
-                <button class="slds-button slds-button_icon"><system-button-icon [icon]="'add'" (click)="addProduct()"></system-button-icon></button>
-            </td>
             <td colspan="5">
-                <div class="slds-truncate slds-text-align_right"></div>
+                <button class="slds-button slds-button_neutral" (click)="addItem()">
+                    <div class="slds-grid">
+                        <span>{{language.getLabel('LBL_ADD_ITEM')}}</span>
+                    </div>
+                </button>
+                <button class="slds-button slds-button_neutral" (click)="addProduct()">
+                    <div class="slds-grid">
+                        <system-icon module="Products" size="x-small"></system-icon>
+                        <span>{{language.getLabel('LBL_PRODUCT')}}</span>
+                    </div>
+                </button>
+                <button class="slds-button slds-button_neutral" (click)="addProductVariant()">
+                    <div class="slds-grid">
+                        <system-icon module="ProductVariants" size="x-small"></system-icon>
+                        <span>{{language.getLabel('LBL_PRODUCTVARIANT')}}</span>
+                    </div>
+                </button>
             </td>
             <td>
                 <div class="slds-truncate slds-text-align_right">{{formatNumber(totalnet)}}</div>
@@ -119,7 +125,7 @@
             <td></td>
         </tr>
         <tr>
-            <td colspan="4">
+            <td colspan="3">
                 <div class="slds-truncate slds-text-align_right">{{language.getModuleName('SalesVouchers', true)}}</div>
             </td>
             <td colspan="2">
@@ -142,7 +148,7 @@
             <td></td>
         </tr>
         <tr *ngIf="voucher_sum !== ''">
-            <td colspan="7">
+            <td colspan="6">
                 <div class="slds-truncate slds-text-align_right"></div>
             </td>
             <td>

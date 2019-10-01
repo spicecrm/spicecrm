@@ -1,2 +1,6 @@
-<h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{model.data.name}}</h2>
+<h2 *ngIf="displayheader" class="slds-text-heading--medium slds-p-around--medium" (click)="openReport()">
+    <span class="slds-text-link_faux">{{model.data.name}}</span>
+</h2>
+<div class="slds-scrollable--y" [ngStyle]="containerstyle">
 <div #presentationcontainer></div>
+</div>

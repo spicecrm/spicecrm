@@ -9,49 +9,50 @@ import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
 import {configurationService} from '../../services/configuration.service';
 import {fieldGeneric} from './fieldgeneric';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 
+/**
+ * renders a select field with the company names defined in the systenm and available for the user
+ */
 @Component({
     selector: 'field-companies',
     templateUrl: './src/objectfields/templates/fieldcompanies.html'
 })
-export class fieldCompanies extends fieldGeneric implements OnInit{
+export class fieldCompanies extends fieldGeneric implements OnInit {
 
-    companies: Array<any> = [];
-
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private configurationService: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private configuration: configurationService) {
         super(model, view, language, metadata, router);
     }
 
-    ngOnInit(){
-        let storedCompanies = this.configurationService.getData('companies');
-        if(storedCompanies === false){
-            this.backend.getRequest('module/CompanyCodes').subscribe((companies : any) => {
-                this.configurationService.setData('companies', companies.list);
-                this.companies = companies.list;
-                this.setDefault();
-            })
-        } else {
-            this.companies = storedCompanies;
-            this.setDefault();
+    public ngOnInit() {
+        this.setDefault();
+    }
+
+    /**
+     * sets the first one by default if no value is set in edit mode
+     */
+    private setDefault() {
+        if (this.view.isEditMode() && !this.model.data[this.fieldname]) {
+            let companyCodes = this.configuration.getData('companycodes');
+            if (companyCodes && companyCodes.length > 0) {
+                companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
+                this.value = companyCodes[0].id;
+            }
         }
     }
 
-    setDefault(){
-        if(this.view.isEditMode() && !this.model.data[this.fieldname] && this.companies.length > 0){
-            this.value = this.companies[0].id;
-        }
-    }
 
-    get companyName(){
+    /**
+     * returns ths name for the given id
+     */
+    get companyName() {
         let companyName = '';
-        this.companies.some(company => {
-            if(company.id == this.model.data[this.fieldname]){
+        this.configuration.getData('companycodes').some(company => {
+            if (company.id == this.model.data[this.fieldname]) {
                 companyName = company.name;
                 return true;
             }
         })
         return companyName;
-
     }
 }

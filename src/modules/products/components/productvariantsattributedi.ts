@@ -12,7 +12,6 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
 /**
  * @ignore
  */
-declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-di',
@@ -30,9 +29,8 @@ export class ProductVariantsAttributeDI extends ProductVariantsAttributeVC {
 
         if (this.attribute.validations) {
             for (let validation of this.attribute.validations) {
-                if (validation.value && validation.value != '') {
-                    retArray.push(validation.value);
-                }
+                if (!validation.value) validation.value = ' ';
+                retArray.push(validation.value);
             }
         }
         return retArray.sort((a, b) => {

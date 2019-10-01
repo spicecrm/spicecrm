@@ -15,39 +15,32 @@ import {modal} from '../../../services/modal.service';
 })
 export class QuestionsManagerEditOptionIst implements OnInit {
 
-    @Input() categorypool;
-    @Output() event: EventEmitter<any> = new EventEmitter<any>();
-    @Input() option: any;
-    @Input() isFirstRow: boolean;
-    @Input() isLastRow: boolean;
-    @Output() isDirty: boolean;
+    @Input() public categorypool;
+    @Output() public event: EventEmitter<any> = new EventEmitter<any>();
+    @Input() public option: any;
+    @Input() public isFirstRow: boolean;
+    @Input() public isLastRow: boolean;
+    @Output() public isDirty: boolean;
 
-    constructor ( private language: language, private metadata: metadata, private model: model, private view: view, private modalservice: modal ) {
+    constructor( private language: language, private metadata: metadata, private model: model, private view: view, private modalservice: modal ) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    get options(){
-        return '';
-    }
-
-    set options(options){
-
-    }
-
-    ngOnInit() {
+    public ngOnInit(): void {
         this.model.module = 'QuestionOptions';
         this.model.id = this.option.id;
         this.model.data = this.option;
     }
 
-    deleteOption () {
-        this.modalservice.confirm( this.language.getLabelFormatted( 'QST_DELETE_ANSWER_OPTION_LONG', this.option.name ), this.language.getLabel('QST_DELETE_ANSWER_OPTION' )).subscribe(( answer ) => {
-            if ( answer )
-                this.event.emit( 'delete');
+    private deleteOption (): void {
+        this.modalservice.confirm( this.language.getLabelFormatted( 'QST_DELETE_ANSWER_OPTION_LONG', this.option.name ), this.language.getLabel('QST_DELETE_ANSWER_OPTION' )).subscribe( answer => {
+            if ( answer ) this.event.emit( 'delete');
         });
     }
 
-    change() {}
+    private change() {
+        null;
+    }
 
 }

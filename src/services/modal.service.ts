@@ -6,17 +6,27 @@ import {metadata} from "./metadata.service";
 import {Observable, Subject, of} from "rxjs";
 import {footer} from "./footer.service";
 import {toast} from "./toast.service";
-import {modelutilities} from "./modelutilities.service";
 
+/**
+ * handles the modals in the system
+ */
 @Injectable()
 export class modal {
 
+    /**
+     * keeps an array of modals that are currently open
+     */
     private modalsArray: any[] = [];
+
+    /**
+     * keeps an array of the obnjects rendered as modals
+     */
     private modalsObject = {};
 
-    constructor(private metadata: metadata, private footer: footer, private toast: toast, private utils: modelutilities) {
+    constructor( private metadata: metadata, private footer: footer, private toast: toast ) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
+                event.stopImmediatePropagation();
                 let wrapperComponent = this.modalsArray[this.modalsArray.length - 1].wrapper;
                 if (wrapperComponent.instance.escKey && (!wrapperComponent.instance.childComponent.instance.onModalEscX || wrapperComponent.instance.childComponent.instance.onModalEscX() !== false)) {
                     wrapperComponent.destroy();
@@ -33,7 +43,7 @@ export class modal {
         if (this.metadata.checkComponent(componentName)) {
             let retSubjectXY = new Subject<any>();
             this.metadata.addComponentDirect("SystemModalWrapper", this.footer.modalcontainer).subscribe(wrapperComponent => {
-                let newModal = <any> {};
+                let newModal: any = {};
                 newModal.wrapper = wrapperComponent;
                 wrapperComponent.instance.escKey = escKey;
                 this.modalsArray.push(newModal);
@@ -63,11 +73,20 @@ export class modal {
         }
     }
 
+    /**
+     * sends an error toast if the modal compopnent that shoudk be rendered is not defined int he repository
+     *
+     * @param componentName the name of the component hat was intended to be rendered in the modal
+     */
     private sendError(componentName) {
         this.toast.sendToast('Component "' + componentName + '" not found.', "error", "Misconfiguration on the system as the component should have been opened in a modal but is not avilable. Please contact your system administrator.");
     }
 
-    // Removes a modal from the modals array.
+    /**
+     * Removes a modal from the modals array.
+     *
+     * @param modalToClose the modal that shoudl be removed from the stack of modals
+     */
     public removeModal(modalToClose) { // modalToClose is a reference to angular component
         for (let i = 0; i < this.modalsArray.length; i++) {
             if (this.modalsArray[i].wrapper === modalToClose) {
@@ -77,7 +96,11 @@ export class modal {
         }
     }
 
-    // Destroys the modal wrapper component. Thereby ngOnDestroy() of the modal wrapper component will be triggered and this will call removeModal().
+    /**
+     * Destroys the modal wrapper component. Thereby ngOnDestroy() of the modal wrapper component will be triggered and this will call removeModal()
+     *
+     * @param modalToClose the modal that should be removed from the stack of modals
+     */
     public closeModal(modalToClose) { // modalToClose can be the index in the modal array or the reference to the wrapper component
         if (typeof modalToClose === "number") {
             if (this.modalsArray[modalToClose]) {
@@ -93,21 +116,40 @@ export class modal {
         }
     }
 
+    /**
+     * close all open modals
+     */
     public closeAllModals() {
         for (let i = this.modalsArray.length - 1; i >= 0; i--) {
             this.modalsArray[i].wrapper.destroy();
         }
     }
 
+    /**
+     * a simple getter to check if the backdrop shoudl be displayed
+     */
     get backdropVisible() {
         return this.modalsArray.length !== 0;
     }
 
+    /**
+     * a simple getter to get the z-index for the backdrop. The backdrop shoudl alwys be rendered right underneath the last visible modal int eh stack
+     */
     get backdropZindex() {
         return this.modalsArray.length * 2;
     }
 
-    public prompt( type: string, text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string|number = null, options: string[] = null ): Observable<any> {
+    /**
+     * prompts a dialog
+     *
+     * @param type the type of the prompts
+     * @param text the text in the prompts
+     * @param headertext the text for the header
+     * @param theme a theme as per slds definition
+     * @param defaultvalue ??
+     * @param options options to be presented to the user
+     */
+    public prompt( type: 'info'|'input'|'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string|number = null, options: string[] = null ): Observable<any> {
         let responseSubject = new Subject();
         this.openModal("SystemPrompt").subscribe(component => {
             component.instance.type = type;
@@ -124,18 +166,45 @@ export class modal {
         return responseSubject.asObservable();
     }
 
+    /**
+     * a shortcut to prompt for a confirm dialog
+     *
+     * @param text
+     * @param headertext
+     * @param theme
+     */
     public confirm(text: string, headertext: string = null, theme: string = null): Observable<any> {
         return this.prompt('confirm', text, headertext, theme);
     }
 
-    public input(text: string, headertext: string = null, defaultvalue: string = null, theme: string = null): Observable<any> {
-        return this.prompt('input', text, headertext, defaultvalue, theme);
+    /**
+     * a shortcut to prompt for an input dialog
+     *
+     * @param text
+     * @param headertext
+     * @param defaultvalue
+     * @param theme
+     */
+    public input(text: string, headertext: string = null, theme: string = null, defaultvalue: string = null ): Observable<any> {
+        return this.prompt('input', text, headertext, theme, defaultvalue );
     }
 
+    /**
+     * a shortcut to prompt for an info dialog
+     *
+     * @param text
+     * @param headertext
+     * @param theme
+     */
     public info(text: string, headertext: string = null, theme: string = null): Observable<any> {
         return this.prompt('info', text, headertext, theme);
     }
 
+    /**
+     * renders a loading modal if the user is supposed to wait until an async operation completes
+     *
+     * @param messagelabel
+     */
     public await(messagelabel: string = null): EventEmitter<boolean> {
         let stopper = new EventEmitter<boolean>();
         this.openModal('SystemLoadingModal', false ).subscribe(component => {

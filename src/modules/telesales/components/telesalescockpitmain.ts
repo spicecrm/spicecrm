@@ -12,7 +12,7 @@ import {model} from "../../../services/model.service";
 })
 export class TeleSalesCockpitMain implements OnChanges {
 
-    @ViewChild('maincontainer', {read: ViewContainerRef}) private maincontainer: ViewContainerRef;
+    @ViewChild('maincontainer', {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
     @Input() private selectedListItemId: string;
 
     constructor(private language: language,

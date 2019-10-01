@@ -14,7 +14,7 @@ import {backend} from '../../../services/backend.service';
 })
 export class ServiceMyQueuesTicketsDashlet implements OnInit{
 
-    @ViewChild('ticketcontainer', {read: ViewContainerRef}) ticketcontainer: ViewContainerRef;
+    @ViewChild('ticketcontainer', {read: ViewContainerRef, static: true}) ticketcontainer: ViewContainerRef;
 
     tickets: Array<any> = [];
     totalcount: number = 0;

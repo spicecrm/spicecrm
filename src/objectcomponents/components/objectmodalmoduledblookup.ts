@@ -22,19 +22,42 @@ import {metadata} from '../../services/metadata.service';
 })
 export class ObjectModalModuleDBLookup implements OnInit {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef}) tablecontent: ViewContainerRef;
-    @ViewChild('modalcontent', {read: ViewContainerRef}) modalcontent: ViewContainerRef;
+    /**
+     * the table contnet .. reqwuired to asses the scrolling
+     * ToDo: change to fixed header
+     */
+    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
 
-    displayFields: Array<any> = [];
-    listFields: Array<string> = [];
-    allSelected: boolean = false;
-    searchTerm: string = '';
-    searchTimeOut: any = undefined;
-    self: any = {};
-    multiselect: boolean = false;
-    module: string = '';
-    @Output() selectedItems: EventEmitter<any> = new EventEmitter<any>();
-    searchConditions = [];
+    /**
+     * the modal content
+     */
+    @ViewChild('modalcontent', {read: ViewContainerRef, static: true}) private modalcontent: ViewContainerRef;
+
+    /**
+     * the list of fields to be displayed
+     */
+    public displayFields: any[] = [];
+    public listFields: string[] = [];
+    public allSelected: boolean = false;
+
+    /**
+     * the searchterm
+     */
+    public searchTerm: string = '';
+
+    /**
+     * a timeout function to ensure searching sztarts after a time there has been no input
+     */
+    public searchTimeOut: any = undefined;
+
+    /**
+     * refgerence to self as we are a modal
+     */
+    public self: any = {};
+    public multiselect: boolean = false;
+    public module: string = '';
+    @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
+    public searchConditions = [];
 
     constructor(
         private language: language,
@@ -47,35 +70,37 @@ export class ObjectModalModuleDBLookup implements OnInit {
 
 
     get checkbox() {
-        return this.allSelected
+        return this.allSelected;
     }
 
     set checkbox(value) {
         this.allSelected = value;
-        if (value)
+        if (value) {
             this.modellist.setAllSelected();
-        else
+        } else {
             this.modellist.setAllUnselected();
+        }
     }
 
-    contentStyle(){
+    private contentStyle() {
         let contentRect = this.tablecontent.element.nativeElement.getBoundingClientRect();
         let modalRect = this.modalcontent.element.nativeElement.getBoundingClientRect();
 
         return {
             height: modalRect.height - (contentRect.top - modalRect.top)
-        }
+        };
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
         this.displayFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
         this.model.module = this.module;
         this.modellist.setModule(this.module);
 
-        if(!this.searchConditions && componentconfig.searchconditions)
+        if (!this.searchConditions && componentconfig.searchconditions) {
             this.searchConditions = JSON.parse(componentconfig.searchconditions);
+        }
         this.modellist.searchConditions = this.searchConditions;
 
         for (let displayField of this.displayFields) {
@@ -85,18 +110,17 @@ export class ObjectModalModuleDBLookup implements OnInit {
         this.doSearch();
     }
 
-    doSearch()
-    {
+    private doSearch() {
         this.modellist.searchConditions = this.searchConditions;
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.loadFilteredList(this.listFields);
     }
 
-    triggerSearch(_e){
+    private triggerSearch(_e) {
         // handle the key pressed
         switch (_e.key) {
             case 'Enter':
-                if(this.searchTerm.length > 0){
+                if (this.searchTerm.length > 0) {
                     if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
                     this.doSearch();
                 }
@@ -108,29 +132,31 @@ export class ObjectModalModuleDBLookup implements OnInit {
         }
     }
 
-    onScroll(e) {
+    private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.modellist.loadMoreFilteredList();
         }
     }
 
-    closePopup(event) {
+    private closePopup() {
         this.self.destroy();
         event.preventDefault();
     }
 
-    getSelectedCount() {
+    private getSelectedCount() {
         return this.modellist.getSelectedCount();
     }
 
-    selectItems() {
+    public selectItems() {
         this.selectedItems.emit(this.modellist.getSelectedItems());
         this.self.destroy();
     }
 
-    clickRow(event, item){
-        this.selectedItems.emit([item]);
-        this.self.destroy();
+    public clickRow(event, item) {
+        if (!this.multiselect) {
+            this.selectedItems.emit([item]);
+            this.self.destroy();
+        }
     }
 }

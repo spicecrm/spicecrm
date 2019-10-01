@@ -24,7 +24,7 @@ export class CalendarOtherCalendarsMonitor {
     public recentUsers: any[] = [];
     public timeout: any = undefined;
     public isLoading: boolean = false;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
     private googleIsVisible: boolean = true;
@@ -73,7 +73,7 @@ export class CalendarOtherCalendarsMonitor {
             return;
         }
         this.isLoading = true;
-        this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
+        this.fts.searchByModules({ searchterm: this.searchterm, modules: ["Users"], size: 5, sortparams: {sortfield: "name"}})
             .subscribe(res => {
                 this.filterResultsList(res["Users"].hits.map(user => user = user._source));
                 this.isLoading = false;

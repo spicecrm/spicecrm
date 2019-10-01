@@ -10,18 +10,11 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'salesdocs-print-button',
-    templateUrl: './src/modules/salesdocs/templates/salesdocsprintbutton.html',
-    host: {
-        'class': 'slds-button slds-button--neutral',
-        '[style.display]': "getDisplay()"
-    },
-    styles: [
-        ':host {cursor:pointer;}'
-    ]
+    templateUrl: './src/modules/salesdocs/templates/salesdocsprintbutton.html'
 })
 export class SalesDocsPrintButton {
 
-    public disabled: boolean = true;
+    public disabled: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private model: model, private configurationService: configurationService, private session: session) {
         this.model.mode$.subscribe(mode => {
@@ -43,7 +36,6 @@ export class SalesDocsPrintButton {
     }
 
     private handleDisabled() {
-        this.disabled
-        this.model.isEditing ? true : false;
+        this.disabled = this.model.isEditing ? true : false;
     }
 }

@@ -1,7 +1,5 @@
 <div [ngClass]="fielddisplayclass+' format-'+fieldconfig.format" style="position:relative" >
-
     <ng-container [ngSwitch]="fieldconfig.format">
-
         <ng-container *ngSwitchCase="'button'">
 
             <button #buttonToPicker *ngIf="fieldIsEmpty" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled withThumb" [disabled]="!isEditMode()" (click)="getImage()">

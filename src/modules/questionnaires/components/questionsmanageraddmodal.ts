@@ -7,7 +7,7 @@ import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {toast} from '../../../services/toast.service';
 import {backend} from "../../../services/backend.service";
-import { Observable ,  Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { QuestionsManagerEditMulti } from './questionsmanagereditmulti';
 
 @Component({
@@ -17,27 +17,31 @@ import { QuestionsManagerEditMulti } from './questionsmanagereditmulti';
 })
 export class QuestionsManagerAddModal implements OnInit {
 
-    @Input() questionset: any = {};
-    @Input() questionid: string = '';
+    @Input() public questionset: any = {};
+    @Input() public questionid = '';
 
-    categorypool = { loaded:false, event:new EventEmitter<any>(), list:[] };
+    private categorypool = {
+        loaded: false,
+        event: new EventEmitter<any>(),
+        list: []
+    };
 
-    response: Observable<object> = null;
-    responseSubject: Subject<any> = null;
+    public response: Observable<object> = null;
+    private responseSubject: Subject<any> = null;
 
-    componentconfig: any = {};
-    questions: Array<any> = [];
+    // componentconfig = {};
+    // questions = [];
 
-    self: any;
+    private self: any;
 
-    @ViewChild(QuestionsManagerEditMulti) private refQuestionsManagerEditMulti;
+    @ViewChild(QuestionsManagerEditMulti, {static:false}) private refQuestionsManagerEditMulti;
 
-    constructor( private language: language, private model: model, private toast:toast, private backend: backend, private view: view ) {
+    constructor( private language: language, private model: model, private toast: toast, private backend: backend, private view: view ) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.model.module = 'Questions';
         if ( this.questionid ) {
             this.model.id = this.questionid;
@@ -55,42 +59,43 @@ export class QuestionsManagerAddModal implements OnInit {
             let allCategories = response.list;
             if ( this.questionset.data.categorypool && this.questionset.data.categorypool != '' ) {
                 let categorypool = this.questionset.data.categorypool.split(',');
-                for ( let i = 0; i < allCategories.length; i++ ) {
+                allCategories.forEach( category => {
                     for ( let categoryId of categorypool ) {
-                        if ( allCategories[i].id === categoryId ) {
-                            this.categorypool.list.push( allCategories[i] );
+                        if ( category.id === categoryId ) {
+                            this.categorypool.list.push( category );
                         }
                     }
-                }
+                });
             }
             this.categorypool.loaded = true;
             this.categorypool.event.emit();
         });
     }
 
-    cancelModal() {
+    private cancelModal(): void {
         this.responseSubject.next( false );
         this.responseSubject.complete();
         this.self.destroy();
     }
 
-    onModalEscX() {
+    public onModalEscX() {
         this.cancelModal();
     }
 
-    saveQuestion() {
+    private saveQuestion(): void {
         let emptyRows = false;
         if ( this.questionset.data.questiontype === 'multi' ) this.refQuestionsManagerEditMulti.doBeforeSavingQuestion();
-        if ( this.questionset.data.questiontype === 'single' || this.questionset.data.questiontype === 'multi' )
-            for ( let i in this.model.data.questionoptions.beans ) {
-                if ( this.model.data.questionoptions.beans[i].name === '' && this.model.data.questionoptions.beans[i].deleted != 1 ) {
+        if ( this.questionset.data.questiontype === 'single' || this.questionset.data.questiontype === 'multi' ) {
+            for( let i in this.model.data.questionoptions.beans ) {
+                if( this.model.data.questionoptions.beans[i].name === '' && this.model.data.questionoptions.beans[i].deleted != 1 ) {
                     emptyRows = true;
                     break;
                 }
             }
-        if ( emptyRows )
-            this.toast.sendToast('You have empty rows. Complete or delete them before saving!', 'error', '', true );
-        else {
+        }
+        if ( emptyRows ) {
+            this.toast.sendToast( 'You have empty rows. Complete or delete them before saving!', 'error', '', true );
+        } else {
             this.model.save().subscribe(modeldata => {
                 this.responseSubject.next( this.model.data );
                 this.responseSubject.complete();

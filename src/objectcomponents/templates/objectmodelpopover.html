@@ -1,4 +1,4 @@
-<div class="slds-popover slds-popover_large slds-popover--panel slds-is-fixed" style="transition: .5s;" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
+<div class="slds-popover slds-popover_large slds-popover--panel slds-is-fixed"  style="transition: .5s; z-index: 11000;" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
     <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
         <system-button-icon icon="close"></system-button-icon>
     </button>
@@ -15,9 +15,9 @@
             <footer class="slds-grid slds-wrap slds-p-right--large">
                 <div class="slds-p-horizontal--small slds-size--1-of-2 slds-p-bottom--x-small" *ngFor="let field of fields">
                     <dl>
-                        <dt>
+                        <!--dt>
                             <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
-                        </dt>
+                        </dt-->
                         <dd>
                             <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
                         </dd>

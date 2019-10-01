@@ -16,10 +16,8 @@ import {language} from '../../../services/language.service';
 })
 export class WorkflowManagerDetailTaskEmailpanel {
 
-
+    private contentOption: string = 'email_template';
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
-
+        this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'email_template';
     }
-
-
 }

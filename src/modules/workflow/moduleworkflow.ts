@@ -11,6 +11,7 @@ import {VersionManagerService} from '../../services/versionmanager.service';
 import { SystemComponents}      from '../../systemcomponents/systemcomponents';
 import { ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import { ObjectFields}      from '../../objectfields/objectfields';
+import { DirectivesModule}      from '../../directives/directives';
 
 import /*embed*/ {workflow} from "./services/workflow.service";
 
@@ -32,17 +33,16 @@ import /*embed*/ {WorkflowManagerDetailTaskSystemactionsLine} from "./components
 import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowmanagerdetailconditions";
 import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
 import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
-
-import /*embed*/ {WorkflowPanel, openworkflowspipe, myopentaskspipe} from "./components/workflowpanel";
+import /*embed*/ {WorkflowPanel} from "./components/workflowpanel";
+import /*embed*/ {WorkflowMyOpenTasksPipe} from "./pipes/workflowmyopentaskspipe";
+import /*embed*/ {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflowspipe";
 import /*embed*/ {WorkflowPanelHeader} from "./components/workflowpanelheader";
 import /*embed*/ {WorkflowPanelItem} from "./components/workflowpanelitem";
 import /*embed*/ {WorkflowPanelTasks} from "./components/workflowpaneltasks";
+import /*embed*/ {WorkflowPanelTasksItem} from "./components/workflowpaneltasksitem";
 import /*embed*/ {WorkflowPanelTask} from "./components/workflowpaneltask";
 import /*embed*/ {WorkflowPanelTaskComments} from "./components/workflowpaneltaskcomments";
-
 import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet";
-
-
 
 @NgModule({
     imports: [
@@ -50,7 +50,8 @@ import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet"
         FormsModule,
         SystemComponents,
         ObjectComponents,
-        ObjectFields
+        ObjectFields,
+        DirectivesModule
     ],
     declarations: [
         WorkflowManager,
@@ -74,11 +75,12 @@ import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet"
         WorkflowManagerDetailConditionsLine,
         WorkflowManagerFieldsdropdown,
         WorkflowPanel,
-        openworkflowspipe,
-        myopentaskspipe,
+        WorkflowOpenWorkflowsPipe,
+        WorkflowMyOpenTasksPipe,
         WorkflowPanelHeader,
         WorkflowPanelItem,
         WorkflowPanelTasks,
+        WorkflowPanelTasksItem,
         WorkflowPanelTask,
         WorkflowPanelTaskComments,
         WorkflowTasksDashlet

@@ -4,12 +4,15 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    Component, ElementRef,
+    Component,
+    ElementRef,
+    EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy,
+    OnDestroy, OnInit, Output,
     Renderer2,
-    ViewChild
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -17,6 +20,9 @@ import {DOCUMENT} from "@angular/common";
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
 import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileuploader";
+import {language} from "../../services/language.service";
+import {take} from "rxjs/operators";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-richtext-editor",
@@ -29,9 +35,9 @@ import {MediaFileUploader} from "../../modules/mediafiles/components/mediafileup
         }, systemrichtextservice
     ]
 })
-export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
+export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAccessor {
 
-    @ViewChild('htmleditor') private htmlEditor: any;
+    @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) private htmlEditor: ViewContainerRef;
 
     // for the value accessor
     private onChange: (value: string) => void;
@@ -40,26 +46,82 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private isActive: boolean = false;
     private clickListener: any;
-    private modalOpen = false;
+    private keydownListener: any;
+    private modalOpen: boolean = false;
+    public isExpanded: boolean = false;
+    public contract: EventEmitter<string> = new EventEmitter<string>();
+    public editorModalSaveSubscriber: any;
 
-    private block = 'default';
-    private fontName = 'Tilium Web';
-    private fontSize = '5';
-
+    private block: string = 'default';
+    private fontName: string = 'Tilium Web';
+    private fontSize: string = '5';
     private tagMap = {
         BLOCKQUOTE: "indent",
         A: "link"
     };
 
+    @Output() private save$: EventEmitter<string> = new EventEmitter<string>();
+
     private select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
-    constructor(private modal: modal, private renderer: Renderer2, private editorService: systemrichtextservice, @Inject(DOCUMENT) private _document: any, private elementRef: ElementRef,) {
+    constructor(private modal: modal,
+                private renderer: Renderer2,
+                private metadata: metadata,
+                private editorService: systemrichtextservice,
+                @Inject(DOCUMENT) private _document: any,
+                private elementRef: ElementRef,
+                private language: language) {
+    }
+
+    get expandIcon() {
+        return this.isExpanded ? 'contract_alt' : 'expand_alt';
+    }
+
+    private getRichTextStyle(container) {
+        return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {};
+    }
+
+    public ngOnInit() {
+        this.handleKeyboardShortcuts();
     }
 
     public ngOnDestroy() {
-        if(this.clickListener) {
+        if (this.clickListener) {
             this.clickListener();
         }
+        if (this.keydownListener) {
+            this.keydownListener();
+        }
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a change event.
+     *
+     * @param fn a function
+     */
+    public registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    /**
+     * Set the function to be called
+     * when the control receives a touch event.
+     *
+     * @param fn a function
+     */
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    /**
+     * Write a new value to the element.
+     *
+     * @param value value to be executed when there is a change in contenteditable
+     */
+    public writeValue(value: any): void {
+        this._html = value ? value : '';
+        this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
     }
 
     /**
@@ -94,7 +156,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         // check if we are active already
         if (!this.isActive) {
             this.isActive = true;
-            this.htmlEditor.nativeElement.focus();
+            this.htmlEditor.element.nativeElement.focus();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -124,36 +186,6 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     }
 
     /**
-     * Set the function to be called
-     * when the control receives a change event.
-     *
-     * @param fn a function
-     */
-    public registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    /**
-     * Set the function to be called
-     * when the control receives a touch event.
-     *
-     * @param fn a function
-     */
-    public registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
-
-    /**
-     * Write a new value to the element.
-     *
-     * @param value value to be executed when there is a change in contenteditable
-     */
-    public writeValue(value: any): void {
-        this._html = value ? value : '';
-        this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
-    }
-
-    /**
      * toggles editor buttons when cursor moved or positioning
      *
      * Send a node array from the contentEditable of the editor
@@ -175,23 +207,43 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         this.triggerBlocks(els);
     }
 
+    /** Workflow:
+     * - Toggle the expand variable value.
+     * - If isExpanded is True:
+     *      -- A new instance of this component will be added to the footer through the "SystemRichTextEditorModal" component.
+     *      -- The html value will be passed to the footer instance of this component.
+     *      -- A subscriber subscribe to the emitter (contract) from the new footer instance of this component to get back the html value and set isExpanded to false and destroy the instance in the footer.
+     * - If isExpanded is False:
+     *      -- the emitter (contract) from the new footer instance of this component will emit the html value to set it back to this component.
+     */
     private openEditorModal() {
-        this.modal.openModal('SystemTinyMCEModal').subscribe(componentRef => {
-            /*
-            componentRef.instance.content = this.ngModel;
-            componentRef.instance.updateContent.subscribe(update => {
-                this.fieldvalue = update;
-                this.editor.setContent(update);
-            })
-            */
-        });
+        this.isExpanded = !this.isExpanded;
+        if (this.isExpanded) {
+            this.modal.openModal('SystemRichTextEditorModal').subscribe(componentRef => {
+                this.editorModalSaveSubscriber = componentRef.instance.save$
+                    .subscribe(content => this.save$.emit(content));
+                componentRef.instance.content = this._html;
+                componentRef.instance.contract
+                    .pipe(take(1))
+                    .subscribe(html => {
+                        this.isExpanded = false;
+                        this.htmlEditor.element.nativeElement.focus();
+                        this.writeValue(html);
+                        this.onChange(html);
+                        if (this.editorModalSaveSubscriber) this.editorModalSaveSubscriber.unsubscribe();
+                    });
+            });
+        } else {
+            this.contract.emit(this._html);
+        }
     }
 
     private openMediaFilePicker() {
         this.modalOpen = true;
         this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
             componentRef.instance.answer.subscribe(image => {
-                if(image && image.upload) {
+                if (!image) {return;}
+                if (image.upload) {
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
@@ -201,7 +253,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                         });
                     });
                 } else {
-                    if (image && image.id) {
+                    if (image.id) {
                         this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
                     }
                     this.modalOpen = false;
@@ -223,7 +275,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                 }
 
                 // set the value to the editor
-                this.renderer.setProperty(this.htmlEditor.nativeElement, 'innerHTML', this._html);
+                this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
             });
         });
     }
@@ -247,7 +299,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         let found = false;
         this.select.forEach(y => {
             const node = nodes.find(x => x.nodeName === y);
-            if (node !== undefined && y === node.nodeName) {
+            if (node !== undefined && (y === node.nodeName || node.nodeName == 'code')) {
                 if (found === false) {
                     this.block = node.nodeName.toLowerCase();
                     found = true;
@@ -258,37 +310,6 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         });
 
         found = false;
-        /*
-        if (this.customClasses) {
-            this.customClasses.forEach((y, index) => {
-                const node = nodes.find(x => {
-                    if (x instanceof Element) {
-                        return x.className === y.class;
-                    }
-                });
-                if (node !== undefined) {
-                    if (found === false) {
-                        this.customClassId = index;
-                        found = true;
-                    }
-                } else if (found === false) {
-                    this.customClassId = -1;
-                }
-            });
-        }
-        */
-
-        /*
-        Object.keys(this.tagMap).map(e => {
-            const elementById = this._document.getElementById(this.tagMap[e] + '-' + this.id);
-            const node = nodes.find(x => x.nodeName === e);
-            if (node !== undefined && e === node.nodeName) {
-                this._renderer.addClass(elementById, "active");
-            } else {
-                this._renderer.removeClass(elementById, "active");
-            }
-        });
-        */
     }
 
     /**
@@ -297,7 +318,36 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
     private insertUrl() {
         const url = prompt("Insert URL link", 'http:\/\/');
         if (url && url !== '' && url !== 'http://') {
+            this.editorService.selectedText = this.getSelectedText();
             this.editorService.createLink(url);
+        }
+    }
+
+    private addVideo() {
+        if (!this.isActive) {return;}
+        this.editorService.saveSelection();
+        this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
+            if (!url || url.length == 0) return;
+            this.htmlEditor.element.nativeElement.focus();
+            this.editorService.restoreSelection();
+            let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
+            let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+            if (url.match(vimeoReg)) {
+                url = 'https://player.vimeo.com/video/' + url.match(vimeoReg)[3];
+            }
+            if (url.match(youtubeReg)) {
+                url = 'https://www.youtube.com/embed/' + url.match(youtubeReg)[7];
+            }
+            let html = `<iframe src="${url}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>`;
+            this._document.execCommand('insertHTML', false, html);
+        });
+    }
+
+    private getSelectedText(): string {
+        if (window.getSelection) {
+            return window.getSelection().toString();
+        } else if (this._document.selection && this._document.selection.type != "Control") {
+            return this._document.selection.createRange().text;
         }
     }
 
@@ -334,5 +384,40 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private setCustomClass(classId: number) {
         // this.editorService.createCustomClass(this.customClasses[classId]);
+    }
+
+    private encodeHtml(value: string): string {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    private addCodeSnippet(): void {
+        if (!this.isActive) {return;}
+        let value = this.encodeHtml(this.getSelectedText()) || '&nbsp;';
+        let html = `<br><pre style="background-color: #eee;border-radius: .2rem; border:1px solid #ccc; padding: .5rem"><code>${value}</code></pre><br>`;
+        this._document.execCommand('insertHTML', false, html);
+    }
+
+    /**
+     * paste a plain text when the caret is in a code tag.
+     */
+    private onPaste(e) {
+        if (e.target.nodeName == 'CODE') {
+            e.preventDefault();
+            let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            document.execCommand("insertHTML", false, this.encodeHtml(text));
+        }
+    }
+
+    private handleKeyboardShortcuts() {
+        this.keydownListener = this.renderer.listen('document', 'keydown', (e) => {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() == 's') {
+                e.preventDefault();
+                this.save$.emit(this._html);
+            }
+        });
     }
 }

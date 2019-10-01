@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import {Component, Input} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 
@@ -9,22 +9,38 @@ import {language} from '../../../services/language.service';
     selector: 'questionnaire-render',
     templateUrl: './src/modules/questionnaires/templates/questionnairerender.html',
 })
-export class QuestionnaireRender {
+export class QuestionnaireRender implements OnInit {
 
-    questionsets: Array<any> = [];
-    @Input() questionnaire: any;
+    @Input() public questionnaire: any;
+    @Input() public inModal: true;
+    @Input() public showQuestionnaireTitle = true;
+    @Input() public previewMode = false;
+
+    private questionsets: any[] = [];
+    private isLoading = true;
 
     constructor( private language: language, private backend: backend ) { }
 
-    ngOnInit() {
-        if ( this.questionnaire.questionsets && this.questionnaire.questionsets.beans ) {
-            for (let key of Object.keys(this.questionnaire.questionsets.beans)) {
-                this.questionsets.push(this.questionnaire.questionsets.beans[key]);
-            }
+    public ngOnInit() {
+        this.loadQuestionsets();
+    }
+
+    private loadQuestionsets(): void {
+        this.isLoading = true;
+        this.questionsets = [];
+        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets').subscribe( questionsets => {
+
+            for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.questionsets.sort((a, b) => {
                 return a.position - b.position;
             });
-        }
+
+            this.isLoading = false;
+        });
+    }
+
+    public reload(): void {
+        if ( !this.isLoading ) this.loadQuestionsets();
     }
 
 }

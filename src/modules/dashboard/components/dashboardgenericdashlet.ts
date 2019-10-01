@@ -25,8 +25,8 @@ export class DashboardGenericDashlet implements OnInit {
     private canLoadMore: boolean = true;
     private loadLimit: number = 20;
 
-    @ViewChild("tablecontainer", {read: ViewContainerRef}) private tablecontainer: ViewContainerRef;
-    @ViewChild("headercontainer", {read: ViewContainerRef}) private headercontainer: ViewContainerRef;
+    @ViewChild("tablecontainer", {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
+    @ViewChild("headercontainer", {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 
@@ -69,6 +69,8 @@ export class DashboardGenericDashlet implements OnInit {
             if (this.dashletconfig.modulefilter) {
                 params.modulefilter = this.dashletconfig.modulefilter;
             }
+            params.sortfield = this.dashletconfig.sortfield;
+            params.sortdirection = this.dashletconfig.sortdirection ? this.dashletconfig.sortdirection : 'ASC';
         }
         params.limit = this.loadLimit;
 

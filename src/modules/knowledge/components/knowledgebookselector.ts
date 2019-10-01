@@ -1,35 +1,44 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-book-selector",
-    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html"
+    templateUrl: "./src/modules/knowledge/templates/knowledgebookselector.html",
+    providers: [model]
 })
 export class KnowledgeBookSelector {
 
     public searchTerm: string = "";
     public searchOpen: boolean = false;
-    @ViewChild("inputcontainer", {read: ViewContainerRef}) private inputContainer: ViewContainerRef;
+    @ViewChild("inputcontainer", {read: ViewContainerRef, static: true}) private inputContainer: ViewContainerRef;
+    @Input() private editable: boolean = true;
 
     constructor(public language: language,
                 public model: model,
+                public modal: modal,
                 public metadata: metadata,
                 public knowledgeService: KnowledgeService,
                 public navigation: navigation,
                 public backend: backend) {
+        this.model.module = 'KnowledgeBooks';
         this.knowledgeService.getBooks();
     }
 
+    get placeHolder() {
+        return !this.isLoading && this.books.length == 0 ? this.language.getLabel('LBL_NO_ENTRIES') : this.language.getLabel('MSG_SEARCH_BOOKS');
+    }
+
     get isLoading() {
-        return this.knowledgeService.isLoading;
+        return this.knowledgeService.isBookLoading;
     }
 
     get selectedBook() {
@@ -58,16 +67,33 @@ export class KnowledgeBookSelector {
         };
     }
 
+    private editBook(bookId) {
+        this.model.id = bookId;
+        this.model.edit(true);
+        this.searchOpen = false;
+    }
+
+    private deleteBook(bookId) {
+        this.model.id = bookId;
+        this.modal.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('LBL_DELETE')).subscribe(answer => {
+            if (answer) {
+                this.model.delete().subscribe(res => {
+                    this.deselectBook();
+                    this.knowledgeService.books = this.knowledgeService.books.filter(book => book.id != bookId);
+                });
+            }
+        });
+    }
+
     private selectBook(book) {
         this.knowledgeService.selectedBook = book;
-        this.knowledgeService.getDocuments(book.id);
         this.knowledgeService.setLastViewedBook();
         this.searchOpen = false;
     }
 
     private deselectBook() {
         this.knowledgeService.selectedBook = undefined;
-        this.knowledgeService.selectedId = "";
+        this.knowledgeService.selectedDoc = "";
         this.knowledgeService.documents = [];
         this.knowledgeService.setLastViewedBook(true);
         this.knowledgeService.favoriteDisable();

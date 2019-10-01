@@ -39,6 +39,11 @@
                 <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.component"/>
             </div>
         </div>
+        <label class="slds-checkbox" for="deprecated">
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="deprecated" (change)="updateDeprecated()" [ngModel]="getDeprecatedBool(currentObjRepo.deprecated)"/>
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label"> {{language.getAppLanglabel('LBL_DEPRECATED')}}</span>
+        </label>
         <div *ngIf="view.isEditMode()" class="slds-form-element slds-m-vertical_medium">
             <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
             <div class="slds-form-element__control">

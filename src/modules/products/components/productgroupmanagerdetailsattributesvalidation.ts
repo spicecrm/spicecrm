@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
@@ -11,7 +14,7 @@ import {model} from "../../../services/model.service";
     providers: [model]
 })
 export class ProductGroupManagerDetailsAttributesValidation implements OnInit, OnDestroy {
-    @ViewChild('buttoncontainer', {read: ViewContainerRef}) private buttonContainer: ViewContainerRef;
+    @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) private buttonContainer: ViewContainerRef;
     @Input() private parent: any = {};
     public listFields: any[] = [];
 

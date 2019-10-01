@@ -58,6 +58,7 @@ export class ProductVariantsAttributes implements OnDestroy {
             this.backend.getRequest(`${type}/${newProductId}/productattributes/direct`)
                 .subscribe(attributes => {
                     this.attributes = attributes;
+                    this.attributes.sort((a,b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
                     this.isLoading = false;
                 }, err => this.isLoading = false);
         } else if (!newProductId) {

@@ -4,68 +4,21 @@
     </button>
     <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
         <ul class="slds-dropdown__list" role="menu">
-            <ng-container *ngIf="!isEditMode()">
-                <ng-container *ngIf="standardactions">
-                    <li *ngIf="canEdit()" class="slds-dropdown__item" role="presentation" (click)="editModel()">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                            <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
-                        </a>
-                    </li>
-                    <li *ngIf="canDelete()" class="slds-dropdown__item" role="presentation" (click)="confirmDelete()">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                            <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
-                        </a>
-                    </li>
-                    <li class="slds-dropdown__item" role="presentation" (click)="viewModel()">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                            <span class="slds-truncate">{{language.getLabel('LBL_OPEN')}}</span>
-                        </a>
-                    </li>
-                </ng-container>
-                <ng-container *ngIf="addactions.length > 0">
-                    <!--li class="slds-has-divider--top-space" role="separator"></li-->
-                    <li *ngFor="let addaction of addactions" class="slds-dropdown__item" role="presentation" (click)="doCustomAction(addaction.action)">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                            <span class="slds-truncate">{{addaction.name}}</span>
-                        </a>
-                    </li>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf="isEditMode()">
-                <ng-container *ngIf="standardeditactions">
-                    <li *ngIf="canEdit()" class="slds-dropdown__item" role="presentation" (click)="cancelEdit()">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                            <span class="slds-truncate">{{language.getLabel('LBL_CANCEL')}}</span>
-                        </a>
-                    </li>
-                    <li *ngIf="canEdit()" class="slds-dropdown__item" role="presentation" (click)="saveModel()">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                            <span class="slds-truncate">{{language.getLabel('LBL_SAVE')}}</span>
-                        </a>
-                    </li>
-                </ng-container>
-                <ng-container *ngIf="addeditactions.length > 0">
-                    <!--li class="slds-has-divider--top-space" role="separator"></li-->
-                    <li *ngFor="let addaction of addeditactions" class="slds-dropdown__item" role="presentation" (click)="doCustomAction(addaction.action)">
-                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                            <span class="slds-truncate">{{addaction.name}}</span>
-                        </a>
-                    </li>
-                </ng-container>
+            <ng-container *ngIf="actionitems.length > 0">
+                <li *ngFor="let actionitem of actionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                    </a>
+                </li>
             </ng-container>
         </ul>
     </div>
 </div>
 <ng-template #smallformfactor>
-    <div class="slds-text-align--right slds-p-top--xx-small slds-p-horizontal--xx-small">
-        <div *ngIf="!isEditMode()" class="slds-button-group" role="group">
-            <button class="slds-button slds-button_neutral" *ngIf="canEdit()" (click)="editModel()">{{language.getLabel('LBL_EDIT')}}</button>
-            <button class="slds-button slds-button_neutral" *ngIf="canDelete()" (click)="confirmDelete()">{{language.getLabel('LBL_DELETE')}}</button>
-            <button class="slds-button slds-button_neutral" *ngIf="canView()" (click)="viewModel()">{{language.getLabel('LBL_OPEN')}}</button>
-        </div>
-        <div *ngIf="isEditMode()" class="slds-button-group" role="group">
-            <button class="slds-button slds-button_neutral" *ngIf="canEdit()" (click)="cancelEdit()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button_neutral" *ngIf="canDelete()" (click)="saveModel()">{{language.getLabel('LBL_SAVE')}}</button>
-        </div>
+    <div class="slds-text-align--right slds-p-top--xx-small slds-p-horizontal--xx-small" *ngIf="actionitems.length > 0">
+        <button *ngFor="let actionitem of actionitems"  class="slds-button slds-button_neutral"  [ngClass]="{'slds-hide': isHidden(actionitem.id)}" (click)="propagateclick(actionitem.id)">
+            <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+        </button>
     </div>
 </ng-template>
+

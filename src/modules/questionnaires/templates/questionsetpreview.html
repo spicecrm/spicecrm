@@ -7,7 +7,7 @@
             <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_QUESTIONSET_PREVIEW')}}</h2>
         </header>
         <div class="slds-modal__content slds-p-around--medium" style="height:100%">
-            <questionset-render *ngIf="!isLoading" [questionsetidorobject]="questionsetidorobject"></questionset-render>
+            <questionset-render *ngIf="!isLoading" [questionsetIdOrObject]="questionsetIdOrObject"></questionset-render>
         </div>
         <div class="slds-modal__footer">
             <button class="slds-button slds-button--neutral" (click)="closePopup()">{{language.getLabel('LBL_CLOSE')}}</button>

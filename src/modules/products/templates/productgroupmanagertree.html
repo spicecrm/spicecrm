@@ -6,6 +6,7 @@
                     <system-button-icon [icon]="'chevronright'"></system-button-icon>
                 </button>
                 <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" [title]="productgroup.summary_text">{{productgroup.summary_text}}</a>
+                <system-spinner *ngIf="isLoading == productgroup.id" size="16" class="slds-col_bump-left slds-m-right--x-small"></system-spinner>
             </div>
         </li>
     </ul>

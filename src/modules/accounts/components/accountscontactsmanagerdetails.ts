@@ -28,7 +28,7 @@ declare var _;
 })
 export class AccountsContactsManagerDetails implements AfterViewInit, OnChanges {
 
-    @ViewChild('detailscontainer', {read: ViewContainerRef}) detailscontainer: ViewContainerRef;
+    @ViewChild('detailscontainer', {read: ViewContainerRef, static: true}) detailscontainer: ViewContainerRef;
     @Input('activecontactid') activeContactId: string = undefined;
     renderedComponents: Array<any> = [];
 

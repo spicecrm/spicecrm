@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {Component, ElementRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -22,7 +25,8 @@ export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
             .map(validation => {
                 validation = validation.value;
                 return validation;
-            }) : [];
+            })
+            .sort((a, b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1): [];
     }
 
     get valueArray() {

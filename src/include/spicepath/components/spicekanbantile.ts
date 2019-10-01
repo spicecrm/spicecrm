@@ -1,5 +1,5 @@
 /**
- * @module AddComponentsModule
+ * @module ModuleSpicePath
  */
 import {Component, Input, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
@@ -9,7 +9,7 @@ import {modellist} from '../../../services/modellist.service';
 
 @Component({
     selector: '[spice-kanban-tile]',
-    templateUrl: './src//include/spicepath/templates/spicekanbantile.html',
+    templateUrl: './src/include/spicepath/templates/spicekanbantile.html',
     providers: [model, view],
     host: {
         '[class]': "'slds-item'"
@@ -26,6 +26,7 @@ export class SpiceKanbanTile implements OnInit {
 
         // display short labels
         this.view.labels = 'short';
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
@@ -33,6 +34,9 @@ export class SpiceKanbanTile implements OnInit {
         this.model.module = this.modellist.module;
         this.model.id = this.item.id;
         this.model.data = this.model.utils.backendModel2spice(this.modellist.module, this.item);
+
+        // initialize the field statis
+        this.model.initializeFieldsStati();
     }
 
     private goDetail() {

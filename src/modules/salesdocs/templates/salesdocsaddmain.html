@@ -1,0 +1,9 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_SALESDOC')}}</system-modal-header>
+    <system-modal-content [grow]="true">
+        <salesdocs-record-view></salesdocs-record-view>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+    </system-modal-footer>
+</system-modal>

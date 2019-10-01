@@ -1,10 +1,11 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-  <div style="float: left; width: 10px; height: 10px; border-radius: 5px; margin-top: 5px; margin-right: 5px;" [ngStyle]="{'background-color': getColor()}"></div> {{getValue()}}
+  <div style="float: left; width: 10px; height: 10px; border-radius: 5px; margin-top: 5px; margin-right: 5px;" [ngStyle]="getColor()"></div> {{getValue()}}
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control" [ngClass]="getFieldClass()">
         <div class="slds-select_container slds-m-vertical--xx-small">
-            <select class="slds-select " [(ngModel)]="value">
+            <select class="slds-select " [(ngModel)]="value" (change)="changed(value)">
                 <ng-container *ngFor="let o of options">
                     <option [value]="o.value"> {{o.long}}</option>
                 </ng-container>

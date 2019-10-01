@@ -21,11 +21,11 @@
             </tr>
         </thead>
         <tbody>
-        <tr>
-            <td *ngIf="model.data.systemactions == 0" colspan="4">
-                <div class="slds-align--absolute-center slds-p-around--small">... no DecisSystemactionsions defined ...</div>
-            </td>
-        </tr>
+            <tr>
+                <td *ngIf="model.data.systemactions == 0" colspan="4">
+                    <div class="slds-align--absolute-center slds-p-around--small">... no DecisSystemactionsions defined ...</div>
+                </td>
+            </tr>
             <tr *ngFor="let systemaction of model.data.systemactions|notdeleted" workflow-manager-detail-tasksystemactions-line [systemaction]="systemaction" [systemactions]="model.data.systemactions" [module]="module"></tr>
         </tbody>
         <tfoot class="slds-border--top slds-theme--shade">

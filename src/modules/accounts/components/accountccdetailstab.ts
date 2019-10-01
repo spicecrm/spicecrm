@@ -4,15 +4,13 @@
 import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
-import {toast} from '../../../services/toast.service';
-import {backend} from '../../../services/backend.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
+declare var _: any;
 
 @Component({
     selector: 'account-cc-details-tab',
@@ -21,47 +19,77 @@ declare var moment: any;
 })
 
 export class AccountCCDetailsTab {
-    @ViewChild('ccdetailscontainer', {read: ViewContainerRef}) ccdetailscontainer: ViewContainerRef;
+    @ViewChild('ccdetailscontainer', {
+        read: ViewContainerRef,
+        static: true
+    }) private ccdetailscontainer: ViewContainerRef;
 
-    @Input() data: any = undefined;
-    @Input('contactid') contactId: string = undefined;
-    @Input('ccid') ccId: string = undefined;
-    @Input('ccname') ccName: string = undefined;
+    @Input() private data: any = undefined;
+    @Input() private componentconfig: any = {};
+
+    @Input() private parent: model;
+
+    @Input() private ccode: any = {};
 
     constructor(private language: language,
                 private metadata: metadata,
-                private view: view,
-                private toast: toast,
-                private backend: backend,
                 private model: model) {
+
+        // set the model
+        this.model.module = 'AccountCCDetails';
     }
 
-    ngOnInit() {
-        this.model.module = 'AccountCCDetails';
+    public ngOnInit() {
+        this.setModelData();
+    }
 
+    public ngAfterViewInit() {
+        this.renderView();
+    }
+
+    /*
+    * Set the model data
+    * @return void
+    * */
+    private setModelData() {
         if (this.data) {
             this.model.id = this.data.id;
-            this.model.data = this.data;
+            this.model.data = this.model.utils.backendModel2spice(this.model.module, this.data);
         } else {
-            this.model.id = this.model.generateGuid();
-            this.model.data = {
-                id: this.model.id,
-                name: this.ccName,
-                contact_id: this.contactId,
-                companycode_id: this.ccId,
-                date_entered: new moment(),
-                date_modified: new moment(),
+            this.model.initialize(this.parent);
+            this.model.setFields({
+                name: this.ccode.name,
+                companycode_id: this.ccode.id
+            });
+
+            // if not set by copy rules .. just to ensure we do not get zombie entries
+            if (!this.model.getField('account_id')) {
+                this.model.setFields({
+                    account_id: this.parent.id,
+                    account_name: this.parent.getField('name')
+                });
             }
         }
     }
 
-    ngAfterViewInit() {
-        this.buildContainer();
-    }
+    /*
+    * Render the configured component set
+    * @return void
+    * */
+    private renderView() {
 
-    buildContainer() {
-        let componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
-        let componentSet = componentconfig.componentset;
+        if (_.isEmpty(this.componentconfig)) {
+            // check to get the config
+            this.componentconfig = this.metadata.getComponentConfig('AccountCCDetails', 'AccountCCDetails');
+
+            // fallback to check with Accounts
+            if (_.isEmpty(this.componentconfig)) {
+                this.componentconfig = this.metadata.getComponentConfig('AccountCCDetailsTab', 'Accounts');
+            }
+        }
+
+        // get the componentset
+        let componentSet = this.componentconfig.componentset;
         if (componentSet) {
             let components = this.metadata.getComponentSetObjects(componentSet);
             for (let component of components) {
