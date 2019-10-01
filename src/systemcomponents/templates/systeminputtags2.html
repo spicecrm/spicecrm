@@ -1,0 +1,32 @@
+<div class="slds-pill_container">
+    <ul #taglist class="slds-listbox slds-listbox_horizontal">
+        <li *ngIf="!tags.length" style="font-style:italic">Not any tags yet.</li>
+        <ng-container *ngFor="let tag of tags; let i=index">
+            <li class="slds-listbox-item" role="presentation">
+                <span class="slds-pill" role="option" tabindex="0">
+                    <span class="slds-pill__label">{{tag}}</span>
+                    <system-utility-icon *ngIf="isEditing" icon="close" size="xx-small" (click)="removeByIndex(i)"></system-utility-icon>
+                </span>
+            </li>
+        </ng-container>
+        <li *ngIf="!maxNumberReached && isEditing">
+            <input type="text" class="slds-input" [placeholder]="lang.getLabel('LBL_ADD_NEW_TAG_HERE')" (keyup.enter)="addTag($event)">
+        </li>
+    </ul>
+</div>
+<div class="slds-combobox_container">
+    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [ngClass]="{'slds-is-open': isOpen}">
+        <div class="slds-combobox__form-element" role="none">
+            <input class="slds-input slds-combobox__input" type="search" [placeholder]="lang.getLabel('LBL_SEARCH_TAG')" [(ngModel)]="querystring" (keyup)="search($event)"/>
+        </div>
+        <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                <li *ngFor="let matchedtag of matchedtags" role="presentation" class="slds-listbox__item" (click)="addTag(matchedtag)">
+                    <div class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
+                        {{matchedtag}}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
