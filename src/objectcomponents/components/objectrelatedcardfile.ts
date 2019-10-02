@@ -87,7 +87,22 @@ export class ObjectRelatedCardFile {
                             });
                             break;
                         default:
-                            this.downloadFile();
+                            let nameparts = this.file.filename.split('.');
+                            let type = nameparts.splice(-1, 1)[0];
+                            switch(type.toLowerCase()){
+                                case 'msg':
+                                    this.modal.openModal('EmailMSGPreviewModal').subscribe(modalref => {
+                                        modalref.instance.name = this.file.filename;
+                                        modalref.instance.type = this.file.file_mime_type;
+                                        this.modelattachments.getAttachment(this.file.id).subscribe(file => {
+                                            modalref.instance.data = atob(file);
+                                        });
+                                    });
+                                    break;
+                                default:
+                                    this.downloadFile();
+                                    break;
+                            }
                             break;
                     }
                     break;
