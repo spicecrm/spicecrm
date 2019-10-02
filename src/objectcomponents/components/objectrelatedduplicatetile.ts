@@ -18,7 +18,7 @@ export class ObjectRelatedDuplicateTile implements OnInit{
     private fieldset: string = '';
 
     constructor(private model: model, private view: view, private language: language, private metadata: metadata) {
-
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
