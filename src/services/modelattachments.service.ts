@@ -179,7 +179,7 @@ export class modelattachments {
                 let fileBody = {
                     file: file.filecontent,
                     filename: file.name,
-                    filemimetype: file.type ? file.type :'application/octet-stream';
+                    filemimetype: file.type ? file.type :'application/octet-stream'
                 };
 
                 request.send(JSON.stringify(fileBody));
