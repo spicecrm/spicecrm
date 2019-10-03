@@ -11,7 +11,7 @@
                 <p>
                     <a href="javascript:void(0);">{{note.user_name}}</a> <ng-container *ngIf="!note.global"> • <system-utility-icon [icon]="'lock'" [size]="'xx-small'"></system-utility-icon></ng-container>
                 </p>
-                <system-utility-icon [icon]="'delete'" [size]="'xx-small'" (click)="deleteNote()"></system-utility-icon>
+                <system-utility-icon [icon]="'delete'" [size]="'xx-small'" (click)="deleteNote()" *ngIf="!hideDeleteButton()"></system-utility-icon>
             </div>
             <p class="slds-text-body--small"><a href="javascript:void(0);" class="slds-text-link--reset">{{getNoteTimeFromNow()}}</a></p>
         </div>
