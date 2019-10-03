@@ -4,12 +4,12 @@
     <div *ngIf="displayCheckboxes">
         <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
             <div class="slds-p-vertical--xx-small slds-text-title_bold">
-                <system-checkbox [ngModel]="getGroupValue(group)" disabled>{{group.display}}</system-checkbox>
+                <system-checkbox [ngModel]="getGroupValue(group)" disabled="true">{{group.display}}</system-checkbox>
             </div>
             <div class="slds-form-element__control" [ngClass]="getFieldClass()" >
                 <system-checkbox-group [ngModel]="fieldValueArray" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
                     <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="checkboxClass">
-                        <system-checkbox-group-checkbox [value]="option.value" disabled> {{option.display}}</system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox [value]="option.value" disabled="true"> {{option.display}}</system-checkbox-group-checkbox>
                     </div>
                 </system-checkbox-group>
             </div>
