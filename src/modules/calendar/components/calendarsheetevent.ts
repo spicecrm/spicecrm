@@ -3,7 +3,6 @@
  */
 import {
     Component,
-    ElementRef,
     EventEmitter,
     HostBinding,
     HostListener,
@@ -14,16 +13,15 @@ import {
     Renderer2
 } from '@angular/core';
 import {model} from '../../../services/model.service';
-import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
-import {broadcast} from '../../../services/broadcast.service';
 import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -44,17 +42,17 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     private hidden: boolean = false;
     private subscription: Subscription = new Subscription();
     private lastMoveTimeSpan: number = 0;
+    private color: string = '';
+    private hasDarkColor: boolean = true;
 
     constructor(private language: language,
-                private metadata: metadata,
-                private broadcast: broadcast,
+                private configuration: configurationService,
                 private calendar: calendar,
-                private elementRef: ElementRef,
                 private model: model,
                 private renderer: Renderer2) {
         this.subscription = this.calendar.color$.subscribe(calendar => {
             if (this.calendar.calendars[calendar.id] && this.calendar.calendars[calendar.id].some(event => this.event.id == event.id)) {
-                this.event.color = calendar.color;
+                this.color = calendar.color;
             }
         });
     }
@@ -86,23 +84,34 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         return {
             'height': '100%',
             'border-radius': '2px',
-            'background-color': !this.isScheduleSheet ? this.event.color : 'transparent',
+            'background-color': !this.isScheduleSheet ? this.color : 'transparent',
         };
     }
 
     public ngOnInit() {
-        this.model.module = this.event.module;
-        this.model.id = this.event.id;
-        this.model.data = this.event.data;
-        if (!this.event.hasOwnProperty('color')) {
-            this.event.color = this.calendar.eventColor;
-        }
+        this.setModelDataFromEvent();
+        this.setEventColor();
     }
 
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
+    /*
+    * set dragging item and hide the original item for z-index conflict purpose
+    * @return void
+    */
+    private setModelDataFromEvent() {
+        this.model.module = this.event.module;
+        this.model.id = this.event.id;
+        this.model.data = this.event.data;
+    }
+
+    /*
+    * set dragging item and hide the original item for z-index conflict purpose
+    * @param drag event
+    * @return void
+    */
     @HostListener('dragstart', ['$event'])
     private dragStart(event) {
         event.stopPropagation();
@@ -116,11 +125,21 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         setTimeout(() => this.hidden = true, 0);
     }
 
+
+    /*
+    * show the original item
+    * @return void
+    */
     @HostListener('dragend')
     private dragEnd() {
         this.hidden = false;
     }
 
+    /*
+    * listen to other mouse events
+    * @param mouse event
+    * @return void
+    */
     private onMouseDown(e) {
 
         this.mouseStart = e;
@@ -141,6 +160,11 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         e.returnValue = false;
     }
 
+    /*
+    * handle the event end hour changes on mouse move
+    * @param mouse event
+    * @return void
+    */
     private onMouseMove(e) {
         if (!this.canEdit) {
             return;
@@ -161,6 +185,10 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
 
     }
 
+    /*
+    * save the event end hour changes on mouse up
+    * @return void
+    */
     private onMouseUp() {
         this.mouseUpListener();
         this.mouseMoveListener();
@@ -190,5 +218,46 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.mouseLast = undefined;
         this.event.resizing = false;
         this.lastMoveTimeSpan = 0;
+    }
+
+    /*
+    * set the default event color if it's not set
+    * or set the hex color if it's defined in the color conditions table
+    * @return void
+    */
+    private setEventColor() {
+        this.color = this.event.hasOwnProperty('color') ? this.event.color : this.calendar.eventColor;
+
+        let colorConditions = this.configuration.getData('calendarcolorconditions');
+        if (!colorConditions || this.owner != this.event.data.assigned_user_id) return;
+        colorConditions.forEach(con => {
+            if (con.module == this.model.module) {
+                this.hasDarkColor = this.isDarkColor(con.color_hex_code);
+                if (con.module_filter != null && con.module_filter.length > 0) {
+                    if (this.model.checkModuleFilterMatch(con.module_filter)) {
+                        this.color = con.color_hex_code.indexOf('#') > -1 ? con.color_hex_code : '#' + con.color_hex_code;
+                    }
+                } else {
+                    this.color = con.color_hex_code.indexOf('#') > -1 ? con.color_hex_code : '#' + con.color_hex_code;
+                }
+            }
+        });
+    }
+
+    /*
+    * @param color
+    * @return boolean
+    */
+    private isDarkColor(color) {
+        let c = color.indexOf('#') > -1 ? color.substring(1) : color;
+        let rgb = parseInt(c, 16);   // convert rrggbb to decimal
+        // tslint:disable-next-line:no-bitwise
+        let r = (rgb >> 16) & 0xff;  // extract red
+        // tslint:disable-next-line:no-bitwise
+        let g = (rgb >> 8) & 0xff;  // extract green
+        // tslint:disable-next-line:no-bitwise
+        let b = (rgb >> 0) & 0xff;  // extract blue
+        let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+        return luma < 120;
     }
 }
