@@ -58,8 +58,8 @@ export class EmailMSGPreviewModal {
      */
     set data(data) {
         this.libloader.loadLib('msgreader').subscribe(loaded => {
-            let msgReader = new MSGReader(Uint8Array.from(data, c => c.charCodeAt(0)));
-            this.msgData = msgReader.getFileData();
+            // let msgReader = new MSGReader(Uint8Array.from(data, c => c.charCodeAt(0)));
+            // this.msgData = msgReader.getFileData();
         });
     }
 

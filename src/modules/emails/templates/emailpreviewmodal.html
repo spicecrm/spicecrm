@@ -1,0 +1,12 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">Email Preview</system-modal-header>
+    <system-modal-content margin="none">
+        <div *ngIf="isLoading" style="height: 50vh;" class="slds-align--absolute-center">
+            <div class="slds-grid_vertical">
+                <system-spinner></system-spinner>
+                <div class="slds-p-around--small">... {{language.getLabel('LBL_LOADING')}} ...</div>
+            </div>
+        </div>
+        <object-record-fieldset *ngIf="!isLoading" [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+    </system-modal-content>
+</system-modal>

@@ -91,12 +91,10 @@ export class ObjectRelatedCardFile {
                             let type = nameparts.splice(-1, 1)[0];
                             switch(type.toLowerCase()){
                                 case 'msg':
-                                    this.modal.openModal('EmailMSGPreviewModal').subscribe(modalref => {
+                                    this.modal.openModal('EmailPreviewModal').subscribe(modalref => {
                                         modalref.instance.name = this.file.filename;
                                         modalref.instance.type = this.file.file_mime_type;
-                                        this.modelattachments.getAttachment(this.file.id).subscribe(file => {
-                                            modalref.instance.data = atob(file);
-                                        });
+                                        modalref.instance.attachmentid = this.file.id;
                                     });
                                     break;
                                 default:
