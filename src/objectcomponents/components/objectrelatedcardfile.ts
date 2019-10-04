@@ -17,7 +17,7 @@ export class ObjectRelatedCardFile {
     @Input() private file: any = {};
 
 
-    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper ) {
+    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper) {
 
     }
 
@@ -109,7 +109,5 @@ export class ObjectRelatedCardFile {
                     break;
             }
         }
-
-
     }
 }

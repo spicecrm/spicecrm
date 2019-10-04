@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import { Component, AfterViewInit, OnInit, OnDestroy, Input } from "@angular/core";
+import {Component, AfterViewInit, OnInit, OnDestroy, Input} from "@angular/core";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
@@ -49,9 +49,9 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
 
         if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
 
-        if ( this.componentconfig.sequencefield ) {
+        if (this.componentconfig.sequencefield) {
             this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
-        } else if ( this.relatedmodels._linkName && this.model.fields[this.relatedmodels._linkName] && this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+        } else if (this.relatedmodels._linkName && this.model.fields[this.relatedmodels._linkName] && this.model.fields[this.relatedmodels._linkName].sequence_field) {
             this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
         }
 
@@ -97,5 +97,12 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
 
     public addSelectedItems(items) {
         this.relatedmodels.addItems(items);
+    }
+
+    /**
+     * returns the listitemactionset if one is defined
+     */
+    get listitemactionset() {
+        return this.componentconfig && this.componentconfig.listitemactionset ? this.componentconfig.listitemactionset : '';
     }
 }
