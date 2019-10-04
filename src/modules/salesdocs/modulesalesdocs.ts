@@ -34,6 +34,10 @@ import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
 import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
 import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
 import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components/salesdocsglobalnavigationmenuitemactionnew";
+import /*embed*/ {SalesdocsRejectButton} from "./components/salesdocsrejectbutton";
+import /*embed*/ {SalesdocsRejectModal} from "./components/salesdocsrejectmodal";
+import /*embed*/ {SalesDocsRejectItemsContainer} from "./components/salesdocsrejectitemscontainer";
+import /*embed*/ {SalesDocsItemRejectContainer} from "./components/salesdocsitemrejectcontainer";
 
 @NgModule({
     imports: [
@@ -67,7 +71,11 @@ import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components
         SalesDocsAddMain,
         SalesDocsRecordView,
         SalesDocsItemsAddTypeSelector,
-        SalesDocsGlobalNavigationMenuItemActionNew
+        SalesDocsGlobalNavigationMenuItemActionNew,
+        SalesdocsRejectButton,
+        SalesdocsRejectModal,
+        SalesDocsRejectItemsContainer,
+        SalesDocsItemRejectContainer
     ]
 })
 export class ModuleSalesDocs {
