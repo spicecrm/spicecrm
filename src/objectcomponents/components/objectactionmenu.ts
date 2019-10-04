@@ -75,7 +75,7 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
         return this.layout.screenwidth == 'small';
     }
 
-    private hasNoActions() {
+    get hasNoActions() {
         // because of custom actions can't be checked if they are enabled... return false
         if (this.actionitems.length > 0) return false;
 
