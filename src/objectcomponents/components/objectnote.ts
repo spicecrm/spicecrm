@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {objectnote} from '../services/objectnote.service';
 import {DomSanitizer} from "@angular/platform-browser";
+import {session} from "../../services/session.service";
 
 /**
  * @ignore
@@ -31,7 +32,7 @@ export class ObjectNote {
      *
      * @param objectnote
      */
-    constructor(private objectnote: objectnote, public sanitized: DomSanitizer) {
+    constructor(private objectnote: objectnote, public sanitized: DomSanitizer, private session: session) {
 
     }
 
@@ -54,5 +55,12 @@ export class ObjectNote {
      */
     get htmlValue()    {
         return this.sanitized.bypassSecurityTrustHtml(this.note.text);
+    }
+
+    private hideDeleteButton() {
+        if(this.note.user_id != this.session.authData.userId && !this.session.authData.admin) {
+            return true;
+        }
+        return false;
     }
 }
