@@ -4,7 +4,7 @@
         <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread" style="min-height: 19px;">
             <div class="slds-truncate" style="width:100%">
                 <ng-container *ngIf="link;else nolink">
-                    <a href="javascript:void(0);" (click)="goRecord()"><ng-container *ngTemplateOutlet="content"></ng-container> </a>
+                    <a href="javascript:void(0);" modelPopOver (click)="goRecord()"><ng-container *ngTemplateOutlet="content"></ng-container> </a>
                 </ng-container>
                 <ng-template #nolink>
                     <ng-container *ngTemplateOutlet="content"></ng-container>

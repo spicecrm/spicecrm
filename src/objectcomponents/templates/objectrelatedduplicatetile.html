@@ -3,7 +3,8 @@
     <div class="slds-media__body">
         <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
             <h3 class="slds-truncate slds-text-heading--small slds-m-bottom--small" (click)="navgiateDetail()">
-                <a href="javascript:void(0);">{{model.data.summary_text}}</a>
+                <a *ngIf="enableLink" href="javascript:void(0);">{{model.data.summary_text}}</a>
+                <span *ngIf="!enableLink">{{model.data.summary_text}}</span>
             </h3>
         </div>
         <div class="slds-tile__detail slds-text-body--small">
