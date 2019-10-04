@@ -35,6 +35,7 @@ export class SalesDocsItemsAddText {
     constructor(private metadata: metadata, private language: language, private model: model, private view: view) {
         // prepare the model
         this.model.module = 'SalesDocItems';
+        this.model.initialize();
 
         // set the view
         this.view.isEditable = true;
