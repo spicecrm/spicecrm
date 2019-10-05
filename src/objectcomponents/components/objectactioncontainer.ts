@@ -9,8 +9,7 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    ChangeDetectorRef,
-    OnChanges
+    OnChanges, AfterViewInit, NgZone
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -24,7 +23,7 @@ import {ObjectActionContainerItem} from "./objectactioncontaineritem";
     selector: "object-action-container",
     templateUrl: "./src/objectcomponents/templates/objectactioncontainer.html"
 })
-export class ObjectActionContainer implements OnChanges {
+export class ObjectActionContainer implements OnChanges, AfterViewInit {
     /**
      * reference to the container item where the indivvidual components can be rendered into dynamically
      */
@@ -57,7 +56,17 @@ export class ObjectActionContainer implements OnChanges {
      */
     private isOpen: boolean = false;
 
-    constructor(public language: language, public metadata: metadata, public model: model, public changeDetectorRef: ChangeDetectorRef) {
+    /**
+     * @ignore
+     */
+    private stable: boolean = false;
+
+    /**
+     * @ignore
+     */
+    private stableSub: any;
+
+    constructor(public language: language, public metadata: metadata, public model: model, public ngZone: NgZone) {
     }
 
     public ngOnChanges() {
@@ -88,6 +97,16 @@ export class ObjectActionContainer implements OnChanges {
                 });
             }
         }
+    }
+
+
+    public ngAfterViewInit(): void {
+        // ugly workaround to detect once the first stable
+        // change detection run is done and then start returning the poroper disabled valued
+        this.stableSub = this.ngZone.onStable.subscribe(stable => {
+            this.stable = true;
+            this.stableSub.unsubscribe();
+        });
     }
 
     private toggleOpen() {
@@ -152,17 +171,16 @@ export class ObjectActionContainer implements OnChanges {
      * @param actionid the action id
      */
     private isHidden(actionid) {
+        if (!this.stable) return false;
+
         let hidden = false;
         if (this.actionitemlist) {
-            this.actionitemlist.some((actionitem: any) => {
-                if (actionitem.id == actionid) {
-                    hidden = actionitem.hidden;
-                    return true;
-                }
-            });
+            let actionitem = this.actionitemlist.find(actionitem => actionitem.id == actionid);
+            if (actionitem) hidden = actionitem.hidden;
         }
         return hidden;
     }
+
 
     private propagateclick(actionid) {
         this.actionitemlist.some(actionitem => {
