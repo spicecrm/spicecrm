@@ -13,7 +13,7 @@
         </div>
     </header>
     <!-- additional header eleents go here-->
-    <div #ngContent [ngClass]="{'slds-m-left--x-small':ngContent.innerHTML}">
+    <div #ngContent class="slds-m-left--x-small">
         <ng-content></ng-content>
     </div>
     <object-action-container *ngIf="actionset" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>
