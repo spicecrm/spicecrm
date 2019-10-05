@@ -8,6 +8,7 @@ import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
+import {modelattachments} from '../../../services/modelattachments.service';
 
 /**
  * a modal that renders and provides a preview for an object
@@ -36,7 +37,7 @@ export class EmailPreviewModal implements OnInit {
     /**
      * the id of the attachment for the email
      */
-    private attachmentid: string;
+    private file: any;
 
     /**
      * the fieldset to be rendered
@@ -48,7 +49,7 @@ export class EmailPreviewModal implements OnInit {
      */
     private isLoading: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private sanitizer: DomSanitizer, private backend: backend, private model: model, private view: view) {
+    constructor(private language: language, private metadata: metadata, private sanitizer: DomSanitizer, private backend: backend, private model: model, private view: view, private modelattachments: modelattachments) {
         this.model.module = 'Emails';
 
         let componentConfig = this.metadata.getComponentConfig('EmailPreviewModal', this.model.module);
@@ -68,10 +69,14 @@ export class EmailPreviewModal implements OnInit {
      * @param data the raw data of the object being passed in. When the data is pased in the bloburl is created
      */
     public ngOnInit() {
-        this.backend.getRequest('module/Emails/msg/' + this.attachmentid + '/preview').subscribe(response => {
+        this.backend.getRequest('module/Emails/msg/' + this.file.id + '/preview').subscribe(response => {
             this.model.setFields(this.model.utils.backendModel2spice('Emails', response));
             this.isLoading = false;
         });
+    }
+
+    private download(){
+        this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
     }
 
 }

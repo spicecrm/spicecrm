@@ -9,4 +9,9 @@
         </div>
         <object-record-fieldset *ngIf="!isLoading" [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
     </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--icon slds-button--icon-border" [disabled]="isLoading" (click)="download()">
+            <system-button-icon icon="download" size="small"></system-button-icon>
+        </button>
+    </system-modal-footer>
 </system-modal>
