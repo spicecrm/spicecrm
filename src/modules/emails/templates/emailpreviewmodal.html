@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()">Email Preview</system-modal-header>
+    <system-modal-header (close)="closeModal()">{{language.getLabel('LBL_EMAIL')}} <span *ngIf="!isLoading" class="slds-truncate">"{{model.data.name}}"</span></system-modal-header>
     <system-modal-content margin="none">
         <div *ngIf="isLoading" style="height: 50vh;" class="slds-align--absolute-center">
             <div class="slds-grid_vertical">

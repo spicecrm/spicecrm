@@ -8,6 +8,9 @@ import {popup} from "../../services/popup.service";
 import {broadcast} from "../../services/broadcast.service";
 import { modal } from '../../services/modal.service';
 
+/**
+ * renders the action menu for the attachment
+ */
 @Component({
     selector: "object-file-action-menu",
     templateUrl: "./src/objectcomponents/templates/objectfileactionmenu.html",
