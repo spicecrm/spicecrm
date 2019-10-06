@@ -30,6 +30,8 @@ import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecrea
 
 import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
 import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
+import /*embed*/ {fieldActivitiesAddActions} from "./components/fieldactivitiesaddactions";
+import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactivitiesaddactionsbutton";
 
 
 @NgModule({
@@ -55,7 +57,9 @@ import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespo
         ActivityCloseModal,
         ActivityCloseCreateModal,
         ActivitiesPopoverAddBar,
-        ActivitiesPopoverAddBarButton
+        ActivitiesPopoverAddBarButton,
+        fieldActivitiesAddActions,
+        fieldActivitiesAddActionsButton
     ]
 })
 export class ModuleActivities {
