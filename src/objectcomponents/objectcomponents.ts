@@ -63,10 +63,7 @@ import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactiondu
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
-import /*embed*/ {
-    ObjectActionNewCopyRuleBeanButton,
-    ObjectActionNewCopyRuleBeanButtonModelHelper
-} from './components/objectactionnewcopyrulebeanbutton';
+import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
 import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
@@ -115,11 +112,7 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {
-    ObjectTabContainerItem,
-    ObjectTabContainer,
-    ObjectTabContainerItemHeader
-} from './components/objecttabcontainer';
+import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
 import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
@@ -212,10 +205,6 @@ import /*embed*/ {ObjectAddresses, ObjectAddressesPipe} from './components/objec
 import /*embed*/ {ObjectAddress} from './components/objectaddress';
 
 import /*embed*/ {ObjectGDPRModal} from './components/objectgdprmodal';
-
-// ToDo: remove the two items .. seem no longer to be used
-// import /*embed*/ {ObjectPopoverHeader} from './components/objectpopoverheader';
-// import /*embed*/ {ObjectPopoverBodyItem} from './components/objectpopoverbodyitem';
 
 import /*embed*/ {ObjectRowItemComponent} from "./components/objectrowitem";
 import /*embed*/ {ObjectModalModuleDBLookup} from "./components/objectmodalmoduledblookup";
