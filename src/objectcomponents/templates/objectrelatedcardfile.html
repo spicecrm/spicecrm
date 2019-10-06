@@ -10,7 +10,7 @@
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
         <div *ngIf="!uploading" class="slds-shrink-none">
-            <object-file-action-menu [buttonsize]="'x-small'" [fileid]="file.id" [filename]="file.filename" ></object-file-action-menu>
+            <object-file-action-menu [file]="file"></object-file-action-menu>
         </div>
     </div>
     <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">
