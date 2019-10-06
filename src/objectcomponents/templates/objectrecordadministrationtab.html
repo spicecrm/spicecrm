@@ -7,6 +7,9 @@
             <object-record-fieldset-field [fieldsetitem]="fields.spiceacl_territories_hash"></object-record-fieldset-field>
         </div>
     </div>
+    <div *ngIf="multipleusers">
+        <object-record-fieldset-field [fieldsetitem]="fields.spiceacl_users_hash"></object-record-fieldset-field>
+    </div>
     <div class="slds-grid slds-wrap">
         <div class="slds-size--1-of-1 slds-medium-size--1-of-2">
             <object-record-fieldset-field [fieldsetitem]="fields.assigned_user_name"></object-record-fieldset-field>
