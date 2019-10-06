@@ -24,6 +24,8 @@ import /*embed*/ {objectimport} from './services/objectimport.service';
 import /*embed*/ {objectmerge} from './services/objectmerge.service';
 import /*embed*/ {objectnote} from './services/objectnote.service';
 
+import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
+
 import /*embed*/ {ObjectListViewHeader} from './components/objectlistviewheader';
 import /*embed*/ {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
 import /*embed*/ {ObjectList} from './components/objectlist';
@@ -61,7 +63,10 @@ import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactiondu
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
-import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
+import /*embed*/ {
+    ObjectActionNewCopyRuleBeanButton,
+    ObjectActionNewCopyRuleBeanButtonModelHelper
+} from './components/objectactionnewcopyrulebeanbutton';
 import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
@@ -110,7 +115,11 @@ import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheader
 import /*embed*/ {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
 import /*embed*/ {ObjectPageHeaderDetailRow} from './components/objectpageheaderdetailrow';
 import /*embed*/ {ObjectPageHeaderDetailRowField} from './components/objectpageheaderdetailrowfield';
-import /*embed*/ {ObjectTabContainerItem, ObjectTabContainer, ObjectTabContainerItemHeader} from './components/objecttabcontainer';
+import /*embed*/ {
+    ObjectTabContainerItem,
+    ObjectTabContainer,
+    ObjectTabContainerItemHeader
+} from './components/objecttabcontainer';
 import /*embed*/ {ObjectVerticalTabContainer} from './components/objectverticaltabcontainer';
 import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverticaltabcontaineritem';
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
@@ -212,7 +221,7 @@ import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionou
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
 import /*embed*/ {ObjectActionVCardButton} from "./components/objectactionvcardbutton";
 
-import /*embed*/ {ObjectKeyValuesPipe} from "./components/objectkeyvalue.pipe";
+
 import /*embed*/ {ObjectTableRow} from "./components/objecttablerow";
 import /*embed*/ {ObjectTable} from "./components/objecttable";
 
