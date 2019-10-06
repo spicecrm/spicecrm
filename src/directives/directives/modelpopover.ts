@@ -83,6 +83,10 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy() {
+        if (this.showPopoverTimeout) {
+            window.clearTimeout(this.showPopoverTimeout);
+        }
+
         if (this.popoverCmp) {
             this.popoverCmp.closePopover(true);
         }
