@@ -9,7 +9,7 @@
         <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="'refresh'" (click)="reload()"></system-button-icon>
     </div>
 </div>
-<div class="slds-p-top--x-small">
+<div class="slds-p-top--x-small" spiceDropFileArea (filesDrop)="handleDroppedFiles($event)">
     <!-- the Activities container-->
     <div class="slds-is-relative spiceActivitiyTimelineHeader">
         <h2 class="slds-p-vertical--xx-small slds-text-heading--x-small">
