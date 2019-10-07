@@ -2,7 +2,7 @@
  * @module ObjectFields
  */
 import {Component, ElementRef, Renderer, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {fieldGeneric} from './fieldgeneric';
-import { modal } from '../../services/modal.service';
+import {modal} from '../../services/modal.service';
 
 
 @Component({
@@ -51,37 +51,38 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    get parentIdField(){
+    get parentIdField() {
         return this.fieldconfig.parentIdField ? this.fieldconfig.parentIdField : 'parent_id';
     }
-    get parentTypeField(){
+
+    get parentTypeField() {
         return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : 'parent_type';
     }
 
-    get parentName(){
+    get parentName() {
         return this.model.getField(this.fieldname);
     }
 
-    get parentType(){
+    get parentType() {
         return this.model.getField(this.parentTypeField);
     }
 
-    get parentId(){
+    get parentId() {
         return this.model.getField(this.parentIdField);
     }
 
     public ngOnInit() {
         // initialize the parenttype
-        if(!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
+        if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
             this.model.data[this.parentTypeField] = this.parentTypes[0];
         }
     }
 
-    get parentTypes(): Array<string>{
+    get parentTypes(): Array<string> {
         let parenttypes = ['Contacts', 'Accounts', 'Leads'];
 
-        if(this.fieldconfig.parenttypes) {
-            parenttypes = this.fieldconfig.parenttypes.replace(/\s/g,'').split(',');
+        if (this.fieldconfig.parenttypes) {
+            parenttypes = this.fieldconfig.parenttypes.replace(/\s/g, '').split(',');
         }
 
         return parenttypes;
@@ -122,7 +123,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.clickListener();
     }
 
-    private setParent(parent){
+    private setParent(parent) {
         this.model.setField(this.fieldname, parent.text);
         this.model.setField(this.parentIdField, parent.id);
     }
@@ -140,6 +141,21 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     private clearParent() {
+        if (this.fieldconfig.promptondelete) {
+            this.modal.confirm(
+                this.language.getLabelFormatted('LBL_PROMPT_DELETE_RELATIONSHIP', [this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig)], 'long'),
+                this.language.getLabelFormatted('LBL_PROMPT_DELETE_RELATIONSHIP', [this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig)])
+            ).subscribe(response => {
+                if (response) {
+                    this.removeRelated();
+                }
+            });
+        } else {
+            this.removeRelated();
+        }
+    }
+
+    private removeRelated() {
         this.model.setField(this.fieldname, '');
         this.model.setField(this.parentIdField, '');
     }
@@ -166,8 +182,8 @@ export class fieldParent extends fieldGeneric implements OnInit {
             selectModal.instance.module = this.parentType;
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
-                if ( items.length ) {
-                    this.setParent({ 'id':items[0].id, 'text': items[0].summary_text, 'data': items[0] });
+                if (items.length) {
+                    this.setParent({'id': items[0].id, 'text': items[0].summary_text, 'data': items[0]});
                 }
             });
             selectModal.instance.searchTerm = this.parentSearchTerm;
