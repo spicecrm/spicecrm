@@ -1,0 +1,22 @@
+<table class="slds-table slds-table_bordered">
+    <thead>
+        <tr salesdocs-item-header></tr>
+    </thead>
+    <tbody *ngIf="itemcount > 0">
+        <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
+            <tr salesdocs-item-container [item]="item" [parentview]="view" [salesdoc]="model" (recalculated)="recalculate()"></tr>
+            <tr *ngIf="item.expanded">
+                <td colspan="2" class="slds-cell-shrink">
+                <td [attr.colspan]="fieldsetItems.length">
+                    <salesdocs-item-details-container [item]="item"></salesdocs-item-details-container>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="slds-cell-shrink">
+                <td [attr.colspan]="fieldsetItems.length">
+                    <salesdocs-item-reject-container [item]="item"></salesdocs-item-reject-container>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table>

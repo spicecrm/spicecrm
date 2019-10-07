@@ -9,6 +9,9 @@ import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
 import {broadcast} from '../../../services/broadcast.service';
 
+/**
+ * renders the panel withj the workflow tasks for a given Bean
+ */
 @Component({
     selector: 'workflow-panel-tasks',
     templateUrl: './src/modules/workflow/templates/workflowpaneltasks.html'
@@ -16,22 +19,11 @@ import {broadcast} from '../../../services/broadcast.service';
 })
 export class WorkflowPanelTasks {
 
+    /**
+     * an array of workflow tasks
+     */
     @Input() private workflowtasks: any[] = [];
 
     constructor(private model: model, private workflow: workflow, private language: language, private broadcast: broadcast) {
-    }
-
-
-    private getStatusIcon(status) {
-        switch (status) {
-            case '5':
-                return 'clock';
-            case '10':
-                return 'threedots';
-            case '20':
-                return 'play';
-            case '30':
-                return 'check';
-        }
     }
 }

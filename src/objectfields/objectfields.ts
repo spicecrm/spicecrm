@@ -232,6 +232,10 @@ declare var _: any;
         FieldMessagesComponent,
         FieldModuleLookupComponent,
         FieldEnumOutputTemplates,
+        fieldLookup,
+        fieldLookupRecent,
+        fieldLookupSearch,
+        fieldLookupSearchAdd
     ]
 })
 export class ObjectFields {
