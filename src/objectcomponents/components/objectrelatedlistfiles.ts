@@ -24,10 +24,6 @@ import {modal} from "../../services/modal.service";
     selector: "object-relatedlist-files",
     templateUrl: "./src/objectcomponents/templates/objectrelatedlistfiles.html",
     providers: [modelattachments],
-    host: {
-        "(drop)": "this.onDrop($event)",
-        "(dragover)": "this.preventdefault($event)"
-    },
     animations: [
         trigger('animateicon', [
             state('open', style({transform: 'scale(1, 1)'})),
@@ -148,6 +144,17 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     private onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
+        if (files && files.length >= 1) {
+            this.doupload(files);
+        }
+    }
+
+    /**
+     * handle the drop and upload the files
+     *
+     * @param event the drop event
+     */
+    private fileDrop(files) {
         if (files && files.length >= 1) {
             this.doupload(files);
         }
