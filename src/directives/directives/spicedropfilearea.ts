@@ -1,10 +1,10 @@
 /**
  * @module directives
  */
-import {Directive, ElementRef, EventEmitter, Output, Renderer2} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
 
 /**
- * highlights the wrapped element to notify that this element is draggable
+ * highlights the wrapped element to notify that this element is draggable and emit the dropped files
  */
 @Directive({
     selector: '[spiceDropFileArea]'
@@ -12,6 +12,7 @@ import {Directive, ElementRef, EventEmitter, Output, Renderer2} from '@angular/c
 export class SpiceDropFileArea {
 
     @Output() public filesDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
+    @Input() private dropMessage: string = 'Drop Here';
     private overlayElement: HTMLElement;
     private dragStartListener: any;
     private dragEnterListener: any;
@@ -28,6 +29,13 @@ export class SpiceDropFileArea {
     ) {
         this.defineOverlayElement();
         this.listenWindowEvents();
+    }
+
+    /**
+     * reset the drop message if it is defined as input
+     */
+    public ngOnChanges() {
+        this.renderer.setProperty(this.overlayElement, 'textContent', this.dropMessage);
     }
 
     public ngOnDestroy() {
@@ -53,7 +61,7 @@ export class SpiceDropFileArea {
         this.renderer.setStyle(this.overlayElement, 'background', 'rgba(135,135,135,0.8)');
         this.renderer.setStyle(this.overlayElement, 'color', '#fff');
         this.renderer.setStyle(this.overlayElement, 'border', 'dashed 2px #fff');
-        this.renderer.setProperty(this.overlayElement, 'textContent', 'Drop Here');
+        this.renderer.setProperty(this.overlayElement, 'textContent', this.dropMessage);
         this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
 
         // set relative position to the reference
