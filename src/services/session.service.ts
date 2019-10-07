@@ -152,6 +152,7 @@ export class session {
         this.authData.password = '';
         this.authData.admin = false;
         this.authData.dev = false;
+        this.authData.renewPass = false;
 
         this.sessionData = {};
 
