@@ -14,7 +14,8 @@
             </div>
         </div>
         <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral" (click)="close()">Cancel</button>
+            <button class="slds-button slds-button_neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button_brand" (click)="copy2clipboard()">{{language.getLabel('LBL_COPY_TO_CLIPBOARD')}}</button>
         </footer>
     </div>
 </section>
