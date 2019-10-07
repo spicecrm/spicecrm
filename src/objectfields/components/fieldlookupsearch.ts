@@ -4,7 +4,6 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {fts} from '../../services/fts.service';
 import {modal} from '../../services/modal.service';
@@ -32,7 +31,7 @@ export class fieldLookupSearch {
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
     }
 
-    constructor( private metadata: metadata, public model: model, public popup: popup, public fts: fts, public language: language, private modal: modal ) {
+    constructor( private metadata: metadata, public model: model, public fts: fts, public language: language, private modal: modal ) {
     }
 
     get canAdd() {
@@ -50,8 +49,6 @@ export class fieldLookupSearch {
         this.searchtermChange.emit(this.searchTerm);
 
         this.selectedObject.emit({ id, text, data });
-
-        this.popup.close();
     }
 
     private recordAdded( record ) {

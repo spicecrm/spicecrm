@@ -2,18 +2,13 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    Input,
-    NgModule,
-    ViewChild,
-    ViewContainerRef
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {dockedComposer} from '../../services/dockedcomposer.service';
 
-
+/**
+ * the container in teh footer for the global docked composers
+ */
 @Component({
     selector: 'global-docked-composer-container',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposercontainer.html',
@@ -28,15 +23,19 @@ export class GlobalDockedComposerContainer {
 
     }
 
+    /**
+     * a getter dto determine if the composer is visible at all.
+     * if there are no composers the composer is hidden since it causes issues with the clickability of elements at the bottom
+     */
     get isVisible() {
         return this.dockedComposer.composers.length > 0 || this.dockedComposer.calls.length > 0;
     }
 
-    private closeComposer() {
-
-    }
-
-    // function to return the style if multiple composers are shown .. to stack them
+    /**
+     * function to return the style if multiple composers are shown .. to stack them
+     *
+     * @param composerindex the index of the composer
+     */
     private getComposerStyle(composerindex): any {
         if (composerindex >= this.dockedComposer.maxComposers - this.dockedComposer.calls.length) {
             return {
@@ -45,6 +44,9 @@ export class GlobalDockedComposerContainer {
         }
     }
 
+    /**
+     * a simple getter to determine if the overflow shoudl be shown
+     */
     get displayOverflow(): boolean {
         return this.dockedComposer.composers.length + this.dockedComposer.calls.length > this.dockedComposer.maxComposers ? true : false;
     }

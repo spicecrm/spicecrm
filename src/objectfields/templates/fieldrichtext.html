@@ -5,7 +5,8 @@
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <div class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="htmlValue" style="white-space: normal; height: 300px; resize: vertical; overflow-y: auto;"></div>
+    <div *ngIf="!asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="htmlValue" style="white-space: normal; height: 300px; resize: vertical; overflow-y: auto;"></div>
+    <iframe *ngIf="asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <system-richtext-editor [(ngModel)]="value" (save$)="save($event)"></system-richtext-editor>
