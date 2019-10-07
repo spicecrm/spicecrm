@@ -15,7 +15,7 @@
             <div class="slds-m-right--x-small">Selected Account:</div>
             <div class="slds-pill">
               <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
-                <object-icon [module]="model.module"></object-icon>
+                <system-icon [module]="model.module"></system-icon>
               </span><a href="javascript:void(0);" class="slds-pill__label">{{selectedAccount.name}}, {{selectedAccount.billing_address_city}}</a>
               <button class="slds-button slds-button--icon slds-pill__remove" title="Remove">
                   <system-button-icon [icon]="'clear'" (click)="unlinkAccount()"></system-button-icon>
