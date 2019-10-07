@@ -1,34 +1,34 @@
 /**
  * @module ObjectComponents
  */
-import {Component,  Renderer2, ElementRef, OnInit} from '@angular/core';
+import {Component, Renderer2, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
+import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-status-network-button',
     templateUrl: './src/objectcomponents/templates/objectstatusnetworkbutton.html'
 })
-export class ObjectStatusNetworkButton implements OnInit{
+export class ObjectStatusNetworkButton implements OnInit {
 
-    isOpen: boolean = false;
-    clickListener: any;
-    statusField: string = '';
-    statusNetwork: Array<any> = [];
-    prmiaryStatus: any = {};
-    secondaryStatuses: Array<any> = [];
+    private isOpen: boolean = false;
+    private statusField: string = '';
+    private statusNetwork: any[] = [];
+    private prmiaryStatus: any = {};
+    private secondaryStatuses: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private router: Router, private renderer: Renderer2, private elementRef: ElementRef) {
 
     }
 
-    get isDisabled(){
+    get isDisabled() {
         return this.model.isEditing || !this.model.checkAccess('edit');
     }
 
-    get isManaged(){
+    get isManaged() {
         return this.statusField != '' && this.primaryItem !== false && !this.isDisabled;
     }
 
@@ -42,57 +42,50 @@ export class ObjectStatusNetworkButton implements OnInit{
         return false;
     }
 
-    get secondaryItems(){
-        let retArray = []; let firstHit = false;
+    get secondaryItems() {
+        let retArray = [];
+        let firstHit = false;
         for (let statusnetworkitem of this.statusNetwork) {
             if (statusnetworkitem.status_from == this.model.getField(this.statusField)) {
 
-                if(firstHit){
+                if (firstHit) {
                     retArray.push(statusnetworkitem);
                 }
 
-                if(!firstHit) firstHit = true;
+                if (!firstHit) firstHit = true;
             }
         }
         return retArray
     }
 
-    ngOnInit(){
+    public ngOnInit() {
         let statusmanaged = this.metadata.checkStatusManaged(this.model.module);
-        if(statusmanaged != false){
+        if (statusmanaged != false) {
             this.statusField = statusmanaged.statusField;
             this.statusNetwork = statusmanaged.statusNetwork;
         }
     }
 
-    toggleOpen(){
-        this.isOpen = !this.isOpen;
-
-        // toggle the listener
-        if (this.isOpen) {
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener)
-            this.clickListener();
-    }
-
-    public onClick(event: MouseEvent): void {
-        if (!this.elementRef.nativeElement.contains(event.target)) {
-            this.isOpen = false;
+    private setStatus(newStatus) {
+        let statusItem = this.statusNetwork.find(item => item.status_to == newStatus);
+        if (statusItem.prompt_label) {
+            this.modal.confirm(this.language.getLabel(statusItem.prompt_label, '', 'long'), this.language.getLabel(statusItem.prompt_label, '')).subscribe(response => {
+                if (response) {
+                    this.executeChange(newStatus);
+                }
+            });
+        } else {
+            this.executeChange(newStatus);
         }
     }
 
-    private closeDropdown(){
-        this.isOpen = false;
-    }
-
-    setStatus(newStatus){
+    private executeChange(newStatus) {
         this.model.startEdit();
         this.model.setField(this.statusField, newStatus);
-        if(this.model.validate()){
-            this.model.save()
+        if (this.model.validate()) {
+            this.model.save();
         } else {
             this.model.edit();
         }
     }
-
 }
