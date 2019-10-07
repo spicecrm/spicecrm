@@ -105,7 +105,6 @@ import /*embed*/ {ObjectRecordView} from './components/objectrecordview';
 import /*embed*/ {ObjectRecordViewDetail1} from './components/objectrecordviewdetail1';
 import /*embed*/ {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2and1';
 import /*embed*/ {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
-import /*embed*/ {ObjectIcon} from './components/objecticon';
 import /*embed*/ {ObjectPageHeader} from './components/objectpageheader';
 import /*embed*/ {ObjectPageHeaderTags} from './components/objectpageheadertags';
 import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheadertagpicker';
@@ -278,7 +277,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
             // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
-        ObjectIcon,
         ObjectListViewContainer,
         ObjectListView,
         ObjectListTypes,
@@ -467,7 +465,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectListViewHeader,
         ObjectList,
         ObjectListItem,
-        ObjectIcon,
         ObjectPageHeader,
         ObjectPageHeaderDetails,
         ObjectPageHeaderDetailRow,
