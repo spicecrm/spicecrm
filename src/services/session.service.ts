@@ -24,6 +24,7 @@ interface authDataIf {
     portalOnly: boolean;
     googleToken: string;
     userimage: string;
+    companycode_id: string;
 }
 
 /**
@@ -47,7 +48,8 @@ export class session {
         renewPass: false,
         portalOnly: false,
         googleToken: '',
-        userimage: ''
+        userimage: '',
+        companycode_id: ''
     };
 
     /**
@@ -153,6 +155,7 @@ export class session {
         this.authData.admin = false;
         this.authData.dev = false;
         this.authData.renewPass = false;
+        this.authData.companycode_id = '';
 
         this.sessionData = {};
 

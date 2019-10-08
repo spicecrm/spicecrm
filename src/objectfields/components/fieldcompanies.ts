@@ -2,14 +2,17 @@
  * @module ObjectFields
  */
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
 import {configurationService} from '../../services/configuration.service';
+import {userpreferences} from '../../services/userpreferences.service';
+
 import {fieldGeneric} from './fieldgeneric';
-import {Router} from '@angular/router';
+
 
 /**
  * renders a select field with the company names defined in the systenm and available for the user
@@ -20,7 +23,7 @@ import {Router} from '@angular/router';
 })
 export class fieldCompanies extends fieldGeneric implements OnInit {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private configuration: configurationService) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private configuration: configurationService, private userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
@@ -33,10 +36,14 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
      */
     private setDefault() {
         if (this.view.isEditMode() && !this.model.data[this.fieldname]) {
-            let companyCodes = this.configuration.getData('companycodes');
-            if (companyCodes && companyCodes.length > 0) {
-                companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
-                this.value = companyCodes[0].id;
+            if (this.userpreferences.companyCodeId) {
+                this.value = this.userpreferences.companyCodeId;
+            } else {
+                let companyCodes = this.configuration.getData('companycodes');
+                if (companyCodes && companyCodes.length > 0) {
+                    companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
+                    this.value = companyCodes[0].id;
+                }
             }
         }
     }
