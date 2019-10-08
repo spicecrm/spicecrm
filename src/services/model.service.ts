@@ -950,7 +950,6 @@ export class model implements OnDestroy {
      * @param parent a model or an array of models
      */
     public executeCopyRules(parent?: any) {
-        this.executeCopyRulesGeneric();
         if (parent) {
             if (_.isArray(parent)) {
                 for (let thisParent of parent) {
@@ -960,6 +959,8 @@ export class model implements OnDestroy {
                 if (parent.data) this.executeCopyRulesParent(parent);
             }
         }
+
+        this.executeCopyRulesGeneric();
     }
 
     // get generic copy rules
