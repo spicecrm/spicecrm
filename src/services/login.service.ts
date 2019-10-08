@@ -83,6 +83,7 @@ export class loginService {
                     let response = res;
                     this.session.authData.sessionId = response.id;
                     this.session.authData.userId = response.userid;
+                    this.session.authData.companycode_id = response.companycode_id;
                     this.session.authData.userName = response.user_name;
                     this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
