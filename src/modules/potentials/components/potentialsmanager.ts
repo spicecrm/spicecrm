@@ -101,8 +101,11 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
         let companyCodes = this.configuration.getData('companycodes');
         if (companyCodes && companyCodes.length > 0) {
             companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
-            this._companyCode = companyCodes[0].id;
-
+            if (this.userpreferences.companyCodeId) {
+                this._companyCode = this.userpreferences.companyCodeId;
+            } else {
+                this._companyCode = companyCodes[0].id;
+            }
             // set the related models filter
             this.relatedmodels.fieldfilters = {companycode_id: this._companyCode};
 
