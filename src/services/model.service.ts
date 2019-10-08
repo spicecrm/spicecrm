@@ -14,7 +14,7 @@ import {broadcast} from "./broadcast.service";
 import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
-import {configuration} from "./configuration.service";
+import {configurationService} from "./configuration.service";
 import {Router} from "@angular/router";
 
 // import {GlobalHeader} from '../globalcomponents/components/globalheader';
@@ -166,7 +166,7 @@ export class model implements OnDestroy {
         public language: language,
         private modal: modal,
         private navigation: navigation,
-        private configuration: configuration,
+        private configuration: configurationService,
         public injector: Injector
     ) {
         this.modelRegisterId = this.navigation.registerModel(this);
