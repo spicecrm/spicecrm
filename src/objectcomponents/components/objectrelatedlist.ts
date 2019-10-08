@@ -29,6 +29,9 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
+
+        // pass in the model
+        this.relatedmodels.model = this.model;
     }
 
     public aclAccess() {

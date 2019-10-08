@@ -172,10 +172,10 @@ export class model implements OnDestroy {
         this.modelRegisterId = this.navigation.registerModel(this);
 
         this.data$ = new BehaviorSubject(this.data);
-        this.broadcast.message$.subscribe( data => {
-            if ( data.messagetype === 'timezone.changed' ) {
-                this.utils.timezoneChanged( this.data, data.messagedata );
-                this.utils.timezoneChanged( this.backupData, data.messagedata );
+        this.broadcast.message$.subscribe(data => {
+            if (data.messagetype === 'timezone.changed') {
+                this.utils.timezoneChanged(this.data, data.messagedata);
+                this.utils.timezoneChanged(this.backupData, data.messagedata);
             }
         });
     }
@@ -737,8 +737,8 @@ export class model implements OnDestroy {
         let responseSubject = new Subject<boolean>();
 
         // Clean strings of leading and ending white spaces:
-        for ( let property in this.data ) {
-            if ( _.isString( this.data[property] )) this.data[property] = this.data[property].trim();
+        for (let property in this.data) {
+            if (_.isString(this.data[property])) this.data[property] = this.data[property].trim();
         }
 
         // determine changed fields
@@ -944,9 +944,22 @@ export class model implements OnDestroy {
         return retSubject.asObservable();
     }
 
-    public executeCopyRules(parent: model = null) {
+    /**
+     * executes the copy rules on the bean. FIrst generic then of the optional parent
+     *
+     * @param parent a model or an array of models
+     */
+    public executeCopyRules(parent?: any) {
         this.executeCopyRulesGeneric();
-        if (parent && parent.data) this.executeCopyRulesParent(parent);
+        if (parent) {
+            if (_.isArray(parent)) {
+                for (let thisParent of parent) {
+                    if (thisParent.data) this.executeCopyRulesParent(thisParent);
+                }
+            } else {
+                if (parent.data) this.executeCopyRulesParent(parent);
+            }
+        }
     }
 
     // get generic copy rules
