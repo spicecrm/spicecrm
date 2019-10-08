@@ -100,7 +100,19 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 msgFiles.push(files[file]);
             }
         }
-        if (msgFiles.length > 0) this.addEmailsFromMsgFiles(msgFiles);
+        if (msgFiles.length > 0) {
+            this.addEmailsFromMsgFiles(msgFiles).subscribe(
+                next => {
+                    console.log(next);
+                },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    this.activitiyTimeLineService.getTimeLineData('History');
+                }
+            );
+        }
     }
 
     /*
@@ -144,15 +156,6 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 request.onreadystatechange = (scope: any = this) => {
                     if (request.readyState == 4) {
                         try {
-                            let retVal = JSON.parse(request.response);
-
-                            newfile.id = retVal[0].id;
-                            newfile.thumbnail = retVal[0].thumbnail;
-                            newfile.user_id = retVal[0].user_id;
-                            newfile.user_name = retVal[0].user_name;
-                            delete (newfile.uploadprogress);
-
-                            retSub.next({files: retVal});
                             retSub.complete();
                         } catch (e) {
                             resp = {
