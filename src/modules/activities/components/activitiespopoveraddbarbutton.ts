@@ -45,7 +45,7 @@ export class ActivitiesPopoverAddBarButton {
 
         // set the parents
         let parents = [this.parent];
-        if (this.relatedmodels && this.relatedmodels.model) parents.unshift(this.relatedmodels.model);
+        if (this.relatedmodels && this.relatedmodels.model) parents.push(this.relatedmodels.model);
 
         this.model.addModel('', parents);
     }
