@@ -30,6 +30,11 @@ export class relatedmodels implements OnDestroy {
     public id = '';
 
     /**
+     * the related Model
+     */
+    public model: any;
+
+    /**
      * the related module
      */
     public relatedModule = '';

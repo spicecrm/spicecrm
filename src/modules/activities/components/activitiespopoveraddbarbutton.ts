@@ -4,14 +4,18 @@
 import {
     Component,
     OnInit,
-    Input
+    Input,
+    Optional
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
+import {relatedmodels} from '../../../services/relatedmodels.service';
 
 /**
  * renders a bar with quick add sysmbols to be rendered in the model popover
+ *
+ * The new model is added with two parents. Priority has the related if one is set. then the model itself. This allows executing multiple copy rules
  */
 @Component({
     selector: 'activities-popover-addbar-button',
@@ -30,14 +34,19 @@ export class ActivitiesPopoverAddBarButton {
      */
     @Input() private parent: any;
 
-    constructor(private model: model, private language: language, private metadata: metadata) {
+    constructor(private model: model, private language: language, private metadata: metadata, @Optional() private relatedmodels: relatedmodels) {
     }
 
     /**
      * handle the click and create the model
      */
-    private addModel(){
+    private addModel() {
         this.model.module = this.module;
-        this.model.addModel('', this.parent);
+
+        // set the parents
+        let parents = [this.parent];
+        if (this.relatedmodels && this.relatedmodels.model) parents.unshift(this.relatedmodels.model);
+
+        this.model.addModel('', parents);
     }
 }
