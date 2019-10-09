@@ -29,6 +29,12 @@
         </h2>
         <object-activitiytimeline-summary-button></object-activitiytimeline-summary-button>
     </div>
+    <div class="slds-m-vertical--medium">
+        <system-progress-bar *ngIf="uploadData.uploading" [progress]="uploadData.progress">
+            {{language.getLabel('LBL_UPLOADING')}}:
+            <span class="slds-text-title_bold">{{uploadData.fileName}}</span>
+        </system-progress-bar>
+    </div>
     <object-activitiytimeline-container module="History" [displayaggregates]="displayaggregates.History"></object-activitiytimeline-container>
     <div class="slds-grid slds-grid_align-end">
         <button *ngIf="activitiyTimeLineService.canLoadMore('History')" class="slds-button slds-button--neutral" type="button" (click)="loadMore('History')"><span>{{language.getLabel('LBL_MORE')}}</span></button>

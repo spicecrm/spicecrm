@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Injector, Input, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
@@ -11,6 +11,14 @@ import {configurationService} from "../../services/configuration.service";
 import {toast} from "../../services/toast.service";
 import {session} from "../../services/session.service";
 import {helper} from "../../services/helper.service";
+import {backend} from "../../services/backend.service";
+import {modelutilities} from "../../services/modelutilities.service";
+import {Router} from "@angular/router";
+import {broadcast} from "../../services/broadcast.service";
+import {metadata} from "../../services/metadata.service";
+import {recent} from "../../services/recent.service";
+import {modal} from "../../services/modal.service";
+import {navigation} from "../../services/navigation.service";
 
 /**
  * @ignore
@@ -28,6 +36,11 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
     @Input() private parentModule: string = '';
     @Input() private parentId: string = '';
     private componentconfig: any = {};
+    private uploadData: any = {
+        fileName: '',
+        uploading: false,
+        progress: undefined
+    };
     private displayaggregates = {
         Activities: false,
         History: false
@@ -38,8 +51,17 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 private activitiyTimeLineService: activitiyTimeLineService,
                 private configurationService: configurationService,
                 private session: session,
+                private backend: backend,
                 private helper: helper,
-                private toast: toast) {
+                private toast: toast,
+                private broadcast: broadcast,
+                public metadata: metadata,
+                public utils: modelutilities,
+                private recent: recent,
+                private router: Router,
+                private modal: modal,
+                private navigation: navigation,
+                public injector: Injector) {
 
     }
 
@@ -96,20 +118,21 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
     private handleDroppedFiles(files: FileList) {
         let msgFiles = [];
         for (let file in files) {
-            if (files.hasOwnProperty(file) && files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.msg') {
-                msgFiles.push(files[file]);
-            }
+            if (files.hasOwnProperty(file)) msgFiles.push(files[file]);
         }
         if (msgFiles.length > 0) {
+            this.uploadData.uploading = true;
             this.addEmailsFromMsgFiles(msgFiles).subscribe(
                 next => {
-                    console.log(next);
+                    this.uploadData.fileName = next.fileName;
+                    this.uploadData.progress = next.progress;
                 },
-                error => {
-                    console.log(error);
+                () => {
+                    this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
                 },
                 () => {
                     this.activitiyTimeLineService.getTimeLineData('History');
+                    this.uploadData.uploading = false;
                 }
             );
         }
@@ -135,20 +158,7 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [file.name, this.helper.humanFileSize(maxSize)]), 'error');
                 continue;
             }
-
-            let newfile = {
-                date: new moment(),
-                file: '',
-                file_mime_type: file.type ? file.type : 'application/octet-stream',
-                filesize: file.size,
-                filename: file.name,
-                id: '',
-                text: '',
-                thumbnail: '',
-                user_id: '1',
-                user_name: 'admin',
-                uploadprogress: 0
-            };
+            let isMsgFile = file.name.substring(file.name.length - 4).toLowerCase() == '.msg';
 
             this.readFile(file).subscribe(filecontent => {
                 let request = new XMLHttpRequest();
@@ -156,7 +166,11 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 request.onreadystatechange = (scope: any = this) => {
                     if (request.readyState == 4) {
                         try {
-                            retSub.complete();
+                            if (!isMsgFile) {
+                                this.addNewNote(file.name, retSub);
+                            } else {
+                                retSub.complete();
+                            }
                         } catch (e) {
                             resp = {
                                 status: "error",
@@ -167,10 +181,20 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 };
 
                 request.upload.addEventListener("progress", e => {
-                    newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
-                    retSub.next({progress: {total: e.total, loaded: e.loaded}});
+                    retSub.next({
+                        progress: Math.round(e.loaded / e.total * 100),
+                        fileName: file.name,
+                        isMsg: isMsgFile
+                    });
                 }, false);
-                let url = this.configurationService.getBackendUrl() + "/module/Emails/msg";
+
+                let url = this.configurationService.getBackendUrl() + '/module/Notes/' + this.model.id + '/noteattachment';
+
+                // change the url to the "add email" url if the file type is msg
+                if (isMsgFile) {
+                    url = this.configurationService.getBackendUrl() + "/module/Emails/msg";
+                }
+
                 request.open("POST", url, true);
                 request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
                 request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -210,5 +234,47 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
         };
         reader.readAsDataURL(file);
         return responseSubject.asObservable();
+    }
+
+    /*
+    * create a new instance of the model service to handle adding a new note
+    * fill in the necessary field and add the note
+    * complete the upload process to refresh the history list
+    * @param fileName
+    * @param fileRetrieveSubject
+    */
+    private addNewNote(fileName, fileRetrieveSubject) {
+        if (!fileName || fileName.length == 0) return;
+
+        let noteModelInstance = new model(
+            this.backend,
+            this.broadcast,
+            this.metadata,
+            this.utils,
+            this.session,
+            this.recent,
+            this.router,
+            this.toast,
+            this.language,
+            this.modal,
+            this.navigation,
+            this.configurationService,
+            this.injector
+        );
+        noteModelInstance.module = 'Notes';
+        noteModelInstance.initialize(this.activitiyTimeLineService.parent);
+        noteModelInstance.startEdit(false);
+        noteModelInstance.setField('name', fileName);
+        noteModelInstance.setField('filename', fileName);
+        noteModelInstance.save(true).subscribe(
+            () => {
+                fileRetrieveSubject.complete();
+                noteModelInstance = null;
+            },
+            () => {
+                fileRetrieveSubject.complete();
+                noteModelInstance = null;
+            }
+        );
     }
 }
