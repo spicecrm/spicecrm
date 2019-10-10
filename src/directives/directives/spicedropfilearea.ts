@@ -2,6 +2,7 @@
  * @module directives
  */
 import {Directive, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
+import {language} from "../../services/language.service";
 
 /**
  * highlights the wrapped element to notify that this element is draggable and emit the dropped files
@@ -12,7 +13,7 @@ import {Directive, ElementRef, EventEmitter, Input, Output, Renderer2} from '@an
 export class SpiceDropFileArea {
 
     @Output() public filesDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
-    @Input() private dropMessage: string = 'Drop Here';
+    @Input() private dropMessage: string;
     private overlayElement: HTMLElement;
     private dragStartListener: any;
     private dragEnterListener: any;
@@ -26,6 +27,7 @@ export class SpiceDropFileArea {
     constructor(
         private renderer: Renderer2,
         private elementRef: ElementRef,
+        private language: language,
     ) {
         this.defineOverlayElement();
         this.listenWindowEvents();
@@ -61,7 +63,7 @@ export class SpiceDropFileArea {
         this.renderer.setStyle(this.overlayElement, 'background', 'rgba(135,135,135,0.8)');
         this.renderer.setStyle(this.overlayElement, 'color', '#fff');
         this.renderer.setStyle(this.overlayElement, 'border', 'dashed 2px #fff');
-        this.renderer.setProperty(this.overlayElement, 'textContent', this.dropMessage);
+        this.renderer.setProperty(this.overlayElement, 'textContent', this.language.getLabel('LBL_DROP_FILES'));
         this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
 
         // set relative position to the reference
