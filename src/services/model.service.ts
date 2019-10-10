@@ -152,6 +152,11 @@ export class model implements OnDestroy {
      */
     public duplicates: any[] = [];
 
+    /**
+     * the coiunt for the toal duplicates found
+     */
+    public duplicatecount: number = 0;
+
     private modelRegisterId: number;
 
     constructor(
@@ -1065,7 +1070,9 @@ export class model implements OnDestroy {
                 // do the check
                 this.duplicateCheck(true).subscribe(
                     duplciates => {
-                        this.duplicates = duplciates;
+                        this.duplicates = duplciates.records;
+                        this.duplicatecount = duplciates.count;
+
                         retSubject.next(true);
                         retSubject.complete();
                     },
