@@ -38,6 +38,7 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
     private componentconfig: any = {};
     private uploadData: any = {
         fileName: '',
+        fileIcon: {},
         uploading: false,
         progress: undefined
     };
@@ -63,6 +64,16 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 private navigation: navigation,
                 public injector: Injector) {
 
+    }
+
+    get progressBarStyle() {
+        return {
+            width: (this.uploadData.progress || 0) + '%'
+        };
+    }
+
+    get maxSize() {
+        return this.configurationService.getSystemParamater('upload_maxsize');
     }
 
     /**
@@ -117,15 +128,33 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
     */
     private handleDroppedFiles(files: FileList) {
         let msgFiles = [];
+        let noteFiles = [];
         for (let file in files) {
-            if (files.hasOwnProperty(file)) msgFiles.push(files[file]);
+            if (files.hasOwnProperty(file)) {
+                if (this.fileSizeExceeded(files[file])) {
+                    this.toast.sendToast(
+                        this.language.getLabelFormatted(
+                            'LBL_EXCEEDS_MAX_UPLOADFILESIZE',
+                            [files[file].name, this.helper.humanFileSize(this.maxSize)]),
+                        'error'
+                    );
+                } else {
+                    // push the files to the appropriate arrays
+                    if (files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.msg') {
+                        msgFiles.push(files[file]);
+                    } else {
+                        noteFiles.push(files[file]);
+                    }
+                }
+            }
         }
         if (msgFiles.length > 0) {
             this.uploadData.uploading = true;
-            this.addEmailsFromMsgFiles(msgFiles).subscribe(
+            this.uploadFiles(msgFiles, this.model.module, this.model.id).subscribe(
                 next => {
                     this.uploadData.fileName = next.fileName;
                     this.uploadData.progress = next.progress;
+                    this.setFileIcon(next.fileName, next.fileType);
                 },
                 () => {
                     this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
@@ -136,6 +165,8 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                 }
             );
         }
+
+        if (noteFiles.length > 0) this.addNotesFromFiles(noteFiles);
     }
 
     /*
@@ -143,34 +174,22 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
     * @param files
     * @return Observable
     */
-    private addEmailsFromMsgFiles(files): Observable<any> {
+    private uploadFiles(files, moduleName, moduleId): Observable<any> {
         if (files.length === 0) {
             return;
         }
 
         let retSub = new Subject<any>();
-        let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
 
         for (let file of files) {
 
-            // check max filesize
-            if (maxSize && file.size > maxSize) {
-                this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [file.name, this.helper.humanFileSize(maxSize)]), 'error');
-                continue;
-            }
-            let isMsgFile = file.name.substring(file.name.length - 4).toLowerCase() == '.msg';
-
-            this.readFile(file).subscribe(filecontent => {
+            this.readFile(file).subscribe(() => {
                 let request = new XMLHttpRequest();
                 let resp: any = {};
                 request.onreadystatechange = (scope: any = this) => {
                     if (request.readyState == 4) {
                         try {
-                            if (!isMsgFile) {
-                                this.addNewNote(file.name, retSub);
-                            } else {
-                                retSub.complete();
-                            }
+                            retSub.complete();
                         } catch (e) {
                             resp = {
                                 status: "error",
@@ -184,16 +203,15 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                     retSub.next({
                         progress: Math.round(e.loaded / e.total * 100),
                         fileName: file.name,
-                        isMsg: isMsgFile
+                        fileType: file.type
+
                     });
                 }, false);
 
-                let url = this.configurationService.getBackendUrl() + '/module/Notes/' + this.model.id + '/noteattachment';
+                let url = this.configurationService.getBackendUrl() + `/module/Notes/${moduleId}/noteattachment`;
 
                 // change the url to the "add email" url if the file type is msg
-                if (isMsgFile) {
-                    url = this.configurationService.getBackendUrl() + "/module/Emails/msg";
-                }
+                if (moduleName != 'Notes') url = this.configurationService.getBackendUrl() + "/module/Emails/msg";
 
                 request.open("POST", url, true);
                 request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
@@ -203,8 +221,8 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
                     file: file.filecontent,
                     filename: file.name,
                     filemimetype: file.type ? file.type : 'application/octet-stream',
-                    beanId: this.model.id,
-                    beanModule: this.model.module
+                    beanId: moduleId,
+                    beanModule: moduleName
                 };
 
                 request.send(JSON.stringify(fileBody));
@@ -223,7 +241,7 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
         let responseSubject = new Subject<any>();
         let reader: any = new FileReader();
         reader.file = file;
-        reader.onloadend = (e) => {
+        reader.onloadend = () => {
             let filecontent = reader.result.toString();
             filecontent = filecontent.substring(filecontent.indexOf('base64,') + 7);
 
@@ -237,14 +255,10 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
     }
 
     /*
-    * create a new instance of the model service to handle adding a new note
-    * fill in the necessary field and add the note
-    * complete the upload process to refresh the history list
-    * @param fileName
-    * @param fileRetrieveSubject
+    * create a new instance of the model service and pass it to the add note handler
+    * @param files
     */
-    private addNewNote(fileName, fileRetrieveSubject) {
-        if (!fileName || fileName.length == 0) return;
+    private addNotesFromFiles(files) {
 
         let noteModelInstance = new model(
             this.backend,
@@ -261,20 +275,78 @@ export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
             this.configurationService,
             this.injector
         );
-        noteModelInstance.module = 'Notes';
-        noteModelInstance.initialize(this.activitiyTimeLineService.parent);
-        noteModelInstance.startEdit(false);
-        noteModelInstance.setField('name', fileName);
-        noteModelInstance.setField('filename', fileName);
-        noteModelInstance.save(true).subscribe(
-            () => {
-                fileRetrieveSubject.complete();
-                noteModelInstance = null;
-            },
-            () => {
-                fileRetrieveSubject.complete();
-                noteModelInstance = null;
+        this.addNewNote(noteModelInstance, files);
+    }
+
+    /*
+    * recursive method to handle adding notes with their attachments synchronously one after another
+    * @param noteModel
+    * @param files
+    * @param currentIndex
+    */
+    private addNewNote(noteModel, files, currentIndex = 0) {
+        noteModel.reset();
+        noteModel.module = 'Notes';
+        noteModel.initialize(this.activitiyTimeLineService.parent);
+        noteModel.startEdit(false);
+        noteModel.setField('name', files[currentIndex].name);
+        noteModel.setField('filename', files[currentIndex].name);
+        noteModel.setField('file_mime_type', files[currentIndex].type ? files[currentIndex].type : 'application/octet-stream');
+        noteModel.save(true).subscribe(
+            res => {
+                this.uploadData.uploading = true;
+                this.uploadFiles([files[currentIndex]], noteModel.module, noteModel.id).subscribe(
+                    next => {
+                        this.uploadData.fileName = next.fileName;
+                        this.uploadData.progress = next.progress;
+                        this.setFileIcon(next.fileName, next.fileType);
+                    },
+                    () => {
+                        this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
+                    },
+                    () => {
+                        if ((currentIndex + 1) >= files.length) {
+                            this.activitiyTimeLineService.getTimeLineData('History');
+                            this.uploadData.uploading = false;
+                        } else {
+                            this.addNewNote(noteModel, files, currentIndex + 1);
+                        }
+                    }
+                );
+            }, () => this.addNewNote(noteModel, files, currentIndex + 1));
+    }
+
+    /*
+    * set the file icon for the upload progressbar
+    * @param fileName
+    * @param fileType
+    */
+    private setFileIcon(fileName, fileType) {
+        if (fileType == this.uploadData.fileIcon.fileType) return;
+        let icon = this.helper.determineFileIcon(fileType);
+        if (icon == 'unknown') {
+            let nameParts = fileName.split('.');
+            let type = nameParts.splice(-1, 1)[0];
+            if (type.toLowerCase() == 'msg') {
+                this.uploadData.fileIcon = {
+                    icon: 'email',
+                    sprite: 'standard',
+                    fileType: fileType
+                };
             }
-        );
+        }
+        this.uploadData.fileIcon = {
+            icon: icon,
+            sprite: 'doctype',
+            fileType: fileType
+        };
+    }
+
+    /*
+    * @param file
+    * @return boolean
+    */
+    private fileSizeExceeded(file) {
+        return this.maxSize && file.size > this.maxSize;
     }
 }

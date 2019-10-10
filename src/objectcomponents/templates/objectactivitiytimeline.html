@@ -29,11 +29,27 @@
         </h2>
         <object-activitiytimeline-summary-button></object-activitiytimeline-summary-button>
     </div>
-    <div class="slds-m-vertical--medium">
-        <system-progress-bar *ngIf="uploadData.uploading" [progress]="uploadData.progress">
-            {{language.getLabel('LBL_UPLOADING')}}:
-            <span class="slds-text-title_bold">{{uploadData.fileName}}</span>
-        </system-progress-bar>
+    <div *ngIf="uploadData.uploading" class="slds-m-vertical--medium slds-media">
+        <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
+            <system-icon [icon]="this.uploadData.fileIcon.icon" divClass="" [sprite]="this.uploadData.fileIcon.sprite"  size="'small'"></system-icon>
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small">
+                    <a href="javascript:void(0);">{{uploadData.fileName}}</a>
+                </h3>
+            </div>
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                <div class="slds-progress-bar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressBarStyle">
+                <span class="slds-assistive-text">Progress: 25%</span>
+            </span>
+                </div>
+                <div class="slds-text-align--right" style="width: 50px;">
+                    {{uploadData.progress}} %
+                </div>
+            </div>
+        </div>
     </div>
     <object-activitiytimeline-container module="History" [displayaggregates]="displayaggregates.History"></object-activitiytimeline-container>
     <div class="slds-grid slds-grid_align-end">
