@@ -1,7 +1,7 @@
 /**
  * @module directives
  */
-import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional} from '@angular/core';
+import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional, AfterViewInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {metadata} from "../../services/metadata.service";
@@ -11,6 +11,9 @@ import {model} from "../../services/model.service";
 
 @Directive({
     selector: '[modelPopOver]',
+    host:{
+        '[class.slds-text-link_faux]' : 'enablelink'
+    }
 })
 export class ModelPopOverDirective implements OnInit, OnDestroy {
     @Input() private module: string;
