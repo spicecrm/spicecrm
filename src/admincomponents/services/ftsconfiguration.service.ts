@@ -11,6 +11,7 @@ import {language} from "../../services/language.service";
 
 import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
+import {CdkDropList} from "@angular/cdk/drag-drop";
 
 @Injectable()
 export class ftsconfiguration {
@@ -18,6 +19,7 @@ export class ftsconfiguration {
     public moduleFtsFields: any = [];
     public moduleFtsSettings: any = {};
     public indexing: boolean = false;
+    public fieldsDropList: CdkDropList;
 
     constructor(
         private backend: backend,
