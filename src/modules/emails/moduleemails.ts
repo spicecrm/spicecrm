@@ -18,6 +18,7 @@ import /*embed*/ {EmailToObjectModal} from "./components/emailtoobjectmodal";
 import /*embed*/ {EmailToObjectButton} from "./components/emailtoobjectbutton";
 import /*embed*/ {EmailPreviewModal} from "./components/emailpreviewmodal";
 import /*embed*/ {EmailMSGPreviewModal} from "./components/emailmsgpreviewmodal";
+import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import /*embed*/ {EmailMSGPreviewModal} from "./components/emailmsgpreviewmodal"
         EmailToObjectEmailText,
         EmailToObjectModal,
         EmailPreviewModal,
-        EmailMSGPreviewModal
+        EmailMSGPreviewModal,
+        EmailsPopoverBody
     ]
 })
 export class ModuleEmails {
