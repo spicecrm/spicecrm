@@ -1,12 +1,5 @@
 <div class="slds-grid">
-    <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
-        <div class="slds-select_container">
-            <select [disabled]="disabled"  class="slds-select" [(ngModel)]="_module">
-                <option value="*">*</option>
-                <option *ngFor="let thismodule of _modules" [value]="thismodule">{{thismodule}}</option>
-            </select>
-        </div>
-    </div>
+    <system-input-module class="slds-p-right--xxx-small slds-size--1-of-3" [(ngModel)]="_module" [displayAsterisk]="true"></system-input-module>
     <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
         <div class="slds-select_container">
             <select  [disabled]="!_module || disabled" class="slds-select" [(ngModel)]="actionset">
