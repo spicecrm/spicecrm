@@ -4,12 +4,9 @@
 import {Component} from '@angular/core';
 
 import {metadata} from '../../services/metadata.service';
-import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-
 
 @Component({
     selector: 'administration-ftsmanager-fields-add',
@@ -21,106 +18,25 @@ export class AdministrationFTSManagerFieldsAdd {
     public self: any = {};
     public fields: any[] = [];
     public dragPlaceHolderNode: Node;
-    public ConnectedToDragLists: any[] = ['administration-fts-manager-field-add-drag-table'];
-    public ConnectedToDropLists: any[] = ['administration-fts-manager-field-add-drop-table'];
     /**
      * array with the fields for the module of the current selected node
      */
     public nodefields: any[] = [];
     private path: any[] = [];
-    private selectedFields: any = {};
     /**
      * holds the path to the current selected tree node
      */
-    private nodepath: string = '';
+    private nodePath: string = '';
 
     constructor(private metadata: metadata,
                 private language: language,
                 private ftsconfiguration: ftsconfiguration,
-                private backend: backend,
-                private modelutilities: modelutilities) {
-        // this.getModuleFields(this.ftsconfiguration.module);
+                private backend: backend) {
     }
 
-    private chooseBreadcrumb(i) {
-        this.path = this.path.slice(0, i + 1);
-        this.getLinks();
-        this.getFields();
+    get fieldsDropList() {
+        return this.ftsconfiguration.fieldsDropList || '';
     }
-
-    private getLinks() {
-        this.links = [];
-        this.backend.getRequest('ftsmanager/core/nodes', {
-            node: 'root',
-            nodeid: this.buildNodeid()
-        }).subscribe(links => {
-            this.links = links;
-        });
-    }
-
-    private setLink(link) {
-        this.path.push(link);
-        this.getLinks();
-        this.getFields();
-    }
-
-    private getFields() {
-        this.fields = [];
-        this.backend.getRequest('ftsmanager/core/fields', {nodeid: this.buildNodeid()}).subscribe(fields => {
-            let nodeid = this.buildNodeid();
-            for (let field of fields) {
-                if (this.ftsconfiguration.searchPath(nodeid + '::field:' + field.name)) {
-                    field.exists = true;
-                }
-
-                this.fields.push(field);
-            }
-        });
-    }
-
-    private buildNodeid() {
-        let nodeArray = [];
-        for (let path of this.path) {
-            nodeArray.push(path.path);
-        }
-        return nodeArray.join('::');
-    }
-
-    private getFieldLabel(field) {
-        let path = this.path[this.path.length - 1].path.split(':');
-        return this.language.getFieldDisplayName(path[1], field);
-    }
-
-    private selectField(field) {
-        if (this.selectedFields[this.buildNodeid() + '::field:' + field.name]) {
-            delete (this.selectedFields[this.buildNodeid() + '::field:' + field.name]);
-        } else {
-            let displaypath = '';
-            for (let path of this.path) {
-                if (displaypath != '') displaypath += '->';
-                displaypath += path.module;
-            }
-            field.displaypath = displaypath;
-            field.fieldname = field.name;
-            field.name = this.getFieldLabel(field.name);
-
-            this.selectedFields[this.buildNodeid() + '::field:' + field.fieldname] = field;
-        }
-    }
-
-    private fieldSelected(fieldname) {
-        return !!this.selectedFields[this.buildNodeid() + '::field:' + fieldname];
-    }
-
-
-    private canSave() {
-        let itemcount = 0;
-        for (let field in this.selectedFields) {
-            itemcount++;
-        }
-        return itemcount > 0;
-    }
-
 
     /**
      * close the modal
@@ -130,45 +46,12 @@ export class AdministrationFTSManagerFieldsAdd {
     }
 
     /**
-     * save the settings
-     */
-    private save() {
-        for (let field in this.selectedFields) {
-            if (!this.selectedFields.hasOwnProperty(field)) continue;
-            let fieldid = this.modelutilities.generateGuid();
-
-            let fieldpath = '';
-            let fieldpathitems = field.split('::');
-            for (let fieldpathitem of fieldpathitems) {
-                let fieldpathitemelements = fieldpathitem.split(':');
-                if (fieldpathitemelements && fieldpathitemelements.length === 3) {
-                    fieldpath += fieldpathitemelements[2] + '->';
-                }
-            }
-
-            this.ftsconfiguration.moduleFtsFields.push({
-                id: fieldid,
-                fieldid: fieldid,
-                fieldname: this.selectedFields[field].fieldname,
-                name: this.selectedFields[field].name,
-                indexfieldname: fieldpath + this.selectedFields[field].fieldname,
-                displaypath: this.selectedFields[field].displaypath,
-                path: field,
-                search: true,
-                indextype: 'string',
-                index: 'analyzed'
-            });
-        }
-        this.self.destroy();
-    }
-
-    /**
      * triggered when an item in the tree is selected
      *
      * @param eventData
      */
     private itemSelected(eventData) {
-        this.nodepath = eventData.path;
+        window.setTimeout(()=> this.nodePath = eventData.path);
         this.getModuleFields(eventData.module);
     }
 
@@ -185,26 +68,6 @@ export class AdministrationFTSManagerFieldsAdd {
         });
     }
 
-
-    private rightDrop(dragEvent: CdkDragDrop<any>) {
-        this.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
-        if (dragEvent.previousContainer === dragEvent.container) {
-            moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
-        } else {
-            let field = dragEvent.item.data;
-            let id = this.modelutilities.generateGuid();
-            let newItem = {
-                id: id,
-                fieldid: id,
-                fieldname: field.name,
-                indexfieldname: field.name,
-                name: field.label,
-                path: this.nodepath + '::' + field.id
-            };
-
-            this.ftsconfiguration.moduleFtsFields.splice(dragEvent.currentIndex, 0, newItem);
-        }
-    }
 
     private dropExited(e) {
         let tr = document.createElement('tr');
@@ -239,15 +102,6 @@ export class AdministrationFTSManagerFieldsAdd {
      */
     private trackByFn(i, item) {
         return item.id;
-    }
-
-    /**
-     * deletes the record with the given index
-     *
-     * @param index index of the row
-     */
-    private deleteField(index) {
-        this.ftsconfiguration.moduleFtsFields.splice(index, 1);
     }
 }
 
