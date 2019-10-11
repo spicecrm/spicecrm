@@ -19,7 +19,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody cdkDropList (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="ConnectedToDropLists" id="administration-fts-manager-field-add-drag-table">
+                        <tbody cdkDropList #dragList="cdkDropList" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="[fieldsDropList]">
                             <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of nodefields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
                                 <td class="slds-p-around--none">
                                     <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
@@ -35,45 +35,8 @@
                     </table>
                 </div>
             </div>
-            <div cdkDropList [cdkDropListData]="ftsconfiguration.moduleFtsFields" [cdkDropListConnectedTo]="ConnectedToDragLists" (cdkDropListDropped)="rightDrop($event)" id="administration-fts-manager-field-add-drop-table" class="slds-size--2-of-3 slds-border--left slds-scrollable" style="height: 100%;">
-                <table class="slds-table slds-table--cell-buffer">
-                    <thead>
-                        <tr class="slds-text-title--caps slds-theme--shade">
-                            <th class="slds-cell-shrink"></th>
-                            <th>
-                                <div class="slds-truncate">{{language.getLabel('LBL_PATH')}}</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
-                            </th>
-                            <th class="slds-cell-shrink"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr cdkDrag [cdkDragData]="field" cdkDragBoundary="#administration-fts-manager-field-add-drop-table" class="slds-border--bottom slds-drag--preview" *ngFor="let field of ftsconfiguration.moduleFtsFields; let i = index" >
-                        <td class="slds-p-around--none">
-                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
-                        </td>
-                        <td>
-                            <div class="slds-truncate">{{field.path}}</div>
-                        </td>
-                        <td data-label="Account Name">
-                            <div class="slds-truncate">{{field.fieldname}}</div>
-                        </td>
-                        <td data-label="Account Name">
-                            <div class="slds-truncate">{{language.getLabel(field.name)}}</div>
-                        </td>
-                        <td class="slds-cell-shrink">
-                            <button class="slds-button slds-button--icon" (click)="deleteField(i)">
-                            <system-button-icon icon="close"></system-button-icon>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="slds-size--2-of-3" style="height: 100%">
+                <administration-ftsmanager-fields-list style="display: block; height: 100%" class="slds-scrollable--y" [dragPlaceHolderNode]="dragPlaceHolderNode" [nodePath]="nodePath" [dragList]="dragList"></administration-ftsmanager-fields-list>
             </div>
         </div>
     </system-modal-content>

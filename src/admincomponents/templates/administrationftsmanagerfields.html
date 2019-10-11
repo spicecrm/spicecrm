@@ -1,35 +1,13 @@
 <div class="slds-grid">
-    <div class="slds-size--1-of-2 slds-p-right--x-small">
-        <!--h2 class="slds-p-vertical--x-small">
-            <span class="slds-text-heading--small">indexed Fields</span>
-        </h2-->
-        <table class="slds-table slds-table--cell-buffer">
-            <thead>
-                <tr class="slds-text-title--caps slds-theme--shade slds-border--bottom">
-                    <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
-                    </th>
-                    <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="slds-border--bottom" *ngFor="let moduleFtsField of moduleFtsFields" (click)="selectField(moduleFtsField.id)" [ngClass]="{'slds-theme--shade': moduleFtsField.id == currentfield}">
-                    <td>
-                        <div class="slds-truncate">{{moduleFtsField.path}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-truncate">{{moduleFtsField.name}}</div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="slds-p-around--small slds-text-align--center">
+    <div class="slds-size--1-of-2 slds-grid slds-grid--vertical" tobottom>
+        <div class="slds-grow slds-scrollable--y" style="height: inherit">
+            <administration-ftsmanager-fields-list style="display: block; height: inherit" (selectListField)="selectField($event)" [selectedField]="currentfield"></administration-ftsmanager-fields-list>
+        </div>
+        <div class="slds-p-around--small slds-text-align--center slds-theme--shade">
             <a href="javascript:void(0)" (click)="showAddFields()">Add Fields</a>
         </div>
     </div>
-    <div class="slds-size--1-of-2">
+    <div class="slds-size--1-of-2 slds-border--left slds-p-left--x-small" tobottom>
         <div *ngIf="currentfield; else selectfield">
             <h2 class="slds-text-heading--small slds-p-vertical--x-small">Field Details:
                 {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
