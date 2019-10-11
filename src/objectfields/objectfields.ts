@@ -107,6 +107,7 @@ import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
 import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
 import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
 import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
+import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
 
 /**
 * @ignore
@@ -220,7 +221,8 @@ declare var _: any;
         fieldIconPopover,
         fieldStylesheetID,
         fieldUnitsOfMeasure,
-        fieldQuantity
+        fieldQuantity,
+        fieldQuestionnaireEvaluation
     ],
     exports: [
         fieldSet,
