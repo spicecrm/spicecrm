@@ -21,7 +21,7 @@ import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
 import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
 import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttileclose';
 
-import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
+
 
 import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
 import /*embed*/ {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
@@ -51,7 +51,6 @@ import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactiv
         TasksManagerTask,
         TasksManagerTaskDetails,
         TasksAssitantTileClose,
-        EmailsPopoverBody,
         ActionActivityCloseButton,
         ActionActivityCloseCreateButton,
         ActivityCloseModal,
