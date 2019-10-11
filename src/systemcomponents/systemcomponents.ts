@@ -60,6 +60,7 @@ import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
 import /*embed*/ {SystemInputFieldset} from "./components/systeminputfieldset";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
+import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
@@ -169,6 +170,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemInputDelayed,
         SystemInputFieldset,
         SystemInputLabel,
+        SystemInputModule,
         SystemInputModuleFilter,
         SystemInputNumber,
         SystemInputRadio,
@@ -257,6 +259,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemInputDelayed,
         SystemInputFieldset,
         SystemInputLabel,
+        SystemInputModule,
         SystemInputModuleFilter,
         SystemInputNumber,
         SystemInputRadio,
