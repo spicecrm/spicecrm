@@ -78,7 +78,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         }
     }
 
-    get parentTypes(): Array<string> {
+    get parentTypes(): string[] {
         let parenttypes = ['Contacts', 'Accounts', 'Leads'];
 
         if (this.fieldconfig.parenttypes) {
@@ -109,6 +109,17 @@ export class fieldParent extends fieldGeneric implements OnInit {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.closePopups();
+        }
+    }
+
+    /**
+     * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
+     */
+    get link() {
+        try {
+            return this.view.displayLinks;
+        } catch (e) {
+            return false;
         }
     }
 
@@ -172,9 +183,11 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
 
+    /*
     private goParent() {
         this.router.navigate(['/module/' + this.model.getField(this.parentTypeField) + '/' + this.model.getField(this.parentIdField)]);
     }
+    */
 
     private searchWithModal() {
         this.parentSearchOpen = false;
@@ -183,7 +196,11 @@ export class fieldParent extends fieldGeneric implements OnInit {
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
                 if (items.length) {
-                    this.setParent({'id': items[0].id, 'text': items[0].summary_text, 'data': items[0]});
+                    this.setParent({
+                        id: items[0].id,
+                        text: items[0].summary_text,
+                        data: items[0]
+                    });
                 }
             });
             selectModal.instance.searchTerm = this.parentSearchTerm;
