@@ -5,6 +5,6 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" (click)="next()">{{language.getLabel('LBL_CONTINUE')}}</button>
+        <button class="slds-button slds-button--brand" [disabled]="!canContinue" (click)="next()">{{language.getLabel('LBL_CONTINUE')}}</button>
     </system-modal-footer>
 </system-modal>
