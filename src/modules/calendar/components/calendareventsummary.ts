@@ -17,6 +17,7 @@ declare var moment: any;
 
 })
 export class CalendarEventSummary {
+    @Input("hasDarkColor") private hasDarkColor: boolean = true;
     @Input("ismulti") private isMulti: boolean = false;
     @Input("isabsence") private isAbsence: boolean = false;
     @Input("isschedulesheet") private isScheduleSheet: boolean = false;
@@ -32,6 +33,6 @@ export class CalendarEventSummary {
     * @return class
     */
     private getTextClass() {
-        return !this.isScheduleSheet ? "slds-text-color--inverse" : '';
+        return !this.isScheduleSheet && this.hasDarkColor ? 'slds-text-color--inverse' : '';
     }
 }

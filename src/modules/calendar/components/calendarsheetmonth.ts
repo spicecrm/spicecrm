@@ -39,16 +39,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @ViewChild('boxcontainer', {read: ViewContainerRef, static: true}) private boxContainer: ViewContainerRef;
-    @ViewChild('morecontainer', {read: ViewContainerRef, static: true}) private moreContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
-    private maxEventsPerBox: number = 1;
-    private resizeHandler: any = {};
     private ownerEvents: any[] = [];
     private otherEvents: any[] = [];
     private userEvents: any[] = [];
@@ -62,7 +58,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private cdr: ChangeDetectorRef,
                 private calendar: calendar) {
-        this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
     }
 
     get allEvents() {
@@ -73,8 +68,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         return !this.calendar.isMobileView ? 25 : 20;
     }
 
+    get maxEventsPerBox() {
+        let boxContainerHeight = this.calendarsheet ? this.calendarsheet.element.nativeElement.clientHeight / this.currentGrid.length : undefined;
+        return boxContainerHeight ? Math.floor((boxContainerHeight - (this.offsetHeight * 2)) / this.eventHeight) : 1;
+    }
+
     public ngAfterViewInit() {
-        this.setMaxEvents();
         this.cdr.detectChanges();
     }
 
@@ -97,9 +96,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.cdr.detach();
-        if (this.resizeHandler) {
-            this.resizeHandler();
-        }
     }
 
     private trackByFn(index, item) {
@@ -117,12 +113,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private endDate() {
         return new moment(this.startDate()).endOf('month');
     }
-
-    private setMaxEvents() {
-        let boxContainerHeight = this.boxContainer.element.nativeElement.clientHeight;
-        this.maxEventsPerBox = Math.floor((boxContainerHeight - (this.offsetHeight * 2)) / this.eventHeight);
-    }
-
     private getSheetDays(): any[] {
         let sheetDays = [];
         let i = 0;
@@ -243,6 +233,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 if (!event.hasOwnProperty("weeksI")) {
                     event.weeksI = [];
                 }
+                // tslint:disable-next-line:prefer-for-of
                 for (let d = 0; d < this.currentGrid[w].length; d++) {
                     let day = this.currentGrid[w][d];
                     for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
