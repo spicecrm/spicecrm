@@ -16,6 +16,7 @@ import /*embed*/ {fieldSet} from './components/fieldset';
 import /*embed*/ {field} from './components/field';
 import /*embed*/ {fieldBlank} from './components/fieldblank';
 import /*embed*/ {fieldLabel} from './components/fieldlabel';
+import /*embed*/ {fieldLabelPopover} from './components/fieldlabelpopover';
 import /*embed*/ {fieldContainer} from './components/fieldcontainer';
 import /*embed*/ {fieldGenericDisplay} from './components/fieldgenericdisplay';
 import /*embed*/ {fieldText} from './components/fieldtext';
@@ -130,6 +131,7 @@ declare var _: any;
         fieldBlank,
         fieldNotAuthorized,
         fieldLabel,
+        fieldLabelPopover,
         fieldContainer,
         fieldGeneric,
         fieldGenericDisplay,
