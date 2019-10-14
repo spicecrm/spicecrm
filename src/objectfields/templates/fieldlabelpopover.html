@@ -1,0 +1,12 @@
+<div class="slds-is-fixed slds-popover slds-nubbin_left-top" role="dialog" [ngStyle]="popoverStyle">
+    <button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="close()">
+        <system-button-icon icon="close"></system-button-icon>
+    </button>
+    <header class="slds-popover__header">
+        <h2 class="slds-text-heading_small">{{fieldlabel}}</h2>
+    </header>
+    <div class="slds-popover__body">
+        fieldname: {{fieldname}}
+        fieldtype:
+    </div>
+</div>
