@@ -164,7 +164,7 @@ export class fts {
 
             // sort by releveance
             this.moduleSearchresults.sort((x, y) => {
-                return y.data.max_score - x.data.max_score;
+                return parseFloat(y.data.max_score) > parseFloat(x.data.max_score) ? 1 : -1;
             });
 
             // set the last parameters
