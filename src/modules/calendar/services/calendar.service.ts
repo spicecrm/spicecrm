@@ -180,7 +180,7 @@ export class calendar implements OnDestroy {
     * @param isOther
     * @return events
     */
-    public loadEvents(start, end, calendar = this.owner, isOther = false) {
+    public loadEvents(start, end, calendar = this.owner, isOther = false, users?) {
         if (this.doReload(start, end, calendar)) {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
