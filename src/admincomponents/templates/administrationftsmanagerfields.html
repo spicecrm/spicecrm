@@ -11,224 +11,217 @@
         <div *ngIf="currentfield; else selectfield">
             <h2 class="slds-text-heading--small slds-p-vertical--x-small">Field Details:
                 {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Name</label>
-                <system-input-label [(ngModel)]="fieldDetails.name"></system-input-label>
-                <!--div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.name"/>
-                </div-->
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Indexed Name</label>
+            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                <legend class="slds-form-element__legend slds-form-element__label">Index Params</legend>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.indexfieldname"/>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">IndexType</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DATATYPE')"></system-icon-help-text>
-
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="fieldDetails.indextype">
-                            <option value=''></option>
-                            <option value='string'>string</option>
-                            <option value='text'>text</option>
-                            <option value='keyword'>keyword</option>
-                            <option value='date'>date</option>
-                            <option value='double'>double</option>
-                            <option value='parentid'>parentid</option>
-                            <option value='activitydate'>activitydate</option>
-                        </select>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Indexed Name</label>
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" [(ngModel)]="fieldDetails.indexfieldname"/>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Aggregate</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE')"></system-icon-help-text>
-
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="fieldDetails.aggregate">
-                            <option value=''></option>
-                            <option value='term'>Term</option>
-                            <option value='range'>Range</option>
-                            <option value='datew'>Date Week</option>
-                            <option value='datem'>Date Month</option>
-                            <option value='dateq'>Date Quarter</option>
-                            <option value='datey'>Date Year</option>
-                        </select>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Name</label>
+                        <system-input-label [(ngModel)]="fieldDetails.name"></system-input-label>
                     </div>
-                </div>
-            </div>
-            <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
-                <label class="slds-form-element__label">Aggregate Params</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">IndexType</label>
+                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DATATYPE')"></system-icon-help-text>
 
-                <div class="slds-form-element__control">
-                    <textarea class="slds-textarea" [(ngModel)]="aggregateaddparams"></textarea>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Aggregate Size</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SIZE')"></system-icon-help-text>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="fieldDetails.indextype">
+                                    <option value=''></option>
+                                    <option value='string'>string</option>
+                                    <option value='text'>text</option>
+                                    <option value='keyword'>keyword</option>
+                                    <option value='date'>date</option>
+                                    <option value='double'>double</option>
+                                    <option value='parentid'>parentid</option>
+                                    <option value='activitydate'>activitydate</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatesize"/>
                 </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Aggregate Priority</label>
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatepriority"/>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Boost</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_BOOST')"></system-icon-help-text>
-
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.boost"/>
-                </div>
-            </div>
-            <div class="slds-form-element slds-m-top--x-small">
-                <div class="slds-form-element__control">
-                <span class="slds-checkbox">
-                  <input type="checkbox" name="options" id="enablesort" [(ngModel)]="fieldDetails.enablesort"/>
-                  <label class="slds-checkbox__label" for="enablesort">
-                    <span class="slds-checkbox--faux"></span>
-                    <span class="slds-form-element__label">Sort</span>
-                  </label>
-                  <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SORT')"></system-icon-help-text>
-                </span>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                <span class="slds-checkbox">
-                  <input type="checkbox" name="options" id="search" [(ngModel)]="fieldDetails.search"/>
-                  <label class="slds-checkbox__label" for="search">
-                    <span class="slds-checkbox--faux"></span>
-                    <span class="slds-form-element__label">Search</span>
-                  </label>
-                  <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SEARCH')"></system-icon-help-text>
-                </span>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                <span class="slds-checkbox">
-                  <input type="checkbox" name="options" id="emailfield" [(ngModel)]="fieldDetails.email"/>
-                  <label class="slds-checkbox__label" for="emailfield">
-                    <span class="slds-checkbox--faux"></span>
-                    <span class="slds-form-element__label">Email</span>
-                  </label>
-                  <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text>
-                </span>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                <span class="slds-checkbox">
-                  <input type="checkbox" name="options" id="duplicatecheck" [(ngModel)]="fieldDetails.duplicatecheck"/>
-                  <label class="slds-checkbox__label" for="duplicatecheck">
-                    <span class="slds-checkbox--faux"></span>
-                    <span class="slds-form-element__label">Duplicate Check</span>
-                  </label>
-                  <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_CHECK')"></system-icon-help-text>
-                </span>
-                </div>
-            </div>
-            <div *ngIf="fieldDetails.duplicatecheck" class="slds-grid slds-grid_vertical-align-center slds-gutters">
-                <div class="slds-col slds-size--1-of-2 slds-form-element">
-                    <label class="slds-form-element__label">Duplicate Query</label>
-                    <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_QUERY')"></system-icon-help-text>
-
-                    <div class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="fieldDetails.duplicatequery">
-                                <option value="">match (or)</option>
-                                <option value='match_and'>match (and)</option>
-                                <option value='term'>term</option>
-                            </select>
+                <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label">Boost</label>
+                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_BOOST')"></system-icon-help-text>
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" [(ngModel)]="fieldDetails.boost"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <system-checkbox [(ngModel)]="fieldDetails.enablesort">{{language.getLabel('LBL_SORT')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SORT')"></system-icon-help-text></system-checkbox>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <system-checkbox [(ngModel)]="fieldDetails.search">{{language.getLabel('LBL_SEARCH')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SEARCH')"></system-icon-help-text></system-checkbox>
                         </div>
                     </div>
                 </div>
-                <div class="slds-col slds-size--1-of-2 slds-form-element">
-                    <label class="slds-form-element__label">Duplicate Fuzziness</label>
-                    <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_FUZZINESS')"></system-icon-help-text>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
-                    </div>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Activity Type</label>
+            </fieldset>
+            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-p-right--x-small">
+                <legend class="slds-form-element__legend slds-form-element__label">Aggregate</legend>
                 <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="fieldDetails.activitytype">
-                            <option value='activityparentid'>activityparentid</option>
-                            <option value='activitydate'>activitydate</option>
-                            <option value='activityenddate'>activityenddate</option>
-                            <option value='activityenddate'>activityparticipant</option>
-                            <option value='activityenddate'>activitystatus</option>
-                        </select>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Aggregate</label>
+                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE')"></system-icon-help-text>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="fieldDetails.aggregate">
+                                    <option value=''></option>
+                                    <option value='term'>Term</option>
+                                    <option value='range'>Range</option>
+                                    <option value='datew'>Date Week</option>
+                                    <option value='datem'>Date Month</option>
+                                    <option value='dateq'>Date Quarter</option>
+                                    <option value='datey'>Date Year</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Analyzer</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ANALYZER') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
-                </system-icon-help-text>
+                    <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
+                        <label class="slds-form-element__label">Aggregate Params</label>
+                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>
 
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
-                            <option value=''>standard</option>
-                            <option value='spice_standard_all'>standard all charatcers</option>
-                            <option value='spice_ngram'>NGram</option>
-                            <option value='spice_ngram_all'>NGram all charatcers</option>
-                            <option value='spice_html'>HTML</option>
-                            <option value='spice_edgengram'>Edge NGram</option>
-                            <option value='spice_email'>email Address</option>
-                        </select>
+                        <div class="slds-form-element__control">
+                            <textarea class="slds-textarea" [(ngModel)]="aggregateaddparams"></textarea>
+                        </div>
+                    </div>
+                    <div class="slds-grid">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label">Aggregate Size</label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SIZE')"></system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatesize"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label">Aggregate Priority</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatepriority"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!--div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.analyzer"/>
-                </div-->
-            </div>
-            <div class="slds-form-element">
-                <label class="slds-form-element__label">Search Analyzer</label>
-                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
-                '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
-                </system-icon-help-text>
+            </fieldset>
+            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                <legend class="slds-form-element__legend slds-form-element__label">Analyzer</legend>
                 <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="fieldDetails.search_analyzer">
-                            <option value=''>standard</option>
-                            <option value='spice_standard_all'>standard all charatcers</option>
-                            <option value='spice_ngram'>NGram</option>
-                            <option value='spice_ngram_all'>NGram all charatcers</option>
-                            <option value='spice_html'>HTML</option>
-                            <option value='spice_edgengram'>Edge NGram</option>
-                            <option value='spice_email'>email Address</option>
-                        </select>
+                    <div class="slds-grid">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label">Analyzer</label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ANALYZER') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
+                            </system-icon-help-text>
+
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
+                                        <option value=''>standard</option>
+                                        <option value='spice_standard_all'>standard all charatcers</option>
+                                        <option value='spice_ngram'>NGram</option>
+                                        <option value='spice_ngram_all'>NGram all charatcers</option>
+                                        <option value='spice_html'>HTML</option>
+                                        <option value='spice_edgengram'>Edge NGram</option>
+                                        <option value='spice_email'>email Address</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label">Search Analyzer</label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
+                            </system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="fieldDetails.search_analyzer">
+                                        <option value=''>standard</option>
+                                        <option value='spice_standard_all'>standard all charatcers</option>
+                                        <option value='spice_ngram'>NGram</option>
+                                        <option value='spice_ngram_all'>NGram all charatcers</option>
+                                        <option value='spice_html'>HTML</option>
+                                        <option value='spice_edgengram'>Edge NGram</option>
+                                        <option value='spice_email'>email Address</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!--div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="fieldDetails.search_analyzer"/>
-                </div-->
-            </div>
+            </fieldset>
+            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                <legend class="slds-form-element__legend slds-form-element__label">Duplicate Settings</legend>
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <system-checkbox [(ngModel)]="fieldDetails.duplicatecheck">{{language.getLabel('LBL_DUPLICATE_CHECK')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_CHECK')"></system-icon-help-text></system-checkbox>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-col slds-size--1-of-2 slds-form-element">
+                            <label class="slds-form-element__label">Duplicate Query</label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_QUERY')"></system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select [disabled]="!fieldDetails.duplicatecheck" class="slds-select" [(ngModel)]="fieldDetails.duplicatequery">
+                                        <option value="">match (or)</option>
+                                        <option value='match_and'>match (and)</option>
+                                        <option value='term'>term</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size--1-of-2 slds-form-element">
+                            <label class="slds-form-element__label">Duplicate Fuzziness</label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_FUZZINESS')"></system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <input type="text" [disabled]="!fieldDetails.duplicatecheck" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                <legend class="slds-form-element__legend slds-form-element__label">Email Settings</legend>
+                <div class="slds-form-element__control">
+                    <system-checkbox [(ngModel)]="fieldDetails.email">{{language.getLabel('LBL_EMAIL_SEARCH')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text></system-checkbox>
+                </div>
+            </fieldset>
+            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                <legend class="slds-form-element__legend slds-form-element__label">Activities/History</legend>
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Activity Type</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="fieldDetails.activitytype">
+                                    <option value=''>---</option>
+                                    <option value='activityparentid'>activityparentid</option>
+                                    <option value='activitydate'>activitydate</option>
+                                    <option value='activityenddate'>activityenddate</option>
+                                    <option value='activityenddate'>activityparticipant</option>
+                                    <option value='activityenddate'>activitystatus</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
         </div>
         <ng-template #selectfield>
             <div class="slds-p-around--small slds-text-align--center">select a field</div>
