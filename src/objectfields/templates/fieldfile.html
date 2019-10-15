@@ -28,7 +28,7 @@
         </button>
     </div>
     <div *ngIf="!value" class="slds-file-selector slds-file-selector_files">
-        <div class="slds-file-selector__dropzone" (dragover)="preventdefault($event)" (dragleave)="preventdefault($event)" (drop)="onDrop($event)">
+        <div class="slds-file-selector__dropzone" spiceDropFileArea (filesDrop)="onDrop($event)">
             <input #fileupload type="file" class="slds-file-selector__input slds-assistive-text" [id]="fieldid"
                    (change)="uploadFile()">
             <label class="slds-file-selector__body" [attr.for]="fieldid">

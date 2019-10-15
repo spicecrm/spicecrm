@@ -13,6 +13,7 @@ import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
 import /*embed*/ {ACLTerritoriesNamePipe} from "./pipes/aclterritoriesname.pipe";
+import /*embed*/ {fieldTerritorySecondaryPipe} from "./pipes/aclterritoriesfieldssecondary.pipe";
 
 import /*embed*/ {ACLTerritorriesManager} from "./components/aclterritorriesmanager";
 import /*embed*/ {ACLTerritorriesManagerHeader} from './components/aclterritorriesmanagerheader';
@@ -38,7 +39,7 @@ import /*embed*/ {ACLObjectsManagerObjectTerritories} from "./components/aclobje
 import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/aclobjectsmanagerobjectterritoriesmodal";
 import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
 import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
-import /*embed*/ {fieldTerritorySecondary, fieldTerritorySecondaryPipe} from "./components/fieldterritorysecondary";
+import /*embed*/ {fieldTerritorySecondary} from "./components/fieldterritorysecondary";
 import /*embed*/ {fieldTerritoryRecent} from "./components/fieldterritoryrecent";
 import /*embed*/ {fieldTerritorySearchModal} from "./components/fieldterritorysearchmodal";
 

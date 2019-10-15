@@ -8,6 +8,7 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 import {modal} from "../../../services/modal.service";
+import {model} from "../../../services/model.service";
 
 /**
  * renders a modal that allws picking the basic paramaters for the salesdoc when adding a new sales document
@@ -28,7 +29,7 @@ export class SalesDocsAddBasics {
      */
     private fieldset: string = '';
 
-    constructor(private metadata: metadata, private language: language, private view: view, private modal: modal, private injector: Injector) {
+    constructor(private metadata: metadata, private language: language, private view: view, private modal: modal, private injector: Injector, private model: model) {
         // set the basics for the view
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -53,5 +54,12 @@ export class SalesDocsAddBasics {
         this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
             editModalRef.instance.model.isNew = true;
         });
+    }
+
+    /**
+     * only allow to continue when the salesdocztype is set
+     */
+    get canContinue() {
+        return this.model.getField('salesdoctype');
     }
 }

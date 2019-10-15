@@ -10,6 +10,7 @@ import {loader} from './loader.service';
 import {session} from './session.service';
 import {toast} from './toast.service';
 import {helper} from './helper.service';
+import {broadcast} from './broadcast.service';
 
 interface loginAuthDataIf {
     userName: string;
@@ -37,8 +38,10 @@ export class loginService {
         private loader: loader,
         private toast: toast,
         private helper: helper,
-        public session: session
-    ) { }
+        public session: session,
+        public broadcast: broadcast
+    ) {
+    }
 
     public login(): Observable<boolean> {
         // make sure we invalidate a session id cookie that might still be around
@@ -80,6 +83,7 @@ export class loginService {
                     let response = res;
                     this.session.authData.sessionId = response.id;
                     this.session.authData.userId = response.userid;
+                    this.session.authData.companycode_id = response.companycode_id;
                     this.session.authData.userName = response.user_name;
                     this.session.authData.userimage = response.user_image;
                     this.session.authData.first_name = response.first_name;
@@ -144,6 +148,10 @@ export class loginService {
         );
         this.session.endSession();
         this.loader.reset();
+
+        // broadcast that the user loged out
+        this.broadcast.broadcastMessage('logout');
+
         this.router.navigate(['/login']);
     }
 

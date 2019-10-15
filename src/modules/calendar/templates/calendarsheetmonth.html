@@ -6,7 +6,7 @@
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
     <ng-container *ngFor="let sheetWeek of currentGrid; let i = index; trackBy: trackByFnDate">
-        <div #boxcontainer *ngFor="let sheetDay of sheetWeek; let j = index; trackBy: trackByFn" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
+        <div *ngFor="let sheetDay of sheetWeek; let j = index; trackBy: trackByFn" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
             <div class="slds-p-around--xx-small" [style.height]="offsetHeight + 'px'">
                 <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
             </div>

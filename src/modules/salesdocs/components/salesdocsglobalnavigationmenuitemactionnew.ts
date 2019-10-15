@@ -23,9 +23,11 @@ export class SalesDocsGlobalNavigationMenuItemActionNew extends GlobalNavigation
     }
 
     public execute() {
+        let componentConfig = this.metadata.getComponentConfig('SalesdocsNewButton', this.model.module);
+
         this.model.id = "";
         this.model.initialize();
-        this.modal.openModal('SalesDocsAddBasics', true, this.injector);
+        this.modal.openModal(componentConfig.modalcomponent ? componentConfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
     }
 
 }
