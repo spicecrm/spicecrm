@@ -174,24 +174,17 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             return;
         }
 
-        for (let calendar of this.calendar.usersCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            event.start = this.resetTime(event.start);
-                            event.end = this.resetTime(event.end);
-                            this.userEvents.push(event);
-                            this.arrangeEvents();
-                        });
-                    }
-                });
-        }
+        this.calendar.loadUsersEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                        this.userEvents.push(event);
+                        this.arrangeEvents();
+                    });
+                }
+            });
     }
 
     private getOtherEvents() {
