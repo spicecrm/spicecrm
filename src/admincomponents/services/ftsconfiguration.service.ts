@@ -2,9 +2,6 @@
  * @module AdminComponentsModule
  */
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
 
@@ -12,6 +9,7 @@ import {language} from "../../services/language.service";
 import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
 import {CdkDropList} from "@angular/cdk/drag-drop";
+import {modal} from "../../services/modal.service";
 
 @Injectable()
 export class ftsconfiguration {
@@ -25,8 +23,10 @@ export class ftsconfiguration {
         private backend: backend,
         private metadata: metadata,
         private language: language,
+        private modal: modal,
         private toast: toast
-    ) {}
+    ) {
+    }
 
     public setModule(module) {
         this.module = module;
@@ -86,67 +86,50 @@ export class ftsconfiguration {
         return pathFound;
     }
 
-    public putMapping() {
-        this.indexing = true;
-        this.backend.deleteRequest('ftsmanager/' + this.module).subscribe(result => {
-            this.backend.postRequest('ftsmanager/' + this.module + '/map').subscribe(
-                result => {
-                    this.indexing = false;
-                }
-            );
+    public executeAction(action) {
+        let url = '';
+        let label = '';
+        switch (action) {
+            case 'index':
+                url = `ftsmanager/${this.module}/index`;
+                label = 'LBL_INDEX';
+                break;
+            case 'bulk':
+                url = `ftsmanager/${this.module}/index`;
+                label = 'LBL_INDEX_BULK';
+                break;
+            case 'init':
+                url = `ftsmanager/core/initialize`;
+                label = 'LBL_INITIALIZE';
+                break;
+            case 'reset':
+                url = `ftsmanager/${this.module}/resetindex`;
+                label = 'LBL_RESET';
+                break;
+            case 'put':
+                url = `ftsmanager/${this.module}/map`;
+                label = 'LBL_PUT_MAPPING';
+                break;
+        }
+
+        let params = action == 'bulk' ? {bulk: true} : {};
+        this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+            loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') +' '+ this.language.getLabel(label);
+            if (action == 'put') {
+                this.backend.deleteRequest('ftsmanager/' + this.module).subscribe(result => {
+                    this.backend.postRequest(url).subscribe(
+                        result => {
+                            loadingModalRef.instance.self.destroy();
+                        },
+                        error => loadingModalRef.instance.self.destroy()
+                    );
+                }, error => loadingModalRef.instance.self.destroy());
+            } else {
+                this.backend.postRequest(url, params).subscribe(
+                    result => loadingModalRef.instance.self.destroy(),
+                    error => loadingModalRef.instance.self.destroy()
+                );
+            }
         });
     }
-
-    public indexModule() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/' + this.module + '/index').subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
-    /**
-     * CR1000257
-     */
-    public indexModuleBulk() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/' + this.module + '/index', { bulk: true },).subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
-    public initialize() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/core/initialize').subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
-
-    public resetModule() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/' + this.module + '/resetindex').subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
 }
