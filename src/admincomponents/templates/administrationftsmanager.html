@@ -10,12 +10,11 @@
         </div>
     </div>
     <div class="slds-form-element slds-col--bump-left">
+        <button type="button" class="slds-button slds-button--neutral" (click)="initialize()">{{language.getLabel('LBL_INITIALIZE')}}</button>
         <div class="slds-button-group" role="group" *ngIf="!ftsconfiguration.indexing">
-            <button type="button" class="slds-button slds-button--neutral" (click)="initialize()">{{language.getLabel('LBL_INITIALIZE')}}</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="resetModule()">{{language.getLabel('LBL_RESET')}}</button>
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModule()">{{language.getLabel('LBL_INDEX')}}</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModuleBulk()">{{language.getLabel('LBL_INDEX_BULK')}}</button>
-            <button type="button" class="slds-button slds-button--brand" [disabled]="!module" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
     </div>
 </div>

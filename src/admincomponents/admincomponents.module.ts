@@ -29,6 +29,7 @@ import /*embed*/ { AdministrationFTSManagerFieldsList } from './components/admin
 import /*embed*/ { AdministrationFTSManagerDetails } from './components/administrationftsmanagerdetails';
 import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
 import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
+import /*embed*/ { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
 
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
 
@@ -89,7 +90,8 @@ export class AdministrationMain {}
         AdministrationSchedulerJobLog,
         AdministrationSchedulerRunButton,
         AdministrationSchedulerScheduleButton,
-        AdministrationSystemStats
+        AdministrationSystemStats,
+        AdministrationFtsManagerIndexModal
     ],
     entryComponents: [
         AdministrationMain,
