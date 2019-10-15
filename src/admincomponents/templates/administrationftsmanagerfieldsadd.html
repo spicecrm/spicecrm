@@ -7,6 +7,10 @@
                     <system-module-tree [module]="ftsconfiguration.module" (itemSelected)="itemSelected($event)"></system-module-tree>
                 </div>
                 <div class="slds-scrollable" style="height: 50%;">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" role="none">
+                        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                        <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="filterKey"/>
+                    </div>
                     <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                         <thead>
                             <tr class="slds-line-height_reset">
@@ -20,8 +24,8 @@
                             </tr>
                         </thead>
                         <tbody cdkDropList #dragList="cdkDropList" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="[fieldsDropList]">
-                            <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of nodefields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
-                                <td class="slds-p-around--none">
+                            <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of filteredNodeFields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
+                                <td class="slds-p-around--none slds-cell-shrink">
                                     <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
                                 </td>
                                 <td data-label="Account Name">
