@@ -92,7 +92,7 @@ export class ftsconfiguration {
         return pathFound;
     }
 
-    public executeAction(action) {
+    public executeAction(action, params?) {
         let url = '';
         let label = '';
         switch (action) {
@@ -114,19 +114,32 @@ export class ftsconfiguration {
                 break;
         }
 
-        let params = action == 'bulk' ? {bulk: true} : {};
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') +' '+ this.language.getLabel(label);
             if (action == 'reset') {
             this.save(false).subscribe(res => {
                 this.backend.postRequest(url, params).subscribe(
-                    result => loadingModalRef.instance.self.destroy(),
+                    result => {
+                        if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
+                            this.modal.info(result.message, result.type, result.status);
+                        } else if (result.status != 'error') {
+                            this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                        }
+                        loadingModalRef.instance.self.destroy();
+                    },
                     error => loadingModalRef.instance.self.destroy()
                 );
             }, error => loadingModalRef.instance.self.destroy());
             } else {
                 this.backend.postRequest(url, params).subscribe(
-                    result => loadingModalRef.instance.self.destroy(),
+                    result => {
+                        if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
+                            this.modal.info(result.message, result.type, result.status);
+                        } else if (result.status != 'error') {
+                            this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                        }
+                        loadingModalRef.instance.self.destroy();
+                    },
                     error => loadingModalRef.instance.self.destroy()
                 );
             }
