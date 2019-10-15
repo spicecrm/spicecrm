@@ -18,6 +18,7 @@ export class AdministrationFTSManagerFieldsAdd {
     public self: any = {};
     public fields: any[] = [];
     public dragPlaceHolderNode: Node;
+    private filterKey: string;
     /**
      * array with the fields for the module of the current selected node
      */
@@ -32,6 +33,14 @@ export class AdministrationFTSManagerFieldsAdd {
                 private language: language,
                 private ftsconfiguration: ftsconfiguration,
                 private backend: backend) {
+    }
+
+    get filteredNodeFields() {
+        return this.filterKey ? this.nodefields
+            .filter(nodeFiled => {
+                return nodeFiled.name.toLowerCase().includes(this.filterKey.toLowerCase()) ||
+                    nodeFiled.label.toLowerCase().includes(this.filterKey.toLowerCase());
+            }) : this.nodefields;
     }
 
     get fieldsDropList() {
