@@ -183,27 +183,13 @@ export class CalendarSheetSchedule implements OnChanges {
             return;
         }
 
-        for (let i = 0; i < this.calendar.usersCalendars.length; i++) {
-            let calendar = this.calendar.usersCalendars[i];
-            let last = this.calendar.usersCalendars.length == (i + 1);
-            this.calendar.loadEvents(this.startDate, this.untilDate, calendar.id)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            if (calendar.visible) {
-                                this.userEvents.push(event);
-                            }
-                            if (last) {
-                                this.allEvents = this.allevents.slice();
-                            }
-                        });
-                    } else if (last) {
-                        this.allEvents = this.allevents.slice();
-                    }
-                });
-        }
+        this.calendar.loadUsersEvents(this.startDate, this.untilDate)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    this.userEvents = events;
+                    this.allEvents = this.allevents.slice();
+                }
+            });
     }
 
     private getOtherEvents() {

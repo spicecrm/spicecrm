@@ -241,28 +241,22 @@ export class CalendarSheetWeek implements OnChanges, AfterViewInit {
             return;
         }
 
-        for (let calendar of this.calendar.usersCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate, this.endDate, calendar.id)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events = this.correctHours(events);
-                        events = this.filterEvents(events);
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            if (!event.isMulti) {
-                                this.userEvents.push(event);
-                            } else {
-                                this.userMultiEvents.push(event);
-                                this.arrangeMultiEvents();
-                            }
-                        });
-                    }
-                });
-        }
+        this.calendar.loadUsersEvents(this.startDate, this.endDate)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events = this.correctHours(events);
+                    events = this.filterEvents(events);
+                    events.forEach(event => {
+                        if (!event.isMulti) {
+                            this.userEvents.push(event);
+                        } else {
+                            this.userMultiEvents.push(event);
+                            this.arrangeMultiEvents();
+                        }
+                    });
+                }
+            });
+
     }
 
     /*
