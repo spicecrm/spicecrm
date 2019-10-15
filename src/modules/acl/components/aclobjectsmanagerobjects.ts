@@ -43,8 +43,8 @@ export class ACLObjectsManagerObjects {
 
             this.acltypes.sort((a, b) => {
                 return a.module > b.module ? 1 : -1;
-            })
-        })
+            });
+        });
 
 
     }
@@ -73,7 +73,7 @@ export class ACLObjectsManagerObjects {
                 return a.name > b.name ? 1 : -1;
             })
             this.loading = false;
-        })
+        });
     }
 
     get contentStyle() {

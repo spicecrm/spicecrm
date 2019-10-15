@@ -14,6 +14,7 @@ import {broadcast} from "./broadcast.service";
 import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
+import {configurationService} from "./configuration.service";
 import {Router} from "@angular/router";
 
 // import {GlobalHeader} from '../globalcomponents/components/globalheader';
@@ -151,6 +152,11 @@ export class model implements OnDestroy {
      */
     public duplicates: any[] = [];
 
+    /**
+     * the coiunt for the toal duplicates found
+     */
+    public duplicatecount: number = 0;
+
     private modelRegisterId: number;
 
     constructor(
@@ -165,17 +171,16 @@ export class model implements OnDestroy {
         public language: language,
         private modal: modal,
         private navigation: navigation,
-        public injector: Injector,
-        // @Optional() private globalHeader: GlobalHeader,
-        // @Optional() private globalFooter: GlobalFooter
+        private configuration: configurationService,
+        public injector: Injector
     ) {
         this.modelRegisterId = this.navigation.registerModel(this);
 
         this.data$ = new BehaviorSubject(this.data);
-        this.broadcast.message$.subscribe( data => {
-            if ( data.messagetype === 'timezone.changed' ) {
-                this.utils.timezoneChanged( this.data, data.messagedata );
-                this.utils.timezoneChanged( this.backupData, data.messagedata );
+        this.broadcast.message$.subscribe(data => {
+            if (data.messagetype === 'timezone.changed') {
+                this.utils.timezoneChanged(this.data, data.messagedata);
+                this.utils.timezoneChanged(this.backupData, data.messagedata);
             }
         });
     }
@@ -737,8 +742,8 @@ export class model implements OnDestroy {
         let responseSubject = new Subject<boolean>();
 
         // Clean strings of leading and ending white spaces:
-        for ( let property in this.data ) {
-            if ( _.isString( this.data[property] )) this.data[property] = this.data[property].trim();
+        for (let property in this.data) {
+            if (_.isString(this.data[property])) this.data[property] = this.data[property].trim();
         }
 
         // determine changed fields
@@ -944,9 +949,23 @@ export class model implements OnDestroy {
         return retSubject.asObservable();
     }
 
-    public executeCopyRules(parent: model = null) {
+    /**
+     * executes the copy rules on the bean. FIrst generic then of the optional parent
+     *
+     * @param parent a model or an array of models
+     */
+    public executeCopyRules(parent?: any) {
+        if (parent) {
+            if (_.isArray(parent)) {
+                for (let thisParent of parent) {
+                    if (thisParent.data) this.executeCopyRulesParent(thisParent);
+                }
+            } else {
+                if (parent.data) this.executeCopyRulesParent(parent);
+            }
+        }
+
         this.executeCopyRulesGeneric();
-        if (parent && parent.data) this.executeCopyRulesParent(parent);
     }
 
     // get generic copy rules
@@ -1051,7 +1070,9 @@ export class model implements OnDestroy {
                 // do the check
                 this.duplicateCheck(true).subscribe(
                     duplciates => {
-                        this.duplicates = duplciates;
+                        this.duplicates = duplciates.records;
+                        this.duplicatecount = duplciates.count;
+
                         retSubject.next(true);
                         retSubject.complete();
                     },
@@ -1290,6 +1311,103 @@ export class model implements OnDestroy {
 
     public isLeaveable(): boolean {
         return !(this.isEditing && _.values(this.getDirtyFields()).length);
+    }
+
+    /**
+     * Check Module Filter Match
+     * @param {string} moduleFilterId
+     * @returns {boolean}
+     */
+    public checkModuleFilterMatch(moduleFilterId): boolean {
+        let moduleFilters = this.configuration.getData('modulefilters');
+        if (!moduleFilters[moduleFilterId] || !moduleFilters[moduleFilterId].filterdefs) return false;
+        let filterDefs = moduleFilters[moduleFilterId].filterdefs;
+        filterDefs = typeof filterDefs == 'string' ? JSON.parse(filterDefs) : filterDefs;
+        return moduleFilters ? this.checkModuleFilterGroupMatch(filterDefs) : false;
+    }
+
+    /**
+     * Check Module Filter Group Match
+     * @param group
+     * @returns {boolean}
+     */
+    private checkModuleFilterGroupMatch(group) {
+        if (group.groupscope == 'own' && this.data.assigned_user_id != this.session.authData.userId) return false;
+
+        let conditionMet = false;
+        if (!group || !group.conditions) return false;
+        group.conditions.forEach(condition => {
+            if (condition.conditions) {
+                conditionMet = this.checkModuleFilterGroupMatch(condition);
+            } else {
+                conditionMet = this.checkModuleFilterConditionMatch(condition);
+            }
+
+            if (group.logicaloperator == 'AND' && !conditionMet) {
+                return false;
+            } else if (conditionMet) {
+                return true;
+            }
+        });
+
+        return conditionMet;
+    }
+
+    /**
+     * Check Module Filter Condition Match
+     * @param condition
+     * @returns {boolean}
+     */
+    private checkModuleFilterConditionMatch(condition) {
+        switch (condition.operator) {
+            case 'empty':
+                return this.getFieldValue(condition.field) == '' || this.getFieldValue(condition.field) == null;
+            case 'equals':
+                return this.getFieldValue(condition.field) == condition.filtervalue;
+            case 'oneof':
+                let valArray = condition.filtervalue instanceof Array ? condition.filtervalue : condition.filtervalue.split(',');
+                return valArray.indexOf(this.getFieldValue(condition.field)) > -1;
+            case 'true':
+                return this.getFieldValue(condition.field) == 1;
+            case 'false':
+                return this.getFieldValue(condition.field) == 0;
+            case 'starts':
+                return this.getFieldValue(condition.field).indexOf(condition.filtervalue) == 0;
+            case 'contains':
+                return this.getFieldValue(condition.field).includes(condition.filtervalue);
+            case 'ncontains':
+                return !this.getFieldValue(condition.field).includes(condition.filtervalue);
+            case 'greater':
+                return this.getFieldValue(condition.field) > condition.filtervalue;
+            case 'gequal':
+                return this.getFieldValue(condition.field) >= condition.filtervalue;
+            case 'less':
+                return this.getFieldValue(condition.field) < condition.filtervalue;
+            case 'lequal':
+                return this.getFieldValue(condition.field) <= condition.filtervalue;
+            case 'today':
+                return moment(this.getFieldValue(condition.field)).isSame(new moment(), 'days');
+            case 'past':
+                return moment(this.getFieldValue(condition.field)).isBefore(new moment());
+            case 'future':
+                return moment(this.getFieldValue(condition.field)).isAfter(new moment());
+            case 'thismonth':
+                return moment(this.getFieldValue(condition.field)).isSame(new moment(), 'month');
+            case 'nextmonth':
+                return moment(this.getFieldValue(condition.field)).isAfter(new moment(), 'month');
+            case 'thisyear':
+                return moment(this.getFieldValue(condition.field)).isSame(new moment(), 'year');
+            case 'nextyear':
+                return moment(this.getFieldValue(condition.field)).isAfter(new moment(), 'year');
+            case 'inndays':
+                return moment(this.getFieldValue(condition.field)).isSame(new moment().add(+condition.filtervalue, 'd'), 'days');
+            case 'ndaysago':
+                return moment(this.getFieldValue(condition.field)).isSame(new moment().subtract(+condition.filtervalue, 'd'), 'days');
+            case 'inlessthandays':
+                return moment(this.getFieldValue(condition.field)).isBefore(new moment().add(+condition.filtervalue, 'd'), 'days');
+            case 'inmorethandays':
+                return moment(this.getFieldValue(condition.field)).isAfter(new moment().add(+condition.filtervalue, 'd'), 'days');
+        }
     }
 
 }
