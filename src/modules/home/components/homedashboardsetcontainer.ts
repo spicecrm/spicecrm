@@ -151,7 +151,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
         let config = this.metadata.getComponentConfig('HomeDashboardSetContainer', 'Home');
         let params = {
-            limit: -1,
+            limit: -99,
             modulefilter: config.moduleFilter,
             sort: {sortfield: "dashboardsets_dashboard_sequence", sortdirection: "ASC"}
         };

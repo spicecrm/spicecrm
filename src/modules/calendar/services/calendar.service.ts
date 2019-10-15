@@ -37,7 +37,7 @@ export class calendar implements OnDestroy {
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
-    public sidebarwidth: number = 350;
+    public sidebarwidth: number = 360;
     public sheetTimeWidth: number = 50;
     public sheetHourHeight: number = 80;
     public weekstartday: number = 0;
@@ -661,7 +661,7 @@ export class calendar implements OnDestroy {
     */
     private loadPreferences() {
         this.timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
-        let preferences = this.userPreferences.unchangedPreferences.global;
+        let preferences = this.userPreferences.toUse;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
         this.weekDaysCount = +preferences.week_days_count || this.weekDaysCount;
         this.startHour = +preferences.calendar_day_start_hour || this.startHour;

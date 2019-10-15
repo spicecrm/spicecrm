@@ -4,7 +4,7 @@
 import {Component, Input} from '@angular/core';
 
 /**
- * an icon rendered from the utility spirte
+ * an icon rendered from the utility sprite
  */
 @Component({
     selector: 'system-utility-icon',
@@ -13,6 +13,11 @@ import {Component, Input} from '@angular/core';
 export class SystemUtilityIcon {
     /**
      * the name of the icon to be rendered
+     *
+     * - it can be a simple name of an icon .. then it is rendered as a utility icon
+     * - it can be a string sepoarated with the sprite and the icon. e.g. 'standard:decision' then the sprite is taken form the icon
+     *  - it can hold sprite, icon and size override. e.g. 'standard:decision:medium'
+     *
      */
     @Input() private icon: string = '';
 
@@ -40,14 +45,48 @@ export class SystemUtilityIcon {
      * returns the SVG href
      */
     private getSvgHRef() {
-        return './sldassets/icons/utility-sprite/svg/symbols.svg#' + this.icon;
+        return './sldassets/icons/' + this._sprite + '-sprite/svg/symbols.svg#' + this._icon;
     }
 
     /**
      * retuns the icon class for the ngClass in the template
      */
     private getIconClass() {
-        return 'slds-icon' + (this.size ? ' slds-icon--' + this.size : '') + ' ' + this.colorclass + ' ' + this.addclasses;
+        return 'slds-icon  slds-icon--' + this._size + ' ' + this.colorclass + ' ' + this.addclasses;
+
+    }
+
+    /**
+     * handles the icon .. if there is a ':' in the icon name the first part is the sprite .. the second is the icon
+     */
+    get _icon() {
+        if (this.icon.indexOf(':') > 0) {
+            return this.icon.split(':')[1];
+        } else {
+            return this.icon;
+        }
+    }
+
+    /**
+     * handles the sprite .. if there is a ':' in the icon name the first part is the sprite .. default is utility
+     */
+    get _sprite() {
+        if (this.icon.indexOf(':') > 0) {
+            return this.icon.split(':')[0];
+        } else {
+            return 'utility';
+        }
+    }
+
+    /**
+     * handles the sprite .. if there is a ':' in the icon name the first part is the sprite .. default is utility
+     */
+    get _size() {
+        if (this.icon.indexOf(':') > 0 && this.icon.split(':').length > 2) {
+            return this.icon.split(':')[2];
+        }
+
+        return this.size ? this.size : 'small';
 
     }
 }
