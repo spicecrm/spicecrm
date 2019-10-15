@@ -10,6 +10,7 @@ import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {modal} from "../../services/modal.service";
+import {Subject} from "rxjs";
 
 @Injectable()
 export class ftsconfiguration {
@@ -61,18 +62,23 @@ export class ftsconfiguration {
         return fieldDetails;
     }
 
-    public save() {
+    public save(notify = true) {
+        let responseSubject = new Subject<any>();
         let postData = {
             fields: this.moduleFtsFields,
             settings: this.moduleFtsSettings
         };
         this.backend.postRequest('ftsmanager/' + this.module, {}, postData).subscribe(response => {
+            responseSubject.next(response);
+            if (!notify) return;
             if (response) {
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
             }
-        });
+        }, error => responseSubject.error(error));
+
+        return responseSubject;
     }
 
     public searchPath(path) {
@@ -106,24 +112,18 @@ export class ftsconfiguration {
                 url = `ftsmanager/${this.module}/resetindex`;
                 label = 'LBL_RESET';
                 break;
-            case 'put':
-                url = `ftsmanager/${this.module}/map`;
-                label = 'LBL_PUT_MAPPING';
-                break;
         }
 
         let params = action == 'bulk' ? {bulk: true} : {};
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') +' '+ this.language.getLabel(label);
-            if (action == 'put') {
-                this.backend.deleteRequest('ftsmanager/' + this.module).subscribe(result => {
-                    this.backend.postRequest(url).subscribe(
-                        result => {
-                            loadingModalRef.instance.self.destroy();
-                        },
-                        error => loadingModalRef.instance.self.destroy()
-                    );
-                }, error => loadingModalRef.instance.self.destroy());
+            if (action == 'reset') {
+            this.save(false).subscribe(res => {
+                this.backend.postRequest(url, params).subscribe(
+                    result => loadingModalRef.instance.self.destroy(),
+                    error => loadingModalRef.instance.self.destroy()
+                );
+            }, error => loadingModalRef.instance.self.destroy());
             } else {
                 this.backend.postRequest(url, params).subscribe(
                     result => loadingModalRef.instance.self.destroy(),

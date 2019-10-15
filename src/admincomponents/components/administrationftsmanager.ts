@@ -47,10 +47,6 @@ export class AdministrationFTSManager {
         this.ftsconfiguration.save();
     }
 
-    public putIndex() {
-        this.ftsconfiguration.executeAction('put');
-    }
-
     public indexModule() {
         this.ftsconfiguration.executeAction('index');
     }
