@@ -47,8 +47,9 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
         this.fieldset = this.componentconfig.fieldset;
         this.listfields = this.metadata.getFieldSetFields(this.fieldset);
         this.module = this.componentconfig.object;
-
         this.relatedmodels.relatedModule = this.componentconfig.object;
+
+        this.relatedmodels.isonlyfiltered = this.componentconfig.isonlyfiltered;
 
         if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
 
