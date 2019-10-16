@@ -59,8 +59,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
         this.navigation.setActiveModule('Calendar');
         let usersSubscriber = this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.subscriptions.add(usersSubscriber);
-        let otherSubscriber = this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
-        this.subscriptions.add(otherSubscriber);
         let addingEventSubscriber = this.calendar.addingEvent$.subscribe(res => this.addEvent(res));
         this.subscriptions.add(addingEventSubscriber);
 

@@ -33,7 +33,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     @ViewChild('scrollcontainer', {read: ViewContainerRef, static: true}) private scrollContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     @Input('footercontainer') private footerContainer: any = undefined;
     @Input('calendarcontent') private calendarContent: any = undefined;
@@ -43,7 +42,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     private ownerMultiEvents: any[] = [];
     private userEvents: any[] = [];
     private userMultiEvents: any[] = [];
-    private otherEvents: any[] = [];
     private googleEvents: any[] = [];
     private googleMultiEvents: any[] = [];
 
@@ -70,7 +68,7 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     }
 
     get allMultiEvents() {
-        return this.ownerMultiEvents.concat(this.otherEvents, this.userMultiEvents, this.googleMultiEvents);
+        return this.ownerMultiEvents.concat(this.userMultiEvents, this.googleMultiEvents);
     }
 
     get startDate() {
@@ -101,9 +99,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
 
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
-        }
-        if (changes.otherCalendars || changes.setdate) {
-            this.getOtherEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -263,34 +258,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
                     });
                 }
             });
-    }
-
-    /*
-    * @return void
-    */
-    private getOtherEvents() {
-        this.otherEvents = [];
-        this.arrangeMultiEvents();
-        if (this.calendar.isMobileView) {
-            return;
-        }
-
-        for (let calendar of this.calendar.otherCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate.hour(0).minute(0).second(0), this.endDate.hour(0).minute(0).second(0), calendar.id, true)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            this.otherEvents.push(event);
-                            this.arrangeMultiEvents();
-                        });
-                    }
-                });
-        }
     }
 
     /*
