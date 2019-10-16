@@ -96,13 +96,9 @@ export class ftsconfiguration {
         let url = '';
         let label = '';
         switch (action) {
-            case 'index':
-                url = `ftsmanager/${this.module}/index`;
-                label = 'LBL_INDEX';
-                break;
             case 'bulk':
                 url = `ftsmanager/${this.module}/index`;
-                label = 'LBL_INDEX_BULK';
+                label = 'LBL_INDEX';
                 break;
             case 'init':
                 url = `ftsmanager/core/initialize`;
@@ -115,13 +111,13 @@ export class ftsconfiguration {
         }
 
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') +' '+ this.language.getLabel(label);
+            loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') +': '+ this.language.getLabel(label);
             if (action == 'reset') {
             this.save(false).subscribe(res => {
                 this.backend.postRequest(url, params).subscribe(
                     result => {
                         if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                            this.modal.info(result.message, result.type, result.status);
+                            this.modal.info(result.message, result.type ? result.type : 'success', result.status);
                         } else if (result.status != 'error') {
                             this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                         }
