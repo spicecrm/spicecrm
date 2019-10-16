@@ -19,6 +19,7 @@ export class AdministrationFtsManagerIndexModal {
     constructor(private language: language) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
+        this.settings.bulkAmount = -1;
     }
 
     private cancel() {
