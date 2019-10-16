@@ -1,9 +1,9 @@
 <div class="slds-p-top--x-small slds-p-horizontal--x-small" tobottom>
     <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-        <legend class="slds-form-element__legend slds-form-element__label">Index Parameters</legend>
+        <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_INDEX_PARAMETERS')}}</legend>
         <div class="slds-form-element__control">
             <div class="slds-form-element">
-                <label class="slds-form-element__label">Index Priority</label>
+                <label class="slds-form-element__label">{{language.getLabel('LBL_INDEX_PRIORITY')}}</label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="ftsconfiguration.moduleFtsSettings.index_priority"/>
                 </div>
@@ -23,7 +23,7 @@
                 </div>
             </div-->
             <div class="slds-form-element">
-                <label class="slds-form-element__label">Multimatch Type</label>
+                <label class="slds-form-element__label">{{language.getLabel('LBL_FTS_MULTIMATCH_TYPE')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.multimatch_type">
@@ -43,15 +43,15 @@
         </div>
     </fieldset>
     <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-        <legend class="slds-form-element__legend slds-form-element__label">Search Parameters</legend>
+        <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_SEARCH_PARAMETERS')}}</legend>
         <div class="slds-form-element__control">
             <div class="slds-form-element">
-                <label class="slds-form-element__label">Search Operator</label>
+                <label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.operator">
-                            <option value='and'>and</option>
-                            <option value='or'>or</option>
+                            <option value='and'>{{language.getLabel('LBL_AND')}}</option>
+                            <option value='or'>{{language.getLabel('LBL_OR')}}</option>
                         </select>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
         </div>
     </fieldset>
     <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-        <legend class="slds-form-element__legend slds-form-element__label">Activity/History/Calendar Params</legend>
+        <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_FTS_ACTIVITY_PARAMS')}}</legend>
         <div class="slds-form-element__control">
             <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
                 <div class="slds-form-element__control slds-col slds-size--1-of-3">
@@ -72,12 +72,12 @@
                              [(ngModel)]="ftsconfiguration.moduleFtsSettings.activitiessearch"/>
                       <label class="slds-checkbox__label" for="activitiessearch">
                         <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">include in Activities</span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_FTS_IN_ACTIVITIES')}}</span>
                       </label>
                     </span>
                 </div>
                 <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
-                    <label class="slds-form-element__label">Filter</label>
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_FILTER')}}</label>
                     <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.activitiesfilter"></system-input-module-filter>
                 </div>
             </div>
@@ -88,12 +88,12 @@
                              [(ngModel)]="ftsconfiguration.moduleFtsSettings.historysearch"/>
                       <label class="slds-checkbox__label" for="historysearch">
                         <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">include in History</span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_FTS_IN_HISTORY')}}</span>
                       </label>
                     </span>
                 </div>
                 <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
-                    <label class="slds-form-element__label">Filter</label>
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_FILTER')}}</label>
                     <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.historyfilter"></system-input-module-filter>
                 </div>
             </div>
@@ -103,12 +103,12 @@
                       <input type="checkbox" name="options" id="calendarsearch" [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarsearch"/>
                       <label class="slds-checkbox__label" for="calendarsearch">
                         <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">include in Calendar</span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_FTS_IN_CALENDAR')}}</span>
                       </label>
                     </span>
                 </div>
                 <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
-                    <label class="slds-form-element__label">Filter</label>
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_FILTER')}}</label>
                     <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarfilter"></system-input-module-filter>
                 </div>
             </div>

@@ -23,17 +23,17 @@
         <ul class="slds-tabs--default__nav" role="tablist">
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab === 'fields'}"
                 role="presentation" (click)="setActiveTab('fields')">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Fields</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">{{language.getLabel('LBL_FIELDS')}}</a>
             </li>
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab === 'details'}"
                 role="presentation" (click)="setActiveTab('details')">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Details</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">{{language.getLabel('LBL_INDEX_PARAMETERS')}}</a>
             </li>
         </ul>
         <administration-ftsmanager-fields *ngIf="activeTab==='fields'"></administration-ftsmanager-fields>
         <administration-ftsmanager-details *ngIf="activeTab==='details'"></administration-ftsmanager-details>
     </div>
     <ng-template #selectmodule>
-        <div class="slds-p-around--small slds-text-align--center">select a module</div>
+        <div class="slds-p-around--small slds-text-align--center">{{language.getLabel('LBL_SELECT_A_MODULE')}}</div>
     </ng-template>
 </div>
