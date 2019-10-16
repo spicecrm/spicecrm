@@ -15,13 +15,13 @@
                 {{language.getLabel('LBL_NONE')}}
             </system-input-radio>
             <system-input-radio style="display: block" name="ftsmanagerbulk" value="100" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = 100">
-                {{language.getLabel('LBL_HUNDERED')}}
+                100 {{language.getLabel('LBL_RECORDS')}}
             </system-input-radio>
             <system-input-radio style="display: block" name="ftsmanagerbulk" value="1000" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = 1000">
-                {{language.getLabel('LBL_THOUSAND')}}
+                1000 {{language.getLabel('LBL_RECORDS')}}
             </system-input-radio>
             <system-input-radio style="display: block" name="ftsmanagerbulk" value="-1" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = -1">
-                {{language.getLabel('LBL_SYSTEM')}}
+                {{language.getLabel('LBL_SYSTEM_DEFAULT')}}
             </system-input-radio>
         </div>
     </system-modal-content>
