@@ -164,7 +164,12 @@ export class fts {
 
             // sort by releveance
             this.moduleSearchresults.sort((x, y) => {
-                return parseFloat(y.data.max_score) > parseFloat(x.data.max_score) ? 1 : -1;
+                let xf = parseFloat(x.data.max_score);
+                let yf = parseFloat(y.data.max_score);
+                if(isNaN(xf) && isNaN(yf)) return 1;
+                if(isNaN(yf)) return -1;
+                if(isNaN(xf)) return 1;
+                return yf > xf ? 1 : -1;
             });
 
             // set the last parameters
