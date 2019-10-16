@@ -1,26 +1,26 @@
 <system-modal>
-    <system-modal-header>{{language.getLabel('LBL_INDEX')}}</system-modal-header>
+    <system-modal-header (close)="cancel()">{{language.getLabel('LBL_INDEX')}}</system-modal-header>
     <system-modal-content>
         <div class="slds-p-bottom--xx-small">
             {{language.getLabel('LBL_RESET_INDEX_DATE', '', 'long')}}
         </div>
         <div class="slds-m-bottom--medium">
-            <system-checkbox [(ngModel)]="this.settings.resetIndexDates">{{language.getLabel('LBL_RESET_INDEX_DATE')}}</system-checkbox>
+            <system-checkbox [(ngModel)]="settings.resetIndexDates">{{language.getLabel('LBL_RESET_INDEX_DATE')}}</system-checkbox>
         </div>
         <div class="slds-p-bottom--xx-small">
             {{language.getLabel('LBL_BULK_INDEX')}}
         </div>
         <div>
-            <system-input-radio style="display: block" name="ftsmanagerbulk" value="none" [ngModel]="settings.bulk" (ngModelChange)="settings.bulk = 'none'">
+            <system-input-radio style="display: block" name="ftsmanagerbulk" value="0" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = 0">
                 {{language.getLabel('LBL_NONE')}}
             </system-input-radio>
-            <system-input-radio style="display: block" name="ftsmanagerbulk" value="hundered" [ngModel]="settings.bulk" (ngModelChange)="settings.bulk = 'hundered'">
+            <system-input-radio style="display: block" name="ftsmanagerbulk" value="100" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = 100">
                 {{language.getLabel('LBL_HUNDERED')}}
             </system-input-radio>
-            <system-input-radio style="display: block" name="ftsmanagerbulk" value="thousand" [ngModel]="settings.bulk" (ngModelChange)="settings.bulk = 'thousand'">
+            <system-input-radio style="display: block" name="ftsmanagerbulk" value="1000" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = 1000">
                 {{language.getLabel('LBL_THOUSAND')}}
             </system-input-radio>
-            <system-input-radio style="display: block" name="ftsmanagerbulk" value="system" [ngModel]="settings.bulk" (ngModelChange)="settings.bulk = 'system'">
+            <system-input-radio style="display: block" name="ftsmanagerbulk" value="-1" [ngModel]="settings.bulkAmount" (ngModelChange)="settings.bulkAmount = -1">
                 {{language.getLabel('LBL_SYSTEM')}}
             </system-input-radio>
         </div>
