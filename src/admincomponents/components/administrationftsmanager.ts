@@ -66,7 +66,7 @@ export class AdministrationFTSManager {
 
     public initialize() {
         this.modal
-            .confirm('Initialize', 'Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!')
+            .confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
             .subscribe(res => {
                 if (res) {
                     this.ftsconfiguration.executeAction('init');
