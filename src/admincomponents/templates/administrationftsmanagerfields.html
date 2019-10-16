@@ -4,28 +4,27 @@
             <administration-ftsmanager-fields-list style="display: block; height: inherit" (selectListField)="selectField($event)" [selectedField]="currentfield"></administration-ftsmanager-fields-list>
         </div>
         <div class="slds-p-around--small slds-text-align--center slds-theme--shade">
-            <a href="javascript:void(0)" (click)="showAddFields()">Add Fields</a>
+            <a href="javascript:void(0)" (click)="showAddFields()">{{language.getLabel('LBL_ADD_FIELD')}}</a>
         </div>
     </div>
     <div class="slds-size--1-of-2 slds-border--left slds-p-left--x-small" tobottom>
         <div *ngIf="currentfield; else selectfield">
-            <h2 class="slds-text-heading--small slds-p-vertical--x-small">Field Details:
-                {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
+            <h2 class="slds-text-heading--small slds-p-vertical--x-small">{{language.getLabel('LBL_FIELD_DETAILS')}}: {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label">Index Params</legend>
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_INDEX_PARAMETERS')}}</legend>
                 <div class="slds-form-element__control">
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label">Indexed Name</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_INDEX_FIELD_NAME')}}</label>
                         <div class="slds-form-element__control">
                             <input type="text" class="slds-input" [(ngModel)]="fieldDetails.indexfieldname"/>
                         </div>
                     </div>
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label">Name</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}</label>
                         <system-input-label [(ngModel)]="fieldDetails.name"></system-input-label>
                     </div>
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label">IndexType</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_TYPE')}}</label>
                         <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DATATYPE')"></system-icon-help-text>
 
                         <div class="slds-form-element__control">
@@ -46,7 +45,7 @@
                 </div>
                 <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">Boost</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_BOOST')}}</label>
                         <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_BOOST')"></system-icon-help-text>
                         <div class="slds-form-element__control">
                             <input type="text" class="slds-input" [(ngModel)]="fieldDetails.boost"/>
@@ -54,7 +53,7 @@
                     </div>
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
-                            <system-checkbox [(ngModel)]="fieldDetails.enablesort">{{language.getLabel('LBL_SORT')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SORT')"></system-icon-help-text></system-checkbox>
+                            <system-checkbox [(ngModel)]="fieldDetails.enablesort">{{language.getLabel('LBL_SORTABLE')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SORT')"></system-icon-help-text></system-checkbox>
                         </div>
                     </div>
                     <div class="slds-form-element">
@@ -65,10 +64,10 @@
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-p-right--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label">Aggregate</legend>
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AGGREGATE')}}</legend>
                 <div class="slds-form-element__control">
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label">Aggregate</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_AGGREGATE')}}</label>
                         <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE')"></system-icon-help-text>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
@@ -85,7 +84,7 @@
                         </div>
                     </div>
                     <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
-                        <label class="slds-form-element__label">Aggregate Params</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_PARAMETERS')}}</label>
                         <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>
 
                         <div class="slds-form-element__control">
@@ -94,14 +93,14 @@
                     </div>
                     <div class="slds-grid">
                         <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label">Aggregate Size</label>
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_AGGREGATE_SIZE')}}</label>
                             <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SIZE')"></system-icon-help-text>
                             <div class="slds-form-element__control">
                                 <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatesize"/>
                             </div>
                         </div>
                         <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label">Aggregate Priority</label>
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_AGGREGATE_PRIORITY')}}</label>
                             <div class="slds-form-element__control">
                                 <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatepriority"/>
                             </div>
@@ -110,11 +109,11 @@
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label">Analyzer</legend>
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_ANALYZER')}}</legend>
                 <div class="slds-form-element__control">
                     <div class="slds-grid">
                         <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label">Analyzer</label>
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_ANALYZER')}}</label>
                             <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ANALYZER') +
                             '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
                             '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
@@ -122,7 +121,6 @@
                             '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
                             '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
                             </system-icon-help-text>
-
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                     <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
@@ -138,7 +136,7 @@
                             </div>
                         </div>
                         <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label">Search Analyzer</label>
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_SEARCH_ANALYZER')}}</label>
                             <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
                             '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
                             '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
@@ -164,7 +162,7 @@
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label">Duplicate Settings</legend>
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_DUPLICATECHECK_SETTINGS')}}</legend>
                 <div class="slds-form-element__control">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
@@ -173,7 +171,7 @@
                     </div>
                     <div class="slds-grid slds-grid_vertical-align-center">
                         <div class="slds-col slds-size--1-of-2 slds-form-element">
-                            <label class="slds-form-element__label">Duplicate Query</label>
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_QUERY')}}</label>
                             <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_QUERY')"></system-icon-help-text>
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
@@ -186,7 +184,7 @@
                             </div>
                         </div>
                         <div class="slds-col slds-size--1-of-2 slds-form-element">
-                            <label class="slds-form-element__label">Duplicate Fuzziness</label>
+                            <label class="slds-form-element__label">{{language.getLabel('LBL_FUZZINESS')}}</label>
                             <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_FUZZINESS')"></system-icon-help-text>
                             <div class="slds-form-element__control">
                                 <input type="text" [disabled]="!fieldDetails.duplicatecheck" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
@@ -196,16 +194,16 @@
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label">Email Settings</legend>
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_EMAIL_SETTINGS')}}</legend>
                 <div class="slds-form-element__control">
                     <system-checkbox [(ngModel)]="fieldDetails.email">{{language.getLabel('LBL_EMAIL_SEARCH')}}<system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text></system-checkbox>
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label">Activities/History</legend>
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_FTS_ACTIVITY_PARAMS')}}</legend>
                 <div class="slds-form-element__control">
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label">Activity Type</label>
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_TYPE')}}</label>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="fieldDetails.activitytype">
