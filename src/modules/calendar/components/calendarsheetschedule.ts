@@ -39,11 +39,9 @@ export class CalendarSheetSchedule implements OnChanges {
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private allevents: any[] = [];
     private ownerEvents: any[] = [];
-    private otherEvents: any[] = [];
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
     private untilDate: any = {};
@@ -67,7 +65,7 @@ export class CalendarSheetSchedule implements OnChanges {
     }
 
     set allEvents(value) {
-        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents));
+        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
         events.sort((a, b) => a.date - b.date);
         this.allevents = events;
     }
@@ -84,9 +82,6 @@ export class CalendarSheetSchedule implements OnChanges {
 
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
-        }
-        if (changes.otherCalendars || changes.setdate) {
-            this.getOtherEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -192,36 +187,6 @@ export class CalendarSheetSchedule implements OnChanges {
             });
     }
 
-    private getOtherEvents() {
-        this.otherEvents = [];
-        this.allEvents = this.allevents.slice();
-        if (this.calendar.isMobileView) {
-            return;
-        }
-
-        for (let i = 0; i < this.calendar.otherCalendars.length; i++) {
-            let calendar = this.calendar.otherCalendars[i];
-            let last = this.calendar.otherCalendars.length == (i + 1);
-            this.calendar.loadEvents(this.startDate, this.untilDate, calendar.id, true)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            if (calendar.visible) {
-                                this.otherEvents.push(event);
-                            }
-                            if (last) {
-                                this.allEvents = this.allevents.slice();
-                            }
-                        });
-                    } else if (last) {
-                        this.allEvents = this.allevents.slice();
-                    }
-                });
-        }
-    }
-
     private getShortDay(date) {
         return new moment(date).format('ddd');
     }
@@ -244,6 +209,5 @@ export class CalendarSheetSchedule implements OnChanges {
         this.getEvents();
         this.getGoogleEvents();
         this.getUsersEvents();
-        this.getOtherEvents();
     }
 }

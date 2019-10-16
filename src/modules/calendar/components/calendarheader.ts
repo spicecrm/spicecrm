@@ -5,6 +5,7 @@ import {Component, ElementRef, EventEmitter, OnDestroy, Output, Renderer2} from 
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
+import {modelutilities} from "../../../services/modelutilities.service";
 
 /**
  * @ignore
@@ -31,8 +32,13 @@ export class CalendarHeader implements OnDestroy {
                 private navigation: navigation,
                 private elementRef: ElementRef,
                 private renderer: Renderer2,
+                private modelUtils: modelutilities,
                 private calendar: calendar) {
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
+    }
+
+    get modules() {
+        return this.calendar.modules;
     }
 
     get sheetType() {
@@ -192,5 +198,27 @@ export class CalendarHeader implements OnDestroy {
             this.openPicker = false;
             this.clickListener();
         }
+    }
+
+    private toggleVisibleModules(module) {
+        let found = this.calendar.otherCalendars.some(calendar => {
+            if (calendar.name == module) {
+                calendar.visible = !calendar.visible;
+                this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
+                return true;
+            }
+        });
+        if (!found) {
+            this.calendar.otherCalendars.push({
+                id: this.modelUtils.generateGuid(),
+                name: module,
+                visible: false
+            });
+            this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
+        }
+    }
+
+    private getIconStyle(module) {
+        return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
     }
 }

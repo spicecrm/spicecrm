@@ -11,7 +11,6 @@
                         *ngIf="sheetType === 'Day'"
                         [googleisvisible]="googleIsVisible"
                         [userscalendars]="usersCalendars"
-                        [othercalendars]="otherCalendars"
                         [setdate]="calendarDate">
                 </calendar-sheet-day>
                 <calendar-sheet-three-days
@@ -20,7 +19,6 @@
                         [calendarcontent]="calendarcontent"
                         [footercontainer]="footercontainer"
                         [userscalendars]="usersCalendars"
-                        [othercalendars]="otherCalendars"
                         [setdate]="calendarDate"
                         (navigateday)="gotToDayView($event)">
                 </calendar-sheet-three-days>
@@ -29,7 +27,6 @@
                         [googleisvisible]="googleIsVisible"
                         [calendarcontent]="calendarcontent"
                         [userscalendars]="usersCalendars"
-                        [othercalendars]="otherCalendars"
                         [setdate]="calendarDate"
                         (navigateday)="gotToDayView($event)">
                 </calendar-sheet-week>
@@ -37,7 +34,6 @@
                         *ngIf="sheetType === 'Month'"
                         [googleisvisible]="googleIsVisible"
                         [userscalendars]="usersCalendars"
-                        [othercalendars]="otherCalendars"
                         [setdate]="calendarDate"
                         (navigateday)="gotToDayView($event)">
                 </calendar-sheet-month>
@@ -45,7 +41,6 @@
                         *ngIf="sheetType === 'Schedule'"
                         [googleisvisible]="googleIsVisible"
                         [userscalendars]="usersCalendars"
-                        [othercalendars]="otherCalendars"
                         [setdate]="calendarDate"
                         (navigateday)="gotToDayView($event)"
                         (untildate$)="handleUntiDate($event)">
