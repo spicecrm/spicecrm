@@ -8,6 +8,8 @@ import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
 import {modelutilities} from "./modelutilities.service";
 import {Observable, of, Subject} from "rxjs";
+import {toast} from "./toast.service";
+import {language} from './language.service';
 
 /**
  * @ignore
@@ -79,6 +81,11 @@ export class relatedmodels implements OnDestroy {
     public isloading = true;
 
     /**
+     * inidcates if the servic eis currently retrieving data from teh backend
+     */
+    public isonlyfiltered = false;
+
+    /**
      * sort parameters
      */
     public sort: any = {
@@ -107,7 +114,9 @@ export class relatedmodels implements OnDestroy {
         private metadata: metadata,
         private backend: backend,
         private broadcast: broadcast,
-        private modelutilities: modelutilities
+        private modelutilities: modelutilities,
+        private toast: toast,
+        private language: language
     ) {
         // subscribe to the broadcast service
         this.serviceSubscriptions.push(
@@ -251,6 +260,7 @@ export class relatedmodels implements OnDestroy {
             this.isloading = true;
         }
         let params = {
+            module: this.relatedModule,
             getcount: true,
             offset: 0,
             limit: this.loaditems,
@@ -260,7 +270,15 @@ export class relatedmodels implements OnDestroy {
             sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
         };
 
-        this.backend.getRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(
+        // check if it is a normal related list, or a filtered list without a relationship
+        let url = "";
+        if(this.isonlyfiltered) {
+            url = "module/" + this.module + "/" + this.id + "/filtered";
+        } else {
+            url = "module/" + this.module + "/" + this.id + "/related/" + this._linkName;
+        }
+
+        this.backend.getRequest(url, params).subscribe(
             (response: any) => {
 
                 // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
@@ -317,6 +335,7 @@ export class relatedmodels implements OnDestroy {
         this.isloading = true;
 
         let params = {
+            module: this.relatedModule,
             getcount: true,
             offset: this.items.length,
             limit: this.items.length + loaditems,
@@ -327,7 +346,15 @@ export class relatedmodels implements OnDestroy {
 
         let retSubject = new Subject<any>();
 
-        this.backend.getRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(
+        // check if it is a normal related list, or a filtered list without a relationship
+        let url = "";
+        if(this.isonlyfiltered) {
+            url = "module/" + this.module + "/" + this.id + "/filtered";
+        } else {
+            url = "module/" + this.module + "/" + this.id + "/related/" + this._linkName;
+        }
+
+        this.backend.getRequest(url, params).subscribe(
             (response: any) => {
 
                 // get the count
@@ -406,34 +433,38 @@ export class relatedmodels implements OnDestroy {
      * @param items
      */
     public addItems(items) {
-        let relatedIds: any[] = [];
-        for (let item of items) {
-            relatedIds.push(item.id);
-        }
 
-        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(res => {
-
+        if(this.isonlyfiltered) {
+            let relatedIds: any[] = [];
             for (let item of items) {
-                // check if we shoudl add this item or it is already in the related models list
-                let itemfound = false;
-                this.items.some(curitem => {
-                    if (curitem.id == item.id) {
-                        itemfound = true;
-                        return true;
-                    }
-                });
-                if (!itemfound) {
-                    this.items.push(item);
-                    this.count++;
-                }
+                relatedIds.push(item.id);
             }
+            this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(res => {
 
-            // emit that a change has happened
-            // this.items$.emit(this.items);
+                for (let item of items) {
+                    // check if we shoudl add this item or it is already in the related models list
+                    let itemfound = false;
+                    this.items.some(curitem => {
+                        if (curitem.id == item.id) {
+                            itemfound = true;
+                            return true;
+                        }
+                    });
+                    if (!itemfound) {
+                        this.items.push(item);
+                        this.count++;
+                    }
+                }
 
-            // this.items = this.items.concat(items);
-            // this.count += items.length;
-        });
+                // emit that a change has happened
+                // this.items$.emit(this.items);
+
+                // this.items = this.items.concat(items);
+                // this.count += items.length;
+            });
+        } else {
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_ADD'),'error');
+        }
     }
 
     /**
@@ -444,9 +475,12 @@ export class relatedmodels implements OnDestroy {
      * @param item the item
      */
     public setItem(item) {
-        this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
-
-        });
+        if(this.isonlyfiltered) {
+            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
+            });
+        } else {
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'),'error');
+        }
     }
 
     /**
@@ -455,24 +489,27 @@ export class relatedmodels implements OnDestroy {
      * @param id the related id
      */
     public deleteItem(id) {
-        let relatedids = [];
-        relatedids.push(id);
-        let params = {
-            relatedids: relatedids
-        };
-        this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(res => {
-            this.items.some((item, index) => {
-                if (item.id == id) {
-                    this.items.splice(index, 1);
-                    this.count--;
-
-                    // emit that a change has happened
-                    // this.items$.emit(this.items);
-
-                    // return
-                    return true;
-                }
+        if(this.isonlyfiltered) {
+            let relatedids = [];
+            relatedids.push(id);
+            let params = {
+                relatedids: relatedids
+            };
+            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(res => {
+                this.items.some((item, index) => {
+                    if (item.id == id) {
+                        this.items.splice(index, 1);
+                        this.count--;
+                        // emit that a change has happened
+                        // this.items$.emit(this.items);
+                        // return
+                        return true;
+                    }
+                });
             });
-        });
+        } else {
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'),'error');
+        }
     }
 }
+
