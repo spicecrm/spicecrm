@@ -28,7 +28,9 @@ export class calendar implements OnDestroy {
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
+    public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
     public color$: EventEmitter<any> = new EventEmitter<any>();
+    public modules: any[] = [];
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public sysUICalendars: any[] = [];
@@ -77,6 +79,7 @@ export class calendar implements OnDestroy {
                 private language: language,
                 private modelutilities: modelutilities,
                 private userPreferences: userpreferences) {
+        this.loadCalendarModules();
         this.loadPreferences();
         this.subscribeToLanguage();
         this.getOtherCalendars();
@@ -103,12 +106,22 @@ export class calendar implements OnDestroy {
         return this.session.authData.userId;
     }
 
+    get ownerName() {
+        return this.session.authData.userName;
+    }
+
     get weekStartDay() {
         return this.weekstartday;
     }
 
     set weekStartDay(value) {
         this.weekstartday = value;
+    }
+
+    private loadCalendarModules() {
+        this.backend.getRequest('calendar/modules').subscribe(modules => {
+           if (modules) this.modules = modules;
+        });
     }
 
     /*
@@ -180,18 +193,19 @@ export class calendar implements OnDestroy {
     * @param isOther
     * @return events
     */
-    public loadEvents(start, end, calendar = this.owner, isOther = false, users?) {
-        if (this.doReload(start, end, calendar)) {
+    public loadEvents(start, end, calendar = this.owner, isOther = false, users = []) {
+        let userId = users.length > 0 ? 'users' : calendar;
+        if (this.doReload(start, end, userId)) {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {start: start.format(format), end: end.format(format), users};
             let endPoint = isOther ? 'calendar/other/' : users.length > 0 ? 'calendar/users/' : 'calendar/';
-            this.currentEnd[users.length > 0 ? 'users' : calendar] = end;
-            this.currentStart[users.length > 0 ? 'users' : calendar] = start;
+            this.currentEnd[userId] = end;
+            this.currentStart[userId] = start;
 
             this.backend.getRequest(endPoint + calendar, params)
                 .subscribe(events => {
-                    this.calendars[calendar] = [];
+                    this.calendars[userId] = [];
                     for (let event of events) {
                         event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                         switch (event.type) {
@@ -224,15 +238,15 @@ export class calendar implements OnDestroy {
                                 continue;
                             }
                         }
-                        this.calendars[calendar].push(event);
+                        this.calendars[userId].push(event);
                     }
-                    responseSubject.next(this.calendars[calendar]);
+                    responseSubject.next(this.calendars[userId]);
                     responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries: any[] = [];
-            for (let event of this.calendars[users.length > 0 ? 'users' : calendar]) {
+            for (let event of this.calendars[userId]) {
                 if (event.start < end && event.end > start) {
                     event.start = moment(event.start).tz(this.timeZone);
                     event.end = moment(event.end).tz(this.timeZone);

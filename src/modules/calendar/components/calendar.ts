@@ -1,26 +1,35 @@
 /**
  * @module ModuleCalendar
  */
-import {AfterViewInit, Component, ElementRef, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    Injector,
+    OnDestroy,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
 import {CalendarHeader} from "./calendarheader";
+import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
+import {take} from "rxjs/operators";
+import {metadata} from "../../../services/metadata.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
-/**
-* @ignore
-*/
-declare var _: any;
 
 @Component({
     selector: 'calendar',
     templateUrl: './src/modules/calendar/templates/calendar.html',
-    providers: [calendar]
+    providers: [calendar, model]
 })
 
 export class Calendar implements AfterViewInit, OnDestroy {
@@ -42,12 +51,18 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 private navigation: navigation,
                 private elementRef: ElementRef,
                 private renderer: Renderer2,
+                private modal: modal,
+                private model: model,
+                private metadata: metadata,
+                private injector: Injector,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
         let usersSubscriber = this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
         this.subscriptions.add(usersSubscriber);
         let otherSubscriber = this.calendar.otherCalendars$.subscribe(res => this.otherCalendars = res);
         this.subscriptions.add(otherSubscriber);
+        let addingEventSubscriber = this.calendar.addingEvent$.subscribe(res => this.addEvent(res));
+        this.subscriptions.add(addingEventSubscriber);
 
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
             this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
@@ -169,5 +184,25 @@ export class Calendar implements AfterViewInit, OnDestroy {
         }
         this.xDown = null;
         this.yDown = null;
+    }
+
+    private addEvent(event) {
+        this.model.reset();
+        this.modal.openModal('CalendarAddModulesModal', true, this.injector)
+            .subscribe(modalRef => {
+                modalRef.instance.module$
+                    .pipe(take(1))
+                    .subscribe(module => {
+                        if (module) {
+                            this.model.module = module.name;
+                            let presets: any = {[module.dateStartFieldName]: event};
+                            if (module.name == 'UserAbsences') {
+                                presets.user_id = this.calendar.owner;
+                                presets.user_name = this.calendar.ownerName;
+                            }
+                            this.model.addModel('', null, presets);
+                        }
+                    });
+            });
     }
 }

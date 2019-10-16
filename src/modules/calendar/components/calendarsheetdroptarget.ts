@@ -42,15 +42,17 @@ export class CalendarSheetDropTarget {
 
     private addEvent() {
         if (this.day) {
-            this.calendar.addingEvent$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
+            if (this.calendar.asPicker) {
+                this.calendar.pickerDate$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
+            } else {
+                this.calendar.addingEvent$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
+            }
         }
     }
 
     @HostListener('mouseenter')
     private mouseEnter() {
-        if (this.calendar.asPicker) {
-            this.showPlus = true;
-        }
+        this.showPlus = true;
     }
 
     @HostListener('mouseleave')
