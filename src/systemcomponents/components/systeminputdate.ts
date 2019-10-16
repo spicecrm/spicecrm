@@ -209,7 +209,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         this.toggleClosed();
         this.modal.openModal('Calendar').subscribe(modalRef => {
             modalRef.instance.asPicker = true;
-            modalRef.instance.calendar.addingEvent$.subscribe(date => {
+            modalRef.instance.calendar.pickerDate$.subscribe(date => {
                 modalRef.instance.asPicker = false;
                 this.datePicked(date);
             });

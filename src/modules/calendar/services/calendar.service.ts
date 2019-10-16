@@ -26,14 +26,12 @@ declare var _: any;
 @Injectable()
 export class calendar implements OnDestroy {
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
-    public otherCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
     public color$: EventEmitter<any> = new EventEmitter<any>();
     public modules: any[] = [];
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
-    public sysUICalendars: any[] = [];
     public calendardate: any = {};
     public calendars: any = {};
     public currentStart: any = {};
@@ -51,7 +49,6 @@ export class calendar implements OnDestroy {
     public googleColor: string = '#db4437';
     public loggedByGoogle: boolean = false;
     public asPicker: boolean = false;
-    public isAllToken: boolean = false;
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
     public sheetType: string = 'Week';
@@ -207,6 +204,7 @@ export class calendar implements OnDestroy {
                 .subscribe(events => {
                     this.calendars[userId] = [];
                     for (let event of events) {
+                        if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
                         event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                         switch (event.type) {
                             case 'event':
@@ -247,6 +245,7 @@ export class calendar implements OnDestroy {
         } else {
             let filteredEntries: any[] = [];
             for (let event of this.calendars[userId]) {
+                if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
                 if (event.start < end && event.end > start) {
                     event.start = moment(event.start).tz(this.timeZone);
                     event.end = moment(event.end).tz(this.timeZone);
@@ -316,36 +315,6 @@ export class calendar implements OnDestroy {
     }
 
     /*
-    * open add modal for other calendars
-    * @return events
-    */
-    public addOtherCalendar() {
-        if (this.isAllToken || this.isMobileView || this.isDashlet) {
-            return;
-        }
-        let calendars = this.sysUICalendars.filter(calendar => !this.otherCalendars.some(token => token.id == calendar.id));
-
-        this.modal.openModal('CalendarAddCalendar')
-            .subscribe(modalRef => {
-                modalRef.instance.calendars = calendars;
-                modalRef.instance.addCalendar
-                    .pipe(take(1))
-                    .subscribe(calendar => {
-                        if (calendar !== false) {
-                            let otherCalendars = this.otherCalendars;
-                            otherCalendars.push({
-                                id: calendar.id,
-                                name: calendar.name,
-                                visible: true,
-                                color: this.getRandomColor()
-                            });
-                            this.setOtherCalendars(otherCalendars.slice());
-                        }
-                    });
-            });
-    }
-
-    /*
     * @param calendar id
     * @return void
     */
@@ -371,8 +340,7 @@ export class calendar implements OnDestroy {
         if (save) {
             this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
         }
-        this.otherCalendars$.emit(this.otherCalendars);
-        this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
+        this.calendarDate = new moment(this.calendardate);
     }
 
     /*
@@ -575,18 +543,6 @@ export class calendar implements OnDestroy {
     }
 
     /*
-    * @return color
-    */
-    private getRandomColor() {
-        let letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-    /*
     * @return void
     */
     private broadcastSubscriber() {
@@ -708,22 +664,10 @@ export class calendar implements OnDestroy {
             .subscribe(calendars => {
                 this.setUserCalendars(calendars.Users, false);
                 this.setOtherCalendars(calendars.Other, false);
-                this.getSysUICalendars();
             });
         if (this.session.authData.googleToken) {
             this.loggedByGoogle = true;
         }
-    }
-
-    /*
-    * @return void
-    */
-    private getSysUICalendars() {
-        this.backend.getRequest('calendar/calendars')
-            .subscribe(calendars => {
-                this.sysUICalendars = calendars;
-                this.isAllToken = this.sysUICalendars.length == this.otherCalendars.length;
-            });
     }
 
     /*

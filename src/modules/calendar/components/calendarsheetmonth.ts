@@ -41,12 +41,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
     private ownerEvents: any[] = [];
-    private otherEvents: any[] = [];
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
 
@@ -61,7 +59,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     get allEvents() {
-        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+        return this.ownerEvents.concat(this.userEvents, this.googleEvents);
     }
 
     get eventHeight() {
@@ -85,9 +83,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
-        }
-        if (changes.otherCalendars || changes.setdate) {
-            this.getOtherEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -185,33 +180,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     });
                 }
             });
-    }
-
-    private getOtherEvents() {
-        this.otherEvents = [];
-        this.arrangeEvents();
-        if (this.calendar.isMobileView) {
-            return;
-        }
-
-        for (let calendar of this.calendar.otherCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            event.start = this.resetTime(event.start);
-                            event.end = this.resetTime(event.end);
-                            this.otherEvents.push(event);
-                            this.arrangeEvents();
-                        });
-                    }
-                });
-        }
     }
 
     private resetTime(event) {
