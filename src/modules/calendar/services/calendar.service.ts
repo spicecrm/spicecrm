@@ -51,6 +51,7 @@ export class calendar implements OnDestroy {
     public asPicker: boolean = false;
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
+    public isLoading: boolean = false;
     public sheetType: string = 'Week';
     public timeZone: any;
     public duration: any = {
@@ -170,7 +171,7 @@ export class calendar implements OnDestroy {
 
     public loadUsersEvents(startDate, endDate) {
         let usersObject = _.object(this.usersCalendars.map(c => c.id), this.usersCalendars);
-        return this.loadEvents(startDate, endDate, this.owner, false, this.usersCalendars.map(c => c.id))
+        return this.loadEvents(startDate, endDate, this.owner, this.usersCalendars.map(c => c.id))
             .pipe(
                 map((events: any) => {
                     return events
@@ -187,22 +188,23 @@ export class calendar implements OnDestroy {
     * @param start
     * @param end
     * @param calendar
-    * @param isOther
     * @return events
     */
-    public loadEvents(start, end, calendar = this.owner, isOther = false, users = []) {
+    public loadEvents(start, end, calendar = this.owner, users = []) {
         let userId = users.length > 0 ? 'users' : calendar;
         if (this.doReload(start, end, userId)) {
+            this.isLoading = true;
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {start: start.format(format), end: end.format(format), users};
-            let endPoint = isOther ? 'calendar/other/' : users.length > 0 ? 'calendar/users/' : 'calendar/';
+            let endPoint = users.length > 0 ? 'calendar/users/' : 'calendar/';
             this.currentEnd[userId] = end;
             this.currentStart[userId] = start;
 
             this.backend.getRequest(endPoint + calendar, params)
                 .subscribe(events => {
                     this.calendars[userId] = [];
+                    this.isLoading = false;
                     for (let event of events) {
                         if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
                         event.data = this.modelutilities.backendModel2spice(event.module, event.data);
@@ -266,6 +268,7 @@ export class calendar implements OnDestroy {
             return of([]);
         }
         if (this.doReload(startDate, endDate, "google")) {
+            this.isLoading = true;
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
@@ -276,6 +279,7 @@ export class calendar implements OnDestroy {
             this.backend.getRequest("google/calendar/getgoogleevents", params)
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
+                        this.isLoading = false;
                         for (let event of res.events) {
                             event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
                             event.end = moment(event.end.dateTime).format('YYYY-MM-DD HH:mm:ss');
@@ -312,18 +316,6 @@ export class calendar implements OnDestroy {
     */
     public getEvents(calendar = this.owner) {
         return this.calendars[calendar] ? this.calendars[calendar] : [];
-    }
-
-    /*
-    * @param calendar id
-    * @return void
-    */
-    public removeOtherCalendar(id) {
-        if (this.isMobileView || this.isDashlet) {
-            return;
-        }
-        let otherCalendars = this.otherCalendars.filter(calendar => calendar.id != id);
-        this.setOtherCalendars(otherCalendars);
     }
 
     /*
@@ -394,27 +386,14 @@ export class calendar implements OnDestroy {
     * @param type
     * @return void
     */
-    public setColor(id, color, type) {
-        switch (type) {
-            case "Users":
-                this.usersCalendars.some(calendar => {
+    public setUserColor(id, color) {
+        this.usersCalendars.some(calendar => {
                     if (calendar.id == id) {
                         calendar.color = color;
                         this.setUserCalendars(this.usersCalendars);
                         return true;
                     }
                 });
-                break;
-            case "Other":
-                this.otherCalendars.some(calendar => {
-                    if (calendar.id == id) {
-                        calendar.color = color;
-                        this.setOtherCalendars(this.otherCalendars);
-                        return true;
-                    }
-                });
-                break;
-        }
         this.color$.emit({id: id, color: color});
     }
 

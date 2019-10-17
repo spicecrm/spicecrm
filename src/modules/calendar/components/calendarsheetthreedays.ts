@@ -24,7 +24,7 @@ declare var moment: any;
     selector: 'calendar-sheet-three-days',
     templateUrl: './src/modules/calendar/templates/calendarsheetthreedays.html'
 })
-export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
+export class CalendarSheetThreeDays implements OnChanges {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     public sheetDays: any[] = [];
@@ -91,6 +91,20 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         return this.isDashlet ? 'slds-text-heading--medium' : 'slds-text-heading--large';
     }
 
+    get timeColStyle() {
+        return {
+            width: this.sheetTimeWidth + 'px'
+        };
+    }
+
+    get hourHeightStyle() {
+        return {height: this.calendar.sheetHourHeight + 'px'};
+    }
+
+    get dayWidthStyle() {
+        return {width: `calc(100% / ${this.calendar.weekDaysCount})`};
+    }
+
     public ngOnChanges(changes: SimpleChanges) {
         this.sheetDays = this.buildSheetDays();
         if (changes.setdate) {
@@ -105,25 +119,12 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         }
     }
 
-    public ngAfterViewInit() {
-        this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
-    }
-
     /*
     * @param index
     * @param item
     * @return index|item
     */
     private trackByFn(index, item) {
-        return item.id;
-    }
-
-    /*
-    * @param index
-    * @param item
-    * @return index|item
-    */
-    private trackByFnDate(index, item) {
         return index;
     }
 
@@ -379,22 +380,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     /*
     * @return style
     */
-    private getTimeColStyle() {
-        return {
-            width: this.sheetTimeWidth + 'px'
-        };
-    }
-
-    /*
-    * @return style
-    */
-    private getDayColStyle() {
-        return {width: 'calc(100% / 3)'};
-    }
-
-    /*
-    * @return style
-    */
     private getDaysContainerStyle() {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
@@ -432,53 +417,6 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
     }
 
     /*
-    * @param hour
-    * @return style
-    */
-    private getHourDividerStyle(hour) {
-        return {
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px'
-        };
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private getHalfHourDividerStyle(hour) {
-        return {
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2) + 'px',
-            left: this.sheetTimeWidth + 'px',
-            width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'
-        };
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private getHourLabelStyle(hour) {
-        return {
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
-            width: this.sheetTimeWidth + 'px'
-        };
-    }
-
-    /*
-    * @param day
-    * @return style
-    */
-    private getDayDividerStyle(day) {
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        return {
-            left: (this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day)) + 'px',
-            top: '0px',
-            height: (this.calendar.sheetHourHeight * this.sheetHours.length) + 'px'
-        };
-    }
-
-    /*
     * @param dow day
     * @return void
     */
@@ -488,29 +426,5 @@ export class CalendarSheetThreeDays implements OnChanges, AfterViewInit {
         }
         let navigateDate = moment(dow);
         this.navigateday.emit(navigateDate);
-    }
-
-    /*
-    * @param hour
-    * @param day
-    * @return style
-    */
-    private getDropTargetStyle(hour, day) {
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        return {
-            left: (this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day)) + 'px',
-            width: ((sheetWidth - this.sheetTimeWidth) / 3) + 'px',
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
-            height: this.calendar.sheetHourHeight + 'px',
-        };
-    }
-
-    /*
-    * @param hour
-    * @return boolean
-    */
-    private notLastHour(hour) {
-        return hour < this.sheetHours.length;
     }
 }
