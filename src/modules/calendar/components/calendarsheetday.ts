@@ -25,7 +25,7 @@ declare var moment: any;
     templateUrl: './src/modules/calendar/templates/calendarsheetday.html'
 })
 
-export class CalendarSheetDay implements OnChanges, AfterViewInit {
+export class CalendarSheetDay implements OnChanges {
 
     @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
@@ -56,6 +56,10 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
             'height': 'calc(100% - ' + this.headerContainer.element.nativeElement.clientHeight + 'px)',
             'margin-top': '-1px'
         };
+    }
+
+    get hourHeightStyle() {
+        return {height: this.calendar.sheetHourHeight + 'px'};
     }
 
     get isDashlet() {
@@ -98,10 +102,6 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return this.isDashlet ? 'slds-text-heading--medium' : 'slds-text-heading--large';
     }
 
-    public ngAfterViewInit() {
-        this.calendarsheet.element.nativeElement.scrollTop = 8 * this.calendar.sheetHourHeight;
-    }
-
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.setdate) {
             this.sheetDay = {date: changes.setdate.currentValue};
@@ -115,13 +115,11 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         }
     }
 
-    /*
-    * @param index
-    * @param item
-    * @return index|item
-    */
-    private trackByFn(index, item) {
-        return item.id;
+    get timeColStyle() {
+        return {
+            width: this.sheetTimeWidth + 'px',
+            height: '100%'
+        };
     }
 
     /*
@@ -129,7 +127,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     * @param item
     * @return index|item
     */
-    private trackByFnHours(index, item) {
+    private trackByFn(index, item) {
         return index;
     }
 
@@ -251,7 +249,7 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return {
             'left': (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
             'width': itemWidth + 'px',
-            'top': (this.calendar.sheetHourHeight / 60 * startminutes) + 'px',
+            'top': (((this.calendar.sheetHourHeight / 60 * startminutes)) -1) + 'px',
             'height': (this.calendar.sheetHourHeight / 60 * (endminutes - startminutes)) + 'px',
             'z-index': event.resizing ? 20 : 15,
             'border-bottom': event.resizing ? '1px dotted #fff' : 0
@@ -283,13 +281,6 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
     /*
     * @return style
     */
-    private getTimeColStyle() {
-        return {width: this.sheetTimeWidth + 'px'};
-    }
-
-    /*
-    * @return style
-    */
     private getDayColStyle() {
         return {width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'};
     }
@@ -315,74 +306,5 @@ export class CalendarSheetDay implements OnChanges, AfterViewInit {
         return {
             color: isToday ? this.calendar.todayColor : 'inherit'
         };
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private getHourDividerStyle(hour) {
-        return {
-            top: this.sheetTopMargin + this.calendar.sheetHourHeight * hour + 'px'
-        };
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private getHalfHourDividerStyle(hour) {
-        return {
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour + this.calendar.sheetHourHeight / 2) + 'px',
-            left: this.sheetTimeWidth + 'px',
-            width: 'calc(100% - ' + this.sheetTimeWidth + 'px)'
-        };
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private getHourLabelStyle(hour) {
-        return {
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
-            width: this.sheetTimeWidth + 'px'
-        };
-    }
-
-    /*
-    * @return style
-    */
-    private getDayDividerStyle() {
-        return {
-            left: this.sheetTimeWidth + 'px',
-            top: '0px',
-            height: (this.calendar.sheetHourHeight * this.sheetHours.length) + 'px'
-        };
-    }
-
-    private gotoWeek() {
-        this.navigateweek.emit();
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private getDropTargetStyle(hour) {
-        return {
-            left: this.sheetTimeWidth + 'px',
-            width: 'calc(100% - ' + this.sheetTimeWidth + 'px)',
-            top: (this.sheetTopMargin + this.calendar.sheetHourHeight * hour) + 'px',
-            height: this.calendar.sheetHourHeight + 'px'
-        };
-    }
-
-    /*
-    * @param hour
-    * @return style
-    */
-    private notLastHour(hour) {
-        return hour < this.sheetHours.length;
     }
 }

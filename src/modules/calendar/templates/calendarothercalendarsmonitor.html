@@ -18,7 +18,7 @@
                 <a class="slds-text-body--regular slds-truncate" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">{{usersCalendar.name}}</a>
             </div>
             <div>
-                <calendar-color-picker *ngIf="hovered == usersCalendar.id" (color$)="setColor(usersCalendar.id, $event, 'Users')"></calendar-color-picker>
+                <calendar-color-picker *ngIf="hovered == usersCalendar.id" (colorChange)="setUserColor(usersCalendar.id, $event)"></calendar-color-picker>
                 <button  class="slds-button slds-button--icon" (click)="removeUserCalendar(usersCalendar.id)">
                     <system-button-icon icon="clear" size="small"></system-button-icon>
                 </button>

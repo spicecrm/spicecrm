@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, EventEmitter, HostBinding, HostListener, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {calendar} from '../services/calendar.service';
 import {take} from "rxjs/operators";
@@ -13,51 +13,36 @@ declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-drop-target',
-    template: `
-        <div *ngIf="showPlus" style="cursor: pointer" (click)="addEvent()"
-             class="slds-align--absolute-center spice-h-full slds-theme_shade slds-text-heading_medium slds-text-color--inverse-weak">
-            +
-        </div>`,
+    template: '',
     providers: [model]
 })
 export class CalendarSheetDropTarget {
 
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     @Input() private hour: any = '';
+    @Input() private set hourPart(value: number) {
+        this.minutes = value ? 15* value : 0;
+    }
     @Input() private day: any = undefined;
-    private isDropTarget: boolean = false;
-    private showPlus: boolean = false;
 
-    constructor(private calendar: calendar, private model: model) {
+    private minutes: number = 0;
+
+    constructor(private calendar: calendar, private model: model, private elementRef: ElementRef) {
     }
 
     get content() {
         return this.hour + ' ' + this.day;
     }
 
-    @HostBinding('class')
-    get targetClass() {
-        return this.isDropTarget ? 'slds-is-absolute slds-theme--shade' : 'slds-is-absolute';
-    }
-
+    @HostListener('click')
     private addEvent() {
-        if (this.day) {
-            if (this.calendar.asPicker) {
-                this.calendar.pickerDate$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
-            } else {
-                this.calendar.addingEvent$.emit(moment(this.day.date).hour(this.hour).minute(0).second(0));
-            }
+        let date = this.day ? new moment(this.day) : new moment();
+        date.hour(this.hour).minute(this.minutes).second(0);
+        if (this.calendar.asPicker) {
+            this.calendar.pickerDate$.emit(date);
+        } else {
+            this.calendar.addingEvent$.emit(date);
         }
-    }
-
-    @HostListener('mouseenter')
-    private mouseEnter() {
-        this.showPlus = true;
-    }
-
-    @HostListener('mouseleave')
-    private mouseLeave() {
-        this.showPlus = false;
     }
 
     @HostListener('dragover', ['$event'])
@@ -67,40 +52,30 @@ export class CalendarSheetDropTarget {
     }
 
     @HostListener('dragenter')
-    private dragEnter() {
-        this.isDropTarget = true;
+    @HostListener('mouseenter')
+    private activateHoverStyle() {
+        this.elementRef.nativeElement.style.cursor = 'pointer';
+        this.elementRef.nativeElement.innerText = `${this.hour}:${(this.minutes == 0 ? '00' : this.minutes)}`;
+        this.elementRef.nativeElement.classList.add('slds-text-align--center');
+        this.elementRef.nativeElement.classList.add('slds-theme--shade');
     }
 
+    @HostListener('mouseleave')
     @HostListener('dragleave')
-    private dragLeave() {
-        this.isDropTarget = false;
+    private deactivateHoverStyle() {
+        this.elementRef.nativeElement.style.cursor = 'initial';
+        this.elementRef.nativeElement.innerText = '';
+        this.elementRef.nativeElement.classList.remove('slds-text-align--center');
+        this.elementRef.nativeElement.classList.remove('slds-theme--shade');
     }
 
     @HostListener('drop', ['$event'])
-    private drop(event) {
-        event.preventDefault();
-        event.stopPropagation();
+    private drop(e) {
+        this.deactivateHoverStyle();
+        let dragEvent: any = this.calendar.getEvents().find(calendarEvent => calendarEvent.dragging);
 
-        let dragEvent: any;
-        this.calendar.getEvents().some(calendarEvent => {
-            if (calendarEvent.dragging) {
-                dragEvent = calendarEvent;
-                return true;
-            }
-        });
         if (dragEvent) {
             dragEvent.dragging = false;
-
-            if (this.day) {
-                dragEvent.data.date_start.date(this.day.date.date());
-                dragEvent.data.date_start.month(this.day.date.month());
-                dragEvent.data.date_start.year(this.day.date.year());
-            }
-            dragEvent.data.date_start.hour(this.hour);
-            dragEvent.data.date_start.minutes(0);
-
-            // calculate the end date
-            dragEvent.data.date_end = new moment(dragEvent.data.date_start).add(dragEvent.data.duration_minutes + 60 * dragEvent.data.duration_hours, 'm');
 
             if (this.day) {
                 dragEvent.start.date(this.day.date.date());
@@ -108,20 +83,28 @@ export class CalendarSheetDropTarget {
                 dragEvent.start.year(this.day.date.year());
             }
             dragEvent.start.hour(this.hour);
-            dragEvent.start.minutes(0);
+            dragEvent.start.minutes(this.minutes);
 
             // calculate the end date
             dragEvent.end = new moment(dragEvent.start).add(dragEvent.data.duration_minutes + 60 * dragEvent.data.duration_hours, 'm');
+            let module = this.calendar.modules.find(module => module == dragEvent.module);
+            let dateStartName = module.dateStartName || 'date_start';
+            let dateEndName = module.dateEndName ||'date_end';
+            dragEvent.data[dateStartName].date(dragEvent.start.date());
+            dragEvent.data[dateStartName].month(dragEvent.start.month());
+            dragEvent.data[dateStartName].year(dragEvent.start.year());
+            dragEvent.data[dateStartName].hour(this.hour);
+            dragEvent.data[dateStartName].minutes(this.minutes);
+            dragEvent.data[dateEndName] = new moment(dragEvent.end);
 
             // save the event
             this.saveEvent(dragEvent);
 
             // emit to rearrange
             this.rearrange.emit();
+            e.preventDefault();
+            e.stopPropagation();
         }
-
-        this.isDropTarget = false;
-        event.preventDefault();
     }
 
 

@@ -51,7 +51,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 private model: model,
                 private renderer: Renderer2) {
         this.subscription = this.calendar.color$.subscribe(calendar => {
-            if (this.calendar.calendars[calendar.id] && this.calendar.calendars[calendar.id].some(event => this.event.id == event.id)) {
+            if (this.calendar.calendars.users && this.calendar.calendars.users.some(event => this.event.id == event.id)) {
                 this.color = calendar.color;
             }
         });
@@ -114,15 +114,12 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     */
     @HostListener('dragstart', ['$event'])
     private dragStart(event) {
-        event.stopPropagation();
-        if (!this.canEdit) {
-            event.preventDefault();
-            return;
-        }
+        if (!this.canEdit) return;
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData("event", 'cross browser dumb');
         this.event.dragging = true;
-        setTimeout(() => this.hidden = true, 0);
+        setTimeout(() => this.hidden = true);
+        event.stopPropagation();
     }
 
 
