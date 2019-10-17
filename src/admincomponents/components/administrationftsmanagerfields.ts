@@ -24,7 +24,10 @@ export class AdministrationFTSManagerFields {
                 private modal: modal,
                 private injector: Injector,
                 private ftsconfiguration: ftsconfiguration) {
-
+        // if the module is changed reset the current field
+        this.ftsconfiguration.module$.subscribe(module => {
+            this.currentfield = '';
+        });
     }
 
     get moduleFtsFields() {

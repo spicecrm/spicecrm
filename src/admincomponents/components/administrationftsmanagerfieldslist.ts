@@ -6,6 +6,7 @@ import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
+import {modal} from '../../services/modal.service';
 import {backend} from '../../services/backend.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
 import {CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -25,12 +26,13 @@ export class AdministrationFTSManagerFieldsList {
     @Input() private nodePath: string = '';
     @Input() private selectedField: string = '';
     @Output() public selectListField: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('dropList', {static: false} ) private dropList;
+    @ViewChild('dropList', {static: false}) private dropList;
 
     constructor(private metadata: metadata,
                 private language: language,
                 private ftsconfiguration: ftsconfiguration,
                 private backend: backend,
+                private modal: modal,
                 private modelutilities: modelutilities) {
     }
 
@@ -81,7 +83,11 @@ export class AdministrationFTSManagerFieldsList {
      * @param index index of the row
      */
     private deleteField(index) {
-        this.ftsconfiguration.moduleFtsFields.splice(index, 1);
+        this.modal.confirmDeleteRecord().subscribe(response => {
+            if (response) {
+                this.ftsconfiguration.moduleFtsFields.splice(index, 1);
+            }
+        });
     }
 
     private handleSelection(fieldId) {
