@@ -1,7 +1,7 @@
 /**
  * @module AdminComponentsModule
  */
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit, EventEmitter} from '@angular/core';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
 
@@ -15,10 +15,13 @@ import {Subject} from "rxjs";
 @Injectable()
 export class ftsconfiguration {
     public module: string = '';
+    public module$: EventEmitter<string> = new EventEmitter<string>();
     public moduleFtsFields: any = [];
     public moduleFtsSettings: any = {};
     public indexing: boolean = false;
     public fieldsDropList: CdkDropList;
+
+    public modules: any[] = [];
 
     constructor(
         private backend: backend,
@@ -27,12 +30,28 @@ export class ftsconfiguration {
         private modal: modal,
         private toast: toast
     ) {
+        this.backend.getRequest('ftsmanager/core/modules').subscribe(modules => this.modules = modules);
     }
 
+    /**
+     * set the current module .. if the module is known retrieve the fields ... otherwise add it and set empty set empty
+     *
+     * @param module
+     */
     public setModule(module) {
         this.module = module;
-        this.getModuleFtsFields();
-        this.getModuleSettings();
+        if (this.modules.indexOf(module) >= 0) {
+            this.getModuleFtsFields();
+            this.getModuleSettings();
+        } else if (this.module) {
+            this.modules.push(module);
+            this.moduleFtsFields = [];
+            this.moduleFtsSettings = [];
+        } else {
+            this.moduleFtsFields = [];
+            this.moduleFtsSettings = [];
+        }
+        this.module$.emit(module);
     }
 
     public getModuleFtsFields() {
@@ -43,7 +62,7 @@ export class ftsconfiguration {
     }
 
     public getModuleSettings() {
-        this.moduleFtsFields = [];
+        this.moduleFtsSettings = [];
         this.backend.getRequest('ftsmanager/' + this.module + '/settings').subscribe(settings => {
             this.moduleFtsSettings = settings;
         });
@@ -60,6 +79,13 @@ export class ftsconfiguration {
         });
 
         return fieldDetails;
+    }
+
+    public deleteModule(module) {
+        this.backend.deleteRequest(`ftsmanager/${this.module}`).subscribe(done => {
+            this.modules.splice(this.modules.indexOf(module), 1);
+            this.module = '';
+        });
     }
 
     public save(notify = true) {
@@ -105,27 +131,27 @@ export class ftsconfiguration {
                 label = 'LBL_INITIALIZE';
                 break;
             case 'reset':
-                url = `ftsmanager/${this.module}/resetindex`;
+                url = `ftsmanager/${this.module}/index/reset`;
                 label = 'LBL_RESET';
                 break;
         }
 
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') +': '+ this.language.getLabel(label);
+            loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') + ': ' + this.language.getLabel(label);
             if (action == 'reset') {
-            this.save(false).subscribe(res => {
-                this.backend.postRequest(url, params).subscribe(
-                    result => {
-                        if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                            this.modal.info(result.message, result.type ? result.type : 'success', result.status);
-                        } else if (result.status != 'error') {
-                            this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
-                        }
-                        loadingModalRef.instance.self.destroy();
-                    },
-                    error => loadingModalRef.instance.self.destroy()
-                );
-            }, error => loadingModalRef.instance.self.destroy());
+                this.save(false).subscribe(res => {
+                    this.backend.postRequest(url, params).subscribe(
+                        result => {
+                            if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
+                                this.modal.info(result.message, result.type ? result.type : 'success', result.status);
+                            } else if (result.status != 'error') {
+                                this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                            }
+                            loadingModalRef.instance.self.destroy();
+                        },
+                        error => loadingModalRef.instance.self.destroy()
+                    );
+                }, error => loadingModalRef.instance.self.destroy());
             } else {
                 this.backend.postRequest(url, params).subscribe(
                     result => {

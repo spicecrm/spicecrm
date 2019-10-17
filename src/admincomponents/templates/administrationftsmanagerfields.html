@@ -1,10 +1,10 @@
 <div class="slds-grid">
     <div class="slds-size--1-of-2 slds-grid slds-grid--vertical" tobottom>
-        <div class="slds-grow slds-scrollable--y" style="height: inherit">
-            <administration-ftsmanager-fields-list style="display: block; height: inherit" (selectListField)="selectField($event)" [selectedField]="currentfield"></administration-ftsmanager-fields-list>
+        <div class="slds-grow slds-scrollable--y" style="height: 100%">
+            <administration-ftsmanager-fields-list style="display: block; height: 100%" (selectListField)="selectField($event)" [selectedField]="currentfield"></administration-ftsmanager-fields-list>
         </div>
-        <div class="slds-p-around--small slds-text-align--center slds-theme--shade">
-            <a href="javascript:void(0)" (click)="showAddFields()">{{language.getLabel('LBL_ADD_FIELD')}}</a>
+        <div class="slds-p-around--small slds-text-align--center">
+            <button class="slds-button slds-button--neutral" (click)="showAddFields()">{{language.getLabel('LBL_ADD_FIELD')}}</button>
         </div>
     </div>
     <div class="slds-size--1-of-2 slds-border--left slds-p-left--x-small" tobottom>
@@ -221,7 +221,7 @@
             </fieldset>
         </div>
         <ng-template #selectfield>
-            <div class="slds-p-around--small slds-text-align--center">select a field</div>
+            <div class="slds-p-around--small slds-align--absolute-center slds-height_full">select a field</div>
         </ng-template>
     </div>
 </div>
