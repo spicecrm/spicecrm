@@ -143,7 +143,8 @@ export class ftsconfiguration {
                     this.backend.postRequest(url, params).subscribe(
                         result => {
                             if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                                this.modal.info(result.message, result.type ? result.type : 'success', result.status);
+                                let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFO');
+                                this.modal.info(result.message, headerText, result.status);
                             } else if (result.status != 'error') {
                                 this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                             }
@@ -156,7 +157,8 @@ export class ftsconfiguration {
                 this.backend.postRequest(url, params).subscribe(
                     result => {
                         if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                            this.modal.info(result.message, result.type, result.status);
+                            let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFO');
+                            this.modal.info(result.message, headerText, result.status);
                         } else if (result.status != 'error') {
                             this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                         }
