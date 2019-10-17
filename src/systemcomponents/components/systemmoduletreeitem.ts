@@ -92,7 +92,8 @@ export class SystemModuleTreeItem {
                 item.displayname = this.language.getLabel(item.label);
                 this.nodeitems.push(item);
             }
-            this.nodeitems.sort((a, b) => this.language.getLabel(a.label).toLowerCase() > this.language.getLabel(b.label).toLowerCase() ? 1 : -1);
+            this.nodeitems.sort((a, b) => !!this.language.getLabel(a.label) && !!this.language.getLabel(b.label) ?
+                this.language.getLabel(a.label).toLowerCase() > this.language.getLabel(b.label).toLowerCase() ? 1 : -1 : 0);
 
             this.isLoading = false;
             this.isLoaded = true;
