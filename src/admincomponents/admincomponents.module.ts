@@ -27,6 +27,7 @@ import /*embed*/ { AdministrationFTSManager } from './components/administrationf
 import /*embed*/ { AdministrationFTSManagerFields } from './components/administrationftsmanagerfields';
 import /*embed*/ { AdministrationFTSManagerFieldsList } from './components/administrationftsmanagerfieldslist';
 import /*embed*/ { AdministrationFTSManagerDetails } from './components/administrationftsmanagerdetails';
+import /*embed*/ { AdministrationFTSManagerModuleAdd } from './components/administrationftsmanagermoduleadd';
 import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
 import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
 import /*embed*/ { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
@@ -73,6 +74,7 @@ export class AdministrationMain {}
         AdministrationQuotaManager,
         AdministrationQuotaManagerField,
         AdministrationFTSManager,
+        AdministrationFTSManagerModuleAdd,
         AdministrationFTSManagerFields,
         AdministrationFTSManagerFieldsList,
         AdministrationFTSManagerDetails,
