@@ -13,7 +13,15 @@ declare var moment: any;
 
 @Component({
     selector: "calendar-event-summary",
-    templateUrl: "./src/modules/calendar/templates/calendareventsummary.html"
+    templateUrl: "./src/modules/calendar/templates/calendareventsummary.html",
+    styles: [`
+        .event_has_dark_color {
+            color: #ffffff;
+        }
+        .event_has_dark_color:hover {
+            color: #eeeeee;
+        }
+    `]
 
 })
 export class CalendarEventSummary {
@@ -33,6 +41,6 @@ export class CalendarEventSummary {
     * @return class
     */
     private getTextClass() {
-        return !this.isScheduleSheet && this.hasDarkColor ? 'slds-text-color--inverse' : '';
+        return !this.isScheduleSheet && this.hasDarkColor ? 'event_has_dark_color' : '';
     }
 }

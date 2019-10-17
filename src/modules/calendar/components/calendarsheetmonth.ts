@@ -251,8 +251,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         let calendarDate = this.calendar.calendarDate;
         let isToday = calendarDate.year() == todayDay.year() && calendarDate.month() == todayDay.month() && todayDayShort == weekdayShort;
         return {
-            width: `calc(100% / ${this.calendar.weekDaysCount})`,
-            color: isToday ? this.calendar.todayColor : 'inherit',
+            'width': `calc(100% / ${this.calendar.weekDaysCount})`,
+            'color': isToday ? this.calendar.todayColor : 'inherit',
             'font-weight': isToday ? '600' : 'inherit'
         };
     }
@@ -294,7 +294,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             }
             w++;
         }
-    };
+    }
 
     private notLastWeek(week) {
         return week < this.currentGrid.length;
@@ -312,12 +312,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     private getBoxStyle(i, j, month) {
         return {
-            left: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
-            top: 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
-            color: this.notThisMonth(month) ? '#9faab5' : 'inherit',
+            'left': (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
+            'top': 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
+            'color': this.notThisMonth(month) ? '#9faab5' : 'inherit',
             'background-color': this.notThisMonth(month) ? '#f4f6f9' : 'transparent',
-            width: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
-            height: 'calc(100% / ' + this.currentGrid.length + ')',
+            'width': (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
+            'height': 'calc(100% / ' + this.currentGrid.length + ')',
         };
     }
 
@@ -356,10 +356,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             'border-radius': '50%',
             'line-height': '1rem',
             'text-align': 'center',
-            width: '1rem',
-            height: '1rem',
-            display: 'block',
-            color: isToday ? '#fff' : 'inherit',
+            'width': '1rem',
+            'height': '1rem',
+            'display': 'block',
+            'color': isToday ? '#fff' : 'inherit',
             'background-color': isToday ? this.calendar.todayColor : 'inherit',
         };
     }

@@ -64,6 +64,7 @@ export class CalendarSheetSchedule implements OnChanges {
         return this.allEvents.length == 0 && this.calendar.isDashlet;
     }
 
+    // tslint:disable-next-line:adjacent-overload-signatures
     set allEvents(value) {
         let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
         events.sort((a, b) => a.date - b.date);
