@@ -39,7 +39,7 @@ export class AdministrationFTSManagerFieldsAdd {
         return this.filterKey ? this.nodefields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.filterKey.toLowerCase()) ||
-                    nodeFiled.label.toLowerCase().includes(this.filterKey.toLowerCase());
+                    (nodeFiled.label && nodeFiled.label.toLowerCase().includes(this.filterKey.toLowerCase()));
             }) : this.nodefields;
     }
 
