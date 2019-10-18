@@ -391,10 +391,10 @@ export class calendar implements OnDestroy {
                     if (calendar.id == id) {
                         calendar.color = color;
                         this.setUserCalendars(this.usersCalendars);
+                        this.color$.emit({id: id, color: color});
                         return true;
                     }
                 });
-        this.color$.emit({id: id, color: color});
     }
 
     /*

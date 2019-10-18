@@ -50,9 +50,9 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 private calendar: calendar,
                 private model: model,
                 private renderer: Renderer2) {
-        this.subscription = this.calendar.color$.subscribe(calendar => {
-            if (this.calendar.calendars.users && this.calendar.calendars.users.some(event => this.event.id == event.id)) {
-                this.color = calendar.color;
+        this.subscription = this.calendar.color$.subscribe(res => {
+            if (this.event.data.assigned_user_id && res.id == this.event.data.assigned_user_id) {
+                this.color = res.color;
             }
         });
     }
