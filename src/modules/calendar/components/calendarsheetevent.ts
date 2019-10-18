@@ -18,6 +18,7 @@ import {view} from '../../../services/view.service';
 import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
 import {configurationService} from "../../../services/configuration.service";
+import {take} from "rxjs/operators";
 
 /**
  * @ignore
@@ -116,8 +117,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     private dragStart(event) {
         if (!this.canEdit) return;
         event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData("event", 'cross browser dumb');
-        this.event.dragging = true;
+        this.subscribeToDrop();
         setTimeout(() => this.hidden = true);
         event.stopPropagation();
     }
@@ -256,5 +256,27 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         let b = (rgb >> 0) & 0xff;  // extract blue
         let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
         return luma < 120;
+    }
+
+    private subscribeToDrop() {
+        this.calendar.eventDrop$
+            .pipe(take(1))
+            .subscribe(dropData => {
+            if (dropData.day) {
+                this.event.start = moment(dropData.day.date.format());
+            }
+            this.event.start.hour(dropData.hour).minute(dropData.minutes).seconds(0);
+
+            // calculate the end date
+            this.event.end = moment(this.event.start.format()).add(this.event.data.duration_minutes + 60 * this.event.data.duration_hours, 'm');
+
+            let module = this.calendar.modules.find(module => module.name == this.event.module) || {};
+            let dateStartName = module.dateStartName || 'date_start';
+            let dateEndName = module.dateEndName ||'date_end';
+            this.event.data[dateStartName] = moment(this.event.start.format());
+            this.event.data[dateEndName] = new moment(this.event.end.format());
+            this.model.data = {...this.event.data};
+            this.model.save(false);
+        });
     }
 }
