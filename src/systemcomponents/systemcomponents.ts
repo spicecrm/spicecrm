@@ -61,6 +61,7 @@ import /*embed*/ {SystemInputFieldset} from "./components/systeminputfieldset";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
 import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
+import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefield";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
@@ -174,6 +175,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
+        SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
         SystemInputTags,
@@ -265,6 +267,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
+        SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
         SystemInputTags,
