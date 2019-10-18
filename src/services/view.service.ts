@@ -1,8 +1,9 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Injectable, OnInit, Optional} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
+import {model} from "./model.service";
 
 @Injectable()
 export class view {
@@ -38,15 +39,33 @@ export class view {
      */
     public editfieldid: string = '';
 
-    // defines the labele .. can be value none, default, long or short
+    /**
+     * defines the default label length for the view
+     */
     public labels: 'default' | 'long' | 'short' = 'default';
 
-    // set the size
+    /**
+     * the size for the responsive design
+     */
     public size: 'regular' | 'small' = 'regular';
 
-    constructor() {
+    /**
+     * set to true to link the view to the model. If set the view will link itself to the model edit mode.
+     */
+    public linkedToModel: boolean = false;
+
+    constructor(@Optional() private model: model) {
         this.mode$ = new BehaviorSubject<string>(this.mode);
+
+        if (this.model) {
+            this.model.mode$.subscribe(mode => {
+                if (this.linkedToModel && mode == 'display') {
+                    this.setViewMode();
+                }
+            });
+        }
     }
+
 
     /**
      * allows qeurying the current mode
