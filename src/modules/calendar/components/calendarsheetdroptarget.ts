@@ -87,7 +87,7 @@ export class CalendarSheetDropTarget {
 
             // calculate the end date
             dragEvent.end = new moment(dragEvent.start).add(dragEvent.data.duration_minutes + 60 * dragEvent.data.duration_hours, 'm');
-            let module = this.calendar.modules.find(module => module == dragEvent.module);
+            let module = this.calendar.modules.find(module => module.name == dragEvent.module);
             let dateStartName = module.dateStartName || 'date_start';
             let dateEndName = module.dateEndName ||'date_end';
             dragEvent.data[dateStartName].date(dragEvent.start.date());
