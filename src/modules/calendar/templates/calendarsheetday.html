@@ -8,7 +8,7 @@
             <h1 class="slds-p-left--x-small slds-truncate" [ngClass]="dateTextDateClass" [ngStyle]="isTodayStyle()">{{displayDate('date')}}</h1>
         </div>
         <div #multieventscontainer class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small" [ngStyle]="getMultiEventsContainerStyle()">
-            <ng-container *ngFor="let event of allMultiEvents; let index = index; trackBy: trackByFn">
+            <ng-container *ngFor="let event of allMultiEvents; let index = index; trackBy: trackByItemFn">
                 <calendar-sheet-event [ngStyle]="getMultiEventStyle(index)" [event]="event"></calendar-sheet-event>
             </ng-container>
         </div>
@@ -19,7 +19,7 @@
         <system-spinner size="30"></system-spinner>
     </div>
     <ng-container *ngIf="!calendar.isLoading">
-        <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByFn" class="slds-grid">
+        <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
             <div [ngStyle]="timeColStyle">
                 <div class="slds-text-align--center slds-border--bottom" [ngStyle]="hourHeightStyle">{{sheetHour}}:00</div>
             </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
+        <ng-container *ngFor="let event of allEvents; trackBy: trackByItemFn">
             <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event"></calendar-sheet-event>
         </ng-container>
     </ng-container>
