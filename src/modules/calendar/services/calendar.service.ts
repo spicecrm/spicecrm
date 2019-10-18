@@ -29,6 +29,7 @@ export class calendar implements OnDestroy {
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
     public color$: EventEmitter<any> = new EventEmitter<any>();
+    public eventDrop$: EventEmitter<any> = new EventEmitter<any>();
     public modules: any[] = [];
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
