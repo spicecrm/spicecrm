@@ -23,6 +23,7 @@ import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttilecl
 
 
 
+import /*embed*/ {ActivityTimelineSaveButton} from "./components/activitytimelinesavebutton";
 import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
 import /*embed*/ {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
 import /*embed*/ {ActivityCloseModal} from "./components/activityclosemodal";
@@ -51,6 +52,7 @@ import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactiv
         TasksManagerTask,
         TasksManagerTaskDetails,
         TasksAssitantTileClose,
+        ActivityTimelineSaveButton,
         ActionActivityCloseButton,
         ActionActivityCloseCreateButton,
         ActivityCloseModal,
