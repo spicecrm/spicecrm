@@ -33,9 +33,6 @@
                 </button>
             </div>
             <ng-container *ngIf="!isMobileView && !asPicker">
-                <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
-                    <system-button-icon [icon]="'add'"></system-button-icon>
-                </button>
                 <button class="slds-button slds-button--icon-border" (click)="calendar.refresh()">
                     <system-button-icon [icon]="'refresh'"></system-button-icon>
                 </button>
