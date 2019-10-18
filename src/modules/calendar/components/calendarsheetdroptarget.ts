@@ -18,7 +18,6 @@ declare var moment: any;
 })
 export class CalendarSheetDropTarget {
 
-    @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
     @Input() private hour: any = '';
     @Input() private set hourPart(value: number) {
         this.minutes = value ? 15* value : 0;
@@ -72,51 +71,12 @@ export class CalendarSheetDropTarget {
     @HostListener('drop', ['$event'])
     private drop(e) {
         this.deactivateHoverStyle();
-        let dragEvent: any = this.calendar.getEvents().find(calendarEvent => calendarEvent.dragging);
-
-        if (dragEvent) {
-            dragEvent.dragging = false;
-
-            if (this.day) {
-                dragEvent.start.date(this.day.date.date());
-                dragEvent.start.month(this.day.date.month());
-                dragEvent.start.year(this.day.date.year());
-            }
-            dragEvent.start.hour(this.hour);
-            dragEvent.start.minutes(this.minutes);
-
-            // calculate the end date
-            dragEvent.end = new moment(dragEvent.start).add(dragEvent.data.duration_minutes + 60 * dragEvent.data.duration_hours, 'm');
-            let module = this.calendar.modules.find(module => module.name == dragEvent.module);
-            let dateStartName = module.dateStartName || 'date_start';
-            let dateEndName = module.dateEndName ||'date_end';
-            dragEvent.data[dateStartName].date(dragEvent.start.date());
-            dragEvent.data[dateStartName].month(dragEvent.start.month());
-            dragEvent.data[dateStartName].year(dragEvent.start.year());
-            dragEvent.data[dateStartName].hour(this.hour);
-            dragEvent.data[dateStartName].minutes(this.minutes);
-            dragEvent.data[dateEndName] = new moment(dragEvent.end);
-
-            // save the event
-            this.saveEvent(dragEvent);
-
-            // emit to rearrange
-            this.rearrange.emit();
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    }
-
-
-    private saveEvent(event) {
-        this.model.module = event.module;
-        this.model.id = event.id;
-        this.model.data = event.data;
-        event.saving = true;
-        this.model.save()
-            .pipe(take(1))
-            .subscribe(data => {
-                event.saving = false;
-            });
+        this.calendar.eventDrop$.emit({
+            day: this.day,
+            hour: this.hour,
+            minutes: this.minutes
+        });
+        e.preventDefault();
+        e.stopPropagation();
     }
 }
