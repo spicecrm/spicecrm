@@ -115,9 +115,18 @@ export class CalendarSheetWeek implements OnChanges {
     /*
     * @param index
     * @param item
-    * @return index|item
+    * @return item.id
     */
-    private trackByFn(index, item) {
+    private trackByItemFn(index, item) {
+        return item.id;
+    }
+
+    /*
+    * @param index
+    * @param item
+    * @return index
+    */
+    private trackByIndexFn(index, item) {
         return index;
     }
 

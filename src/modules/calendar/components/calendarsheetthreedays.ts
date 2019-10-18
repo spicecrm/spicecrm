@@ -37,7 +37,6 @@ export class CalendarSheetThreeDays implements OnChanges {
     @Input('footercontainer') private footerContainer: any = undefined;
     @Input('calendarcontent') private calendarContent: any = undefined;
     private sheetHours: any[] = [];
-    private sheetTopMargin: number = 0;
     private ownerEvents: any[] = [];
     private ownerMultiEvents: any[] = [];
     private userEvents: any[] = [];
@@ -122,9 +121,18 @@ export class CalendarSheetThreeDays implements OnChanges {
     /*
     * @param index
     * @param item
-    * @return index|item
+    * @return item.id
     */
-    private trackByFn(index, item) {
+    private trackByItemFn(index, item) {
+        return item.id;
+    }
+
+    /*
+    * @param index
+    * @param item
+    * @return index
+    */
+    private trackByIndexFn(index, item) {
         return index;
     }
 

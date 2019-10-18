@@ -118,10 +118,6 @@ export class CalendarHeader implements OnDestroy {
         this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.calendar.sheetType == 'Three_Days' ? 3 : 1, this.calendar.duration[this.calendar.sheetType])));
     }
 
-    private addOtherCalendar() {
-        this.calendar.addOtherCalendar();
-    }
-
     private getCalendarHeader() {
         const focDate = new moment(this.calendarDate);
         switch (this.calendar.sheetType) {

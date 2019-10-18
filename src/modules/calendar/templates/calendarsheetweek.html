@@ -4,7 +4,7 @@
     </div>
     <div class="slds-border--right" [ngStyle]="getDaysContainerStyle()">
         <div class="slds-grid">
-            <div *ngFor="let sheetDay of sheetDays; trackBy: trackByFn" class="slds-border--left" [ngStyle]="dayWidthStyle">
+            <div *ngFor="let sheetDay of sheetDays; trackBy: trackByIndexFn" class="slds-border--left" [ngStyle]="dayWidthStyle">
                 <div class="slds-p-top--xx-small">
                     <div class="slds-text-body--regular slds-p-left--x-small" [ngStyle]="isTodayStyle(sheetDay.date)">{{displayDate('ddd', sheetDay.date)}}</div>
                     <div class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom slds-text-heading--large">
@@ -14,13 +14,13 @@
             </div>
         </div>
         <div class="slds-is-relative">
-            <ng-container *ngFor="let event of allMultiEvents; trackBy: trackByFn">
+            <ng-container *ngFor="let event of allMultiEvents; trackBy: trackByItemFn">
                 <calendar-sheet-event [ngStyle]="getMultiEventStyle(event)" [event]="event"></calendar-sheet-event>
             </ng-container>
         </div>
         <div class="slds-grid">
-            <div *ngFor="let sheetDay of sheetDays; trackBy: trackByFn" [ngStyle]="dayWidthStyle" [style.min-height]="calendar.multiEventHeight + 'px'" class="slds-border--left">
-                <div *ngFor="let item of sheetDay.items; trackBy: trackByFn"  [style.height]="calendar.multiEventHeight + 'px'"></div>
+            <div *ngFor="let sheetDay of sheetDays; trackBy: trackByIndexFn" [ngStyle]="dayWidthStyle" [style.min-height]="calendar.multiEventHeight + 'px'" class="slds-border--left">
+                <div *ngFor="let item of sheetDay.items; trackBy: trackByItemFn"  [style.height]="calendar.multiEventHeight + 'px'"></div>
             </div>
         </div>
     </div>
@@ -31,12 +31,12 @@
         <system-spinner size="30"></system-spinner>
     </div>
     <ng-container *ngIf="!calendar.isLoading">
-        <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByFn" class="slds-grid">
+        <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
             <div [ngStyle]="timeColStyle">
                 <div class="slds-text-align--center slds-border--bottom" [ngStyle]="hourHeightStyle">{{sheetHour}}:00</div>
             </div>
             <div class="slds-border--left slds-border--bottom slds-grow slds-grid" [ngStyle]="hourHeightStyle">
-                <div *ngFor="let sheetDay of sheetDays; trackBy: trackByFn" class="slds-border--right" [ngStyle]="dayWidthStyle">
+                <div *ngFor="let sheetDay of sheetDays; trackBy: trackByIndexFn" class="slds-border--right" [ngStyle]="dayWidthStyle">
                     <div style="height: 50%" class="slds-grid slds-grid--vertical">
                         <calendar-sheet-drop-target [day]="sheetDay" [hour]="sheetHour" [hourPart]="0" style="display: block; width: 100%; height: 50%"></calendar-sheet-drop-target>
                         <calendar-sheet-drop-target [day]="sheetDay" [hour]="sheetHour" [hourPart]="1" style="display: block; width: 100%; height: 50%"></calendar-sheet-drop-target>
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
+        <ng-container *ngFor="let event of allEvents; trackBy: trackByItemFn">
             <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event"></calendar-sheet-event>
         </ng-container>
     </ng-container>
