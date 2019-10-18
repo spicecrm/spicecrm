@@ -24,6 +24,7 @@ export class ObjectRecordDetails implements OnInit {
 
     constructor( private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2 ) {
         this.view.isEditable = true;
+        this.view.linkedToModel = true;
     }
 
     public ngOnInit() {
