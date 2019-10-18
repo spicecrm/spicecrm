@@ -63,18 +63,27 @@
         </div>
     </fieldset>
     <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+        <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_GEO_SEARCH_PARAMETERS')}}</legend>
+        <div class="slds-form-element__control">
+            <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.geosearch">{{language.getLabel('LBL_GEO_SEARCH')}}</system-checkbox>
+        </div>
+        <div class="slds-form-element__control slds-grid">
+            <div class="slds-form-element slds-size--1-of-2">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_LATITUDE')}}</label>
+                <system-input-module-field [disabled]="!ftsconfiguration.moduleFtsSettings.geosearch" [(ngModel)]="ftsconfiguration.moduleFtsSettings.geolat" [module]="ftsconfiguration.module"></system-input-module-field>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_LONGITUDE')}}</label>
+                <system-input-module-field [disabled]="!ftsconfiguration.moduleFtsSettings.geosearch" [(ngModel)]="ftsconfiguration.moduleFtsSettings.geolng" [module]="ftsconfiguration.module"></system-input-module-field>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
         <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_FTS_ACTIVITY_PARAMS')}}</legend>
         <div class="slds-form-element__control">
             <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
                 <div class="slds-form-element__control slds-col slds-size--1-of-3">
-                    <span class="slds-checkbox">
-                      <input type="checkbox" name="options" id="activitiessearch"
-                             [(ngModel)]="ftsconfiguration.moduleFtsSettings.activitiessearch"/>
-                      <label class="slds-checkbox__label" for="activitiessearch">
-                        <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_FTS_IN_ACTIVITIES')}}</span>
-                      </label>
-                    </span>
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.activitiessearch">{{language.getLabel('LBL_FTS_IN_ACTIVITIES')}}</system-checkbox>
                 </div>
                 <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_FILTER')}}</label>
@@ -83,14 +92,7 @@
             </div>
             <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
                 <div class="slds-form-element__control slds-col slds-size--1-of-3">
-                    <span class="slds-checkbox">
-                      <input type="checkbox" name="options" id="historysearch"
-                             [(ngModel)]="ftsconfiguration.moduleFtsSettings.historysearch"/>
-                      <label class="slds-checkbox__label" for="historysearch">
-                        <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_FTS_IN_HISTORY')}}</span>
-                      </label>
-                    </span>
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.historysearch">{{language.getLabel('LBL_FTS_IN_HISTORY')}}</system-checkbox>
                 </div>
                 <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_FILTER')}}</label>
@@ -99,13 +101,7 @@
             </div>
             <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
                 <div class="slds-form-element__control slds-col slds-size--1-of-3">
-                    <span class="slds-checkbox">
-                      <input type="checkbox" name="options" id="calendarsearch" [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarsearch"/>
-                      <label class="slds-checkbox__label" for="calendarsearch">
-                        <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_FTS_IN_CALENDAR')}}</span>
-                      </label>
-                    </span>
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarsearch">{{language.getLabel('LBL_FTS_IN_CALENDAR')}}</system-checkbox>
                 </div>
                 <div class="slds-col slds-size--2-of-3 slds-grid slds-grid--vertical-align-center">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_FILTER')}}</label>
