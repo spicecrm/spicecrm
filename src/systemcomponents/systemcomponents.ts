@@ -47,6 +47,7 @@ import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynami
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemIcon} from "./components/systemicon";
+import /*embed*/ {SystemFileIcon} from "./components/systemfileicon";
 import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
@@ -161,6 +162,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
+        SystemFileIcon,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -254,6 +256,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
+        SystemFileIcon,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
