@@ -123,12 +123,7 @@
                                 <div class="slds-select_container">
                                     <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
                                         <option value=''>standard</option>
-                                        <option value='spice_standard_all'>standard all charatcers</option>
-                                        <option value='spice_ngram'>NGram</option>
-                                        <option value='spice_ngram_all'>NGram all charatcers</option>
-                                        <option value='spice_html'>HTML</option>
-                                        <option value='spice_edgengram'>Edge NGram</option>
-                                        <option value='spice_email'>email Address</option>
+                                        <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
                                     </select>
                                 </div>
                             </div>
@@ -146,12 +141,7 @@
                                 <div class="slds-select_container">
                                     <select class="slds-select" [(ngModel)]="fieldDetails.search_analyzer">
                                         <option value=''>standard</option>
-                                        <option value='spice_standard_all'>standard all charatcers</option>
-                                        <option value='spice_ngram'>NGram</option>
-                                        <option value='spice_ngram_all'>NGram all charatcers</option>
-                                        <option value='spice_html'>HTML</option>
-                                        <option value='spice_edgengram'>Edge NGram</option>
-                                        <option value='spice_email'>email Address</option>
+                                        <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
                                     </select>
                                 </div>
                             </div>
