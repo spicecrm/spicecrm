@@ -12,11 +12,10 @@ import {helper} from "../../services/helper.service";
     selector: "[object-related-card-file]",
     templateUrl: "./src/objectcomponents/templates/objectrelatedcardfile.html"
 })
-export class ObjectRelatedCardFile implements OnInit {
+export class ObjectRelatedCardFile {
 
     @Input() private file: any = {};
 
-    private fileicon: any = {icon: 'unknown', sprite: 'doctype'};
 
     constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
 
@@ -28,32 +27,6 @@ export class ObjectRelatedCardFile implements OnInit {
 
     get filedate() {
         return this.file.date ? this.file.date.format(this.userpreferences.getDateFormat()) : '';
-    }
-
-    public ngOnInit(): void {
-        this.fileicon = this.getFileIcon();
-    }
-
-    private getFileIcon() {
-        let icon = this.helper.determineFileIcon(this.file.file_mime_type);
-        if (icon == 'unknown') {
-            let nameparts = this.file.filename.split('.');
-            let type = nameparts.splice(-1, 1)[0];
-            switch (type.toLowerCase()) {
-                case 'msg':
-                    return {
-                        icon: 'email',
-                        sprite: 'standard'
-                    };
-                default:
-
-                    break;
-            }
-        }
-        return {
-            icon: icon,
-            sprite: 'doctype'
-        };
     }
 
     get uploading() {
@@ -81,7 +54,7 @@ export class ObjectRelatedCardFile implements OnInit {
         if (this.file.file_mime_type) {
             let fileTypeArray = this.file.file_mime_type.split("/");
             // check the application
-            switch (fileTypeArray[0]) {
+            switch (fileTypeArray[0].trim()) {
                 case "image":
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.file.filename;
