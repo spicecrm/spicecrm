@@ -434,7 +434,7 @@ export class relatedmodels implements OnDestroy {
      */
     public addItems(items) {
 
-        if(this.isonlyfiltered) {
+        if(!this.isonlyfiltered) {
             let relatedIds: any[] = [];
             for (let item of items) {
                 relatedIds.push(item.id);
@@ -475,7 +475,7 @@ export class relatedmodels implements OnDestroy {
      * @param item the item
      */
     public setItem(item) {
-        if(this.isonlyfiltered) {
+        if(!this.isonlyfiltered) {
             this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
             });
         } else {
@@ -489,7 +489,7 @@ export class relatedmodels implements OnDestroy {
      * @param id the related id
      */
     public deleteItem(id) {
-        if(this.isonlyfiltered) {
+        if(!this.isonlyfiltered) {
             let relatedids = [];
             relatedids.push(id);
             let params = {
