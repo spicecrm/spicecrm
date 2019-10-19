@@ -22,6 +22,7 @@ export class ftsconfiguration {
     public fieldsDropList: CdkDropList;
 
     public modules: any[] = [];
+    public analyzers: any[] = [];
 
     constructor(
         private backend: backend,
@@ -31,6 +32,7 @@ export class ftsconfiguration {
         private toast: toast
     ) {
         this.backend.getRequest('ftsmanager/core/modules').subscribe(modules => this.modules = modules);
+        this.backend.getRequest('ftsmanager/core/analyzers').subscribe(analyzers => this.analyzers = analyzers.sort((a, b) => a.value > b.value ? 1 : -1));
     }
 
     /**
