@@ -2,12 +2,9 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div style="white-space: pre-line;">{{value}}</div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()" style="position:relative;">
-    <textarea #focus #textField class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small"
-              [(ngModel)]="value" [ngStyle]="getTextAreaStyle()"></textarea>
-    <button *ngIf="speechRecognition" style="position:absolute;margin-top:-26px;right:0.35rem;top:0"
-            class="slds-button slds-button_small slds-button_icon"
-            (click)="speechRecognitionStart()">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-is-relative" [ngClass]="getFieldClass()" style="position:relative;">
+    <textarea #focus #textField class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="value" [ngStyle]="getTextAreaStyle()"></textarea>
+    <button *ngIf="speechRecognition" class="slds-button slds-button_small slds-button_icon slds-is-absolute" style="right:8px;" (click)="speechRecognitionStart()">
         <system-button-icon [size]="'small'" [icon]="'unmuted'"></system-button-icon>
     </button>
     <field-messages [fieldname]="fieldname"></field-messages>
