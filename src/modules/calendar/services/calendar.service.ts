@@ -119,7 +119,7 @@ export class calendar implements OnDestroy {
 
     private loadCalendarModules() {
         this.backend.getRequest('calendar/modules').subscribe(modules => {
-           if (modules) this.modules = modules;
+            if (modules) this.modules = modules;
         });
     }
 
@@ -389,13 +389,13 @@ export class calendar implements OnDestroy {
     */
     public setUserColor(id, color) {
         this.usersCalendars.some(calendar => {
-                    if (calendar.id == id) {
-                        calendar.color = color;
-                        this.setUserCalendars(this.usersCalendars);
-                        this.color$.emit({id: id, color: color});
-                        return true;
-                    }
-                });
+            if (calendar.id == id) {
+                calendar.color = color;
+                this.setUserCalendars(this.usersCalendars);
+                this.color$.emit({id: id, color: color});
+                return true;
+            }
+        });
     }
 
     /*
@@ -585,16 +585,17 @@ export class calendar implements OnDestroy {
             this.deleteEvent(id, module);
             return true;
         }
-        return this.calendars[uid].some(event => {
-            if (event.id == id && module == event.module) {
-                event.data = data;
-                event.start = data.date_start;
-                event.end = data.date_end;
-                event.isMulti = +data.date_end.diff(data.date_start, 'days') > 0;
-                this.calendarDate = moment(this.calendarDate);
-                return true;
-            }
-        });
+        let event = this.calendars[uid].find(thisevent => thisevent.id == id);
+        if (event) {
+            event.data = data;
+            event.start = data.date_start;
+            event.end = data.date_end;
+            event.isMulti = +data.date_end.diff(data.date_start, 'days') > 0;
+            this.calendarDate = moment(this.calendarDate);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /*

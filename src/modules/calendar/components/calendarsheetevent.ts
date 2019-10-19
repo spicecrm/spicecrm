@@ -6,7 +6,7 @@ import {
     EventEmitter,
     HostBinding,
     HostListener,
-    Input,
+    Input, OnChanges,
     OnDestroy,
     OnInit,
     Output,
@@ -16,6 +16,7 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
 import {calendar} from '../services/calendar.service';
+import {broadcast} from '../../../services/broadcast.service';
 import {Subscription} from "rxjs";
 import {configurationService} from "../../../services/configuration.service";
 import {take} from "rxjs/operators";
@@ -41,7 +42,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     private mouseStart: any = undefined;
     private mouseLast: any = undefined;
     private hidden: boolean = false;
-    private subscription: Subscription = new Subscription();
+    private subscriptions: Subscription[] = [];
     private lastMoveTimeSpan: number = 0;
     private color: string = '';
     private hasDarkColor: boolean = true;
@@ -50,12 +51,29 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 private configuration: configurationService,
                 private calendar: calendar,
                 private model: model,
+                private broadcast: broadcast,
                 private renderer: Renderer2) {
-        this.subscription = this.calendar.color$.subscribe(res => {
+        this.subscriptions.push(this.calendar.color$.subscribe(res => {
             if (this.event.data.assigned_user_id && res.id == this.event.data.assigned_user_id) {
                 this.color = res.color;
             }
-        });
+        }));
+
+        this.subscriptions.push(this.broadcast.message$.subscribe(message => {
+            let id = message.messagedata.id;
+            let module = message.messagedata.module;
+            let data = message.messagedata.data;
+            if (module == this.model.module) {
+                switch (message.messagetype) {
+                    case "model.save":
+                        if (id == this.model.id) {
+                            this.model.data = this.model.utils.backendModel2spice(this.model.module, data);
+                            this.setEventColor();
+                        }
+                        break;
+                }
+            }
+        }));
     }
 
     get isAbsense() {
@@ -95,7 +113,9 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.subscription.unsubscribe();
+        for (let subscription of this.subscriptions) {
+            subscription.unsubscribe();
+        }
     }
 
     /*
@@ -227,18 +247,24 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
 
         let colorConditions = this.configuration.getData('calendarcolorconditions');
         if (!colorConditions || this.owner != this.event.data.assigned_user_id) return;
-        colorConditions.forEach(con => {
-            if (con.module == this.model.module) {
-                this.hasDarkColor = this.isDarkColor(con.color_hex_code);
-                if (con.module_filter != null && con.module_filter.length > 0) {
-                    if (this.model.checkModuleFilterMatch(con.module_filter)) {
-                        this.color = con.color_hex_code.indexOf('#') > -1 ? con.color_hex_code : '#' + con.color_hex_code;
-                    }
-                } else {
-                    this.color = con.color_hex_code.indexOf('#') > -1 ? con.color_hex_code : '#' + con.color_hex_code;
-                }
-            }
+
+        // filter and sort the conditions
+        colorConditions = colorConditions.filter(item => item.module == this.model.module).sort((a, b) => {
+            a.priority < b.priority ? 1 : -1;
         });
+        for (let colorCondition of colorConditions) {
+            if (colorCondition.module_filter != null && colorCondition.module_filter.length > 0) {
+                if (this.model.checkModuleFilterMatch(colorCondition.module_filter)) {
+                    this.color = colorCondition.color_hex_code.indexOf('#') > -1 ? colorCondition.color_hex_code : '#' + colorCondition.color_hex_code;
+                    this.hasDarkColor = this.isDarkColor(colorCondition.color_hex_code);
+                    break;
+                }
+            } else {
+                this.color = colorCondition.color_hex_code.indexOf('#') > -1 ? colorCondition.color_hex_code : '#' + colorCondition.color_hex_code;
+                this.hasDarkColor = this.isDarkColor(colorCondition.color_hex_code);
+                break;
+            }
+        }
     }
 
     /*
@@ -262,21 +288,22 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.calendar.eventDrop$
             .pipe(take(1))
             .subscribe(dropData => {
-            if (dropData.day) {
-                this.event.start = moment(dropData.day.date.format());
-            }
-            this.event.start.hour(dropData.hour).minute(dropData.minutes).seconds(0);
+                if (dropData.day) {
+                    this.event.start = moment(dropData.day.date.format());
+                }
+                this.event.start.hour(dropData.hour).minute(dropData.minutes).seconds(0);
 
-            // calculate the end date
-            this.event.end = moment(this.event.start.format()).add(this.event.data.duration_minutes + 60 * this.event.data.duration_hours, 'm');
+                // calculate the end date
+                this.event.end = moment(this.event.start.format()).add(this.event.data.duration_minutes + 60 * this.event.data.duration_hours, 'm');
 
-            let module = this.calendar.modules.find(module => module.name == this.event.module) || {};
-            let dateStartName = module.dateStartName || 'date_start';
-            let dateEndName = module.dateEndName ||'date_end';
-            this.event.data[dateStartName] = moment(this.event.start.format());
-            this.event.data[dateEndName] = new moment(this.event.end.format());
-            this.model.data = {...this.event.data};
-            this.model.save(false);
-        });
+                let module = this.calendar.modules.find(module => module.name == this.event.module) || {};
+                let dateStartName = module.dateStartName || 'date_start';
+                let dateEndName = module.dateEndName || 'date_end';
+                this.event.data[dateStartName] = moment(this.event.start.format());
+                this.event.data[dateEndName] = new moment(this.event.end.format());
+                this.model.data = {...this.event.data};
+                this.model.save(false);
+            });
     }
+
 }
