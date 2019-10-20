@@ -19,6 +19,7 @@ interface ftsSearchBuckets {
 
 interface ftsSearchParameters {
     searchterm?: string;
+    searchgeo: any;
     modules?: string[];
     size?: number;
     aggregates?: any;
@@ -37,6 +38,7 @@ export class fts {
     public runningmodulesearch: any = undefined;
     public searchTerm: string = '';
     public searchSort: any = {};
+    public searchGeo: any = {};
     public searchAggregates: any = {};
     public searchModules: any[] = [];
     public modulefilter: string = '';
@@ -125,6 +127,7 @@ export class fts {
         this.searchTerm = parameters.searchterm;
         this.searchAggregates = parameters.aggregates;
         this.searchSort = parameters.sortparams;
+        this.searchGeo = parameters.searchgeo;
         this.modulefilter = parameters.modulefilter;
         this.buckets = parameters.buckets;
 
@@ -139,6 +142,7 @@ export class fts {
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
             modules: parameters.modules.length > 0 ? parameters.modules.join(',') : '',
             searchterm: parameters.searchterm,
+            searchgeo: parameters.searchgeo,
             records: parameters.size,
             owner: parameters.owner,
             aggregates: this.searchAggregates,
