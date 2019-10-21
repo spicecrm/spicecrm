@@ -1,67 +1,61 @@
-<div tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
-    <div class="slds-modal__container">
-        <system-modal-header (close)="cancel()">
-            {{language.getLabel('LBL_NEW_IMAGE')}}
-        </system-modal-header>
-        <div class="slds-modal__content slds-p-around--medium slds-grid" style="height:100%">
+<system-modal size="large">
+    <system-modal-header (close)="cancel()">
+        {{lang.getLabel('LBL_NEW_IMAGE')}}
+    </system-modal-header>
+    <system-modal-content style="height:100%">
 
+        <div class="slds-p-around--medium slds-grid" style="height:100%">
             <div class="slds-box slds-box_x-small slds-size--5-of-12">
-                <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" (mediaReady)="mediaReady=$event" style="height:100%"></system-input-media><!-- (mediaMetaData)="mediaMetaData"-->
+                <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" allowMirroring="true" allowRotating="true" (added)="mediaAdded($event)" style="height:100%"></system-input-media>
             </div>
 
             <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--7-of-12">
 
                 <div class="slds-grid">
                     <div class="slds-size--1-of-2 slds-p-right--x-small">
-                        <field-label fieldname="name"></field-label>
                         <field-container field="name"></field-container>
                     </div>
                     <div class="slds-size--1-of-2 slds-p-left--x-small">
-                        <field-label fieldname="mediacategory_name"></field-label>
                         <field-container field="mediacategory_name"></field-container>
                     </div>
                 </div>
 
                 <div class="slds-m-vertical--x-small">
-                    <field-label fieldname="alttext"></field-label>
                     <field-container field="alttext"></field-container>
                 </div>
 
                 <div class="slds-grid slds-m-vertical--x-small">
                     <div class="slds-size--1-of-2 slds-p-right--x-small">
-                        <field-label fieldname="copyright_owner"></field-label>
                         <field-container field="copyright_owner"></field-container>
                     </div>
                     <div class="slds-size--1-of-2 slds-p-left--x-small">
-                        <field-label fieldname="copyright_license"></field-label>
                         <field-container field="copyright_license"></field-container>
                     </div>
                 </div>
 
                 <div>
-                    <field-label fieldname="description"></field-label>
                     <field-container field="description"></field-container>
                 </div>
 
-                <label class="slds-form-element__label slds-truncate" for="tags">Schlagworte
-                <system-input-tags-2 [(ngModel)]="tags" maxNumber="10" id="tags"></system-input-tags-2>
-                </label>
-
-                <div class="slds-m-top--large">                <button (click)="tagsEditing = !tagsEditing">edit</button></div>
+                <label class="slds-form-element__label slds-truncate" for="tags">{{lang.getLabel('LBL_TAGS')}}</label>
+                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread ng-star-inserted">
+                    <system-input-tags-2 [(ngModel)]="tags" maxNumber="10" id="tags" [isEditing]="isEditing" ></system-input-tags-2>
+                </div>
 
             </div>
 
         </div>
 
-        <div class="slds-modal__footer">
-            <div *ngIf="!isSaving">
-                <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{language.getLabel('LBL_SAVE')}}</button>
-                <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-            </div>
-            <div *ngIf="isSaving">
-                <system-progress-bar [progress]="theProgress">Saving media file &hellip;</system-progress-bar>
-            </div>
-        </div>
+    </system-modal-content>
 
-    </div>
-</div>
+    <system-modal-footer>
+        <div *ngIf="!isSaving">
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{lang.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()">{{lang.getLabel('LBL_CANCEL')}}</button>
+        </div>
+        <div *ngIf="isSaving">
+            <system-progress-bar [progress]="theProgress">{{lang.getLabel('LBL_UPLOADING_MEDIA_FILE')}} &hellip;</system-progress-bar>
+        </div>
+    </system-modal-footer>
+
+</system-modal>
