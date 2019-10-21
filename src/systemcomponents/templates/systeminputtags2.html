@@ -13,7 +13,7 @@
             <div class="slds-combobox_container">
                 <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open':isOpen}">
                     <div class="slds-combobox__form-element">
-                        <input type="text" class="slds-input slds-combobox__input" [placeholder]="lang.getLabel('LBL_ADD_TAG')" [(ngModel)]="queryString" (keyup)="search($event)" (focus)="inputFieldGotFocus(true)" (blur)="inputFieldGotFocus(false)"><!--(keyup.enter)="addTag($event.target.value,$event)"-->
+                        <input type="text" id="{{id}}" class="slds-input slds-combobox__input" [placeholder]="lang.getLabel('LBL_ADD_TAG')" [(ngModel)]="queryString" (keyup)="search($event)" (focus)="inputFieldGotFocus(true)" (blur)="inputFieldGotFocus(false)"><!--(keyup.enter)="addTag($event.target.value,$event)"-->
                     </div>
                     <div *ngIf="proposedTags.length > 0" class="slds-dropdown slds-dropdown_fluid" (mouseleave)="hover(-1)">
                         <ul class="slds-listbox slds-listbox_vertical">

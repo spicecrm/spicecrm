@@ -5,6 +5,7 @@
     <system-modal-content style="height:100%">
 
         <div class="slds-p-around--medium slds-grid" style="height:100%">
+
             <div class="slds-box slds-box_x-small slds-size--5-of-12">
                 <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" allowMirroring="true" allowRotating="true" (added)="mediaAdded($event)" style="height:100%"></system-input-media>
             </div>
@@ -39,7 +40,7 @@
 
                 <label class="slds-form-element__label slds-truncate" for="tags">{{lang.getLabel('LBL_TAGS')}}</label>
                 <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread ng-star-inserted">
-                    <system-input-tags-2 [(ngModel)]="tags" maxNumber="10" id="tags" [isEditing]="isEditing" ></system-input-tags-2>
+                    <system-input-tags-2 [(ngModel)]="tagsAsString" maxNumber="10" id="tags" [isEditing]="isEditing" ></system-input-tags-2>
                 </div>
 
             </div>
