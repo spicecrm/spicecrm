@@ -1,5 +1,5 @@
 /**
- * @module ObjectFields
+ * @module ModuleACLTerritories
  */
 import {Component, ElementRef, Renderer, OnInit, Injector} from '@angular/core';
 import {model} from '../../../services/model.service';

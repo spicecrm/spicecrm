@@ -3,7 +3,6 @@
  */
 import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {model} from '../../services/model.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {recent} from '../../services/recent.service';
 
@@ -17,9 +16,9 @@ export class fieldLookupRecent implements OnInit {
     @Input() private idfield: string = '';
     @Input() private namefield: string = '';
     @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
-    private recentItems: Array<any> = [];
+    private recentItems: any[] = [];
 
-    constructor(public model: model, public popup: popup, public recent: recent, public language: language) {
+    constructor(public model: model, public recent: recent, public language: language) {
 
     }
 
@@ -33,12 +32,10 @@ export class fieldLookupRecent implements OnInit {
 
         // fake data object... hope it will be the whole record in future!
         if (!data) {
-            data = {'id': id, 'summary_text': text};
+            data = {id: id, summary_text: text};
         }
 
-        this.selectedObject.emit({'id': id, 'text': text, 'data': data});
-
-        this.popup.close();
+        this.selectedObject.emit({id: id, text: text, data: data});
     }
 
     private getRecent() {

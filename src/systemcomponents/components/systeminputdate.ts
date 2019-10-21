@@ -9,6 +9,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {language} from "../../services/language.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {modal} from "../../services/modal.service";
+import {take} from "rxjs/operators";
 
 /**
  * @ignore
@@ -182,7 +183,7 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private datePicked(value) {
+    private datePicked(value, fromCalendar?: boolean) {
         if (value) {
             if (!this._date.moment) {
                 this._date.moment = new moment();
@@ -192,6 +193,10 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
             this._date.moment.set('year', value.year());
             this._date.moment.set('month', value.month());
             this._date.moment.set('date', value.date());
+            if (fromCalendar) {
+                this._date.moment.set('hour', value.hour());
+                this._date.moment.set('minute', value.minute());
+            }
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
 
@@ -209,10 +214,12 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         this.toggleClosed();
         this.modal.openModal('Calendar').subscribe(modalRef => {
             modalRef.instance.asPicker = true;
-            modalRef.instance.calendar.addingEvent$.subscribe(date => {
-                modalRef.instance.asPicker = false;
-                this.datePicked(date);
-            });
+            modalRef.instance.calendar.pickerDate$
+                .pipe(take(1))
+                .subscribe(date => {
+                    modalRef.instance.asPicker = false;
+                    this.datePicked(date, true);
+                });
         });
     }
 

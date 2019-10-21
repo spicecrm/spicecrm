@@ -16,6 +16,8 @@ import {currency} from '../../../services/currency.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 
+declare var moment: any;
+
 @Component({
     selector: 'salesdocs-items-container',
     templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
@@ -180,6 +182,8 @@ export class SalesDocsItemsContainer {
         itemData.quantity = 1;
         itemData.itemnr = this.getNextItemNr();
         itemData.itemtype = itemType;
+        itemData.date_entered = new moment();
+        itemData.date_modified = new moment();
 
         // add to the bean as well
         if (!this.model.data.salesdocitems) {

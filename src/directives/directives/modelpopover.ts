@@ -1,7 +1,7 @@
 /**
  * @module directives
  */
-import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional} from '@angular/core';
+import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional, AfterViewInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {metadata} from "../../services/metadata.service";
@@ -11,10 +11,14 @@ import {model} from "../../services/model.service";
 
 @Directive({
     selector: '[modelPopOver]',
+    host:{
+        '[class.slds-text-link_faux]' : 'enablelink'
+    }
 })
 export class ModelPopOverDirective implements OnInit, OnDestroy {
     @Input() private module: string;
     @Input() private id: string;
+    @Input() private enablelink: boolean = true;
     @Input() private modelPopOver: boolean = true;
     private popoverCmp = null;
     private self: any = null;
@@ -52,7 +56,7 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
 
     @HostListener('click')
     private goRelated() {
-        if (this.modelPopOver === false) return false;
+        if (this.modelPopOver === false || !this.enablelink) return false;
 
         if (this.showPopoverTimeout) {
             window.clearTimeout(this.showPopoverTimeout);
@@ -83,6 +87,10 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy() {
+        if (this.showPopoverTimeout) {
+            window.clearTimeout(this.showPopoverTimeout);
+        }
+
         if (this.popoverCmp) {
             this.popoverCmp.closePopover(true);
         }

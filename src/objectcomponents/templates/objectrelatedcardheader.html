@@ -1,6 +1,6 @@
 <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
     <header class="slds-media slds-media--center slds-has-flexi-truncate">
-        <object-icon [module]="module" [size]="'small'"></object-icon>
+        <system-icon [module]="module" [size]="'small'"></system-icon>
         <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
             <h2>
                 <a href="javascript:void(0);" class="slds-text-link--reset">
@@ -13,7 +13,7 @@
         </div>
     </header>
     <!-- additional header eleents go here-->
-    <div #ngContent [ngClass]="{'slds-m-left--x-small':ngContent.innerHTML}">
+    <div #ngContent class="slds-m-left--x-small">
         <ng-content></ng-content>
     </div>
     <object-action-container *ngIf="actionset" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>

@@ -1,14 +1,14 @@
 <article  class="slds-card slds-card_boundary slds-m-bottom--medium">
     <div class="slds-card__header slds-grid">
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
-            <object-icon [icon]="'merge'" [size]="'small'" [sprite]="'standard'"></object-icon>
+            <system-icon [icon]="'merge'" [size]="'small'" [sprite]="'standard'"></system-icon>
             <div class="slds-grid slds-grid--vertical-align-center slds-media__body slds-truncate">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{duplicates.length}})</span>
+                        <span class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{duplicatecount}})</span>
                     </a>
                 </h2>
-                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicates.length > 0" icon="up" [ngStyle]="iconStyle" style="transition: .5s;" size="x-small" (click)="toggleDuplicates()"></system-utility-icon>
+                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicatecount > 0" icon="up" [ngStyle]="iconStyle" style="transition: .5s;" size="x-small" (click)="toggleDuplicates()"></system-utility-icon>
             </div>
         </header>
         <object-merge-button *ngIf="showMergeButton" [mergemodels]="duplicates" (merged)="merged($event)"></object-merge-button>

@@ -19,12 +19,6 @@ import {modalwindow} from "../../../services/modalwindow.service";
 export class ActionActivityCloseCreateButton implements OnInit {
 
     /**
-     * only "disabled" is in use !
-     */
-    public hidden: boolean = true;
-
-
-    /**
      * the actionconfig passed in from the actionset
      */
     public actionconfig: any;

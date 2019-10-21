@@ -10,7 +10,7 @@
                     <system-icon [module]="workflowtask.parent_type" [size]="'small'"></system-icon>
                 </div>
                 <div class="slds-media__body">
-                    <div class="slds-text-title_caps slds-text-link_reset" (click)="goDetail(workflowtask.parent_type, workflowtask.parent_id)">{{workflowtask.parent_name}}</div>
+                    <div class="slds-text-title_caps slds-text-link_reset" modelPopOver [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</div>
                     <div class="slds-text-body_small slds-line-height_reset">{{workflowtask.wfname}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
                 </div>
             </div>

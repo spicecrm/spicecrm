@@ -23,13 +23,15 @@ declare var google: any;
 
 @Component({
     selector: 'spice-map',
-    templateUrl: './src/include/spicemap//templates/spicemap.html'
+    templateUrl: './src/include/spicemap/templates/spicemap.html'
 })
 export class SpiceMap implements AfterViewInit {
     @ViewChild('mapelement', {read: ViewContainerRef, static: true}) private mapelement: ViewContainerRef;
 
     private componentconfig: any = {};
     private map: any = {};
+    private circle: any = {};
+    private mousedown: boolean = false;
     private mapBoundaries: any = {};
     private modelMarker: any = {};
     private surroundingFunction: any = {};
@@ -102,7 +104,7 @@ export class SpiceMap implements AfterViewInit {
                 position: center,
                 map: this.map,
                 // icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-                icon: 'http://maps.google.com/mapfiles/ms/micons/red-dot.png',
+                icon: 'https://maps.google.com/mapfiles/ms/micons/red-dot.png',
                 title: this.model.data.summary_text
             });
         }
@@ -114,7 +116,34 @@ export class SpiceMap implements AfterViewInit {
             }
             this.surroundingFunction = window.setTimeout(() => this.getSurrounding(), 500);
         });
+        /*
+        this.circle = new google.maps.Circle({
+            strokeColor: 'red',
+            fillColor: '#dddddd',
+            fillOpacity: 0.5,
+            strokeWeight: 1,
+            clickable: true,
+            draggable: true,
+            editable: true,
+            zIndex: 1,
+            map: this.map,
+            center: center,
+            radius: 1000
+        });
 
+        google.maps.event.addListener(this.circle, 'mousedown', () => {
+            this.mousedown = true;
+        });
+        google.maps.event.addListener(this.circle, 'mouseup', () => {
+            this.mousedown = false;
+        });
+        google.maps.event.addListener(this.circle, 'center_changed', () => {
+            if(!this.mousedown) console.log('center',this.circle.getCenter());
+        });
+        google.maps.event.addListener(this.circle, 'radius_changed', () => {
+            if(!this.mousedown) console.log('radius', this.circle.getRadius());
+        });
+        */
     }
 
     private reCenter() {

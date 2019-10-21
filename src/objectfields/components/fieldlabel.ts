@@ -1,10 +1,12 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input} from '@angular/core';
+import {Component, Input, Injector} from '@angular/core';
 import {model} from '../../services/model.service';
+import {metadata} from '../../services/metadata.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
+import {footer} from '../../services/footer.service';
 import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
@@ -19,9 +21,12 @@ export class fieldLabel {
 
     constructor(
         private model: model,
+        private metadata: metadata,
         private view: view,
         private userPreferences: userpreferences,
-        private language: language
+        private language: language,
+        private footer: footer,
+        private injector: Injector
     ) {
     }
 
@@ -91,5 +96,25 @@ export class fieldLabel {
         } else {
             return this.language.getFieldHelpText(this.model.module, this.fieldname, this.fieldconfig);
         }
+    }
+
+    /**
+     * display a context menu
+     * @param e
+     */
+    private showContext(e) {
+        // currently do nothing .. need to finish this
+        return;
+
+        // prevent the default evenet
+        e.preventDefault();
+
+        // render the popover and pass in the details
+        this.metadata.addComponentDirect('fieldLabelPopover', this.footer.footercontainer, this.injector).subscribe(popover => {
+            popover.instance.event = e;
+            popover.instance.fieldlabel = this.label;
+            popover.instance.fieldname = this.fieldname;
+            popover.instance.fieldconfig = this.fieldconfig;
+        });
     }
 }

@@ -19,7 +19,8 @@ import {language} from '../../../services/language.service';
 })
 export class WorkflowPanelTasksItem {
 
-    constructor(private model: model, private language: language) {
+    constructor(private model: model, private language: language, private view: view) {
+        this.view.displayLabels = false;
     }
 
     /**
@@ -30,7 +31,7 @@ export class WorkflowPanelTasksItem {
             case '5':
                 return 'clock';
             case '10':
-                return 'threedots';
+                return 'hierarchy';
             case '20':
                 return 'play';
             case '30':
