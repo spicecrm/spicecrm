@@ -20,7 +20,7 @@
     <div *ngIf="!isLoading && dashboardlayout.dashboardNotFound" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
         <system-illustration-no-access></system-illustration-no-access>
     </div>
-    <div *ngIf="!isLoading && dashboardElements.length == 0 && !dashboardlayout.dashboardNotFound" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
+    <div *ngIf="!isLoading && dashboardElements.length == 0 && !dashboardlayout.dashboardNotFound && !isEditMode" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
         <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
     </div>
 </div>

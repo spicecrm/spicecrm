@@ -21,12 +21,18 @@ import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
 import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
 import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttileclose';
 
-import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
 
+
+import /*embed*/ {ActivityTimelineSaveButton} from "./components/activitytimelinesavebutton";
 import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
 import /*embed*/ {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
 import /*embed*/ {ActivityCloseModal} from "./components/activityclosemodal";
 import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
+
+import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
+import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
+import /*embed*/ {fieldActivitiesAddActions} from "./components/fieldactivitiesaddactions";
+import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactivitiesaddactionsbutton";
 
 
 @NgModule({
@@ -46,11 +52,15 @@ import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecrea
         TasksManagerTask,
         TasksManagerTaskDetails,
         TasksAssitantTileClose,
-        EmailsPopoverBody,
+        ActivityTimelineSaveButton,
         ActionActivityCloseButton,
         ActionActivityCloseCreateButton,
         ActivityCloseModal,
-        ActivityCloseCreateModal
+        ActivityCloseCreateModal,
+        ActivitiesPopoverAddBar,
+        ActivitiesPopoverAddBarButton,
+        fieldActivitiesAddActions,
+        fieldActivitiesAddActionsButton
     ]
 })
 export class ModuleActivities {

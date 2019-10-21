@@ -15,6 +15,9 @@ export class ObjectRelatedDuplicates implements AfterViewInit {
     private displayitems: number = 5;
 
     private duplicates: any[] = [];
+
+    private duplicatecount: number = 0;
+
     private hideDuplicates: boolean = true;
 
     constructor(private language: language, private model: model, private toast: toast) {
@@ -40,7 +43,8 @@ export class ObjectRelatedDuplicates implements AfterViewInit {
     private checkDuplicates() {
         this.duplicates = [];
         this.model.duplicateCheck().subscribe(data => {
-            this.duplicates = data;
+            this.duplicates = data.records;
+            this.duplicatecount = data.count;
         });
     }
 

@@ -93,8 +93,8 @@ export class GlobalDockedComposer implements OnInit {
 
     }
 
-    private handleaction(action){
-        switch(action){
+    private handleaction(action) {
+        switch (action) {
             default:
                 this.closeComposer();
         }

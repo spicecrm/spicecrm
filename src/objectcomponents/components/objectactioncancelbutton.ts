@@ -25,7 +25,7 @@ export class ObjectActionCancelButton {
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view, @Optional()private modalwindow: modalwindow) {}
 
     get hidden() {
-        return !this.view.isEditMode();
+        return !this.model.isEditing;
     }
 
     public execute() {
@@ -36,6 +36,6 @@ export class ObjectActionCancelButton {
         if(this.modalwindow) this.modalwindow.self.destroy();
 
         // emit that we cancelled
-        this.actionemitter.emit('cancel')
+        this.actionemitter.emit('cancel');
     }
 }

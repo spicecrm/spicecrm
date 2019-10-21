@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit, Injector} from "@angular/core";
 import {toast} from "../../services/toast.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {modal} from "../../services/modal.service";
@@ -17,7 +17,7 @@ export class ObjectRelatedCardFile {
     @Input() private file: any = {};
 
 
-    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper ) {
+    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
 
     }
 
@@ -54,7 +54,7 @@ export class ObjectRelatedCardFile {
         if (this.file.file_mime_type) {
             let fileTypeArray = this.file.file_mime_type.split("/");
             // check the application
-            switch (fileTypeArray[0]) {
+            switch (fileTypeArray[0].trim()) {
                 case "image":
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.file.filename;
@@ -87,7 +87,20 @@ export class ObjectRelatedCardFile {
                             });
                             break;
                         default:
-                            this.downloadFile();
+                            let nameparts = this.file.filename.split('.');
+                            let type = nameparts.splice(-1, 1)[0];
+                            switch (type.toLowerCase()) {
+                                case 'msg':
+                                    this.modal.openModal('EmailPreviewModal', true, this.injector).subscribe(modalref => {
+                                        modalref.instance.name = this.file.filename;
+                                        modalref.instance.type = this.file.file_mime_type;
+                                        modalref.instance.file = this.file;
+                                    });
+                                    break;
+                                default:
+                                    this.downloadFile();
+                                    break;
+                            }
                             break;
                     }
                     break;

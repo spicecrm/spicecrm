@@ -24,10 +24,6 @@ import {modal} from "../../services/modal.service";
     selector: "object-relatedlist-files",
     templateUrl: "./src/objectcomponents/templates/objectrelatedlistfiles.html",
     providers: [modelattachments],
-    host: {
-        "(drop)": "this.onDrop($event)",
-        "(dragover)": "this.preventdefault($event)"
-    },
     animations: [
         trigger('animateicon', [
             state('open', style({transform: 'scale(1, 1)'})),
@@ -116,9 +112,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param event
      */
     private preventdefault(event: any) {
-        if ((event.dataTransfer.items.length >= 1 && this.allItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
+        if ((event.dataTransfer.items.length >= 1 && this.hasOneItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
+
+            // ensure we are copying the element
+            event.dataTransfer.dropEffect = 'copy';
         }
     }
 
@@ -127,14 +126,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param items the items from the event
      */
-    private allItemsFile(items) {
+    private hasOneItemsFile(items) {
         for (let item of items) {
-            if (item.kind != 'file') {
-                return false;
+            if (item.kind == 'file') {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -145,6 +144,17 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     private onDrop(event: any) {
         this.preventdefault(event);
         let files = event.dataTransfer.files;
+        if (files && files.length >= 1) {
+            this.doupload(files);
+        }
+    }
+
+    /**
+     * handle the drop and upload the files
+     *
+     * @param event the drop event
+     */
+    private fileDrop(files) {
         if (files && files.length >= 1) {
             this.doupload(files);
         }
