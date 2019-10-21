@@ -228,8 +228,8 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemMultipleSelect,
         SystemSelectUOM,
         SystemModuleTree,
-        SystemModuleTreeItem
-        SystemSelectUOM
+        SystemModuleTreeItem,
+        SystemSelectUOM,
         SystemInputMedia,
         SystemInputTags2
     ],
@@ -314,9 +314,9 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression,
-        SystemSelectUOM
+        SystemSelectUOM,
         SystemInputMedia,
-        SystemInputTags2
+        SystemInputTags2,
         SystemSelectUOM,
         SystemModuleTree,
         SystemModuleTreeItem

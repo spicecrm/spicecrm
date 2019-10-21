@@ -56,8 +56,6 @@ export class MediaFileUploader {
         this.view.isEditable = true;
         this.view.setEditMode();
 
-        this.model.setField('tags', ['Technik','Natur','Bauwesen']);
-
     }
 
     private cancel(): void {
@@ -97,11 +95,11 @@ export class MediaFileUploader {
         } else this.isSaving = false;
     }
 
-    public set tags( tags ) {
-        this.model.setField('tags', tags);
+    public set tagsAsString( value ) {
+        this.model.setField('tags', value );
     }
 
-    public get tags() {
+    public get tagsAsString() {
         return this.model.getField('tags');
     }
 
