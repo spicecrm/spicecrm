@@ -4,7 +4,9 @@
             <h2 *ngIf="headertext" class="slds-text-heading_medium slds-hyphenate">{{headertext}}</h2>
         </header>
         <div *ngIf="text || type === 'input'" class="slds-modal__content slds-text-align_center ">
-            <div *ngIf="text" class="slds-m-vertical_medium">{{text}}</div>
+            <div *ngIf="text" class="slds-m-vertical_medium">
+                <div *ngFor="let line of splitText">{{line}}</div>
+            </div>
             <div *ngIf="type === 'input'" class="slds-form-element slds-m-vertical_medium">
                 <div class="slds-form-element__control">
                     <input *ngIf="!options" #inputField class="slds-input" type="text" [(ngModel)]="value" />

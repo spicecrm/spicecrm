@@ -20,7 +20,7 @@
     </thead>
     <ng-container *ngIf="!isSequenced">
         <tbody>
-            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" [hideActions]="hideActions" class="slds-hint-parent"></tr>
+            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" [hideActions]="hideActions" [listitemactionset]="listitemactionset" class="slds-hint-parent"></tr>
         </tbody>
     </ng-container>
     <ng-container *ngIf="isSequenced">
