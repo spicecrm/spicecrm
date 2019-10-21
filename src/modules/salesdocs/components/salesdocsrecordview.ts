@@ -41,6 +41,8 @@ export class SalesDocsRecordView {
             let docType = this.model.getField('salesdoctype');
             if (docType && docType != this._salesdoctype) {
                 this.renderViewForDocType();
+            } else if (!docType) {
+                this.renderDefaultView();
             }
         });
     }
@@ -65,11 +67,21 @@ export class SalesDocsRecordView {
              */
         }
 
-        if(!this.headerComponentset || !this.footerComponentset){
+        if (!this.headerComponentset || !this.footerComponentset) {
             let defaultConfig = this.metadata.getComponentConfig('SalesDocsRecordView', 'SalesDocs');
-            if(!this.headerComponentset) this.headerComponentset = defaultConfig.headercomponentset;
-            if(!this.footerComponentset) this.footerComponentset = defaultConfig.footercomponentset;
+            if (!this.headerComponentset) this.headerComponentset = defaultConfig.headercomponentset;
+            if (!this.footerComponentset) this.footerComponentset = defaultConfig.footercomponentset;
         }
+        this.initialized = true;
+    }
+
+    /**
+     * renders a default view
+     */
+    private renderDefaultView() {
+        let componentConf = this.metadata.getComponentConfig('SalesDocsRecordView', this.model.module);
+        this.headerComponentset = componentConf.headercomponentset;
+        this.footerComponentset = componentConf.footercomponentset;
         this.initialized = true;
     }
 

@@ -18,7 +18,7 @@ declare var _;
 })
 export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy {
     private valuearray: any[] = [];
-    private groups: any = {};
+    private groups: any[] = [];
     private viewmodevalue: string = '';
     private languageSubscription: Subscription = new Subscription();
 
@@ -30,9 +30,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
         public router: Router
     ) {
         super(model, view, language, metadata, router);
-        this.languageSubscription = this.language.currentlanguage$.subscribe((newlang) => {
-            this.buildOptionGroups();
-        });
+        this.subscribeToLanguage();
     }
 
     public ngOnInit() {
@@ -67,6 +65,21 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
         return this.valuearray;
     }
 
+    /*
+    * rebuild the option groups on language change
+    * @return void
+    */
+    private subscribeToLanguage() {
+        this.languageSubscription = this.language.currentlanguage$.subscribe((newlang) => {
+            this.buildOptionGroups();
+        });
+    }
+
+    /*
+    * disable the group value if one of its items is checked
+    * @param groupValue
+    * @return bool
+    */
     private isDisabled(groupValue) {
         let disabled = false;
         this.fieldValueArray.some(item => {
@@ -76,6 +89,12 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
         return disabled;
     }
 
+    /*
+    * set the field value and add the group value of the group item if it is not set
+    * @param valueArray
+    * @param group
+    * @return void
+    */
     private setFieldValue(valueArray, group) {
         let groupNotExist = this.fieldValueArray.indexOf(group.value) == -1;
         let groupHasItems = valueArray.some(item => {
@@ -88,17 +107,32 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
         if (!groupHasItems) {
             this.setGroupValue(false, group);
         }
+        this.viewmodevalue = '';
         this.value = valueArray.map(item => `^${item}^`).join(',');
     }
 
+    /*
+    * @param index
+    * @param item
+    * @return index
+    */
     private trackByFn(index, item) {
         return index;
     }
 
+    /*
+    * @param group
+    * @return groupValue
+    */
     private getGroupValue(group) {
         return this.fieldValueArray[this.fieldValueArray.indexOf(group.value)];
     }
 
+    /*
+    * @param checked
+    * @param group
+    * @return void
+    */
     private setGroupValue(checked, group) {
         let newArray = this.fieldValueArray;
         let groupIndex = newArray.indexOf(group.value);
@@ -107,11 +141,16 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
         } else {
             newArray.splice(groupIndex, 1);
         }
+        this.viewmodevalue = '';
         this.value = newArray.map(item => `^${item}^`).join(',');
     }
 
+    /*
+    * build the checkbox groups and their items
+    * @return void
+    */
     private buildOptionGroups() {
-        this.groups = {};
+        this.groups = [];
         let newGroups = {};
         let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
 

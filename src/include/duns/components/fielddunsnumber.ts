@@ -68,8 +68,8 @@ export class FieldDunsNumber extends fieldGeneric {
             .subscribe(modalRef => {
                 this.getResults(modalRef);
                 modalRef.instance.response.subscribe(res => {
-                    if (res) {
-                        this.value = res.duns;
+                    this.value = res.duns;
+                    if (res != 'none') {
                         this.setAddressFields(res);
                     }
                 });

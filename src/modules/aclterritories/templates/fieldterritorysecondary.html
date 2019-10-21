@@ -9,7 +9,7 @@
     <div class="slds-form-element__control slds-size--1-of-1">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox"
-                 [ngClass]="{'slds-is-open':isAdding && territorySearchTerm}">
+                 [ngClass]="{'slds-is-open':territorySearchOpen && territorySearchTerm}">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                     <div class="slds-pill_container" (click)="onClick()">
                         <ul class="slds-listbox slds-listbox_horizontal" role="listbox">
@@ -25,7 +25,7 @@
                                   </span>
                             </li>
                             <li class="slds-listbox-item" role="presentation">
-                                <input spoiceui-autofocus *ngIf="isAdding" type="text" style="min-width: 12rem;"
+                                <input spoiceui-autofocus *ngIf="territorySearchOpen" type="text" style="min-width: 12rem;"
                                        class="slds-p-horizontal--x-small" [(ngModel)]="territorySearchTerm" (blur)="onBlur()" [placeholder]="language.getLabel('LBL_ADD_TERRITORY')"/>
                             </li>
                         </ul>

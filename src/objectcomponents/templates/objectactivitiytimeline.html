@@ -9,7 +9,7 @@
         <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="'refresh'" (click)="reload()"></system-button-icon>
     </div>
 </div>
-<div class="slds-p-top--x-small">
+<div class="slds-p-top--x-small" spiceDropFileArea (filesDrop)="handleDroppedFiles($event)">
     <!-- the Activities container-->
     <div class="slds-is-relative spiceActivitiyTimelineHeader">
         <h2 class="slds-p-vertical--xx-small slds-text-heading--x-small">
@@ -28,6 +28,28 @@
             <system-utility-icon *ngIf="activitiyTimeLineService.usefts && activitiyTimeLineService.activities.History.totalcount > 0" [icon]="displayaggregates.History?'up':'down'" size="x-small" (click)="displayaggregates.History = !displayaggregates.History"></system-utility-icon>
         </h2>
         <object-activitiytimeline-summary-button></object-activitiytimeline-summary-button>
+    </div>
+    <div *ngIf="uploadData.uploading" class="slds-m-vertical--medium slds-media">
+        <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
+            <system-icon [icon]="this.uploadData.fileIcon.icon" divClass="" [sprite]="this.uploadData.fileIcon.sprite"  size="'small'"></system-icon>
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small">
+                    <a href="javascript:void(0);">{{uploadData.fileName}}</a>
+                </h3>
+            </div>
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                <div class="slds-progress-bar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressBarStyle">
+                <span class="slds-assistive-text">Progress: 25%</span>
+            </span>
+                </div>
+                <div class="slds-text-align--right" style="width: 50px;">
+                    {{uploadData.progress}} %
+                </div>
+            </div>
+        </div>
     </div>
     <object-activitiytimeline-container module="History" [displayaggregates]="displayaggregates.History"></object-activitiytimeline-container>
     <div class="slds-grid slds-grid_align-end">

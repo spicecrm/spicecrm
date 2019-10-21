@@ -16,6 +16,12 @@ import {session} from "./session.service";
  */
 declare var moment: any;
 
+interface geoSearch {
+    radius: number;
+    lat: number;
+    lng: number;
+}
+
 @Injectable()
 export class modellist implements OnDestroy {
     public module: string = '';
@@ -41,6 +47,9 @@ export class modellist implements OnDestroy {
     public searchConditions: any[] = [];
     public searchTerm: string = '';
     public searchAggregates: any = {};
+    public searchGeo: geoSearch;
+
+
     public selectedAggregates: any[] = [];
 
     /**
@@ -721,6 +730,7 @@ export class modellist implements OnDestroy {
             aggregates[this.module] = this.selectedAggregates;
             this.fts.searchByModules({
                 searchterm: this.searchTerm,
+                searchgeo: this.searchGeo,
                 modules: [this.module],
                 size: this.loadlimit,
                 aggregates: aggregates,
