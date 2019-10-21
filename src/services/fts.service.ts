@@ -19,7 +19,7 @@ interface ftsSearchBuckets {
 
 interface ftsSearchParameters {
     searchterm?: string;
-    searchgeo: any;
+    searchgeo?: any;
     modules?: string[];
     size?: number;
     aggregates?: any;
