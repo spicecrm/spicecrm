@@ -19,7 +19,8 @@ import { SystemInputMedia } from '../../../systemcomponents/components/systeminp
     styles: [
         ':host {height: 100%;}',
         ':host >>> div.uploadbar {margin-left:-16px;margin-right:-16px;margin-top:16px;margin-bottom:-16px;width:calc(100% + 32px);height:8px;}',
-        ':host >>> div.uploadprogress {width: 90%;height: 100%;background-color: red;}'
+        ':host >>> div.uploadprogress {width: 90%;height: 100%;background-color: red;}',
+        'field-container ::ng-deep button.slds-button.slds-button--icon { display: none; }'
     ]
 })
 export class MediaFileUploader {
@@ -32,15 +33,16 @@ export class MediaFileUploader {
 
     private self: any;
 
-    private mediaReady = false;
+    private isMediaReady = false;
 
     private isSaving = false;
+    private isEditing = true;
     private tagsEditing = true;
-    @ViewChild(SystemInputMedia) public inputMedia;
+    @ViewChild(SystemInputMedia, { static: false }) public inputMedia;
 
     private mediaMetaData;
 
-    constructor( private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private language: language, private toast: toast, public model: model, public view: view ) {
+    constructor( private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private lang: language, private toast: toast, public model: model, public view: view ) {
 
         this.answerSubject = new Subject<boolean>();
         this.answer = this.answerSubject.asObservable();
@@ -65,26 +67,28 @@ export class MediaFileUploader {
         this.self.destroy();
     }
 
-    public onModalEscX(): boolean {
-        if ( !this.isSaving ) this.cancel();
-        return true;
+    private get canSave(): boolean {
+        return this.isMediaReady && !this.isSaving;
     }
 
-    private get canSave(): boolean {
-        return this.mediaReady && !this.isSaving;
+    private mediaAdded( mediaMetaData ) {
+        this.isMediaReady = mediaMetaData !== false;
+        this.mediaMetaData = mediaMetaData;
+        if ( mediaMetaData ) {
+            if ( !this.model.getField('name' )) this.model.setField('name', mediaMetaData.filename.replace(/\.[^\.]+$/, '' ).replace(/_/, ' '));
+        }
     }
 
     private save(): void {
         if ( !this.canSave ) return;
         this.isSaving = true;
-        this.mediaMetaData = this.inputMedia.getMetaData();
         this.model.setField('file', this.inputMedia.getImage() );
         this.model.setField('mediatype', this.mediaMetaData.mediatype );
         this.model.setField('filetype', this.mediaMetaData.fileformat );
-        this.model.setField('upload_completed', 1 );
         this.model.savingProgress.subscribe( progress => this.theProgress = progress );
         if ( this.model.validate() ) {
             this.view.setViewMode();
+            this.isEditing = false;
             this.model.save().subscribe( () => {
                 this.answerSubject.next( this.model.id );
                 this.answerSubject.complete();
@@ -101,9 +105,9 @@ export class MediaFileUploader {
         return this.model.getField('tags');
     }
 
-    public ch(x) {
-        console.log(x);
-        console.log(this.model.data.tags);
+    public onModalEscX() {
+        if ( !this.isSaving ) this.cancel();
+        return false;
     }
 
 }
