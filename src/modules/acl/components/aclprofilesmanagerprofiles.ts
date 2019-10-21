@@ -51,6 +51,10 @@ export class ACLProfilesManagerProfiles {
 
         this.backend.getRequest('module/SpiceACLProfiles', params).subscribe(aclprofiles => {
             this.aclprofiles = aclprofiles.list;
+
+            // sort by name
+            this.aclprofiles.sort((a, b) => a.name > b.name ? 1 : -1);
+
             this.loading = false;
         });
     }

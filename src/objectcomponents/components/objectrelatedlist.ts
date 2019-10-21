@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import { Component, AfterViewInit, OnInit, OnDestroy, Input } from "@angular/core";
+import {Component, AfterViewInit, OnInit, OnDestroy, Input} from "@angular/core";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
@@ -29,6 +29,9 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
+
+        // pass in the model
+        this.relatedmodels.model = this.model;
     }
 
     public aclAccess() {
@@ -44,14 +47,15 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
         this.fieldset = this.componentconfig.fieldset;
         this.listfields = this.metadata.getFieldSetFields(this.fieldset);
         this.module = this.componentconfig.object;
-
         this.relatedmodels.relatedModule = this.componentconfig.object;
+
+        this.relatedmodels.isonlyfiltered = this.componentconfig.isonlyfiltered;
 
         if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
 
-        if ( this.componentconfig.sequencefield ) {
+        if (this.componentconfig.sequencefield) {
             this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
-        } else if ( this.relatedmodels._linkName && this.model.fields[this.relatedmodels._linkName] && this.model.fields[this.relatedmodels._linkName].sequence_field ) {
+        } else if (this.relatedmodels._linkName && this.model.fields[this.relatedmodels._linkName] && this.model.fields[this.relatedmodels._linkName].sequence_field) {
             this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
         }
 
@@ -97,5 +101,12 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
 
     public addSelectedItems(items) {
         this.relatedmodels.addItems(items);
+    }
+
+    /**
+     * returns the listitemactionset if one is defined
+     */
+    get listitemactionset() {
+        return this.componentconfig && this.componentconfig.listitemactionset ? this.componentconfig.listitemactionset : '';
     }
 }

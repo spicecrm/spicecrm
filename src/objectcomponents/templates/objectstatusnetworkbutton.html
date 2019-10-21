@@ -1,8 +1,8 @@
 <div *ngIf="isManaged" class="slds-button-group slds-m-horizontal--xxx-small">
     <button class="slds-button slds-button_neutral" [disabled]="isDisabled" (click)="closeDropdown()">
-        <object-status-network-button-item [item]="primaryItem" [statusfield]="statusField" (status)="setStatus($event)"></object-status-network-button-item>
+        <object-status-network-button-item [item]="primaryItem" (status)="setStatus($event)"></object-status-network-button-item>
     </button>
-    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" [ngClass]="{'slds-is-open': isOpen}">
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" dropdowntrigger>
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="isDisabled || secondaryItems.length == 0" (click)="toggleOpen()">
             <system-button-icon icon="down"></system-button-icon>
         </button>

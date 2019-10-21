@@ -1,19 +1,27 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
+            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+              <system-icon [module]="pill.module" [size]="'small'"></system-icon>
+            </span>
+            <span class="slds-pill__label">{{pill.summary_text}}</span>
+      </span>
+</field-generic-display>
+<!--div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
             <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
               <system-icon [module]="pill.module" [size]="'small'"></system-icon>
             </span>
-            <span class="slds-pill__label">{{pill.summary_text}}</span>
+            <span class="slds-pill__label" modelPopOver [module]="pill.module" [id]="pill.id">{{pill.summary_text}}</span>
           </span>
         <button *ngIf="isEditable()" style="float: right" class="slds-button slds-button--icon"
                 (click)="setEditMode()">
             <system-button-icon [icon]="'edit'"></system-button-icon>
         </button>
     </ng-template>
-</div>
+</div-->
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-vertical--xx-small">
         <div *ngIf="lookuplinks.length > 1" class="slds-combobox_object-switcher slds-combobox-addon_start">

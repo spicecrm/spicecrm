@@ -1,35 +1,59 @@
 /**
  * @module AdminComponentsModule
  */
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
+import {Injectable, OnInit, EventEmitter} from '@angular/core';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
 
 
 import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
+import {CdkDropList} from "@angular/cdk/drag-drop";
+import {modal} from "../../services/modal.service";
+import {Subject} from "rxjs";
 
 @Injectable()
 export class ftsconfiguration {
     public module: string = '';
+    public module$: EventEmitter<string> = new EventEmitter<string>();
     public moduleFtsFields: any = [];
     public moduleFtsSettings: any = {};
     public indexing: boolean = false;
+    public fieldsDropList: CdkDropList;
+
+    public modules: any[] = [];
+    public analyzers: any[] = [];
 
     constructor(
         private backend: backend,
         private metadata: metadata,
         private language: language,
+        private modal: modal,
         private toast: toast
-    ) {}
+    ) {
+        this.backend.getRequest('ftsmanager/core/modules').subscribe(modules => this.modules = modules);
+        this.backend.getRequest('ftsmanager/core/analyzers').subscribe(analyzers => this.analyzers = analyzers.sort((a, b) => a.value > b.value ? 1 : -1));
+    }
 
+    /**
+     * set the current module .. if the module is known retrieve the fields ... otherwise add it and set empty set empty
+     *
+     * @param module
+     */
     public setModule(module) {
         this.module = module;
-        this.getModuleFtsFields();
-        this.getModuleSettings();
+        if (this.modules.indexOf(module) >= 0) {
+            this.getModuleFtsFields();
+            this.getModuleSettings();
+        } else if (this.module) {
+            this.modules.push(module);
+            this.moduleFtsFields = [];
+            this.moduleFtsSettings = [];
+        } else {
+            this.moduleFtsFields = [];
+            this.moduleFtsSettings = [];
+        }
+        this.module$.emit(module);
     }
 
     public getModuleFtsFields() {
@@ -40,7 +64,7 @@ export class ftsconfiguration {
     }
 
     public getModuleSettings() {
-        this.moduleFtsFields = [];
+        this.moduleFtsSettings = [];
         this.backend.getRequest('ftsmanager/' + this.module + '/settings').subscribe(settings => {
             this.moduleFtsSettings = settings;
         });
@@ -59,18 +83,30 @@ export class ftsconfiguration {
         return fieldDetails;
     }
 
-    public save() {
+    public deleteModule(module) {
+        this.backend.deleteRequest(`ftsmanager/${this.module}`).subscribe(done => {
+            this.modules.splice(this.modules.indexOf(module), 1);
+            this.module = '';
+        });
+    }
+
+    public save(notify = true) {
+        let responseSubject = new Subject<any>();
         let postData = {
             fields: this.moduleFtsFields,
             settings: this.moduleFtsSettings
         };
         this.backend.postRequest('ftsmanager/' + this.module, {}, postData).subscribe(response => {
+            responseSubject.next(response);
+            if (!notify) return;
             if (response) {
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
             }
-        });
+        }, error => responseSubject.error(error));
+
+        return responseSubject;
     }
 
     public searchPath(path) {
@@ -84,67 +120,55 @@ export class ftsconfiguration {
         return pathFound;
     }
 
-    public putMapping() {
-        this.indexing = true;
-        this.backend.deleteRequest('ftsmanager/' + this.module).subscribe(result => {
-            this.backend.postRequest('ftsmanager/' + this.module + '/map').subscribe(
-                result => {
-                    this.indexing = false;
-                }
-            );
+    public executeAction(action, params?) {
+        let url = '';
+        let label = '';
+        switch (action) {
+            case 'bulk':
+                url = `ftsmanager/${this.module}/index`;
+                label = 'LBL_INDEX';
+                break;
+            case 'init':
+                url = `ftsmanager/core/initialize`;
+                label = 'LBL_INITIALIZE';
+                break;
+            case 'reset':
+                url = `ftsmanager/${this.module}/index/reset`;
+                label = 'LBL_RESET';
+                break;
+        }
+
+        this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+            loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') + ': ' + this.language.getLabel(label);
+            if (action == 'reset') {
+                this.save(false).subscribe(res => {
+                    this.backend.postRequest(url, params).subscribe(
+                        result => {
+                            if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
+                                let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFO');
+                                this.modal.info(result.message, headerText, result.status);
+                            } else if (result.status != 'error') {
+                                this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                            }
+                            loadingModalRef.instance.self.destroy();
+                        },
+                        error => loadingModalRef.instance.self.destroy()
+                    );
+                }, error => loadingModalRef.instance.self.destroy());
+            } else {
+                this.backend.postRequest(url, params).subscribe(
+                    result => {
+                        if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
+                            let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFO');
+                            this.modal.info(result.message, headerText, result.status);
+                        } else if (result.status != 'error') {
+                            this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                        }
+                        loadingModalRef.instance.self.destroy();
+                    },
+                    error => loadingModalRef.instance.self.destroy()
+                );
+            }
         });
     }
-
-    public indexModule() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/' + this.module + '/index').subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
-    /**
-     * CR1000257
-     */
-    public indexModuleBulk() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/' + this.module + '/index', { bulk: true },).subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
-    public initialize() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/core/initialize').subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
-
-    public resetModule() {
-        this.indexing = true;
-        this.backend.postRequest('ftsmanager/' + this.module + '/resetindex').subscribe(
-            result => {
-                this.indexing = false;
-            },
-            error => {
-                this.indexing = false;
-            }
-        );
-    }
-
 }
