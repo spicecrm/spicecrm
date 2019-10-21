@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import {language} from "../../services/language.service";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import { backend } from '../../services/backend.service';
@@ -16,81 +16,91 @@ declare var window: any;
         }
     ],
     styles: [
-        'li, li+li { padding: 0.25rem 0 0 0.25rem; }',
-        'ul { padding: 0 0.25rem 0.25rem 0; }',
+        '.slds-pill_container > ul > li, .slds-pill_container > ul > li+li { padding: 0.25rem 0 0 0.25rem; }',
+        '.slds-pill_container > ul { padding: 0 0.25rem 0.25rem 0; }',
         'system-utility-icon { cursor: pointer; }',
         'input { line-height: 1.5rem; padding: 0 0.5rem; min-height: 0; border-style: dashed; border-color: rgb(110,110,110); }',
-        '.slds-pill__label { padding: 0 0.125rem; }'
+        '.slds-pill--label, .slds-pill__label { padding: 0 0.125rem; }',
+        '.slds-dropdown { transform: none; left: 0; }',
+        '.slds-dropdown--fluid, .slds-dropdown_fluid { min-width: auto; }'
     ]
 })
 export class SystemInputTags2 implements ControlValueAccessor {
 
-    @Input() public isLoading = false;
     @Input() public isEditing = true;
     @Input() public maxNumber = null;
 
-    @Input() public isRequired = false;
-    @Input() public label = '';
-
-    @ViewChild('taglist', {read: ViewContainerRef}) private taglist: ViewContainerRef;
+    @ViewChild('taglist', { read: ViewContainerRef, static: true }) private taglist: ViewContainerRef;
 
     private tags: string[] = []; // the tags
     private tagsLower: string[] = []; // the lower-case variants of the tags
 
     // for the dropdown
-    private querystring: string = '';
-    private querytimeout: any = undefined;
-    private matchedtags: string[] = [];
-    private matchedtagindex: number;
+    private queryString = '';
+    private queryTimeout: number = undefined;
+    private proposedTags: string[] = [];
+    private matchedTagsFromBackend: string[] = [];
 
-    constructor( private lang: language, private backend: backend ) { }
+    private inputFieldHasFocus = false;
+    private console: any;
+
+    private selectedProposal = -1;
+    private hoveredProposal = -1;
+
+    private isOpen = false;
+    private lastTypedQueryString = '';
+
+    constructor( private lang: language, private backend: backend, private changeDetRef: ChangeDetectorRef ) {
+        this.console = window.console;
+    }
 
     public onChange = (_) => { 1; };
 
-    /*
-    set value( val ) { // this value is updated by programmatic changes
-        if ( val !== undefined ) { // && this.tags !== val ) {
-            this.tags = val;
-        //    this.onChange( val );
-        }
-    }
-    */
-
     // this method sets the value programmatically
-    public writeValue( value: any ) {
+    public writeValue( value: any ): void {
         if ( value ) {
             this.tags = value;
             this.tagsToLowerCase();
         } else this.tags = [];
     }
 
-    private tagsToLowerCase() {
-        for ( let i=0; i< this.tags.length; i++ ) {
-            this.tagsLower[i] = this.tags[i].toLocaleLowerCase();
-        }
+    private tagsToLowerCase(): void {
+        for ( let i=0; i< this.tags.length; i++ ) this.tagsLower[i] = this.tags[i].toLocaleLowerCase();
         this.tagsLower.length = this.tags.length;
     }
 
     // upon UI element value changes, this method gets triggered
-    public registerOnChange( fn: any ) {
+    public registerOnChange( fn: any ): void {
         this.onChange = fn;
     }
 
-    public registerOnTouched( fn: any ) { 1; }
+    public registerOnTouched( fn: any ): void { 1; }
 
-    public addTag( event ) {
-        if ( this.maxNumberReached ) return;
-        let tag = event.target.value;
+    public addTag( tag: string, typedIn = false ): void {
         tag = tag.trim();
-        if ( tag === '' ) return;
+        if ( tag === '' || this.maxNumberReached ) return;
         let tagLower = tag.toLocaleLowerCase();
         let position = this.tagsLower.indexOf( tagLower ); // Is the tag already in the list?
         if ( position === -1 ) { // No? --> Add it to the list.
             this.tags.push( tag );
             this.tagsLower.push( tagLower );
-            event.target.value = '';
+            // if ( event ) event.target.value = '';
+            // this.queryString = this.lastTypedQueryString;
+            // if ( typedIn ) this.queryString = '';
             this.onChange( this.tags );
+            if ( this.maxNumberReached ) this.queryString = '';
+            this.determineProposedTags();
+            this.doNewPosition();
+            this.changeDetRef.detectChanges();
         } else this.highlightTag( position ); // Yes? --> Highlight it to draw attention to it.
+    }
+
+    private doNewPosition() {
+        if ( this.selectedProposal > this.proposedTags.length-1 ) this.selectedProposal = this.proposedTags.length-1;
+        if ( this.selectedProposal < 0 ) {
+            this.isOpen = false;
+            this.queryString = this.lastTypedQueryString;
+        } else this.queryString = this.proposedTags[this.selectedProposal];
     }
 
     private get maxNumberReached(): boolean {
@@ -102,56 +112,114 @@ export class SystemInputTags2 implements ControlValueAccessor {
         tagStyle.boxShadow = '0 0 5px 5px #f66';
         tagStyle.transition = 'box-shadow 100ms';
         window.setTimeout( () => {
-            tagStyle.transition = 'box-shadow 1000ms';
+            tagStyle.transition = 'box-shadow 1500ms';
             tagStyle.boxShadow = null;
         }, 100 );
     }
 
-    private removeByIndex( index ) {
+    private removeByIndex( index ): void {
         this.tags.splice( index, 1 );
         this.tagsLower.splice( index, 1 );
         this.onChange( this.tags );
+        this.determineProposedTags();
     }
 
-    get isOpen(): boolean {
-        return this.matchedtags.length > 0;
-    }
-
-
-    private search(_e) {
+    private search( event ) {
+        console.log(event);
         // handle the key pressed
-        switch (_e.key) {
+        switch ( event.key ) {
+            case 'Escape':
+                if ( this.isOpen ) {
+                    this.isOpen = false;
+                    event.stopPropagation();
+                    this.queryString = this.lastTypedQueryString;
+                }
+                break;
             case 'ArrowDown':
+                if ( !this.isOpen ) {
+                    this.switchOnProposalsIfOff();
+                    this.selectedProposal = -1;
+                    break;
+                }
+                this.switchOnProposalsIfOff();
+                if ( this.proposedTags.length > 0 ) {
+                    this.selectedProposal++;
+                    if ( this.selectedProposal === this.proposedTags.length ) this.selectedProposal = 0;
+                    this.queryString = this.proposedTags[this.selectedProposal];
+                }
+                break;
             case 'ArrowUp':
+                if ( !this.isOpen ) {
+                    this.switchOnProposalsIfOff();
+                    this.selectedProposal = -1;
+                    break;
+                }
+                this.switchOnProposalsIfOff();
+                if ( this.proposedTags.length > 0 ) {
+                    this.selectedProposal--;
+                    if ( this.selectedProposal === -1 ) this.selectedProposal = this.proposedTags.length-1;
+                    this.queryString = this.proposedTags[this.selectedProposal];
+                }
                 break;
             case ',':
             case ';':
             case 'Enter':
-                this.addTag(this.querystring.replace(/^[\s]+|[\s\W]+$/gm, ''))
+                this.addTag( this.queryString, true ); // .replace(/^[\s]+|[\s\W]+$/gm, '')
                 break;
             default:
-                if (this.querytimeout) window.clearTimeout(this.querytimeout);
-                this.querytimeout = window.setTimeout(() => this.doSearch(), 500);
+                if ( this.proposedTags[this.selectedProposal] !== this.queryString ) { // ??????????????????
+                    this.lastTypedQueryString = this.queryString;
+                    if ( this.queryTimeout ) window.clearTimeout( this.queryTimeout );
+                    this.queryTimeout = window.setTimeout( () => this.doSearch(), 500 );
+                }
                 break;
         }
     }
 
-    private doSearch() {
-        /*
-        this.backend.getRequest('/SpiceTags/' + btoa(this.querystring.trim())).subscribe(tags => {
-            this.matchedtags = tags;
-            this.matchedtags.sort((a, b) => {
-                return a.toLowerCase() > b.toLowerCase() ? 1 : -1;
-            });
+    private doSearch(): void {
+        this.backend.postRequest('/SpiceTags', {},  { search: this.queryString.trim() }).subscribe( tags => {
+            // this.matchedTagsFromBackend = tags;
+            this.matchedTagsFromBackend = ['Landwirtschaft','IT','Pflege','Medizin','Architektur','Maschinenbau','Hochbau','Tiefbau','Gastronomie']; // provisorisch, solange nix vom Backend
+            this.matchedTagsFromBackend.sort((a, b) => a.localeCompare(b) );
+            this.determineProposedTags();
+            if ( this.inputFieldHasFocus ) this.switchOnProposalsIfOff();
         });
-        */
-        this.backend.postRequest('/SpiceTags', {},  {search: this.querystring.trim()}).subscribe(tags => {
-            this.matchedtags = tags;
-            this.matchedtags = ['Kirche','Kapelle','Kathethrale','Dom','Basilika','Babptisterium'];
-            this.matchedtags.sort((a, b) => {
-                return a.toLowerCase() > b.toLowerCase() ? 1 : -1;
-            });
+    }
+
+    private switchOnProposalsIfOff(): void {
+        if ( this.isOpen || this.proposedTags.length === 0 ) return;
+        this.isOpen = true;
+        this.selectedProposal = -1;
+    }
+
+    private determineProposedTags(): void {
+        // this.proposedTags = this.matchedTagsFromBackend; // for debugging
+        // return; // for debugging
+        this.proposedTags = this.matchedTagsFromBackend.filter( ( string) => {
+            let stringLower = string.toLocaleLowerCase();
+            if ( this.lastTypedQueryString.length === 0 ) return false;
+            if ( stringLower.indexOf( this.lastTypedQueryString.toLocaleLowerCase() ) === -1 ) return false;
+            if ( this.tagsLower.indexOf( stringLower ) !== -1 ) return false;
+            return true;
         });
+    }
+
+    private inputFieldGotFocus( status ) {
+        if ( status === false ) {
+            this.queryString = this.lastTypedQueryString;
+            this.isOpen = false;
+        }
+        this.inputFieldHasFocus = status;
+    }
+
+    private proposalIsHighlighted( i ): boolean {
+        if ( this.hoveredProposal > -1 ) return this.hoveredProposal === i;
+        else return this.selectedProposal === i;
+    }
+
+    private hover( i: number ) {
+        this.hoveredProposal = i;
+        this.selectedProposal = -1;
     }
 
 }
