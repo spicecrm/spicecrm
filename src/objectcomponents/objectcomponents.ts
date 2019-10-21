@@ -24,6 +24,8 @@ import /*embed*/ {objectimport} from './services/objectimport.service';
 import /*embed*/ {objectmerge} from './services/objectmerge.service';
 import /*embed*/ {objectnote} from './services/objectnote.service';
 
+import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
+
 import /*embed*/ {ObjectListViewHeader} from './components/objectlistviewheader';
 import /*embed*/ {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
 import /*embed*/ {ObjectList} from './components/objectlist';
@@ -103,7 +105,6 @@ import /*embed*/ {ObjectRecordView} from './components/objectrecordview';
 import /*embed*/ {ObjectRecordViewDetail1} from './components/objectrecordviewdetail1';
 import /*embed*/ {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2and1';
 import /*embed*/ {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
-import /*embed*/ {ObjectIcon} from './components/objecticon';
 import /*embed*/ {ObjectPageHeader} from './components/objectpageheader';
 import /*embed*/ {ObjectPageHeaderTags} from './components/objectpageheadertags';
 import /*embed*/ {ObjectPageHeaderTagPicker} from './components/objectpageheadertagpicker';
@@ -204,19 +205,18 @@ import /*embed*/ {ObjectAddress} from './components/objectaddress';
 
 import /*embed*/ {ObjectGDPRModal} from './components/objectgdprmodal';
 
-import /*embed*/ {ObjectPopoverHeader} from './components/objectpopoverheader';
-import /*embed*/ {ObjectPopoverBodyItem} from './components/objectpopoverbodyitem';
 import /*embed*/ {ObjectRowItemComponent} from "./components/objectrowitem";
 import /*embed*/ {ObjectModalModuleDBLookup} from "./components/objectmodalmoduledblookup";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
 import /*embed*/ {ObjectActionVCardButton} from "./components/objectactionvcardbutton";
 
-import /*embed*/ {ObjectKeyValuesPipe} from "./components/objectkeyvalue.pipe";
+
 import /*embed*/ {ObjectTableRow} from "./components/objecttablerow";
 import /*embed*/ {ObjectTable} from "./components/objecttable";
 
 import /*embed*/ {ObjectModelPopover} from "./components/objectmodelpopover";
+import /*embed*/ {ObjectModelPopoverHeader} from "./components/objectmodelpopoverheader";
 import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopoverfield";
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
@@ -277,7 +277,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
             // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
         ])],
     declarations: [
-        ObjectIcon,
         ObjectListViewContainer,
         ObjectListView,
         ObjectListTypes,
@@ -436,8 +435,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectAddresses,
         ObjectAddressesPipe,
         ObjectAddress,
-        ObjectPopoverHeader,
-        ObjectPopoverBodyItem,
+        // ObjectPopoverHeader,
+        // ObjectPopoverBodyItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,
         ObjectRecordFieldsetHorizontalList,
@@ -453,6 +452,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectTableRow,
         ObjectTable,
         ObjectModelPopover,
+        ObjectModelPopoverHeader,
         ObjectModelPopoverField,
         ObjectModelPopoverRelated,
         ObjectModelPopoverRelatedItem,
@@ -465,7 +465,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectListViewHeader,
         ObjectList,
         ObjectListItem,
-        ObjectIcon,
         ObjectPageHeader,
         ObjectPageHeaderDetails,
         ObjectPageHeaderDetailRow,
@@ -476,8 +475,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectRelatedList,
         ObjectRelatedlistTable,
         ObjectRelatedListItem,
-        ObjectPopoverHeader,
-        ObjectPopoverBodyItem,
+        // ObjectPopoverHeader,
+        // ObjectPopoverBodyItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetHorizontalList,
         ObjectRowItemComponent,

@@ -1,0 +1,13 @@
+<li [attr.aria-expanded]="expanded" [attr.aria-level]="level" role="treeitem" tabindex="0">
+    <div class="slds-tree__item">
+        <button class="slds-button slds-button_icon slds-m-right_x-small" [disabled]="disabled" (click)="expandItem()">
+            <system-button-icon [icon]="icon"></system-button-icon>
+        </button>
+        <span class="slds-has-flexi-truncate">
+      <div class="slds-tree__item-label slds-truncate" (click)="nodeSelected()">{{name}}</div>
+    </span>
+    </div>
+    <ul role="group">
+        <system-module-tree-item *ngFor="let nodeitem of nodeitems" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="nodeitem.path" (itemSelected)="emitSelected($event)"></system-module-tree-item>
+    </ul>
+</li>

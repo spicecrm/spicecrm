@@ -17,6 +17,7 @@
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
+                        <option></option>
                         <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator">{{language.getLabel(operator.name)}}</option>
                     </select>
                 </div>
@@ -31,6 +32,7 @@
                 <ng-container *ngIf="operatortype == 'enum'">
                     <div *ngIf="filterexpression.operator == 'equals'" class="slds-select_container">
                         <select class="slds-select" [disabled]="enumDisabled()" [(ngModel)]="filterexpression.filtervalue">
+                            <option></option>
                             <option *ngFor="let option of getFieldDisplayOptions()" [value]="option.value">{{option.display}}</option>
                         </select>
                     </div>

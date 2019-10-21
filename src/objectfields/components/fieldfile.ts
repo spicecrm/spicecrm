@@ -119,6 +119,7 @@ export class fieldFile extends fieldGeneric {
             // check max filesize
             if (maxSize && file.size > maxSize) {
                 this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [file.name, this.humanFileSize(maxSize)]), 'error');
+                retSub.error(true);
                 continue;
             }
 
@@ -307,14 +308,10 @@ export class fieldFile extends fieldGeneric {
     /**
      * handle the drop event when a file is dropped
      *
-     * @param event
+     * @param files
      */
-    private onDrop(event: any) {
-        this.preventdefault(event);
-        let files = event.dataTransfer.files;
-        if (files && files.length == 1) {
+    private onDrop(files: FileList) {
             this.doupload(files);
-        }
     }
 
 }
