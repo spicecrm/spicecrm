@@ -29,6 +29,7 @@ export class SystemInputTags2 implements ControlValueAccessor {
 
     @Input() public isEditing = true;
     @Input() public maxNumber = null;
+    @Input() public id = '';
 
     @ViewChild('taglist', { read: ViewContainerRef, static: true }) private taglist: ViewContainerRef;
 
@@ -54,14 +55,19 @@ export class SystemInputTags2 implements ControlValueAccessor {
         this.console = window.console;
     }
 
-    public onChange = (_) => { 1; };
+    public propagateChange = (_) => { 1; };
 
     // this method sets the value programmatically
-    public writeValue( value: any ): void {
-        if ( value ) {
-            this.tags = value;
-            this.tagsToLowerCase();
-        } else this.tags = [];
+    public writeValue( tagsAsString: string ): void {
+        if ( !tagsAsString || tagsAsString === '' ) this.tags = [];
+        else {
+            try {
+                this.tags = JSON.parse( tagsAsString );
+            } catch (e) {
+                this.tags = [];
+            }
+        }
+        this.tagsToLowerCase();
     }
 
     private tagsToLowerCase(): void {
@@ -71,7 +77,7 @@ export class SystemInputTags2 implements ControlValueAccessor {
 
     // upon UI element value changes, this method gets triggered
     public registerOnChange( fn: any ): void {
-        this.onChange = fn;
+        this.propagateChange = fn;
     }
 
     public registerOnTouched( fn: any ): void { 1; }
@@ -83,11 +89,15 @@ export class SystemInputTags2 implements ControlValueAccessor {
         let position = this.tagsLower.indexOf( tagLower ); // Is the tag already in the list?
         if ( position === -1 ) { // No? --> Add it to the list.
             this.tags.push( tag );
-            this.tagsLower.push( tagLower );
+            this.lang.sortArray( this.tags );
+            // this.tagsLower.push( tagLower );
+            // this.lang.sortArray( this.tagsLower );
+            this.tagsToLowerCase();
             // if ( event ) event.target.value = '';
             // this.queryString = this.lastTypedQueryString;
             // if ( typedIn ) this.queryString = '';
-            this.onChange( this.tags );
+            if ( this.lastTypedQueryString === this.queryString ) this.queryString = '';
+            this.propagateChange( JSON.stringify( this.tags ));
             if ( this.maxNumberReached ) this.queryString = '';
             this.determineProposedTags();
             this.doNewPosition();
@@ -120,12 +130,11 @@ export class SystemInputTags2 implements ControlValueAccessor {
     private removeByIndex( index ): void {
         this.tags.splice( index, 1 );
         this.tagsLower.splice( index, 1 );
-        this.onChange( this.tags );
+        this.propagateChange( JSON.stringify( this.tags ));
         this.determineProposedTags();
     }
 
     private search( event ) {
-        console.log(event);
         // handle the key pressed
         switch ( event.key ) {
             case 'Escape':
@@ -177,7 +186,7 @@ export class SystemInputTags2 implements ControlValueAccessor {
     }
 
     private doSearch(): void {
-        this.backend.postRequest('/SpiceTags', {},  { search: this.queryString.trim() }).subscribe( tags => {
+        this.backend.postRequest('SpiceTags', {},  { search: this.queryString.trim() }).subscribe( tags => {
             // this.matchedTagsFromBackend = tags;
             this.matchedTagsFromBackend = ['Landwirtschaft','IT','Pflege','Medizin','Architektur','Maschinenbau','Hochbau','Tiefbau','Gastronomie']; // provisorisch, solange nix vom Backend
             this.matchedTagsFromBackend.sort((a, b) => a.localeCompare(b) );
