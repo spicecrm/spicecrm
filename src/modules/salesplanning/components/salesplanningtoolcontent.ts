@@ -119,6 +119,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private getNodeInfo() {
         if (!this.node) return;
+        this.isLoading = true;
         let params = {
             nodes: this.planningService.selectedNodes,
             characteristics: this.planningService.selectedCharacteristics,
@@ -128,6 +129,8 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 if (nodeInfo && nodeInfo.planningNode) {
                     this.nodeInfo = nodeInfo;
                     this.getNodeContent();
+                } else {
+                    this.isLoading = false;
                 }
             });
     }
@@ -135,7 +138,6 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private getNodeContent() {
         this.nodeContentArray = [];
         if (!this.node) return;
-        this.isLoading = true;
         let params = {
             nodes: this.planningService.selectedNodes,
             characteristics: this.planningService.selectedCharacteristics,
@@ -144,15 +146,15 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             .subscribe(nodeContent => {
                 if (nodeContent && nodeContent.data && nodeContent.data.length) {
                     this.nodeContentArray = nodeContent.data;
-                    this.isLoading = false;
+                    this.formatValues();
                 }
+                this.isLoading = false;
             });
     }
 
     private setEditMode() {
         this.nodeContentArrayBackup = [];
         this.nodeContentArray.forEach(field => this.nodeContentArrayBackup.push(_.clone(field)));
-        this.formatValues();
         this.view.setEditMode();
     }
 
@@ -187,7 +189,8 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private toggleMarkDone() {
         this.isClosing = true;
-        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/markDone`)
+        let action = this.nodeInfo.marked_done ? 'unmarkDone' : 'markDone';
+        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
             .subscribe(result => {
                 if (result.success == true) {
                     this.nodeInfo.marked_done = !this.nodeInfo.marked_done;

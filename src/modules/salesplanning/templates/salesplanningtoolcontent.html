@@ -1,14 +1,14 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div class="slds-border--bottom slds-grid" style="min-height: 20px">
+    <div class="slds-border--bottom slds-grid" style="min-height: 30px">
         <div class="slds-grow slds-p-horizontal--medium slds-p-vertical--small slds-scrollable--x slds-text-heading--small">
             {{nodeInfo.nodeText}}
         </div>
         <div class="slds-col_bump-left slds-p-vertical--x-small slds-m-right--x-small">
             <div class="slds-button-group">
-                <button class="slds-button-group-item slds-button slds-button--neutral" (click)="viewNote()">
+                <button [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="viewNote()">
                     View Note
                 </button>
-                <button [disabled]="isClosing" [class.slds-is-pressed]="nodeInfo.marked_done && !isClosing" (click)="toggleMarkDone()"
+                <button [disabled]="isClosing || isLoading" [class.slds-is-pressed]="nodeInfo.marked_done && !isClosing" (click)="toggleMarkDone()"
                         class="slds-button-group-item slds-button slds-button--neutral slds-button_dual-stateful slds-align--absolute-center" >
                     <system-button-icon *ngIf="nodeInfo.marked_done && !isClosing" icon="check" addclasses="slds-button__icon_left"></system-button-icon>
                     <system-spinner *ngIf="isClosing" size="14" class="slds-m-right--xxx-small" style="display: inline-block"></system-spinner>
@@ -16,20 +16,20 @@
                 </button>
             </div>
             <div class="slds-button-group slds-m-left--small">
-                <button *ngIf="isEditMode" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
+                <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     {{language.getLabel('LBL_CANCEL')}}
                 </button>
-                <button *ngIf="isEditMode" class="slds-button-group-item slds-button slds-button--brand" (click)="save()">
+                <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--brand" (click)="save()">
                     {{language.getLabel('LBL_SAVE')}}
                 </button>
-                <button *ngIf="!isEditMode && nodeContentArray.length > 0" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                <button *ngIf="!isEditMode" [disabled]="isLoading && nodeContentArray.length == 0" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
                     {{language.getLabel('LBL_EDIT')}}
                 </button>
             </div>
         </div>
     </div>
-    <div class="slds-grow slds-scrollable--y">
-        <table *ngIf="nodeContentArray.length > 0" class="slds-table slds-table_bordered slds-table_cell-buffer spice-table_header-fixed">
+    <div class="slds-grow slds-scrollable">
+        <table *ngIf="nodeContentArray.length > 0 && !isLoading" class="slds-table slds-table_bordered slds-table_cell-buffer spice-table_header-fixed">
             <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col" style="padding: .1rem .1rem">
