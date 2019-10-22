@@ -19,6 +19,7 @@ interface ftsSearchBuckets {
 
 interface ftsSearchParameters {
     searchterm?: string;
+    searchgeo?: any;
     modules?: string[];
     size?: number;
     aggregates?: any;
@@ -37,6 +38,8 @@ export class fts {
     public runningmodulesearch: any = undefined;
     public searchTerm: string = '';
     public searchSort: any = {};
+    public searchOwner: boolean = false;
+    public searchGeo: any = {};
     public searchAggregates: any = {};
     public searchModules: any[] = [];
     public modulefilter: string = '';
@@ -125,6 +128,8 @@ export class fts {
         this.searchTerm = parameters.searchterm;
         this.searchAggregates = parameters.aggregates;
         this.searchSort = parameters.sortparams;
+        this.searchGeo = parameters.searchgeo;
+        this.searchOwner = parameters.owner;
         this.modulefilter = parameters.modulefilter;
         this.buckets = parameters.buckets;
 
@@ -139,6 +144,7 @@ export class fts {
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
             modules: parameters.modules.length > 0 ? parameters.modules.join(',') : '',
             searchterm: parameters.searchterm,
+            searchgeo: parameters.searchgeo,
             records: parameters.size,
             owner: parameters.owner,
             aggregates: this.searchAggregates,
@@ -224,7 +230,7 @@ export class fts {
         if (buckets) {
             // check per bucket
             let canLoadMore = false;
-            for(let bucketitem of buckets.bucketitems){
+            for(let bucketitem of buckets.bucketitems) {
                 if(!bucketitem.total || bucketitem.total > bucketitem.items){
                     canLoadMore = true;
                 }
@@ -242,6 +248,7 @@ export class fts {
             searchterm: this.lastSearchParams.searchterm,
             aggregates: this.searchAggregates,
             sort: this.searchSort,
+            owner: this.searchOwner,
             records: this.lastSearchParams.size,
             start: this.moduleSearchresults[0].data.hits.length,
             modulefilter: this.modulefilter,

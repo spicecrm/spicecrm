@@ -21,6 +21,9 @@
             <div class="slds-page-header__title slds-m-horizontal--x-small slds-align-middle slds-truncate">{{getCompactCalendarHeader()}}</div>
         </div>
         <div class="slds-align-top slds-col slds-grid slds-no-flex slds-col--bump-left">
+            <div class="slds-m-right--medium slds-grid">
+                <system-icon *ngFor="let module of modules" [module]="module.name" [ngStyle]="getIconStyle(module.name)" (click)="toggleVisibleModules(module.name)" size="medium" divClass="slds-m-right--xx-small" style="cursor: pointer"></system-icon>
+            </div>
             <div *ngIf="!isMobileView || asPicker" class="slds-button-group" role="group">
                 <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
                     <system-button-icon [icon]="'chevronleft'"></system-button-icon>
@@ -30,9 +33,6 @@
                 </button>
             </div>
             <ng-container *ngIf="!isMobileView && !asPicker">
-                <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
-                    <system-button-icon [icon]="'add'"></system-button-icon>
-                </button>
                 <button class="slds-button slds-button--icon-border" (click)="calendar.refresh()">
                     <system-button-icon [icon]="'refresh'"></system-button-icon>
                 </button>

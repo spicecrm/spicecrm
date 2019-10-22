@@ -22,8 +22,17 @@ export class ObjectRecordDetails implements OnInit {
     private componentSet = '';
     private componentconfig: any = {};
 
-    constructor( private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2 ) {
+    constructor(private view: view, private metadata: metadata, private componentFactoryResolver: ComponentFactoryResolver, private model: model, private language: language, private renderer: Renderer2) {
         this.view.isEditable = true;
+        this.view.linkedToModel = true;
+
+        // subscribe to the view mode
+        // in case the view is set external to editing .. also set the model to edit mode
+        this.view.mode$.subscribe(mode => {
+            if (mode == 'edit' && !this.model.isEditing) {
+                this.model.startEdit();
+            }
+        });
     }
 
     public ngOnInit() {
