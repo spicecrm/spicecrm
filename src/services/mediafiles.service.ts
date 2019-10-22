@@ -18,9 +18,9 @@ import { modal } from './modal.service';
 @Injectable()
 export class mediafiles {
 
-    categoriesLoaded: boolean = false;
-    categories: object = {};
-    categoriesSorted = [];
+    private categoriesLoaded: boolean = false;
+    public categories: object = {};
+    public categoriesSorted = [];
 
     constructor(
         private sanitizer: DomSanitizer,
@@ -37,7 +37,7 @@ export class mediafiles {
 
     private storeEtag( id, etag ) {
         if ( !sessionStorage.mediaFileEtags ) sessionStorage.mediaFileEtags = {};
-        //sessionStorage.mediaFileEtags[id] = etag;
+        // sessionStorage.mediaFileEtags[id] = etag;
     }
 
     private getEtag( id ) {
@@ -48,41 +48,41 @@ export class mediafiles {
     // If-None-Match
     private _getImage( mediaId: string, variant: string = '' ) {
         let responseSubject = new Subject<any>(); // this.getEtag(mediaId)
-        //{ 'If-None-Match': '1234567890'  }
-        this.backend.getRawRequest('module/MediaFiles/'+mediaId+'/file'+(variant != '' ? '/':'' )+variant, {}, null,{} ).subscribe( (response : any) => {
-            //this.storeEtag( mediaId,'abc12345' );
+        // { 'If-None-Match': '1234567890'  }
+        this.backend.getRawRequest('module/MediaFiles/'+mediaId+'/file'+(variant != '' ? '/':'' )+variant, {}, null,{} ).subscribe( (response: any) => {
+            // this.storeEtag( mediaId,'abc12345' );
             let objectUrl = URL.createObjectURL(response);
             responseSubject.next( this.sanitizer.bypassSecurityTrustUrl( objectUrl ));
             responseSubject.complete();
         });
         return responseSubject.asObservable();
     }
-    getImageVariant( mediaId: string, variant: string ) {
+    public getImageVariant( mediaId: string, variant: string ) {
         return this._getImage( mediaId, variant );
     }
-    getImage( mediaId: string ){
+    public getImage( mediaId: string ) {
         return this._getImage( mediaId );
     }
-    getImageThumb( mediaId: string, size: number ) {
+    public getImageThumb( mediaId: string, size: number ) {
         return this._getImage( mediaId, 'th/'+size );
     }
-    getImageSquare( mediaId: string, size: number ) {
+    public getImageSquare( mediaId: string, size: number ) {
         return this._getImage( mediaId, 'sq/'+size );
     }
 
-    uploadFile( files ): Observable<any> {
+    public uploadFile( files ): Observable<any> {
 
         if ( files.length === 0 ) return;
 
         let retSub = new Subject<any>();
 
-        var data = new FormData();
+        let data = new FormData();
         data.append('file', files[0], files[0].name);
 
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         let resp: any = {};
 
-        request.onreadystatechange = function ( scope: any = this ) {
+        request.onreadystatechange = function( scope: any = this ) {
             if ( request.readyState == 4 ) {
                 try {
                     let retVal = JSON.parse(request.response);
@@ -97,7 +97,7 @@ export class mediafiles {
             }
         };
 
-        request.upload.addEventListener( 'progress', function ( e: any ) {
+        request.upload.addEventListener( 'progress', ( e: any ) => {
             retSub.next({ progress: { total: e.total, loaded: e.loaded }});
             // console.log('progress' + e.loaded + '/' + e.total + '=' + Math.ceil(e.loaded/e.total) * 100 + '%');
         }, false);
@@ -109,7 +109,7 @@ export class mediafiles {
         return retSub.asObservable();
     }
 
-    getMediaFile( mediatype: number, filetype: string, noImagePicker = false, noMetaData = false, category: string ): Observable<any> {
+    public getMediaFile( mediatype: number, filetype: string, noImagePicker = false, noMetaData = false, category: string ): Observable<any> {
 
         let retSubject = new Subject();
         if ( noImagePicker ) {
@@ -137,12 +137,12 @@ export class mediafiles {
         return retSubject.asObservable();
     }
 
-    pickMediaFile( mediatype: number, filetype: string ): Observable<any> {
+    private pickMediaFile( mediatype: number, filetype: string ): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFilePicker').subscribe(picker => {
-            picker.instance['mediatype'] = mediatype;
-            picker.instance['filetype'] = filetype;
-            picker.instance['answer'].subscribe( answer => {
+            picker.instance.mediatype = mediatype;
+            picker.instance.filetype = filetype;
+            picker.instance.answer.subscribe( answer => {
                 retSubject.next(answer); // return the answer
                 retSubject.complete();
             });
@@ -151,13 +151,13 @@ export class mediafiles {
     }
 
     // todo: acceptFileTypes
-    uploadMediaFile( acceptFileTypes: Array<string>, noMetaData = false, category: string ): Observable<any> {
+    private uploadMediaFile( acceptFileTypes: string[], noMetaData = false, category: string ): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFileUploader').subscribe(uploader => {
-            uploader.instance['acceptFileTypes'] = acceptFileTypes;
-            uploader.instance['noMetaData'] = noMetaData;
-            uploader.instance['category'] = category;
-            uploader.instance['answer'].subscribe( answer => {
+            uploader.instance.acceptFileTypes = acceptFileTypes;
+            uploader.instance.noMetaData = noMetaData;
+            uploader.instance.category = category;
+            uploader.instance.answer.subscribe( answer => {
                 retSubject.next( answer ); // return the answer
                 retSubject.complete();
             });
@@ -177,12 +177,12 @@ export class mediafiles {
         else category.fullName = this.makeFullName( category );
     }
 
-    loadCategories() {
+    public loadCategories() {
 
         let responseSubject = new Subject();
 
         if ( this.categoriesLoaded ) {
-            setTimeout( ()=>{ responseSubject.next(); responseSubject.complete(); }, 1 );
+            setTimeout( () => { responseSubject.next(); responseSubject.complete(); }, 1 );
             return responseSubject;
         }
 
@@ -197,10 +197,8 @@ export class mediafiles {
                 this.categories[c.id] = c;
                 this.categoriesSorted.push( c );
             }
-            for ( let c in this.categories )
-                this.categories[c].parent = ( this.categories[c].parent_id && this.categories[c].parent_id != '' ) ? this.categories[this.categories[c].parent_id] : null;
-            for ( let c in this.categories )
-                this.setFullName( this.categories[c] );
+            for ( let c in this.categories ) this.categories[c].parent = ( this.categories[c].parent_id && this.categories[c].parent_id != '' ) ? this.categories[this.categories[c].parent_id] : null;
+            for ( let c in this.categories ) this.setFullName( this.categories[c] );
             this.categoriesSorted.sort( ( a, b ) => {
                 return a.fullName.localeCompare( b.fullName ); // return ( a.fullName > b.fullName ) ? 1 : (( b.fullName > a.fullName ) ? -1 : 0 );
             });
