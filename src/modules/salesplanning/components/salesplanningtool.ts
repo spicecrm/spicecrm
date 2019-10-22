@@ -18,6 +18,7 @@ declare var _;
 export class SalesPlanningTool implements OnInit {
 
     private isLoading: boolean = false;
+    private isCollapsed: boolean = false;
 
     constructor(private language: language,
                 private backend: backend,
@@ -29,6 +30,18 @@ export class SalesPlanningTool implements OnInit {
 
     get selectedNode() {
         return this.planningService.selectedNode;
+    }
+
+    get splitViewClass() {
+        return this.isCollapsed ? 'slds-is-closed' : 'slds-is-open';
+    }
+
+    get splitViewButtonClass() {
+        return this.isCollapsed ? 'slds-is-closed' : 'slds-is-open';
+    }
+
+    get contentContainerClass() {
+        return this.isCollapsed ? 'slds-grow' : 'slds-size--3-of-4';
     }
 
     get characteristicsLoaded() {
@@ -62,5 +75,9 @@ export class SalesPlanningTool implements OnInit {
         let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
         if (!content || !content.salesplanningcontentfields) return;
         this.planningService.contentClassifications = content.salesplanningcontentfields.beans;
+    }
+
+    private toggleCollapseView() {
+        this.isCollapsed = !this.isCollapsed;
     }
 }

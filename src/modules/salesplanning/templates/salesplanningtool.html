@@ -3,13 +3,18 @@
         <sales-planning-tool-header></sales-planning-tool-header>
     </div>
     <div class="slds-grid slds-theme--default slds-grow" style="height: 100%">
-        <div class="slds-size--1-of-4 slds-border--right" style="height: inherit">
-            <sales-planning-tool-tree *ngIf="characteristicsLoaded"></sales-planning-tool-tree>
-            <div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium">
-                <system-spinner></system-spinner>
-            </div>
+        <div class="slds-split-view_container" [ngClass]="splitViewClass" [class.slds-size--1-of-4]="!isCollapsed" style="height: inherit">
+            <button (click)="toggleCollapseView()" [ngClass]="splitViewClass" class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button" aria-controls="salesplanningtool-split-view" aria-expanded="true" [title]="language.getLabel('LBL_COLLAPSE')">
+                <system-button-icon icon="left" size="x-small"></system-button-icon>
+            </button>
+            <article [attr.aria-hidden]="isCollapsed" id="salesplanningtool-split-view" class="slds-split-view slds-grid slds-grid_vertical slds-grow" style="height: inherit">
+                <sales-planning-tool-tree *ngIf="characteristicsLoaded" style="display: block; height: inherit"></sales-planning-tool-tree>
+                <div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium">
+                    <system-spinner></system-spinner>
+                </div>
+            </article>
         </div>
-        <div class="slds-size--3-of-4" style="height: inherit">
+        <div [ngClass]="contentContainerClass" style="height: inherit; margin-left: .8rem">
             <sales-planning-tool-content [node]="selectedNode" style="display: block; height: inherit"></sales-planning-tool-content>
         </div>
     </div>

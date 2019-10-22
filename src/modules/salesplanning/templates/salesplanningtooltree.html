@@ -1,4 +1,4 @@
-<div class="slds-tree_container slds-scrollable--y" style="max-width: 100%" role="application">
+<div class="slds-tree_container slds-scrollable--y" style="max-width: 100%; height: 100%" role="application">
     <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
         <li *ngFor="let treeItem of treeItems; trackBy: trackByFn" (click)="selectTreeItem(treeItem)" role="treeitem" [attr.aria-level]="treeItem.level" [class.slds-theme--shade]="isSelected(treeItem.id)">
             <div class="slds-tree__item">

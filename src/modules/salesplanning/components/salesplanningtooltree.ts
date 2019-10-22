@@ -105,7 +105,6 @@ export class SalesPlanningToolTree implements OnInit {
     }
 
     private selectTreeItem(item) {
-        if (item.level != this.planningService.characteristics.length) return;
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
                 this.planningService.selectedNode = item;

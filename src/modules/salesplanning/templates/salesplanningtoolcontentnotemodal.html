@@ -1,0 +1,10 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_NOTE')}}</system-modal-header>
+    <system-modal-content>
+        <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" style="min-height: 300px" [(ngModel)]="nodeInfo.notice"></textarea>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="clear()">{{language.getLabel('LBL_CLEARALL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+    </system-modal-footer>
+</system-modal>

@@ -1,37 +1,48 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
     <div class="slds-border--bottom slds-grid" style="min-height: 20px">
         <div class="slds-grow slds-p-horizontal--medium slds-p-vertical--small slds-scrollable--x slds-text-heading--small">
-            {{nodeItemName}}
+            {{nodeInfo.nodeText}}
         </div>
-        <div *ngIf="!isEditMode && nodeContentArray.length > 0" class="slds-m-vertical--xx-small slds-m-horizontal--small">
-            <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="setEditMode()">
-                {{language.getLabel('LBL_EDIT')}}
-            </button>
-        </div>
-        <div *ngIf="isEditMode" class="slds-m-vertical--xx-small slds-m-horizontal--small">
-            <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="cancel()">
-                {{language.getLabel('LBL_CANCEL')}}
-            </button>
-            <button class="slds-button slds-button--brand slds-m-left--xx-small" (click)="save()">
-                {{language.getLabel('LBL_SAVE')}}
-            </button>
+        <div class="slds-col_bump-left slds-p-vertical--x-small slds-m-right--x-small">
+            <div class="slds-button-group">
+                <button class="slds-button-group-item slds-button slds-button--neutral" (click)="viewNote()">
+                    View Note
+                </button>
+                <button [disabled]="isClosing" [class.slds-is-pressed]="nodeInfo.marked_done && !isClosing" (click)="toggleMarkDone()"
+                        class="slds-button-group-item slds-button slds-button--neutral slds-button_dual-stateful slds-align--absolute-center" >
+                    <system-button-icon *ngIf="nodeInfo.marked_done && !isClosing" icon="check" addclasses="slds-button__icon_left"></system-button-icon>
+                    <system-spinner *ngIf="isClosing" size="14" class="slds-m-right--xxx-small" style="display: inline-block"></system-spinner>
+                    {{language.getLabel('LBL_CLOSE')}}
+                </button>
+            </div>
+            <div class="slds-button-group slds-m-left--small">
+                <button *ngIf="isEditMode" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
+                    {{language.getLabel('LBL_CANCEL')}}
+                </button>
+                <button *ngIf="isEditMode" class="slds-button-group-item slds-button slds-button--brand" (click)="save()">
+                    {{language.getLabel('LBL_SAVE')}}
+                </button>
+                <button *ngIf="!isEditMode && nodeContentArray.length > 0" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                    {{language.getLabel('LBL_EDIT')}}
+                </button>
+            </div>
         </div>
     </div>
     <div class="slds-grow slds-scrollable--y">
-        <table *ngIf="nodeContentArray.length > 0" class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout spice-table_header-fixed">
+        <table *ngIf="nodeContentArray.length > 0" class="slds-table slds-table_bordered slds-table_cell-buffer spice-table_header-fixed">
             <thead>
             <tr class="slds-text-title_caps">
-                <th scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_PLAN_CODE')">
+                <th scope="col" style="padding: .1rem .1rem">
+                    <div [title]="language.getLabel('LBL_PLAN_CODE')">
                         {{language.getLabel('LBL_PLAN_CODE')}}
                     </div>
                 </th>
-                <th *ngFor="let period of periods; trackBy: trackByFn" scope="col" [title]="period?.name">
+                <th *ngFor="let period of periods; trackBy: trackByFn" scope="col" [title]="period?.name" style="padding: .1rem .1rem">
                     <div class="slds-truncate">
                         {{period?.name}}
                     </div>
                 </th>
-                <th scope="col">
+                <th scope="col" style="padding: .1rem .1rem">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_SUM_PERIODS')">
                         {{language.getLabel('LBL_SUM_PERIODS')}}
                     </div>
@@ -40,21 +51,21 @@
             </thead>
             <tbody>
             <tr *ngFor="let field of nodeContentArray; trackBy: trackByFn">
-                <td>
-                    <div class="slds-truncate" [title]="field.description">
+                <td style="padding: .1rem .1rem">
+                    <div [title]="field.description">
                         {{field.description}}
                     </div>
                 </td>
-                <td *ngFor="let period of periods; trackBy: trackByFn" [title]="formattedValue(field[period?.key])">
-                    <div *ngIf="!isEditMode|| !isEditable(field.field_id)" class="slds-truncate">
-                        {{formattedValue(field[period?.key])}}
+                <td *ngFor="let period of periods; trackBy: trackByFn" [title]="field[period?.key]" style="padding: .1rem .1rem">
+                    <div *ngIf="!isEditMode|| !isEditable(field.field_id)" class="slds-truncate slds-text-align--right">
+                        {{field[period?.key]}}
                     </div>
                     <div *ngIf="isEditMode && isEditable(field.field_id)" class="slds-form-element__control slds-m-vertical--xx-small">
-                        <input type="text" class="slds-input" [ngModel]="field[period?.key]" [ngModelOptions]="modelOptions" (ngModelChange)="setPeriodValues($event, field, period?.key)" style="min-height: 20px !important; line-height: 20px;">
+                        <input type="text" class="slds-input slds-text-align--right" [ngModel]="field[period?.key]" [ngModelOptions]="modelOptions" (ngModelChange)="setPeriodValues($event, field, period?.key)" style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
                     </div>
                 </td>
-                <td>
-                    <div class="slds-truncate" [title]="getFieldSum(field)">
+                <td style="padding: .1rem .1rem" >
+                    <div class="slds-truncate slds-text-align--right" [title]="getFieldSum(field)">
                         {{getFieldSum(field)}}
                     </div>
                 </td>

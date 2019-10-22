@@ -3,6 +3,7 @@
  */
 import {Component} from '@angular/core';
 import {language} from '../../../services/language.service';
+import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'sales-planning-tool-header',
@@ -11,6 +12,6 @@ import {language} from '../../../services/language.service';
 
 export class SalesPlanningToolHeader {
 
-    constructor(private language: language) {
+    constructor(private language: language, private model: model) {
     }
 }

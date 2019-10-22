@@ -13,6 +13,7 @@ import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
+import /*embed*/ {SalesPlanningToolContentNoteModal} from './components/salesplanningtoolcontentnotemodal';
 import /*embed*/ {SalesPlanningToolContent} from './components/salesplanningtoolcontent';
 import /*embed*/ {SalesPlanningToolTree} from './components/salesplanningtooltree';
 import /*embed*/ {SalesPlanningToolHeader} from './components/salesplanningtoolheader';
@@ -31,6 +32,7 @@ import {DirectivesModule} from "../../directives/directives";
         DirectivesModule
     ],
     declarations: [
+        SalesPlanningToolContentNoteModal,
         SalesPlanningToolContent,
         SalesPlanningToolTree,
         SalesPlanningToolHeader,
