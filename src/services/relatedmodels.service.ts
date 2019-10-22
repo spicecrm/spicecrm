@@ -272,7 +272,7 @@ export class relatedmodels implements OnDestroy {
 
         // check if it is a normal related list, or a filtered list without a relationship
         let url = "";
-        if(this.isonlyfiltered) {
+        if (this.isonlyfiltered) {
             url = "module/" + this.module + "/" + this.id + "/filtered";
         } else {
             url = "module/" + this.module + "/" + this.id + "/related/" + this._linkName;
@@ -348,7 +348,7 @@ export class relatedmodels implements OnDestroy {
 
         // check if it is a normal related list, or a filtered list without a relationship
         let url = "";
-        if(this.isonlyfiltered) {
+        if (this.isonlyfiltered) {
             url = "module/" + this.module + "/" + this.id + "/filtered";
         } else {
             url = "module/" + this.module + "/" + this.id + "/related/" + this._linkName;
@@ -434,7 +434,7 @@ export class relatedmodels implements OnDestroy {
      */
     public addItems(items) {
 
-        if(!this.isonlyfiltered) {
+        if (!this.isonlyfiltered) {
             let relatedIds: any[] = [];
             for (let item of items) {
                 relatedIds.push(item.id);
@@ -463,7 +463,7 @@ export class relatedmodels implements OnDestroy {
                 // this.count += items.length;
             });
         } else {
-            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_ADD'),'error');
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_ADD'), 'error');
         }
     }
 
@@ -474,12 +474,21 @@ export class relatedmodels implements OnDestroy {
      *
      * @param item the item
      */
-    public setItem(item) {
-        if(!this.isonlyfiltered) {
+    public setItem(item): Observable<any> {
+        if (!this.isonlyfiltered) {
+            let retSubject = new Subject<any>();
             this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
-            });
+                    retSubject.next(true);
+                    retSubject.complete();
+                },
+                error => {
+                    retSubject.error(error);
+                    retSubject.complete();
+                });
+            return retSubject.asObservable();
         } else {
-            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'),'error');
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'), 'error');
+            return of(true);
         }
     }
 
@@ -489,7 +498,7 @@ export class relatedmodels implements OnDestroy {
      * @param id the related id
      */
     public deleteItem(id) {
-        if(!this.isonlyfiltered) {
+        if (!this.isonlyfiltered) {
             let relatedids = [];
             relatedids.push(id);
             let params = {
@@ -508,7 +517,7 @@ export class relatedmodels implements OnDestroy {
                 });
             });
         } else {
-            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'),'error');
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'), 'error');
         }
     }
 }
