@@ -576,7 +576,10 @@ export class modellist implements OnDestroy {
     }
 
     public reLoadList() {
+        return this.loadList(this.lastFields);
+    }
 
+    public resetListData() {
         // reset buckets if there are any set
         if (this.buckets && this.buckets.bucketitems) {
             for (let bucketitem of this.buckets.bucketitems) {
@@ -586,10 +589,6 @@ export class modellist implements OnDestroy {
             }
         }
 
-        return this.loadList(this.lastFields);
-    }
-
-    public resetListData() {
         this.listData = {
             list: [],
             totalcount: 0
