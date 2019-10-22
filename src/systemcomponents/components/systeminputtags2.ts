@@ -22,13 +22,14 @@ declare var window: any;
         'input { line-height: 1.5rem; padding: 0 0.5rem; min-height: 0; border-style: dashed; border-color: rgb(110,110,110); }',
         '.slds-pill--label, .slds-pill__label { padding: 0 0.125rem; }',
         '.slds-dropdown { transform: none; left: 0; }',
-        '.slds-dropdown--fluid, .slds-dropdown_fluid { min-width: auto; }'
+        '.slds-dropdown--fluid, .slds-dropdown_fluid { min-width: auto; }',
+        ':host { display: inline-block; width:100%; }'
     ]
 })
 export class SystemInputTags2 implements ControlValueAccessor {
 
     @Input() public isEditing = true;
-    @Input() public maxNumber = null;
+    @Input() public maxNumber;
     @Input() public id = '';
 
     @ViewChild('taglist', { read: ViewContainerRef, static: true }) private taglist: ViewContainerRef;
@@ -82,7 +83,7 @@ export class SystemInputTags2 implements ControlValueAccessor {
 
     public registerOnTouched( fn: any ): void { 1; }
 
-    public addTag( tag: string, typedIn = false ): void {
+    public addTag( tag: string ): void {
         tag = tag.trim();
         if ( tag === '' || this.maxNumberReached ) return;
         let tagLower = tag.toLocaleLowerCase();
@@ -90,12 +91,9 @@ export class SystemInputTags2 implements ControlValueAccessor {
         if ( position === -1 ) { // No? --> Add it to the list.
             this.tags.push( tag );
             this.lang.sortArray( this.tags );
-            // this.tagsLower.push( tagLower );
-            // this.lang.sortArray( this.tagsLower );
-            this.tagsToLowerCase();
-            // if ( event ) event.target.value = '';
-            // this.queryString = this.lastTypedQueryString;
-            // if ( typedIn ) this.queryString = '';
+            this.tagsLower.push( tagLower );
+            this.lang.sortArray( this.tagsLower );
+            if ( this.lastTypedQueryString === this.queryString ) this.lastTypedQueryString = '';
             if ( this.lastTypedQueryString === this.queryString ) this.queryString = '';
             this.propagateChange( JSON.stringify( this.tags ));
             if ( this.maxNumberReached ) this.queryString = '';
@@ -114,7 +112,7 @@ export class SystemInputTags2 implements ControlValueAccessor {
     }
 
     private get maxNumberReached(): boolean {
-        return !this.maxNumber || this.tags.length >= this.maxNumber;
+        return this.maxNumber && this.tags.length >= this.maxNumber;
     }
 
     private highlightTag( tagIndex: number ): void {
@@ -173,7 +171,7 @@ export class SystemInputTags2 implements ControlValueAccessor {
             case ',':
             case ';':
             case 'Enter':
-                this.addTag( this.queryString, true ); // .replace(/^[\s]+|[\s\W]+$/gm, '')
+                this.addTag( this.queryString ); // .replace(/^[\s]+|[\s\W]+$/gm, '')
                 break;
             default:
                 if ( this.proposedTags[this.selectedProposal] !== this.queryString ) { // ??????????????????
@@ -187,9 +185,8 @@ export class SystemInputTags2 implements ControlValueAccessor {
 
     private doSearch(): void {
         this.backend.postRequest('SpiceTags', {},  { search: this.queryString.trim() }).subscribe( tags => {
-            // this.matchedTagsFromBackend = tags;
-            this.matchedTagsFromBackend = ['Landwirtschaft','IT','Pflege','Medizin','Architektur','Maschinenbau','Hochbau','Tiefbau','Gastronomie']; // provisorisch, solange nix vom Backend
-            this.matchedTagsFromBackend.sort((a, b) => a.localeCompare(b) );
+            this.matchedTagsFromBackend = tags;
+            this.lang.sortArray( this.matchedTagsFromBackend );
             this.determineProposedTags();
             if ( this.inputFieldHasFocus ) this.switchOnProposalsIfOff();
         });
