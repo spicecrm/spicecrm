@@ -48,7 +48,7 @@ export class fieldColorEnum  extends fieldGeneric {
         }
         let retArray = [];
         for (let optionVal in options) {
-            let arrcolor = (typeof this.colors !== 'undefined') ? (this.colors[optionVal].substring(0, 1) != '#' ? '#' + this.colors[optionVal] : this.colors[optionVal] ): '';
+            let arrcolor = (typeof this.colors !== 'undefined' && typeof this.colors[optionVal] !== 'undefined') ? (this.colors[optionVal].substring(0, 1) != '#' ? '#' + this.colors[optionVal] : this.colors[optionVal] ): '';
             let arrlong = (typeof this.longOptions !== 'undefined') ? this.longOptions[optionVal] : '';
             retArray.push({
                 value: optionVal,
