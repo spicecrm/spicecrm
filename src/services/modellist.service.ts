@@ -16,6 +16,12 @@ import {session} from "./session.service";
  */
 declare var moment: any;
 
+interface geoSearch {
+    radius: number;
+    lat: number;
+    lng: number;
+}
+
 @Injectable()
 export class modellist implements OnDestroy {
     public module: string = '';
@@ -41,6 +47,9 @@ export class modellist implements OnDestroy {
     public searchConditions: any[] = [];
     public searchTerm: string = '';
     public searchAggregates: any = {};
+    public searchGeo: geoSearch;
+
+
     public selectedAggregates: any[] = [];
 
     /**
@@ -493,7 +502,7 @@ export class modellist implements OnDestroy {
 
         this.isLoading = true;
 
-        if (this.currentList.type == 'all') {
+        if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
             this.fts.loadMore(this.buckets).subscribe(res => {
                 let newItems = [];
                 for (let item of res[this.module].hits) {
@@ -567,7 +576,10 @@ export class modellist implements OnDestroy {
     }
 
     public reLoadList() {
+        return this.loadList(this.lastFields);
+    }
 
+    public resetListData() {
         // reset buckets if there are any set
         if (this.buckets && this.buckets.bucketitems) {
             for (let bucketitem of this.buckets.bucketitems) {
@@ -577,10 +589,6 @@ export class modellist implements OnDestroy {
             }
         }
 
-        return this.loadList(this.lastFields);
-    }
-
-    public resetListData() {
         this.listData = {
             list: [],
             totalcount: 0
@@ -721,6 +729,7 @@ export class modellist implements OnDestroy {
             aggregates[this.module] = this.selectedAggregates;
             this.fts.searchByModules({
                 searchterm: this.searchTerm,
+                searchgeo: this.searchGeo,
                 modules: [this.module],
                 size: this.loadlimit,
                 aggregates: aggregates,

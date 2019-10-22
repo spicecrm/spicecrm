@@ -41,12 +41,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
     private ownerEvents: any[] = [];
-    private otherEvents: any[] = [];
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
 
@@ -61,7 +59,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     get allEvents() {
-        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+        return this.ownerEvents.concat(this.userEvents, this.googleEvents);
     }
 
     get eventHeight() {
@@ -85,9 +83,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
-        }
-        if (changes.otherCalendars || changes.setdate) {
-            this.getOtherEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -174,51 +169,17 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             return;
         }
 
-        for (let calendar of this.calendar.usersCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            event.start = this.resetTime(event.start);
-                            event.end = this.resetTime(event.end);
-                            this.userEvents.push(event);
-                            this.arrangeEvents();
-                        });
-                    }
-                });
-        }
-    }
-
-    private getOtherEvents() {
-        this.otherEvents = [];
-        this.arrangeEvents();
-        if (this.calendar.isMobileView) {
-            return;
-        }
-
-        for (let calendar of this.calendar.otherCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            event.start = this.resetTime(event.start);
-                            event.end = this.resetTime(event.end);
-                            this.otherEvents.push(event);
-                            this.arrangeEvents();
-                        });
-                    }
-                });
-        }
+        this.calendar.loadUsersEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                        this.userEvents.push(event);
+                        this.arrangeEvents();
+                    });
+                }
+            });
     }
 
     private resetTime(event) {
@@ -290,8 +251,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         let calendarDate = this.calendar.calendarDate;
         let isToday = calendarDate.year() == todayDay.year() && calendarDate.month() == todayDay.month() && todayDayShort == weekdayShort;
         return {
-            width: `calc(100% / ${this.calendar.weekDaysCount})`,
-            color: isToday ? this.calendar.todayColor : 'inherit',
+            'width': `calc(100% / ${this.calendar.weekDaysCount})`,
+            'color': isToday ? this.calendar.todayColor : 'inherit',
             'font-weight': isToday ? '600' : 'inherit'
         };
     }
@@ -333,7 +294,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             }
             w++;
         }
-    };
+    }
 
     private notLastWeek(week) {
         return week < this.currentGrid.length;
@@ -351,12 +312,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     private getBoxStyle(i, j, month) {
         return {
-            left: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
-            top: 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
-            color: this.notThisMonth(month) ? '#9faab5' : 'inherit',
+            'left': (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
+            'top': 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
+            'color': this.notThisMonth(month) ? '#9faab5' : 'inherit',
             'background-color': this.notThisMonth(month) ? '#f4f6f9' : 'transparent',
-            width: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
-            height: 'calc(100% / ' + this.currentGrid.length + ')',
+            'width': (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
+            'height': 'calc(100% / ' + this.currentGrid.length + ')',
         };
     }
 
@@ -395,10 +356,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             'border-radius': '50%',
             'line-height': '1rem',
             'text-align': 'center',
-            width: '1rem',
-            height: '1rem',
-            display: 'block',
-            color: isToday ? '#fff' : 'inherit',
+            'width': '1rem',
+            'height': '1rem',
+            'display': 'block',
+            'color': isToday ? '#fff' : 'inherit',
             'background-color': isToday ? this.calendar.todayColor : 'inherit',
         };
     }

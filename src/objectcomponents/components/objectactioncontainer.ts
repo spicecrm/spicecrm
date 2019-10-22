@@ -146,6 +146,19 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
         });
     }
 
+    /**
+     * a getter for additonal classes.
+     * Considers the actonconfig and the hidden attribute
+     *
+     * @param actionitem the actionitem
+     */
+    private addclasses(actionitem) {
+        let addclasses = actionitem.actionconfig.addclasses;
+        if (this.isHidden(actionitem.id)) {
+            addclasses += ' slds-hide';
+        }
+        return addclasses;
+    }
 
     /**
      * determines based on the action ID if the component embedded in the container item is disabled

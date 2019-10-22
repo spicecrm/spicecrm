@@ -1,5 +1,5 @@
 <div [ngClass]="containerclass" role="group">
-    <button class="slds-button slds-button_neutral" [ngClass]="actionitem.actionconfig.addclasses" *ngFor="let actionitem of mainactionitems" [disabled]="isDisabled(actionitem.id)" (click)="propagateclick(actionitem.id)">
+    <button class="slds-button slds-button_neutral" [ngClass]="addclasses(actionitem)" *ngFor="let actionitem of mainactionitems" [disabled]="isDisabled(actionitem.id)" (click)="propagateclick(actionitem.id)">
         <object-action-container-item [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
     </button>
     <div *ngIf="hasAddItems" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" dropdowntrigger>
