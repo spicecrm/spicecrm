@@ -1,12 +1,11 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component} from '@angular/core';
+import {Component, OnInit, Injector} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
-
-
+import {modal} from "../../services/modal.service";
 
 
 @Component({
@@ -22,24 +21,52 @@ export class AdministrationFTSManager {
     constructor(
         private metadata: metadata,
         private language: language,
-        private ftsconfiguration: ftsconfiguration
+        private modal: modal,
+        private ftsconfiguration: ftsconfiguration,
+        private injector: Injector
     ) {
 
     }
 
     get modules() {
-        return this.metadata.getModules().sort();
+        // return this.metadata.getModules().sort();
+        return this.ftsconfiguration.modules.sort();
     }
 
-    get module(){
+    get module() {
         return this.ftsconfiguration.module;
     }
 
-    set module(module){
+    set module(module) {
         this.ftsconfiguration.setModule(module);
     }
 
-    public setActiveTab(tab){
+    /**
+     * adds a new fts module
+     */
+    private add() {
+        this.modal.openModal('AdministrationFTSManagerModuleAdd', true, this.injector).subscribe(addPopup => {
+            addPopup.instance.module$.subscribe(newModule => {
+                if (newModule) {
+                    this.module = newModule;
+                }
+            });
+        });
+    }
+
+    /**
+     * deletes the current FTS config settings
+     */
+    private delete() {
+        this.modal.confirmDeleteRecord().subscribe(response => {
+            if (response) {
+                this.ftsconfiguration.deleteModule(this.module);
+                this.module = '';
+            }
+        });
+    }
+
+    public setActiveTab(tab) {
         this.activeTab = tab;
     }
 
@@ -47,24 +74,29 @@ export class AdministrationFTSManager {
         this.ftsconfiguration.save();
     }
 
-    public putIndex() {
-        this.ftsconfiguration.putMapping();
+    public indexModule() {
+        this.modal.openModal('AdministrationFtsManagerIndexModal')
+            .subscribe(modalRef => {
+                modalRef.instance.response.subscribe(res => {
+                    if (res) {
+                        this.ftsconfiguration.executeAction('bulk', res);
+                    }
+                });
+            });
     }
 
-    public indexModule() {
-        this.ftsconfiguration.indexModule();
-    }
-    public  indexModuleBulk() { // CR1000257
-        this.ftsconfiguration.indexModuleBulk();
-    }
     public resetModule() {
-        this.ftsconfiguration.resetModule();
+        this.ftsconfiguration.executeAction('reset');
     }
 
     public initialize() {
-        if(confirm("Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!")) {
-            this.ftsconfiguration.initialize();
-        }
+        this.modal
+            .confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
+            .subscribe(res => {
+                if (res) {
+                    this.ftsconfiguration.executeAction('init');
+                }
+            });
     }
 
 }

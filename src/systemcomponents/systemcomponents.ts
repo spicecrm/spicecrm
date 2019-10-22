@@ -17,7 +17,6 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
 
-
 // Pipes...
 import /*embed*/ {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
 import /*embed*/ {SystemModuleGlobalPipe} from "./pipes/systemmoduleglobalpipe";
@@ -48,6 +47,7 @@ import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynami
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemIcon} from "./components/systemicon";
+import /*embed*/ {SystemFileIcon} from "./components/systemfileicon";
 import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
@@ -62,6 +62,7 @@ import /*embed*/ {SystemInputFieldset} from "./components/systeminputfieldset";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
 import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
+import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefield";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
@@ -114,6 +115,11 @@ import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
+import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
+import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
+
+import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
+import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 
 @NgModule({
     imports: [
@@ -158,6 +164,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
+        SystemFileIcon,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -172,6 +179,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
+        SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
         SystemInputTags,
@@ -218,7 +226,12 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemViewContainer,
         SystemIconHelpText,
         SystemMultipleSelect,
-        SystemSelectUOM
+        SystemSelectUOM,
+        SystemModuleTree,
+        SystemModuleTreeItem,
+        SystemSelectUOM,
+        SystemInputMedia,
+        SystemInputTags2
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -248,6 +261,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
+        SystemFileIcon,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -261,6 +275,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
+        SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
         SystemInputTags,
@@ -299,7 +314,12 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression,
-        SystemSelectUOM
+        SystemSelectUOM,
+        SystemInputMedia,
+        SystemInputTags2,
+        SystemSelectUOM,
+        SystemModuleTree,
+        SystemModuleTreeItem
     ]
 })
 export class SystemComponents {
