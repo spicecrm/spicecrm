@@ -159,6 +159,8 @@ export class model implements OnDestroy {
 
     private modelRegisterId: number;
 
+    public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
+
     constructor(
         public backend: backend,
         private broadcast: broadcast,
@@ -759,7 +761,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress )
             .subscribe(
                 res => {
                     this.data = res;

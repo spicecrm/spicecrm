@@ -1,0 +1,31 @@
+<div class="slds-pill_container">
+    <ul #taglist class="slds-listbox slds-listbox_horizontal">
+        <li *ngIf="!tags.length" style="font-style:italic">Not any tags yet.</li>
+        <ng-container *ngFor="let tag of tags; let i=index">
+            <li class="slds-listbox-item" role="presentation">
+                <span class="slds-pill" role="option" tabindex="0">
+                    <span class="slds-pill__label">{{tag}}</span>
+                    <system-utility-icon *ngIf="isEditing" icon="close" size="xx-small" (click)="removeByIndex(i)"></system-utility-icon>
+                </span>
+            </li>
+        </ng-container>
+        <li *ngIf="!maxNumberReached && isEditing">
+            <div class="slds-combobox_container">
+                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open':isOpen}">
+                    <div class="slds-combobox__form-element">
+                        <input type="text" id="{{id}}" class="slds-input slds-combobox__input" [placeholder]="lang.getLabel('LBL_ADD_TAG')" [(ngModel)]="queryString" (keyup)="search($event)" (focus)="inputFieldGotFocus(true)" (blur)="inputFieldGotFocus(false)"><!--(keyup.enter)="addTag($event.target.value,$event)"-->
+                    </div>
+                    <div *ngIf="proposedTags.length > 0" class="slds-dropdown slds-dropdown_fluid" (mouseleave)="hover(-1)">
+                        <ul class="slds-listbox slds-listbox_vertical">
+                            <li *ngFor="let tag of proposedTags; let i=index" class="slds-listbox__item" (click)="addTag(tag)" (mouseenter)="hover(i)">
+                                <div class="slds-media slds-listbox__option slds-listbox__option_plain" style="width:100%" [ngClass]="{'slds-has-focus':proposalIsHighlighted(i)}">
+                                    {{tag}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

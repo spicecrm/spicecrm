@@ -6,7 +6,7 @@
 import {Injectable} from '@angular/core';
 import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
-import {Subject, Observable} from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import {Router} from '@angular/router';
 
 import {configurationService} from './configuration.service';
@@ -206,7 +206,7 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: Subject<number> = null ): Observable<any> {
+    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: BehaviorSubject<number> = null ): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -756,9 +756,9 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any): Observable<any[]> {
+    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
-        this.postRequest("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata))
+        this.postRequestWithProgress("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata), null, progress )
             .subscribe(
                 (response: any) => {
                     responseSubject.next(this.modelutilities.backendModel2spice(module, response));
