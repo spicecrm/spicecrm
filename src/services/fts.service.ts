@@ -38,6 +38,7 @@ export class fts {
     public runningmodulesearch: any = undefined;
     public searchTerm: string = '';
     public searchSort: any = {};
+    public searchOwner: boolean = false;
     public searchGeo: any = {};
     public searchAggregates: any = {};
     public searchModules: any[] = [];
@@ -128,6 +129,7 @@ export class fts {
         this.searchAggregates = parameters.aggregates;
         this.searchSort = parameters.sortparams;
         this.searchGeo = parameters.searchgeo;
+        this.searchOwner = parameters.owner;
         this.modulefilter = parameters.modulefilter;
         this.buckets = parameters.buckets;
 
@@ -246,6 +248,7 @@ export class fts {
             searchterm: this.lastSearchParams.searchterm,
             aggregates: this.searchAggregates,
             sort: this.searchSort,
+            owner: this.searchOwner,
             records: this.lastSearchParams.size,
             start: this.moduleSearchresults[0].data.hits.length,
             modulefilter: this.modulefilter,

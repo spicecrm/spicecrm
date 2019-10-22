@@ -145,7 +145,19 @@ export class SpiceKanban implements OnInit, OnDestroy {
     private onScroll(e) {
         let element = this.kanbanContainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            this.modellist.loadMoreList();
+
+            // check if there are still buckets that have potentially more items
+            let loadmore = false;
+            for (let bucket of this.modellist.buckets.bucketitems) {
+                if (bucket.total > bucket.items) {
+                    loadmore = true;
+                    break;
+                }
+            }
+
+            if (loadmore) {
+                this.modellist.loadMoreList();
+            }
         }
     }
 

@@ -502,7 +502,7 @@ export class modellist implements OnDestroy {
 
         this.isLoading = true;
 
-        if (this.currentList.type == 'all') {
+        if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
             this.fts.loadMore(this.buckets).subscribe(res => {
                 let newItems = [];
                 for (let item of res[this.module].hits) {
