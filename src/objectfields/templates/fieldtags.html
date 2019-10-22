@@ -1,0 +1,9 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div class="slds-grid slds-grid--vertical-align-start">
+    <div [ngClass]="fielddisplayclass" style="border-bottom:none!important;width:100%" class="slds-m-vertical--xx-small slds-p-vertical--none">
+        <system-input-tags-2 [(ngModel)]="value" [isEditing]="isEditable() && isEditMode()" ></system-input-tags-2>
+    </div>
+    <button *ngIf="isEditable() && !isEditMode()" class="slds-button slds-button--icon slds-m-left--xx-small slds-m-top--small" (click)="setEditMode()">
+        <system-button-icon [icon]="'edit'"></system-button-icon>
+    </button>
+</div>
