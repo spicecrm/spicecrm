@@ -38,9 +38,9 @@
                     <field-container field="description"></field-container>
                 </div>
 
-                <label class="slds-form-element__label slds-truncate" for="tags">{{lang.getLabel('LBL_TAGS')}}</label>
-                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread ng-star-inserted">
-                    <system-input-tags-2 [(ngModel)]="tagsAsString" maxNumber="10" id="tags" [isEditing]="isEditing" ></system-input-tags-2>
+                <label class="slds-form-element__label slds-truncate" for="{{componentId}}-tags">{{lang.getLabel('LBL_TAGS')}}</label>
+                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+                    <system-input-tags-2 [(ngModel)]="tagsAsString" id="{{componentId}}-tags" [isEditing]="isEditing" ></system-input-tags-2>
                 </div>
 
             </div>

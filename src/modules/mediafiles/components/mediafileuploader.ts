@@ -12,6 +12,8 @@ import { view } from '../../../services/view.service';
 import { metadata } from '../../../services/metadata.service';
 import { SystemInputMedia } from '../../../systemcomponents/components/systeminputmedia';
 
+declare var _: any;
+
 @Component({
     selector: 'media-file-uploader',
     templateUrl: './src/modules/mediafiles/templates/mediafileuploader.html',
@@ -41,6 +43,8 @@ export class MediaFileUploader {
     @ViewChild(SystemInputMedia, { static: false }) public inputMedia;
 
     private mediaMetaData;
+
+    private componentId = _.uniqueId();
 
     constructor( private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private lang: language, private toast: toast, public model: model, public view: view ) {
 
