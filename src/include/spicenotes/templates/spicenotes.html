@@ -8,7 +8,6 @@
         </div>
         <div class="slds-media__body">
             <div class="slds-publisher slds-publisher_comment" [ngClass]="{'slds-is-active':isActive}">
-                <label class="slds-assistive-text">Write a comment</label>
                 <textarea class="slds-publisher__input slds-input_bare slds-text-longform" (focus)="onFocus()" (blur)="onBlur()" [placeholder]="language.getLabel('LBL_CREATENOTE')" [(ngModel)]="newNote"></textarea>
                 <div class="slds-publisher__actions slds-grid slds-grid_align-spread">
                     <ul class="slds-grid">
@@ -46,5 +45,5 @@
     </div>
 </div>
 <div class="slds-feed slds-p-top--small">
-    <object-note *ngFor="let note of objectnote.notes" [note]="note"></object-note>
+    <spice-note *ngFor="let note of notes" [note]="note" (deleteNote)="deleteNote(note.id)"></spice-note>
 </div>
