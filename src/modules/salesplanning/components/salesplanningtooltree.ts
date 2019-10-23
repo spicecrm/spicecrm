@@ -16,6 +16,7 @@ export class SalesPlanningToolTree implements OnInit {
     public nodeItems: any[] = [];
     public treeItems: any[] = [];
     public isLoading: string = '';
+    public unDoneOnly: boolean = false;
 
     constructor(private language: language, private backend: backend, private planningService: SalesPlanningService) {
     }
@@ -29,7 +30,8 @@ export class SalesPlanningToolTree implements OnInit {
         this.setRetrieveParams(item);
         let params = {
             nodes: this.planningService.selectedNodes,
-            characteristics: this.planningService.selectedCharacteristics
+            characteristics: this.planningService.selectedCharacteristics,
+            undoneOnly: this.unDoneOnly
         };
         this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/NodesList`, params)
             .subscribe(nodeItems => {
@@ -145,5 +147,14 @@ export class SalesPlanningToolTree implements OnInit {
 
     private isSelected(id) {
         return this.planningService.selectedNode && this.planningService.selectedNode.id == id;
+    }
+
+    private toggleUndoneOnly() {
+        this.unDoneOnly = !this.unDoneOnly;
+        this.nodeItems = [];
+        this.treeItems = [];
+        this.planningService.selectedNode = undefined;
+        this.planningService.selectedNodes = [];
+        this.getNodeItems();
     }
 }

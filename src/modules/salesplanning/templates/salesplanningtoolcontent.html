@@ -1,29 +1,29 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div class="slds-border--bottom slds-grid" style="min-height: 30px">
-        <div class="slds-grow slds-p-horizontal--medium slds-p-vertical--small slds-scrollable--x slds-text-heading--small">
+    <div [class.slds-border--bottom]="nodeContentArray.length == 0 || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
+        <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
             {{nodeInfo.nodeText}}
         </div>
-        <div class="slds-col_bump-left slds-p-vertical--x-small slds-m-right--x-small">
+        <div class="slds-col_bump-left slds-m-right--xx-small">
             <div class="slds-button-group">
-                <button [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="viewNote()">
-                    View Note
-                </button>
-                <button [disabled]="isClosing || isLoading" [class.slds-is-pressed]="nodeInfo.marked_done && !isClosing" (click)="toggleMarkDone()"
-                        class="slds-button-group-item slds-button slds-button--neutral slds-button_dual-stateful slds-align--absolute-center" >
-                    <system-button-icon *ngIf="nodeInfo.marked_done && !isClosing" icon="check" addclasses="slds-button__icon_left"></system-button-icon>
-                    <system-spinner *ngIf="isClosing" size="14" class="slds-m-right--xxx-small" style="display: inline-block"></system-spinner>
-                    {{language.getLabel('LBL_CLOSE')}}
-                </button>
-            </div>
-            <div class="slds-button-group slds-m-left--small">
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     {{language.getLabel('LBL_CANCEL')}}
                 </button>
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--brand" (click)="save()">
                     {{language.getLabel('LBL_SAVE')}}
                 </button>
-                <button *ngIf="!isEditMode" [disabled]="isLoading && nodeContentArray.length == 0" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo.leaf || nodeContentArray.length == 0" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
                     {{language.getLabel('LBL_EDIT')}}
+                </button>
+            </div>
+            <div class="slds-button-group slds-m-left--small">
+                <button [disabled]="isLoading || !nodeInfo.leaf" class="slds-button-group-item slds-button slds-button--neutral" (click)="viewNote()">
+                    {{language.getLabel('LBL_NOTE')}}
+                </button>
+                <button [disabled]="isClosing || isLoading || !nodeInfo.leaf" [class.slds-is-pressed]="nodeInfo.marked_done && !isClosing" (click)="toggleMarkDone()"
+                        class="slds-button-group-item slds-button slds-button--neutral slds-button_dual-stateful slds-align--absolute-center" >
+                    <system-button-icon *ngIf="nodeInfo.marked_done && !isClosing" icon="check" addclasses="slds-button__icon_left"></system-button-icon>
+                    <system-spinner *ngIf="isClosing" size="14" class="slds-m-right--xxx-small" style="display: inline-block"></system-spinner>
+                    {{language.getLabel('LBL_CLOSE')}}
                 </button>
             </div>
         </div>
@@ -66,7 +66,7 @@
                 </td>
                 <td style="padding: .1rem .1rem" >
                     <div class="slds-truncate slds-text-align--right" [title]="getFieldSum(field)">
-                        {{getFieldSum(field)}}
+                        {{getFieldSumDisplay(field)}}
                     </div>
                 </td>
             </tr>

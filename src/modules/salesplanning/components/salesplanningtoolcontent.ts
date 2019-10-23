@@ -146,28 +146,25 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             .subscribe(nodeContent => {
                 if (nodeContent && nodeContent.data && nodeContent.data.length) {
                     this.nodeContentArray = nodeContent.data;
-                    this.formatValues();
                 }
                 this.isLoading = false;
             });
     }
 
     private setEditMode() {
+        if (!this.nodeInfo.leaf) return;
         this.nodeContentArrayBackup = [];
-        this.nodeContentArray.forEach(field => this.nodeContentArrayBackup.push(_.clone(field)));
+        this.nodeContentArray.forEach(field => {
+            this.nodeContentArrayBackup.push(_.clone(field));
+            this.periods.forEach(period => {
+                field[period.key] = this.formatValue(field[period.key]);
+            });
+        });
         this.view.setEditMode();
     }
 
     private setViewMode() {
         this.view.setViewMode();
-    }
-
-
-    private formatValues() {
-        this.nodeContentArray = this.nodeContentArray.map(field => {
-            this.periods.forEach(period => field[period.key] = this.formattedValue(field[period.key]));
-            return field;
-        });
     }
 
     private save() {
@@ -188,6 +185,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private toggleMarkDone() {
+        if (!this.nodeInfo.leaf) return;
         this.isClosing = true;
         let action = this.nodeInfo.marked_done ? 'unmarkDone' : 'markDone';
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
@@ -204,23 +202,23 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return item.id;
     }
 
-    private setPeriodValues(value, field, periodKey) {
-        field[periodKey] = value;
-        this.nodeContentArray = this.nodeContentArray.map(field => {
-            field[periodKey] = this.getFieldValue(field, periodKey);
-            return field;
+    private setPeriodValues(value, inputField, periodKey) {
+        inputField[periodKey] = this.formatValue(value);
+        this.nodeContentArray = this.nodeContentArray.map(contentField => {
+            if (inputField.field_id != contentField.field_id) {
+                contentField[periodKey] = this.formatValue(this.getFieldValue(contentField, periodKey));
+            }
+            return contentField;
         });
     }
 
     private getFieldSum(field) {
         let result = 0;
-        this.periods.forEach(period => result += +((''+ field[period.key])
-            .replace(this.userPrefs.toUse.num_grp_sep, '')
-            .replace(this.userPrefs.toUse.dec_sep, '.'))
+        this.periods.forEach(period => result += +(this.machineFormatValue(field[period.key]))
         );
         let fieldClassifications = this.planningService.contentClassifications[field.field_id];
         if (!fieldClassifications.formula_sum || fieldClassifications.formula_sum.length == 0) {
-            return this.formattedValue(result);
+            return result;
         }
 
         let ids = fieldClassifications.formula_sum.match(/\[.*?]/g);
@@ -229,7 +227,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         let canExecute = !!formulaValues
             .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
         if (canExecute) result = +this.mathExpCompiler.do(formulaValues);
-        return this.formattedValue(result);
+        return result;
+    }
+
+    private getFieldSumDisplay(field) {
+        return this.formatValue(this.getFieldSum(field));
     }
 
     private getFieldValue(field, periodKey) {
@@ -250,22 +252,21 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         ids.forEach(id => {
             let idField = this.nodeContentArray.find(contentField => contentField.field_id == id.replace(/[\[\]]/g, ''));
             if (idField && periodKey && idField[periodKey]) {
-                idField[periodKey] = idField[periodKey]
-                    .replace(this.userPrefs.toUse.num_grp_sep, '')
-                    .replace(this.userPrefs.toUse.dec_sep, '.');
+                idField[periodKey] = this.machineFormatValue(idField[periodKey]);
                 formula = formula.replace(id, idField[periodKey]);
             } else if (idField && isSumFormula && formula.indexOf(fieldId) == -1) {
-                formula = formula.replace(id, this.getFieldSum(idField).toString()
-                    .replace(this.userPrefs.toUse.num_grp_sep, '')
-                    .replace(this.userPrefs.toUse.dec_sep, '.')
-                );
+                formula = formula.replace(id, this.machineFormatValue(this.getFieldSum(idField)));
             }
         });
         return formula;
     }
 
-    private formattedValue(value) {
+    private formatValue(value) {
         return !isNaN(+value) && value != 0 ? this.userPrefs.formatMoney(+value) : '';
+    }
+
+    private machineFormatValue(value) {
+        return (''+ value).replace(this.userPrefs.toUse.num_grp_sep, '').replace(this.userPrefs.toUse.dec_sep, '.');
     }
 
     private viewNote() {
