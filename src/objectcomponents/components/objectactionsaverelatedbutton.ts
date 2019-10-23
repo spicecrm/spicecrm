@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component,  EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
@@ -14,7 +14,7 @@ import {relatedmodels} from "../../services/relatedmodels.service";
 })
 export class ObjectActionSaveRelatedButton {
 
-    @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     public parent: any = {};
     public module: string = '';
@@ -30,7 +30,7 @@ export class ObjectActionSaveRelatedButton {
     }
 
     public execute() {
-        if(this.saving) return;
+        if (this.saving) return;
         if (this.model.validate()) {
             this.saving = true;
             // get changed Data
@@ -40,9 +40,18 @@ export class ObjectActionSaveRelatedButton {
             changedData.id = this.model.id;
             // save related model
             this.actionemitter.emit(true);
-            this.relatedmodels.setItem(changedData);
-            this.model.endEdit();
+
+            // set to view mode and save bean
             this.view.setViewMode();
+            this.relatedmodels.setItem(changedData).subscribe(success => {
+                // end editing
+                this.model.endEdit();
+                this.saving = false;
+            }, error => {
+                // return to edit mode
+                this.view.setEditMode();
+                this.saving = false;
+            });
         }
     }
 
