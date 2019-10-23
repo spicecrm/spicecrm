@@ -208,7 +208,7 @@ export class calendar implements OnDestroy {
                     this.isLoading = false;
                     for (let event of events) {
                         if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
-                        event.data = this.modelutilities.backendModel2spice(event.module, event.data);
+                        // event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                         switch (event.type) {
                             case 'event':
                                 event.start = moment(event.start).tz(this.timeZone).add(moment().utcOffset(), 'm');
