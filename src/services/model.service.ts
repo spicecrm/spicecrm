@@ -265,6 +265,18 @@ export class model implements OnDestroy {
     }
 
     /**
+     * returns the field access status if one is set
+     *
+     * @param field the field to be checked
+     */
+    public checkFieldAccess(field): boolean {
+        if (this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1') {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * navigates to the detasil view route of the given model
      */
     public goDetail() {
@@ -761,7 +773,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData, this.savingProgress )
+        this.backend.save(this.module, this.id, changedData, this.savingProgress)
             .subscribe(
                 res => {
                     this.data = res;
