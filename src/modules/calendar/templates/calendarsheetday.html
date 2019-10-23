@@ -15,10 +15,7 @@
     </div>
 </div>
 <div #calendarsheet [ngStyle]="sheetStyle" class="slds-scrollable--y slds-is-relative">
-    <div *ngIf="calendar.isLoading" class="slds-align_absolute-center slds-border--left slds-border--top slds-theme--default slds-is-absolute" style="height: 100%; opacity: .7; width: 100%">
-        <system-spinner size="30"></system-spinner>
-    </div>
-    <ng-container *ngIf="!calendar.isLoading">
+    <ng-container>
         <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
             <div [ngStyle]="timeColStyle">
                 <div class="slds-text-align--center slds-border--bottom" [ngStyle]="hourHeightStyle">{{sheetHour}}:00</div>
