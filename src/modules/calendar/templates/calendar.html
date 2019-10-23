@@ -1,10 +1,15 @@
 <div #calendarcontainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'">
     <div [class.slds-modal__container]="asPicker">
         <calendar-header (datePicked)="setDateChanged($event)"></calendar-header>
-        <div #calendarcontent tobottom class="slds-grid slds-theme_default slds-border--right">
+        <div #calendarcontent tobottom class="slds-grid slds-theme_default slds-border--right slds-is-relative">
             <div *ngIf="!isMobileView" tobottom [ngStyle]="sidebarStyle" class="slds-border--right slds-p-around--xx-small spicecrm-scrollbar slds-scrollable--y slds-size--1-of-1 slds-theme--default">
                 <system-input-date-picker [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
                 <calendar_other_calendars_monitor (googleIsVisible$)="handleGoogleIsVisible($event)" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
+            </div>
+            <div *ngIf="calendar.isLoading" class="slds-align_absolute-center slds-is-absolute" [ngStyle]="sheetStyle" [style.left]="this.sidebarWidth + 'px'" style="z-index: 99999">
+                <div class="slds-p-around--small slds-theme--default" style="border-radius: 50%; box-shadow: 0 0 5px 0 #555;">
+                    <system-spinner size="30"></system-spinner>
+                </div>
             </div>
             <div [ngStyle]="sheetStyle">
                 <calendar-sheet-day
