@@ -125,7 +125,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     private setModelDataFromEvent() {
         this.model.module = this.event.module;
         this.model.id = this.event.id;
-        this.model.data = this.event.data;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.event.data);
     }
 
     /*
