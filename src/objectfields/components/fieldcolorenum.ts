@@ -41,8 +41,10 @@ export class fieldColorEnum  extends fieldGeneric {
         if(typeof this.colors !== 'undefined') {
             let colordef = '';
             colordef = this.colors[this.value];
-            if(colordef.substring(0, 1) != '#') {
-                colordef = '#' + colordef;
+            if (typeof colordef !== 'undefined') {
+                if (colordef.substring(0, 1) != '#') {
+                    colordef = '#' + colordef;
+                }
             }
             this.acolor['background-color'] = colordef;
         }
@@ -75,8 +77,10 @@ export class fieldColorEnum  extends fieldGeneric {
     private changed() {
         let colordef = '';
         colordef = this.colors[this.value];
-        if(colordef.substring(0, 1) != '#') {
-            colordef = '#' + colordef;
+        if (typeof colordef !== 'undefined') {
+            if(colordef.substring(0, 1) != '#') {
+                colordef = '#' + colordef;
+            }
         }
         this.acolor['background-color'] = colordef;
     }
