@@ -6,6 +6,8 @@ import {HttpHeaders} from "@angular/common/http";
 import {loggerService} from './logger.service';
 import {broadcast} from './broadcast.service';
 
+declare var moment: any;
+
 // Taken from https://github.com/killmenot/webtoolkit.md5
 
 interface authDataIf {
@@ -186,6 +188,10 @@ export class session {
     public setTimezone( timezone: string ): void {
         if ( this.getSessionData('timezone') === timezone ) return; // Timezone did not change, nothing to do.
         this.setSessionData('timezone', timezone, false ); // Set timezone ...
+
+        // set the default moment timezon
+        moment.tz.setDefault(timezone);
+
         this.broadcast.broadcastMessage('timezone.changed', timezone ); // ... and tell about the changement.
     }
 
