@@ -41,14 +41,16 @@ export class fieldColorEnum  extends fieldGeneric {
         if(typeof this.colors !== 'undefined') {
             let colordef = '';
             colordef = this.colors[this.value];
-            if(colordef.substring(0, 1) != '#') {
-                colordef = '#' + colordef;
+            if (typeof colordef !== 'undefined') {
+                if (colordef.substring(0, 1) != '#') {
+                    colordef = '#' + colordef;
+                }
             }
             this.acolor['background-color'] = colordef;
         }
         let retArray = [];
         for (let optionVal in options) {
-            let arrcolor = (typeof this.colors !== 'undefined') ? (this.colors[optionVal].substring(0, 1) != '#' ? '#' + this.colors[optionVal] : this.colors[optionVal] ): '';
+            let arrcolor = (typeof this.colors !== 'undefined' && typeof this.colors[optionVal] !== 'undefined') ? (this.colors[optionVal].substring(0, 1) != '#' ? '#' + this.colors[optionVal] : this.colors[optionVal] ): '';
             let arrlong = (typeof this.longOptions !== 'undefined') ? this.longOptions[optionVal] : '';
             retArray.push({
                 value: optionVal,
@@ -60,23 +62,33 @@ export class fieldColorEnum  extends fieldGeneric {
         this.options = retArray;
     }
 
+    get getColor() {
+        let colordef = '';
+        colordef = this.colors[this.value];
+        if (typeof colordef !== 'undefined') {
+            if(colordef.substring(0, 1) != '#') {
+                colordef = '#' + colordef;
+            }
+        }
+        this.acolor['background-color'] = colordef;
+        return this.acolor;
+    }
+
     private getValue(): string {
-        for(let opt of this.options) {
-            if(opt.value == this.value) {
+        for (let opt of this.options) {
+            if (opt.value == this.value) {
                 return opt.display;
             }
         }
     }
 
-    private getColor(): any {
-        return this.acolor;
-    }
-
     private changed() {
         let colordef = '';
         colordef = this.colors[this.value];
-        if(colordef.substring(0, 1) != '#') {
-            colordef = '#' + colordef;
+        if (typeof colordef !== 'undefined') {
+            if(colordef.substring(0, 1) != '#') {
+                colordef = '#' + colordef;
+            }
         }
         this.acolor['background-color'] = colordef;
     }
