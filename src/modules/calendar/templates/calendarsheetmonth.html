@@ -5,10 +5,7 @@
     </div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
-    <div *ngIf="calendar.isLoading" class="slds-align_absolute-center slds-border--left slds-border--top slds-theme--default slds-is-absolute" style="height: 100%; opacity: .7; width: 100%">
-        <system-spinner size="30"></system-spinner>
-    </div>
-    <ng-container *ngIf="!calendar.isLoading">
+    <ng-container>
         <ng-container *ngFor="let sheetWeek of currentGrid; let i = index; trackBy: trackByFnDate">
             <div *ngFor="let sheetDay of sheetWeek; let j = index; trackBy: trackByFnDate" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
                 <div class="slds-p-around--xx-small" [style.height]="offsetHeight + 'px'">

@@ -134,7 +134,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
      * a helper function to determine if the card shoudl be hidden based on the modelstate or the ACL check
      */
     get hidden() {
-        return !this.checkModelState() || !this.aclAccess();
+        return !this.checkModelState() || !this.aclAccess;
     }
 
     /**
@@ -165,17 +165,6 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
 
         // by default return true
         return true;
-    }
-
-    /**
-     * checks if the user has Access per ACL rights
-     */
-    public aclAccess() {
-        if (this.module) {
-            return this.metadata.checkModuleAcl(this.module, "list");
-        } else {
-            return false;
-        }
     }
 
     /**
