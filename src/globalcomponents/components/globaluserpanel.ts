@@ -15,6 +15,8 @@ import {cookie} from "../../services/cookie.service";
 import {userpreferences} from '../../services/userpreferences.service';
 import {toast} from '../../services/toast.service';
 
+declare var _: any;
+
 @Component({
     selector: "global-user-panel",
     templateUrl: "./src/globalcomponents/templates/globaluserpanel.html",
@@ -25,6 +27,7 @@ export class GlobaUserPanel {
     private timezones: object;
     private timezoneKeys: string[];
     private isEditingTz = false;
+    private compId: string = _.uniqueId();
 
     constructor(
         private rendered: Renderer,
