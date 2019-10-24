@@ -8,7 +8,7 @@ import { language } from '../../services/language.service';
 import { userpreferences } from '../../services/userpreferences.service';
 import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
-import { Observable, Subject } from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 
 /**
  * @ignore
@@ -120,7 +120,7 @@ export class ConfigTransfer {
                 if ( answer ) {
                     this.isUploading = true;
                     this.importOK = null;
-                    let progress = new Subject<number>();
+                    let progress = new BehaviorSubject<number>(0);
                     progress.subscribe( value => {
                         this.uploadProgress = value;
                         if ( value === 100 ) this.isImporting = true;

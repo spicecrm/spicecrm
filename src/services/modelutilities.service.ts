@@ -75,7 +75,7 @@ export class modelutilities {
                 // Then we set the time zone by the required time zone of the user (held in the session). This doesn´t change the actual value of the moment. It´s only for displaying/formatting.
                 let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
                 // set the Time Zone for the Field Value only if the Time Zone is set
-                let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment(value).tz(timeZone).add(moment().utcOffset(), 'm') : moment(value);
+                let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(value).tz(timeZone) : moment(value);
                 return pDateTime.isValid() ? pDateTime : null;
             case "double":
             case "currency":

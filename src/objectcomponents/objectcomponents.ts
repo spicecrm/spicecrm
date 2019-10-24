@@ -22,7 +22,6 @@ import {VersionManagerService} from '../services/versionmanager.service';
 import /*embed*/ {listfilters} from './services/listfilters.service';
 import /*embed*/ {objectimport} from './services/objectimport.service';
 import /*embed*/ {objectmerge} from './services/objectmerge.service';
-import /*embed*/ {objectnote} from './services/objectnote.service';
 
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 
@@ -196,9 +195,6 @@ import /*embed*/ {ObjectMergeModalRecords} from './components/objectmergemodalre
 import /*embed*/ {ObjectMergeModalData} from './components/objectmergemodaldata';
 import /*embed*/ {ObjectMergeModalDataField} from './components/objectmergemodaldatafield';
 import /*embed*/ {ObjectMergeModalExecute} from './components/objectmergemodalexecute';
-
-import /*embed*/ {ObjectNotes} from './components/objectnotes';
-import /*embed*/ {ObjectNote} from './components/objectnote';
 
 import /*embed*/ {ObjectAddresses, ObjectAddressesPipe} from './components/objectaddresses';
 import /*embed*/ {ObjectAddress} from './components/objectaddress';
@@ -430,8 +426,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectMergeModalData,
         ObjectMergeModalDataField,
         ObjectMergeModalExecute,
-        ObjectNotes,
-        ObjectNote,
         ObjectAddresses,
         ObjectAddressesPipe,
         ObjectAddress,
@@ -475,8 +469,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectRelatedList,
         ObjectRelatedlistTable,
         ObjectRelatedListItem,
-        // ObjectPopoverHeader,
-        // ObjectPopoverBodyItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetHorizontalList,
         ObjectRowItemComponent,
