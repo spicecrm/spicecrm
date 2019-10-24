@@ -211,8 +211,8 @@ export class calendar implements OnDestroy {
                         // event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                         switch (event.type) {
                             case 'event':
-                                event.start = moment(event.start).tz(this.timeZone).add(moment().utcOffset(), 'm');
-                                event.end = moment(event.end).tz(this.timeZone).add(moment().utcOffset(), 'm');
+                                event.start = moment.utc(event.start).tz(this.timeZone);
+                                event.end = moment.utc(event.end).tz(this.timeZone);
                                 event.isMulti = +event.end.diff(event.start, 'days') > 0;
                                 event.color = this.eventColor;
                                 break;
