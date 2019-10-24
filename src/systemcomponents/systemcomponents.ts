@@ -117,6 +117,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
+import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -231,7 +232,8 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModuleTreeItem,
         SystemSelectUOM,
         SystemInputMedia,
-        SystemInputTags2
+        SystemInputTags2,
+        SystemInputTimezone
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -319,7 +321,8 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputTags2,
         SystemSelectUOM,
         SystemModuleTree,
-        SystemModuleTreeItem
+        SystemModuleTreeItem,
+        SystemInputTimezone
     ]
 })
 export class SystemComponents {
