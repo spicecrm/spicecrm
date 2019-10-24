@@ -36,10 +36,6 @@ export class SalesPlanningTool implements OnInit {
         return this.isCollapsed ? 'slds-is-closed' : 'slds-is-open';
     }
 
-    get splitViewButtonClass() {
-        return this.isCollapsed ? 'slds-is-closed' : 'slds-is-open';
-    }
-
     get contentContainerClass() {
         return this.isCollapsed ? 'slds-grow' : 'slds-size--3-of-4';
     }
@@ -53,7 +49,7 @@ export class SalesPlanningTool implements OnInit {
             this.planningService.versionId = params.versionId;
             this.model.id = params.versionId;
             this.model.getData()
-                .subscribe(item => this.setContentClassifications(item));
+                .subscribe(item => this.setContentFields(item));
             this.getCharacteristicList();
         });
     }
@@ -70,11 +66,13 @@ export class SalesPlanningTool implements OnInit {
             });
     }
 
-    private setContentClassifications(parent) {
+    private setContentFields(parent) {
         if (!parent || !parent.salesplanningcontents) return;
         let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
         if (!content || !content.salesplanningcontentfields) return;
-        this.planningService.contentClassifications = content.salesplanningcontentfields.beans;
+        let array = _.toArray(content.salesplanningcontentfields.beans);
+        array.sort((a, b) => a.sort_order > b.sort_order ? 1 : -1);
+        this.planningService.contentFields = _.object(array.map(item => item.id), array);
     }
 
     private toggleCollapseView() {
