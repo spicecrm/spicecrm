@@ -151,10 +151,14 @@ export class SalesPlanningToolTree implements OnInit {
 
     private toggleUndoneOnly() {
         this.unDoneOnly = !this.unDoneOnly;
+        this.resetData();
+        this.getNodeItems();
+    }
+
+    private resetData() {
         this.nodeItems = [];
         this.treeItems = [];
         this.planningService.selectedNode = undefined;
         this.planningService.selectedNodes = [];
-        this.getNodeItems();
     }
 }

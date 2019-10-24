@@ -1,5 +1,5 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div [class.slds-border--bottom]="nodeContentArray.length == 0 || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
+    <div [class.slds-border--bottom]="!nodeContentData || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
         <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
             {{nodeInfo.nodeText}}
         </div>
@@ -11,7 +11,7 @@
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--brand" (click)="save()">
                     {{language.getLabel('LBL_SAVE')}}
                 </button>
-                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo.leaf || nodeContentArray.length == 0" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo.leaf || !nodeContentData" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
                     {{language.getLabel('LBL_EDIT')}}
                 </button>
             </div>
@@ -28,8 +28,8 @@
             </div>
         </div>
     </div>
-    <div class="slds-grow slds-scrollable">
-        <table *ngIf="nodeContentArray.length > 0 && !isLoading" class="slds-table slds-table_bordered slds-table_cell-buffer spice-table_header-fixed">
+    <div class="slds-grow slds-scrollable slds-p-right--xx-small">
+        <table *ngIf="nodeContentData && !isLoading" class="slds-table slds-table_bordered slds-table_cell-buffer spice-table_header-fixed">
             <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col" style="padding: .1rem .1rem">
@@ -37,7 +37,7 @@
                         {{language.getLabel('LBL_PLAN_CODE')}}
                     </div>
                 </th>
-                <th *ngFor="let period of periods; trackBy: trackByFn" scope="col" [title]="period?.name" style="padding: .1rem .1rem">
+                <th *ngFor="let period of periods; trackBy: trackByIndexFn" scope="col" [title]="period?.name" style="padding: .1rem .1rem">
                     <div class="slds-truncate">
                         {{period?.name}}
                     </div>
@@ -50,23 +50,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let field of nodeContentArray; trackBy: trackByFn">
+            <tr *ngFor="let contentField of contentFields; trackBy: trackByItemFn">
                 <td style="padding: .1rem .1rem">
-                    <div [title]="field.description">
-                        {{field.description}}
+                    <div [title]="nodeContentData[contentField.id].description">
+                        {{nodeContentData[contentField.id].description}}
                     </div>
                 </td>
-                <td *ngFor="let period of periods; trackBy: trackByFn" [title]="field[period?.key]" style="padding: .1rem .1rem">
-                    <div *ngIf="!isEditMode|| !isEditable(field.field_id)" class="slds-truncate slds-text-align--right">
-                        {{field[period?.key]}}
+                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="nodeContentData[contentField.id][period?.key]" style="padding: .1rem .1rem">
+                    <div *ngIf="!isEditMode|| contentField.editable != '1'" class="slds-truncate slds-text-align--right">
+                        {{nodeContentData[contentField.id][period?.key]}}
                     </div>
-                    <div *ngIf="isEditMode && isEditable(field.field_id)" class="slds-form-element__control slds-m-vertical--xx-small">
-                        <input type="text" class="slds-input slds-text-align--right" [ngModel]="field[period?.key]" [ngModelOptions]="modelOptions" (ngModelChange)="setPeriodValues($event, field, period?.key)" style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
+                    <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control slds-m-vertical--xx-small">
+                        <input type="text" class="slds-input slds-text-align--right"
+                               [ngModel]="nodeContentData[contentField.id][period?.key]"
+                               [ngModelOptions]="modelOptions"
+                               (ngModelChange)="setPeriodValues($event, nodeContentData[contentField.id], contentField, period?.key)"
+                               style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
                     </div>
                 </td>
                 <td style="padding: .1rem .1rem" >
-                    <div class="slds-truncate slds-text-align--right" [title]="getFieldSum(field)">
-                        {{getFieldSumDisplay(field)}}
+                    <div class="slds-truncate slds-text-align--right" [title]="getFieldSumDisplay(nodeContentData[contentField.id], contentField)">
+                        {{getFieldSumDisplay(nodeContentData[contentField.id], contentField)}}
                     </div>
                 </td>
             </tr>

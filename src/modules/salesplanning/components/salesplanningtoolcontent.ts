@@ -30,8 +30,8 @@ declare var _: any;
 
 export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
-    public nodeContentArray: any[] = [];
-    public nodeContentArrayBackup: any[] = [];
+    public nodeContentData: any;
+    public nodeContentDataBackup: any = {};
     public periods: any[] = [];
     public languageSubscriber: any = {};
     public units: any = {
@@ -68,6 +68,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return this.view.isEditMode();
     }
 
+    get contentFields() {
+        return _.toArray(this.planningService.contentFields);
+    }
+
     public ngOnChanges() {
         this.setViewMode();
         this.buildPeriods();
@@ -76,11 +80,6 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     public ngOnDestroy() {
         this.languageSubscriber.unsubscribe();
-    }
-
-    private isEditable(fieldId) {
-        let fieldClassifications = this.planningService.contentClassifications[fieldId];
-        return fieldClassifications && fieldClassifications.editable && fieldClassifications.editable == 1;
     }
 
     private subscribeToLanguage() {
@@ -120,6 +119,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private getNodeInfo() {
         if (!this.node) return;
         this.isLoading = true;
+        this.nodeInfo = undefined;
         let params = {
             nodes: this.planningService.selectedNodes,
             characteristics: this.planningService.selectedCharacteristics,
@@ -136,7 +136,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private getNodeContent() {
-        this.nodeContentArray = [];
+        this.nodeContentData = undefined;
         if (!this.node) return;
         let params = {
             nodes: this.planningService.selectedNodes,
@@ -144,31 +144,37 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         };
         this.backend.getRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Content`, params)
             .subscribe(nodeContent => {
-                if (nodeContent && nodeContent.data && nodeContent.data.length) {
-                    this.nodeContentArray = nodeContent.data;
+                if (nodeContent && nodeContent.data) {
+                    this.nodeContentData = this.formatAllData(nodeContent.data);
                 }
                 this.isLoading = false;
             });
     }
 
+    private formatAllData(data) {
+        for (let id in data) {
+            if (data.hasOwnProperty(id)) {
+                this.periods.forEach(period => {
+                    data[id][period.key] = this.formatValue(data[id][period.key]);
+                });
+            }
+        }
+        return data;
+    }
+
     private setEditMode() {
         if (!this.nodeInfo.leaf) return;
-        this.nodeContentArrayBackup = [];
-        this.nodeContentArray.forEach(field => {
-            this.nodeContentArrayBackup.push(_.clone(field));
-            this.periods.forEach(period => {
-                field[period.key] = this.formatValue(field[period.key]);
-            });
-        });
+        this.nodeContentDataBackup = _.clone(this.nodeContentData);
         this.view.setEditMode();
     }
 
     private setViewMode() {
+        this.nodeContentDataBackup = undefined;
         this.view.setViewMode();
     }
 
     private save() {
-        let body = {data: this.nodeContentArray};
+        let body = {data: this.nodeContentData};
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Update`, {}, body)
             .subscribe(result => {
                 if (result.success == true) {
@@ -179,8 +185,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private cancel() {
-        this.nodeContentArray = [];
-        this.nodeContentArray = this.nodeContentArrayBackup;
+        this.nodeContentData = _.clone(this.nodeContentDataBackup);
         this.setViewMode();
     }
 
@@ -198,64 +203,65 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             });
     }
 
-    private trackByFn(index, item) {
+    private trackByItemFn(index, item) {
         return item.id;
     }
 
-    private setPeriodValues(value, inputField, periodKey) {
-        inputField[periodKey] = this.formatValue(value);
-        this.nodeContentArray = this.nodeContentArray.map(contentField => {
-            if (inputField.field_id != contentField.field_id) {
-                contentField[periodKey] = this.formatValue(this.getFieldValue(contentField, periodKey));
-            }
-            return contentField;
-        });
+    private trackByIndexFn(index, item) {
+        return index;
     }
 
-    private getFieldSum(field) {
+    private setPeriodValues(value, fieldData, contentField, periodKey) {
+        fieldData[periodKey] = this.formatValue(value);
+        for (let itemId in this.nodeContentData) {
+            if (this.nodeContentData.hasOwnProperty(itemId)) {
+                if (fieldData.field_id != this.nodeContentData[itemId].field_id) {
+                    this.nodeContentData[itemId][periodKey] = this.getFieldValue(this.nodeContentData[itemId], contentField, periodKey);
+                }
+            }
+        }
+    }
+
+    private getFieldSum(fieldData, contentField) {
         let result = 0;
-        this.periods.forEach(period => result += +(this.machineFormatValue(field[period.key]))
-        );
-        let fieldClassifications = this.planningService.contentClassifications[field.field_id];
-        if (!fieldClassifications.formula_sum || fieldClassifications.formula_sum.length == 0) {
+        this.periods.forEach(period => result += +(this.machineFormatValue(fieldData[period.key])));
+        if (!contentField.formula_sum || contentField.formula_sum.length == 0) {
             return result;
         }
 
-        let ids = fieldClassifications.formula_sum.match(/\[.*?]/g);
-        let formulaSum = fieldClassifications.formula_sum;
-        let formulaValues = this.replaceIdsWithValues(ids, formulaSum, field.field_id, false, true);
+        let ids = contentField.formula_sum.match(/\[.*?]/g);
+        let formulaSum = contentField.formula_sum;
+        let formulaValues = this.replaceIdsWithValues(ids, formulaSum, fieldData, contentField, false, true);
         let canExecute = !!formulaValues
             .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
         if (canExecute) result = +this.mathExpCompiler.do(formulaValues);
         return result;
     }
 
-    private getFieldSumDisplay(field) {
-        return this.formatValue(this.getFieldSum(field));
+    private getFieldSumDisplay(fieldData, contentField) {
+        return this.formatValue(this.getFieldSum(fieldData, contentField));
     }
 
-    private getFieldValue(field, periodKey) {
-        let result = field[periodKey];
-        let fieldClassifications = this.planningService.contentClassifications[field.field_id];
-        if (!fieldClassifications.formula || fieldClassifications.formula.length == 0) return result;
+    private getFieldValue(fieldData, contentField, periodKey) {
+        let result = fieldData[periodKey];
+        if (!contentField.formula || contentField.formula.length == 0) return result;
 
-        let ids = fieldClassifications.formula.match(/\[.*?]/g);
-        let formula = fieldClassifications.formula;
-        let formulaValues = this.replaceIdsWithValues(ids, formula, field.field_id, periodKey);
+        let ids = contentField.formula.match(/\[.*?]/g);
+        let formula = contentField.formula;
+        let formulaValues = this.replaceIdsWithValues(ids, formula, fieldData, contentField, periodKey);
         let canExecute = !!formulaValues
             .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
         if (canExecute) result = this.mathExpCompiler.do(formulaValues);
-        return result;
+        return this.formatValue(result);
     }
 
-    private replaceIdsWithValues(ids, formula, fieldId, periodKey?, isSumFormula?) {
+    private replaceIdsWithValues(ids, formula, fieldData, contentField, periodKey?, isSumFormula?) {
         ids.forEach(id => {
-            let idField = this.nodeContentArray.find(contentField => contentField.field_id == id.replace(/[\[\]]/g, ''));
-            if (idField && periodKey && idField[periodKey]) {
-                idField[periodKey] = this.machineFormatValue(idField[periodKey]);
-                formula = formula.replace(id, idField[periodKey]);
-            } else if (idField && isSumFormula && formula.indexOf(fieldId) == -1) {
-                formula = formula.replace(id, this.machineFormatValue(this.getFieldSum(idField)));
+            if (fieldData.field_id == id.replace(/[\[\]]/g, '') && periodKey && fieldData[periodKey]) {
+                let value = this.machineFormatValue(fieldData[periodKey]);
+                formula = formula.replace(id, value);
+            } else if (fieldData.field_id == id.replace(/[\[\]]/g, '') && isSumFormula && formula.indexOf(fieldData.field_id) == -1) {
+                formula = formula.replace(id, this.machineFormatValue(this.getFieldSum(fieldData, contentField)));
             }
         });
         return formula;
@@ -266,7 +272,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private machineFormatValue(value) {
-        return (''+ value).replace(this.userPrefs.toUse.num_grp_sep, '').replace(this.userPrefs.toUse.dec_sep, '.');
+        return ('' + value).replace(this.userPrefs.toUse.num_grp_sep, '').replace(this.userPrefs.toUse.dec_sep, '.');
     }
 
     private viewNote() {
