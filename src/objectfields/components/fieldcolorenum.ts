@@ -62,16 +62,24 @@ export class fieldColorEnum  extends fieldGeneric {
         this.options = retArray;
     }
 
+    get getColor() {
+        let colordef = '';
+        colordef = this.colors[this.value];
+        if (typeof colordef !== 'undefined') {
+            if(colordef.substring(0, 1) != '#') {
+                colordef = '#' + colordef;
+            }
+        }
+        this.acolor['background-color'] = colordef;
+        return this.acolor;
+    }
+
     private getValue(): string {
-        for(let opt of this.options) {
-            if(opt.value == this.value) {
+        for (let opt of this.options) {
+            if (opt.value == this.value) {
                 return opt.display;
             }
         }
-    }
-
-    private getColor(): any {
-        return this.acolor;
     }
 
     private changed() {
