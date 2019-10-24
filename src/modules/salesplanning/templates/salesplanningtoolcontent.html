@@ -8,7 +8,8 @@
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     {{language.getLabel('LBL_CANCEL')}}
                 </button>
-                <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--brand" (click)="save()">
+                <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="save()">
+                    <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
                     {{language.getLabel('LBL_SAVE')}}
                 </button>
                 <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo.leaf || !nodeContentData" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
@@ -63,6 +64,7 @@
                     <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control slds-m-vertical--xx-small">
                         <input type="text" class="slds-input slds-text-align--right"
                                [ngModel]="nodeContentData[contentField.id][period?.key]"
+                               [disabled]="isSaving"
                                [ngModelOptions]="modelOptions"
                                (ngModelChange)="setPeriodValues($event, nodeContentData[contentField.id], contentField, period?.key)"
                                style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">

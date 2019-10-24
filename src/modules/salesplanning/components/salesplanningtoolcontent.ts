@@ -43,6 +43,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     };
     public nodeInfo: any = {};
     private isLoading: boolean = false;
+    private isSaving: boolean = false;
     private isClosing: boolean = false;
     @Input() private node: any;
 
@@ -174,11 +175,13 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private save() {
+        this.isSaving = true;
         let body = {data: this.nodeContentData};
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Update`, {}, body)
             .subscribe(result => {
                 if (result.success == true) {
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
+                    this.isSaving = false;
                     this.setViewMode();
                 }
             });
