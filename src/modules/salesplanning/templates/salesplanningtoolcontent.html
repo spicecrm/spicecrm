@@ -1,5 +1,5 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div [class.slds-border--bottom]="!nodeContentData || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
+    <div *ngIf="nodeInfo" [class.slds-border--bottom]="!nodeContentData || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
         <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
             {{nodeInfo.nodeText}}
         </div>
