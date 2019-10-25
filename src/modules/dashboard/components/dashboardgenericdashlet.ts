@@ -17,12 +17,12 @@ export class DashboardGenericDashlet implements OnInit {
     private loading: boolean = true;
     private records: any[] = [];
     private recordcount: number = 0;
+    private recordtotal: number = 0;
     private dashletconfig: any = null;
     private dashletModule: string = undefined;
     private dashletLabel: string = undefined;
     private dashletFields: any[] = [];
     private dashletFieldSet: any = undefined;
-    private canLoadMore: boolean = true;
     private loadLimit: number = 20;
 
     @ViewChild("tablecontainer", {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
@@ -31,10 +31,14 @@ export class DashboardGenericDashlet implements OnInit {
     private sortparams: any = {
         sortdirection: '',
         sortfield: ''
-    }
+    };
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 
+    }
+
+    get canLoadMore() {
+        return this.recordtotal > this.records.length;
     }
 
     get dashletTitle() {
@@ -104,10 +108,8 @@ export class DashboardGenericDashlet implements OnInit {
                 .subscribe((records: any) => {
                     this.records = records.list;
                     this.recordcount = +records.list.length;
+                    this.recordtotal = records.totalcount;
                     this.loading = false;
-                    if (records.list.length < this.loadLimit) {
-                        this.canLoadMore = false;
-                    }
                 });
         }
     }
@@ -133,9 +135,6 @@ export class DashboardGenericDashlet implements OnInit {
                 .subscribe((records: any) => {
                     this.records = this.records.concat(records.list);
                     this.recordcount += +records.list.length;
-                    if (records.list.length < this.loadLimit) {
-                        this.canLoadMore = false;
-                    }
                     this.loading = false;
                 });
         }
