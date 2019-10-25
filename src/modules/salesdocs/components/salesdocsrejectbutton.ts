@@ -11,11 +11,9 @@ import {ObjectActionNewButton} from "../../../objectcomponents/components/object
 @Component({
     templateUrl: "./src/modules/salesdocs/templates/salesdocsrejectbutton.html",
 })
-export class SalesdocsRejectButton extends ObjectActionNewButton implements OnInit {
+export class SalesdocsRejectButton {
 
     constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, private injector: Injector) {
-        super(language, metadata, model);
-
         this.model.module = 'SalesDocs';
     }
 
