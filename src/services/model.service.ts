@@ -322,7 +322,7 @@ export class model implements OnDestroy {
                 responseSubject.complete();
 
                 if (trackAction != "") {
-                    this.recent.trackItem(this.module, this.id, this.data.summary_text);
+                    this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, "init");
