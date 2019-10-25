@@ -107,19 +107,6 @@ export class GlobaUserPanel {
         return this.session.authData.userimage;
     }
 
-    private getTimezones() {
-        this.backend.getRequest( "/timezones" ).subscribe( response => {
-            this.timezones = response;
-            this.timezoneKeys = Object.keys( this.timezones );
-        } );
-    }
-
-    private setEditingTz( event ) {
-        this.isEditingTz = true;
-        this.getTimezones();
-        event.stopPropagation();
-    }
-
     private set currentTz( value ) {
         if ( this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value ) return;
         this.userprefs.setPreference('timezone', value, true ).subscribe( ( data: any ) => {
