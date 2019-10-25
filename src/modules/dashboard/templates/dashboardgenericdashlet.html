@@ -1,6 +1,6 @@
 <div #headercontainer class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
     <system-icon [module]="dashletModule" [size]="'small'"></system-icon>
-    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}})</h2>
+    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}} {{language.getLabel('LBL_OF')}} {{recordtotal}})</h2>
 </div>
 <!-- the table - hidden if no records have been found and the dashlet is not loading-->
 <div class="slds-size--1-of-1" [ngStyle]="tableContainerStyle" [ngClass]="{'slds-table--header-fixed_container': islarge}">
