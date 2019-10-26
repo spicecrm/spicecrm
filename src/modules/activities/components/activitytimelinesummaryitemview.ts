@@ -6,17 +6,17 @@ import {
     Input, OnChanges
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
 
 @Component({
-    selector: 'object-activitiy-timeline-summary-item-view',
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinesummaryitemview.html',
+    selector: 'activity-timeline-summary-item-view',
+    templateUrl: './src/modules/activities/templates/activitytimelinesummaryitemview.html',
     providers: [model]
 })
-export class ObjectActivitiyTimelineSummaryItemView implements OnChanges{
+export class ActivityTimelineSummaryItemView implements OnChanges{
     @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) private detailContainer: ViewContainerRef;
 
     @Input() private module: '';
@@ -37,7 +37,7 @@ export class ObjectActivitiyTimelineSummaryItemView implements OnChanges{
             component.destroy();
         }
 
-        let componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineSummary', this.module);
+        let componentconfig = this.metadata.getComponentConfig('ActivityTimelineSummary', this.module);
         if (componentconfig && componentconfig.componentsets) {
             for (let componentSet of componentconfig.componentsets) {
                 for (let view of this.metadata.getComponentSetObjects(componentSet)) {

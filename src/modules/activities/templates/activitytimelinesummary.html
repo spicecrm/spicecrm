@@ -15,14 +15,14 @@
         </nav>
         <div class="slds-col slds-align-bottom slds-p-top--xxx-small">
             <!--p class="slds-text-body--small">Sub Header</p-->
-            <object-activitiy-timeline-summary-aggregates module="History"></object-activitiy-timeline-summary-aggregates>
+            <activity-timeline-summary-aggregates module="History"></activity-timeline-summary-aggregates>
         </div>
     </div>
     <div class="slds-page-header__col-actions slds-grid">
         <system-input-delayed *ngIf="componentconfig.usefts" [(ngModel)]="searchterm" delay="1000"></system-input-delayed>
         <div class="slds-page-header__controls">
             <div class="slds-page-header__control">
-                <object-activitiy-timeline-filter class="slds-align--absolute-center slds-button slds-button--icon slds-button--icon-border-filled"></object-activitiy-timeline-filter>
+                <activity-timeline-filter class="slds-align--absolute-center slds-button slds-button--icon slds-button--icon-border-filled"></activity-timeline-filter>
             </div>
         </div>
         <div class="slds-page-header__controls">
@@ -37,33 +37,33 @@
 <div class="slds-grid" >
     <div #listContainer tobottom class="slds-size--1-of-1 slds-medium-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
         <!--div class="slds-border--bottom slds-p-vertical--small slds-grid">
-            <object-activitiy-timeline-filter class="slds-col--bump-left slds-p-horizontal--xxx-small"></object-activitiy-timeline-filter>
+            <activity-timeline-filter class="slds-col--bump-left slds-p-horizontal--xxx-small"></activity-timeline-filter>
         </div-->
         <ul class="slds-timeline">
             <li class="slds-p-around--x-small" *ngFor="let activity of activities" (click)="setActivitiy(activity)" [ngClass]="{'slds-theme--default slds-border--bottom slds-border--top' : activity.id == activityid}">
-                <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
+                <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
             </li>
         </ul>
         <!-- stencils when loading -->
         <ul class="slds-timeline" *ngIf="activitiyTimeLineService.activities.History.loading">
             <li class="slds-p-around--x-small">
-                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+                <activitytimeline-stencil></activitytimeline-stencil>
             </li>
             <li style="opacity: 0.8" class="slds-p-around--x-small">
-                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+                <activitytimeline-stencil></activitytimeline-stencil>
             </li>
             <li style="opacity: 0.6" class="slds-p-around--x-small">
-                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+                <activitytimeline-stencil></activitytimeline-stencil>
             </li>
             <li style="opacity: 0.4" class="slds-p-around--x-small">
-                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+                <activitytimeline-stencil></activitytimeline-stencil>
             </li>
             <li style="opacity: 0.2" class="slds-p-around--x-small">
-                <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+                <activitytimeline-stencil></activitytimeline-stencil>
             </li>
         </ul>
     </div>
     <div *ngIf="displayDetailsPane" class="slds-size--2-of-3" tobottom>
-        <object-activitiy-timeline-summary-item-view *ngIf="activitymodule" [module]="activitymodule" [id]="activityid" [data]="activitydata"></object-activitiy-timeline-summary-item-view>
+        <activity-timeline-summary-item-view *ngIf="activitymodule" [module]="activitymodule" [id]="activityid" [data]="activitydata"></activity-timeline-summary-item-view>
     </div>
 </div>

@@ -2,23 +2,23 @@
  * @module ObjectComponents
  */
 import {Component, Injector, Input, OnDestroy, OnInit} from '@angular/core';
-import {language} from '../../services/language.service';
-import {model} from '../../services/model.service';
-import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
-import {modelattachments} from "../../services/modelattachments.service";
+import {language} from '../../../services/language.service';
+import {model} from '../../../services/model.service';
+import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {modelattachments} from "../../../services/modelattachments.service";
 import {Observable, Subject} from "rxjs";
-import {configurationService} from "../../services/configuration.service";
-import {toast} from "../../services/toast.service";
-import {session} from "../../services/session.service";
-import {helper} from "../../services/helper.service";
-import {backend} from "../../services/backend.service";
-import {modelutilities} from "../../services/modelutilities.service";
+import {configurationService} from "../../../services/configuration.service";
+import {toast} from "../../../services/toast.service";
+import {session} from "../../../services/session.service";
+import {helper} from "../../../services/helper.service";
+import {backend} from "../../../services/backend.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 import {Router} from "@angular/router";
-import {broadcast} from "../../services/broadcast.service";
-import {metadata} from "../../services/metadata.service";
-import {recent} from "../../services/recent.service";
-import {modal} from "../../services/modal.service";
-import {navigation} from "../../services/navigation.service";
+import {broadcast} from "../../../services/broadcast.service";
+import {metadata} from "../../../services/metadata.service";
+import {recent} from "../../../services/recent.service";
+import {modal} from "../../../services/modal.service";
+import {navigation} from "../../../services/navigation.service";
 
 /**
  * @ignore
@@ -26,11 +26,11 @@ import {navigation} from "../../services/navigation.service";
 declare var moment;
 
 @Component({
-    selector: 'object-activitiytimeline',
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimeline.html',
+    selector: 'activitytimeline',
+    templateUrl: './src/modules/activities/templates/activitytimeline.html',
     providers: [activitiyTimeLineService, modelattachments]
 })
-export class ObjectActivitiyTimeline implements OnInit, OnDestroy {
+export class ActivityTimeline implements OnInit, OnDestroy {
 
     public displayAddContainer: boolean = false;
     @Input() private parentModule: string = '';

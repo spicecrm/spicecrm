@@ -1,20 +1,20 @@
 <div *ngIf="displayaggregates && hasAggregates" class="slds-p-vertical--x-small slds-m-top--x-small">
-    <object-activitiy-timeline-aggregates [module]="module" labellength="short"></object-activitiy-timeline-aggregates>
+    <activity-timeline-aggregates [module]="module" labellength="short"></activity-timeline-aggregates>
 </div>
 <ul *ngIf="hasActivities; else nocontent" class="slds-timeline slds-p-vertical--small">
     <li *ngFor="let activity of activities; trackBy:trackByFn">
-        <object-activitiytimeline-item-container [activity]="activity"></object-activitiytimeline-item-container>
+        <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
     </li>
 </ul>
 <ul class="slds-timeline" *ngIf="loading">
     <li>
-        <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+        <activitytimeline-stencil></activitytimeline-stencil>
     </li>
     <li style="opacity: 0.6">
-        <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+        <activitytimeline-stencil></activitytimeline-stencil>
     </li>
     <li style="opacity: 0.3">
-        <object-activitiytimeline-stencil></object-activitiytimeline-stencil>
+        <activitytimeline-stencil></activitytimeline-stencil>
     </li>
 </ul>
 <ng-template #nocontent>
