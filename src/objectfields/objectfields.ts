@@ -71,6 +71,7 @@ import /*embed*/ {fieldBarcode} from './components/fieldbarcode';
 import /*embed*/ {fieldBarcodeRenderer} from './components/fieldbarcoderenderer';
 import /*embed*/ {fieldRating} from './components/fieldrating';
 import /*embed*/ {fieldLookupRecent} from './components/fieldlookuprecent';
+import /*embed*/ {fieldLookupRecentItem} from './components/fieldlookuprecentitem';
 import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
 import /*embed*/ {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
@@ -174,6 +175,7 @@ declare var _: any;
         fieldModifiedBy,
         fieldLookup,
         fieldLookupRecent,
+        fieldLookupRecentItem,
         fieldLookupSearch,
         fieldLookupSearchItem,
         fieldLookupSearchAdd,
