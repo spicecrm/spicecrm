@@ -24,7 +24,7 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
     @Input() private hit: any = {};
     @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
-    private mainfieldsetfields: any[];
+    private mainfieldset: string;
     private subfieldsetfields: any[];
 
     constructor(private model: model, private view: view, private router: Router, private language: language, private metadata: metadata) {
@@ -46,7 +46,7 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
 
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
-        if(componentconfig && componentconfig.mainfieldset) this.mainfieldsetfields = this.metadata.getFieldSetItems(componentconfig.mainfieldset);
+        this.mainfieldset = componentconfig.mainfieldset;
         if(componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
 
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.hit._source);

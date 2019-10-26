@@ -23,7 +23,7 @@ export class GlobalHeaderSearchRecentItem implements OnInit {
     @Input() private item: any = {};
     @Output() private selected: EventEmitter<any> = new EventEmitter<any>();
 
-    private mainfieldsetfields: any[];
+    private mainfieldset: string;
     private subfieldsetfields: any[];
 
     constructor(private model: model, private router: Router, private language: language, private metadata: metadata, private view: view) {
@@ -47,7 +47,8 @@ export class GlobalHeaderSearchRecentItem implements OnInit {
 
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
-        if(componentconfig && componentconfig.mainfieldset) this.mainfieldsetfields = this.metadata.getFieldSetItems(componentconfig.mainfieldset);
+
+        this.mainfieldset = componentconfig.mainfieldset;
         if(componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
 
     }
