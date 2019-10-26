@@ -11,7 +11,7 @@ import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from '../objectfields/objectfields';
-import {GlobalComponents} from '../globalcomponents/globalcomponents';
+// import {GlobalComponents} from '../globalcomponents/globalcomponents';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
 import {loginCheck} from '../services/login.service';
@@ -228,7 +228,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         DragDropModule,
         FormsModule,
         ObjectFields,
-        GlobalComponents,
+        // GlobalComponents,
         SystemComponents,
         DirectivesModule,
         RouterModule.forRoot([
