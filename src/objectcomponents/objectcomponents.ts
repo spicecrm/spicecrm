@@ -144,22 +144,7 @@ import /*embed*/ {ObjectRecordFieldsetContainer} from './components/objectrecord
 import /*embed*/ {ObjectRecordChecklist} from './components/objectrecordchecklist';
 import /*embed*/ {ObjectRecordChecklistItem} from './components/objectrecordchecklistitem';
 
-import /*embed*/ {ObjectActivitiyTimeline} from './components/objectactivitytimeline';
-import /*embed*/ {ObjectActivityTimelineFilter} from "./components/objectactivitiytimelinefilter";
-import /*embed*/ {ObjectActivitiyTimelineContainer} from './components/objectactivitytimelinecontainer';
-import /*embed*/ {ObjectActivitiyTimelineItemContainer} from './components/objectactivitiytimelineitemcontainer';
-import /*embed*/ {ObjectActivitiyTimelineAddTabContainer} from './components/objectactivitiytimelineaddtabcontainer';
-import /*embed*/ {ObjectActivitiyTimelineItem} from './components/objectactivitiytimelineitem';
-import /*embed*/ {ObjectActivitiyTimelineStencil} from './components/objectactivitiytimelinestencil';
-import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/objectactivitiytimelineaddcontainer';
-import /*embed*/ {ObjectActivitiyTimelineAddItem} from './components/objectactivitiytimelineadditem';
-import /*embed*/ {ObjectActivitiyTimelineAddEmail} from './components/objectactivitiytimelineaddemail';
-import /*embed*/ {ObjectActivitiyTimelineSummary} from './components/objectactivitiytimelinesummary';
-import /*embed*/ {ObjectActivitiyTimelineAggregates} from './components/objectactivitiytimelineaggregates';
-import /*embed*/ {ObjectActivitiyTimelineSummaryItemView} from './components/objectactivitiytimelinesummaryitemview';
-import /*embed*/ {ObjectActivitiyTimelineSummaryButton} from './components/objectactivitiytimelinesummarybutton';
-import /*embed*/ {ObjectActivitiyTimelineSummaryModal} from './components/objectactivitiytimelinesummarymodal';
-import /*embed*/ {ObjectActivitiyTimelineSummaryAggregates} from './components/objectactivitiytimelinesummaryaggregates';
+
 
 import /*embed*/ {ObjectRecordDetails} from './components/objectrecorddetails';
 import /*embed*/ {ObjectRecordDetailsTab} from './components/objectrecorddetailstab';
@@ -233,7 +218,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
             {
                 path: 'module/:module',
-                component: ObjectListViewContainer,
+                    component: ObjectListViewContainer,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'list'}
             },
@@ -243,12 +228,14 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
                 canActivate: [loginCheck, aclCheck],
                 data: {aclaction: 'import'}
             },
+            /*
             {
                 path: 'module/:module/historysummary/:id',
                 component: ObjectActivitiyTimelineSummary,
                 canActivate: [loginCheck, aclCheck],
                 data: {aclaction: 'view'}
             },
+            */
             {
                 path: 'module/:module/:id',
                 component: ObjectRecordViewContainer,
@@ -366,22 +353,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectRelatedlistSequenced,
         ObjectRelatedListSequencedItem,
         ObjectFileActionMenu,
-        ObjectActivitiyTimeline,
-        ObjectActivityTimelineFilter,
-        ObjectActivitiyTimelineContainer,
-        ObjectActivitiyTimelineItemContainer,
-        ObjectActivitiyTimelineAddTabContainer,
-        ObjectActivitiyTimelineItem,
-        ObjectActivitiyTimelineStencil,
-        ObjectActivitiyTimelineAddContainer,
-        ObjectActivitiyTimelineAddItem,
-        ObjectActivitiyTimelineAddEmail,
-        ObjectActivitiyTimelineSummary,
-        ObjectActivitiyTimelineAggregates,
-        ObjectActivitiyTimelineSummaryItemView,
-        ObjectActivitiyTimelineSummaryButton,
-        ObjectActivitiyTimelineSummaryModal,
-        ObjectActivitiyTimelineSummaryAggregates,
         ObjectRecordDetails,
         ObjectRecordDetailsTab,
         ObjectRecordDetailsModelstateTab,
@@ -415,8 +386,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectAddresses,
         ObjectAddressesPipe,
         ObjectAddress,
-        // ObjectPopoverHeader,
-        // ObjectPopoverBodyItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,
         ObjectRecordFieldsetHorizontalList,
@@ -461,15 +430,15 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectTabContainerItemHeader,
         ObjectTableRow,
         ObjectTable,
-        ObjectActivitiyTimelineItemContainer,
-        ObjectActivitiyTimelineStencil,
         ObjectRelatedCard,
         ObjectRelatedCardHeader,
         ObjectRelatedCardFooter,
         ObjectRecordDetails,
         ObjectRecordDetailsFooter,
         ObjectEditModalDialogContainer,
-        ObjectListHeaderActionMenu
+        ObjectListHeaderActionMenu,
+        ObjectRecordMessagesBadge,
+        ObjectRelatedlistFiles
     ]
 })
 export class ObjectComponents {

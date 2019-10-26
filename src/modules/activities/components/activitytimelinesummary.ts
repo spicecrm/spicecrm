@@ -5,11 +5,11 @@ import {
     Component, OnDestroy, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {layout} from '../../services/layout.service';
-import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {layout} from '../../../services/layout.service';
+import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
 
 /**
  * @ignore
@@ -20,10 +20,10 @@ declare var moment: any;
  * displays a timeline summary with all activities from the parent record. Activities are on the left hand side, details on teh right hand side
  */
 @Component({
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinesummary.html',
+    templateUrl: './src/modules/activities/templates/activitytimelinesummary.html',
     providers: [activitiyTimeLineService, model]
 })
-export class ObjectActivitiyTimelineSummary implements OnDestroy {
+export class ActivityTimelineSummary implements OnDestroy {
     /**
      * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
      */
@@ -54,7 +54,7 @@ export class ObjectActivitiyTimelineSummary implements OnDestroy {
     constructor(private metadata: metadata, private parent: model, private language: language, private activitiyTimeLineService: activitiyTimeLineService, private activatedRoute: ActivatedRoute, private layout: layout) {
 
         // check the componentconfig wether to use fts or not
-        this.componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineSummary');
+        this.componentconfig = this.metadata.getComponentConfig('ActivityTimelineSummary');
         if (this.componentconfig.usefts) this.activitiyTimeLineService.usefts = true;
 
         this.activatedRoute.params.subscribe(params => this.initialize(params));

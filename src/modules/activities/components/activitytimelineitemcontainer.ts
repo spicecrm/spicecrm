@@ -2,14 +2,14 @@
  * @module ObjectComponents
  */
 import {OnInit, Component, Input, ViewContainerRef, ViewChild} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
+import {metadata} from '../../../services/metadata.service';
 
 
 @Component({
-    selector: 'object-activitiytimeline-item-container',
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimelineitemcontainer.html'
+    selector: 'activitytimeline-item-container',
+    templateUrl: './src/modules/activities/templates/activitytimelineitemcontainer.html'
 })
-export class ObjectActivitiyTimelineItemContainer implements OnInit {
+export class ActivityTimelineItemContainer implements OnInit {
 
     @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
@@ -18,7 +18,7 @@ export class ObjectActivitiyTimelineItemContainer implements OnInit {
     constructor(private metadata: metadata) {}
 
     public ngOnInit() {
-        let componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineItemContainer', this.activity.module);
+        let componentconfig = this.metadata.getComponentConfig('ActivityTimelineItemContainer', this.activity.module);
         if(componentconfig.componentset) {
             let components = this.metadata.getComponentSetObjects(componentconfig.componentset);
             for(let component of components) {
