@@ -151,10 +151,6 @@ import /*embed*/ {ObjectActivitiyTimelineContainer} from './components/objectact
 import /*embed*/ {ObjectActivitiyTimelineItemContainer} from './components/objectactivitiytimelineitemcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddTabContainer} from './components/objectactivitiytimelineaddtabcontainer';
 import /*embed*/ {ObjectActivitiyTimelineItem} from './components/objectactivitiytimelineitem';
-import /*embed*/ {ObjectActivitiyTimelineCall} from './components/objectactivitytimelinecall';
-import /*embed*/ {ObjectActivitiyTimelineEvent} from './components/objectactivitytimelineevent';
-import /*embed*/ {ObjectActivitiyTimelineEmail} from './components/objectactivitytimelineemail';
-import /*embed*/ {ObjectActivitiyTimelineNote} from './components/objectactivitiytimelinenote';
 import /*embed*/ {ObjectActivitiyTimelineTask} from './components/objectactivitiytimelinetask';
 import /*embed*/ {ObjectActivitiyTimelineStencil} from './components/objectactivitiytimelinestencil';
 import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/objectactivitiytimelineaddcontainer';
@@ -268,9 +264,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
                 component: ObjectRelatedlistAll,
                 canActivate: [loginCheck, aclCheck],
                 data: {aclaction: 'view'}
-            },
-            // {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-            // {path: '**', redirectTo: 'module/Home', canActivate: [loginCheck]}
+            }
         ])],
     declarations: [
         ObjectListViewContainer,
@@ -381,11 +375,7 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineAddTabContainer,
         ObjectActivitiyTimelineItem,
-        ObjectActivitiyTimelineCall,
-        ObjectActivitiyTimelineEvent,
-        ObjectActivitiyTimelineEmail,
         ObjectActivitiyTimelineTask,
-        ObjectActivitiyTimelineNote,
         ObjectActivitiyTimelineStencil,
         ObjectActivitiyTimelineAddContainer,
         ObjectActivitiyTimelineAddItem,

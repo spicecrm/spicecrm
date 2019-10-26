@@ -8,11 +8,14 @@
         </div>
         <div class="slds-media__body">
             <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
-                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
-                    <h3 class="slds-truncate" [title]="subject" modelPopOver>
-                        <a href="javascript:void(0);">
-                            <strong>{{subject}}</strong>
-                        </a>
+                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [viewprovider]="{displayLabels: false}">
+                    <h3 class="slds-truncate">
+                        <div *ngIf="headerFieldSet; else noheaderfieldset" class="slds-grid">
+                            <field-container *ngFor="let fieldsetitem of headerFieldSetItems" [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-p-right--small"></field-container>
+                        </div>
+                        <ng-template #noheaderfieldset>
+                            <div modelPopOver>{{subject}}</div>
+                        </ng-template>
                     </h3>
                 </div>
                 <div class="slds-timeline__actions slds-timeline__actions_inline">
@@ -20,15 +23,15 @@
                     <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
                 </div>
             </div>
-            <p class="slds-m-horizontal_xx-small">
-                <a href="javascript:void(0);" modelPopOver module="Users" [id]="model.getField('assigned_user_id')">{{model.getField('assigned_user_name')}}</a>
-                <ng-container *ngIf="model.getField('contact_id')">
-                    ,&nbsp;<a href="javascript:void(0);" modelPopOver module="Contacts" [id]="model.getField('contact_id')">{{model.getField('contact_name')}}</a>
-                </ng-container>
-                <ng-container *ngIf="model.getField('parent_id')">
-                    ,&nbsp;<a href="javascript:void(0);" modelPopOver [module]="model.getField('parent_type')" [id]="model.getField('parent_id')">{{model.getField('parent_name')}}</a>
-                </ng-container>
-            </p>
+            <div class="slds-m-horizontal_xx-small" [viewprovider]="{displayLabels: false}">
+                <ul *ngIf="subheaderFieldSet" class="slds-list_horizontal slds-has-dividers_left">
+                    <ng-container *ngFor="let subfieldsetitem of subheaderFieldSetItems">
+                        <li *ngIf="model.getField(subfieldsetitem.field)" class="slds-item">
+                            <field-container  [field]="subfieldsetitem.field" [fieldconfig]="subfieldsetitem.fieldconfig" fielddisplayclass=""></field-container>
+                        </li>
+                    </ng-container>
+                </ul>
+            </div>
             <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
                 <object-record-fieldset [fieldset]="formFieldSet" direction="vertical" fielddisplayclass="slds-truncate" fieldpadding="none"></object-record-fieldset>
             </article>

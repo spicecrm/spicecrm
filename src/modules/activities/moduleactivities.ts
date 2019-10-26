@@ -33,6 +33,7 @@ import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopovera
 import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
 import /*embed*/ {fieldActivitiesAddActions} from "./components/fieldactivitiesaddactions";
 import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactivitiesaddactionsbutton";
+import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./components/fieldactivitiestaskwithclosecheckbox";
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactiv
         ActivitiesPopoverAddBar,
         ActivitiesPopoverAddBarButton,
         fieldActivitiesAddActions,
-        fieldActivitiesAddActionsButton
+        fieldActivitiesAddActionsButton,
+        fieldActivitiesTaskWithCloseCheckbox
     ]
 })
 export class ModuleActivities {

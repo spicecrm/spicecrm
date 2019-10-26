@@ -24,6 +24,7 @@ export class ObjectActivitiyTimelineItemContainer implements OnInit {
             for(let component of components) {
                 this.metadata.addComponent(component.component, this.container).subscribe(containerElementRef => {
                     containerElementRef.instance.activity = this.activity;
+                    containerElementRef.instance.componentconfig = component.componentconfig;
                 });
             }
         }
