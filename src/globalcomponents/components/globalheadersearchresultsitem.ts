@@ -49,8 +49,6 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
         if(componentconfig && componentconfig.mainfieldset) this.mainfieldsetfields = this.metadata.getFieldSetItems(componentconfig.mainfieldset);
         if(componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
 
-        for (let field in this.hit._source) {
-            this.model.data[field] = this.hit._source[field];
-        }
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.hit._source);
     }
 }
