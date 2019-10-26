@@ -8,6 +8,7 @@ import {metadata} from '../../services/metadata.service';
 import {userpreferences} from '../../services/userpreferences.service';
 
 declare var moment: any;
+declare var _: any;
 
 @Component({
     selector: 'object-activitiytimeline-item',
@@ -19,12 +20,20 @@ export class ObjectActivitiyTimelineItem implements OnInit {
     @Input() private showtoolset: boolean = true;
 
     private formFieldSet: string = '';
+
+    private headerFieldSet: string;
+    private headerFieldSetItems: any[] = [];
+
+    private subheaderFieldSet: string;
+    private subheaderFieldSetItems: any[] = [];
+
     private isopen: boolean = false;
 
     public componentconfig: any = {};
 
     constructor(private model: model, private metadata: metadata, private view: view, private userpreferences: userpreferences) {
         this.view.isEditable = false;
+        this.view.displayLabels = true;
     }
 
     get actionset() {
@@ -62,7 +71,23 @@ export class ObjectActivitiyTimelineItem implements OnInit {
         this.model.id = this.activity.id;
         this.model.data = this.activity.data;
         this.model.module = this.activity.module;
-        this.componentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineItem', this.model.module);
+
+
+        let defaultcomponentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineItem', this.model.module);
+
+        // get the header fieldset
+        if (this.componentconfig.headerfieldset || defaultcomponentconfig.headerfieldset) {
+            this.headerFieldSet = this.componentconfig.headerfieldset ? this.componentconfig.headerfieldset : defaultcomponentconfig.headerfieldset;
+            this.headerFieldSetItems = this.metadata.getFieldSetFields(this.headerFieldSet);
+        }
+
+        // get the subheader fieldset
+        if (this.componentconfig.subheaderfieldset || defaultcomponentconfig.subheaderfieldset) {
+            this.subheaderFieldSet = this.componentconfig.subheaderfieldset ? this.componentconfig.subheaderfieldset : defaultcomponentconfig.subheaderfieldset;
+            this.subheaderFieldSetItems = this.metadata.getFieldSetFields(this.subheaderFieldSet);
+        }
+
+        // set the fieldset
         this.formFieldSet = this.componentconfig.fieldset;
     }
 
