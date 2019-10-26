@@ -10,8 +10,14 @@ import {
 } from '@angular/core';
 import {view} from "../../services/view.service";
 
+/**
+ * asimple directive that provides a view service for the dom element
+ *
+ * parameters are editable to make the view editbale and displayLabels to show or display labels in the view
+ */
 @Directive({
     selector: '[viewprovider]',
+    providers:[view]
 })
 export class ViewProviderDirective implements AfterViewInit, OnDestroy {
 
