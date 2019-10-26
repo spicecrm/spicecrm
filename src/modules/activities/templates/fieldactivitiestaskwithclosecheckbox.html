@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid_vertical-align-center">
-        <system-checkbox [disabled]="!canComplete" [(ngModel)]="completed"></system-checkbox>
-        <div>{{value}}</div>
+        <system-checkbox *ngIf="canComplete" [(ngModel)]="completed"></system-checkbox>
+        <div modelPopOver>{{value}}</div>
     </div>
 </field-generic-display>

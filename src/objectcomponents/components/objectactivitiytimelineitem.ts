@@ -72,20 +72,13 @@ export class ObjectActivitiyTimelineItem implements OnInit {
         this.model.data = this.activity.data;
         this.model.module = this.activity.module;
 
-
         let defaultcomponentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineItem', this.model.module);
 
         // get the header fieldset
-        if (this.componentconfig.headerfieldset || defaultcomponentconfig.headerfieldset) {
-            this.headerFieldSet = this.componentconfig.headerfieldset ? this.componentconfig.headerfieldset : defaultcomponentconfig.headerfieldset;
-            this.headerFieldSetItems = this.metadata.getFieldSetFields(this.headerFieldSet);
-        }
+        this.headerFieldSet = this.componentconfig.headerfieldset ? this.componentconfig.headerfieldset : defaultcomponentconfig.headerfieldset;
 
         // get the subheader fieldset
-        if (this.componentconfig.subheaderfieldset || defaultcomponentconfig.subheaderfieldset) {
-            this.subheaderFieldSet = this.componentconfig.subheaderfieldset ? this.componentconfig.subheaderfieldset : defaultcomponentconfig.subheaderfieldset;
-            this.subheaderFieldSetItems = this.metadata.getFieldSetFields(this.subheaderFieldSet);
-        }
+        this.subheaderFieldSet = this.componentconfig.subheaderfieldset ? this.componentconfig.subheaderfieldset : defaultcomponentconfig.subheaderfieldset;
 
         // set the fieldset
         this.formFieldSet = this.componentconfig.fieldset;
