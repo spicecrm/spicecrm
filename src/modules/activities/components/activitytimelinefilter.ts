@@ -4,18 +4,18 @@
 import {
     Component, Renderer2, ElementRef
 } from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {activitiyTimeLineService, activityTimelineOwnerfilter} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {activitiyTimeLineService, activityTimelineOwnerfilter} from '../../../services/activitiytimeline.service';
 
 /**
  * a filter button that is tied to the timeline service and allows the user to filter by type and assignment
  */
 @Component({
-    selector: 'object-activitiy-timeline-filter',
-    templateUrl: './src/objectcomponents/templates/objectactivitytimelinefilter.html'
+    selector: 'activity-timeline-filter',
+    templateUrl: './src/modules/activities/templates/activitytimelinefilter.html'
 })
-export class ObjectActivityTimelineFilter {
+export class ActivityTimelineFilter {
 
     /**
      * internal fag if the dropdown is open

@@ -4,9 +4,9 @@
 import {
     Component, OnDestroy, ViewChild, ViewContainerRef, Input
 } from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {activitiyTimeLineService, activityTimeLineModules} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {activitiyTimeLineService, activityTimeLineModules} from '../../../services/activitiytimeline.service';
 
 /**
  * @ignore
@@ -17,10 +17,10 @@ declare var moment: any;
  * displays the aggregate values that are retrieved from the activitzyTimelLineService
  */
 @Component({
-    selector: 'object-activitiy-timeline-aggregates',
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimelineaggregates.html',
+    selector: 'activity-timeline-aggregates',
+    templateUrl: './src/modules/activities/templates/activitytimelineaggregates.html',
 })
-export class ObjectActivitiyTimelineAggregates {
+export class ActivityTimelineAggregates {
 
     @Input() private module: activityTimeLineModules;
     @Input() private labellength: string = 'default';

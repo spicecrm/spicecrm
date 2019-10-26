@@ -2,16 +2,16 @@
  * @module ObjectComponents
  */
 import {Component, OnInit, Input, ViewChild, ViewContainerRef} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
+import {metadata} from '../../../services/metadata.service';
 
 /**
  * the container as part of the activitiy stream that holds the add items
  */
 @Component({
-    selector: 'object-activitiytimeline-add-tabcontainer',
-    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddtabcontainer.html'
+    selector: 'activitytimeline-add-tabcontainer',
+    templateUrl: './src/modules/activities/templates/activitytimelineaddtabcontainer.html'
 })
-export class ObjectActivitiyTimelineAddTabContainer implements OnInit {
+export class ActivityTimelineAddTabContainer implements OnInit {
 
     /**
      * the ref to the container wher the items are added

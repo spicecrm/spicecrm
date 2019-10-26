@@ -2,18 +2,18 @@
  * @module ObjectComponents
  */
 import {OnInit, Component, Input} from '@angular/core';
-import {language} from '../../services/language.service';
-import {activitiyTimeLineService, activityTimeLineModules} from '../../services/activitiytimeline.service';
+import {language} from '../../../services/language.service';
+import {activitiyTimeLineService, activityTimeLineModules} from '../../../services/activitiytimeline.service';
 
 /**
  * a component that renders a contianer with activities (past or future) as well as aggergates etc.
  */
 @Component({
-    selector: 'object-activitiytimeline-container',
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimelinecontainer.html',
+    selector: 'activitytimeline-container',
+    templateUrl: './src/modules/activities/templates/activitytimelinecontainer.html',
 
 })
-export class ObjectActivitiyTimelineContainer implements OnInit {
+export class ActivityTimelineContainer implements OnInit {
 
     /**
      * the module to be displayed

@@ -2,21 +2,21 @@
  * @module ObjectComponents
  */
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {modal} from '../../services/modal.service';
-import {backend} from '../../services/backend.service';
-import {session} from '../../services/session.service';
-import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {modal} from '../../../services/modal.service';
+import {backend} from '../../../services/backend.service';
+import {session} from '../../../services/session.service';
+import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
 
 @Component({
-    selector: 'object-activitiytimeline-add-email',
-    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddemail.html',
+    selector: 'activitytimeline-add-email',
+    templateUrl: './src/modules/activities/templates/activitytimelineaddemail.html',
     providers: [model, view]
 })
-export class ObjectActivitiyTimelineAddEmail implements OnInit {
+export class ActivityTimelineAddEmail implements OnInit {
 
     public fromEmails: any[] = [];
     private formFields: any[] = [];
@@ -83,7 +83,7 @@ export class ObjectActivitiyTimelineAddEmail implements OnInit {
     }
 
     private getFields() {
-        let conf = this.metadata.getComponentConfig('ObjectActivitiyTimelineAddEmail', this.model.module);
+        let conf = this.metadata.getComponentConfig('ActivityTimelineAddEmail', this.model.module);
         this.formFieldSet = conf.fieldset;
         this.formFields = this.metadata.getFieldSetItems(conf.fieldset);
     }

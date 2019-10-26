@@ -2,20 +2,20 @@
  * @module ObjectComponents
  */
 import {Component, Input, OnInit} from '@angular/core';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {metadata} from '../../services/metadata.service';
-import {userpreferences} from '../../services/userpreferences.service';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {metadata} from '../../../services/metadata.service';
+import {userpreferences} from '../../../services/userpreferences.service';
 
 declare var moment: any;
 declare var _: any;
 
 @Component({
-    selector: 'object-activitiytimeline-item',
-    templateUrl: './src/objectcomponents/templates/objectactivitiytimelineitem.html',
+    selector: 'activitytimeline-item',
+    templateUrl: './src/modules/activities/templates/activitytimelineitem.html',
     providers: [model, view]
 })
-export class ObjectActivitiyTimelineItem implements OnInit {
+export class ActivityTimelineItem implements OnInit {
     @Input() private activity: any = {};
     @Input() private showtoolset: boolean = true;
 
@@ -72,7 +72,7 @@ export class ObjectActivitiyTimelineItem implements OnInit {
         this.model.data = this.activity.data;
         this.model.module = this.activity.module;
 
-        let defaultcomponentconfig = this.metadata.getComponentConfig('ObjectActivitiyTimelineItem', this.model.module);
+        let defaultcomponentconfig = this.metadata.getComponentConfig('ActivityTimelineItem', this.model.module);
 
         // get the header fieldset
         this.headerFieldSet = this.componentconfig.headerfieldset ? this.componentconfig.headerfieldset : defaultcomponentconfig.headerfieldset;

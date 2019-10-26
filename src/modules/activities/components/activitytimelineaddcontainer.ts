@@ -12,16 +12,16 @@ import {
     Renderer2,
     OnDestroy, ViewChild
 } from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
 
 @Component({
-    selector: 'object-activitiytimeline-add-container',
-    templateUrl: './src/objectcomponents/templates/objectactivitytimelineaddcontainer.html'
+    selector: 'activitytimeline-add-container',
+    templateUrl: './src/modules/activities/templates/activitytimelineaddcontainer.html'
 })
-export class ObjectActivitiyTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {
+export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChildren('maintabs', {read: ViewContainerRef}) private maintabs: QueryList<any>;
     @ViewChildren('moretabs', {read: ViewContainerRef}) private moretabs: QueryList<any>;
@@ -40,7 +40,7 @@ export class ObjectActivitiyTimelineAddContainer implements OnInit, AfterViewIni
     }
 
     public ngOnInit() {
-        let config = this.metadata.getComponentConfig('ObjectActivitiyTimelineAddContainer', this.model.module);
+        let config = this.metadata.getComponentConfig('ActivityTimelineAddContainer', this.model.module);
         if (config && config.componentset) {
             let componentsetComponents = this.metadata.getComponentSetObjects(config.componentset);
             for (let componentsetComponent of componentsetComponents) {

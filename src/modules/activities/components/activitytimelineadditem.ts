@@ -2,13 +2,13 @@
  * @module ObjectComponents
  */
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {modal} from '../../services/modal.service';
-import {dockedComposer} from '../../services/dockedcomposer.service';
-import {activitiyTimeLineService} from '../../services/activitiytimeline.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {modal} from '../../../services/modal.service';
+import {dockedComposer} from '../../../services/dockedcomposer.service';
+import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
 
 /**
  * @ignore
@@ -19,11 +19,11 @@ declare var moment: any;
  * a component that is a generic container for adding items as part of the activitiy add container
  */
 @Component({
-    selector: 'object-activitiytimeline-add-item',
-    templateUrl: './src/objectcomponents/templates/objectactivitytimelineadditem.html',
+    selector: 'activitytimeline-add-item',
+    templateUrl: './src/modules/activities/templates/activitytimelineadditem.html',
     providers: [model, view]
 })
-export class ObjectActivitiyTimelineAddItem implements OnInit, OnDestroy {
+export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 
     /**
      * @ignore
