@@ -10,9 +10,7 @@
             <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
                 <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [viewprovider]="{displayLabels: false}">
                     <h3 class="slds-truncate">
-                        <div *ngIf="headerFieldSet; else noheaderfieldset" class="slds-grid">
-                            <field-container *ngFor="let fieldsetitem of headerFieldSetItems" [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-p-right--small"></field-container>
-                        </div>
+                        <object-record-fieldset-horizontal-list *ngIf="headerFieldSet; else noheaderfieldset" [fieldset]="headerFieldSet"></object-record-fieldset-horizontal-list>
                         <ng-template #noheaderfieldset>
                             <div modelPopOver>{{subject}}</div>
                         </ng-template>
@@ -24,13 +22,7 @@
                 </div>
             </div>
             <div class="slds-m-horizontal_xx-small" [viewprovider]="{displayLabels: false}">
-                <ul *ngIf="subheaderFieldSet" class="slds-list_horizontal slds-has-dividers_left">
-                    <ng-container *ngFor="let subfieldsetitem of subheaderFieldSetItems">
-                        <li *ngIf="model.getField(subfieldsetitem.field)" class="slds-item">
-                            <field-container  [field]="subfieldsetitem.field" [fieldconfig]="subfieldsetitem.fieldconfig" fielddisplayclass=""></field-container>
-                        </li>
-                    </ng-container>
-                </ul>
+                <object-record-fieldset-horizontal-list *ngIf="subheaderFieldSet" [fieldset]="subheaderFieldSet"></object-record-fieldset-horizontal-list>
             </div>
             <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
                 <object-record-fieldset [fieldset]="formFieldSet" direction="vertical" fielddisplayclass="slds-truncate" fieldpadding="none"></object-record-fieldset>

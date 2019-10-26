@@ -151,7 +151,6 @@ import /*embed*/ {ObjectActivitiyTimelineContainer} from './components/objectact
 import /*embed*/ {ObjectActivitiyTimelineItemContainer} from './components/objectactivitiytimelineitemcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddTabContainer} from './components/objectactivitiytimelineaddtabcontainer';
 import /*embed*/ {ObjectActivitiyTimelineItem} from './components/objectactivitiytimelineitem';
-import /*embed*/ {ObjectActivitiyTimelineTask} from './components/objectactivitiytimelinetask';
 import /*embed*/ {ObjectActivitiyTimelineStencil} from './components/objectactivitiytimelinestencil';
 import /*embed*/ {ObjectActivitiyTimelineAddContainer} from './components/objectactivitiytimelineaddcontainer';
 import /*embed*/ {ObjectActivitiyTimelineAddItem} from './components/objectactivitiytimelineadditem';
@@ -375,7 +374,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActivitiyTimelineItemContainer,
         ObjectActivitiyTimelineAddTabContainer,
         ObjectActivitiyTimelineItem,
-        ObjectActivitiyTimelineTask,
         ObjectActivitiyTimelineStencil,
         ObjectActivitiyTimelineAddContainer,
         ObjectActivitiyTimelineAddItem,

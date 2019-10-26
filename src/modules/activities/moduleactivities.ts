@@ -12,6 +12,7 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {TasksManager} from './components/tasksmanager';
 import /*embed*/ {TasksManagerView} from './components/tasksmanagerview';
@@ -20,8 +21,6 @@ import /*embed*/ {TasksManagerTasks} from './components/tasksmanagertasks';
 import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
 import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
 import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttileclose';
-
-
 
 import /*embed*/ {ActivityTimelineSaveButton} from "./components/activitytimelinesavebutton";
 import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
@@ -44,6 +43,7 @@ import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./components/field
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         TasksManager,
