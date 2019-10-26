@@ -63,6 +63,10 @@ export class fieldParent extends fieldGeneric implements OnInit {
         return this.model.getField(this.parentIdField);
     }
 
+    get displayModuleIcon() {
+        return this.fieldconfig.hidemoduleicon ? false : true;
+    }
+
     public ngOnInit() {
         // initialize the parenttype
         if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
