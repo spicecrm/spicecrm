@@ -46,6 +46,16 @@ export class ActivityCloseModal implements OnInit {
     private newValueFields: any = [];
 
     /**
+     * the componentset .. set from the button when opening the modal. Also set there in the action config
+     */
+    private componentSet: string;
+
+    /**
+     * the actionset .. set from the button when opening the modal. Also set there in the action config
+     */
+    private actionSet: string;
+
+    /**
      * ToDo: add documentation what we need this for
      */
     private actionSubject: Subject<any> = new Subject<any>();
