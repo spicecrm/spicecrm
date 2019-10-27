@@ -32,10 +32,10 @@ export class ObjectActionCancelButton {
         this.model.cancelEdit();
         this.view.setViewMode();
 
-        // close the modal window if we have one
-        if(this.modalwindow) this.modalwindow.self.destroy();
-
         // emit that we cancelled
         this.actionemitter.emit('cancel');
+
+        // close the modal window if we have one
+        if(this.modalwindow) this.modalwindow.self.destroy();
     }
 }
