@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit, Optional} from '@angular/core';
+import {Component, EventEmitter, OnInit, Optional, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {modalwindow} from '../../services/modalwindow.service';
@@ -18,6 +18,11 @@ import {modal} from "../../services/modal.service";
     providers: [helper]
 })
 export class ObjectActionModalSaveButton {
+
+    /**
+     * emits the action. can emit save or savegodetail
+     */
+    @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     private actionconfig: any = {};
 
@@ -65,13 +70,13 @@ export class ObjectActionModalSaveButton {
                     if (status) {
                         /// if go Deail go to record)
                         if (this.actionconfig.gorelated) {
-                            this.model.goDetail();
+                            this.actionemitter.emit('savegodetail');
                         }
                     }
                     modalRef.instance.self.destroy();
 
-                    // destroy the modal window
-                    if(this.modalwindow) this.modalwindow.self.destroy();
+                    // emit that we saved
+                    this.actionemitter.emit('save');
                 },
                 error => {
                     modalRef.instance.self.destroy();
