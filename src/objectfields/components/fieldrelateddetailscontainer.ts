@@ -27,5 +27,4 @@ export class fieldRelatedDetailsContainer implements OnChanges {
             this.model.getData(true);
         }
     }
-
 }
