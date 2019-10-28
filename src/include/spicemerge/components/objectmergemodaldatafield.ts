@@ -2,12 +2,12 @@
  * @module ObjectComponents
  */
 import {Component, Input, OnInit} from '@angular/core';
-import {model} from '../../services/model.service';
-import {modellist} from '../../services/modellist.service';
+import {model} from '../../../services/model.service';
+import {modellist} from '../../../services/modellist.service';
 
 @Component({
     selector: 'object-merge-modal-data-field',
-    templateUrl: './src/objectcomponents/templates/objectmergemodaldatafield.html',
+    templateUrl: './src/include/spicemerge/templates/objectmergemodaldatafield.html',
     providers: [model]
 })
 export class ObjectMergeModalDataField implements OnInit {
