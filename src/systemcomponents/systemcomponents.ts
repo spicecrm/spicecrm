@@ -116,7 +116,6 @@ import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/system
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
-import /*embed*/ {SystemInputTags2} from './components/systeminputtags2';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
@@ -232,7 +231,6 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModuleTreeItem,
         SystemSelectUOM,
         SystemInputMedia,
-        SystemInputTags2,
         SystemInputTimezone
     ],
     entryComponents: [
@@ -318,7 +316,6 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemFilterBuilderFilterExpression,
         SystemSelectUOM,
         SystemInputMedia,
-        SystemInputTags2,
         SystemSelectUOM,
         SystemModuleTree,
         SystemModuleTreeItem,
