@@ -70,7 +70,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     get contentFields() {
-        return _.toArray(this.planningService.contentFields);
+        return this.planningService.contentFields;
     }
 
     get markDone() {
@@ -229,10 +229,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private setPeriodValues(value, contentField, periodKey) {
         this.nodeContentData[contentField.id][periodKey] = this.formatValue(value);
-        for (let itemId in this.nodeContentData) {
-            if (this.nodeContentData.hasOwnProperty(itemId)) {
-                if (this.nodeContentData[contentField.id].field_id != this.nodeContentData[itemId].field_id) {
-                    this.nodeContentData[itemId][periodKey] = this.getFieldValue(this.nodeContentData[itemId], contentField, periodKey);
+        for (let itemFieldId in this.nodeContentData) {
+            if (this.nodeContentData.hasOwnProperty(itemFieldId)) {
+                if (contentField.id != itemFieldId) {
+                    this.nodeContentData[itemFieldId][periodKey] = this.getFieldValue(this.nodeContentData[itemFieldId], this.contentFields.find(field => field.id == itemFieldId), periodKey);
                 }
             }
         }
@@ -241,13 +241,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private getFieldSum(fieldData, contentField) {
         let result = 0;
         this.periods.forEach(period => result += +(this.machineFormatValue(fieldData[period.key])));
-        if (!contentField.formula_sum || contentField.formula_sum.length == 0) {
-            return result;
-        }
+        if (!contentField.formula_sum || contentField.formula_sum.length == 0) return result;
 
         let ids = contentField.formula_sum.match(/\[.*?]/g);
         let formulaSum = contentField.formula_sum;
-        let formulaValues = this.replaceIdsWithValues(ids, formulaSum, fieldData, contentField, false, true);
+        let formulaValues = this.replaceIdsWithValues(ids, formulaSum, contentField, false, true);
         let canExecute = !!formulaValues
             .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
         if (canExecute) result = +this.mathExpCompiler.do(formulaValues);
@@ -269,20 +267,21 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
         let ids = contentField.formula.match(/\[.*?]/g);
         let formula = contentField.formula;
-        let formulaValues = this.replaceIdsWithValues(ids, formula, fieldData, contentField, periodKey);
+        let formulaValues = this.replaceIdsWithValues(ids, formula, contentField, periodKey);
         let canExecute = !!formulaValues
             .match(/^\s*([-+]?)(\d+\.?\d*)(?:\s*([-+*\/%])\s*((?:\s[-+])?\d+\.?\d*)\s*)+$/g);
         if (canExecute) result = this.mathExpCompiler.do(formulaValues);
         return this.formatValue(result);
     }
 
-    private replaceIdsWithValues(ids, formula, fieldData, contentField, periodKey?, isSumFormula?) {
+    private replaceIdsWithValues(ids, formula, contentField, periodKey?, isSumFormula?) {
         ids.forEach(id => {
-            if (fieldData.field_id == id.replace(/[\[\]]/g, '') && periodKey && fieldData[periodKey]) {
-                let value = this.machineFormatValue(fieldData[periodKey]);
+            let idString = id.replace(/[\[\]]/g, '');
+            if (this.nodeContentData[idString] && periodKey && this.nodeContentData[idString][periodKey]) {
+                let value = this.machineFormatValue(this.nodeContentData[idString][periodKey]);
                 formula = formula.replace(id, value);
-            } else if (fieldData.field_id == id.replace(/[\[\]]/g, '') && isSumFormula && formula.indexOf(fieldData.field_id) == -1) {
-                formula = formula.replace(id, this.machineFormatValue(this.getFieldSum(fieldData, contentField)));
+            } else if (this.nodeContentData[idString] && isSumFormula) {
+                formula = formula.replace(id, this.machineFormatValue(this.getFieldSum(this.nodeContentData[idString], this.contentFields.find(field => field.id == idString))));
             }
         });
         return formula;

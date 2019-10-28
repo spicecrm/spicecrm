@@ -89,8 +89,8 @@ export class SalesPlanningTool implements OnInit {
         let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
         if (!content || !content.salesplanningcontentfields) return;
         let array = _.toArray(content.salesplanningcontentfields.beans);
-        array.sort((a, b) => a.sort_order > b.sort_order ? 1 : -1);
-        this.planningService.contentFields = _.object(array.map(item => item.id), array);
+        array.sort((a, b) => a.sort_order && b.sort_order ? a.sort_order > b.sort_order ? 1 : -1 : a.summary_text > b.summary_text ? 1 : -1);
+        this.planningService.contentFields = array;
     }
 
     private toggleCollapseView() {

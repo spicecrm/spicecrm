@@ -50,7 +50,7 @@
                         {{contentField.summary_text}}
                     </div>
                 </td>
-                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getValue(period?.key, contentField)" style="padding: .1rem">
+                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getValue(period?.key, contentField)" class="slds-size--1-of-12" style="padding: .1rem">
                     <div *ngIf="!isEditMode || contentField.editable != '1'" class="slds-truncate slds-text-align--right">
                         {{getValue(period?.key, contentField)}}
                     </div>
