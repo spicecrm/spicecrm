@@ -23,7 +23,7 @@
                 <object-record-messages-badge></object-record-messages-badge>
             </div>
             <div class="slds-col">
-                <object-action-container containerclass="slds-button-group-row" [actionset]="componentconfig.actionset"></object-action-container>
+                <object-action-container containerclass="slds-button-group-row" [actionset]="componentconfig.actionset" (actionemitter)="handleAction($event)"></object-action-container>
             </div>
         </div>
     </system-modal-footer>
