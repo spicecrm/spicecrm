@@ -1,17 +1,12 @@
 <div class="slds-grid slds-grid--vertical" style="height: 100%">
     <div class="slds-border--bottom slds-grid slds-theme--default" style="min-height: 30px">
-        <button [class.slds-is-pressed]="unDoneOnly" (click)="toggleUndoneOnly()"
-                class="slds-button slds-button_dual-stateful slds-align--absolute-center slds-size--1-of-1 slds-p-vertical--xx-small"
-                style="text-transform: uppercase; border-radius: 0">
-            <system-button-icon icon="filterList" addclasses="slds-button__icon_left"></system-button-icon>
-            {{language.getLabel('LBL_UNDONE_ONLY')}}
-        </button>
+        <system-checkbox [(ngModel)]="unDoneOnly" class="slds-text-heading--label slds-align--absolute-center">{{language.getLabel('LBL_UNDONE_ONLY')}}</system-checkbox>
     </div>
     <div *ngIf="isLoading != '*'" class="slds-tree_container slds-scrollable--y slds-grow" style="max-width: 100%" role="application">
         <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
             <li *ngFor="let treeItem of treeItems; trackBy: trackByFn" (click)="selectTreeItem(treeItem)" role="treeitem" [attr.aria-level]="treeItem.level" [class.slds-theme--shade]="isSelected(treeItem.id)">
                 <div class="slds-tree__item">
-                    <button [class.slds-hidden]="treeItem.level >= planningService.characteristics.length" class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" (click)="toggle(treeItem, $event)">
+                    <button [class.slds-hidden]="treeItem.level >= planningService.characteristics.length" class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" (click)="toggleOpen(treeItem, $event)">
                         <system-button-icon [icon]="'chevronright'"></system-button-icon>
                     </button>
                     <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" [title]="treeItem.name">

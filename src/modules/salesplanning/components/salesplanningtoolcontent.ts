@@ -1,7 +1,7 @@
 /**
  * @module ModuleSalesPlanning
  */
-import {Component, Injector, Input, OnChanges, OnDestroy} from '@angular/core';
+import {Component, Injector, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {SalesPlanningService} from "../services/salesplanning.service";
@@ -73,6 +73,24 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return _.toArray(this.planningService.contentFields);
     }
 
+    get markDone() {
+        return this.nodeInfo && this.nodeInfo.marked_done;
+    }
+
+    set markDone(bool) {
+        if (!this.nodeInfo.leaf) return;
+        this.isClosing = true;
+        let action = bool ? 'unmarkDone' : 'markDone';
+        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
+            .subscribe(result => {
+                if (result.success == true) {
+                    this.nodeInfo.marked_done = bool;
+                    this.isClosing = false;
+                    this.setViewMode();
+                }
+            });
+    }
+
     public ngOnChanges() {
         this.setViewMode();
         this.buildPeriods();
@@ -89,7 +107,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private buildPeriods() {
 
-        this.periods = [];
+        if (this.periods.length > 0 ) return;
         let unit = this.model.getField('periode_unit');
         let segments = this.model.getField('periode_segments');
         let dateStart = this.model.getField('date_start');
@@ -192,20 +210,6 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.setViewMode();
     }
 
-    private toggleMarkDone() {
-        if (!this.nodeInfo.leaf) return;
-        this.isClosing = true;
-        let action = this.nodeInfo.marked_done ? 'unmarkDone' : 'markDone';
-        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
-            .subscribe(result => {
-                if (result.success == true) {
-                    this.nodeInfo.marked_done = !this.nodeInfo.marked_done;
-                    this.isClosing = false;
-                    this.setViewMode();
-                }
-            });
-    }
-
     private trackByItemFn(index, item) {
         return item.id;
     }
@@ -214,11 +218,20 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return index;
     }
 
-    private setPeriodValues(value, fieldData, contentField, periodKey) {
-        fieldData[periodKey] = this.formatValue(value);
+    private getValue(column, contentField, withSymbol = true) {
+        if (!this.nodeContentData) return '';
+        if (this.nodeContentData[contentField.id][column] != '') {
+            return (withSymbol ? this.getFieldSymbol(contentField.field_type) +' ' : '') + this.nodeContentData[contentField.id][column];
+        } else {
+            return '';
+        }
+    }
+
+    private setPeriodValues(value, contentField, periodKey) {
+        this.nodeContentData[contentField.id][periodKey] = this.formatValue(value);
         for (let itemId in this.nodeContentData) {
             if (this.nodeContentData.hasOwnProperty(itemId)) {
-                if (fieldData.field_id != this.nodeContentData[itemId].field_id) {
+                if (this.nodeContentData[contentField.id].field_id != this.nodeContentData[itemId].field_id) {
                     this.nodeContentData[itemId][periodKey] = this.getFieldValue(this.nodeContentData[itemId], contentField, periodKey);
                 }
             }
@@ -241,8 +254,13 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return result;
     }
 
-    private getFieldSumDisplay(fieldData, contentField) {
-        return this.formatValue(this.getFieldSum(fieldData, contentField));
+    private getFieldSumDisplay(contentField) {
+        if (!this.nodeContentData) return '';
+        if (this.formatValue(this.getFieldSum(this.nodeContentData[contentField.id], contentField)) != '') {
+            return `${this.getFieldSymbol(contentField.field_type)} ${this.formatValue(this.getFieldSum(this.nodeContentData[contentField.id], contentField))}`;
+        } else {
+            return '';
+        }
     }
 
     private getFieldValue(fieldData, contentField, periodKey) {
@@ -295,5 +313,14 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                     this.setViewMode();
                 }
             });
+    }
+
+    private getFieldSymbol(fieldType) {
+        switch (fieldType) {
+            case 'currency':
+                return '€';
+            case 'percentage':
+                return '%';
+        }
     }
 }

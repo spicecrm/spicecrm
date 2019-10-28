@@ -1,9 +1,13 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div *ngIf="nodeInfo" [class.slds-border--bottom]="!nodeContentData || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
-        <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
-            {{nodeInfo.nodeText}}
+    <div [class.slds-border--bottom]="!nodeContentData || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
+        <div *ngIf="nodeInfo" class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
+            <span>{{nodeInfo.nodeText}}</span>
+            <button (click)="viewNote()" class="slds-button slds-m-left--x-small">
+                <system-button-icon icon="note" size="medium" [addclasses]="isLoading || nodeInfo.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
+            </button>
         </div>
         <div class="slds-col_bump-left slds-m-right--xx-small">
+            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf" class="slds-m-right--x-small">{{language.getLabel('LBL_CLOSE')}}</system-checkbox>
             <div class="slds-button-group">
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     {{language.getLabel('LBL_CANCEL')}}
@@ -12,38 +16,27 @@
                     <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
                     {{language.getLabel('LBL_SAVE')}}
                 </button>
-                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo.leaf || !nodeContentData" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !nodeContentData" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
                     {{language.getLabel('LBL_EDIT')}}
-                </button>
-            </div>
-            <div class="slds-button-group slds-m-left--small">
-                <button [disabled]="isLoading || !nodeInfo.leaf" class="slds-button-group-item slds-button slds-button--neutral" (click)="viewNote()">
-                    {{language.getLabel('LBL_NOTE')}}
-                </button>
-                <button [disabled]="isClosing || isLoading || !nodeInfo.leaf" [class.slds-is-pressed]="nodeInfo.marked_done && !isClosing" (click)="toggleMarkDone()"
-                        class="slds-button-group-item slds-button slds-button--neutral slds-button_dual-stateful slds-align--absolute-center" >
-                    <system-button-icon *ngIf="nodeInfo.marked_done && !isClosing" icon="check" addclasses="slds-button__icon_left"></system-button-icon>
-                    <system-spinner *ngIf="isClosing" size="14" class="slds-m-right--xxx-small" style="display: inline-block"></system-spinner>
-                    {{language.getLabel('LBL_CLOSE')}}
                 </button>
             </div>
         </div>
     </div>
     <div class="slds-grow slds-scrollable slds-p-right--xx-small">
-        <table *ngIf="nodeContentData && !isLoading" class="slds-table slds-table_bordered slds-table_cell-buffer spice-table_header-fixed">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
             <thead>
-            <tr class="slds-text-title_caps">
-                <th scope="col" style="padding: .1rem .1rem">
+            <tr class="slds-text-title_caps" style="height: 30px">
+                <th scope="col" style="padding: .1rem">
                     <div [title]="language.getLabel('LBL_PLAN_CODE')">
                         {{language.getLabel('LBL_PLAN_CODE')}}
                     </div>
                 </th>
-                <th *ngFor="let period of periods; trackBy: trackByIndexFn" scope="col" [title]="period?.name" style="padding: .1rem .1rem">
+                <th *ngFor="let period of periods; trackBy: trackByIndexFn" class="slds-text-align--right" scope="col" [title]="period?.name" style="padding: .1rem">
                     <div class="slds-truncate">
                         {{period?.name}}
                     </div>
                 </th>
-                <th scope="col" style="padding: .1rem .1rem">
+                <th class="slds-text-align--right" scope="col" style="padding: .1rem">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_SUM_PERIODS')">
                         {{language.getLabel('LBL_SUM_PERIODS')}}
                     </div>
@@ -51,36 +44,34 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let contentField of contentFields; trackBy: trackByItemFn">
-                <td style="padding: .1rem .1rem">
-                    <div [title]="nodeContentData[contentField.id].description">
-                        {{nodeContentData[contentField.id].description}}
+            <tr *ngFor="let contentField of contentFields; trackBy: trackByItemFn" style="height: 30px">
+                <td style="padding: .1rem">
+                    <div [title]="contentField.summary_text">
+                        {{contentField.summary_text}}
                     </div>
                 </td>
-                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="nodeContentData[contentField.id][period?.key]" style="padding: .1rem .1rem">
-                    <div *ngIf="!isEditMode|| contentField.editable != '1'" class="slds-truncate slds-text-align--right">
-                        {{nodeContentData[contentField.id][period?.key]}}
+                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getValue(period?.key, contentField)" style="padding: .1rem">
+                    <div *ngIf="!isEditMode || contentField.editable != '1'" class="slds-truncate slds-text-align--right">
+                        {{getValue(period?.key, contentField)}}
                     </div>
-                    <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control slds-m-vertical--xx-small">
+                    <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
+                        <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
                         <input type="text" class="slds-input slds-text-align--right"
-                               [ngModel]="nodeContentData[contentField.id][period?.key]"
+                               [ngModel]="getValue(period?.key, contentField, false)"
                                [disabled]="isSaving"
                                [ngModelOptions]="modelOptions"
-                               (ngModelChange)="setPeriodValues($event, nodeContentData[contentField.id], contentField, period?.key)"
+                               (ngModelChange)="setPeriodValues($event, contentField, period?.key)"
                                style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
                     </div>
                 </td>
-                <td style="padding: .1rem .1rem" >
-                    <div class="slds-truncate slds-text-align--right" [title]="getFieldSumDisplay(nodeContentData[contentField.id], contentField)">
-                        {{getFieldSumDisplay(nodeContentData[contentField.id], contentField)}}
+                <td style="padding: .1rem" >
+                    <div class="slds-truncate slds-text-align--right" [title]="getFieldSumDisplay(contentField)">
+                        {{getFieldSumDisplay(contentField)}}
                     </div>
                 </td>
             </tr>
             </tbody>
         </table>
-        <div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium" style="height: inherit">
-            <system-spinner></system-spinner>
-        </div>
     </div>
 </div>
 <div *ngIf="!isLoading && !node" class="slds-p-around--small slds-align--absolute-center" style="height: inherit">

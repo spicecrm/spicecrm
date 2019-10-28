@@ -1,7 +1,7 @@
 /**
  * @module ModuleSalesPlanning
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {SalesPlanningService} from "../services/salesplanning.service";
@@ -16,9 +16,20 @@ export class SalesPlanningToolTree implements OnInit {
     public nodeItems: any[] = [];
     public treeItems: any[] = [];
     public isLoading: string = '';
-    public unDoneOnly: boolean = false;
+    public undoneonly: boolean = false;
+    @Output() public selectNode: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private language: language, private backend: backend, private planningService: SalesPlanningService) {
+    }
+
+    get unDoneOnly() {
+        return this.undoneonly;
+    }
+
+    set unDoneOnly(bool) {
+        this.undoneonly = bool;
+        this.resetData();
+        this.getNodeItems();
     }
 
     public ngOnInit() {
@@ -111,12 +122,13 @@ export class SalesPlanningToolTree implements OnInit {
             if (treeItem.id == item.id) {
                 this.planningService.selectedNode = item;
                 this.planningService.selectedNodes = this.getNodes(item);
+                this.selectNode.emit();
                 return true;
             }
         });
     }
 
-    private toggle(treeItem, e) {
+    private toggleOpen(treeItem, e) {
         this.nodeItems.some((item) => {
                 if (item.id == treeItem.id) {
                     item.expanded = !item.expanded;
@@ -140,19 +152,12 @@ export class SalesPlanningToolTree implements OnInit {
     }
 
     private setRetrieveParams(item?) {
-        let characteristic = item ? this.planningService.characteristics[item.level].id : this.planningService.characteristicTerritory;
-        this.planningService.selectedCharacteristics = this.getCharacteristicLevels(characteristic);
+        this.planningService.selectedCharacteristics = item ? this.getCharacteristicLevels(this.planningService.characteristics[item.level].id) : [this.planningService.characteristicTerritory];
         this.planningService.selectedNodes = this.getNodes(item);
     }
 
     private isSelected(id) {
         return this.planningService.selectedNode && this.planningService.selectedNode.id == id;
-    }
-
-    private toggleUndoneOnly() {
-        this.unDoneOnly = !this.unDoneOnly;
-        this.resetData();
-        this.getNodeItems();
     }
 
     private resetData() {

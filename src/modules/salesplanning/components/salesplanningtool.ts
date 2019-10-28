@@ -1,28 +1,50 @@
 /**
  * @module ModuleSalesPlanning
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {ActivatedRoute} from "@angular/router";
 import {SalesPlanningService} from "../services/salesplanning.service";
 import {model} from "../../../services/model.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 declare var _;
 
 @Component({
     templateUrl: './src/modules/salesplanning/templates/salesplanningtool.html',
-    providers: [SalesPlanningService, model]
-})
+    providers: [SalesPlanningService, model],
+    animations: [
+    trigger('collapseContainerAnimation', [
+        state('open', style({ width: '25%'})),
+        state('closed', style({ width: 0})),
+        transition('open <=> closed', [
+            animate('.5s'),
+        ])
+    ]),
+    trigger('collapseListAnimation', [
+        state('open', style({overflow: 'initial', width: '100%', opacity: 1})),
+        state('closed', style({overflow: 'hidden', width: 0, opacity: 0})),
+        transition('open <=> closed', [
+            animate('.5s'),
+        ])
+    ]),
+]})
 
 export class SalesPlanningTool implements OnInit {
 
     private isLoading: boolean = false;
     private isCollapsed: boolean = false;
+    private isHovered: boolean = false;
+    private hoverTimeout: any;
+    private mouseEnterListener: ()=> void;
+
+    @ViewChild('hoverTriggerContainer', {read: ViewContainerRef ,static: true}) private hoverTriggerContainer: ViewContainerRef;
 
     constructor(private language: language,
                 private backend: backend,
                 private activatedRoute: ActivatedRoute,
+                private renderer: Renderer2,
                 private model: model,
                 private planningService: SalesPlanningService) {
         model.module = 'SalesPlanningVersions';
@@ -32,12 +54,8 @@ export class SalesPlanningTool implements OnInit {
         return this.planningService.selectedNode;
     }
 
-    get splitViewClass() {
-        return this.isCollapsed ? 'slds-is-closed' : 'slds-is-open';
-    }
-
     get contentContainerClass() {
-        return this.isCollapsed ? 'slds-grow' : 'slds-size--3-of-4';
+        return this.isCollapsed && !this.isHovered ? 'slds-grow' : 'slds-size--3-of-4';
     }
 
     get characteristicsLoaded() {
@@ -76,6 +94,30 @@ export class SalesPlanningTool implements OnInit {
     }
 
     private toggleCollapseView() {
-        this.isCollapsed = !this.isCollapsed;
+        if (!this.isHovered) {
+            this.isCollapsed = !this.isCollapsed;
+        } else {
+            window.clearTimeout(this.hoverTimeout);
+        }
+    }
+
+    private onAnimationStart() {
+        if (this.mouseEnterListener) this.mouseEnterListener();
+    }
+
+    private onAnimationDone() {
+        if (this.isCollapsed) {
+            this.mouseEnterListener = this.renderer
+                .listen(this.hoverTriggerContainer.element.nativeElement, 'mouseenter', () => {
+                    this.toggleHover(true);
+                });
+        }
+    }
+
+    private toggleHover(bool) {
+        if (!this.isCollapsed) return;
+        window.clearTimeout(this.hoverTimeout);
+        if (bool) this.hoverTimeout = window.setTimeout(()=> this.isHovered = true, 500);
+        else this.isHovered = false;
     }
 }
