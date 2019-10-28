@@ -111,6 +111,8 @@ import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
 import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
 import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
 import /*embed*/ {fieldTags} from './components/fieldtags';
+import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
+import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
 
 /**
 * @ignore
@@ -228,7 +230,9 @@ declare var _: any;
         fieldUnitsOfMeasure,
         fieldQuantity,
         fieldQuestionnaireEvaluation,
-        fieldTags
+        fieldTags,
+        fieldRelatedDetails,
+        fieldRelatedDetailsContainer
     ],
     exports: [
         fieldSet,
