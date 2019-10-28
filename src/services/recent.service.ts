@@ -78,7 +78,7 @@ export class recent {
         this.items.splice(0, 0, {
             item_id,
             module_name,
-            item_summary: item_data.item_summary,
+            item_summary: item_data.summary_text,
             data: item_data
         });
 
@@ -98,7 +98,7 @@ export class recent {
             this.moduleItems[module_name].splice(0, 0, {
                 item_id,
                 module_name,
-                item_summary: item_data.item_summary,
+                item_summary: item_data.summary_text,
                 data: item_data
             });
 
