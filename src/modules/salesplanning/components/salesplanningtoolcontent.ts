@@ -141,7 +141,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.nodeInfo = undefined;
         let params = {
             nodes: this.planningService.selectedNodes,
-            characteristics: this.planningService.selectedCharacteristics,
+            characteristics: this.planningService.selectedNode.level > 1 ? this.planningService.selectedCharacteristics : [this.planningService.characteristicTerritory],
         };
         this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/NodeInfo`, params)
             .subscribe(nodeInfo => {

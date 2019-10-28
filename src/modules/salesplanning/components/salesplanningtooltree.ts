@@ -152,7 +152,8 @@ export class SalesPlanningToolTree implements OnInit {
     }
 
     private setRetrieveParams(item?) {
-        this.planningService.selectedCharacteristics = item ? this.getCharacteristicLevels(this.planningService.characteristics[item.level].id) : [this.planningService.characteristicTerritory];
+        let characteristic = item ? this.planningService.characteristics[item.level].id : this.planningService.characteristicTerritory;
+        this.planningService.selectedCharacteristics = this.getCharacteristicLevels(characteristic);
         this.planningService.selectedNodes = this.getNodes(item);
     }
 
