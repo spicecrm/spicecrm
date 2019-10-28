@@ -38,7 +38,7 @@ export class fieldLookupRecent implements OnInit {
         // stop the event
         event.preventDefault();
 
-        this.selectedObject.emit({id: recentItem.id, text: recentItem.data.summary_text, data: recentItem.data});
+        this.selectedObject.emit({id: recentItem.data.id, text: recentItem.data.summary_text, data: recentItem.data});
     }
 
     private getRecent() {
