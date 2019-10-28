@@ -249,7 +249,8 @@ declare var _: any;
         fieldLookup,
         fieldLookupRecent,
         fieldLookupSearch,
-        fieldLookupSearchAdd
+        fieldLookupSearchAdd,
+        fieldTags
     ]
 })
 export class ObjectFields {
