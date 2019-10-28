@@ -20,7 +20,7 @@ import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
 import /*embed*/ {objectimport} from './services/objectimport.service';
-import /*embed*/ {objectmerge} from './services/objectmerge.service';
+
 
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 
@@ -144,8 +144,6 @@ import /*embed*/ {ObjectRecordFieldsetContainer} from './components/objectrecord
 import /*embed*/ {ObjectRecordChecklist} from './components/objectrecordchecklist';
 import /*embed*/ {ObjectRecordChecklistItem} from './components/objectrecordchecklistitem';
 
-
-
 import /*embed*/ {ObjectRecordDetails} from './components/objectrecorddetails';
 import /*embed*/ {ObjectRecordDetailsTab} from './components/objectrecorddetailstab';
 import /*embed*/ {ObjectRecordDetailsModelstateTab} from './components/objectrecorddetailsmodelstatetab';
@@ -169,11 +167,6 @@ import /*embed*/ {ObjectImportUpdate} from "./components/objectimportupdate";
 import /*embed*/ {ObjectImportResult} from './components/objectimportresult';
 
 import /*embed*/ {ObjectMergeButton} from './components/objectmergebutton';
-import /*embed*/ {ObjectMergeModal} from './components/objectmergemodal';
-import /*embed*/ {ObjectMergeModalRecords} from './components/objectmergemodalrecords';
-import /*embed*/ {ObjectMergeModalData} from './components/objectmergemodaldata';
-import /*embed*/ {ObjectMergeModalDataField} from './components/objectmergemodaldatafield';
-import /*embed*/ {ObjectMergeModalExecute} from './components/objectmergemodalexecute';
 
 import /*embed*/ {ObjectAddresses, ObjectAddressesPipe} from './components/objectaddresses';
 import /*embed*/ {ObjectAddress} from './components/objectaddress';
@@ -201,7 +194,6 @@ import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton"
 import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
-
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -378,11 +370,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectImportUpdate,
         ObjectImportResult,
         ObjectMergeButton,
-        ObjectMergeModal,
-        ObjectMergeModalRecords,
-        ObjectMergeModalData,
-        ObjectMergeModalDataField,
-        ObjectMergeModalExecute,
         ObjectAddresses,
         ObjectAddressesPipe,
         ObjectAddress,
