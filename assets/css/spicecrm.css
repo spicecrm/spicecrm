@@ -1165,3 +1165,16 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     font-style: italic;
     opacity: 1; /* Firefox */
 }
+
+/* spicetags */
+
+ul.spicetaglist li {
+    display: inline;
+}
+ul.spicetaglist {
+    margin: 0 -0.5rem -0.5rem 0;
+}
+ul.spicetaglist span.slds-badge {
+    display: inline-block;
+    margin: 0 0.5rem 0.5rem 0;
+}
