@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {Injectable} from '@angular/core';
-import { metadata } from '../../services/metadata.service';
+import { metadata } from '../../../services/metadata.service';
 
 @Injectable()
 export class objectmerge {
