@@ -2,16 +2,16 @@
  * @module ObjectComponents
  */
 import { Component} from '@angular/core';
-import { metadata } from '../../services/metadata.service';
-import { modellist } from '../../services/modellist.service';
-import { language } from '../../services/language.service';
-import { view } from '../../services/view.service';
+import { metadata } from '../../../services/metadata.service';
+import { modellist } from '../../../services/modellist.service';
+import { language } from '../../../services/language.service';
+import { view } from '../../../services/view.service';
 
 import { objectmerge } from '../services/objectmerge.service';
 
 @Component({
     selector: 'object-merge-modal-data',
-    templateUrl: './src/objectcomponents/templates/objectmergemodaldata.html',
+    templateUrl: './src/include/spicemerge/templates/objectmergemodaldata.html',
     providers: [view]
 })
 export class ObjectMergeModalData{

@@ -2,19 +2,19 @@
  * @module ObjectComponents
  */
 import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { metadata } from '../../services/metadata.service';
-import { model } from '../../services/model.service';
-import { modellist } from '../../services/modellist.service';
-import { language } from '../../services/language.service';
-import { modal } from '../../services/modal.service';
-import { backend } from '../../services/backend.service';
+import { metadata } from '../../../services/metadata.service';
+import { model } from '../../../services/model.service';
+import { modellist } from '../../../services/modellist.service';
+import { language } from '../../../services/language.service';
+import { modal } from '../../../services/modal.service';
+import { backend } from '../../../services/backend.service';
 
 import { objectmerge } from '../services/objectmerge.service';
-import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
+import {SystemLoadingModal} from "../../../systemcomponents/components/systemloadingmodal";
 
 @Component({
     selector: 'object-merge-modal',
-    templateUrl: './src/objectcomponents/templates/objectmergemodal.html',
+    templateUrl: './src/include/spicemerge/templates/objectmergemodal.html',
     providers: [model, modellist, objectmerge],
     styles: [
         ':host >>> .slds-progress__marker global-button-icon svg {fill:#CA1B1F}',
