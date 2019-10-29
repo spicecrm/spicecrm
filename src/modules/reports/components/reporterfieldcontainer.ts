@@ -56,6 +56,10 @@ export class ReporterFieldContainer implements AfterViewInit {
                 case 'enum':
                     fieldType = 'ReporterFieldEnum';
                     break;
+                case "datetimecombo":
+                case "datetime":
+                    fieldType = 'ReporterFieldDateTime';
+                    break
                 case 'date':
                     fieldType = 'ReporterFieldDate';
                     break;

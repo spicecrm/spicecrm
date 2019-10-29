@@ -4,7 +4,7 @@
 import {
     Component
 } from '@angular/core';
-import {model} from '../../../services/model.service';
+import {session} from '../../../services/session.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 
 /**
@@ -14,23 +14,23 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-field-date',
-    templateUrl: './src/modules/reports/templates/reporterfielddate.html'
+    templateUrl: './src/modules/reports/templates/reporterfielddatetime.html'
 })
-export class ReporterFieldDate {
+export class ReporterFieldDateTime {
 
     private record: any = {};
     private field: any = {};
 
-    constructor(private userpreferences: userpreferences) {
+    constructor(private userpreferences: userpreferences, private session: session) {
 
     }
 
     get fieldvalue() {
         try {
             if (this.record[this.field.fieldid]) {
-                let date = new moment.utc(this.record[this.field.fieldid]);
+                let date = new moment.utc(this.record[this.field.fieldid]).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
                 if (date.isValid()) {
-                    return date.format(this.userpreferences.getDateFormat());
+                    return this.userpreferences.formatDateTime(date);
                 } else {
                     return '';
                 }
