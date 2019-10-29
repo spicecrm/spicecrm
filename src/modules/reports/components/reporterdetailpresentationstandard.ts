@@ -91,7 +91,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     private toggleSearch(field) {
         if (this.isSortable(field)) {
             if (this.sortData.sortField == field.fieldid) {
-                if(this.sortData.sortDirection == 'asc'){
+                if (this.sortData.sortDirection == 'asc') {
                     this.sortData.sortDirection = 'desc';
                 } else {
                     this.sortData.sortField = '';
@@ -125,9 +125,20 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
     }
 
+    /**
+     * returns the set listentries from the pres params if set ... by default 25
+     */
+    get listEntries() {
+        try {
+            return this.presParams.pluginData.standardViewProperties.listEntries;
+        } catch (e) {
+            return 25;
+        }
+    }
+
     get displayRecords() {
-        let startRecords = (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries + 1;
-        let endRecords = this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries;
+        let startRecords = (this.currentPage - 1) * this.listEntries + 1;
+        let endRecords = this.currentPage * this.listEntries;
 
         return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
     }
@@ -153,8 +164,8 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         }
 
         let body = {
-            start: (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries,
-            limit: this.presParams.pluginData.standardViewProperties.listEntries,
+            start: (this.currentPage - 1) * this.listEntries,
+            limit: this.listEntries,
             whereConditions: JSON.stringify(whereConditions),
             parentbeanId: this.model.getField('parentBeanId'),
             parentbeanModule: this.model.getField('parentBeanModule'),
@@ -227,7 +238,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     }
 
     get nextDisabled() {
-        return this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries >= this.presData.count;
+        return this.currentPage * this.listEntries >= this.presData.count;
     }
 
     private nextPage() {
@@ -236,7 +247,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     }
 
     private lastPage() {
-        this.currentPage = Math.ceil(this.totalRecords / this.presParams.pluginData.standardViewProperties.listEntries);
+        this.currentPage = Math.ceil(this.totalRecords / this.listEntries);
         this.getPresentation();
     }
 }
