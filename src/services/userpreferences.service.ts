@@ -259,12 +259,28 @@ export class userpreferences {
         return num.replace('.', decSep).replace(new RegExp(re, 'g'), '$&' + grpSep);
     }
 
+    /**
+     * format a moment object or a string as date in teh users date format
+     *
+     * @param d
+     */
     public formatDate(d) {
+        if(moment.isMoment(d)){
+            return d.format(this.getDateFormat());
+        }
         return moment(d).format(this.getDateFormat());
     }
 
+    /**
+     * format a string or moment object in the users preference as date time
+     *
+     * @param d
+     */
     public formatDateTime(d) {
-        return moment(d).format(this.getDateFormat()) + ' ' + moment(d).format('HH:mm:ss');
+        if(moment.isMoment(d)){
+            return d.format(this.getDateFormat()) + ' ' + d.format(this.getTimeFormat());
+        }
+        return moment.utc(d).format(this.getDateFormat()) + ' ' + moment.utc(d).format(this.getTimeFormat());
     }
 
     private askForMissingPreferences() {
