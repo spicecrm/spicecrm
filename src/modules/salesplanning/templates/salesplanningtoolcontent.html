@@ -1,5 +1,5 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
-    <div [class.slds-border--bottom]="!nodeContentData || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
+    <div [class.slds-border--bottom]="!data || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
         <div *ngIf="nodeInfo" class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
             <span>{{nodeInfo.nodeText}}</span>
             <button (click)="viewNote()" class="slds-button slds-m-left--x-small">
@@ -16,7 +16,7 @@
                     <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
                     {{language.getLabel('LBL_SAVE')}}
                 </button>
-                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !nodeContentData" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !data" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
                     {{language.getLabel('LBL_EDIT')}}
                 </button>
             </div>
@@ -50,23 +50,23 @@
                         {{contentField.summary_text}}
                     </div>
                 </td>
-                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getValue(period?.key, contentField)" class="slds-size--1-of-12" style="padding: .1rem">
+                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getCellDisplayValue(period?.key, contentField)" class="slds-size--1-of-12" style="padding: .1rem">
                     <div *ngIf="!isEditMode || contentField.editable != '1'" class="slds-truncate slds-text-align--right">
-                        {{getValue(period?.key, contentField)}}
+                        {{getCellDisplayValue(period?.key, contentField)}}
                     </div>
                     <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
                         <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
                         <input type="text" class="slds-input slds-text-align--right"
-                               [ngModel]="getValue(period?.key, contentField, false)"
+                               [ngModel]="getCellDisplayValue(period?.key, contentField, false)"
                                [disabled]="isSaving"
                                [ngModelOptions]="modelOptions"
-                               (ngModelChange)="setPeriodValues($event, contentField, period?.key)"
+                               (ngModelChange)="setCellValue($event, contentField, period?.key)"
                                style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
                     </div>
                 </td>
                 <td style="padding: .1rem" >
-                    <div class="slds-truncate slds-text-align--right" [title]="getFieldSumDisplay(contentField)">
-                        {{getFieldSumDisplay(contentField)}}
+                    <div class="slds-truncate slds-text-align--right" [title]="getRowSumDisplay(contentField)">
+                        {{getRowSumDisplay(contentField)}}
                     </div>
                 </td>
             </tr>
