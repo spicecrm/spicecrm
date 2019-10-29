@@ -51,21 +51,25 @@
                     </div>
                 </td>
                 <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getCellDisplayValue(period?.key, contentField)" class="slds-size--1-of-12" style="padding: .1rem">
-                    <div *ngIf="!isEditMode || contentField.editable != '1'" class="slds-truncate slds-text-align--right">
-                        {{getCellDisplayValue(period?.key, contentField)}}
-                    </div>
-                    <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
-                        <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
-                        <input type="text" class="slds-input slds-text-align--right"
-                               [ngModel]="getCellDisplayValue(period?.key, contentField, false)"
-                               [disabled]="isSaving"
-                               [ngModelOptions]="modelOptions"
-                               (ngModelChange)="setCellValue($event, contentField, period?.key)"
-                               style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
-                    </div>
+                    <system-stencil *ngIf="isLoading"></system-stencil>
+                    <ng-container *ngIf="!isLoading">
+                        <div *ngIf="!isEditMode || contentField.editable != '1'" class="slds-truncate slds-text-align--right">
+                            {{getCellDisplayValue(period?.key, contentField)}}
+                        </div>
+                        <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
+                            <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
+                            <input type="text" class="slds-input slds-text-align--right"
+                                   [ngModel]="getCellDisplayValue(period?.key, contentField, false)"
+                                   [disabled]="isSaving"
+                                   [ngModelOptions]="modelOptions"
+                                   (ngModelChange)="setCellValue($event, contentField, period?.key)"
+                                   style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
+                        </div>
+                    </ng-container>
                 </td>
                 <td style="padding: .1rem" >
-                    <div class="slds-truncate slds-text-align--right" [title]="getRowSumDisplay(contentField)">
+                    <system-stencil *ngIf="isLoading"></system-stencil>
+                    <div *ngIf="!isLoading" class="slds-truncate slds-text-align--right" [title]="getRowSumDisplay(contentField)">
                         {{getRowSumDisplay(contentField)}}
                     </div>
                 </td>
