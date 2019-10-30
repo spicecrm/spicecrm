@@ -197,7 +197,7 @@ export class calendar implements OnDestroy {
             this.isLoading = true;
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {start: start.format(format), end: end.format(format), users};
+            let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
             let endPoint = users.length > 0 ? 'calendar/users/' : 'calendar/';
             this.currentEnd[userId] = end;
             this.currentStart[userId] = start;
