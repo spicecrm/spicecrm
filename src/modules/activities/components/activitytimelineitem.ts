@@ -4,6 +4,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
+import {session} from '../../../services/session.service';
 import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 
@@ -31,7 +32,7 @@ export class ActivityTimelineItem implements OnInit {
 
     public componentconfig: any = {};
 
-    constructor(private model: model, private metadata: metadata, private view: view, private userpreferences: userpreferences) {
+    constructor(private model: model, private metadata: metadata, private view: view, private userpreferences: userpreferences, private session: session) {
         this.view.isEditable = false;
         this.view.displayLabels = true;
     }
@@ -52,7 +53,7 @@ export class ActivityTimelineItem implements OnInit {
      * gets the activity time and returns it formatted
      */
     get starttime() {
-        let startdate = new moment(this.activity.date_activity);
+        let startdate = new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
         return startdate ? startdate.format(this.userpreferences.getTimeFormat()) : '';
     }
 
@@ -60,7 +61,7 @@ export class ActivityTimelineItem implements OnInit {
      * gets the activity date and returns it formatted
      */
     get startdate() {
-        let startdate = new moment(this.activity.date_activity);
+        let startdate = new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
         return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
     }
 
