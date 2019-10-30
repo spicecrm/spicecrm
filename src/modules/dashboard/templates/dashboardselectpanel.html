@@ -2,7 +2,7 @@
     <div class="slds-nav-vertical__section">
         <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-center slds-p-horizontal--small slds-p-vertical--x-small">
             <h2 id="entity-header" class="slds-text-heading--small">{{language.getModuleName('Dashboards')}}</h2>
-            <button class="slds-show--large slds-button slds-button_icon slds-button_icon-border" (click)="addDashboard()">
+            <button *ngIf="canAdd" class="slds-show--large slds-button slds-button_icon slds-button_icon-border" (click)="addDashboard()">
                 <system-button-icon [icon]="'add'"></system-button-icon>
             </button>
             <button class="slds-hide--large slds-button slds-button_icon" (click)="hidepanel()">
