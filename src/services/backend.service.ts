@@ -220,7 +220,7 @@ export class backend {
 
         let reportProgress = progress !== null;
         if ( reportProgress ) progress.next(0);
-        this.http.post( this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, { headers: headers, observe: 'events', params: this.prepareParams(params), reportProgress: true }).subscribe(
+        this.http.post( this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, { headers: headers, observe: 'events', params: this.prepareParams(params), reportProgress: !!progress }).subscribe(
             event => {
                 if ( event.type === HttpEventType.UploadProgress ) {
                     progress.next( 100 * event.loaded / event.total );
