@@ -32,6 +32,10 @@ export class DashboardSelectPanel {
         return dashboards;
     }
 
+    get canAdd() {
+        return this.metadata.checkModuleAcl('Dashboards', 'create');
+    }
+
     private getActiveClass(id) {
         return id == this.dashboardlayout.dashboardId ? 'slds-is-active' : '';
     }
@@ -44,7 +48,7 @@ export class DashboardSelectPanel {
     }
 
     private addDashboard() {
-        if (this.metadata.checkModuleAcl('Dashboards', 'create')) {
+        if (this.canAdd) {
             this.model.module = 'Dashboards';
             this.model.id = this.model.utils.generateGuid();
             this.model.initialize();
