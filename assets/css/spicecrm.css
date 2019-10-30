@@ -1178,3 +1178,7 @@ ul.spicetaglist span.slds-badge {
     display: inline-block;
     margin: 0 0.5rem 0.5rem 0;
 }
+
+.slds-context-bar__item_tab {
+    width: initial;
+}
