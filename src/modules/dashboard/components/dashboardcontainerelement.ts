@@ -22,7 +22,7 @@ import {dashboardlayout} from "../services/dashboardlayout.service";
 export class DashboardContainerElement implements AfterViewInit {
     @ViewChild("containerelement", {read: ViewContainerRef, static: false}) private containerelement: ViewContainerRef;
 
-    private componentRefs: Array<any> = [];
+    private componentRefs: any[] = [];
     private isAuthorized: boolean = true;
     @Input() private item: any = {};
     private mouseMoveListener: any = undefined;
@@ -49,7 +49,8 @@ export class DashboardContainerElement implements AfterViewInit {
         for (let component of this.componentRefs) {
             component.destroy();
         }
-        this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true;
+        // assign the isAuthorized on setTimeout callback function to avoid angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
+        window.setTimeout(()=> this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true);
         if (this.item.component && this.isAuthorized) {
             this.metadata.addComponent(this.item.component, this.containerelement)
                 .subscribe(componentRef => {
