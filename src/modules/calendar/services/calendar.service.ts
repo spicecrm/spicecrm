@@ -194,7 +194,8 @@ export class calendar implements OnDestroy {
     public loadEvents(start, end, calendar = this.owner, users = []) {
         let userId = users.length > 0 ? 'users' : calendar;
         if (this.doReload(start, end, userId)) {
-            this.isLoading = true;
+            // use setTimeout to prevent Angular change detection error
+            window.setTimeout(()=> this.isLoading = true);
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
@@ -269,7 +270,8 @@ export class calendar implements OnDestroy {
             return of([]);
         }
         if (this.doReload(startDate, endDate, "google")) {
-            this.isLoading = true;
+            // use setTimeout to prevent Angular change detection error
+            window.setTimeout(()=> this.isLoading = true);
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
