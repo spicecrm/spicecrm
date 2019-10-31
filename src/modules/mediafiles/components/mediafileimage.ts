@@ -1,7 +1,7 @@
 /**
  * @module ModuleMediaFiles
  */
-import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
+import { Component, OnChanges, Input, ElementRef } from '@angular/core';
 import {mediafiles} from '../../../services/mediafiles.service';
 
 @Component({
@@ -14,35 +14,37 @@ import {mediafiles} from '../../../services/mediafiles.service';
 })
 export class MediaFileImage implements OnChanges {
 
-    @Input() media_id: string;
-    @Input() variant: string;
-    @Input() classImage: string = '';
-    @Input() classOuter: string = '';
-    @Input() styleImage: string = '';
-    @Input() align: string = '';
-    @Input() size: number = null;
-    @Input() width: number = null;
-    @Input() height: number = null;
-    @Input() frameWidth: number = null;
-    @Input() frameHeight: number = null;
-    @Input() frameSize: number = null;
-    @Input() displayInline: boolean = false;
-    @Input() title: string = '';
-    @Input() alttext: string = '';
+    @Input() public media_id: string;
+    @Input() public variant: string;
+    @Input() public classImage: string = '';
+    @Input() public classOuter: string = '';
+    @Input() public styleImage: string = '';
+    @Input() public align: string = '';
+    @Input() public size: number = null;
+    @Input() public width: number = null;
+    @Input() public height: number = null;
+    @Input() public frameWidth: number = null;
+    @Input() public frameHeight: number = null;
+    @Input() public frameSize: number = null;
+    @Input() public displayInline: boolean = false;
+    @Input() public title: string = '';
+    @Input() public alttext: string = '';
 
-    imageUrl: any;
+    private imageUrl: any;
 
-    dimensions: any = {};
+    private dimensions: any = {};
 
-    isFirstChange: boolean = true;
-    variantStatic: string;
-    lastMediaId: string = '';
+    private isFirstChange: boolean = true;
+    private variantStatic: string;
+    private lastMediaId: string = '';
 
-    withFrameHeight = true;
+    private withFrameHeight = true;
 
-    constructor ( private mediafiles: mediafiles, private elRef:ElementRef ) {}
+    constructor( private mediafiles: mediafiles, private elRef: ElementRef ) {}
 
-    ngOnChanges() {
+    public ngOnChanges() {
+
+        console.log('Media ID',this.media_id);
 
         if ( this.isFirstChange ) {
             this.isFirstChange = false;
@@ -100,25 +102,25 @@ export class MediaFileImage implements OnChanges {
         }
     }
 
-    getWidthOfParent() {
+    private getWidthOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).width.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingLeft.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingRight.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderLeftWidth.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderRightWidth.replace( /px$/, '' ));
     }
-    determineWidthOfImage() {
+    private determineWidthOfImage() {
         return Math.round( this.getWidthOfParent() );
     }
 
-    getHeightOfParent() {
+    private getHeightOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).height.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingTop.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingBottom.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderTopWidth.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderBottomWidth.replace( /px$/, '' ));
     }
-    determineHeightOfImage() {
+    private determineHeightOfImage() {
         return Math.round( this.getHeightOfParent() );
     }
 

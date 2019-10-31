@@ -1160,3 +1160,25 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open {
     background: rgba(155, 155, 155, .1) !important;
 }
+
+::placeholder {
+    font-style: italic;
+    opacity: 1; /* Firefox */
+}
+
+/* spicetags */
+
+ul.spicetaglist li {
+    display: inline;
+}
+ul.spicetaglist {
+    margin: 0 -0.5rem -0.5rem 0;
+}
+ul.spicetaglist span.slds-badge {
+    display: inline-block;
+    margin: 0 0.5rem 0.5rem 0;
+}
+
+.slds-context-bar__item_tab {
+    width: initial;
+}

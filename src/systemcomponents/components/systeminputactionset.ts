@@ -42,11 +42,6 @@ export class SystemInputActionset implements ControlValueAccessor {
     private _actionsets: any[] = [];
 
     /**
-     * internal held for the modules
-     */
-    private _modules: any[] = [];
-
-    /**
      * the current module
      */
     private _module: string = '';
@@ -56,8 +51,6 @@ export class SystemInputActionset implements ControlValueAccessor {
         private metadata: metadata,
     ) {
         this._actionsets = this.metadata.getActionSets();
-        this._modules = this.metadata.getModules();
-        this._modules.sort();
     }
 
     /**

@@ -16,10 +16,10 @@
     <!--div class="OptionsSeparator">{{language.getLabel('LBL_OPTIONS')}}</div-->
     <div class="slds-p-around--small slds-form--stacked">
         <div class="slds-form-element">
-            <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_LANGUAGE')}}</label>
+            <label class="slds-form-element__label" for="{{compId}}-select-lang">{{language.getLabel('LBL_SELECT_LANGUAGE')}}</label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage">
+                    <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage" id="{{compId}}-select-lang">
                         <option *ngFor="let language of getAvialableLanguages()" [value]="language.language">
                             {{language.text}}
                         </option>
@@ -28,33 +28,11 @@
             </div>
         </div>
         <div class="slds-p-top--x-small">
-            <ng-container *ngIf="isEditingTz">
-                <div class="slds-form-element">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_TIMEZONE')}}</label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select [disabled]="!timezones" class="slds-select" [(ngModel)]="currentTz">
-                                <option *ngFor="let key of timezoneKeys" [value]="key">{{timezones[key]}}</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </ng-container>
-            <ng-container *ngIf="!isEditingTz">
-                <div style="display:flow-root">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_TIMEZONE')}}</label>
-                </div >
-                <div class="slds-has-divider--bottom slds-p-vertical--x-small slds-p-top--none">
-                    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread ng-star-inserted" x-style="min-height: 19px;">
-                        <div class="slds-truncate" style="width:100%">{{currentTz}}</div>
-                        <button style="float:right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="setEditingTz($event)">
-                            <system-button-icon [icon]="'edit'"></system-button-icon>
-                        </button>
-                    </div>
-                </div>
-            </ng-container>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="{{compId}}-select-tz">{{language.getLabel('LBL_SELECT_TIMEZONE')}}</label>
+                <system-input-timezone [(ngModel)]="currentTz" id="{{compId}}-select-tz"></system-input-timezone>
+            </div>
         </div>
-        <!--div (click)="goAdmin()">admin</div-->
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
         <div>

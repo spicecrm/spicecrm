@@ -7,11 +7,11 @@ import {FormsModule} from '@angular/forms';
 
 import {VersionManagerService} from '../../services/versionmanager.service';
 
-
 import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {TasksManager} from './components/tasksmanager';
 import /*embed*/ {TasksManagerView} from './components/tasksmanagerview';
@@ -21,13 +21,33 @@ import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
 import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
 import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttileclose';
 
-import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
-
+import /*embed*/ {ActivityTimelineSaveButton} from "./components/activitytimelinesavebutton";
 import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
 import /*embed*/ {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
 import /*embed*/ {ActivityCloseModal} from "./components/activityclosemodal";
 import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
 
+import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
+import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
+import /*embed*/ {fieldActivitiesAddActions} from "./components/fieldactivitiesaddactions";
+import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactivitiesaddactionsbutton";
+import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./components/fieldactivitiestaskwithclosecheckbox";
+
+import /*embed*/ {ActivityTimeline} from './components/activitytimeline';
+import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
+import /*embed*/ {ActivityTimelineContainer} from './components/activitytimelinecontainer';
+import /*embed*/ {ActivityTimelineItemContainer} from './components/activitytimelineitemcontainer';
+import /*embed*/ {ActivityTimelineAddTabContainer} from './components/activitytimelineaddtabcontainer';
+import /*embed*/ {ActivityTimelineItem} from './components/activitytimelineitem';
+import /*embed*/ {ActivityTimelineStencil} from './components/activitytimelinestencil';
+import /*embed*/ {ActivityTimelineAddContainer} from './components/activitytimelineaddcontainer';
+import /*embed*/ {ActivityTimelineAddItem} from './components/activitytimelineadditem';
+import /*embed*/ {ActivityTimelineAddEmail} from './components/activitytimelineaddemail';
+import /*embed*/ {ActivityTimelineSummary} from './components/activitytimelinesummary';
+import /*embed*/ {ActivityTimelineAggregates} from './components/activitytimelineaggregates';
+import /*embed*/ {ActivityTimelineSummaryItemView} from './components/activitytimelinesummaryitemview';
+import /*embed*/ {ActivityTimelineSummaryButton} from './components/activitytimelinesummarybutton';
+import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activitytimelinesummaryaggregates';
 
 @NgModule({
     imports: [
@@ -37,6 +57,7 @@ import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecrea
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         TasksManager,
@@ -46,11 +67,35 @@ import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecrea
         TasksManagerTask,
         TasksManagerTaskDetails,
         TasksAssitantTileClose,
-        EmailsPopoverBody,
+        ActivityTimelineSaveButton,
         ActionActivityCloseButton,
         ActionActivityCloseCreateButton,
         ActivityCloseModal,
-        ActivityCloseCreateModal
+        ActivityCloseCreateModal,
+        ActivitiesPopoverAddBar,
+        ActivitiesPopoverAddBarButton,
+        fieldActivitiesAddActions,
+        fieldActivitiesAddActionsButton,
+        fieldActivitiesTaskWithCloseCheckbox,
+        ActivityTimeline,
+        ActivityTimelineFilter,
+        ActivityTimelineContainer,
+        ActivityTimelineItemContainer,
+        ActivityTimelineAddTabContainer,
+        ActivityTimelineItem,
+        ActivityTimelineStencil,
+        ActivityTimelineAddContainer,
+        ActivityTimelineAddItem,
+        ActivityTimelineAddEmail,
+        ActivityTimelineSummary,
+        ActivityTimelineAggregates,
+        ActivityTimelineSummaryItemView,
+        ActivityTimelineSummaryButton,
+        ActivityTimelineSummaryAggregates
+    ],
+    exports: [
+        ActivityTimelineItemContainer,
+        ActivityTimelineStencil
     ]
 })
 export class ModuleActivities {

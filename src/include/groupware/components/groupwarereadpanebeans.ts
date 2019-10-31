@@ -1,3 +1,6 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component} from '@angular/core';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from '../../../services/language.service';
@@ -19,6 +22,9 @@ export class GroupwareReadPaneBeans {
         this.groupware.loadLinkedBeans();
     }
 
+    /**
+     * Related beans.
+     */
     get beans() {
         return this.groupware.relatedBeans;
     }

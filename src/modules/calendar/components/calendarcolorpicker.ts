@@ -15,14 +15,14 @@ export class CalendarColorPicker {
         'bd35bd', '5779c1', '5ebbff', '00aea9', '3cba4c', 'f5bc25', 'f99221',
         '580d8c', '001970', '0a2399', '0b7477', '0b6b50', 'b67e11', 'b85d0d',
     ];
-    @Output() public color$: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public colorChange: EventEmitter<any> = new EventEmitter<any>();
     private isOpen: boolean = false;
 
     constructor(private language: language) {
     }
 
     private pickColor(color) {
-        this.color$.emit('#' + color);
+        this.colorChange.emit('#' + color);
         this.isOpen = false;
     }
 }

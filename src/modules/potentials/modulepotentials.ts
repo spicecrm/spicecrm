@@ -19,6 +19,7 @@ import /*embed*/ {PotentialsOpportunityAllocationTab} from "./components/potenti
 import /*embed*/ {PotentialsOpportunityAllocationLines} from "./components/potentialsopportunityallocationlines";
 import /*embed*/ {PotentialsOpportunityAllocationLineItem} from "./components/potentialsopportunityallocationlineitem";
 import /*embed*/ {PotentialsOpportunityAllocationsCCFilterPipe} from "./pipes/potentialsopportunityallocationsccfilterpipe";
+import /*embed*/ {PotentialsManagerNewButton} from "./components/potentialsmanagernewbutton";
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import /*embed*/ {PotentialsOpportunityAllocationsCCFilterPipe} from "./pipes/po
         PotentialsOpportunityAllocationTab,
         PotentialsOpportunityAllocationLines,
         PotentialsOpportunityAllocationLineItem,
-        PotentialsOpportunityAllocationsCCFilterPipe
+        PotentialsOpportunityAllocationsCCFilterPipe,
+        PotentialsManagerNewButton
     ]
 })
 export class ModulePotentials {

@@ -82,12 +82,15 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     private loadDashboards() {
-        this.isLoading = true;
+        // set isLoading on timeout to prevent angular change detection error
+        window.setTimeout(()=> this.isLoading = true);
         this.loadDashboardSetDashboards().subscribe(res => {
             this.isLoading = false;
-            this.dashboardsList = _.toArray(res);
-            this.renderView();
-            window.setTimeout(() => this.handleOverflow());
+            if (res) {
+                this.dashboardsList = _.toArray(res);
+                if (this.dashboardsList.length > 0) this.setActiveDashboard(this.dashboardsList[0].id);
+                window.setTimeout(() => this.handleOverflow());
+            }
         });
         this.resizeListener = this.renderer.listen('window', 'resize', e => this.handleOverflow());
     }
@@ -151,7 +154,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
         let config = this.metadata.getComponentConfig('HomeDashboardSetContainer', 'Home');
         let params = {
-            limit: -1,
+            limit: -99,
             modulefilter: config.moduleFilter,
             sort: {sortfield: "dashboardsets_dashboard_sequence", sortdirection: "ASC"}
         };

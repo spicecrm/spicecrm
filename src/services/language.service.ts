@@ -613,8 +613,8 @@ export class language {
      *
      * @param array The array of strings to sort.
      */
-    public sortArray( array: string[] ): void {
-        array.sort( ( a, b ) => this.compareStrings( a, b ));
+    public sortArray( array: string[], reverse = false ): void {
+        array.sort( ( a, b ) => this.compareStrings( a, b ) * ( reverse?-1:1 ));
     }
 
     /**
@@ -624,8 +624,8 @@ export class language {
      * @param array The array of objects to sort.
      * @param property The property to be used for sorting.
      */
-    public sortObjects( array: object[], property ): void {
-        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ));
+    public sortObjects( array: object[], property: string, reverse = false ): void {
+        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ) * ( reverse?-1:1 ));
     }
 
     /**

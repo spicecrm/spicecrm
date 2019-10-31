@@ -1,0 +1,12 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">Email Preview</system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <div *ngIf="!msgData" style="height: 50vh;" class="slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <div *ngIf="msgData" class="slds-p-around--small slds-text-align--center">
+            <div>subject: {{subject}}</div>
+            <div [innerHTML]="body"></div>
+        </div>
+    </system-modal-content>
+</system-modal>

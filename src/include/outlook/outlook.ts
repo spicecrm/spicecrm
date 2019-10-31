@@ -1,3 +1,6 @@
+/**
+ * @module Outlook
+ */
 import {
     Component,
     Injectable,

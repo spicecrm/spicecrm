@@ -37,7 +37,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader, {static: true}) private cardheaders: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheaders: ObjectRelatedCardHeader;
 
     /**
      * holds the curent compüanycode as filter criteria for the list
@@ -101,8 +101,11 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
         let companyCodes = this.configuration.getData('companycodes');
         if (companyCodes && companyCodes.length > 0) {
             companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
-            this._companyCode = companyCodes[0].id;
-
+            if (this.userpreferences.companyCodeId) {
+                this._companyCode = this.userpreferences.companyCodeId;
+            } else {
+                this._companyCode = companyCodes[0].id;
+            }
             // set the related models filter
             this.relatedmodels.fieldfilters = {companycode_id: this._companyCode};
 
@@ -131,7 +134,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
      * a helper function to determine if the card shoudl be hidden based on the modelstate or the ACL check
      */
     get hidden() {
-        return !this.checkModelState() || !this.aclAccess();
+        return !this.checkModelState() || !this.aclAccess;
     }
 
     /**
@@ -162,17 +165,6 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
 
         // by default return true
         return true;
-    }
-
-    /**
-     * checks if the user has Access per ACL rights
-     */
-    public aclAccess() {
-        if (this.module) {
-            return this.metadata.checkModuleAcl(this.module, "list");
-        } else {
-            return false;
-        }
     }
 
     /**

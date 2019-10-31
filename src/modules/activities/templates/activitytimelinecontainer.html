@@ -1,0 +1,22 @@
+<div *ngIf="displayaggregates && hasAggregates" class="slds-p-vertical--x-small slds-m-top--x-small">
+    <activity-timeline-aggregates [module]="module" labellength="short"></activity-timeline-aggregates>
+</div>
+<ul *ngIf="hasActivities; else nocontent" class="slds-timeline slds-p-vertical--small">
+    <li *ngFor="let activity of activities; trackBy:trackByFn">
+        <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
+    </li>
+</ul>
+<ul class="slds-timeline" *ngIf="loading">
+    <li>
+        <activitytimeline-stencil></activitytimeline-stencil>
+    </li>
+    <li style="opacity: 0.6">
+        <activitytimeline-stencil></activitytimeline-stencil>
+    </li>
+    <li style="opacity: 0.3">
+        <activitytimeline-stencil></activitytimeline-stencil>
+    </li>
+</ul>
+<ng-template #nocontent>
+    <system-illustration-no-records *ngIf="!loading">{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
+</ng-template>

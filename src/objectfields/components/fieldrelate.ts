@@ -75,9 +75,25 @@ export class fieldRelate extends fieldGeneric implements OnInit {
      * resets the field on the  model
      */
     private clearField() {
+        if (this.fieldconfig.promptondelete) {
+            this.modal.confirm(
+                this.language.getLabelFormatted('LBL_PROMPT_DELETE_RELATIONSHIP', [this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig)], 'long'),
+                this.language.getLabelFormatted('LBL_PROMPT_DELETE_RELATIONSHIP', [this.language.getFieldDisplayName(this.model.module, this.fieldname, this.fieldconfig)])
+            ).subscribe(response => {
+                if (response) {
+                    this.removeRelated();
+                }
+            });
+        } else {
+            this.removeRelated();
+        }
+    }
+
+    private removeRelated() {
         this.model.setField(this.relateNameField, '');
         this.model.setField(this.relateIdField, '');
     }
+
 
     /**
      * open the recent items when the feld recievs the focus
@@ -103,8 +119,10 @@ export class fieldRelate extends fieldGeneric implements OnInit {
      * @param related the related record
      */
     private setRelated(related) {
-        this.model.setField(this.relateIdField, related.id);
-        this.model.setField(this.relateNameField, related.text);
+        let newFields = {};
+        newFields[this.relateIdField] = related.id;
+        newFields[this.relateNameField] = related.text;
+        this.model.setFields(newFields);
         if (this.fieldconfig.executeCopyRules == 2) {
             this.executeCopyRules(related.id);
         } else if (this.fieldconfig.executeCopyRules == 1) {

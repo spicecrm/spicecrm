@@ -1,10 +1,10 @@
 /**
  * @module SystemComponents
  */
-import { Component, OnInit, ChangeDetectorRef, ApplicationRef } from '@angular/core';
-import { metadata } from '../../services/metadata.service';
+import {Component, OnInit, ChangeDetectorRef, ApplicationRef} from '@angular/core';
+import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import { toast } from '../../services/toast.service';
+import {toast} from '../../services/toast.service';
 
 declare var window: any;
 
@@ -12,8 +12,6 @@ declare var window: any;
     templateUrl: './src/systemcomponents/templates/speechrecognition.html'
 })
 export class SpeechRecognition implements OnInit {
-
-    public debug = true;
 
     private self;
 
@@ -40,26 +38,24 @@ export class SpeechRecognition implements OnInit {
     private pausing = false;
     private working = false;
 
-    private languages = [ { id: 'de_DE', name: 'Deutsch' }, { id: 'en_US', name: 'English' } ];
+    private languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
     private selectedLanguage = 0;
 
-    constructor( private language: language, private metadata: metadata, private toast: toast, private changeDetRef: ChangeDetectorRef, private applicationRef: ApplicationRef ) { }
+    constructor(private language: language, private metadata: metadata, private toast: toast, private changeDetRef: ChangeDetectorRef, private applicationRef: ApplicationRef) {
+    }
 
     public ngOnInit() {
 
-        this.debug && console.log( 'SpeechRecognition debugging is on :-)');
 
-        if ( !window.chrome || !window.chrome.webstore ) {
-            this.toast.sendToast('Sorry, speech recognition is possible only with Google Chrome.','error');
+        if (!window.webkitSpeechRecognition) {
+            this.toast.sendToast('Sorry, speech recognition is possible only with Google Chrome.', 'error');
             this.self.destroy();
         }
 
-        if ( this.language.currentlanguage === 'de_DE' ) this.selectedLanguage = 0;
+        if (this.language.currentlanguage === 'de_DE') this.selectedLanguage = 0;
         else this.selectedLanguage = 1;
 
-        this.recognition = new ( window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition )();
-
-        this.debug && console.log( 'webspeech object: ', this.recognition );
+        this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
 
         this.recognition.continuous = true;
         this.recognition.lang = this.languages[this.selectedLanguage].id;
@@ -67,77 +63,65 @@ export class SpeechRecognition implements OnInit {
         this.recognition.maxAlternatives = 1;
 
         this.part1fromField =
-            this.textfield.element.nativeElement.value.substring( 0, this.textfield.element.nativeElement.selectionStart );
-        this.debug && console.log('selection start/end: ', this.textfield.element.nativeElement.selectionStart, this.textfield.element.nativeElement.selectionEnd );
+            this.textfield.element.nativeElement.value.substring(0, this.textfield.element.nativeElement.selectionStart);
         this.part2fromField =
-            this.textfield.element.nativeElement.value.substring( this.textfield.element.nativeElement.selectionEnd );
+            this.textfield.element.nativeElement.value.substring(this.textfield.element.nativeElement.selectionEnd);
 
-        this.recognition.onresult = ( speech ) => {
-
-            this.debug && console.log( 'result callback' );
-            this.debug && console.log( 'results: ', speech.results );
-            this.debug && console.log( 'results length: ', speech.results.length );
-            this.debug && console.log( 'result index: ',speech.resultIndex);
+        this.recognition.onresult = (speech) => {
 
             this.working = true;
             this.changeDetRef.detectChanges();
 
             let dummy: string = '';
             let isFinal = true;
-            for ( let result of speech.results ) {
-                if ( ! result.isFinal ) isFinal = false;
-                this.debug && console.log( 'isFinal' );
-                this.debug && console.log( 'Transcript', result[0].transcript );
+            for (let result of speech.results) {
+                if (!result.isFinal) isFinal = false;
                 dummy += result[0].transcript;
-                this.debug && console.log( 'dummy', dummy );
                 this.theTextNewest = dummy;
             }
 
-            if ( isFinal ) {
+            if (isFinal) {
                 this.working = false;
                 this.changeDetRef.detectChanges();
             }
 
-            this.debug && console.log('theText: ',this.theText);
+            if (!this.dirty && this.theTextNewest) this.dirty = true;
 
-            if ( !this.dirty && this.theTextNewest ) this.dirty = true;
-
-            if ( this.dirty ) {
-                this.theTextHtml = '<p>' + this.linebreaks2html( this.capitalize( this.theText + ' ' + this.theTextNewest ) ) + '</p>';
+            if (this.dirty) {
+                this.theTextHtml = '<p>' + this.linebreaks2html(this.capitalize(this.theText + ' ' + this.theTextNewest)) + '</p>';
                 this.changeDetRef.detectChanges();
             }
 
         };
 
-        this.recognition.onerror = ( event ) => {
+        this.recognition.onerror = (event) => {
 
-            this.debug && console.log( 'error callback: ', event.error );
-
-            switch ( event.error ) {
+            switch (event.error) {
 
                 case 'network':
                     this.errorOccurred = true;
-                    this.sendErrorToast( this.language.getLabel( 'MSG_NO_NETWORK' ));
+                    this.sendErrorToast(this.language.getLabel('MSG_NO_NETWORK'));
                     break;
 
                 case 'no-speech':
-                    if ( !this.stopping ) {
+                    if (!this.stopping) {
                         this.recognition.stop(); // ???
                     }
                     return;
 
                 case 'audio-capture':
                     this.errorOccurred = true;
-                    this.sendErrorToast( this.language.getLabel('MSG_NO_MICROPHONE' ));
+                    this.sendErrorToast(this.language.getLabel('MSG_NO_MICROPHONE'));
                     break;
 
                 case 'not-allowed':
                     this.errorOccurred = true;
-                    if ( event.timeStamp - this.start_timestamp < 100 ) this.sendErrorToast( this.language.getLabel('LBL_BLOCKED' ));
-                    else this.sendErrorToast( this.language.getLabel( 'LBL_DENIED' ));
+                    if (event.timeStamp - this.start_timestamp < 100) this.sendErrorToast(this.language.getLabel('LBL_BLOCKED'));
+                    else this.sendErrorToast(this.language.getLabel('LBL_DENIED'));
                     break;
 
-                default: break;
+                default:
+                    break;
 
             }
 
@@ -145,35 +129,22 @@ export class SpeechRecognition implements OnInit {
 
         };
 
-        this.recognition.onend = ( event ) => {
+        this.recognition.onend = (event) => {
 
             this.working = false;
 
-            this.debug && console.log( 'callback onend' );
-
-            if ( this.cancelling ) {
+            if (this.cancelling) {
                 this.self.destroy();
                 return;
             }
 
-            if ( this.pausing && !this.stopping ) {
+            if (this.pausing && !this.stopping) {
                 this.applyText();
                 return;
             }
 
             this.acceptAndClose();
 
-        };
-
-        // Next 3 methods with no special sense, only for debugging.
-        this.recognition.onspeechend = ( event ) => {
-            this.debug && console.log( 'callback onspeechend' );
-        };
-        this.recognition.onspeechstart = ( event ) => {
-            this.debug && console.log( 'callback onspeechstart' );
-        };
-        this.recognition.onnomatch = ( event ) => {
-            this.debug && console.log( 'callback onnomatch' );
         };
 
         this.start();
@@ -186,7 +157,7 @@ export class SpeechRecognition implements OnInit {
     }
 
     private applyText() {
-        this.theText += ( this.theText === '' ? this.capitalize( this.theTextNewest ) : this.theTextNewest );
+        this.theText += (this.theText === '' ? this.capitalize(this.theTextNewest) : this.theTextNewest);
         this.theTextNewest = '';
     }
 
@@ -194,14 +165,14 @@ export class SpeechRecognition implements OnInit {
 
         this.applyText();
 
-        if ( this.errorOccurred ) {
-            if ( this.theText === '' && this.theTextNewest === '' ) this.self.destroy();
+        if (this.errorOccurred) {
+            if (this.theText === '' && this.theTextNewest === '') this.self.destroy();
             return;
         }
 
-        if ( !this.stopping ) {
+        if (!this.stopping) {
             this.recognition.start();
-            if ( this.toRestart ) this.toRestart = false;
+            if (this.toRestart) this.toRestart = false;
             return;
         }
 
@@ -214,22 +185,20 @@ export class SpeechRecognition implements OnInit {
 
     }
 
-    private start( event = null ) {
-        if ( this.recognizing ) return;
+    private start(event = null) {
+        if (this.recognizing) return;
         this.recognizing = true;
         this.recognition.start();
-        if ( event ) this.start_timestamp = event.timeStamp;
+        if (event) this.start_timestamp = event.timeStamp;
     }
 
     private buttonAcceptClose() {
-        this.debug && console.log( 'accept&close button' );
         this.stopping = true;
-        if ( this.pausing ) this.acceptAndClose();
+        if (this.pausing) this.acceptAndClose();
         else this.recognition.stop();
     }
 
     private buttonPause() {
-        this.debug && console.log( 'pause button' );
         this.pausing = !this.pausing;
         this.changeDetRef.detectChanges();
         this.applicationRef.tick();
@@ -244,23 +213,22 @@ export class SpeechRecognition implements OnInit {
         this.self.destroy();
     }
 
-    private changeLang( event ) {
+    private changeLang(event) {
         this.selectedLanguage = event.target.selectedIndex;
         this.recognition.lang = this.languages[this.selectedLanguage].id;
         this.doRestart();
     }
 
-    private capitalize( string: string ) {
-        if ( this.part1fromField.length === 0 ) return string.replace(/\S/, m => m.toUpperCase() );
+    private capitalize(string: string) {
+        if (this.part1fromField.length === 0) return string.replace(/\S/, m => m.toUpperCase());
         else return string;
     }
 
-    private linebreaks2html( string: string ) {
-        return string.replace( /\n\n/g, '</p><p>').replace( /\n/g, '<br>' );
+    private linebreaks2html(string: string) {
+        return string.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
     }
 
-    private sendErrorToast( message: string ) {
-        this.toast.sendToast(this.language.getLabel('ERR_SPEECH_RECOGNITION')+': '+message+'.', 'error', '', false );
+    private sendErrorToast(message: string) {
+        this.toast.sendToast(this.language.getLabel('ERR_SPEECH_RECOGNITION') + ': ' + message + '.', 'error', '', false);
     }
-
 }

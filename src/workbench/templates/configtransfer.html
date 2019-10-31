@@ -4,7 +4,6 @@
 
     <p>Export and import configuration data from/into database. Also usable for backup.</p>
 
-
     <div class="slds-tabs_default slds-tabs_medium">
 
         <ul class="slds-tabs_default__nav" role="tablist">
@@ -121,12 +120,12 @@
 
                 <div><button class="slds-button slds-button--brand" (click)="exportTables()" [disabled]="( numberOfSelectedTables === 0 && additionalTables === '' ) || isDownloading">{{lang.getLabel('LBL_EXPORT')}}</button></div>
 
-                <a #downloadlink style="display:none" [href]="loadUrl" [download]="fileName"></a>
-
             </div>
 
         </div>
 
     </div>
+
+    <a #downloadlink style="display:none" [href]="loadUrl" [download]="fileName"></a>
 
 </div>

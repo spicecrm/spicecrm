@@ -1,5 +1,5 @@
 /**
- * @module ObjectFields
+ * @module ModuleACLTerritories
  */
 import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
