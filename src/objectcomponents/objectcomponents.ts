@@ -23,6 +23,7 @@ import /*embed*/ {objectimport} from './services/objectimport.service';
 
 
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
+import /*embed*/ {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
 
 import /*embed*/ {ObjectListViewHeader} from './components/objectlistviewheader';
 import /*embed*/ {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
@@ -34,6 +35,7 @@ import /*embed*/ {ObjectActionContainer} from './components/objectactioncontaine
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
+import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
 import /*embed*/ {ObjectListHeaderActionsSelectAllButton} from "./components/objectlistheaderactionsselectallbutton";
@@ -254,6 +256,8 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectActionContainerItem,
         ObjectListHeaderActionMenu,
         ObjectListHeaderActionsExportCSVButton,
+        ObjectFieldFilterPipe,
+        ObjectListHeaderActionsExportCSVSelectFields,
         ObjectListHeaderActionsExportTargetlistButton,
         ObjectListHeaderActionsExportTargetlistModal,
         ObjectListHeaderActionsSelectAllButton,
