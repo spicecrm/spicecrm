@@ -85,9 +85,11 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         this.isLoading = true;
         this.loadDashboardSetDashboards().subscribe(res => {
             this.isLoading = false;
-            this.dashboardsList = _.toArray(res);
-            this.renderView();
-            window.setTimeout(() => this.handleOverflow());
+            if (res) {
+                this.dashboardsList = _.toArray(res);
+                if (this.dashboardsList.length > 0) this.setActiveDashboard(this.dashboardsList[0].id);
+                window.setTimeout(() => this.handleOverflow());
+            }
         });
         this.resizeListener = this.renderer.listen('window', 'resize', e => this.handleOverflow());
     }
