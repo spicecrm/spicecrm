@@ -14,6 +14,11 @@ import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {modal} from '../../services/modal.service';
 
+/**
+ * renders a modal dialog to let the user choose the fields to be exported. By default it is the fields in the view
+ *
+ * per componentconfig also all fields can be enabled or a specific fieldset
+ */
 @Component({
     templateUrl: './src/objectcomponents/templates/objectlistheaderactionsexportcsvselectfields.html',
 })
