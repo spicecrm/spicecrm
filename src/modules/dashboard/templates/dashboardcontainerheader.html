@@ -7,23 +7,23 @@
     <div class="slds-col slds-has-flexi-truncate slds-grid slds-grid--vertical-align-center">
         <system-spinner size="16" class="slds-p-right--small" *ngIf="dashboardlayout.isloading"></system-spinner>
         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-            {{dashboardlayout.model.getField('name')}}
+            {{model.getField('name')}}
         </h1>
-        <button *ngIf="editable" class="slds-button slds-show--large" (click)="edit()">
+        <button *ngIf="editable && model.id" class="slds-button slds-show--large" (click)="editModal()">
             <system-button-icon [icon]="'edit'"></system-button-icon>
         </button>
     </div>
     <div class="slds-col slds-no-flex slds-grid slds-align-top slds-show--large">
-        <div *ngIf="!dashboardlayout.isloading && dashboardlayout.dashboardId.length > 0" class="slds-button-group" role="group">
+        <div *ngIf="!dashboardlayout.isloading && model.id" class="slds-button-group" role="group">
             <button class="slds-button slds-button--neutral" (click)="toggleHomeDashboard()">
                 <system-button-icon class="slds-m-right--xx-small" *ngIf="isHomeDashboard" icon="check"></system-button-icon>
                 <span class="slds-truncate">{{language.getLabel('LBL_AS_HOME_DASHBOARD')}}</span>
             </button>
-            <button *ngIf="editable" class="slds-button slds-button--neutral" (click)="toggleEditMode()">{{language.getLabel('LBL_EDIT')}}</button>
+            <button *ngIf="editable && !view.isEditMode()" class="slds-button slds-button--neutral" (click)="toggleEditContent()">{{language.getLabel('LBL_EDIT')}}</button>
         </div>
-        <div *ngIf="dashboardlayout.editMode" class="slds-button-group" role="group">
-            <button class="slds-button slds-button--neutral" (click)="dashboardlayout.cancelEdit()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="dashboardlayout.saveDashboard()">{{language.getLabel('LBL_SAVE')}}</button>
+        <div *ngIf="view.isEditMode()" class="slds-button-group" role="group">
+            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="saveComponents()">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
     </div>
 </div>
