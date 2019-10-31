@@ -1,19 +1,11 @@
 /**
  * @module ModuleDashboard
  */
-import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    HostBinding,
-    Input,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef
-} from "@angular/core";
+import {AfterViewInit, Component, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
-import {language} from "../../../services/language.service";
 import {dashboardlayout} from "../services/dashboardlayout.service";
+import {view} from "../../../services/view.service";
+import {model} from "../../../services/model.service";
 
 @Component({
     selector: "dashboard-container-element",
@@ -30,15 +22,21 @@ export class DashboardContainerElement implements AfterViewInit {
     private mouseLast: any = null;
     private mouseStart: any = null;
     private mouseTarget: string = "";
+    private isMoving: boolean = false;
 
     constructor(private dashboardlayout: dashboardlayout,
                 private metadata: metadata,
                 private renderer: Renderer2,
-                private language: language) {
+                private model: model,
+                private view: view) {
     }
 
-    get compactView() {
-        return this.dashboardlayout.compactView;
+    get containerClass() {
+        return {
+            'slds-scrollable--y': !this.view.isEditMode(),
+            'slds-is-absolute': !this.dashboardlayout.compactView,
+            'slds-m-vertical_xx-small': this.dashboardlayout.compactView
+        };
     }
 
     public ngAfterViewInit() {
@@ -50,7 +48,7 @@ export class DashboardContainerElement implements AfterViewInit {
             component.destroy();
         }
         // assign the isAuthorized on setTimeout callback function to avoid angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
-        window.setTimeout(()=> this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true);
+        window.setTimeout(() => this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true);
         if (this.item.component && this.isAuthorized) {
             this.metadata.addComponent(this.item.component, this.containerelement)
                 .subscribe(componentRef => {
@@ -67,18 +65,18 @@ export class DashboardContainerElement implements AfterViewInit {
     }
 
     private isEditing() {
-        return this.dashboardlayout.editMode && this.item.id === this.dashboardlayout.editing;
+        return this.view.isEditMode() && this.item.id === this.dashboardlayout.editing;
     }
 
     private getBoxStyle() {
         let itemPos = this.item.position;
-        let style = this.dashboardlayout.getElementStyle(itemPos.top, itemPos.left, itemPos.width, itemPos.height);
-        style = this.dashboardlayout.applyMove(style, this.mouseTarget, this.mouseStart, this.mouseLast);
+        let elementStyle = this.dashboardlayout.getElementStyle(itemPos.top, itemPos.left, itemPos.width, itemPos.height);
+        let style = this.dashboardlayout.applyMove(elementStyle, this.mouseTarget, this.mouseStart, this.mouseLast);
 
         if (this.isEditing()) {
             style.border = "1px dashed #ca1b21";
             style.cursor = "move";
-            if (this.dashboardlayout.isMoving) {
+            if (this.isMoving) {
                 style.opacity = ".5";
                 style["z-index"] = "9999";
             }
@@ -88,8 +86,8 @@ export class DashboardContainerElement implements AfterViewInit {
 
     private getBoundingBoxStyle(position): any {
         let itemPos = this.item.position;
-        let rect = this.dashboardlayout.getElementStyle(itemPos.top, itemPos.left, itemPos.width, itemPos.height);
-        rect = this.dashboardlayout.applyMove(rect, this.mouseTarget, this.mouseStart, this.mouseLast);
+        let elementStyle = this.dashboardlayout.getElementStyle(itemPos.top, itemPos.left, itemPos.width, itemPos.height);
+        let rect = this.dashboardlayout.applyMove(elementStyle, this.mouseTarget, this.mouseStart, this.mouseLast);
         let style: any = {};
 
         switch (position) {
@@ -117,7 +115,7 @@ export class DashboardContainerElement implements AfterViewInit {
     }
 
     private onMousedown(target, e) {
-        if (this.dashboardlayout.editMode) {
+        if (this.view.isEditMode()) {
             this.mouseTarget = target;
 
             this.dashboardlayout.editing = this.item.id;
@@ -127,7 +125,7 @@ export class DashboardContainerElement implements AfterViewInit {
             this.mouseUpListener = this.renderer.listen("document", "mouseup", (event) => this.onMouseUp());
             this.mouseMoveListener = this.renderer.listen("document", "mousemove", (event) => this.onMouseMove(event));
 
-            this.dashboardlayout.isMoving = true;
+            this.isMoving = true;
 
             // prevent select event trigger
             if (e.stopPropagation) {
@@ -142,7 +140,7 @@ export class DashboardContainerElement implements AfterViewInit {
     }
 
     private onMouseMove(e) {
-        if (this.dashboardlayout.editMode) {
+        if (this.view.isEditMode()) {
             this.mouseLast = e;
         }
         this.handleScrolling();
@@ -158,11 +156,11 @@ export class DashboardContainerElement implements AfterViewInit {
         this.mouseLast = null;
         this.mouseTarget = "";
 
-        this.dashboardlayout.isMoving = false;
+        this.isMoving = false;
     }
 
     private handleScrolling() {
-        if (!this.dashboardlayout.editMode || !this.dashboardlayout.isMoving) {
+        if (!this.view.isEditMode() || !this.isMoving) {
             return;
         }
 
