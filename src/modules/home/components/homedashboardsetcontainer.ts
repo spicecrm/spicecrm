@@ -82,7 +82,8 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     private loadDashboards() {
-        this.isLoading = true;
+        // set isLoading on timeout to prevent angular change detection error
+        window.setTimeout(()=> this.isLoading = true);
         this.loadDashboardSetDashboards().subscribe(res => {
             this.isLoading = false;
             if (res) {
