@@ -131,28 +131,6 @@ export class ActivityTimelineSummary implements OnDestroy {
     }
 
     /**
-     * gets the proper date field for the activits
-     *
-     * @param activity the activitiy itself
-     */
-    private getDate(activity) {
-
-        let dateField = 'date_start';
-        switch (activity.module) {
-            case 'Tasks':
-                dateField = 'date_due';
-                break;
-            case 'Emails':
-            case 'Notes':
-                dateField = 'date_entered';
-                break;
-        }
-
-        let date: Date = new moment(Date.parse(activity.data[dateField]));
-        return date.format('DD.MM.YYYY');
-    }
-
-    /**
      * triggers setting the activitiy and thus updating the form on the right side with the activitiy content and details
      *
      * @param activity the activity
