@@ -51,12 +51,19 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
         } else if (componentConfig.fieldset) {
             let fieldsetfields = this.metadata.getFieldSetFields(componentConfig.fieldset);
             for (let field of fieldsetfields) {
-                if (this.isExportable(field.field) && this.exportFields.indexOf(field.field) == -1) this.availableFields.push(field.field);
+                if (this.exportFields.indexOf(field.field) == -1) this.availableFields.push(field.field);
             }
         }
         this.sortAvailableFields();
     }
 
+    /**
+     * dos ome checks fi the field can be exported
+     *
+     * no links, .. check on other fields tbd.
+     *
+     * @param field the fieldmetadata
+     */
     private isExportable(field) {
         return field.type != 'link';
     }
