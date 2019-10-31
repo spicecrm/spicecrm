@@ -792,7 +792,7 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
-    public exportList(): Observable<boolean> {
+    public exportList(fields?: any[]): Observable<boolean> {
 
         let retSub = new Subject<boolean>();
 
@@ -800,7 +800,7 @@ export class modellist implements OnDestroy {
         if (selectedIds.length > 0) {
             this.backend.getLinkToDownload('/module/' + this.module + '/export', 'POST', {}, {
                 ids: selectedIds,
-                fields: this.lastFields
+                fields: fields ? fields :this.lastFields
             }, {}).subscribe(
                 (downloadurl) => {
                     retSub.next(downloadurl);
@@ -811,7 +811,7 @@ export class modellist implements OnDestroy {
             if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
                 let aggregates = {};
                 aggregates[this.module] = this.selectedAggregates;
-                this.fts.export(this.searchTerm, this.module, this.lastFields, aggregates, {
+                this.fts.export(this.searchTerm, this.module, fields ? fields :this.lastFields, aggregates, {
                         sortfield: this.sortfield,
                         sortdirection: this.sortdirection.toLowerCase()
                     }, this.currentList.type == 'owner' ? true : false,
@@ -829,7 +829,7 @@ export class modellist implements OnDestroy {
                         listid: this.currentList.id,
                         sortfield: this.sortfield,
                         sortdirection: this.sortdirection,
-                        fields: JSON.stringify(this.lastFields)
+                        fields: fields ? fields :this.lastFields
                     }
                 ).subscribe(
                     (res) => {
