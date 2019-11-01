@@ -248,10 +248,11 @@ export class relatedmodels implements OnDestroy {
      *
      * @param silent if set to true all items will remain in the list and the user will not dierclty see that the related list is loading
      */
-    public getData(silent: boolean = false) {
+    public getData(silent: boolean = false): Observable<any>  {
+        let responseSubject = new Subject<any>();
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
-            return false;
+            return of(false);
         }
 
         // set that we are loading
@@ -309,8 +310,14 @@ export class relatedmodels implements OnDestroy {
 
                 // emit that a change has happened
                 // this.items$.emit(this.items);
+
+                // complete the Observable
+                responseSubject.next(true);
+                responseSubject.complete();
             }
         );
+
+        return responseSubject.asObservable();
     }
 
     /**
