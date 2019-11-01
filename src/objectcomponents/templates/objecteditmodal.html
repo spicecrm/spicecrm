@@ -7,7 +7,7 @@
             </button>
         </system-modal-header-right>
     </system-modal-header>
-    <system-modal-content [grow]="grow" margin="none" #modalContent viewprovider>
+    <system-modal-content [grow]="grow" margin="none" #modalContent>
         <div *ngIf="!showDuplicatesTable"  class="slds-grid">
             <div class="slds-grid--vertical slds-grow">
                 <object-edit-modal-dialog-container [module]="model.module"></object-edit-modal-dialog-container>
@@ -23,7 +23,7 @@
                 <object-record-messages-badge></object-record-messages-badge>
             </div>
             <div class="slds-col">
-                <object-action-container containerclass="slds-button-group-row" [actionset]="componentconfig.actionset"></object-action-container>
+                <object-action-container containerclass="slds-button-group-row" [actionset]="componentconfig.actionset" (actionemitter)="handleAction($event)"></object-action-container>
             </div>
         </div>
     </system-modal-footer>

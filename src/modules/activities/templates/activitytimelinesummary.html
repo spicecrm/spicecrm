@@ -1,0 +1,69 @@
+<div class="slds-page-header slds-grid slds-grid--align-spread">
+    <div class="slds-col">
+        <nav role="navigation" aria-label="Breadcrumbs">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                <li class="slds-breadcrumb__item slds-text-title_caps">
+                    <a href="javascript:void(0);" (click)="goModule()">{{language.getModuleName(parent.module)}}</a>
+                </li>
+                <li class="slds-breadcrumb__item slds-text-title_caps">
+                    <a href="javascript:void(0);" (click)="goModel()">{{parent.data.summary_text}}</a>
+                </li>
+                <li class="slds-breadcrumb__item slds-text-title_caps">
+                    <span class="slds-p-horizontal--x-small">{{language.getModuleName( 'History' )}}</span>
+                </li>
+            </ol>
+        </nav>
+        <div class="slds-col slds-align-bottom slds-p-top--xxx-small">
+            <!--p class="slds-text-body--small">Sub Header</p-->
+            <activity-timeline-summary-aggregates module="History"></activity-timeline-summary-aggregates>
+        </div>
+    </div>
+    <div class="slds-page-header__col-actions slds-grid">
+        <system-input-delayed *ngIf="componentconfig.usefts" [(ngModel)]="searchterm" delay="1000"></system-input-delayed>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+                <activity-timeline-filter class="slds-align--absolute-center slds-button slds-button--icon slds-button--icon-border-filled"></activity-timeline-filter>
+            </div>
+        </div>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+                <button class="slds-button slds-button--icon slds-button--icon-border-filled">
+                    <system-button-icon icon="refresh" (click)="reload()"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-grid" >
+    <div #listContainer tobottom class="slds-size--1-of-1 slds-medium-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
+        <!--div class="slds-border--bottom slds-p-vertical--small slds-grid">
+            <activity-timeline-filter class="slds-col--bump-left slds-p-horizontal--xxx-small"></activity-timeline-filter>
+        </div-->
+        <ul class="slds-timeline">
+            <li class="slds-p-around--x-small" *ngFor="let activity of activities" (click)="setActivitiy(activity)" [ngClass]="{'slds-theme--default slds-border--bottom slds-border--top' : activity.id == activityid}">
+                <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
+            </li>
+        </ul>
+        <!-- stencils when loading -->
+        <ul class="slds-timeline" *ngIf="activitiyTimeLineService.activities.History.loading">
+            <li class="slds-p-around--x-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.8" class="slds-p-around--x-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.6" class="slds-p-around--x-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.4" class="slds-p-around--x-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+            <li style="opacity: 0.2" class="slds-p-around--x-small">
+                <activitytimeline-stencil></activitytimeline-stencil>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="displayDetailsPane" class="slds-size--2-of-3" tobottom>
+        <activity-timeline-summary-item-view *ngIf="activitymodule" [module]="activitymodule" [id]="activityid" [data]="activitydata"></activity-timeline-summary-item-view>
+    </div>
+</div>

@@ -3,16 +3,16 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {VersionManagerService} from '../../services/versionmanager.service';
 
 
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
-
+import {ModuleActivities} from "../../modules/activities/moduleactivities";
 
 import /*embed*/ {Home} from './components/home';
 import /*embed*/ {HomeAssistant} from './components/homeassistant';
@@ -30,7 +30,8 @@ import /*embed*/ {HomeDashboardSetContainer} from './components/homedashboardset
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        ModuleActivities
     ],
     declarations: [
         Home,

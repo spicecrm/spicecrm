@@ -119,8 +119,10 @@ export class fieldRelate extends fieldGeneric implements OnInit {
      * @param related the related record
      */
     private setRelated(related) {
-        this.model.setField(this.relateIdField, related.id);
-        this.model.setField(this.relateNameField, related.text);
+        let newFields = {};
+        newFields[this.relateIdField] = related.id;
+        newFields[this.relateNameField] = related.text;
+        this.model.setFields(newFields);
         if (this.fieldconfig.executeCopyRules == 2) {
             this.executeCopyRules(related.id);
         } else if (this.fieldconfig.executeCopyRules == 1) {

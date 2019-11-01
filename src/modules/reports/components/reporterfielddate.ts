@@ -28,7 +28,7 @@ export class ReporterFieldDate {
     get fieldvalue() {
         try {
             if (this.record[this.field.fieldid]) {
-                let date = new moment(this.record[this.field.fieldid]);
+                let date = new moment.utc(this.record[this.field.fieldid]);
                 if (date.isValid()) {
                     return date.format(this.userpreferences.getDateFormat());
                 } else {

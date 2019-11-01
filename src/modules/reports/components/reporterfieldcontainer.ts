@@ -56,6 +56,10 @@ export class ReporterFieldContainer implements AfterViewInit {
                 case 'enum':
                     fieldType = 'ReporterFieldEnum';
                     break;
+                case "datetimecombo":
+                case "datetime":
+                    fieldType = 'ReporterFieldDateTime';
+                    break
                 case 'date':
                     fieldType = 'ReporterFieldDate';
                     break;
@@ -78,10 +82,10 @@ export class ReporterFieldContainer implements AfterViewInit {
     }
 
     get recordModule() {
-        if (this.hasLink) {
+        if (this.hasLink && this.record) {
             // route to the proper module
-            if (this.field.linkinfo && this.field.linkinfo.root) {
-                return this.field.linkinfo.root.module;
+            if (this.field.linkinfo && this.field.linkinfo[this.record.unionid]) {
+                return this.field.linkinfo[this.record.unionid].module;
             } else {
                 return this.record.sugarRecordModule;
             }
@@ -91,10 +95,10 @@ export class ReporterFieldContainer implements AfterViewInit {
     }
 
     get recordId() {
-        if (this.hasLink) {
+        if (this.hasLink && this.record) {
             // route to the proper module
-            if (this.field.linkinfo && this.field.linkinfo.root) {
-                return this.record[this.field.linkinfo.root.idfield];
+            if (this.field.linkinfo && this.field.linkinfo[this.record.unionid]) {
+                return this.record[this.field.linkinfo[this.record.unionid].idfield];
             } else {
                 return this.record.sugarRecordId;
             }

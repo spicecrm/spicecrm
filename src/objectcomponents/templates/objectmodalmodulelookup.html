@@ -1,6 +1,6 @@
 <system-modal size="large">
     <system-modal-header
-            (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', model.module)}}</system-modal-header>
+            (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
     <system-modal-content #modalcontent margin="none">
         <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
             <div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small">
@@ -8,7 +8,7 @@
                     <system-utility-icon icon="search" size="x-small"
                                          addclasses="slds-input__icon"></system-utility-icon>
                     <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm"
-                           (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(model.module)">
+                           (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
                 </div>
             </div>
             <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
@@ -24,7 +24,7 @@
                        [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}"
                        role="listbox">
                     <thead>
-                    <tr>
+                    <tr [modelProvider]="{module: modellist.module}">
                         <th *ngIf="multiselect" class="slds-cell-shrink" scope="col">
                             <label class="slds-checkbox">
                                 <input type="checkbox" name="options" [(ngModel)]="checkbox"/>
@@ -32,7 +32,7 @@
                                 <span class="slds-assistive-text">Select All</span>
                             </label>
                         </th>
-                        <th *ngFor="let displayField of displayFields" scope="col">
+                        <th *ngFor="let displayField of displayFields" scope="col" >
                             <div class="slds-truncate" title="Account Name">
                                 <field-label [fieldname]="displayField.field"></field-label>
                             </div>
