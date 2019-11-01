@@ -159,6 +159,8 @@ export class model implements OnDestroy {
 
     private modelRegisterId: number;
 
+    public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
+
     constructor(
         public backend: backend,
         private broadcast: broadcast,
@@ -263,6 +265,18 @@ export class model implements OnDestroy {
     }
 
     /**
+     * returns the field access status if one is set
+     *
+     * @param field the field to be checked
+     */
+    public checkFieldAccess(field): boolean {
+        if (this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1') {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * navigates to the detasil view route of the given model
      */
     public goDetail() {
@@ -308,7 +322,7 @@ export class model implements OnDestroy {
                 responseSubject.complete();
 
                 if (trackAction != "") {
-                    this.recent.trackItem(this.module, this.id, this.data.summary_text);
+                    this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, "init");
@@ -759,7 +773,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress)
             .subscribe(
                 res => {
                     this.data = res;
@@ -936,6 +950,13 @@ export class model implements OnDestroy {
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
                         retSubject.next(response);
+
+                        // if we save .. add to the last viewed
+                        if (response == 'save' || response == 'savegodetail') {
+                            this.recent.trackItem(this.module, this.id, this.data);
+                        }
+
+                        // complete the subject
                         retSubject.complete();
                     });
                 }

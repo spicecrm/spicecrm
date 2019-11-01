@@ -15,11 +15,7 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-parent',
-    templateUrl: './src/objectfields/templates/fieldparent.html',
-    providers: [popup],
-    host: {
-        // '(document:click)': 'this.onClick($event)'
-    }
+    templateUrl: './src/objectfields/templates/fieldparent.html'
 })
 export class fieldParent extends fieldGeneric implements OnInit {
     private clickListener: any;
@@ -28,12 +24,11 @@ export class fieldParent extends fieldGeneric implements OnInit {
     private parentSearchOpen: boolean = false;
     private parentSearchTerm: string = '';
 
-    private recentItems: Array<any> = [];
+    private recentItems: any[] = [];
 
     constructor(
         public model: model,
         public view: view,
-        public popup: popup,
         public broadcast: broadcast,
         public language: language,
         public metadata: metadata,
@@ -43,9 +38,6 @@ export class fieldParent extends fieldGeneric implements OnInit {
         private modal: modal
     ) {
         super(model, view, language, metadata, router);
-
-        // subscribe to the popup handler
-        this.popup.closePopup$.subscribe(() => this.closePopups());
 
         // subscriber to the broadcast when new model is added from the model
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
@@ -69,6 +61,10 @@ export class fieldParent extends fieldGeneric implements OnInit {
 
     get parentId() {
         return this.model.getField(this.parentIdField);
+    }
+
+    get displayModuleIcon() {
+        return this.fieldconfig.hidemoduleicon ? false : true;
     }
 
     public ngOnInit() {
@@ -182,12 +178,6 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.parentSearchOpen = true;
         this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
     }
-
-    /*
-    private goParent() {
-        this.router.navigate(['/module/' + this.model.getField(this.parentTypeField) + '/' + this.model.getField(this.parentIdField)]);
-    }
-    */
 
     private searchWithModal() {
         this.parentSearchOpen = false;

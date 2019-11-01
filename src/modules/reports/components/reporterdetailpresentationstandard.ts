@@ -32,7 +32,12 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
     private isLoading: boolean = true;
 
-    constructor(private language: language, private model: model, private backend: backend,  private reporterconfig: reporterconfig) {
+    private sortData: any = {
+        sortField: '',
+        sortDirection: ''
+    }
+
+    constructor(private language: language, private model: model, private backend: backend, private reporterconfig: reporterconfig) {
         this.reporterconfig.refresh$.subscribe(event => {
             this.getPresentation();
         });
@@ -48,10 +53,27 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     }
 
 
+    private isSortable(field) {
+        return field.sort && field.sort != '-';
+    }
+
+    /**
+     * gets additonalö display classes for the header field
+     *
+     * @param field
+     */
     private displayClasses(field) {
         let classes = [];
 
-        if (field.sortable) classes.push('slds-is-sortable');
+        if (this.isSortable(field)) {
+            classes.push('slds-is-sortable');
+            if (field.fieldid == this.sortData.sortField) {
+                classes.push('slds-is-sorted');
+                if (this.sortData.sortDirection == 'asc') {
+                    classes.push('slds-is-sorted_asc');
+                }
+            }
+        }
 
         switch (field.type) {
             case 'currency':
@@ -64,6 +86,24 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         }
 
         return classes.join(' ');
+    }
+
+    private toggleSearch(field) {
+        if (this.isSortable(field)) {
+            if (this.sortData.sortField == field.fieldid) {
+                if (this.sortData.sortDirection == 'asc') {
+                    this.sortData.sortDirection = 'desc';
+                } else {
+                    this.sortData.sortField = '';
+                    this.sortData.sortDirection = '';
+                }
+                this.getPresentation();
+            } else {
+                this.sortData.sortField = field.fieldid;
+                this.sortData.sortDirection = 'asc';
+                this.getPresentation();
+            }
+        }
     }
 
     // todo : fix this for scrolling with a fixed table header
@@ -85,9 +125,20 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
     }
 
+    /**
+     * returns the set listentries from the pres params if set ... by default 25
+     */
+    get listEntries() {
+        try {
+            return this.presParams.pluginData.standardViewProperties.listEntries;
+        } catch (e) {
+            return 25;
+        }
+    }
+
     get displayRecords() {
-        let startRecords = (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries + 1;
-        let endRecords = this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries;
+        let startRecords = (this.currentPage - 1) * this.listEntries + 1;
+        let endRecords = this.currentPage * this.listEntries;
 
         return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
     }
@@ -112,13 +163,23 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             });
         }
 
-        this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
-            start: (this.currentPage - 1) * this.presParams.pluginData.standardViewProperties.listEntries,
-            limit: this.presParams.pluginData.standardViewProperties.listEntries,
+        let body = {
+            start: (this.currentPage - 1) * this.listEntries,
+            limit: this.listEntries,
             whereConditions: JSON.stringify(whereConditions),
             parentbeanId: this.model.getField('parentBeanId'),
-            parentbeanModule: this.model.getField('parentBeanModule')
-        }).subscribe((presData: any) => {
+            parentbeanModule: this.model.getField('parentBeanModule'),
+            sort: undefined
+        };
+
+        if (this.sortData.sortField) {
+            body.sort = JSON.stringify([{
+                direction: this.sortData.sortDirection.toUpperCase(),
+                property: this.sortData.sortField
+            }]);
+        }
+
+        this.backend.postRequest(`KReporter/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
 
             // get field width
             this.totalWidth = 0;
@@ -135,7 +196,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
     private getFields() {
         try {
-            return this.presData.reportmetadata.fields;
+            return this.presData.reportmetadata.fields.filter(field => field.display == 'yes');
         } catch (e) {
             return [];
         }
@@ -165,17 +226,28 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return this.currentPage <= 1;
     }
 
+
+    private firstPage() {
+        this.currentPage = 1;
+        this.getPresentation();
+    }
+
     private prevPage() {
         this.currentPage--;
         this.getPresentation();
     }
 
     get nextDisabled() {
-        return this.currentPage * this.presParams.pluginData.standardViewProperties.listEntries >= this.presData.count;
+        return this.currentPage * this.listEntries >= this.presData.count;
     }
 
     private nextPage() {
         this.currentPage++;
+        this.getPresentation();
+    }
+
+    private lastPage() {
+        this.currentPage = Math.ceil(this.totalRecords / this.listEntries);
         this.getPresentation();
     }
 }

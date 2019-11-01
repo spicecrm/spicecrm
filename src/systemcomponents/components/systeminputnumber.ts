@@ -42,17 +42,15 @@ export class SystemInputNumber implements ControlValueAccessor {
         this.textValue = value;
     }
 
-    private onChange(val: string): void {
-    };
+    private onChange(val: string): void { 1; }
 
-    private onTouched(): void {
-    };
+    private onTouched(): void { 1; }
 
     // ControlValueAccessor Interface <<
 
     private onBlur() {
         let pref = this.userpreferences.toUse;
-        let defSigDigits = this.precision || pref.default_currency_significant_digits;
+        let defSigDigits = this.precision === undefined ? pref.default_currency_significant_digits : this.precision;
         let numberValue: any = this.textValue.split(pref.num_grp_sep).join('');
         numberValue = numberValue.split(pref.dec_sep).join('.');
         numberValue = isNaN(parseFloat(numberValue)) ? undefined : (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
@@ -68,6 +66,6 @@ export class SystemInputNumber implements ControlValueAccessor {
         }
         let val = parseFloat(numValue);
         if (isNaN(val)) return '';
-        return this.userpreferences.formatMoney(val);
+        return this.userpreferences.formatMoney(val, this.precision);
     }
 }

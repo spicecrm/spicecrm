@@ -1,7 +1,4 @@
-<div *ngIf="calendar.isLoading" class="slds-align_absolute-center slds-border--left slds-theme--default" style="height: 100%; opacity: .7">
-    <system-spinner size="30"></system-spinner>
-</div>
-<div *ngIf="!calendar.isLoading" style="height: 100%" class="slds-scrollable--y">
+<div style="height: 100%" class="slds-scrollable--y">
     <div *ngFor="let day of allEvents; trackBy: trackByFnDate" class="slds-grid slds-border--bottom">
         <div class="slds-border--right slds-p-around--xx-small slds-size--1-of-4">
             <div>{{getShortDay(day.date)}}</div>

@@ -12,7 +12,7 @@ import {
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
-import {broadcast} from "../../../services/broadcast.service";
+import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 
 /**
@@ -58,12 +58,19 @@ export class SpicePathWithCoaching {
      * holds the current active stage if the user clicks on another stage
      */
     private activeStage: string;
+
     /**
      * holds current results for the checks
      */
     private beanStagesChecksResults: any[];
 
-    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend) {
+    private componentconfig: any = {};
+
+    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend, private metadata: metadata) {
+        this.componentconfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+        if (this.componentconfig && this.componentconfig.coachingVisible) {
+            this.coachingVisible = this.componentconfig.coachingVisible;
+        }
     }
 
     /**

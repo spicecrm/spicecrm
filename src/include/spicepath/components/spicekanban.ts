@@ -28,6 +28,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
     private componentconfig: any = {};
     private modellistsubscribe: any = undefined;
     private requestedFields: string[] = [];
+    private stages: any[] = [];
 
     /**
      * holds an array of currencies
@@ -45,12 +46,22 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
     }
 
+    /**
+     * load ths stage data and build the buckts we are searching for to build the kanban board
+     */
     public ngOnInit() {
         let confData = this.configuration.getData('spicebeanguides')[this.model.module];
         let stages = confData.stages;
 
         let bucketitems = [];
         for (let stage of stages) {
+            // if not in kanban continue
+            if (stage.stagedata.not_in_kanban == '1') continue;
+
+            // push to stages
+            this.stages.push(stage);
+
+            // push the bucket item
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
                 value: 0,
@@ -71,33 +82,25 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellist.getListData(this.requestedFields, false);
     }
 
+    /**
+     * destry any subscriptuon and reset the modellist buckets
+     */
     public ngOnDestroy() {
+        // unsubscribe
         this.modellistsubscribe.unsubscribe();
 
+        // reset buckets
         this.modellist.buckets = {};
     }
 
     /**
-     * returns the stages for the module from teh configuration service
+     * gets the data for a given stage
+     *
+     * @param stage the stage
      */
-    get stages() {
-        try {
-            return this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-
     private getStageData(stage): any {
-        let stagedata = [];
-        this.stages.some(thisStage => {
-            if (stage == thisStage.stage) {
-                stagedata = thisStage.stagedata;
-                return;
-            }
-        });
-        return stagedata;
+        let stagedata = this.stages.find(thisStage => stage == thisStage.stage);
+        return stagedata.stagedata;
     }
 
 
@@ -106,20 +109,36 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellist.getListData(this.requestedFields);
     }
 
-    private showSum() {
+    /**
+     * a getter retruning if the sum should be shown
+     */
+    get showSum() {
         return this.componentconfig.sum !== '';
     }
 
+    /**
+     * the size class
+     */
     get sizeClass() {
         return 'slds-size--1-of-' + this.stages.length;
     }
 
+    /**
+     * get the count from the bucket in the modellist
+     *
+     * @param stagedata
+     */
     private getStageCount(stagedata) {
         let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
         let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
         return item ? item.total : 0;
     }
 
+    /**
+     * get the sum for the stage bucket
+     *
+     * @param stagedata
+     */
     private getStageSum(stagedata) {
         let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
         let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
@@ -127,6 +146,11 @@ export class SpiceKanban implements OnInit, OnDestroy {
         return item && item.value ? this.userpreferences.formatMoney(item.value, 0) : 0;
     }
 
+    /**
+     * get all items for a stage
+     *
+     * @param stage
+     */
     private getStageItems(stage) {
         let stageData = this.getStageData(stage);
         let items: any[] = [];
@@ -138,14 +162,36 @@ export class SpiceKanban implements OnInit, OnDestroy {
         return items;
     }
 
+    /**
+     * format the number as money
+     *
+     * @param amount the amount
+     */
     private getMoney(amount) {
         return this.userpreferences.formatMoney(parseFloat(amount), 0);
     }
 
+    /**
+     * react to the scroll event and if possible reload the list
+     *
+     * @param e
+     */
     private onScroll(e) {
         let element = this.kanbanContainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            this.modellist.loadMoreList();
+
+            // check if there are still buckets that have potentially more items
+            let loadmore = false;
+            for (let bucket of this.modellist.buckets.bucketitems) {
+                if (bucket.total > bucket.items) {
+                    loadmore = true;
+                    break;
+                }
+            }
+
+            if (loadmore) {
+                this.modellist.loadMoreList();
+            }
         }
     }
 
@@ -177,5 +223,4 @@ export class SpiceKanban implements OnInit, OnDestroy {
         });
         return currencySymbol;
     }
-
 }

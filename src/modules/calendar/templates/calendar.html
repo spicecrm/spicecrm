@@ -6,7 +6,7 @@
                 <system-input-date-picker [setDate]="calendarDate" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
                 <calendar_other_calendars_monitor (googleIsVisible$)="handleGoogleIsVisible($event)" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
             </div>
-            <div [ngStyle]="sheetStyle">
+            <div [ngStyle]="sheetStyle" spiceOverlayLoadingSpinner [isLoading]="calendar.isLoading">
                 <calendar-sheet-day
                         *ngIf="sheetType === 'Day'"
                         [googleisvisible]="googleIsVisible"
