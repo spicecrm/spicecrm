@@ -1,7 +1,7 @@
 <div class="slds-height_full">
     <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout slds-border--top">
         <thead>
-        <tr class="slds-text-title--caps">
+        <tr class="slds-text-title--caps slds-table--col-bordered">
             <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
                 <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
                     <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
@@ -17,6 +17,11 @@
         </div>
         <ng-container *ngFor="let groupByValue of groupByValues">
             <table *ngIf="!isLoading"  class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout slds-m-bottom--medium">
+                <thead>
+                    <tr>
+                        <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)" class="slds-p-around_none"></th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <td [attr.colspan]="getFields().length" class="slds-theme--shade slds-text-title_bold">
@@ -38,7 +43,7 @@
                             </td>
                         </tr>
                     </ng-container>
-                    <tr>
+                    <tr *ngIf="hasSummary">
                         <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)" class="slds-text-title_bold">
                             <reporter-field-container [field]="field" [record]="groupByValue.totalRecord"></reporter-field-container>
                         </td>
@@ -47,7 +52,7 @@
             </table>
         </ng-container>
     </div>
-    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout slds-no-row-hover">
+    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout slds-no-row-hover" [ngClass]="{'slds-hide': !hasSummary}">
         <tbody>
         <tr class="slds-theme--info">
             <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)"  class="slds-text-title_bold">

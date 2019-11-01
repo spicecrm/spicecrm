@@ -21,7 +21,7 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
 
 @Component({
     templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
-    providers: [view, model, modellist],
+    providers: [view, modellist],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
         '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
@@ -29,10 +29,10 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
 })
 export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
 
-    @Output() private additem: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public language: language, public model: model, public modellist: modellist, public metadata: metadata) {
-        super(language, model, modellist, metadata);
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public model: model) {
+        super(language, modellist, metadata);
 
         // set module to Products
         this.module = 'Products';

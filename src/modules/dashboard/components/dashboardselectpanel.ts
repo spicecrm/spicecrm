@@ -1,7 +1,15 @@
 /**
  * @module ModuleDashboard
  */
-import {Component, EventEmitter, Output} from '@angular/core';
+import {
+    Component,
+    ComponentFactoryResolver,
+    ComponentRef,
+    EventEmitter,
+    Injector,
+    Output,
+    ReflectiveInjector, ViewContainerRef
+} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
@@ -11,14 +19,16 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({
     selector: 'dashboard-select-panel',
-    templateUrl: './src/modules/dashboard/templates/dashboardselectpanel.html'
+    templateUrl: './src/modules/dashboard/templates/dashboardselectpanel.html',
+    providers: [model]
 })
 export class DashboardSelectPanel {
 
     private dashboardFilter: string = '';
     @Output() private hide: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() private dashboardSelect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private metadata: metadata, private userpreferences: userpreferences, private language: language, private model: model, private modellist: modellist, private dashboardlayout: dashboardlayout) {
+    constructor(private vcr: ViewContainerRef,private metadata: metadata, private userpreferences: userpreferences, private language: language, private model: model, private modellist: modellist, private dashboardlayout: dashboardlayout, private cfr: ComponentFactoryResolver) {
 
     }
 
@@ -32,6 +42,10 @@ export class DashboardSelectPanel {
         return dashboards;
     }
 
+    get canAdd() {
+        return this.metadata.checkModuleAcl('Dashboards', 'create');
+    }
+
     private getActiveClass(id) {
         return id == this.dashboardlayout.dashboardId ? 'slds-is-active' : '';
     }
@@ -39,17 +53,8 @@ export class DashboardSelectPanel {
     private setDashboard(dashboard) {
         // save the preference
         this.userpreferences.setPreference('last_dashboard', dashboard.id);
-        this.dashboardlayout.loadDashboard(dashboard.id, dashboard.name);
+        this.dashboardSelect.emit(dashboard.id);
         this.hidepanel();
-    }
-
-    private addDashboard() {
-        if (this.metadata.checkModuleAcl('Dashboards', 'create')) {
-            this.model.module = 'Dashboards';
-            this.model.id = this.model.utils.generateGuid();
-            this.model.initialize();
-            this.model.addModel();
-        }
     }
 
     private hidepanel() {

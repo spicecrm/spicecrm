@@ -115,6 +115,8 @@ import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
+import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
+import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -226,7 +228,10 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemMultipleSelect,
         SystemSelectUOM,
         SystemModuleTree,
-        SystemModuleTreeItem
+        SystemModuleTreeItem,
+        SystemSelectUOM,
+        SystemInputMedia,
+        SystemInputTimezone
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -310,8 +315,11 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression,
         SystemSelectUOM,
+        SystemInputMedia,
+        SystemSelectUOM,
         SystemModuleTree,
-        SystemModuleTreeItem
+        SystemModuleTreeItem,
+        SystemInputTimezone
     ]
 })
 export class SystemComponents {

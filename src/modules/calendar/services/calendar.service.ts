@@ -130,7 +130,7 @@ export class calendar implements OnDestroy {
     public refresh() {
         this.currentStart = {};
         this.currentEnd = {};
-        this.calendarDate = new moment(this.calendarDate);
+        this.triggerSheetReload();
     }
 
     /*
@@ -194,10 +194,11 @@ export class calendar implements OnDestroy {
     public loadEvents(start, end, calendar = this.owner, users = []) {
         let userId = users.length > 0 ? 'users' : calendar;
         if (this.doReload(start, end, userId)) {
-            this.isLoading = true;
+            // use setTimeout to prevent Angular change detection error
+            window.setTimeout(()=> this.isLoading = true);
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {start: start.format(format), end: end.format(format), users};
+            let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
             let endPoint = users.length > 0 ? 'calendar/users/' : 'calendar/';
             this.currentEnd[userId] = end;
             this.currentStart[userId] = start;
@@ -208,11 +209,11 @@ export class calendar implements OnDestroy {
                     this.isLoading = false;
                     for (let event of events) {
                         if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
-                        event.data = this.modelutilities.backendModel2spice(event.module, event.data);
+                        // event.data = this.modelutilities.backendModel2spice(event.module, event.data);
                         switch (event.type) {
                             case 'event':
-                                event.start = moment(event.start).tz(this.timeZone).add(moment().utcOffset(), 'm');
-                                event.end = moment(event.end).tz(this.timeZone).add(moment().utcOffset(), 'm');
+                                event.start = moment.utc(event.start).tz(this.timeZone);
+                                event.end = moment.utc(event.end).tz(this.timeZone);
                                 event.isMulti = +event.end.diff(event.start, 'days') > 0;
                                 event.color = this.eventColor;
                                 break;
@@ -269,7 +270,8 @@ export class calendar implements OnDestroy {
             return of([]);
         }
         if (this.doReload(startDate, endDate, "google")) {
-            this.isLoading = true;
+            // use setTimeout to prevent Angular change detection error
+            window.setTimeout(()=> this.isLoading = true);
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
@@ -333,7 +335,7 @@ export class calendar implements OnDestroy {
         if (save) {
             this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
         }
-        this.calendarDate = new moment(this.calendardate);
+        this.triggerSheetReload();
     }
 
     /*
@@ -532,15 +534,18 @@ export class calendar implements OnDestroy {
             let data = message.messagedata.data;
             if (message.messagetype == 'timezone.changed') {
                 this.timeZone = message.messagedata;
-                this.calendarDate = moment(this.calendarDate);
+                this.triggerSheetReload();
             }
-            if (module == 'Meetings' || module == 'Calls') {
+            if (this.modules.some(thisModule => thisModule.name == module)) {
                 switch (message.messagetype) {
                     case "model.save":
                         let uid = data.assigned_user_id;
-                        if (!this.calendars[uid]) {
+                        let isOtherUser = this.calendars.users && this.calendars.users.some(user => user.id == uid);
+                        if (!this.calendars[uid] && !isOtherUser) {
                             return;
                         }
+
+                        if (isOtherUser) uid = 'users';
                         if (!this.modifyEvent(id, module, data, uid)) {
                             if (this.isValid(data.date_end) && this.isValid(data.date_start)) {
                                 this.calendars[uid].push({
@@ -552,7 +557,7 @@ export class calendar implements OnDestroy {
                                     isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
                                     data: data
                                 });
-                                this.calendarDate = moment(this.calendarDate);
+                                this.triggerSheetReload();
                             }
                         }
                         break;
@@ -561,7 +566,6 @@ export class calendar implements OnDestroy {
                             return;
                         }
                         this.deleteEvent(id, module);
-                        this.calendarDate = moment(this.calendarDate);
                         break;
                 }
             }
@@ -587,11 +591,9 @@ export class calendar implements OnDestroy {
         }
         let event = this.calendars[uid].find(thisevent => thisevent.id == id);
         if (event) {
-            event.data = data;
             event.start = data.date_start;
             event.end = data.date_end;
             event.isMulti = +data.date_end.diff(data.date_start, 'days') > 0;
-            this.calendarDate = moment(this.calendarDate);
             return true;
         } else {
             return false;
@@ -607,7 +609,7 @@ export class calendar implements OnDestroy {
         this.calendars[this.owner].some(event => {
             if (event.id == id && module == event.module) {
                 this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
-                this.calendarDate = moment(this.calendarDate);
+                this.triggerSheetReload();
                 return true;
             }
         });
@@ -631,7 +633,7 @@ export class calendar implements OnDestroy {
         this.weekDaysCount = +preferences.week_days_count || this.weekDaysCount;
         this.startHour = +preferences.calendar_day_start_hour || this.startHour;
         this.endHour = +preferences.calendar_day_end_hour || this.endHour;
-        this.calendarDate = moment(this.calendarDate);
+        this.triggerSheetReload();
     }
 
     /*
@@ -655,7 +657,11 @@ export class calendar implements OnDestroy {
     * @return void
     */
     private subscribeToLanguage() {
-        let languageSubscriber = this.language.currentlanguage$.subscribe(lang => this.calendarDate = moment(this.calendarDate));
+        let languageSubscriber = this.language.currentlanguage$.subscribe(lang => this.triggerSheetReload());
         this.subscriptions.add(languageSubscriber);
+    }
+
+    private triggerSheetReload() {
+        this.calendarDate = moment(this.calendarDate);
     }
 }

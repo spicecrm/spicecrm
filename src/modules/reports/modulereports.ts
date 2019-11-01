@@ -33,6 +33,7 @@ import /*embed*/ {ReporterFieldStandard} from "./components/reporterfieldstandar
 import /*embed*/ {ReporterFieldCurrency} from "./components/reporterfieldcurrency";
 import /*embed*/ {ReporterFieldEnum} from "./components/reporterfieldenum";
 import /*embed*/ {ReporterFieldDate} from "./components/reporterfielddate";
+import /*embed*/ {ReporterFieldDateTime} from "./components/reporterfielddatetime";
 import /*embed*/ {ReporterFieldColor} from "./components/reporterfieldcolor";
 
 import /*embed*/ {ReporterIntegrationExportButton} from "./components/reporterintegrationexportbutton";
@@ -80,6 +81,7 @@ declare var moment: any;
         ReporterFieldCurrency,
         ReporterFieldEnum,
         ReporterFieldDate,
+        ReporterFieldDateTime,
         ReporterFieldColor,
         ReporterIntegrationExportButton,
         ReporterIntegrationExportMask,

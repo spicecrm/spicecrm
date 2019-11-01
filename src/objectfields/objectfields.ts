@@ -71,6 +71,7 @@ import /*embed*/ {fieldBarcode} from './components/fieldbarcode';
 import /*embed*/ {fieldBarcodeRenderer} from './components/fieldbarcoderenderer';
 import /*embed*/ {fieldRating} from './components/fieldrating';
 import /*embed*/ {fieldLookupRecent} from './components/fieldlookuprecent';
+import /*embed*/ {fieldLookupRecentItem} from './components/fieldlookuprecentitem';
 import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
 import /*embed*/ {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
@@ -109,6 +110,9 @@ import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
 import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
 import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
 import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
+import /*embed*/ {fieldTags} from './components/fieldtags';
+import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
+import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
 
 /**
 * @ignore
@@ -173,6 +177,7 @@ declare var _: any;
         fieldModifiedBy,
         fieldLookup,
         fieldLookupRecent,
+        fieldLookupRecentItem,
         fieldLookupSearch,
         fieldLookupSearchItem,
         fieldLookupSearchAdd,
@@ -224,7 +229,10 @@ declare var _: any;
         fieldStylesheetID,
         fieldUnitsOfMeasure,
         fieldQuantity,
-        fieldQuestionnaireEvaluation
+        fieldQuestionnaireEvaluation,
+        fieldTags,
+        fieldRelatedDetails,
+        fieldRelatedDetailsContainer
     ],
     exports: [
         fieldSet,
@@ -241,7 +249,8 @@ declare var _: any;
         fieldLookup,
         fieldLookupRecent,
         fieldLookupSearch,
-        fieldLookupSearchAdd
+        fieldLookupSearchAdd,
+        fieldTags
     ]
 })
 export class ObjectFields {

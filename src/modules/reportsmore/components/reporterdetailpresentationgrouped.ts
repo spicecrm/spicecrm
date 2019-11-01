@@ -22,7 +22,7 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
 
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
     @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
-    @ViewChild('tablesummary', {read: ViewContainerRef, static: true}) private tablesummary: ViewContainerRef;
+    @ViewChild('tablesummary', {read: ViewContainerRef, static: false}) private tablesummary: ViewContainerRef;
     @ViewChild('tablefooter', {read: ViewContainerRef, static: true}) private tablefooter: ViewContainerRef;
 
     private presParams: any = {};
@@ -37,6 +37,7 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
     private groupByValues: any[] = [];
     private totalRecord: {};
     private reportFields: any[] = [];
+    private hasSummary: boolean = false;
 
     constructor(private metadata: metadata, private model: model, private backend: backend, private reporterconfig: reporterconfig, private language: language) {
         this.reporterconfig.refresh$.subscribe(event => {
@@ -78,6 +79,7 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
 
     public ngOnInit() {
         this.presParams = this.model.getField('presentation_params');
+
     }
 
     public ngAfterViewInit() {
@@ -105,9 +107,15 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
 
     // todo : fix this for scrolling with a fixed table header
     private getContainerStyle(): any {
+        // the header element
         let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
-        let rects = this.tablesummary.element.nativeElement.getBoundingClientRect();
+
+        // only if the report has a summary .. other wise returna simple element with property height is 0
+        let rects = this.hasSummary ? this.tablesummary.element.nativeElement.getBoundingClientRect() : {height: 0};
+
+        // the footer element
         let rectf = this.tablefooter.element.nativeElement.getBoundingClientRect();
+
         return {
             height: 'calc(100% - ' + (rects.height + recth.height + rectf.height) + 'px)'
         };
@@ -156,8 +164,15 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
             // set the pres data
             this.presData = presData;
 
+            // check if we have a summary to be displayed
+            let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
+            this.hasSummary = fields.length > 0;
+
             // set the group by id if it is not set already
             if (!this._groupById) this._groupById = presData.reportmetadata.presentation_params.pluginData.groupedViewProperties.groupById;
+
+
+
 
             // rebuild the grouped sums and count
             this.rebuildGroups();
@@ -170,7 +185,7 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
 
     private getFields() {
         try {
-            return this.presData.reportmetadata.fields;
+            return this.presData.reportmetadata.fields.filter(field => field.display == 'yes');
         } catch (e) {
             return [];
         }
