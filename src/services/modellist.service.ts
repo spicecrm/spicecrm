@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
-import {Observable, Subject, of} from 'rxjs';
+import {Observable, Subject, of, BehaviorSubject} from 'rxjs';
 import {backend} from './backend.service';
 import {fts} from './fts.service';
 import {userpreferences} from './userpreferences.service';
@@ -24,33 +24,90 @@ interface geoSearch {
 
 @Injectable()
 export class modellist implements OnDestroy {
+
+    /**
+     * the module the list is for
+     */
     public module: string = '';
-    public modulefilter: string = '';
+
+    /**
+     * the current list type
+     */
     public listtype: string = 'all';
-    public listtype$: EventEmitter<string>;
+
+    /**
+     * a behavioural subject for the listtype to catch changes in other components
+     */
+    public listtype$: BehaviorSubject<string>;
+
+    /**
+     * the list data
+     */
     public listData: any = {
         list: [],
         totalcount: 0
     };
+
+    /**
+     * the selected items
+     */
     public listSelected: any = {
         type: '',
         items: []
     };
+
+    /**
+     * keeps the last retrieved fields
+     * ToDo: check if keep that
+     */
     public lastFields: any[] = [];
+
+    /**
+     * thje sortfield
+     */
     public sortfield: string = '';
-    public sortdirection: string = 'ASC';
+
+    /**
+     * the sort direction
+     */
+    public sortdirection: 'ASC'|'DESC' = 'ASC';
+
+    /**
+     * keeps the last loaded date
+     */
     public lastLoad: any = new moment();
 
+    /**
+     * the limit for loading the list
+     */
     public loadlimit: number = 50;
+
+    /**
+     * an indicator that the list is loading
+     */
     public isLoading: boolean = false;
 
-    public searchConditions: any[] = [];
+    // public searchConditions: any[] = [];
+
+    /**
+     * the search term
+     */
     public searchTerm: string = '';
-    public searchAggregates: any = {};
-    public searchGeo: geoSearch;
 
+    /**
+     * the set search aggregates as returned by the search
+     */
+    public searchAggregates: any;
 
+    /**
+     * the aggregate values the user selected
+     */
     public selectedAggregates: any[] = [];
+
+    /**
+     * search geo data
+     */
+    public searchGeo: geoSearch;
 
     /**
      * for the bucketed views
@@ -62,7 +119,7 @@ export class modellist implements OnDestroy {
      */
     public usecache: boolean = false;
 
-    public standardLists: Array<any> = [
+    public standardLists: any[] = [
         {
             id: 'all',
             type: 'all',
@@ -86,19 +143,6 @@ export class modellist implements OnDestroy {
                 enableDelete: false
             }
         }
-        // todo: implement recent
-        /*, {
-         id: 'recent',
-         type: 'recent',
-         basefilter: 'rec',
-         name: 'Recently Viewed <module>',
-         config: {
-         showSearch: false,
-         enableFilter: false,
-         enableDelete: false
-         }
-
-         }*/
     ];
     public listTypes: any[] = [];
     public currentList: any = {};
@@ -107,14 +151,14 @@ export class modellist implements OnDestroy {
     constructor(
         private broadcast: broadcast,
         private backend: backend,
-        private fts: fts,
+        // private fts: fts,
         private metadata: metadata,
         private language: language,
         private userpreferences: userpreferences,
         private session: session,
     ) {
-        // create the event Emitter
-        this.listtype$ = new EventEmitter<string>();
+        // create the event behaviour Subject
+        this.listtype$ = new BehaviorSubject<string>('all');
 
         // subscribe to the broadcast service
         this.serviceSubscriptions.push(
@@ -179,7 +223,7 @@ export class modellist implements OnDestroy {
         }
     }
 
-    public setSortDirection(direction: string) {
+    public setSortDirection(direction: 'ASC'|'DESC') {
         this.sortdirection = direction;
     }
 
@@ -233,7 +277,7 @@ export class modellist implements OnDestroy {
         }
 
         // emit the change
-        this.listtype$.emit(listType);
+        this.listtype$.next(listType);
     }
 
     public checkFilterChange(listType): boolean {
@@ -258,7 +302,7 @@ export class modellist implements OnDestroy {
 
     public aggregatesEnabled() {
         try {
-            return this.currentList.config.enableAggregates;
+            return this.searchAggregates ? true : false;
         } catch (e) {
             return false;
         }
@@ -327,7 +371,7 @@ export class modellist implements OnDestroy {
         return this.currentList.basefilter;
     }
 
-    public getFieldDefs(): Array<any> {
+    public getFieldDefs(): any[] {
         try {
             return JSON.parse(atob(this.currentList.fielddefs));
         } catch (e) {
@@ -335,11 +379,18 @@ export class modellist implements OnDestroy {
         }
     }
 
-    public getFilterDefs(): Array<any> {
+    /**
+     * returns the filterdefs for the list type .. if not an empty filterdefs object
+     */
+    public getFilterDefs(): any {
         try {
-            return JSON.parse(atob(this.currentList.filterdefs));
+            return JSON.parse(this.currentList.filterdefs);
         } catch (e) {
-            return [];
+            return {
+                logicaloperator: 'and',
+                groupscope: 'all',
+                conditions: []
+            };
         }
     }
 
@@ -377,8 +428,7 @@ export class modellist implements OnDestroy {
 
     public updateListType(listParams): Observable<boolean> {
         let retSub = new Subject<boolean>();
-        this.backend.setListType(this.currentList.id, this.module, listParams).subscribe((listdata: any) => {
-
+        this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
             this.listTypes.some(item => {
                 if (item.id == this.currentList.id) {
 
@@ -395,7 +445,7 @@ export class modellist implements OnDestroy {
             this.metadata.updateModuleListType(this.module, listParams);
 
             // emit since changes might impact others
-            this.listtype$.emit(this.currentList);
+            this.listtype$.next(this.currentList);
 
             // return message to Observable and complete it
             retSub.next(true);
@@ -451,7 +501,12 @@ export class modellist implements OnDestroy {
         return this.loadList(fields, checkSession);
     }
 
-    public showSearch(listType) {
+    /**
+     * @deprecated
+     *
+     * @param listType
+     */
+    public showSearch(listType?) {
         if (!listType) {
             listType = this.listtype;
         }
@@ -473,11 +528,7 @@ export class modellist implements OnDestroy {
             start: 0,
             limit: this.loadlimit,
             listid: this.currentList.id,
-            searchterm: this.searchTerm,
-            searchfields: {
-                join: 'AND',
-                conditions: this.searchConditions,
-            },
+            searchterm: this.searchTerm
         }).subscribe(
             res => {
                 this.listData = res;
@@ -502,7 +553,8 @@ export class modellist implements OnDestroy {
 
         this.isLoading = true;
 
-        if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
+        /*
+        if ( 1 == 2 && this.currentList.type == 'all' || this.currentList.type == 'owner') {
             this.fts.loadMore(this.buckets).subscribe(res => {
                 let newItems = [];
                 for (let item of res[this.module].hits) {
@@ -520,22 +572,29 @@ export class modellist implements OnDestroy {
 
             });
         } else {
-            this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
-                start: this.listData.list.length,
-                limit: this.loadlimit,
-                listid: this.currentList.id
-            })
-                .subscribe((res: any) => {
-                    this.listData.list = this.listData.list.concat(res.list);
-                    this.lastLoad = new moment();
+         */
+        let aggregates = {};
+        aggregates[this.module] = this.selectedAggregates;
+        this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
+            start: this.listData.list.length,
+            limit: this.loadlimit,
+            listid: this.currentList.id,
+            searchterm: this.searchTerm,
+            searchgeo: this.searchGeo,
+            aggregates: aggregates,
+            buckets: this.buckets
+        })
+            .subscribe((res: any) => {
+                this.listData.list = this.listData.list.concat(res.list);
+                this.lastLoad = new moment();
 
-                    this.isLoading = false;
+                this.isLoading = false;
 
-                    // save the current result
-                    this.setToSession();
+                // save the current result
+                this.setToSession();
 
-                });
-        }
+            });
+        // }
     }
 
     public loadMoreFilteredList() {
@@ -552,11 +611,7 @@ export class modellist implements OnDestroy {
             listid: this.currentList.id,
             sortfield: this.sortfield,
             sortdirection: this.sortdirection,
-            searchterm: this.searchTerm,
-            searchfields: {
-                join: 'AND',
-                conditions: this.searchConditions,
-            },
+            searchterm: this.searchTerm
         }).subscribe(
             res => {
                 this.listData.list = this.listData.list.concat(res);
@@ -596,7 +651,7 @@ export class modellist implements OnDestroy {
     }
 
     public getListTypes(base = true) {
-        let listTypes: Array<any> = [];
+        let listTypes: any[] = [];
 
         if (base) {
             for (let list of this.standardLists) {
@@ -724,7 +779,8 @@ export class modellist implements OnDestroy {
         if (checksession && this.getFromSession()) return of(true);
 
         this.isLoading = true;
-        if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
+        /*
+        if (1 == 2 && this.currentList.type == 'all' || this.currentList.type == 'owner') {
             let aggregates = {};
             aggregates[this.module] = this.selectedAggregates;
             this.fts.searchByModules({
@@ -738,7 +794,6 @@ export class modellist implements OnDestroy {
                     sortdirection: this.sortdirection.toLowerCase()
                 },
                 owner: this.currentList.type == 'owner' ? true : false,
-                modulefilter: this.modulefilter,
                 buckets: this.buckets
             }).subscribe(res => {
                 // console.log(res);
@@ -769,26 +824,34 @@ export class modellist implements OnDestroy {
                 retSub.complete();
             });
         } else {
-            this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
-                start: 0,
-                limit: this.loadlimit,
-                listid: this.currentList.id,
-                modulefilter: this.modulefilter
-            }).subscribe(
-                res => {
-                    this.listData = res;
-                    this.lastLoad = new moment();
+         */
+        let aggregates = {};
+        aggregates[this.module] = this.selectedAggregates;
+        this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
+            start: 0,
+            limit: this.loadlimit,
+            listid: this.currentList.id,
+            searchterm: this.searchTerm,
+            searchgeo: this.searchGeo,
+            aggregates: aggregates,
+            buckets: this.buckets
+        }).subscribe((res: any) => {
+                this.listData = res;
+                this.lastLoad = new moment();
 
-                    this.isLoading = false;
+                this.isLoading = false;
 
-                    // save the current result
-                    this.setToSession();
+                this.searchAggregates = res.aggregations;
+                this.buckets = res.buckets;
 
-                    retSub.next(true);
-                    retSub.complete();
-                }
-            );
-        }
+                // save the current result
+                this.setToSession();
+
+                retSub.next(true);
+                retSub.complete();
+            }
+        );
+
         return retSub.asObservable();
     }
 
@@ -800,7 +863,7 @@ export class modellist implements OnDestroy {
         if (selectedIds.length > 0) {
             this.backend.getLinkToDownload('/module/' + this.module + '/export', 'POST', {}, {
                 ids: selectedIds,
-                fields: fields ? fields :this.lastFields
+                fields: fields ? fields : this.lastFields
             }, {}).subscribe(
                 (downloadurl) => {
                     retSub.next(downloadurl);
@@ -808,36 +871,36 @@ export class modellist implements OnDestroy {
                 }
             );
         } else {
+            /*
             if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
                 let aggregates = {};
                 aggregates[this.module] = this.selectedAggregates;
-                this.fts.export(this.searchTerm, this.module, fields ? fields :this.lastFields, aggregates, {
-                        sortfield: this.sortfield,
-                        sortdirection: this.sortdirection.toLowerCase()
-                    }, this.currentList.type == 'owner' ? true : false,
-                    this.modulefilter).subscribe(res => {
+                this.fts.export(this.searchTerm, this.module, fields ? fields : this.lastFields, aggregates, {
+                    sortfield: this.sortfield,
+                    sortdirection: this.sortdirection.toLowerCase()
+                }, this.currentList.type == 'owner' ? true : false).subscribe(res => {
                     // console.log(res);
                     retSub.next(res);
                     retSub.complete();
                 });
             } else {
-                this.backend.getLinkToDownload(
-                    '/module/' + this.module + '/export',
-                    'POST',
-                    {},
-                    {
-                        listid: this.currentList.id,
-                        sortfield: this.sortfield,
-                        sortdirection: this.sortdirection,
-                        fields: fields ? fields :this.lastFields
-                    }
-                ).subscribe(
-                    (res) => {
-                        retSub.next(res);
-                        retSub.complete();
-                    }
-                );
-            }
+             */
+            this.backend.getLinkToDownload(
+                '/module/' + this.module + '/export',
+                'POST',
+                {},
+                {
+                    listid: this.currentList.id,
+                    sortfield: this.sortfield,
+                    sortdirection: this.sortdirection,
+                    fields: fields ? fields : this.lastFields
+                }
+            ).subscribe(
+                (res) => {
+                    retSub.next(res);
+                    retSub.complete();
+                }
+            );
         }
         return retSub.asObservable();
     }

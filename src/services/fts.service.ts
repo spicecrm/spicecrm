@@ -191,7 +191,7 @@ export class fts {
         return retSubject.asObservable();
     }
 
-    public export(searchterm: string, module: string, fields: string[], aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
+    public export(searchterm: string, module: string, fields: string[], aggregates = {}, sortparams: any = {}, owner = false,) {
         let retSubject = new Subject<any>();
 
         if (searchterm.indexOf('%') != -1) {
@@ -202,7 +202,6 @@ export class fts {
         this.searchTerm = searchterm;
         this.searchAggregates = aggregates;
         this.searchSort = sortparams;
-        this.modulefilter = modulefilter;
 
         this.runningmodulesearch = this.backend.getDownloadPostRequestFile('search/export', {}, {
             module,
@@ -211,7 +210,6 @@ export class fts {
             owner,
             aggregates,
             sort: this.searchSort,
-            modulefilter
         }).subscribe(response => {
             retSubject.next(response);
             retSubject.complete();
