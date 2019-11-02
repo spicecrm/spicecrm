@@ -12,6 +12,8 @@ import {modellist} from '../../services/modellist.service';
 import {listfilters} from '../services/listfilters.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 
+declare var _: any;
+
 @Component({
     selector: 'object-listview-filter-panel',
     templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
@@ -26,39 +28,35 @@ export class ObjectListViewFilterPanel {
     };
 
     constructor(private elementRef: ElementRef, private listfilters: listfilters, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
-        this.setBaseFilter();
-        this.modellist.listtype$.subscribe(newlist => this.setBaseFilter());
+        this.modellist.listtype$.subscribe(newList => {
+            this.setFilter();
+        });
     }
 
     get module() {
         return this.modellist.module;
     }
 
-    private setBaseFilter() {
-        this.listfilters.basefilter = this.modellist.getBaseFilter();
-        this.listfilters.loadedBasefilter = this.modellist.getBaseFilter();
-
-        this.listfilters.filters = this.modellist.getFilterDefs();
-        this.listfilters.loadedFilters = this.modellist.getFilterDefs();
+    private setFilter() {
+        this.filter = {...this.modellist.getFilterDefs()};
+        // if no filter is set ... set it fresh
+        if (!this.filter || _.isEmpty(this.filter)) {
+            this.filter = {
+                logicaloperator: 'and',
+                groupscope: 'all',
+                conditions: []
+            };
+        }
     }
 
     get isChanged() {
-        return this.listfilters.isDirty();
+        return JSON.stringify(this.filter) != JSON.stringify(this.modellist.getFilterDefs());
     }
 
     private save() {
         this.modellist.updateListType({
-            basefilter: this.listfilters.basefilter,
-            filterdefs: btoa(JSON.stringify(this.listfilters.filters))
-        }).subscribe(retval => {
-            this.listfilters.loadedBasefilter = this.modellist.getBaseFilter();
-            this.listfilters.loadedFilters = this.modellist.getFilterDefs();
+            filterdefs: JSON.stringify(this.filter)
         });
-    }
-
-    private cancel() {
-        this.listfilters.basefilter = this.modellist.getBaseFilter();
-        this.listfilters.filters = this.modellist.getFilterDefs();
     }
 
     /**
