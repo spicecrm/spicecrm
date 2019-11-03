@@ -16,7 +16,7 @@
                 <span class="slds-hide--medium">{{modellist.getListTypeName()}} • </span>
                 {{modellist.listData.list.length}} {{language.getLabel('LBL_OF')}} {{modellist.listData.totalcount}}
                 <span class="slds-show--medium">
-                    {{language.getLabel('LBL_ITEMS')}} • {{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(model.module, modellist.sortfield)}}  • {{language.getLabel('LBL_LASTUPDATE')}} {{modellist.getLastLoadTime()}}
+                    {{language.getLabel('LBL_ITEMS')}} • {{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(model.module, modellist.sortfield)}}  • {{language.getLabel('LBL_LASTUPDATE')}} {{modellist.getLastLoadTime()}} • <system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon>
                 </span>
             </p>
         </div>
