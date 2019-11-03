@@ -7,5 +7,8 @@
             </tbody>
             <tbody system-table-stencils [columns]="listFields?.length" [select]="rowselect" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
         </table>
+        <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center slds-height_full">
+            <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+        </div>
     </div>
 </div>

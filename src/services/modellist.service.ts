@@ -1,10 +1,9 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject, of, BehaviorSubject} from 'rxjs';
 import {backend} from './backend.service';
-import {fts} from './fts.service';
 import {userpreferences} from './userpreferences.service';
 import {language} from './language.service';
 import {metadata} from "./metadata.service";
@@ -31,6 +30,11 @@ export class modellist implements OnDestroy {
     public module: string = '';
 
     /**
+     * an optional modulefilter
+     */
+    public modulefilter: string;
+
+    /**
      * the current list type
      */
     public listtype: string = 'all';
@@ -45,7 +49,8 @@ export class modellist implements OnDestroy {
      */
     public listData: any = {
         list: [],
-        totalcount: 0
+        totalcount: 0,
+        source: undefined
     };
 
     /**
@@ -244,17 +249,11 @@ export class modellist implements OnDestroy {
     public addCustomListtype(id, name, basefilter, fielddefs, filterdefs, global): void {
         this.listTypes.push({
             id: id,
-            type: 'custom',
             name: name,
             global: global,
             basefilter: basefilter,
             fielddefs: fielddefs,
-            filterdefs: filterdefs,
-            config: {
-                showSearch: false,
-                enableFilter: true,
-                enableDelete: true
-            }
+            filterdefs: filterdefs
         });
     }
 
@@ -294,7 +293,7 @@ export class modellist implements OnDestroy {
 
     public filterEnabled() {
         try {
-            return this.currentList.config.enableFilter;
+            return this.currentList.id != 'all' && this.currentList.id != 'owner';
         } catch (e) {
             return false;
         }
@@ -367,10 +366,6 @@ export class modellist implements OnDestroy {
         return this.currentList.global;
     }
 
-    public getBaseFilter(): string {
-        return this.currentList.basefilter;
-    }
-
     public getFieldDefs(): any[] {
         try {
             return JSON.parse(atob(this.currentList.fielddefs));
@@ -394,6 +389,12 @@ export class modellist implements OnDestroy {
         }
     }
 
+    /**
+     * adds a new list type
+     *
+     * @param name
+     * @param global
+     */
     public addListType(name, global): Observable<boolean> {
         let retSub = new Subject<boolean>();
         let listParams = {
@@ -401,22 +402,13 @@ export class modellist implements OnDestroy {
             global: global
         };
         this.backend.addListType(this.module, listParams).subscribe((listdata: any) => {
-
             this.addCustomListtype(listdata.id, listdata.name, 'all', null, null, listdata.global);
 
             // ad it to the metadata colection as well
             this.metadata.addModuleListType(this.module, {
                 id: listdata.id,
-                type: 'custom',
                 name: listdata.name,
-                basefilter: 'all',
-                fielddefs: null,
-                filterdefs: null,
-                config: {
-                    showSearch: false,
-                    enableFilter: true,
-                    enableDelete: true
-                }
+                fielddefs: null
             });
 
             this.setListType(listdata.id);
@@ -426,6 +418,11 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
+    /**
+     * update the listtype on the backend
+     *
+     * @param listParams
+     */
     public updateListType(listParams): Observable<boolean> {
         let retSub = new Subject<boolean>();
         this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
@@ -454,6 +451,11 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
+    /**
+     * delete a listtype
+     *
+     * @param id
+     */
     public deleteListType(id: string = ''): Observable<boolean> {
         let retSub = new Subject<boolean>();
         if (id === '') {
@@ -478,12 +480,20 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
+    /**
+     * returns the last load time in user format
+     */
     public getLastLoadTime(): string {
-        return this.lastLoad.format('HH:mm');
-        // return this.lastLoad.toLocaleDateString() + ' ' + this.lastLoad.getHours() + ':' + this.lastLoad.getMinutes();
+        return this.lastLoad.format(this.userpreferences.getTimeFormat());
     }
 
-    public getListData(fields: any[], checkSession: boolean = false): Observable<boolean> {
+    /**
+     * resets the list and loads the data
+     *
+      * @param fields
+     * @param checkSession
+     */
+    public getListData(fields?: any[], checkSession: boolean = false): Observable<boolean> {
         this.resetListData();
 
         // check if we have fields defined or use the last fields
@@ -518,122 +528,16 @@ export class modellist implements OnDestroy {
         return false;
     }
 
-    public loadFilteredList(fields: any[]) {
-        this.isLoading = true;
-
-        let retSub = new Subject<boolean>();
-        this.resetListData();
-
-        this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
-            start: 0,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            searchterm: this.searchTerm
-        }).subscribe(
-            res => {
-                this.listData = res;
-                this.lastLoad = new moment();
-
-                this.isLoading = false;
-
-                // save the current result
-                this.setToSession();
-
-                retSub.next(true);
-                retSub.complete();
-            }
-        );
-        return retSub.asObservable();
-    }
-
-    public loadMoreList() {
-        if (this.isLoading || this.listData.list.length >= this.listData.totalcount) {
-            return false;
-        }
-
-        this.isLoading = true;
-
-        /*
-        if ( 1 == 2 && this.currentList.type == 'all' || this.currentList.type == 'owner') {
-            this.fts.loadMore(this.buckets).subscribe(res => {
-                let newItems = [];
-                for (let item of res[this.module].hits) {
-                    item._source.acl = item.acl;
-                    newItems.push(item._source);
-                }
-
-                this.listData.list = this.listData.list.concat(newItems);
-                this.lastLoad = new moment();
-
-                // set the buckets
-                this.buckets = res[this.module].buckets;
-
-                this.isLoading = false;
-
-            });
-        } else {
-         */
-        let aggregates = {};
-        aggregates[this.module] = this.selectedAggregates;
-        this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
-            start: this.listData.list.length,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            searchterm: this.searchTerm,
-            searchgeo: this.searchGeo,
-            aggregates: aggregates,
-            buckets: this.buckets
-        })
-            .subscribe((res: any) => {
-                this.listData.list = this.listData.list.concat(res.list);
-                this.lastLoad = new moment();
-
-                this.isLoading = false;
-
-                // save the current result
-                this.setToSession();
-
-            });
-        // }
-    }
-
-    public loadMoreFilteredList() {
-        if (this.isLoading || this.listData.list.length >= this.listData.totalcount) {
-            return false;
-        }
-
-        this.isLoading = true;
-        let retSub = new Subject<boolean>();
-        this.backend.all(this.module, {
-            // this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
-            offset: this.listData.list.length,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            sortfield: this.sortfield,
-            sortdirection: this.sortdirection,
-            searchterm: this.searchTerm
-        }).subscribe(
-            res => {
-                this.listData.list = this.listData.list.concat(res);
-                this.lastLoad = new moment();
-
-                this.isLoading = false;
-
-                // save the current result
-                this.setToSession();
-
-                retSub.next(true);
-                retSub.complete();
-            }
-        );
-
-        return retSub;
-    }
-
+    /**
+     * reloads the last loaded list
+     */
     public reLoadList() {
         return this.loadList(this.lastFields);
     }
 
+    /**
+     * resets the list data for a reload
+     */
     public resetListData() {
         // reset buckets if there are any set
         if (this.buckets && this.buckets.bucketitems) {
@@ -673,19 +577,40 @@ export class modellist implements OnDestroy {
         return listTypes;
     }
 
-    public hasAggregates() {
+    /**
+     * a getter to check if the current search result has aggregates
+     */
+    get hasAggregates() {
         return this.selectedAggregates.length > 0;
     }
 
+    /**
+     * sets a set of aggdata to the aggregates
+     *
+     * @param aggregate
+     * @param aggdata
+     */
     public setAggregate(aggregate, aggdata) {
         this.selectedAggregates.push(aggregate + '::' + aggdata);
         this.reLoadList();
     }
 
+    /**
+     * checks if the aggregate is set
+     *
+     * @param aggregate
+     * @param aggdata
+     */
     public checkAggregate(aggregate, aggdata) {
         return this.selectedAggregates.indexOf(aggregate + '::' + aggdata.trim()) > -1;
     }
 
+    /**
+     * removes an aggregate from the set
+     *
+     * @param aggregate
+     * @param aggdata
+     */
     public removeAggregate(aggregate, aggdata) {
         let index = this.selectedAggregates.indexOf(aggregate + '::' + aggdata);
         if (index >= 0) {
@@ -694,6 +619,9 @@ export class modellist implements OnDestroy {
         }
     }
 
+    /**
+     * clears all set aggregates
+     */
     public removeAllAggregates() {
         this.selectedAggregates = [];
         this.reLoadList();
@@ -716,6 +644,9 @@ export class modellist implements OnDestroy {
         }
     }
 
+    /**
+     * returny the number of selected IDs
+     */
     public getSelectedCount() {
         let selCount = 0;
         for (let listItem of this.listData.list) {
@@ -726,6 +657,9 @@ export class modellist implements OnDestroy {
         return selCount;
     }
 
+    /**
+     * returns an array with the selected IDs
+     */
     public getSelectedIDs(): string[] {
         let ids: string[] = [];
         for (let listItem of this.listData.list) {
@@ -770,61 +704,20 @@ export class modellist implements OnDestroy {
 
     }
 
+    /**
+     * loads a list with the current settings
+     *
+     * @param fields
+     * @param checksession
+     */
     private loadList(fields: any[], checksession: boolean = false): Observable<boolean> {
-
-
         let retSub = new Subject<boolean>();
         this.resetListData();
 
         if (checksession && this.getFromSession()) return of(true);
 
         this.isLoading = true;
-        /*
-        if (1 == 2 && this.currentList.type == 'all' || this.currentList.type == 'owner') {
-            let aggregates = {};
-            aggregates[this.module] = this.selectedAggregates;
-            this.fts.searchByModules({
-                searchterm: this.searchTerm,
-                searchgeo: this.searchGeo,
-                modules: [this.module],
-                size: this.loadlimit,
-                aggregates: aggregates,
-                sortparams: {
-                    sortfield: this.sortfield,
-                    sortdirection: this.sortdirection.toLowerCase()
-                },
-                owner: this.currentList.type == 'owner' ? true : false,
-                buckets: this.buckets
-            }).subscribe(res => {
-                // console.log(res);
-                let result = {list: [], totalcount: res[this.module].total};
-                for (let item of res[this.module].hits) {
-                    item._source.acl = item.acl;
-                    item._source.acl_fieldcontrol = item.acl_fieldcontrol;
-                    result.list.push(item._source);
-                }
-                this.listData = result;
 
-                // set the aggegates
-                this.searchAggregates = res[this.module].aggregations;
-
-                // set the last load
-                this.lastLoad = new moment();
-
-                // cancel that we are loading
-                this.isLoading = false;
-
-                // set the buckets
-                this.buckets = res[this.module].buckets;
-
-                // save the current result
-                this.setToSession();
-
-                retSub.next(true);
-                retSub.complete();
-            });
-        } else {
-         */
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
         this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
@@ -854,6 +747,41 @@ export class modellist implements OnDestroy {
 
         return retSub.asObservable();
     }
+
+
+    /**
+     * loads on top of the existing results
+     */
+    public loadMoreList() {
+        if (this.isLoading || this.listData.list.length >= this.listData.totalcount) {
+            return false;
+        }
+        this.isLoading = true;
+        let aggregates = {};
+        aggregates[this.module] = this.selectedAggregates;
+        this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
+            modulefilter: this.modulefilter,
+            start: this.listData.list.length,
+            limit: this.loadlimit,
+            listid: this.currentList.id,
+            searchterm: this.searchTerm,
+            searchgeo: this.searchGeo,
+            aggregates: aggregates,
+            buckets: this.buckets
+        })
+            .subscribe((res: any) => {
+                this.listData.list = this.listData.list.concat(res.list);
+                this.lastLoad = new moment();
+
+                this.isLoading = false;
+
+                // save the current result
+                this.setToSession();
+
+            });
+        // }
+    }
+
 
     public exportList(fields?: any[]): Observable<boolean> {
 
