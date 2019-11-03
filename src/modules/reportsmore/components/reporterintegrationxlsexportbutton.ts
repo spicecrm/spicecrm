@@ -11,8 +11,8 @@ import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -27,6 +27,10 @@ export class ReporterIntegrationXLSexportButton {
     private fileName: string = 'file.csv';
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private footer: footer, private reporterconfig: reporterconfig) {
+    }
+
+    get canExport() {
+        return this.model.checkAccess('export');
     }
 
     private exportXLS() {
