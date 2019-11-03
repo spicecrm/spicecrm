@@ -76,6 +76,8 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
     }
 
     get isDisabled() {
+        if (!this.model.checkAccess('export')) return false;
+
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
 
