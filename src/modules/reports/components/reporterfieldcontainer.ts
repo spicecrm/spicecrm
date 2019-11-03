@@ -84,8 +84,8 @@ export class ReporterFieldContainer implements AfterViewInit {
     get recordModule() {
         if (this.hasLink && this.record) {
             // route to the proper module
-            if (this.field.linkinfo && this.field.linkinfo[this.record.unionid]) {
-                return this.field.linkinfo[this.record.unionid].module;
+            if (this.field.linkinfo && this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root']) {
+                return this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root'].module;
             } else {
                 return this.record.sugarRecordModule;
             }
@@ -97,8 +97,8 @@ export class ReporterFieldContainer implements AfterViewInit {
     get recordId() {
         if (this.hasLink && this.record) {
             // route to the proper module
-            if (this.field.linkinfo && this.field.linkinfo[this.record.unionid]) {
-                return this.record[this.field.linkinfo[this.record.unionid].idfield];
+            if (this.field.linkinfo && this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root']) {
+                return this.record[this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root'].idfield];
             } else {
                 return this.record.sugarRecordId;
             }
