@@ -176,7 +176,6 @@ import /*embed*/ {ObjectAddress} from './components/objectaddress';
 import /*embed*/ {ObjectGDPRModal} from './components/objectgdprmodal';
 
 import /*embed*/ {ObjectRowItemComponent} from "./components/objectrowitem";
-import /*embed*/ {ObjectModalModuleDBLookup} from "./components/objectmodalmoduledblookup";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
 import /*embed*/ {ObjectActionVCardButton} from "./components/objectactionvcardbutton";
@@ -382,7 +381,6 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectRecordFieldsetHorizontalList,
         ObjectRecordFieldsetContainer,
         ObjectRowItemComponent,
-        ObjectModalModuleDBLookup,
         ObjectActionOutputBeanModal,
         ObjectActionOutputBeanButton,
         ObjectActionVCardButton,
