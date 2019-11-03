@@ -12,6 +12,11 @@
                     </a>
                 </li>
             </ng-container>
+            <li *ngIf="canChooseFields" class="slds-dropdown__item slds-has-divider--top-space" role="presentation" (click)="chooseFields()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                    {{language.getLabel('LBL_SETFIELDS')}}
+                </a>
+            </li>
         </ul>
     </div>
 </div>
