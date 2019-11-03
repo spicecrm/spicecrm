@@ -285,7 +285,7 @@ export class modellist implements OnDestroy {
 
     public canDelete(): boolean {
         try {
-            return this.currentList.config.enableDelete;
+            return this.currentList != 'all' && this.currentList != 'owner';
         } catch (e) {
             return false;
         }

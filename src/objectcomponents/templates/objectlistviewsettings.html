@@ -3,10 +3,10 @@
         <system-button-icon icon="settings"></system-button-icon>
         <system-button-icon [icon]="'down'" [size]="'x-small'"></system-button-icon>
     </button>
-    <div class="slds-dropdown slds-dropdown--right slds-dropdown--medium" (click)="toggleMenu()">
+    <div class="slds-dropdown slds-dropdown--right" (click)="toggleMenu()">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header" role="separator">
-                <span class="slds-text-title--caps">{{language.getLabel('LBL_LISTVIEWSETTINGS')}}</span>
+                <span class="slds-text-title--caps">{{language.getLabel('LBL_SETTINGS')}}</span>
             </li>
             <li class="slds-dropdown__item" role="presentation">
                 <a style="cursor: pointer" class="slds-button" role="menuitem" (click)="add()">
@@ -18,11 +18,11 @@
                     <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
                 </a>
             </li>
-            <li class="slds-dropdown__item" role="presentation">
+            <!--li class="slds-dropdown__item" role="presentation">
                 <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="setfields()">
                     <span class="slds-truncate">{{language.getLabel('LBL_SETFIELDS')}}</span>
                 </a>
-            </li>
+            </li-->
             <li class="slds-dropdown__item" role="presentation">
                 <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
                     <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>

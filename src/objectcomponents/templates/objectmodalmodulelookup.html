@@ -1,52 +1,63 @@
 <system-modal size="large">
-    <system-modal-header
-            (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
-    <system-modal-content #modalcontent margin="none">
-        <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
-            <div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small">
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-                    <system-utility-icon icon="search" size="x-small"
-                                         addclasses="slds-input__icon"></system-utility-icon>
-                    <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm"
-                           (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
+    <system-modal-header (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
+    <system-modal-content margin="none" #modalcontent [grow]="true">
+        <div class="slds-height_full">
+            <div #headercontent>
+                <div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small slds-grid slds-grid--vertical-align-center">
+                    <object-list-types></object-list-types>
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-grow">
+                        <system-utility-icon icon="search" size="x-small" addclasses="slds-input__icon"></system-utility-icon>
+                        <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm" (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
+                    </div>
+                    <button class="slds-button slds-button--icon-border slds-m-left--x-small" [disabled]="aggregatesDisabled" (click)="toggleAggregates()">
+                        <system-button-icon icon="bucket"></system-button-icon>
+                    </button>
+                </div>
+                <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
+                    <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
+                        <li class="slds-item">{{modellist.listData.totalcount}} {{language.getLabel('LBL_ITEMS')}}</li>
+                        <li class="slds-item">{{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(modellist.module, modellist.sortfield)}}</li>
+                        <li class="slds-item">{{language.getLabel('LBL_SELECTED')}} {{selectedCount}}</li>
+                        <li class="slds-item"><system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>
+                    </ul>
                 </div>
             </div>
-            <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
-                {{modellist.listData.totalcount}} {{language.getLabel('LBL_ITEMS')}}
-                , {{language.getLabel('LBL_SORTEDBY')}}
-                {{language.getFieldDisplayName(modellist.module, modellist.sortfield)}}
-                , {{language.getLabel('LBL_SELECTED')}}
-                {{modellist.getSelectedCount()}}
-            </div>
-            <div style="height:75vh; overflow-y: auto;" #tablecontent (scroll)="onScroll($event)"
-                 [ngStyle]="contentStyle()">
-                <table class="slds-table slds-table--bordered slds-table--cell-buffer"
-                       [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}"
-                       role="listbox">
-                    <thead>
-                    <tr [modelProvider]="{module: modellist.module}">
-                        <th *ngIf="multiselect" class="slds-cell-shrink" scope="col">
-                            <label class="slds-checkbox">
-                                <input type="checkbox" name="options" [(ngModel)]="checkbox"/>
-                                <span class="slds-checkbox--faux"></span>
-                                <span class="slds-assistive-text">Select All</span>
-                            </label>
-                        </th>
-                        <th *ngFor="let displayField of displayFields" scope="col" >
-                            <div class="slds-truncate" title="Account Name">
-                                <field-label [fieldname]="displayField.field"></field-label>
+            <div class="slds-table--header-fixed_container slds-is-relative" [ngStyle]="contentStyle()">
+                <div class="slds-scrollable--y slds-height_full" #tablecontent (scroll)="onScroll($event)">
+                    <table class="slds-table slds-table--bordered slds-table_header-fixed"
+                           [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}"
+                           role="listbox">
+                        <thead>
+                            <tr [modelProvider]="{module: modellist.module}">
+                                <th *ngIf="multiselect" class="slds-cell-shrink" scope="col">
+                                </th>
+                                <th *ngFor="let displayField of displayFields"  scope="col">
+                                    <div class="slds-truncate slds-p-horizontal--x-small slds-cell-fixed">
+                                        <field-label [fieldname]="displayField.field"></field-label>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr object-list-item *ngFor="let listItem of modellist.listData.list"
+                                [listFields]="displayFields" [listItem]="listItem" [showActionMenu]="false"
+                                [rowselect]="multiselect" [displaylinks]="false"
+                                class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
+                        </tbody>
+                        <tbody system-table-stencils [columns]="listFields?.length" [select]="multiselect" [tools]="true" [rows]="10" *ngIf="modellist.isLoading"></tbody>
+                    </table>
+                    <div @animatepanel *ngIf="showAggregates" class="slds-is-absolute slds-scrollable--y" style="width: 320px; height: 100%; top:0px; right: 0px;" [modelProvider]="{module: modellist.module}">
+                        <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters">
+                            <div class="slds-filters__body" tobottom>
+                                <div class="slds-grid_vertical">
+                                    <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of getAggregates()">
+                                        <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
+                                    </div>
+                                </div>
                             </div>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr object-list-item *ngFor="let listItem of modellist.listData.list"
-                        [listFields]="displayFields" [listItem]="listItem" [showActionMenu]="false"
-                        [rowselect]="multiselect" [displaylinks]="false"
-                        class="slds-hint-parent" (click)="clickRow($event, listItem)"></tr>
-                    </tbody>
-                </table>
-                <system-spinner *ngIf="modellist.isLoading"></system-spinner>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </system-modal-content>
@@ -54,7 +65,7 @@
         <button class="slds-button slds-button--neutral" (click)="closePopup()">
             {{language.getLabel('LBL_CANCEL')}}
         </button>
-        <button *ngIf="multiselect" class="slds-button slds-button--brand" [disabled]="getSelectedCount() == 0"
+        <button *ngIf="multiselect" class="slds-button slds-button--brand" [disabled]="selectedCount == 0"
                 (click)="selectItems()">
             {{language.getLabel('LBL_SELECT')}}
         </button>

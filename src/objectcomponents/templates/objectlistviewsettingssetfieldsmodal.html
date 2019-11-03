@@ -3,62 +3,20 @@
         {{language.getLabel('LBL_SETFIELDS')}}
     </system-modal-header>
     <system-modal-content>
-        <!--div class="slds-grid">
-            <div class="slds-grid slds-grid--align-center">
-                <div class="slds-form-element">
-                    <span class="slds-form-element__label" aria-label="select-1">Available Fields</span>
-                    <div class="slds-picklist"  cdkDropList #listOne="cdkDropList" [cdkDropListConnectedTo]="[listTwo]">
-                        <ul class="slds-picklist__options slds-picklist__options--multi">
-                            <li *ngFor="let field of availableFields" cdkDrag [cdkDragData]="field" class="slds-picklist__item" [attr.aria-selected]="isSelected('available', field.field)" role="option" (click)="selectField('available', field.field)">
-                                <span class="slds-truncate">{{field.displayName}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="slds-grid slds-grid--vertical">
-                    <button class="slds-button slds-button--icon-container" [disabled]="selectedListFields.length === 0" (click)="moveFields('list')">
-                        <system-button-icon [icon]="'left'"></system-button-icon>
-                    </button>
-                    <button class="slds-button slds-button--icon-container" [disabled]="selectedAvailableFields.length === 0" (click)="moveFields('available')">
-                        <system-button-icon [icon]="'right'"></system-button-icon>
-                    </button>
-                </div>
-            </div>
-            <div class="slds-grid slds-grid--align-center">
-                <div class="slds-form-element">
-                    <span class="slds-form-element__label" aria-label="select-1">Display Fields</span>
-                    <div class="slds-picklist" cdkDropList #listTwo="cdkDropList" [cdkDropListConnectedTo]="[listOne]">
-                        <ul class="slds-picklist__options slds-picklist__options--multi">
-                            <li *ngFor="let field of listFields" cdkDrag [cdkDragData]="field" class="slds-picklist__item" [attr.aria-selected]="isSelected('list', field.field)" role="option" (click)="selectField('list', field.field)">
-                                <span class="slds-truncate">{{field.displayName}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="slds-grid slds-grid--vertical">
-                    <button class="slds-button slds-button--icon-container" [disabled]="selectedListFields.length === 0" (click)="moveUp()">
-                        <system-button-icon [icon]="'up'"></system-button-icon>
-                    </button>
-                    <button class="slds-button slds-button--icon-container" [disabled]="selectedListFields.length === 0" (click)="moveDown()">
-                        <system-button-icon [icon]="'down'"></system-button-icon>
-                    </button>
-                </div>
-            </div>
-        </div-->
-        <div class="slds-grid slds-align--absolute-center">
-            <div class="slds-form-element slds-m-horizontal--small">
+        <div class="slds-grid slds-p-horizontal--x-small">
+            <div class="slds-form-element slds-m-horizontal--small slds-size--1-of-2">
                 <span class="slds-form-element__label">{{language.getLabel('LBL_AVAILABLE_FIELDS')}}</span>
-                <div class="slds-picklist slds-picklist__options "  cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableFields" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
-                    <div *ngFor="let field of availableFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('available', field.field)" role="option" (click)="selectField('available', field.field)">
-                        <span class="slds-truncate">{{field.displayName}}</span>
+                <div class="slds-picklist slds-picklist__options slds-size--1-of-1" style="height: 50vh" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableFields" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
+                    <div *ngFor="let field of availableFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('available', field)" role="option" (click)="selectField('available', field)">
+                        <span class="slds-truncate">{{language.getFieldDisplayName(modellist.module, field)}} ({{field}})</span>
                     </div>
                 </div>
             </div>
-            <div class="slds-form-element slds-m-horizontal--small">
-                <span class="slds-form-element__label">{{language.getLabel('LBL_DISPLAY_FIELDS')}}</span>
-                <div class="slds-picklist slds-picklist__options cdk-drag" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="listFields" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
-                    <div *ngFor="let field of listFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('list', field.field)" role="option" (click)="selectField('list', field.field)">
-                        <span class="slds-truncate">{{field.displayName}}</span>
+            <div class="slds-form-element slds-m-horizontal--small slds-size--1-of-2">
+                <span class="slds-form-element__label">{{language.getLabel('LBL_EXPORT_FIELDS')}}</span>
+                <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" style="height: 50vh" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="listFields" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
+                    <div *ngFor="let field of listFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('list', field)" role="option" (click)="selectField('list', field)">
+                        <span class="slds-truncate">{{language.getFieldDisplayName(modellist.module, field)}} ({{field}})</span>
                     </div>
                 </div>
             </div>

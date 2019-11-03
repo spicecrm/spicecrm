@@ -427,7 +427,9 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectEditModalDialogContainer,
         ObjectListHeaderActionMenu,
         ObjectRecordMessagesBadge,
-        ObjectRelatedlistFiles
+        ObjectRelatedlistFiles,
+        ObjectListTypes,
+        ObjectListViewAggregate
     ]
 })
 export class ObjectComponents {
