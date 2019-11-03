@@ -34,6 +34,9 @@ export class ReporterIntegrationXLSexportButton {
     }
 
     private exportXLS() {
+        // check if user has export right
+        if(!this.canExport) return;
+
         // build wherecondition
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
