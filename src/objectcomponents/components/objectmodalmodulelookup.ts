@@ -1,12 +1,13 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'object-modal-module-lookup',
@@ -14,13 +15,25 @@ import {metadata} from '../../services/metadata.service';
     providers: [view, modellist],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
-        '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
+    ],
+    animations: [
+        trigger('animatepanel', [
+            transition(':enter', [
+                style({right: '-320px', overflow: 'hidden'}),
+                animate('.5s', style({right: '0px'})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({right: '-320px'}))
+            ])
+        ])
     ]
 })
-export class ObjectModalModuleLookup implements OnInit {
+export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild('modalcontent', {read: ViewContainerRef, static: true}) private modalcontent: ViewContainerRef;
+    @ViewChild('headercontent', {read: ViewContainerRef, static: true}) private headercontent: ViewContainerRef;
 
     public displayFields: any[] = [];
     public listFields: string[] = [];
@@ -33,38 +46,33 @@ export class ObjectModalModuleLookup implements OnInit {
     public module: string = '';
     public modulefilter: string = '';
 
+    private showAggregates: boolean = false;
+
+    private modellistsubscribe: any;
+
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata) {
+        // subscribe to changes of the listtype
+        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
     }
 
-
-    get checkbox() {
-        return this.allSelected
-    }
-
-    set checkbox(value) {
-        this.allSelected = value;
-        if (value) {
-            this.modellist.setAllSelected();
-        } else {
-            this.modellist.setAllUnselected();
-        }
-    }
-
+    /**
+     * get the style for the content so the table can scroll with fixed header
+     */
     private contentStyle() {
-        let contentRect = this.tablecontent.element.nativeElement.getBoundingClientRect();
-        let modalRect = this.modalcontent.element.nativeElement.getBoundingClientRect();
+        let headerRect = this.headercontent.element.nativeElement.getBoundingClientRect();
 
         return {
-            height: modalRect.height - (contentRect.top - modalRect.top)
+            height: `calc(100% - ${headerRect.height}px)`
         };
     }
 
+    /**
+     * loads the modellist and sets the various paramaters
+     */
     public ngOnInit() {
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
-        this.displayFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
         // this.model.module = this.module;
         this.modellist.setModule(this.module);
@@ -73,6 +81,8 @@ export class ObjectModalModuleLookup implements OnInit {
         for (let displayField of this.displayFields) {
             this.listFields.push(displayField.field);
         }
+        // load the display fields
+        this.setFieldDefs();
 
         // load the list
         this.modellist.getListData(this.listFields);
@@ -83,12 +93,55 @@ export class ObjectModalModuleLookup implements OnInit {
         }
     }
 
+    /**
+     * unsubscribe from teh list type change
+     */
+    public ngOnDestroy(): void {
+        if (this.modellistsubscribe) this.modellistsubscribe.unsubscribe();
+    }
+
+    /**
+     * handle the change of listtype
+     */
+    private switchListtype() {
+        this.setFieldDefs();
+        if (this.modellist.module) {
+            this.modellist.reLoadList();
+        }
+    }
+
+    /**
+     * manage the display fields
+     */
+    private setFieldDefs(): void {
+        this.displayFields = [];
+
+        // check if we have fielddefs
+        let fielddefs = this.modellist.getFieldDefs();
+        // load all fields
+        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
+        let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+        for (let listField of allFields) {
+            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length === 0 && listField.fieldconfig.default !== false)) {
+                this.displayFields.push(listField);
+            }
+        }
+    }
+
+    /**
+     * tigger the search
+     */
     private doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
         this.modellist.getListData(this.listFields);
     }
 
+    /**
+     * trigger the search immediate or with a delay
+     *
+     * @param _e
+     */
     private triggerSearch(_e) {
         if (this.searchTerm === this.searchTermOld) return;
         // handle the key pressed
@@ -106,6 +159,10 @@ export class ObjectModalModuleLookup implements OnInit {
         }
     }
 
+    /**
+     * scroll event handler for the infinite scrolling in the window
+     * @param e
+     */
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
@@ -113,12 +170,16 @@ export class ObjectModalModuleLookup implements OnInit {
         }
     }
 
+    /**
+     * closes the popup
+     */
     private closePopup() {
         this.usedSearchTerm.emit(this.searchTerm);
         this.self.destroy();
     }
 
-    private getSelectedCount() {
+
+    get selectedCount() {
         return this.modellist.getSelectedCount();
     }
 
@@ -140,4 +201,28 @@ export class ObjectModalModuleLookup implements OnInit {
         this.closePopup();
     }
 
+    /**
+     * check if the modellist has aggregates
+     */
+    get aggregatesDisabled() {
+        return !(this.modellist.aggregatesEnabled());
+    }
+
+    private toggleAggregates() {
+        this.showAggregates = !this.showAggregates;
+    }
+
+    /**
+     * a getter for the aggregates
+     */
+    private getAggregates() {
+        let aggArray = [];
+        for (let aggregate in this.modellist.searchAggregates) {
+            if (aggregate != 'tags' && this.modellist.searchAggregates.hasOwnProperty(aggregate)) {
+                aggArray.push(this.modellist.searchAggregates[aggregate]);
+            }
+        }
+
+        return aggArray;
+    }
 }

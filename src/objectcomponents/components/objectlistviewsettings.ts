@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, Renderer2} from '@angular/core';
+import {Component, ElementRef, Renderer2, Injector} from '@angular/core';
 import {modellist} from '../../services/modellist.service';
 import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
@@ -22,7 +22,8 @@ export class ObjectListViewSettings {
         private elementRef: ElementRef,
         private modal: modal,
         private modellist: modellist,
-        private renderer: Renderer2
+        private renderer: Renderer2,
+        private injector: Injector
     ) {}
 
     private toggleMenu() {
@@ -65,10 +66,7 @@ export class ObjectListViewSettings {
         if (!this.modellist.checkAccess('edit')) {
             return false;
         }
-
-        this.modal.openModal('ObjectListViewSettingsSetfieldsModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
-        });
+        this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
     }
 
     private delete() {
@@ -76,7 +74,7 @@ export class ObjectListViewSettings {
             return false;
         }
 
-        this.modal.openModal('ObjectListViewSettingsDeletelistModal').subscribe(modalref => {
+        this.modal.openModal('ObjectListViewSettingsDeletelistModal', true, this.injector).subscribe(modalref => {
             modalref.instance.modellist = this.modellist;
         });
     }
