@@ -81,7 +81,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     set markDone(bool) {
         if (!this.nodeInfo.leaf) return;
         this.isClosing = true;
-        let action = bool ? 'unmarkDone' : 'markDone';
+        let action = !bool ? 'unmarkDone' : 'markDone';
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
             .subscribe(result => {
                 if (result.success == true) {
