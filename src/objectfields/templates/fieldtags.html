@@ -5,7 +5,7 @@
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <div class="slds-grid slds-grid--vertical-align-end">
         <div class="slds-size--2-of-3">
-            <ul *ngIf="objecttags.length" class="spicetaglist">
+            <ul *ngIf="objecttags.length" class="spice-taglist">
                 <li *ngFor="let tag of objecttags;let i=index">
                     <span class="slds-badge">
                         {{tag}}
