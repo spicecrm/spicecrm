@@ -5,7 +5,7 @@
     <textarea style="display:block" class="slds-textarea slds-m-vertical--x-small" [(ngModel)]="option.text" (change)="change()" rows="5"></textarea>
 </td>
 <td width="4rem">
-    <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafile'}" [fielddisplayclass]="''" (change)="change()"></field-container>
+    <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''" (change)="change()"></field-container>
 </td>
 <td>
     <questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories>

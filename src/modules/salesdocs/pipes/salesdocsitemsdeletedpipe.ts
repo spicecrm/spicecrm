@@ -12,6 +12,12 @@ export class SalesDocsItemsDeletedPipe {
                 retValues.push(value);
             }
         }
+
+        // sort by itemnumber
+        retValues.sort((a, b) => {
+            return parseInt(a.itemnr, 10) - parseInt(b.itemnr, 10);
+        });
+
         return retValues;
     }
 }

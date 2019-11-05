@@ -1,5 +1,10 @@
-<div class="slds-form-element__control">
+<div *ngIf="!onlyField" class="slds-form-element__control">
     <div class="slds-form-element">
-        <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textValue" (blur)="onBlur()"/>
+        <ng-template [ngTemplateOutlet]="field"></ng-template>
     </div>
 </div>
+<ng-template *ngIf="onlyField" [ngTemplateOutlet]="field"></ng-template>
+
+<ng-template #field>
+    <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textValue" (change)="fieldChanged($event)" [attr.placeholder]="placeholder" [disabled]="disabled" [attr.size]="size" [ngStyle]="{'width':size?'auto':undefined}"/>
+</ng-template>
