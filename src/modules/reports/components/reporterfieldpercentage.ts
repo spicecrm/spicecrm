@@ -22,7 +22,7 @@ export class ReporterFieldPercentage {
 
     private getValue() {
         if (this.record[this.field.fieldid]) {
-            return this.userpreferences.formatMoney(parseFloat(this.record[this.field.fieldid]), 2, 99);
+            return this.userpreferences.formatMoney(parseFloat(this.record[this.field.fieldid]), 2, 99) + '%';
         } else {
             return '';
         }
