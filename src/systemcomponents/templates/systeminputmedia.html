@@ -1,18 +1,15 @@
-<div #area_metadata1 class="slds-p-horizontal--xx-small">
-    <div *ngIf="!mediaMetaData.mimetype">&nbsp;</div>
-    <div *ngIf="mediaMetaData.mimetype">
-        <div *ngIf="!isResized">{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px&nbsp;</div>
-        <div *ngIf="isResized" class="slds-grid slds-grid--align-spread">
-            <div>Original: {{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px&nbsp;</div>
-            <div>&#8594; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</div>
-        </div>
+<div #area_metadata class="slds-p-horizontal--xx-small">
+    <div *ngIf="!mediaBase64">&nbsp;</div><!-- mediaMetaData.mimetype -->
+    <div *ngIf="mediaBase64" class="slds-grid slds-grid--align-spread"><!-- mediaMetaData.mimetype -->
+        <div *ngIf="mediaMetaData.fileformat">{{this.mediaMetaData.fileformat.toUpperCase()}}</div>
+        <div>{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px<span *ngIf="isResized"> &#8594; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</span></div>
     </div>
 </div>
 <div #area_media [ngStyle]="{height:areaMediaHeight}" style="position:relative">
 
     <div (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" style="height:100%">
         <div style="height:100%;width:100%;display:table">
-            <div  class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}" style="display:table-cell;vertical-align:middle;position: absolute;top:0;bottom:0;right:0;left:0">
+            <div class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}" style="display:table-cell;vertical-align:middle;position: absolute;top:0;bottom:0;right:0;left:0">
                 <div class="chessbg" style="height:100%;">
                     <img #imgelement *ngIf="mediaBase64" [src]="mediaBase64" (load)="imageLoaded($event)" style="max-height:100%"/>
                 </div>
@@ -23,24 +20,26 @@
     <system-spinner *ngIf="isLoading" style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);"></system-spinner>
 
 </div>
-<div #area_metadata2><span *ngIf="mediaMetaData.fileformat">{{this.mediaMetaData.fileformat.toUpperCase()}}</span>&nbsp;</div>
 <div #area_controls style="position:absolute;left:0;bottom:0;right:0">
     <div class="slds-grid slds-grid--vertical-align-end slds-grid--align-spread">
-        <div class="slds-m-right--small">
+        <div>
             <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{lang.getLabel('LBL_SELECT_FILE')}}&nbsp;&hellip;</button>
         </div>
-        <div *ngIf="allowCropping" class="slds-m-horizontal--small">
-            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="removeCropping()" [disabled]="!cropper || !isCropped"><system-button-icon icon="close" size="medium"></system-button-icon></button>
+        <div *ngIf="allowCropping" class="slds-m-left--x-small">
+            <button class="slds-button x-slds-button--icon x-slds-button--icon-border x-slds-button--icon-border-filled" (click)="removeCropping()" [disabled]="!cropper || !isCropped" title="Remove Cropping">RC<!--system-button-custom-icon icon="removecropping" size="medium"></system-button-icon--></button>
         </div>
-        <div *ngIf="allowRotating" class="slds-m-horizontal--small">
+        <div *ngIf="allowEditing" class="slds-m-left--x-small">
+            <button class="slds-button x-slds-button--icon x-slds-button--icon-border x-slds-button--icon-border-filled" (click)="removeModifications()" [disabled]="!cropper || !isEdited" title="Remove Modifications" style="padding-left:0.5rem">RM<!--system-button-custom-icon icon="removemodifications" size="medium"></system-button-icon--></button>
+        </div>
+        <div *ngIf="allowRotating" class="slds-m-left--x-small">
             <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="rotate(-90)" [disabled]="!canRotate"><system-button-custom-icon icon="rotateleft" size="medium"></system-button-custom-icon></button>
             <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="rotate(+90)" [disabled]="!canRotate"><system-button-custom-icon icon="rotateright" size="medium"></system-button-custom-icon></button>
         </div>
-        <div *ngIf="allowMirroring" class="slds-m-horizontal--small">
+        <div *ngIf="allowMirroring" class="slds-m-left--x-small">
             <button title="mirror x horizontal" class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="mirrorX()" [disabled]="!canMirror"><system-button-custom-icon icon="mirrorhorizontal" size="medium"></system-button-custom-icon></button>
             <button title="mirror y vertical" class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="mirrorY()" [disabled]="!canMirror"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
         </div>
-        <div *ngIf="allowResizing" class="slds-m-left--small slds-grid slds-grid--vertical-align-end">
+        <div *ngIf="allowResizing" class="slds-m-left--x-small slds-grid slds-grid--vertical-align-end">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-checkbox">
@@ -51,8 +50,8 @@
                         </label>
                     </div>
                 </div>
-                <div class="slds-form-element__control slds-text-align--right slds-p-top--xxx-small">
-                    <input trim type="text" class="slds-input" style="width:auto" size="4" placeholder="Width" [(ngModel)]="maxWidthInput" [disabled]="!doResize || !canResize" (change)="maxWidthChanged()">&nbsp;&times;&nbsp;<input trim type="text" class="slds-input" style="width:auto" size="4" placeholder="Height" [(ngModel)]="maxHeightInput" [disabled]="!doResize || !canResize" (change)="maxHeightChanged()">&nbsp;px
+                <div class="slds-form-element__control slds-p-top--xxx-small">
+                    <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="Width " [disabled]="!doResize || !canResize" size="4" (change)="maxWidthChanged()"></system-input-number>&nbsp;&times;&nbsp;<system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="Height " [disabled]="!doResize || !canResize" size="4" (change)="maxHeightChanged()"></system-input-number>
                 </div>
             </div>
         </div>

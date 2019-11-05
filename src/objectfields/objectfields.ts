@@ -76,6 +76,7 @@ import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
 import /*embed*/ {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
 import /*embed*/ {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
+import /*embed*/ {fieldMediaFile} from './components/fieldmediafile';
 import /*embed*/ {fieldMediaFileImage} from './components/fieldmediafileimage';
 import /*embed*/ {FieldMessagesComponent} from "./components/fieldmessages";
 import /*embed*/ {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
@@ -196,6 +197,7 @@ declare var _: any;
         fieldBarcode,
         fieldBarcodeRenderer,
         fieldRating,
+        fieldMediaFile,
         fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
@@ -242,6 +244,7 @@ declare var _: any;
         fieldGeneric,
         fieldGenericDisplay,
         fieldHtml,
+        fieldMediaFile,
         fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
