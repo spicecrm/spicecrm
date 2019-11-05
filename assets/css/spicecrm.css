@@ -1168,13 +1168,24 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 
 /* spicetags */
 
-ul.spicetaglist li {
+ul.spice-taglist li {
     display: inline;
 }
-ul.spicetaglist {
+ul.spice-taglist {
     margin: 0 -0.5rem -0.5rem 0;
 }
-ul.spicetaglist span.slds-badge {
+ul.spice-taglist span.slds-badge {
     display: inline-block;
     margin: 0 0.5rem 0.5rem 0;
+}
+
+.spice-vertically-centered {
+    display: inline-block;
+    top: 50%;
+    transform: translateY(-50%);
+    position:relative;
+}
+
+.slds-context-bar__item_tab {
+    width: initial;
 }

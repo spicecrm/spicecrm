@@ -12,8 +12,6 @@ import { view } from '../../../services/view.service';
 import { metadata } from '../../../services/metadata.service';
 import { SystemInputMedia } from '../../../systemcomponents/components/systeminputmedia';
 
-declare var _: any;
-
 @Component({
     selector: 'media-file-uploader',
     templateUrl: './src/modules/mediafiles/templates/mediafileuploader.html',
@@ -44,7 +42,7 @@ export class MediaFileUploader {
 
     private mediaMetaData;
 
-    private componentId = _.uniqueId();
+    private fieldsetId: string;
 
     constructor( private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private lang: language, private toast: toast, public model: model, public view: view ) {
 
@@ -59,6 +57,9 @@ export class MediaFileUploader {
 
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        let componentConfig = this.metadata.getComponentConfig('MediaFileUploader','MediaFiles');
+        this.fieldsetId = componentConfig.fieldset;
 
     }
 

@@ -18,7 +18,7 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'object-modal-module-db-lookup',
     templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
-    providers: [view, model, modellist]
+    providers: [view, modellist]
 })
 export class ObjectModalModuleDBLookup implements OnInit {
 
@@ -61,7 +61,6 @@ export class ObjectModalModuleDBLookup implements OnInit {
 
     constructor(
         private language: language,
-        private model: model,
         private modellist: modellist,
         private metadata: metadata
     ) {
@@ -95,7 +94,6 @@ export class ObjectModalModuleDBLookup implements OnInit {
         let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
         this.displayFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
-        this.model.module = this.module;
         this.modellist.setModule(this.module);
 
         if (!this.searchConditions && componentconfig.searchconditions) {

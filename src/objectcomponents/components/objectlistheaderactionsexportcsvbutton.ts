@@ -91,7 +91,7 @@
  */
 declare var moment: any;
 
-import {Component} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
@@ -114,7 +114,8 @@ export class ObjectListHeaderActionsExportCSVButton {
         private metadata: metadata,
         private model: model,
         private modellist: modellist,
-        private modal: modal
+        private modal: modal,
+        private injector: Injector
     ) {}
 
     /**
@@ -134,6 +135,8 @@ export class ObjectListHeaderActionsExportCSVButton {
 
     public execute() {
         if(!this.disabled) {
+            this.modal.openModal('ObjectListHeaderActionsExportCSVSelectFields', true, this.injector);
+            /*
             this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
                 loadingRef.instance.messagelabel = 'LBL_EXPORTING';
                 this.modellist.exportList().subscribe(downloadurl => {
@@ -149,6 +152,7 @@ export class ObjectListHeaderActionsExportCSVButton {
 
                 });
             });
+            */
         }
     }
 

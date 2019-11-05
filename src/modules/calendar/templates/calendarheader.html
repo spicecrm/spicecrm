@@ -37,13 +37,13 @@
                     <system-button-icon [icon]="'refresh'"></system-button-icon>
                 </button>
                 <div class="slds-button-group slds-m-left--x-small" role="group">
-                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
+                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=30 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'zoomout'"></system-button-icon>
                     </button>
                     <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'undo'"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
+                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=140 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'zoomin'"></system-button-icon>
                     </button>
                 </div>
