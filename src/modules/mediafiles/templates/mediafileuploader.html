@@ -4,45 +4,14 @@
     </system-modal-header>
     <system-modal-content style="height:100%">
 
-        <div class="slds-p-around--medium slds-grid" style="height:100%">
+        <div class="x-slds-p-around--medium slds-grid" style="height:100%">
 
-            <div class="slds-box slds-box_x-small slds-size--5-of-12">
+            <div class="slds-box slds-box_x-small slds-size--1-of-2">
                 <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" allowMirroring="true" allowRotating="true" (added)="mediaAdded($event)" style="height:100%"></system-input-media>
             </div>
 
-            <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--7-of-12">
-
-                <div class="slds-grid">
-                    <div class="slds-size--1-of-2 slds-p-right--x-small">
-                        <field-container field="name"></field-container>
-                    </div>
-                    <div class="slds-size--1-of-2 slds-p-left--x-small">
-                        <field-container field="mediacategory_name"></field-container>
-                    </div>
-                </div>
-
-                <div class="slds-m-vertical--x-small">
-                    <field-container field="alttext"></field-container>
-                </div>
-
-                <div class="slds-grid slds-m-vertical--x-small">
-                    <div class="slds-size--1-of-2 slds-p-right--x-small">
-                        <field-container field="copyright_owner"></field-container>
-                    </div>
-                    <div class="slds-size--1-of-2 slds-p-left--x-small">
-                        <field-container field="copyright_license"></field-container>
-                    </div>
-                </div>
-
-                <div>
-                    <field-container field="description"></field-container>
-                </div>
-
-                <label class="slds-form-element__label slds-truncate" for="{{componentId}}-tags">{{lang.getLabel('LBL_TAGS')}}</label>
-                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-                    <system-input-tags-2 [(ngModel)]="tagsAsString" id="{{componentId}}-tags" [isEditing]="isEditing" ></system-input-tags-2>
-                </div>
-
+            <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--1-of-2">
+                <object-record-fieldset [fieldset]="fieldsetId" direction="vertical"></object-record-fieldset>
             </div>
 
         </div>

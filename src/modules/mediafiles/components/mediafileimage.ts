@@ -44,8 +44,6 @@ export class MediaFileImage implements OnChanges {
 
     public ngOnChanges() {
 
-        console.log('Media ID',this.media_id);
-
         if ( this.isFirstChange ) {
             this.isFirstChange = false;
             this.variantStatic = this.variant;
