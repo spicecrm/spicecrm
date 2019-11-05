@@ -26,18 +26,18 @@
             <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{lang.getLabel('LBL_SELECT_FILE')}}&nbsp;&hellip;</button>
         </div>
         <div *ngIf="allowCropping" class="slds-m-left--x-small">
-            <button class="slds-button x-slds-button--icon x-slds-button--icon-border x-slds-button--icon-border-filled" (click)="removeCropping()" [disabled]="!cropper || !isCropped" title="Remove Cropping">RC<!--system-button-custom-icon icon="removecropping" size="medium"></system-button-icon--></button>
+            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeCropping()" [disabled]="!cropper || !isCropped" title="Remove Cropping">RC<!--system-button-custom-icon icon="removecropping" size="medium"></system-button-icon--></button>
         </div>
         <div *ngIf="allowEditing" class="slds-m-left--x-small">
-            <button class="slds-button x-slds-button--icon x-slds-button--icon-border x-slds-button--icon-border-filled" (click)="removeModifications()" [disabled]="!cropper || !isEdited" title="Remove Modifications" style="padding-left:0.5rem">RM<!--system-button-custom-icon icon="removemodifications" size="medium"></system-button-icon--></button>
+            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeModifications()" [disabled]="!cropper || !isEdited" title="Remove Modifications" style="padding-left:0.5rem;padding-right:0.5rem">RM<!--system-button-custom-icon icon="removemodifications" size="medium"></system-button-icon--></button>
         </div>
         <div *ngIf="allowRotating" class="slds-m-left--x-small">
-            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="rotate(-90)" [disabled]="!canRotate"><system-button-custom-icon icon="rotateleft" size="medium"></system-button-custom-icon></button>
-            <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="rotate(+90)" [disabled]="!canRotate"><system-button-custom-icon icon="rotateright" size="medium"></system-button-custom-icon></button>
+            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="rotate(-90)" [disabled]="!canRotate"><system-button-custom-icon icon="rotateleft" size="medium"></system-button-custom-icon></button>
+            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="rotate(+90)" [disabled]="!canRotate"><system-button-custom-icon icon="rotateright" size="medium"></system-button-custom-icon></button>
         </div>
         <div *ngIf="allowMirroring" class="slds-m-left--x-small">
-            <button title="mirror x horizontal" class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="mirrorX()" [disabled]="!canMirror"><system-button-custom-icon icon="mirrorhorizontal" size="medium"></system-button-custom-icon></button>
-            <button title="mirror y vertical" class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="mirrorY()" [disabled]="!canMirror"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
+            <button title="mirror x horizontal" class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="mirrorX()" [disabled]="!canMirror"><system-button-custom-icon icon="mirrorhorizontal" size="medium"></system-button-custom-icon></button>
+            <button title="mirror y vertical" class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="mirrorY()" [disabled]="!canMirror"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
         </div>
         <div *ngIf="allowResizing" class="slds-m-left--x-small slds-grid slds-grid--vertical-align-end">
             <div class="slds-form-element">
