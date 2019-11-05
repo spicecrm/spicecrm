@@ -8,19 +8,25 @@ import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
+import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'dashboard-view',
     templateUrl: './src/modules/dashboard/templates/dashboardview.html',
-    providers: [model, modellist, dashboardlayout]
+    providers: [model, modellist, dashboardlayout, view]
 })
 export class DashboardView implements OnInit {
 
     private panelwidth = 250;
     private showpanel: boolean = false;
 
-    constructor(private navigation: navigation, private language: language, private dashboardlayout: dashboardlayout, private userpreferences: userpreferences, private model: model, private modellist: modellist, private elementRef: ElementRef) {
-
+    constructor(private navigation: navigation,
+                private language: language,
+                private dashboardlayout: dashboardlayout,
+                private userpreferences: userpreferences,
+                private model: model,
+                private view: view,
+                private modellist: modellist) {
     }
 
     get ismobile() {
@@ -42,26 +48,45 @@ export class DashboardView implements OnInit {
     }
 
     public ngOnInit() {
+        this.loadDashboards();
+        this.navigation.setActiveModule('Dashboards');
+    }
+
+    private loadDashboards() {
         // load for the selector
-        let lastDashboard = this.userpreferences.getPreference('last_dashboard');
+        let lastDashboardId = this.userpreferences.getPreference('last_dashboard');
         this.model.module = 'Dashboards';
         this.modellist.module = 'Dashboards';
+        // ToDo: add infinite scrolling and reload on change of searchterm
+        this.modellist.loadlimit = 250;
         this.modellist.getListData(['name', 'global'])
-            .subscribe(listdata => {
-                if (lastDashboard) {
+            .subscribe(() => {
+                if (lastDashboardId) {
                     this.modellist.listData.list.some(dashboard => {
-                        if (dashboard.id == lastDashboard) {
-                            this.dashboardlayout.loadDashboard(lastDashboard);
+                        if (dashboard.id == lastDashboardId) {
+                            this.loadDashboard(lastDashboardId);
                             return true;
                         }
                     });
                 }
             });
-
-        this.navigation.setActiveModule('Dashboards');
     }
 
-    private tooglepanel() {
-        this.showpanel = !this.showpanel;
+    public loadDashboard(id) {
+        if (id != this.dashboardlayout.dashboardId) {
+            this.view.setViewMode();
+            this.dashboardlayout.dashboardId = id;
+            this.model.id = id;
+            this.dashboardlayout.dashboardElements = [];
+            this.dashboardlayout.dashboardNotFound = false;
+
+            this.model.getData().subscribe(() => {
+                this.dashboardlayout.dashboardElements = this.model.getField('components');
+
+                // sort the elements for the compact view
+                this.dashboardlayout.sortElements();
+
+                }, err => {if (err.status == 404) this.dashboardlayout.dashboardNotFound = true;});
+        }
     }
 }

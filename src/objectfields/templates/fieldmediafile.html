@@ -1,0 +1,27 @@
+<div [ngClass]="fielddisplayclass+' format-'+fieldconfig.format" style="margin-right:-0.75rem;text-align:center;height:400px">
+
+    <ng-container *ngIf="isEditMode()">
+        <system-spinner *ngIf="isLoadingOriginal" size="large" class="spice-vertically-centered"></system-spinner>
+        <system-input-media *ngIf="!isLoadingOriginal"
+                acceptMedia="{image:true}" allowResizing="true" allowCropping="true" allowMirroring="true" allowRotating="true"
+                [image]="imageUrlOriginal" [mediatype]="mediatype" [fileformat]="fileformat" (mediaChange)="mediaChange($event)"
+                style="height:100%">
+        </system-input-media>
+    </ng-container>
+
+    <div #imgFrame *ngIf="!isEditMode()" style="height:100%">
+        <span class="spice-vertically-centered" style="display:inline-block;max-height:100%;position:relative">
+            <ng-container *ngIf="!isLoadingVariant">
+                <img *ngIf="imageUrlVariant" [src]="imageUrlVariant" style="max-width:100%;max-height:100%">
+                <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled toLightbox" (click)="openLightbox()" style="position:absolute;top:0.25rem;right:0.25rem;margin:0">
+                    <system-button-icon [icon]="'expand'"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled toLightbox" (click)="setEditMode()" style="position:absolute;bottom:0.25rem;right:0.25rem;margin:0">
+                    <system-button-icon [icon]="'edit'"></system-button-icon>
+                </button>
+            </ng-container>
+            <system-spinner *ngIf="isLoadingVariant" size="large" class="spice-vertically-centered"></system-spinner>
+        </span>
+    </div>
+
+</div>
