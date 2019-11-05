@@ -11,7 +11,7 @@ import {
     ElementRef,
     AfterViewChecked,
     Renderer2,
-    ChangeDetectorRef
+    ChangeDetectorRef, OnChanges
 } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { language } from "../../services/language.service";
@@ -39,6 +39,16 @@ interface mediaMetaData {
     originalHeight: number;
 }
 
+interface mediaData {
+    metaData: {
+        mediatype: number;
+        fileformat: string;
+    };
+    image: SafeResourceUrl;
+    isDirty: boolean;
+    isImported: boolean;
+}
+
 @Component({
     selector: "system-input-media",
     templateUrl: "./src/systemcomponents/templates/systeminputmedia.html",
@@ -47,25 +57,28 @@ interface mediaMetaData {
         ':host { display: block; position: relative; }'
     ]
 })
-export class SystemInputMedia implements OnDestroy, AfterViewChecked {
+export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked {
 
     @Input() private allowCropping = false;
     @Input() private allowResizing = false;
     @Input() private allowRotating = false;
     @Input() private allowMirroring = false;
     @Input() public acceptMedia = { image: true, video: false, audio: false };
+    @Input() private fileformat: string;
+    @Input() private mediatype: number;
+    // @Input() private image: SafeResourceUrl;
 
     @Output() public added: EventEmitter<mediaMetaData> = new EventEmitter<mediaMetaData>();
+    @Output() public mediaChange: EventEmitter<mediaData> = new EventEmitter<mediaData>();
 
     @ViewChild('fileselector', { static: false }) private fileSelector: ElementRef;
     @ViewChild('imgelement', { static: false }) private imageElement: ElementRef;
 
-    @ViewChild('area_metadata1', { static: false }) private areaMetadata1: ElementRef;
-    @ViewChild('area_metadata2', { static: false }) private areaMetadata2: ElementRef;
+    @ViewChild('area_metadata', { static: false }) private areaMetadata: ElementRef;
     @ViewChild('area_media', { static: false }) private areaMedia: ElementRef;
     @ViewChild('area_controls', { static: false }) private areaControls: ElementRef;
 
-    private mediaBase64: SafeResourceUrl = '';
+    @Input('image') private mediaBase64: SafeResourceUrl = null;
 
     private cropper: any = null;
 
@@ -79,6 +92,7 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
     private maxHeight: number = null;
 
     private isCropped = false;
+    private isImported = false;
 
     // image qualities analog to backend
     // private imageQualities = { bmp: true, gif: null, jpg: 85, jpeg: 85, png: 9, webp: 80 }; // for png: it´s not the quality, it´s the compression (lossless)
@@ -99,18 +113,18 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
 
     private isLoading = false;
 
-    private imageIsToBeEncoded = false;
-
     /**
      * allow pasting an image. This is the listener that catches the past event on the window
      */
     private unlistenPasteEvent: any;
 
-    private xScaling = 1;
-    private yScaling = 1;
+    private xMirrored = 1;
+    private yMirrored = 1;
     private currentRotation = 0;
 
     private jpegCompressionLevel = 0.95;
+
+    private lastCropBoxData = {};
 
     constructor(
         private lang: language,
@@ -166,11 +180,11 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
                                 this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl( window.URL.createObjectURL( data.body ));
                                 this.cd.detectChanges();
                                 this.resetMediaMetaData();
-                                this.imageIsToBeEncoded = false;
+                                this.resetModificationStati();
+                                this.isImported = true;
                                 this.mediaMetaData.fileformat = type.toString();
                                 this.mediaMetaData.filename = url.substring( url.lastIndexOf('/')+1 );
                                 this.mediaMetaData.mimetype = data.body.type;
-                                this._imageLoaded();
                             }, err => {
                                 this.isLoading = false;
                             });
@@ -188,15 +202,24 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
                     }
                     this.mediaMetaData.fileformat = type.toString();
                     this.mediaMetaData.mimetype = blob.type;
+                    this.resetModificationStati();
+                    this.isImported = true;
                     this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl( window.URL.createObjectURL( blob ) );
-                    this.imageIsToBeEncoded = true;
-                    this._imageLoaded();
 
                 }
 
             }
         });
 
+    }
+
+    public ngOnChanges(): void {
+        if ( this.mediaBase64 !== null ) {
+            this.mediaMetaData.fileformat = this.fileformat;
+            this.mediaMetaData.mediatype = this.mediatype;
+            this.resetModificationStati();
+            this.isImported = false;
+        }
     }
 
     private resetMediaMetaData() {
@@ -217,16 +240,12 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
     }
 
     private setSizeOfAreaMedia(): void {
-        this.areaMediaHeight = this.componentElRef.nativeElement.offsetHeight - this.areaControls.nativeElement.offsetHeight - this.areaMetadata1.nativeElement.offsetHeight - this.areaMetadata2.nativeElement.offsetHeight - 20 + 'px';
+        this.areaMediaHeight = this.componentElRef.nativeElement.offsetHeight - this.areaControls.nativeElement.offsetHeight - this.areaMetadata.nativeElement.offsetHeight - 5 + 'px';
         this.cd.detectChanges(); // prevents angular change detection error
     }
 
     public ngAfterViewChecked(): void {
         this.setSizeOfAreaMedia();
-    }
-
-    private get isResized(): boolean {
-        return this.mediaMetaData.width !== this.mediaMetaData.originalWidth || this.mediaMetaData.height !== this.mediaMetaData.originalHeight;
     }
 
     /**
@@ -239,41 +258,53 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
     private getMediaFromFileSystem(): void {
         let reader = new FileReader();
         reader.onloadend = e => {
+            this.resetModificationStati();
+            this.isImported = true;
             this.mediaBase64 = reader.result;
-            this._imageLoaded();
         };
         // reader.onerror = e => { };
         reader.readAsDataURL( this.fileFromBrowser );
     }
 
-    private _imageLoaded(): void {
-        this.added.emit( this.mediaMetaData );
-    }
-
     private imageLoaded( event ): void {
+
         let image = this.imageElement.nativeElement;
+
+        image.addEventListener('ready', () => {
+            if ( this.cropper ) {
+                this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
+                this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
+                // this.mediaMetaData.width = this.mediaMetaData.originalWidth;
+                // this.mediaMetaData.height = this.mediaMetaData.originalHeight;
+                this.calcTargetSize();
+                if ( this.isDirty ) this.emitChange();
+                this.cropper.zoomTo(1);
+            }
+        });
+
+        if ( this.allowCropping ) {
+            image.addEventListener('cropend', () => {
+                let cropBoxData = this.cropper.getCropBoxData();
+                this.isCropped = !_.isEmpty( this.cropper.getCropBoxData() );
+                if ( _.isEqual( cropBoxData, this.lastCropBoxData )) return;
+                this.lastCropBoxData = _.clone( cropBoxData );
+                this.emitChange();
+                this.calcTargetSize();
+            });
+        }
+
+        image.addEventListener('zoom', () => {
+            if ( this.isEdited ) this.emitChange();
+            if ( this.isCropped ) this.calcTargetSize();
+        });
+
         this.libloader.loadLib('cropper').subscribe(
             (next) => {
                 if ( this.cropper ) this.cropper.destroy();
-                const cropperOptions = {
-                    autoCrop: false,
-                    viewMode: 2 // 2
-                };
-                image.addEventListener('ready', () => {
-                    this.mediaMetaData.width = this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
-                    this.mediaMetaData.height = this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
-                    this.calcTargetSize();
-                });
-                this.cropper = new Cropper( image, cropperOptions );
-                if ( this.allowCropping ) {
-                    this.imageElement.nativeElement.addEventListener('cropend', event => {
-                        this.calcTargetSize();
-                        this.isCropped = true;
-                    });
-                }
-                this.imageElement.nativeElement.addEventListener('zoom', event => { this.calcTargetSize(); });
+                this.cropper = new Cropper( image, { autoCrop: false, viewMode: 2 });
             }
         );
+
     }
 
     private onDrop( event: DragEvent ): void {
@@ -343,7 +374,6 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
             return;
         }
         this.resetMediaMetaData();
-        this.imageIsToBeEncoded = false;
         this.mediaMetaData.fileformat = type;
         this.mediaMetaData.filename = this.fileFromBrowser.name;
         this.mediaMetaData.mimetype = this.fileFromBrowser.type;
@@ -364,8 +394,8 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
     public getImage(): SafeResourceUrl {
         if ( !this.cropper ) return false;
         let image;
-        if ( this.cropper.getCropBoxData().hasOwnProperty('left') || this.isResized ) {
-            image = this.cropper.getCroppedCanvas({ maxHeight: this.mediaMetaData.height, maxWidth:this.mediaMetaData.width })
+        if ( this.isEdited || this.isResized ) {
+            image = this.cropper.getCroppedCanvas({ maxHeight: this.mediaMetaData.height, maxWidth:this.mediaMetaData.width, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }) // height: this.mediaMetaData.height, width:this.mediaMetaData.width,
                 .toDataURL('image/' + this.mediaMetaData.fileformat, this.mediaMetaData.fileformat === 'jpeg' ? this.jpegCompressionLevel : undefined );
         } else image = this.mediaBase64.toString();
         return image.substring( image.indexOf('base64,') + 7 );
@@ -374,7 +404,9 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
     private removeCropping(): void {
         this.cropper.clear();
         this.isCropped = false;
+        this.lastCropBoxData = {};
         this.calcTargetSize();
+        this.emitChange();
     }
 
     private resetSize(): void {
@@ -406,34 +438,22 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
         return this.cropper.getData(true).height;
     }
 
-    // Sanitize maximal height input and launch the calculation of new target size
+    // ...
     private maxHeightChanged(): void {
-        let val: number|string = this.maxHeightInput;
-        val = val.split( this.userprefs.toUse.num_grp_sep ).join('');
-        val = parseInt( val, 10 );
-        if ( isNaN( val ) || val <= 0 ) {
-            this.maxHeightInput = '';
-            this.maxHeight = null;
-        } else {
-            this.maxHeightInput = val.toString();
-            this.maxHeight = val;
-        }
+        let val: number;
+        val = parseInt( this.maxHeightInput, 10 );
+        this.maxHeight = isNaN( val ) ? null : val;
         this.calcTargetSize();
+        this.emitChange();
     }
 
-    // Sanitize input value of maximal width - and launch the calculation of new target size
+    // ...
     private maxWidthChanged(): void {
-        let val: number|string = this.maxWidthInput;
-        val = val.split( this.userprefs.toUse.num_grp_sep ).join('');
-        val = parseInt( val, 10 );
-        if ( isNaN( val ) || val <= 0 ) {
-            this.maxWidthInput = '';
-            this.maxWidth = null;
-        } else {
-            this.maxWidthInput = val.toString();
-            this.maxWidth = val;
-        }
+        let val: number;
+        val = parseInt( this.maxWidthInput, 10 );
+        this.maxWidth = isNaN( val ) ? null : val;
         this.calcTargetSize();
+        this.emitChange();
     }
 
     // Calculate target size. Is to be written to object "mediaMetaData".
@@ -463,14 +483,16 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
 
     public mirrorX(): void {
         // if ... else: Workaround for strange behavior of cropper.js in case the image lies sideways (90 or 270 degrees)
-        if ( this.currentRotation === 90 || this.currentRotation === 270 ) this.cropper.scaleY( this.yScaling = this.yScaling * -1 );
-        else this.cropper.scaleX( this.xScaling = this.xScaling * -1 );
+        if ( this.currentRotation === 90 || this.currentRotation === 270 ) this.cropper.scaleY( this.yMirrored = this.yMirrored * -1 );
+        else this.cropper.scaleX( this.xMirrored = this.xMirrored * -1 );
+        this.emitChange();
     }
 
     public mirrorY(): void {
         // if ... else: Workaround for strange behavior of cropper.js in case the image lies sideways (90 or 270 degrees)
-        if ( this.currentRotation === 90 || this.currentRotation === 270 ) this.cropper.scaleX( this.xScaling = this.xScaling * -1 );
-        else this.cropper.scaleY( this.yScaling = this.yScaling * -1 );
+        if ( this.currentRotation === 90 || this.currentRotation === 270 ) this.cropper.scaleX( this.xMirrored = this.xMirrored * -1 );
+        else this.cropper.scaleY( this.yMirrored = this.yMirrored * -1 );
+        this.emitChange();
     }
 
     public rotate( degrees ): void {
@@ -478,6 +500,58 @@ export class SystemInputMedia implements OnDestroy, AfterViewChecked {
         this.currentRotation = this.currentRotation % 360;
         if ( this.currentRotation < 0 ) this.currentRotation += 360;
         this.cropper.rotateTo( this.currentRotation );
+        this.emitChange();
+    }
+
+    private get isRotated(): boolean {
+        return this.currentRotation !== 0;
+    }
+
+    private get isMirrored(): boolean {
+        return this.xMirrored === -1 || this.yMirrored === -1;
+    }
+
+    private get isResized(): boolean {
+        return this.mediaMetaData.width !== this.mediaMetaData.originalWidth || this.mediaMetaData.height !== this.mediaMetaData.originalHeight;
+    }
+
+    private get isEdited(): boolean {
+        return this.isRotated || this.isMirrored || this.isCropped;
+    }
+
+    private get isDirty(): boolean {
+        return this.isEdited || this.isImported || this.isResized;
+    }
+
+    private emitChange() {
+        let im = this.getImage();
+        this.mediaChange.emit( {
+            metaData: this.mediaMetaData,
+            image: this.isDirty ? im : null,
+            isDirty: this.isDirty,
+            isImported: this.isImported
+        });
+    }
+
+    private resetModificationStati(): void {
+        this.xMirrored = this.yMirrored = 1;
+        this.currentRotation = 0;
+        this.isCropped = false;
+        this.lastCropBoxData = {};
+    }
+
+    private removeModifications(): void {
+        this.cropper.rotateTo( 0 );
+        this.cropper.scale( 1, 1 ); // this.cropper.scale( this.xMirrored === -1 ? -1:1, this.yMirrored === -1 ? -1:1 );
+        this.cropper.clear();
+        this.isCropped = false;
+        this.lastCropBoxData = {};
+        this.calcTargetSize();
+        this.emitChange();
+    }
+
+    private get allowEditing(): boolean {
+        return this.allowCropping || this.allowRotating || this.allowMirroring;
     }
 
 }
