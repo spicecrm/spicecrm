@@ -79,6 +79,13 @@ export class SalesPlanningTool implements OnInit {
             .subscribe(char => {
                 if (char && char.data) {
                     this.planningService.characteristics = char.data;
+                    this.planningService.characteristics.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+                    this.planningService.characteristics.some(char => {
+                        if (char.id == this.planningService.characteristicTerritory) {
+                            char.value = this.language.getLabel('LBL_TERRITORY');
+                            return true;
+                        }
+                    });
                     this.isLoading = false;
                 }
             });

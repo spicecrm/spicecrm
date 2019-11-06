@@ -13,4 +13,8 @@ export class SalesPlanningService {
     public contentFields: any[] = [];
     public selectedNode: any;
     public selectedNodes: any[] = [];
+
+    get selectedCharacteristicIds() {
+        return this.selectedCharacteristics.map(char => char.id);
+    }
 }

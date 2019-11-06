@@ -2,6 +2,15 @@
     <system-icon icon="data_integration_hub"></system-icon>
     <div class="slds-media__body">
         <p class="slds-text-title--caps slds-line-height--reset">{{language.getLabel('LBL_SALES_PLANNING_TOOL')}}</p>
-        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{model.getFieldValue('summary_text')}}</h1>
+        <nav role="navigation" aria-label="Breadcrumbs" class="slds-grid slds-grid_vertical-align-center slds-p-around--x-small">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                <li class="slds-breadcrumb__item slds-text-title--caps" style="font-weight: bold">
+                    <a>{{model.getFieldValue('summary_text')}}</a>
+                </li>
+                <li *ngFor="let breadcrumb of breadcrumbs" class="slds-breadcrumb__item slds-text-title--caps">
+                    <a>{{breadcrumb.value}}</a>
+                </li>
+            </ol>
+        </nav>
     </div>
 </div>

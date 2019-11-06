@@ -38,10 +38,10 @@ export class SalesPlanningToolTree implements OnInit {
 
     private getNodeItems(parentId = '', item?) {
         this.isLoading = parentId.length == 0 ? '*' : parentId;
-        this.setRetrieveParams(item);
+        this.setRetrieveParams(item, true);
         let params = {
-            nodes: this.planningService.selectedNodes,
-            characteristics: this.planningService.selectedCharacteristics,
+            pathArray: this.planningService.selectedNodes,
+            characteristics: this.planningService.selectedCharacteristicIds,
             undoneOnly: this.unDoneOnly
         };
         this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/NodesList`, params)
@@ -76,12 +76,6 @@ export class SalesPlanningToolTree implements OnInit {
                 this.getNodeByParent(item.parent_id, nodes);
             }
         }
-    }
-
-    private getCharacteristicLevels(characteristic) {
-        return this.planningService.characteristics
-            .filter((char, index) => index <= this.planningService.characteristics.map(c => c.id).indexOf(characteristic))
-            .map(char => char.id);
     }
 
     private buildTree() {
@@ -120,8 +114,8 @@ export class SalesPlanningToolTree implements OnInit {
     private selectTreeItem(item) {
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
+                this.setRetrieveParams(item);
                 this.planningService.selectedNode = item;
-                this.planningService.selectedNodes = this.getNodes(item);
                 this.selectNode.emit();
                 return true;
             }
@@ -142,6 +136,7 @@ export class SalesPlanningToolTree implements OnInit {
                             }
                         }
                     } else {
+                        this.setRetrieveParams(item);
                         this.buildTree();
                     }
                     return true;
@@ -151,9 +146,9 @@ export class SalesPlanningToolTree implements OnInit {
         if (e.stopPropagation) e.stopPropagation();
     }
 
-    private setRetrieveParams(item?) {
-        let characteristic = item ? this.planningService.characteristics[item.level].id : this.planningService.characteristicTerritory;
-        this.planningService.selectedCharacteristics = this.getCharacteristicLevels(characteristic);
+    private setRetrieveParams(item?, nextLevel?) {
+        let index = item ? nextLevel ? item.level +1 : item.level : 1;
+        this.planningService.selectedCharacteristics = this.planningService.characteristics.slice(0, index);
         this.planningService.selectedNodes = this.getNodes(item);
     }
 

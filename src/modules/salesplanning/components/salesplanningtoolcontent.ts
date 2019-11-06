@@ -141,8 +141,8 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.isLoading = true;
         this.nodeInfo = undefined;
         let params = {
-            nodes: this.planningService.selectedNodes,
-            characteristics: this.planningService.selectedNode.level > 1 ? this.planningService.selectedCharacteristics : [this.planningService.characteristicTerritory],
+            pathArray: this.planningService.selectedNodes,
+            characteristics: this.planningService.selectedNode.level > 1 ? this.planningService.selectedCharacteristicIds : [this.planningService.characteristicTerritory],
         };
         this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/NodeInfo`, params)
             .subscribe(nodeInfo => {
@@ -160,8 +160,8 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.rowsSum = undefined;
         if (!this.node) return;
         let params = {
-            nodes: this.planningService.selectedNodes,
-            characteristics: this.planningService.selectedCharacteristics,
+            pathArray: this.planningService.selectedNodes,
+            characteristics: this.planningService.selectedCharacteristicIds,
         };
         this.backend.getRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Content`, params)
             .subscribe(nodeContent => {
