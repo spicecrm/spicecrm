@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
     templateUrl: './src/objectfields/templates/fieldemailrecipients.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
-export class fieldEmailRecipients extends fieldGeneric implements OnInit{
+export class fieldEmailRecipients extends fieldGeneric implements OnInit {
 
     public searchResults: any[] = [];
     private isAdding: boolean = false;
@@ -71,7 +71,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit{
                     }
                 });
             }
-        } catch(e){
+        } catch (e) {
             this.model.data.recipient_addresses = [];
         }
     }
