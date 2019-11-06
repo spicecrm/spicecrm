@@ -12,9 +12,9 @@ import {modal} from "../../../services/modal.service";
  * Button for ServiceTickets that opens up a modal with an email form.
  */
 @Component({
-    templateUrl: "../templates/requestfeedbackbutton.html"
+    templateUrl: "./src/modules/servicecomponents/templates/servicerequestfeedbackbutton.html"
 })
-export class RequestFeedbackButton {
+export class ServiceRequestFeedbackButton {
 
     public parent: any = {};
     public module: string = "";
@@ -29,10 +29,19 @@ export class RequestFeedbackButton {
     ) {
     }
 
-    private execute() {
-        this.modal.openModal("OeamtcSendEmailModal", true, this.ViewContainerRef.injector).subscribe(
-            (next: any) => {
-                console.log('Email sent');
+    private execute(e) {
+        e.stopPropagation(); e.preventDefault();
+        this.modal.openModal("ObjectActionMailModal", true, this.ViewContainerRef.injector).subscribe(
+            (modal: any) => {
+                modal.instance.parent = this.model;
+                modal.instance.mailsent.subscribe(sent => {
+                    if (sent) {
+                        // set the statu
+                        this.model.startEdit();
+                        this.model.setFields({serviceticket_status: 'pendinginput'});
+                        this.model.save();
+                    }
+                });
             }
         );
     }
