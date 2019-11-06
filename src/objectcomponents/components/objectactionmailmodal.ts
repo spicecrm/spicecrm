@@ -115,6 +115,8 @@ export class ObjectActionMailModal implements OnInit {
             this.model.save().subscribe(
                 success => {
                     modalRef.instance.self.destroy();
+                    // emit that the email has been sent
+                    this.mailsent.emit(true);
                     this.close();
                 },
                 error => {
