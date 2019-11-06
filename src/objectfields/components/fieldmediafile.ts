@@ -34,6 +34,8 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
     private widthOfImgFrame: number;
     private heightOfImgFrame: number;
 
+    private allowR: string;
+
     @ViewChild('imgFrame', {static: false}) private imgFrame: ElementRef;
 
     constructor(
@@ -109,7 +111,7 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
 
     private mediaChange( data ): void {
         if ( data.isDirty ) {
-            console.log( 'mediaChange, dirty' );
+            // console.log( 'mediaChange, dirty' );
             this.model.setField( this.fieldname, data.image );
             this.mediatype = data.metaData.mediatype;
             this.fileformat = data.metaData.fileformat;
@@ -117,7 +119,7 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
                 this.model.setField( this.fieldForName, data.metaData.filename.replace( /\.[^\.]+$/, '' ).replace( /_/, ' ' ) );
             }
         } else {
-            console.log( 'mediaChange, not dirty' );
+            // console.log( 'mediaChange, not dirty' );
         }
     }
 
