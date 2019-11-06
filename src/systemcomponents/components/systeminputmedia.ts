@@ -68,7 +68,6 @@ export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked 
     @Input() private mediatype: number;
     // @Input() private image: SafeResourceUrl;
 
-    @Output() public added: EventEmitter<mediaMetaData> = new EventEmitter<mediaMetaData>();
     @Output() public mediaChange: EventEmitter<mediaData> = new EventEmitter<mediaData>();
 
     @ViewChild('fileselector', { static: false }) private fileSelector: ElementRef;
@@ -274,8 +273,6 @@ export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked 
             if ( this.cropper ) {
                 this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
                 this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
-                // this.mediaMetaData.width = this.mediaMetaData.originalWidth;
-                // this.mediaMetaData.height = this.mediaMetaData.originalHeight;
                 this.calcTargetSize();
                 if ( this.isDirty ) this.emitChange();
                 this.cropper.zoomTo(1);
