@@ -196,6 +196,8 @@ import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton"
 import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
+import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
+import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectactiondeactivatebeansmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -399,7 +401,9 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
         ObjectTexts,
         ObjectTextsAddButton,
         ObjectTextsAddModal,
-        ObjectRecordMessagesBadge
+        ObjectRecordMessagesBadge,
+        ObjectActionDeactivateBeansButton,
+        ObjectActionDeactivateBeansModal
     ],
     exports: [
         ObjectListViewHeader,
