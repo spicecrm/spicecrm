@@ -92,7 +92,7 @@ export class MediaFilePicker implements OnInit {
         this.backend.getRequest( 'module/MediaFiles', paramsFiles ).subscribe( ( response: any ) => {
                 this.files = response.list;
                 this.files.forEach( file => {
-                    file.name = file.name;
+                    // file.name = file.name;
                     file.filesize = parseInt( '0'+file.filesize, 10 ); // The backend delivers the field filesize as string, we need it as number (for sorting).
                     file.filesize_display = Math.ceil( file.filesize / 1024 );
                     file.date_entered_display = this.prefservice.formatDateTime( file.date_entered );
