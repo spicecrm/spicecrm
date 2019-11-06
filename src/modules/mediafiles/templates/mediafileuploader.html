@@ -7,7 +7,7 @@
         <div class="x-slds-p-around--medium slds-grid" style="height:100%">
 
             <div class="slds-box slds-box_x-small slds-size--1-of-2">
-                <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" allowMirroring="true" allowRotating="true" (added)="mediaAdded($event)" style="height:100%"></system-input-media>
+                <system-input-media acceptMedia="{image:true}" allowResizing="true" allowCropping="true" allowMirroring="true" allowRotating="true" (mediaChange)="mediaChanged($event)" style="height:100%"></system-input-media>
             </div>
 
             <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--1-of-2">
