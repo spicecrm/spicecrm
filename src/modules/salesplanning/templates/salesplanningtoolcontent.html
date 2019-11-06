@@ -1,9 +1,10 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
     <div [class.slds-border--bottom]="!data || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
-        <div *ngIf="nodeInfo" class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
+        <system-stencil *ngIf="isLoading" class="slds-m-horizontal--xx-small slds-m-top--xxx-small slds-size--1-of-4" style="line-height: 1.8rem"></system-stencil>
+        <div *ngIf="nodeInfo && !isLoading" class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
             <span>{{nodeInfo.nodeText}}</span>
             <button (click)="viewNote()" class="slds-button slds-m-left--x-small">
-                <system-button-icon icon="note" size="medium" [addclasses]="isLoading || nodeInfo.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
+                <system-button-icon icon="note" size="medium" [addclasses]="isLoading || !nodeInfo.notice || nodeInfo.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
             </button>
         </div>
         <div class="slds-col_bump-left slds-m-right--xx-small">

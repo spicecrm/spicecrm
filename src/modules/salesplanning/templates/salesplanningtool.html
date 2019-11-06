@@ -4,8 +4,8 @@
     </div>
     <div class="slds-grid slds-theme--default slds-grow" style="height: 100%">
         <div [@collapseContainerAnimation]="!isCollapsed || isHovered ? 'open' : 'closed'" (@collapseContainerAnimation.start)="onAnimationStart()" (@collapseContainerAnimation.done)="onAnimationDone()" (mouseleave)="toggleHover(false)" class="slds-split-view_container" style="height: inherit">
-            <div class="slds-split-view__toggle-button slds-grid slds-grid--vertical">
-                <button (click)="toggleCollapseView()" style="height: 29px" class="slds-button slds-button_icon slds-button_icon" aria-controls="salesplanningtool-split-view" aria-expanded="true" [title]="language.getLabel('LBL_COLLAPSE')">
+            <div class="slds-split-view__toggle-button slds-grid slds-grid--vertical" style="border-top: 0">
+                <button (click)="toggleCollapseView()" style="min-height: 2.5rem" class="slds-button slds-button_icon slds-button_icon" aria-controls="salesplanningtool-split-view" aria-expanded="true" [title]="language.getLabel('LBL_COLLAPSE')">
                     <system-button-icon [icon]="this.isCollapsed && !this.isHovered ? 'right' : 'left'" size="x-small"></system-button-icon>
                 </button>
                 <div #hoverTriggerContainer class="slds-border--top slds-grow" style="height: 100%"></div>
