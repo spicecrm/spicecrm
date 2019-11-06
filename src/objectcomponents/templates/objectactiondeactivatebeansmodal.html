@@ -1,0 +1,28 @@
+<system-modal size="x-small">
+    <system-modal-header (close)="closeModal()">
+        {{language.getLabel('LBL_SELECT_ACTIVE')}}
+    </system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-m-left_x-small slds-m-vertical_large">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <system-input-radio *ngFor="let item of selectedItems" name="module" [value]="item.id" [(ngModel)]="value">{{fieldname(item)}}
+                        <div class="slds-float--right slds-m-right_small" *ngIf="item.itemsaved == 'deactivated'">
+                            {{language.getLabel('LBL_DEACTIVATED')}}
+                            <system-button-icon class="slds-m-left_small" [icon]="'check'"></system-button-icon>
+                        </div>
+                        <div class="slds-float--right slds-m-right_small" *ngIf="item.itemsaved == 'error'">
+                            {{language.getLabel('LBL_ERROR')}}
+                            <system-button-icon class="slds-m-left_small" [icon]="'close'"></system-button-icon>
+                        </div>
+                    </system-input-radio>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button *ngIf="!showfinish" class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button *ngIf="!showfinish" class="slds-button slds-button--brand" (click)="select()">{{language.getLabel('LBL_EXECUTE')}}</button>
+        <button *ngIf="showfinish" class="slds-button slds-button--brand" (click)="closeModal()">{{language.getLabel('LBL_FINISH')}}</button>
+    </system-modal-footer>
+</system-modal>

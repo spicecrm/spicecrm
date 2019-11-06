@@ -47,6 +47,9 @@ export class ReporterFieldContainer implements AfterViewInit {
             fieldType = this.field.component;
         } else {
             switch (this.field.type) {
+                case 'percentage':
+                    fieldType = 'ReporterFieldPercentage';
+                    break;
                 case 'currency':
                     fieldType = 'ReporterFieldCurrency';
                     break;
