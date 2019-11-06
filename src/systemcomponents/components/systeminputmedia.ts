@@ -59,14 +59,18 @@ interface mediaData {
 })
 export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked {
 
-    @Input() private allowCropping = false;
-    @Input() private allowResizing = false;
-    @Input() private allowRotating = false;
-    @Input() private allowMirroring = false;
+    // It is important to keep the input variable "allowModifications" at first position, before the other allowXY variables.
+    @Input() private set allowModifications( val: boolean ) {
+        this.allowMirroring = this.allowResizing = this.allowRotating = this.allowCropping = val;
+    }
+    @Input() private allowCropping = true;
+    @Input() private allowResizing = true;
+    @Input() private allowRotating = true;
+    @Input() private allowMirroring = true;
+
     @Input() public acceptMedia = { image: true, video: false, audio: false };
     @Input() private fileformat: string;
     @Input() private mediatype: number;
-    // @Input() private image: SafeResourceUrl;
 
     @Output() public mediaChange: EventEmitter<mediaData> = new EventEmitter<mediaData>();
 
@@ -298,7 +302,7 @@ export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked 
         this.libloader.loadLib('cropper').subscribe(
             (next) => {
                 if ( this.cropper ) this.cropper.destroy();
-                this.cropper = new Cropper( image, { autoCrop: false, viewMode: 2 });
+                this.cropper = new Cropper( image, { autoCrop: false, viewMode: 2, toggleDragModeOnDblclick: this.allowCropping, dragMode: this.allowCropping ? 'crop':'move' });
             }
         );
 
