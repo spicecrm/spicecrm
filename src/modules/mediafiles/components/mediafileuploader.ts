@@ -33,8 +33,6 @@ export class MediaFileUploader {
 
     private self: any;
 
-    private isMediaReady = false;
-
     private isSaving = false;
     private isEditing = true;
     private tagsEditing = true;
@@ -71,15 +69,12 @@ export class MediaFileUploader {
     }
 
     private get canSave(): boolean {
-        return this.isMediaReady && !this.isSaving;
+        return this.mediaMetaData && !this.isSaving;
     }
 
-    private mediaAdded( mediaMetaData ) {
-        this.isMediaReady = mediaMetaData !== false;
-        this.mediaMetaData = mediaMetaData;
-        if ( mediaMetaData ) {
-            if ( !this.model.getField('name' )) this.model.setField('name', mediaMetaData.filename.replace(/\.[^\.]+$/, '' ).replace(/_/, ' '));
-        }
+    private mediaChanged( data ) {
+        this.mediaMetaData = data.metaData;
+        if ( !this.model.getField('name' )) this.model.setField('name', this.mediaMetaData.filename.replace(/\.[^\.]+$/, '' ).replace(/_/, ' '));
     }
 
     private save(): void {
