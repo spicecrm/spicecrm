@@ -1,7 +1,7 @@
 /**
- * @module ObjectFields
+ * @module ModuleACLTerritories
  */
-import {Component, ElementRef, Renderer, OnInit} from '@angular/core';
+import {Component, ElementRef, Renderer, OnInit, Injector} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
@@ -33,7 +33,7 @@ export class fieldTerritory extends fieldGeneric implements OnInit {
     private territorySearchTerm: string = '';
 
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private elementRef: ElementRef, private renderer: Renderer, private modal: modal, private territories: territories) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private elementRef: ElementRef, private renderer: Renderer, private modal: modal, private territories: territories, private injector: Injector) {
         super(model, view, language, metadata, router);
     }
 
@@ -56,7 +56,6 @@ export class fieldTerritory extends fieldGeneric implements OnInit {
         }
 
         this.territorySearchOpen = false;
-
     }
 
     private clearField() {
@@ -80,22 +79,14 @@ export class fieldTerritory extends fieldGeneric implements OnInit {
     }
 
     private openSearchModal() {
-        // close the relate search
         this.territorySearchOpen = false;
-        this.clickListener();
-
-        /*
-        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-            selectModal.instance.module = this.relateType;
-            selectModal.instance.multiselect = false;
-            selectModal.instance.selectedItems.subscribe(items => {
-                if(items.length > 0) {
-                    this.model.data[this.relateIdField] = items[0].id;
-                    this.model.data[this.relateNameField] = items[0].summary_text;
-                }
+        this.modal.openModal('fieldTerritorySearchModal', true, this.injector).subscribe(selectModal => {
+            selectModal.instance.searchTerm = this.territorySearchTerm;
+            selectModal.instance.selectedTerritory.subscribe(territory => {
+                this.value = territory.id;
+                this.model.setField(this.fieldname + '_name', territory.name);
+                this.territorySearchTerm = '';
             });
         });
-        */
     }
-
 }

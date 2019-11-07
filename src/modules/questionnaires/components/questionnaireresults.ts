@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * @module ModuleQuestionnaires
+ */
+import { Component, Injector, OnInit } from '@angular/core';
 import { model } from '../../../services/model.service';
 import { metadata } from '../../../services/metadata.service';
 import { backend } from '../../../services/backend.service';
 import { language } from '../../../services/language.service';
+import { modal } from '../../../services/modal.service';
 
 @Component({
     templateUrl: './src/modules/questionnaires/templates/questionnaireresults.html'
@@ -13,7 +17,7 @@ export class QuestionnaireResults implements OnInit {
     private noParticipation = false;
     private questionsets: any[] = [];
 
-    constructor( private model: model, private metadata: metadata, private language: language, private backend: backend ) { }
+    constructor( private model: model, private metadata: metadata, private language: language, private backend: backend, private modal: modal, private injector: Injector ) { }
 
     public ngOnInit(): void {
         this.loadQuestionSetsWithResults();
@@ -36,6 +40,10 @@ export class QuestionnaireResults implements OnInit {
         this.isLoading = true;
         this.noParticipation = false;
         this.loadQuestionSetsWithResults();
+    }
+
+    private fillOut() {
+        this.modal.openModal('QuestionnaireFillOut', true, this.injector );
     }
 
 }

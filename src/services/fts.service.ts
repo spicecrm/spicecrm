@@ -9,6 +9,26 @@ import {backend} from './backend.service';
 import {metadata} from './metadata.service';
 import {Subject} from 'rxjs';
 
+
+interface ftsSearchBuckets {
+    bucketfield: string;
+    bucketitems: any[];
+    aggregatefield?: string;
+    aggregatefunction?: 'SUM' | 'COUNT';
+}
+
+interface ftsSearchParameters {
+    searchterm?: string;
+    searchgeo?: any;
+    modules?: string[];
+    size?: number;
+    aggregates?: any;
+    sortparams?: any;
+    owner?: boolean;
+    modulefilter?: any;
+    buckets?: ftsSearchBuckets;
+}
+
 @Injectable()
 export class fts {
 
@@ -18,9 +38,17 @@ export class fts {
     public runningmodulesearch: any = undefined;
     public searchTerm: string = '';
     public searchSort: any = {};
+    public searchOwner: boolean = false;
+    public searchGeo: any = {};
     public searchAggregates: any = {};
     public searchModules: any[] = [];
     public modulefilter: string = '';
+
+    /**
+     * bucket paramater for the search with buckets
+     */
+    public buckets: any = {};
+
     public moduleSearchresults: any[] = [];
     private lastSearchParams: any = {};
 
@@ -84,22 +112,26 @@ export class fts {
         });
     }
 
-    public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
+    // public searchByModules(searchterm: string, modules: string[] = [], size: number = 10, aggregates = {}, sortparams: any = {}, owner = false, modulefilter = '') {
+    public searchByModules(parameters: ftsSearchParameters) {
         let retSubject = new Subject<any>();
         // if no module is passed .. search all modules
-        if (modules.length === 0) {
-            modules = this.loadedSearchModules;
+        if (!parameters.modules || parameters.modules.length === 0) {
+            parameters.modules = this.loadedSearchModules;
         }
 
-        if (searchterm.indexOf('%') != -1) {
-            searchterm = searchterm.replace(/%/g, '*');
+        if (parameters.searchterm && parameters.searchterm.indexOf('%') != -1) {
+            parameters.searchterm = parameters.searchterm.replace(/%/g, '*');
         }
-        searchterm = searchterm.trim();
+        parameters.searchterm = parameters.searchterm.trim();
         // set the searchterm
-        this.searchTerm = searchterm;
-        this.searchAggregates = aggregates;
-        this.searchSort = sortparams;
-        this.modulefilter = modulefilter;
+        this.searchTerm = parameters.searchterm;
+        this.searchAggregates = parameters.aggregates;
+        this.searchSort = parameters.sortparams;
+        this.searchGeo = parameters.searchgeo;
+        this.searchOwner = parameters.owner;
+        this.modulefilter = parameters.modulefilter;
+        this.buckets = parameters.buckets;
 
 
         // todo: check if same search is done .. and then do nothing .. avoid too many calls
@@ -110,13 +142,15 @@ export class fts {
         }
 
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
-            modules: modules.length > 0 ? modules.join(',') : '',
-            searchterm,
-            records: size,
-            owner,
+            modules: parameters.modules.length > 0 ? parameters.modules.join(',') : '',
+            searchterm: parameters.searchterm,
+            searchgeo: parameters.searchgeo,
+            records: parameters.size,
+            owner: parameters.owner,
             aggregates: this.searchAggregates,
             sort: this.searchSort,
-            modulefilter
+            modulefilter: parameters.modulefilter,
+            buckets: parameters.buckets
         }).subscribe(response => {
             // var response = res.json();
             this.moduleSearchresults = [];
@@ -136,15 +170,17 @@ export class fts {
 
             // sort by releveance
             this.moduleSearchresults.sort((x, y) => {
-                return y.data.max_score - x.data.max_score;
-            })
+                let xf = parseFloat(x.data.max_score);
+                let yf = parseFloat(y.data.max_score);
+                if(isNaN(xf) && isNaN(yf)) return 1;
+                if(isNaN(yf)) return -1;
+                if(isNaN(xf)) return 1;
+                return yf > xf ? 1 : -1;
+            });
 
             // set the last parameters
-            this.lastSearchParams = {
-                modules,
-                searchterm,
-                size
-            };
+            this.lastSearchParams = parameters;
+
             this.runningmodulesearch = undefined;
 
             retSubject.next(response);
@@ -184,25 +220,39 @@ export class fts {
         return retSubject.asObservable();
     }
 
-    public loadMore() {
+    public loadMore(buckets?) {
         let retSubject = new Subject<any>();
         // if we are in a serch ... do nothing
         if (this.runningmodulesearch) {
             return;
         }
 
-        if (this.moduleSearchresults[0].data.hits.length >= this.moduleSearchresults[0].data.total) {
-            return;
+        if (buckets) {
+            // check per bucket
+            let canLoadMore = false;
+            for(let bucketitem of buckets.bucketitems) {
+                if(!bucketitem.total || bucketitem.total > bucketitem.items){
+                    canLoadMore = true;
+                }
+            }
+            if(!canLoadMore) return;
+        } else {
+            if (this.moduleSearchresults[0].data.hits.length >= this.moduleSearchresults[0].data.total) {
+                return;
+            }
         }
+
 
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
             modules: this.lastSearchParams.modules.length > 0 ? this.lastSearchParams.modules.join(',') : '',
             searchterm: this.lastSearchParams.searchterm,
             aggregates: this.searchAggregates,
             sort: this.searchSort,
+            owner: this.searchOwner,
             records: this.lastSearchParams.size,
             start: this.moduleSearchresults[0].data.hits.length,
-            modulefilter: this.modulefilter
+            modulefilter: this.modulefilter,
+            buckets: buckets
         }).subscribe(response => {
             // var response = res.json();
             for (let module of this.lastSearchParams.modules) {

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';

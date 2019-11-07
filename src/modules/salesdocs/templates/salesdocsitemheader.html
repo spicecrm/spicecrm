@@ -1,0 +1,7 @@
+<th class="slds-cell-shrink"></th>
+<th style="width: 60px">
+    <field-label fieldname="itemnr"></field-label>
+</th>
+<th *ngFor="let fieldsetItem of fieldsetItems">
+    <field-label [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig"></field-label>
+</th>

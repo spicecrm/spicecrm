@@ -26,11 +26,11 @@ export class SystemButtonIcon {
     }
 
     private getIcon() {
-        if(this.icon) {
+        if (this.icon) {
             return this.icon;
         }
 
-        if(this.module && this.metadata.getModuleIcon(this.module) ) {
+        if (this.module && this.metadata.getModuleIcon(this.module)) {
             let moduleIcon = this.metadata.getModuleIcon(this.module);
 
             return moduleIcon.indexOf(":") > 0 ? moduleIcon.split(":")[1] : moduleIcon;
@@ -40,8 +40,10 @@ export class SystemButtonIcon {
     }
 
     private getSprite() {
-        if(this.module && this.metadata.getModuleIcon(this.module) && this.metadata.getModuleIcon(this.module).indexOf(":") > 0) {
+        if (this.module && this.metadata.getModuleIcon(this.module) && this.metadata.getModuleIcon(this.module).indexOf(":") > 0) {
             return this.metadata.getModuleIcon(this.module).split(":")[0];
+        } else if (this.module) {
+            return 'standard';
         } else {
             return this.sprite;
         }
@@ -49,17 +51,17 @@ export class SystemButtonIcon {
 
     private getClass() {
         let classList: string[] = [];
-        if(this.size != "") {
+        if (this.size != "") {
             classList.push("slds-button__icon--" + this.size);
         } else {
             classList.push("slds-button__icon");
         }
 
-        if ( this.position != "" ) {
+        if (this.position != "") {
             classList.push("slds-button__icon_" + this.position);
         }
 
-        if(this.inverse) {
+        if (this.inverse) {
             classList.push("slds-button_icon-inverse");
         }
 

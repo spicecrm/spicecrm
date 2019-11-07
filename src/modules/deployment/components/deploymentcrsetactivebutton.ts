@@ -8,12 +8,22 @@ import {broadcast} from '../../../services/broadcast.service';
 import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 
+/**
+ * renders a button in an actionset that can activate a CR in the system
+ */
 @Component({
     templateUrl: './src/modules/deployment/templates/deploymentcrsetactivebutton.html'
 })
 export class DeploymentCRSetActiveButton implements OnInit {
 
+    /**
+     * the active id
+     */
     private activeID = '';
+
+    /**
+     * to set the button disabled
+     */
     public disabled: boolean = false;
 
     constructor(private language: language, private backend: backend, private model: model, private toast: toast, private broadcast: broadcast) {
@@ -38,17 +48,26 @@ export class DeploymentCRSetActiveButton implements OnInit {
     }
 
     public execute() {
-        this.backend.postRequest('systemdeploymentcrs/active/' + this.model.id).subscribe(status => {
-            if (status.status == 'success') {
-                this.activeID = this.model.id;
-
-                this.broadcast.broadcastMessage('cr.setactive', {
+        if (this.isActive) {
+            this.backend.deleteRequest('systemdeploymentcrs/active').subscribe(status => {
+                this.activeID = '';
+                this.broadcast.broadcastMessage('cr.clearactive', {
                     module: this.model.module,
-                    id: this.model.id,
-                    name: this.model.data.name
                 });
-            }
-        });
+            });
+        } else {
+            this.backend.postRequest('systemdeploymentcrs/active/' + this.model.id).subscribe(status => {
+                if (status.status == 'success') {
+                    this.activeID = this.model.id;
+
+                    this.broadcast.broadcastMessage('cr.setactive', {
+                        module: this.model.module,
+                        id: this.model.id,
+                        name: this.model.data.name
+                    });
+                }
+            });
+        }
     }
 
     private handleDisabled(mode) {

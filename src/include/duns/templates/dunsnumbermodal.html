@@ -18,11 +18,23 @@
                 <th class="slds-text-title_caps" scope="col">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">{{ language.getLabel('LBL_NAME') }} </div>
                 </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_STREET')">{{ language.getLabel('LBL_STREET') }} </div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_POSTALCODE')">{{ language.getLabel('LBL_POSTALCODE') }} </div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_CITY')">{{ language.getLabel('LBL_CITY') }} </div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_COUNTRY')">{{ language.getLabel('LBL_COUNTRY') }} </div>
+                </th>
                 <th class="slds-cell-shrink" scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let result of results; trackBy: trackByFn" class="slds-hint-parent" [ngClass]="rowClass(result.duns)" (click)="selectItem(result.duns)" style="cursor: pointer">
+            <tr *ngFor="let result of results; trackBy: trackByFn" class="slds-hint-parent" [ngClass]="rowClass(result)" (click)="selectItem(result)" style="cursor: pointer">
                 <td>
                     <div class="slds-truncate" [title]="result.duns">
                         {{result.duns}}
@@ -33,17 +45,37 @@
                         {{result.name}}
                     </div>
                 </td>
+                <td>
+                    <div class="slds-truncate" [title]="result.street">
+                        {{result.street}}
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-truncate" [title]="result.postalcode">
+                        {{result.postalcode}}
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-truncate" [title]="result.city">
+                        {{result.city}}
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-truncate" [title]="result.country">
+                        {{result.country}}
+                    </div>
+                </td>
                 <td class="slds-cell-shrink">
-                    <system-utility-icon *ngIf="selectedItem == result.duns" icon="check" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+                    <system-utility-icon *ngIf="selectedItem == result" icon="check" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
                 </td>
             </tr>
             <tr *ngIf="!isLoading && results?.length == 0">
-                <td colspan="3">
+                <td colspan="7">
                     <div class="slds-p-around--small slds-align--absolute-center">{{language.getLabel('LBL_NO_ENTRIES')}}</div>
                 </td>
             </tr>
             <tr *ngIf="isLoading">
-                <td colspan="3">
+                <td colspan="7">
                     <div class="slds-p-around--small slds-align--absolute-center"><system-spinner></system-spinner></div>
                 </td>
             </tr>

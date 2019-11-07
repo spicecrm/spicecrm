@@ -2,10 +2,15 @@
     <div class="slds-grid">
         <div *ngIf="!isMobileView" class="slds-col" [ngClass]="titleClass">
             <div class="slds-media slds-no-space slds-grow">
-                <object-icon [module]="'Calendar'"></object-icon>
+                <system-icon [module]="'Calendar'"></system-icon>
                 <div class="slds-media__body">
                     <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('Calendar')}}</p>
-                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{getCalendarHeader()}}</h1>
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                        {{getCalendarHeader()}}
+                        <span *ngIf="calendar.sheetType == 'Week'" class="slds-p-horizontal--x-small slds-p-vertical--xx-small slds-pill slds-text-body--small">
+                            {{getWeekNumberDisplay()}}
+                        </span>
+                    </h1>
                 </div>
             </div>
         </div>
@@ -16,6 +21,9 @@
             <div class="slds-page-header__title slds-m-horizontal--x-small slds-align-middle slds-truncate">{{getCompactCalendarHeader()}}</div>
         </div>
         <div class="slds-align-top slds-col slds-grid slds-no-flex slds-col--bump-left">
+            <div class="slds-m-right--medium slds-grid">
+                <system-icon *ngFor="let module of modules" [module]="module.name" [ngStyle]="getIconStyle(module.name)" (click)="toggleVisibleModules(module.name)" size="medium" divClass="slds-m-right--xx-small" style="cursor: pointer"></system-icon>
+            </div>
             <div *ngIf="!isMobileView || asPicker" class="slds-button-group" role="group">
                 <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
                     <system-button-icon [icon]="'chevronleft'"></system-button-icon>
@@ -25,20 +33,17 @@
                 </button>
             </div>
             <ng-container *ngIf="!isMobileView && !asPicker">
-                <button class="slds-button slds-button--neutral slds-p-horizontal--small" (click)="addOtherCalendar()" [disabled]="calendar.isAllToken">
-                    <system-button-icon [icon]="'add'"></system-button-icon>
-                </button>
                 <button class="slds-button slds-button--icon-border" (click)="calendar.refresh()">
                     <system-button-icon [icon]="'refresh'"></system-button-icon>
                 </button>
                 <div class="slds-button-group slds-m-left--x-small" role="group">
-                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=50 || sheetType == 'Month' || sheetType == 'Schedule'">
+                    <button class="slds-button slds-button--icon-border" (click)="zoomout()" [disabled]="calendar.sheetHourHeight <=30 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'zoomout'"></system-button-icon>
                     </button>
                     <button class="slds-button slds-button--icon-border" (click)="resetzoom()" [disabled]="calendar.sheetHourHeight ==80 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'undo'"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=120 || sheetType == 'Month' || sheetType == 'Schedule'">
+                    <button class="slds-button slds-button--icon-border" (click)="zoomin()" [disabled]="calendar.sheetHourHeight >=140 || sheetType == 'Month' || sheetType == 'Schedule'">
                         <system-button-icon [icon]="'zoomin'"></system-button-icon>
                     </button>
                 </div>

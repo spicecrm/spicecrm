@@ -12,6 +12,10 @@ import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 import {modal} from "../../services/modal.service";
 import {cookie} from "../../services/cookie.service";
+import {userpreferences} from '../../services/userpreferences.service';
+import {toast} from '../../services/toast.service';
+
+declare var _: any;
 
 @Component({
     selector: "global-user-panel",
@@ -20,6 +24,10 @@ import {cookie} from "../../services/cookie.service";
 export class GlobaUserPanel {
 
     @ViewChild("imgupload", {read: ViewContainerRef, static: true}) public imgupload: ViewContainerRef;
+    private timezones: object;
+    private timezoneKeys: string[];
+    private isEditingTz = false;
+    private compId: string = _.uniqueId();
 
     constructor(
         private rendered: Renderer,
@@ -32,7 +40,9 @@ export class GlobaUserPanel {
         private backend: backend,
         private config: configurationService,
         private modalservice: modal,
-        private cookie: cookie
+        private cookie: cookie,
+        private userprefs: userpreferences,
+        private toastservice: toast
     ) {
 
     }
@@ -96,4 +106,21 @@ export class GlobaUserPanel {
     get userimage() {
         return this.session.authData.userimage;
     }
+
+    private set currentTz( value ) {
+        if ( this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value ) return;
+        this.userprefs.setPreference('timezone', value, true ).subscribe( ( data: any ) => {
+            this.toastservice.sendToast('Timezone set successfully to "'+data.timezone+'".', 'success' );
+        }, error => {
+            this.toastservice.sendToast('Error setting timezone.', 'error' );
+        });
+        this.session.setTimezone( value ); // Let the UI together with all the models and components know about the new configured timezone.
+        this.popup.close();
+    }
+
+    private get currentTz(): string {
+        if ( this.userprefs.unchangedPreferences && this.userprefs.unchangedPreferences.global ) return this.userprefs.unchangedPreferences.global.timezone;
+        else return '';
+    }
+
 }

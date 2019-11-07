@@ -6,7 +6,7 @@
 import {Injectable} from '@angular/core';
 import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
-import {Subject, Observable} from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import {Router} from '@angular/router';
 
 import {configurationService} from './configuration.service';
@@ -206,7 +206,7 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: Subject<number> = null ): Observable<any> {
+    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: BehaviorSubject<number> = null ): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -220,7 +220,7 @@ export class backend {
 
         let reportProgress = progress !== null;
         if ( reportProgress ) progress.next(0);
-        this.http.post( this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, { headers: headers, observe: 'events', params: this.prepareParams(params), reportProgress: true }).subscribe(
+        this.http.post( this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, { headers: headers, observe: 'events', params: this.prepareParams(params), reportProgress: !!progress }).subscribe(
             event => {
                 if ( event.type === HttpEventType.UploadProgress ) {
                     progress.next( 100 * event.loaded / event.total );
@@ -394,7 +394,8 @@ export class backend {
                 a.remove();
                 sub.next();
                 sub.complete();
-            }
+            },
+            error => sub.error(error)
         );
 
         return sub.asObservable();
@@ -755,9 +756,9 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any): Observable<any[]> {
+    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
-        this.postRequest("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata))
+        this.postRequestWithProgress("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata), null, progress )
             .subscribe(
                 (response: any) => {
                     responseSubject.next(this.modelutilities.backendModel2spice(module, response));

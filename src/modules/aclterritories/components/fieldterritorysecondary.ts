@@ -1,7 +1,7 @@
 /**
- * @module ObjectFields
+ * @module ModuleACLTerritories
  */
-import {Component, Renderer2, ElementRef, Pipe} from '@angular/core';
+import {Component, Renderer2, ElementRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {territories} from '../../../services/territories.service';
@@ -11,45 +11,45 @@ import {backend} from '../../../services/backend.service';
 import {Router} from '@angular/router';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
-@Pipe({
-    name: 'fieldterritorysecondarypipe',
-    pure: false
-})
-export class fieldTerritorySecondaryPipe {
-
-    transform(territories, primary_territory_id) {
-        let retValues = [];
-
-        for (let territory of territories)
-            if (territory.id != primary_territory_id)
-                retValues.push(territory);
-
-        return retValues;
-    }
-}
-
-
+/**
+ * renders a field to add secondary territories
+ */
 @Component({
     templateUrl: './src/modules/aclterritories/templates/fieldterritorysecondary.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
 export class fieldTerritorySecondary extends fieldGeneric {
 
-    private isAdding: boolean = false;
+    /**
+     * indicates if the search is open
+     */
     private territorySearchOpen: boolean = false;
+
+    /**
+     * the term we are searching for
+     */
     private territorySearchTerm: string = '';
+
+    /**
+     * for the handling of the dropdown
+     */
     private clickListener: any;
-    private currentHash = '';
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private renderer: Renderer2, private elementRef: ElementRef, private territoriesService: territories) {
         super(model, view, language, metadata, router);
 
     }
 
+    /**
+     * returns the id of the prmary territory of the model
+     */
     get primary_territory_id() {
         return this.model.getFieldValue('spiceacl_primary_territory');
     }
 
+    /**
+     * returns an array of territories
+     */
     get territories() {
         try {
             return JSON.parse(this.model.data.spiceacl_secondary_territories)
@@ -58,19 +58,37 @@ export class fieldTerritorySecondary extends fieldGeneric {
         }
     }
 
+    /**
+     * sets the territories
+     *
+     * @param value an array of territory ids
+     */
     set territories(value) {
         this.model.data.spiceacl_secondary_territories = JSON.stringify(value ? value : []);
     }
 
+    /**
+     * triggered when the click in the field
+     */
     private onClick() {
-        this.isAdding = true;
+        this.territorySearchOpen = true;
     }
 
+    /**
+     * ensure the search is closed when the field fires a blur event
+     */
     private onBlur() {
         if (this.territorySearchTerm == '') {
-            this.isAdding = false;}
+            this.territorySearchOpen = false;
+        }
     }
 
+    /**
+     * triggered when a pill remove button is clicked and the territory is to be removed
+     *
+     * @param e the event passed  in with $event
+     * @param territoryid the id of the territory
+     */
     private removeTerritory(e, territoryid) {
         // stop the event here
         e.preventDefault();
@@ -89,28 +107,31 @@ export class fieldTerritorySecondary extends fieldGeneric {
 
     }
 
-
-    private closeSearchDialog() {
-        // close the cliklistener sine the component is gone
-        this.clickListener();
-        this.territorySearchOpen = false;
-    }
-
+    /**
+     * for the click handler to determine if we clicked outside or inside
+     *
+     * @param event the event
+     */
     private handleClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
-            this.closeSearchDialog();
+            if (this.clickListener) this.clickListener();
             this.territorySearchTerm = '';
-            this.isAdding = false;
+            this.territorySearchOpen = false;
         }
     }
 
+    /**
+     * adds a territory to the list of secondary tzerritories
+     *
+     * @param territory the territory id
+     */
     private addTerritory(territory) {
         let territories = this.territories;
         if (territories == '') territories = [];
         territories.push(territory);
         this.territories = territories;
         this.territorySearchTerm = '';
-        this.isAdding = false;
+        this.territorySearchOpen = false;
     }
 }

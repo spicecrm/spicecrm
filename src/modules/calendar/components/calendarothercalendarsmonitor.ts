@@ -73,9 +73,9 @@ export class CalendarOtherCalendarsMonitor {
             return;
         }
         this.isLoading = true;
-        this.fts.searchByModules(this.searchterm, ["Users"], 5, "", {sortfield: "name"})
+        this.fts.searchByModules({ searchterm: this.searchterm, modules: ["Users"], size: 5, sortparams: {sortfield: "name"}})
             .subscribe(res => {
-                this.filterResultsList(res["Users"].hits.map(user => user = user._source));
+                this.filterResultsList(res.Users.hits.map(user => user = user._source));
                 this.isLoading = false;
             }, err => this.isLoading = false);
     }
@@ -107,10 +107,6 @@ export class CalendarOtherCalendarsMonitor {
         this.calendar.removeUserCalendar(id);
     }
 
-    private removeOtherCalendar(id) {
-        this.calendar.removeOtherCalendar(id);
-    }
-
     private toggleVisible(id, type) {
         switch (type) {
             case "Users":
@@ -122,22 +118,13 @@ export class CalendarOtherCalendarsMonitor {
                     }
                 });
                 break;
-            case "Other":
-                this.calendar.otherCalendars.some(calendar => {
-                    if (calendar.id == id) {
-                        calendar.visible = !calendar.visible;
-                        this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
-                        return true;
-                    }
-                });
-                break;
             case "Google":
                 this.googleIsVisible = !this.googleIsVisible;
                 this.googleIsVisible$.emit(this.googleIsVisible);
         }
     }
 
-    private setColor(id, color, type) {
-        this.calendar.setColor(id, color, type);
+    private setUserColor(id, color) {
+        this.calendar.setUserColor(id, color);
     }
 }

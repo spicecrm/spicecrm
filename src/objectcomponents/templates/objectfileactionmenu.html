@@ -1,14 +1,14 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open': isOpen}">
-    <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" (click)="toggleOpen()">
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click" dropdowntrigger>
+    <button class="slds-button slds-button--icon-border-filled slds-button--icon-x-small" aria-haspopup="true">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
     <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
         <ul class="slds-dropdown__list" role="menu">
-            <li class="slds-dropdown__item" role="presentation" (click)="openFile()">
+            <!--li class="slds-dropdown__item" role="presentation" (click)="openFile()">
                 <a href="javascript:void(0);" role="menuitem" tabindex="0">
                     <span class="slds-truncate">{{language.getLabel('LBL_OPEN')}}</span>
                 </a>
-            </li>
+            </li-->
             <li class="slds-dropdown__item" role="presentation" (click)="downloadFile()">
                 <a href="javascript:void(0);" role="menuitem" tabindex="0">
                     <span class="slds-truncate">{{language.getLabel('LBL_DOWNLOAD')}}</span>

@@ -27,13 +27,13 @@ import {ObjectRelatedCardHeader} from "./objectrelatedcardheader";
     animations: [
         trigger('displaycard', [
             transition(':enter', [
-                style({ opacity: 0 , height: '0px',overflow: 'hidden'}),
-                animate('.5s', style({ height: '*', opacity: 1 })),
-                style({ overflow: 'unset'})
+                style({opacity: 0, height: '0px', overflow: 'hidden'}),
+                animate('.5s', style({height: '*', opacity: 1})),
+                style({overflow: 'unset'})
             ]),
             transition(':leave', [
-                style({ overflow: 'hidden'}),
-                animate('.5s', style({ height: '0px', opacity: 0 }))
+                style({overflow: 'hidden'}),
+                animate('.5s', style({height: '0px', opacity: 0}))
             ])
         ])
     ]
@@ -43,14 +43,15 @@ export class ObjectRelatedCard {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader,{static: true}) private cardheaders: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheaders: ObjectRelatedCardHeader;
 
     /**
      * the component config as key paramater into the component
      */
     @Input() private componentconfig;
 
-    constructor(private language: language, private metadata: metadata, private relatedmodels: relatedmodels, private model: model) {    }
+    constructor(private language: language, private metadata: metadata, private relatedmodels: relatedmodels, private model: model) {
+    }
 
     /**
      * a simple getter to extract the module out of the component config
@@ -84,6 +85,7 @@ export class ObjectRelatedCard {
         return this.relatedmodels.count > 0 || this.isloading;
     }
 
+
     /**
      * checks the model state if a requiredmodelstate is set in the componentconfig
      */
@@ -97,14 +99,16 @@ export class ObjectRelatedCard {
     }
 
     /**
-     * checks if the user has Access per ACL rights
+     * check if we can list and also if the user has access to the link field
+     * the link field can be disabled using the field control in the acl object
+     * if the link field is turned off .. the acl access is not granted
      */
     public aclAccess() {
         if (this.module) {
-            return this.metadata.checkModuleAcl(this.module, "list");
+            let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule.toLowerCase();
+            return this.metadata.checkModuleAcl(this.module, "list") && this.model.checkFieldAccess(linkField);
         } else {
             return false;
         }
     }
-
 }

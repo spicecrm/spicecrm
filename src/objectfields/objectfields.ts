@@ -16,6 +16,7 @@ import /*embed*/ {fieldSet} from './components/fieldset';
 import /*embed*/ {field} from './components/field';
 import /*embed*/ {fieldBlank} from './components/fieldblank';
 import /*embed*/ {fieldLabel} from './components/fieldlabel';
+import /*embed*/ {fieldLabelPopover} from './components/fieldlabelpopover';
 import /*embed*/ {fieldContainer} from './components/fieldcontainer';
 import /*embed*/ {fieldGenericDisplay} from './components/fieldgenericdisplay';
 import /*embed*/ {fieldText} from './components/fieldtext';
@@ -70,9 +71,12 @@ import /*embed*/ {fieldBarcode} from './components/fieldbarcode';
 import /*embed*/ {fieldBarcodeRenderer} from './components/fieldbarcoderenderer';
 import /*embed*/ {fieldRating} from './components/fieldrating';
 import /*embed*/ {fieldLookupRecent} from './components/fieldlookuprecent';
+import /*embed*/ {fieldLookupRecentItem} from './components/fieldlookuprecentitem';
 import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
+import /*embed*/ {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
 import /*embed*/ {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
+import /*embed*/ {fieldMediaFile} from './components/fieldmediafile';
 import /*embed*/ {fieldMediaFileImage} from './components/fieldmediafileimage';
 import /*embed*/ {FieldMessagesComponent} from "./components/fieldmessages";
 import /*embed*/ {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
@@ -104,6 +108,12 @@ import /*embed*/ {fieldSystemLabel} from "./components/fieldsystemlabel";
 import /*embed*/ {fieldTimeDifference} from "./components/fieldtimedifference";
 import /*embed*/ {fieldIconPopover} from "./components/fieldiconpopover";
 import /*embed*/ {fieldStylesheetID} from "./components/fieldstylesheetid";
+import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
+import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
+import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
+import /*embed*/ {fieldTags} from './components/fieldtags';
+import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
+import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
 
 /**
 * @ignore
@@ -126,6 +136,7 @@ declare var _: any;
         fieldBlank,
         fieldNotAuthorized,
         fieldLabel,
+        fieldLabelPopover,
         fieldContainer,
         fieldGeneric,
         fieldGenericDisplay,
@@ -167,7 +178,9 @@ declare var _: any;
         fieldModifiedBy,
         fieldLookup,
         fieldLookupRecent,
+        fieldLookupRecentItem,
         fieldLookupSearch,
+        fieldLookupSearchItem,
         fieldLookupSearchAdd,
         fieldAddress,
         fieldModelFooterPopover,
@@ -184,6 +197,7 @@ declare var _: any;
         fieldBarcode,
         fieldBarcodeRenderer,
         fieldRating,
+        fieldMediaFile,
         fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
@@ -214,7 +228,13 @@ declare var _: any;
         fieldSystemLabel,
         fieldTimeDifference,
         fieldIconPopover,
-        fieldStylesheetID
+        fieldStylesheetID,
+        fieldUnitsOfMeasure,
+        fieldQuantity,
+        fieldQuestionnaireEvaluation,
+        fieldTags,
+        fieldRelatedDetails,
+        fieldRelatedDetailsContainer
     ],
     exports: [
         fieldSet,
@@ -224,10 +244,16 @@ declare var _: any;
         fieldGeneric,
         fieldGenericDisplay,
         fieldHtml,
+        fieldMediaFile,
         fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
         FieldEnumOutputTemplates,
+        fieldLookup,
+        fieldLookupRecent,
+        fieldLookupSearch,
+        fieldLookupSearchAdd,
+        fieldTags
     ]
 })
 export class ObjectFields {
