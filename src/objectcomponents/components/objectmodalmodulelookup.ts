@@ -11,7 +11,7 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'object-modal-module-lookup',
     templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
-    providers: [view, model, modellist],
+    providers: [view, modellist],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
         '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
@@ -36,7 +36,7 @@ export class ObjectModalModuleLookup implements OnInit {
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private language: language, private model: model, private modellist: modellist, private metadata: metadata) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata) {
     }
 
 
@@ -66,7 +66,7 @@ export class ObjectModalModuleLookup implements OnInit {
         let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
         this.displayFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
-        this.model.module = this.module;
+        // this.model.module = this.module;
         this.modellist.setModule(this.module);
         this.modellist.modulefilter = this.modulefilter;
 
@@ -122,16 +122,18 @@ export class ObjectModalModuleLookup implements OnInit {
         return this.modellist.getSelectedCount();
     }
 
-    private selectItems() {
+    public selectItems() {
         this.selectedItems.emit(this.modellist.getSelectedItems());
         this.usedSearchTerm.emit(this.searchTerm);
         this.self.destroy();
     }
 
-    private clickRow(event, item) {
-        this.selectedItems.emit([item]);
-        this.usedSearchTerm.emit(this.searchTerm);
-        this.self.destroy();
+    public clickRow(event, item) {
+        if (!this.multiselect) {
+            this.selectedItems.emit([item]);
+            this.usedSearchTerm.emit(this.searchTerm);
+            this.self.destroy();
+        }
     }
 
     private onModalEscX() {

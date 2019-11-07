@@ -12,7 +12,7 @@
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div class="slds-grid slds-m-vertical--xx-small">
         <div *ngIf="currencyidfield" class="slds-form-element slds-p-right--x-small" [ngClass]="{'slds-size--1-of-4':!fieldconfig.currencyReadonly}">
-            <div *ngIf="fieldconfig.currencyReadonly" class="slds-input slds-p-around--none" style="border-color:transparent">
+            <div *ngIf="fieldconfig.currencyReadonly" class="slds-height_full slds-align--absolute-center slds-p-around--none" style="border-color:transparent">
                     {{getCurrencySymbol()}}&nbsp;
             </div>
             <div *ngIf="!fieldconfig.currencyReadonly" class="slds-form-element__control">

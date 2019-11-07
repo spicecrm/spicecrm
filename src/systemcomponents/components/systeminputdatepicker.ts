@@ -1,20 +1,13 @@
 /**
  * @module SystemComponents
  */
-import {
-    Component,
-    Input,
-    OnInit,
-    Output,
-    EventEmitter,
-    OnChanges
-} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -27,19 +20,45 @@ declare var moment: any;
 export class SystemInputDatePicker implements OnInit, OnChanges {
 
 
+    public currentGrid: any[] = [];
     @Input() private setDate: any;
     @Input() private minDate: any;
     @Input() private maxDate: any;
     @Input() private weekStartDay: number = 0;
     @Input() private showTodayButton: boolean = true;
     @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
-
     private curDate: any = new moment();
-    private currentGrid: any[] = [];
 
     constructor(private language: language, private userPreferences: userpreferences) {
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
+    }
+
+    get currentYear(): number {
+        return this.curDate.year();
+    }
+
+    set currentYear(value) {
+        this.curDate.year(value);
+        this.buildGrid();
+    }
+
+    get currentMonth(): string {
+        return moment.localeData().months()[this.curDate.month()];
+    }
+
+    get weekdays() {
+        let lang = this.language.currentlanguage.substring(0, 2);
+        moment.locale(lang);
+        let weekDays = moment.weekdaysMin();
+        switch (this.weekStartDay) {
+            case 1:
+                let sun = weekDays.shift();
+                weekDays.push(sun);
+                return weekDays;
+            default:
+                return weekDays;
+        }
     }
 
     public ngOnInit() {
@@ -60,35 +79,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         this.buildGrid();
     }
 
-    get currentYear(): number {
-        return this.curDate.year();
-    }
-
-    set currentYear(value) {
-        this.curDate.year(value);
-        this.buildGrid();
-    }
-
-    get currentMonth(): string {
-        return moment.localeData().months()[this.curDate.month()];
-    }
-
-    get weekdays() {
-        let lang = this.language.currentlanguage.substring(0,2);
-        moment.locale(lang);
-        let weekDays = moment.weekdaysShort();
-        switch (this.weekStartDay) {
-            case 1:
-                let sun = weekDays.shift();
-                weekDays.push(sun);
-                return weekDays;
-            default:
-                return weekDays;
-        }
-    }
-
     private weekdayLong(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0,2);
+        let lang = this.language.currentlanguage.substring(0, 2);
         moment.locale(lang);
         return moment.weekdays(dayIndex + this.weekStartDay);
     }
@@ -101,31 +93,20 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         if (month !== this.curDate.month()) return true;
 
         let thedate = new moment();
-        thedate.date(day).month(month).year(this.curDate.year())
+        thedate.date(day).month(month).year(this.curDate.year());
         if (this.minDate && thedate.isBefore(this.minDate)) {
             return true;
         }
-        if (this.maxDate && thedate.isAfter(this.maxDate)) {
-            return true;
-        }
-        return false;
+        return !!(this.maxDate && thedate.isAfter(this.maxDate));
     }
 
     private isToday(day, month) {
         let today = new moment();
-        if (today.year() === this.curDate.year() && today.month() === month && today.date() == day) {
-            return true;
-        } else {
-            return false;
-        }
+        return today.year() === this.curDate.year() && today.month() === month && today.date() == day;
     }
 
     private isCurrent(day, month) {
-        if (this.setDate && this.curDate.year() === this.setDate.year() && this.setDate.month() === month && this.setDate.date() == day) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.setDate && this.curDate.year() === this.setDate.year() && this.setDate.month() === month && this.setDate.date() == day;
     }
 
     private prevMonth() {
@@ -169,9 +150,9 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         let j = 0;
         while (j < 6) {
             let i = 0;
-            let week = [];
+            let week = {days: [], number: fdom.format('w')};
             while (i < 7) {
-                week.push({day: fdom.date(), month: fdom.month()});
+                week.days.push({day: fdom.date(), month: fdom.month()});
                 fdom.add(1, 'd');
                 i++;
             }

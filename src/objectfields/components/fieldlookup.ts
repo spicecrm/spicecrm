@@ -1,11 +1,10 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer2,  OnInit} from '@angular/core';
+import {Component, ElementRef, Renderer2, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -14,13 +13,12 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-lookup',
-    templateUrl: './src/objectfields/templates/fieldlookup.html',
-    providers: [popup]
+    templateUrl: './src/objectfields/templates/fieldlookup.html'
 })
 export class fieldLookup extends fieldGeneric implements OnInit {
 
     private clickListener: any;
-    private lookupType = 0;
+    public lookupType = 0;
     private lookuplinkSelectOpen: boolean = false;
     private lookupSearchOpen: boolean = false;
     private lookupSearchTerm: string = '';
@@ -28,18 +26,14 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
     constructor(public model: model,
                 public view: view,
-                public popup: popup,
                 public broadcast: broadcast,
                 public language: language,
                 public metadata: metadata,
                 public router: Router,
-                private elementRef: ElementRef,
-                private renderer: Renderer2,
-                private modal: modal) {
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public modal: modal) {
         super(model, view, language, metadata, router);
-
-        // subscribe to the popup handler
-        this.popup.closePopup$.subscribe(() => this.closePopups());
 
         // subscriber to the broadcast when new model is added from the model
         this.broadcast.message$.subscribe((message) => this.handleMessage(message));
@@ -113,6 +107,9 @@ export class fieldLookup extends fieldGeneric implements OnInit {
             id: item.id,
             summary_text: item.text
         };
+
+        // close the lookup
+        this.lookupSearchOpen = false;
     }
 
     private handleMessage(message: any) {
@@ -159,7 +156,7 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     private removeItem(item) {
         if (!this.model.data[item.link].beans_relations_to_delete) this.model.data[item.link].beans_relations_to_delete = {};
         this.model.data[item.link].beans_relations_to_delete[item.id] = item;
-        delete(this.model.data[item.link].beans[item.id]);
+        delete (this.model.data[item.link].beans[item.id]);
     }
 
     private onFocus() {

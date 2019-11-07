@@ -223,7 +223,9 @@ export class metadata {
     }
 
     /*
-     * function to add Component
+     * function to add a Component direct
+     *
+     * no system container is rendered. This is faster but can cause that the sequence is mixed up
      */
     public addComponentDirect(component: string, viewChild: any, injector?: Injector): Observable<any> {
         let retSubject = new Subject();
@@ -249,7 +251,6 @@ export class metadata {
         } else {
             if (this.componentDirectory[component].module) {
                 let module = this.componentDirectory[component].module;
-
                 try {
                     System.import(this.moduleDirectory[module].path)
                         .then((fileContents: any) => {
@@ -258,17 +259,13 @@ export class metadata {
                         .then((type: any) => {
                             this.moduleDirectory[module].factories = {};
                             this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                                let foundComp = componentfactory.componentFactories.some(factory => {
-                                    if (factory.componentType.name === component) {
-                                        let componentRef = viewChild.createComponent(factory, undefined, injector);
-                                        componentRef.instance.self = componentRef;
-                                        retSubject.next(componentRef);
-                                        retSubject.complete();
-                                        return true;
-                                    }
-                                });
-                                if (!foundComp) {
-                                    // console.error("Cannot find a factory for component " + component);
+                                let foundComp = componentfactory.componentFactories.find(factory => factory.componentType.name === component);
+                                if (foundComp) {
+                                    let componentRef = viewChild.createComponent(foundComp, undefined, injector);
+                                    componentRef.instance.self = componentRef;
+                                    retSubject.next(componentRef);
+                                    retSubject.complete();
+                                } else {
                                     retSubject.error("Cannot find a factory for component " + component);
                                     retSubject.complete();
                                 }
@@ -296,7 +293,6 @@ export class metadata {
     }
 
     public checkComponent(component: string) {
-
         if (this.componentDirectory[component]) {
             return true;
         } else {
@@ -1119,7 +1115,7 @@ export class metadata {
      */
     public checkModuleAcl(module, action?) {
         try {
-            if(action){
+            if (action) {
                 return this.moduleDefs[module].acl[action];
             } else {
                 return !!this.moduleDefs[module];
@@ -1236,6 +1232,8 @@ export class metadata {
     }
 
     /**
+     * @deprecated shuld be replaced with libloader service
+     *
      * Lib Loading
      */
 
@@ -1475,10 +1473,12 @@ export class aclCheck implements CanActivate {
             return false;
         }
 
-        // otherwise check here
-        if (route.params.module === 'Users' && !this.session.authData.admin) {
+        // • prevents non-admins from listing the user list
+        // • prevents non-admins from accessing foreign user records
+        if (route.params.module === 'Users' && (!route.params.id || route.params.id != this.session.authData.userId) && !this.session.authData.admin) {
             return false;
-        } // prevents non-admins from listing the user list
+        }
+
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list
         if (route.params.module && route.params.module != "Home" && !this.metadata.checkModuleAcl(route.params.module, route.data.aclaction)) {
             this.router.navigate(["/modules/Home"]);

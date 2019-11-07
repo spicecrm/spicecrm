@@ -21,7 +21,13 @@ export class SystemInputNumber implements ControlValueAccessor {
     @Input() private max: number;
     @Input() private min: number;
     @Input() private precision: number;
+    @Input() private onlyField = false; // Display only the html input field, not the surrounding html
+    @Input() private placeholder: string; // HTML attribute
+    @Input() private disabled = false; // HTML attribute
+    @Input() private size: number; // HTML attribute
+
     private textValue: string = '';
+    private lastTextValue: string = ''; // The previous textValue, for comparison.
 
     constructor(public userpreferences: userpreferences) {
     }
@@ -29,9 +35,7 @@ export class SystemInputNumber implements ControlValueAccessor {
     // ControlValueAccessor Interface: >>
 
     public registerOnChange(fn: any): void {
-        this.onChange = (val) => {
-            fn(val);
-        };
+        this.onChange = fn;
     }
 
     public registerOnTouched(fn: any): void {
@@ -40,26 +44,42 @@ export class SystemInputNumber implements ControlValueAccessor {
 
     public writeValue(value: any): void {
         this.textValue = value;
+        if (this.textValue) this.getValSanitized(this.textValue);
+        this.lastTextValue = this.textValue;
     }
 
-    private onChange(val: string): void {
-    };
+    private onChange(val: string): void { 1; }
 
-    private onTouched(): void {
-    };
+    private onTouched(): void { 1; }
 
     // ControlValueAccessor Interface <<
 
-    private onBlur() {
+    /**
+     * Actions to do when the HTML input field changed.
+     * @param event The DOM event
+     */
+    private fieldChanged(event) {
+        this.textValue = this.getValSanitized(this.textValue);
+        // Only submit the (new) value if the sanitized value has actually changed:
+        if ( this.textValue !== this.lastTextValue ) {
+            this.onChange( this.textValue );
+            this.lastTextValue = this.textValue;
+        } else event.stopPropagation(); // The value of the HTML input field changed, but the real value (sanitized) stayed the same. So no propagation of the change event.
+    }
+
+    /**
+     * Takes a string that should be a number, removes group seperators, cuts to specific decimal places, limit it to min and max - and returns it as string (in case it is a valid number).
+     * @param textValue The text value to sanitize.
+     */
+    private getValSanitized(textValue: string): string {
         let pref = this.userpreferences.toUse;
-        let defSigDigits = this.precision || pref.default_currency_significant_digits;
+        let defSigDigits = this.precision === undefined ? pref.default_currency_significant_digits : this.precision;
         let numberValue: any = this.textValue.split(pref.num_grp_sep).join('');
         numberValue = numberValue.split(pref.dec_sep).join('.');
         numberValue = isNaN(parseFloat(numberValue)) ? undefined : (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
         numberValue = numberValue && numberValue > this.max ? this.max : numberValue;
         numberValue = numberValue && numberValue < this.min ? this.min : numberValue;
-        this.textValue = this.getValAsText(numberValue);
-        this.onChange(this.textValue);
+        return this.getValAsText(numberValue);
     }
 
     private getValAsText(numValue) {
@@ -68,6 +88,7 @@ export class SystemInputNumber implements ControlValueAccessor {
         }
         let val = parseFloat(numValue);
         if (isNaN(val)) return '';
-        return this.userpreferences.formatMoney(val);
+        return this.userpreferences.formatMoney(val, this.precision);
     }
+
 }

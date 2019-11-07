@@ -25,7 +25,7 @@ export class ObjectActionSaveButton {
     }
 
     get hidden() {
-        return !this.view.isEditMode();
+        return !this.model.isEditing;
     }
 
     public execute() {
@@ -33,8 +33,8 @@ export class ObjectActionSaveButton {
 
         if(this.model.validate()) {
             this.saving = true;
-            this.model.save().subscribe(saved => {
-                this.actionemitter.emit(true);
+            this.model.save(true).subscribe(saved => {
+                this.actionemitter.emit('save');
                 this.model.endEdit();
                 this.view.setViewMode();
             });

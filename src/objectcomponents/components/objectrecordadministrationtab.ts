@@ -28,6 +28,10 @@ export class ObjectRecordAdministrationTab implements OnInit {
             field: 'spiceacl_territories_hash',
             fieldconfig: {}
         },
+        spiceacl_users_hash: {
+            field: 'spiceacl_users_hash',
+            fieldconfig: {}
+        },
         assigned_user_name: {
             field: 'assigned_user_name',
             fieldconfig: {}
@@ -65,6 +69,14 @@ export class ObjectRecordAdministrationTab implements OnInit {
      */
     get territorymanaged() {
         return this.territories.checkModuleManaged(this.model.module);
+    }
+
+
+    /**
+     * simple getter to return if the current module manages multiple users
+     */
+    get multipleusers() {
+        return this.metadata.getModuleDefs(this.model.module).acl_multipleusers == 1 ? true : false;
     }
 
     get hidden() {

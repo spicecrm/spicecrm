@@ -15,6 +15,11 @@ export class ObjectRecordMessagesBadge {
 
     @Input() private side: "left" | "right" = 'left'
 
+    /**
+     * if the popover with the messages shoudl be displayed
+     */
+    private showpopover: boolean = false;
+
     constructor(private model: model, private language: language) {
 
     }

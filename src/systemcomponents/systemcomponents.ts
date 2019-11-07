@@ -17,7 +17,6 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
 
-
 // Pipes...
 import /*embed*/ {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
 import /*embed*/ {SystemModuleGlobalPipe} from "./pipes/systemmoduleglobalpipe";
@@ -48,6 +47,7 @@ import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynami
 import /*embed*/ {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesautocomplete";
 import /*embed*/ {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import /*embed*/ {SystemIcon} from "./components/systemicon";
+import /*embed*/ {SystemFileIcon} from "./components/systemfileicon";
 import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
@@ -60,7 +60,9 @@ import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
 import /*embed*/ {SystemInputFieldset} from "./components/systeminputfieldset";
 import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
+import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
+import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefield";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
@@ -112,6 +114,12 @@ import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
+import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
+import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
+import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
+
+import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
+import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 
 @NgModule({
     imports: [
@@ -156,6 +164,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
+        SystemFileIcon,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -168,7 +177,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputDelayed,
         SystemInputFieldset,
         SystemInputLabel,
+        SystemInputModule,
         SystemInputModuleFilter,
+        SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
         SystemInputTags,
@@ -214,7 +225,13 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemUtilityIcon,
         SystemViewContainer,
         SystemIconHelpText,
-        SystemMultipleSelect
+        SystemMultipleSelect,
+        SystemSelectUOM,
+        SystemModuleTree,
+        SystemModuleTreeItem,
+        SystemSelectUOM,
+        SystemInputMedia,
+        SystemInputTimezone
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -244,6 +261,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
+        SystemFileIcon,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -255,7 +273,9 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputDelayed,
         SystemInputFieldset,
         SystemInputLabel,
+        SystemInputModule,
         SystemInputModuleFilter,
+        SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
         SystemInputTags,
@@ -293,7 +313,13 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
-        SystemFilterBuilderFilterExpression
+        SystemFilterBuilderFilterExpression,
+        SystemSelectUOM,
+        SystemInputMedia,
+        SystemSelectUOM,
+        SystemModuleTree,
+        SystemModuleTreeItem,
+        SystemInputTimezone
     ]
 })
 export class SystemComponents {

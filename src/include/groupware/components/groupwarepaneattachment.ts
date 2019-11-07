@@ -1,18 +1,26 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, Input} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
+/**
+ * An email attachment component.
+ */
 @Component({
     selector: 'groupware-pane-attachment',
     templateUrl: './src/include/groupware/templates/groupwarepaneattachment.html'
 })
 export class GroupwarePaneAttachment {
 
+    /**
+     * Current attachment.
+     */
     @Input() private attachment: any;
 
     constructor(
         private groupware: GroupwareService,
-    ) {
-    }
+    ) {}
 
     private onClick(event) {
         if (event.target.checked) {

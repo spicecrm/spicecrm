@@ -1,14 +1,14 @@
 /**
  * @module ObjectFields
  */
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
-import {Router}   from '@angular/router';
-import { modal } from '../../services/modal.service';
+import {Router} from '@angular/router';
+import {modal} from '../../services/modal.service';
 
 declare const window: any;
 
@@ -20,15 +20,13 @@ export class fieldText extends fieldGeneric implements OnInit {
 
     private speechRecognition = false;
     @ViewChild('textField', {read: ViewContainerRef, static: false}) private textField: ViewContainerRef;
-    private browserIsChrome: boolean;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modalservice: modal ) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modalservice: modal) {
         super(model, view, language, metadata, router);
-        this.browserIsChrome = !!window.chrome && !!window.chrome.webstore;
     }
 
     public ngOnInit() {
-        if ( this.browserIsChrome ) {
+        if (window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
             this.speechRecognition = true; // for debugging
         }
@@ -43,8 +41,15 @@ export class fieldText extends fieldGeneric implements OnInit {
         return styleObj;
     }
 
+    /**
+     * returns true if the field is to be displaxed truncated
+     */
+    get truncated() {
+        return this.fieldconfig.truncate ? true : false;
+    }
+
     private speechRecognitionStart() {
-        this.modalservice.openModal('SpeechRecognition',false).subscribe( modal => {
+        this.modalservice.openModal('SpeechRecognition', false).subscribe(modal => {
             modal.instance.textfield = this.textField;
         });
     }

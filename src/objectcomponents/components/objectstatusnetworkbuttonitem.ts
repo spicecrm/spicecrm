@@ -1,36 +1,35 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, Output, Renderer2, ElementRef,EventEmitter} from '@angular/core';
-import {Router} from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
+import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import {language} from '../../services/language.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: 'object-status-network-button-item',
     templateUrl: './src/objectcomponents/templates/objectstatusnetworkbuttonitem.html',
-    host:{
-        '(click)' : 'this.setStatus()'
+    host: {
+        '(click)': 'this.setStatus()'
     }
 })
-export class ObjectStatusNetworkButtonItem {
+export class ObjectStatusNetworkButtonItem implements OnInit {
 
-    @Input() item: any = {};
-    @Input() statusfield: string = '';
-    @Output() status: EventEmitter<string> = new EventEmitter<string>();
+    @Input() private item: any = {};
+    @Output() private status: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(private language: language) {
 
     }
 
-    setStatus(){
+    public ngOnInit(): void {
+        console.log(this.item);
+    }
+
+    private setStatus() {
         this.status.emit(this.item.status_to);
     }
-
 }

@@ -79,6 +79,9 @@ export class SystemPrompt implements OnInit, AfterViewInit {
         this.answer = this.answerSubject.asObservable();
     }
 
+    get splitText(): string[] {
+        return this.text ? this.text.split(/(?:\r\n|\r|\n)/g) : [];
+    }
     public ngOnInit() {
         if ( !this.theme ) this.theme = 'shade';
     }

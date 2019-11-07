@@ -15,7 +15,7 @@
 </div>
 <div *ngIf="!isEditMode()" class="slds-scrollable--y" style="max-height: 300px;" [ngClass]="fielddisplayclass">
     <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue"></div>
-    <iframe *ngIf="asiframe" [src]="sanitizedValue" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
+    <iframe *ngIf="asiframe" [src]="sanitizedValue" style="resize: vertical;" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
 </div>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <field-html-editor [fieldid]="fieldid" [fieldvalue]="value" [fieldconfig]="fieldconfig" [useStylesheets]="useStylesheets" [useStylesheetSwitcher]="useStylesheetSwitcher" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></field-html-editor>

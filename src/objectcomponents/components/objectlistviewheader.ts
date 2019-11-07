@@ -7,10 +7,25 @@ import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
+import {modal} from '../../services/modal.service';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
     selector: 'object-listview-header',
-    templateUrl: './src/objectcomponents/templates/objectlistviewheader.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewheader.html',
+    animations: [
+        trigger('animatepanel', [
+            transition(':enter', [
+                style({right: '-320px', overflow: 'hidden'}),
+                animate('.5s', style({right: '0px'})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({right: '-320px'}))
+            ])
+        ])
+    ]
 })
 export class ObjectListViewHeader implements OnDestroy {
     @Input() private parentconfig: any = [];
@@ -21,7 +36,7 @@ export class ObjectListViewHeader implements OnDestroy {
     private listTypeSubscription: any;
     private moduleName: string = '';
 
-    constructor(private metadata: metadata, private activatedRoute: ActivatedRoute, private router: Router, private modellist: modellist, private language: language, private model: model) {
+    constructor(private metadata: metadata, private activatedRoute: ActivatedRoute, private router: Router, private modellist: modellist, private language: language, private model: model, private modal: modal) {
         /*
         this.activatedRoute.params.subscribe(params => {
             this.moduleName = params['module'];
@@ -104,5 +119,48 @@ export class ObjectListViewHeader implements OnDestroy {
         }
     }
 
+    /**
+     *  a getter to get if the geo search is enabled or not
+     */
+    get geoDisabled() {
+        if (this.model && this.model.module) {
+            return !this.metadata.getModuleDefs(this.model.module).ftsgeo;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * getter if the searhc geo is set
+     */
+    get geoSet() {
+        return this.modellist.searchGeo ? true : false;
+    }
+
+    /**
+     * opens the geo selector
+     */
+    private openGeo() {
+        this.modal.openModal('SpiceMapSelector').subscribe(mapModal => {
+            if (this.modellist.searchGeo) {
+                mapModal.instance.lat = this.modellist.searchGeo.lat;
+                mapModal.instance.lng = this.modellist.searchGeo.lng;
+                mapModal.instance._radius = this.modellist.searchGeo.radius;
+            }
+            mapModal.instance.geoSearchemitter.subscribe(geodata => {
+                if (!geodata) {
+                    this.modellist.searchGeo = undefined;
+                    this.modellist.reLoadList();
+                } else {
+                    this.modellist.searchGeo = {
+                        radius: geodata.radius,
+                        lat: geodata.lat,
+                        lng: geodata.lng
+                    };
+                    this.modellist.reLoadList();
+                }
+            });
+        });
+    }
 
 }
