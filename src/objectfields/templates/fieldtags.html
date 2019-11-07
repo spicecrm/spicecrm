@@ -1,0 +1,25 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    {{displayTags}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
+    <div class="slds-grid slds-grid--vertical-align-end">
+        <div class="slds-size--2-of-3">
+            <ul *ngIf="objecttags.length" class="spice-taglist">
+                <li *ngFor="let tag of objecttags;let i=index">
+                    <span class="slds-badge">
+                        {{tag}}
+                        <span class="slds-badge__icon slds-badge__icon_right" (click)="removeByIndex(i)">
+                            <system-utility-icon icon="close" size="xx-small"></system-utility-icon>
+                        </span>
+                    </span>
+                </li>
+            </ul>
+            <div *ngIf="!objecttags.length" style="font-style:italic">{{language.getLabel('LBL_NO_TAGS_ASSIGNED')}}</div>
+        </div>
+        <div class="slds-size--1-of-3 slds-p-left--x-small">
+            <system-input-tags (tagemitter)="addTag($event)"></system-input-tags>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

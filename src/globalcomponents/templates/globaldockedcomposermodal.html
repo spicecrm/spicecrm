@@ -4,9 +4,13 @@
         <div #containercontent></div>
     </system-modal-content>
     <system-modal-footer>
-        <div class="slds-col_bump-left slds-text-align_right">
-            <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <global-docked-composer-messages-badge></global-docked-composer-messages-badge>
+            <div class="slds-text-align_right">
+                <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
+                <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
+                <button class="slds-button slds-button--brand" (click)="saveComposer(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+            </div>
         </div>
     </system-modal-footer>
 </system-modal>

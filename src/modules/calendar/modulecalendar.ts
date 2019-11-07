@@ -31,6 +31,7 @@ import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
+import /*embed*/ {CalendarAddModulesModal} from "./components/calendaraddmodulesmodal";
 import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
 import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
 import /*embed*/ {CalendarScheduleDashlet} from "./components/calendarscheduledashlet";
@@ -64,6 +65,7 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         CalendarMorePopoverEvent,
         CalendarMoreButton,
         CalendarAddCalendar,
+        CalendarAddModulesModal,
         CalendarOtherCalendarsMonitor,
         CalendarColorPicker,
         CalendarScheduleDashlet,

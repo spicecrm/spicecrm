@@ -1,6 +1,9 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
-    <a href="javascript:void(0);"  modelPopOver [module]="parentType" [id]="parentId">{{value}}</a>
+    <div *ngIf="parentId" class="slds-grid slds-grid_vertical-align-center">
+        <system-icon *ngIf="displayModuleIcon" [module]="model.data[parentTypeField]" [size]="'x-small'"></system-icon>
+        <span modelPopOver [module]="parentType" [id]="parentId" [enablelink]="link">{{value}}</span>
+    </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div class="slds-form-element">

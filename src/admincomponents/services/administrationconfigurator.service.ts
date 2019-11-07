@@ -73,7 +73,7 @@ export class administrationconfigurator {
             switch (this.fielddefobj[field]) {
                 case 'bool':
                 case 'boolean':
-                    newRecord[field] = record[field]  == 'true' ? '1' : '0';
+                    newRecord[field] = record[field]  == true ? '1' : '0';
                     break;
                 default:
                     newRecord[field] = record[field];

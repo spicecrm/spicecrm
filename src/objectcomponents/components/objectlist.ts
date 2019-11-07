@@ -41,6 +41,9 @@ export class ObjectList implements OnDestroy {
         // load the list intiially
         this.setFieldDefs();
 
+        // set the limit for the loading
+        this.modellist.loadlimit = 50;
+
         // load the list and initialize from sesson data if this is set
         this.loadList(true);
 
@@ -61,7 +64,7 @@ export class ObjectList implements OnDestroy {
     }
 
     get sortdirection() {
-        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'DESC';
+        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
     }
 
     public ngOnDestroy() {
@@ -105,26 +108,15 @@ export class ObjectList implements OnDestroy {
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
-        this.modellist.getListData(requestedFields, loadfromcache).subscribe({
-            complete: () => this.sortList(this.modellist.listData.list)
-        });
+        this.modellist.setSortDirection(this.sortdirection);
+        this.modellist.setSortFieldWithoutReload(this.sortfield);
+        this.modellist.getListData(requestedFields, loadfromcache);
     }
-
+//
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.modellist.loadMoreList();
-        }
-    }
-
-    private sortList(list) {
-        if(this.sortfield) {
-            let sortedlist = [];
-            if(this.sortdirection == 'ASC') {
-                sortedlist = list.sort((a,b) => (a[this.sortfield] < b[this.sortfield]) ? 1 : ((b[this.sortfield] < a[this.sortfield]) ? -1 : 0));
-            } else {
-                sortedlist = list.sort((a,b) => (a[this.sortfield] < b[this.sortfield]) ? -1 : ((b[this.sortfield] < a[this.sortfield]) ? 1 : 0));
-            }
         }
     }
 }

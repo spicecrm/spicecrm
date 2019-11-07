@@ -47,6 +47,11 @@ export class ObjectRelatedlistTable implements OnInit {
     @Input() private hideActions: boolean = false;
 
     /**
+     * the list item actionset
+     */
+    @Input() private listitemactionset: string;
+
+    /**
      * set if no access to the related odule is allowed
      */
     private noAccess: boolean = false;

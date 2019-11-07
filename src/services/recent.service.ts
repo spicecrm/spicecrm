@@ -25,11 +25,11 @@ export class recent {
 
     private handleMessage(message: any) {
         switch (message.messagetype) {
-
             case 'model.save':
                 this.items.some((item, index) => {
                     if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
                         this.items[index].item_summary = message.messagedata.data.summary_text;
+                        this.items[index].data = message.messagedata.data;
                         return true;
                     }
                 });
@@ -38,6 +38,7 @@ export class recent {
                     this.moduleItems[message.messagedata.module].some((item, index) => {
                         if (item.item_id == message.messagedata.id) {
                             this.moduleItems[message.messagedata.module][index].item_summary = message.messagedata.data.summary_text;
+                            this.moduleItems[message.messagedata.module][index].data = message.messagedata.data;
                             return true;
                         }
                     });
@@ -65,7 +66,7 @@ export class recent {
         }
     }
 
-    public trackItem(module_name: string, item_id: string, item_summary: string) {
+    public trackItem(module_name: string, item_id: string, item_data: any) {
         // handle the general tracker
         this.items.some((item, index) => {
             if (item.module_name === module_name && item.item_id == item_id) {
@@ -77,7 +78,8 @@ export class recent {
         this.items.splice(0, 0, {
             item_id,
             module_name,
-            item_summary
+            item_summary: item_data.summary_text,
+            data: item_data
         });
 
         while (this.items.length > 50) {
@@ -96,7 +98,8 @@ export class recent {
             this.moduleItems[module_name].splice(0, 0, {
                 item_id,
                 module_name,
-                item_summary
+                item_summary: item_data.summary_text,
+                data: item_data
             });
 
             while (this.moduleItems[module_name].length > 5) {

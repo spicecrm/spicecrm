@@ -5,14 +5,15 @@ import {Component, ElementRef, EventEmitter, OnDestroy, Output, Renderer2} from 
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
+import {modelutilities} from "../../../services/modelutilities.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 @Component({
@@ -31,8 +32,13 @@ export class CalendarHeader implements OnDestroy {
                 private navigation: navigation,
                 private elementRef: ElementRef,
                 private renderer: Renderer2,
+                private modelUtils: modelutilities,
                 private calendar: calendar) {
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
+    }
+
+    get modules() {
+        return this.calendar.modules;
     }
 
     get sheetType() {
@@ -112,15 +118,11 @@ export class CalendarHeader implements OnDestroy {
         this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.calendar.sheetType == 'Three_Days' ? 3 : 1, this.calendar.duration[this.calendar.sheetType])));
     }
 
-    private addOtherCalendar() {
-        this.calendar.addOtherCalendar();
-    }
-
     private getCalendarHeader() {
         const focDate = new moment(this.calendarDate);
         switch (this.calendar.sheetType) {
             case 'Week':
-                return this.getFirstDayOfWeek() + ' - ' + this.getLastDayOfWeek();
+                return `${this.getFirstDayOfWeek()} - ${this.getLastDayOfWeek()}`;
             case 'Month':
                 return focDate.format('MMMM YYYY');
             case 'Day':
@@ -135,6 +137,11 @@ export class CalendarHeader implements OnDestroy {
     private getCompactCalendarHeader() {
         const focDate = new moment(this.calendarDate);
         return focDate.format('MMM, YYYY');
+    }
+
+    private getWeekNumberDisplay() {
+        let focDate = new moment(this.calendarDate);
+        return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('w')}`;
     }
 
     private getFirstDayOfWeek() {
@@ -187,5 +194,27 @@ export class CalendarHeader implements OnDestroy {
             this.openPicker = false;
             this.clickListener();
         }
+    }
+
+    private toggleVisibleModules(module) {
+        let found = this.calendar.otherCalendars.some(calendar => {
+            if (calendar.name == module) {
+                calendar.visible = !calendar.visible;
+                this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
+                return true;
+            }
+        });
+        if (!found) {
+            this.calendar.otherCalendars.push({
+                id: this.modelUtils.generateGuid(),
+                name: module,
+                visible: false
+            });
+            this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
+        }
+    }
+
+    private getIconStyle(module) {
+        return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
     }
 }

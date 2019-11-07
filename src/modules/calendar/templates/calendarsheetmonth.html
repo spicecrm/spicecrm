@@ -5,23 +5,25 @@
     </div>
 </div>
 <div #calendarsheet [ngStyle]="getSheetStyle()" class="slds-scrollable slds-p-vertical--medium slds-is-relative">
-    <ng-container *ngFor="let sheetWeek of currentGrid; let i = index; trackBy: trackByFnDate">
-        <div #boxcontainer *ngFor="let sheetDay of sheetWeek; let j = index; trackBy: trackByFn" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
-            <div class="slds-p-around--xx-small" [style.height]="offsetHeight + 'px'">
-                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
+    <ng-container>
+        <ng-container *ngFor="let sheetWeek of currentGrid; let i = index; trackBy: trackByFnDate">
+            <div *ngFor="let sheetDay of sheetWeek; let j = index; trackBy: trackByFnDate" class="slds-is-absolute slds-truncate" [ngStyle]="getBoxStyle(i, j, sheetDay.month)">
+                <div class="slds-p-around--xx-small" [style.height]="offsetHeight + 'px'">
+                    <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
+                </div>
+                <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight + 'px'">
+                    <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [sheetday]="sheetDay" [moreevents]="sheetDay.items" [ismobileview]="calendar.isMobileView"></calendar-more-button>
+                </div>
             </div>
-            <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight + 'px'">
-                <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [sheetday]="sheetDay" [moreevents]="sheetDay.items" [ismobileview]="calendar.isMobileView"></calendar-more-button>
-            </div>
-        </div>
-        <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>
-    </ng-container>
-    <ng-container *ngFor="let sheetDay of getSheetDays(); trackBy: trackByFnDate">
-        <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
-    </ng-container>
-    <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
-        <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFn">
-            <calendar-sheet-event [event]="event" [ismonthsheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
+            <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>
+        </ng-container>
+        <ng-container *ngFor="let sheetDay of getSheetDays(); trackBy: trackByFnDate">
+            <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
+        </ng-container>
+        <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
+            <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFnDate">
+                <calendar-sheet-event [event]="event" [ismonthsheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
+            </ng-container>
         </ng-container>
     </ng-container>
 </div>

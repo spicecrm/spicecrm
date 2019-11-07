@@ -29,12 +29,16 @@
             <div class="slds-button-group" role="group">
                 <button class="slds-button slds-button--icon-border" [disabled]="aggregatesDisabled()" [ngClass]="getPanelButtonClass('aggregates')" (click)="setPanelButton('aggregates')">
                     <system-button-icon icon="bucket"></system-button-icon>
-                </button><button class="slds-button slds-button--icon-border" [disabled]="filterDisabled()" [ngClass]="getPanelButtonClass('filter')" (click)="setPanelButton('filter')">
+                </button>
+                <button class="slds-button slds-button--icon-border" [disabled]="filterDisabled()" [ngClass]="getPanelButtonClass('filter')" (click)="setPanelButton('filter')">
                     <system-button-icon icon="filterList"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button--icon-border" [ngClass]="{'slds-is-selected': geoSet}" [disabled]="geoDisabled" (click)="openGeo()">
+                    <system-button-icon icon="world"></system-button-icon>
                 </button>
             </div>
         </div>
     </div>
 </div>
-<object-listview-filter-panel [ngStyle]="getFilterPanelStyle()"></object-listview-filter-panel>
-<object-listview-aggregates-panel [ngStyle]="getAggregatesPanelStyle()"></object-listview-aggregates-panel>
+<object-listview-filter-panel @animatepanel *ngIf="panelButtonState === 'filter'"></object-listview-filter-panel>
+<object-listview-aggregates-panel @animatepanel *ngIf="panelButtonState === 'aggregates'"></object-listview-aggregates-panel>

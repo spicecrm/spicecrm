@@ -12,6 +12,13 @@
     <div class="slds-dropdown slds-nubbin--top">
         <ul #menulist class="slds-dropdown__list" role="menu">
             <div #menucontainer></div>
+            <ng-container *ngIf="itemMenu.length > 0">
+                <li *ngFor="let actionitem of itemMenu" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
+                    <a href="javascript:void(0);" role="menuitem">
+                        <global-navigation-menu-item-action-container class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem"></global-navigation-menu-item-action-container>
+                    </a>
+                </li>
+            </ng-container>
             <ng-container *ngIf="favorites.length > 0">
                 <li class="slds-has-divider--top-space" role="separator"></li>
                 <li class="slds-dropdown__header" role="separator">

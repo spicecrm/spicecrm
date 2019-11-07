@@ -25,24 +25,6 @@
             <div *ngIf="isEditing" class="slds-grid slds-grow">
                 <div class="slds-form-element slds-grow">
                     <system-input-tags (tagemitter)="addTag($event)"></system-input-tags>
-                    <!--div class="slds-form-element__control">
-                        <div class="slds-combobox_container">
-                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-expanded="false" aria-haspopup="listbox" role="combobox">
-                                <div class="slds-combobox__form-element " role="none">
-                                    <input type="text" class="slds-input slds-combobox__input" aria-autocomplete="list" autoComplete="off" role="textbox" />
-                                </div>
-                                <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
-                                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                        <li role="presentation" class="slds-listbox__item">
-                                            <div class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
-                                                    tag
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div-->
                 </div>
                 <button class="slds-p-left--xx-small slds-button slds-button_icon" (click)="cancelEdit()">
                     <system-button-icon [icon]="'close'"></system-button-icon>
