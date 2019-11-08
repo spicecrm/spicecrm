@@ -34,7 +34,7 @@ export class ActionsetManager {
     private currentActionSetItems: Array<any> = [];
     private selectedItem: any = {
         type: '',
-        fieldset: '',
+        actionset: '',
         id: '',
         isViewMode: false
     };
@@ -55,8 +55,8 @@ export class ActionsetManager {
             this.sysModules = modules;
 
             // iniutialize the metadata service
-            // this.metadata.loadFieldSets(new Subject<any>(), true);
-            // this.metadata.loadFieldDefs(new Subject<any>(), true);
+            // this.metadata.loadActionSets(new Subject<any>(), true);
+            // this.metadata.loadActionDefs(new Subject<any>(), true);
             // this.metadata.loadComponents(new Subject<any>(), true);
         });
         this.checkMode();
@@ -72,11 +72,11 @@ export class ActionsetManager {
     }
 
     get currentActionSetPackage() {
-        return this.metadata.getFieldset(this.currentActionSet).package;
+        return this.metadata.getActionSet(this.currentActionSet).package;
     }
 
     set currentActionSetPackage(newPackage) {
-        this.metadata.setFieldset(this.currentActionSet, {name: this.currentActionSetName, package: newPackage});
+        this.metadata.setActionset(this.currentActionSet, {name: this.currentActionSetName, package: newPackage});
     }
 
     get showDetailIcon() {
@@ -89,7 +89,7 @@ export class ActionsetManager {
 
     get actionSetType() {
         if (this.currentActionSet) {
-            return this.metadata.getFieldset(this.currentActionSet).type;
+            return this.metadata.getActionSet(this.currentActionSet).type;
         } else {
             return '';
         }
@@ -170,31 +170,31 @@ export class ActionsetManager {
     private loadCurrentActionset() {
         this.selectedItem = {
             type: '',
-            fieldset: '',
+            actionset: '',
             id: ''
         };
         this.checkMode();
         this.currentActionSetItems = [];
-        this.addFieldSetItems(this.currentActionSet, 0, this.actionSetType);
+        this.addActionSetItems(this.currentActionSet, 0, this.actionSetType);
     }
 
     private addItem(parent = '') {
-        this.modalservice.openModal('FieldsetManagerAddDialog').subscribe(modal => {
+        this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
             modal.instance.metadata = this.metadata;
             modal.instance.module = this.currentModule;
-            modal.instance.fieldsettype = this.fieldSetType;
+            modal.instance.actionsettype = this.actionSetType;
             modal.instance.edit_mode = this.edit_mode;
-            modal.instance.parent = parent ? parent : this.currentFieldSet;
+            modal.instance.parent = parent ? parent : this.currentActionSet;
             modal.instance.closedialog.subscribe(added => {
                 if (added) {
-                    this.loadCurrentFieldset();
+                    this.loadCurrentActionset();
                 }
             });
         });
     }
 
     private unlinkItem(item) {
-        if (this.metadata.removeFieldsetItem(item.actionset, item.item)) {
+        if (this.metadata.removeActionsetItem(item.actionset, item.item)) {
             this.selectedItem = {
                 type: '',
                 actionset: '',
@@ -211,10 +211,10 @@ export class ActionsetManager {
             modal.instance.closedialog.subscribe(update => {
                 if (update !== false) {
                     if (this.currentActionSet != '') {
-                        this.metadata.setFieldset(this.currentActionSet, {name: update.name, type: update.type});
+                        this.metadata.setActionset(this.currentActionSet, {name: update.name, type: update.type});
                     } else {
                         let actionsetid = this.modelutilities.generateGuid();
-                        this.metadata.addFieldset(actionsetid, this.currentModule, update.name, update.type);
+                        this.metadata.addActionset(actionsetid, this.currentModule, update.name, update.type);
                         this.currentActionSet = actionsetid;
                     }
                     this.checkMode();
@@ -243,7 +243,7 @@ export class ActionsetManager {
     private addActionSetItems(actionSet, level = 0, parentScope = "global") {
         let actionsetItems = this.metadata.getActionSetItems(actionSet);
 
-        // for(let [index, fieldsetItem] of fieldsetItems){
+        // for(let [index, actionsetItem] of actionsetItems){
         actionsetItems.forEach((actionsetItem, index) => {
 
             let customModeGlobalField = false;
@@ -256,10 +256,10 @@ export class ActionsetManager {
             }
 
             if (actionsetItem.field) {
-                let currentFieldSetItem = {
+                let currentActionSetItem = {
                     level: level + 1,
                     type: 'field',
-                    fieldset: actionSet,
+                    actionset: actionSet,
                     id: actionsetItem.id,
                     name: actionsetItem.field,
                     index: index,
@@ -268,13 +268,13 @@ export class ActionsetManager {
                     parentScope: parentScope,
                     customModeGlobalField: customModeGlobalField
                 };
-                this.currentActionSetItems.push(currentFieldSetItem);
+                this.currentActionSetItems.push(currentActionSetItem);
 
-            } else if (actionsetItem.fieldset) {
+            } else if (actionsetItem.actionset) {
 
                 let customModeGlobalField = false;
                 if (this.edit_mode == "custom" && !this.crNoneActive) {
-                    let item = this.metadata.getFieldset(actionsetItem.fieldset);
+                    let item = this.metadata.getActionSet(actionsetItem.actionset);
                     if (item) {
                         if (item.type == "global") {
                             customModeGlobalField = true;
@@ -283,15 +283,15 @@ export class ActionsetManager {
                 } else if (this.edit_mode == "none" || this.crNoneActive) {
                     customModeGlobalField = true;
                 }
-                // getDisplayType(currentFieldSetItem) == 'global'
-                // this.metadata.getFieldset(fieldsetItem.fieldset).type
+                // getDisplayType(currentActionSetItem) == 'global'
+                // this.metadata.getActionset(actionsetItem.actionset).type
 
                 let currentActionSetItem = {
                     level: level + 1,
-                    type: 'fieldset',
-                    fieldset: actionSet,
+                    type: 'actionset',
+                    actionset: actionSet,
                     id: actionsetItem.id,
-                    name: this.metadata.getFieldsetName(actionsetItem.fieldset),
+                    name: this.metadata.getActionsetName(actionsetItem.actionset),
                     index: index,
                     count: actionsetItems.length,
                     item: actionsetItem,
@@ -300,7 +300,7 @@ export class ActionsetManager {
                 };
                 this.currentActionSetItems.push(currentActionSetItem);
 
-                this.addActionSetItems(actionsetItem.fieldset, level + 1, this.getDisplayType(currentActionSetItem));
+                this.addActionSetItems(actionsetItem.actionset, level + 1, this.getDisplayType(currentActionSetItem));
             }
         });
     }
@@ -310,14 +310,14 @@ export class ActionsetManager {
             return item.item.field;
         }
 
-        if (item.type == 'fieldset') {
-            return this.metadata.getFieldsetName(item.item.fieldset);
+        if (item.type == 'actionset') {
+            return this.metadata.getActionsetName(item.item.actionset);
         }
     }
 
     private getDisplayType(item) {
-        if (item.type == 'fieldset') {
-            let ditem = this.metadata.getFieldset(item.item.fieldset);
+        if (item.type == 'actionset') {
+            let ditem = this.metadata.getActionSet(item.item.actionset);
             if (ditem) {
                 return ditem.type;
             }
@@ -329,49 +329,49 @@ export class ActionsetManager {
         return id == this.selectedItem.id;
     }
 
-    private selectItem(currentFieldSetItem, scope) {
+    private selectItem(currentActionSetItem, scope) {
         this.selectedItem = {
-            type: currentFieldSetItem.type,
-            fieldset: currentFieldSetItem.fieldset,
-            id: currentFieldSetItem.id,
-            isViewMode: currentFieldSetItem.customModeGlobalField
+            type: currentActionSetItem.type,
+            actionset: currentActionSetItem.actionset,
+            id: currentActionSetItem.id,
+            isViewMode: currentActionSetItem.customModeGlobalField
         };
     }
 
     private moveDown(item) {
-        let fieldsetItems = this.metadata.getFieldSetItems(item.fieldset);
+        let actionsetItems = this.metadata.getActionSetItems(item.actionset);
 
         // get the current ind ex in the array
         let currentIndex = 0;
-        fieldsetItems.some((someitem, someindex) => {
+        actionsetItems.some((someitem, someindex) => {
             if (someitem.id == item.id) {
                 currentIndex = someindex;
                 return true;
             }
         });
-        if (currentIndex < fieldsetItems.length - 1) {
+        if (currentIndex < actionsetItems.length - 1) {
             // shuffle
-            let currentItem = fieldsetItems.splice(currentIndex, 1);
-            fieldsetItems.splice(currentIndex + 1, 0, currentItem[0]);
+            let currentItem = actionsetItems.splice(currentIndex, 1);
+            actionsetItems.splice(currentIndex + 1, 0, currentItem[0]);
 
             // renumber
             let i = 0;
-            for (let item of fieldsetItems) {
+            for (let item of actionsetItems) {
                 item.sequence = i;
                 i++;
             }
 
             // reload
-            this.loadCurrentFieldset();
+            this.loadCurrentActionset();
         }
     }
 
     private moveUp(item) {
-        let fieldsetItems = this.metadata.getFieldSetItems(item.fieldset);
+        let actionsetItems = this.metadata.getActionSetItems(item.actionset);
 
         // get the current ind ex in the array
         let currentIndex = 0;
-        fieldsetItems.some((someitem, someindex) => {
+        actionsetItems.some((someitem, someindex) => {
             if (someitem.id == item.id) {
                 currentIndex = someindex;
                 return true;
@@ -380,23 +380,23 @@ export class ActionsetManager {
 
         if (currentIndex > 0) {
             // shuffle
-            let currentItem = fieldsetItems.splice(currentIndex, 1);
-            fieldsetItems.splice(currentIndex - 1, 0, currentItem[0]);
+            let currentItem = actionsetItems.splice(currentIndex, 1);
+            actionsetItems.splice(currentIndex - 1, 0, currentItem[0]);
 
             // renumber
             let i = 0;
-            for (let item of fieldsetItems) {
+            for (let item of actionsetItems) {
                 item.sequence = i;
                 i++;
             }
 
             // reload
-            this.loadCurrentFieldset();
+            this.loadCurrentActionset();
         }
     }
 
     private allowEdit() {
-        return this.currentFieldSet != '';
+        return this.currentActionSet != '';
     }
 
     // Find table
@@ -406,183 +406,183 @@ export class ActionsetManager {
 
         if (type == "global") {
             tablescope = {
-                fieldsetTable: "sysuifieldsets",
-                itemsTable: "sysuifieldsetsitems"
+                actionsetTable: "sysuiactionsets",
+                itemsTable: "sysuiactionsetsitems"
             };
         } else {
             tablescope = {
-                fieldsetTable: "sysuicustomfieldsets",
-                itemsTable: "sysuicustomfieldsetsitems"
+                actionsetTable: "sysuicustomactionsets",
+                itemsTable: "sysuicustomactionsetsitems"
             };
         }
         return tablescope;
     }
 
-
-    private copy(currentFieldset = this.currentFieldSet, customizeItem = null) {
-        this.modalservice.openModal('FieldsetManagerCopyDialog').subscribe(modal => {
-
-            modal.instance.fieldset = currentFieldset;
-            modal.instance.sysModules = this.sysModules;
-            modal.instance.metaFieldSets = this.metadata.getAllFieldsets();
-
-            modal.instance.edit_mode = this.edit_mode;
-
-            modal.instance.closedialog.subscribe(update => {
-
-                this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-
-                    let fieldset = {...update.fieldset};
-
-                    let module = update.module;
-                    let type = update.type;
-                    let name = update.name;
-
-                    if (module == "*") {
-                        module = 'global';
-                    }
-
-
-                    let checkParams = {
-                        'module': module,
-                        'type': type,
-                        'name': name
-                    };
-
-                    // check if component exists
-                    this.backend.getRequest('spiceui/core/fieldsetalreadyexists', checkParams).subscribe(
-                        data => {
-                            if (data == false) {
-
-                                let tablescope = this.findTable(type);
-
-                                fieldset.module = module;
-                                if (module == "global") {
-                                    fieldset.module = '*';
-                                }
-                                fieldset.name = name;
-
-                                let newid = this.modelutilities.generateGuid(); // generate id
-                                fieldset.id = newid;
-
-                                let save_items: any = [];
-
-                                for (let item of fieldset.items) {
-                                    let copied_item = {...item};
-                                    copied_item.fieldconfig = {...item.fieldconfig};
-
-                                    copied_item.id = this.modelutilities.generateGuid(); // item generate id
-                                    copied_item.fieldset_id = newid;
-                                    save_items.push(copied_item);
-                                }
-
-
-                                delete fieldset.items;
-                                delete fieldset.type;
-
-
-                                this.backend.postRequest('configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, fieldset).subscribe(
-                                    (success) => {
-                                        let savecounter = 0;
-
-                                        fieldset.items = save_items;
-                                        fieldset.type = type;
-
-                                        for (let save_item of save_items) {
-                                            this.backend.postRequest('configurator/' + tablescope.itemsTable + '/' + save_item.id, null, save_item).subscribe(
-                                                (success) => {
-                                                    savecounter++;
-                                                    if (savecounter == save_items.length) {
-                                                        if (customizeItem) {
-                                                            customizeItem.item.fieldset = fieldset.id;
-                                                            let parenttablescope = this.findTable(customizeItem.parentScope);
-
-                                                            this.backend.postRequest('configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, customizeItem.item).subscribe(
-                                                                (success) => {
-                                                                    loadingModalRef.instance.self.destroy();
-                                                                    this.toast.sendToast('saved!');
-                                                                    this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
-                                                                },
-                                                                (error) => {
-                                                                    loadingModalRef.instance.self.destroy();
-                                                                    this.toast.sendAlert('saving link failed!, ' + save_item.id);
-                                                                    console.error(error);
-                                                                }
-                                                            );
-
-                                                        } else {
-                                                            loadingModalRef.instance.self.destroy();
-                                                            this.toast.sendToast('saved!');
-                                                            this.currentModule = fieldset.module;
-                                                            this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
-                                                            this.currentFieldSet = fieldset.id;
-
-                                                            this.currentFieldSetItems = save_items;
-                                                            this.selectedItem = {};
-                                                            this.currentFieldSetName = fieldset.name;
-                                                            this.loadCurrentFieldset();
-                                                        }
-                                                    }
-                                                },
-                                                (error) => {
-                                                    loadingModalRef.instance.self.destroy();
-                                                    this.toast.sendAlert('saving failed!, ' + save_item.id);
-                                                    console.error(error);
-                                                }
-                                            );
-                                        }
-                                    },
-                                    (error) => {
-                                        loadingModalRef.instance.self.destroy();
-                                        this.toast.sendAlert('saving failed!');
-                                        console.error(error);
-                                    }
-                                );
-                            } else {
-                                loadingModalRef.instance.self.destroy();
-                                this.toast.sendAlert('Fieldset already exists!');
-                            }
-                        });
-                });
-            });
-        });
-    }
+    //
+    // private copy(currentActionset = this.currentActionSet, customizeItem = null) {
+    //     this.modalservice.openModal('FieldsetManagerCopyDialog').subscribe(modal => {
+    //
+    //         modal.instance.fieldset = currentActionset;
+    //         modal.instance.sysModules = this.sysModules;
+    //         modal.instance.metaFieldSets = this.metadata.getAllFieldsets();
+    //
+    //         modal.instance.edit_mode = this.edit_mode;
+    //
+    //         modal.instance.closedialog.subscribe(update => {
+    //
+    //             this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+    //
+    //                 let fieldset = {...update.fieldset};
+    //
+    //                 let module = update.module;
+    //                 let type = update.type;
+    //                 let name = update.name;
+    //
+    //                 if (module == "*") {
+    //                     module = 'global';
+    //                 }
+    //
+    //
+    //                 let checkParams = {
+    //                     'module': module,
+    //                     'type': type,
+    //                     'name': name
+    //                 };
+    //
+    //                 // check if component exists
+    //                 this.backend.getRequest('spiceui/core/fieldsetalreadyexists', checkParams).subscribe(
+    //                     data => {
+    //                         if (data == false) {
+    //
+    //                             let tablescope = this.findTable(type);
+    //
+    //                             fieldset.module = module;
+    //                             if (module == "global") {
+    //                                 fieldset.module = '*';
+    //                             }
+    //                             fieldset.name = name;
+    //
+    //                             let newid = this.modelutilities.generateGuid(); // generate id
+    //                             fieldset.id = newid;
+    //
+    //                             let save_items: any = [];
+    //
+    //                             for (let item of fieldset.items) {
+    //                                 let copied_item = {...item};
+    //                                 copied_item.fieldconfig = {...item.fieldconfig};
+    //
+    //                                 copied_item.id = this.modelutilities.generateGuid(); // item generate id
+    //                                 copied_item.fieldset_id = newid;
+    //                                 save_items.push(copied_item);
+    //                             }
+    //
+    //
+    //                             delete fieldset.items;
+    //                             delete fieldset.type;
+    //
+    //
+    //                             this.backend.postRequest('configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, fieldset).subscribe(
+    //                                 (success) => {
+    //                                     let savecounter = 0;
+    //
+    //                                     fieldset.items = save_items;
+    //                                     fieldset.type = type;
+    //
+    //                                     for (let save_item of save_items) {
+    //                                         this.backend.postRequest('configurator/' + tablescope.itemsTable + '/' + save_item.id, null, save_item).subscribe(
+    //                                             (success) => {
+    //                                                 savecounter++;
+    //                                                 if (savecounter == save_items.length) {
+    //                                                     if (customizeItem) {
+    //                                                         customizeItem.item.fieldset = fieldset.id;
+    //                                                         let parenttablescope = this.findTable(customizeItem.parentScope);
+    //
+    //                                                         this.backend.postRequest('configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, customizeItem.item).subscribe(
+    //                                                             (success) => {
+    //                                                                 loadingModalRef.instance.self.destroy();
+    //                                                                 this.toast.sendToast('saved!');
+    //                                                                 this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
+    //                                                             },
+    //                                                             (error) => {
+    //                                                                 loadingModalRef.instance.self.destroy();
+    //                                                                 this.toast.sendAlert('saving link failed!, ' + save_item.id);
+    //                                                                 console.error(error);
+    //                                                             }
+    //                                                         );
+    //
+    //                                                     } else {
+    //                                                         loadingModalRef.instance.self.destroy();
+    //                                                         this.toast.sendToast('saved!');
+    //                                                         this.currentModule = fieldset.module;
+    //                                                         this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
+    //                                                         this.currentFieldSet = fieldset.id;
+    //
+    //                                                         this.currentFieldSetItems = save_items;
+    //                                                         this.selectedItem = {};
+    //                                                         this.currentFieldSetName = fieldset.name;
+    //                                                         this.loadCurrentFieldset();
+    //                                                     }
+    //                                                 }
+    //                                             },
+    //                                             (error) => {
+    //                                                 loadingModalRef.instance.self.destroy();
+    //                                                 this.toast.sendAlert('saving failed!, ' + save_item.id);
+    //                                                 console.error(error);
+    //                                             }
+    //                                         );
+    //                                     }
+    //                                 },
+    //                                 (error) => {
+    //                                     loadingModalRef.instance.self.destroy();
+    //                                     this.toast.sendAlert('saving failed!');
+    //                                     console.error(error);
+    //                                 }
+    //                             );
+    //                         } else {
+    //                             loadingModalRef.instance.self.destroy();
+    //                             this.toast.sendAlert('Fieldset already exists!');
+    //                         }
+    //                     });
+    //             });
+    //         });
+    //     });
+    // }
 
 
     private saveChanges() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            this.backend.getRequest('spiceui/core/fieldsets').subscribe((res: any) => {
+            this.backend.getRequest('spiceui/core/actionsets').subscribe((res: any) => {
 
 
-                let rawFieldsets = this.metadata.getRawFieldSets();
-                let addedFieldsets: any = {};
-                let changedFieldsets: any = {};
-                let deletedFieldsets: any = {};
+                let rawActionsets = this.metadata.getRawActionSets();
+                let addedActionsets: any = {};
+                let changedActionsets: any = {};
+                let deletedActionsets: any = {};
 
-                for (let fieldset in rawFieldsets) {
-                    if (!res.fieldsets[fieldset]) {
-                        addedFieldsets[fieldset] = rawFieldsets[fieldset];
+                for (let actionset in rawActionsets) {
+                    if (!res.actionsets[actionset]) {
+                        addedActionsets[actionset] = rawActionsets[actionset];
                         continue;
                     }
 
-                    if (JSON.stringify(rawFieldsets[fieldset]) !== JSON.stringify(res.fieldsets[fieldset])) {
-                        changedFieldsets[fieldset] = rawFieldsets[fieldset];
+                    if (JSON.stringify(rawActionsets[actionset]) !== JSON.stringify(res.actionsets[actionset])) {
+                        changedActionsets[actionset] = rawActionsets[actionset];
                     }
 
-                    delete (res.fieldsets[fieldset]);
+                    delete (res.actionsets[actionset]);
                 }
 
-                deletedFieldsets = res.fieldsets;
+                deletedActionsets = res.actionsets;
 
 
                 let postData = {
-                    add: addedFieldsets,
-                    update: changedFieldsets,
-                    delete: deletedFieldsets
+                    add: addedActionsets,
+                    update: changedActionsets,
+                    delete: deletedActionsets
                 };
 
-                this.backend.postRequest('spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
-                    this.broadcast.broadcastMessage('metadata.updatefieldsets', postData);
+                this.backend.postRequest('spiceui/core/actionsets', {}, postData).subscribe((res: any) => {
+                    this.broadcast.broadcastMessage('metadata.updateactionsets', postData);
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast('changes saved');
                 });
@@ -591,7 +591,7 @@ export class ActionsetManager {
     }
 
     get getAllowCopyButton() {
-        if (!this.currentFieldSet) {
+        if (!this.currentActionSet) {
             return false;
         } else {
             return this.allowBarButtons;
