@@ -988,6 +988,10 @@ export class metadata {
         return this.getComponentConfig(component, module);
     }
 
+    public getRawActionSets() {
+        return this.actionSets;
+    }
+
     /*
      * get the action set
      */
@@ -1032,6 +1036,15 @@ export class metadata {
         this.actionSets[actionset_id].package = params.package;
     }
 
+    public addActionset(id, module, name, type = "custom", items = []) {
+        this.actionSets[id] = {
+            items: items,
+            module: module,
+            name: name,
+            type: type
+        };
+    }
+
     public removeActionsetItem(parent, item) {
         let remIndex = false;
         this.actionSets[parent].items.some((curitem, curindex) => {
@@ -1051,6 +1064,19 @@ export class metadata {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * returns the name of a fieldset
+     *
+     * @param fieldset the id of the fieldset
+     */
+    public getActionsetName(actionset) {
+        try {
+            return this.actionSets[actionset].name;
+        } catch (e) {
+            return "";
         }
     }
 
