@@ -31,7 +31,7 @@ export class ObjectListViewSettingsSetfieldsModal {
         let componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         let listFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of listFields) {
-            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length == 0 && listField.fieldconfig.default)) {
+            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length == 0 && listField.fieldconfig.default !== false)) {
                 this.listFields.push(listField.field);
             } else {
                 this.availableFields.push(listField.field);
