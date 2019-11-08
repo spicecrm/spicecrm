@@ -3,6 +3,6 @@
     {{value}}
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
-    <input #focus type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [ngModelOptions]="modelOptions" />
+    <input #focus type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [autocomplete]="fieldid" [ngModelOptions]="modelOptions" />
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

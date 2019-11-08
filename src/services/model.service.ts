@@ -1009,10 +1009,34 @@ export class model implements OnDestroy {
         for (let copyrule of copyrules) {
             if (copyrule.fromfield && copyrule.tofield) {
                 // this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
-                this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
+                // this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
+                this.copyValue(copyrule.tofield, parent.data[copyrule.fromfield]);
             } else if (copyrule.tofield && copyrule.fixedvalue) {
                 this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
             }
+        }
+    }
+
+    /**
+     * copy the value to a field. Executed from the copy rules. Handles links special with deep copy
+     *
+     * @param toField
+     * @param value
+     */
+    private copyValue(toField, value) {
+        let fieldDef = this.metadata.getFieldDefs(this.module, toField);
+        switch (fieldDef.type) {
+            case 'link':
+                if (_.isObject(value) && value.beans) {
+                    let newLink = {beans:{}};
+                    for(let relid in value.beans){
+                        newLink.beans[this.utils.generateGuid()] = {...value.beans[relid]}
+                    }
+                    this.setFieldValue(toField, newLink);
+                }
+            default:
+                this.setFieldValue(toField, value);
+                break;
         }
     }
 
