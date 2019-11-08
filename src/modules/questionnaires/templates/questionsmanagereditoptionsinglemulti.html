@@ -5,7 +5,7 @@
         <div><input type="text" class="slds-input" [(ngModel)]="option.name" (change)="change()"></div>
     </td>
     <td style="width:4rem">
-        <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafile'}" [fielddisplayclass]="''" (change)="change()"></field-container>
+        <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''" (change)="change()"></field-container>
     </td>
     <td width="50%">
         <div><questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories></div>

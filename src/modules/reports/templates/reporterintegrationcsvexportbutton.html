@@ -1,4 +1,4 @@
-<li class="slds-dropdown__item" role="presentation" >
+<li *ngIf="canExport" class="slds-dropdown__item" role="presentation" >
     <a href="javascript:void(0);" role="menuitem" tabindex="0" (click)="exportCSV()">
         <system-icon sprite="doctype" icon="csv" size="x-small"></system-icon>
         <span class="slds-truncate">{{language.getLabel('LBL_CSV_EXPORT')}}</span>
