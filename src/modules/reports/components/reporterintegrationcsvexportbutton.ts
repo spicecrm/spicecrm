@@ -29,6 +29,10 @@ export class ReporterIntegrationCSVexportButton {
     constructor( private language: language, private metadata: metadata, private backend: backend,  private model: model, private footer: footer, private reporterconfig: reporterconfig) {
     }
 
+    get canExport() {
+        return this.model.checkAccess('export');
+    }
+
     private exportCSV(){
         // build wherecondition
         let whereConditions: any[] = [];
