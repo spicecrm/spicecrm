@@ -11,8 +11,8 @@ import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -29,7 +29,14 @@ export class ReporterIntegrationXLSexportButton {
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private footer: footer, private reporterconfig: reporterconfig) {
     }
 
+    get canExport() {
+        return this.model.checkAccess('export');
+    }
+
     private exportXLS() {
+        // check if user has export right
+        if(!this.canExport) return;
+
         // build wherecondition
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {

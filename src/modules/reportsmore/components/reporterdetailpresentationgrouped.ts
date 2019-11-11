@@ -185,7 +185,7 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
 
     private getFields() {
         try {
-            return this.presData.reportmetadata.fields;
+            return this.presData.reportmetadata.fields.filter(field => field.display == 'yes');
         } catch (e) {
             return [];
         }
