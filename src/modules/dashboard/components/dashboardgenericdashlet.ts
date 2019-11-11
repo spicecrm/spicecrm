@@ -127,7 +127,7 @@ export class DashboardGenericDashlet implements OnInit {
     }
 
     private loadMore() {
-        if (this.canLoadMore) {
+        if (this.canLoadMore && !this.loading) {
             this.loading = true;
             let params: any = this.params;
             params.offset = this.records.length;
