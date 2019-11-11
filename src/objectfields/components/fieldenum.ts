@@ -45,5 +45,14 @@ export class fieldEnum extends fieldGeneric {
             });
         }
         this.options = retArray;
+        if (this.fieldconfig.sortdirection) {
+            switch (this.fieldconfig.sortdirection.toLowerCase()) {
+                case 'desc':
+                    this.options.sort((a,b) => a.display.toLowerCase() < b.display.toLowerCase() ? 1 : -1);
+                    break;
+                case 'asc':
+                    this.options.sort((a,b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
+            }
+        }
     }
 }
