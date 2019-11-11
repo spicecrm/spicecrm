@@ -8,16 +8,16 @@ import {ActivatedRoute} from "@angular/router";
 import {SalesPlanningService} from "../services/salesplanning.service";
 import {model} from "../../../services/model.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {navigation} from "../../../services/navigation.service";
+import {favorite} from "../../../services/favorite.service";
+import {Subscription} from "rxjs";
+import {broadcast} from "../../../services/broadcast.service";
 
 declare var _;
-
-@Component({
-    templateUrl: './src/modules/salesplanning/templates/salesplanningtool.html',
-    providers: [SalesPlanningService, model],
-    animations: [
+const ANIMATIONS: any = [
     trigger('collapseContainerAnimation', [
-        state('open', style({ width: '25%'})),
-        state('closed', style({ width: 0})),
+        state('open', style({width: '25%'})),
+        state('closed', style({width: 0})),
         transition('open <=> closed', [
             animate('.5s'),
         ])
@@ -28,26 +28,39 @@ declare var _;
         transition('open <=> closed', [
             animate('.5s'),
         ])
-    ]),
-]})
+    ])
+];
+
+@Component({
+    templateUrl: './src/modules/salesplanning/templates/salesplanningtool.html',
+    providers: [SalesPlanningService],
+    animations: ANIMATIONS
+})
 
 export class SalesPlanningTool implements OnInit {
 
+    public self: any = {};
     private isLoading: boolean = false;
     private isCollapsed: boolean = false;
     private isHovered: boolean = false;
     private hoverTimeout: any;
-    private mouseEnterListener: ()=> void;
+    private mouseEnterListener: () => void;
+    public subscriptions: Subscription = new Subscription();
 
-    @ViewChild('hoverTriggerContainer', {read: ViewContainerRef ,static: true}) private hoverTriggerContainer: ViewContainerRef;
+    @ViewChild('hoverTriggerContainer', {
+        read: ViewContainerRef,
+        static: true
+    }) private hoverTriggerContainer: ViewContainerRef;
 
     constructor(private language: language,
                 private backend: backend,
                 private activatedRoute: ActivatedRoute,
                 private renderer: Renderer2,
+                private navigation: navigation,
                 private model: model,
+                private broadcast: broadcast,
+                private favorite: favorite,
                 private planningService: SalesPlanningService) {
-        model.module = 'SalesPlanningVersions';
     }
 
     get selectedNode() {
@@ -63,13 +76,44 @@ export class SalesPlanningTool implements OnInit {
     }
 
     public ngOnInit() {
+        this.initialize();
+    }
+
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    private initialize() {
         this.activatedRoute.params.subscribe(params => {
-            this.planningService.versionId = params.versionId;
-            this.model.id = params.versionId;
-            this.model.getData()
-                .subscribe(item => this.setContentFields(item));
-            this.getCharacteristicList();
+            this.model.module = params.module;
+            this.model.id = params.id;
         });
+        this.model.getData().subscribe(item => {
+            this.setContentFields(item);
+            this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
+        });
+        this.favorite.enable(this.model.module, this.model.id);
+        this.planningService.versionId = this.model.id;
+        this.getCharacteristicList();
+        this.subscribeToChanges();
+    }
+
+    private subscribeToChanges() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+                let res = msg.messagedata;
+                if (res.module == this.model.module && res.id == this.model.id && msg.messagetype == 'model.save') {
+                    this.getCharacteristicList();
+                    this.resetSelections();
+                }
+            })
+        );
+    }
+
+    private resetSelections() {
+        this.planningService.selectedCharacteristics = [];
+        this.planningService.selectedNodes = [];
+        this.planningService.selectedNode = undefined;
     }
 
     private getCharacteristicList() {
@@ -124,7 +168,10 @@ export class SalesPlanningTool implements OnInit {
     private toggleHover(bool) {
         if (!this.isCollapsed) return;
         window.clearTimeout(this.hoverTimeout);
-        if (bool) this.hoverTimeout = window.setTimeout(()=> this.isHovered = true, 500);
-        else this.isHovered = false;
+        if (bool) {
+            this.hoverTimeout = window.setTimeout(() => this.isHovered = true, 500);
+        } else {
+            this.isHovered = false;
+        }
     }
 }

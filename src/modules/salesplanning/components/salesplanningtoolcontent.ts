@@ -12,6 +12,8 @@ import {toast} from "../../../services/toast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {MathExpressionCompilerService} from "../../../services/mathexpressioncompiler";
 import {modal} from "../../../services/modal.service";
+import {Subscription} from "rxjs";
+import {broadcast} from "../../../services/broadcast.service";
 
 /**
  * @ignore
@@ -34,7 +36,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     public rowsSum: any;
     public dataBackup: any = {};
     public periods: any[] = [];
-    public languageSubscriber: any = {};
+    public subscriptions: Subscription = new Subscription();
     public units: any = {
         days: 'd',
         weeks: 'w',
@@ -51,6 +53,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     constructor(private language: language,
                 private backend: backend,
                 private model: model,
+                private broadcast: broadcast,
                 private view: view,
                 private toast: toast,
                 private modal: modal,
@@ -59,7 +62,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 private injector: Injector,
                 private mathExpCompiler: MathExpressionCompilerService,
                 private planningService: SalesPlanningService) {
-        this.subscribeToLanguage();
+    }
+
+    get canEdit() {
+        return this.metadata.checkModuleAcl(this.model.module, 'edit');
     }
 
     get modelOptions(): any {
@@ -79,7 +85,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     set markDone(bool) {
-        if (!this.nodeInfo.leaf) return;
+        if (!this.nodeInfo.leaf || !this.canEdit) return;
         this.isClosing = true;
         let action = !bool ? 'unmarkDone' : 'markDone';
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
@@ -99,11 +105,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.languageSubscriber.unsubscribe();
-    }
-
-    private subscribeToLanguage() {
-        this.languageSubscriber = this.language.currentlanguage$.subscribe(() => this.buildPeriods(true));
+        this.subscriptions.unsubscribe();
     }
 
     private buildPeriods(forceRebuild?) {
@@ -133,6 +135,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 date.add(1, this.units[unit]);
                 i++;
             }
+            this.periods.sort();
         }
     }
 
@@ -250,7 +253,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private setEditMode() {
-        if (!this.nodeInfo.leaf) return;
+        if (!this.nodeInfo.leaf || !this.canEdit) return;
         this.dataBackup = _.clone(this.data);
         this.view.setEditMode();
     }
@@ -320,6 +323,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private viewNote() {
         this.modal.openModal('SalesPlanningToolContentNoteModal')
             .subscribe(modalRef => {
+                modalRef.instance.canEdit = this.canEdit;
                 modalRef.instance.nodeInfo = this.nodeInfo;
                 modalRef.instance.doSave.subscribe(() => this.saveContentNote());
             });

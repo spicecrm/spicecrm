@@ -6,8 +6,8 @@
     <system-modal-footer>
         <div class="slds-button-group">
             <button class="slds-button-group-item slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button-group-item slds-button slds-button--neutral" (click)="clear()">{{language.getLabel('LBL_CLEARALL')}}</button>
-            <button class="slds-button-group-item slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button-group-item slds-button slds-button--neutral" (click)="clear()" [disabled]="!canEdit">{{language.getLabel('LBL_CLEARALL')}}</button>
+            <button class="slds-button-group-item slds-button slds-button--brand" (click)="save()" [disabled]="!canEdit">{{language.getLabel('LBL_SAVE')}}</button>
         </div>
     </system-modal-footer>
 </system-modal>

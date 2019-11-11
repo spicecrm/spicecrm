@@ -38,7 +38,7 @@ export class SalesPlanningToolTree implements OnInit {
 
     private getNodeItems(parentId = '', item?) {
         this.isLoading = parentId.length == 0 ? '*' : parentId;
-        this.setRetrieveParams(item, true);
+        this.planningService.setRetrieveParams(this.treeItems, item, true);
         let params = {
             pathArray: this.planningService.selectedNodes,
             characteristics: this.planningService.selectedCharacteristicIds,
@@ -57,25 +57,6 @@ export class SalesPlanningToolTree implements OnInit {
                     this.isLoading = '';
                 }
             });
-    }
-
-    private getNodes(node) {
-        let nodes = [];
-        if (node && node.value) nodes = [(node.value)];
-        if (node && node.parent_id && node.parent_id.length > 0) {
-            this.getNodeByParent(node.parent_id, nodes);
-        }
-        nodes.unshift('root');
-        return nodes;
-    }
-
-    private getNodeByParent(parentId, nodes) {
-        for (let item of this.nodeItems) {
-            if (item.id == parentId) {
-                nodes.unshift(item.value);
-                this.getNodeByParent(item.parent_id, nodes);
-            }
-        }
     }
 
     private buildTree() {
@@ -114,7 +95,7 @@ export class SalesPlanningToolTree implements OnInit {
     private selectTreeItem(item) {
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
-                this.setRetrieveParams(item);
+                this.planningService.setRetrieveParams(this.treeItems, item);
                 this.planningService.selectedNode = item;
                 this.selectNode.emit();
                 return true;
@@ -136,7 +117,7 @@ export class SalesPlanningToolTree implements OnInit {
                             }
                         }
                     } else {
-                        this.setRetrieveParams(item);
+                        this.planningService.setRetrieveParams(this.treeItems, item);
                         this.buildTree();
                     }
                     return true;
@@ -144,12 +125,6 @@ export class SalesPlanningToolTree implements OnInit {
             }
         );
         if (e.stopPropagation) e.stopPropagation();
-    }
-
-    private setRetrieveParams(item?, nextLevel?) {
-        let index = item ? nextLevel ? item.level +1 : item.level : 1;
-        this.planningService.selectedCharacteristics = this.planningService.characteristics.slice(0, index);
-        this.planningService.selectedNodes = this.getNodes(item);
     }
 
     private isSelected(id) {
