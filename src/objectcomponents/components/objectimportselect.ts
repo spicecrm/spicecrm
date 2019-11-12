@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, Output, Renderer, ViewChild, ViewContainerRef,} from '@angular/core';
+import {Component, EventEmitter, Output, Renderer2, ViewChild, ViewContainerRef,} from '@angular/core';
 import {model} from '../../services/model.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
@@ -53,7 +53,7 @@ export class ObjectImportSelect {
         private configurationService: configurationService,
         private model: model,
         private backend: backend,
-        private renderer: Renderer
+        private renderer: Renderer2
     ) {
     }
 
@@ -140,7 +140,7 @@ export class ObjectImportSelect {
 
     selectFile() {
         let event = new MouseEvent('click', {bubbles: true});
-        this.renderer.invokeElementMethod(this.fileupload.element.nativeElement, 'dispatchEvent', [event]);
+        this.fileupload.element.nativeElement.dispatchEvent(event);
     }
 
     uploadFile() {

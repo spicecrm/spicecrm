@@ -160,6 +160,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      */
     private handleaction(event) {
         this.initializeModule();
+        this.view.setEditMode();
         this.isExpanded = false;
     }
 }
