@@ -7,6 +7,7 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {modal} from "../../services/modal.service";
 
 /**
  * represents an object in the duplicates search
@@ -22,13 +23,14 @@ export class ObjectRelatedDuplicateTile implements OnInit {
      * to enable the link on the tile
      */
     @Input() private enableLink: boolean = true;
+    @Input() private enableButtonLink: boolean = false;
 
     /**
      * the fieldset from the config
      */
     private fieldset: string = '';
 
-    constructor(private model: model, private view: view, private language: language, private metadata: metadata) {
+    constructor(private model: model, private modal: modal, private view: view, private language: language, private metadata: metadata) {
         this.view.displayLabels = false;
     }
 
@@ -52,9 +54,18 @@ export class ObjectRelatedDuplicateTile implements OnInit {
     /**
      *
      */
-    private navgiateDetail() {
-        if (this.enableLink) {
+    private navigateDetails(source) {
+        if (source == 'link' && this.enableLink) {
             this.model.goDetail();
+        }
+        if (source == 'button' && this.enableButtonLink) {
+            this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP', '', 'long'),this.language.getLabel('MSG_NAVIGATIONSTOP'))
+                .subscribe(res => {
+                    if (res) {
+                        this.model.goDetail();
+                        this.modal.closeAllModals();
+                    }
+                });
         }
     }
 }

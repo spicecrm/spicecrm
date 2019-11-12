@@ -30,16 +30,21 @@ export class ServiceRequestFeedbackButton {
     }
 
     private execute(e) {
-        e.stopPropagation(); e.preventDefault();
+        e.stopPropagation();
+        e.preventDefault();
         this.modal.openModal("ObjectActionMailModal", true, this.ViewContainerRef.injector).subscribe(
             (modal: any) => {
+                modal.instance.titellabel = 'LBL_REQUEST_FEEDBACK';
                 modal.instance.parent = this.model;
                 modal.instance.mailsent.subscribe(sent => {
                     if (sent) {
+                        let stopper = this.modal.await('LBL_SAVING')
                         // set the statu
                         this.model.startEdit();
-                        this.model.setFields({serviceticket_status: 'pendinginput'});
-                        this.model.save();
+                        this.model.setFields({serviceticket_status: 'Pending Input'});
+                        this.model.save().subscribe(saved => {
+                            stopper.emit(true);
+                        });
                     }
                 });
             }
