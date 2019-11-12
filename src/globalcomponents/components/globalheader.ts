@@ -7,7 +7,7 @@ import {
     HostListener,
     EventEmitter,
     Output,
-    Renderer, ViewChildren, QueryList, ViewChild, ViewContainerRef, DoCheck
+    ViewChildren, QueryList, ViewChild, ViewContainerRef, DoCheck
 } from '@angular/core';
 import {toast} from '../../services/toast.service';
 import {session} from '../../services/session.service';

@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, Input, Renderer} from "@angular/core";
+import {Component, ElementRef, Input} from "@angular/core";
 import {language} from "../../services/language.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {popup} from "../../services/popup.service";
@@ -19,7 +19,7 @@ export class ObjectFileActionMenu {
 
     @Input() private file: any;
 
-    constructor(private broadcast: broadcast, private modelattachments: modelattachments, private language: language, private elementRef: ElementRef, private renderer: Renderer, private modalservice: modal) {
+    constructor(private broadcast: broadcast, private modelattachments: modelattachments, private language: language, private elementRef: ElementRef, private modalservice: modal) {
 
     }
 

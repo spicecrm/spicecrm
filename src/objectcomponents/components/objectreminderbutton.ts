@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, Renderer, ElementRef} from '@angular/core';
+import {Component, Input, Renderer2, ElementRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {reminder} from '../../services/reminder.service';
@@ -24,7 +24,7 @@ export class ObjectReminderButton {
     private hasReminder: boolean = false;
     private clickListener: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private renderer: Renderer, private elementRef: ElementRef, private reminder: reminder, private userpreferences: userpreferences) {
+    constructor(private language: language, private metadata: metadata, private model: model, private renderer: Renderer2, private elementRef: ElementRef, private reminder: reminder, private userpreferences: userpreferences) {
 
         if (this.reminder.loaded$) {
             this.reminder.loaded$.subscribe(loaded => {
@@ -48,7 +48,7 @@ export class ObjectReminderButton {
 
         // toggle the listener
         if (this.showDialog) {
-            this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
         } else if (this.clickListener) {
             this.clickListener();
         }
