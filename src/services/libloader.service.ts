@@ -52,9 +52,9 @@ export class libloader {
      *
      * @param scripts
      */
-    public loadLibs(...libs: string[]): Observable<object> {
+    public loadLibs(...libs: string[]): Observable<any> {
 
-        let observables: Array<Observable<object>> = [];
+        let observables: Array<Observable<any>> = [];
         libs.forEach((lib) => {
             observables.push(this.loadLib(lib));
         });
@@ -92,7 +92,7 @@ export class libloader {
      *
      * @param name the name of the library
      */
-    public loadLib(name: string): Observable<object> {
+    public loadLib(name: string): Observable<any> {
         // error if not found... (but how?)
         if (!this.scripts[name]) {
             return of({script: name, loaded: false, status: "Unknown"});
