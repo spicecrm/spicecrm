@@ -107,8 +107,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    private buildPeriods(forceRebuild?) {
-        if (this.periods.length > 0 && !forceRebuild) return;
+    private buildPeriods() {
         this.periods = [];
         let unit = this.model.getField('periode_unit');
         let segments = this.model.getField('periode_segments');
