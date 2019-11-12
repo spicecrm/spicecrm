@@ -2,7 +2,7 @@
  * @module ModuleProducts
  */
 import {CommonModule} from '@angular/common';
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from '@angular/core';
+import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, Renderer2, ViewChild, ViewContainerRef, Injectable, Input, Output, EventEmitter, SimpleChanges, OnInit, OnDestroy, OnChanges} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {FormsModule}   from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';

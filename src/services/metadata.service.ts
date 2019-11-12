@@ -1209,8 +1209,8 @@ export class metadata {
      * Lib Loading
      */
 
-    public loadLibs(...scripts: string[]): Observable<object> {
-        let observables: Array<Observable<object>> = [];
+    public loadLibs(...scripts: string[]): Observable<any> {
+        let observables: Array<Observable<any>> = [];
         scripts.forEach((script) => {
             observables.push(this.loadLib(script));
         });
@@ -1248,8 +1248,8 @@ export class metadata {
      * @param {string} name
      * @returns {Observable<object>}
      */
-    private loadLib(name: string): Observable<object> {
-        let sub = new Subject<object>();
+    private loadLib(name: string): Observable<any> {
+        let sub = new Subject<any>();
 
         // error if not found... (but how?)
         if (!this.scripts[name]) {
