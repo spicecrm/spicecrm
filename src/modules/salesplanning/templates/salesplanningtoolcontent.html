@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="slds-grow slds-scrollable slds-p-right--xx-small">
-        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-no-row-hover">
             <thead>
             <tr class="slds-text-title_caps" style="height: 30px">
                 <th scope="col" style="padding: .1rem">
@@ -59,7 +59,7 @@
                         </div>
                         <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
                             <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
-                            <input type="text" class="slds-input slds-text-align--right"
+                            <input type="text" class="slds-input slds-text-align--right" [style.background-color]="contentField.display_color"
                                    [ngModel]="getCellDisplayValue(period?.key, contentField, false)"
                                    [disabled]="isSaving"
                                    [ngModelOptions]="modelOptions"

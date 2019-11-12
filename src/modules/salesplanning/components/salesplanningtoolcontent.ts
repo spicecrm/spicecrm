@@ -27,7 +27,6 @@ declare var _: any;
 @Component({
     selector: 'sales-planning-tool-content',
     templateUrl: './src/modules/salesplanning/templates/salesplanningtoolcontent.html',
-    styles: ['tr:hover {color: initial}'],
     providers: [view]
 })
 
