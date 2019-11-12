@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="slds-col_bump-left slds-m-right--xx-small">
-            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !this.canEdit" class="slds-m-right--x-small">{{language.getLabel('LBL_CLOSE')}}</system-checkbox>
+            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !this.canEdit || !isEditMode" class="slds-m-right--x-small">{{language.getLabel('LBL_CLOSE')}}</system-checkbox>
             <div class="slds-button-group">
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     {{language.getLabel('LBL_CANCEL')}}
@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let contentField of contentFields; trackBy: trackByItemFn" style="height: 30px">
+            <tr *ngFor="let contentField of contentFields; trackBy: trackByItemFn" style="height: 30px" [class.slds-text-color--inverse]="isDarkColor(contentField.display_color)" [style.background-color]="contentField.display_color">
                 <td style="padding: .1rem">
                     <div [title]="contentField.summary_text">
                         {{contentField.summary_text}}

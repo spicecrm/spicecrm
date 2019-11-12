@@ -27,6 +27,7 @@ declare var _: any;
 @Component({
     selector: 'sales-planning-tool-content',
     templateUrl: './src/modules/salesplanning/templates/salesplanningtoolcontent.html',
+    styles: ['tr:hover {color: initial}'],
     providers: [view]
 })
 
@@ -85,7 +86,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     set markDone(bool) {
-        if (!this.nodeInfo.leaf || !this.canEdit) return;
+        if (!this.nodeInfo.leaf || !this.canEdit || !this.isEditMode) return;
         this.isClosing = true;
         let action = !bool ? 'unmarkDone' : 'markDone';
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
@@ -93,7 +94,6 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 if (result.success == true) {
                     this.nodeInfo.marked_done = bool;
                     this.isClosing = false;
-                    this.setViewMode();
                 }
             });
     }
@@ -184,17 +184,19 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private setColumnsSum() {
         this.periods.forEach(period => {
             this.contentFields.forEach(field => {
-                if (field.formula && field.formula.length > 0) {
-                    this.data[field.id][period.key] = this.getCellValue(this.data[field.id], field.formula, period.key);
-                }
+                if ((field.group_action && field.group_action.length > 0) && (field.storable && field.storable == '1') ||
+                    (field.cbfunction && field.cbfunction.length > 0) || (!field.formula && field.formula.length == 0)) return;
+
+                this.data[field.id][period.key] = this.getCellValue(this.data[field.id], field.formula, period.key);
+
             });
         });
     }
 
     private setRowsSum() {
         this.rowsSum = {};
-        let fieldsHasNoFormula = this.contentFields.filter(field => !field.formula_sum || field.formula_sum.length == 0);
-        let fieldsHasFormula = this.contentFields.filter(field => field.formula_sum && field.formula_sum.length > 0);
+        let fieldsHasNoFormula = this.contentFields.filter(field => (!field.formula_sum || field.formula_sum.length == 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
+        let fieldsHasFormula = this.contentFields.filter(field => (field.formula_sum && field.formula_sum.length > 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
         fieldsHasNoFormula.forEach(field => {
             this.rowsSum[field.id] = 0;
             this.periods.forEach(period => this.rowsSum[field.id] += +(this.machineFormat(this.data[field.id][period.key])));
@@ -252,6 +254,15 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return data;
     }
 
+    private machineFormatAllData(data) {
+        for (let id in data) {
+            if (data.hasOwnProperty(id)) {
+                this.periods.forEach(period => data[id][period.key] = this.machineFormat(data[id][period.key]));
+            }
+        }
+        return data;
+    }
+
     private setEditMode() {
         if (!this.nodeInfo.leaf || !this.canEdit) return;
         this.dataBackup = _.clone(this.data);
@@ -265,7 +276,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private save() {
         this.isSaving = true;
-        let body = {data: this.data};
+        let body = {data: this.machineFormatAllData(this.data)};
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Update`, {}, body)
             .subscribe(result => {
                 if (result.success == true) {
@@ -304,9 +315,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private getRowSumDisplay(contentField) {
-        if (!this.rowsSum) return '';
-        if (this.formatValue(this.rowsSum[contentField.id]) != '') {
-            return `${this.getFieldSymbol(contentField.field_type)} ${this.formatValue(this.rowsSum[contentField.id])}`;
+        if (!this.rowsSum && !this.data[contentField.id].sum) return '';
+        let rowSum = this.data[contentField.id].sum || this.rowsSum[contentField.id];
+        if (this.formatValue(rowSum) != '') {
+            return `${this.getFieldSymbol(contentField.field_type)} ${this.formatValue(rowSum)}`;
         } else {
             return '';
         }
@@ -346,6 +358,22 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 return '€';
             case 'percentage':
                 return '%';
+            default:
+                return '';
         }
+    }
+
+    private isDarkColor(color) {
+        if (!color || color.length == 0) return false;
+        let c = color.indexOf('#') > -1 ? color.substring(1) : color;
+        let rgb = parseInt(c, 16);   // convert rrggbb to decimal
+        // tslint:disable-next-line:no-bitwise
+        let r = (rgb >> 16) & 0xff;  // extract red
+        // tslint:disable-next-line:no-bitwise
+        let g = (rgb >> 8) & 0xff;  // extract green
+        // tslint:disable-next-line:no-bitwise
+        let b = (rgb >> 0) & 0xff;  // extract blue
+        let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+        return luma < 120;
     }
 }

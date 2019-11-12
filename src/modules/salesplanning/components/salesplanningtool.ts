@@ -40,13 +40,12 @@ const ANIMATIONS: any = [
 export class SalesPlanningTool implements OnInit {
 
     public self: any = {};
+    public subscriptions: Subscription = new Subscription();
     private isLoading: boolean = false;
     private isCollapsed: boolean = false;
     private isHovered: boolean = false;
     private hoverTimeout: any;
     private mouseEnterListener: () => void;
-    public subscriptions: Subscription = new Subscription();
-
     @ViewChild('hoverTriggerContainer', {
         read: ViewContainerRef,
         static: true
@@ -123,13 +122,15 @@ export class SalesPlanningTool implements OnInit {
             .subscribe(char => {
                 if (char && char.data) {
                     this.planningService.characteristics = char.data;
-                    this.planningService.characteristics.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-                    this.planningService.characteristics.some(char => {
-                        if (char.id == this.planningService.characteristicTerritory) {
-                            char.value = this.language.getLabel('LBL_TERRITORY');
-                            return true;
-                        }
-                    });
+                    this.planningService.characteristics
+                        .sort((a, b) => a.id == this.planningService.characteristicTerritory || a.sequence < b.sequence ? -1 : 1);
+                    this.planningService.characteristics
+                        .some(char => {
+                            if (char.id == this.planningService.characteristicTerritory) {
+                                char.value = this.language.getLabel('LBL_TERRITORY');
+                                return true;
+                            }
+                        });
                     this.isLoading = false;
                 }
             });
