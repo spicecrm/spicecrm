@@ -3,18 +3,18 @@
     <div class="slds-grid slds-p-vertical--xx-small">
         <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_ACCOUNT_SID')}}</label>
-            <input type="text"
+            <input type="text" [disabled]="!view.isEditMode()"
                    [(ngModel)]="model.data.settings.account_sid"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
         <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_AUTH_TOKEN')}}</label>
-            <input type="text" [(ngModel)]="model.data.settings.auth_token"
+            <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.auth_token"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
         <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
             <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PHONE_NUMBER_FROM')}}</label>
-            <input type="text" [(ngModel)]="model.data.settings.phone_number_from"
+            <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.phone_number_from"
                    class="slds-input ng-pristine ng-valid"/>
         </div>
     </div>
