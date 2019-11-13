@@ -1,10 +1,9 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
     <div [class.slds-border--bottom]="!data || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
-        <system-stencil *ngIf="isLoading" class="slds-m-horizontal--xx-small slds-m-top--xxx-small slds-size--1-of-4" style="line-height: 1.8rem"></system-stencil>
-        <div *ngIf="nodeInfo && !isLoading" class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
-            <span>{{nodeInfo.nodeText}}</span>
-            <button (click)="viewNote()" class="slds-button slds-m-left--x-small">
-                <system-button-icon icon="note" size="medium" [addclasses]="isLoading || !nodeInfo.notice || nodeInfo.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
+        <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
+            <span>{{nodeName}}</span>
+            <button (click)="viewNote()" [disabled]="isLoading || !nodeInfo" class="slds-button slds-m-left--x-small">
+                <system-button-icon icon="note" size="medium" [addclasses]="isLoading || !nodeInfo?.notice || nodeInfo?.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
             </button>
         </div>
         <div class="slds-col_bump-left slds-m-right--xx-small">
@@ -59,7 +58,7 @@
                         </div>
                         <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
                             <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
-                            <input type="text" class="slds-input slds-text-align--right" [style.background-color]="contentField.display_color"
+                            <input type="text" class="slds-input slds-text-align--right"
                                    [ngModel]="getCellDisplayValue(period?.key, contentField, false)"
                                    [disabled]="isSaving"
                                    [ngModelOptions]="modelOptions"

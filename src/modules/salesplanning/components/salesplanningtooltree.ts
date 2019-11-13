@@ -40,7 +40,7 @@ export class SalesPlanningToolTree implements OnInit {
         this.isLoading = parentId.length == 0 ? '*' : parentId;
         this.planningService.setRetrieveParams(this.treeItems, item, true);
         let params = {
-            pathArray: this.planningService.selectedNodes,
+            pathArray: this.planningService.selectedNodesIds,
             characteristics: this.planningService.selectedCharacteristicIds,
             undoneOnly: this.unDoneOnly
         };

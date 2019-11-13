@@ -18,6 +18,10 @@ export class SalesPlanningService {
         return this.selectedCharacteristics.map(char => char.id);
     }
 
+    get selectedNodesIds() {
+        return ['root', ...this.selectedNodes.map(node => node.value)];
+    }
+
     public setRetrieveParams(originNodes, item?, nextLevel?) {
         let index = item ? nextLevel ? item.level +1 : item.level : 1;
         this.selectedCharacteristics = this.characteristics.slice(0, index);
@@ -26,18 +30,17 @@ export class SalesPlanningService {
 
     private getSelectedNodes(node, originNodes) {
         let selectedNodes = [];
-        if (node && node.value) selectedNodes = [(node.value)];
+        if (node && node.value) selectedNodes = [(node)];
         if (node && node.parent_id && node.parent_id.length > 0) {
             this.getNodeByParent(originNodes, node.parent_id, selectedNodes);
         }
-        selectedNodes.unshift('root');
         return selectedNodes;
     }
 
     private getNodeByParent(originNodes, parentId, selectedNodes) {
         for (let item of originNodes) {
             if (item.id == parentId) {
-                selectedNodes.unshift(item.value);
+                selectedNodes.unshift(item);
                 this.getNodeByParent(originNodes, item.parent_id, selectedNodes);
             }
         }

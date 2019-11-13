@@ -64,6 +64,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 private planningService: SalesPlanningService) {
     }
 
+    get nodeName() {
+        return this.planningService.selectedNodes.map(node => node.name).join('/');
+    }
+
     get canEdit() {
         return this.metadata.checkModuleAcl(this.model.module, 'edit');
     }
@@ -142,7 +146,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.isLoading = true;
         this.nodeInfo = undefined;
         let params = {
-            pathArray: this.planningService.selectedNodes,
+            pathArray: this.planningService.selectedNodesIds,
             characteristics: this.planningService.selectedNode.level > 1 ? this.planningService.selectedCharacteristicIds : [this.planningService.characteristicTerritory],
         };
         this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/NodeInfo`, params)
@@ -161,7 +165,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.rowsSum = undefined;
         if (!this.node) return;
         let params = {
-            pathArray: this.planningService.selectedNodes,
+            pathArray: this.planningService.selectedNodesIds,
             characteristics: this.planningService.selectedCharacteristicIds,
         };
         this.backend.getRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Content`, params)
