@@ -5,6 +5,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {SalesPlanningService} from "../services/salesplanning.service";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'sales-planning-tool-tree',
@@ -19,7 +20,7 @@ export class SalesPlanningToolTree implements OnInit {
     public undoneonly: boolean = false;
     @Output() public selectNode: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private language: language, private backend: backend, private planningService: SalesPlanningService) {
+    constructor(private language: language, private modal: modal, private backend: backend, private planningService: SalesPlanningService) {
     }
 
     get unDoneOnly() {
@@ -95,10 +96,22 @@ export class SalesPlanningToolTree implements OnInit {
     private selectTreeItem(item) {
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
-                this.planningService.setRetrieveParams(this.treeItems, item);
-                this.planningService.selectedNode = item;
-                this.selectNode.emit();
-                return true;
+                if (this.planningService.isEditing) {
+                    this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP', '', 'long'), this.language.getLabel('MSG_NAVIGATIONSTOP'), 'warning')
+                        .subscribe(res => {
+                            if (!res) return;
+                            this.planningService.setRetrieveParams(this.treeItems, item);
+                            this.planningService.selectedNode = item;
+                            this.selectNode.emit();
+                            return true;
+                        });
+                    return true;
+                } else {
+                    this.planningService.setRetrieveParams(this.treeItems, item);
+                    this.planningService.selectedNode = item;
+                    this.selectNode.emit();
+                    return true;
+                }
             }
         });
     }

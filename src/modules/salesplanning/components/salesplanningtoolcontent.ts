@@ -267,11 +267,13 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         for (let key in this.data) if (this.data.hasOwnProperty(key)) dataPeriods[key] = {...this.data[key]};
         this.dataBackup = _.clone(dataPeriods);
         this.view.setEditMode();
+        this.planningService.isEditing = true;
     }
 
     private setViewMode() {
         this.dataBackup = undefined;
         this.view.setViewMode();
+        this.planningService.isEditing = false;
     }
 
     private save() {

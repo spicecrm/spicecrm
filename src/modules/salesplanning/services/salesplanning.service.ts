@@ -13,6 +13,7 @@ export class SalesPlanningService {
     public contentFields: any[] = [];
     public selectedNode: any;
     public selectedNodes: any[] = [];
+    public isEditing: boolean = false;
 
     get selectedCharacteristicIds() {
         return this.selectedCharacteristics.map(char => char.id);
