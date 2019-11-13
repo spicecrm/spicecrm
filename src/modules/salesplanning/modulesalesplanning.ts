@@ -16,7 +16,6 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import /*embed*/ {SalesPlanningToolContentNoteModal} from './components/salesplanningtoolcontentnotemodal';
 import /*embed*/ {SalesPlanningToolContent} from './components/salesplanningtoolcontent';
 import /*embed*/ {SalesPlanningToolTree} from './components/salesplanningtooltree';
-import /*embed*/ {SalesPlanningToolHeader} from './components/salesplanningtoolheader';
 import /*embed*/ {SalesPlanningTool} from './components/salesplanningtool';
 import /*embed*/ {SalesPlanningService} from './services/salesplanning.service';
 import {DirectivesModule} from "../../directives/directives";
@@ -35,7 +34,6 @@ import {DirectivesModule} from "../../directives/directives";
         SalesPlanningToolContentNoteModal,
         SalesPlanningToolContent,
         SalesPlanningToolTree,
-        SalesPlanningToolHeader,
         SalesPlanningTool,
     ],
     providers: [SalesPlanningService]
