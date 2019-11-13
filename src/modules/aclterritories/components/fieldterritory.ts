@@ -1,7 +1,7 @@
 /**
  * @module ModuleACLTerritories
  */
-import {Component, ElementRef, Renderer, OnInit, Injector} from '@angular/core';
+import {Component, ElementRef, Renderer2, OnInit, Injector, OnDestroy} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
@@ -15,7 +15,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
     selector: 'field-territory',
     templateUrl: './src/modules/aclterritories/templates/fieldterritory.html'
 })
-export class fieldTerritory extends fieldGeneric implements OnInit {
+export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 
     /**
      * click lisatener to haneld the open Popup
@@ -33,12 +33,16 @@ export class fieldTerritory extends fieldGeneric implements OnInit {
     private territorySearchTerm: string = '';
 
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private elementRef: ElementRef, private renderer: Renderer, private modal: modal, private territories: territories, private injector: Injector) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private elementRef: ElementRef, private renderer: Renderer2, private modal: modal, private territories: territories, private injector: Injector) {
         super(model, view, language, metadata, router);
     }
 
     public ngOnInit() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+    }
+
+    public ngOnDestroy(): void {
+        if(this.clickListener) this.clickListener();
     }
 
     public onClick(event: MouseEvent): void {
@@ -64,7 +68,7 @@ export class fieldTerritory extends fieldGeneric implements OnInit {
 
     private onFocus() {
         this.territorySearchOpen = true;
-        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+        this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
     get territoryName() {

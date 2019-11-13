@@ -58,8 +58,8 @@
             </div>
         </div>
     </system-section>
-    <system-section *ngIf="model.data.transport" titlelabel="LBL_TRANSPORT">
-        <div class="slds-p-vertical--x-small">
+   <!-- <system-section *ngIf="model.data.transport" titlelabel="LBL_TRANSPORT">
+        <div class="slds-p-vertical&#45;&#45;x-small">
             <mailboxes-imap-smtp-traffic-manager
                     *ngIf="model.data.transport == 'imap'"></mailboxes-imap-smtp-traffic-manager>
             <mailboxes-mailgun-traffic-manager
@@ -71,7 +71,7 @@
             <mailboxes-a1-traffic-manager
                     *ngIf="model.data.transport == 'a1'"></mailboxes-a1-traffic-manager>
         </div>
-    </system-section>
+    </system-section>-->
     <system-section titlelabel="LBL_EMAIL" [expanded]="false">
         <div class="slds-grid slds-p-horizontal--medium slds-p-vertical--small">
             <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">

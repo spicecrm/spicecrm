@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ViewChild, ViewContainerRef, Renderer} from '@angular/core';
+import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {configurationService} from '../../services/configuration.service';
@@ -32,7 +32,6 @@ export class ObjectImportResult {
         private session: session,
         private configurationService: configurationService,
         private model: model,
-        private renderer: Renderer,
         private router: Router
     ) {}
 
