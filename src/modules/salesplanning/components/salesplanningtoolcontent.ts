@@ -31,6 +31,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     public data: any;
     public rowsSum: any;
     public dataBackup: any = {};
+    public rowsSumBackup: any = {};
     public periods: any[] = [];
     public subscriptions: Subscription = new Subscription();
     public units: any = {
@@ -266,12 +267,14 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         let dataPeriods = {};
         for (let key in this.data) if (this.data.hasOwnProperty(key)) dataPeriods[key] = {...this.data[key]};
         this.dataBackup = _.clone(dataPeriods);
+        this.rowsSumBackup = _.clone(this.rowsSum);
         this.view.setEditMode();
         this.planningService.isEditing = true;
     }
 
     private setViewMode() {
         this.dataBackup = undefined;
+        this.rowsSumBackup =  undefined;
         this.view.setViewMode();
         this.planningService.isEditing = false;
     }
@@ -318,6 +321,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private cancel() {
         this.data = _.clone(this.dataBackup);
+        this.rowsSum = _.clone(this.rowsSumBackup);
         this.setViewMode();
     }
 
