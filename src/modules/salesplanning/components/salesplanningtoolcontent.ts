@@ -15,13 +15,9 @@ import {modal} from "../../../services/modal.service";
 import {Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
 
-/**
- * @ignore
- */
+/* @ignore */
 declare var moment: any;
-/**
- * @ignore
- */
+/* @ignore */
 declare var _: any;
 
 @Component({
@@ -267,7 +263,9 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
 
     private setEditMode() {
         if (!this.nodeInfo.leaf || !this.canEdit) return;
-        this.dataBackup = _.clone(this.data);
+        let dataPeriods = {};
+        for (let key in this.data) if (this.data.hasOwnProperty(key)) dataPeriods[key] = {...this.data[key]};
+        this.dataBackup = _.clone(dataPeriods);
         this.view.setEditMode();
     }
 
@@ -287,6 +285,33 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                     this.setViewMode();
                 }
             });
+    }
+
+    private openInputHelper() {
+        this.modal.openModal('SalesPlanningToolInputHelperModal', true, this.injector)
+            .subscribe(ref => {
+               ref.instance.periods = this.periods;
+               ref.instance.allFields = this.contentFields;
+               ref.instance.response.subscribe(res => this.executeInputHelperData(res));
+            });
+    }
+
+    private executeInputHelperData(res) {
+        if (!res) return;
+        let periodRange = this.periods.slice(res.startPeriod, +res.endPeriod +1);
+        let value = this.machineFormat(res.value);
+        periodRange.forEach(period => {
+            if (res.fromField == 'fixed') {
+                this.data[res.toField][period.key] = res.evenly ? this.formatValue(+value / periodRange.length) : this.formatValue(value);
+            } else {
+                this.data[res.toField][period.key] = +this.machineFormat(this.data[res.fromField][period.key]);
+                if (res.percentValue && res.percentValue.length > 0) {
+                    this.data[res.toField][period.key] += +this.machineFormat(res.percentValue) * 100 / this.data[res.toField][period.key];
+                }
+                this.data[res.toField][period.key] = this.formatValue(this.data[res.toField][period.key]);
+            }
+        });
+        this.doRowsColumnsSum();
     }
 
     private cancel() {

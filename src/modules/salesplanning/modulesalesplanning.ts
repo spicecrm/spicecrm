@@ -17,6 +17,7 @@ import /*embed*/ {SalesPlanningToolContentNoteModal} from './components/salespla
 import /*embed*/ {SalesPlanningToolContent} from './components/salesplanningtoolcontent';
 import /*embed*/ {SalesPlanningToolTree} from './components/salesplanningtooltree';
 import /*embed*/ {SalesPlanningTool} from './components/salesplanningtool';
+import /*embed*/ {SalesPlanningToolInputHelperModal} from './components/salesplanningtoolinputhelpermodal';
 import /*embed*/ {SalesPlanningService} from './services/salesplanning.service';
 import {DirectivesModule} from "../../directives/directives";
 
@@ -35,6 +36,7 @@ import {DirectivesModule} from "../../directives/directives";
         SalesPlanningToolContent,
         SalesPlanningToolTree,
         SalesPlanningTool,
+        SalesPlanningToolInputHelperModal
     ],
     providers: [SalesPlanningService]
 })

@@ -12,6 +12,10 @@
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     {{language.getLabel('LBL_CANCEL')}}
                 </button>
+                <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--neutral slds-align--absolute-center" (click)="openInputHelper()">
+                    <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
+                    {{language.getLabel('LBL_INPUT_HELPER')}}
+                </button>
                 <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="save()">
                     <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
                     {{language.getLabel('LBL_SAVE')}}
