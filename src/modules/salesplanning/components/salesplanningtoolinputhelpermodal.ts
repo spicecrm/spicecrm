@@ -25,9 +25,15 @@ export class SalesPlanningToolInputHelperModal {
     public ngOnInit() {
         this.data.endPeriod = this.periods.length -1;
     }
+
     get editableFields() {
         return this.allFields.filter(field => field.editable == '1');
     }
+
+    get allAvailableFields() {
+        return this.allFields.filter(field => field.id != this.data.toField);
+    }
+
     private cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
