@@ -54,7 +54,7 @@
             <button class="slds-button-group-item slds-button slds-button--neutral slds-align--absolute-center" (click)="cancel()">
                 {{language.getLabel('LBL_CANCEL')}}
             </button>
-            <button [disabled]="!data.toField || (data.fromField == 'fixed' && !data.value || data.value.length == 0)" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="execute()">
+            <button [disabled]="!data.toField || (data.fromField == 'fixed' && (!data.value || data.value.length == 0))" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="execute()">
                 {{language.getLabel('LBL_APPLY')}}
             </button>
         </div>
