@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {
-    Component, ElementRef, Renderer, Input, Output, EventEmitter, ViewChild,
+    Component, ElementRef, Input, Output, EventEmitter, ViewChild,
     ViewContainerRef, AfterViewInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
@@ -23,7 +23,7 @@ export class ObjectActionsetMenuContainer implements AfterViewInit {
     @Input() actionset: string = '';
     @Output() action: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private language: language, private model: model, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer, private popup: popup, private helper: helper) {
+    constructor(private language: language, private model: model, private metadata: metadata, private elementRef: ElementRef, private popup: popup, private helper: helper) {
 
     }
 
