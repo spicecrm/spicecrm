@@ -1,9 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component, Pipe
-} from '@angular/core';
+import {Component, Pipe} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
@@ -35,23 +33,25 @@ export class ObjectRepositoryManagerFilter {
     }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Component({
     templateUrl: './src/workbench/templates/objectrepositorymanager.html',
     providers: [view]
 })
 export class ObjectRepositoryManager {
-    private moduleReposSelect: Array<any> = [];
-    private moduleRepos: Array<any> = [];
-    private moduleReposSelectedItem: any = {};
-
-    private objrepoList: Array<any> = [];
+    public treelist: any[] = [];
+    // editable
+    public edit_mode: string = "custom";
+    public change_request_required: boolean = false;
+    public crNoneActive: boolean = false;
+    private moduleReposSelect: any[] = [];
+    private moduleRepos: any[] = [];
+    private modulereposselecteditem: any = {};
+    private objrepoList: any[] = [];
     private configList: any = {};
-    private currentConfigArray: Array<any> = [];
-
+    private currentConfigArray: any[] = [];
     private objectFilter: string = '';
-
-    private fieldTypeList: Array<any> = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
-
+    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
     private newRepo: any = {};
     private emptyRepo: any = {
         component: "",
@@ -73,15 +73,7 @@ export class ObjectRepositoryManager {
         version: "",
         scope: "custom"
     };
-
     private currentObjRepo: any = {};
-    public treelist: Array<any> = [];
-
-    // editable
-    public edit_mode: string = "custom";
-    public change_request_required: boolean = false;
-    public crNoneActive: boolean = false;
-
 
     constructor(
         private backend: backend,
@@ -101,9 +93,9 @@ export class ObjectRepositoryManager {
                 this.moduleRepos.push(module);
                 let moduleRepos = {};
                 moduleRepos = {
-                    'id': module.id,
-                    'name': module.module,
-                    'group': "global"
+                    id: module.id,
+                    name: module.module,
+                    group: "global"
                 };
                 this.moduleReposSelect.push(moduleRepos);
             }
@@ -116,9 +108,9 @@ export class ObjectRepositoryManager {
                 this.moduleRepos.push(module);
                 let moduleObj = {};
                 moduleObj = {
-                    'id': module.id,
-                    'name': module.module,
-                    'group': "custom"
+                    id: module.id,
+                    name: module.module,
+                    group: "custom"
                 };
                 this.moduleReposSelect.push(moduleObj);
             }
@@ -127,9 +119,61 @@ export class ObjectRepositoryManager {
         this.checkMode();
     }
 
+    set moduleReposSelectedItem(event) {
+        this.modulereposselecteditem = event;
+
+        if (event.group == 'global') {
+            this.backend.getRequest('configurator/entries/sysuiobjectrepository').subscribe(orepos => {
+                this.objrepoList = [];
+
+                for (let orepo of orepos) {
+                    if (event.id == orepo.module) {
+                        this.objrepoList.push(orepo);
+                    }
+                }
+            });
+        } else if (event.group == 'custom') {
+            this.backend.getRequest('configurator/entries/sysuicustomobjectrepository').subscribe(orepos => {
+                this.objrepoList = [];
+
+                for (let orepo of orepos) {
+                    if (event.id == orepo.module) {
+                        this.objrepoList.push(orepo);
+                    }
+                }
+            });
+        } else {
+            console.error("Damaged item!");
+        }
+
+        this.objrepoList.sort((a, b) => {
+            return a.object < b.object ? 1 : -1;
+        });
+
+        for (let module of this.moduleRepos) {
+            if (module.id == event.id) {
+                this.currentModule = module;
+                this.currentModule.scope = event.group;
+            }
+        }
+        this.checkMode();
+    }
+
+    get moduleReposSelectedItem() {
+        return this.modulereposselecteditem;
+    }
+
+    public updateField(event) {
+        this.currentObjRepo.description = event;
+    }
+
+    public updateDeprecated() {
+        this.currentObjRepo.deprecated = (this.currentObjRepo.deprecated == '1') ? '0' : '1';
+    }
+
     private checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
-        this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
+        this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required;
 
         if (!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')) {
             this.edit_mode = 'custom';
@@ -180,44 +224,6 @@ export class ObjectRepositoryManager {
         this.view.setEditMode();
     }
 
-    public selectedOutputItemModule(event) {
-        if (event.group == 'global') {
-            this.backend.getRequest('configurator/entries/sysuiobjectrepository').subscribe(orepos => {
-                this.objrepoList = [];
-
-                for (let orepo of orepos) {
-                    if (event.id == orepo.module) {
-                        this.objrepoList.push(orepo);
-                    }
-                }
-            });
-        } else if (event.group == 'custom') {
-            this.backend.getRequest('configurator/entries/sysuicustomobjectrepository').subscribe(orepos => {
-                this.objrepoList = [];
-
-                for (let orepo of orepos) {
-                    if (event.id == orepo.module) {
-                        this.objrepoList.push(orepo);
-                    }
-                }
-            });
-        } else {
-            console.error("Damaged item!");
-        }
-
-        this.objrepoList.sort((a, b) => {
-            return a.object < b.object ? 1 : -1;
-        });
-
-        for (let module of this.moduleRepos) {
-            if (module.id == event.id) {
-                this.currentModule = module;
-                this.currentModule.scope = event.group;
-            }
-        }
-        this.checkMode();
-    }
-
     private clickObjRepo(cor) {
         this.currentObjRepo = cor;
         this.currentConfigArray = [];
@@ -249,10 +255,8 @@ export class ObjectRepositoryManager {
     }
 
     private checkCurrentObjRepo(id) {
-        if (this.currentObjRepo.id == id) {
-            return true;
-        }
-        return false;
+        return this.currentObjRepo.id == id;
+
     }
 
     private addConfig() {
@@ -288,8 +292,7 @@ export class ObjectRepositoryManager {
                 }
             }
             if (checkInput) {
-                let saveConfig = JSON.stringify(configObject);
-                this.currentObjRepo.componentconfig = saveConfig;
+                this.currentObjRepo.componentconfig = JSON.stringify(configObject);
 
                 let table = "";
                 if (this.currentModule.scope == "global") {
@@ -346,7 +349,6 @@ export class ObjectRepositoryManager {
         });
     }
 
-
     private addModalRepo(mode = 'add') {
         this.modalservice.openModal('ObjectRepositoryManagerAddModule').subscribe(modal => {
             if (mode == 'edit') {
@@ -375,20 +377,20 @@ export class ObjectRepositoryManager {
                             table = "sysuicustommodulerepository";
                             scope = "custom";
                         }
-                        delete(this.newModule.scope);
+                        delete (this.newModule.scope);
                         this.backend.postRequest('configurator/' + table + '/' + this.newModule.id, null, this.newModule).subscribe(
                             (success) => {
 
                                 let moduleRepoSelect = {
-                                    "id": this.newModule.id,
-                                    "name": this.newModule.module,
-                                    "group": scope
+                                    id: this.newModule.id,
+                                    name: this.newModule.module,
+                                    group: scope
                                 };
                                 this.newModule.scope = scope;
                                 if (mode == 'add') {
                                     this.moduleReposSelect.push(moduleRepoSelect);
                                     this.moduleRepos.push(this.newModule);
-                                    this.selectedOutputItemModule(moduleRepoSelect);
+                                    this.moduleReposSelectedItem = moduleRepoSelect;
                                 } else {
                                     for (let index in this.moduleReposSelect) {
                                         if (this.moduleReposSelect[index].id == moduleRepoSelect.id) {
@@ -418,19 +420,12 @@ export class ObjectRepositoryManager {
         this.addModalRepo('edit');
     }
 
-    public updateField(event) {
-        this.currentObjRepo.description = event;
-    }
-
     private exportRepoList() {
         this.modalservice.openModal('ObjectRepositoryExport');
     }
 
     private getDeprecatedBool(dep) {
-        return dep == '1' ? true : false;
-    }
-    public updateDeprecated() {
-        this.currentObjRepo.deprecated = (this.currentObjRepo.deprecated == '1') ? '0' : '1';
+        return dep == '1';
     }
 
 }
