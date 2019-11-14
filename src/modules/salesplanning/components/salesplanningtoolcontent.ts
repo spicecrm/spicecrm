@@ -290,6 +290,8 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                     this.setViewMode();
                 }
             });
+
+        this.data = this.formatAllData(this.data);
     }
 
     private openInputHelper() {
