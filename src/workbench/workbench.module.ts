@@ -53,6 +53,7 @@ import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageraddd
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
+import /*embed*/ {MailboxesTransportManager} from "./components/mailboxestransportmanager";
 import /*embed*/ {MailboxesProcessors} from "./components/mailboxesprocessors";
 import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
 import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
@@ -155,6 +156,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesTwillioTrafficManager,
         MailboxesA1TrafficManager,
         MailboxesIMAPSMTPSelectFoldersModal,
+        MailboxesTransportManager,
         SortPipe,
         ServiceCategoryManagerComponent,
         MailboxesProcessors,
