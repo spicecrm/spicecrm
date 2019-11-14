@@ -21,6 +21,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
 
     public currentGrid: any[] = [];
+    public yearsList: any[] = [];
     @Input() private setDate: any;
     @Input() private minDate: any;
     @Input() private maxDate: any;
@@ -34,12 +35,15 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
 
-    get currentYear(): number {
-        return this.curDate.year();
+    get currentYear(): any {
+        return {
+            id: this.curDate.year(),
+            name: this.curDate.year()
+        };
     }
 
     set currentYear(value) {
-        this.curDate.year(value);
+        this.curDate.year(value.length ? value : value.name);
         this.buildGrid();
     }
 
@@ -75,8 +79,15 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         } else {
             this.curDate = new moment();
         }
-
+        this.buildYearsList();
         this.buildGrid();
+    }
+
+    private buildYearsList() {
+        this.yearsList = new Array(11).fill('').map((e,i) => {
+            let year = i - 5 + +this.curDate.year();
+            return {id: year.toString(), name: year.toString()};
+        });
     }
 
     private weekdayLong(dayIndex) {
@@ -125,7 +136,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     private pickDate(date, month) {
-        let newDate = new moment().year(this.currentYear).month(month).date(date);
+        let newDate = new moment().year(this.currentYear.name).month(month).date(date);
 
         if (this.minDate && newDate.isBefore(this.minDate)) {
             return false;
