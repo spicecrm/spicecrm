@@ -1,0 +1,36 @@
+<system-card>
+    <system-card-header icon="list_email" cardtitel="Mail Log"></system-card-header>
+    <system-card-body class="slds-scrollable" style="display: block">
+        <system-spinner *ngIf="isLoading"></system-spinner>
+        <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <span class="slds-truncate">betreff</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">bezeichnung</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">datum</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">geoeffnet</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">klicks</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let mailLogItem of mailLogList" class="slds-hint-parent">
+                <td>{{mailLogItem.betreff}}</td>
+                <td>{{mailLogItem.bezeichnung}}</td>
+                <td>{{mailLogItem.datum}}</td>
+                <td>{{mailLogItem.geoeffnet}}</td>
+                <td>{{mailLogItem.klicks}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </system-card-body>
+</system-card>
