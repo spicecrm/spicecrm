@@ -313,7 +313,9 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             } else {
                 this.data[res.toField][period.key] = +this.machineFormat(this.data[res.fromField][period.key]);
                 if (res.percentValue && res.percentValue.length > 0) {
-                    this.data[res.toField][period.key] += +this.machineFormat(res.percentValue) * 100 / this.data[res.toField][period.key];
+                    let newValue = this.data[res.toField][period.key];
+                    this.data[res.toField][period.key] = this.mathExpCompiler
+                        .do(`${newValue} + ${res.percentValue} * 100 / ${newValue}`);
                 }
                 this.data[res.toField][period.key] = this.formatValue(this.data[res.toField][period.key]);
             }
