@@ -347,7 +347,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private setCellValue(value, contentField, periodKey) {
-        this.data[contentField.id][periodKey] = this.formatValue(value);
+        this.data[contentField.id][periodKey] = this.formatValue(this.machineFormat(value));
         this.doRowsColumnsSum();
     }
 
@@ -362,11 +362,16 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private formatValue(value) {
+        value = parseFloat(value);
         return !isNaN(+value) && value != 0 ? this.userPrefs.formatMoney(+value) : '';
     }
 
     private machineFormat(value) {
-        return ('' + value).replace(this.userPrefs.toUse.num_grp_sep, '').replace(this.userPrefs.toUse.dec_sep, '.');
+        value = value.split(this.userPrefs.toUse.num_grp_sep).join('');
+        value = value.split(this.userPrefs.toUse.dec_sep).join('.');
+        if (isNaN(value = parseFloat(value))) return '';
+        return Math.floor(+value * Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits)) /
+            Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits);
     }
 
     private viewNote() {
