@@ -44,6 +44,7 @@ export class SalesPlanningTool implements OnInit {
     private isLoading: boolean = false;
     private isCollapsed: boolean = false;
     private isHovered: boolean = false;
+    private isAnimating: boolean = false;
     private hoverTimeout: any;
     private mouseEnterListener: () => void;
     @ViewChild('hoverTriggerContainer', {
@@ -67,7 +68,7 @@ export class SalesPlanningTool implements OnInit {
     }
 
     get contentContainerClass() {
-        return this.isCollapsed && !this.isHovered ? 'slds-grow' : 'slds-size--3-of-4';
+        return this.isAnimating || this.isCollapsed && !this.isHovered ? 'slds-grow' : 'slds-size--3-of-4';
     }
 
     get characteristicsLoaded() {
@@ -154,10 +155,12 @@ export class SalesPlanningTool implements OnInit {
     }
 
     private onAnimationStart() {
+        this.isAnimating = true;
         if (this.mouseEnterListener) this.mouseEnterListener();
     }
 
     private onAnimationDone() {
+        this.isAnimating = false;
         if (this.isCollapsed) {
             this.mouseEnterListener = this.renderer
                 .listen(this.hoverTriggerContainer.element.nativeElement, 'mouseenter', () => {
