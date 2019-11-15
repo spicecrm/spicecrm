@@ -14,6 +14,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {MailLogPanel} from "./components/maillogpanel";
+import /*embed*/ {ProspectListsToMailLogButton} from "./components/prospectliststomaillogbutton";
+import /*embed*/ {ProspectListsToMailLogModal} from "./components/prospectliststomaillogmodal";
 
 @NgModule({
     imports: [
@@ -27,6 +29,8 @@ import /*embed*/ {MailLogPanel} from "./components/maillogpanel";
     ],
     declarations: [
         MailLogPanel,
+        ProspectListsToMailLogButton,
+        ProspectListsToMailLogModal,
     ]
 })
 export class MailLogModule {
