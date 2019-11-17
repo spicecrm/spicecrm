@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer} from "@angular/core";
+import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer2} from "@angular/core";
 import {
     trigger,
     state,
@@ -80,7 +80,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param metadata
      * @param modalservice
      */
-    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
+    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer2, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -165,7 +165,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      */
     private selectFile() {
         let event = new MouseEvent("click", {bubbles: true});
-        this.renderer.invokeElementMethod(this.fileupload.element.nativeElement, "dispatchEvent", [event]);
+        this.fileupload.element.nativeElement.dispatchEvent(event);
     }
 
     /**
