@@ -15,15 +15,15 @@
             </ng-container>
         </ul>
     </div>
-    <div *ngIf="this.componentconfig.sum" class="slds-grid" style="border-bottom: 1px solid #d8dde6;">
+    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom">
         <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small"
              [ngClass]="sizeClass">
-            <div *ngIf="showSum" class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
+            <div class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
                 {{getCurrencySymbol()}}{{getStageSum(stage.stagedata)}}
             </div>
         </div>
     </div>
-    <div tobottom #kanbanContainer class="slds-scrollable--y" (scroll)="onScroll()">
+    <div tobottom #kanbanContainer class="slds-scrollable--y" (scroll)="onScroll($event)">
         <div class="slds-grid">
             <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass" >
                 <ul class="slds-has-dividers--around-space slds-m-top--x-small">
