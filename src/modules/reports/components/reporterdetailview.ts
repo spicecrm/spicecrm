@@ -98,7 +98,10 @@ export class ReporterDetailView implements OnInit {
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
             this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
             if (data.visualization_params != '') {
-                this.hasVisualization = true;
+                let visualizationParams = JSON.parse(data.visualization_params);
+                if (visualizationParams && visualizationParams.layout != '-') {
+                    this.hasVisualization = true;
+                }
             }
 
             // load the where conditions

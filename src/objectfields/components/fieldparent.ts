@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -34,7 +34,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         public metadata: metadata,
         public router: Router,
         private elementRef: ElementRef,
-        private renderer: Renderer,
+        private renderer: Renderer2,
         private modal: modal
     ) {
         super(model, view, language, metadata, router);
@@ -170,13 +170,13 @@ export class fieldParent extends fieldGeneric implements OnInit {
     private openParentTypes() {
         this.parentTypeSelectOpen = true;
         this.parentSearchOpen = false;
-        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+        this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
     private onFocusParent() {
         this.parentTypeSelectOpen = false;
         this.parentSearchOpen = true;
-        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+        this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
     private searchWithModal() {

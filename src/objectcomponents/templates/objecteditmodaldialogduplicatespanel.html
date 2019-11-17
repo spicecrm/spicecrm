@@ -8,7 +8,7 @@
     </div>
     <div class="slds-card__body slds-card__body_inner">
         <ul class="slds-grid slds-wrap slds-grid_pull-padded">
-            <object-related-duplicate-tile class="slds-size--1-of-1" *ngFor="let duplicate of model.duplicates" [modelProvider]="{module:model.module, data:duplicate}" [enableLink]="false"></object-related-duplicate-tile>
+            <object-related-duplicate-tile class="slds-size--1-of-1" *ngFor="let duplicate of model.duplicates" [modelProvider]="{module:model.module, data:duplicate}" [enableLink]="false" [enableButtonLink]="true"></object-related-duplicate-tile>
         </ul>
     </div>
 </div>

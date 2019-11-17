@@ -290,6 +290,8 @@ export class fieldFile extends fieldGeneric {
                     this.downloadAttachment();
                     break;
             }
+        } else {
+            this.downloadAttachment();
         }
     }
 
