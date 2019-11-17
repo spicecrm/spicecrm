@@ -39,9 +39,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.model.module);
 
-        // subscribe to changes of the listtype
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
-
         this.currencies = this.currency.getCurrencies();
 
     }
@@ -69,17 +66,24 @@ export class SpiceKanban implements OnInit, OnDestroy {
             });
         }
 
-        this.requestedFields = ['name', 'account_name', 'account_id', 'sales_stage', 'amount_usdollar', 'amount'];
+        let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
+        let tilecomponentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
+        for (let tilecomponentField of tilecomponentFields) {
+            this.requestedFields.push(tilecomponentField.field);
+        }
 
         this.modellist.buckets = {
             bucketfield: confData.statusfield,
+            buckettotal: this.componentconfig.sumfield,
             bucketitems: bucketitems
         }
 
         // set limit to 10 .. since this is retrieved bper stage
-        this.modellist.loadlimit = 10;
+        this.modellist.loadlimit = 25;
 
-        this.modellist.getListData(this.requestedFields, false);
+        // subscribe to changes of the listtype
+        // since this is a behvaiour subject this will also fire the intiial list load
+        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
     }
 
     /**
@@ -109,12 +113,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellist.getListData(this.requestedFields);
     }
 
-    /**
-     * a getter retruning if the sum should be shown
-     */
-    get showSum() {
-        return this.componentconfig.sum !== '';
-    }
 
     /**
      * the size class
