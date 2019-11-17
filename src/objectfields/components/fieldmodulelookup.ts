@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, ElementRef, Renderer2, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -37,7 +37,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
         public metadata: metadata,
         public router: Router,
         private elementRef: ElementRef,
-        private renderer: Renderer,
+        private renderer: Renderer2,
     ) {
         super(model, view, language, metadata, router);
         this.popup.closePopup$.subscribe(() => this.closePopups());
@@ -72,7 +72,7 @@ export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
 
     private onFocus() {
         this.show_search_results = true;
-        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+        this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
     set selected_item(item)
