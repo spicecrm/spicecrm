@@ -1,11 +1,11 @@
 <div class="slds-grid slds-wrap spice-h-full">
     <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right spice-h-full">
         <div class="slds-text-body--regular slds-box slds-m-top--small slds-text-color--weak" style="padding: .25rem">
-            {{ objectimport.stepLongText }}
+            {{ spiceImport.stepLongText }}
         </div>
         <div class="slds-form slds-m-around--medium">
             <div class="slds-form-element slds-m-vertical--medium">
-                <div *ngIf="objectimport.fileId === ''" class="slds-form-element__control">
+                <div *ngIf="spiceImport.fileId === ''" class="slds-form-element__control">
                     <div class="slds-file-selector slds-file-selector--files slds-p-vertical--xx-small  slds-grid"
                          (drop)="onDrop($event)"
                          (dragover)="preventdefault($event)" (dragleave)="preventdefault($event)">
@@ -82,15 +82,15 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="objectimport.fileId !== ''" class="slds-form-element__control">
+                <div *ngIf="spiceImport.fileId !== ''" class="slds-form-element__control">
                     <div class="slds-pill slds-m-top--small slds-m-bottom--xxx-small slds-p-vertical--xx-small slds-p-horizontal--x-small">
-                        <a href="javascript:void(0);" class="slds-pill__label">{{objectimport.fileName}} </a>
+                        <a href="javascript:void(0);" class="slds-pill__label">{{spiceImport.fileName}} </a>
                         <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearFile()">
                             <system-button-icon [icon]="'close'"></system-button-icon>
                         </button>
                     </div>
                     <div>
-                        ({{objectimport.fileRows}}) {{language.getLabel('LBL_RECORDS')}}
+                        ({{spiceImport.fileRows}}) {{language.getLabel('LBL_RECORDS')}}
                     </div>
 
                 </div>
@@ -119,7 +119,7 @@
                     </span>
                 </div>
             </div>
-            <div [hidden]="!objectimport.fileId" class="slds-form-element slds-m-vertical--medium">
+            <div [hidden]="!spiceImport.fileId" class="slds-form-element slds-m-vertical--medium">
                 <legend class="slds-form-element__legend slds-form-element__label">
                     {{language.getLabel('LBL_IMPORT_TEMPLATE')}}
                 </legend>
@@ -151,7 +151,7 @@
 
                 </div>
             </div>
-            <div *ngIf="importTemplateAction=='choose' && objectimport.fileId"
+            <div *ngIf="importTemplateAction=='choose' && spiceImport.fileId"
                  class="slds-form-element slds-m-vertical--medium">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_TEMPLATE', '',
                     'short')}}</label>
@@ -177,7 +177,7 @@
         </div>
     </div>
     <div class="slds-size--3-of-4 spice-h-full">
-        <table *ngIf="objectimport.fileHeader.length > 0"
+        <table *ngIf="spiceImport.fileHeader.length > 0"
                class="slds-table slds-table--bordered slds-table--cell-buffer">
             <thead>
             <tr class="slds-text-title--caps slds-p-vertical--small">
@@ -189,17 +189,17 @@
                 <th colspan="2" scope="col">
                     <div style="font-weight: 600" class="slds-truncate slds-p-vertical--xx-small">
                         {{language.getLabel('LBL_RECORDS')}}
-                        ({{objectimport.fileRows}})
+                        ({{spiceImport.fileRows}})
                     </div>
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let row of objectimport.fileHeader; let columnindex = index">
+            <tr *ngFor="let row of spiceImport.fileHeader; let columnindex = index">
                 <td scope="row">
                     <div class="slds-truncate">{{row}}</div>
                 </td>
-                <td *ngFor="let record of objectimport.fileData">
+                <td *ngFor="let record of spiceImport.fileData">
                     <div class="slds-truncate">{{record[columnindex]}}</div>
                 </td>
             </tr>
