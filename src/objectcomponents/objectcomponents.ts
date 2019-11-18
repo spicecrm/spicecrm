@@ -19,7 +19,6 @@ import {canNavigateAway} from '../services/navigation.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
-import /*embed*/ {objectimport} from './services/objectimport.service';
 
 
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
@@ -160,13 +159,7 @@ import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectre
 import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
 
-import /*embed*/ {ObjectImport} from './components/objectimport';
-import /*embed*/ {ObjectImportSelect} from './components/objectimportselect';
-import /*embed*/ {ObjectImportMap} from './components/objectimportmap';
-import /*embed*/ {ObjectImportFixed} from './components/objectimportfixed';
-import /*embed*/ {ObjectImportCheck} from './components/objectimportcheck';
-import /*embed*/ {ObjectImportUpdate} from "./components/objectimportupdate";
-import /*embed*/ {ObjectImportResult} from './components/objectimportresult';
+
 
 import /*embed*/ {ObjectMergeButton} from './components/objectmergebutton';
 
@@ -217,12 +210,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
                     component: ObjectListViewContainer,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'list'}
-            },
-            {
-                path: 'module/:module/import',
-                component: ObjectImport,
-                canActivate: [loginCheck, aclCheck],
-                data: {aclaction: 'import'}
             },
             /*
             {
@@ -368,13 +355,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectReminderButton,
         ObjectActionBeanToMailButton,
         ObjectActionMailModal,
-        ObjectImport,
-        ObjectImportSelect,
-        ObjectImportMap,
-        ObjectImportFixed,
-        ObjectImportCheck,
-        ObjectImportUpdate,
-        ObjectImportResult,
         ObjectMergeButton,
         ObjectAddresses,
         ObjectAddressesPipe,
@@ -433,7 +413,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectEditModalDialogContainer,
         ObjectListHeaderActionMenu,
         ObjectRecordMessagesBadge,
-        ObjectRelatedlistFiles
+        ObjectRelatedlistFiles,
+        ObjectKeyValuesPipe
     ]
 })
 export class ObjectComponents {
