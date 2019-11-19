@@ -108,8 +108,9 @@ export class ObjectList implements OnDestroy {
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
-        this.modellist.setSortDirection(this.sortdirection);
-        this.modellist.setSortFieldWithoutReload(this.sortfield);
+        if(this.sortfield){
+            this.modellist.setSortField(this.sortfield, this.sortdirection, false);
+        }
         this.modellist.getListData(requestedFields, loadfromcache);
     }
 //

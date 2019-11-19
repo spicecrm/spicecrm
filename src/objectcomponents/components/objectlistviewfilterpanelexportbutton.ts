@@ -65,8 +65,7 @@ export class ObjectListViewFilterPanelExportButton {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
             let params = {
                 listid: this.modellist.currentList.id,
-                sortfield: this.modellist.sortfield,
-                sortdirection: this.modellist.sortdirection,
+                sortfields: this.modellist.sortArray,
                 fields: JSON.stringify(this.modellist.lastFields)
             }
 

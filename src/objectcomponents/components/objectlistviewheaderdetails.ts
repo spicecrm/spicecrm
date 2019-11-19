@@ -1,0 +1,19 @@
+/**
+ * @module ObjectComponents
+ */
+import {Component} from '@angular/core';
+import {language} from '../../services/language.service';
+import {modellist} from '../../services/modellist.service';
+
+/**
+ * renders the header row for a list view table
+ */
+@Component({
+    selector: 'object-listview-header-details',
+    templateUrl: './src/objectcomponents/templates/objectlistviewheaderdetails.html'
+})
+export class ObjectListViewHeaderDetails {
+    constructor(private modellist: modellist, private language: language) {
+
+    }
+}

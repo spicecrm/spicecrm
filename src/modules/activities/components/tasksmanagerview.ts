@@ -14,7 +14,7 @@ import {navigation} from '../../../services/navigation.service';
 
     templateUrl: './src/modules/activities/templates/tasksmanagerview.html',
 })
-export class TasksManagerView implements OnDestroy{
+export class TasksManagerView implements OnDestroy {
 
     /**
      * holds the subscription to the model changes
@@ -35,17 +35,16 @@ export class TasksManagerView implements OnDestroy{
 
     }
 
-    public ngOnDestroy(){
+    public ngOnDestroy() {
         this.modellistsubscribe.unsubscribe();
     }
 
     /**
      * loads the lost of tasks from the modellist service
      */
-    private loadList(){
+    private loadList() {
         this.focus = null;
-        this.modellist.sortfield = 'date_due';
-        this.modellist.sortdirection = 'ASC';
+        this.modellist.setSortField('date_due', 'ASC', false);
         this.modellist.getListData(['name', 'parent_type', 'parent_name', 'parent_id', 'date_due', 'assigned_user_name', 'assigned_user_id', 'created_by', 'created_by_name']);
     }
 
@@ -54,7 +53,7 @@ export class TasksManagerView implements OnDestroy{
      *
      * @param id the id of the selected task. This is emitted by the underlying component
      */
-    private taskSelected(id){
+    private taskSelected(id) {
         this.focus = id;
     }
 }

@@ -4,11 +4,11 @@
         <th class="slds-cell-shrink" scope="col">
             <object-list-header-actionmenu [actionset]="actionset"></object-list-header-actionmenu>
         </th>
-        <th *ngFor="let item of listfields" [ngClass]="{'slds-is-sortable' : isSortable(item)}" scope="col">
+        <th *ngFor="let item of listfields" scope="col">
             <ng-container *ngIf="isSortable(item); else nosort">
-                <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
                     <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="item.field" [fieldconfig]="item.fieldconfig"></field-label>
-                    <system-utility-icon [icon]="getSortIcon()" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                    <object-list-header-sort [field]="item"></object-list-header-sort>
                 </a>
             </ng-container>
             <ng-template #nosort>

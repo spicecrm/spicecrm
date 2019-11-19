@@ -26,6 +26,7 @@ import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import /*embed*/ {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
 
 import /*embed*/ {ObjectListViewHeader} from './components/objectlistviewheader';
+import /*embed*/ {ObjectListViewHeaderDetails} from './components/objectlistviewheaderdetails';
 import /*embed*/ {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
 import /*embed*/ {ObjectList} from './components/objectlist';
 import /*embed*/ {ObjectListViewContainer} from './components/objectlistviewcontainer';
@@ -33,6 +34,7 @@ import /*embed*/ {ObjectListView} from './components/objectlistview';
 import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
 import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
+import /*embed*/ {ObjectListHeaderSort} from './components/objectlistheadersort';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
@@ -250,9 +252,11 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListView,
         ObjectListTypes,
         ObjectListViewHeader,
+        ObjectListViewHeaderDetails,
         ObjectListViewHeaderListSelector,
         ObjectList,
         ObjectListHeader,
+        ObjectListHeaderSort,
         ObjectActionContainer,
         ObjectActionContainerItem,
         ObjectListHeaderActionMenu,
@@ -433,7 +437,9 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordMessagesBadge,
         ObjectRelatedlistFiles,
         ObjectListTypes,
-        ObjectListViewAggregate
+        ObjectListViewAggregate,
+        ObjectListViewHeaderDetails,
+        ObjectListHeaderSort
     ]
 })
 export class ObjectComponents {
