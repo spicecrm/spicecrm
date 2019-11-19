@@ -12,12 +12,7 @@
     </div>
     <div class="slds-grid slds-grid_vertical-align-center">
         <div class="slds-col slds-align-bottom">
-            <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
-                <li class="slds-item">{{modellist.listData.list.length}} {{language.getLabel('LBL_OF')}} {{modellist.listData.totalcount}} {{language.getLabel('LBL_ITEMS')}}</li>
-                <li class="slds-item">{{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(model.module, modellist.sortfield)}}</li>
-                <li class="slds-item">{{language.getLabel('LBL_LASTUPDATE')}} {{modellist.getLastLoadTime()}}</li>
-                <li class="slds-item"><system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>
-            </ul>
+            <object-listview-header-details></object-listview-header-details>
         </div>
         <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
             <object-listview-settings class="slds-show--medium"></object-listview-settings>

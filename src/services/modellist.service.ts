@@ -68,14 +68,9 @@ export class modellist implements OnDestroy {
     public lastFields: any[] = [];
 
     /**
-     * thje sortfield
+     * holds an array of fields and direction for multidimensional sorting
      */
-    public sortfield: string = '';
-
-    /**
-     * the sort direction
-     */
-    public sortdirection: 'ASC'|'DESC' = 'ASC';
+    public sortArray: any[] = [];
 
     /**
      * keeps the last loaded date
@@ -228,22 +223,72 @@ export class modellist implements OnDestroy {
         }
     }
 
-    public setSortDirection(direction: 'ASC'|'DESC') {
-        this.sortdirection = direction;
-    }
+    /**
+     * sets a field as sort criteria
+     *
+     * @param field the field
+     * @param sortDirection optional the sort direction
+     * @param reload an indicator if the list shoudl reload automatically
+     */
+    public setSortField(field: string, sortDirection?: 'ASC' | 'DESC', reload = true) {
+        // check that a field is set and that the list is not right now loading
+        if (!field || this.isLoading) return;
 
-    public setSortFieldWithoutReload(field: string) {
-        this.sortfield = field;
-    }
-
-    public setSortField(field: string) {
-        if (this.sortfield == field) {
-            this.sortdirection = this.sortdirection == 'ASC' ? 'DESC' : 'ASC';
+        // find the field we are sorting an and if found handle the sort
+        let sortItemIndex = this.sortArray.findIndex(item => item.sortfield == field);
+        if (sortItemIndex >= 0) {
+            let sortItem = this.sortArray[sortItemIndex];
+            if (sortItem.sortdirection == 'ASC') {
+                sortItem.sortdirection = 'DESC';
+            } else {
+                this.sortArray.splice(sortItemIndex, 1);
+            }
         } else {
-            this.sortfield = field;
-            this.sortdirection = 'ASC';
+            this.sortArray.push({
+                sortfield: field,
+                sortdirection: sortDirection ? sortDirection : 'ASC'
+            });
         }
-        this.reLoadList();
+
+        if (reload) {
+            this.reLoadList();
+        }
+    }
+
+    /**
+     * returns the sort par<mater for a specific field if it is a current sort criteria
+     * @param field
+     */
+    public getSortField(field) {
+        let sortItemIndex = this.sortArray.findIndex(item => item.sortfield == field);
+        if (sortItemIndex >= 0) {
+            let sortItem = this.sortArray[sortItemIndex];
+            return {
+                sortdirection: sortItem.sortdirection,
+                sortindex: sortItemIndex,
+                sortitems: this.sortArray.length
+            };
+        }
+
+        return false;
+    }
+
+    /**
+     * returns an array of sort fields to be displays
+     */
+    public getSortFields() {
+        let sortfields = []
+        for (let sortitem of this.sortArray) {
+            sortfields.push(this.language.getFieldDisplayName(this.module, sortitem.sortfield));
+        }
+        return sortfields.join(', ');
+    }
+
+    /**
+     * simplegetter that returns if there are sort fields set
+     */
+    get isSorted() {
+        return this.sortArray.length > 0;
     }
 
     public addCustomListtype(id, name, basefilter, fielddefs, filterdefs, global): void {
@@ -490,7 +535,7 @@ export class modellist implements OnDestroy {
     /**
      * resets the list and loads the data
      *
-      * @param fields
+     * @param fields
      * @param checkSession
      */
     public getListData(fields?: any[], checkSession: boolean = false): Observable<boolean> {
@@ -504,9 +549,11 @@ export class modellist implements OnDestroy {
         }
 
         // check if we have a sortfield or shoudl set one
+        /*
         if (!this.sortfield) {
             this.sortfield = fields.length > 0 ? fields[0] : 'id';
         }
+        */
 
         return this.loadList(fields, checkSession);
     }
@@ -720,7 +767,7 @@ export class modellist implements OnDestroy {
 
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
-        this.backend.getList(this.module, this.sortfield, this.sortdirection, fields, {
+        this.backend.getList(this.module, this.sortArray, fields, {
             start: 0,
             limit: this.loadlimit,
             listid: this.currentList.id,
@@ -759,7 +806,7 @@ export class modellist implements OnDestroy {
         this.isLoading = true;
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
-        this.backend.getList(this.module, this.sortfield, this.sortdirection, this.lastFields, {
+        this.backend.getList(this.module, this.sortArray, this.lastFields, {
             modulefilter: this.modulefilter,
             start: this.listData.list.length,
             limit: this.loadlimit,
@@ -819,8 +866,7 @@ export class modellist implements OnDestroy {
                 {},
                 {
                     listid: this.currentList.id,
-                    sortfield: this.sortfield,
-                    sortdirection: this.sortdirection,
+                    sortfields: this.sortArray,
                     fields: fields ? fields : this.lastFields
                 }
             ).subscribe(

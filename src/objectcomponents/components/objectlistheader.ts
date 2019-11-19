@@ -37,6 +37,7 @@ export class ObjectListHeader {
         return this.modellist.module;
     }
 
+
     /**
      * returns if a given fielsd is set sortable in teh fieldconfig
      *
@@ -60,16 +61,4 @@ export class ObjectListHeader {
             this.modellist.setSortField(field.field);
         }
     }
-
-    /**
-     * a helper function to determine the sort icon based on the set sort criteria
-     */
-    private getSortIcon(): string {
-        if (this.modellist.sortdirection === 'ASC') {
-            return 'arrowdown';
-        } else {
-            return 'arrowup';
-        }
-    }
-
 }

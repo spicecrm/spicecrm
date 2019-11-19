@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
-import {model} from '../../services/model.service';
+import {modelutilities} from '../../services/modelutilities.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -46,16 +46,26 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     public module: string = '';
     public modulefilter: string = '';
 
+    /**
+     * a trigger to show the aggregates üpanel
+     */
     private showAggregates: boolean = false;
+
+    /**
+     * a guid to kill the autocomplete
+     */
+    private autoCompleteKiller: string;
 
     private modellistsubscribe: any;
 
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, private modelutilities: modelutilities) {
         // subscribe to changes of the listtype
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
+
+        this.autoCompleteKiller = this.modelutilities.generateGuid();
     }
 
     /**
@@ -224,5 +234,30 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         }
 
         return aggArray;
+    }
+
+
+    /**
+     * returns if a given fielsd is set sortable in teh fieldconfig
+     *
+     * @param field the field from the fieldset
+     */
+    private isSortable(field): boolean {
+        if (field.fieldconfig.sortable === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * sets the field as sort parameter
+     *
+     * @param field the field from the fieldset
+     */
+    private setSortField(field): void {
+        if (this.isSortable(field)) {
+            this.modellist.setSortField(field.field);
+        }
     }
 }
