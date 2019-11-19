@@ -6,12 +6,9 @@ import {Component, OnInit, Injector} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {modellist} from '../../../services/modellist.service';
 import {modal} from '../../../services/modal.service';
-import {toast} from "../../../services/toast.service";
 import {Router} from "@angular/router";
 import {backend} from '../../../services/backend.service';
-import {relatedmodels} from "../../../services/relatedmodels.service";
 
 /**
  * modal onInit() == setsyncusers profiles are syncronized
@@ -31,12 +28,22 @@ export class ProspectListsToMailLogModal {
         private router: Router,
         private metadata: metadata,
         private backend: backend,
-        private toast: toast,
         private model: model,
-        private relatedModels: relatedmodels,
-        private modal: modal,
-        private modellist: modellist
+        private modal: modal
     ) {
+        window.console.log(this.model.id);
+    }
+
+    private transferToMailLog() {
+        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
+            loadingRef.instance.messagelabel = 'LBL_EXPORTING';
+
+            this.backend.postRequest(`MailLog/ProspectLists/d3dc01c9-2367-e1b0-b3b6-5dd4016f3942/transferToMailLog`).subscribe(result => {
+                this.list = result;
+                window.console.log(result);
+                loadingRef.instance.self.destroy();
+            });
+        });
     }
 
     public ngOnInit() {
@@ -47,14 +54,4 @@ export class ProspectListsToMailLogModal {
         this.self.destroy();
     }
 
-    private transferToMailLog() {
-        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            loadingRef.instance.messagelabel = 'LBL_EXPORTING';
-
-            this.backend.postRequest('/MailLog/ProspectLists/' + this.model.id).subscribe(result => {
-                this.list = result;
-                loadingRef.instance.self.destroy();
-            });
-        });
-    }
 }
