@@ -3,29 +3,30 @@
         {{language.getLabel('LBL_EXPORT_PROSPECTLIST')}} to {{language.getLabel('LBL_MAILLOG')}}
     </system-modal-header>
     <system-modal-content>
-        <table class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
-            <thead>
-                <tr class="slds-text-title--caps">
-                    <th scope="col">
-                        <span class="slds-truncate">{{language.getLabel('LBL_FIRST_NAME')}}</span>
-                    </th>
-                    <th scope="col">
-                        <span class="slds-truncate">{{language.getLabel('LBL_LAST_NAME')}}</span>
-                    </th>
-                    <th scope="col">
-                        <span class="slds-truncate">{{language.getLabel('LBL_EMAIL')}}</span>
-                    </th>
-                </tr>
-            </thead>
-            <h2 class="slds-text-align_center" *ngIf="!list">No contacts of type {{language.getLabel('LBL_MAILLOG')}}</h2>
-            <tbody *ngIf="list">
-                <tr *ngFor="let item of list">
-                    <td>{{item.vorname}}</td>
-                    <td>{{item.nachname}}</td>
-                    <td>{{item.email}}}</td>
-                </tr>
-            </tbody>
-        </table>
+<!--        <table class="slds-table slds-max-medium-table_stacked-horizontal slds-table&#45;&#45;bordered slds-no-row-hover">-->
+<!--            <thead>-->
+<!--                <tr class="slds-text-title&#45;&#45;caps">-->
+<!--                    <th scope="col">-->
+<!--                        <span class="slds-truncate">{{language.getLabel('LBL_FIRST_NAME')}}</span>-->
+<!--                    </th>-->
+<!--                    <th scope="col">-->
+<!--                        <span class="slds-truncate">{{language.getLabel('LBL_LAST_NAME')}}</span>-->
+<!--                    </th>-->
+<!--                    <th scope="col">-->
+<!--                        <span class="slds-truncate">{{language.getLabel('LBL_EMAIL')}}</span>-->
+<!--                    </th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+<!--            <h2 class="slds-text-align_center" *ngIf="!list">No contacts of type {{language.getLabel('LBL_MAILLOG')}}</h2>-->
+<!--            <tbody *ngIf="list">-->
+<!--                <tr *ngFor="let item of list">-->
+<!--                    <td>{{item.vorname}}</td>-->
+<!--                    <td>{{item.nachname}}</td>-->
+<!--                    <td>{{item.email}}}</td>-->
+<!--                </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+        <p>we found {{count}} contacts</p>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>

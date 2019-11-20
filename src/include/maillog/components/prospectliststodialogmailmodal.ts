@@ -21,6 +21,8 @@ export class ProspectListsToDialogMailModal {
 
     private self: any = {};
     public list: any[] = [];
+    public group: any[] = [];
+    public count: any;
 
     constructor(
         private language: language,
@@ -29,23 +31,33 @@ export class ProspectListsToDialogMailModal {
         private backend: backend,
         private model: model,
         private modal: modal
-    ) {}
-
-    private initialize(){
-        // get request ...
-        // => count total .. count mit dialogmail profil .. count wenn liste existiert mit Änderungen ..
+    ) {
     }
 
-    private transferToDialogMail() {
+    private initialize() {
+        // get request ...
+        // => count total .. count mit dialogmail profil .. count wenn liste existiert mit Änderungen ..
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
-            this.backend.postRequest(`MailLog/ProspectLists/${this.model.id}/transferToDialogMail`).subscribe(result => {
+            this.backend.getRequest(`MailLog/ProspectLists/${this.model.id}/initialize`).subscribe(result => {
                 this.list = result;
-                window.console.log(result);
+                window.console.log(this.list);
+                this.count = 0;
+                for(let i in this.list) {
+                    this.count ++;
+                }
                 loadingRef.instance.self.destroy();
             });
         });
+    }
+
+    private transferToDialogMail() {
+        this.backend.postRequest(`MailLog/ProspectLists/${this.model.id}/transferToDialogMail`).subscribe(result => {
+            this.group = result;
+            window.console.log(this.group);
+        });
+
     }
 
     private close() {
@@ -53,9 +65,8 @@ export class ProspectListsToDialogMailModal {
     }
 
     public ngOnInit() {
-        this.transferToDialogMail();
+        this.initialize();
     }
-
 
 
 }
