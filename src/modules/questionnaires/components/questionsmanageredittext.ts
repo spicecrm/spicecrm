@@ -17,8 +17,8 @@ export class QuestionsManagerEditText implements OnInit {
     @Input() public categorypool;
 
     private answer: any = {}; // No array, only one element (a text answer)
-
     private sequenced = false;
+    private isBuilt = false;
 
     constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
         this.view.isEditable = true;
@@ -26,11 +26,14 @@ export class QuestionsManagerEditText implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.model.isLoading) this.model.data$.subscribe( () => this.buildEntries() );
-        else this.buildEntries();
+        this.model.data$.subscribe(data => {
+            if ( data.id && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
+        });
     }
 
     private buildEntries(): void {
+
+        this.isBuilt = true;
 
         if ( this.questionset.data.questiontypeparameter.length ) {
             let config = JSON.parse( this.questionset.data.questiontypeparameter );

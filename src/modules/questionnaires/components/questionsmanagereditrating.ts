@@ -7,6 +7,7 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
 
+declare var _: any;
 @Component({
     selector: 'questions-manager-edit-rating',
     templateUrl: './src/modules/questionnaires/templates/questionsmanagereditrating.html'
@@ -18,6 +19,7 @@ export class QuestionsManagerEditRating implements OnInit {
 
     private entries: any[] = [];
     private options: any[] = [];
+    private isBuilt = false;
 
     constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
         this.view.isEditable = true;
@@ -25,15 +27,13 @@ export class QuestionsManagerEditRating implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.model.isLoading) {
-            this.model.data$.subscribe(data => {
-                this.buildEntries();
-            });
-        } else this.buildEntries();
+        this.model.data$.subscribe(data => {
+            if ( data.id && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
+        });
     }
 
     private buildEntries(): void {
-
+        this.isBuilt = true;
         let config: any;
         try {
             config =  JSON.parse(this.questionset.data.questiontypeparameter);
