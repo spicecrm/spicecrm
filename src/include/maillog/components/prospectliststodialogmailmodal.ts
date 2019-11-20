@@ -14,11 +14,10 @@ import {backend} from '../../../services/backend.service';
  * modal onInit() == setsyncusers profiles are syncronized
  */
 @Component({
-    selector: 'prospectlists-to-maillog-modal',
-    templateUrl: './src/include/maillog/templates/prospectliststomaillogmodal.html',
-    providers: [model]
+    selector: 'prospectlists-to-dialogmail-modal',
+    templateUrl: './src/include/maillog/templates/prospectliststodialogmailmodal.html'
 })
-export class ProspectListsToMailLogModal {
+export class ProspectListsToDialogMailModal {
 
     private self: any = {};
     public list: any[] = [];
@@ -30,15 +29,18 @@ export class ProspectListsToMailLogModal {
         private backend: backend,
         private model: model,
         private modal: modal
-    ) {
-        window.console.log(this.model.id);
+    ) {}
+
+    private initialize(){
+        // get request ...
+        // => count total .. count mit dialogmail profil .. count wenn liste existiert mit Änderungen ..
     }
 
-    private transferToMailLog() {
+    private transferToDialogMail() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
-            this.backend.postRequest(`MailLog/ProspectLists/d3dc01c9-2367-e1b0-b3b6-5dd4016f3942/transferToMailLog`).subscribe(result => {
+            this.backend.postRequest(`MailLog/ProspectLists/${this.model.id}/transferToDialogMail`).subscribe(result => {
                 this.list = result;
                 window.console.log(result);
                 loadingRef.instance.self.destroy();
@@ -46,12 +48,14 @@ export class ProspectListsToMailLogModal {
         });
     }
 
-    public ngOnInit() {
-        this.transferToMailLog();
-    }
-
     private close() {
         this.self.destroy();
     }
+
+    public ngOnInit() {
+        this.transferToDialogMail();
+    }
+
+
 
 }

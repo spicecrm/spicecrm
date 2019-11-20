@@ -9,26 +9,23 @@ import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
 
 /**
- * exports targetlist to maillog
+ * exports targetlist to dialogMail
  */
 @Component({
-    selector: 'prospectlists-to-maillog-button',
-    templateUrl: './src/include/maillog/templates/prospectliststomaillogbutton.html',
+    selector: 'prospectlists-to-dialogmail-button',
+    templateUrl: './src/include/maillog/templates/prospectliststodialogmailbutton.html',
 })
-export class ProspectListsToMailLogButton {
+export class ProspectListsToDialogMailButton {
 
     constructor(
         private language: language,
         private metadata: metadata,
         private model: model,
-        private modal: modal
+        private modal: modal,
+        private injector: Injector
     ) {}
 
-    /* how many contacts in the prospect list have an online profile with type "Maillog"?
-       >> execute rest call to Mailog >> create group in dmail
-    */
-
     public execute() {
-        this.modal.openModal('ProspectListsToMailLogModal', true);
+        this.modal.openModal('ProspectListsToDialogMailModal', true, this.injector);
     }
 }
