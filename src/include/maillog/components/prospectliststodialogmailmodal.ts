@@ -9,6 +9,7 @@ import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
 import {Router} from "@angular/router";
 import {backend} from '../../../services/backend.service';
+import {toast} from "../../../services/toast.service";
 
 /**
  * modal onInit() == setsyncusers profiles are syncronized
@@ -20,9 +21,7 @@ import {backend} from '../../../services/backend.service';
 export class ProspectListsToDialogMailModal {
 
     private self: any = {};
-    public list: any[] = [];
-    public group: any[] = [];
-    public count: any;
+    public statistics: any[] = [];
 
     constructor(
         private language: language,
@@ -30,7 +29,8 @@ export class ProspectListsToDialogMailModal {
         private metadata: metadata,
         private backend: backend,
         private model: model,
-        private modal: modal
+        private modal: modal,
+        private toast: toast
     ) {
     }
 
@@ -41,12 +41,8 @@ export class ProspectListsToDialogMailModal {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
             this.backend.getRequest(`MailLog/ProspectLists/${this.model.id}/initialize`).subscribe(result => {
-                this.list = result;
-                window.console.log(this.list);
-                this.count = 0;
-                for(let i in this.list) {
-                    this.count ++;
-                }
+                this.statistics = result;
+                window.console.log(this.statistics);
                 loadingRef.instance.self.destroy();
             });
         });
@@ -54,8 +50,12 @@ export class ProspectListsToDialogMailModal {
 
     private transferToDialogMail() {
         this.backend.postRequest(`MailLog/ProspectLists/${this.model.id}/transferToDialogMail`).subscribe(result => {
-            this.group = result;
-            window.console.log(this.group);
+            if (result.status == 'success') {
+                this.router.navigate(['/module/ProspectLists/' + this.model.id]);
+                this.close();
+            } else {
+                this.toast.sendToast(result.msg, 'error');
+            }
         });
 
     }
