@@ -17,7 +17,8 @@
                     </h3>
                 </div>
                 <div class="slds-timeline__actions slds-timeline__actions_inline">
-                    <p class="slds-timeline__date">{{starttime}} | {{startdate}}</p>
+                    <system-utility-icon *ngIf="highlightdate" class="slds-p-right--xx-small" addclasses="slds-icon-text-error" icon="warning" size="x-small"></system-utility-icon>
+                    <p class="slds-timeline__date" [ngClass]="{'slds-text-color_error' : highlightdate}">{{starttime}} | {{startdate}}</p>
                     <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
                 </div>
             </div>
