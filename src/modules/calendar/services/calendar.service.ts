@@ -33,7 +33,7 @@ export class calendar implements OnDestroy {
     public modules: any[] = [];
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
-    public calendardate: any = {};
+    public calendardate: any = moment();
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
@@ -53,7 +53,7 @@ export class calendar implements OnDestroy {
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
     public isLoading: boolean = false;
-    public sheetType: string = 'Week';
+    public sheettype: string = 'Week';
     public timeZone: any;
     public duration: any = {
         Day: 'd',
@@ -81,8 +81,17 @@ export class calendar implements OnDestroy {
         this.loadCalendarModules();
         this.loadPreferences();
         this.subscribeToLanguage();
-        this.getOtherCalendars();
+        this.getCalendarPreferences();
         this.broadcastSubscriber();
+    }
+
+    set sheetType(value) {
+        this.sheettype = value;
+        this.session.setSessionData('sheetType', value);
+    }
+
+    get sheetType() {
+        return this.sheettype;
     }
 
     get calendarDate() {
@@ -91,6 +100,7 @@ export class calendar implements OnDestroy {
 
     set calendarDate(value) {
         this.calendardate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
+        this.session.setSessionData('calendarDate', this.calendardate);
     }
 
     get sidebarWidth() {
@@ -127,10 +137,10 @@ export class calendar implements OnDestroy {
     * trigger the changes for calendar sheets
     * @return void
     */
-    public refresh() {
+    public refresh(date?) {
         this.currentStart = {};
         this.currentEnd = {};
-        this.triggerSheetReload();
+        this.triggerSheetReload(date);
     }
 
     /*
@@ -334,8 +344,8 @@ export class calendar implements OnDestroy {
         this.otherCalendars = calendars;
         if (save) {
             this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
+            this.triggerSheetReload();
         }
-        this.triggerSheetReload();
     }
 
     /*
@@ -633,6 +643,11 @@ export class calendar implements OnDestroy {
         this.weekDaysCount = +preferences.week_days_count || this.weekDaysCount;
         this.startHour = +preferences.calendar_day_start_hour || this.startHour;
         this.endHour = +preferences.calendar_day_end_hour || this.endHour;
+
+        let savedCalendarDate = this.session.getSessionData('calendarDate', false);
+        let savedSheetType = this.session.getSessionData('sheetType', false);
+        if (savedSheetType) this.sheettype = savedSheetType;
+        if (savedCalendarDate) this.calendardate = new moment(savedCalendarDate);
         this.triggerSheetReload();
     }
 
@@ -640,8 +655,9 @@ export class calendar implements OnDestroy {
     * get other calendars ids for the calendar monitor
     * @return void
     */
-    private getOtherCalendars() {
+    private getCalendarPreferences() {
         if (this.isMobileView || this.isDashlet) return;
+
         this.userPreferences.loadPreferences("Calendar")
             .pipe(take(1))
             .subscribe(calendars => {
@@ -661,7 +677,7 @@ export class calendar implements OnDestroy {
         this.subscriptions.add(languageSubscriber);
     }
 
-    private triggerSheetReload() {
-        this.calendarDate = moment(this.calendarDate);
+    private triggerSheetReload(date?) {
+        this.calendarDate = moment(date ? date : this.calendardate);
     }
 }
