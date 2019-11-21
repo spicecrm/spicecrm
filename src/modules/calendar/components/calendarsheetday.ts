@@ -36,7 +36,6 @@ export class CalendarSheetDay implements OnChanges {
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
-    private sheetTopMargin: number = 0;
     private sheetDay: any = {};
     private sheetHours: any[] = [];
     private ownerEvents: any[] = [];
