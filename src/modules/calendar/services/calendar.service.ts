@@ -100,6 +100,7 @@ export class calendar implements OnDestroy {
 
     set calendarDate(value) {
         this.calendardate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
+        this.session.setSessionData('calendarDate', this.calendardate);
     }
 
     get sidebarWidth() {
@@ -136,10 +137,10 @@ export class calendar implements OnDestroy {
     * trigger the changes for calendar sheets
     * @return void
     */
-    public refresh() {
+    public refresh(date?) {
         this.currentStart = {};
         this.currentEnd = {};
-        this.triggerSheetReload();
+        this.triggerSheetReload(date);
     }
 
     /*
@@ -343,8 +344,8 @@ export class calendar implements OnDestroy {
         this.otherCalendars = calendars;
         if (save) {
             this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
+            this.triggerSheetReload();
         }
-        this.triggerSheetReload();
     }
 
     /*
@@ -654,8 +655,9 @@ export class calendar implements OnDestroy {
     * get other calendars ids for the calendar monitor
     * @return void
     */
-    private getOtherCalendars() {
+    private getCalendarPreferences() {
         if (this.isMobileView || this.isDashlet) return;
+
         this.userPreferences.loadPreferences("Calendar")
             .pipe(take(1))
             .subscribe(calendars => {
@@ -675,7 +677,7 @@ export class calendar implements OnDestroy {
         this.subscriptions.add(languageSubscriber);
     }
 
-    private triggerSheetReload() {
-        this.calendarDate = moment(this.calendarDate);
+    private triggerSheetReload(date?) {
+        this.calendarDate = moment(date ? date : this.calendardate);
     }
 }

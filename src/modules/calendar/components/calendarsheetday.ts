@@ -33,7 +33,6 @@ export class CalendarSheetDay implements OnChanges {
         read: ViewContainerRef,
         static: true
     }) private multiEventsContainer: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
@@ -49,13 +48,6 @@ export class CalendarSheetDay implements OnChanges {
 
     constructor(private language: language, private calendar: calendar) {
         this.buildHours();
-    }
-
-    get sheetStyle() {
-        return {
-            'height': 'calc(100% - ' + this.headerContainer.element.nativeElement.clientHeight + 'px)',
-            'margin-top': '-1px'
-        };
     }
 
     get hourHeightStyle() {
