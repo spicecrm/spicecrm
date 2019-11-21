@@ -27,12 +27,8 @@ declare var moment: any;
 
 export class CalendarSheetDay implements OnChanges {
 
-    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @ViewChild('multieventscontainer', {
-        read: ViewContainerRef,
-        static: true
-    }) private multiEventsContainer: ViewContainerRef;
+    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
@@ -47,6 +43,15 @@ export class CalendarSheetDay implements OnChanges {
 
     constructor(private language: language, private calendar: calendar) {
         this.buildHours();
+    }
+
+    get multiEventStyle(): any {
+        return {
+            height: this.calendar.multiEventHeight + "px",
+            width: '100%',
+            position: 'initial',
+            display: 'block'
+        };
     }
 
     get hourHeightStyle() {
@@ -255,27 +260,6 @@ export class CalendarSheetDay implements OnChanges {
             'border-bottom': event.resizing ? '1px dotted #fff' : 0
         };
 
-    }
-
-    /*
-    * @param index
-    * @return style
-    */
-    private getMultiEventStyle(index): any {
-        let multiEvents = this.multiEventsContainer.element.nativeElement.getBoundingClientRect();
-        return {
-            height: this.calendar.multiEventHeight + "px",
-            width: multiEvents.width + "px",
-            top: (multiEvents.top + (this.calendar.multiEventHeight * index)) + "px",
-            left: multiEvents.left + "px",
-        };
-    }
-
-    /*
-    * @return style
-    */
-    private getMultiEventsContainerStyle() {
-        return {height: this.allMultiEvents.length > 0 ? (this.calendar.multiEventHeight * this.allMultiEvents.length) + 'px' : this.calendar.multiEventHeight + 'px'};
     }
 
     /*
