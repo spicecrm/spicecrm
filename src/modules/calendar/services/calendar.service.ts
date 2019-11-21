@@ -33,7 +33,7 @@ export class calendar implements OnDestroy {
     public modules: any[] = [];
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
-    public calendardate: any = {};
+    public calendardate: any = moment();
     public calendars: any = {};
     public currentStart: any = {};
     public currentEnd: any = {};
@@ -53,7 +53,7 @@ export class calendar implements OnDestroy {
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
     public isLoading: boolean = false;
-    public sheetType: string = 'Week';
+    public sheettype: string = 'Week';
     public timeZone: any;
     public duration: any = {
         Day: 'd',
@@ -81,8 +81,17 @@ export class calendar implements OnDestroy {
         this.loadCalendarModules();
         this.loadPreferences();
         this.subscribeToLanguage();
-        this.getOtherCalendars();
+        this.getCalendarPreferences();
         this.broadcastSubscriber();
+    }
+
+    set sheetType(value) {
+        this.sheettype = value;
+        this.session.setSessionData('sheetType', value);
+    }
+
+    get sheetType() {
+        return this.sheettype;
     }
 
     get calendarDate() {
@@ -633,6 +642,11 @@ export class calendar implements OnDestroy {
         this.weekDaysCount = +preferences.week_days_count || this.weekDaysCount;
         this.startHour = +preferences.calendar_day_start_hour || this.startHour;
         this.endHour = +preferences.calendar_day_end_hour || this.endHour;
+
+        let savedCalendarDate = this.session.getSessionData('calendarDate', false);
+        let savedSheetType = this.session.getSessionData('sheetType', false);
+        if (savedSheetType) this.sheettype = savedSheetType;
+        if (savedCalendarDate) this.calendardate = new moment(savedCalendarDate);
         this.triggerSheetReload();
     }
 
