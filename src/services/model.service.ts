@@ -106,6 +106,12 @@ export class model implements OnDestroy {
      * indicates that the current model is in an edit state
      */
     public isEditing: boolean = false;
+
+    /**
+     * for the navigate away check ... set when the model is added from a global component and thus is not tracked for th enavigate away action
+     */
+    public isGlobal: boolean = false;
+
     /**
      * set when a new record is created and teh model is not yet saved on the backend
      */
@@ -913,16 +919,6 @@ export class model implements OnDestroy {
         this.evaluateValidationRules(null, "init");
     }
 
-    public isOutsideRouterOutlet(): boolean {
-
-        return true;
-
-        // if ( this.globalHeader || this.globalFooter ) return true;
-        // else return false;
-
-        // alternative:
-        // return !( this.injector.get( GlobalHeader ) || this.injector.get( GlobalFooter ) );
-    }
 
     public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
 
@@ -1354,8 +1350,8 @@ export class model implements OnDestroy {
         this.navigation.unregisterModel(this.modelRegisterId);
     }
 
-    public isLeaveable(): boolean {
-        return !(this.isEditing && _.values(this.getDirtyFields()).length);
+    public isDirty(): boolean {
+        return (this.isEditing && _.values(this.getDirtyFields()).length);
     }
 
     /**
