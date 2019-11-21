@@ -75,7 +75,7 @@ export class ActivityTimelineItem implements OnInit {
      * returns if the date shoudl be highlighted since it is in the past
      */
     get highlightdate() {
-        return this.module == 'Activities' && new moment() >  new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
+        return this.module == 'Activities' && new moment().hour(0).minute(0).second(0) >  new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
     }
 
     /**
