@@ -20,6 +20,8 @@ import {broadcast} from '../../../services/broadcast.service';
 import {Subscription} from "rxjs";
 import {configurationService} from "../../../services/configuration.service";
 import {take} from "rxjs/operators";
+import {userpreferences} from "../../../services/userpreferences.service";
+import {metadata} from "../../../services/metadata.service";
 
 /**
  * @ignore
@@ -29,7 +31,15 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-event',
     templateUrl: './src/modules/calendar/templates/calendarsheetevent.html',
-    providers: [model, view]
+    providers: [model, view],
+    styles: [`
+        .event_has_dark_color {
+            color: #ffffff;
+        }
+        .event_has_dark_color:hover {
+            color: #eeeeee;
+        }
+    `]
 })
 export class CalendarSheetEvent implements OnInit, OnDestroy {
     @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
@@ -46,12 +56,16 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     private lastMoveTimeSpan: number = 0;
     private color: string = '';
     private hasDarkColor: boolean = true;
+    private headerFieldset: string;
+    private subFieldset: string;
 
     constructor(private language: language,
                 private configuration: configurationService,
                 private calendar: calendar,
                 private model: model,
                 private broadcast: broadcast,
+                private userpreferences: userpreferences,
+                private metadata: metadata,
                 private renderer: Renderer2) {
         this.subscriptions.push(this.calendar.color$.subscribe(res => {
             if (this.event.data.assigned_user_id && res.id == this.event.data.assigned_user_id) {
@@ -76,7 +90,15 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         }));
     }
 
-    get isAbsense() {
+    get startHour() {
+        return this.model.data.date_start ? moment(this.model.data.date_start).tz(this.calendar.timeZone).format(this.userpreferences.getTimeFormat()) : undefined;
+    }
+
+    get textClass() {
+        return !this.isScheduleSheet && this.hasDarkColor ? 'event_has_dark_color' : '';
+    }
+
+    get isAbsence() {
         return this.event.type == 'absence' || this.event.module == 'UserAbsences';
     }
 
@@ -109,6 +131,9 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.setModelDataFromEvent();
+        let config = this.metadata.getComponentConfig('CalendarSheetEvent', this.model.module);
+        if (config && config.header_fieldset) this.headerFieldset = config.header_fieldset;
+        if (config && config.sub_fieldset) this.subFieldset = config.sub_fieldset;
         this.setEventColor();
     }
 
