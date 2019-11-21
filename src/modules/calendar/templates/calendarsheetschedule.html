@@ -6,8 +6,8 @@
                 <a style="cursor: pointer" class="slds-text-link" (click)="goToDay(day.date)">{{getMonthDayYear(day.date)}}</a>
             </div>
         </div>
-        <div class="slds-p-around--xx-small slds-size--3-of-4">
-            <div *ngFor="let event of day.events; trackBy: trackByFn" class="slds-grid slds-grid--vertical-align-center" [style.height]="calendar.multiEventHeight + 'px'">
+        <div class="slds-size--3-of-4">
+            <div *ngFor="let event of day.events; trackBy: trackByFn; let last = last" [class.slds-border--bottom]="!last" class="slds-grid slds-p-horizontal--xx-small">
                 <div class="slds-button slds-button--icon slds-m-right--x-small slds-p-top--xxx-small" style="height: 100%" [style.color]="event.color">
                     <system-button-icon icon="user" size="small"></system-button-icon>
                 </div>
