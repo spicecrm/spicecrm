@@ -8,9 +8,9 @@
                 <div class="slds-p-left--x-small slds-truncate" [ngClass]="dayTextDayClass" [ngStyle]="isTodayStyle()">{{displayDate('day')}}</div>
                 <h1 class="slds-p-left--x-small slds-truncate" [ngClass]="dateTextDateClass" [ngStyle]="isTodayStyle()">{{displayDate('date')}}</h1>
             </div>
-            <div #multieventscontainer class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small" [ngStyle]="getMultiEventsContainerStyle()">
-                <ng-container *ngFor="let event of allMultiEvents; let index = index; trackBy: trackByItemFn">
-                    <calendar-sheet-event [ngStyle]="getMultiEventStyle(index)" [event]="event"></calendar-sheet-event>
+            <div [style.min-height.px]="calendar.multiEventHeight" class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small">
+                <ng-container *ngFor="let event of allMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-event [ngStyle]="multiEventStyle" [event]="event"></calendar-sheet-event>
                 </ng-container>
             </div>
         </div>
