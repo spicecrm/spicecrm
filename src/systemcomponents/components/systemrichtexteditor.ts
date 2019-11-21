@@ -156,7 +156,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         // check if we are active already
         if (!this.isActive) {
             this.isActive = true;
-            this.htmlEditor.element.nativeElement.focus();
+            this.focusEditor();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -227,7 +227,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     .pipe(take(1))
                     .subscribe(html => {
                         this.isExpanded = false;
-                        this.htmlEditor.element.nativeElement.focus();
+                        this.focusEditor();
                         this.writeValue(html);
                         this.onChange(html);
                         if (this.editorModalSaveSubscriber) this.editorModalSaveSubscriber.unsubscribe();
@@ -247,6 +247,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
+                                this.focusEditor();
                                 this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage);
                             }
                             this.modalOpen = false;
@@ -254,6 +255,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     });
                 } else {
                     if (image.id) {
+                        this.focusEditor();
                         this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
                     }
                     this.modalOpen = false;
@@ -328,7 +330,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.editorService.saveSelection();
         this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
             if (!url || url.length == 0) return;
-            this.htmlEditor.element.nativeElement.focus();
+            this.focusEditor();
             this.editorService.restoreSelection();
             let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
             let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
@@ -419,5 +421,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 this.save$.emit(this._html);
             }
         });
+    }
+
+    private focusEditor() {
+        this.htmlEditor.element.nativeElement.focus();
     }
 }

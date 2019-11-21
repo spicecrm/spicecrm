@@ -66,6 +66,9 @@ export class ReporterFieldContainer implements AfterViewInit {
                 case 'date':
                     fieldType = 'ReporterFieldDate';
                     break;
+                case 'text':
+                    fieldType = 'ReporterFieldText';
+                    break;
                 default:
                     fieldType = 'ReporterFieldStandard';
                     break;

@@ -33,7 +33,7 @@ export class QuestionsManagerEditOptionIst implements OnInit {
         this.model.data = this.option;
     }
 
-    private deleteOption (): void {
+    private deleteOption(): void {
         this.modalservice.confirm( this.language.getLabelFormatted( 'QST_DELETE_ANSWER_OPTION_LONG', this.option.name ), this.language.getLabel('QST_DELETE_ANSWER_OPTION' )).subscribe( answer => {
             if ( answer ) this.event.emit( 'delete');
         });

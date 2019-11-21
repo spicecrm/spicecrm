@@ -30,6 +30,7 @@ import /*embed*/ {ReporterCockpit} from "./components/reportercockpit";
 import /*embed*/ {ReporterCockpitTile} from "./components/reportercockpittile";
 import /*embed*/ {ReporterFieldContainer} from "./components/reporterfieldcontainer";
 import /*embed*/ {ReporterFieldStandard} from "./components/reporterfieldstandard";
+import /*embed*/ {ReporterFieldText} from "./components/reporterfieldtext";
 import /*embed*/ {ReporterFieldCurrency} from "./components/reporterfieldcurrency";
 import /*embed*/ {ReporterFieldPercentage} from "./components/reporterfieldpercentage";
 import /*embed*/ {ReporterFieldEnum} from "./components/reporterfieldenum";
@@ -79,6 +80,7 @@ declare var moment: any;
         ReporterCockpitTile,
         ReporterFieldContainer,
         ReporterFieldStandard,
+        ReporterFieldText,
         ReporterFieldCurrency,
         ReporterFieldPercentage,
         ReporterFieldEnum,

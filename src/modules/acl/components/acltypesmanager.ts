@@ -46,11 +46,13 @@ export class ACLTypesManager {
         });
     }
 
-    addField(field){
-        this.backend.postRequest('spiceaclobjects/authtypes/'+this.activeType.authtypeid+'/authtypefields/'+field).subscribe(fielddata => {
-            this.activeType.authtypefields.push(fielddata)
-            this.sortType();
-        })
+    addFields(fields){
+        for (let field of fields) {
+            this.backend.postRequest('spiceaclobjects/authtypes/' + this.activeType.authtypeid + '/authtypefields/' + field).subscribe(fielddata => {
+                this.activeType.authtypefields.push(fielddata)
+                this.sortType();
+            });
+        }
     }
     deleteField(fieldid) {
         this.backend.deleteRequest('spiceaclobjects/authtypes/' + this.activeType.authtypeid + '/authtypefields/' + fieldid).subscribe(fielddata => {
