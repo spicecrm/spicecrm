@@ -938,7 +938,7 @@ export class model implements OnDestroy {
                 this.data[fieldname] = presets[fieldname];
             }
 
-            this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
+            this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
@@ -1063,7 +1063,7 @@ export class model implements OnDestroy {
         }
 
         // open the edit Modal
-        this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
+        this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
             if (editModalRef) {
                 if (componentSet && componentSet != "") {
                     editModalRef.instance.componentSet = componentSet;
