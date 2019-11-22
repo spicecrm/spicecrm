@@ -1,8 +1,8 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnChanges, Output} from "@angular/core";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "@angular/core";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 /**
  * @ignore
@@ -10,14 +10,12 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag
 declare var _: any;
 
 /* -----------------------------------
-*  -- REQUIRED INPUT LIST STRUCTURE --
+*  -- REQUIRED INPUT treelist STRUCTURE --
 * ------------------------------------
 * - id: string
 * - parent_id: string
 * - parent_sequence: string
 * - name: string
-* - selected: boolean
-* - clickable: boolean
 * -------------------
 * -- @INPUT PARAMS --
 * -------------------
@@ -33,33 +31,38 @@ declare var _: any;
 *---------------------
 * -- @OUTPUT PARAMS --
 * --------------------
-* - selectedItem$: string = selected item id;
-* - addItem$: string = parent item id
-* - itemPosition$: any = {
-*       id: string = moved item id,
-*       parent_id: string = parent item id,
-*       parent_name: string = parent item name,
-*       parent_sequence: string = item new sequence
-*   };
-* ----------------------------
-* TODO:Lazy Load functionality
+* - selectedItemChange: string = selected item id;
+* - onItemAdd: string = parent item id
+* - onTreeDrop: any = {
+*       itemWithNewParent?: {
+*           id: string,
+*           parent_id: string
+*       },
+*       newSortSequences?: {
+*           id: string,
+*           index: number
+*       }
+* }
+*
+* NOTE: selected item can be used as two way binding angular like:
+*   <system-tree [(selectedItem)] ></system-tree>
 */
 
 @Component({
     selector: "system-tree",
-    templateUrl: "./src/systemcomponents/templates/systemtree.html"
+    templateUrl: "./src/systemcomponents/templates/systemtree.html",
+    styles: ['.cdk-drag-animating {transition: none}']
 })
 
 export class SystemTree implements OnChanges {
-    @Input() public treelist: any[] = [];
-    @Input() public selectedItem: string = "";
-
-    @Output() public addItem$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public selectedItem$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public itemPosition$: EventEmitter<any> = new EventEmitter<any>();
-
+    @Input('treelist') public sourceList: any[] = [];
+    @Output() public selectedItemChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public onItemAdd: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
     public tree: any[] = [];
-    public droplistids: any[] = [];
+    @Input() private selectedItem: string = "";
+    @Input() private dragPosition: any;
+    private isDragging: boolean = false;
     private treeConfig: any = {
         draggable: false,
         canadd: false,
@@ -81,86 +84,161 @@ export class SystemTree implements OnChanges {
         this.treeConfig.collapsible = obj.collapsible || true;
     }
 
-    get dropListIds() {
-        return this.droplistids;
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.sourceList) {
+            this.sourceList.sort((a, b) => a.name && b.name ? a.name > b.name ? 1 : -1 : 0);
+            this.buildTree();
+        }
+        if (changes.selectedItem) this.handleSelection(this.selectedItem);
     }
 
-    set dropListIds(val) {
-        this.droplistids = val;
+    private buildTree() {
+        this.tree = [];
+        this.sortBySequence();
+        this.addTreeItem();
+        this.setHasChildren();
     }
 
-    public ngOnChanges() {
-        this.resetTreeList();
-        this.tree = this.buildTree(this.treelist);
-    }
-
-    private resetTreeList() {
-        this.treelist.map(item => {
-            if (item.parent_id === "" || item.parent_id === undefined) {
-                item.parent_id = null;
+    private sortBySequence() {
+        let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
+        this.sourceList = [];
+        for (let parentId in groupedByParent) {
+            if (groupedByParent.hasOwnProperty(parentId)) {
+                groupedByParent[parentId].sort((a, b) => a.parent_sequence > b.parent_sequence ? 1 : -1);
+                this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
             }
-            item.parent_name = "";
-            item = _.omit(item, "path", "level", "children");
-            return item;
+        }
+    }
+
+    private addTreeItem(parentId = '', level = 1) {
+        for (let item of this.sourceList) {
+            if (item.parent_id == parentId) {
+                if (!item.systemTreeDefs) {
+                    item.systemTreeDefs = {};
+                }
+                item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
+                item.systemTreeDefs.clickable = this.config.clickable;
+                item.systemTreeDefs.level = level;
+                item.systemTreeDefs.isSelected = this.selectedItem == item.id;
+                this.tree.push(item);
+                if (item.systemTreeDefs.expanded) {
+                    this.addTreeItem(item.id, level + 1);
+                }
+            }
+        }
+    }
+
+    private setHasChildren() {
+        this.tree.forEach(item => {
+            item.systemTreeDefs.hasChildren = this.sourceList.some(i => i.parent_id == item.id);
         });
     }
 
-    private buildTree(treelist, parent = null, level = 0, parentpath = []) {
-        let tree = [];
-        for (let item of treelist) {
-            if (item.parent_id === parent) {
-
-                item.expanded = this.config.collapsible ? this.config.expandall : true;
-                item.clickable = this.config.clickable;
-                item.level = level + 1;
-                item.path = parentpath.slice();
-                item.path[level] = item.id;
-
-                let children = this.buildTree(treelist, item.id, level + 1, item.path);
-                delete item.path[level + 1];
-
-                item.children = children.length ? children : [];
-
-                // set expanded if child is selected or also expanded
-                for (let child of children) {
-                    if (child.id === this.selectedItem || child.expanded) {
-                        item.expanded = true;
-                    }
-                }
-                tree.push(item);
-            }
-        }
-        return tree;
-    }
-
+    /*
+    * Emits an object with the necessary changes
+    * @param dragEvent: CdkDragDrop
+    * @emit object: {itemWithNewParent, itemsWithNewSequence}
+    */
     private handleDrop(dragEvent: CdkDragDrop<any>) {
-        let newParent: any = dragEvent.container.data[0];
-        let newItemPosition = {
-            id: dragEvent.item.data.id,
-            parent_id: newParent.parent_id,
-            parent_sequence: dragEvent.currentIndex
-        };
-        let canDrop = !this.treelist
-            .some(item => item.id === newItemPosition.parent_id && item.path.includes(newItemPosition.id));
+        this.isDragging = false;
 
-        if (dragEvent.previousContainer === dragEvent.container) {
-            moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
-            this.itemPosition$.emit(newItemPosition);
-        } else if (canDrop) {
-            dragEvent.item.data.level = newParent.level;
-            transferArrayItem(dragEvent.previousContainer.data,
-                dragEvent.container.data,
-                dragEvent.previousIndex,
-                dragEvent.currentIndex);
-            this.itemPosition$.emit(newItemPosition);
+        let oldParentId = dragEvent.item.data.parent_id;
+        let target = this.tree.find(item => item.id == this.dragPosition.id);
+        let targetIndex = this.tree.findIndex(item => item.id == this.dragPosition.id);
+
+        switch (this.dragPosition.position) {
+            case 'before':
+                let isFirst: boolean = targetIndex -1 <= 0;
+                let previousTarget = this.tree[isFirst ? 0 : targetIndex -1];
+                dragEvent.item.data.parent_id = isFirst ? null : previousTarget.systemTreeDefs.hasChildren ? previousTarget.id : previousTarget.parent_id;
+                dragEvent.item.data.systemTreeDefs.level = isFirst ? 1 : previousTarget.systemTreeDefs.hasChildren ? previousTarget.systemTreeDefs.level + 1 : previousTarget.systemTreeDefs.level;
+                targetIndex = isFirst ? 0 : targetIndex;
+                break;
+            case 'item':
+                if (dragEvent.previousIndex > targetIndex) targetIndex++;
+                dragEvent.item.data.systemTreeDefs.level = target.systemTreeDefs.level + 1;
+                dragEvent.item.data.parent_id = target.id;
+                target.systemTreeDefs.hasChildren = true;
+                break;
+            case 'after':
+                let isLast: boolean = targetIndex >= this.tree.length - 1;
+                let nextTarget = this.tree[isLast ? this.tree.length - 1 : targetIndex];
+                dragEvent.item.data.systemTreeDefs.level = isLast ? 1 : nextTarget.systemTreeDefs.hasChildren ? nextTarget.systemTreeDefs.level + 1 : nextTarget.systemTreeDefs.level;
+                dragEvent.item.data.parent_id = isLast ? null : nextTarget.systemTreeDefs.hasChildren ? nextTarget.id : nextTarget.parent_id;
+                targetIndex = isLast ? this.tree.length - 1 : dragEvent.previousIndex > targetIndex ? targetIndex +1 : targetIndex;
+                break;
         }
+
+        let newSortSequences;
+        let itemWithNewParent;
+
+        if (dragEvent.previousIndex != targetIndex) {
+            this.tree.some(item => {
+                if (item.id == oldParentId) {
+                    item.systemTreeDefs.hasChildren = this.sourceList.some(item => item.parent_id == oldParentId);
+                    return true;
+                }
+            });
+            moveItemInArray(this.tree, dragEvent.previousIndex, targetIndex);
+            newSortSequences = this.tree
+                .filter(item => item.parent_id == dragEvent.item.data.parent_id || item.parent_id == oldParentId)
+                .map((item, index) => item = {id: item.id, index});
+
+            this.tree = this.tree.map(item => {
+                let index = newSortSequences.findIndex(i => i.id == item.id);
+                if (index > -1) item.parent_sequence = index;
+                return item;
+            });
+        }
+
+        if (dragEvent.item.data.parent_id != oldParentId) {
+            itemWithNewParent = {
+                id: dragEvent.item.data.id,
+                parent_id: dragEvent.item.data.parent_id
+            };
+        }
+
+
+        let p = this.tree.find(item => item.id == dragEvent.item.data.parent_id);
+        this.onTreeDrop.emit({itemWithNewParent, newSortSequences});
     }
 
-    private handleDropListId(obj) {
-        if (obj.action == 'add') {
-            this.droplistids.push(obj.id);
-        } else {
-            this.droplistids = this.droplistids.filter(id => id != obj.id);
-        }
+    private setIsDragging(value) {
+        this.isDragging = value;
+    }
+
+    private handleDragPosition(pos) {
+        this.dragPosition = pos;
+    }
+
+    private handleExpand(id) {
+        this.sourceList.some(item => {
+            if (item.id == id) {
+                item.expanded = !item.expanded;
+                return true;
+            }
+        });
+        this.buildTree();
+    }
+
+    private handleSelection(id) {
+        this.selectedItemChange.emit(id);
+        this.selectedItem = id;
+        this.tree.some(item => {
+            if (item.systemTreeDefs.isSelected) {
+                item.systemTreeDefs.isSelected = false;
+                return true;
+            }
+        });
+        this.tree.some(treeItem => {
+            if (treeItem.id == id) {
+                treeItem.systemTreeDefs.isSelected = true;
+                return true;
+            }
+        });
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 }
