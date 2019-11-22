@@ -22,6 +22,7 @@ export class ProspectListsToDialogMailModal {
 
     private self: any = {};
     public statistics: any[] = [];
+    private module: string = '';
 
     constructor(
         private language: language,
@@ -40,7 +41,7 @@ export class ProspectListsToDialogMailModal {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
-            this.backend.getRequest(`MailLog/ProspectLists/${this.model.id}/initialize`).subscribe(result => {
+            this.backend.getRequest(`MailLog/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
                 this.statistics = result;
                 window.console.log(this.statistics);
                 loadingRef.instance.self.destroy();
@@ -49,9 +50,9 @@ export class ProspectListsToDialogMailModal {
     }
 
     private transferToDialogMail() {
-        this.backend.postRequest(`MailLog/ProspectLists/${this.model.id}/transferToDialogMail`).subscribe(result => {
+        this.backend.postRequest(`MailLog/${this.model.module}/${this.model.id}/transferToDialogMail`).subscribe(result => {
             if (result.status == 'success') {
-                this.router.navigate(['/module/ProspectLists/' + this.model.id]);
+                this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
                 this.close();
             } else {
                 this.toast.sendToast(result.msg, 'error');
