@@ -61,7 +61,7 @@ export class SystemTree implements OnChanges {
     @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
     public tree: any[] = [];
     @Input() private selectedItem: string = "";
-    @Input() private dragPosition: any;
+    private dragPosition: any;
     private isDragging: boolean = false;
     private treeConfig: any = {
         draggable: false,
@@ -141,7 +141,7 @@ export class SystemTree implements OnChanges {
     */
     private handleDrop(dragEvent: CdkDragDrop<any>) {
         this.isDragging = false;
-
+        if (!this.dragPosition) return;
         let oldParentId = dragEvent.item.data.parent_id;
         let target = this.tree.find(item => item.id == this.dragPosition.id);
         let targetIndex = this.tree.findIndex(item => item.id == this.dragPosition.id);
@@ -199,7 +199,7 @@ export class SystemTree implements OnChanges {
         }
 
 
-        let p = this.tree.find(item => item.id == dragEvent.item.data.parent_id);
+        this.dragPosition = null;
         this.onTreeDrop.emit({itemWithNewParent, newSortSequences});
     }
 

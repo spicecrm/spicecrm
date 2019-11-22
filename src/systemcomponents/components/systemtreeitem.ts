@@ -29,6 +29,6 @@ export class SystemTreeItem {
     private setPosition(position) {
         if (!this.isDragging) return;
         this.dragPosition = position;
-        this.dragPositionChange.emit({id: this.item.id, position});
+        this.dragPositionChange.emit(!position ? null : {id: this.item.id, position});
     }
 }
