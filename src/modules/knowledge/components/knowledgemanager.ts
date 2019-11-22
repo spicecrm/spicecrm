@@ -17,7 +17,7 @@ import {modal} from "../../../services/modal.service";
 })
 export class KnowledgeManager implements AfterViewInit {
 
-    public config: any = {clickable: true, canadd: true, draggable: true};
+    public config: any = {clickable: true, canadd: true, draggable: true, expandall: true};
     public activeTab: string = "tree";
 
     @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
@@ -41,6 +41,12 @@ export class KnowledgeManager implements AfterViewInit {
 
     get documents() {
         return this.knowledgeService.documents;
+    }
+
+
+    set selectedDoc(id) {
+        this.knowledgeService.selectedDoc = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 
     get selectedDoc() {
@@ -84,35 +90,31 @@ export class KnowledgeManager implements AfterViewInit {
             knowledgebook_id: this.knowledgeService.selectedBook.id,
             status: "Draft"
         };
-        this.modal.openModal('KnowledgeManagerAddModal', true)
+        this.modal.openModal('KnowledgeManagerAddModal')
             .subscribe(modalRef => {
                 modalRef.instance.presets = presets;
                 modalRef.instance.response.subscribe(res => {
                     if (typeof res === "object") {
-                        this.knowledgeService.selectedDoc = res.id;
+                        this.selectedDoc = res.id;
                     }
                 });
             });
     }
 
-    private changeItemPosition(toEdit: any) {
-        let data = {
-            parent_id: toEdit.parent_id,
-            parent_sequence: toEdit.parent_sequence
-        };
-        this.backend.save("KnowledgeDocuments", toEdit.id, data);
+    private handleTreeDrop(toEdit) {
+        if (toEdit.newSortSequences) {
+            this.backend.postRequest('module/KnowledgeDocument/List/modifySortSequence', {}, toEdit.newSortSequences);
+        }
+
+        if (!toEdit.itemWithNewParent) return;
+        this.backend.save("KnowledgeDocuments", toEdit.itemWithNewParent.id, toEdit.itemWithNewParent);
         this.knowledgeService.documents.some(doc => {
             if (doc.id === toEdit.id) {
                 doc.parent_id = toEdit.parent_id;
                 doc.parent_sequence = toEdit.parent_sequence;
+                this.knowledgeService.selectedDoc = toEdit.id;
                 return true;
             }
         });
-        this.knowledgeService.selectedDoc = toEdit.id;
-    }
-
-    private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedDoc = id;
-        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }

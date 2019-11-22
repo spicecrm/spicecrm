@@ -38,6 +38,10 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
         return this.knowledgeService.documents;
     }
 
+    set selectedDoc(id) {
+        this.knowledgeService.selectedDoc = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);    }
+
     get selectedDoc() {
         return this.knowledgeService.selectedDoc;
     }
@@ -66,10 +70,5 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedDoc = id;
-        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }
