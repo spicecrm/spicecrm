@@ -25,7 +25,6 @@ import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
 import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
 import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
-import /*embed*/ {CalendarEventSummary} from "./components/calendareventsummary";
 import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
 import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
