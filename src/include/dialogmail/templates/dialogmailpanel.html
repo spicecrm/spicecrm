@@ -1,5 +1,5 @@
 <system-card>
-    <system-card-header icon="list_email" cardtitel="Mail Log"></system-card-header>
+    <system-card-header icon="list_email" cardtitel="Dialog Mail"></system-card-header>
     <system-card-body class="slds-scrollable" style="display: block">
         <system-spinner *ngIf="isLoading"></system-spinner>
         <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
@@ -23,7 +23,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let mailLogItem of mailLogList" class="slds-hint-parent">
+            <tr *ngFor="let mailLogItem of dMailList" class="slds-hint-parent">
                 <td>{{mailLogItem.betreff}}</td>
                 <td>{{mailLogItem.bezeichnung}}</td>
                 <td>{{mailLogItem.datum}}</td>

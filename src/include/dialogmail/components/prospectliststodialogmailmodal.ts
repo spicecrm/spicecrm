@@ -1,5 +1,5 @@
 /**
- * @module MailLogModule
+ * @module DialogMailModule
  */
 
 import {Component, OnInit, Injector} from '@angular/core';
@@ -11,12 +11,9 @@ import {Router} from "@angular/router";
 import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
 
-/**
- * modal onInit() == setsyncusers profiles are syncronized
- */
 @Component({
     selector: 'prospectlists-to-dialogmail-modal',
-    templateUrl: './src/include/maillog/templates/prospectliststodialogmailmodal.html'
+    templateUrl: './src/include/dialogmail/templates/prospectliststodialogmailmodal.html'
 })
 export class ProspectListsToDialogMailModal {
 
@@ -36,12 +33,10 @@ export class ProspectListsToDialogMailModal {
     }
 
     private initialize() {
-        // get request ...
-        // => count total .. count mit dialogmail profil .. count wenn liste existiert mit Änderungen ..
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
-            this.backend.getRequest(`MailLog/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
+            this.backend.getRequest(`DialogMail/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
                 this.statistics = result;
                 window.console.log(this.statistics);
                 loadingRef.instance.self.destroy();
@@ -50,7 +45,7 @@ export class ProspectListsToDialogMailModal {
     }
 
     private transferToDialogMail() {
-        this.backend.postRequest(`MailLog/${this.model.module}/${this.model.id}/transferToDialogMail`).subscribe(result => {
+        this.backend.postRequest(`DialogMail/${this.model.module}/${this.model.id}/transferToDialogMail`).subscribe(result => {
             if (result.status == 'success') {
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
                 this.close();

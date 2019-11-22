@@ -1,5 +1,5 @@
 /**
- * @module MailLogModule
+ * @module DialogMailModule
  */
 
 import {Component, OnInit, Injector} from '@angular/core';
@@ -13,7 +13,7 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     selector: 'prospectlists-to-dialogmail-button',
-    templateUrl: './src/include/maillog/templates/prospectliststodialogmailbutton.html',
+    templateUrl: './src/include/dialogmail/templates/prospectliststodialogmailbutton.html',
 })
 export class ProspectListsToDialogMailButton {
 

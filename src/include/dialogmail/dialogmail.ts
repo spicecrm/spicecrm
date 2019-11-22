@@ -1,5 +1,5 @@
 /**
- * @module MailLogModule
+ * @module DialogMailModule
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -13,7 +13,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {MailLogPanel} from "./components/maillogpanel";
+import /*embed*/ {DialogMailPanel} from "./components/dialogmailpanel";
 import {ProspectListsToDialogMailButton} from "./components/prospectliststodialogmailbutton";
 import {ProspectListsToDialogMailModal} from "./components/prospectliststodialogmailmodal";
 
@@ -28,12 +28,12 @@ import {ProspectListsToDialogMailModal} from "./components/prospectliststodialog
         DirectivesModule,
     ],
     declarations: [
-        MailLogPanel,
+        DialogMailPanel,
         ProspectListsToDialogMailButton,
         ProspectListsToDialogMailModal,
     ]
 })
-export class MailLogModule {
+export class DialogMailModule {
     public readonly version = "1.0";
     public readonly build_date = "/*build_date*/";
 

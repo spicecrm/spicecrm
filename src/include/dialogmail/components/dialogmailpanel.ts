@@ -1,5 +1,5 @@
 /**
- * @module MailLogModule
+ * @module DialogMailModule
  */
 import {Component} from "@angular/core";
 import {model} from "../../../services/model.service";
@@ -8,11 +8,11 @@ import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    templateUrl: "./src/include/maillog/templates/maillogpanel.html"
+    templateUrl: "./src/include/dialogmail/templates/dialogmailpanel.html"
 })
-export class MailLogPanel {
+export class DialogMailPanel {
 
-    public mailLogList: any[] = [];
+    public dMailList: any[] = [];
     private isLoading: boolean = false;
 
     constructor(private language: language, private model: model, private metadata: metadata, private backend: backend) {
@@ -21,9 +21,9 @@ export class MailLogPanel {
 
     private getUserMails() {
         this.isLoading = true;
-        this.backend.getRequest(`/MailLog/Contact/${this.model.id}/mails`)
+        this.backend.getRequest(`/DialogMail/Contact/${this.model.id}/mails`)
             .subscribe(res => {
-                this.mailLogList = res;
+                this.dMailList = res;
                 window.console.log(res);
                 this.isLoading = false;
             });
