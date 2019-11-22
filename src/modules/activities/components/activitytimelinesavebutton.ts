@@ -9,7 +9,7 @@ import {view} from "../../../services/view.service";
 import {ObjectActionSaveButton} from "../../../objectcomponents/components/objectactionsavebutton";
 
 @Component({
-    selector: 'object-action-save-button',
+    selector: 'activity-timeline-save-button',
     templateUrl: './src/modules/activities/templates/activitytimelinesavebutton.html'
 })
 export class ActivityTimelineSaveButton {
