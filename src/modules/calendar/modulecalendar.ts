@@ -58,7 +58,6 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         CalendarSheetMonth,
         CalendarSheetSchedule,
         CalendarSheetEvent,
-        CalendarEventSummary,
         CalendarSheetDropTarget,
         CalendarMorePopover,
         CalendarMorePopoverEvent,
