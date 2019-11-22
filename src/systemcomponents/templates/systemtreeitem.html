@@ -1,4 +1,4 @@
-<div class="slds-p-left--x-small" (mouseleave)="dragPosition = null">
+<div class="slds-p-left--x-small" (mouseleave)="setPosition(null)">
     <div style="height: 0.37rem; width: 100%" [style.box-shadow]="dragPosition == 'before' ? '0 -2px' : 'none'"
          (mouseenter)="setPosition('before')"></div>
     <article (mouseenter)="setPosition('item')" [style.box-shadow]="dragPosition == 'item' ? '0 0 0 2.5px' : 'none'"
