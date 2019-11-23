@@ -23,9 +23,14 @@ export class ReporterFieldText {
      */
     private field: any = {};
 
-    constructor(private sanitizer: DomSanitizer) {}
+    constructor(private sanitizer: DomSanitizer) {
+    }
 
-    get sanitizedValue(){
-        return this,this.sanitizer.bypassSecurityTrustHtml(this.record[this.field.fieldid].replace(/(?:\r\n|\r|\n)/g, '<br>'));
+    get sanitizedValue() {
+        try {
+            return this.sanitizer.bypassSecurityTrustHtml(this.record[this.field.fieldid].replace(/(?:\r\n|\r|\n)/g, '<br>'));
+        } catch (e) {
+            return '';
+        }
     }
 }
