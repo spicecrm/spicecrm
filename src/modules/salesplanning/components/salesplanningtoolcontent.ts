@@ -183,8 +183,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private setColumnsSum() {
         this.periods.forEach(period => {
             this.contentFields.forEach(field => {
-                if ((field.group_action && field.group_action.length > 0) && (field.storable && field.storable == '1') ||
-                    (field.cbfunction && field.cbfunction.length > 0) || (!field.formula && field.formula.length == 0)) return;
+                if (!field.formula || field.formula.length == 0) return;
 
                 this.data[field.id][period.key] = this.getCellValue(this.data[field.id], field.formula, period.key);
 
