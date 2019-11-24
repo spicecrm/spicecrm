@@ -176,11 +176,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     private doRowsColumnsSum() {
-        this.setColumnsSum();
-        this.setRowsSum();
+        this.calculateColumnFields();
+        this.calculateRowsTotals();
     }
 
-    private setColumnsSum() {
+    private calculateColumnFields() {
         this.periods.forEach(period => {
             this.contentFields.forEach(field => {
                 if (!field.formula || field.formula.length == 0) return;
@@ -191,7 +191,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         });
     }
 
-    private setRowsSum() {
+    private calculateRowsTotals() {
         this.rowsSum = {};
         let fieldsHasNoFormula = this.contentFields.filter(field => (!field.formula_sum || field.formula_sum.length == 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
         let fieldsHasFormula = this.contentFields.filter(field => (field.formula_sum && field.formula_sum.length > 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
