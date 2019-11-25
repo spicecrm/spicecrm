@@ -83,22 +83,37 @@ export class SalesPlanningTool implements OnInit {
         this.subscriptions.unsubscribe();
     }
 
+    /*
+    * @set model from the activated route
+    * @get model data
+    * @get contentFields
+    * @set active module
+    * @enable favorite
+    * @set versionId
+    * @get all characteristics
+    * @subscribe model.save
+    */
     private initialize() {
         this.activatedRoute.params.subscribe(params => {
             this.model.module = params.module;
             this.model.id = params.id;
         });
         this.model.getData().subscribe(item => {
-            this.setContentFields(item);
+            this.getContentFields(item);
             this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
         });
         this.favorite.enable(this.model.module, this.model.id);
         this.planningService.versionId = this.model.id;
         this.getCharacteristicList();
-        this.subscribeToChanges();
+        this.subscribeToModelSave();
     }
 
-    private subscribeToChanges() {
+    /*
+    * @subscribe model.save
+    * @get characteristics
+    * @reset selection
+    */
+    private subscribeToModelSave() {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(msg => {
                 let res = msg.messagedata;
@@ -110,12 +125,22 @@ export class SalesPlanningTool implements OnInit {
         );
     }
 
+    /*
+    * @reset selectedCharacteristics
+    * @reset selectedNodes
+    * @reset selectedNode
+    */
     private resetSelections() {
         this.planningService.selectedCharacteristics = [];
         this.planningService.selectedNodes = [];
         this.planningService.selectedNode = undefined;
     }
 
+    /*
+    * @get characteristics
+    * @sort characteristics by sequence
+    * @set characteristicTerritory label
+    */
     private getCharacteristicList() {
         this.planningService.characteristics = [];
         this.isLoading = true;
@@ -137,7 +162,12 @@ export class SalesPlanningTool implements OnInit {
             });
     }
 
-    private setContentFields(parent) {
+    /*
+    * @param parent: any
+    * @sort contentFields by (sort_order | summary_text)
+    * @set contentFields
+    */
+    private getContentFields(parent) {
         if (!parent || !parent.salesplanningcontents) return;
         let content = _.toArray(parent.salesplanningcontents.beans).length > 0 ? _.toArray(parent.salesplanningcontents.beans)[0] : undefined;
         if (!content || !content.salesplanningcontentfields) return;
@@ -146,6 +176,10 @@ export class SalesPlanningTool implements OnInit {
         this.planningService.contentFields = array;
     }
 
+    /*
+    * @toggle? isCollapsed
+    * @clear? hoverTimeout
+    */
     private toggleCollapseView() {
         if (!this.isHovered) {
             this.isCollapsed = !this.isCollapsed;
@@ -154,11 +188,19 @@ export class SalesPlanningTool implements OnInit {
         }
     }
 
+    /*
+    * @set isAnimating
+    * @removeListener mouseEnterListener
+    */
     private onAnimationStart() {
         this.isAnimating = true;
         if (this.mouseEnterListener) this.mouseEnterListener();
     }
 
+    /*
+    * @set isAnimating
+    * @listen mouseEnter on tree open trigger
+    */
     private onAnimationDone() {
         this.isAnimating = false;
         if (this.isCollapsed) {
@@ -169,6 +211,11 @@ export class SalesPlanningTool implements OnInit {
         }
     }
 
+    /*
+    * @clear hoverTimeout
+    * @setTimeout hoverTimeout if isHovered true
+    * @set isHovered
+    */
     private toggleHover(bool) {
         if (!this.isCollapsed) return;
         window.clearTimeout(this.hoverTimeout);

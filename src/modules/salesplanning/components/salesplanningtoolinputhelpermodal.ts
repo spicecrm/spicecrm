@@ -22,6 +22,9 @@ export class SalesPlanningToolInputHelperModal {
         this.response = this.responseSubject.asObservable();
     }
 
+    /*
+    * @set endPeriod = last period
+    */
     public ngOnInit() {
         this.data.endPeriod = this.periods.length -1;
     }
@@ -30,16 +33,29 @@ export class SalesPlanningToolInputHelperModal {
         return this.allFields.filter(field => field.editable == '1');
     }
 
+    /*
+    * @return all fields except toField
+    */
     get allAvailableFields() {
         return this.allFields.filter(field => field.id != this.data.toField);
     }
 
+    /*
+    * @next responseSubject: boolean = false
+    * @complete responseSubject
+    * @destroy self
+    */
     private cancel() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
 
+    /*
+    * @next responseSubject: any = data
+    * @complete responseSubject
+    * @destroy self
+    */
     private execute() {
         this.responseSubject.next(this.data);
         this.responseSubject.complete();

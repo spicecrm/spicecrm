@@ -15,6 +15,7 @@ export class SalesPlanningService {
     public selectedNodes: any[] = [];
     public isEditing: boolean = false;
 
+
     get selectedCharacteristicIds() {
         return this.selectedCharacteristics.map(char => char.id);
     }
@@ -23,26 +24,46 @@ export class SalesPlanningService {
         return ['root', ...this.selectedNodes.map(node => node.value)];
     }
 
+    /*
+    * set the retrieve params (visited tree item & visited characteristics) for the get node content and the content list
+    * @param originNodes: any[]
+    * @param item?: any
+    * @param nextLevel?: number
+    * @set selectedNodes
+    * @set selectedCharacteristics
+    */
     public setRetrieveParams(originNodes, item?, nextLevel?) {
         let index = item ? nextLevel ? item.level +1 : item.level : 1;
         this.selectedCharacteristics = this.characteristics.slice(0, index);
-        this.selectedNodes = this.getSelectedNodes(item, originNodes);
+        this.selectedNodes = this.getVisitedTreeItems(item, originNodes);
     }
 
-    private getSelectedNodes(node, originNodes) {
+    /*
+    * @param item: any
+    * @param originNodes: number
+    * @return selectedNodes: array[]
+    */
+    private getVisitedTreeItems(item, originNodes) {
         let selectedNodes = [];
-        if (node && node.value) selectedNodes = [(node)];
-        if (node && node.parent_id && node.parent_id.length > 0) {
-            this.getNodeByParent(originNodes, node.parent_id, selectedNodes);
+        if (item && item.value) selectedNodes = [(item)];
+        if (item && item.parent_id && item.parent_id.length > 0) {
+            this.getTreeItemByParent(originNodes, item.parent_id, selectedNodes);
         }
         return selectedNodes;
     }
 
-    private getNodeByParent(originNodes, parentId, selectedNodes) {
+    /*
+    * recursive method to get tree items by parent
+    * @param originNodes: any[]
+    * @param parentId: string
+    * @param selectedNodes: any[]
+    * @unshift selectedNodes
+    */
+    private getTreeItemByParent(originNodes, parentId, selectedNodes) {
         for (let item of originNodes) {
             if (item.id == parentId) {
                 selectedNodes.unshift(item);
-                this.getNodeByParent(originNodes, item.parent_id, selectedNodes);
+                this.getTreeItemByParent(originNodes, item.parent_id, selectedNodes);
             }
         }
     }

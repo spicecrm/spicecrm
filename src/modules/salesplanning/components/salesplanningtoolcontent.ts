@@ -108,6 +108,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
+    /*
+    * @reset periods
+    * @push period: {key: string, name:string}
+    * @sort periods by default
+    */
     private buildPeriods() {
         this.periods = [];
         let unit = this.model.getField('periode_unit');
@@ -138,6 +143,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         }
     }
 
+    /*
+    * @reset nodeInfo
+    * @get nodeInfo
+    * @get nodeContent
+    */
     private getNodeInfo() {
         if (!this.node) return;
         this.isLoading = true;
@@ -157,6 +167,12 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             });
     }
 
+    /*
+    * @reset data
+    * @reset rowsSum
+    * @set data
+    * @sum rows and columns
+    */
     private getNodeContent() {
         this.data = undefined;
         this.rowsSum = undefined;
@@ -175,11 +191,18 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             });
     }
 
+    /*
+    * @calculate columnFields
+    * @calculate rowsTotals
+    */
     private doRowsColumnsSum() {
         this.calculateColumnFields();
         this.calculateRowsTotals();
     }
 
+    /*
+    * @calculate cellValue if formula is set
+    */
     private calculateColumnFields() {
         this.periods.forEach(period => {
             this.contentFields.forEach(field => {
@@ -191,6 +214,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         });
     }
 
+    /*
+    * @sum field columns if formula_sum is not set and cbfunction_sum is not set
+    * @calculate field columns if formula_sum is set and cbfunction_sum is not set
+    */
     private calculateRowsTotals() {
         this.rowsSum = {};
         let fieldsHasNoFormula = this.contentFields.filter(field => (!field.formula_sum || field.formula_sum.length == 0) && (!field.cbfunction_sum || field.cbfunction_sum.length == 0));
@@ -202,6 +229,15 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         fieldsHasFormula.forEach(field => this.rowsSum[field.id] = this.getRowSum(field.formula_sum));
     }
 
+    /*
+    * @param fieldData: any
+    * @param formula: string
+    * @param periodKey: string
+    * @get formulaValues
+    * @check isValidFormula
+    * @calculate formulaValues by mathExpCompiler.do
+    * @return result: formatted number
+    */
     private getCellValue(fieldData, formula, periodKey) {
         let result = fieldData[periodKey];
         let formulaIds = formula.match(/\[.*?]/g);
@@ -212,6 +248,13 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return this.formatValue(result);
     }
 
+    /*
+    * @param formulaSum: string
+    * @get formulaValues
+    * @check isValidFormula
+    * @calculate formulaValues by mathExpCompiler.do
+    * @return result: number
+    */
     private getRowSum(formulaSum) {
         let result = 0;
         let formulaIds = formulaSum.match(/\[.*?]/g);
@@ -222,6 +265,14 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return result;
     }
 
+    /*
+    * @param source: 'contentData' | 'rowSum'
+    * @param ids: string[]
+    * @param formula: string
+    * @param periodKey?: string
+    * @replace fieldId with cellValue
+    * @return parsedFormula
+    */
     private replaceIdsWithValues(source, ids, formula, periodKey?) {
         let parsedFormula = formula;
         ids.forEach(fieldId => {
@@ -243,6 +294,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return parsedFormula;
     }
 
+    /*
+    * @param data: any
+    * @format cellValue
+    * @return data: any
+    */
     private formatAllData(data) {
         for (let id in data) {
             if (data.hasOwnProperty(id)) {
@@ -252,6 +308,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return data;
     }
 
+    /*
+    * @param data: any
+    * @machineFormat cellValue
+    * @return data: any
+    */
     private machineFormatAllData(data) {
         for (let id in data) {
             if (data.hasOwnProperty(id)) {
@@ -261,6 +322,13 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         return data;
     }
 
+    /*
+    * @clone dataPeriods
+    * @backup data
+    * @backup rowsSum
+    * @set editMode true
+    * @set isEditing true
+    */
     private setEditMode() {
         if (!this.nodeInfo.leaf || !this.canEdit) return;
         let dataPeriods = {};
@@ -271,6 +339,12 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.planningService.isEditing = true;
     }
 
+    /*
+    * @reset dataBackup
+    * @reset rowsSumBackup
+    * @set viewMode true
+    * @set isEditing false
+    */
     private setViewMode() {
         this.dataBackup = undefined;
         this.rowsSumBackup =  undefined;
@@ -278,6 +352,12 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.planningService.isEditing = false;
     }
 
+    /*
+    * @save data
+    * @toast success
+    * @set viewMode true
+    * @set data
+    */
     private save() {
         this.isSaving = true;
         let body = {data: this.machineFormatAllData(this.data)};
@@ -293,6 +373,12 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.data = this.formatAllData(this.data);
     }
 
+    /*
+    * @openModal SalesPlanningToolInputHelperModal
+    * @pass contentFields
+    * @pass periods
+    * @execute inputHelperData
+    */
     private openInputHelper() {
         this.modal.openModal('SalesPlanningToolInputHelperModal', true, this.injector)
             .subscribe(ref => {
@@ -302,6 +388,18 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             });
     }
 
+    /*
+    * if fromField equals 'fixed' and evenly is true, set the cellValues evenly from the @param res.value
+    * if fromField is another field, set the cellValue from the other field and add the percentage value
+    * if the percentValue is set.
+    * @param res: {
+    *       startPeriod: string, endPeriod: string, value: string, evenly: boolean,
+    *       fromField: string, toField: string, percentValue: number
+    * }
+    * @get periodRange
+    * @set cellValue
+    * @do rowsColumnsSum
+    */
     private executeInputHelperData(res) {
         if (!res) return;
         let periodRange = this.periods.slice(res.startPeriod, +res.endPeriod +1);
@@ -322,20 +420,45 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         this.doRowsColumnsSum();
     }
 
+    /*
+    * @restore data
+    * @restore rowsSum
+    * @set viewMode true
+    */
     private cancel() {
         this.data = _.clone(this.dataBackup);
         this.rowsSum = _.clone(this.rowsSumBackup);
         this.setViewMode();
     }
 
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return item
+    */
     private trackByItemFn(index, item) {
         return item.id;
     }
 
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return index
+    */
     private trackByIndexFn(index, item) {
         return index;
     }
 
+    /*
+    * @param column: any
+    * @param contentField: any
+    * @param withSymbol: boolean = true
+    * @return cellValue with fieldSymbol
+    */
     private getCellDisplayValue(column, contentField, withSymbol = true) {
         if (!this.data) return '';
         if (this.data[contentField.id][column] != '') {
@@ -345,11 +468,22 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         }
     }
 
+    /*
+    * @param value: string
+    * @param contentField: any
+    * @param periodKey: string
+    * @set cellValue
+    * @do rowsColumnsSum
+    */
     private setCellValue(value, contentField, periodKey) {
         this.data[contentField.id][periodKey] = this.formatValue(this.machineFormat(value));
         this.doRowsColumnsSum();
     }
 
+    /*
+    * @param contentField: any
+    * @return rowSum with fieldSymbol | ''
+    */
     private getRowSumDisplay(contentField) {
         if (!this.rowsSum && !this.data[contentField.id].sum) return '';
         let rowSum = this.data[contentField.id].sum || this.rowsSum[contentField.id];
@@ -360,11 +494,19 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         }
     }
 
+    /*
+    * @param value: string
+    * @return money formatted value | ''
+    */
     private formatValue(value) {
         value = parseFloat(value);
         return !isNaN(+value) && value != 0 ? this.userPrefs.formatMoney(+value) : '';
     }
 
+    /*
+    * @param value: string
+    * @return number value without format | ''
+    */
     private machineFormat(value) {
         value = value.split(this.userPrefs.toUse.num_grp_sep).join('');
         value = value.split(this.userPrefs.toUse.dec_sep).join('.');
@@ -373,6 +515,12 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits);
     }
 
+    /*
+    * @openModal SalesPlanningToolContentNoteModal
+    * @pass canEdit
+    * @pass nodeInfo
+    * @save contentNote
+    */
     private viewNote() {
         this.modal.openModal('SalesPlanningToolContentNoteModal')
             .subscribe(modalRef => {
@@ -382,6 +530,11 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             });
     }
 
+    /*
+    * @save notice
+    * @toast success
+    * @set viewMode
+    */
     private saveContentNote() {
         let body = {notice: this.nodeInfo.notice};
         this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/setNotice`, {}, body)
@@ -393,6 +546,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             });
     }
 
+    /*
+    * @param fieldType: 'currency' | 'percentage' | mixed
+    * @return symbol
+    */
     private getFieldSymbol(fieldType) {
         switch (fieldType) {
             case 'currency':
@@ -404,6 +561,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         }
     }
 
+    /*
+    * @param color: string
+    * @return isDarkColor: boolean
+    */
     private isDarkColor(color) {
         if (!color || color.length == 0) return false;
         let c = color.indexOf('#') > -1 ? color.substring(1) : color;

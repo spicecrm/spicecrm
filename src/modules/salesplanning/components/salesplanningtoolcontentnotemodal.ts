@@ -17,20 +17,31 @@ export class SalesPlanningToolContentNoteModal {
     public doSave: Observable<boolean> = new Observable<boolean>();
     public doSaveSubject: Subject<boolean> = new Subject<boolean>();
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(private language: language) {
         this.doSave = this.doSaveSubject.asObservable();
 
     }
 
+    /*
+    * @reset notice
+    */
     private clear() {
         if (!this.canEdit) return;
         this.nodeInfo.notice = '';
     }
 
+    /*
+    * @destroy self
+    */
     private close() {
         this.self.destroy();
     }
 
+    /*
+    * @next doSaveSubject: boolean = true
+    * @complete doSaveSubject
+    * @close
+    */
     private save() {
         if (!this.canEdit) return;
         this.doSaveSubject.next(true);
