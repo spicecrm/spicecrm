@@ -945,10 +945,10 @@ export class model implements OnDestroy {
                     editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
-                        retSubject.next(response);
 
                         // if we save .. add to the last viewed
                         if (response == 'save' || response == 'savegodetail') {
+                            retSubject.next(this.data);
                             this.recent.trackItem(this.module, this.id, this.data);
                         }
 
