@@ -17,7 +17,7 @@ import {modal} from "../../../services/modal.service";
 })
 export class KnowledgeManager implements AfterViewInit {
 
-    public config: any = {clickable: true, canadd: true, draggable: true, expandall: true};
+    public config: any = {clickable: true, canadd: true, draggable: true, expandall: false};
     public activeTab: string = "tree";
 
     @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) private maincontainer: ViewContainerRef;
