@@ -27,6 +27,11 @@ export class SalesPlanningToolTree implements OnInit {
         return this.undoneonly;
     }
 
+    /*
+    * @set undoneOnly
+    * @reset items & selection
+    * @get nodeItems
+    */
     set unDoneOnly(bool) {
         this.undoneonly = bool;
         this.resetData();
@@ -37,6 +42,13 @@ export class SalesPlanningToolTree implements OnInit {
         this.getNodeItems();
     }
 
+    /*
+    * @param parentId: string
+    * @param item?: any
+    * @set retrieveParams for next level
+    * @push nodeItem to nodeItems
+    * @build tree
+    */
     private getNodeItems(parentId = '', item?) {
         this.isLoading = parentId.length == 0 ? '*' : parentId;
         this.planningService.setRetrieveParams(this.treeItems, item, true);
@@ -60,12 +72,20 @@ export class SalesPlanningToolTree implements OnInit {
             });
     }
 
+    /*
+    * @reset treeItems
+    * @sort nodeItems
+    * @add treeNode recursively
+    */
     private buildTree() {
         this.treeItems = [];
         this.sortItems();
         this.addTreeNode();
     }
 
+    /*
+    * @sort nodeItems by (sortseq | name)
+    */
     private sortItems() {
         this.nodeItems.sort((a, b) => {
             if (!isNaN(a.sortseq) && !isNaN(b.sortseq) && a.sortseq != b.sortseq) {
@@ -76,6 +96,9 @@ export class SalesPlanningToolTree implements OnInit {
         });
     }
 
+    /*
+    * @sort nodeItems by (sortseq | name)
+    */
     private addTreeNode(parentId = '', level = 1) {
         for (let item of this.nodeItems) {
             if (item.parent_id == parentId) {
@@ -89,10 +112,23 @@ export class SalesPlanningToolTree implements OnInit {
         }
     }
 
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return index
+    */
     private trackByFn(index, item) {
         return index;
     }
 
+    /*
+    * @confirm? change selected item
+    * @set retrieveParams
+    * @set selectedNode
+    * @emit selectNode: void
+    */
     private selectTreeItem(item) {
         this.treeItems.some(treeItem => {
             if (treeItem.id == item.id) {
@@ -116,6 +152,15 @@ export class SalesPlanningToolTree implements OnInit {
         });
     }
 
+    /*
+    * @param treeItem: any
+    * @param e: clickEvent
+    * @build tree if item.expanded & loaded
+    * @get nodeItems if item.expanded & not loaded
+    * @set retrieveParams if item collapsed
+    * @build tree if item collapsed
+    * @stopPropagation e
+    */
     private toggleOpen(treeItem, e) {
         this.nodeItems.some((item) => {
                 if (item.id == treeItem.id) {
@@ -140,10 +185,20 @@ export class SalesPlanningToolTree implements OnInit {
         if (e.stopPropagation) e.stopPropagation();
     }
 
+    /*
+    * @param id: string
+    * @return isSelected: boolean
+    */
     private isSelected(id) {
         return this.planningService.selectedNode && this.planningService.selectedNode.id == id;
     }
 
+    /*
+    * @reset nodeItems
+    * @reset treeItems
+    * @reset selectedNode
+    * @reset selectedNodes
+    */
     private resetData() {
         this.nodeItems = [];
         this.treeItems = [];
