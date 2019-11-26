@@ -18,7 +18,9 @@ declare var _;
 })
 export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy {
     private valuearray: any[] = [];
-    private groups: any[] = [];
+    public groups: any[] = [];
+    public options: any[] = [];
+    private hasGroupItems = false;
     private viewmodevalue: string = '';
     private languageSubscription: Subscription = new Subscription();
 
@@ -150,10 +152,10 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
     * @return void
     */
     private buildOptionGroups() {
+        this.hasGroupItems = false;
         this.groups = [];
         let newGroups = {};
         let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
-
         // define groups
         for (let optionKey in languageOptions) {
             if (!optionKey.includes('_')) {
@@ -163,18 +165,28 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
                     disabled: false,
                     options: []
                 };
+            } else {
+                this.hasGroupItems = true;
             }
         }
 
         // define group options
         for (let optionKey in languageOptions) {
-            let enumValue = optionKey.split('_');
-            if (enumValue.length == 2 && newGroups[enumValue[0]]) {
-                newGroups[enumValue[0]].options.push({
+            if (!this.hasGroupItems) {
+                this.options.push({
                     value: optionKey,
                     display: languageOptions[optionKey]
                 });
+            } else {
+                let enumValue = optionKey.split('_');
+                if (enumValue.length == 2 && newGroups[enumValue[0]]) {
+                    newGroups[enumValue[0]].options.push({
+                        value: optionKey,
+                        display: languageOptions[optionKey]
+                    });
+                }
             }
+
         }
 
         this.groups = _.toArray(newGroups);
