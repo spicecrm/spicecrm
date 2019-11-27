@@ -16,6 +16,7 @@ declare var _: any;
 * - parent_id: string
 * - parent_sequence: string
 * - name: string
+* - clickable: boolean
 * -------------------
 * -- @INPUT PARAMS --
 * -------------------
@@ -24,7 +25,6 @@ declare var _: any;
 * - config: any = {
 *       draggable: false,
 *       canadd: false,
-*       clickable: false,
 *       expandall: false,
 *       collapsible: true
 *   };
@@ -66,7 +66,6 @@ export class SystemTree implements OnChanges {
     private treeConfig: any = {
         draggable: false,
         canadd: false,
-        clickable: false,
         expandall: false,
         collapsible: true,
     };
@@ -79,7 +78,6 @@ export class SystemTree implements OnChanges {
     set config(obj) {
         this.treeConfig.draggable = obj.draggable || false;
         this.treeConfig.canadd = obj.canadd || false;
-        this.treeConfig.clickable = obj.clickable || false;
         this.treeConfig.expandall = obj.expandall || false;
         this.treeConfig.collapsible = obj.collapsible || true;
     }
@@ -89,7 +87,7 @@ export class SystemTree implements OnChanges {
             this.sourceList.sort((a, b) => a.name && b.name ? a.name > b.name ? 1 : -1 : 0);
             this.buildTree();
         }
-        if (changes.selectedItem) this.handleSelection(this.selectedItem);
+        if (changes.selectedItem) this.handleClick(this.selectedItem);
     }
 
     private buildTree() {
@@ -104,7 +102,7 @@ export class SystemTree implements OnChanges {
         this.sourceList = [];
         for (let parentId in groupedByParent) {
             if (groupedByParent.hasOwnProperty(parentId)) {
-                groupedByParent[parentId].sort((a, b) => a.parent_sequence > b.parent_sequence ? 1 : -1);
+                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? a.parent_sequence > b.parent_sequence ? 1 : -1 : 0);
                 this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
             }
         }
@@ -112,12 +110,12 @@ export class SystemTree implements OnChanges {
 
     private addTreeItem(parentId = '', level = 1) {
         for (let item of this.sourceList) {
-            if (item.parent_id == parentId) {
+            if (!item.parent_id && parentId == '' || item.parent_id == parentId) {
                 if (!item.systemTreeDefs) {
                     item.systemTreeDefs = {};
                 }
                 item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
-                item.systemTreeDefs.clickable = this.config.clickable;
+                item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
                 this.tree.push(item);
@@ -214,25 +212,30 @@ export class SystemTree implements OnChanges {
     private handleExpand(id) {
         this.sourceList.some(item => {
             if (item.id == id) {
-                item.expanded = !item.expanded;
+                item.systemTreeDefs.expanded = !item.systemTreeDefs.expanded;
                 return true;
             }
         });
         this.buildTree();
     }
 
-    private handleSelection(id) {
-        this.selectedItemChange.emit(id);
-        this.selectedItem = id;
+    private handleClick(id) {
         this.tree.some(item => {
-            if (item.systemTreeDefs.isSelected) {
-                item.systemTreeDefs.isSelected = false;
+            if (item.id == id) {
+                if (item.systemTreeDefs && item.systemTreeDefs.clickable) {
+                    item.systemTreeDefs.isSelected = true;
+                    this.selectedItemChange.emit(id);
+                    this.selectedItem = id;
+                } else {
+                    this.handleExpand(id);
+                }
+
                 return true;
             }
         });
-        this.tree.some(treeItem => {
-            if (treeItem.id == id) {
-                treeItem.systemTreeDefs.isSelected = true;
+        this.tree.some(item => {
+            if (item.id != id && item.systemTreeDefs && item.systemTreeDefs.isSelected) {
+                item.systemTreeDefs.isSelected = false;
                 return true;
             }
         });
