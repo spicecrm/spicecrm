@@ -20,7 +20,7 @@
                     <system-tree
                             *ngIf="selectedBook && !isLoading"
                             [config]="config"
-                            [treelist]="documents"
+                            [sourceList]="documents"
                             [(selectedItem)]="selectedDoc"
                             (onTreeDrop)="handleTreeDrop($event)"
                             (onItemAdd)="handleAddEvent($event)">
