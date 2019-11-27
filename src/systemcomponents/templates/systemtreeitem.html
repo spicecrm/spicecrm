@@ -1,7 +1,7 @@
 <div class="slds-p-left--x-small" (mouseleave)="setPosition(null)">
-    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="dragPosition == 'before' ? '0 -2px' : 'none'"
+    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="isDragging && dragPosition == 'before' ? '0 -2px' : 'none'"
          (mouseenter)="setPosition('before')"></div>
-    <article (mouseenter)="setPosition('item')" [style.box-shadow]="dragPosition == 'item' ? '0 0 0 2.5px' : 'none'"
+    <article (mouseenter)="setPosition('item')" [style.box-shadow]="isDragging && dragPosition == 'item' ? '0 0 0 2.5px' : 'none'"
              class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
         <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
             <div style="min-width: 16px">
@@ -23,7 +23,7 @@
             </button>
         </div>
     </article>
-    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="dragPosition == 'after' ? '0 2px' : 'none'"
+    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="isDragging && dragPosition == 'after' ? '0 2px' : 'none'"
          (mouseenter)="setPosition('after')"></div>
 
 </div>

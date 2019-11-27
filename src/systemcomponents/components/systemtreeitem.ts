@@ -44,6 +44,9 @@ export class SystemTreeItem {
     * @input config: object
     */
     @Input() private config: any = {};
+    /*
+    * @input isDragging: boolean
+    */
     @Input() private isDragging: boolean = false;
     private dragPosition: string = '';
 
@@ -73,8 +76,8 @@ export class SystemTreeItem {
     * @emit null | object by @output dragPositionChange
     */
     private setPosition(position) {
-        if (!this.isDragging) return;
         this.dragPosition = position;
+        if (!this.isDragging) return;
         this.dragPositionChange.emit(!position ? null : {id: this.item.id, position});
     }
 }
