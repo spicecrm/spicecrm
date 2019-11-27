@@ -15,7 +15,6 @@ import {Subscription} from "rxjs";
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
-    public config: any = {clickable: true};
     public activeTab: string = "tree";
     private subscription: Subscription = new Subscription();
 
