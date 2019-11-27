@@ -23,7 +23,7 @@ export class SystemTreeItem {
 
     public expand(item, e?) {
         this.toggleExpandedChange.emit(item.id);
-        e.stopPropagation();
+        if (e && e.stopPropagation) e.stopPropagation();
     }
 
     private setPosition(position) {
