@@ -16,10 +16,10 @@ export class CleverReachPanel {
     private isLoading: boolean = false;
 
     constructor(private language: language, private model: model, private metadata: metadata, private backend: backend) {
-        this.getUserMails();
+        this.getReceiversMailings();
     }
 
-    private getUserMails() {
+    private getReceiversMailings() {
         this.isLoading = true;
         this.backend.getRequest(`/CleverReach/Contact/${this.model.id}/mails`)
             .subscribe(res => {

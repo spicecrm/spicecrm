@@ -1,19 +1,30 @@
 <system-card>
-    <system-card-header icon="list_email" cardtitel="Clever Reach Mail"></system-card-header>
+    <system-card-header icon="list_email" cardtitel="Clever Reach Mailings"></system-card-header>
     <system-card-body class="slds-scrollable" style="display: block">
         <system-spinner *ngIf="isLoading"></system-spinner>
         <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
             <thead>
             <tr class="slds-text-title--caps">
                 <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_NAME')}}</span>
+                </th>
+                <th scope="col">
                     <span class="slds-truncate">{{language.getLabel('LBL_SUBJECT')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_SENDER_NAME')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_EMAIL')}}</span>
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let mailLogItem of CRList" class="slds-hint-parent">
-
-
+                <td>{{mailLogItem.name}}</td>
+                <td>{{mailLogItem.subject}}</td>
+                <td>{{mailLogItem.sender_name}}</td>
+                <td>{{mailLogItem.sender_email}}</td>
             </tr>
             </tbody>
         </table>
