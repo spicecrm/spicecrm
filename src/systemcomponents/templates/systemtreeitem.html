@@ -14,9 +14,7 @@
                                      [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
             </div>
             <div class="slds-truncate">
-                <span *ngIf="item.systemTreeDefs.clickable" class="slds-tree__item-label slds-truncate">{{item.name}}</span>
-                <span *ngIf="!item.systemTreeDefs.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;"
-                      class="slds-tree__item-label slds-truncate">{{item.name}}</span>
+                <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
             </div>
         </div>
         <div *ngIf="config.canadd && item.systemTreeDefs.isSelected" class="slds-m-right--xx-small">
