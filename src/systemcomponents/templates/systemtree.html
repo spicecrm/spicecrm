@@ -12,7 +12,7 @@
             [attr.aria-selected]="item.systemTreeDefs.isSelected"
             class="slds-grid slds-drag--preview">
             <system-tree-item [item]="item"
-                              (click)="handleSelection(item.id)"
+                              (click)="handleClick(item.id)"
                               [config]="config"
                               [isDragging]="isDragging"
                               (toggleExpandedChange)="handleExpand($event)"
