@@ -442,7 +442,8 @@ export class metadata {
         }
 
         retComponentSets.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
+            if ( !a.name ) return 1;
+            return a.name.localeCompare( b.name );
         });
 
         return retComponentSets;
