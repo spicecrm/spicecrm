@@ -15,6 +15,8 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import {ProspectListsToCleverReachButton} from "./components/prospectliststocleverreachbutton";
 import {ProspectListsToCleverReachModal} from "./components/prospectliststocleverreachmodal";
+import {SendMailingButton} from "./components/sendmailingbutton";
+import {SendMailingModal} from "./components/sendmailingmodal";
 
 @NgModule({
     imports: [
@@ -28,7 +30,9 @@ import {ProspectListsToCleverReachModal} from "./components/prospectliststocleve
     ],
     declarations: [
         ProspectListsToCleverReachButton,
-        ProspectListsToCleverReachModal
+        ProspectListsToCleverReachModal,
+        SendMailingButton,
+        SendMailingModal
     ]
 })
 export class CleverReachModule {
