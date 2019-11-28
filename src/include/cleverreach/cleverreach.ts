@@ -13,7 +13,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {CleverReachPanel} from "./components/cleverreachpanel";
+import {ProspectListsToCleverReachButton} from "./components/prospectliststocleverreachbutton";
+import {ProspectListsToCleverReachModal} from "./components/prospectliststocleverreachmodal";
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import /*embed*/ {CleverReachPanel} from "./components/cleverreachpanel";
         DirectivesModule,
     ],
     declarations: [
-        CleverReachPanel,
+        ProspectListsToCleverReachButton,
+        ProspectListsToCleverReachModal
     ]
 })
 export class CleverReachModule {
