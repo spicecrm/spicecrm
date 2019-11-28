@@ -671,6 +671,17 @@ export class metadata {
         }
     }
 
+    /**
+     * Has a module a specific field?
+     *
+     * @param module the name of the module
+     * @param field the name of the field
+     * @return true or false
+     */
+    public hasField( module: string, field: string ): boolean {
+        return true && this.fieldDefs[module] && this.fieldDefs[module][field];
+    }
+
     public getAppModules() {
         // convert object to array...
         let ret = [];
