@@ -3,7 +3,7 @@
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
@@ -27,6 +27,7 @@ import {SendMailingModal} from "./components/sendmailingmodal";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        ReactiveFormsModule,
     ],
     declarations: [
         ProspectListsToCleverReachButton,

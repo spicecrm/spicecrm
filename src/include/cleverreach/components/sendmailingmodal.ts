@@ -10,6 +10,7 @@ import {modal} from '../../../services/modal.service';
 import {Router} from "@angular/router";
 import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
+import {FormGroup, FormControl, FormArray} from '@angular/forms';
 
 @Component({
     selector: 'send-mailing-modal',
@@ -19,6 +20,11 @@ export class SendMailingModal {
 
     private self: any = {};
     private module: string = '';
+    private mailing = new FormGroup({
+        name: new FormControl(''),
+        subject: new FormControl(''),
+        html: new FormControl(''),
+    });
 
     constructor(
         private language: language,
@@ -31,18 +37,22 @@ export class SendMailingModal {
     ) {
     }
 
-    private writeMailing() {
-        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            loadingRef.instance.messagelabel = 'LBL_EXPORTING';
+    private onSubmit() {
+        this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
+            (success) => {
+                this.toast.sendToast('successfully submitted');
+            },
+            (error) => {
+                this.toast.sendAlert('something went wrong');
+                console.error(error);
+            }
+        );
 
-            this.backend.getRequest(`CleverReach/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
-
-            });
-        });
     }
 
     private close() {
         this.self.destroy();
     }
+
 
 }
