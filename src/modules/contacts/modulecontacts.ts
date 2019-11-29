@@ -17,6 +17,7 @@ import /*embed*/ {ContactNewslettersButton} from "./components/contactnewsletter
 import /*embed*/ {ContactNewsletters} from "./components/contactnewsletters";
 import /*embed*/ {ContactPortalButton} from "./components/contactportalbutton";
 import /*embed*/ {ContactPortalDetails} from "./components/contactportaldetails";
+import /*embed*/ {ContactExchangeSyncButton} from "./components/contactexchangesyncbutton";
 
 @NgModule({
     imports: [
@@ -33,6 +34,7 @@ import /*embed*/ {ContactPortalDetails} from "./components/contactportaldetails"
         ContactNewsletters,
         ContactPortalButton,
         ContactPortalDetails,
+        ContactExchangeSyncButton
     ]
 })
 export class ModuleContacts {
