@@ -26,7 +26,7 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-// // various services we need on global app level
+// various services we need on global app level
 import {configurationService} from "../../services/configuration.service";
 import {helper} from "../../services/helper.service";
 import {loginService, loginCheck} from "../../services/login.service";
