@@ -8,8 +8,8 @@
                         <div class="slds-page-header__name-title">
                             <h1>
                                 <span>{{language.getModuleName('Emails')}}</span>
-                                <span *ngIf="isArchived" class="slds-page-header__title slds-truncate">archived</span>
-                                <span *ngIf="!isArchived" class="slds-page-header__title slds-truncate">not archived</span>
+                                <span *ngIf="isArchived" class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_ARCHIVED')}}</span>
+                                <span *ngIf="!isArchived" class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_NOT_ARCHIVED')}}</span>
                             </h1>
                         </div>
                     </div>
