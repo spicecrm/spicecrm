@@ -9,7 +9,8 @@
                             <div class="slds-page-header__name-title">
                                 <h1>
                                     <span>{{language.getModuleName('Emails')}}</span>
-                                    <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_SEARCHING')}}</span>
+                                    <span *ngIf="loading" class="slds-page-header__title slds-truncate slds-text-heading--small">{{language.getLabel('LBL_SEARCHING')}}</span>
+                                    <span *ngIf="!loading" class="slds-page-header__title slds-truncate slds-text-heading--small">{{language.getLabel('LBL_SELECT')}}</span>
                                 </h1>
                             </div>
                         </div>
