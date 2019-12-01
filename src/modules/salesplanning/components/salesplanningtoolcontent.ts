@@ -206,7 +206,14 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private calculateColumnFields() {
         this.periods.forEach(period => {
             this.contentFields.forEach(field => {
+                // return if we do not have a formula
                 if (!field.formula || field.formula.length == 0) return;
+
+                // do not execute on editbale fields on a leaf
+                if(this.nodeInfo.leaf && field.editable) return;
+
+                // do not calculate on fields that have a callback function if we are not on a leaf
+                if(!this.nodeInfo.leaf && field.cbfunction) return;
 
                 this.data[field.id][period.key] = this.getCellValue(this.data[field.id], field.formula, period.key);
 
