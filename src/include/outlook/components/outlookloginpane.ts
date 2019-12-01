@@ -120,7 +120,6 @@ export class OutlookLoginPane {
                     this.outlookConfiguration.saveSettings();
                 },
                 (err) => {
-                    console.log(err);
                     this.goToSettings();
                 }
             );
