@@ -4,6 +4,7 @@
 import {EventEmitter, Injectable, OnInit, Optional} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {model} from "./model.service";
+import {layout} from "./layout.service";
 
 @Injectable()
 export class view {
@@ -47,14 +48,14 @@ export class view {
     /**
      * the size for the responsive design
      */
-    public size: 'regular' | 'small' = 'regular';
+    public _size: 'regular' | 'small' = 'regular';
 
     /**
      * set to true to link the view to the model. If set the view will link itself to the model edit mode.
      */
     public linkedToModel: boolean = false;
 
-    constructor(@Optional() private model: model) {
+    constructor(@Optional() private model: model, private layout: layout) {
         this.mode$ = new BehaviorSubject<string>(this.mode);
 
         if (this.model) {
@@ -66,6 +67,13 @@ export class view {
         }
     }
 
+    set size(size: 'regular' | 'small') {
+        this._size = size;
+    }
+
+    get size() {
+        return this.layout.screenwidth == 'small' ? 'small' : this._size;
+    }
 
     /**
      * allows qeurying the current mode
