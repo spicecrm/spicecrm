@@ -1,22 +1,22 @@
 /**
- * @module ObjectComponents
+ * @module SpiceTextsModule
  */
 import {Component, Input} from '@angular/core';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {modal} from "../../services/modal.service";
-import {relatedmodels} from "../../services/relatedmodels.service";
-import {configurationService} from "../../services/configuration.service";
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {modal} from "../../../services/modal.service";
+import {relatedmodels} from "../../../services/relatedmodels.service";
+import {configurationService} from "../../../services/configuration.service";
 
 declare var _;
 
 @Component({
-    selector: 'object-texts-add-button',
-    templateUrl: './src/objectcomponents/templates/objecttextsaddbutton.html',
+    selector: 'spice-texts-add-button',
+    templateUrl: './src/include/spicetexts/templates/spicetextsaddbutton.html',
     providers: [model]
 })
 
-export class ObjectTextsAddButton {
+export class SpiceTextsAddButton {
 
     @Input() public parent: any;
     @Input() public spiceTexts: any[] = [];
@@ -44,7 +44,7 @@ export class ObjectTextsAddButton {
             return;
         }
 
-        this.modal.openModal("ObjectTextsAddModal", true).subscribe(ref => {
+        this.modal.openModal("SpiceTextsAddModal", true).subscribe(ref => {
             if (ref) {
                 ref.instance.spiceTexts = this.spiceTexts;
                 ref.instance.sysTextIds = this.sysTextIds;
