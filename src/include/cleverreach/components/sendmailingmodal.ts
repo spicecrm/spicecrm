@@ -10,7 +10,7 @@ import {modal} from '../../../services/modal.service';
 import {Router} from "@angular/router";
 import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
-import {FormGroup, FormControl, FormArray} from '@angular/forms';
+import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
     selector: 'send-mailing-modal',
@@ -40,10 +40,10 @@ export class SendMailingModal {
     private onSubmit() {
         this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
             (success) => {
-                this.toast.sendToast('successfully submitted');
+                this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
             },
             (error) => {
-                this.toast.sendAlert('something went wrong');
+                this.toast.sendAlert(this.language.getLabel('LBL_ERROR'));
                 console.error(error);
             }
         );

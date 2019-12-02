@@ -1,23 +1,23 @@
 <system-modal>
     <system-modal-header (close)="close()">
-        <h1>LBL_CREATE CleverReach Mailing</h1>
+        <h1>{{language.getLabel('LBL_CREATE')}} {{language.getLabel('LBL_CLEVERREACH')}} Mailing</h1>
     </system-modal-header>
     <system-modal-content>
         <form class="slds-form" [formGroup]="mailing" (ngSubmit)="onSubmit()">
             <div class="slds-form-element">
-                <label class="slds-form-element__label">Name:</label>
+                <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}:</label>
                 <div class="slds-form-element__control">
                     <input type="text" placeholder="name must be unique" class="slds-input" formControlName="name">
                 </div>
             </div>
             <div class="slds-form-element">
-                <label class="slds-form-element__label">Subject:</label>
+                <label class="slds-form-element__label">{{language.getLabel('LBL_SUBJECT')}}:</label>
                 <div class="slds-form-element__control">
                     <input type="text" placeholder="Placeholder Text" class="slds-input" formControlName="subject">
                 </div>
             </div>
-            <div class="slds-form-element slds-form-element_horizontal">
-                <label class="slds-form-element__label">Newsletter Content:</label>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_CONTENT')}}:</label>
                 <div class="slds-form-element__control">
                     <textarea placeholder="Placeholder Text" class="slds-textarea" formControlName="html"  rows="5"></textarea>
                 </div>
