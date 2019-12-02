@@ -17,6 +17,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
 
     private componentconfig: any = {};
     private expanded: boolean = true;
+    private hasFieldAssignedUser = false;
     // private territorymanaged: boolean = false;
 
     private fields: any = {
@@ -62,6 +63,8 @@ export class ObjectRecordAdministrationTab implements OnInit {
             }
         }
         */
+
+        this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_name');
     }
 
     /**
@@ -82,4 +85,5 @@ export class ObjectRecordAdministrationTab implements OnInit {
     get hidden() {
         return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
+
 }

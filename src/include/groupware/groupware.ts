@@ -12,6 +12,8 @@ import {RouterModule} from '@angular/router';
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
+import {loginCheck} from "../../services/login.service";
+import {ObjectFields} from "../../objectfields/objectfields";
 
 import /*embed*/ {GroupwareService} from './services/groupware.service';
 
@@ -25,8 +27,6 @@ import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanel
 import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
 import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
-import {loginCheck} from "../../services/login.service";
-import {ObjectFields} from "../../objectfields/objectfields";
 
 @NgModule({
     imports: [
