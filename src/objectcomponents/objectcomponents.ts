@@ -63,7 +63,6 @@ import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebut
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
-import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import /*embed*/ {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
@@ -290,7 +289,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionNewrelatedButton,
         ObjectActionNewCopyRuleBeanButton,
         ObjectActionNewCopyRuleBeanButtonModelHelper,
-        ObjectActionImportButton,
         ObjectActionSelectButton,
         ObjectEditModal,
         ObjectEditModalWReference,
