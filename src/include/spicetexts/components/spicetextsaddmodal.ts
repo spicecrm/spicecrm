@@ -1,23 +1,22 @@
 /**
- * @module ObjectComponents
+ * @module SpiceTextsModule
  */
 import {Component, OnInit} from '@angular/core';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
 import {Subject} from "rxjs";
-import {view} from "../../services/view.service";
-import {backend} from "../../services/backend.service";
-import {configurationService} from "../../services/configuration.service";
+import {view} from "../../../services/view.service";
+import {backend} from "../../../services/backend.service";
+import {configurationService} from "../../../services/configuration.service";
 
 declare var _;
 
 @Component({
-    selector: 'object-texts-add-modal',
-    templateUrl: './src/objectcomponents/templates/objecttextsaddmodal.html',
+    templateUrl: './src/include/spicetexts/templates/spicetextsaddmodal.html',
     providers: [model, view]
 })
 
-export class ObjectTextsAddModal implements OnInit {
+export class SpiceTextsAddModal implements OnInit {
 
     public spiceTexts: any[] = [];
     public sysTextIds: any[] = [];

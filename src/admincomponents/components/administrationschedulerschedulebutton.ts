@@ -32,7 +32,7 @@ export class AdministrationSchedulerScheduleButton {
 
     public execute() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
-            this.backend.postRequest('module/Schedulers/'+ this.model.id +'/runjob').subscribe(res => {
+            this.backend.postRequest('module/Schedulers/'+ this.model.id +'/schedulejob').subscribe(res => {
                 modalRef.instance.self.destroy();
                 if (res) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
