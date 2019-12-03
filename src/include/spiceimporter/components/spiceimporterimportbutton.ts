@@ -1,18 +1,18 @@
 /**
- * @module ObjectComponents
+ * @module SpiceImporterModule
  */
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {metadata} from '../../services/metadata.service';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {layout} from '../../services/layout.service';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {layout} from '../../../services/layout.service';
 
 @Component({
-    selector: 'object-action-import-button',
-    templateUrl: './src/objectcomponents/templates/objectactionimportbutton.html'
+    selector: 'spice-importer-import-button',
+    templateUrl: './src/include/spiceimporter/templates/spiceimporterimportbutton.html'
 })
-export class ObjectActionImportButton implements OnInit {
+export class SpiceImporterImportButton implements OnInit {
 
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private layout: layout) {
 
