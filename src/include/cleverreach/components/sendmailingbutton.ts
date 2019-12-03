@@ -5,7 +5,7 @@ import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
 
 /**
- * sends mailing
+ * creates mailing
  */
 @Component({
     selector: 'send-mailing-button',
@@ -13,15 +13,25 @@ import {modal} from '../../../services/modal.service';
 })
 export class SendMailingButton {
 
+    public disabled: boolean = false;
+
     constructor(
         private language: language,
         private metadata: metadata,
         private model: model,
         private modal: modal,
         private injector: Injector
-    ) {}
+    ) {
+    }
 
     public execute() {
-        this.modal.openModal('SendMailingModal', true, this.injector);
+        if (this.model.getFieldValue('mailing_id')) {
+            this.disabled = true;
+            return;
+        } else {
+            this.modal.openModal('SendMailingModal', true, this.injector);
+        }
+
     }
+
 }

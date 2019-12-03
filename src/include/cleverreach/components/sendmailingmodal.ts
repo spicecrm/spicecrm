@@ -39,8 +39,12 @@ export class SendMailingModal {
 
     private onSubmit() {
         this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
-            (success) => {
+            response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
+                this.model.setField('mailing_id', response.mailing_id);
+                this.model.save();
+                this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
+                this.close();
             },
             (error) => {
                 this.toast.sendAlert(this.language.getLabel('LBL_ERROR'));
