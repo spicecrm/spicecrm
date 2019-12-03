@@ -44,7 +44,7 @@ export class ReporterIntegrationPDFexportButton {
                 valuekey: userFilter.valuekey,
                 valueto: userFilter.valueto,
                 valuetokey: userFilter.valuetokey
-            })
+            });
         }
 
         this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.pdf';
