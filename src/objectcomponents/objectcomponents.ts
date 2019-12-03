@@ -65,7 +65,6 @@ import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebut
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
-import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import /*embed*/ {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
@@ -186,9 +185,6 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
-import /*embed*/ {ObjectTexts} from "./components/objecttexts";
-import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
-import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
@@ -297,7 +293,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionNewrelatedButton,
         ObjectActionNewCopyRuleBeanButton,
         ObjectActionNewCopyRuleBeanButtonModelHelper,
-        ObjectActionImportButton,
         ObjectActionSelectButton,
         ObjectEditModal,
         ObjectEditModalWReference,
@@ -382,9 +377,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModelPopoverField,
         ObjectModelPopoverRelated,
         ObjectModelPopoverRelatedItem,
-        ObjectTexts,
-        ObjectTextsAddButton,
-        ObjectTextsAddModal,
         ObjectRecordMessagesBadge,
         ObjectActionDeactivateBeansButton,
         ObjectActionDeactivateBeansModal
