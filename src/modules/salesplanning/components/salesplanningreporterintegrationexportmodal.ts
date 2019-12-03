@@ -1,16 +1,16 @@
 /**
  * @module ModuleReportsMore
  */
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
-import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
-
-
+/**
+ * an export component for the reporter that allows wroiting the plannign nodes form the report
+ */
 @Component({
     templateUrl: './src/modules/salesplanning/templates/salesplanningreporterintegrationexportmodal.html'
 })
@@ -29,7 +29,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
     /**
      * the selected version
      */
-    private _selectedversion: string;
+    private _selectedversion: string = '';
 
     /**
      * holds the characteristics for the selected version
@@ -39,18 +39,30 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
     /**
      * the node name fields
      */
-    private nodenamefield: string;
+    private nodenamefield: string = '';
 
+    /**
+     * an array with the reporterfields
+     * gets decoded once and then used in various select fields
+     */
     private reporterFields: any[] = [];
 
+    /**
+     * indicates that the chars are getting loaded
+     */
+    private characteristicsloading: boolean = false;
+
+    /**
+     * array holding the set values for the territory
+     */
     private territory: any = {
         fixedvalue: '',
-        fixedvalus: [],
+        fixedvalues: [],
         valuefield: '',
         namefield: ''
-    }
+    };
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private reporterconfig: reporterconfig) {
+    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model) {
     }
 
     /**
@@ -63,7 +75,10 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
             this.salespanningversions = versions.list;
         });
 
-        this.backend.getRequest('/module/SalesPlanningTerritories', {limit: '-99', fields: JSON.stringify(['name', 'id'])}).subscribe(territories => {
+        this.backend.getRequest('/module/SalesPlanningTerritories', {
+            limit: '-99',
+            fields: JSON.stringify(['name', 'id'])
+        }).subscribe(territories => {
             this.territory.fixedvalues = territories.list;
         });
 
@@ -71,16 +86,26 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
         this.reporterFields = JSON.parse(this.model.getField('listfields'));
     }
 
+    /**
+     * getter for the selectedverison
+     */
     get selectedversion() {
         return this._selectedversion;
     }
 
+    /**
+     * setter for the selected version that also reloads the characteritics
+     *
+     * @param selectedversion
+     */
     set selectedversion(selectedversion) {
-        this._selectedversion = selectedversion;
+        if (this._selectedversion != selectedversion) {
+            this._selectedversion = selectedversion;
 
-        // get the current version and get the scopeset
-        let currentversion = this.salespanningversions.find(version => version.id == selectedversion);
-        this.getCharacteristics(currentversion.salesplanningscopeset_id);
+            // get the current version and get the scopeset
+            let currentversion = this.salespanningversions.find(version => version.id == selectedversion);
+            this.getCharacteristics(currentversion.salesplanningscopeset_id);
+        }
     }
 
     /**
@@ -90,30 +115,82 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
         this.self.destroy();
     }
 
+    /**
+     * loads the charcateritiscs for the planning version from the backend
+     *
+     * @param scopeSetId
+     */
     private getCharacteristics(scopeSetId) {
-        this.backend.getRequest('/module/SalesPlanningScopeSets/getScopeCharacteristics/' + scopeSetId).subscribe(scopesetcharacteristics => {
-            for (let scopesetcharacteristic of scopesetcharacteristics) {
-                if (scopesetcharacteristic.id != 'territory') {
-                    this.scopesetcharacteristics.push({
-                        name: scopesetcharacteristic.name,
-                        id: scopesetcharacteristic.id,
-                        type: 'report',
-                        namefield: null,
-                        valuefield: null,
-                        fixedvalue: null,
-                        fixedvalues: []
-                    });
-                    this.backend.getRequest('module/SalesPlanningCharacteristics/CharacteristicValues/'+scopesetcharacteristic.id).subscribe(charvalues => {
-                        let char = this.scopesetcharacteristics.find(char => char.id == scopesetcharacteristic.id);
-                        char.fixedvalues = charvalues;
-                    });
+        // set to loading
+        this.characteristicsloading = true;
+
+        // reset the chars array
+        this.scopesetcharacteristics = [];
+
+        // backend call
+        this.backend.getRequest('/module/SalesPlanningScopeSets/getScopeCharacteristics/' + scopeSetId).subscribe(
+            scopesetcharacteristics => {
+                for (let scopesetcharacteristic of scopesetcharacteristics) {
+                    if (scopesetcharacteristic.id != 'territory') {
+                        this.scopesetcharacteristics.push({
+                            name: scopesetcharacteristic.name,
+                            id: scopesetcharacteristic.id,
+                            type: 'report',
+                            namefield: null,
+                            valuefield: null,
+                            fixedvalue: null,
+                            fixedvalues: []
+                        });
+
+                        // for each characteristic get the values
+                        this.backend.getRequest('module/SalesPlanningCharacteristics/CharacteristicValues/' + scopesetcharacteristic.id).subscribe(charvalues => {
+                            let char = this.scopesetcharacteristics.find(char => char.id == scopesetcharacteristic.id);
+                            char.fixedvalues = charvalues;
+                        });
+
+                        // set loading indicator to false
+                        this.characteristicsloading = false;
+                    }
                 }
-            }
-        });
+            },
+            error => {
+                // set loading indicator to false
+                this.characteristicsloading = false;
+            });
     }
 
+    /**
+     * a getter that checks if we can export and if not is used to didable the export button
+     */
+    get canExport() {
+        // not while we are loading
+        if(this.characteristicsloading) return false;
+
+        // need to have  planning version
+        if (!this.selectedversion) return false;
+
+        // need to have a tertritory value
+        if (!this.territory.fixedvalue || (this.territory.valuefield)) return false;
+
+        // check for the nodename
+        if (!this.nodenamefield || this.nodenamefield == '') return false;
+
+        // check for all mapped chars
+        for (let scopesetcharacteristic of this.scopesetcharacteristics) {
+            if (!(scopesetcharacteristic.fixedvalue || (scopesetcharacteristic.valuefield && scopesetcharacteristic.namefield))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * exports the planning data
+     */
     private exportPlanningScope() {
         // build wherecondition
+        /*
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
@@ -125,6 +202,32 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
                 valuetokey: userFilter.valuetokey
             });
         }
+         */
+
+        let currentversion = this.salespanningversions.find(version => version.id == this._selectedversion);
+
+        let params = {
+            nodeName: this.nodenamefield,
+            mapping: [{
+                charid: 'territory',
+                fieldvalue: this.territory.valuefield,
+                fieldname: null,
+                fixedvalue: this.territory.fixedvalue
+            }]
+        };
+
+        for (let scopesetcharacteristic of this.scopesetcharacteristics) {
+            params.mapping.push({
+                charid: scopesetcharacteristic.id,
+                fieldvalue: scopesetcharacteristic.valuefield,
+                fieldname: scopesetcharacteristic.namefield,
+                fixedvalue: scopesetcharacteristic.fixedvalue
+            });
+        }
+
+        this.backend.postRequest(`module/SalesPlanningScopeSets/${currentversion.salesplanningscopeset_id}/createFromKReport/${this.model.id}`, {}, params).subscribe(result => {
+            this.close();
+        });
 
     }
 }
