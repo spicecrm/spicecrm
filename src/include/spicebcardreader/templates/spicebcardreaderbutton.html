@@ -1,2 +1,2 @@
 <span>{{language.getLabel('LBL_NEW_FROM_BCARD')}}</span>
-<input #fileupload style="display:none" type="file" (change)="uploadFile()"/>
+<input #fileupload style="display:none" type="file" (click)="uploadclick($e)" (change)="uploadFile()"/>
