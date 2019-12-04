@@ -13,7 +13,7 @@ import {modal} from '../../../services/modal.service';
 })
 export class SendMailingButton {
 
-    public disabled: boolean = false;
+    private disabled: boolean = false;
 
     constructor(
         private language: language,
@@ -22,16 +22,21 @@ export class SendMailingButton {
         private modal: modal,
         private injector: Injector
     ) {
+        this.model.data$.subscribe(data => {
+            this.disableButton();
+        });
+    }
+
+    public disableButton() {
+        if (this.model.data.mailing_id) {
+            this.disabled = true;
+            window.console.log(this.disabled);
+            return;
+        }
     }
 
     public execute() {
-        if (this.model.getFieldValue('mailing_id')) {
-            this.disabled = true;
-            return;
-        } else {
-            this.modal.openModal('SendMailingModal', true, this.injector);
-        }
-
+        this.modal.openModal('SendMailingModal', true, this.injector);
     }
 
 }
