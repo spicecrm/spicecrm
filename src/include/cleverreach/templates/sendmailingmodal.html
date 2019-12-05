@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="close()">
-        <h1>{{language.getLabel('LBL_CREATE')}} {{language.getLabel('LBL_CLEVERREACH')}} Mailing</h1>
+        <h1>{{language.getLabel('LBL_CREATE_MAILING')}} in {{language.getLabel('LBL_CLEVERREACH')}}</h1>
     </system-modal-header>
     <system-modal-content>
         <form class="slds-form" [formGroup]="mailing" (ngSubmit)="onSubmit()">

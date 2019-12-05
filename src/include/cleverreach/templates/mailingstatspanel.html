@@ -1,0 +1,24 @@
+<system-card>
+    <system-card-header icon="metrics" cardtitel="Mailing Stats"></system-card-header>
+    <system-card-body class="slds-scrollable" style="display: block">
+        <system-spinner *ngIf="isLoading"></system-spinner>
+        <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_METRIC')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_VALUE')}}</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let stat of mailingStats | keyvalue" class="slds-hint-parent">
+                <td>{{stat.key}}</td>
+                <td>{{stat.value}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </system-card-body>
+</system-card>

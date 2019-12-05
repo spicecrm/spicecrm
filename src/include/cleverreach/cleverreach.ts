@@ -18,6 +18,9 @@ import {ProspectListsToCleverReachModal} from "./components/prospectliststocleve
 import {SendMailingButton} from "./components/sendmailingbutton";
 import {SendMailingModal} from "./components/sendmailingmodal";
 
+import {GetStatsButton} from "./components/getstatsbutton";
+import {MailingStatsPanel} from "./components/mailingstatspanel";
+
 @NgModule({
     imports: [
         CommonModule,
@@ -33,7 +36,9 @@ import {SendMailingModal} from "./components/sendmailingmodal";
         ProspectListsToCleverReachButton,
         ProspectListsToCleverReachModal,
         SendMailingButton,
-        SendMailingModal
+        SendMailingModal,
+        GetStatsButton,
+        MailingStatsPanel
     ]
 })
 export class CleverReachModule {
