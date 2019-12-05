@@ -130,7 +130,7 @@ export class SystemTree implements OnChanges {
         this.sourceList = [];
         for (let parentId in groupedByParent) {
             if (groupedByParent.hasOwnProperty(parentId)) {
-                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? a.parent_sequence > b.parent_sequence ? 1 : -1 : 0);
+                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? +a.parent_sequence > +b.parent_sequence ? 1 : -1 : 0);
                 this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
             }
         }
