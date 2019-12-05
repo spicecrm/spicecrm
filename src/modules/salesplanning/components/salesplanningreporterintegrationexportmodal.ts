@@ -170,7 +170,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
         if (!this.selectedversion) return false;
 
         // need to have a tertritory value
-        if (!this.territory.fixedvalue || (this.territory.valuefield)) return false;
+        if (!this.territory.fixedvalue && !this.territory.valuefield) return false;
 
         // check for the nodename
         if (!this.nodenamefield || this.nodenamefield == '') return false;
