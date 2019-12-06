@@ -46,6 +46,12 @@ export class ReporterPresentationDashlet implements AfterViewInit {
 
     private presComponent: any = undefined;
 
+    /**
+     * emit if a no access or not found error has been raised by the backend
+     * allows to hide the container for the report dashlet
+     */
+    @Output() private noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(private model: model, private metadata: metadata, private elementRef: ElementRef) {
     }
 
@@ -57,13 +63,19 @@ export class ReporterPresentationDashlet implements AfterViewInit {
                 this.model['parentBeanId'] = this.parentId;
                 this.model['parentBeanModule'] = this.parentModule;
             }
-            this.model.getData().subscribe(data => {
-                // emit the title
-                this.dashletTitle.emit(this.model.getField('name'));
+            this.model.getData().subscribe(
+                data => {
+                    // emit the title
+                    this.dashletTitle.emit(this.model.getField('name'));
 
-                // render the report
-                this.renderPresentation();
-            });
+                    // render the report
+                    this.renderPresentation();
+                },
+                err => {
+                    if (err.status == '403' || err.status == '404') {
+                        this.noAccess.emit(true);
+                    }
+                });
         }
     }
 

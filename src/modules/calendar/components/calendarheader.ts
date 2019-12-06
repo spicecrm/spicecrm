@@ -61,10 +61,6 @@ export class CalendarHeader implements OnDestroy {
         return this.calendar.calendarDate;
     }
 
-    set calendarDate(value) {
-        this.calendar.calendarDate = new moment(value);
-    }
-
     get asPicker() {
         return this.calendar.asPicker;
     }
@@ -103,19 +99,11 @@ export class CalendarHeader implements OnDestroy {
     }
 
     private shiftPlus() {
-        let weekDaysCountOffset = 7 - this.weekDaysCount;
-        if (this.calendar.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay + (this.weekDaysCount - 1)) {
-            this.calendarDate = new moment(this.calendarDate.add(moment.duration(weekDaysCountOffset, "d")));
-        }
-        this.calendarDate = new moment(this.calendarDate.add(moment.duration(this.calendar.sheetType == 'Three_Days' ? 3 : 1, this.calendar.duration[this.calendar.sheetType])));
+        this.calendar.shiftPlus();
     }
 
     private shiftMinus() {
-        let weekDaysCountOffset = 7 - this.weekDaysCount;
-        if (this.calendar.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay) {
-            this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(weekDaysCountOffset, "d")));
-        }
-        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.calendar.sheetType == 'Three_Days' ? 3 : 1, this.calendar.duration[this.calendar.sheetType])));
+        this.calendar.shiftMinus();
     }
 
     private getCalendarHeader() {
@@ -167,7 +155,7 @@ export class CalendarHeader implements OnDestroy {
     }
 
     private goToday() {
-        this.calendarDate = new moment();
+        this.calendar.calendarDate = new moment();
     }
 
     private zoomin() {

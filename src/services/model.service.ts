@@ -106,6 +106,12 @@ export class model implements OnDestroy {
      * indicates that the current model is in an edit state
      */
     public isEditing: boolean = false;
+
+    /**
+     * for the navigate away check ... set when the model is added from a global component and thus is not tracked for th enavigate away action
+     */
+    public isGlobal: boolean = false;
+
     /**
      * set when a new record is created and teh model is not yet saved on the backend
      */
@@ -913,16 +919,6 @@ export class model implements OnDestroy {
         this.evaluateValidationRules(null, "init");
     }
 
-    public isOutsideRouterOutlet(): boolean {
-
-        return true;
-
-        // if ( this.globalHeader || this.globalFooter ) return true;
-        // else return false;
-
-        // alternative:
-        // return !( this.injector.get( GlobalHeader ) || this.injector.get( GlobalFooter ) );
-    }
 
     public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
 
@@ -942,17 +938,17 @@ export class model implements OnDestroy {
                 this.data[fieldname] = presets[fieldname];
             }
 
-            this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
+            this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
                     editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
-                        retSubject.next(response);
 
                         // if we save .. add to the last viewed
                         if (response == 'save' || response == 'savegodetail') {
+                            retSubject.next(this.data);
                             this.recent.trackItem(this.module, this.id, this.data);
                         }
 
@@ -1067,7 +1063,7 @@ export class model implements OnDestroy {
         }
 
         // open the edit Modal
-        this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
+        this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
             if (editModalRef) {
                 if (componentSet && componentSet != "") {
                     editModalRef.instance.componentSet = componentSet;
@@ -1354,8 +1350,8 @@ export class model implements OnDestroy {
         this.navigation.unregisterModel(this.modelRegisterId);
     }
 
-    public isLeaveable(): boolean {
-        return !(this.isEditing && _.values(this.getDirtyFields()).length);
+    public isDirty(): boolean {
+        return (this.isEditing && _.values(this.getDirtyFields()).length);
     }
 
     /**

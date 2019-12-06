@@ -1,9 +1,9 @@
 <div class="slds-grid slds-wrap spice-h-full">
     <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right spice-h-full">
         <div class="slds-text-body--regular slds-box slds-m-vertical--small slds-text-color--weak" style="padding: .25rem">
-            {{ objectimport.stepLongText }}
+            {{ spiceImport.stepLongText }}
         </div>
-        <div *ngIf="modelFields && this.objectimport.importAction == 'new'">
+        <div *ngIf="modelFields && this.spiceImport.importAction == 'new'">
             <legend class="slds-form-element__legend slds-form-element__label">
                 {{language.getLabel('MSG_REQUIRED_MAPPED_FIXED')}}
             </legend>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="slds-size--3-of-4 spice-h-full">
-        <table *ngIf="objectimport.fileHeader.length > 0"
+        <table *ngIf="spiceImport.fileHeader.length > 0"
                class="slds-table slds-table--bordered slds-table--cell-buffer">
             <thead>
             <tr class="slds-text-title--caps">
@@ -37,7 +37,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let row of objectimport.fixedFields; let rowIndex = index;">
+            <tr *ngFor="let row of spiceImport.fixedFields; let rowIndex = index;">
                 <td>
                     <div class="slds-truncate">
                         <div class="slds-form-element__control">
@@ -67,7 +67,7 @@
             </tbody>
         </table>
         <div class="slds-grid slds-grid--align-center slds-p-vertical--xx-small">
-            <button type="button" class="slds-button slds-button--brand" (click)="objectimport.addFixed()">{{language.getLabel('LBL_ADD_FIXED_FIELDS', '', 'short')}}</button>
+            <button type="button" class="slds-button slds-button--brand" (click)="spiceImport.addFixed()">{{language.getLabel('LBL_ADD_FIXED_FIELDS', '', 'short')}}</button>
         </div>
     </div>
 </div>

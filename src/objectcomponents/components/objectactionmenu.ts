@@ -97,9 +97,4 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
             return 'slds-button--icon-' + this.buttonsize;
         }
     }
-
-    private getDropdownLocationClass() {
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        return {'slds-dropdown--bottom': window.innerHeight - rect.bottom < 100};
-    }
 }

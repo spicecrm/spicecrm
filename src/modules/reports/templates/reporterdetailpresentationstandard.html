@@ -21,7 +21,7 @@
         <table *ngIf="!isLoading"
                class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
             <tbody>
-            <tr *ngFor="let record of getRecords()">
+            <tr *ngFor="let record of getRecords()" style="vertical-align: top;">
                 <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
                     <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
                 </td>
