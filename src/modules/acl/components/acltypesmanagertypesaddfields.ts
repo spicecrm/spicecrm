@@ -37,19 +37,19 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
     private currentfields: any[] = [];
 
     /**
+     * all selected fields
+     */
+    private selectedfields: any[] = [];
+
+    /**
      * the fields to be presented as selection options
      */
     private fields: any[] = [];
 
     /**
-     * the selcted field
-     */
-    private field: string = '';
-
-    /**
      * event emitter provided to be subscribed by the component opening the modal
      */
-    private addfield: EventEmitter<string> = new EventEmitter<string>();
+    private addfields: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * parameter to set to true if no filter for nondb or orhter shoudlk be added.
@@ -58,6 +58,13 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      */
     private showAll: boolean = false;
 
+
+    /**
+     * Flag: if true, the select all checkbox is checked!
+     */
+    private selectAllChecked: boolean = false;
+
+
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities) {
 
     }
@@ -65,19 +72,18 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
     public ngOnInit() {
         let fields = this.metadata.getModuleFields(this.module);
 
-        let activeFields = [];
-        for (let currentField of this.currentfields) {
-            activeFields.push(currentField.name);
-        }
+        this.selectedfields = [];
 
         for (let field in fields) {
-            if ((this.showAll || this.allowField(fields[field])) && activeFields.indexOf(field) < 0) {
+            if (this.showAll || this.allowField(fields[field])) {
                 this.fields.push(field);
             }
         }
+        for (let currentField of this.currentfields) {
+            this.selectedfields.push(currentField.name);
+        }
 
         this.fields.sort();
-
     }
 
     /**
@@ -94,7 +100,7 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      *
      * @param field the field name
      */
-    private getFieldDisplayName(field){
+    private getFieldDisplayName(field) {
         return this.language.getFieldDisplayName(this.module, field);
     }
 
@@ -109,7 +115,61 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      * handler when the add buton is pushed
      */
     private add() {
-        this.addfield.emit(this.field);
+        this.addfields.emit(this.selectedfields);
         this.close();
+    }
+
+
+
+    private getFieldDisplay(fieldname) {
+        for (let currentField of this.currentfields) {
+            if (currentField.name == fieldname && currentField.hide) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private getFieldValue(fieldname) {
+
+        for (let field of this.selectedfields) {
+            if (field == fieldname) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private setFieldValue(fieldname, event) {
+        // stop propagation
+        event.preventDefault();
+
+        let found = false;
+        for (let key in this.selectedfields) {
+            if (this.selectedfields[key] == fieldname) {
+                this.selectedfields.splice(+key, 1);
+                found = true;
+            }
+        }
+        if(!found) {
+            this.selectedfields.push(fieldname);
+        }
+    }
+
+
+    private toggleSelectAll(event) {
+        // stop propagation
+        event.preventDefault();
+
+        if(!this.selectAllChecked) {
+            for (let field of this.fields) {
+                this.selectedfields.push(field);
+            }
+            this.selectAllChecked = true;
+        } else {
+            this.selectAllChecked = false;
+            this.selectedfields = [];
+        }
+
+
     }
 }

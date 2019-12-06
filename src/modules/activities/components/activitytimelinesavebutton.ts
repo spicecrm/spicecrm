@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component,  EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -9,25 +9,41 @@ import {view} from "../../../services/view.service";
 import {ObjectActionSaveButton} from "../../../objectcomponents/components/objectactionsavebutton";
 
 @Component({
-    selector: 'object-action-save-button',
-    templateUrl: './src/objectcomponents/templates/objectactionsavebutton.html'
+    selector: 'activity-timeline-save-button',
+    templateUrl: './src/modules/activities/templates/activitytimelinesavebutton.html'
 })
 export class ActivityTimelineSaveButton {
 
-    @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * holds the action config
+     */
+    public actionconfig: any = {};
+
+    @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
     public parent: any = {};
     public module: string = '';
 
+    /**
+     * indicates that the model is saving
+     */
     private saving: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
 
     }
-    public execute() {
-        if(this.saving) return;
 
-        if(this.model.validate()) {
+    /**
+     * getter for th elabel allows setting the display label via the actionconfig in the actionset
+     */
+    get buttonLabel() {
+        return this.actionconfig.label ? this.actionconfig.label : 'LBL_SAVE';
+    }
+
+    public execute() {
+        if (this.saving) return;
+
+        if (this.model.validate()) {
             this.saving = true;
             this.model.save(true).subscribe(saved => {
                 this.actionemitter.emit('save');

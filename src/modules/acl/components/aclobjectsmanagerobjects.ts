@@ -64,14 +64,14 @@ export class ACLObjectsManagerObjects {
         let params = {
             sysmodule_id: this.activeTypeId,
             searchterm: this.searchterm
-        }
+        };
 
         this.backend.getRequest('spiceaclobjects', params).subscribe(aclobjects => {
             this.aclobjects = aclobjects;
 
             this.aclobjects.sort((a, b) => {
                 return a.name > b.name ? 1 : -1;
-            })
+            });
             this.loading = false;
         });
     }
@@ -80,7 +80,7 @@ export class ACLObjectsManagerObjects {
         let rect = this.header.element.nativeElement.getBoundingClientRect();
         return {
             height: 'calc(100% - ' + rect.height + 'px)'
-        }
+        };
     }
 
     private getType(type) {
@@ -110,6 +110,21 @@ export class ACLObjectsManagerObjects {
         });
     }
 
+    private addDefaultObjects() {
+        if(this.aclobjects.length == 0 && this.activeTypeId) {
+            this.loading = true;
+
+            let params = {
+                sysmodule_id: this.activeTypeId,
+                sysmodule_name: this.acltypes.find(x => x.id == this.activeTypeId).module
+            };
+            this.backend.postRequest('spiceaclobjects/createdefaultobjects', params).subscribe(aclobjects => {
+                this.getObjects();
+                this.loading = false;
+            });
+        }
+    }
+
     private selectObject(aclobject) {
         this.activeObjectId = aclobject.id;
 
@@ -123,8 +138,8 @@ export class ACLObjectsManagerObjects {
                     object.status = 'r';
                     return true;
                 }
-            })
-        })
+            });
+        });
     }
 
     private deactivateObject(objectid) {
@@ -134,8 +149,7 @@ export class ACLObjectsManagerObjects {
                     object.status = 'd';
                     return true;
                 }
-            })
-        })
+            });
+        });
     }
-
 }

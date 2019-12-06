@@ -7,6 +7,7 @@ import {view} from '../../../services/view.service';
 import {session} from '../../../services/session.service';
 import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {activitiyTimeLineService} from "../../../services/activitiytimeline.service";
 
 declare var moment: any;
 declare var _: any;
@@ -31,6 +32,11 @@ export class ActivityTimelineItem implements OnInit {
     private isopen: boolean = false;
 
     public componentconfig: any = {};
+
+    /**
+     * the module to be displayed
+     */
+    @Input() private module: string;
 
     constructor(private model: model, private metadata: metadata, private view: view, private userpreferences: userpreferences, private session: session) {
         this.view.isEditable = false;
@@ -63,6 +69,13 @@ export class ActivityTimelineItem implements OnInit {
     get startdate() {
         let startdate = new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
         return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
+    }
+
+    /**
+     * returns if the date shoudl be highlighted since it is in the past
+     */
+    get highlightdate() {
+        return this.module == 'Activities' && new moment().hour(0).minute(0).second(0) >  new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
     }
 
     /**

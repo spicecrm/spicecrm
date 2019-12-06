@@ -257,12 +257,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         };
     }
 
-    private getSheetStyle() {
-        return {
-            height: 'calc(100vh - ' + (this.calendarsheet.element.nativeElement.offsetTop + 20) + 'px)',
-        };
-    }
-
     private getDayDividerStyle(day) {
         return {
             left: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * day) + 'px',

@@ -29,7 +29,7 @@ export class ACLTypesManagerTypesFields {
     @Input() authtypefields: Array<any> = [];
     @Input() authtypemodule: string = '';
 
-    @Output() addfield: EventEmitter<string> = new EventEmitter<string>();
+    @Output() addfields: EventEmitter<any> = new EventEmitter<any>();
     @Output() deletefield: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
@@ -37,13 +37,34 @@ export class ACLTypesManagerTypesFields {
     }
 
     addField(){
+
+        //we want to hide every selected field (We can't add fields two times)
+        for (let afield of this.authtypefields) {
+            afield.hide = true;
+        }
         this.modal.openModal('ACLTypesManagerTypesAddFields').subscribe(modalRef => {
             modalRef.instance.module = this.authtypemodule;
             modalRef.instance.currentfields = this.authtypefields;
-            modalRef.instance.addfield.subscribe(addfield => {
-                this.addfield.emit(addfield);
-            })
-        })
+            modalRef.instance.addfields.subscribe(fields => {
+
+                if (fields) {
+                    let newFields = [];
+                    for (let sfield of fields) {
+                        let already_selected = false;
+                        for (let key in this.authtypefields) {
+                            if(this.authtypefields[key].name == sfield) {
+                                already_selected = true;
+                            }
+                        }
+                        if(!already_selected) {
+                            newFields.push(sfield);
+                        }
+                    }
+                    this.addfields.emit(newFields);
+                }
+
+            });
+        });
     }
 
     deleteField(id){

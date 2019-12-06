@@ -14,7 +14,7 @@
         </div>
         <ul #itemcontainer class="slds-timeline">
             <li *ngFor="let item of assistant.assitantItems" class="slds-p-around--xx-small">
-                <activitytimeline-item-container [activity]="item"></activitytimeline-item-container>
+                <activitytimeline-item-container module="Activities" [activity]="item"></activitytimeline-item-container>
             </li>
         </ul>
         <ul *ngIf="loading" class="slds-timeline">

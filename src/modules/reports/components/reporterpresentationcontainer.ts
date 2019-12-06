@@ -23,6 +23,11 @@ export class ReporterPresentationContainer {
      */
     private dashletTitle: string;
 
+    /**
+     * status to have the component hidden
+     */
+    private isHidden: boolean = false;
+
     constructor(private model: model, private language: language) {
     }
 
@@ -31,5 +36,13 @@ export class ReporterPresentationContainer {
      */
     get title() {
         return this.dashletTitle ? this.dashletTitle : this.language.getModuleName('KReports');
+    }
+
+    /**
+     * called when the container canot load the report
+     * @param event
+     */
+    private noAccess(event) {
+        this.isHidden = event;
     }
 }

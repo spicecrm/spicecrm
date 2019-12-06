@@ -13,6 +13,9 @@
         <div class="slds-p-left--xx-small">
             <button class="slds-button slds-button--icon-border" [disabled]="!activeTypeId" (click)="addObject()"><system-button-icon icon="new"></system-button-icon></button>
         </div>
+        <div class="slds-p-left--xx-small">
+            <button class="slds-button slds-button--icon-border" [disabled]="!activeTypeId || aclobjects.length > 0" (click)="addDefaultObjects()"><system-button-icon icon="insert_template"></system-button-icon></button>
+        </div>
     </div>
     <div class="slds-scrollable" [ngStyle]="contentStyle">
         <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">

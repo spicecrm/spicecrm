@@ -7,8 +7,8 @@
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                     <input (focus)="onFocus()" type="text" [attr.disabled]="disabled ? 'disabled' : null"
                            class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off"
-                           role="textbox" placeholder="{{language.getAppLanglabel('LBL_SEARCH')}}"
-                           value="{{inputValue}}"
+                           role="textbox" placeholder="{{language.getLabel('LBL_SEARCH')}}"
+                           [value]="selectedItem?.name || ''"
                            (keyup)="onKeydown($event)"
                     />
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
@@ -23,11 +23,11 @@
                                   </span>
                                 </div>
                             </li>
-                            <li *ngFor="let selectItem of selectItem.value" role="presentation" class="slds-listbox__item" (click)="itemClicked(selectItem)">
-                                <div [ngClass]="{'slds-has-focus':  selectedItemId == selectItem.id}" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                            <li *ngFor="let selectItem of selectItem.value" role="presentation" class="slds-listbox__item" (click)="itemClicked(selectItem, $event)">
+                                <div [ngClass]="{'slds-has-focus':  selectedItem?.id == selectItem.id}" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                     <span class="slds-media__body">
                                       <span class="slds-truncate" title="" value="selectItem.id">
-                                          <p [innerHTML]="selectItem.name"> </p>
+                                          <span [innerHTML]="selectItem.name"> </span>
                                       </span>
                                     </span>
                                 </div>
