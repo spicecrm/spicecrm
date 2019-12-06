@@ -17,6 +17,7 @@ export class QuestionsManagerEditNPS implements OnInit {
     @Input() public categorypool;
 
     private forCategories = { categories: '' };
+    private categoriesAreRead = false;
 
     constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
         this.view.isEditable = true;
@@ -24,12 +25,13 @@ export class QuestionsManagerEditNPS implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.model.isLoading) {
-            this.model.data$.subscribe(() => this.readCategories() );
-        } else this.readCategories();
+        this.model.data$.subscribe(data => {
+            if ( data.id && !this.categoriesAreRead ) this.readCategories();
+        });
     }
 
     private readCategories(): void {
+        this.categoriesAreRead = true;
         let params;
         try {
             params = JSON.parse( this.model.data.questionparameter );

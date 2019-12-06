@@ -8,6 +8,9 @@ import {session} from '../../../services/session.service';
 import {configurationService} from '../../../services/configuration.service';
 import {language} from '../../../services/language.service';
 
+/**
+ * @deprecated
+ */
 @Component({
     selector: 'salesdocs-print-button',
     templateUrl: './src/modules/salesdocs/templates/salesdocsprintbutton.html'

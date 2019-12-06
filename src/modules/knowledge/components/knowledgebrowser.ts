@@ -15,7 +15,6 @@ import {Subscription} from "rxjs";
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
-    public config: any = {clickable: true};
     public activeTab: string = "tree";
     private subscription: Subscription = new Subscription();
 
@@ -37,6 +36,10 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     get documents() {
         return this.knowledgeService.documents;
     }
+
+    set selectedDoc(id) {
+        this.knowledgeService.selectedDoc = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);    }
 
     get selectedDoc() {
         return this.knowledgeService.selectedDoc;
@@ -66,10 +69,5 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedDoc = id;
-        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 }

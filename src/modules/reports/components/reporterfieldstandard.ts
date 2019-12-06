@@ -3,7 +3,7 @@
  */
 import {
     Component
-} from '@angular/core';;
+} from '@angular/core';
 
 @Component({
     selector: 'reporter-field-standard',
@@ -11,11 +11,15 @@ import {
 })
 export class ReporterFieldStandard {
 
+    /**
+     * the complete record
+     */
     private record: any = {};
+
+    /**
+     * the field
+     */
     private field: any = {};
 
-    constructor() {
-
-    }
-
+    constructor() {}
 }

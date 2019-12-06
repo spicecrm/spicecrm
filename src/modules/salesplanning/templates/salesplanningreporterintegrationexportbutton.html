@@ -1,0 +1,6 @@
+<li class="slds-dropdown__item" role="presentation" >
+    <a href="javascript:void(0);" role="menuitem" tabindex="0" (click)="export()">
+        <system-icon module="SalesPlanningVersions" size="x-small"></system-icon>
+        <span class="slds-truncate" [ngClass]="{'slds-disabled-text': !canExport}">{{language.getLabel('LBL_SALES_PLANNING_VERSION')}}</span>
+    </a>
+</li>

@@ -1,0 +1,62 @@
+<system-modal>
+    <system-modal-header (close)="cancel()">{{language.getLabel('LBL_INPUT_HELPER')}}</system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element__control">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_PLAN_CODE')}} {{language.getLabel('LBL_FOR')}}</label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="data.toField">
+                    <option *ngFor="let editableField of editableFields" [value]="editableField.id">{{editableField.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--small">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_PERIOD')}} {{language.getLabel('LBL_FROM')}}</label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="data.startPeriod">
+                        <option *ngFor="let period of periods; let index = index" [value]="index">{{period.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-2">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_PERIOD')}} {{language.getLabel('LBL_TO')}}</label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="data.endPeriod">
+                        <option *ngFor="let period of periods; let index = index" [value]="index">{{period.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element__control">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_PLAN_CODE')}} {{language.getLabel('LBL_FROM')}}</label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="data.fromField">
+                    <option value="fixed">{{language.getLabel('LBL_FIXED')}}</option>
+                    <option *ngFor="let field of allAvailableFields" [value]="field.id">{{field.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div *ngIf="data.fromField == 'fixed'">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
+            <system-input-number [(ngModel)]="data.value"></system-input-number>
+            <system-checkbox [(ngModel)]="data.evenly" class="slds-m-top--x-small" style="display: block">{{language.getLabel('LBL_SPREAD_EVENLY')}}</system-checkbox>
+        </div>
+        <div *ngIf="!!data.fromField && data.fromField != 'fixed'">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_WITH_VALUE_MODIFICATION')}}</label>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-input-number [(ngModel)]="data.percentValue"></system-input-number>
+                <span class="slds-m-left--xx-small slds-text-heading--small">%</span>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-button-group">
+            <button class="slds-button-group-item slds-button slds-button--neutral slds-align--absolute-center" (click)="cancel()">
+                {{language.getLabel('LBL_CANCEL')}}
+            </button>
+            <button [disabled]="!data.toField || (data.fromField == 'fixed' && (!data.value || data.value.length == 0))" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="execute()">
+                {{language.getLabel('LBL_APPLY')}}
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

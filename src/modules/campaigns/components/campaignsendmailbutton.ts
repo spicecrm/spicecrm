@@ -39,6 +39,16 @@ export class CampaignSendMailButton {
         }
     }
 
+    /**
+     * only show for campaign tasks of type email
+     */
+    get hidden() {
+        return this.model.data.campaigntask_type !== 'Email';
+    }
+
+    /**
+     * handle the disabled status
+     */
     private handleDisabled() {
 
         // not if activated already

@@ -29,13 +29,23 @@ export class CampaignSendTestMailButton {
     public execute() {
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest('module/CampaignTasks/'+this.model.id+'/sendtestmail').subscribe((results: any) => {
+            this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/sendtestmail').subscribe((results: any) => {
                 this.sending = false;
                 this.toast.sendToast('Mails sent');
             });
         }
     }
 
+    /**
+     * only show for campaign tasks of type email
+     */
+    get hidden() {
+        return this.model.data.campaigntask_type !== 'Email';
+    }
+
+    /**
+     * handle the disabled status
+     */
     private handleDisabled() {
         // not if activated already
         if (this.model.getField('activated')) {

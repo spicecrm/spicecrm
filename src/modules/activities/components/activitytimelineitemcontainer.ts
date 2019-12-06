@@ -13,7 +13,16 @@ export class ActivityTimelineItemContainer implements OnInit {
 
     @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
+    /**
+     * the activity
+     */
     @Input() private activity: any = {};
+
+    /**
+     * the module to be displayed
+     */
+    @Input() private module: string;
+
 
     constructor(private metadata: metadata) {}
 
@@ -24,6 +33,7 @@ export class ActivityTimelineItemContainer implements OnInit {
             for(let component of components) {
                 this.metadata.addComponent(component.component, this.container).subscribe(containerElementRef => {
                     containerElementRef.instance.activity = this.activity;
+                    containerElementRef.instance.module = this.module;
                     containerElementRef.instance.componentconfig = component.componentconfig;
                 });
             }

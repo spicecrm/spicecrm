@@ -38,6 +38,9 @@ import /*embed*/ {SalesdocsRejectButton} from "./components/salesdocsrejectbutto
 import /*embed*/ {SalesdocsRejectModal} from "./components/salesdocsrejectmodal";
 import /*embed*/ {SalesDocsRejectItemsContainer} from "./components/salesdocsrejectitemscontainer";
 import /*embed*/ {SalesDocsItemRejectContainer} from "./components/salesdocsitemrejectcontainer";
+import /*embed*/ {SalesdocsWithReferenceButton} from "./components/salesdocswithreferencebutton";
+import /*embed*/ {SalesdocsWithReferenceTypeModal} from "./components/salesdocswithreferencetypemodal";
+import /*embed*/ {SalesdocsWithReferenceSelectItemsModal} from "./components/salesdocswithreferenceselectitemsmodal";
 
 @NgModule({
     imports: [
@@ -75,7 +78,10 @@ import /*embed*/ {SalesDocsItemRejectContainer} from "./components/salesdocsitem
         SalesdocsRejectButton,
         SalesdocsRejectModal,
         SalesDocsRejectItemsContainer,
-        SalesDocsItemRejectContainer
+        SalesDocsItemRejectContainer,
+        SalesdocsWithReferenceButton,
+        SalesdocsWithReferenceTypeModal,
+        SalesdocsWithReferenceSelectItemsModal
     ]
 })
 export class ModuleSalesDocs {
