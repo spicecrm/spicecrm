@@ -1,24 +1,23 @@
 <groupware-read-pane-header></groupware-read-pane-header>
 <div class="slds-tabs_default">
-    <span *ngIf="isArchived" class="slds-badge">Archived</span>
     <ul class="slds-tabs_default__nav" role="tablist">
         <li class="slds-tabs_default__item" title="Search" role="presentation" [ngClass]="{'slds-is-active': activetab=='beans'}">
-            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('beans')">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="open('beans')">
                 <system-utility-icon icon="user" size="x-small"></system-utility-icon>
             </a>
         </li>
         <li class="slds-tabs_default__item" title="Search" role="presentation" [ngClass]="{'slds-is-active': activetab=='search'}">
-            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('search')">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="open('search')">
                 <system-utility-icon icon="search" size="x-small"></system-utility-icon>
             </a>
         </li>
         <li class="slds-tabs_default__item" title="Attachments" role="presentation" [ngClass]="{'slds-is-active': activetab=='attachments'}">
-            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('attachments')">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="open('attachments')">
                 <system-utility-icon icon="attach" size="x-small"></system-utility-icon>
             </a>
         </li>
         <li class="slds-tabs_default__item" title="Attachments" role="presentation" [ngClass]="{'slds-is-active': activetab=='linked'}">
-            <a class="slds-tabs_default__link slds-p-vertical--x-small" href="javascript:void(0);" role="tab" (click)="open('linked')">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="open('linked')">
                 <system-utility-icon icon="linked" size="x-small"></system-utility-icon>
             </a>
         </li>

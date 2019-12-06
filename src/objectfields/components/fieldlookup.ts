@@ -17,12 +17,40 @@ import {modal} from '../../services/modal.service';
 })
 export class fieldLookup extends fieldGeneric implements OnInit {
 
+    /**
+     * listens to the click
+     */
     private clickListener: any;
-    public lookupType = 0;
-    private lookuplinkSelectOpen: boolean = false;
-    private lookupSearchOpen: boolean = false;
-    private lookupSearchTerm: string = '';
+
+    /**
+     * the links that can be selected with the lookup
+     */
     private lookuplinks = [];
+
+    /**
+     * the index of the type of lookup (index of the aray above
+     */
+    public lookupType = 0;
+
+    /**
+     * indicate tha the typoe selector is open
+     */
+    private lookuplinkSelectOpen: boolean = false;
+
+    /**
+     * indicates that the search box is open
+     */
+    private lookupSearchOpen: boolean = false;
+
+    /**
+     * the uiser search term
+     */
+    private lookupSearchTerm: string = '';
+
+    /**
+     * the pills to be displayed. Loaded initially and then handled by the field itself
+     */
+    private pills: any[] = [];
 
     constructor(public model: model,
                 public view: view,
@@ -37,8 +65,16 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
         // subscriber to the broadcast when new model is added from the model
         this.broadcast.message$.subscribe((message) => this.handleMessage(message));
+
+        // subscribe to model $data and build the pills .. replacing the setter
+        this.model.data$.subscribe(modelData => {
+            this.setPills()
+        })
     }
 
+    /**
+     * load the links
+     */
     public ngOnInit() {
         this.lookuplinks = this.getLookuplinks();
     }
@@ -47,11 +83,16 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         return this.fieldconfig.displayassigneduser;
     }
 
+    /**
+     * returns the name for the link resp the module
+     */
     get lookupTypeName() {
         return this.language.getModuleName(this.lookuplinks[this.lookupType].module);
     }
 
-    // getLookupmodules() is only needed when no definition by this.fieldconfig.lookuplinks
+    /**
+     * is only needed when no definition by this.fieldconfig.lookuplinks
+     */
     private getLookupmodules(): string[] {
         let modules: string[];
         if (this.fieldconfig.lookupmodules) modules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
@@ -59,6 +100,11 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         return modules;
     }
 
+    /**
+     * loads the links from the config
+     *
+     * fallback to the metadata
+     */
     private getLookuplinks(): any[] {
         let linknames: string[];
         if (this.fieldconfig.lookuplinks) linknames = this.fieldconfig.lookuplinks.replace(/\s/g, '').split(',');
@@ -73,8 +119,10 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         return links;
     }
 
-    get pills() {
-        let pills = [];
+    /**
+     * initially loads the pills .. also listens to model chanmges (noit fired bny the field
+     */
+    private setPills() {
         for (let lookuplink of this.lookuplinks) {
             if (this.model.data[lookuplink.name] && this.model.data[lookuplink.name].beans) {
                 //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
@@ -86,20 +134,27 @@ export class fieldLookup extends fieldGeneric implements OnInit {
                         continue;
                     }
 
-                    // pus to the pills
-                    pills.push({
-                        module: lookuplink.module,
-                        id: bean.id,
-                        summary_text: bean.summary_text,
-                        link: lookuplink.name
-                    });
+                    // check if we have the record already
+                    let index = this.pills.findIndex(pill => pill.id == bean.id);
+                    if (index < 0) {
+                        // push to the pills
+                        this.pills.push({
+                            module: lookuplink.module,
+                            id: bean.id,
+                            summary_text: bean.summary_text,
+                            link: lookuplink.name
+                        });
+                    }
                 }
             }
         }
-        return pills;
     }
 
-
+    /**
+     * adds an item from the search
+     *
+     * @param item
+     */
     private addItem(item) {
         if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = {beans: {}};
 
@@ -110,8 +165,17 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
         // close the lookup
         this.lookupSearchOpen = false;
+
+        // set the pills
+        this.setPills();
     }
 
+    /**
+     * message handler listening to the broadcast and adding the reference when a model is added from one of the dialogs and has the refrerence to the field
+     * ToDo: this shoudl be replaced by a chained suibscribe
+     *
+     * @param message
+     */
     private handleMessage(message: any) {
         if (message.messagedata.reference) {
             switch (message.messagetype) {
@@ -128,6 +192,10 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         }
     }
 
+    /**
+     * click handler for the
+     * @param event
+     */
     public onClick(event: MouseEvent): void {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
@@ -135,6 +203,9 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         }
     }
 
+    /**
+     * closes all open dropdowns
+     */
     private closePopups() {
         this.lookupSearchOpen = false;
         this.lookuplinkSelectOpen = false;
@@ -142,31 +213,50 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         this.clickListener();
     }
 
+    /**
+     * opens or closes the type selector
+     */
     private toggleLookupTypeSelect() {
         this.lookuplinkSelectOpen = !this.lookuplinkSelectOpen;
         this.lookupSearchOpen = false;
     }
 
+    /**
+     * sets the type selected from the type dropdown
+     *
+     * @param lookupType the index in the array
+     */
     private setLookupType(lookupType) {
         this.lookupSearchTerm = '';
         this.lookupType = lookupType;
         this.lookuplinkSelectOpen = false;
     }
 
+    /**
+     * removes on of the pills linked
+     * @param item the pill item
+     */
     private removeItem(item) {
         if (!this.model.data[item.link].beans_relations_to_delete) this.model.data[item.link].beans_relations_to_delete = {};
         this.model.data[item.link].beans_relations_to_delete[item.id] = item;
         delete (this.model.data[item.link].beans[item.id]);
+
+        // remove th pill
+        let index = this.pills.findIndex(pill => pill.id == item.id);
+        this.pills.splice(index, 1);
     }
 
+    /**
+     * opens the search dropdown when the input gets the focus
+     */
     private onFocus() {
         this.openSearchDropDown();
     }
 
-    private onFieldClick() {
-        this.openSearchDropDown();
-    }
 
+    /*
+    * opens the search dropdown
+     */
     private openSearchDropDown() {
         // this.getRecent();
         this.lookuplinkSelectOpen = false;
@@ -174,14 +264,9 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
-    private parentSearchStyle() {
-        if (this.lookupSearchOpen) {
-            return {
-                display: 'block'
-            };
-        }
-    }
-
+    /**
+     * opens the separate search modal
+     */
     private searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = this.lookuplinks[this.lookupType].module;
@@ -194,6 +279,15 @@ export class fieldLookup extends fieldGeneric implements OnInit {
             });
             selectModal.instance.searchTerm = this.lookupSearchTerm;
         });
+    }
+
+    /**
+     * trackby function for the pills to imporve rendering and performance
+     *
+     * @param pill
+     */
+    private pillid(pill) {
+        return pill.id;
     }
 
 }

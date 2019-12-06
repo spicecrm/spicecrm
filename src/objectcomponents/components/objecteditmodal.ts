@@ -136,24 +136,19 @@ export class ObjectEditModal implements OnInit {
      * @param event
      */
     private handleAction(event) {
-        console.log(event);
         switch (event) {
             case 'savegodetail':
+                this.actionSubject.next(event);
                 this.model.goDetail();
-                this.actionSubject.complete();
-                this.self.destroy();
                 break;
             case 'save':
                 this.actionSubject.next(event);
-                this.actionSubject.complete();
-                this.self.destroy();
                 break;
             default:
                 this.actionSubject.next(false);
-                this.actionSubject.complete();
-                this.self.destroy();
-                break;
         }
+        this.actionSubject.complete();
+        this.self.destroy();
     }
 
     /**

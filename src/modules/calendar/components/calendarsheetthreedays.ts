@@ -28,13 +28,11 @@ export class CalendarSheetThreeDays implements OnChanges {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     public sheetDays: any[] = [];
-    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
     @ViewChild('scrollcontainer', {read: ViewContainerRef, static: true}) private scrollContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
-    @Input('footercontainer') private footerContainer: any = undefined;
     @Input('calendarcontent') private calendarContent: any = undefined;
     private sheetHours: any[] = [];
     private ownerEvents: any[] = [];
@@ -406,22 +404,6 @@ export class CalendarSheetThreeDays implements OnChanges {
             this.sheetHours.push(i);
             i++;
         }
-    }
-
-    /*
-    * @return style
-    */
-    private getSheetStyle() {
-        if (this.footerContainer && this.calendar.asPicker) {
-            return {
-                'height': (this.footerContainer.offsetTop - this.calendarsheet.element.nativeElement.offsetTop) + 'px',
-                'margin-top': '-1px'
-            };
-        }
-        return {
-            'height': 'calc(100% - ' + this.headerContainer.element.nativeElement.clientHeight + 'px)',
-            'margin-top': '-1px'
-        };
     }
 
     /*

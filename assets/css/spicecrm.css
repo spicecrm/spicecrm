@@ -1189,3 +1189,8 @@ ul.spice-taglist span.slds-badge {
 .slds-context-bar__item_tab {
     width: initial;
 }
+
+.slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item {
+    background: #ecebea;
+    box-shadow: #CA1B21 4px 0 0 inset;
+}
