@@ -19,7 +19,6 @@ import {canNavigateAway} from '../services/navigation.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
-import /*embed*/ {objectimport} from './services/objectimport.service';
 
 
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
@@ -51,6 +50,7 @@ import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objecta
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
+import /*embed*/ {ObjectActionEditRelatedButton, ObjectActionEditRelatedButtonHelper} from "./components/objectactioneditrelatedbutton";
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
 import /*embed*/ {ObjectActionOpenButton} from './components/objectactionopenbutton';
@@ -64,7 +64,6 @@ import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebut
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
-import /*embed*/ {ObjectActionImportButton} from './components/objectactionimportbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import /*embed*/ {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
@@ -160,13 +159,7 @@ import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectre
 import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
 
-import /*embed*/ {ObjectImport} from './components/objectimport';
-import /*embed*/ {ObjectImportSelect} from './components/objectimportselect';
-import /*embed*/ {ObjectImportMap} from './components/objectimportmap';
-import /*embed*/ {ObjectImportFixed} from './components/objectimportfixed';
-import /*embed*/ {ObjectImportCheck} from './components/objectimportcheck';
-import /*embed*/ {ObjectImportUpdate} from "./components/objectimportupdate";
-import /*embed*/ {ObjectImportResult} from './components/objectimportresult';
+
 
 import /*embed*/ {ObjectMergeButton} from './components/objectmergebutton';
 
@@ -191,9 +184,6 @@ import /*embed*/ {ObjectModelPopoverField} from "./components/objectmodelpopover
 import /*embed*/ {ObjectModelPopoverRelated} from "./components/objectmodelpopoverrelated";
 import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelpopoverrelateditem";
 
-import /*embed*/ {ObjectTexts} from "./components/objecttexts";
-import /*embed*/ {ObjectTextsAddButton} from "./components/objecttextsaddbutton";
-import /*embed*/ {ObjectTextsAddModal} from "./components/objecttextsaddmodal";
 
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
@@ -217,12 +207,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
                     component: ObjectListViewContainer,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'list'}
-            },
-            {
-                path: 'module/:module/import',
-                component: ObjectImport,
-                canActivate: [loginCheck, aclCheck],
-                data: {aclaction: 'import'}
             },
             /*
             {
@@ -291,6 +275,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionEditButton,
+        ObjectActionEditRelatedButtonHelper,
+        ObjectActionEditRelatedButton,
         ObjectActionSaveButton,
         ObjectActionSaveRelatedButton,
         ObjectActionDeleteButton,
@@ -306,7 +292,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionNewrelatedButton,
         ObjectActionNewCopyRuleBeanButton,
         ObjectActionNewCopyRuleBeanButtonModelHelper,
-        ObjectActionImportButton,
         ObjectActionSelectButton,
         ObjectEditModal,
         ObjectEditModalWReference,
@@ -368,13 +353,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectReminderButton,
         ObjectActionBeanToMailButton,
         ObjectActionMailModal,
-        ObjectImport,
-        ObjectImportSelect,
-        ObjectImportMap,
-        ObjectImportFixed,
-        ObjectImportCheck,
-        ObjectImportUpdate,
-        ObjectImportResult,
         ObjectMergeButton,
         ObjectAddresses,
         ObjectAddressesPipe,
@@ -398,9 +376,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModelPopoverField,
         ObjectModelPopoverRelated,
         ObjectModelPopoverRelatedItem,
-        ObjectTexts,
-        ObjectTextsAddButton,
-        ObjectTextsAddModal,
         ObjectRecordMessagesBadge,
         ObjectActionDeactivateBeansButton,
         ObjectActionDeactivateBeansModal
@@ -433,7 +408,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectEditModalDialogContainer,
         ObjectListHeaderActionMenu,
         ObjectRecordMessagesBadge,
-        ObjectRelatedlistFiles
+        ObjectRelatedlistFiles,
+        ObjectKeyValuesPipe
     ]
 })
 export class ObjectComponents {

@@ -34,7 +34,10 @@ export class GroupwareDetailPaneBean implements OnInit {
         private metadata: metadata,
         private model: model,
         private router: Router,
-    ) {}
+        private view: view
+    ) {
+        this.view.displayLabels = false;
+    }
 
     public ngOnInit() {
         // get the fieldconfig

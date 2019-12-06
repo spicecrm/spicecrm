@@ -6,7 +6,7 @@
         <acltypes-manager-types class="slds-size--1-of-2 slds-border--right" (typeselected)="setType($event)"></acltypes-manager-types>
         <div class="slds-size--1-of-2">
             <div style="height: 50%;">
-                <acltypes-manager-types-fields  [authtypemodule]="activeType.authtypemodule" [authtypefields]="activeType.authtypefields" (addfield)="addField($event)" (deletefield)="deleteField($event)"></acltypes-manager-types-fields>
+                <acltypes-manager-types-fields  [authtypemodule]="activeType.authtypemodule" [authtypefields]="activeType.authtypefields" (addfields)="addFields($event)" (deletefield)="deleteField($event)"></acltypes-manager-types-fields>
             </div>
             <div style="height: 50%;">
                 <acltypes-manager-types-actions [authtypeactions]="activeType.authtypeactions" (addaction)="addAction($event)" (deleteaction)="deleteAction($event)"></acltypes-manager-types-actions>

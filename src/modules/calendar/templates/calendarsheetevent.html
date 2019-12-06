@@ -1,8 +1,13 @@
 <div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [class.slds-p-vertical--xx-small]="event.saving" [ngStyle]="eventStyle" [draggable]="isDraggable">
     <ng-container *ngIf="!event.saving; else saving">
-        <div class="slds-grid slds-grid--align-spread">
-            <div class="slds-truncate" style="height: 100%;">
-                <calendar-event-summary [ismulti]="event.isMulti" [isabsence]="isAbsense" [isschedulesheet]="isScheduleSheet" [hasDarkColor]="hasDarkColor"></calendar-event-summary>
+        <div class="slds-grid slds-grid--align-spread" style="height: 100%;">
+            <div class="slds-truncate" style="height: inherit; width: 100%">
+                <object-record-fieldset-horizontal-list *ngIf="headerFieldset; else summaryContainer" [ngClass]="textClass" [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
+                <ng-template #summaryContainer>
+                    <span modelPopOver class="slds-text-link--reset" [ngClass]="textClass">{{model.data.summary_text}}</span>
+                    <span *ngIf="event.isMulti && startHour && !isAbsence" [ngClass]="textClass">, {{startHour}}</span>
+                </ng-template>
+                <object-record-fieldset-horizontal-list *ngIf="subFieldset && !event.isMulti" [ngClass]="textClass" [fieldset]="subFieldset"></object-record-fieldset-horizontal-list>
             </div>
             <object-action-menu *ngIf="canEdit" [buttonsize]="'xx-small'"></object-action-menu>
         </div>
