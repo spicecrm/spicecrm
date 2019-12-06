@@ -1,69 +1,72 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnChanges, Output} from "@angular/core";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "@angular/core";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
-/**
- * @ignore
- */
+/* @ignore */
 declare var _: any;
-
-/* -----------------------------------
-*  -- REQUIRED INPUT LIST STRUCTURE --
-* ------------------------------------
-* - id: string
-* - parent_id: string
-* - parent_sequence: string
-* - name: string
-* - selected: boolean
-* - clickable: boolean
-* -------------------
-* -- @INPUT PARAMS --
-* -------------------
-* - treelist: any[] = [];
-* - selectedItem: string = "";
-* - config: any = {
-*       draggable: false,
-*       canadd: false,
-*       clickable: false,
-*       expandall: false,
-*       collapsible: true
-*   };
-*---------------------
-* -- @OUTPUT PARAMS --
-* --------------------
-* - selectedItem$: string = selected item id;
-* - addItem$: string = parent item id
-* - itemPosition$: any = {
-*       id: string = moved item id,
-*       parent_id: string = parent item id,
-*       parent_name: string = parent item name,
-*       parent_sequence: string = item new sequence
-*   };
-* ----------------------------
-* TODO:Lazy Load functionality
-*/
 
 @Component({
     selector: "system-tree",
-    templateUrl: "./src/systemcomponents/templates/systemtree.html"
+    templateUrl: "./src/systemcomponents/templates/systemtree.html",
+    styles: ['.cdk-drag-animating {transition: none}']
 })
 
 export class SystemTree implements OnChanges {
-    @Input() public treelist: any[] = [];
+    /*
+    * @input sourceList: object[]
+    * [
+    *   {
+    *     id: string,
+    *     parent_id: string,
+    *     parent_sequence: number,
+    *     name: string,
+    *     clickable: boolean
+    *   }
+    * ]
+    */
+    @Input() public sourceList: any[] = [];
+    /*
+    * @input selectedItem: string
+    */
     @Input() public selectedItem: string = "";
-
-    @Output() public addItem$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public selectedItem$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public itemPosition$: EventEmitter<any> = new EventEmitter<any>();
+    /*
+    * @output selectedItemChange: string = selectedItem
+    * @note: selectedItem can be used as two way binding angular like:
+    *        <system-tree [(selectedItem)] ></system-tree>
+    */
+    @Output() public selectedItemChange: EventEmitter<any> = new EventEmitter<any>();
+    /*
+     * @output onItemAdd: object
+     * {
+     *   id: string = parentId,
+     *   name: string = parentName
+     * }
+     */
+    @Output() public onItemAdd: EventEmitter<any> = new EventEmitter<any>();    /*
+     * @output onTreeDrop: object
+     * {
+     *   itemWithNewParent?: object
+     *      {
+     *          id: string,
+     *          parent_id: string
+     *      },
+     *   newSortSequences?: object
+     *      {
+     *          id: string,
+     *          index: number
+     *      }
+     * }
+     */
+    @Output() public onTreeDrop: EventEmitter<any> = new EventEmitter<any>();
 
     public tree: any[] = [];
-    public droplistids: any[] = [];
+    private dragPosition: any;
+    private isDragging: boolean = false;
     private treeConfig: any = {
         draggable: false,
         canadd: false,
-        clickable: false,
         expandall: false,
         collapsible: true,
     };
@@ -72,95 +75,257 @@ export class SystemTree implements OnChanges {
         return this.treeConfig;
     }
 
+    /*
+    * @input config: object
+    * {
+    *   draggable: boolean = false,
+    *   canadd: boolean = false,
+    *   expandall: boolean = false,
+    *   collapsible: boolean = true
+    * }
+    * @set treeConfig from the input config
+    */
     @Input()
     set config(obj) {
         this.treeConfig.draggable = obj.draggable || false;
         this.treeConfig.canadd = obj.canadd || false;
-        this.treeConfig.clickable = obj.clickable || false;
         this.treeConfig.expandall = obj.expandall || false;
         this.treeConfig.collapsible = obj.collapsible || true;
     }
 
-    get dropListIds() {
-        return this.droplistids;
+    /*
+    * @param changes: SimpleChanges
+    * @build tree from sourceList
+    * @handle selectedItem
+    */
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.sourceList) this.buildTree();
+        if (changes.selectedItem) this.handleClick(this.selectedItem);
     }
 
-    set dropListIds(val) {
-        this.droplistids = val;
+    /*
+    * @reset tree
+    * @sort by sequence
+    * @add treeItem recursively
+    * @set hasChildren
+    */
+    private buildTree() {
+        this.tree = [];
+        this.sortBySequence();
+        this.addTreeItem();
+        this.setHasChildren();
     }
 
-    public ngOnChanges() {
-        this.resetTreeList();
-        this.tree = this.buildTree(this.treelist);
-    }
-
-    private resetTreeList() {
-        this.treelist.map(item => {
-            if (item.parent_id === "" || item.parent_id === undefined) {
-                item.parent_id = null;
+    /*
+    * group the sourceList items by parent_id to succeed sorting the children by parent_sequence without
+    * loosing the parent children order
+    * @sort by name
+    * @group by parent_id
+    * @reset sourceList
+    * @sort by parent_sequence
+    */
+    private sortBySequence() {
+        this.sourceList.sort((a, b) => a.name && b.name ? a.name > b.name ? 1 : -1 : 0);
+        let groupedByParent = _.groupBy(this.sourceList, item => item.parent_id);
+        this.sourceList = [];
+        for (let parentId in groupedByParent) {
+            if (groupedByParent.hasOwnProperty(parentId)) {
+                groupedByParent[parentId].sort((a, b) => a.parent_sequence && b.parent_sequence ? +a.parent_sequence > +b.parent_sequence ? 1 : -1 : 0);
+                this.sourceList = [...this.sourceList, ...groupedByParent[parentId]];
             }
-            item.parent_name = "";
-            item = _.omit(item, "path", "level", "children");
-            return item;
+        }
+    }
+
+    /*
+    * recursive method to push the sourceList items to the tree array with the correct parent child order
+    * and add the necessary systemTreeDefs values for the item behaviours handling.
+    * @param parentId: string = ''
+    * @param level: number = 1
+    * @set systemTreeDefs
+    * @push sourceList Item to tree array
+    * @call self and pass the id as parentId and the level +1
+    * @structure systemTreeDefs: object
+    * {
+    *   level: number,
+    *   expanded: boolean,
+    *   clickable: boolean,
+    *   isSelected: boolean,
+    *   hasChildren: boolean
+    * }
+    */
+    private addTreeItem(parentId = '', level = 1) {
+        for (let item of this.sourceList) {
+            if (!item.parent_id && parentId == '' || item.parent_id == parentId) {
+                if (!item.systemTreeDefs) {
+                    item.systemTreeDefs = {};
+                }
+                item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
+                item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
+                item.systemTreeDefs.level = level;
+                item.systemTreeDefs.isSelected = this.selectedItem == item.id;
+                this.tree.push(item);
+                if (item.systemTreeDefs.expanded) {
+                    this.addTreeItem(item.id, level + 1);
+                }
+            }
+        }
+    }
+
+    /*
+    * @set hasChildren for each tree item from the sourceList
+    */
+    private setHasChildren() {
+        this.tree.forEach(item => {
+            item.systemTreeDefs.hasChildren = this.sourceList.some(i => i.parent_id == item.id);
         });
     }
 
-    private buildTree(treelist, parent = null, level = 0, parentpath = []) {
-        let tree = [];
-        for (let item of treelist) {
-            if (item.parent_id === parent) {
-
-                item.expanded = this.config.collapsible ? this.config.expandall : true;
-                item.clickable = this.config.clickable;
-                item.level = level + 1;
-                item.path = parentpath.slice();
-                item.path[level] = item.id;
-
-                let children = this.buildTree(treelist, item.id, level + 1, item.path);
-                delete item.path[level + 1];
-
-                item.children = children.length ? children : [];
-
-                // set expanded if child is selected or also expanded
-                for (let child of children) {
-                    if (child.id === this.selectedItem || child.expanded) {
-                        item.expanded = true;
-                    }
-                }
-                tree.push(item);
-            }
-        }
-        return tree;
-    }
-
+    /*
+    * Handles the cdkDrop event and move the item in the tree depending its drop position
+    * Change the parent_id for the item and its level depending on its drop position and reassign hasChildren
+    * emits the necessary changes as @output by onTreeDrop.
+    * @param dragEvent: CdkDragDrop
+    * @define necessary variables
+    * @set droppedItem.parent_id
+    * @set droppedItem.level
+    * @set target.systemTreeDefs.hasChildren
+    * @move droppedItem in tree array
+    * @reset dragPosition
+    * @emit object: {itemWithNewParent, itemsWithNewSequence} by @output onTreeDrop
+    */
     private handleDrop(dragEvent: CdkDragDrop<any>) {
-        let newParent: any = dragEvent.container.data[0];
-        let newItemPosition = {
-            id: dragEvent.item.data.id,
-            parent_id: newParent.parent_id,
-            parent_sequence: dragEvent.currentIndex
-        };
-        let canDrop = !this.treelist
-            .some(item => item.id === newItemPosition.parent_id && item.path.includes(newItemPosition.id));
+        this.isDragging = false;
+        if (!this.dragPosition) return;
+        let oldParentId = dragEvent.item.data.parent_id;
+        let target = this.tree.find(item => item.id == this.dragPosition.id);
+        let targetIndex = this.tree.findIndex(item => item.id == this.dragPosition.id);
 
-        if (dragEvent.previousContainer === dragEvent.container) {
-            moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
-            this.itemPosition$.emit(newItemPosition);
-        } else if (canDrop) {
-            dragEvent.item.data.level = newParent.level;
-            transferArrayItem(dragEvent.previousContainer.data,
-                dragEvent.container.data,
-                dragEvent.previousIndex,
-                dragEvent.currentIndex);
-            this.itemPosition$.emit(newItemPosition);
+        switch (this.dragPosition.position) {
+            case 'before':
+                let isFirst: boolean = targetIndex - 1 <= 0;
+                let previousTarget = this.tree[isFirst ? 0 : targetIndex - 1];
+                dragEvent.item.data.parent_id = isFirst ? null : previousTarget.systemTreeDefs.hasChildren ? previousTarget.id : previousTarget.parent_id;
+                dragEvent.item.data.systemTreeDefs.level = isFirst ? 1 : previousTarget.systemTreeDefs.hasChildren ? previousTarget.systemTreeDefs.level + 1 : previousTarget.systemTreeDefs.level;
+                targetIndex = isFirst ? 0 : targetIndex;
+                break;
+            case 'item':
+                if (dragEvent.previousIndex > targetIndex) targetIndex++;
+                dragEvent.item.data.systemTreeDefs.level = target.systemTreeDefs.level + 1;
+                dragEvent.item.data.parent_id = target.id;
+                target.systemTreeDefs.hasChildren = true;
+                break;
+            case 'after':
+                let isLast: boolean = targetIndex >= this.tree.length - 1;
+                let nextTarget = this.tree[isLast ? this.tree.length - 1 : targetIndex];
+                dragEvent.item.data.systemTreeDefs.level = isLast ? 1 : nextTarget.systemTreeDefs.hasChildren ? nextTarget.systemTreeDefs.level + 1 : nextTarget.systemTreeDefs.level;
+                dragEvent.item.data.parent_id = isLast ? null : nextTarget.systemTreeDefs.hasChildren ? nextTarget.id : nextTarget.parent_id;
+                targetIndex = isLast ? this.tree.length - 1 : dragEvent.previousIndex > targetIndex ? targetIndex + 1 : targetIndex;
+                break;
         }
+
+        let newSortSequences;
+        let itemWithNewParent;
+
+        if (dragEvent.previousIndex != targetIndex) {
+            this.tree.some(item => {
+                if (item.id == oldParentId) {
+                    item.systemTreeDefs.hasChildren = this.sourceList.some(item => item.parent_id == oldParentId);
+                    return true;
+                }
+            });
+            moveItemInArray(this.tree, dragEvent.previousIndex, targetIndex);
+            newSortSequences = this.tree
+                .filter(item => item.parent_id == dragEvent.item.data.parent_id || item.parent_id == oldParentId)
+                .map((item, index) => item = {id: item.id, index});
+
+            this.tree = this.tree.map(item => {
+                let index = newSortSequences.findIndex(i => i.id == item.id);
+                if (index > -1) item.parent_sequence = index;
+                return item;
+            });
+        }
+
+        if (dragEvent.item.data.parent_id != oldParentId) {
+            itemWithNewParent = {
+                id: dragEvent.item.data.id,
+                parent_id: dragEvent.item.data.parent_id
+            };
+        }
+
+
+        this.dragPosition = null;
+        this.onTreeDrop.emit({itemWithNewParent, newSortSequences});
     }
 
-    private handleDropListId(obj) {
-        if (obj.action == 'add') {
-            this.droplistids.push(obj.id);
-        } else {
-            this.droplistids = this.droplistids.filter(id => id != obj.id);
-        }
+    /*
+    * @param value
+    * @set isDragging
+    */
+    private setIsDragging(value) {
+        this.isDragging = value;
+    }
+
+    /*
+    * @param pos: null | object = {id: string, position: 'before' | 'item' | 'after'}
+    * @set dragPosition
+    */
+    private handleDragPosition(pos) {
+        this.dragPosition = pos;
+    }
+
+    /*
+    * @param id: string
+    * @set item.systemTreeDefs.expanded
+    * @build tree
+    */
+    private handleExpand(id) {
+        this.sourceList.some(item => {
+            if (item.id == id) {
+                item.systemTreeDefs.expanded = !item.systemTreeDefs.expanded;
+                return true;
+            }
+        });
+        this.buildTree();
+    }
+
+    /*
+    * if the item is clickable select it otherwise expand it and unselect the previous selected item from the tree.
+    * @param id: string
+    * @set? item.systemTreeDefs.isSelected
+    * @set? selectedItem
+    * @handle? expand
+    * @emit id by @output selectedItemChange
+    */
+    private handleClick(id) {
+        this.tree.some(item => {
+            if (item.id == id) {
+                if (item.systemTreeDefs && item.systemTreeDefs.clickable) {
+                    item.systemTreeDefs.isSelected = true;
+                    this.selectedItemChange.emit(id);
+                    this.selectedItem = id;
+                } else {
+                    this.handleExpand(id);
+                }
+
+                return true;
+            }
+        });
+        this.tree.some(item => {
+            if (item.id != id && item.systemTreeDefs && item.systemTreeDefs.isSelected) {
+                item.systemTreeDefs.isSelected = false;
+                return true;
+            }
+        });
+    }
+
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return index
+    */
+    private trackByFn(index, item) {
+        return item.id;
     }
 }

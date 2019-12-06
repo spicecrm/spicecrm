@@ -13,7 +13,7 @@
                                 <a href="javascript:void(0);">{{language.getLabel('LBL_IMPORT')}}</a>
                             </li>
                             <li *ngIf="currentImportStep >= 1" class="slds-breadcrumb__item slds-text-title--caps slds-p-left--x-small">
-                                {{ objectimport.importAction == 'new' ? language.getLabel('LBL_LOAD_NEW_RECORDS'): language.getLabel('LBL_UPDATE_EXISTING_RECORDS')}}
+                                {{ spiceImporter.importAction == 'new' ? language.getLabel('LBL_LOAD_NEW_RECORDS'): language.getLabel('LBL_UPDATE_EXISTING_RECORDS')}}
                             </li>
                         </ol>
                     </nav>
@@ -52,12 +52,12 @@
             class="slds-button slds-button--brand slds-grid slds-grid_vertical-align-center"
             (click)="nextStep()">
         <span *ngIf="!processing" class="slds-p-right--xx-small">
-            {{objectimport.importAction == 'new' ?
+            {{spiceImporter.importAction == 'new' ?
             language.getLabel('LBL_IMPORT'):
             language.getLabel('LBL_UPDATE') }}
         </span>
         <span *ngIf="processing" class="slds-p-right--xx-small">
-            {{objectimport.importAction == 'new' ?
+            {{spiceImporter.importAction == 'new' ?
             language.getLabel('LBL_IMPORTING'):
             language.getLabel('LBL_UPDATING') }}
         </span>
@@ -70,22 +70,22 @@
 
 </div>
 <div #contentcontainer class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
-    <object-import-select
+    <spice-importer-select
             (templateNameSet)="templateName = $event"
             (importActionSet)="setImportAction($event)"
-            [hidden]="currentImportStep!==0"></object-import-select>
-    <object-import-map
+            [hidden]="currentImportStep!==0"></spice-importer-select>
+    <spice-importer-map
             [modelfields]="modelFields"
             [requiredmodelfields]="requiredModelFields"
-            [hidden]="currentImportStep!==1"></object-import-map>
-    <object-import-fixed
+            [hidden]="currentImportStep!==1"></spice-importer-map>
+    <spice-importer-fixed
             [modelfields]="modelFields"
             [requiredmodelfields]="requiredModelFields"
             [hidden]="currentImportStep!==2"
-            [currentimportstep]="currentImportStep"></object-import-fixed>
-    <object-import-check *ngIf="currentImportStep === 3 && objectimport.importAction == 'new'"></object-import-check>
-    <object-import-update
-            *ngIf="currentImportStep === 3 && objectimport.importAction == 'update'"></object-import-update>
-    <object-import-result [hidden]="currentImportStep!==4"></object-import-result>
+            [currentimportstep]="currentImportStep"></spice-importer-fixed>
+    <spice-importer-check *ngIf="currentImportStep === 3 && spiceImporter.importAction == 'new'"></spice-importer-check>
+    <spice-importer-update
+            *ngIf="currentImportStep === 3 && spiceImporter.importAction == 'update'"></spice-importer-update>
+    <spice-importer-result [hidden]="currentImportStep!==4"></spice-importer-result>
 </div>
 

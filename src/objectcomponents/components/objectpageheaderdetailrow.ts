@@ -31,14 +31,19 @@ export class ObjectPageHeaderDetailRow implements OnInit {
         if (this.model.data && this.model.data.acl_fieldcontrol) {
             let thisFieldsetFields = [];
             for (let fieldsetFieldIndex in fieldsetFields) {
-                if (!(this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] && this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] === '1')) {
-                    thisFieldsetFields.push(fieldsetFields[fieldsetFieldIndex]);
+                if ( this.metadata.hasField( this.model.module, fieldsetFields[fieldsetFieldIndex].field )) {
+                    if( !(this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] && this.model.data.acl_fieldcontrol[fieldsetFields[fieldsetFieldIndex].field] === '1') ) {
+                        thisFieldsetFields.push( fieldsetFields[fieldsetFieldIndex] );
+                    }
                 }
             }
 
             return thisFieldsetFields;
         }
 
+        fieldsetFields.forEach( ( field, index ) => {
+            if ( !this.metadata.hasField( this.model.module, field.field ) ) fieldsetFields.splice( index,1 );
+        });
         return fieldsetFields;
 
     }
