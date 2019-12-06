@@ -13,6 +13,8 @@ import {backend} from "../../../services/backend.service";
 })
 export class GetStatsButton {
 
+    public report: any[] = [];
+
     constructor(
         private language: language,
         private metadata: metadata,
@@ -22,6 +24,11 @@ export class GetStatsButton {
     }
 
     public execute() {
+        this.backend.getRequest(`/CleverReach/CampaignTasks/${this.model.id}/report`)
+            .subscribe(response => {
+                this.report = response;
+                window.console.log(this.report);
+            });
 
     }
 }
