@@ -1,0 +1,34 @@
+Exchange Settings
+<button class="slds-button slds-button--brand" (click)="subscribe()">subscribe</button>
+<button class="slds-button slds-button--brand" (click)="reload()">reload</button>
+
+<table width="100%" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-size--1-of-1">
+    <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+                <div class="slds-truncate">Folder</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate">last active</div>
+            </th>
+            <th class="slds-cell-shrink" scope="col">
+                <div class="slds-truncate">last active</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let subscriptionOption of subscriptionOptions" class="slds-hint-parent">
+            <td>
+                <div class="slds-truncate">{{subscriptionOption}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{lastActive(subscriptionOption)}}</div>
+            </td>
+            <td>
+                <button class="slds-button slds-button_icon" (click)="toggle(subscriptionOption)">
+                    <system-utility-icon size="x-small" [icon]="getSubscriptionIcon(subscriptionOption)"></system-utility-icon>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
