@@ -17,7 +17,6 @@ import {modal} from "../../../services/modal.service";
 
 export class SpiceBCardReaderButton {
 
-    private executed: boolean = false;
     @ViewChild("fileupload", {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
 
     constructor(private modelattachments: modelattachments,
@@ -32,9 +31,6 @@ export class SpiceBCardReaderButton {
     }
 
     public execute() {
-        if (this.executed) return;
-        this.executed = true;
-        window.setTimeout(() => this.executed = false, 5000);
         let mouseEvent = new MouseEvent("click", {bubbles: false});
         this.fileupload.element.nativeElement.dispatchEvent(mouseEvent);
     }
@@ -75,7 +71,7 @@ export class SpiceBCardReaderButton {
      */
     protected getNewModelAddresses(fields) {
         let addresses: any = {};
-        if (fields.adr[0]) {
+        if (fields.adr && fields.adr[0]) {
             addresses.primary_address_pobox = fields.adr[0].value[0] || '';
             addresses.primary_address_attn = fields.adr[0].value[1] || '';
             addresses.primary_address_street = fields.adr[0].value[2] || '';
@@ -83,7 +79,7 @@ export class SpiceBCardReaderButton {
             addresses.primary_address_postalcode = fields.adr[0].value[5] || '';
             addresses.primary_address_country = fields.adr[0].value[6] || '';
         }
-        if (fields.adr[1]) {
+        if (fields.adr && fields.adr[1]) {
             addresses.alt_address_pobox = fields.adr[1].value[0] || '';
             addresses.alt_address_attn = fields.adr[1].value[1] || '';
             addresses.alt_address_street = fields.adr[1].value[2] || '';
@@ -100,6 +96,15 @@ export class SpiceBCardReaderButton {
     private uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
         if (files.length == 1) this.doUpload(files[0]);
+        this.fileupload.element.nativeElement.value = '';
+    }
+
+    /**
+     * stop propagation on the field clicl
+     * @param event
+     */
+    private uploadclick(event) {
+        event.stopPropagation();
     }
 
     /*
@@ -126,7 +131,6 @@ export class SpiceBCardReaderButton {
                     });
             });
         });
-
     }
 
     /*
@@ -140,17 +144,17 @@ export class SpiceBCardReaderButton {
         if (newModelFields.first_name && newModelFields.last_name && fields.n && fields.n.length > 0) {
             newModelPresets = {...newModelPresets, ...this.getNewModelFullName(fields)};
         }
-        if (newModelFields.email_addresses || newModelFields.emailaddresses && fields.email && fields.email.length > 0) {
+        if ((newModelFields.email_addresses || newModelFields.emailaddresses) && fields.email && fields.email.length > 0) {
             newModelPresets.emailaddresses = this.getNewModelEmailAddresses(fields);
         }
-        if (newModelFields.primary_address_street || newModelFields.alt_address_street && fields.adr && fields.adr.length > 0) {
+        if ((newModelFields.primary_address_street || newModelFields.alt_address_street) && fields.adr && fields.adr.length > 0) {
             newModelPresets = {...newModelPresets, ...this.getNewModelAddresses(fields)};
         }
         if (newModelFields.title && fields.title && fields.title.length > 0) {
             newModelPresets.title = fields.title[0].value[0];
         }
-        if (newModelFields.phone_home || newModelFields.phone_mobile ||
-            newModelFields.phone_other || newModelFields.phone_work && fields.title && fields.title.length > 0) {
+        if ((newModelFields.phone_home || newModelFields.phone_mobile ||
+            newModelFields.phone_other || newModelFields.phone_work) && fields.title && fields.title.length > 0) {
             newModelPresets = {...newModelPresets, ...this.getNewModelPhone(fields)};
         }
         return newModelPresets;

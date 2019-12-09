@@ -12,6 +12,8 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
+
 
 import /*embed*/ {SalesPlanningService} from './services/salesplanning.service';
 import /*embed*/ {SalesPlanningToolContentNoteModal} from './components/salesplanningtoolcontentnotemodal';
@@ -19,7 +21,8 @@ import /*embed*/ {SalesPlanningToolContent} from './components/salesplanningtool
 import /*embed*/ {SalesPlanningToolTree} from './components/salesplanningtooltree';
 import /*embed*/ {SalesPlanningTool} from './components/salesplanningtool';
 import /*embed*/ {SalesPlanningToolInputHelperModal} from './components/salesplanningtoolinputhelpermodal';
-import {DirectivesModule} from "../../directives/directives";
+import /*embed*/ {SalesPlanningReporterIntegrationExportButton} from './components/salesplanningreporterintegrationexportbutton';
+import /*embed*/ {SalesPlanningReporterIntegrationExportModal} from './components/salesplanningreporterintegrationexportmodal';
 
 @NgModule({
     imports: [
@@ -36,7 +39,9 @@ import {DirectivesModule} from "../../directives/directives";
         SalesPlanningToolContent,
         SalesPlanningToolTree,
         SalesPlanningTool,
-        SalesPlanningToolInputHelperModal
+        SalesPlanningToolInputHelperModal,
+        SalesPlanningReporterIntegrationExportButton,
+        SalesPlanningReporterIntegrationExportModal
     ],
     providers: [SalesPlanningService]
 })
