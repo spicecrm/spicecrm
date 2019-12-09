@@ -41,7 +41,17 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         quarters: 'Q',
         years: 'Y'
     };
+
+    /**
+     * the info retrieved on the node from the backend call
+     */
     public nodeInfo: any = {};
+
+    /**
+     * an aray with the node crumbs as retriveed with the call from the backend
+     */
+    public nodeCrumbs: any[] = [];
+
     private isLoading: boolean = false;
     private isSaving: boolean = false;
     private isClosing: boolean = false;
@@ -61,8 +71,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 private planningService: SalesPlanningService) {
     }
 
-    get nodeName() {
-        return this.planningService.selectedNodes.map(node => node.name).join('/');
+    get displayNodeCrumbs() {
+        return this.nodeCrumbs.length > 0 ? this.nodeCrumbs : this.planningService.selectedNodes.map(node => {
+            return {displayname: node.name};
+        });
     }
 
     get canEdit() {
@@ -152,6 +164,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
         if (!this.node) return;
         this.isLoading = true;
         this.nodeInfo = undefined;
+        this.nodeCrumbs = [];
         let params = {
             pathArray: this.planningService.selectedNodesIds,
             characteristics: this.planningService.selectedNode.level > 1 ? this.planningService.selectedCharacteristicIds : [this.planningService.characteristicTerritory],
@@ -160,6 +173,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             .subscribe(nodeInfo => {
                 if (nodeInfo && nodeInfo.planningNode) {
                     this.nodeInfo = nodeInfo;
+                    this.nodeCrumbs = nodeInfo.nodecrumbs;
                     this.getNodeContent();
                 } else {
                     this.isLoading = false;
@@ -210,10 +224,10 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 if (!field.formula || field.formula.length == 0) return;
 
                 // do not execute on editbale fields on a leaf
-                if(this.nodeInfo.leaf && field.editable) return;
+                if (this.nodeInfo.leaf && field.editable) return;
 
                 // do not calculate on fields that have a callback function if we are not on a leaf
-                if(!this.nodeInfo.leaf && field.cbfunction) return;
+                if (!this.nodeInfo.leaf && field.cbfunction) return;
 
                 this.data[field.id][period.key] = this.getCellValue(this.data[field.id], field.formula, period.key);
 
@@ -354,7 +368,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     */
     private setViewMode() {
         this.dataBackup = undefined;
-        this.rowsSumBackup =  undefined;
+        this.rowsSumBackup = undefined;
         this.view.setViewMode();
         this.planningService.isEditing = false;
     }
@@ -389,9 +403,9 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private openInputHelper() {
         this.modal.openModal('SalesPlanningToolInputHelperModal', true, this.injector)
             .subscribe(ref => {
-               ref.instance.periods = this.periods;
-               ref.instance.allFields = this.contentFields;
-               ref.instance.response.subscribe(res => this.executeInputHelperData(res));
+                ref.instance.periods = this.periods;
+                ref.instance.allFields = this.contentFields;
+                ref.instance.response.subscribe(res => this.executeInputHelperData(res));
             });
     }
 
@@ -409,7 +423,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     */
     private executeInputHelperData(res) {
         if (!res) return;
-        let periodRange = this.periods.slice(res.startPeriod, +res.endPeriod +1);
+        let periodRange = this.periods.slice(res.startPeriod, +res.endPeriod + 1);
         let value = this.machineFormat(res.value);
         periodRange.forEach(period => {
             if (res.fromField == 'fixed') {
