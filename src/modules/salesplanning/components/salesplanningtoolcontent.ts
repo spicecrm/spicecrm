@@ -78,7 +78,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     }
 
     get canEdit() {
-        return this.metadata.checkModuleAcl(this.model.module, 'edit');
+        return this.model.getField('status') == 'a';
     }
 
     get modelOptions(): any {
