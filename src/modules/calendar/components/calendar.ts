@@ -35,6 +35,7 @@ declare var moment: any;
 export class Calendar implements AfterViewInit, OnDestroy {
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
+    public componentconfig: any = {};
     public googleIsVisible: boolean = true;
     @ViewChild('calendarcontainer', {read: ViewContainerRef, static: true}) private calendarContainer: ViewContainerRef;
     @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarcontent: ViewContainerRef;
@@ -66,6 +67,10 @@ export class Calendar implements AfterViewInit, OnDestroy {
             this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
         });
         this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
+    }
+
+    get pickerDualMode() {
+        return this.componentconfig.pickerDualMode;
     }
 
     get isMobileView() {
