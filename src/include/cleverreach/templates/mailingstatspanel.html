@@ -1,5 +1,11 @@
 <system-card>
-    <system-card-header icon="metrics" cardtitel="Mailing Stats"></system-card-header>
+
+
+    <system-card-header icon="metrics" cardtitel="Mailing Stats">
+    <button class="slds-button slds-button--icon" (click)="reloadData()">
+        <system-button-icon [icon]="'refresh'"></system-button-icon>
+    </button>
+    </system-card-header>
     <system-card-body class="slds-scrollable" style="display: block">
         <system-spinner *ngIf="isLoading"></system-spinner>
         <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
