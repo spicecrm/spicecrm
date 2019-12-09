@@ -1,11 +1,8 @@
 /**
  * @module ObjectComponents
  */
-import {
-    AfterViewInit,  Component,  ViewChild, ViewContainerRef,
-    OnDestroy
-} from '@angular/core';
-import { ActivatedRoute}   from '@angular/router';
+import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 
@@ -14,44 +11,32 @@ import {broadcast} from '../../services/broadcast.service';
     templateUrl: './src/objectcomponents/templates/objectlistviewcontainer.html'
 })
 export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
-    @ViewChild('container', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
-    moduleName: any = '';
-    initialized: boolean = false;
-    componentRefs: any = [];
-    listViewDefs: any = [];
-    fieldSet: string = '';
-    listFields: Array<any> = [];
-    componentSubscriptions: Array<any> = [];
+    @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    private moduleName: any = '';
+    private initialized: boolean = false;
+    private componentRefs: any = [];
+    private componentSubscriptions: any[] = [];
 
     constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private broadcast: broadcast) {
+        // subscribe to route params.module changes
         this.activatedRoute.params.subscribe(params => {
-            this.moduleName = params['module'];
-            if (this.initialized)
+            this.moduleName = params.module;
+            if (this.initialized) {
                 this.buildContainer();
+            }
         });
-
+        // subscribe to applauncher.setrole
         this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         }));
-
-
     }
 
-    private handleMessage(message) {
-        switch (message.messagetype) {
-            case 'applauncher.setrole':
-                this.buildContainer();
-                break;
-
-        }
-    }
-
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.initialized = true;
         this.buildContainer();
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         // destroy components
         for (let component of this.componentRefs) {
             component.destroy();
@@ -63,7 +48,12 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
         }
     }
 
-    buildContainer() {
+    /*
+    * @add ObjectListViewContainer components from componentConfig
+    * @pass componentconfig to componentRef
+    * @push componentRef to componentRefs
+    */
+    private buildContainer() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -73,13 +63,26 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
         let componentconfig = this.metadata.getComponentConfig('ObjectListViewContainer', this.moduleName);
         for (let view of this.metadata.getComponentSetObjects(componentconfig.componentset)) {
             this.metadata.addComponent(view.component, this.container).subscribe(componentRef => {
-                if (view.componentconfig && view.componentconfig.length > 0)
-                    componentRef.instance['componentconfig'] = view.componentconfig;
-                else
-                    componentRef.instance['componentconfig'] = this.metadata.getComponentConfig(view.component, this.moduleName);
+                if (view.componentconfig && Object.keys(view.componentconfig).length > 0) {
+                    componentRef.instance.componentconfig = view.componentconfig;
+                } else {
+                    componentRef.instance.componentconfig = this.metadata.getComponentConfig(view.component, this.moduleName);
+                }
                 this.componentRefs.push(componentRef);
             });
         }
     }
 
+    /*
+    * @handle broadcast message
+    * @param message: object
+    * @buildContainer
+    */
+    private handleMessage(message) {
+        switch (message.messagetype) {
+            case 'applauncher.setrole':
+                this.buildContainer();
+                break;
+        }
+    }
 }
