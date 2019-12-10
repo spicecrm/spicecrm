@@ -13,8 +13,11 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import {ProspectListsToMailChimpButton} from "./components/prospectliststomailchimphbutton";
-import {ProspectListsToMailChimpModal} from "./components/prospectliststomailchimphmodal";
+// import {ProspectListsToMailChimpButton} from "./components/prospectliststomailchimphbutton";
+// import {ProspectListsToMailChimpModal} from "./components/prospectliststomailchimphmodal";
+// import {MailChimpCreateCampaignButton} from "./components/mailchimpcreatecampaignbutton";
+// import {MailChimpCreateCampaignModal} from "./components/mailchimpcreatecampaignmodal";
+import {MailChimpGetReportButton} from "./components/mailchimpgetreportbutton";
 
 
 @NgModule({
@@ -29,8 +32,11 @@ import {ProspectListsToMailChimpModal} from "./components/prospectliststomailchi
         ReactiveFormsModule,
     ],
     declarations: [
-        ProspectListsToMailChimpButton,
-        ProspectListsToMailChimpModal,
+        // ProspectListsToMailChimpButton,
+        // ProspectListsToMailChimpModal,
+        // MailChimpCreateCampaignButton,
+        // MailChimpCreateCampaignModal,
+        MailChimpGetReportButton
     ]
 })
 export class MailChimpModule {
