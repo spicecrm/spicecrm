@@ -529,11 +529,14 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     * @return number value without format | ''
     */
     private machineFormat(value) {
-        value = value.split(this.userPrefs.toUse.num_grp_sep).join('');
-        value = value.split(this.userPrefs.toUse.dec_sep).join('.');
-        if (isNaN(value = parseFloat(value))) return '';
-        return Math.floor(+value * Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits)) /
-            Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits);
+        if (value) {
+            value = value.split(this.userPrefs.toUse.num_grp_sep).join('');
+            value = value.split(this.userPrefs.toUse.dec_sep).join('.');
+            if (isNaN(value = parseFloat(value))) return '';
+            return Math.floor(+value * Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits)) /
+                Math.pow(10, this.userPrefs.toUse.default_currency_significant_digits);
+        }
+        return value;
     }
 
     /*
