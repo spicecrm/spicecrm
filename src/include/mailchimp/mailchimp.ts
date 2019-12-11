@@ -15,8 +15,8 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 // import {ProspectListsToMailChimpButton} from "./components/prospectliststomailchimphbutton";
 // import {ProspectListsToMailChimpModal} from "./components/prospectliststomailchimphmodal";
-// import {MailChimpCreateCampaignButton} from "./components/mailchimpcreatecampaignbutton";
-// import {MailChimpCreateCampaignModal} from "./components/mailchimpcreatecampaignmodal";
+import {MailChimpCreateCampaignButton} from "./components/mailchimpcreatecampaignbutton";
+import {MailChimpCreateCampaignModal} from "./components/mailchimpcreatecampaignmodal";
 import {MailChimpGetReportButton} from "./components/mailchimpgetreportbutton";
 
 
@@ -34,8 +34,8 @@ import {MailChimpGetReportButton} from "./components/mailchimpgetreportbutton";
     declarations: [
         // ProspectListsToMailChimpButton,
         // ProspectListsToMailChimpModal,
-        // MailChimpCreateCampaignButton,
-        // MailChimpCreateCampaignModal,
+        MailChimpCreateCampaignButton,
+        MailChimpCreateCampaignModal,
         MailChimpGetReportButton
     ]
 })

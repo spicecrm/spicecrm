@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<system-modal>
+    <system-modal-header (close)="close()">
+        <h1>{{language.getLabel('LBL_CREATE_MAILING')}} in {{language.getLabel('LBL_CLEVERREACH')}}</h1>
+    </system-modal-header>
+    <system-modal-content>
+        <form class="slds-form" [formGroup]="campaign" (ngSubmit)="onSubmit()">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}:</label>
+                <div class="slds-form-element__control">
+                    <input type="text" placeholder="name must be unique" class="slds-input" formControlName="name">
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_SUBJECT')}}:</label>
+                <div class="slds-form-element__control">
+                    <input type="text" placeholder="Placeholder Text" class="slds-input" formControlName="subject">
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_TYPE')}}:</label>
 
-</body>
-</html>
+                <div class="slds-form-element__control">
+                      <span class="slds-radio">
+                        <input type="radio" id="radio-15" value="regular" formControlName="type"/>
+                        <label class="slds-radio__label" for="radio-15">
+                          <span class="slds-radio_faux"></span>
+                          <span class="slds-form-element__label">Regular</span>
+                        </label>
+                      </span>
+                    <span class="slds-radio">
+                        <input type="radio" id="radio-16" value="plaintext" formControlName="type"/>
+                        <label class="slds-radio__label" for="radio-16">
+                          <span class="slds-radio_faux"></span>
+                          <span class="slds-form-element__label">Plain Text</span>
+                        </label>
+                      </span>
+                </div>
+            </div>
+        </form>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" type="submit"
+                (click)="onSubmit()">{{language.getLabel('LBL_CREATE')}}</button>
+    </system-modal-footer>
+</system-modal>
