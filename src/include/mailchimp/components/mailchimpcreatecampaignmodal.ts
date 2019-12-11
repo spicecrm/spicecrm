@@ -19,11 +19,11 @@ import {FormGroup, FormControl} from '@angular/forms';
 export class MailChimpCreateCampaignModal {
 
     private self: any = {};
-    private module: string = '';
     private campaign = new FormGroup({
         name: new FormControl(''),
         subject: new FormControl(''),
-        html: new FormControl(''),
+        type: new FormControl(''),
+        content: new FormControl('')
     });
 
     constructor(
@@ -41,8 +41,9 @@ export class MailChimpCreateCampaignModal {
         this.backend.postRequest(`MailChimp/${this.model.module}/${this.model.id}/createCampaign`, null, this.campaign.value).subscribe(
             response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
-                // this.model.setField('mailing_id', response.id);
-                // this.model.save();
+                this.model.setField('ext_id', response.id);
+                this.model.save();
+                window.console.log(response);
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
                 this.close();
             },
