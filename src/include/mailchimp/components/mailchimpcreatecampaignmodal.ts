@@ -23,7 +23,7 @@ export class MailChimpCreateCampaignModal {
         name: new FormControl(''),
         subject: new FormControl(''),
         type: new FormControl(''),
-        content: new FormControl('')
+        text: new FormControl('')
     });
 
     constructor(
