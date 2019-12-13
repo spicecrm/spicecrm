@@ -18,6 +18,7 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {MailChimpCreateCampaignButton} from "./components/mailchimpcreatecampaignbutton";
 import {MailChimpCreateCampaignModal} from "./components/mailchimpcreatecampaignmodal";
 import {MailChimpGetReportButton} from "./components/mailchimpgetreportbutton";
+import {MailChimpCampaignStatsPanel} from "./components/mailchimpcampaignstatspanel";
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import {MailChimpGetReportButton} from "./components/mailchimpgetreportbutton";
         // ProspectListsToMailChimpModal,
         MailChimpCreateCampaignButton,
         MailChimpCreateCampaignModal,
-        MailChimpGetReportButton
+        MailChimpGetReportButton,
+        MailChimpCampaignStatsPanel
     ]
 })
 export class MailChimpModule {

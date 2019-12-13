@@ -36,7 +36,7 @@ export class MailingStatsPanel implements OnInit {
         this.isLoading = true;
         this.backend.getRequest(`/CleverReach/CampaignTasks/${this.model.id}/stats`)
             .subscribe(response => {
-                this.mailingStats = response.basic;
+                this.mailingStats = response;
                 this.isLoading = false;
             });
     }
@@ -66,7 +66,7 @@ export class MailingStatsPanel implements OnInit {
     public ngOnInit(): void {
         this.backend.getRequest(`/CleverReach/CampaignTasks/${this.model.id}/stats`)
         .subscribe(response => {
-            this.mailingStats = response.basic;
+            this.mailingStats = response;
             this.isLoading = false;
         });
         // this.libloader.loadLib('googlecharts').subscribe((next) => {

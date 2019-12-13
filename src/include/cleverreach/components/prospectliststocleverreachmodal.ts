@@ -41,7 +41,7 @@ export class ProspectListsToCleverReachModal {
                 window.console.log(this.statistics);
                 loadingRef.instance.self.destroy();
             });
-        });
+        }, error => console.log(error));
     }
 
     private transferToCleverReach() {
