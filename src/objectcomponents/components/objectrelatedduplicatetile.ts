@@ -54,18 +54,8 @@ export class ObjectRelatedDuplicateTile implements OnInit {
     /**
      *
      */
-    private navigateDetails(source) {
-        if (source == 'link' && this.enableLink) {
-            this.model.goDetail();
-        }
-        if (source == 'button' && this.enableButtonLink) {
-            this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP', '', 'long'),this.language.getLabel('MSG_NAVIGATIONSTOP'))
-                .subscribe(res => {
-                    if (res) {
-                        this.model.goDetail();
-                        this.modal.closeAllModals();
-                    }
-                });
-        }
+    private navigateDetails() {
+        this.modal.closeAllModals();
+        this.model.goDetail();
     }
 }
