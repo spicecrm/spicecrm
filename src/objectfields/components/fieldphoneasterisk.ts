@@ -12,9 +12,9 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-phone',
-    templateUrl: './src/objectfields/templates/fieldphone.html'
+    templateUrl: '../templates/fieldphoneasterisk.html'
 })
-export class fieldPhone extends fieldGeneric {
+export class fieldPhoneAsterisk extends fieldGeneric {
 
     private invalid = false;
     private mark: string;
