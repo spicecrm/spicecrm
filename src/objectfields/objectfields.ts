@@ -114,6 +114,7 @@ import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestion
 import /*embed*/ {fieldTags} from './components/fieldtags';
 import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
 import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
+import /*embed*/ {fieldPhone} from "./components/fieldphone";
 
 /**
 * @ignore
@@ -234,7 +235,8 @@ declare var _: any;
         fieldQuestionnaireEvaluation,
         fieldTags,
         fieldRelatedDetails,
-        fieldRelatedDetailsContainer
+        fieldRelatedDetailsContainer,
+        fieldPhone
     ],
     exports: [
         fieldSet,
