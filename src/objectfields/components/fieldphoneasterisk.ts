@@ -11,8 +11,8 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'field-phone',
-    templateUrl: '../templates/fieldphoneasterisk.html'
+    selector: 'field-phone-asterisk',
+    templateUrl: './src/objectfields/templates/fieldphoneasterisk.html'
 })
 export class fieldPhoneAsterisk extends fieldGeneric {
 
