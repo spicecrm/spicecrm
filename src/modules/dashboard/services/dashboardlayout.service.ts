@@ -5,7 +5,6 @@ import {Injectable, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {modal} from '../../../services/modal.service';
 import {model} from '../../../services/model.service';
-import {take} from "rxjs/operators";
 
 declare var _;
 
@@ -21,28 +20,29 @@ export class dashboardlayout {
     public editing: string = '';
     public isMoving: boolean = false;
     public isloading: boolean = false;
+    public dashboardNotFound: boolean = false;
     public bodycontainerref: ViewContainerRef;
 
     constructor(private backend: backend, public model: model, private modal: modal) {
-    }
-
-    set bodyContainerRef(value) {
-        this.bodycontainerref = value;
     }
 
     get bodyContainerRef() {
         return this.bodycontainerref.element.nativeElement;
     }
 
-    set editMode(bool) {
-        this.editmode = bool;
-        if (this.editmode) {
-            setTimeout(()=> this.calculateGrid(), 100);
-        }
+    set bodyContainerRef(value) {
+        this.bodycontainerref = value;
     }
 
     get editMode() {
         return this.editmode;
+    }
+
+    set editMode(bool) {
+        this.editmode = bool;
+        if (this.editmode) {
+            setTimeout(() => this.calculateGrid(), 100);
+        }
     }
 
     get elementHeight() {
@@ -148,7 +148,7 @@ export class dashboardlayout {
                 return true;
             }
         });
-        setTimeout(()=> this.calculateGrid(), 100);
+        setTimeout(() => this.calculateGrid(), 100);
     }
 
     public canDrop(id, item, movex, movey, mouseLast, mouseTarget) {
@@ -328,7 +328,6 @@ export class dashboardlayout {
         this.modal.openModal('DashboardAddElement')
             .subscribe(modalRef => {
                 modalRef.instance.addDashlet
-                    .pipe(take(1))
                     .subscribe(dashlet => {
                         if (dashlet !== false) {
                             this.editing = this.model.generateGuid();
@@ -367,45 +366,6 @@ export class dashboardlayout {
         });
     }
 
-    public loadDashboard(id, name?) {
-        if (id != this.dashboardId) {
-            this.editMode = false;
-            this.isloading = true;
-            this.dashboardId = id;
-            this.model.module = 'Dashboards';
-            this.model.id = id;
-            this.dashboardElements = [];
-
-            if (name) {
-                this.model.setField('name', name);
-            }
-
-            this.model.getData(false)
-                .subscribe(loaded => {
-                    this.dashboardData = this.model.data;
-                    this.dashboardElements = this.model.getField('components');
-
-                    // sort the elements for the compact view
-                    this.sortElements();
-
-                    this.isloading = false;
-                });
-        }
-    }
-
-    public cancelEdit() {
-        this.editMode = false;
-        this.dashboardElements = this.model.getField('components');
-    }
-
-    public saveDashboard() {
-        this.editMode = false;
-        this.backend.postRequest('dashboards/' + this.dashboardId, {}, this.dashboardElements)
-            .subscribe(data => {
-                this.dashboardData.components = this.dashboardElements.slice(0);
-            });
-    }
-
     public prepareStyle(style) {
         let returnStyle = _.clone(style);
         for (let prop in returnStyle) {
@@ -416,7 +376,7 @@ export class dashboardlayout {
         return returnStyle;
     }
 
-    private sortElements() {
+    public sortElements() {
         this.dashboardElements = this.dashboardElements.sort((a, b) => {
             if (a.position.top == b.position.top) {
                 return a.position.left > b.position.left ? 1 : -1;

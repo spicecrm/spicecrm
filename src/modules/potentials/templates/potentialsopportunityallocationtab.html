@@ -1,0 +1,26 @@
+<system-collapsable-tab tabtitle="LBL_POTENTIALS" moduleicon="Potentials">
+    <div *ngIf="canAllocate; else notready">
+        <potentials-opportunity-allocation-lines [account_id]="account_id"></potentials-opportunity-allocation-lines>
+    </div>
+    <ng-template #notready>
+        <div class="slds-p-around--small slds-align--absolute-center">
+            {{language.getLabel('MSG_ENTERACCOUNT')}}
+        </div>
+    </ng-template>
+</system-collapsable-tab>
+
+
+
+<!--system-card>
+    <system-card-header module="Potentials" [cardtitel]="language.getLabel('LBL_POTENTIALS')"></system-card-header>
+    <system-card-body>
+        <div *ngIf="canAllocate; else notready">
+            <potentials-opportunity-allocation-lines [account_id]="account_id"></potentials-opportunity-allocation-lines>
+        </div>
+        <ng-template #notready>
+            <div class="slds-p-around--small slds-align--absolute-center">
+                {{language.getLabel('MSG_ENTERACCOUNT')}}
+            </div>
+        </ng-template>
+    </system-card-body>
+</system-card-->

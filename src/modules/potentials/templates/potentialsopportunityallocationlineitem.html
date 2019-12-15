@@ -1,0 +1,16 @@
+<td>
+    <field-container field="productgroup_name" fielddisplayclass="fielddisplayclass" [fieldconfig]="{fieldtype: 'modelinfo', hidelabel: true}"></field-container>
+</td>
+<td [attr.data-label]="language.getFieldDisplayName('Potentials', 'productgroup_name')">
+    <field-container field="productgroup_name" fielddisplayclass="fielddisplayclass" [fieldconfig]="{hidelabel: true, readonly: true}"></field-container>
+</td>
+<td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'amount')">
+    <field-container field="potential_value" fielddisplayclass="fielddisplayclass" [fieldconfig]="{hidelabel: true, link: true, readonly: true}"></field-container>
+</td>
+<td [attr.data-label]="language.getLabel('LBL_COMPANYCODE')">
+    <field-container field="companycode_id" fielddisplayclass="fielddisplayclass" [fieldconfig]="{hidelabel: true, readonly: true}"></field-container>
+</td>
+<td [attr.data-label]="language.getFieldDisplayName('OpportunityRevenueLines', 'amount')">
+    <field-container field="opportunity_amount" fielddisplayclass="fielddisplayclass" [fieldconfig]="{hidelabel: true}"></field-container>
+</td>
+

@@ -26,6 +26,7 @@ import /*embed*/ {ServiceMyQueuesTicketsDashletItem} from "./components/servicem
 import /*embed*/ {ServiceTicketProlongButton} from "./components/serviceticketprolongbutton";
 import /*embed*/ {ServiceTicketProlongModal} from "./components/serviceticketprolongmodal";
 import /*embed*/ {ServiceTicketSLAIndicator} from "./components/serviceticketslaindicator";
+import /*embed*/ {ServiceRequestFeedbackButton} from "./components/servicerequestfeedbackbutton";
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import /*embed*/ {ServiceTicketSLAIndicator} from "./components/serviceticketsla
         ServiceMyQueuesTicketsDashletItem,
         ServiceTicketProlongButton,
         ServiceTicketProlongModal,
-        ServiceTicketSLAIndicator
+        ServiceTicketSLAIndicator,
+        ServiceRequestFeedbackButton
         ]
     })
 export class ServiceComponentsModule {

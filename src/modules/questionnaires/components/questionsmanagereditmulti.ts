@@ -19,6 +19,7 @@ export class QuestionsManagerEditMulti implements OnInit {
     private minAnswers: string;
     private maxAnswers: string;
     private hasInfosCorrectness = false;
+    private isBuilt = false;
 
     private allCategories = [];
 
@@ -28,12 +29,13 @@ export class QuestionsManagerEditMulti implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.model.isLoading) {
-            this.model.data$.subscribe(( data, data2 ) => this.buildEntries() );
-        } else this.buildEntries();
+        this.model.data$.subscribe(data => {
+            if ( data.id && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet (options are not built yet)
+        });
     }
 
     private buildEntries(): void {
+        this.isBuilt = true;
         if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans ) {
             this.model.data.questionoptions = { beans:{} };
         }

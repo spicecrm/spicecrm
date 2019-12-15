@@ -16,6 +16,7 @@ export class navigation {
     public activeModule$: EventEmitter<string>;
 
     public activeModule: string = "Home";
+    public hasSubTabs: string;
     private activeId: string = "";
 
     private modelsEditing: any[] = [];
@@ -125,8 +126,7 @@ export class navigation {
      */
     public anyDirtyModel(): boolean {
         if ( this.modelregister.some( model => {
-            if ( !model.model.isLeaveable() ) {
-                console.info('Warning to prevent closing of window/tab. Dirty Model: ' + model.model.module + ', ' + model.model.id );
+            if ( model.model.isDirty() ) {
                 return true;
             }
         })) {
@@ -145,7 +145,7 @@ export class canNavigateAway implements CanActivate {
 
         let isToWarn = false;
         for ( let model of this.navigation.modelregister ) {
-            if ( !model.model.isOutsideRouterOutlet() && !model.model.isLeaveable() ) {
+            if ( !model.model.isGlobal && model.model.isDirty() ) {
                 isToWarn = true;
                 break;
             }

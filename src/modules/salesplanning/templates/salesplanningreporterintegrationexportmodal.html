@@ -1,0 +1,99 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">export Planner Data</system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div class="slds-form-element slds-p-horizontal--small">
+            <label class="slds-form-element__label">{{language.getLabel('LBL_SALES_PLANNING_VERSION')}}</label>
+            <div class="slds-select_container slds-m-vertical--xx-small">
+                <select class="slds-select" [disabled]="salespanningversions.length==0" [(ngModel)]="selectedversion">
+                    <option *ngFor="let salespanningversion of salespanningversions"
+                            [value]="salespanningversion.id">{{salespanningversion.name}}</option>
+                </select>
+            </div>
+        </div>
+        <ng-container *ngIf="selectedversion">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-m-vertical--small">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate">{{language.getLabel('LBL_SALES_PLANNING_CHARACTERISTIC')}}</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate">Fixed Value</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate">Value Field</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate">Name Field</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-truncate">{{language.getLabel('LBL_SALES_PLANNING_TERRITORY')}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container slds-m-vertical--xx-small">
+                                <select [disabled]=" territory.fixedvalues.length == 0" class="slds-select" [(ngModel)]="territory.fixedvalue">
+                                    <option *ngFor="let thisvalue of territory.fixedvalues" [value]="thisvalue.id">{{thisvalue.name}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container slds-m-vertical--xx-small">
+                                <select class="slds-select " [(ngModel)]="territory.valuefield">
+                                    <option></option>
+                                    <option *ngFor="let reporterField of reporterFields" [value]="reporterField.fieldid">{{reporterField.name}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let scopesetcharacteristic of scopesetcharacteristics" class="slds-hint-parent">
+                        <td>
+                            <div class="slds-truncate">{{scopesetcharacteristic.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container slds-m-vertical--xx-small">
+                                <select [disabled]="scopesetcharacteristic.fixedvalues.length == 0" class="slds-select" [(ngModel)]="scopesetcharacteristic.fixedvalue">
+                                    <option *ngFor="let thisvalue of scopesetcharacteristic.fixedvalues" [value]="thisvalue.charvalid">{{thisvalue.charvalue}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container slds-m-vertical--xx-small">
+                                <select class="slds-select " [(ngModel)]="scopesetcharacteristic.valuefield">
+                                    <option></option>
+                                    <option *ngFor="let reporterField of reporterFields" [value]="reporterField.fieldid">{{reporterField.name}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container slds-m-vertical--xx-small">
+                                <select class="slds-select " [(ngModel)]="scopesetcharacteristic.namefield">
+                                    <option></option>
+                                    <option *ngFor="let reporterField of reporterFields" [value]="reporterField.fieldid">{{reporterField.name}}</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="characteristicsloading" system-table-stencils columns="4" rows="3"></tbody>
+            </table>
+            <div class="slds-form-element slds-p-horizontal--small">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}</label>
+                <div class="slds-select_container slds-m-vertical--xx-small">
+                    <select class="slds-select " [(ngModel)]="nodenamefield">
+                        <option *ngFor="let reporterField of reporterFields" [value]="reporterField.fieldid">{{reporterField.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </ng-container>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button-group-item slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button-group-item slds-button slds-button--brand" [disabled]="!canExport" (click)="exportPlanningScope()">{{language.getLabel('LBL_EXPORT')}}</button>
+    </system-modal-footer>
+</system-modal>

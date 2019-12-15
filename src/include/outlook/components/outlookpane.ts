@@ -1,10 +1,19 @@
+/**
+ * @module Outlook
+ */
 import {Component, OnInit} from '@angular/core';
+
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {GroupwareService} from "../../groupware/services/groupware.service";
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
 
 declare var Office: any;
 
+/**
+ * Main container for the SpiceCRM Outlook add-in. This gets rendered by the loader.
+ * The pane intializes the mailbox and the groupware services. Then it loads the UI and starts the config process
+ * if no user and password is set in the store it loads the settings route
+ */
 @Component({
     selector: 'outlook-pane',
     templateUrl: './src/include/outlook/templates/outlookpane.html'
@@ -18,7 +27,7 @@ export class OutlookPane implements OnInit {
     ) {}
 
     /**
-     * Loads the message ID into the groupware service.
+     * Sets the ID of the currently selected email.
      */
     public ngOnInit(): void {
         this.groupware.messageId = Office.context.mailbox.item.itemId;

@@ -1,5 +1,5 @@
 /**
- * @module ModuleEmails
+ * @module ModulePotentials
  */
 import {Component, Input} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";

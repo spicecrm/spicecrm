@@ -1,4 +1,4 @@
-<div class="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters" style="height:100%; width: 350px;">
+<div class="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters" style="height:100%; width: 500px;">
     <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y slds-grid slds-grid_vertical">
         <div class="slds-filters">
             <div class="slds-filters__header slds-grid slds-has-divider_bottom-space">
@@ -11,10 +11,8 @@
                 <reporter-filter-saved-filters  [reportid]="model.id"></reporter-filter-saved-filters>
             </div>
             <div class="slds-filters__body">
-                <reporter-filter-item *ngFor="let whereCondition of whereConditions"
-                                      [wherecondition]="whereCondition"></reporter-filter-item>
+                <reporter-filter-item *ngFor="let whereCondition of whereConditions" [wherecondition]="whereCondition"></reporter-filter-item>
             </div>
-
         </div>
     </div>
 </div>

@@ -20,7 +20,7 @@ export class reporterconfig {
 
     constructor(private configurationService: configurationService, private backend: backend) {
         let repConfig = this.configurationService.getData('reporterConfig');
-        if(!repConfig){
+        if (!repConfig) {
             this.backend.getRequest('KReporter/core/whereoperators/all').subscribe(repConfig => {
                 this.configurationService.setData('reporterConfig', repConfig);
                 this.parseConfifg(repConfig);
@@ -30,35 +30,35 @@ export class reporterconfig {
         }
     }
 
-    parseConfifg(repConfig){
+    parseConfifg(repConfig) {
         this.operatorCount = repConfig.operatorCount;
         this.operatorTypes = repConfig.operatorTypes;
         this.operatorAssignments = repConfig.operatorAssignments;
     }
 
-    refresh(){
+    public refresh() {
         this.refresh$.emit(true);
     }
 
-    resetUserFilters(){
+    resetUserFilters() {
         this.userFilters = [];
         this.defaultUserFilters = '[]';
     }
 
-    addUserFilter(filter){
+    addUserFilter(filter) {
         this.userFilters.push(filter);
         this.defaultUserFilters = JSON.stringify(this.userFilters);
     }
 
-    setDefaultUserFilter(){
+    setDefaultUserFilter() {
         this.userFilters = JSON.parse(this.defaultUserFilters);
         this.refresh();
     }
 
-    setSavedFilter(filtervalues){
-        for(let filtervalue of filtervalues){
+    setSavedFilter(filtervalues) {
+        for (let filtervalue of filtervalues) {
             this.userFilters.some(userfilter => {
-                if(userfilter.fieldid == filtervalue.fieldid){
+                if (userfilter.fieldid == filtervalue.fieldid) {
                     userfilter.operator = filtervalue.operator;
                     userfilter.value = filtervalue.value;
                     userfilter.valuekey = filtervalue.valuekey;

@@ -1,29 +1,40 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component} from '@angular/core';
-import {GroupwareService} from "../services/groupware.service";
+
+import {backend} from "../../../services/backend.service";
 
 /**
- * Outlook add-in pane used to display the bean search results from SpiceCRM.
+ * Search component. Returns a list of beans found using the search terms.
  */
 @Component({
     selector: 'groupware-read-pane-search',
     templateUrl: './src/include/groupware/templates/groupwarereadpanesearch.html'
 })
 export class GroupwareReadPaneSearch {
+    /**
+     * Input string used for searching.
+     */
     private searchTerm: string = "";
     private beans: any[] = [];
+    /**
+     * A list of found beans.
+     */
     private searchResults: any[] = [];
-
+    /**
+     * A boolean used to indicate if a search is currently running.
+     */
     private searching: boolean = false;
 
     private searchTimeOut: any = undefined;
 
     constructor(
-        private groupware: GroupwareService,
+        private backend: backend,
     ) {}
 
     /**
-     * Handles the search input field.
-     *
+     * Handles the keyboard input into the search field.
      * @param _e
      */
     private search(_e) {
@@ -47,13 +58,22 @@ export class GroupwareReadPaneSearch {
     }
 
     /**
-     * Triggers the bean search in SpiceCRM.
+     * Performs the search in SpiceCRM.
      */
     private searchSpice() {
         this.searching = true;
         this.searchResults = [];
 
-        this.groupware.searchSpice(this.searchTerm).subscribe(
+        let searchParams = {
+            aggregates: {},
+            modules: "",
+            owner: false,
+            records: 10,
+            searchterm: this.searchTerm,
+            sort: {},
+        };
+
+        this.backend.postRequest('module/Emails/groupware/search', {}, searchParams).subscribe(
             (res: any) => {
                 this.searchResults = res;
                 this.searching = false;

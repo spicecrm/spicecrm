@@ -1,22 +1,23 @@
+/**
+ * @module Outlook
+ */
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {GroupwareService} from "../../groupware/services/groupware.service";
+
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 
 /**
- * Outlook add-in route handler component.
+ * Route handler for the SpiceCRM Outlook add-in.This is a pure helkper component that catches the initial load and either send the use
+ * to the login or the settings pane
  */
 @Component({
     templateUrl: './src/include/outlook/templates/outlookroutehandler.html'
 })
-export class OutlookRouteHandler implements OnInit {
+export class OutlookRouteHandler {
 
     constructor(
         private groupware: GroupwareService,
         private router: Router,
     ) {}
-
-    public ngOnInit(): void {
-        console.log('handler init');
-    }
 
 }

@@ -1,33 +1,48 @@
+/**
+ * @module Outlook
+ */
 import {
-    Component, OnInit,
-    // ChangeDetectorRef, Renderer2
+    Component, OnInit
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {loginService} from '../../../services/login.service';
 import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
 import {cookie} from '../../../services/cookie.service';
-// import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-// import {DomSanitizer,SafeResourceUrl} from '@angular/platform-browser';
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 
 declare var _: any;
 
+/**
+ * A component that handles the display of the SpiceCRM login form in the Outlook add-in
+ * and the communication with SpiceCRM to confirm the login credentials.
+ */
 @Component({
     selector: 'outlook-login-pane',
     templateUrl: './src/include/outlook/templates/outlookloginpane.html'
 })
-export class OutlookLoginPane implements OnInit {
+export class OutlookLoginPane {
 
     private promptUser: boolean = false;
-
+    /**
+     * Login user name.
+     */
     private username: string = '';
+    /**
+     * Login password.
+     */
     private password: string = '';
     private _selectedlanguage: string = '';
     private selectedsite: string = '';
+    /**
+     * Previously used UI language.
+     */
     private lastSelectedLanguage: string = null;
+    /**
+     * Show the form to change forgotten password.
+     */
     private showForgotPass: boolean = false;
 
     constructor(
@@ -38,15 +53,11 @@ export class OutlookLoginPane implements OnInit {
         private http: HttpClient,
         private configuration: configurationService,
         private session: session,
-        private cookie: cookie,
-        // private language: language,
-        // private sanitizer: DomSanitizer,
-        // private changeDetectorRef: ChangeDetectorRef
+        private cookie: cookie
     ) {
         if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
-
 
             if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
                 this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
@@ -88,32 +99,18 @@ export class OutlookLoginPane implements OnInit {
             this.password = this.outlookConfiguration.password;
             this.login();
         } else {
-            this.promptUser = true;
-
-            this.selectedsite = this.cookie.getValue('spiceuibackend');
-            if (this.selectedsite) {
-                this.configuration.setSiteID(this.selectedsite);
-            }
+            this.goToSettings();
         }
 
         // check the last selected language from the Cookie
         this.lastSelectedLanguage = this.cookie.getValue('spiceuilanguage');
     }
 
-    public ngOnInit(): void {
-        // if(this.configuration.hasSettings()) {
-        //     this.router.navigate(['mailitem']);
-        // } else {
-        //     this.router.navigate(['settings']);
-        // }
-    }
-
     /**
-     * triggers the actual login itself
+     * Triggers the actual login itself.
      */
     private login() {
-        console.log('Loggin in from Outlook add-in');
-        if (this.username.length > 0 && this.password.length > 0) {
+        if (this.username && this.username.length > 0 && this.password && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
             this.loginService.login().subscribe(
@@ -123,9 +120,18 @@ export class OutlookLoginPane implements OnInit {
                     this.outlookConfiguration.saveSettings();
                 },
                 (err) => {
-                    console.log(err);
+                    this.goToSettings();
                 }
             );
+        }
+    }
+
+    private goToSettings() {
+        this.promptUser = true;
+
+        this.selectedsite = this.cookie.getValue('spiceuibackend');
+        if (this.selectedsite) {
+            this.configuration.setSiteID(this.selectedsite);
         }
     }
 }

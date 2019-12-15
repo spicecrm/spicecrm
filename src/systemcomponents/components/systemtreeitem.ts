@@ -1,57 +1,83 @@
 /**
  * @module SystemComponents
  */
-import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 
 @Component({
     selector: "system-tree-item",
     templateUrl: "./src/systemcomponents/templates/systemtreeitem.html"
 })
 
-export class SystemTreeItem implements AfterViewInit, OnDestroy {
-    @Output() public selectedItem$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public addItem$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public itemPosition$: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public dropListId$: EventEmitter<any> = new EventEmitter<any>();
-    @Input() public selectedItem: string = "";
-    @Input() public items: any = [];
-    @Input() private dropListIds: any = [];
+export class SystemTreeItem {
+    /*
+    * @output onItemAdd: object
+    * {
+    *   id: string = parentId,
+    *   name: string = parentName
+    * }
+    */
+    @Output() public onItemAdd: EventEmitter<any> = new EventEmitter<any>();
+    /*
+    * @output toggleExpandedChange: string = item.id
+    */
+    @Output() public toggleExpandedChange: EventEmitter<any> = new EventEmitter<any>();
+    /*
+    * @output dragPositionChange: object:
+    * {
+    *   id: string = item.id,
+    *   position: string
+    * }
+    */
+    @Output() public dragPositionChange: EventEmitter<any> = new EventEmitter<any>();
+    /*
+    * @input item: object
+    * {
+    *     id: string,
+    *     parent_id: string,
+    *     parent_sequence: number,
+    *     name: string,
+    *     systemTreeDefs: object
+    * }
+    */
+    @Input() public item: any = [];
+    /*
+    * @input config: object
+    */
     @Input() private config: any = {};
-    @Input() private hasChildren: boolean = false;
-    @ViewChild('dropList', {static: false} ) private dropList;
+    /*
+    * @input isDragging: boolean
+    */
+    @Input() private isDragging: boolean = false;
+    private dragPosition: string = '';
 
-    get connectionList() {
-        return (this.dropList && this.hasChildren) ? this.dropListIds.filter(i => i != this.dropList.id) : this.dropListIds;
+    /*
+    * @param parentId: string
+    * @param parentName: string
+    * @emit object by @Output onItemAdd
+    */
+    public addItem(parentId, parentName) {
+        this.onItemAdd.emit({id: parentId, name: parentName});
     }
 
-    public ngAfterViewInit() {
-        if (this.hasChildren && this.dropList && this.config.draggable) {
-            window.setTimeout(() => this.dropListId$.emit({id: this.dropList.id, action: 'add'}), 100);
-        }
-    }
-
-    public ngOnDestroy() {
-        if (this.dropList && this.config.draggable) {
-            window.setTimeout(() => this.dropListId$.emit({id: this.dropList.id, action: 'remove'}), 100);
-        }
-    }
-
+    /*
+    * @param item: object
+    * @param e?: MouseEvent
+    * @stop MouseEvent propagation
+    * @emit object: {id: string = parentId, name: string = parentName} by @output onItemAdd
+    */
     public expand(item, e?) {
-        item.expanded = !item.expanded;
-        e.stopPropagation();
+        this.toggleExpandedChange.emit(item.id);
+        if (e && e.stopPropagation) e.stopPropagation();
     }
 
-    public addItem(e, parentId, parentName) {
-        this.addItem$.emit({id: parentId, name: parentName});
-        e.stopPropagation();
-    }
-
-    private selectItem(e, id) {
-        this.selectedItem$.emit(id);
-        e.stopPropagation();
-    }
-
-    private trackByFn(i, item) {
-        return item.id;
+    /*
+    * @param position: string
+    * @set dragPosition
+    * @emit null | object by @output dragPositionChange
+    */
+    private setPosition(position) {
+        this.dragPosition = position;
+        if (!this.isDragging) return;
+        this.dragPositionChange.emit(!position ? null : {id: this.item.id, position});
     }
 }

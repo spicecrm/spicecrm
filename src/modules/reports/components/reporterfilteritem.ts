@@ -23,7 +23,18 @@ export class ReporterFilterItem {
     }
 
     private getOperators() {
-        return this.reporterconfig.operatorTypes[this.reporterconfig.operatorAssignments[this.wherecondition.type]];
+        let retArray = [];
+        let operators = this.reporterconfig.operatorTypes[this.reporterconfig.operatorAssignments[this.wherecondition.type]];
+        for (let oprator of operators) {
+            retArray.push({
+                value: oprator,
+                display: this.language.getLabel('LBL_OP_' + oprator.toUpperCase())
+            });
+        }
+
+        retArray.sort((a, b) => a.display > b.display ? 1 : -1);
+
+        return retArray;
     }
 
     get itemType() {
@@ -38,6 +49,17 @@ export class ReporterFilterItem {
                     case 'oneofnot':
                     case 'oneofnotornull':
                         type = 'enum';
+                        break;
+                }
+                break;
+            case 'date':
+            case 'datetime':
+            case 'datetimecombo':
+                switch (this.wherecondition.operator) {
+                    case 'before':
+                    case 'after':
+                    case 'between':
+                        type = 'date';
                         break;
                 }
                 break;

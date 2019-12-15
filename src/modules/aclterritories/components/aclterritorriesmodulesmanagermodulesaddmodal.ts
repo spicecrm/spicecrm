@@ -38,6 +38,8 @@ export class ACLTerritorriesModulesmanagerModulesAddModal implements OnInit{
                 this.availablemodules.push(module);
             }
         }
+
+        this.availablemodules.sort();
     }
 
     get linkedfields(){

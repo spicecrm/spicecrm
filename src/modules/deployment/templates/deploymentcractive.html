@@ -1,4 +1,6 @@
-<div class="slds-p-vertical--xx-small slds-p-horizontal--small slds-grid slds-grid--vertical-align-center slds-show--large slds-truncate">
-    <system-icon module="SystemDeploymentCRs" size="xx-small" divClass="slds-p-horizontal--xx-small"></system-icon>
-    <a href="javascript:void(0);" class="slds-text-link_reset" (click)="goCR()">{{crName}}</a>
+<div *ngIf="isAdmin" class="slds-p-vertical--xx-small slds-p-horizontal--small slds-grid slds-grid--vertical-align-center slds-show--large slds-truncate" (click)="goCR()">
+    <system-icon module="SystemDeploymentCRs" size="small" divClass="slds-p-horizontal--none"></system-icon>
+    <div class="slds-p-left--xx-small" *ngIf="activeID">
+        <a href="javascript:void(0);" class="slds-text-link_reset">{{crName}}</a>
+    </div>
 </div>

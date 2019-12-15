@@ -3,23 +3,24 @@
         <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="module">
+                <select class="slds-select" [(ngModel)]="module" [disabled]="modules.length == 0">
+                    <option value=""></option>
                     <option *ngFor="let module of modules" [value]="module">{{module}}</option>
                 </select>
             </div>
         </div>
     </div>
+    <div class="slds-button-group" role="group">
+        <button type="button" class="slds-button slds-button--neutral" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+        <button type="button" [disabled]="!module" class="slds-button slds-button--neutral" (click)="delete()">{{language.getLabel('LBL_DELETE')}}</button>
+    </div>
     <div class="slds-form-element slds-col--bump-left">
-        <div class="slds-button-group" role="group" *ngIf="!ftsconfiguration.indexing; else indexing">
-            <button type="button" class="slds-button slds-button--neutral" (click)="initialize()">Initialize</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="putIndex()">Put Mapping</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="resetModule()">Reset</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModule()">Index</button>
-            <button type="button" class="slds-button slds-button--brand" [disabled]="!module" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button type="button" class="slds-button slds-button--neutral" (click)="initialize()">{{language.getLabel('LBL_INITIALIZE')}}</button>
+        <div class="slds-button-group" role="group" *ngIf="!ftsconfiguration.indexing">
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="resetModule()">{{language.getLabel('LBL_RESET')}}</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!module" (click)="indexModule()">{{language.getLabel('LBL_INDEX')}}</button>
         </div>
-        <ng-template #indexing>
-            <system-spinner></system-spinner>
-        </ng-template>
     </div>
 </div>
 <div class="slds-tabs--default slds-p-top--xx-small">
@@ -27,17 +28,17 @@
         <ul class="slds-tabs--default__nav" role="tablist">
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab === 'fields'}"
                 role="presentation" (click)="setActiveTab('fields')">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Fields</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">{{language.getLabel('LBL_FIELDS')}}</a>
             </li>
             <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab === 'details'}"
                 role="presentation" (click)="setActiveTab('details')">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Details</a>
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">{{language.getLabel('LBL_INDEX_PARAMETERS')}}</a>
             </li>
         </ul>
         <administration-ftsmanager-fields *ngIf="activeTab==='fields'"></administration-ftsmanager-fields>
         <administration-ftsmanager-details *ngIf="activeTab==='details'"></administration-ftsmanager-details>
     </div>
     <ng-template #selectmodule>
-        <div class="slds-p-around--small slds-text-align--center">select a module</div>
+        <div class="slds-p-around--small slds-align--absolute-center" tobottom>{{language.getLabel('LBL_SELECT_A_MODULE')}}</div>
     </ng-template>
 </div>

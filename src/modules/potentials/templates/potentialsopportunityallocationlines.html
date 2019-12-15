@@ -1,0 +1,35 @@
+<div class="slds-p-vertical--x-small">
+    <div class="slds-p-bottom--x-small slds-grid slds-grid--align-end slds-grid--vertical-align-center">
+        <div class="slds-p-horizontal--x-small">{{language.getLabel('LBL_COMPANYCODE')}}</div>
+        <system-input-companycodes [(ngModel)]="companyCode"></system-input-companycodes>
+    </div>
+    <table  class="slds-table slds-table_bordered">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-cell-shrink" scope="col"></th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getFieldDisplayName('Potentials', 'productgroup_name')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getFieldDisplayName('Potentials', 'potential_value')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_COMPANYCODE')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getFieldDisplayName('Potentials', 'opportunity_amount')}}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent" potentials-opportunity-allocation-line-item [potential]="account_potential" [opportunity]="model" *ngFor="let account_potential of account_potentials | potentialsopportunityallocationsccfilter: companyCode; trackBy: trackItemFn"></tr>
+        </tbody>
+        <tbody system-table-stencils *ngIf="isLoading" [columns]="4" [select]="false" [tools]="false"></tbody>
+    </table>
+    <div *ngIf="isEditing"
+         class="slds-p-around--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-wrap">
+        <div class="slds-size--1-of-1 slds-large-size--1-of-2">
+            <field-messages fieldname="opportunityrevenuelines"></field-messages>
+        </div>
+    </div>
+</div>

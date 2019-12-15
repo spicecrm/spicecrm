@@ -1,5 +1,8 @@
+/**
+ * @module Outlook
+ */
 import {Injectable} from "@angular/core";
-import {GroupwareService} from "../../groupware/services/groupware.service";
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, Subject} from "rxjs";
 
 declare var Office: any;

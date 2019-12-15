@@ -3,20 +3,36 @@
         {{language.getLabel('LBL_ADD_FIELD')}}
     </system-modal-header>
     <system-modal-content>
+
+
         <fieldset class="slds-form-element">
             <div class="slds-form-element__control">
-                <span class="slds-radio" *ngFor="let thisfield of fields">
-                    <input type="radio" [id]="'id'+thisfield" [value]="thisfield" [(ngModel)]="field"  name="availablefields" />
-                    <label class="slds-radio__label" [attr.for]="'id'+thisfield">
-                    <span class="slds-radio_faux"></span>
-                    <span class="slds-form-element__label">{{thisfield}}</span>
+                <div class="slds-checkbox" (click)="toggleSelectAll($event)">
+                    <input type="checkbox" [id]="'select_all'" [checked]="selectAllChecked"/>
+                    <label class="slds-checkbox__label" [attr.for]="'select_all'">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_SELECT_ALL')}}</span>
                     </label>
-                </span>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+        <fieldset class="slds-form-element">
+            <div *ngFor="let thisfield of fields" class="slds-form-element__control">
+                <div *ngIf="!getFieldDisplay(thisfield)" class="slds-checkbox" (click)="setFieldValue(thisfield, $event)">
+                    <input type="checkbox" [id]="'id'+thisfield" [checked]="getFieldValue(thisfield)" />
+                    <label class="slds-checkbox__label" [attr.for]="'id'+thisfield">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{getFieldDisplayName(thisfield)}}&nbsp;/&nbsp;{{thisfield}}</span>
+                    </label>
+                </div>
             </div>
         </fieldset>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button [disabled]="field == ''" class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+        <button [disabled]="field == ''" class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ADOPT')}}</button>
     </system-modal-footer>
 </system-modal>

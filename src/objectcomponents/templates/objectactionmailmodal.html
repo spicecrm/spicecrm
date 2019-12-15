@@ -1,50 +1,10 @@
 <system-modal size="large">
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_BEANTOMAIL')}}</system-modal-header>
+    <system-modal-header (close)="close()">{{language.getLabel(titlelabel)}}</system-modal-header>
     <system-modal-content>
-        <div class="slds-grid slds-p-around--xx-small">
-            <div class="slds-size--1-of-2 slds-p-right--xxx-small">
-                <div class="slds-form-element">
-                    <field-container [field]="'mailbox_name'" [fieldconfig]="{required: true, scope: 'outbound'}"></field-container>
-                </div>
-            </div>
-            <div class="slds-size--1-of-2 slds-p-left--xxx-small">
-                <field-container [field]="'parent_name'"></field-container>
-            </div>
-        </div>
-        <div class="slds-grid slds-p-around--xx-small">
-            <div class="slds-size--1-of-2 slds-p-right--xxx-small">
-                <div class="slds-form-element">
-                    <field-container field="to_addrs_names" [fieldconfig]="{fieldtype:'emailrecipients', addresstype: 'to', required: true}"></field-container>
-                </div>
-            </div>
-            <div class="slds-size--1-of-2 slds-p-left--xxx-small">
-                <div class="slds-form-element">
-                    <field-container field="cc_addrs_names" [fieldconfig]="{fieldtype:'emailrecipients', addresstype: 'cc'}"></field-container>
-                </div>
-            </div>
-        </div>
-        <div class="slds-grid slds-p-around--xx-small">
-            <div class="slds-size--1-of-2 slds-p-right--xxx-small">
-                <div class="slds-form-element">
-                    <field-container [field]="'name'" [fieldconfig]="{required: true}"></field-container>
-                </div>
-            </div>
-            <div class="slds-size--1-of-2 slds-p-right--xxx-small">
-                <div *ngIf="model.data.parent_type" class="slds-form-element">
-                    <field-container field="emailtemplate_id" [fieldconfig]="{fieldtype:'emailtemplate', templatetype: 'bean2mail'}"></field-container>
-                </div>
-            </div>
-        </div>
-        <div class="slds-p-around--xx-small">
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                    <field-html fieldname="body" [fieldconfig]="{required: true}"></field-html>
-                </div>
-            </div>
-        </div>
+        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
         <button [disabled]="isDisabled" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SEND')}}</button>
     </system-modal-footer>
 </system-modal>

@@ -48,7 +48,7 @@ export class ModelProviderDirective {
         if (provided_model.data) {
             this.model.data = provided_model.data;
             this.model.isLoading = false;
-            this.model.data$.emit();
+            this.model.data$.next(this.model.data);
 
             if (provided_model.data.acl) {
                 // has to be called again after the data is set because of the missing acl before...

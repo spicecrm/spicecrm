@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -14,9 +14,9 @@ import {Router} from '@angular/router';
     templateUrl: './src/objectfields/templates/fieldemailrecipients.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })
-export class fieldEmailRecipients extends fieldGeneric {
+export class fieldEmailRecipients extends fieldGeneric implements OnInit {
 
-    public searchResults: Array<any> = [];
+    public searchResults: any[] = [];
     private isAdding: boolean = false;
     private addAddress: string = '';
     private searchTimeOut: any = undefined;
@@ -53,7 +53,30 @@ export class fieldEmailRecipients extends fieldGeneric {
         return addressArray;
     }
 
-    closeSearchDialog() {
+    public ngOnInit() {
+        super.ngOnInit();
+
+        // try to determine addresses from Parent
+        try {
+            if (this.addresstype == 'to' && this.model.data.recipient_addresses.length == 0 && this.model.getField('parent_type') && this.model.getField('parent_id')) {
+                this.backend.getRequest(`module/${this.model.getField('parent_type')}/${this.model.getField('parent_id')}`).subscribe(parentdata => {
+                    if (parentdata.email1) {
+                        this.model.data.recipient_addresses = [{
+                            parent_type: this.model.getField('parent_type'),
+                            parent_id: this.model.getField('parent_id'),
+                            email_address: parentdata.email1,
+                            id: this.model.generateGuid(),
+                            address_type: 'to'
+                        }];
+                    }
+                });
+            }
+        } catch (e) {
+            this.model.data.recipient_addresses = [];
+        }
+    }
+
+    private closeSearchDialog() {
         // close the cliklistener sine the component is gone
         if (this.clickListener) {
             this.clickListener();
@@ -67,8 +90,7 @@ export class fieldEmailRecipients extends fieldGeneric {
     }
 
     private onBlur() {
-        if (this.addAddress == '')
-            this.isAdding = false;
+        if (this.addAddress == '') this.isAdding = false;
     }
 
     private removeAddress(e, removeid) {
@@ -132,10 +154,11 @@ export class fieldEmailRecipients extends fieldGeneric {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.handleClick(event));
 
             this.backend.postRequest('EmailAddresses/' + this.addAddress).subscribe(results => {
-                if (results.length > 0)
+                if (results.length > 0) {
                     this.searchResults = results;
-                else
+                } else {
                     this.closeSearchDialog();
+                }
 
                 this.searchResultsLoading = false;
             });
@@ -176,7 +199,7 @@ export class fieldEmailRecipients extends fieldGeneric {
     }
 
     private validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
 }

@@ -1,12 +1,11 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component} from '@angular/core';
+import {Component, OnInit, Injector} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {ftsconfiguration} from '../services/ftsconfiguration.service';
-
-
+import {modal} from "../../services/modal.service";
 
 
 @Component({
@@ -16,52 +15,88 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 })
 export class AdministrationFTSManager {
 
-    activeTab: string = 'fields';
-    selected_module;
+    public activeTab: string = 'fields';
+    public selected_module;
 
     constructor(
         private metadata: metadata,
         private language: language,
-        private ftsconfiguration: ftsconfiguration
+        private modal: modal,
+        private ftsconfiguration: ftsconfiguration,
+        private injector: Injector
     ) {
 
     }
 
     get modules() {
-        return this.metadata.getModules().sort();
+        // return this.metadata.getModules().sort();
+        return this.ftsconfiguration.modules.sort();
     }
 
-    get module(){
+    get module() {
         return this.ftsconfiguration.module;
     }
 
-    set module(module){
+    set module(module) {
         this.ftsconfiguration.setModule(module);
     }
 
-    setActiveTab(tab){
+    /**
+     * adds a new fts module
+     */
+    private add() {
+        this.modal.openModal('AdministrationFTSManagerModuleAdd', true, this.injector).subscribe(addPopup => {
+            addPopup.instance.module$.subscribe(newModule => {
+                if (newModule) {
+                    this.module = newModule;
+                }
+            });
+        });
+    }
+
+    /**
+     * deletes the current FTS config settings
+     */
+    private delete() {
+        this.modal.confirmDeleteRecord().subscribe(response => {
+            if (response) {
+                this.ftsconfiguration.deleteModule(this.module);
+                this.module = '';
+            }
+        });
+    }
+
+    public setActiveTab(tab) {
         this.activeTab = tab;
     }
 
-    save(){
+    public save() {
         this.ftsconfiguration.save();
     }
 
-    putIndex(){
-        this.ftsconfiguration.putMapping();
+    public indexModule() {
+        this.modal.openModal('AdministrationFtsManagerIndexModal')
+            .subscribe(modalRef => {
+                modalRef.instance.response.subscribe(res => {
+                    if (res) {
+                        this.ftsconfiguration.executeAction('bulk', res);
+                    }
+                });
+            });
     }
 
-    indexModule(){
-        this.ftsconfiguration.indexModule();
-    }
-    resetModule(){
-        this.ftsconfiguration.resetModule();
+    public resetModule() {
+        this.ftsconfiguration.executeAction('reset');
     }
 
-    initialize(){
-        if(confirm("Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!")) {
-            this.ftsconfiguration.initialize();
-        }
+    public initialize() {
+        this.modal
+            .confirm('Are you sure you want to initialize your FTS? It recreates new indices, so indexed data will be lost and have to be rebuild!', 'Initialize')
+            .subscribe(res => {
+                if (res) {
+                    this.ftsconfiguration.executeAction('init');
+                }
+            });
     }
 
 }

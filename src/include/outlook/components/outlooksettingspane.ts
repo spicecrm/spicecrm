@@ -1,19 +1,33 @@
+/**
+ * @module Outlook
+ */
 import {Component} from '@angular/core';
+import {Subject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 import {language} from "../../../services/language.service";
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 
 /**
- * Outlook add-in pane used to gather the login settings.
+ * A settings component for the SpiceCRM Outlook add-in.
  */
 @Component({
     selector: 'outlook-read-pane-settings',
     templateUrl: './src/include/outlook/templates/outlooksettingspane.html'
 })
 export class OutlookSettingsPane {
+    private submitSettingsString: string = "Save Settings";
+    /**
+     * Error message.
+     */
     private errormessage: any;
+    /**
+     * Is the add-in already configured.
+     */
     private isconfigured: boolean;
+    /**
+     * A loading indicator.
+     */
     private loading: boolean = false;
 
     constructor(
@@ -25,7 +39,7 @@ export class OutlookSettingsPane {
     }
 
     /**
-     * Saves the settings in the configuration service.
+     * Saves the settings.
      */
     private saveSettings() {
         this.loading = true;
@@ -49,7 +63,7 @@ export class OutlookSettingsPane {
     }
 
     /**
-     * Cancels changes.
+     * Cancels out of the setting container.
      */
     private cancel() {
         this.configuration.loadSettings();

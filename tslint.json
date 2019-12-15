@@ -38,7 +38,9 @@
     "switch-default": false,
     "variable-name": false,
     "whitespace" : false,
-    "object-literal-shorthand": ["error","consistent"]
+    "object-literal-shorthand": ["error","consistent"],
+    "one-variable-per-declaration": false,
+    "no-trailing-whitespace": false
   },
   "jsRules": {
     "max-line-length": {

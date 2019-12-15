@@ -1,12 +1,32 @@
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded}">
-    <h3 class="slds-section__title">
-        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-            <!--global-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon-->
-            <span class="slds-truncate" title="Section Title">{{language.getLabel('LBL_ITEMS', 'SalesDocItems')}}</span>
-        </button>
-    </h3>
-    <div>
-        <salesdocs-items-display *ngIf="!editing"></salesdocs-items-display>
-        <salesdocs-items-edit *ngIf="editing"></salesdocs-items-edit>
-    </div>
-</div>
+<system-collapsable-tab tabtitle="LBL_ITEMS">
+    <table class="slds-table slds-table_bordered">
+        <thead>
+            <tr salesdocs-item-header></tr>
+        </thead>
+        <tbody *ngIf="itemcount > 0">
+            <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
+                <tr salesdocs-item-container [item]="item" [parentview]="view" [salesdoc]="model" (recalculated)="recalculate()"></tr>
+                <tr *ngIf="item.expanded">
+                    <td colspan="2" class="slds-cell-shrink">
+                    <td [attr.colspan]="fieldsetItems.length">
+                        <salesdocs-item-details-container [item]="item" ></salesdocs-item-details-container>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+        <tbody *ngIf="itemcount == 0">
+            <td [attr.colspan]="2 + fieldsetItems.length">
+                <div class="slds-p-around--medium slds-align--absolute-center">
+                    <button [disabled]="!editing" class="slds-button slds-button_neutral" (click)="addItem()">
+                        <div class="slds-grid">
+                            <span>{{language.getLabel('LBL_ADD_ITEM')}}</span>
+                        </div>
+                    </button>
+                </div>
+            </td>
+        </tbody>
+        <tfoot *ngIf="itemcount > 0">
+            <tr salesdocs-item-footer [editing]="editing" (addItem)="addItem()"></tr>
+        </tfoot>
+    </table>
+</system-collapsable-tab>

@@ -1,3 +1,6 @@
+/**
+ * @module ModuleProducts
+ */
 import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -56,7 +59,6 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
                 this.detailsItems.push(componentRef);
             });
         }
-        this.relatedmodels.getData();
     }
 
     private goDetails() {
@@ -65,10 +67,8 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
 
     private toggleOpen() {
         this.isOpen = !this.isOpen;
-    }
+        if (this.isOpen) this.relatedmodels.getData();
 
-    // will be called from parent
-    private expand(bool) {
-        this.isOpen = bool;
+
     }
 }

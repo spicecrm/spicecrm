@@ -24,8 +24,10 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         {id: 'list', action: 'LBL_LIST'},
         {id: 'listrelated', action: 'LBL_LISTRELATED'},
         {id: 'view', action: 'LBL_VIEW'},
+        {id: 'editrelated', action: 'LBL_EDITRELATION'},
         {id: 'edit', action: 'LBL_EDIT'},
         {id: 'create', action: 'LBL_CREATE'},
+        {id: 'deleterelated', action: 'LBL_REMOVERELATION'},
         {id: 'delete', action: 'LBL_DELETE'},
         {id: 'export', action: 'LBL_EXPORT'},
         {id: 'import', action: 'LBL_IMPORT'},
@@ -46,7 +48,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     }
 
     public ngOnInit() {
-        this.backend.getRequest('spiceaclobjects/authtypes/' + this.model.getFieldValue('spiceacltype_id') + '/authtypeactions').subscribe(objectactions => {
+        this.backend.getRequest('spiceaclobjects/authtypes/' + this.model.getFieldValue('sysmodule_id') + '/authtypeactions').subscribe(objectactions => {
             this.objectactions = objectactions;
         });
     }

@@ -20,10 +20,8 @@
                             <system-tree
                                     *ngIf="selectedBook && documents.length > 0 && !isLoading"
                                     [config]="config"
-                                    [treelist]="documents"
-                                    [selectedItem]="selectedDoc"
-                                    (selectedItem$)="handleSelectedItemEvent($event)">
-
+                                    [sourceList]="documents"
+                                    [(selectedItem)]="selectedDoc">
                             </system-tree>
                             <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
                                 <system-spinner></system-spinner>

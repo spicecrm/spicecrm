@@ -7,7 +7,7 @@
     <div *ngIf="questionsets.length; else noQuestionsetsTemplate">
         <div *ngFor="let questionset of questionsets; last as isLast">
             <div class="slds-box" [ngClass]="{'slds-m-bottom--x-small': !isLast}">
-                <questionset-render [questionsetIdOrObject]="questionset" [inModal]="inModal" [previewMode]="previewMode"></questionset-render>
+                <questionset-render [questionsetIdOrObject]="questionset" [inModal]="inModal" [previewMode]="false"></questionset-render>
             </div>
         </div>
     </div>

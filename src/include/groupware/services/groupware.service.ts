@@ -1,22 +1,36 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 
 /**
- * Groupware service used to communicate with the SpiceCRM KREST backend.
- * Needs to be extended in order to communicate with email software (i.e. Outlook, Gmail).
+ * Groupware Service is used to communicate between SpiceCRM and a 3rd party platform.
+ * Functions that communicate with SpiceCRM are already implemented in this class.
+ * Functions that communicate with the 3rd party platform need to be implemented in a class that extends GroupwareService.
  */
 @Injectable()
 export abstract class GroupwareService {
 
     public emailId: string = "";
     public _messageId: string = "";
-
+    /**
+     * A list of beans that are to be archived.
+     */
     public archiveto: any[] = [];
+    /**
+     * A list of attachments that are to be archived.
+     */
     public archiveattachments: any[] = [];
-
+    /**
+     * A list of beans related to the email.
+     */
     public relatedBeans: any[] = [];
-
+    /**
+     * Outlook connection data and attachment list.
+     * todo: that should probably be moved to the OutlookGroupwareService
+     */
     public outlookAttachments = {
         attachmentToken: '',
         ewsUrl: '',
@@ -28,8 +42,7 @@ export abstract class GroupwareService {
     ) {}
 
     /**
-     * Adds a selected bean to the archive list.
-     *
+     * Adds a bean to the archive bean.
      * @param bean
      */
     public addBean(bean) {
@@ -37,8 +50,7 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Removes a selected bean from the archive list.
-     *
+     * Remvoes a bean from the archive list.
      * @param bean
      */
     public removeBean(bean) {
@@ -47,8 +59,7 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Checks if a bean is already on the archive list.
-     *
+     * Checks if a given bean is in the list of beans to be archived.
      * @param bean
      */
     public checkBeanArchive(bean) {
@@ -57,7 +68,6 @@ export abstract class GroupwareService {
 
     /**
      * Adds an attachment to the archive list.
-     *
      * @param attachment
      */
     public addAttachment(attachment) {
@@ -66,7 +76,6 @@ export abstract class GroupwareService {
 
     /**
      * Removes an attachment from the archive list.
-     *
      * @param attachment
      */
     public removeAttachment(attachment) {
@@ -75,8 +84,7 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Checks if an attachment is already on the archive list.
-     *
+     * Checks if a given attachment is in the list of attachments that are to be archived.
      * @param attachment
      */
     public checkAttachmentArchive(attachment) {
@@ -84,8 +92,7 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Returns an attachment from the list by its ID (Outlook/Exchange ID)
-     *
+     * Get email attachment with the given ID.
      * @param id
      */
     public getAttachment(id) {
@@ -93,8 +100,7 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Checks if a bean is already on the related beans list.
-     *
+     * Checks if a given bean is already in the list of related beans.
      * @param bean
      */
     public checkRelatedBeans(bean) {
@@ -102,7 +108,8 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Sends a request to archive the email along with the selected beans and attachments.
+     * A call to SpiceCRM API to archive the current email.
+     * It also saves the relations to the linked beans and attachments, if any were selected.
      */
     public archiveEmail(): Observable<any> {
         let retSubject = new Subject();
@@ -156,8 +163,8 @@ export abstract class GroupwareService {
     }
 
     /**
-     * Uses the message ID to check if the email has already been archived in SpiceCRM.
-     * If it has, its ID (SpiceCRM DB GUID), linked beans and linked attachments are loaded.
+     * A call to SpiceCRM API to get an email using the message ID.
+     * If an email with this ID is present, it is returned along with a list of linked beans and attachments.
      */
     public getEmailFromSpice(): Observable<any> {
         let retSubject = new Subject();
@@ -223,59 +230,37 @@ export abstract class GroupwareService {
         return responseSubject.asObservable();
     }
 
-    /**
-     * Performs the search for beans in SpiceCRM using KREST.
-     *
-     * @param searchTerm
-     */
-    public searchSpice(searchTerm: string = ""): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        let searchParams = {
-            aggregates: {},
-            modules: "",
-            owner: false,
-            records: 10,
-            searchterm: searchTerm,
-            sort: {},
-        };
-
-        this.backend.postRequest('module/Emails/groupware/search', {}, searchParams).subscribe(
-            (searchResults: any) => {
-                responseSubject.next(searchResults);
-                responseSubject.complete();
-            },
-            (err) => {
-                responseSubject.error(err);
-            }
-        );
-
-        return responseSubject.asObservable();
-    }
-
-    /**
-     * Getter for the message ID.
-     */
     get messageId() {
         return this._messageId;
     }
 
-    /**
-     * Setter for the message ID.
-     *
-     * @param value
-     */
     set messageId(value) {
         this._messageId = value;
     }
 
+    /**
+     * Convert the 3rd party email structure into json that can be sent to SpiceCRM API.
+     */
     public abstract assembleEmail(): Observable<any>;
 
+    /**
+     * Retrieve a list of attachments for the current email.
+     */
     public abstract getAttachments(): Observable<any>;
 
+    /**
+     * Retrieve an attachment callback token.
+     * todo: this is possibly just outlook specific.
+     */
     public abstract getAttachmentToken(): Observable<any>;
 
+    /**
+     * Retrieves an array of all email addresses (From, To, Cc)
+     */
     public abstract getAddressArray();
 
+    /**
+     * Retrieves an of email adresses and the message ID of the current email.
+     */
     public abstract getEmailAddressData();
 }

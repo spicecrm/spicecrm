@@ -56,6 +56,7 @@ export class administrationconfigurator {
     private mapData(record) {
         for (let field in this.fielddefobj) {
             switch (this.fielddefobj[field]) {
+                case 'bool':
                 case 'boolean':
                     record[field] = record[field] == '1' ? true : false;
             }
@@ -70,8 +71,9 @@ export class administrationconfigurator {
         let newRecord = {};
         for (let field in this.fielddefobj) {
             switch (this.fielddefobj[field]) {
+                case 'bool':
                 case 'boolean':
-                    newRecord[field] = record[field]  == 'true' ? '1' : '0';
+                    newRecord[field] = record[field]  == true ? '1' : '0';
                     break;
                 default:
                     newRecord[field] = record[field];

@@ -5,13 +5,14 @@ import {Injectable, EventEmitter} from '@angular/core';
 
 import {cookie} from './cookie.service';
 import {session} from './session.service';
+import {broadcast} from './broadcast.service';
 
 import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 @Injectable()
@@ -23,21 +24,19 @@ export class configurationService {
         backendextensions: {},
         systemparameters: {}
     };
+
+    /**
+     * holds any app data the application can store with a given key
+     */
+    private appdata: any = {};
+
     public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private http: HttpClient,
                 private cookie: cookie,
                 private session: session,
+                private broadcast: broadcast,
                 private router: Router,) {
-        /*
-         http.get('config.json')
-         .subscribe(
-         file => {
-         this.data = file.json();
-         this.getSysinfo();
-         }
-         );
-         */
 
         let storedSites = localStorage.spiceuisites;
 
@@ -57,6 +56,9 @@ export class configurationService {
             if (!siteFound) {
                 this.setSiteID(this.sites[0].id);
             }
+
+            // subscribe to the broadcast to catch the logout
+            this.broadcast.message$.subscribe(message => this.handleLogout(message));
         }
 
         // reload the sites
@@ -104,6 +106,17 @@ export class configurationService {
                 }
             );
 
+    }
+
+    /**
+     * handle the message broadcast and if messagetype is logout reset the data
+     *
+     * @param message the message received
+     */
+    private handleLogout(message) {
+        if (message.messagetype == 'logout') {
+            this.appdata = {};
+        }
     }
 
     public setSiteData(data) {
@@ -192,10 +205,10 @@ export class configurationService {
     }
 
     public setData(key, data) {
-        this.data[key] = data;
+        this.appdata[key] = data;
     }
 
     public getData(key) {
-        return this.data[key] ? this.data[key] : false;
+        return this.appdata[key] ? this.appdata[key] : false;
     }
 }

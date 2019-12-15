@@ -1,9 +1,13 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, ChangeDetectorRef} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+import {Subject, Observable} from 'rxjs';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from '../../../services/language.service';
 
 /**
- * Outlook add-in pane showing the attachments of the chosen email.
+ * A list of attachments for the current email.
  */
 @Component({
     selector: 'groupware-read-pane-attachments',
@@ -20,18 +24,19 @@ export class GroupwareReadPaneAttachments {
     }
 
     /**
-     * Getter for the attachment array
+     * List of attachments.
      */
     get attachments() {
         return this.groupware.outlookAttachments.attachments;
     }
 
     /**
-     * Loads the attachments in the groupware service.
+     * Loads a list of the attachments.
      */
     public loadAttachments() {
         this.groupware.getAttachments().subscribe(
             (res: any) => {
+                // todo get a list of the already selected attachments
                 this.changeDetectorRef.detectChanges();
             },
             (err) => {

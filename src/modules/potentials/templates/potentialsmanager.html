@@ -1,11 +1,16 @@
 <div *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
-    <object-related-card-header [componentconfig]="componentconfig"><system-input-companycodes [(ngModel)]="companyCode"></system-input-companycodes></object-related-card-header>
+    <object-related-card-header [componentconfig]="componentconfig">
+        <div class="slds-grid">
+            <system-input-companycodes [(ngModel)]="companyCode"></system-input-companycodes>
+            <potentials-manager-new-button class="slds-p-left--x-small" [parent]="model" [companyCode]="companyCode"></potentials-manager-new-button>
+        </div>
+    </object-related-card-header>
     <div @displaycard *ngIf="isopen">
         <div class="slds-card__body slds-size--1-of-1">
             <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset"></object-relatedlist-table>
             <div class="slds-p-vertical--x-small">
                 <div class="slds-p-around--medium slds-grid slds-grid--vertical-align-center">
-                    <object-icon module="SalesDocs" size="small"></object-icon>
+                    <system-icon module="SalesDocs" size="small"></system-icon>
                     <h2 class="slds-text-heading--small">{{language.getLabel('LBL_REVENUES')}}</h2>
                 </div>
                 <table class="slds-table slds-table_cell-buffer slds-table_bordered">

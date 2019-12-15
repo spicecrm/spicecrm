@@ -16,16 +16,18 @@ export class QuestionsManagerEditBinary implements OnInit {
     @Input() public categorypool;
 
     private options: any[] = []; // Should always be 2 elements (left option and right option of binary question)
-    private isLoading = true;
+    private isBuilt = false;
 
     constructor( private language: language, private model: model) { }
 
     public ngOnInit(): void {
-        if ( this.model.isLoading ) this.model.data$.subscribe( () => this.buildEntries() );
-        else this.buildEntries();
+        this.model.data$.subscribe(data => {
+            if ( data.id && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
+        });
     }
 
     private buildEntries(): void {
+        this.isBuilt = true;
         if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans) {
             this.model.data.questionoptions = {beans: {}};
         }

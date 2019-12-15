@@ -12,11 +12,15 @@ import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
+import /*embed*/ {ACLTerritoriesNamePipe} from "./pipes/aclterritoriesname.pipe";
+import /*embed*/ {fieldTerritorySecondaryPipe} from "./pipes/aclterritoriesfieldssecondary.pipe";
+
 import /*embed*/ {ACLTerritorriesManager} from "./components/aclterritorriesmanager";
 import /*embed*/ {ACLTerritorriesManagerHeader} from './components/aclterritorriesmanagerheader';
 import /*embed*/ {ACLTerritorriesManagerTerritories} from "./components/aclterritorriesmanagerterritories";
 import /*embed*/ {ACLTerritorriesManagerTerritory} from "./components/aclterritorriesmanagerterritory";
 import /*embed*/ {ACLTerritorriesManagerTerritoryValues} from "./components/aclterritorriesmanagerterritoryvalues";
+import /*embed*/ {ACLTerritorriesManagerTerritoryValue} from "./components/aclterritorriesmanagerterritoryvalue";
 import /*embed*/ {ACLTerritorriesManagerTerritoryAddModal} from "./components/aclterritorriesmanagerterritoryaddmodal";
 import /*embed*/ {ACLTerritorriesElementmanager} from './components/aclterritorrieselementmanager';
 import /*embed*/ {ACLTerritorriesElementmanagerElements} from './components/aclterritorrieselementmanagerelements';
@@ -33,7 +37,11 @@ import /*embed*/ {ACLTerritorriesModulesmanagerModulesAddModal} from "./componen
 
 import /*embed*/ {ACLObjectsManagerObjectTerritories} from "./components/aclobjectsmanagerobjectterritories";
 import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/aclobjectsmanagerobjectterritoriesmodal";
-
+import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
+import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
+import /*embed*/ {fieldTerritorySecondary} from "./components/fieldterritorysecondary";
+import /*embed*/ {fieldTerritoryRecent} from "./components/fieldterritoryrecent";
+import /*embed*/ {fieldTerritorySearchModal} from "./components/fieldterritorysearchmodal";
 
 @NgModule({
     imports: [
@@ -45,11 +53,13 @@ import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/ac
         SystemComponents,
     ],
     declarations: [
+        ACLTerritoriesNamePipe,
         ACLTerritorriesManager,
         ACLTerritorriesManagerHeader,
         ACLTerritorriesManagerTerritories,
         ACLTerritorriesManagerTerritory,
         ACLTerritorriesManagerTerritoryValues,
+        ACLTerritorriesManagerTerritoryValue,
         ACLTerritorriesManagerTerritoryAddModal,
         ACLTerritorriesElementmanager,
         ACLTerritorriesElementmanagerElements,
@@ -64,7 +74,13 @@ import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/ac
         ACLTerritorriesModulesmanagerModules,
         ACLTerritorriesModulesmanagerModulesAddModal,
         ACLObjectsManagerObjectTerritories,
-        ACLObjectsManagerObjectTerritoriesModal
+        ACLObjectsManagerObjectTerritoriesModal,
+        fieldTerritory,
+        fieldTerritorySearch,
+        fieldTerritoryRecent,
+        fieldTerritorySecondary,
+        fieldTerritorySecondaryPipe,
+        fieldTerritorySearchModal
     ]
 })
 export class ModuleACLTerritories {

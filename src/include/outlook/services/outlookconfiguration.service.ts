@@ -1,3 +1,6 @@
+/**
+ * @module Outlook
+ */
 import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
@@ -32,7 +35,7 @@ export class OutlookConfiguration {
      * Checks if any of the settings are set.
      */
     public hasSettings() {
-        return this.username != '' && this.password != '';
+        return this.username && this.username != '' && this.password && this.password != '';
     }
 
     /**

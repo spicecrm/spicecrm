@@ -1,0 +1,27 @@
+<div class="slds-tabs--scoped" [ngClass]="{'slds-hide': tabs.length == 0}">
+    <ul class="slds-tabs--scoped__nav" role="tablist">
+        <li #maintabs *ngFor="let tab of tabs" class="slds-tabs--scoped__item" [ngClass]="{'slds-active': checkTab(tab.module)}" role="presentation" [attr.data-module]="tab.module">
+            <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" (click)="setTab(tab.module)">{{language.getModuleName(tab.module, true)}}</a>
+        </li>
+        <li #moretab class="slds-tabs_scoped__item slds-tabs_scoped__overflow-button slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': moreOpen, 'slds-active': moreactive}" (click)="toggleOpen()" role="presentation">
+            <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab">
+                {{language.getLabel('LBL_MORE')}}<system-utility-icon class="slds-p-horizontal--xx-small" icon="down" size="x-small"></system-utility-icon>
+            </a>
+            <div class="slds-dropdown slds-dropdown_right">
+                <ul class="slds-dropdown__list slds-dropdown_length-with-icon-10" role="menu">
+                    <li #moretabs *ngFor="let tab of tabs" class="slds-dropdown__item" role="presentation" [attr.data-module]="tab.module" (click)="setTab(tab.module)">
+                        <a href="javascript:void(0);" role="menuitem" >
+                            <span class="slds-truncate"><system-utility-icon icon="check" size="x-small" class="slds-p-right--xx-small" [ngClass]="{'slds-hidden': !checkTab(tab.module)}"></system-utility-icon>{{language.getModuleName(tab.module, true)}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+    <div *ngFor="let tab of tabs" class="slds-tabs--scoped__content slds-p-around--none" [ngClass]="tabClass(tab)" role="tabpanel" [hidden]="!checkTab(tab.module)">
+       <activitytimeline-add-tabcontainer [tabcomponent]="tab.component" [componentconfig]="tab.componentconfig"></activitytimeline-add-tabcontainer>
+    </div>
+</div>
+<ng-template *ngIf="tabs.length == 0" >
+    <div class="slds-box slds-theme--shade slds-align--absolute-center">no actions configured</div>
+</ng-template>

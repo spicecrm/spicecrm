@@ -144,7 +144,7 @@ export class language {
      * ```
      *
      */
-    public getLabel(label: string, module: string = '', length: 'default' | 'long' | 'short' = 'default') {
+    public getLabel(label: string, module: string = '', length: 'default' | 'long' | 'short' = 'default'): string {
         try {
             if (module != '') {
                 if (typeof (this.languagedata.mod) != "undefined" && this.languagedata.mod[module] != undefined && this.languagedata.mod[module][label]) {
@@ -596,4 +596,54 @@ export class language {
             short: tshort
         };
     }
+
+    /**
+     * Compares two strings, case-insensitive, using the current language selected by the user
+     *
+     * @param a The first string.
+     * @param b The second string.
+     */
+    public compareStrings( a: string, b: string ): number {
+        return a.localeCompare( b, this._currentlanguage.slice( 0, 2 ));
+    }
+
+    /**
+     * Sorts an array of strings.
+     * It compares case-insensitive, using the current language selected by the user.
+     *
+     * @param array The array of strings to sort.
+     */
+    public sortArray( array: string[], reverse = false ): void {
+        array.sort( ( a, b ) => this.compareStrings( a, b ) * ( reverse?-1:1 ));
+    }
+
+    /**
+     * Sorts an array of objects, by the given property.
+     * It compares case-insensitive, using the current language selected by the user.
+     *
+     * @param array The array of objects to sort.
+     * @param property The property to be used for sorting.
+     */
+    public sortObjects( array: object[], property: string, reverse = false ): void {
+        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ) * ( reverse?-1:1 ));
+    }
+
+    /**
+     * Capitalize the first letter in a string.
+     *
+     * @param string The string.
+     */
+    public ucFirst( string ): string {
+        return string.charAt(0).toLocaleUpperCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    }
+
+    /**
+     * Uncapitalize the first letter in a string.
+     *
+     * @param string The string.
+     */
+    public lcFirst( string ): string {
+        return string.charAt(0).toLocaleLowerCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    }
+
 }
