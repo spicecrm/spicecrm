@@ -3,10 +3,11 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {FormsModule} from '@angular/forms';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
@@ -17,9 +18,9 @@ import /*embed*/ {ReporterFilterSavedFilters} from "./components/reporterfilters
 import /*embed*/ {ReporterFilterItem} from "./components/reporterfilteritem";
 import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemtext";
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
+import /*embed*/ {ReporterFilterItemDate} from "./components/reporterfilteritemdate";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
-import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
 import /*embed*/ {ReporterVisualizationDashlet} from "./components/reportervisualizationdashlet";
 import /*embed*/ {ReporterVisualizationContainer} from "./components/reportervisualizationcontainer";
@@ -29,9 +30,12 @@ import /*embed*/ {ReporterCockpit} from "./components/reportercockpit";
 import /*embed*/ {ReporterCockpitTile} from "./components/reportercockpittile";
 import /*embed*/ {ReporterFieldContainer} from "./components/reporterfieldcontainer";
 import /*embed*/ {ReporterFieldStandard} from "./components/reporterfieldstandard";
+import /*embed*/ {ReporterFieldText} from "./components/reporterfieldtext";
 import /*embed*/ {ReporterFieldCurrency} from "./components/reporterfieldcurrency";
+import /*embed*/ {ReporterFieldPercentage} from "./components/reporterfieldpercentage";
 import /*embed*/ {ReporterFieldEnum} from "./components/reporterfieldenum";
 import /*embed*/ {ReporterFieldDate} from "./components/reporterfielddate";
+import /*embed*/ {ReporterFieldDateTime} from "./components/reporterfielddatetime";
 import /*embed*/ {ReporterFieldColor} from "./components/reporterfieldcolor";
 
 import /*embed*/ {ReporterIntegrationExportButton} from "./components/reporterintegrationexportbutton";
@@ -39,16 +43,12 @@ import /*embed*/ {ReporterIntegrationTargetlistexportButton} from "./components/
 import /*embed*/ {ReporterIntegrationExportMask} from "./components/reporterintegrationexportmask";
 import /*embed*/ {ReporterIntegrationTargetlistexportModal} from "./components/reporterintegrationtargetlistexportmodal";
 import /*embed*/ {ReporterIntegrationCSVexportButton} from "./components/reporterintegrationcsvexportbutton";
-import /*embed*/ {ReporterIntegrationXLSexportButton} from "./components/reporterintegrationxlsexportbutton";
-import /*embed*/ {ReporterIntegrationPDFexportButton} from "./components/reporterintegrationpdfexportbutton";
 
 import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterintegrationtoolsbutton";
-import /*embed*/ {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
-import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @NgModule({
@@ -57,7 +57,8 @@ declare var moment: any;
         FormsModule,
         ObjectFields,
         ObjectComponents,
-        SystemComponents
+        SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ReporterDetailView,
@@ -67,9 +68,9 @@ declare var moment: any;
         ReporterFilterItem,
         ReporterFilterItemText,
         ReporterFilterItemEnum,
+        ReporterFilterItemDate,
         ReporterDetailPresentationStandard,
         ReporterDetailVisualization,
-        ReporterDetailVisualizationHighcharts,
         ReporterDetailVisualizationGooglecharts,
         ReporterVisualizationDashlet,
         ReporterVisualizationContainer,
@@ -79,35 +80,22 @@ declare var moment: any;
         ReporterCockpitTile,
         ReporterFieldContainer,
         ReporterFieldStandard,
+        ReporterFieldText,
         ReporterFieldCurrency,
+        ReporterFieldPercentage,
         ReporterFieldEnum,
         ReporterFieldDate,
+        ReporterFieldDateTime,
         ReporterFieldColor,
         ReporterIntegrationExportButton,
         ReporterIntegrationExportMask,
         ReporterIntegrationTargetlistexportButton,
         ReporterIntegrationTargetlistexportModal,
         ReporterIntegrationCSVexportButton,
-        ReporterIntegrationXLSexportButton,
-        ReporterIntegrationPDFexportButton,
         ReporterIntegrationToolsButton,
-        ReporterIntegrationQueryanalyzerButton,
-        ReporterIntegrationQueryanalyzerModal
-    ],
-    entryComponents: [
-        ReporterDetailView,
-        ReporterDetailPresentationStandard,
-        ReporterDetailVisualizationHighcharts,
-        ReporterDetailVisualizationGooglecharts,
-        ReporterVisualizationDashlet,
-        ReporterPresentationDashlet,
-        ReporterVisualizationContainer,
-        ReporterCockpit
     ],
     exports: [
-        ReporterDetailView,
-        ReporterVisualizationDashlet,
-        ReporterPresentationDashlet
+        ReporterFieldContainer
     ]
 })
 export class ModuleReports {

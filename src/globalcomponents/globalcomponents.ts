@@ -7,9 +7,13 @@ import {DirectivesModule} from "../directives/directives";
 import {NgModule} from "@angular/core";
 import {RouterModule,} from "@angular/router";
 
+import {ObjectFields}      from "../objectfields/objectfields";
+import {ObjectComponents}      from "../objectcomponents/objectcomponents";
+import {SystemComponents}      from "../systemcomponents/systemcomponents";
+
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 /**
  * @ignore
@@ -18,9 +22,7 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
-
-import {ObjectFields}      from "../objectfields/objectfields";
-import {SystemComponents}      from "../systemcomponents/systemcomponents";
+import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {MenuService} from "./services/menu.service";
 
@@ -44,9 +46,12 @@ import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgo
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
 import /*embed*/ {GlobalNavigation} from "./components/globalnavigation";
 import /*embed*/ {GlobalNavigationMenu} from "./components/globalnavigationmenu";
+import /*embed*/ {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
 import /*embed*/ {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
 import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigationmenuitemnew";
+import /*embed*/ {GlobalNavigationMenuItemActionNew} from "./components/globalnavigationmenuitemactionnew";
 import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
+import /*embed*/ {GlobalNavigationMenuItemActionRoute} from "./components/globalnavigationmenuitemactionroute";
 import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
 import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
 import /*embed*/ {GlobalNavigationCompact} from "./components/globalnavigationcompact";
@@ -74,9 +79,11 @@ import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmodulei
 
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
 import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
-import {VersionManagerService} from "../services/versionmanager.service";
+
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
+import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
+
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -88,6 +95,7 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         ObjectFields,
         DirectivesModule,
         SystemComponents,
+        ObjectComponents,
         RouterModule.forRoot([
             // {path: "login", component: GlobalLogin},
             {path: "setup", component: GlobalSetup},
@@ -116,8 +124,11 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalNavigation,
         GlobalNavigationMenu,
         GlobalNavigationMenuItem,
+        GlobalNavigationMenuItemActionContainer,
         GlobalNavigationMenuItemNew,
+        GlobalNavigationMenuItemActionNew,
         GlobalNavigationMenuItemRoute,
+        GlobalNavigationMenuItemActionRoute,
         GlobalNavigationMenuItemIcon,
         GlobalNavigationMenuMore,
         GlobalNavigationCompact,
@@ -143,7 +154,8 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
         GlobalSearchModule,
         GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
-        GlobalLoginGoogle
+        GlobalLoginGoogle,
+        GlobalObtainImportantPreferences
     ],
     entryComponents: [
         GlobalHeader,

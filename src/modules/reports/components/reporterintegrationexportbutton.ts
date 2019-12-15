@@ -39,6 +39,10 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
     public ngOnChanges() {
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
+
+                // check if the plugin is active
+                if (this.integrationParams.activePlugins[plugin] != 1) break;
+
                 switch (plugin) {
                     case 'ktargetlistexport':
                         this.metadata.addComponent('ReporterIntegrationTargetlistexportButton', this.actionitems).subscribe(object => {
@@ -60,6 +64,11 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
                             this.actionComponents.push(object);
                         })
                         break;
+                    case 'kplannerexport':
+                        this.metadata.addComponent('SalesPlanningReporterIntegrationExportButton', this.actionitems).subscribe(object => {
+                            this.actionComponents.push(object);
+                        })
+                        break;
                 }
             }
         }
@@ -72,13 +81,20 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
     }
 
     get isDisabled() {
+        if (!this.model.checkAccess('export')) return false;
+
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
+
+                // check if the plugin is active
+                if (this.integrationParams.activePlugins[plugin] != 1) break;
+
                 switch (plugin) {
                     case 'ktargetlistexport':
                     case 'kcsvexport':
                     case 'kexcelexport':
                     case 'kpdfexport':
+                    case 'kplannerexport':
                         return false;
                 }
             }

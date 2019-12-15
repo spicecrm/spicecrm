@@ -1,9 +1,13 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from "../../../services/language.service";
 
 /**
- * A header component used in the Outlook add-in.
+ * Header component for the add-in.
  */
 @Component({
     selector: 'groupware-read-pane-header',
@@ -17,7 +21,7 @@ export class GroupwareReadPaneHeader {
     ) {}
 
     /**
-     * Triggers saving the email in SpiceCRM along with the selected beans and/or attachments.
+     * Archives an email in SpiceCRM.
      */
     private archive() {
         this.groupware.archiveEmail().subscribe(
@@ -33,12 +37,15 @@ export class GroupwareReadPaneHeader {
             });
     }
 
+    /**
+     * Check if there are any beans to be archived.
+     */
     get canArchive() {
         return this.groupware.archiveto.length > 0;
     }
 
     /**
-     * Checks if the current has already been archived in SpiceCRM.
+     * Check if the email has already been archived.
      */
     get isArchived() {
         if (this.groupware.emailId.length === 0) {

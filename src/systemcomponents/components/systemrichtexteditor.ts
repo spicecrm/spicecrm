@@ -9,7 +9,7 @@ import {
     EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy, Output,
+    OnDestroy, OnInit, Output,
     Renderer2,
     ViewChild,
     ViewContainerRef
@@ -35,7 +35,7 @@ import {metadata} from "../../services/metadata.service";
         }, systemrichtextservice
     ]
 })
-export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
+export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAccessor {
 
     @ViewChild('htmleditor', {read: ViewContainerRef, static: true}) private htmlEditor: ViewContainerRef;
 
@@ -46,6 +46,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
 
     private isActive: boolean = false;
     private clickListener: any;
+    private keydownListener: any;
     private modalOpen: boolean = false;
     public isExpanded: boolean = false;
     public contract: EventEmitter<string> = new EventEmitter<string>();
@@ -80,9 +81,16 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {};
     }
 
+    public ngOnInit() {
+        this.handleKeyboardShortcuts();
+    }
+
     public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
+        }
+        if (this.keydownListener) {
+            this.keydownListener();
         }
     }
 
@@ -148,7 +156,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         // check if we are active already
         if (!this.isActive) {
             this.isActive = true;
-            this.htmlEditor.element.nativeElement.focus();
+            this.focusEditor();
 
             // listen to the click event if it is ousoide of the current elements scope
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
@@ -219,7 +227,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                     .pipe(take(1))
                     .subscribe(html => {
                         this.isExpanded = false;
-                        this.htmlEditor.element.nativeElement.focus();
+                        this.focusEditor();
                         this.writeValue(html);
                         this.onChange(html);
                         if (this.editorModalSaveSubscriber) this.editorModalSaveSubscriber.unsubscribe();
@@ -239,6 +247,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
+                                this.focusEditor();
+                                this.editorService.restoreSelection();
                                 this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage);
                             }
                             this.modalOpen = false;
@@ -246,6 +256,8 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
                     });
                 } else {
                     if (image.id) {
+                        this.focusEditor();
+                        this.editorService.restoreSelection();
                         this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
                     }
                     this.modalOpen = false;
@@ -320,7 +332,7 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
         this.editorService.saveSelection();
         this.modal.input('Add Video','Inser Video URL').subscribe((url: string) => {
             if (!url || url.length == 0) return;
-            this.htmlEditor.element.nativeElement.focus();
+            this.focusEditor();
             this.editorService.restoreSelection();
             let vimeoReg = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
             let youtubeReg = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
@@ -402,5 +414,18 @@ export class SystemRichTextEditor implements OnDestroy, ControlValueAccessor {
             let text = (e.originalEvent || e).clipboardData.getData('text/plain');
             document.execCommand("insertHTML", false, this.encodeHtml(text));
         }
+    }
+
+    private handleKeyboardShortcuts() {
+        this.keydownListener = this.renderer.listen('document', 'keydown', (e) => {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() == 's') {
+                e.preventDefault();
+                this.save$.emit(this._html);
+            }
+        });
+    }
+
+    private focusEditor() {
+        this.htmlEditor.element.nativeElement.focus();
     }
 }

@@ -10,7 +10,6 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {broadcast} from "../../services/broadcast.service";
-import {Subscription} from "rxjs";
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 
@@ -20,13 +19,26 @@ declare var _;
     selector: 'field-richtext',
     templateUrl: './src/objectfields/templates/fieldrichtext.html',
 })
-export class fieldRichText extends fieldGeneric implements OnDestroy {
+export class fieldRichText extends fieldGeneric {
     private stylesheetField: string = '';
     private useStylesheets: boolean;
     private useStylesheetSwitcher: boolean;
     private stylesheets: any[];
     private stylesheetToUse: string = '';
-    private subscription: Subscription = new Subscription();
+
+    /**
+     *
+     */
+    private _sanitizedValue;
+
+    /**
+     * the cached full html code to prevent "flickering" of the iframe (change detection)
+     */
+    private fullValue_cached: string;
+
+
+    private fullValue: string = '';
+
 
     @ViewChild('printframe', {read: ViewContainerRef, static: true}) private printframe: ViewContainerRef;
 
@@ -66,14 +78,53 @@ export class fieldRichText extends fieldGeneric implements OnDestroy {
         }
     }
 
+    /**
+     * returns the style for the given stylesheet
+     * used in the iframe display
+     */
+    get styleTag() {
+        return (this.stylesheetId) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.stylesheetId) + '</style>' : '';
+    }
+
+    /**
+     * simple getter to get the config if the field shoudl be rendered as iFrame in the view
+     */
+    get asiframe() {
+        return this.fieldconfig.asiframe ? true : false;
+    }
+
+    get heightStyle() {
+        return {height: this.fieldconfig.height ? this.fieldconfig.height : '500px'};
+    }
+
     public ngOnInit() {
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
     }
 
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
+
+    /**
+     * get the html representation of the corresponding value
+     * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should only be rebuild on change
+     * @returns {any}
+     */
+    get sanitizedValue() {
+        if (this.value) {
+            if (this.value.includes('</html>')) {
+                this.fullValue = this.value;
+            } else {
+                // added <base target="_blank"> so all links open in new window
+                this.fullValue = `<html><head><base target="_blank">${this.styleTag}</head><body class="spice">${this.value}</body></html>`;
+            }
+        }
+
+        // if value changed, generate sanitized html value
+        if (this.fullValue != this.fullValue_cached) {
+            this._sanitizedValue = this.sanitized.bypassSecurityTrustResourceUrl(this.fullValue ? 'data:text/html;charset=UTF-8,' + encodeURIComponent(this.fullValue) : '');
+            this.fullValue_cached = this.fullValue;
+        }
+        return this._sanitizedValue;
     }
 
     private modelChangesSubscriber() {
@@ -146,7 +197,7 @@ export class fieldRichText extends fieldGeneric implements OnDestroy {
                     this.value = res[this.fieldname];
                     this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                } ,
+                },
                 error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
             );
     }

@@ -1,11 +1,12 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit, Injector} from "@angular/core";
 import {toast} from "../../services/toast.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {modal} from "../../services/modal.service";
 import {userpreferences} from "../../services/userpreferences.service";
+import {helper} from "../../services/helper.service";
 
 @Component({
     selector: "[object-related-card-file]",
@@ -16,7 +17,7 @@ export class ObjectRelatedCardFile {
     @Input() private file: any = {};
 
 
-    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast) {
+    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
 
     }
 
@@ -38,55 +39,6 @@ export class ObjectRelatedCardFile {
         };
     }
 
-    private determineFileIcon() {
-        if (this.file.file_mime_type) {
-            let fileTypeArray = this.file.file_mime_type.split("/");
-            // check the application
-            switch (fileTypeArray[0]) {
-                case "image":
-                    return "image";
-                case "text":
-                    switch (fileTypeArray[1]) {
-                        case 'html':
-                            return 'html';
-                        default:
-                            return "txt";
-                    }
-                case "audio":
-                    return "audio";
-                case "video":
-                    return "video";
-                default:
-                    break;
-            }
-
-            // check the type
-            switch (fileTypeArray[1]) {
-                case "xml":
-                    return "xml";
-                case "pdf":
-                    return "pdf";
-                case "vnd.ms-excel":
-                case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                    return "excel";
-                case "vnd.openxmlformats-officedocument.wordprocessingml.document":
-                case "vnd.oasis.opendocument.text":
-                    return "word";
-                case "vnd.oasis.opendocument.presentation":
-                case "vnd.openxmlformats-officedocument.presentationml.presentation":
-                    return "ppt";
-                case "x-zip-compressed":
-                    return "zip";
-                case "x-msdownload":
-                    return "exe";
-                default:
-                    break;
-            }
-        }
-
-        return "unknown";
-    }
-
     private downloadFile() {
         if (!this.uploading) {
             this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
@@ -102,7 +54,7 @@ export class ObjectRelatedCardFile {
         if (this.file.file_mime_type) {
             let fileTypeArray = this.file.file_mime_type.split("/");
             // check the application
-            switch (fileTypeArray[0]) {
+            switch (fileTypeArray[0].trim()) {
                 case "image":
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.file.filename;
@@ -135,7 +87,20 @@ export class ObjectRelatedCardFile {
                             });
                             break;
                         default:
-                            this.downloadFile();
+                            let nameparts = this.file.filename.split('.');
+                            let type = nameparts.splice(-1, 1)[0];
+                            switch (type.toLowerCase()) {
+                                case 'msg':
+                                    this.modal.openModal('EmailPreviewModal', true, this.injector).subscribe(modalref => {
+                                        modalref.instance.name = this.file.filename;
+                                        modalref.instance.type = this.file.file_mime_type;
+                                        modalref.instance.file = this.file;
+                                    });
+                                    break;
+                                default:
+                                    this.downloadFile();
+                                    break;
+                            }
                             break;
                     }
                     break;

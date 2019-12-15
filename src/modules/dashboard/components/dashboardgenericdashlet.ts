@@ -17,19 +17,28 @@ export class DashboardGenericDashlet implements OnInit {
     private loading: boolean = true;
     private records: any[] = [];
     private recordcount: number = 0;
+    private recordtotal: number = 0;
     private dashletconfig: any = null;
     private dashletModule: string = undefined;
     private dashletLabel: string = undefined;
     private dashletFields: any[] = [];
     private dashletFieldSet: any = undefined;
-    private canLoadMore: boolean = true;
-    private loadLimit: number = 20;
+    private loadLimit: number = 50;
 
     @ViewChild("tablecontainer", {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
     @ViewChild("headercontainer", {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
 
+    private sortparams: any = {
+        sortdirection: '',
+        sortfield: ''
+    };
+
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 
+    }
+
+    get canLoadMore() {
+        return this.recordtotal > this.records.length;
     }
 
     get dashletTitle() {
@@ -69,6 +78,8 @@ export class DashboardGenericDashlet implements OnInit {
             if (this.dashletconfig.modulefilter) {
                 params.modulefilter = this.dashletconfig.modulefilter;
             }
+            params.sortfield = this.sortparams.sortfield ? this.sortparams.sortfield : this.dashletconfig.sortfield;
+            params.sortdirection = this.sortparams.sortdirection ? this.sortparams.sortdirection : (this.dashletconfig.sortdirection ? this.dashletconfig.sortdirection : 'ASC');
         }
         params.limit = this.loadLimit;
 
@@ -84,7 +95,7 @@ export class DashboardGenericDashlet implements OnInit {
     public ngOnInit() {
         // set the module on the model
         this.model.module = this.dashletModule;
-        this.loadLimit = (this.dashletconfig && this.dashletconfig.limit) ?  this.dashletconfig.limit : this.loadLimit;
+        this.loadLimit = (this.dashletconfig && this.dashletconfig.limit) ? this.dashletconfig.limit : this.loadLimit;
 
         // load the dashlet records
         this.loadRecords();
@@ -97,10 +108,8 @@ export class DashboardGenericDashlet implements OnInit {
                 .subscribe((records: any) => {
                     this.records = records.list;
                     this.recordcount = +records.list.length;
+                    this.recordtotal = records.totalcount;
                     this.loading = false;
-                    if (records.list.length < this.loadLimit) {
-                        this.canLoadMore = false;
-                    }
                 });
         }
     }
@@ -111,13 +120,14 @@ export class DashboardGenericDashlet implements OnInit {
 
     private onScroll() {
         let element = this.tablecontainer.element.nativeElement;
-        if (element.scrollTop + element.clientHeight >= element.scrollHeight) {
+        if (element.scrollTop + element.clientHeight >= element.scrollHeight - 5) {
             this.loadMore();
+            console.log('loading more');
         }
     }
 
     private loadMore() {
-        if (this.canLoadMore) {
+        if (this.canLoadMore && !this.loading) {
             this.loading = true;
             let params: any = this.params;
             params.offset = this.records.length;
@@ -125,11 +135,54 @@ export class DashboardGenericDashlet implements OnInit {
                 .subscribe((records: any) => {
                     this.records = this.records.concat(records.list);
                     this.recordcount += +records.list.length;
-                    if (records.list.length < this.loadLimit) {
-                        this.canLoadMore = false;
-                    }
                     this.loading = false;
                 });
         }
     }
+
+
+    /**
+     * returns if a given fielsd is set sortable in teh fieldconfig
+     *
+     * @param field the field from the fieldset
+     */
+    private isSortable(field): boolean {
+        if (field.fieldconfig.sortable === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * a helper function to determine the sort icon based on the set sort criteria
+     */
+    private getSortIcon(): string {
+        if (this.sortparams.sortdirection === 'ASC') {
+            return 'arrowdown';
+        } else {
+            return 'arrowup';
+        }
+    }
+
+    /**
+     * sets the field as sort parameter
+     *
+     * @param field the field from the fieldset
+     */
+    private setSortField(field): void {
+        if (this.isSortable(field)) {
+            if (this.sortparams.sortfield == field.field) {
+                this.sortparams.sortdirection = this.sortparams.sortdirection == 'ASC' ? 'DESC' : 'ASC';
+            } else {
+                this.sortparams.sortfield = field.field;
+                this.sortparams.sortdirection = 'ASC';
+            }
+
+            // reload the records
+            this.loadRecords();
+        }
+    }
+
 }

@@ -9,7 +9,7 @@
                       <system-icon [icon]="'check'" [size]="'x-small'" [sprite]="'utility'"
                                    [addclasses]="'spicecrm-processicon'"></system-icon>
                     </span>
-                        <span class="slds-tabs--path__title">{{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stage)}})</span>
+                        <span class="slds-tabs--path__title">{{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stagedata)}})</span>
                     </a>
                 </li>
             </ng-container>
@@ -18,8 +18,8 @@
     <div *ngIf="this.componentconfig.sum" class="slds-grid" style="border-bottom: 1px solid #d8dde6;">
         <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small"
              [ngClass]="sizeClass">
-            <div *ngIf="showSum()" class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
-                {{getCurrencySymbol()}}{{getStageSum(stage.stage)}}
+            <div *ngIf="showSum" class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
+                {{getCurrencySymbol()}}{{getStageSum(stage.stagedata)}}
             </div>
         </div>
     </div>

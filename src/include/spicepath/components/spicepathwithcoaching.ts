@@ -12,7 +12,8 @@ import {
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
-import {broadcast} from "../../../services/broadcast.service";
+import {metadata} from "../../../services/metadata.service";
+import {backend} from "../../../services/backend.service";
 
 /**
  * renders a path with coaching in the context of a model
@@ -38,13 +39,13 @@ import {broadcast} from "../../../services/broadcast.service";
             state('open', style({transform: 'rotate(90deg)'})),
             state('closed', style({transform: 'rotate(0deg)'})),
             transition('open => closed', [
-                animate('.5s'),
+                animate('.5s')
             ]),
             transition('closed => open', [
-                animate('.5s'),
+                animate('.5s')
             ])
         ])
-    ],
+    ]
 })
 export class SpicePathWithCoaching {
 
@@ -58,11 +59,31 @@ export class SpicePathWithCoaching {
      */
     private activeStage: string;
 
-    constructor(private configuration: configurationService, private model: model, private language: language) {
+    /**
+     * holds current results for the checks
+     */
+    private beanStagesChecksResults: any[];
+
+    private componentconfig: any = {};
+
+    constructor(private configuration: configurationService, private model: model, private language: language, private backend: backend, private metadata: metadata) {
+        this.componentconfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+        if (this.componentconfig && this.componentconfig.coachingVisible) {
+            this.coachingVisible = this.componentconfig.coachingVisible;
+        }
     }
 
     /**
-     * gets the icon style for the coaching checvron and roitates it by 90degress if open (animated)
+     * retrieve results for checks on load
+     */
+    public ngOnInit() {
+        this.backend.getRequest("spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
+            this.beanStagesChecksResults = stages;
+        });
+    }
+
+    /**
+     * gets the icon style for the coaching checvron and rotates it by 90degress if open (animated)
      */
     get coachingIconStyle() {
         if (this.coachingVisible) {
@@ -111,11 +132,11 @@ export class SpicePathWithCoaching {
     }
 
     /**
-     * retrieves the checks for the curretn stage
+     * retrieves the checks for the current stage
      */
     get checks() {
         let checks = []
-        this.stages.some(stage => {
+        this.beanStagesChecksResults.some(stage => {
             if (stage.stage === this.displayStage) {
                 checks = stage.stagedata.checks
                 return true;
@@ -137,5 +158,16 @@ export class SpicePathWithCoaching {
         } else {
             return stage.stagedata.stage_description;
         }
+    }
+
+    /**
+     * gets the current stage description
+     */
+    get stageComponentset() {
+        let stage = this.stages.find(el => el.stage == this.displayStage);
+
+        if (!stage) return '';
+
+        return stage.stagedata.stage_componentset;
     }
 }

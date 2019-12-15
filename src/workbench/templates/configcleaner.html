@@ -10,7 +10,7 @@
             <p>{{results.total_checks}} Checks are made and found {{results.total_records}} Records:</p>
         </div>
         <system-card *ngFor="let check of results.checks" class="slds-m-bottom--medium">
-            <system-card-header-title>{{check.table}}</system-card-header-title>
+            <system-card-header [title]="check.table"></system-card-header>
             <system-card-body>
                 <div *ngIf="!check.records" class="slds-inline_icon_text slds-grid">
                     <system-utility-icon icon="check" size="x-small"></system-utility-icon>

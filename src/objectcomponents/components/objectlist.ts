@@ -41,6 +41,9 @@ export class ObjectList implements OnDestroy {
         // load the list intiially
         this.setFieldDefs();
 
+        // set the limit for the loading
+        this.modellist.loadlimit = 50;
+
         // load the list and initialize from sesson data if this is set
         this.loadList(true);
 
@@ -54,6 +57,14 @@ export class ObjectList implements OnDestroy {
 
     get issmall() {
         return this.layout.screenwidth == 'small';
+    }
+
+    get sortfield() {
+        return this.componentconfig.sortfield;
+    }
+
+    get sortdirection() {
+        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
     }
 
     public ngOnDestroy() {
@@ -97,9 +108,11 @@ export class ObjectList implements OnDestroy {
         for (let entry of this.allFields) {
             requestedFields.push(entry.field);
         }
+        this.modellist.setSortDirection(this.sortdirection);
+        this.modellist.setSortFieldWithoutReload(this.sortfield);
         this.modellist.getListData(requestedFields, loadfromcache);
     }
-
+//
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {

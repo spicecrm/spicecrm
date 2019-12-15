@@ -1,7 +1,15 @@
 /**
  * @module ObjectFields
  */
-import { Component, ElementRef, OnInit, Renderer, ViewChild, AfterViewInit, ChangeDetectorRef  } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    OnInit,
+    ViewChild,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Renderer2
+} from '@angular/core';
 import { model } from '../../services/model.service';
 import { view } from '../../services/view.service';
 import { Router } from '@angular/router';
@@ -10,7 +18,6 @@ import { metadata } from '../../services/metadata.service';
 import { fieldGeneric } from './fieldgeneric';
 import { mediafiles } from '../../services/mediafiles.service';
 import { backend } from '../../services/backend.service';
-import {toast} from "../../services/toast.service";
 
 @Component( {
     selector: 'field-media-file-image',
@@ -37,72 +44,68 @@ import {toast} from "../../services/toast.service";
 })
 export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterViewInit {
 
-    //@Input() size: number = 30;
+    // @Input() private size: number = 30;
 
-    thumbSize: number;
+    private thumbSize: number;
 
-    relateIdField: string = '';
-    relateNameField: string = '';
-    relateType: string = '';
+    private relateIdField: string = '';
+    private relateNameField: string = '';
+    private relateType: string = '';
 
-    clickListener: any;
+    private clickListener: any;
 
-    imageUrl: string;
-    imageUrlEnlarged: string;
+    private imageUrl: string;
+    private imageUrlEnlarged: string;
 
-    enlarged = false;
-    lightboxOpen = false;
+    private enlarged = false;
+    private lightboxOpen = false;
 
-    fieldIsEmpty: boolean = true;
+    private fieldIsEmpty: boolean = true;
 
-    lastValue: string = '';
+    private lastValue: string = '';
 
-    height: string = '';
+    private height: string = '';
 
-    @ViewChild('buttonToEnlargement', {static: true}) buttonToEnlargement: ElementRef;
-    @ViewChild('buttonToPicker', {static: true}) buttonToPicker: ElementRef;
+    @ViewChild('buttonToEnlargement', {static: true}) private buttonToEnlargement: ElementRef;
+    @ViewChild('buttonToPicker', {static: true}) private buttonToPicker: ElementRef;
 
-    size1rem: number;
-    widthOfParent: number;
+    private size1rem: number;
+    private widthOfParent: number;
 
     constructor(
         public model: model,
         public view: view,
         public language: language,
         public metadata: metadata,
-        private toast:toast,
         public router: Router,
         private elementRef: ElementRef,
-        private renderer: Renderer,
+        private renderer: Renderer2,
         private mediafiles: mediafiles,
         private backend: backend ,
-        private elRef:ElementRef,
+        private elRef: ElementRef,
         private changeDetRef: ChangeDetectorRef
     ) {
         super( model, view, language, metadata, router );
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         if ( this.fieldconfig.format !== 'image' ) this.fieldconfig.format = 'button';
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
 
         this.size1rem = this.getSize1rem();
         this.thumbSize = this.size1rem * 2 - 2;
         this.widthOfParent = this.getWidthOfParent();
 
-        if ( this.fieldconfig['height'] )
-            this.height = 'calc('+this.fieldconfig['height']+' - 2px - 0.5rem )';
+        if ( this.fieldconfig.height ) this.height = 'calc(' + this.fieldconfig.height + ' - 2px - 0.5rem )';
 
-        if (this.model.isLoading)
-            this.model.data$.subscribe( () => { this.afterLoadingModel(); } );
-        else
-            this.afterLoadingModel();
+        if (this.model.isLoading) this.model.data$.subscribe( () => { this.afterLoadingModel(); } );
+        else this.afterLoadingModel();
 
     }
 
-    afterLoadingModel() {
+    private afterLoadingModel(): void {
         this.lastValue = this.model.data[this.fieldname];
         this.loadImages();
         this.model.data$.subscribe( () => {
@@ -114,25 +117,25 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     }
 
     public onClick( event: MouseEvent ): void {
-        if ( !this.elementRef.nativeElement.contains( event.target ) ) // clicked inside?
-            this.enlarged= false;
+        // clicked inside?
+        if ( !this.elementRef.nativeElement.contains( event.target )) this.enlarged= false;
     }
 
-    private closePopups() {
+    private closePopups(): void {
         this.clickListener();
         this.enlarged = false;
     }
 
-    openEnlarged() {
+    private openEnlarged(): void {
         this.clickListener = this.renderer.listen( 'document', 'click', ( event ) => this.onClick( event ) );
         this.enlarged = true;
     }
-    closeEnlarged() {
+    private closeEnlarged(): void {
         this.enlarged = false;
         if ( this.buttonToEnlargement ) this.buttonToEnlargement.nativeElement.focus();
     }
 
-    loadImages() {
+    private loadImages(): void {
         if ( this.model.data[this.fieldname] ) {
             this.fieldIsEmpty = false;
             if ( this.fieldconfig.format === 'button' ) {
@@ -150,25 +153,25 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
         } else this.fieldIsEmpty = true;
     }
 
-    openLightbox() {
+    private openLightbox() {
         this.enlarged = false;
         alert('Lightbox (große Anzeige des Bildes) ist noch nicht implementiert.');
     }
-    closeLightbox() {}
+    private closeLightbox() { 1; }
 
-    clearField4button() {
+    private clearField4button(): void {
         this.imageUrl = this.imageUrlEnlarged = this.value = '';
         this.enlarged = false;
         if ( this.buttonToPicker ) this.buttonToPicker.nativeElement.focus();
         this.fieldIsEmpty = true;
     }
 
-    clearField4image() {
+    private clearField4image(): void {
         this.imageUrl = this.model.data[this.fieldname] = '';
         this.fieldIsEmpty = true;
     }
 
-    getImage() {
+    private getImage(): void {
         this.mediafiles.getMediaFile( 1, '', this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
             if ( answer ) {
                 this.value = answer;
@@ -177,24 +180,22 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
         });
     }
 
-    getSize1rem() {
+    private getSize1rem(): number {
         return Math.ceil( Number( getComputedStyle( document.documentElement,null ).fontSize.replace( /px$/, '' )));
     }
 
-    getWidthOfParent() {
+    private getWidthOfParent(): number {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement.parentElement, null ).width.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement.parentElement, null ).paddingLeft.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement.parentElement, null ).paddingRight.replace( /px$/, '' ));
     }
 
-    determineWidthOfImage() {
+    private determineWidthOfImage(): number {
         return Math.round( this.widthOfParent );
     }
 
-    get imageStyle(){
-        return {
-            height: this.height
-        }
+    private get imageStyle() {
+        return { height: this.height };
     }
 
 }

@@ -56,7 +56,9 @@ export class fieldContainer implements AfterViewInit {
     private getFieldType() {
         let fieldType = '';
 
-        if (this.model.data && this.model.data.acl_fieldcontrol && this.model.data.acl_fieldcontrol[this.field] && this.model.data.acl_fieldcontrol[this.field] == '1') {
+        // check if we have a field access
+        // if (this.model.data && this.model.data.acl_fieldcontrol && this.model.data.acl_fieldcontrol[this.field] && this.model.data.acl_fieldcontrol[this.field] == '1') {
+        if (!this.model.checkFieldAccess(this.field)) {
             return 'fieldNotAuthorized';
         }
 

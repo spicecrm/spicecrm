@@ -1,12 +1,15 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, Input, OnInit} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 
 /**
- * Renders a bean with a checkbox in the read pane bean checklist
+ * A bean component. Dsiplays a list of Beans that are matched to an email address
  */
 @Component({
     selector: 'groupware-pane-bean',
@@ -15,6 +18,9 @@ import {view} from "../../../services/view.service";
 })
 export class GroupwarePaneBean implements OnInit {
 
+    /**
+     * Current bean.
+     */
     @Input() private bean: any;
 
     private mainfieldsetfields: any[];
@@ -25,12 +31,11 @@ export class GroupwarePaneBean implements OnInit {
         private language: language,
         private metadata: metadata,
         private model: model,
+        private view: view
     ) {
+        this.view.displayLabels = false;
     }
 
-    /**
-     * Loads the display configuration for the component.
-     */
     public ngOnInit() {
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig(

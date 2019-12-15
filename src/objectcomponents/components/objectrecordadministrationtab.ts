@@ -7,6 +7,7 @@ import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
+import {territories} from '../../services/territories.service';
 
 @Component({
     selector: 'object-record-details-tab',
@@ -16,7 +17,8 @@ export class ObjectRecordAdministrationTab implements OnInit {
 
     private componentconfig: any = {};
     private expanded: boolean = true;
-    private territorymanaged: boolean = false;
+    private hasFieldAssignedUser = false;
+    // private territorymanaged: boolean = false;
 
     private fields: any = {
         spiceacl_primary_territory: {
@@ -25,6 +27,10 @@ export class ObjectRecordAdministrationTab implements OnInit {
         },
         spiceacl_territories_hash: {
             field: 'spiceacl_territories_hash',
+            fieldconfig: {}
+        },
+        spiceacl_users_hash: {
+            field: 'spiceacl_users_hash',
             fieldconfig: {}
         },
         assigned_user_name: {
@@ -41,7 +47,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
         }
     };
 
-    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language) {
+    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private model: model, private language: language, private territories: territories) {
     }
 
     public ngOnInit() {
@@ -49,16 +55,35 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.expanded = false;
         }
 
+        /*
         let fields = this.metadata.getModuleFields(this.model.module)
         {
-            if (fields.spiceacl_primary_territory){
+            if (fields.spiceacl_primary_territory) {
                 this.territorymanaged = true;
             }
         }
+        */
+
+        this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_name');
     }
 
+    /**
+     * a simple getter that returns true if the module is territory managed
+     */
+    get territorymanaged() {
+        return this.territories.checkModuleManaged(this.model.module);
+    }
+
+
+    /**
+     * simple getter to return if the current module manages multiple users
+     */
+    get multipleusers() {
+        return this.metadata.getModuleDefs(this.model.module).acl_multipleusers == 1 ? true : false;
+    }
 
     get hidden() {
         return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
+
 }

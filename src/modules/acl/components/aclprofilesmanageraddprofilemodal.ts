@@ -20,7 +20,7 @@ export class ACLProfilesManagerAddProfileModal {
 
     private self: any = {};
     private fieldset: string = '';
-    @Input() private spiceacltype_id: string = '';
+    @Input() private sysmodule_id: string = '';
 
     @Output() private newObjectData: EventEmitter<any> = new EventEmitter<any>();
 
@@ -41,7 +41,7 @@ export class ACLProfilesManagerAddProfileModal {
     }
 
     public ngOnInit() {
-        this.model.setFieldValue('spiceacltype_id', this.spiceacltype_id);
+        this.model.setFieldValue('sysmodule_id', this.sysmodule_id);
     }
 
     private close() {
