@@ -25,7 +25,7 @@ export class ReporterFieldCurrency {
     }
 
     get currencyidfield() {
-        return this.field.fieldid + '_curid';
+        return this.field.fieldid  + '_curid';
     }
 
     private getCurrencySymbol() {
@@ -37,14 +37,7 @@ export class ReporterFieldCurrency {
         if (this.currencyidfield) {
             this.record[this.currencyidfield];
         }
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        })
-        return currencySymbol;
-
+        return this.currencies.find(currency => currency.id == currencyid).symbol;
     }
 
     private getValue() {

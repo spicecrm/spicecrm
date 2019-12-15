@@ -2,7 +2,7 @@
     <div class="slds-form-element__control">
         <div class="slds-select_container">
             <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="value" [multiple]="isMultiselect">
-                <option *ngFor="let enumOption of enumOptions" [value]="enumOption.value">{{enumOption.text}}</option>
+                <option *ngFor="let enumOption of enumOptions" [value]="enumOption.value">{{enumOption.display}}</option>
             </select>
         </div>
     </div>

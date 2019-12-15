@@ -1,40 +1,56 @@
 /**
  * @module ModuleDashboard
  */
-import {
-    Component,
-    Input,
-    OnInit,
-    OnChanges,
-    SimpleChanges
-} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
 import {Router} from "@angular/router";
+import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'dashboard-container',
     templateUrl: './src/modules/dashboard/templates/dashboardcontainer.html',
-    providers: [model, dashboardlayout]
+    providers: [model, view, dashboardlayout]
 })
-export class DashboardContainer implements OnChanges, OnInit {
+export class DashboardContainer implements OnChanges {
 
-    @Input() dashboardid: string = '';
-    @Input() context: string = 'Dashboard';
+    @Input() private dashboardid: string = '';
+    @Input() private context: string = 'Dashboard';
 
-    constructor(private dashboardlayout: dashboardlayout, private language: language, private router: Router) {
+    constructor(private dashboardlayout: dashboardlayout, private language: language, private router: Router, private model: model) {
     }
 
-    public ngOnInit(): void {
-        this.dashboardlayout.loadDashboard(this.dashboardid);
+    public loadDashboard() {
+        if (this.dashboardid != this.dashboardlayout.dashboardId) {
+            this.model.initialize();
+            this.model.module = 'Dashboards';
+            this.dashboardlayout.dashboardId = this.dashboardid;
+            this.model.id = this.dashboardid;
+
+            this.dashboardlayout.dashboardElements = [];
+            this.dashboardlayout.dashboardNotFound = false;
+
+            this.model.getData(false)
+                .subscribe(() => {
+                    this.dashboardlayout.dashboardElements = this.model.getField('components');
+
+                    // sort the elements for the compact view
+                    this.dashboardlayout.sortElements();
+
+                }, err => {if (err.status == 404) this.dashboardlayout.dashboardNotFound = true;});
+        }
+    }
+
+    public ngOnInit() {
+        this.loadDashboard();
+    }
+
+    public ngOnChanges() {
+        this.loadDashboard();
     }
 
     private navigate() {
         this.router.navigate(['/module/Dashboards']);
-    }
-
-    public ngOnChanges(changes: SimpleChanges): void {
-        this.dashboardlayout.loadDashboard(this.dashboardid);
     }
 }

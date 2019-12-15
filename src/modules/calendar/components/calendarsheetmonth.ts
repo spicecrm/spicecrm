@@ -39,18 +39,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @ViewChild('boxcontainer', {read: ViewContainerRef, static: true}) private boxContainer: ViewContainerRef;
-    @ViewChild('morecontainer', {read: ViewContainerRef, static: true}) private moreContainer: ViewContainerRef;
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('othercalendars') private otherCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
-    private maxEventsPerBox: number = 1;
-    private resizeHandler: any = {};
     private ownerEvents: any[] = [];
-    private otherEvents: any[] = [];
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
 
@@ -62,19 +56,22 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private cdr: ChangeDetectorRef,
                 private calendar: calendar) {
-        this.resizeHandler = this.renderer.listen('window', 'resize', () => this.setMaxEvents());
     }
 
     get allEvents() {
-        return this.ownerEvents.concat(this.userEvents, this.otherEvents, this.googleEvents);
+        return this.ownerEvents.concat(this.userEvents, this.googleEvents);
     }
 
     get eventHeight() {
         return !this.calendar.isMobileView ? 25 : 20;
     }
 
+    get maxEventsPerBox() {
+        let boxContainerHeight = this.calendarsheet ? this.calendarsheet.element.nativeElement.clientHeight / this.currentGrid.length : undefined;
+        return boxContainerHeight ? Math.floor((boxContainerHeight - (this.offsetHeight * 2)) / this.eventHeight) : 1;
+    }
+
     public ngAfterViewInit() {
-        this.setMaxEvents();
         this.cdr.detectChanges();
     }
 
@@ -87,9 +84,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
         }
-        if (changes.otherCalendars || changes.setdate) {
-            this.getOtherEvents();
-        }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
@@ -97,9 +91,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.cdr.detach();
-        if (this.resizeHandler) {
-            this.resizeHandler();
-        }
     }
 
     private trackByFn(index, item) {
@@ -117,12 +108,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private endDate() {
         return new moment(this.startDate()).endOf('month');
     }
-
-    private setMaxEvents() {
-        let boxContainerHeight = this.boxContainer.element.nativeElement.clientHeight;
-        this.maxEventsPerBox = Math.floor((boxContainerHeight - (this.offsetHeight * 2)) / this.eventHeight);
-    }
-
     private getSheetDays(): any[] {
         let sheetDays = [];
         let i = 0;
@@ -184,51 +169,17 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             return;
         }
 
-        for (let calendar of this.calendar.usersCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            event.start = this.resetTime(event.start);
-                            event.end = this.resetTime(event.end);
-                            this.userEvents.push(event);
-                            this.arrangeEvents();
-                        });
-                    }
-                });
-        }
-    }
-
-    private getOtherEvents() {
-        this.otherEvents = [];
-        this.arrangeEvents();
-        if (this.calendar.isMobileView) {
-            return;
-        }
-
-        for (let calendar of this.calendar.otherCalendars) {
-            if (!calendar.visible) {
-                continue;
-            }
-            this.calendar.loadEvents(this.startDate(), this.endDate(), calendar.id, true)
-                .subscribe(events => {
-                    if (events.length > 0) {
-                        events.forEach(event => {
-                            event.color = calendar.color;
-                            event.visible = calendar.visible;
-                            event.start = this.resetTime(event.start);
-                            event.end = this.resetTime(event.end);
-                            this.otherEvents.push(event);
-                            this.arrangeEvents();
-                        });
-                    }
-                });
-        }
+        this.calendar.loadUsersEvents(this.startDate(), this.endDate())
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        event.start = this.resetTime(event.start);
+                        event.end = this.resetTime(event.end);
+                        this.userEvents.push(event);
+                        this.arrangeEvents();
+                    });
+                }
+            });
     }
 
     private resetTime(event) {
@@ -243,6 +194,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 if (!event.hasOwnProperty("weeksI")) {
                     event.weeksI = [];
                 }
+                // tslint:disable-next-line:prefer-for-of
                 for (let d = 0; d < this.currentGrid[w].length; d++) {
                     let day = this.currentGrid[w][d];
                     for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
@@ -299,15 +251,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         let calendarDate = this.calendar.calendarDate;
         let isToday = calendarDate.year() == todayDay.year() && calendarDate.month() == todayDay.month() && todayDayShort == weekdayShort;
         return {
-            width: `calc(100% / ${this.calendar.weekDaysCount})`,
-            color: isToday ? this.calendar.todayColor : 'inherit',
+            'width': `calc(100% / ${this.calendar.weekDaysCount})`,
+            'color': isToday ? this.calendar.todayColor : 'inherit',
             'font-weight': isToday ? '600' : 'inherit'
-        };
-    }
-
-    private getSheetStyle() {
-        return {
-            height: 'calc(100vh - ' + (this.calendarsheet.element.nativeElement.offsetTop + 20) + 'px)',
         };
     }
 
@@ -342,7 +288,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             }
             w++;
         }
-    };
+    }
 
     private notLastWeek(week) {
         return week < this.currentGrid.length;
@@ -360,12 +306,12 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     private getBoxStyle(i, j, month) {
         return {
-            left: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
-            top: 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
-            color: this.notThisMonth(month) ? '#9faab5' : 'inherit',
+            'left': (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount * j) + 'px',
+            'top': 'calc((100% / ' + this.currentGrid.length + ') * ' + i + ' )',
+            'color': this.notThisMonth(month) ? '#9faab5' : 'inherit',
             'background-color': this.notThisMonth(month) ? '#f4f6f9' : 'transparent',
-            width: (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
-            height: 'calc(100% / ' + this.currentGrid.length + ')',
+            'width': (this.calendarsheet.element.nativeElement.clientWidth / this.calendar.weekDaysCount) + 'px',
+            'height': 'calc(100% / ' + this.currentGrid.length + ')',
         };
     }
 
@@ -404,10 +350,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             'border-radius': '50%',
             'line-height': '1rem',
             'text-align': 'center',
-            width: '1rem',
-            height: '1rem',
-            display: 'block',
-            color: isToday ? '#fff' : 'inherit',
+            'width': '1rem',
+            'height': '1rem',
+            'display': 'block',
+            'color': isToday ? '#fff' : 'inherit',
             'background-color': isToday ? this.calendar.todayColor : 'inherit',
         };
     }

@@ -1,7 +1,17 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, Renderer2, Input, Output, EventEmitter, ChangeDetectorRef, OnInit} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Renderer2,
+    Input,
+    Output,
+    EventEmitter,
+    ChangeDetectorRef,
+    OnInit,
+    AfterViewInit, NgZone
+} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -38,8 +48,8 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
                 private renderer: Renderer2,
                 private helper: helper,
                 private layout: layout,
-                public changeDetectorRef: ChangeDetectorRef) {
-        super(language, metadata, model, changeDetectorRef);
+                public ngZone: NgZone) {
+        super(language, metadata, model,  ngZone);
     }
 
     public ngOnInit() {
@@ -75,7 +85,7 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
         return this.layout.screenwidth == 'small';
     }
 
-    private hasNoActions() {
+    get hasNoActions() {
         // because of custom actions can't be checked if they are enabled... return false
         if (this.actionitems.length > 0) return false;
 
@@ -86,10 +96,5 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
         if (this.buttonsize !== '') {
             return 'slds-button--icon-' + this.buttonsize;
         }
-    }
-
-    private getDropdownLocationClass() {
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        return {'slds-dropdown--bottom': window.innerHeight - rect.bottom < 100};
     }
 }

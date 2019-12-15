@@ -1,6 +1,6 @@
 <div class="slds-p-bottom--small">
-    <div class="slds-text-heading--label">
-        {{wherecondition.name}}
+    <div class="slds-text-heading--label slds-p-bottom--xxx-small">
+        {{language.getLabel(wherecondition.name)}}
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small">
         <!--label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR', 'KReports')}}</label-->
@@ -8,9 +8,7 @@
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="wherecondition.operator" (change)="changeOperator()">
                     <option value="ignore">{{language.getLabel('LBL_OP_IGNORE', 'KReports')}}</option>
-                    <option *ngFor="let operator of getOperators()" [value]="operator">
-                        {{language.getLabel('LBL_OP_'+operator.toUpperCase(), 'KReports')}}
-                    </option>
+                    <option *ngFor="let operator of getOperators()" [value]="operator.value">{{operator.display}}</option>
                 </select>
             </div>
         </div>
@@ -18,10 +16,12 @@
     <div class="slds-grid slds-p-vertical--xx-small" *ngIf="showValue">
         <div [ngSwitch]="itemType" [ngClass]="{'slds-size--1-of-1': !showValueTo, 'slds-size--1-of-2': showValueTo, 'slds-p-right--xxx-small': showValueTo}">
             <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'value'" [wherecondition]="wherecondition"></reporter-filter-item-enum>
+            <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="wherecondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="wherecondition"></reporter-filter-item-text>
         </div>
         <div *ngIf="showValueTo" class="slds-size--1-of-2 slds-p-left--xxx-small" [ngSwitch]="itemType">
             <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'valueto'" [wherecondition]="wherecondition"></reporter-filter-item-enum>
+            <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuetokey'" [wherecondition]="wherecondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'valueto'" [wherecondition]="wherecondition"></reporter-filter-item-text>
         </div>
     </div>

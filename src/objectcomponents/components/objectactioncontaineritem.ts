@@ -9,7 +9,8 @@ import {
     AfterViewInit,
     ViewChild,
     ViewContainerRef,
-    NgZone
+    NgZone,
+    Injector, ChangeDetectorRef
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -53,13 +54,14 @@ export class ObjectActionContainerItem implements AfterViewInit {
         EDIT: "ObjectActionEditButton",
         DELETE: "ObjectActionDeleteButton",
         AUDIT: "ObjectActionAuditlogButton",
-        IMPORT: "ObjectActionImportButton",
+        IMPORT: "SpiceImporterImportButton",
         MAIL: "ObjectActionBeanToMailButton",
         PRINT: "ObjectActionOutputBeanButton",
         SELECT: "ObjectActionSelectButton",
         OPEN: "ObjectActionOpenButton",
         CANCEL: "ObjectActionCancelButton",
-        SAVE: "ObjectActionSaveButton"
+        SAVE: "ObjectActionSaveButton",
+        SAVERELATED: "ObjectActionSaveRelatedButton"
     };
     /**
      * @ignore
@@ -71,7 +73,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
      */
     private stableSub: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone) {
+    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private injector: Injector, private cdr: ChangeDetectorRef) {
     }
 
     get id() {
@@ -95,7 +97,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.metadata.addComponent(this.actionitem.action ? this.standardActions[this.actionitem.action] : this.actionitem.component, this.actioncontainer).subscribe(componentref => {
+        this.metadata.addComponent(this.actionitem.action ? this.standardActions[this.actionitem.action] : this.actionitem.component, this.actioncontainer, this.injector).subscribe(componentref => {
             componentref.instance.parent = this.model;
             componentref.instance.actionconfig = this.actionitem.actionconfig;
             if (componentref.instance.actionemitter) {
@@ -106,6 +108,9 @@ export class ObjectActionContainerItem implements AfterViewInit {
 
             // add the componentn and handle visibility
             this.componentref = componentref;
+            // use ChangeDetectorRef.detectChanges to force the app to detect the changes
+            // this prevents angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
+            this.cdr.detectChanges();
         });
 
 

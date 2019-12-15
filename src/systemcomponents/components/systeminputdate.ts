@@ -3,21 +3,17 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {
-    Component, ElementRef,
-    forwardRef,
-    OnDestroy,
-    Renderer2,
-} from '@angular/core';
+import {Component, ElementRef, forwardRef, OnDestroy, Renderer2,} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {modal} from "../../services/modal.service";
+import {take} from "rxjs/operators";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -53,12 +49,6 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
                 private userpreferences: userpreferences,
                 private modal: modal,
                 private language: language) {
-    }
-
-    public ngOnDestroy() {
-        if (this.clickListener) {
-            this.clickListener();
-        }
     }
 
     get isValid() {
@@ -101,46 +91,23 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         return !!this._date.display;
     }
 
-    private clear(notify = true) {
-        this._date.moment = null;
-        this._date.display = '';
-        this._date.valid = true;
-
-        // emit the value to the ngModel directive
-        if (typeof this.onChange === 'function' && notify) {
-            this.onChange(this._date.moment);
-        }
-    }
-
     /**
-     *  focus the text area when the editor is focussed
+     * determines the side (left or right) for the dropdown depending how much space is left for the element
      */
-    private toggleOpen() {
-
-        this.isOpen = !this.isOpen;
-        // check if we are active already
-        if (this.isOpen) {
-            // listen to the click event if it is ousoide of the current elements scope
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+    get dropdownside() {
+        let erect = this.elementref.nativeElement.getBoundingClientRect();
+        if (window.innerWidth - erect.left < 280) {
+            return 'slds-dropdown_right';
+        } else {
+            return 'slds-dropdown_left';
         }
     }
 
-    private toggleClosed() {
-        // close the dropdown
-        this.isOpen = false;
+    public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
         }
     }
-
-
-    private onDocumentClick(event: MouseEvent) {
-        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
-            this.isOpen = false;
-            this.clickListener();
-        }
-    }
-
 
     /**
      * Set the function to be called
@@ -177,13 +144,59 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         }
     }
 
-    private datePicked(value) {
+    private clear(notify = true) {
+        this._date.moment = null;
+        this._date.display = '';
+        this._date.valid = true;
+
+        // emit the value to the ngModel directive
+        if (typeof this.onChange === 'function' && notify) {
+            this.onChange(this._date.moment);
+        }
+    }
+
+    /**
+     *  focus the text area when the editor is focussed
+     */
+    private toggleOpen() {
+
+        this.isOpen = !this.isOpen;
+        // check if we are active already
+        if (this.isOpen) {
+            // listen to the click event if it is ousoide of the current elements scope
+            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+        }
+    }
+
+    private toggleClosed() {
+        // close the dropdown
+        this.isOpen = false;
+        if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+    private onDocumentClick(event: MouseEvent) {
+        if (this.isOpen && !this.elementref.nativeElement.contains(event.target)) {
+            this.isOpen = false;
+            this.clickListener();
+        }
+    }
+
+    private datePicked(value, fromCalendar?: boolean) {
         if (value) {
             if (!this._date.moment) {
                 this._date.moment = new moment();
             }
+            if (!moment.isMoment(value)) value = moment(value);
 
-            this._date.moment = value;
+            this._date.moment.set('year', value.year());
+            this._date.moment.set('month', value.month());
+            this._date.moment.set('date', value.date());
+            if (fromCalendar) {
+                this._date.moment.set('hour', value.hour());
+                this._date.moment.set('minute', value.minute());
+            }
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
 
@@ -201,10 +214,12 @@ export class SystemInputDate implements OnDestroy, ControlValueAccessor {
         this.toggleClosed();
         this.modal.openModal('Calendar').subscribe(modalRef => {
             modalRef.instance.asPicker = true;
-            modalRef.instance.calendar.addingEvent$.subscribe(date => {
-                modalRef.instance.asPicker = false;
-                this.datePicked(date);
-            });
+            modalRef.instance.calendar.pickerDate$
+                .pipe(take(1))
+                .subscribe(date => {
+                    modalRef.instance.asPicker = false;
+                    this.datePicked(date, true);
+                });
         });
     }
 

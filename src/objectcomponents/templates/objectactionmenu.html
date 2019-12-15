@@ -1,8 +1,8 @@
 <div *ngIf="!isSmall; else smallformfactor" class="slds-dropdown-trigger slds-dropdown-trigger--click" dropdowntrigger>
-    <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions()">
+    <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
-    <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
+    <div class="slds-dropdown">
         <ul class="slds-dropdown__list" role="menu">
             <ng-container *ngIf="actionitems.length > 0">
                 <li *ngFor="let actionitem of actionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">

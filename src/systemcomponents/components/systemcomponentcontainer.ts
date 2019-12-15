@@ -10,7 +10,7 @@ import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} fro
 export class SystemComponentContainer implements AfterViewInit {
 
     @ViewChild("container", {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
-    private containerRef: EventEmitter<any> = new EventEmitter<any>()
+    private containerRef: EventEmitter<any> = new EventEmitter<any>();
 
     private loaded: false;
     public containerComponent: string = "";
@@ -19,5 +19,4 @@ export class SystemComponentContainer implements AfterViewInit {
         this.containerRef.emit(this.container);
         this.containerRef.complete();
     }
-
 }

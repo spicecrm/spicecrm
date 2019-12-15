@@ -3,13 +3,14 @@
         <div class="slds-page-header__row">
             <div class="slds-page-header__col-title">
                 <div class="slds-media">
-                    <object-icon module="Emails"></object-icon>
+                    <system-icon module="Emails"></system-icon>
                     <div class="slds-media__body">
                         <div class="slds-page-header__name">
                             <div class="slds-page-header__name-title">
                                 <h1>
                                     <span>{{language.getModuleName('Emails')}}</span>
-                                    <span class="slds-page-header__title slds-truncate">searching records</span>
+                                    <span *ngIf="loading" class="slds-page-header__title slds-truncate slds-text-heading--small">{{language.getLabel('LBL_SEARCHING')}}</span>
+                                    <span *ngIf="!loading" class="slds-page-header__title slds-truncate slds-text-heading--small">{{language.getLabel('LBL_SELECT')}}</span>
                                 </h1>
                             </div>
                         </div>
@@ -22,7 +23,7 @@
         <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
     </div>
     <div *ngIf="beans.length == 0 && !loading">
-        No Beans found
+        {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
     </div>
     <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
         <system-spinner></system-spinner>

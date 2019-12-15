@@ -1,5 +1,6 @@
 <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
-    <system-icon *ngIf="!file.thumbnail" [icon]="determineFileIcon()" divClass="" sprite="doctype"  size="'small'"></system-icon>
+    <!--system-icon *ngIf="!file.thumbnail" [icon]="fileicon.icon" divClass="" [sprite]="fileicon.sprite"  size="'small'"></system-icon-->
+    <system-file-icon *ngIf="!file.thumbnail" [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
     <div *ngIf="file.thumbnail">
         <img [src]="'data:image/jpg;base64,' + file.thumbnail"/>
     </div>
@@ -10,7 +11,7 @@
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
         <div *ngIf="!uploading" class="slds-shrink-none">
-            <object-file-action-menu [buttonsize]="'x-small'" [fileid]="file.id" [filename]="file.filename" ></object-file-action-menu>
+            <object-file-action-menu [file]="file"></object-file-action-menu>
         </div>
     </div>
     <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">

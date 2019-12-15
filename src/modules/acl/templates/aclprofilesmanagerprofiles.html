@@ -12,7 +12,7 @@
         <table class="slds-table slds-table_bordered slds-table_cell-buffer">
             <thead>
             <tr class="slds-text-title_caps">
-                <th scope="col">
+                <th scope="col" class="slds-truncate">
                     <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
                 </th>
                 <th scope="col" style="width: 3rem;"></th>
@@ -20,8 +20,8 @@
             </thead>
             <tbody>
             <tr *ngFor="let aclprofile of aclprofiles" (click)="selectProfile(aclprofile)" [ngClass]="{'slds-theme--shade': aclprofile.id == activeProfileId}">
-                <td>
-                    <div class="slds-truncate">{{aclprofile.name}}</div>
+                <td class="slds-truncate">
+                    <div >{{aclprofile.name}}</div>
                 </td>
                 <td style="width: 3rem;">
                     <div class="slds-grid">

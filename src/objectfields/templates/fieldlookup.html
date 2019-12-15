@@ -1,21 +1,14 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
-    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
-    <ng-template #displaycontent>
-        <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <span *ngFor="let pill of pills" class="slds-pill slds-m-right--xx-small slds-p-around--xx-small">
             <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
               <system-icon [module]="pill.module" [size]="'small'"></system-icon>
             </span>
             <span class="slds-pill__label">{{pill.summary_text}}</span>
-          </span>
-        <button *ngIf="isEditable()" style="float: right" class="slds-button slds-button--icon"
-                (click)="setEditMode()">
-            <system-button-icon [icon]="'edit'"></system-button-icon>
-        </button>
-    </ng-template>
-</div>
+      </span>
+</field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <div *ngIf="!model.data[parentIdField]" class="slds-combobox-group slds-p-vertical--xx-small">
+    <div class="slds-combobox-group slds-p-vertical--xx-small">
         <div *ngIf="lookuplinks.length > 1" class="slds-combobox_object-switcher slds-combobox-addon_start">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
@@ -45,7 +38,7 @@
         <div class="slds-combobox_container slds-combobox-addon_end">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': lookupSearchOpen}"  role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" class="slds-input" [ngClass]="{'slds-combobox__input':lookuplinks.length > 1}" aria-autocomplete="list" (focus)="onFocus()" (click)="onFieldClick()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', lookuplinks[lookupType].module)"/>
+                    <input type="text" class="slds-input" [ngClass]="{'slds-combobox__input':lookuplinks.length > 1}" aria-autocomplete="list" (focus)="onFocus()" autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', lookuplinks[lookupType].module)"/>
                     <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
@@ -56,7 +49,7 @@
         </div>
     </div>
     <ul *ngIf="pills.length > 0" class="slds-listbox slds-listbox_horizontal" role="group">
-        <li *ngFor="let pill of pills" role="presentation" class="slds-listbox__item slds-p-top_xxx-small">
+        <li *ngFor="let pill of pills;trackBy:pillid" role="presentation" class="slds-listbox__item slds-p-top_xxx-small">
             <span class="slds-pill">
                 <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
                   <system-icon [module]="pill.module" [size]="'small'"></system-icon>

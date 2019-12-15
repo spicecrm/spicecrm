@@ -1,9 +1,15 @@
-import {Component} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+/**
+ * @module ModuleGroupware
+ */
+import {Component, ChangeDetectorRef} from '@angular/core';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Subject, Observable} from 'rxjs';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
+
 import {language} from '../../../services/language.service';
 
 /**
- * Outlook add-in pane showing a list of beans and/or attachments chosen to be archived in SpiceCRM with an email.
+ * A component showing the beans and attachments that are linked to the currently opened email.
  */
 @Component({
     selector: 'groupware-read-pane-linked',
@@ -14,18 +20,17 @@ export class GroupwareReadPaneLinked {
     constructor(
         private groupware: GroupwareService,
         private language: language
-    ) {
-    }
+    ) {}
 
     /**
-     * Getter for the selected bean array.
+     * Linked beans.
      */
     get beans() {
         return this.groupware.archiveto;
     }
 
     /**
-     * Getter for the selected attachments array.
+     * Linked attachments.
      */
     get attachments() {
         return this.groupware.archiveattachments;

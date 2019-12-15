@@ -51,7 +51,10 @@ import {assistant} from "./services/assistant.service";
 import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
+import {libloader} from "./services/libloader.service";
+
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
+import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 
 // declarations for TS
 /**
@@ -116,7 +119,8 @@ export class SpiceUI {
             [
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
+                // {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
             ]
         )
     ],
@@ -158,7 +162,8 @@ export class SpiceUI {
         VersionManagerService,
         modal,
         Title,
-        loggerService
+        loggerService,
+        libloader
     ]
 })
 export class SpiceUIModule {

@@ -1,5 +1,8 @@
+/**
+ * @module ModuleGroupware
+ */
 import {Component, OnInit} from '@angular/core';
-import {GroupwareService} from '../services/groupware.service';
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -32,8 +35,7 @@ export class GroupwareDetailPane implements OnInit {
         private model: model,
         private metadata: metadata,
         private language: language
-    ) {
-    }
+    ) {}
 
     /**
      * triggers the loader and if one record is found opens that one
@@ -68,7 +70,6 @@ export class GroupwareDetailPane implements OnInit {
      * @param id
      */
     private loadRecord(module, id) {
-
         // load te model
         this.model.module = module;
         this.model.id = id;
@@ -76,7 +77,6 @@ export class GroupwareDetailPane implements OnInit {
 
         // load the componentset
         this.componentconfig = this.metadata.getComponentConfig('GroupwareDetailPane', module);
-        // this.componentset = this.metadata.getComponentConfig('GroupwareDetailPane', module).componentset;
     }
 
     /**

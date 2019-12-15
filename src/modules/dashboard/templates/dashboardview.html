@@ -1,6 +1,6 @@
 <div class="slds-grid">
     <div class="slds-theme--shade" [ngClass]="{'slds-is-absolute': ismobile}" style="transition: left 1s" [ngStyle]="panelstyle">
-        <dashboard-select-panel (hide)="showpanel = false;"></dashboard-select-panel>
+        <dashboard-select-panel (hide)="showpanel = false" (dashboardSelect)="loadDashboard($event)"></dashboard-select-panel>
     </div>
     <div class="slds-theme--default" [ngStyle]="dashboardstyle">
         <dashboard-container-header [showdashboardselector]="ismobile" (showselect)="showpanel = true;"></dashboard-container-header>

@@ -1,0 +1,5 @@
+<div *ngIf="modules.length > 0" class="slds-grid slds-p-vertical--x-small">
+    <div *ngFor="let module of modules" class="slds-p-horizontal--xx-small">
+        <activities-popover-addbar-button  [module]="module" [parent]="model"></activities-popover-addbar-button>
+    </div>
+</div>

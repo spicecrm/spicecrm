@@ -31,4 +31,13 @@ export class currency {
 
         return curArray;
     }
+
+    public getCurrencySmbol(currencyid) {
+        let curRecord = this.currencies.find(cur => cur.id == currencyid);
+        if (curRecord) {
+            return curRecord.symbol;
+        } else {
+            return '';
+        }
+    }
 }

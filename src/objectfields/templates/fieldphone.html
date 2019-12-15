@@ -1,11 +1,10 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <div class="slds-truncate"><a [href]="'tel:'+value">{{value}}</a></div>
-        <system-icon class="slds-text-link_reset slds-p-left--x-small" *ngIf="value" [icon]="'call'" [sprite]="'utility'" [size]="'x-small'" (click)="makeCall()"></system-icon>
+        <div class="slds-truncate"><a *ngIf="value" [href]="'tel:'+value">{{value}}</a></div>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
-    <input type="text" class="slds-input" [(ngModel)]="value" required minlength="3" [maxlength]="fieldlength" [ngModelOptions]="modelOptions" />
+    <input #focus type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [autocomplete]="fieldid" [ngModelOptions]="modelOptions" />
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

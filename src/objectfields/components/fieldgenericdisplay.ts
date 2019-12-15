@@ -68,8 +68,10 @@ export class fieldGenericDisplay {
      * sets the model and the viewinto edit mode
      */
     public setEditMode() {
-        this.model.startEdit();
-        this.view.setEditMode(this.fieldid);
+        if (this.editable) {
+            this.model.startEdit();
+            this.view.setEditMode(this.fieldid);
+        }
     }
 
     /**

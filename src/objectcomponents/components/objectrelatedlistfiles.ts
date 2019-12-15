@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer} from "@angular/core";
+import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer2} from "@angular/core";
 import {
     trigger,
     state,
@@ -24,10 +24,6 @@ import {modal} from "../../services/modal.service";
     selector: "object-relatedlist-files",
     templateUrl: "./src/objectcomponents/templates/objectrelatedlistfiles.html",
     providers: [modelattachments],
-    host: {
-        "(drop)": "this.onDrop($event)",
-        "(dragover)": "this.preventdefault($event)"
-    },
     animations: [
         trigger('animateicon', [
             state('open', style({transform: 'scale(1, 1)'})),
@@ -84,7 +80,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param metadata
      * @param modalservice
      */
-    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
+    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer2, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
     }
@@ -116,9 +112,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param event
      */
     private preventdefault(event: any) {
-        if ((event.dataTransfer.items.length >= 1 && this.allItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
+        if ((event.dataTransfer.items.length >= 1 && this.hasOneItemsFile(event.dataTransfer.items)) || (event.dataTransfer.files.length > 0)) {
             event.preventDefault();
             event.stopPropagation();
+
+            // ensure we are copying the element
+            event.dataTransfer.dropEffect = 'copy';
         }
     }
 
@@ -127,14 +126,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      *
      * @param items the items from the event
      */
-    private allItemsFile(items) {
+    private hasOneItemsFile(items) {
         for (let item of items) {
-            if (item.kind != 'file') {
-                return false;
+            if (item.kind == 'file') {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -151,11 +150,22 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     }
 
     /**
+     * handle the drop and upload the files
+     *
+     * @param event the drop event
+     */
+    private fileDrop(files) {
+        if (files && files.length >= 1) {
+            this.doupload(files);
+        }
+    }
+
+    /**
      * triggers a file upload. From the select button firing the hidden file upload input
      */
     private selectFile() {
         let event = new MouseEvent("click", {bubbles: true});
-        this.renderer.invokeElementMethod(this.fileupload.element.nativeElement, "dispatchEvent", [event]);
+        this.fileupload.element.nativeElement.dispatchEvent(event);
     }
 
     /**

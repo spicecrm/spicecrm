@@ -10,6 +10,7 @@ import {VersionManagerService} from '../../services/versionmanager.service';
 import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
+import {DirectivesModule}      from '../../directives/directives';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
 import /*embed*/ {ACLTypesManager} from "./components/acltypesmanager";
@@ -32,6 +33,9 @@ import /*embed*/ {ACLProfilesManagerProfile} from "./components/aclprofilesmanag
 import /*embed*/ {ACLProfilesManagerProfiles} from "./components/aclprofilesmanagerprofiles";
 import /*embed*/ {ACLProfilesManagerAddObjectModal} from "./components/aclprofilesmanageraddobjectmodal";
 import /*embed*/ {ACLProfilesManagerAddProfileModal} from "./components/aclprofilesmanageraddprofilemodal";
+import /*embed*/ {ACLUserProfiles} from "./components/acluserprofiles";
+
+import /*embed*/ {fieldACLAdditionalUsers} from "./components/fieldacladditionalusers";
 
 @NgModule({
     imports: [
@@ -41,6 +45,7 @@ import /*embed*/ {ACLProfilesManagerAddProfileModal} from "./components/aclprofi
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ACLTypesManager,
@@ -61,7 +66,9 @@ import /*embed*/ {ACLProfilesManagerAddProfileModal} from "./components/aclprofi
         ACLProfilesManagerProfiles,
         ACLProfilesManagerProfile,
         ACLProfilesManagerAddProfileModal,
-        ACLProfilesManagerAddObjectModal
+        ACLProfilesManagerAddObjectModal,
+        ACLUserProfiles,
+        fieldACLAdditionalUsers
     ]
 })
 export class ModuleACL {

@@ -13,64 +13,85 @@ import {Router}   from '@angular/router';
     selector: 'field-enum',
     templateUrl: './src/objectfields/templates/fieldcolorenum.html'
 })
-export class fieldColorEnum extends fieldGeneric
-{
+export class fieldColorEnum  extends fieldGeneric {
 
-    longOptions: Array<any> = [];
-    options: Array<any> = [];
-    colors: Array<any> = [];
+    private longOptions: any = [];
+    private options: any = [];
+    private colors: any = [];
+    private acolor: any = {'background-color': ''};
 
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
 
-    getValue(): String {
-        for(let opt of this.options) {
-            if(opt.value == this.value) {
+    public ngOnInit() {
+        this.getOptions();
+    }
+
+    private getOptions() {
+        this.longOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        let options = this.longOptions;
+
+        if(!options || this.fieldconfig.useShort) {
+            options = this.language.getDisplayOptions(this.fieldconfig.shortEnum);
+        }
+
+        this.colors = this.language.getDisplayOptions(this.fieldconfig.colorEnum);
+        if(typeof this.colors !== 'undefined') {
+            let colordef = '';
+            colordef = this.colors[this.value];
+            if (typeof colordef !== 'undefined') {
+                if (colordef.substring(0, 1) != '#') {
+                    colordef = '#' + colordef;
+                }
+            }
+            this.acolor['background-color'] = colordef;
+        }
+        let retArray = [];
+        for (let optionVal in options) {
+            let arrcolor = (typeof this.colors !== 'undefined' && typeof this.colors[optionVal] !== 'undefined') ? (this.colors[optionVal].substring(0, 1) != '#' ? '#' + this.colors[optionVal] : this.colors[optionVal] ): '';
+            let arrlong = (typeof this.longOptions !== 'undefined') ? this.longOptions[optionVal] : '';
+            retArray.push({
+                value: optionVal,
+                color: arrcolor,
+                display: options[optionVal],
+                long: arrlong
+            });
+        }
+        this.options = retArray;
+    }
+
+    get getColor() {
+        let colordef = '';
+        if (typeof this.colors != 'undefined') {
+            colordef = this.colors[this.value];
+            if(colordef) {
+                if (colordef.substring(0, 1) != '#') {
+                    colordef = '#' + colordef;
+                }
+            }
+            this.acolor['background-color'] = colordef;
+        }
+        return this.acolor;
+    }
+
+    private getValue(): string {
+        for (let opt of this.options) {
+            if (opt.value == this.value) {
                 return opt.display;
             }
         }
     }
 
-    getColor(): String {
-        if(this.colors) {
-            if (this.colors[this.value]) {
-                return this.colors[this.value];
-            } else {
-                return 'transparent';
+    private changed() {
+        let colordef = '';
+        colordef = this.colors[this.value];
+        if (typeof colordef !== 'undefined') {
+            if(colordef.substring(0, 1) != '#') {
+                colordef = '#' + colordef;
             }
         }
+        this.acolor['background-color'] = colordef;
     }
-
-    ngOnInit(){
-        this.getOptions();
-    }
-
-    getOptions()
-    {
-        this.longOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
-        let options = {...this.longOptions};
-
-        if(!options || this.fieldconfig.useShort){
-            options = this.language.getDisplayOptions(this.fieldconfig.shortEnum);
-        }
-
-        this.colors = this.language.getDisplayOptions(this.fieldconfig.colorEnum);
-
-        let retArray = [];
-
-        for (let optionVal in options) {
-
-            retArray.push({
-                value: optionVal,
-                color: this.colors[optionVal],
-                display: options[optionVal],
-                long: this.longOptions[optionVal]
-            })
-        }
-        this.options = retArray;
-        
-    }
-
 }

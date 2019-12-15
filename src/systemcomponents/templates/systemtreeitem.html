@@ -1,41 +1,29 @@
-<div cdkDropList #dropList="cdkDropList" [cdkDropListData]="items" [cdkDropListConnectedTo]="connectionList" (cdkDropListDropped)="itemPosition$.emit($event)">
-    <li *ngFor="let item of items; trackBy: trackByFn; let first = first" [id]="item.id" role="treeitem" [attr.aria-level]="item.level" (click)="selectItem($event, item.id)">
-        <article cdkDrag [cdkDragData]="item" [title]="item.name" cdkDragBoundary=".tree-list-drag-boundary" [cdkDragDisabled]="!config.draggable" [class.slds-is-selected]="selectedItem == item.id"
-                 class="slds-tree__item slds-is-open slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-drag--preview">
-            <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
-                <div style="min-width: 16px">
-                    <button *ngIf="item.children.length > 0 && config.collapsible"
-                            class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
-                            (click)="expand(item, $event)">
-                        <system-button-icon [icon]="item.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
-                    </button>
-                    <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
-                                         [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
-                </div>
-                <div class="slds-truncate">
-                    <span *ngIf="item.clickable" class="slds-tree__item-label slds-truncate">{{item.name}}</span>
-                    <span *ngIf="!item.clickable" (click)="expand(item)" style="opacity: 0.8; cursor: default;"
-                          class="slds-tree__item-label slds-truncate">{{item.name}}</span>
-                </div>
-            </div>
-            <div *ngIf="config.canadd && item.id == selectedItem" class="slds-m-right--xx-small">
-                <button class="slds-button slds-button_icon slds-m-top--none" (click)="addItem($event, item.id, item.name)">
-                    <system-button-icon icon="add" size="xx-small"></system-button-icon>
+<div class="slds-p-left--x-small" (mouseleave)="setPosition(null)">
+    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="isDragging && dragPosition == 'before' ? '0 -2px' : 'none'"
+         (mouseenter)="setPosition('before')"></div>
+    <article (mouseenter)="setPosition('item')" [style.box-shadow]="isDragging && dragPosition == 'item' ? '0 0 0 2.5px' : 'none'"
+             class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grow slds-truncate">
+            <div style="min-width: 16px">
+                <button *ngIf="config.collapsible && item.systemTreeDefs.hasChildren" [disabled]="config.expandall"
+                        class="slds-button slds-button_icon slds-m-right--xx-small slds-m-top--none" aria-expanded="true" aria-hidden="true" tabindex="-1"
+                        (click)="expand(item, $event)">
+                    <system-button-icon [icon]="item.systemTreeDefs.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
                 </button>
+                <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
+                                     [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
             </div>
-        </article>
-        <ul *ngIf="item.children.length > 0 && item.expanded == true" class="slds-tree" role="tree" aria-labelledby="treeheading">
-            <system-tree-item
-                    [hasChildren]="true"
-                    [config]="config"
-                    [items]="item.children"
-                    [dropListIds]="dropListIds"
-                    [selectedItem]="selectedItem"
-                    (addItem$)="addItem$.emit($event)"
-                    (dropListId$)="dropListId$.emit($event)"
-                    (selectedItem$)="selectedItem$.emit($event)"
-                    (itemPosition$)="itemPosition$.emit($event)"></system-tree-item>
-        </ul>
-    </li>
-</div>
+            <div class="slds-truncate">
+                <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
+            </div>
+        </div>
+        <div *ngIf="config.canadd && item.systemTreeDefs.isSelected" class="slds-m-right--xx-small">
+            <button class="slds-button slds-button_icon slds-m-top--none" (click)="addItem(item.id, item.name)">
+                <system-button-icon icon="add" size="xx-small"></system-button-icon>
+            </button>
+        </div>
+    </article>
+    <div style="height: 0.37rem; width: 100%" [style.box-shadow]="isDragging && dragPosition == 'after' ? '0 2px' : 'none'"
+         (mouseenter)="setPosition('after')"></div>
 
+</div>

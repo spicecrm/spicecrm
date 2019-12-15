@@ -1,0 +1,54 @@
+<article class="slds-post slds-border--bottom slds-p-top--small">
+    <header class="slds-post__header slds-media">
+        <div class="slds-media__figure">
+            <span *ngIf="!note.user_image" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
+                <system-utility-icon [icon]="'user'" [size]="'x-small'" [addclasses]="'slds-icon'" [colorclass]="''"></system-utility-icon>
+            </span>
+            <img style="height: 40px; width: 40px" *ngIf="note.user_image" [src]="note.user_image"/>
+        </div>
+        <div *ngIf="!isEditing" class="slds-media__body">
+            <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
+                <p>
+                    <a href="javascript:void(0);">{{note.user_name}}</a> <ng-container *ngIf="!note.global"> • <system-utility-icon [icon]="'lock'" [size]="'xx-small'"></system-utility-icon></ng-container>
+                </p>
+                <system-utility-icon class="slds-col--bump-left slds-p-horizontal--x-small" icon="edit" size="xx-small" (click)="edit()" *ngIf="!hideDeleteButton()"></system-utility-icon>
+                <system-utility-icon icon="delete" size="xx-small" (click)="delete()" *ngIf="!hideDeleteButton()"></system-utility-icon>
+            </div>
+            <p class="slds-text-body--small"><a href="javascript:void(0);" class="slds-text-link--reset">{{getNoteTimeFromNow()}}</a></p>
+        </div>
+        <div *ngIf="isEditing" class="slds-media__body">
+            <div class="slds-publisher slds-publisher_comment slds-is-active">
+                <textarea class="slds-publisher__input slds-input_bare slds-text-longform"  style="height: 10rem;" [(ngModel)]="note.text"></textarea>
+                <div class="slds-publisher__actions slds-grid slds-grid_align-spread">
+                    <ul class="slds-grid">
+                        <li>
+                            <button class="slds-button slds-button_icon slds-button_icon-container" (click)="togglePrivate()">
+                                <system-utility-icon [icon]="getPrivateIcon()" [size]="'xx-small'"></system-utility-icon>
+                            </button>
+                        </li>
+                        <!--li>
+                            <button disabled class="slds-button slds-button_icon slds-button_icon-container">
+                                <system-button-icon icon="adduser"></system-button-icon>
+                            </button>
+                        </li-->
+                        <!--li>
+                            <button disabled class="slds-button slds-button_icon slds-button_icon-container">
+                                <system-button-icon icon="attach"></system-button-icon>
+                            </button>
+                        </li-->
+                    </ul>
+                    <ul class="slds-grid">
+                        <li>
+                            <button class="slds-button slds-button_icon slds-button_icon-container" (click)="saveNote()">
+                                <system-button-icon sprite="utility" icon="check"></system-button-icon>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div *ngIf="!isEditing" [innerHTML]="htmlValue">
+        <!--p>{{note.text}}</p-->
+    </div>
+</article>

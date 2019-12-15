@@ -50,7 +50,7 @@ export class ObjectRelatedCardHeader {
     /**
      * Reference to <ng-content></ngcontent>. Is needed in the template.
      */
-    @ViewChild('ngContent', {static:true}) private ngContent: ElementRef;
+    // @ViewChild('ngContent', {static:true}) private ngContent: ElementRef;
 
     constructor( private language: language, private relatedmodels: relatedmodels, private model: model, private metadata: metadata ) { }
 

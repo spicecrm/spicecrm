@@ -4,7 +4,7 @@
 import {Component, ViewChild, ViewContainerRef, EventEmitter, Input, Output, Renderer2, OnDestroy} from "@angular/core";
 import {DomSanitizer} from '@angular/platform-browser';
 import {language} from "../../services/language.service";
-import {metadata} from "../../services/metadata.service";
+import {libloader} from "../../services/libloader.service";
 
 /**
  * @ignore
@@ -22,7 +22,7 @@ export class SystemUploadImage implements OnDestroy {
     /**
      * a reference to the image container
      */
-    @ViewChild("imgupload", {read: ViewContainerRef, static: true}) public imgupload: ViewContainerRef;
+    @ViewChild("imgupload", {read: ViewContainerRef, static: false}) public imgupload: ViewContainerRef;
 
     /**
      * the height of a crop area in pixel
@@ -73,7 +73,7 @@ export class SystemUploadImage implements OnDestroy {
      */
     private pasteListener: any;
 
-    constructor(private language: language, private metadata: metadata, private renderer: Renderer2, private sanitizer: DomSanitizer) {
+    constructor(private language: language, private libloader: libloader, private renderer: Renderer2, private sanitizer: DomSanitizer) {
         this.pasteListener = this.renderer.listen('window', 'paste', e => {
             e.preventDefault();
             e.stopPropagation();
@@ -136,7 +136,7 @@ export class SystemUploadImage implements OnDestroy {
      */
     private doCrop(event): void {
         if (!this.croppie) {
-            this.metadata.loadLibs('croppie').subscribe(
+            this.libloader.loadLib('croppie').subscribe(
                 (next) => {
                     this.croppie = new Croppie(document.getElementById('croppieimage'), {
                         enableExif: true,

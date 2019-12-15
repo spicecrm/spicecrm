@@ -10,7 +10,7 @@ import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {layout} from "../../services/layout.service";
 import {view} from "../../services/view.service";
-import { modal } from '../../services/modal.service';
+import {modal} from '../../services/modal.service';
 
 @Component({
     selector: "[object-related-list-item]",
@@ -25,6 +25,11 @@ export class ObjectRelatedListItem implements OnInit {
     @Input() private editcomponentset: string = "";
 
     /**
+     * an oiptional list item actionset that can be passed through
+     */
+    @Input() private listitemactionset: string;
+
+    /**
      * set to true to hide the actionset menu item being display
      */
     @Input() private hideActions: boolean = false;
@@ -34,26 +39,47 @@ export class ObjectRelatedListItem implements OnInit {
     private expanded: boolean = false;
     public componentconfig: any = {};
 
-    constructor( private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal ) { }
+    constructor(private metadata: metadata, private footer: footer, protected model: model, private relatedmodels: relatedmodels, private view: view, private router: Router, private language: language, private layout: layout, private modalservice: modal) {
+    }
 
+    /**
+     * initialize
+     */
     public ngOnInit() {
+        // do not display labels in this view and disable editing
         this.view.displayLabels = false;
+        this.view.isEditable = this.editable;
 
+        // initialize the model
         this.model.module = this.module;
         this.model.id = this.listitem.id;
         this.model.data = this.listitem;
 
+        // load the componentconfig from ObjectRelatedListItem ... if input itemactionset is not defined
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListItem', this.model.module);
     }
 
+    /**
+     * returns the actionset that iss either passed in via input from the container or retrieved from the config
+     */
     get actionset() {
-        return this.componentconfig.actionset;
+        return this.listitemactionset ? this.listitemactionset : this.componentconfig.actionset;
     }
 
+    /**
+     * go to the detail voie for the model
+     */
     private navigateDetail() {
         this.router.navigate(["/module/" + this.model.module + "/" + this.model.id]);
     }
 
+    /**
+     * handling the actions
+     *
+     * ToDo: switch this to proper actionset item handling
+     *
+     * @param action
+     */
     private handleAction(action) {
         switch (action) {
             case "canceledit":
@@ -83,8 +109,8 @@ export class ObjectRelatedListItem implements OnInit {
                 });
                 break;
             case "remove":
-                this.modalservice.confirm( this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short')).subscribe( (answer) => {
-                    if ( answer ) this.relatedmodels.deleteItem(this.model.id);
+                this.modalservice.confirm(this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short')).subscribe((answer) => {
+                    if (answer) this.relatedmodels.deleteItem(this.model.id);
                 });
                 break;
             case "saverelated":

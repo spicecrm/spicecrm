@@ -107,10 +107,7 @@ export class mailboxesEmails {
         ];
 
         let parameters = {
-            searchfields: JSON.stringify({
-                conditions: conditions,
-                join: "and",
-            }),
+            searchfields: {},
             sortdirection: "DESC",
             sortfield: "date_sent",
             fields: '',
@@ -150,6 +147,12 @@ export class mailboxesEmails {
             parameters.fields = JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness",
                     "sentiment", "magnitude"]);
         }
+
+        parameters.searchfields =
+            JSON.stringify({
+                conditions: conditions,
+                join: "and",
+            });
 
 
         this.isLoading = true;
