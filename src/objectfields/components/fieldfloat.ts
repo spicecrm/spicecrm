@@ -16,36 +16,35 @@ import {userpreferences} from '../../services/userpreferences.service';
 })
 export class fieldFloat extends fieldGeneric implements OnInit {
 
-    textvalue: string = '';
+    private textvalue: string = '';
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences ) {
         super(model, view, language, metadata, router);
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.textvalue = this.getValAsText();
         this.model.data$.subscribe( () => {
             this.textvalue = this.getValAsText();
         });
     }
 
-    getValAsText() {
+    private getValAsText() {
         if ( this.value === undefined ) return '';
         let val = parseFloat( this.value );
         if ( isNaN( val )) return '';
         return this.userpreferences.formatMoney( val );
     }
 
-    changed() {
+    private changed() {
         let val: any = this.textvalue;
         val = val.split( this.userpreferences.toUse.num_grp_sep ).join('');
         val = val.split( this.userpreferences.toUse.dec_sep ).join('.');
         if ( isNaN( val = parseFloat( val ))) {
             this.value = '';
         } else {
-            this.value = ( Math.floor( val * Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits )) / Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits ));
+            this.value = ( Math.round( val * Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits )) / Math.pow( 10, this.userpreferences.toUse.default_currency_significant_digits ));
         }
         this.textvalue = this.getValAsText();
     }
-
 }
