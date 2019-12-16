@@ -99,7 +99,7 @@ import /*embed*/ {fieldNotAuthorized} from "./components/fieldnotauthorized";
 import /*embed*/ {fieldModuleIcon} from "./components/fieldmoduleicon";
 import /*embed*/ {fieldRichText} from "./components/fieldrichtext";
 import /*embed*/ {fieldEnumMulti} from "./components/fieldenummulti";
-import /*embed*/ {fieldPhone} from "./components/fieldphone";
+import /*embed*/ {fieldPhoneAsterisk} from "./components/fieldphoneasterisk";
 import /*embed*/ {fieldCronInterval} from "./components/fieldcroninterval";
 import /*embed*/ {fieldGooglePlacesSearch} from "./components/fieldgoogleplacessearch";
 import /*embed*/ {fieldTextID} from "./components/fieldtextid";
@@ -114,6 +114,7 @@ import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestion
 import /*embed*/ {fieldTags} from './components/fieldtags';
 import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
 import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
+import /*embed*/ {fieldPhone} from "./components/fieldphone";
 
 /**
 * @ignore
@@ -220,7 +221,7 @@ declare var _: any;
         fieldModuleIcon,
         fieldRichText,
         fieldEnumMulti,
-        fieldPhone,
+        fieldPhoneAsterisk,
         fieldCronInterval,
         fieldGooglePlacesSearch,
         fieldTextID,
@@ -234,7 +235,8 @@ declare var _: any;
         fieldQuestionnaireEvaluation,
         fieldTags,
         fieldRelatedDetails,
-        fieldRelatedDetailsContainer
+        fieldRelatedDetailsContainer,
+        fieldPhone
     ],
     exports: [
         fieldSet,

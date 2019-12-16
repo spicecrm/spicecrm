@@ -1,6 +1,6 @@
 <div *ngIf="isManaged" class="slds-button-group slds-m-horizontal--xxx-small">
-    <button class="slds-button slds-button_neutral" [disabled]="isDisabled">
-        <object-status-network-button-item [item]="primaryItem" (status)="setStatus($event)"></object-status-network-button-item>
+    <button class="slds-button slds-button_neutral" [disabled]="isDisabled" (click)="propagateclick(primaryItem.id)">
+        <object-status-network-button-item [item]="primaryItem"></object-status-network-button-item>
     </button>
     <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" dropdowntrigger>
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="isDisabled || secondaryItems.length == 0">
@@ -8,9 +8,9 @@
         </button>
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
             <ul class="slds-dropdown__list" role="menu">
-                <li class="slds-dropdown__item" *ngFor="let secondaryItem of secondaryItems" role="presentation">
+                <li class="slds-dropdown__item" *ngFor="let secondaryItem of secondaryItems" role="presentation" (click)="propagateclick(secondaryItem.id)">
                     <a class="slds-truncate" href="javascript:void(0);" role="menuitem">
-                        <object-status-network-button-item [item]="secondaryItem" (status)="setStatus($event)"></object-status-network-button-item>
+                        <object-status-network-button-item [item]="secondaryItem"></object-status-network-button-item>
                     </a>
                 </li>
             </ul>
