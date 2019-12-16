@@ -147,8 +147,13 @@ export class fieldHtml extends fieldGeneric {
         }
     }
 
+    /**
+     * removed .. this does in this way not make sense
+     */
+    /*
     private print() {
         this.printframe.element.nativeElement.contentWindow.print();
     }
+   */
 
 }
