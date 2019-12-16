@@ -54,7 +54,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
         EDIT: "ObjectActionEditButton",
         DELETE: "ObjectActionDeleteButton",
         AUDIT: "ObjectActionAuditlogButton",
-        IMPORT: "ObjectActionImportButton",
+        IMPORT: "SpiceImporterImportButton",
         MAIL: "ObjectActionBeanToMailButton",
         PRINT: "ObjectActionOutputBeanButton",
         SELECT: "ObjectActionSelectButton",

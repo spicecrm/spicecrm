@@ -29,9 +29,7 @@ export class ServiceRequestFeedbackButton {
     ) {
     }
 
-    private execute(e) {
-        e.stopPropagation();
-        e.preventDefault();
+    private execute() {
         this.modal.openModal("ObjectActionMailModal", true, this.ViewContainerRef.injector).subscribe(
             (modal: any) => {
                 modal.instance.titellabel = 'LBL_REQUEST_FEEDBACK';

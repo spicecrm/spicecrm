@@ -5,9 +5,7 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angula
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 
-/**
- * @ignore
- */
+/* @ignore */
 declare var moment: any;
 
 @Component({
@@ -19,16 +17,40 @@ declare var moment: any;
 })
 export class SystemInputDatePicker implements OnInit, OnChanges {
 
-
     public currentGrid: any[] = [];
+    public secondGrid: any[] = [];
     public yearsList: any[] = [];
+    /*
+    * @input setDate: moment
+    */
     @Input() private setDate: any;
+    /*
+    * @input dual: boolean
+    */
+    @Input() private dual: boolean = false;
+    /*
+    * @input minDate: moment
+    */
     @Input() private minDate: any;
+    /*
+    * @input maxDate: moment
+    */
     @Input() private maxDate: any;
+    /*
+    * @input weekStartDay: number
+    */
     @Input() private weekStartDay: number = 0;
+    /*
+    * @input showTodayButton: boolean
+    */
     @Input() private showTodayButton: boolean = true;
+    /*
+    * @output datePicked: moment
+    */
     @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
+
     private curDate: any = new moment();
+    private secondDate: any = new moment();
 
     constructor(private language: language, private userPreferences: userpreferences) {
         let preferences = this.userPreferences.unchangedPreferences.global;
@@ -44,13 +66,29 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
     set currentYear(value) {
         this.curDate.year(value.length ? value : value.name);
-        this.buildGrid();
+        this.buildGrids();
+    }
+
+    set secondYear(value) {
+        this.curDate.year(value.length ? value : value.name);
+        this.buildGrids();
+    }
+
+    get secondYearDisplay(): any {
+        return this.secondDate.year();
     }
 
     get currentMonth(): string {
         return moment.localeData().months()[this.curDate.month()];
     }
 
+    get secondMonth(): string {
+        return moment.localeData().months()[this.secondDate.month()];
+    }
+
+    /*
+    * @return weekDays: string[]
+    */
     get weekdays() {
         let lang = this.language.currentlanguage.substring(0, 2);
         moment.locale(lang);
@@ -66,77 +104,129 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     public ngOnInit() {
-        this.intializeGrid();
+        this.initializeGrid();
     }
 
     public ngOnChanges() {
-        this.intializeGrid();
+        this.initializeGrid();
     }
 
-    private intializeGrid() {
+    /*
+    * @initialize grid
+    * @set curDate
+    * @add 1 month to secondDate
+    * @buildYearsList
+    * @buildGrids
+    */
+    private initializeGrid() {
         if (this.setDate) {
             this.curDate = new moment(this.setDate);
+            this.secondDate = new moment(this.setDate);
         } else {
             this.curDate = new moment();
+            this.secondDate = new moment();
         }
+        this.secondDate.add(1, 'month');
         this.buildYearsList();
-        this.buildGrid();
+        this.buildGrids();
     }
 
+    /*
+    * @build yearsList
+    * @set yearsList
+    */
     private buildYearsList() {
-        this.yearsList = new Array(11).fill('').map((e,i) => {
+        this.yearsList = new Array(11).fill('').map((e, i) => {
             let year = i - 5 + +this.curDate.year();
             return {id: year.toString(), name: year.toString()};
         });
     }
 
+    /*
+    * @param dayIndex: number
+    * @return weekdayLong: string
+    */
     private weekdayLong(dayIndex) {
         let lang = this.language.currentlanguage.substring(0, 2);
         moment.locale(lang);
         return moment.weekdays(dayIndex + this.weekStartDay);
     }
 
-    private notCurrentMonth(month) {
-        return month !== this.curDate.month();
-    }
+    /*
+    * @check is disabled
+    * @param date: moment
+    * @return boolean
+    */
+    private disabled(date) {
+        if (!date) return false;
+        if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
 
-    private disabled(month, day) {
-        if (month !== this.curDate.month()) return true;
-
-        let thedate = new moment();
-        thedate.date(day).month(month).year(this.curDate.year());
-        if (this.minDate && thedate.isBefore(this.minDate)) {
+        let thedate = new moment(date.format());
+        if (this.minDate && thedate.isBefore(this.minDate, 'month')) {
             return true;
         }
-        return !!(this.maxDate && thedate.isAfter(this.maxDate));
+        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'month'));
     }
 
-    private isToday(day, month) {
+    /*
+    * @check is today
+    * @param date: moment
+    * @return boolean
+    */
+    private isToday(date) {
+        if (!date) return false;
         let today = new moment();
-        return today.year() === this.curDate.year() && today.month() === month && today.date() == day;
+        return today.isSame(date, 'year') && today.isSame(date, 'month') && today.isSame(date, 'day');
     }
 
-    private isCurrent(day, month) {
-        return this.setDate && this.curDate.year() === this.setDate.year() && this.setDate.month() === month && this.setDate.date() == day;
+    /*
+    * @check is current
+    * @param date: moment
+    * @return boolean
+    */
+    private isCurrent(date) {
+        if (!date) return false;
+        return this.setDate && this.setDate.isSame(date, 'year') && this.setDate.isSame(date, 'month') && this.setDate.isSame(date, 'day');
     }
 
+    /*
+    * @subtract 1 month to curDate
+    * @subtract? 1 month to secondDate
+    * @buildGrids
+    */
     private prevMonth() {
         this.curDate.subtract(1, 'months');
-        this.buildGrid();
+        if (this.dual) this.secondDate.subtract(1, 'months');
+        this.buildGrids();
     }
 
+    /*
+    * @add 1 month to curDate
+    * @add? 1 month to secondDate
+    * @buildGrids
+    */
     private nextMonth() {
         this.curDate.add(1, 'months');
-        this.buildGrid();
+        if (this.dual) this.secondDate.add(1, 'months');
+        this.buildGrids();
     }
 
+    /*
+    * @set curDate to today
+    * @buildGrids
+    */
     private goToday() {
         this.curDate = new moment();
-        this.buildGrid();
+        this.buildGrids();
     }
 
-    private pickDate(date, month) {
-        let newDate = new moment().year(this.currentYear.name).month(month).date(date);
+    /*
+    * @param date
+    * @emit newDate: moment by datePicked
+    */
+    private pickDate(date) {
+        if (!date) return;
+        let newDate = new moment(date.format());
 
         if (this.minDate && newDate.isBefore(this.minDate)) {
             return false;
@@ -148,26 +238,54 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         this.datePicked.emit(newDate);
     }
 
-    private buildGrid() {
+    /*
+    * @buildGridWeeks
+    * @reset currentGrid
+    * @reset secondGrid
+    */
+    private buildGrids() {
         this.currentGrid = [];
-        // let fdom = new moment(this.curDate.year() + '-' + (this.curDate.month() + 1) + '-' + '01');
-        let fdom = new moment(this.curDate);
+        this.secondGrid = [];
+
+        this.buildGridWeeks(this.currentGrid, this.curDate);
+        if (this.dual) {
+            this.buildGridWeeks(this.secondGrid, this.secondDate);
+        }
+    }
+
+    /*
+    * @build weeks and their days
+    * @push week: moment[] to grid
+    * @param grid: any[]
+    * @param date: moment
+    */
+    private buildGridWeeks(grid, date) {
+        let fdom = new moment(date);
         // move to first day of month
         fdom.date(1);
-        // move to Sunday
+        // go the the previous week if the month starts on sunday and the week starts on monday
+        if (fdom.day() == 0 && this.weekStartDay == 1) fdom.subtract(7, 'd');
+        // move to week start day
         fdom.day(this.weekStartDay);
-
         // build 6 weeks
         let j = 0;
         while (j < 6) {
             let i = 0;
             let week = {days: [], number: fdom.format('w')};
             while (i < 7) {
-                week.days.push({day: fdom.date(), month: fdom.month()});
+                // push the day only if we are in currentGrid and the date is the same or before the current date
+                // or if we are not i dual mode and the date is after the current date
+                // or if we are in dual mode and in the secondGrid and the date is the same or after the second date
+                if ((date.isSame(this.curDate, 'month') && fdom.isSameOrBefore(this.curDate, 'month')) || (!this.dual && fdom.isAfter(this.curDate, 'month')) ||
+                    (this.dual && date.isSame(this.secondDate, 'month') && fdom.isSameOrAfter(this.secondDate, 'month'))) {
+                    week.days[i] = moment(fdom.format());
+                }
                 fdom.add(1, 'd');
                 i++;
             }
-            this.currentGrid.push(week);
+            grid.push(week);
+            // prevent adding the last week if it is out of the current months range
+            if (fdom.isAfter(date, 'month') || fdom.isAfter(date, 'year')) break;
             j++;
         }
     }

@@ -10,7 +10,9 @@ import {session} from "../../../services/session.service";
 declare var Office: any;
 
 /**
- * Main container for the SpiceCRM Outlook add-in.
+ * Main container for the SpiceCRM Outlook add-in. This gets rendered by the loader.
+ * The pane intializes the mailbox and the groupware services. Then it loads the UI and starts the config process
+ * if no user and password is set in the store it loads the settings route
  */
 @Component({
     selector: 'outlook-pane',

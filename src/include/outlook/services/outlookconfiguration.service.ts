@@ -32,7 +32,7 @@ export class OutlookConfiguration {
     }
 
     public hasSettings() {
-        return this.username != '' && this.password != '';
+        return this.username && this.username != '' && this.password && this.password != '';
     }
 
     public saveSettings(): Observable<any> {
