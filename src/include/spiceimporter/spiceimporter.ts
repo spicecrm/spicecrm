@@ -26,6 +26,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 import /*embed*/ {SpiceImporterService} from './services/spiceimporter.service';
 
+import /*embed*/ {SpiceImporterImportButton} from './components/spiceimporterimportbutton';
 import /*embed*/ {SpiceImporterSelect} from './components/spiceimporterselect';
 import /*embed*/ {SpiceImporterMap} from './components/spiceimportermap';
 import /*embed*/ {SpiceImporterFixed} from './components/spiceimporterfixed';
@@ -53,9 +54,17 @@ import {ObjectFields} from "../../objectfields/objectfields";
         SpiceImporterFixed,
         SpiceImporterCheck,
         SpiceImporterUpdate,
-        SpiceImporterResult
+        SpiceImporterResult,
+        SpiceImporterImportButton
     ],
-    exports: [SpiceImporter],
+    exports: [
+        SpiceImporter,
+        SpiceImporterImportButton
+    ],
+    entryComponents: [
+        SpiceImporter,
+        SpiceImporterImportButton
+    ],
     providers: [SpiceImporterService]
 })
 export class SpiceImporterModule {

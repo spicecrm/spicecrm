@@ -12,7 +12,7 @@ import {
 })
 export class ObjectRecordFieldsetField {
 
-    @Input() private fieldsetitem: string = '';
+    @Input() private fieldsetitem: any;
     @Input() private fieldpadding: string = 'x-small';
     @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight';
 

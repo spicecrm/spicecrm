@@ -63,6 +63,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 private configuration: configurationService,
                 private calendar: calendar,
                 private model: model,
+                private view: view,
                 private broadcast: broadcast,
                 private userpreferences: userpreferences,
                 private metadata: metadata,
@@ -88,6 +89,9 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 }
             }
         }));
+
+        // set the view to nbot diusplay labels
+        this.view.displayLabels = false;
     }
 
     get startHour() {
