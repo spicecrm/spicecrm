@@ -1148,7 +1148,6 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     position: sticky;
     top: 0px;
     z-index: 1;
-    border-top: 0;
     border-bottom: 1px solid #dddbda;
 }
 
