@@ -1,11 +1,11 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Directive, OnInit, ViewChild} from '@angular/core';
+import {Component, Directive, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
-import {relatedmodels} from "../../services/relatedmodels.service";
+import {Subscription} from "rxjs";
 
 
 /**
@@ -22,25 +22,25 @@ export class ObjectActionEditRelatedButtonHelper {
     }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Component({
     selector: 'object-action-edit-related-button',
     templateUrl: './src/objectcomponents/templates/objectactioneditrelatedbutton.html'
 })
-export class ObjectActionEditRelatedButton implements OnInit {
+export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
 
+    public disabled: boolean = true;
+    /**
+     * the action config from the actionset
+     */
+    public actionconfig: any = {};
     /**
      * this is a helper so we have a subcomponent that can provide a new model
      *
      * this model is detected via teh component and then addressed
      */
     @ViewChild(ObjectActionEditRelatedButtonHelper, {static: true}) private child;
-
-    public disabled: boolean = true;
-
-    /**
-     * the action config from the actionset
-     */
-    public actionconfig: any = {};
+    private subscriptions: Subscription = new Subscription();
 
     constructor(
         private language: language,
@@ -52,20 +52,27 @@ export class ObjectActionEditRelatedButton implements OnInit {
 
     public ngOnInit() {
         this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-        this.model.mode$.subscribe(mode => {
-            this.handleDisabled(mode);
-        });
 
-        this.model.data$.subscribe(data => {
+        // handleDisabled on on model.mode changes
+        this.subscriptions.add(
+            this.model.mode$.subscribe(mode => {
+                this.handleDisabled(mode);
+            })
+        );
 
-            // Set the module of the new model and open a modal with copy rules
-            this.child.model.module = this.actionconfig.module;
-            this.child.model.id = this.model.getFieldValue(this.actionconfig.parent_field);
-            this.child.model.getData(false);
+        // handleDisabled on on model.data changes
+        this.subscriptions.add(
+            this.model.data$.subscribe(data => {
+                // Set the module of the new model and open a modal with copy rules
+                this.child.model.module = this.actionconfig.module;
+                this.child.model.id = this.model.getFieldValue(this.actionconfig.parent_field);
+                this.child.model.getData(false);
 
-            this.handleDisabled(this.child.model.isEditing ? 'edit' : 'display');
-        });
+                this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+            })
+        );
     }
+
 
     get hidden() {
         return this.child.model.id ? false : true;
@@ -75,13 +82,22 @@ export class ObjectActionEditRelatedButton implements OnInit {
         this.child.model.edit();
     }
 
+    /*
+    * @unsubscribe subscriptions
+    */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    /*
+    * @set disabled
+    */
     private handleDisabled(mode) {
         if (this.model.data.acl && !this.model.checkAccess('edit')) {
-
             this.disabled = true;
             return;
         }
-        this.disabled = mode == 'edit' ? true : false;
+        this.disabled = mode == 'edit';
     }
 
 }

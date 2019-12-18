@@ -134,8 +134,8 @@ import /*embed*/ {ObjectRelatedListSequencedItem} from './components/objectrelat
 
 import /*embed*/ {ObjectFileActionMenu} from './components/objectfileactionmenu';
 
-import /*embed*/ {ObjectStatusNetworkButton} from './components/objectstatusnetworkbutton';
 import /*embed*/ {ObjectStatusNetworkButtonItem} from './components/objectstatusnetworkbuttonitem';
+import /*embed*/ {ObjectStatusNetworkButton} from './components/objectstatusnetworkbutton';
 
 import /*embed*/ {ObjectRecordFieldset} from './components/objectrecordfieldset';
 import /*embed*/ {ObjectRecordFieldsetField} from './components/objectrecordfieldsetfield';
