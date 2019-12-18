@@ -1,18 +1,24 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Renderer2, ElementRef, OnInit} from '@angular/core';
+import {Component, Renderer2, ElementRef, OnInit, ViewChildren, QueryList} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
+import {ObjectStatusNetworkButtonItem} from "./objectstatusnetworkbuttonitem";
 
 @Component({
     selector: 'object-status-network-button',
     templateUrl: './src/objectcomponents/templates/objectstatusnetworkbutton.html'
 })
 export class ObjectStatusNetworkButton implements OnInit {
+
+    /**
+     * reference to the container item where the indivvidual components can be rendered into dynamically
+     */
+    @ViewChildren(ObjectStatusNetworkButtonItem) private buttonitemlist: QueryList<ObjectStatusNetworkButtonItem>;
 
     private isOpen: boolean = false;
     private statusField: string = '';
@@ -55,7 +61,7 @@ export class ObjectStatusNetworkButton implements OnInit {
                 if (!firstHit) firstHit = true;
             }
         }
-        return retArray
+        return retArray;
     }
 
     public ngOnInit() {
@@ -66,26 +72,12 @@ export class ObjectStatusNetworkButton implements OnInit {
         }
     }
 
-    private setStatus(newStatus) {
-        let statusItem = this.statusNetwork.find(item => item.status_to == newStatus);
-        if (statusItem.prompt_label) {
-            this.modal.confirm(this.language.getLabel(statusItem.prompt_label, '', 'long'), this.language.getLabel(statusItem.prompt_label, '')).subscribe(response => {
-                if (response) {
-                    this.executeChange(newStatus);
-                }
-            });
-        } else {
-            this.executeChange(newStatus);
-        }
-    }
-
-    private executeChange(newStatus) {
-        this.model.startEdit();
-        this.model.setField(this.statusField, newStatus);
-        if (this.model.validate()) {
-            this.model.save();
-        } else {
-            this.model.edit();
-        }
+    private propagateclick(actionid) {
+        this.buttonitemlist.some(actionitem => {
+            if (actionitem.id == actionid) {
+                actionitem.setStatus(this.statusField);
+                return true;
+            }
+        });
     }
 }
