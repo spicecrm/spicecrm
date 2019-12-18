@@ -9,7 +9,7 @@ import {relatedmodels} from "../../services/relatedmodels.service";
 
 
 /**
- * a helper component used in ObjectActionNewCopyRuleBeanButton
+ * a helper component used in ObjectActionEditRelatedButton
  *
  * does nothing but provide a model
  */
@@ -57,17 +57,21 @@ export class ObjectActionEditRelatedButton implements OnInit {
         });
 
         this.model.data$.subscribe(data => {
-            this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+
+            // Set the module of the new model and open a modal with copy rules
+            this.child.model.module = this.actionconfig.module;
+            this.child.model.id = this.model.getFieldValue(this.actionconfig.parent_field);
+            this.child.model.getData(false);
+
+            this.handleDisabled(this.child.model.isEditing ? 'edit' : 'display');
         });
     }
 
+    get hidden() {
+        return this.child.model.id ? false : true;
+    }
+
     public execute() {
-
-        // Set the module of the new model and open a modal with copy rules
-        this.child.model.module = this.actionconfig.module;
-        this.child.model.id = this.model.getFieldValue(this.actionconfig.parent_field);
-        this.child.model.getData(false);
-
         this.child.model.edit();
     }
 
