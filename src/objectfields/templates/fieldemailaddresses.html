@@ -12,33 +12,15 @@
             </div>
             <div class="slds-col slds-size--1-of-1 slds-large-size--1-of-2 slds-p-vertical--xxx-small">
                 <div class="slds-grid slds-grid--align-spread">
-                    <div class="slds-truncate slds-form-element__control">
-                        <span class="slds-radio">
-                          <input type="radio" name="primaryemail" [id]="emailaddress.id + 'primary'" [checked]="emailaddress.primary_address == '1'" disabled>
-                          <label class="slds-radio__label" [attr.for]="emailaddress.id + 'primary'">
-                            <span class="slds-radio--faux"></span>
-                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">{{language.getLabel('LBL_EMAILADDRESS_FIELD_PRIMARY')}}</span>
-                          </label>
-                        </span>
-                    </div>
-                    <div class="slds-truncate slds-form-element__control">
-                        <span class="slds-checkbox">
-                          <input type="checkbox" [id]="emailaddress.id + 'optout'" [checked]="emailaddress.opt_out == '1'" disabled>
-                          <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'optout'">
-                            <span class="slds-checkbox--faux"></span>
-                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">{{language.getLabel('LBL_EMAILADDRESS_FIELD_OPT_OUT')}}</span>
-                          </label>
-                        </span>
-                    </div>
-                    <div class="slds-truncate slds-form-element__control">
-                        <span class="slds-checkbox">
-                          <input type="checkbox" [id]="emailaddress.id + 'invalid'" [checked]="emailaddress.invalid_email == '1'" disabled>
-                          <label class="slds-checkbox__label" [attr.for]="emailaddress.id + 'invalid'">
-                            <span class="slds-checkbox--faux"></span>
-                            <span class="slds-form-element__label slds-p-left--xx-small slds-truncate">{{language.getLabel('LBL_EMAILADDRESS_FIELD_INVALID')}}</span>
-                          </label>
-                        </span>
-                    </div>
+                    <system-input-radio value="1" [ngModel]="emailaddress.primary_address" [disabled]="true" class="slds-size--1-of-3">
+                        {{language.getLabel('LBL_EMAILADDRESS_FIELD_PRIMARY')}}
+                    </system-input-radio>
+                    <system-checkbox [ngModel]="emailaddress.opt_out == '1'" [disabled]="true" class="slds-size--1-of-3">
+                        {{language.getLabel('LBL_EMAILADDRESS_FIELD_OPT_OUT')}}
+                    </system-checkbox>
+                    <system-checkbox [ngModel]="emailaddress.invalid_email == '1'" [disabled]="true" class="slds-size--1-of-3">
+                        {{language.getLabel('LBL_EMAILADDRESS_FIELD_INVALID')}}
+                    </system-checkbox>
                 </div>
             </div>
         </div>

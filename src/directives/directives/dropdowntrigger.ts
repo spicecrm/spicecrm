@@ -14,12 +14,15 @@ import {
 import {footer} from "../../services/footer.service";
 
 /**
- * a directive that can be added to an element and then makes this act as a dropdowntrigger in
- * the sense of lightning design. It reacts to a click and then sets the attribute slds-is-open as class to the element this is rendered to
+ * This directive can be added to an element to handle show/hide the dropdown element
+ * it also move the dropdown element to the footer and re position it to prevent any overflow.
  *
- * ```html
- * <div dropdowntrigger></div>
- * ```
+ * <div dropdowntrigger>
+ *      <button>dropdown button</button>
+ *      <div class="slds-dropdown">
+ *          dropdown content
+ *      </div>
+ * </div>
  */
 @Directive({
     selector: '[dropdowntrigger]'
@@ -113,10 +116,12 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
     /*
     * @set dropdown style.transform
     * @set dropdown style.right
+    * @set dropdown style.z-index
     */
     private resetDropdownStyles() {
         this.renderer.setStyle(this.dropdownElement, 'transform', 'initial');
         this.renderer.setStyle(this.dropdownElement, 'right', 'initial');
+        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
     }
 
     /*
