@@ -68,6 +68,8 @@ export class AdministrationMenu implements OnDestroy {
                 this.adminNavigation = nav;
                 // default open version control...
                 // this.openContent('Versioning', 'Version Control');
+                window.console.log("questo è il nav");
+                window.console.log(nav);
             },
 
         );
@@ -105,7 +107,6 @@ export class AdministrationMenu implements OnDestroy {
             }
 
         }
-
         return blocks.sort();
     }
 
@@ -165,7 +166,6 @@ export class AdministrationMenu implements OnDestroy {
 
     private loadHome() {
         this.metadata.addComponent('AdminHomeScreen', this.adminhomecontainer);
-        window.console.log(this.hidden);
     }
 
     public ngAfterViewInit() {
