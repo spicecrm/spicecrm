@@ -113,7 +113,7 @@ export class QuestionsetCategoryPool implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
+        if ( this.clickListener ) this.clickListener();
     }
 
     private change( event=null ): void {
