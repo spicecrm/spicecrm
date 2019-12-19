@@ -53,7 +53,7 @@ export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
                 // Set the module of the new model and open a modal with copy rules
                 this.model.module = this.actionconfig.module;
                 this.model.id = this.parent.getFieldValue(this.actionconfig.parent_field);
-                this.model.getData(false);
+                // this.model.getData(false);
 
                 this.handleDisabled(this.parent.isEditing ? 'edit' : 'display');
             })
@@ -65,7 +65,7 @@ export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
     }
 
     public execute() {
-        this.model.edit();
+        this.model.edit(true);
     }
 
     /*
