@@ -15,6 +15,7 @@ import {language} from '../../services/language.service';
 export class AdminHomeScreen {
     private adminHomeMenu: any[] = [];
 
+
     constructor(
         private router: Router,
         private metadata: metadata,
@@ -25,12 +26,12 @@ export class AdminHomeScreen {
     }
 
     private loadHomeMenu() {
-        let groupItems = [];
+
         this.backend.getRequest('spiceui/admin/homemenu').subscribe(
             response => {
-                this.adminHomeMenu = response.Calendar;
-                window.console.log(this.adminHomeMenu);
+                this.adminHomeMenu.push(Object.keys(response).map(key => response[key]));
             }
         );
+        window.console.log(this.adminHomeMenu);
     }
 }
