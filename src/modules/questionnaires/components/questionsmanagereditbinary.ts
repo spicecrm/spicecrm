@@ -5,6 +5,8 @@ import {Component, OnInit, Input } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 
+declare var _: any;
+
 @Component({
     selector: 'questions-manager-edit-binary',
     templateUrl: './src/modules/questionnaires/templates/questionsmanagereditbinary.html',
@@ -22,7 +24,7 @@ export class QuestionsManagerEditBinary implements OnInit {
 
     public ngOnInit(): void {
         this.model.data$.subscribe(data => {
-            if ( data.id && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
+            if ( !this.model.isLoading && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
         });
     }
 

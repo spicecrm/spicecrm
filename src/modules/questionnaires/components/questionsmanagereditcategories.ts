@@ -63,7 +63,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
+        if ( this.clickListener ) this.clickListener();
     }
 
     private toggleCategory( i: number ): void {

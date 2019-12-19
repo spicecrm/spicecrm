@@ -30,7 +30,7 @@
                     </button>
                 </td>
             </tr>
-            <tr *ngFor="let option of options; let i = index;" questions-manager-edit-binary-option [option]="option" [categorypool]="categorypool" [side]="i == 0 ? 'l':'r'" (dataChanged)="handleChange($event)" (exchangeOptions)="exchangeOptions()"></tr>
+            <tr *ngFor="let option of options; let i = index;" questions-manager-edit-binary-option [option]="option" [categorypool]="categorypool" [side]="i == 0 ? 'l':'r'" (dataChanged)="handleChange($event)"></tr>
         </tbody>
     </table>
 </div>
