@@ -23,6 +23,7 @@ import /*embed*/ { AdministrationConfiguratorItemRole } from './components/admin
 import /*embed*/ { AdministrationQuotaManager } from './components/administrationquotamanager';
 import /*embed*/ { AdministrationQuotaManagerField } from './components/administrationquotamanagerfield';
 
+
 import /*embed*/ { AdministrationFTSManager } from './components/administrationftsmanager';
 import /*embed*/ { AdministrationFTSManagerFields } from './components/administrationftsmanagerfields';
 import /*embed*/ { AdministrationFTSManagerFieldsList } from './components/administrationftsmanagerfieldslist';
@@ -31,6 +32,7 @@ import /*embed*/ { AdministrationFTSManagerModuleAdd } from './components/admini
 import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
 import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
 import /*embed*/ { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
+import {AdminHomeScreen} from "./components/adminhomescreen";
 
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
 
@@ -93,7 +95,8 @@ export class AdministrationMain {}
         AdministrationSchedulerRunButton,
         AdministrationSchedulerScheduleButton,
         AdministrationSystemStats,
-        AdministrationFtsManagerIndexModal
+        AdministrationFtsManagerIndexModal,
+        AdminHomeScreen
     ],
     entryComponents: [
         AdministrationMain,

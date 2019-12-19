@@ -5,8 +5,7 @@ import {
     Component,
     ViewChild,
     ViewContainerRef,
-    ElementRef, OnDestroy
-} from '@angular/core';
+    ElementRef, OnDestroy, AfterViewInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
@@ -14,6 +13,7 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
 import {session} from '../../services/session.service';
+import { AdminHomeScreen } from './adminhomescreen';
 
 @Component({
     selector: '[administration-menu]',
@@ -22,11 +22,13 @@ import {session} from '../../services/session.service';
 export class AdministrationMenu implements OnDestroy {
 
     @ViewChild('admincontentcontainer', {read: ViewContainerRef, static: true}) private admincontentcontainer: ViewContainerRef;
+    @ViewChild('adminhomecontainer', {read: ViewContainerRef, static: true}) private adminhomecontainer: ViewContainerRef;
 
     private admincontentObject: any = null;
     private adminNavigation: any = {};
     private itemfilter: string = '';
     private opened_itemid: any = {};
+    private hidden: boolean = false;
 
     private broadcastsubscription: any;
 
@@ -38,10 +40,9 @@ export class AdministrationMenu implements OnDestroy {
         private broadcast: broadcast,
         private navigation: navigation,
         private elementref: ElementRef,
-        private session: session
+        private session: session,
     ) {
         this.loadNavigation();
-
         this.navigation.setActiveModule('Administration');
 
         this.broadcastsubscription = this.broadcast.message$.subscribe(message => {
@@ -67,8 +68,10 @@ export class AdministrationMenu implements OnDestroy {
                 this.adminNavigation = nav;
                 // default open version control...
                 // this.openContent('Versioning', 'Version Control');
-            }
+            },
+
         );
+
     }
 
     private getContainerStyle() {
@@ -125,6 +128,8 @@ export class AdministrationMenu implements OnDestroy {
     }
 
     private openContent(block: string, item) {
+        this.hidden = true;
+        window.console.log(this.hidden);
         // already loaded?
         if (this.opened_itemid == item.id) {
             return true;
@@ -156,6 +161,15 @@ export class AdministrationMenu implements OnDestroy {
                 this.admincontentObject = admObject;
             });
         }
+    }
+
+    private loadHome() {
+        this.metadata.addComponent('AdminHomeScreen', this.adminhomecontainer);
+        window.console.log(this.hidden);
+    }
+
+    public ngAfterViewInit() {
+        this.loadHome();
     }
 
 }
