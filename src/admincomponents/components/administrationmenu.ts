@@ -68,8 +68,6 @@ export class AdministrationMenu implements OnDestroy {
                 this.adminNavigation = nav;
                 // default open version control...
                 // this.openContent('Versioning', 'Version Control');
-                window.console.log("questo è il nav");
-                window.console.log(nav);
             },
 
         );
