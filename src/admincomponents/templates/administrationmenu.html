@@ -24,7 +24,11 @@
             </ng-container>
         </div>
     </div>
-    <div style="width:100%; height: 100%;" class="slds-scrollable" >
+    <div [hidden]="hidden == true" style="width:100%; height: 100%;" class="slds-scrollable">
+    <div #adminhomecontainer></div>
+    </div>
+    <div style="width:100%; height: 100%;" class="slds-scrollable">
         <div #admincontentcontainer></div>
     </div>
+
 </div>
