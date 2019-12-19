@@ -1,85 +1,71 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Directive, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Directive, OnDestroy, OnInit, ViewChild, SkipSelf} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {Subscription} from "rxjs";
 
-
-/**
- * a helper component used in ObjectActionEditRelatedButton
- *
- * does nothing but provide a model
- */
-@Directive({
-    selector: "object-action-edit-related-button-helper",
-    providers: [model]
-})
-export class ObjectActionEditRelatedButtonHelper {
-    constructor(public model: model) {
-    }
-}
-
-// tslint:disable-next-line:max-classes-per-file
 @Component({
     selector: 'object-action-edit-related-button',
-    templateUrl: './src/objectcomponents/templates/objectactioneditrelatedbutton.html'
+    templateUrl: './src/objectcomponents/templates/objectactioneditrelatedbutton.html',
+    providers: [model]
 })
 export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
 
     public disabled: boolean = true;
+
     /**
      * the action config from the actionset
      */
     public actionconfig: any = {};
+
     /**
      * this is a helper so we have a subcomponent that can provide a new model
      *
      * this model is detected via teh component and then addressed
      */
-    @ViewChild(ObjectActionEditRelatedButtonHelper, {static: true}) private child;
     private subscriptions: Subscription = new Subscription();
 
     constructor(
         private language: language,
         private metadata: metadata,
-        private model: model,
+        @SkipSelf() private parent: model,
+        private model: model
     ) {
 
     }
 
     public ngOnInit() {
-        this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+        this.handleDisabled(this.parent.isEditing ? 'edit' : 'display');
 
         // handleDisabled on on model.mode changes
         this.subscriptions.add(
-            this.model.mode$.subscribe(mode => {
+            this.parent.mode$.subscribe(mode => {
                 this.handleDisabled(mode);
             })
         );
 
         // handleDisabled on on model.data changes
         this.subscriptions.add(
-            this.model.data$.subscribe(data => {
+            this.parent.data$.subscribe(data => {
                 // Set the module of the new model and open a modal with copy rules
-                this.child.model.module = this.actionconfig.module;
-                this.child.model.id = this.model.getFieldValue(this.actionconfig.parent_field);
-                this.child.model.getData(false);
+                this.model.module = this.actionconfig.module;
+                this.model.id = this.parent.getFieldValue(this.actionconfig.parent_field);
+                this.model.getData(false);
 
-                this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+                this.handleDisabled(this.parent.isEditing ? 'edit' : 'display');
             })
         );
     }
 
-
     get hidden() {
-        return this.child.model.id ? false : true;
+        return this.model.id ? false : true;
     }
 
     public execute() {
-        this.child.model.edit();
+        this.model.edit();
     }
 
     /*
@@ -93,11 +79,10 @@ export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
     * @set disabled
     */
     private handleDisabled(mode) {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+        if (this.parent.data.acl && !this.parent.checkAccess('edit')) {
             this.disabled = true;
             return;
         }
         this.disabled = mode == 'edit';
     }
-
 }
