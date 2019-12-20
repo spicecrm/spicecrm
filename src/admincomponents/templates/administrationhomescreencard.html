@@ -1,0 +1,22 @@
+<div class="slds-p-around--medium">
+    <article *ngFor="let adminNavigationBlock of administration.getNavigationBlocks()" class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <p class="slds-card__header-link slds-truncate">
+                            {{language.getLabel(adminNavigationBlock)}}
+                        </p>
+                        <p class="slds-text-body_small slds-p-top_small" >{{language.getLabel(adminNavigationBlock, '','long')}}</p>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <ul class="slds-grid slds-wrap slds-grid_pull-padded">
+                <administration-card-item></administration-card-item>
+            </ul>
+        </div>
+    </article>
+</div>
