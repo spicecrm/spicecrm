@@ -14,7 +14,9 @@ import {SystemComponents} from '../systemcomponents/systemcomponents';
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service';
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
 import /*embed*/ {dictionary} from './services/dictionary.service';
+import /*embed*/ {administration} from './services/administration.service';
 
+import /*embed*/ { AdministrationMain } from './components/administrationmain';
 import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
 import /*embed*/ { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
 import /*embed*/ { AdministrationConfigurator } from './components/administrationconfigurator';
@@ -32,7 +34,9 @@ import /*embed*/ { AdministrationFTSManagerModuleAdd } from './components/admini
 import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
 import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
 import /*embed*/ { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
-import {AdminHomeScreen} from "./components/adminhomescreen";
+import /*embed*/ {AdministrationHomeScreen} from "./components/administrationhomescreen";
+import /*embed*/ {AdministrationHomeScreenCard} from "./components/administrationhomescreencard";
+import /*embed*/ {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
 
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
 
@@ -51,12 +55,6 @@ import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/ad
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {VersionControllerComponent} from "./components/versioncontroller";
 
-
-@Component({
-    selector: 'administration-main',
-    template: '<div administration-menu></div>'
-})
-export class AdministrationMain {}
 
 @NgModule({
     imports: [
@@ -96,7 +94,9 @@ export class AdministrationMain {}
         AdministrationSchedulerScheduleButton,
         AdministrationSystemStats,
         AdministrationFtsManagerIndexModal,
-        AdminHomeScreen
+        AdministrationHomeScreen,
+        AdministrationHomeScreenCard,
+        AdministrationHomeScreenCardItem
     ],
     entryComponents: [
         AdministrationMain,
