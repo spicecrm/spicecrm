@@ -159,7 +159,7 @@ export class SystemCheckboxGroup implements ControlValueAccessor
 @Component({
     selector: 'system-checkbox-group-checkbox',
     template: `
-        <span class="slds-checkbox">
+        <span class="slds-checkbox slds-truncate">
             <input type="checkbox" id="checkbox-group-checkbox-{{id}}" [attr.aria-labelledby]="'checkbox-group-checkbox-button-label-'+id+' check-group-header'" [disabled]="disabled" [checked]="checked" (click)="toggle()" />
             <label class="slds-checkbox__label" for="checkbox-group-checkbox-{{id}}" id="checkbox-group-checkbox-button-label-{{id}}">
                 <span class="slds-checkbox_faux"></span>

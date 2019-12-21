@@ -322,17 +322,16 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
                 this.data = res;
-                this.data$.next(res);
-                this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
-                responseSubject.next(res);
-                responseSubject.complete();
-
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, "init");
                 this.isLoading = false;
+                this.data$.next(res);
+                this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
+                responseSubject.next(res);
+                responseSubject.complete();
             },
             err => {
                 if (redirectNotFound && err.status != 401) {
@@ -898,6 +897,7 @@ export class model implements OnDestroy {
 
         // reset the data object
         this.data = {};
+        // this.data.id = this.id;
         this.data.assigned_user_id = this.session.authData.userId;
         this.data.assigned_user_name = this.session.authData.userName;
         this.data.modified_by_id = this.session.authData.userId;
