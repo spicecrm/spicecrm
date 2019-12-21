@@ -20,7 +20,6 @@ import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {listfilters} from './services/listfilters.service';
 
-
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import /*embed*/ {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
 
@@ -52,7 +51,7 @@ import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objecta
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
-import /*embed*/ {ObjectActionEditRelatedButton, ObjectActionEditRelatedButtonHelper} from "./components/objectactioneditrelatedbutton";
+import /*embed*/ {ObjectActionEditRelatedButton} from "./components/objectactioneditrelatedbutton";
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
 import /*embed*/ {ObjectActionOpenButton} from './components/objectactionopenbutton';
@@ -136,8 +135,8 @@ import /*embed*/ {ObjectRelatedListSequencedItem} from './components/objectrelat
 
 import /*embed*/ {ObjectFileActionMenu} from './components/objectfileactionmenu';
 
-import /*embed*/ {ObjectStatusNetworkButton} from './components/objectstatusnetworkbutton';
 import /*embed*/ {ObjectStatusNetworkButtonItem} from './components/objectstatusnetworkbuttonitem';
+import /*embed*/ {ObjectStatusNetworkButton} from './components/objectstatusnetworkbutton';
 
 import /*embed*/ {ObjectRecordFieldset} from './components/objectrecordfieldset';
 import /*embed*/ {ObjectRecordFieldsetField} from './components/objectrecordfieldsetfield';
@@ -278,7 +277,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionEditButton,
-        ObjectActionEditRelatedButtonHelper,
         ObjectActionEditRelatedButton,
         ObjectActionSaveButton,
         ObjectActionSaveRelatedButton,
@@ -420,8 +418,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
     ]
 })
 export class ObjectComponents {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
 
     constructor(
         public metadata: metadata,

@@ -1,4 +1,4 @@
-<div class="slds-popover slds-popover--panel slds-is-fixed" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
+<div class="slds-popover slds-popover--panel slds-is-fixed" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut($event)">
     <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
         <system-button-icon icon="close"></system-button-icon>
     </button>
@@ -6,7 +6,7 @@
         <div class="slds-popover__header" style="padding: .5rem">
             <header class="slds-text-heading--small slds-m-bottom--x-small">{{shortDate}} {{'('+ events.length +')'}} {{language.getLabel('LBL_EVENTS')}}</header>
             <div class="slds-scrollable--y" style="height: 120px">
-                <calendar-more-popover-event *ngFor="let event of events; trackBy: trackByFn"  [event]="event" (action$)="closePopover(true)"></calendar-more-popover-event>
+                <calendar-sheet-event *ngFor="let event of events; trackBy: trackByFn" [event]="event" [ismonthsheet]="true" [ngStyle]="eventStyle"></calendar-sheet-event>
             </div>
         </div>
     </div>
