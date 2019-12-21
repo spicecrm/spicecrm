@@ -93,24 +93,25 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
     }
 
     private save() {
-        this.model.save().subscribe(
-            res => {
-                // if a relation link is given
-                if(this.object_relation_link_name) {
-                    // link this model to emails...
-                    this.backend.postRequest("module/Emails/" + this.email_model.id + "/related/" + this.object_relation_link_name, [], [this.model.id]).subscribe(
-                        subres => {
-                            this.save$.emit(this.model.data);
-                            this.close();
-                        }
-                    );
-                } else {
-                    this.save$.emit(this.model.data);
-                    this.close();
+        if(this.model.validate()) {
+            this.model.save().subscribe(
+                res => {
+                    // if a relation link is given
+
+                    if (this.object_relation_link_name) {
+                        // link this model to emails...
+                        this.backend.postRequest("module/Emails/" + this.email_model.id + "/related/" + this.object_relation_link_name, [], [this.model.id]).subscribe(
+                            subres => {
+                                this.save$.emit(this.model.data);
+                                this.close();
+                            }
+                        );
+                    } else {
+                        this.save$.emit(this.model.data);
+                        this.close();
+                    }
                 }
-
-            }
-        );
+            );
+        }
     }
-
 }
