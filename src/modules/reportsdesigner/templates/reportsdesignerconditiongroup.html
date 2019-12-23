@@ -1,0 +1,120 @@
+<li class="slds-expression__group">
+    <fieldset>
+        <div class="slds-grid slds-gutters_direct-xx-small slds-grid--vertical-align-end slds-size--1-of-1">
+            <div class="slds-form-element slds-col slds-grow-none">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_OPERATOR')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="group.type">
+                            <option value="AND">{{language.getLabel('LBL_AND')}}</option>
+                            <option value="OR">{{language.getLabel('LBL_OR')}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button *ngIf="canDelete" class="slds-button slds-button_icon slds-button_icon-border-filled slds-col--bump-left" (click)="emitSelfDeletion()">
+                <system-button-icon icon="delete"></system-button-icon>
+            </button>
+        </div>
+        <ul class="slds-m-vertical--x-small slds-p-horizontal--x-small">
+            <li *ngFor="let condition of group.conditions; let index = index" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
+                <div class="slds-grid slds-p-around--xx-small">
+                    <reports-designer-condition [whereCondition]="condition" class="slds-grid slds-grid--vertical-align-center slds-grow"></reports-designer-condition>
+                    <div>
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small" (click)="deleteCondition(index)">
+                            <system-button-icon icon="delete"></system-button-icon>
+                        </button>
+                        <system-utility-icon [icon]="expanded == condition.id ? 'up' : 'down'" (click)="toggleExpand(condition.id)" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
+                                             size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
+                    </div>
+                </div>
+                <div *ngIf="expanded == condition.id && reportsDesignerService.expertMode" class="slds-grid slds-p-around--x-small" style="box-shadow: inset -1px 1px 6px 0 #aaa;">
+                    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-size--1-of-1">
+                        <div class="slds-form-element__control">
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_REQUIRED')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" [ngModel]="condition.jointype" (ngModelChange)="setConditionValue(condition.id,'jointype', $event)">
+                                                <option value="required">{{language.getLabel('LBL_REQUIRED')}}</option>
+                                                <option value="optional">{{language.getLabel('LBL_OPTIONAL')}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_SEQUENCE')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" [ngModel]="condition.sequence" (ngModelChange)="setConditionValue(condition.id,'sequence', $event)" class="slds-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_USER_EDITABLE')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" [ngModel]="condition.usereditable" (ngModelChange)="setConditionValue(condition.id,'usereditable', $event)">
+                                                <option value="yes">{{language.getLabel('LBL_YES')}}</option>
+                                                <option value="no">{{language.getLabel('LBL_NO')}}</option>
+                                                <option value="yfo">{{language.getLabel('LBL_VALUE_ONLY')}}</option>
+                                                <option value="yo1">{{language.getLabel('LBL_REPORTS_ALLOW_EDIT_ON_OFF')}}</option>
+                                                <option value="yo2">{{language.getLabel('LBL_REPORTS_ALLOW_EDIT_ON_ON')}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" [ngModel]="condition.grouping" (ngModelChange)="setConditionValue(condition.id,'grouping', $event)" class="slds-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_DASHLET_EDITABLE')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" [ngModel]="condition.dashleteditable" (ngModelChange)="setConditionValue(condition.id,'dashleteditable', $event)">
+                                                <option value="yes">{{language.getLabel('LBL_YES')}}</option>
+                                                <option value="no">{{language.getLabel('LBL_NO')}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_CONTEXT')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" [ngModel]="condition.context" (ngModelChange)="setConditionValue(condition.id,'context', $event)" class="slds-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-1">
+                                    <label class="slds-form-element__label">{{language.getLabel('LBL_REFERENCE')}}</label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" [ngModel]="condition.reference" (ngModelChange)="setConditionValue(condition.id,'reference', $event)" class="slds-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </li>
+            <li cdkDropList [id]="group.id" [cdkDropListConnectedTo]="[reportsDesignerService.treeCDKDragList]" (cdkDropListDropped)="onDrop($event)" class="slds-align--absolute-center slds-text-color--inverse-weak" style="min-height: 30px; border: 1px dashed #ddd">
+                {{language.getLabel('MSG_DROP_FIELD_HERE')}}
+            </li>
+            <ng-container *ngFor="let childGroup of group.children">
+                <reports-designer-condition-group [group]="childGroup" [canDelete]="true" (groupDeleted)="deleteGroup($event)"></reports-designer-condition-group>
+            </ng-container>
+        </ul>
+        <div class="slds-expression__buttons">
+            <button class="slds-button slds-button_neutral" (click)="addGroup()">
+                <system-button-icon icon="add" class="slds-m-right--xx-small"></system-button-icon>
+                {{language.getLabel('LBL_ADD_GROUP')}}
+            </button>
+        </div>
+    </fieldset>
+</li>

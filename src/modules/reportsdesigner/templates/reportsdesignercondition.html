@@ -1,0 +1,42 @@
+<div class="slds-grid slds-size--1-of-2 slds-grid--vertical-align-center">
+    <div class="slds-form-element slds-grid slds-size--1-of-2">
+        <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center">
+            {{language.getLabel('LBL_NAME')}}
+        </label>
+        <div class="slds-form-element__control slds-grow">
+            <input type="text" [ngModel]="whereCondition.name" [disabled]="true" class="slds-input">
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small slds-grid slds-size--1-of-2">
+        <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
+            {{language.getLabel('LBL_OPERATOR')}}
+        </label>
+        <div class="slds-form-element__control slds-grow">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="whereCondition.operator" (change)="changeOperator()">
+                    <option value="ignore">{{language.getLabel('LBL_OP_IGNORE', 'KReports')}}</option>
+                    <option *ngFor="let operator of getOperators(); trackBy: trackByFn" [value]="operator.value">{{operator.display}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="showValue" class="slds-size--1-of-2 slds-grid">
+    <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
+        {{language.getLabel('LBL_VALUE')}}
+    </label>
+    <div class="slds-grid slds-grow">
+        <div [ngSwitch]="itemType" [ngClass]="{'slds-size--1-of-1': !showValueTo, 'slds-size--1-of-2': showValueTo, 'slds-p-right--xxx-small': showValueTo}">
+            <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
+            <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
+            <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-text>
+        </div>
+        <div *ngIf="showValueTo" class="slds-size--1-of-2 slds-p-left--xxx-small" [ngSwitch]="itemType">
+            <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
+            <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuetokey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
+            <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-text>
+        </div>
+    </div>
+
+</div>
+

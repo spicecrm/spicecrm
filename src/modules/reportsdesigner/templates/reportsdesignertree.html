@@ -1,0 +1,35 @@
+<div class="slds-scrollable--y slds-border--bottom" style="height: 50%">
+    <system-module-tree [module]="model.getField('report_module')" (itemSelected)="onItemSelection($event)"></system-module-tree>
+</div>
+<div class="slds-scrollable" style="height: 50%">
+    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" role="none">
+        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+        <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="filterKey"/>
+    </div>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th class="slds-cell-shrink"></th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody cdkDropList #dragList="cdkDropList" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="reportFields" [cdkDropListConnectedTo]="dropLists">
+        <tr cdkDrag [cdkDragData]="reportField" *ngFor="let reportField of filteredReportFields; trackBy: trackByFn" class="slds-hint-parent slds-drag--preview">
+            <td class="slds-p-around--none slds-cell-shrink">
+                <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+            </td>
+            <td data-label="Account Name">
+                <div class="slds-truncate" [title]="reportField.name">{{reportField.name}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate" [title]="language.getLabel(reportField.label)">{{language.getLabel(reportField.label)}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
